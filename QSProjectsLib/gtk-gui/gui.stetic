@@ -7,10 +7,11 @@
   <import>
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="369 303">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="369 379">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Вход в систему</property>
-    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Icon">stock:gtk-connect LargeToolbar</property>
+    <property name="WindowPosition">CenterAlways</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">
@@ -1020,7 +1021,7 @@
                 <property name="MemberName" />
                 <property name="ShowArrow">False</property>
                 <property name="ButtonStyle">Both</property>
-                <node name="__gtksharp_211_Stetic_Editor_ActionToolbar" type="Toolbar">
+                <node name="toolbar1" type="Toolbar">
                   <node type="Toolitem" action="addAction1" />
                   <node type="Toolitem" action="editAction1" />
                   <node type="Toolitem" action="removeAction1" />

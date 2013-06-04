@@ -19,14 +19,15 @@ namespace QSProjectsLib
 		private global::Gtk.Button buttonErrorInfo;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSProjectsLib.Login
 			this.Name = "QSProjectsLib.Login";
 			this.Title = global::Mono.Unix.Catalog.GetString ("Вход в систему");
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "gtk-connect", global::Gtk.IconSize.LargeToolbar);
+			this.WindowPosition = ((global::Gtk.WindowPosition)(3));
 			// Internal child QSProjectsLib.Login.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
@@ -264,7 +265,7 @@ namespace QSProjectsLib
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 369;
-			this.DefaultHeight = 303;
+			this.DefaultHeight = 379;
 			this.buttonDemo.Hide ();
 			this.buttonErrorInfo.Hide ();
 			this.Show ();
