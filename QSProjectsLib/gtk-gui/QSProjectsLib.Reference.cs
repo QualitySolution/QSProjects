@@ -22,7 +22,7 @@ namespace QSProjectsLib
 		private global::Gtk.Button buttonClose;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
@@ -37,16 +37,19 @@ namespace QSProjectsLib
 			this.removeAction = new global::Gtk.Action ("removeAction", null, null, "gtk-remove");
 			w1.Add (this.removeAction, null);
 			this.addAction1 = new global::Gtk.Action ("addAction1", null, null, "gtk-add");
+			this.addAction1.ShortLabel = global::Mono.Unix.Catalog.GetString ("Добавить");
 			w1.Add (this.addAction1, null);
 			this.editAction1 = new global::Gtk.Action ("editAction1", null, null, "gtk-edit");
+			this.editAction1.ShortLabel = global::Mono.Unix.Catalog.GetString ("Изменить");
 			w1.Add (this.editAction1, null);
 			this.removeAction1 = new global::Gtk.Action ("removeAction1", null, null, "gtk-remove");
+			this.removeAction1.ShortLabel = global::Mono.Unix.Catalog.GetString ("Удалить");
 			w1.Add (this.removeAction1, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "QSProjectsLib.Reference";
 			this.Title = global::Mono.Unix.Catalog.GetString ("Справочник");
-			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "stock_addressbook", global::Gtk.IconSize.Menu);
+			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "stock_addressbook", global::Gtk.IconSize.LargeToolbar);
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child QSProjectsLib.Reference.VBox
 			global::Gtk.VBox w2 = this.VBox;
@@ -62,6 +65,7 @@ namespace QSProjectsLib
 			this.toolbar1.Name = "toolbar1";
 			this.toolbar1.ShowArrow = false;
 			this.toolbar1.ToolbarStyle = ((global::Gtk.ToolbarStyle)(2));
+			this.toolbar1.IconSize = ((global::Gtk.IconSize)(3));
 			this.vbox2.Add (this.toolbar1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.toolbar1]));
 			w3.Position = 0;

@@ -986,25 +986,28 @@
       <action id="addAction1">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
+        <property name="ShortLabel" translatable="yes">Добавить</property>
         <property name="StockId">gtk-add</property>
         <signal name="Activated" handler="OnAddActionActivated" />
       </action>
       <action id="editAction1">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
+        <property name="ShortLabel" translatable="yes">Изменить</property>
         <property name="StockId">gtk-edit</property>
         <signal name="Activated" handler="OnEditActionActivated" />
       </action>
       <action id="removeAction1">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
+        <property name="ShortLabel" translatable="yes">Удалить</property>
         <property name="StockId">gtk-remove</property>
         <signal name="Activated" handler="OnRemoveActionActivated" />
       </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">Справочник</property>
-    <property name="Icon">stock:stock_addressbook Menu</property>
+    <property name="Icon">stock:stock_addressbook LargeToolbar</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">3</property>
     <property name="HelpButton">False</property>
@@ -1021,6 +1024,7 @@
                 <property name="MemberName" />
                 <property name="ShowArrow">False</property>
                 <property name="ButtonStyle">Both</property>
+                <property name="IconSize">LargeToolbar</property>
                 <node name="toolbar1" type="Toolbar">
                   <node type="Toolitem" action="addAction1" />
                   <node type="Toolitem" action="editAction1" />
