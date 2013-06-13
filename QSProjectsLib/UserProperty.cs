@@ -95,7 +95,7 @@ namespace QSProjectsLib
 				if(!CreateLogin ())
 					return;
 				sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName +", description" + QSMain.GetPermissionFieldsForSelect () +") " +
-					"VALUES (@name, @login, @admin, @edit_slips, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
+					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
 			}
 			else
 			{
