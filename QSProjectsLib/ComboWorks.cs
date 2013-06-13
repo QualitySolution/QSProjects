@@ -6,7 +6,7 @@ namespace QSProjectsLib
 {
 	public class ComboWorks
 	{
-		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode)
+		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode, bool SetDefault = true)
 		{   //Заполняем комбобокс элементами справочника
 			// Режимы списка:
 			// 0 - Только элементы справочника
@@ -44,9 +44,9 @@ namespace QSProjectsLib
 					count++;
 				}
 				rdr.Close();
-				if(listmode == 2 && count == 1)
+				if(SetDefault && listmode == 2 && count == 1)
 					combo.Active = 1;
-				if(listmode == 0 && count == 1)
+				if(SetDefault && listmode == 0 && count == 1)
 					combo.Active = 0;
 				QSMain.OnNewStatusText("Ok");
 			}
