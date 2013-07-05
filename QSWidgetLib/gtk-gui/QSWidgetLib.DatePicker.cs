@@ -62,6 +62,7 @@ namespace QSWidgetLib
 			this.entryDate.FocusInEvent += new global::Gtk.FocusInEventHandler (this.OnEntryDateFocusInEvent);
 			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryDateFocusOutEvent);
 			this.entryDate.Changed += new global::System.EventHandler (this.OnEntryDateChanged);
+			this.entryDate.TextInserted += new global::Gtk.TextInsertedHandler (this.OnEntryDateTextInserted);
 			this.buttonEditDate.Clicked += new global::System.EventHandler (this.OnButtonEditDateClicked);
 		}
 	}

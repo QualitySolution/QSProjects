@@ -26,6 +26,7 @@
             <signal name="FocusInEvent" handler="OnEntryDateFocusInEvent" />
             <signal name="FocusOutEvent" handler="OnEntryDateFocusOutEvent" />
             <signal name="Changed" handler="OnEntryDateChanged" />
+            <signal name="TextInserted" handler="OnEntryDateTextInserted" />
           </widget>
           <packing>
             <property name="Position">0</property>
@@ -99,7 +100,8 @@
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
                 <property name="Date">0</property>
-                <property name="IsEditable">False</property>
+                <property name="IsEditable">True</property>
+                <property name="AutoSeparation">True</property>
                 <signal name="DateChanged" handler="OnStartDateDateChanged" />
               </widget>
               <packing>
@@ -124,7 +126,8 @@
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
                 <property name="Date">0</property>
-                <property name="IsEditable">False</property>
+                <property name="IsEditable">True</property>
+                <property name="AutoSeparation">True</property>
                 <signal name="DateChanged" handler="OnEndDateDateChanged" />
               </widget>
               <packing>

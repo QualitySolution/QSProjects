@@ -14,6 +14,7 @@ namespace QSWidgetLib
 		public DatePicker ()
 		{
 			this.Build ();
+
 		}
 
 		public string DateText {
@@ -50,6 +51,13 @@ namespace QSWidgetLib
 			get { return entryDate.IsEditable;}
 			set { entryDate.IsEditable = value;
 				buttonEditDate.Sensitive = value;}
+		}
+
+		private bool _AutoSeparation = true;
+		[System.ComponentModel.DefaultValue(true)]
+		public bool AutoSeparation{
+			get { return _AutoSeparation;}
+			set { _AutoSeparation = value;}
 		}
 
 		public void Clear()
@@ -130,6 +138,23 @@ namespace QSWidgetLib
 		protected void OnCalendarDaySelectedDoubleClick (object sender, EventArgs e)
 		{
 			editDate.Respond(ResponseType.Ok);
+		}
+
+		protected void OnEntryDateTextInserted (object o, TextInsertedArgs args)
+		{
+			if(!_AutoSeparation)
+				return;
+			//Console.WriteLine(String.Format("T:{0} L:{1} P:{2}", args.Text, args.Length, args.Position));
+			//Console.WriteLine(String.Format("E:{0} L:{1}", entryDate.Text, entryDate.Text.Length));
+			if(args.Length == 1 && 
+			   (args.Position == 3 || args.Position == 6) && 
+			   args.Text != System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator &&
+			   args.Position == entryDate.Text.Length)
+			{
+				int Pos = args.Position - 1;
+				entryDate.InsertText( System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, ref Pos);
+				args.Position++;
+			}
 		}
 	}
 }

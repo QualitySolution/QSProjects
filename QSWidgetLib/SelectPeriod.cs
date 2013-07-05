@@ -30,6 +30,12 @@ namespace QSWidgetLib
 			set{EndDate.Date = value;}
 		}
 
+		public bool AutoDateSeparation {
+			get{return StartDate.AutoSeparation;}
+			set{EndDate.AutoSeparation = value;
+				StartDate.AutoSeparation = value;}
+		}
+
 		public bool IsAllTime {
 			get{return StartDate.IsEmpty && EndDate.IsEmpty;}
 		}

@@ -11,7 +11,7 @@ namespace QSWidgetLib
 		private global::QSWidgetLib.DatePicker StartDate;
 		private global::Gtk.Label label2;
 		private global::QSWidgetLib.DatePicker EndDate;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
@@ -49,6 +49,8 @@ namespace QSWidgetLib
 			this.StartDate.Events = ((global::Gdk.EventMask)(256));
 			this.StartDate.Name = "StartDate";
 			this.StartDate.Date = new global::System.DateTime (0);
+			this.StartDate.IsEditable = true;
+			this.StartDate.AutoSeparation = true;
 			this.hbox1.Add (this.StartDate);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.StartDate]));
 			w3.Position = 0;
@@ -66,6 +68,8 @@ namespace QSWidgetLib
 			this.EndDate.Events = ((global::Gdk.EventMask)(256));
 			this.EndDate.Name = "EndDate";
 			this.EndDate.Date = new global::System.DateTime (0);
+			this.EndDate.IsEditable = true;
+			this.EndDate.AutoSeparation = true;
 			this.hbox1.Add (this.EndDate);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.EndDate]));
 			w5.Position = 2;
