@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using System.ComponentModel;
 
 namespace QSWidgetLib
 {
@@ -14,7 +15,6 @@ namespace QSWidgetLib
 		public DatePicker ()
 		{
 			this.Build ();
-
 		}
 
 		public string DateText {
@@ -47,6 +47,7 @@ namespace QSWidgetLib
 
 		}
 
+		[DefaultValue (true)]
 		public bool IsEditable{
 			get { return entryDate.IsEditable;}
 			set { entryDate.IsEditable = value;
@@ -101,7 +102,7 @@ namespace QSWidgetLib
 
 		protected void OnEntryDateFocusInEvent (object o, FocusInEventArgs args)
 		{
-			entryDate.SelectRegion(1,10);
+			entryDate.SelectRegion(0,10);
 		}
 
 		protected void OnEntryDateFocusOutEvent (object o, FocusOutEventArgs args)
