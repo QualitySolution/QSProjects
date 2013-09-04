@@ -294,9 +294,8 @@ namespace QSProjectsLib
 					privileges = "ALL";
 				else
 					privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW";
-				string sql = "GRANT " + privileges + " ON " + QSMain.connectionDB.Database +".* TO @login";
+				string sql = "GRANT " + privileges + " ON " + QSMain.connectionDB.Database +".* TO " + entryLogin.Text + ", " + entryLogin.Text + "@localhost";
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", entryLogin.Text);
 				cmd.ExecuteNonQuery();
 				if(checkAdmin.Active)
 				{
