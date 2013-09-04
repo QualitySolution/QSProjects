@@ -6,13 +6,13 @@ namespace QSProjectsLib
 {
 	public class ComboWorks
 	{
+		/// <summary>Заполняет комбобокс любыми данными из базы.
+    	/// <param name="listmode">Режимы списка:
+		/// 0 - Только элементы;
+		/// 1 - Есть пункт "Все" с кодом 0;
+		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
 		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode)
-		{   //Заполняем универсальный комбобокс
-			// Режимы списка:
-			// 0 - Только элементы
-			// 1 - Есть пункт "Все" с кодом 0
-			// 2 - Есть пункт "Нет" с кодом -1
-
+		{   
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
 			ListStore store = new ListStore (typeof (string), typeof (int));
@@ -61,13 +61,13 @@ namespace QSProjectsLib
 
 		}
 
+		/// <summary>Заполняем комбобокс элементами справочника.
+		/// <param name="listmode">Режимы списка:
+		/// 0 - Только элементы;
+		/// 1 - Есть пункт "Все" с кодом 0;
+		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
 		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode, bool SetDefault = true)
-		{   //Заполняем комбобокс элементами справочника
-			// Режимы списка:
-			// 0 - Только элементы справочника
-			// 1 - Есть пункт "Все" с кодом 0
-			// 2 - Есть пункт "Нет" с кодом -1
-			
+		{   			
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
 			ListStore store = new ListStore (typeof (string), typeof (int));
