@@ -91,32 +91,32 @@ namespace QSProjectsLib
 		
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-/*			TreeIter iter;
+			TreeIter iter;
 			
 			treeviewUsers.Selection.GetSelected(out iter);
-			int itemid = Convert.ToInt32(UsersListStore.GetValue(iter,0));
+			int itemid = (int) UsersListStore.GetValue(iter,0);
 			string loginname = UsersListStore.GetValue(iter,1).ToString ();
 			Delete winDel = new Delete();
-			if (winDel.RunDeletion("users",itemid))
+			if (winDel.RunDeletion("users", itemid))
 			{
-				QSMain.StatusMessage("Удаляем пользователя с сервера...");
+				QSMain.OnNewStatusText("Удаляем пользователя MySQL...");
 				string sql;
 				sql = String.Format("DROP USER {0}, {0}@localhost", loginname);
 				try 
 				{
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					cmd.ExecuteNonQuery();
-					QSMain.StatusMessage("Пользователь удалён. Ok");
+					QSMain.OnNewStatusText("Пользователь удалён. Ok");
 				} 
 				catch (Exception ex) 
 				{
 					Console.WriteLine(ex.ToString());
-					QSMain.StatusMessage("Ошибка удаления пользователя!");
+					QSMain.OnNewStatusText("Ошибка удаления пользователя!");
 					QSMain.ErrorMessage(this,ex);
 				}
 			}
 			winDel.Destroy();
-			UpdateUsers(); */
+			UpdateUsers();
 		}
 	}
 }

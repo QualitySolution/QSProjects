@@ -317,17 +317,16 @@ namespace QSProjectsLib
 		
 		protected void OnRemoveActionActivated (object sender, System.EventArgs e)
 		{
-			//FIXME Удаление
-/*			Delete winDelete = new Delete();
+			Delete winDelete = new Delete();
 			TreeIter iter;
 			treeviewref.Selection.GetSelected(out iter);
-			SelectedID = Convert.ToInt32(filter.GetValue(iter,0));
+			SelectedID = (int) filter.GetValue(iter,0);
 			if(winDelete.RunDeletion(TableRef, SelectedID))
 			{
 				UpdateList();
 				RefChanged = true;
 			}
-			winDelete.Destroy(); */
+			winDelete.Destroy();
 		}
 		
 		protected void BuildSimpleEditorDialog()

@@ -8,8 +8,6 @@ namespace QSProjectsLib
 {
 	public partial class Delete : Gtk.Dialog
 	{
-		public static Dictionary<string,TableInfo> Tables;
-
 		bool ErrorHappens = false;
 		string ErrorString;
 		
@@ -56,13 +54,13 @@ namespace QSProjectsLib
 			{
 				if(CountReferenceItems < 10)
 					treeviewObjects.ExpandAll ();
-				this.Title = String.Format("Удалить {0}?", Tables[table].ObjectName);
+				this.Title = String.Format("Удалить {0}?", QSMain.ProjectTables[table].ObjectName);
 				result = (ResponseType)this.Run () == ResponseType.Yes;
 			}
 			else
 			{
 				this.Hide();
-				result = SimpleDialog(Tables[table].ObjectName) == ResponseType.Yes;
+				result = SimpleDialog(QSMain.ProjectTables[table].ObjectName) == ResponseType.Yes;
 			}
 			if(result)
 				DeleteObjects (table,OutParam);
@@ -99,7 +97,7 @@ namespace QSProjectsLib
 			MySqlCommand cmd;
 			MySqlDataReader rdr;
 
-			if(!Tables.ContainsKey(Table))
+			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
 				ErrorString = "Нет описания для таблицы " + Table;
 				Console.WriteLine(ErrorString);
@@ -107,16 +105,16 @@ namespace QSProjectsLib
 				ErrorHappens = true;
 				return 0;
 			}
-			if(Tables[Table].DeleteItems.Count > 0)
+			if(QSMain.ProjectTables[Table].DeleteItems.Count > 0)
 			{
 				if(!ObjectsTreeStore.IterIsValid(root))
 					DeleteIter = ObjectsTreeStore.AppendNode();
 				else
 					DeleteIter = ObjectsTreeStore.AppendNode (root);
-				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in Tables[Table].DeleteItems)
+				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in QSMain.ProjectTables[Table].DeleteItems)
 				{
 					GroupCount = 0;
-					string sql = Tables[pair.Key].SqlSelect + pair.Value.sqlwhere;
+					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					if(pair.Value.SqlParam.ParamStr != "")
 						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
@@ -131,10 +129,10 @@ namespace QSProjectsLib
 					GroupIter = ObjectsTreeStore.AppendNode(DeleteIter);
 					int IndexIntParam = 0;
 					int IndexStrParam = 0;
-					if(Tables[pair.Key].PrimaryKey.ParamInt != "")
-						IndexIntParam = rdr.GetOrdinal(Tables[pair.Key].PrimaryKey.ParamInt);
-					if(Tables[pair.Key].PrimaryKey.ParamStr != "")
-						IndexStrParam = rdr.GetOrdinal(Tables[pair.Key].PrimaryKey.ParamStr);
+					if(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt != "")
+						IndexIntParam = rdr.GetOrdinal(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt);
+					if(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr != "")
+						IndexStrParam = rdr.GetOrdinal(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr);
 					List<object[]> ReadedDate = new List<object[]>();
 					while(rdr.Read())
 					{
@@ -146,13 +144,13 @@ namespace QSProjectsLib
 
 					foreach(object[] row in ReadedDate)
 					{
-						ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(Tables[pair.Key].DisplayString, row));
-						if(Tables[pair.Key].DeleteItems.Count > 0 || Tables[pair.Key].ClearItems.Count > 0)
+						ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(QSMain.ProjectTables[pair.Key].DisplayString, row));
+						if(QSMain.ProjectTables[pair.Key].DeleteItems.Count > 0 || QSMain.ProjectTables[pair.Key].ClearItems.Count > 0)
 						{
 							TableInfo.Params OutParam = new TableInfo.Params();
-							if(Tables[pair.Key].PrimaryKey.ParamInt != "")
+							if(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt != "")
 								OutParam.ParamInt = Convert.ToInt32(row[IndexIntParam]);
-							if(Tables[pair.Key].PrimaryKey.ParamStr != "")
+							if(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr != "")
 								OutParam.ParamStr = row[IndexStrParam].ToString();
 							Totalcount += FillObjects (pair.Key,ItemIter,OutParam);
 						}
@@ -160,7 +158,7 @@ namespace QSProjectsLib
 						Totalcount++;
 						DelCount++;
 					}
-					ObjectsTreeStore.SetValues(GroupIter, Tables[pair.Key].ObjectsName + "(" + GroupCount.ToString() + ")");
+					ObjectsTreeStore.SetValues(GroupIter, QSMain.ProjectTables[pair.Key].ObjectsName + "(" + GroupCount.ToString() + ")");
 				}
 				if(DelCount > 0)
 					ObjectsTreeStore.SetValues(DeleteIter, String.Format ("Будет удалено ({0}/{1}) объектов:",DelCount,Totalcount));
@@ -168,16 +166,16 @@ namespace QSProjectsLib
 					ObjectsTreeStore.Remove (ref DeleteIter);
 			}
 
-			if(Tables[Table].ClearItems.Count > 0)
+			if(QSMain.ProjectTables[Table].ClearItems.Count > 0)
 			{
 				if(!ObjectsTreeStore.IterIsValid(root))
 					ClearIter = ObjectsTreeStore.AppendNode();
 				else
 					ClearIter = ObjectsTreeStore.AppendNode (root);
-				foreach(KeyValuePair<string, TableInfo.ClearDependenceItem> pair in Tables[Table].ClearItems)
+				foreach(KeyValuePair<string, TableInfo.ClearDependenceItem> pair in QSMain.ProjectTables[Table].ClearItems)
 				{
 					GroupCount = 0;
-					string sql = Tables[pair.Key].SqlSelect + pair.Value.sqlwhere;
+					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					if(pair.Value.SqlParam.ParamStr != "")
 						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
@@ -195,12 +193,12 @@ namespace QSProjectsLib
 					{
 						object[] Fields = new object[rdr.FieldCount];
 						rdr.GetValues(Fields);
-						ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(Tables[pair.Key].DisplayString,Fields));
+						ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(QSMain.ProjectTables[pair.Key].DisplayString,Fields));
 						GroupCount++;
 						Totalcount++;
 						ClearCount++;
 					}
-					ObjectsTreeStore.SetValues(GroupIter, Tables[pair.Key].ObjectsName + "(" + GroupCount.ToString() + ")");
+					ObjectsTreeStore.SetValues(GroupIter, QSMain.ProjectTables[pair.Key].ObjectsName + "(" + GroupCount.ToString() + ")");
 					rdr.Close ();
 				}
 				if(ClearCount > 0)
@@ -216,7 +214,7 @@ namespace QSProjectsLib
 			MySqlCommand cmd;
 			MySqlDataReader rdr;
 			string sql;
-			if(!Tables.ContainsKey(Table))
+			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
 				ErrorString = "Нет описания для таблицы " + Table;
 				Console.WriteLine(ErrorString);
@@ -224,11 +222,11 @@ namespace QSProjectsLib
 				ErrorHappens = true;
 				return;
 			}
-			if(Tables[Table].DeleteItems.Count > 0)
+			if(QSMain.ProjectTables[Table].DeleteItems.Count > 0)
 			{
-				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in Tables[Table].DeleteItems)
+				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in QSMain.ProjectTables[Table].DeleteItems)
 				{
-					if(Tables[pair.Key].DeleteItems.Count > 0 || Tables[pair.Key].ClearItems.Count > 0)
+					if(QSMain.ProjectTables[pair.Key].DeleteItems.Count > 0 || QSMain.ProjectTables[pair.Key].ClearItems.Count > 0)
 					{
 						sql = "SELECT * FROM " +pair.Key + " " + pair.Value.sqlwhere;
 						cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -238,8 +236,8 @@ namespace QSProjectsLib
 							cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
 						rdr = cmd.ExecuteReader();
 						List<TableInfo.Params> ReadedDate = new List<TableInfo.Params>();
-						string IntFieldName = Tables[pair.Key].PrimaryKey.ParamInt;
-						string StrFieldName = Tables[pair.Key].PrimaryKey.ParamStr;
+						string IntFieldName = QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt;
+						string StrFieldName = QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr;
 						while(rdr.Read())
 						{
 							TableInfo.Params OutParam = new TableInfo.Params();
@@ -267,9 +265,9 @@ namespace QSProjectsLib
 				}
 			}
 			
-			if(Tables[Table].ClearItems.Count > 0)
+			if(QSMain.ProjectTables[Table].ClearItems.Count > 0)
 			{
-				foreach(KeyValuePair<string, TableInfo.ClearDependenceItem> pair in Tables[Table].ClearItems)
+				foreach(KeyValuePair<string, TableInfo.ClearDependenceItem> pair in QSMain.ProjectTables[Table].ClearItems)
 				{
 					sql = "UPDATE " + pair.Key + " SET "; 
 					bool first = true;
@@ -292,22 +290,22 @@ namespace QSProjectsLib
 
 			sql = "DELETE FROM " + Table + " WHERE ";
 			bool FirstKey = true;
-			if(Tables[Table].PrimaryKey.ParamInt != "")
+			if(QSMain.ProjectTables[Table].PrimaryKey.ParamInt != "")
 			{
-				sql += Tables[Table].PrimaryKey.ParamInt + " = @IntParam ";
+				sql += QSMain.ProjectTables[Table].PrimaryKey.ParamInt + " = @IntParam ";
 				FirstKey = false;
 			}
-			if(Tables[Table].PrimaryKey.ParamStr != "")
+			if(QSMain.ProjectTables[Table].PrimaryKey.ParamStr != "")
 			{
 				if(!FirstKey)
 					sql += "AND ";
-				sql += Tables[Table].PrimaryKey.ParamStr + " = @StrParam ";
+				sql += QSMain.ProjectTables[Table].PrimaryKey.ParamStr + " = @StrParam ";
 				FirstKey = false;
 			}
 			cmd = new MySqlCommand(sql, QSMain.connectionDB);
-			if(Tables[Table].PrimaryKey.ParamStr != "")
+			if(QSMain.ProjectTables[Table].PrimaryKey.ParamStr != "")
 				cmd.Parameters.AddWithValue("@StrParam", ParametersIn.ParamStr);
-			if(Tables[Table].PrimaryKey.ParamInt != "")
+			if(QSMain.ProjectTables[Table].PrimaryKey.ParamInt != "")
 				cmd.Parameters.AddWithValue("@IntParam", ParametersIn.ParamInt);
 			cmd.ExecuteNonQuery();
 		}

@@ -12,7 +12,7 @@ namespace QSProjectsLib
 		private global::Gtk.Button buttonEdit;
 		private global::Gtk.Button buttonDelete;
 		private global::Gtk.Button buttonClose;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

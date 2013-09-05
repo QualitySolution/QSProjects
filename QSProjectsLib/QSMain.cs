@@ -9,7 +9,8 @@ namespace QSProjectsLib
 	{
 		public static MySqlConnection connectionDB;
 		public static string ConnectionString;
-		public static Dictionary<string,UserPermission> ProjectPermission;
+		public static Dictionary<string, UserPermission> ProjectPermission;
+		public static Dictionary<string, TableInfo> ProjectTables;
 		public static string AdminFieldName;
 		public static UserInfo User;
 		//События

@@ -27,7 +27,7 @@ namespace QSProjectsLib
 			public DeleteDependenceItem(string sqlwhere , string StrParamName, string IntParamName)
 			{
 				this.sqlwhere = sqlwhere;
-				SqlParam = new PrimaryKeys(StrParamName,IntParamName);
+				SqlParam = new PrimaryKeys(IntParamName, StrParamName);
 			}
 		}
 
@@ -40,13 +40,13 @@ namespace QSProjectsLib
 			public ClearDependenceItem(string sqlwhere , string StrParamName, string IntParamName, string ClearField1, string ClearField2)
 			{
 				this.sqlwhere = sqlwhere;
-				SqlParam = new PrimaryKeys(StrParamName,IntParamName);
+				SqlParam = new PrimaryKeys(IntParamName, StrParamName);
 				ClearFields = new string[]{ClearField1, ClearField2};
 			}
 			public ClearDependenceItem(string sqlwhere, string StrParamName, string IntParamName, string ClearField1)
 			{
 				this.sqlwhere = sqlwhere;
-				SqlParam = new PrimaryKeys(StrParamName,IntParamName);
+				SqlParam = new PrimaryKeys(IntParamName, StrParamName);
 				ClearFields = new string[]{ClearField1};
 			}
 		}
@@ -68,10 +68,10 @@ namespace QSProjectsLib
 		{
 			public string ParamStr, ParamInt;
 
-			public PrimaryKeys (string Str, string Int)
+			public PrimaryKeys (string IntParamName, string StrParamName = "")
 			{
-				ParamStr = Str;
-				ParamInt = Int;
+				ParamStr = StrParamName;
+				ParamInt = IntParamName;
 			}
 		}
 	}
