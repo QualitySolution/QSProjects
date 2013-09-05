@@ -61,7 +61,7 @@ namespace QSProjectsLib
 
 		}
 
-		/// <summary>Заполняем комбобокс элементами справочника.
+		/// <summary>Заполняет комбобокс элементами справочника.
 		/// <param name="listmode">Режимы списка:
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
@@ -111,6 +111,38 @@ namespace QSProjectsLib
 				QSMain.OnNewStatusText("Ошибка получения данных справочника!");
 			}
 			
+		}
+
+		/// <summary>Заполняет комбобокс уникальными значениями поля
+		/// </summary>
+		public static void ComboFillUniqueValue(ComboBox combo, string tablename, string fieldname, bool SetDefault = true)
+		{
+			((ListStore)combo.Model).Clear();
+			//CellRendererText text = new CellRendererText ();
+			QSMain.OnNewStatusText(String.Format("Запрос всех значений {0}.{1} ...", tablename, fieldname));
+			try
+			{
+				int count = 0;
+				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
+				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
+				MySqlDataReader rdr = cmd.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					combo.AppendText(rdr.GetString(0));
+					count++;
+				}
+				rdr.Close();
+				if(SetDefault && count == 1)
+					combo.Active = 0;
+				QSMain.OnNewStatusText("Ok");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+				QSMain.OnNewStatusText("Ошибка получения списка уникальных значений!");
+			}
+
 		}
 	}
 }
