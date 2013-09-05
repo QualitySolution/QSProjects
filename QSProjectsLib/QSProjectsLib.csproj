@@ -64,6 +64,9 @@
     <Compile Include="Reference.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.Reference.cs" />
     <Compile Include="ListStoreWorks.cs" />
+    <Compile Include="Delete.cs" />
+    <Compile Include="TableInfo.cs" />
+    <Compile Include="gtk-gui\QSProjectsLib.Delete.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
