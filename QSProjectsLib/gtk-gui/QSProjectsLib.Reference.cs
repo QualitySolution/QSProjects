@@ -240,6 +240,7 @@ namespace QSProjectsLib
 			this.buttonClean.Clicked += new global::System.EventHandler (this.OnButtonCleanClicked);
 			this.treeviewref.CursorChanged += new global::System.EventHandler (this.OnTreeviewrefCursorChanged);
 			this.treeviewref.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewrefRowActivated);
+			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
 }
