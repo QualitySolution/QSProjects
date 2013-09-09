@@ -53,7 +53,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSWidgetLib.SelectPeriod" design-size="361 107">
+  <widget class="Gtk.Bin" id="QSWidgetLib.SelectPeriod" design-size="294 76">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -88,7 +88,8 @@
           </widget>
           <packing>
             <property name="Position">1</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
           </packing>
         </child>
         <child>

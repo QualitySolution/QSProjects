@@ -40,6 +40,7 @@ namespace QSWidgetLib
 			this.vboxMain.Add (this.RadiosTable);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vboxMain [this.RadiosTable]));
 			w2.Position = 1;
+			w2.Expand = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
