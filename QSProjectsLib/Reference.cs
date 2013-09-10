@@ -1,7 +1,6 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using Gtk;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace QSProjectsLib
@@ -14,6 +13,9 @@ namespace QSProjectsLib
 		string TableRef, nameNode, nameRef;
 		public int SelectedID;
 		public string SelectedName;
+		public string SqlSelect;
+		public List<ColumnInfo> Columns;
+		public int NameColumn = 1;
 		bool NewNode;
 		bool RefChanged = false;
 		bool DescriptionField = false;
@@ -21,38 +23,33 @@ namespace QSProjectsLib
 		Gtk.ListStore RefListStore;
 		Gtk.TreeModelFilter filter;
 		
-		Gtk.TreeViewColumn DescriptionColumn;
-		
 		Dialog editNode;
 		Entry inputNameEntry, inputDiscriptionEntry;
 		Label LableName, LableDescription;
 		
-		public Reference ()
+		public Reference ( bool WithDiscription = false)
 		{
 			this.Build ();
 			this.Destroyed += OnDestroyed;
-			
-			//Создаем таблицу "Справочника"
-			RefListStore = new Gtk.ListStore (typeof (int), typeof (string), typeof (string));
-			
-			DescriptionColumn = new Gtk.TreeViewColumn ();
-			DescriptionColumn.Title = "Описание";
-			DescriptionColumn.Visible = false;
-			Gtk.CellRendererText DiscriptCell = new Gtk.CellRendererText ();
-			DescriptionColumn.PackStart (DiscriptCell, true);
-			
-			treeviewref.AppendColumn ("Код", new Gtk.CellRendererText (), "text", 0);
-			treeviewref.AppendColumn ("Название", new Gtk.CellRendererText (), "text", 1);
-			treeviewref.AppendColumn (DescriptionColumn);
-			DescriptionColumn.AddAttribute(DiscriptCell, "text" , 2);
-			
-			filter = new Gtk.TreeModelFilter (RefListStore, null);
-			filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
-			treeviewref.Model = filter;
-			treeviewref.ShowAll();
+
+			DescriptionField = WithDiscription;
+
+			Columns = new List<ColumnInfo>();
+			Columns.Add( new ColumnInfo("Код", "{0}", false));
+			Columns.Add( new ColumnInfo("Название", "{1}"));
+			if(WithDiscription)
+			{
+				SqlSelect = "SELECT id, name, description FROM @tablename ";
+				Columns.Add( new ColumnInfo("Описание", "{2}"));
+			}
+			else
+			{
+				SqlSelect = "SELECT id, name FROM @tablename ";
+			}
+				
 		}
 
-		//Событие запуска окна справочника
+		// Событие запуска окна справочника
 		public class RunReferenceItemDlgEventArgs : EventArgs
 		{
 			public string TableName { get; set; }
@@ -77,17 +74,39 @@ namespace QSProjectsLib
 			return Result;
 		}
 
+		public class ColumnInfo
+		{
+			/// <summary>
+			/// Если имя = пустая строка. Колонка не отображается.
+			/// </summary>
+			public string Name;
+			public bool Search;
+			public string DisplayFormat;
+
+			public ColumnInfo(string name, string format, bool search = true)
+			{
+				Name = name;
+				DisplayFormat = format;
+				Search = search;
+			}
+		}
+
 		private bool FilterTree (Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
 			if (entryFilter.Text == "")
 				return true;
-			
-			string Refname = model.GetValue(iter, 1).ToString();
-			
-			if (Refname.IndexOf (entryFilter.Text, StringComparison.CurrentCultureIgnoreCase) > -1)
-				return true;
-			else
-				return false;
+
+			string Str;
+			for(int i = 0; i < Columns.Count; i++)
+			{
+				if(Columns[i].Search)
+				{
+					Str = model.GetValue(iter, i).ToString();
+					if (Str.IndexOf (entryFilter.Text, StringComparison.CurrentCultureIgnoreCase) > -1)
+						return true;
+				}
+			}
+			return false;
 		}
 		
 		public void FillList(string table, string Nodename, string Refname)
@@ -95,12 +114,9 @@ namespace QSProjectsLib
 			nameNode = Nodename;
 			nameRef = Refname;
 			TableRef = table;
-			
-			if(TableRef == "place_types")
-			{
-				DescriptionField = true;
-				DescriptionColumn.Visible = true;
-			}
+
+			if (RefListStore == null)
+				CreateTable();
 			
 			if(SelectMode)
 			{
@@ -116,24 +132,26 @@ namespace QSProjectsLib
 		protected void UpdateList()
 		{
 			QSMain.OnNewStatusText("Получаем таблицу справочника "+ nameRef + "...");
-			string sql = "SELECT id, name";
-			if(DescriptionField)
-				sql += ", description";
-			sql += " FROM " + TableRef;
 			entryFilter.Text = "";
 			try
 			{
+				string sql = SqlSelect.Replace("@tablename", TableRef);
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				
 				MySqlDataReader rdr = cmd.ExecuteReader();
 				
 				RefListStore.Clear();
+				object[] Values = new object[Columns.Count];
 				while (rdr.Read())
 				{
-					if(DescriptionField)
-						RefListStore.AppendValues(int.Parse(rdr["id"].ToString()), rdr["name"].ToString(), rdr["description"].ToString());
-					else
-						RefListStore.AppendValues(int.Parse(rdr["id"].ToString()), rdr["name"].ToString());
+					Values[0] = rdr.GetInt32(0);
+					object[] Fields = new object[rdr.FieldCount];
+					rdr.GetValues(Fields);
+					for(int i = 1; i < Columns.Count; i++)
+					{
+						Values[i] = String.Format(Columns[i].DisplayFormat, Fields);
+					}
+					RefListStore.AppendValues(Values);
 				}
 				rdr.Close();
 				QSMain.OnNewStatusText("Ok");
@@ -171,6 +189,32 @@ namespace QSProjectsLib
 			addAction.Sensitive = CanNew;
 			editAction.Sensitive = false;
 			removeAction.Sensitive = false;
+		}
+
+		private void CreateTable()
+		{
+			//Создаем таблицу "Справочника"
+			//Первая колонка всегда ID
+			System.Type[] Types = new System.Type[Columns.Count];
+			Types[0] =	typeof (int); 
+
+			for(int i = 1; i < Columns.Count; i++)
+			{
+				Types[i] = typeof(string);
+			}
+
+			RefListStore = new Gtk.ListStore (Types);
+
+			for(int i = 0; i < Columns.Count; i++)
+			{
+				if(Columns[i].Name != "")
+					treeviewref.AppendColumn (Columns[i].Name , new Gtk.CellRendererText (), "text", i);
+			}
+
+			filter = new Gtk.TreeModelFilter (RefListStore, null);
+			filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
+			treeviewref.Model = filter;
+			treeviewref.ShowAll();
 		}
 		
 		protected virtual void OnAddActionActivated (object sender, System.EventArgs e)
@@ -294,8 +338,8 @@ namespace QSProjectsLib
 		{
 			TreeIter iter;
 			treeviewref.Selection.GetSelected(out iter);
-			SelectedID = Convert.ToInt32(filter.GetValue(iter,0));
-			SelectedName = filter.GetValue(iter,1).ToString();
+			SelectedID = (int) filter.GetValue(iter,0);
+			SelectedName = filter.GetValue(iter, NameColumn).ToString();
 		}
 		
 		protected virtual void OnTreeviewrefRowActivated (object o, Gtk.RowActivatedArgs args)

@@ -1045,7 +1045,7 @@
                 <child>
                   <widget class="Gtk.Label" id="label1">
                     <property name="MemberName" />
-                    <property name="LabelProp" translatable="yes">Быстрый поиск по имени:</property>
+                    <property name="LabelProp" translatable="yes">Быстрый поиск:</property>
                   </widget>
                   <packing>
                     <property name="Position">0</property>
