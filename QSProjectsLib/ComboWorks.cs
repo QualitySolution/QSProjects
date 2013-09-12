@@ -25,28 +25,28 @@ namespace QSProjectsLib
 				int count = 0;
 				MySqlCommand cmd = new MySqlCommand(SqlSelect, QSMain.connectionDB);
 				cmd.Parameters.AddRange (Parameters);
-				MySqlDataReader rdr = cmd.ExecuteReader();
-
-				switch (listmode) {
-					case 1: //Все
-					store.AppendValues("Все", 0);
-					break;
-					case 2: //Нет
-					store.AppendValues("нет", -1);
-					break;
-					default:
-					break;
-				}
-
-				while (rdr.Read())
+				using(MySqlDataReader rdr = cmd.ExecuteReader())
 				{
-					object[] Fields = new object[rdr.FieldCount];
-					rdr.GetValues(Fields);
-					store.AppendValues(String.Format(DisplayString, Fields),
-					                   Convert.ToInt32(Fields[KeyField]));
-					count++;
+					switch (listmode) {
+						case 1: //Все
+						store.AppendValues("Все", 0);
+						break;
+						case 2: //Нет
+						store.AppendValues("нет", -1);
+						break;
+						default:
+						break;
+					}
+
+					while (rdr.Read())
+					{
+						object[] Fields = new object[rdr.FieldCount];
+						rdr.GetValues(Fields);
+						store.AppendValues(String.Format(DisplayString, Fields),
+						                   Convert.ToInt32(Fields[KeyField]));
+						count++;
+					}
 				}
-				rdr.Close();
 				if(listmode == 2 && count == 1)
 					combo.Active = 1;
 				if(listmode == 0 && count == 1)
@@ -80,25 +80,25 @@ namespace QSProjectsLib
 				int count = 0;
 				string sql = "SELECT id, name FROM " + TableRef;
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				MySqlDataReader rdr = cmd.ExecuteReader();
-				
-				switch (listmode) {
-				case 1: //Все
-					store.AppendValues("Все", 0);
-					break;
-				case 2: //Нет
-					store.AppendValues("нет", -1);
-					break;
-				default:
-					break;
-				}
-				
-				while (rdr.Read())
+				using( MySqlDataReader rdr = cmd.ExecuteReader())
 				{
-					store.AppendValues(rdr["name"].ToString(),int.Parse(rdr["id"].ToString()));
-					count++;
+					switch (listmode) {
+					case 1: //Все
+						store.AppendValues("Все", 0);
+						break;
+					case 2: //Нет
+						store.AppendValues("нет", -1);
+						break;
+					default:
+						break;
+					}
+					
+					while (rdr.Read())
+					{
+						store.AppendValues(rdr["name"].ToString(),int.Parse(rdr["id"].ToString()));
+						count++;
+					}
 				}
-				rdr.Close();
 				if(SetDefault && listmode == 2 && count == 1)
 					combo.Active = 1;
 				if(SetDefault && listmode == 0 && count == 1)
@@ -125,14 +125,17 @@ namespace QSProjectsLib
 				int count = 0;
 				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				MySqlDataReader rdr = cmd.ExecuteReader();
-
-				while (rdr.Read())
+				using(MySqlDataReader rdr = cmd.ExecuteReader())
 				{
-					combo.AppendText(rdr.GetString(0));
-					count++;
+					while (rdr.Read())
+					{
+						if(rdr[0] != DBNull.Value)
+						{
+							combo.AppendText(rdr.GetString(0));
+							count++;
+						}
+					}
 				}
-				rdr.Close();
 				if(SetDefault && count == 1)
 					combo.Active = 0;
 				QSMain.OnNewStatusText("Ok");
