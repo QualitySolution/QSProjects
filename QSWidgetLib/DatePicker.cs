@@ -27,6 +27,8 @@ namespace QSWidgetLib
 				return date;
 			}
 			set {
+				if (date == value)
+					return;
 				date = value;
 				if(date.Year == 1 && date.DayOfYear == 1)
 					Clear ();
@@ -34,9 +36,9 @@ namespace QSWidgetLib
 				{
 					isEmpty = false;
 					entryDate.Text = date.ToShortDateString();
-					if(DateChanged != null)
-						DateChanged(this, EventArgs.Empty);
 				}
+				if(DateChanged != null)
+					DateChanged(this, EventArgs.Empty);
 			}
 		}
 
@@ -65,8 +67,7 @@ namespace QSWidgetLib
 		{
 			isEmpty = true;
 			entryDate.Text = "";
-			if(DateChanged != null)
-				DateChanged(this, EventArgs.Empty);
+			date = new DateTime(1, 1, 1);
 		}
 
 		protected void OnButtonEditDateClicked (object sender, EventArgs e)
@@ -90,11 +91,8 @@ namespace QSWidgetLib
 			int response = editDate.Run ();
 			if(response == (int)ResponseType.Ok)
 			{
-				date = SelectDate.GetDate();
-				isEmpty = false;
-				entryDate.Text = date.ToShortDateString();
-				if(DateChanged != null)
-					DateChanged(this, e);
+				Date = SelectDate.GetDate();
+				entryDate.Text = Date.ToShortDateString();
 			}
 			SelectDate.Destroy();
 			editDate.Destroy ();
@@ -116,10 +114,7 @@ namespace QSWidgetLib
 			if(DateTime.TryParse(((Entry)o).Text, out outDate))
 			{
 				entryDate.Text = outDate.ToShortDateString();
-				date = outDate;
-				isEmpty = false;
-				if(DateChanged != null)
-					DateChanged(this, args);
+				Date = outDate;
 			}
 			else
 			{
