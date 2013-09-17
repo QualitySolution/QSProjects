@@ -9,10 +9,13 @@ namespace QSWidgetLib
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class SelectPeriod : Gtk.Bin
 	{
-		private Dictionary<string, bool> ShowRadio;
-		private Dictionary<string, RadioButton> RadioButtons;
+		private Dictionary<Period, bool> ShowRadio;
+		private Dictionary<Period, RadioButton> RadioButtons;
 		private RadioModeType _RadioMode;
+		private bool UsingRadio;
 		public event EventHandler DatesChanged;
+
+		public enum Period {None, Today, Week, Month, ThreeMonth, SixMonth, Year, AllTime, CurWeek, CurMonth, CurQuarter, CurYear};
 
 		public RadioModeType RadioMode {
 			get{return _RadioMode;}
@@ -41,68 +44,68 @@ namespace QSWidgetLib
 		}
 
 		public bool ShowToday {
-			get{return ShowRadio["Today"];}
-			set{ShowRadio["Today"] = value;
+			get{return ShowRadio[Period.Today];}
+			set{ShowRadio[Period.Today] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowWeek {
-			get{return ShowRadio["Week"];}
-			set{ShowRadio["Week"] = value;
+			get{return ShowRadio[Period.Week];}
+			set{ShowRadio[Period.Week] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowMonth {
-			get{return ShowRadio["Month"];}
-			set{ShowRadio["Month"] = value;
+			get{return ShowRadio[Period.Month];}
+			set{ShowRadio[Period.Month] = value;
 				OnRepackRadios();}
 		}
 
 		public bool Show3Month {
-			get{return ShowRadio["3Month"];}
-			set{ShowRadio["3Month"] = value;
+			get{return ShowRadio[Period.ThreeMonth];}
+			set{ShowRadio[Period.ThreeMonth] = value;
 				OnRepackRadios();}
 		}
 
 		public bool Show6Month {
-			get{return ShowRadio["6Month"];}
-			set{ShowRadio["6Month"] = value;
+			get{return ShowRadio[Period.SixMonth];}
+			set{ShowRadio[Period.SixMonth] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowYear {
-			get{return ShowRadio["Year"];}
-			set{ShowRadio["Year"] = value;
+			get{return ShowRadio[Period.Year];}
+			set{ShowRadio[Period.Year] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowAllTime {
-			get{return ShowRadio["AllTime"];}
-			set{ShowRadio["AllTime"] = value;
+			get{return ShowRadio[Period.AllTime];}
+			set{ShowRadio[Period.AllTime] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowCurWeek {
-			get{return ShowRadio["CurWeek"];}
-			set{ShowRadio["CurWeek"] = value;
+			get{return ShowRadio[Period.CurWeek];}
+			set{ShowRadio[Period.CurWeek] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowCurMonth {
-			get{return ShowRadio["CurMonth"];}
-			set{ShowRadio["CurMonth"] = value;
+			get{return ShowRadio[Period.CurMonth];}
+			set{ShowRadio[Period.CurMonth] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowCurQuarter {
-			get{return ShowRadio["CurQuarter"];}
-			set{ShowRadio["CurQuarter"] = value;
+			get{return ShowRadio[Period.CurQuarter];}
+			set{ShowRadio[Period.CurQuarter] = value;
 				OnRepackRadios();}
 		}
 
 		public bool ShowCurYear {
-			get{return ShowRadio["CurYear"];}
-			set{ShowRadio["CurYear"] = value;
+			get{return ShowRadio[Period.CurYear];}
+			set{ShowRadio[Period.CurYear] = value;
 				OnRepackRadios();}
 		}
 
@@ -111,89 +114,110 @@ namespace QSWidgetLib
 			this.Build ();
 
 			//Создаем переключатели
-			RadioButtons = new Dictionary<string, RadioButton>();
-			RadioButtons.Add ("Today", new RadioButton("Сегодня"));
-			RadioButtons["Today"].Clicked += OnRadioTodayClicked;
-			RadioButton RadioToday = RadioButtons["Today"];
-			RadioButtons.Add ("Week", new RadioButton(RadioToday, "За неделю"));
-			RadioButtons["Week"].Clicked += OnRadioWeekClicked;
-			RadioButtons.Add ("Month", new RadioButton(RadioToday, "За месяц"));
-			RadioButtons["Month"].Clicked += OnRadioMonthClicked;
-			RadioButtons.Add ("3Month", new RadioButton(RadioToday, "За 3 месяца"));
-			RadioButtons["3Month"].Clicked += OnRadio3monthClicked;
-			RadioButtons.Add ("6Month", new RadioButton(RadioToday, "За полгода"));
-			RadioButtons["6Month"].Clicked += OnRadio6monthClicked;
-			RadioButtons.Add ("Year", new RadioButton(RadioToday, "За год"));
-			RadioButtons["Year"].Clicked += OnRadioYearClicked;
-			RadioButtons.Add ("AllTime", new RadioButton(RadioToday, "Все время"));
-			RadioButtons["AllTime"].Clicked += OnRadioAllClicked;
+			RadioButtons = new Dictionary<Period, RadioButton>();
+			RadioButtons.Add (Period.Today, new RadioButton("Сегодня"));
+			RadioButtons[Period.Today].Clicked += OnRadioTodayClicked;
+			RadioButton RadioToday = RadioButtons[Period.Today];
+			RadioButtons.Add (Period.Week, new RadioButton(RadioToday, "За неделю"));
+			RadioButtons[Period.Week].Clicked += OnRadioWeekClicked;
+			RadioButtons.Add (Period.Month, new RadioButton(RadioToday, "За месяц"));
+			RadioButtons[Period.Month].Clicked += OnRadioMonthClicked;
+			RadioButtons.Add (Period.ThreeMonth, new RadioButton(RadioToday, "За 3 месяца"));
+			RadioButtons[Period.ThreeMonth].Clicked += OnRadio3monthClicked;
+			RadioButtons.Add (Period.SixMonth, new RadioButton(RadioToday, "За полгода"));
+			RadioButtons[Period.SixMonth].Clicked += OnRadio6monthClicked;
+			RadioButtons.Add (Period.Year, new RadioButton(RadioToday, "За год"));
+			RadioButtons[Period.Year].Clicked += OnRadioYearClicked;
+			RadioButtons.Add (Period.AllTime, new RadioButton(RadioToday, "Все время"));
+			RadioButtons[Period.AllTime].Clicked += OnRadioAllClicked;
 
-			RadioButtons.Add ("CurWeek", new RadioButton(RadioToday, "Тек. неделя"));
-			RadioButtons["CurWeek"].Clicked += OnRadioCurWeekClicked;
-			RadioButtons.Add ("CurMonth", new RadioButton(RadioToday, "Тек. месяц"));
-			RadioButtons["CurMonth"].Clicked += OnRadioCurMonthClicked;
-			RadioButtons.Add ("CurQuarter", new RadioButton(RadioToday, "Тек. квартал"));
-			RadioButtons["CurQuarter"].Clicked += OnRadioCurQuarterClicked;
-			RadioButtons.Add ("CurYear", new RadioButton(RadioToday, "Тек. год"));
-			RadioButtons["CurYear"].Clicked += OnRadioYearClicked;
+			RadioButtons.Add (Period.CurWeek, new RadioButton(RadioToday, "Тек. неделя"));
+			RadioButtons[Period.CurWeek].Clicked += OnRadioCurWeekClicked;
+			RadioButtons.Add (Period.CurMonth, new RadioButton(RadioToday, "Тек. месяц"));
+			RadioButtons[Period.CurMonth].Clicked += OnRadioCurMonthClicked;
+			RadioButtons.Add (Period.CurQuarter, new RadioButton(RadioToday, "Тек. квартал"));
+			RadioButtons[Period.CurQuarter].Clicked += OnRadioCurQuarterClicked;
+			RadioButtons.Add (Period.CurYear, new RadioButton(RadioToday, "Тек. год"));
+			RadioButtons[Period.CurYear].Clicked += OnRadioYearClicked;
 
-			ShowRadio = new Dictionary<string, bool>();
-			ShowRadio.Add ("Today", true);
-			ShowRadio.Add ("Week", true);
-			ShowRadio.Add ("Month", true);
-			ShowRadio.Add ("3Month", false);
-			ShowRadio.Add ("6Month", false);
-			ShowRadio.Add ("Year", false);
-			ShowRadio.Add ("CurWeek", false);
-			ShowRadio.Add ("CurMonth", false);
-			ShowRadio.Add ("CurQuarter", false);
-			ShowRadio.Add ("CurYear", false);
-			ShowRadio.Add ("AllTime", true);
+			ShowRadio = new Dictionary<Period, bool>();
+			ShowRadio.Add (Period.Today, true);
+			ShowRadio.Add (Period.Week, true);
+			ShowRadio.Add (Period.Month, true);
+			ShowRadio.Add (Period.ThreeMonth, false);
+			ShowRadio.Add (Period.SixMonth, false);
+			ShowRadio.Add (Period.Year, false);
+			ShowRadio.Add (Period.CurWeek, false);
+			ShowRadio.Add (Period.CurMonth, false);
+			ShowRadio.Add (Period.CurQuarter, false);
+			ShowRadio.Add (Period.CurYear, false);
+			ShowRadio.Add (Period.AllTime, true);
 
 			_RadioMode = RadioModeType.DoubleColumn;
 			OnRepackRadios ();
+		}
+
+		public Period ActiveRadio
+		{
+			get {foreach(KeyValuePair<Period, RadioButton> Pair in RadioButtons)
+				{
+					if (Pair.Value.Active)
+						return Pair.Key;
+				};
+				return Period.None;
+			}
+			set {if(value != Period.None)
+					RadioButtons[value].Click();
+			}
 		}
 
 		protected void OnRadioTodayClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.Date;
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 
 		protected void OnRadioWeekClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.AddDays(-7);
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 
 		protected void OnRadioMonthClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.AddMonths(-1);
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 		
 		protected void OnRadio3monthClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.AddMonths(-3);
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 
 		protected void OnRadio6monthClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.AddMonths(-6);
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 		
 		protected void OnRadioYearClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = DateTime.Now.AddYears(-1);
 			EndDate.Date = DateTime.Now.Date;
+			UsingRadio = true;
 		}
 		
 		protected void OnRadioAllClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = new DateTime(1, 1, 1);
 			EndDate.Date = new DateTime(1, 1, 1);
+			UsingRadio = true;
 		}
 
 		protected void OnRadioCurWeekClicked (object sender, EventArgs e)
@@ -205,6 +229,7 @@ namespace QSWidgetLib
 				Day = (int)DateTime.Now.DayOfWeek;
 			StartDate.Date = DateTime.Now.AddDays(1-Day);
 			EndDate.Date = DateTime.Now.AddDays(7-Day);
+			UsingRadio = true;
 		}
 
 		protected void OnRadioCurMonthClicked (object sender, EventArgs e)
@@ -215,6 +240,7 @@ namespace QSWidgetLib
 			int LastDay = cal.GetDaysInMonth (Year, Month);
 			StartDate.Date = new DateTime(Year, Month, 1);
 			EndDate.Date = new DateTime(Year, Month, LastDay);
+			UsingRadio = true;
 		}
 
 		protected void OnRadioCurQuarterClicked (object sender, EventArgs e)
@@ -222,18 +248,20 @@ namespace QSWidgetLib
 			int quarterNumber = (DateTime.Today.Month-1)/3+1;
 			StartDate.Date = new DateTime(DateTime.Today.Year, (quarterNumber-1)*3+1,1);
 			EndDate.Date = StartDate.Date.AddMonths(3).AddDays(-1);
+			UsingRadio = true;
 		}
 
 		protected void OnRadioCurYearClicked (object sender, EventArgs e)
 		{
 			StartDate.Date = new DateTime(DateTime.Today.Year, 1, 1);
-			EndDate.Date = new DateTime(DateTime.Today.Year, 12, 31);;
+			EndDate.Date = new DateTime(DateTime.Today.Year, 12, 31);
+			UsingRadio = true;
 		}
 
 		protected void OnRepackRadios()
 		{
 			uint Count = 0;
-			foreach(KeyValuePair<string, bool> pair in ShowRadio)
+			foreach(KeyValuePair<Period, bool> pair in ShowRadio)
 			{
 				if(pair.Value)
 					Count++;
@@ -258,7 +286,7 @@ namespace QSWidgetLib
 			RadiosTable.NColumns = MaxCol;
 			uint CurRow = 0;
 			uint CurCol = 0;
-			foreach(KeyValuePair<string, bool> pair in ShowRadio)
+			foreach(KeyValuePair<Period, bool> pair in ShowRadio)
 			{
 				if(pair.Value)
 				{
