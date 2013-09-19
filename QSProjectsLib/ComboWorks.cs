@@ -24,7 +24,8 @@ namespace QSProjectsLib
 			{
 				int count = 0;
 				MySqlCommand cmd = new MySqlCommand(SqlSelect, QSMain.connectionDB);
-				cmd.Parameters.AddRange (Parameters);
+				if(Parameters != null)
+					cmd.Parameters.AddRange (Parameters);
 				using(MySqlDataReader rdr = cmd.ExecuteReader())
 				{
 					switch (listmode) {
