@@ -79,7 +79,7 @@ namespace QSProjectsLib
 
 		ResponseType SimpleDialog(string ObjectName)
 		{
-			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+			MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
 	                              MessageType.Question, 
                                   ButtonsType.YesNo,"Вы уверены что хотите удалить "+ ObjectName + "?");
 			ResponseType result = (ResponseType)md.Run ();
