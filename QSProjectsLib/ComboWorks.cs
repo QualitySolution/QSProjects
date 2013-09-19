@@ -148,5 +148,23 @@ namespace QSProjectsLib
 			}
 
 		}
+
+		public static bool SetActiveItem(ComboBox combo, int id)
+		{
+			TreeIter iter;
+			bool result = ListStoreWorks.SearchListStore((ListStore)combo.Model, id, out iter);
+			if (result)
+				combo.SetActiveIter(iter);
+			return result;
+		}
+
+		public static int GetActiveId(ComboBox combo)
+		{
+			TreeIter iter;
+			if( combo.GetActiveIter(out iter))
+				return (int) combo.Model.GetValue(iter, 1);
+			else
+				return -1;
+		}
 	}
 }
