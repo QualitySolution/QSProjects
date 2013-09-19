@@ -8,13 +8,14 @@ namespace QSWidgetLib
 	public partial class DatePicker : Gtk.Bin
 	{
 		protected DateTime date;
-		protected bool isEmpty;
+		protected bool _IsEmpty;
 		public event EventHandler DateChanged;
 		protected Dialog editDate;
 
 		public DatePicker ()
 		{
 			this.Build ();
+			_IsEmpty = true;
 		}
 
 		public string DateText {
@@ -34,7 +35,7 @@ namespace QSWidgetLib
 					Clear ();
 				else
 				{
-					isEmpty = false;
+					_IsEmpty = false;
 					entryDate.Text = date.ToShortDateString();
 				}
 				if(DateChanged != null)
@@ -44,7 +45,7 @@ namespace QSWidgetLib
 
 		public bool IsEmpty {
 			get {
-				return isEmpty;
+				return _IsEmpty;
 			}
 
 		}
@@ -65,7 +66,7 @@ namespace QSWidgetLib
 
 		public void Clear()
 		{
-			isEmpty = true;
+			_IsEmpty = true;
 			entryDate.Text = "";
 			date = new DateTime(1, 1, 1);
 		}
@@ -82,7 +83,7 @@ namespace QSWidgetLib
 				CalendarDisplayOptions.ShowDayNames | 
 					CalendarDisplayOptions.ShowWeekNumbers;
 			SelectDate.DaySelectedDoubleClick += OnCalendarDaySelectedDoubleClick;
-			if(isEmpty)
+			if(_IsEmpty)
 				SelectDate.Date = DateTime.Now.Date;
 			else
 				SelectDate.Date = date;
