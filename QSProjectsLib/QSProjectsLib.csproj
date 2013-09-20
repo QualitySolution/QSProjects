@@ -68,6 +68,7 @@
     <Compile Include="TableInfo.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.Delete.cs" />
     <Compile Include="DBWorks.cs" />
+    <Compile Include="ViewReportExt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
