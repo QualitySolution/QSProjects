@@ -40,6 +40,15 @@ namespace QSProjectsLib
 			else
 				return NullValue;
 		}
+
+		public static string GetString(MySqlDataReader rdr, string Column, string NullValue)
+		{
+			if (rdr[Column] != DBNull.Value)
+				return rdr.GetString(Column);
+			else
+				return NullValue;
+		}
+
 	}
 }
 
