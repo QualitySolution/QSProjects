@@ -49,6 +49,18 @@ namespace QSProjectsLib
 				return NullValue;
 		}
 
+		public static object ValueOrNull<T>(bool condition, T NotNullValue)
+		{
+			if(condition)
+			{
+				return (object)NotNullValue;
+			}
+			else
+			{
+				return (object)DBNull.Value;
+			}
+		}
+
 	}
 }
 
