@@ -45,7 +45,7 @@ namespace QSProjectsLib
 				                                      ButtonsType.Close,
 				                                      "ошибка");
 				md.UseMarkup = false;
-				md.Text = "При выполении поиска зависимостей удаляемого объекта произошла ошибка. Убедитесь что версия базы данных соответствует версии программы. Если версия базы данных правильная, сообщите разработчику об ошибке в программе.\n" + ErrorString;
+				md.Text = "При выполнении поиска зависимостей удаляемого объекта произошла ошибка. Убедитесь, что версия базы данных соответствует версии программы. Если версия базы данных правильная, сообщите разработчику об ошибке в программе.\n" + ErrorString;
 				md.Run ();
 				md.Destroy();
 				return false;
@@ -66,7 +66,13 @@ namespace QSProjectsLib
 				DeleteObjects (table,OutParam);
 			return result;
 		}
-
+		
+		/// <summary>
+		/// Runs the deletion.
+		/// </summary>
+		/// <returns><c>true</c>, if deletion was run, <c>false</c> otherwise.</returns>
+		/// <param name="table">Table.</param>
+		/// <param name="IntKey">Int key.</param>
 		public bool RunDeletion(string table, int IntKey)
 		{
 			return RunDeletion (table, IntKey, "");
