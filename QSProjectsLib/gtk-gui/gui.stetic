@@ -964,25 +964,6 @@
   </widget>
   <widget class="Gtk.Dialog" id="QSProjectsLib.Reference" design-size="482 450">
     <action-group name="Default">
-      <action id="addAction">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes">Добавить</property>
-        <property name="ShortLabel" translatable="yes">Добавить</property>
-        <property name="StockId">gtk-add</property>
-        <signal name="Activated" handler="OnAddActionActivated" />
-      </action>
-      <action id="editAction">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
-        <property name="StockId">gtk-edit</property>
-        <signal name="Activated" handler="OnEditActionActivated" />
-      </action>
-      <action id="removeAction">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
-        <property name="StockId">gtk-remove</property>
-        <signal name="Activated" handler="OnRemoveActionActivated" />
-      </action>
       <action id="addAction1">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />

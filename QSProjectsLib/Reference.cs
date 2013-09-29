@@ -186,9 +186,9 @@ namespace QSProjectsLib
 			buttonOk.Visible = Select;
 			buttonCancel.Visible = Select;
 			buttonClose.Visible = !Select;
-			addAction.Sensitive = CanNew;
-			editAction.Sensitive = false;
-			removeAction.Sensitive = false;
+			addAction1.Sensitive = CanNew;
+			editAction1.Sensitive = false;
+			removeAction1.Sensitive = false;
 		}
 
 		private void CreateTable()

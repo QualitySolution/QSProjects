@@ -5,9 +5,6 @@ namespace QSProjectsLib
 	public partial class Reference
 	{
 		private global::Gtk.UIManager UIManager;
-		private global::Gtk.Action addAction;
-		private global::Gtk.Action editAction;
-		private global::Gtk.Action removeAction;
 		private global::Gtk.Action addAction1;
 		private global::Gtk.Action editAction1;
 		private global::Gtk.Action removeAction1;
@@ -29,13 +26,6 @@ namespace QSProjectsLib
 			// Widget QSProjectsLib.Reference
 			this.UIManager = new global::Gtk.UIManager ();
 			global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup ("Default");
-			this.addAction = new global::Gtk.Action ("addAction", global::Mono.Unix.Catalog.GetString ("Добавить"), null, "gtk-add");
-			this.addAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Добавить");
-			w1.Add (this.addAction, null);
-			this.editAction = new global::Gtk.Action ("editAction", null, null, "gtk-edit");
-			w1.Add (this.editAction, null);
-			this.removeAction = new global::Gtk.Action ("removeAction", null, null, "gtk-remove");
-			w1.Add (this.removeAction, null);
 			this.addAction1 = new global::Gtk.Action ("addAction1", null, null, "gtk-add");
 			this.addAction1.ShortLabel = global::Mono.Unix.Catalog.GetString ("Добавить");
 			w1.Add (this.addAction1, null);
@@ -230,9 +220,6 @@ namespace QSProjectsLib
 			this.DefaultWidth = 482;
 			this.DefaultHeight = 450;
 			this.Show ();
-			this.addAction.Activated += new global::System.EventHandler (this.OnAddActionActivated);
-			this.editAction.Activated += new global::System.EventHandler (this.OnEditActionActivated);
-			this.removeAction.Activated += new global::System.EventHandler (this.OnRemoveActionActivated);
 			this.addAction1.Activated += new global::System.EventHandler (this.OnAddActionActivated);
 			this.editAction1.Activated += new global::System.EventHandler (this.OnEditActionActivated);
 			this.removeAction1.Activated += new global::System.EventHandler (this.OnRemoveActionActivated);
