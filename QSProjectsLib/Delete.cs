@@ -35,6 +35,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine (ex.ToString ());
 				ErrorHappens = true;
 				ErrorString = ex.ToString ();
 			}
@@ -65,6 +66,7 @@ namespace QSProjectsLib
 			}
 			if(result)
 				DeleteObjects (table,OutParam);
+			this.Destroy ();
 			return result;
 		}
 		
