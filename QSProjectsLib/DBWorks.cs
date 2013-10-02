@@ -33,6 +33,22 @@ namespace QSProjectsLib
 				return NullValue;
 		}
 
+		public static float GetFloat(MySqlDataReader rdr, string Column, float NullValue)
+		{
+			if (rdr[Column] != DBNull.Value)
+				return rdr.GetFloat(Column);
+			else
+				return NullValue;
+		}
+
+		public static double GetDouble(MySqlDataReader rdr, string Column, double NullValue)
+		{
+			if (rdr[Column] != DBNull.Value)
+				return rdr.GetDouble(Column);
+			else
+				return NullValue;
+		}
+
 		public static DateTime GetDateTime(MySqlDataReader rdr, string Column, DateTime NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
