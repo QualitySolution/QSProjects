@@ -992,6 +992,7 @@
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">3</property>
     <property name="HelpButton">False</property>
+    <signal name="DestroyEvent" handler="OnDestroyEvent" />
     <child internal-child="VBox">
       <widget class="Gtk.VBox" id="dialog1_VBox">
         <property name="MemberName" />

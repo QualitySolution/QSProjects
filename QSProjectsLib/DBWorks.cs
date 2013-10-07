@@ -65,6 +65,12 @@ namespace QSProjectsLib
 				return NullValue;
 		}
 
+		/// <summary>
+		/// Return values if condition is true else DBNull.
+		/// </summary>
+		/// <param name="condition">If set to <c>true</c> return value.</param>
+		/// <param name="NotNullValue">Not null value.</param>
+		/// <typeparam name="T">Type of value.</typeparam>
 		public static object ValueOrNull<T>(bool condition, T NotNullValue)
 		{
 			if(condition)
