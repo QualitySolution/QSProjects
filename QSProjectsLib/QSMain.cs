@@ -103,11 +103,7 @@ namespace QSProjectsLib
 
 		public static void ErrorMessage(Window parent, Exception ex)
 		{
-			MessageDialog md = new MessageDialog ( parent, DialogFlags.DestroyWithParent,
-			                                      MessageType.Error, 
-			                                      ButtonsType.Close,"ошибка");
-			md.UseMarkup = false;
-			md.Text = ex.ToString();
+			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(parent, ex);
 			md.Run ();
 			md.Destroy();
 		}
