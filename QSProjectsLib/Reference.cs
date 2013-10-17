@@ -16,6 +16,8 @@ namespace QSProjectsLib
 		public string SqlSelect;
 		public List<ColumnInfo> Columns;
 		public int NameColumn = 1;
+		public int ParentId = -1;
+		public string ParentFieldName = "";
 		bool NewNode;
 		bool RefChanged = false;
 		bool DescriptionField = false;
@@ -54,11 +56,12 @@ namespace QSProjectsLib
 		{
 			public string TableName { get; set; }
 			public int ItemId { get; set; }
+			public int ParentId { get; set; }
 			public bool NewItem { get; set; }
 			public ResponseType Result { get; set; }
 		}
 		
-		internal static ResponseType OnRunReferenceItemDlg(string TableName, bool New, int id)
+		internal static ResponseType OnRunReferenceItemDlg(string TableName, bool New, int id, int parentid)
 		{
 			ResponseType Result = ResponseType.None;
 			EventHandler<RunReferenceItemDlgEventArgs> handler = RunReferenceItemDlg;
@@ -68,6 +71,7 @@ namespace QSProjectsLib
 				e.TableName = TableName;
 				e.ItemId = id;
 				e.NewItem = New;
+				e.ParentId = parentid;
 				handler(null, e);
 				Result = e.Result;
 			}
@@ -233,7 +237,7 @@ namespace QSProjectsLib
 			else
 			{
 				//Вызываем событие в основном приложении для запуска диалога элемента справочника
-				result = OnRunReferenceItemDlg (TableRef, true, -1);
+				result = OnRunReferenceItemDlg (TableRef, true, -1, ParentId);
 			}
 			
 			if (result == ResponseType.Ok)
@@ -251,13 +255,19 @@ namespace QSProjectsLib
 				string sql, InsertDescriptString, UpdateDescriptString;
 				if(DescriptionField)
 				{
-					InsertDescriptString = " (name, description) VALUES (@name, @descript)";
+					if(ParentFieldName == "")
+						InsertDescriptString = " (name, description) VALUES (@name, @descript)";
+					else
+						InsertDescriptString = " (name, description, " + ParentFieldName + ") VALUES (@name, @descript, @parent)";
 					UpdateDescriptString = ", description = @descript ";
 				}
 				else
 				{
-					InsertDescriptString = " (name) VALUES (@name)";
-					UpdateDescriptString = "";
+					if(ParentFieldName == "")
+						InsertDescriptString = " (name) VALUES (@name)";
+					else
+						InsertDescriptString = " (name, " + ParentFieldName + ") VALUES (@name, @parent)";
+					UpdateDescriptString = ""; 
 				}
 				if(NewNode)
 				{
@@ -276,7 +286,8 @@ namespace QSProjectsLib
 					cmd.Parameters.AddWithValue("@name", inputNameEntry.Text);
 					if(DescriptionField)
 						cmd.Parameters.AddWithValue("@descript", inputDiscriptionEntry.Text);
-					
+					if(ParentFieldName != "")
+						cmd.Parameters.AddWithValue("@parent", ParentId);
 					cmd.ExecuteNonQuery();
 					QSMain.OnNewStatusText("Ok");
 				} 
@@ -316,7 +327,7 @@ namespace QSProjectsLib
 			else
 			{
 				//Вызываем событие в основном приложении для запуска диалога элемента справочника
-				result = OnRunReferenceItemDlg (TableRef, false, SelectedID);
+				result = OnRunReferenceItemDlg (TableRef, false, SelectedID, ParentId);
 			}
 			
 			if(result == ResponseType.Ok)
