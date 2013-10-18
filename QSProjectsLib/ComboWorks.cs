@@ -11,11 +11,15 @@ namespace QSProjectsLib
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
 		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
-		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode)
+		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
 		{   
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
-			ListStore store = new ListStore (typeof (string), typeof (int));
+			ListStore store;
+			if(WithDBValues)
+				store = new ListStore (typeof (string), typeof (int), typeof(object[]));
+			else
+				store = new ListStore (typeof (string), typeof (int));
 			combo.Model = store;
 			combo.PackStart (text, false);
 			combo.AddAttribute (text, "text", 0);
@@ -43,8 +47,13 @@ namespace QSProjectsLib
 					{
 						object[] Fields = new object[rdr.FieldCount];
 						rdr.GetValues(Fields);
-						store.AppendValues(String.Format(DisplayString, Fields),
-						                   Convert.ToInt32(Fields[KeyField]));
+						if(WithDBValues)
+							store.AppendValues(String.Format(DisplayString, Fields),
+						                   Convert.ToInt32(Fields[KeyField]),
+							                   Fields);
+						else
+							store.AppendValues(String.Format(DisplayString, Fields),
+							                   Convert.ToInt32(Fields[KeyField]));
 						count++;
 					}
 				}
