@@ -78,6 +78,11 @@ namespace QSProjectsLib
 			return Result;
 		}
 
+		public bool ReferenceIsChanged
+		{
+			get{ return RefChanged;}
+		}
+
 		public class ColumnInfo
 		{
 			/// <summary>
@@ -299,6 +304,7 @@ namespace QSProjectsLib
 				}
 			}
 		}
+
 		protected virtual void OnEditActionActivated (object sender, System.EventArgs e)
 		{
 			ResponseType result;
