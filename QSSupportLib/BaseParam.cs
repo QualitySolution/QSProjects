@@ -8,22 +8,22 @@ namespace QSSupportLib
 	{
 		public string Product 
 		{
-			get{return All["product_name"];}
+			get{return All.ContainsKey("product_name") ? All["product_name"] : null;}
 		}
 
 		public string Version 
 		{
-			get{return All["version"];}
+			get{return All.ContainsKey("version") ? All["version"] : null;}
 		}
 
 		public string Edition 
 		{
-			get{return All["edition"];}
+			get{return All.ContainsKey("edition") ? All["edition"] : null;}
 		}
 
 		public string SerialNumber 
 		{
-			get{return All["serial_number"];}
+			get{return All.ContainsKey("serial_number") ? All["serial_number"] : null;}
 		}
 
 		Dictionary<string, string> All;

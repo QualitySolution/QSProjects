@@ -5,7 +5,7 @@ namespace QSSupportLib
 {
 	public class MainSupport
 	{
-		public static BaseParam Param;
+		public static BaseParam BaseParameters;
 		public static AppVersion ProjectVerion;
 
 		public MainSupport ()
@@ -14,35 +14,63 @@ namespace QSSupportLib
 		
 		public static void TestVersion(Window Parrent)
 		{
-			string errors = "";
+			string TextMes = TestVersionText ();
 			
-			if(MainSupport.Param.Edition != ProjectVerion.Edition)
-			{
-				errors = "\nРедакция продукта не совпадает с редакцией базы данных.\n";
-				errors += "Редакция продукта: " + ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.Param.Edition + "\n";
-			}
-	
-			string[] ver = MainSupport.Param.Version.Split('.');
-			if(ProjectVerion.Version.Major.ToString() != ver[0] || ProjectVerion.Version.Minor.ToString() != ver[1])
-			{
-				errors = "\nВерсия продукта не совпадает с версией базы данных.\n";
-				errors += String.Format("Версия продукта: {0}.{1}.{2}", ProjectVerion.Version.Major, ProjectVerion.Version.Minor, ProjectVerion.Version.Build); 
-				errors += "\nВерсия базы данных: " + MainSupport.Param.Version + "\n";
-			}
-			
-			if(MainSupport.Param.Product != ProjectVerion.Product)
-				errors = "\nБаза данных не для того продукта.\n";
-
-			if(errors != "")
+			if(TextMes != null)
 			{
 				MessageDialog VersionError = new MessageDialog (Parrent , DialogFlags.DestroyWithParent,
 					                                      MessageType.Warning, 
 					                                      ButtonsType.Close, 
-					                                      errors);
+				                                                TextMes);
 				VersionError.Run();
 				VersionError.Destroy();
 				Environment.Exit(0);
 			}
+		}
+
+		private static string TestVersionText()
+		{
+			string ErrorText;
+
+			if (MainSupport.BaseParameters.Product == null) {
+				ErrorText = "Название продуката в базе данных не указано.";
+				return ErrorText;
+			}
+
+			if (MainSupport.BaseParameters.Product != ProjectVerion.Product) {
+				ErrorText = "База данных не для того продукта.";
+				return ErrorText;
+			}
+
+			if (MainSupport.BaseParameters.Version == null) {
+				ErrorText = "Версия базы данных не определена.";
+				return ErrorText;
+			}
+
+			string[] ver = MainSupport.BaseParameters.Version.Split('.');
+			if(ProjectVerion.Version.Major.ToString() != ver[0] || ProjectVerion.Version.Minor.ToString() != ver[1])
+			{
+				ErrorText = "Версия продукта не совпадает с версией базы данных.\n";
+				ErrorText += String.Format("Версия продукта: {0}.{1}.{2}", ProjectVerion.Version.Major, ProjectVerion.Version.Minor, ProjectVerion.Version.Build); 
+				ErrorText += "\nВерсия базы данных: " + MainSupport.BaseParameters.Version;
+				return ErrorText;
+			}
+
+			if(MainSupport.BaseParameters.Edition == null)
+			{
+				ErrorText = "Редакция базы не указана!\n";
+				ErrorText += "Редакция продукта: " + ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition;
+				return ErrorText;
+			}
+
+			if(MainSupport.BaseParameters.Edition != ProjectVerion.Edition)
+			{
+				ErrorText = "Редакция продукта не совпадает с редакцией базы данных.\n";
+				ErrorText += "Редакция продукта: " + ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition;
+				return ErrorText;
+			}
+
+			return null;
 		}
 
 	}
