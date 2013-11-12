@@ -138,7 +138,7 @@ namespace QSSupportLib
 			w20.Add (w21);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w23 = new global::Gtk.Label ();
-			w23.LabelProp = global::Mono.Unix.Catalog.GetString ("Понял");
+			w23.LabelProp = global::Mono.Unix.Catalog.GetString ("Понятно");
 			w23.UseUnderline = true;
 			w20.Add (w23);
 			w19.Add (w20);
