@@ -78,6 +78,7 @@ namespace QSProjectsLib
             string host = "localhost";
             string port = "3306";
             string[] uriSplit = entryServer.Text.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            host = uriSplit[0];
             if (uriSplit.Length > 1)
             {
                 port = uriSplit[1];
