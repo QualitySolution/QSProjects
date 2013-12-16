@@ -83,6 +83,42 @@ namespace QSProjectsLib
 			}
 		}
 
+		public class SQLHelper
+		{
+			public string Text;
+
+			private bool FirstInList = true;
+			private string ListSeparator = ", ";
+
+			public SQLHelper(string text)
+			{
+				Text = text;
+			}
+
+			public void AddAsList(string item, string separator)
+			{
+				ListSeparator = separator;
+				AddAsList (item);
+			}
+
+			public void AddAsList(string item)
+			{
+				if (!FirstInList)
+					Text += ListSeparator;
+				Text += item;
+				FirstInList = false;
+			}
+
+			public void StartNewList()
+			{
+				FirstInList = true;
+			}
+
+			public void Add(string text)
+			{
+				Text += text;
+			}
+		}
 	}
 }
 
