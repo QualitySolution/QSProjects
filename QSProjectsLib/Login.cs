@@ -75,8 +75,17 @@ namespace QSProjectsLib
 		
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
-			string connStr = "server=" + entryServer.Text + ";user=" +
-				entryUser.Text + ";database=" + BaseName + ";port=3306;password=" +
+            string host = "localhost";
+            string port = "3306";
+            string[] uriSplit = entryServer.Text.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            host = uriSplit[0];
+            if (uriSplit.Length > 1)
+            {
+                port = uriSplit[1];
+            }
+
+			string connStr = "server=" + host + ";user=" +
+				entryUser.Text + ";database=" + BaseName + ";port=" + port + ";password=" +
 					entryPassword.Text + ";";
 			QSMain.connectionDB = new MySqlConnection(connStr);
 			try
