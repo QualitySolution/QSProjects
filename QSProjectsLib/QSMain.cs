@@ -65,6 +65,44 @@ namespace QSProjectsLib
 			return true;
 		}
 
+		public static void CheckServer(Window Parrent)
+		{
+			string sql = "SHOW VARIABLES LIKE \"character_set_%\";";
+			MySqlCommand cmd = new MySqlCommand (sql, connectionDB);
+			string TextMes = "";
+			using (MySqlDataReader rdr = cmd.ExecuteReader ()) 
+			{
+				while (rdr.Read ()) 
+				{
+					switch (rdr ["Variable_name"].ToString ()) 
+					{
+					case "character_set_server":
+						if (rdr ["Value"].ToString () != "utf8") {
+							TextMes += String.Format ("* character_set_server = {0} - для нормальной работы программы кодировка сервера " +
+								"должна быть utf8, иначе возможны проблемы с языковыми символами, этот параметр изменяется" +
+							"в настройках сервера.\n", rdr ["Value"].ToString ());
+						}
+						break;
+					case "character_set_database":
+						if (rdr ["Value"].ToString () != "utf8") {
+							TextMes += String.Format ("* character_set_database = {0} - для нормальной работы программы кодировка базы данных " +
+								"должна быть utf8, иначе возможны проблемы с языковыми символами, измените кодировку для используемой базы.\n", rdr ["Value"].ToString ());
+						}
+						break;
+					}
+				}
+			}
+			if (TextMes != "") 
+			{
+				MessageDialog VersionError = new MessageDialog (Parrent, DialogFlags.DestroyWithParent,
+					                            MessageType.Warning, 
+					                            ButtonsType.Close, 
+					                            TextMes);
+				VersionError.Run ();
+				VersionError.Destroy ();
+			}
+		}
+
 		public static string GetPermissionFieldsForSelect()
 		{
 			if(ProjectPermission == null)
