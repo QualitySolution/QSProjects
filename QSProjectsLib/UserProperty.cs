@@ -307,16 +307,31 @@ namespace QSProjectsLib
 				}
 				cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.ExecuteNonQuery();
+				bool GrantMake = false;
 				if(checkAdmin.Active)
 				{
 					sql = "GRANT SELECT, UPDATE ON mysql.* TO " + entryLogin.Text + ", " + entryLogin.Text + "@localhost";
+					GrantMake = true;
 				}
 				else
 				{
+					sql = string.Format ("SHOW GRANTS FOR '{0}';", entryLogin.Text);
+					cmd = new MySqlCommand(sql, QSMain.connectionDB);
+					using(MySqlDataReader rdr = cmd.ExecuteReader ())
+					{
+						while(rdr.Read ())
+						{
+							if(rdr[0].ToString ().IndexOf ("mysql") > 0)
+								GrantMake = true;
+						}
+					}
 					sql = "REVOKE SELECT, UPDATE ON mysql.* FROM " + entryLogin.Text + ", " + entryLogin.Text + "@localhost";
 				}
-				cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.ExecuteNonQuery();
+				if(GrantMake)
+				{
+					cmd = new MySqlCommand(sql, QSMain.connectionDB);
+					cmd.ExecuteNonQuery();
+				}
 				QSMain.OnNewStatusText("Права установлены. Ok");
 			} 
 			catch (Exception ex) 
