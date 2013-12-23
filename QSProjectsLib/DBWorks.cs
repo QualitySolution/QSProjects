@@ -89,6 +89,7 @@ namespace QSProjectsLib
 
 			private bool FirstInList = true;
 			private string ListSeparator = ", ";
+			private string BeforeFirst = "";
 
 			public SQLHelper(string text)
 			{
@@ -103,15 +104,19 @@ namespace QSProjectsLib
 
 			public void AddAsList(string item)
 			{
+				if(FirstInList && BeforeFirst != "")
+					Text += BeforeFirst;
 				if (!FirstInList)
 					Text += ListSeparator;
 				Text += item;
 				FirstInList = false;
 			}
 
-			public void StartNewList()
+			public void StartNewList(string beforefirst = "", string separator = ", ")
 			{
 				FirstInList = true;
+				BeforeFirst = beforefirst;
+				ListSeparator = separator;
 			}
 
 			public void Add(string text)
