@@ -46,12 +46,7 @@ namespace QSWidgetLib
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.StartDate = new global::QSWidgetLib.DatePicker ();
-			this.StartDate.Events = ((global::Gdk.EventMask)(256));
-			this.StartDate.Name = "StartDate";
-			this.StartDate.Date = new global::System.DateTime (0);
-			this.StartDate.IsEditable = true;
-			this.StartDate.AutoSeparation = true;
+			this.StartDate = null;
 			this.hbox1.Add (this.StartDate);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.StartDate]));
 			w3.Position = 0;
@@ -65,12 +60,7 @@ namespace QSWidgetLib
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.EndDate = new global::QSWidgetLib.DatePicker ();
-			this.EndDate.Events = ((global::Gdk.EventMask)(256));
-			this.EndDate.Name = "EndDate";
-			this.EndDate.Date = new global::System.DateTime (0);
-			this.EndDate.IsEditable = true;
-			this.EndDate.AutoSeparation = true;
+			this.EndDate = null;
 			this.hbox1.Add (this.EndDate);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.EndDate]));
 			w5.Position = 2;
@@ -84,8 +74,6 @@ namespace QSWidgetLib
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
-			this.StartDate.DateChanged += new global::System.EventHandler (this.OnStartDateDateChanged);
-			this.EndDate.DateChanged += new global::System.EventHandler (this.OnEndDateDateChanged);
 		}
 	}
 }

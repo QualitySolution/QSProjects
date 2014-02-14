@@ -35,25 +35,14 @@ namespace QSWidgetLib
 			this.buttonEditDate.CanFocus = true;
 			this.buttonEditDate.Name = "buttonEditDate";
 			this.buttonEditDate.UseUnderline = true;
-			// Container child buttonEditDate.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w2 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w3 = new global::Gtk.HBox ();
-			w3.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w4 = new global::Gtk.Image ();
-			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSWidgetLib.icons.x-office-calendar.png");
-			w3.Add (w4);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w6 = new global::Gtk.Label ();
-			w3.Add (w6);
-			w2.Add (w3);
-			this.buttonEditDate.Add (w2);
+			global::Gtk.Image w2 = new global::Gtk.Image ();
+			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSWidgetLib.icons.x-office-calendar.png");
+			this.buttonEditDate.Image = w2;
 			this.hbox1.Add (this.buttonEditDate);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonEditDate]));
-			w10.Position = 1;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonEditDate]));
+			w3.Position = 1;
+			w3.Expand = false;
+			w3.Fill = false;
 			this.Add (this.hbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
