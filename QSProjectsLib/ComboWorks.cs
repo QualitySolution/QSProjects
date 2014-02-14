@@ -6,12 +6,20 @@ namespace QSProjectsLib
 {
 	public class ComboWorks
 	{
+		public enum ListMode {OnlyItems, WithAll, WithNo}
+
+		[Obsolete("Используейте метод с перечислением ListMode.")]
+		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
+		{
+			ComboFillUniversal (combo, SqlSelect, DisplayString, Parameters, KeyField, (ListMode) listmode, WithDBValues);
+		}
+
 		/// <summary>Заполняет комбобокс любыми данными из базы.
     	/// <param name="listmode">Режимы списка:
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
 		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
-		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
+		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, ListMode listmode, bool WithDBValues = false)
 		{   
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
@@ -33,12 +41,12 @@ namespace QSProjectsLib
 				using(MySqlDataReader rdr = cmd.ExecuteReader())
 				{
 					switch (listmode) {
-						case 1: //Все
-						store.AppendValues("Все", 0);
-						break;
-						case 2: //Нет
-						store.AppendValues("нет", -1);
-						break;
+						case ListMode.WithAll: //Все
+							store.AppendValues("Все", 0);
+							break;
+						case ListMode.WithNo: //Нет
+							store.AppendValues("нет", -1);
+							break;
 						default:
 						break;
 					}
@@ -57,9 +65,9 @@ namespace QSProjectsLib
 						count++;
 					}
 				}
-				if(listmode == 2 && count == 1)
+				if(listmode == ListMode.WithNo && count == 1)
 					combo.Active = 1;
-				if(listmode == 0 && count == 1)
+				if(listmode == ListMode.OnlyItems && count == 1)
 					combo.Active = 0;
 				QSMain.OnNewStatusText("Ok");
 			}
@@ -71,12 +79,17 @@ namespace QSProjectsLib
 
 		}
 
+		[Obsolete("Используейте метод с перечислением ListMode.")]
+		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode, bool SetDefault = true)
+		{
+			ComboFillReference (combo, TableRef, (ListMode) listmode, SetDefault);
+		}
 		/// <summary>Заполняет комбобокс элементами справочника.
 		/// <param name="listmode">Режимы списка:
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
 		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
-		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode, bool SetDefault = true)
+		public static void ComboFillReference(ComboBox combo, string TableRef, ListMode listmode, bool SetDefault = true)
 		{   			
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
@@ -93,10 +106,10 @@ namespace QSProjectsLib
 				using( MySqlDataReader rdr = cmd.ExecuteReader())
 				{
 					switch (listmode) {
-					case 1: //Все
+					case ListMode.WithAll: //Все
 						store.AppendValues("Все", 0);
 						break;
-					case 2: //Нет
+					case ListMode.WithNo: //Нет
 						store.AppendValues("нет", -1);
 						break;
 					default:
@@ -109,9 +122,9 @@ namespace QSProjectsLib
 						count++;
 					}
 				}
-				if(SetDefault && listmode == 2 && count == 1)
+				if(SetDefault && listmode == ListMode.WithNo && count == 1)
 					combo.Active = 1;
-				if(SetDefault && listmode == 0 && count == 1)
+				if(SetDefault && listmode == ListMode.OnlyItems && count == 1)
 					combo.Active = 0;
 				QSMain.OnNewStatusText("Ok");
 			}
