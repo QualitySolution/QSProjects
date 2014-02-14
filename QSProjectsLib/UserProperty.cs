@@ -1,6 +1,5 @@
 using System;
 using Gtk;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 
