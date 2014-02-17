@@ -13,6 +13,7 @@ namespace QSProjectsLib
 		string TableRef, nameNode, nameRef;
 		public int SelectedID;
 		public string SelectedName;
+		public object[] SelectedRow;
 		public string SqlSelect;
 		public List<ColumnInfo> Columns;
 		public int NameColumn = 1;
@@ -357,6 +358,11 @@ namespace QSProjectsLib
 			treeviewref.Selection.GetSelected(out iter);
 			SelectedID = (int) filter.GetValue(iter,0);
 			SelectedName = filter.GetValue(iter, NameColumn).ToString();
+			SelectedRow = new object[filter.NColumns];
+			for(int i = 0; i < filter.NColumns; i++)
+			{
+				SelectedRow[i] = filter.GetValue(iter, i);
+			}
 		}
 		
 		protected virtual void OnTreeviewrefRowActivated (object o, Gtk.RowActivatedArgs args)
