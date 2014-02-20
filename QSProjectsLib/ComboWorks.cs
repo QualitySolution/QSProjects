@@ -200,9 +200,9 @@ namespace QSProjectsLib
 
 		public static object GetActiveIdOrNull(ComboBox combo)
 		{
-			TreeIter iter;
-			if( combo.GetActiveIter(out iter))
-				return (int) combo.Model.GetValue(iter, 1);
+			int id = GetActiveId(combo);
+			if (id > 0)
+				return id;
 			else
 				return DBNull.Value;
 		}
