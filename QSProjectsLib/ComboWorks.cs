@@ -197,5 +197,14 @@ namespace QSProjectsLib
 			else
 				return -1;
 		}
+
+		public static object GetActiveIdOrNull(ComboBox combo)
+		{
+			TreeIter iter;
+			if( combo.GetActiveIter(out iter))
+				return (int) combo.Model.GetValue(iter, 1);
+			else
+				return DBNull.Value;
+		}
 	}
 }
