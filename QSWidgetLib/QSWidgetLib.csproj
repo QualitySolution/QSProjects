@@ -45,6 +45,7 @@
     <Compile Include="SelectPeriod.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.SelectPeriod.cs" />
     <Compile Include="CheckList.cs" />
+    <Compile Include="WidgetId.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
