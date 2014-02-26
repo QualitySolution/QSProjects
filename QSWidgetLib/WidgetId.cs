@@ -10,4 +10,12 @@ namespace QSWidgetLib
 		public MenuItemId(string label) : base (label) {}
 		public MenuItemId() : base () {}
 	}
+
+	public class ButtonId<I> : Button
+	{
+		public I ID;
+
+		public ButtonId() : base () {}
+	}
+
 }
