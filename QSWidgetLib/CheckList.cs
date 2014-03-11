@@ -25,6 +25,19 @@ namespace QSWidgetLib
 			this.PackStart (CheckBox, false, false, 0);
 			this.ShowAll();
 		}
+
+		public int SelectedCount
+		{
+			get{
+				int count = 0;
+				foreach(KeyValuePair<string, CheckButton> pair in CheckButtons)
+				{
+					if (pair.Value.Active)
+						count++;
+				}
+				return count;
+			}
+		}
 	}
 }
 
