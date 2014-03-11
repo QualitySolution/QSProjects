@@ -138,7 +138,7 @@ namespace QSWidgetLib
 			RadioButtons.Add (Period.CurQuarter, new RadioButton(RadioToday, "Тек. квартал"));
 			RadioButtons[Period.CurQuarter].Clicked += OnRadioCurQuarterClicked;
 			RadioButtons.Add (Period.CurYear, new RadioButton(RadioToday, "Тек. год"));
-			RadioButtons[Period.CurYear].Clicked += OnRadioYearClicked;
+			RadioButtons[Period.CurYear].Clicked += OnRadioCurYearClicked;
 
 			ShowRadio = new Dictionary<Period, bool>();
 			ShowRadio.Add (Period.Today, true);
