@@ -92,9 +92,10 @@ namespace QSProjectsLib
 			{
 				Console.WriteLine("Connecting to MySQL...");
 				labelLoginInfo.Text = "Соединяемся....";
-				labelLoginInfo.GdkWindow.ProcessUpdates(true);
-				
-				Console.WriteLine(connStr);
+				while (GLib.MainContext.Pending())
+				{
+					Gtk.Main.Iteration();
+				}
 				
 				QSMain.connectionDB.Open();
 				labelLoginInfo.Text = "";
