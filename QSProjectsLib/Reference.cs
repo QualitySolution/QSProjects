@@ -22,6 +22,7 @@ namespace QSProjectsLib
 		bool NewNode;
 		bool RefChanged = false;
 		bool DescriptionField = false;
+		private int OrdinalColumn;
 		
 		Gtk.ListStore RefListStore;
 		Gtk.TreeModelFilter filter;
@@ -49,7 +50,8 @@ namespace QSProjectsLib
 			{
 				SqlSelect = "SELECT id, name FROM @tablename ";
 			}
-				
+
+			eventboxOrdinalInfo.ModifyBg(StateType.Normal, new Gdk.Color(237, 200, 119));
 		}
 
 		// Событие запуска окна справочника
@@ -82,6 +84,22 @@ namespace QSProjectsLib
 		public bool ReferenceIsChanged
 		{
 			get{ return RefChanged;}
+		}
+
+		private string _OrdinalField = "";
+		public string OrdinalField
+		{
+			get{
+				return _OrdinalField;
+			}
+			set{
+				_OrdinalField = value;
+				AddOrdinar();
+				if(_OrdinalField != "")
+				{
+					hboxOrdinal.Visible = true;
+				}
+			}
 		}
 
 		public class ColumnInfo
@@ -151,7 +169,7 @@ namespace QSProjectsLib
 				MySqlDataReader rdr = cmd.ExecuteReader();
 				
 				RefListStore.Clear();
-				object[] Values = new object[Columns.Count];
+				object[] Values = new object[RefListStore.NColumns];
 				while (rdr.Read())
 				{
 					Values[0] = rdr.GetInt32(0);
@@ -160,6 +178,10 @@ namespace QSProjectsLib
 					for(int i = 1; i < Columns.Count; i++)
 					{
 						Values[i] = String.Format(Columns[i].DisplayFormat, Fields);
+					}
+					if(_OrdinalField != "")
+					{
+						Values[OrdinalColumn] = rdr.GetInt32(_OrdinalField);
 					}
 					RefListStore.AppendValues(Values);
 				}
@@ -173,10 +195,12 @@ namespace QSProjectsLib
 				QSMain.ErrorMessage(this,ex);
 			}
 			OnTreeviewrefCursorChanged((object)treeviewref,EventArgs.Empty);
+			TestOrdinalChanged();
 		}
 		protected virtual void OnEntryFilterChanged (object sender, System.EventArgs e)
 		{
 			filter.Refilter ();
+			OnTreeviewrefCursorChanged(treeviewref, EventArgs.Empty);
 		}
 		
 		void OnInputEntryChanged (object sender, System.EventArgs e)
@@ -205,12 +229,19 @@ namespace QSProjectsLib
 		{
 			//Создаем таблицу "Справочника"
 			//Первая колонка всегда ID
-			System.Type[] Types = new System.Type[Columns.Count];
+			int count = _OrdinalField != "" ? Columns.Count + 1 : Columns.Count;
+			System.Type[] Types = new System.Type[count];
 			Types[0] =	typeof (int); 
 
 			for(int i = 1; i < Columns.Count; i++)
 			{
 				Types[i] = typeof(string);
+			}
+
+			if(_OrdinalField != "")
+			{
+				OrdinalColumn = count - 1;
+				Types[OrdinalColumn] = typeof(int);
 			}
 
 			RefListStore = new Gtk.ListStore (Types);
@@ -349,6 +380,19 @@ namespace QSProjectsLib
 			bool isSelect = treeviewref.Selection.CountSelectedRows() == 1;
 			editAction1.Sensitive = isSelect && CanEdit;
 			removeAction1.Sensitive = isSelect && CanDel;
+			bool SelectFirst = false, SelectLast = false;
+			bool Filtered = entryFilter.Text != "";
+			TreeIter iter, SelectIter;
+			if (treeviewref.Selection.GetSelected(out SelectIter))
+			{
+				TreePath SelectPath = RefListStore.GetPath(filter.ConvertIterToChildIter(SelectIter));
+				RefListStore.GetIterFirst(out iter);
+				SelectFirst = RefListStore.GetPath(iter).Compare(SelectPath) == 0;
+				RefListStore.IterNthChild(out iter, RefListStore.IterNChildren() - 1);
+				SelectLast = RefListStore.GetPath(iter).Compare(SelectPath) == 0;
+			}
+			buttonOrdinalUp.Sensitive = isSelect && !Filtered && !SelectFirst;
+			buttonOrdinalDown.Sensitive = isSelect && !Filtered && !SelectLast;
 			buttonOk.Sensitive = isSelect;
 		}
 		
@@ -426,6 +470,100 @@ namespace QSProjectsLib
 		{
 			if(RefChanged)
 				QSMain.OnReferenceUpdated (TableRef);
+		}
+
+		private void AddOrdinar()
+		{
+			if(_OrdinalField != "")
+			{ //Добавляем
+				int FromPos = SqlSelect.IndexOf(" FROM ", StringComparison.CurrentCultureIgnoreCase);
+				if(!SqlSelect.Substring(0, FromPos).Contains(_OrdinalField))
+				{
+					SqlSelect = SqlSelect.Insert(FromPos, 
+						String.Format(", {0}", _OrdinalField));
+				}
+			}
+		}
+
+		protected void OnButtonOrdinalDownClicked(object sender, EventArgs e)
+		{
+			TreeIter SelectIter, NextIter;
+			treeviewref.Selection.GetSelected(out SelectIter);
+			NextIter = SelectIter = filter.ConvertIterToChildIter(SelectIter);
+			RefListStore.IterNext(ref NextIter);
+			RefListStore.Swap(SelectIter, NextIter);
+			OnTreeviewrefCursorChanged(treeviewref, EventArgs.Empty);
+			TestOrdinalChanged();
+		}
+
+		protected void OnButtonOrdinalUpClicked(object sender, EventArgs e)
+		{
+			TreeIter SelectIter, BeforeIter;
+			treeviewref.Selection.GetSelected(out SelectIter);
+			SelectIter = filter.ConvertIterToChildIter(SelectIter);
+			TreePath path = RefListStore.GetPath(SelectIter);
+			path.Prev();
+			RefListStore.GetIter(out BeforeIter, path);
+			RefListStore.Swap(SelectIter, BeforeIter);
+			OnTreeviewrefCursorChanged(treeviewref, EventArgs.Empty);
+			TestOrdinalChanged();
+		}
+
+		private void TestOrdinalChanged()
+		{
+			int OldOrdinal = 0;
+			bool Changed = false;
+			foreach(object[] row in RefListStore)
+			{
+				if((int)row[OrdinalColumn] < OldOrdinal)
+				{
+					Changed = true;
+					break;
+				}
+				OldOrdinal = (int)row[OrdinalColumn];
+			}
+			eventboxOrdinalInfo.Visible = Changed;
+		}
+
+		protected void OnButtonSaveOrdinalClicked(object sender, EventArgs e)
+		{
+			int[] Numbers = new int[RefListStore.IterNChildren()];
+			int n = 0;
+			foreach(object[] row in RefListStore)
+			{
+				Numbers[n] = (int)row[OrdinalColumn];
+				n++;
+			}
+			Array.Sort(Numbers);
+
+			string sql = String.Format("UPDATE {0} SET {1} = @ord WHERE id = @id", TableRef, _OrdinalField);
+			MySqlCommand cmd;
+			MySqlTransaction trans = QSMain.connectionDB.BeginTransaction();
+			try
+			{
+				n = 0;
+				foreach(object[] row in RefListStore)
+				{
+					if(Numbers[n] != (int) row[OrdinalColumn])
+					{
+						cmd = new MySqlCommand(sql, QSMain.connectionDB, trans);
+						cmd.Parameters.AddWithValue("@id", row[0]);
+						cmd.Parameters.AddWithValue("@ord", Numbers[n]);
+						cmd.ExecuteNonQuery();
+					}
+					n++;
+				}
+				trans.Commit();
+				UpdateList();
+			}
+			catch (Exception ex) 
+			{
+				trans.Rollback();
+				Console.WriteLine(ex.ToString());
+				QSMain.OnNewStatusText("Ошибка записи последовательности в "+ nameRef + "!");
+				QSMain.ErrorMessage(this,ex);
+			}
+
 		}
 
 	}
