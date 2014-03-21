@@ -310,6 +310,7 @@
   </widget>
   <widget class="Gtk.Dialog" id="QSProjectsLib.Users" design-size="485 316">
     <property name="MemberName" />
+    <property name="Title" translatable="yes">Пользователи</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">1</property>
     <property name="HelpButton">False</property>
