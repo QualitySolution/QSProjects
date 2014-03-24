@@ -511,6 +511,8 @@ namespace QSProjectsLib
 
 		private void TestOrdinalChanged()
 		{
+			if (_OrdinalField == "")
+				return;
 			int OldOrdinal = 0;
 			bool Changed = false;
 			foreach(object[] row in RefListStore)
