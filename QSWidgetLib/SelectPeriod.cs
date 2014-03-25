@@ -155,6 +155,7 @@ namespace QSWidgetLib
 
 			_RadioMode = RadioModeType.DoubleColumn;
 			OnRepackRadios ();
+			ActiveRadio = Period.AllTime;
 		}
 
 		public Period ActiveRadio
