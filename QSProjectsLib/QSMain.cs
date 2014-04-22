@@ -2,11 +2,14 @@ using System;
 using Gtk;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public class QSMain
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		public static MySqlConnection connectionDB;
 		public static string ConnectionString;
 		public static Dictionary<string, UserPermission> ProjectPermission;
@@ -100,6 +103,26 @@ namespace QSProjectsLib
 					                            TextMes);
 				VersionError.Run ();
 				VersionError.Destroy ();
+			}
+		}
+
+		public static void CheckConnectionAlive()
+		{
+			if(!connectionDB.Ping())
+			{
+				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
+				QSMain.OnNewStatusText("Пытаемся восстановить соединение...");
+				try
+				{
+					connectionDB.Open();
+				}
+				catch (Exception ex) 
+				{
+					logger.Fatal("Пересоединится не удалось.");
+					logger.Fatal(ex.ToString());
+					//ErrorMessage(this,ex);
+					throw;
+				}
 			}
 		}
 

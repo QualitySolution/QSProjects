@@ -161,6 +161,7 @@ namespace QSProjectsLib
 		{
 			QSMain.OnNewStatusText("Получаем таблицу справочника "+ nameRef + "...");
 			entryFilter.Text = "";
+			QSMain.CheckConnectionAlive();
 			try
 			{
 				string sql = SqlSelect.Replace("@tablename", TableRef);
@@ -315,6 +316,7 @@ namespace QSProjectsLib
 					sql = "UPDATE " + TableRef + " SET name = @name " + UpdateDescriptString +
 						"WHERE id = @id";
 				}
+				QSMain.CheckConnectionAlive();
 				try 
 				{
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -541,6 +543,7 @@ namespace QSProjectsLib
 			string sql = String.Format("UPDATE {0} SET {1} = @ord WHERE id = @id", TableRef, _OrdinalField);
 			MySqlCommand cmd;
 			MySqlTransaction trans = QSMain.connectionDB.BeginTransaction();
+			QSMain.CheckConnectionAlive();
 			try
 			{
 				n = 0;
@@ -548,7 +551,7 @@ namespace QSProjectsLib
 				{
 					if(Numbers[n] != (int) row[OrdinalColumn])
 					{
-						cmd = new MySqlCommand(sql, QSMain.connectionDB, trans);
+						cmd = new MySqlCommand(sql, QSMain.connectionDB, trans); //FIXME Использовать препаре для ускорения
 						cmd.Parameters.AddWithValue("@id", row[0]);
 						cmd.Parameters.AddWithValue("@ord", Numbers[n]);
 						cmd.ExecuteNonQuery();
