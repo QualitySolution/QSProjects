@@ -6,6 +6,7 @@ namespace QSProjectsLib
 	public partial class ChangePassword : Gtk.Dialog
 	{
 		public Mode WorkMode = Mode.DataBase;
+		private bool _canSetEmptyPassword = false;
 		public string NewPassword;
 
 		public enum Mode{DataBase, Manual};
@@ -13,6 +14,19 @@ namespace QSProjectsLib
 		public ChangePassword ()
 		{
 			this.Build ();
+		}
+
+		public bool CanSetEmptyPassword
+		{
+			get
+			{
+				return _canSetEmptyPassword;
+			}
+			set
+			{
+				_canSetEmptyPassword = value;
+				OnEntryPasswordChanged(null, EventArgs.Empty);
+			}
 		}
 
 		protected void OnButtonOkClicked (object sender, EventArgs e)
@@ -41,9 +55,9 @@ namespace QSProjectsLib
 
 		protected void OnEntryPasswordChanged (object sender, EventArgs e)
 		{
-			bool CanSaveEmpty = entryPassword.Text != "" || entryPassword2.Text != "";
+			bool CanSaveEmpty = _canSetEmptyPassword || entryPassword.Text != "" || entryPassword2.Text != "";
 			bool CanSaveEqual = entryPassword.Text == entryPassword2.Text;
-			bool CanSaveLength = entryPassword.Text.Length >= 3;
+			bool CanSaveLength = _canSetEmptyPassword || entryPassword.Text.Length >= 3;
 			bool CanSaveSpace = entryPassword.Text.IndexOf(' ') == -1;
 			bool CanSaveCyrillic = !System.Text.RegularExpressions.Regex.IsMatch (entryPassword.Text, "\\p{IsCyrillic}");
 			if(!CanSaveCyrillic) buttonOk.TooltipText = "Пароль не может содержать русские буквы";
