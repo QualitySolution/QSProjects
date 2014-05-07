@@ -60,9 +60,11 @@ namespace QSSupportLib
 				cmd.CommandText = sql;
 				DbParameter paramName = cmd.CreateParameter();
 				paramName.ParameterName = "@name";
+				paramName.Value = name;
 				cmd.Parameters.Add(paramName);
 				DbParameter paramValue = cmd.CreateParameter();
 				paramValue.ParameterName = "@str_value";
+				paramValue.Value = value;
 				cmd.Parameters.Add(paramValue);
 				cmd.ExecuteNonQuery();
 
