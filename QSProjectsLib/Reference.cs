@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 
 namespace QSProjectsLib
 {
@@ -165,28 +165,29 @@ namespace QSProjectsLib
 			try
 			{
 				string sql = SqlSelect.Replace("@tablename", TableRef);
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+				cmd.CommandText = sql;
 				
-				MySqlDataReader rdr = cmd.ExecuteReader();
-				
-				RefListStore.Clear();
-				object[] Values = new object[RefListStore.NColumns];
-				while (rdr.Read())
+				using (DbDataReader rdr = cmd.ExecuteReader())
 				{
-					Values[0] = rdr.GetInt32(0);
-					object[] Fields = new object[rdr.FieldCount];
-					rdr.GetValues(Fields);
-					for(int i = 1; i < Columns.Count; i++)
+					RefListStore.Clear();
+					object[] Values = new object[RefListStore.NColumns];
+					while (rdr.Read())
 					{
-						Values[i] = String.Format(Columns[i].DisplayFormat, Fields);
+						Values[0] = rdr.GetInt32(0);
+						object[] Fields = new object[rdr.FieldCount];
+						rdr.GetValues(Fields);
+						for(int i = 1; i < Columns.Count; i++)
+						{
+							Values[i] = String.Format(Columns[i].DisplayFormat, Fields);
+						}
+						if(_OrdinalField != "")
+						{
+							Values[OrdinalColumn] = rdr.GetInt32(rdr.GetOrdinal(_OrdinalField));
+						}
+						RefListStore.AppendValues(Values);
 					}
-					if(_OrdinalField != "")
-					{
-						Values[OrdinalColumn] = rdr.GetInt32(_OrdinalField);
-					}
-					RefListStore.AppendValues(Values);
 				}
-				rdr.Close();
 				QSMain.OnNewStatusText("Ok");
 			}
 			catch (Exception ex)
@@ -319,14 +320,33 @@ namespace QSProjectsLib
 				QSMain.CheckConnectionAlive();
 				try 
 				{
-					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					
-					cmd.Parameters.AddWithValue("@id",SelectedID);
-					cmd.Parameters.AddWithValue("@name", inputNameEntry.Text);
+					DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+					cmd.CommandText = sql;
+
+					DbParameter param = cmd.CreateParameter();
+					param.ParameterName = "@id";
+					param.Value = SelectedID;
+					cmd.Parameters.Add(param);
+
+					param = cmd.CreateParameter();
+					param.ParameterName = "@name";
+					param.Value = inputNameEntry.Text;
+					cmd.Parameters.Add(param);
+
 					if(DescriptionField)
-						cmd.Parameters.AddWithValue("@descript", inputDiscriptionEntry.Text);
+					{
+						param = cmd.CreateParameter();
+						param.ParameterName = "@descript";
+						param.Value = inputDiscriptionEntry.Text;
+						cmd.Parameters.Add(param);
+					}
 					if(ParentFieldName != "")
-						cmd.Parameters.AddWithValue("@parent", ParentId);
+					{
+						param = cmd.CreateParameter();
+						param.ParameterName = "@parent";
+						param.Value = ParentId;
+						cmd.Parameters.Add(param);
+					}
 					cmd.ExecuteNonQuery();
 					QSMain.OnNewStatusText("Ok");
 				} 
@@ -541,19 +561,28 @@ namespace QSProjectsLib
 			Array.Sort(Numbers);
 
 			string sql = String.Format("UPDATE {0} SET {1} = @ord WHERE id = @id", TableRef, _OrdinalField);
-			MySqlCommand cmd;
-			MySqlTransaction trans = QSMain.connectionDB.BeginTransaction();
+			DbCommand cmd;
+			DbTransaction trans = QSMain.ConnectionDB.BeginTransaction();
 			QSMain.CheckConnectionAlive();
 			try
 			{
 				n = 0;
+				cmd = QSMain.ConnectionDB.CreateCommand();
+				DbParameter paramId = cmd.CreateParameter();
+				paramId.ParameterName = "@id";
+				cmd.Parameters.Add(paramId);
+				DbParameter paramOrd = cmd.CreateParameter();
+				paramOrd.ParameterName = "@ord";
+				cmd.Parameters.Add(paramOrd);
+				cmd.CommandText = sql;
+				cmd.Prepare();
+
 				foreach(object[] row in RefListStore)
 				{
 					if(Numbers[n] != (int) row[OrdinalColumn])
 					{
-						cmd = new MySqlCommand(sql, QSMain.connectionDB, trans); //FIXME Использовать препаре для ускорения
-						cmd.Parameters.AddWithValue("@id", row[0]);
-						cmd.Parameters.AddWithValue("@ord", Numbers[n]);
+						paramId.Value = row[0];
+						paramOrd.Value = Numbers[n];
 						cmd.ExecuteNonQuery();
 					}
 					n++;

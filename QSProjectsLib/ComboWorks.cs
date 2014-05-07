@@ -1,5 +1,5 @@
 using System;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 using Gtk;
 
 namespace QSProjectsLib
@@ -9,7 +9,7 @@ namespace QSProjectsLib
 		public enum ListMode {OnlyItems, WithAll, WithNo}
 
 		[Obsolete("Используейте метод с перечислением ListMode.")]
-		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
+		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, System.Data.IDataParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
 		{
 			ComboFillUniversal (combo, SqlSelect, DisplayString, Parameters, KeyField, (ListMode) listmode, WithDBValues);
 		}
@@ -19,7 +19,7 @@ namespace QSProjectsLib
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
 		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
-		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, MySqlParameter[] Parameters, int KeyField, ListMode listmode, bool WithDBValues = false)
+		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, System.Data.IDataParameter[] Parameters, int KeyField, ListMode listmode, bool WithDBValues = false)
 		{   
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
@@ -35,10 +35,11 @@ namespace QSProjectsLib
 			try
 			{
 				int count = 0;
-				MySqlCommand cmd = new MySqlCommand(SqlSelect, QSMain.connectionDB);
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = SqlSelect;
 				if(Parameters != null)
 					cmd.Parameters.AddRange (Parameters);
-				using(MySqlDataReader rdr = cmd.ExecuteReader())
+				using(DbDataReader rdr = cmd.ExecuteReader())
 				{
 					switch (listmode) {
 						case ListMode.WithAll: //Все
@@ -102,8 +103,9 @@ namespace QSProjectsLib
 			{
 				int count = 0;
 				string sql = "SELECT id, name FROM " + TableRef;
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				using( MySqlDataReader rdr = cmd.ExecuteReader())
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = sql;
+				using( DbDataReader rdr = cmd.ExecuteReader())
 				{
 					switch (listmode) {
 					case ListMode.WithAll: //Все
@@ -147,8 +149,9 @@ namespace QSProjectsLib
 			{
 				int count = 0;
 				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				using(MySqlDataReader rdr = cmd.ExecuteReader())
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = sql;
+				using(DbDataReader rdr = cmd.ExecuteReader())
 				{
 					while (rdr.Read())
 					{

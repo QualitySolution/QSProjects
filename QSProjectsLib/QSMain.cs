@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using Gtk;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace QSProjectsLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		public static DataProviders DBMS;
+		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;
 		public static string ConnectionString;
 		public static Dictionary<string, UserPermission> ProjectPermission;
@@ -19,6 +22,38 @@ namespace QSProjectsLib
 		//События
 		public static event EventHandler<NewStatusTextEventArgs> NewStatusText;
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
+
+		//Перечисления
+		public enum DataProviders {MySQL, Factory};
+
+		private static DbConnection _ConnectionDB;
+		public static DbConnection ConnectionDB
+		{
+			get
+			{
+				switch (DBMS) 
+				{
+					case DataProviders.Factory:
+						return _ConnectionDB;
+					case DataProviders.MySQL:
+					default:
+						return connectionDB;
+				}
+			}
+			set
+			{
+				switch (DBMS) 
+				{
+					case DataProviders.Factory:
+						_ConnectionDB = value;
+						break;
+					case DataProviders.MySQL:
+					default:
+						connectionDB = (MySqlConnection) value;
+						break;
+				}
+			}
+		}
 
 		public QSMain ()
 		{
@@ -108,6 +143,8 @@ namespace QSProjectsLib
 
 		public static void CheckConnectionAlive()
 		{
+			if (DBMS != DataProviders.MySQL)
+				return;
 			if(!connectionDB.Ping())
 			{
 				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");

@@ -1,10 +1,15 @@
 using System;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 
 namespace QSProjectsLib
 {
 	public partial class ChangePassword : Gtk.Dialog
 	{
+		public Mode WorkMode = Mode.DataBase;
+		public string NewPassword;
+
+		public enum Mode{DataBase, Manual};
+
 		public ChangePassword ()
 		{
 			this.Build ();
@@ -12,12 +17,17 @@ namespace QSProjectsLib
 
 		protected void OnButtonOkClicked (object sender, EventArgs e)
 		{
+			NewPassword = entryPassword.Text;
+			if(WorkMode == Mode.Manual)
+				return;
+
 			QSMain.OnNewStatusText("Отправляем новый пароль на сервер...");
 			string sql;
 			sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
 			try 
 			{
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = sql;
 				cmd.ExecuteNonQuery();
 				QSMain.OnNewStatusText("Пароль изменен. Ok");
 			} 

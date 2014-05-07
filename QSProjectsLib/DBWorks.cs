@@ -1,5 +1,5 @@
 using System;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 
 namespace QSProjectsLib
 {
@@ -9,58 +9,66 @@ namespace QSProjectsLib
 		{
 		}
 
-		public static int GetInt(MySqlDataReader rdr, string Column, int NullValue)
+		public static bool GetBoolean(System.Data.IDataReader rdr, string Column, bool NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetInt32(Column);
+				return rdr.GetBoolean(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static long GetLong(MySqlDataReader rdr, string Column, long NullValue)
+		public static int GetInt(System.Data.IDataReader rdr, string Column, int NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetInt64(Column);
+				return rdr.GetInt32(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static decimal GetDecimal(MySqlDataReader rdr, string Column, decimal NullValue)
+		public static long GetLong(System.Data.IDataReader rdr, string Column, long NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetDecimal(Column);
+				return rdr.GetInt64(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static float GetFloat(MySqlDataReader rdr, string Column, float NullValue)
+		public static decimal GetDecimal(System.Data.IDataReader rdr, string Column, decimal NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetFloat(Column);
+				return rdr.GetDecimal(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static double GetDouble(MySqlDataReader rdr, string Column, double NullValue)
+		public static float GetFloat(System.Data.IDataReader rdr, string Column, float NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetDouble(Column);
+				return rdr.GetFloat(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static DateTime GetDateTime(MySqlDataReader rdr, string Column, DateTime NullValue)
+		public static double GetDouble(System.Data.IDataReader rdr, string Column, double NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetDateTime(Column);
+				return rdr.GetDouble(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
 
-		public static string GetString(MySqlDataReader rdr, string Column, string NullValue)
+		public static DateTime GetDateTime(System.Data.IDataReader rdr, string Column, DateTime NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
-				return rdr.GetString(Column);
+				return rdr.GetDateTime(rdr.GetOrdinal(Column));
+			else
+				return NullValue;
+		}
+
+		public static string GetString(System.Data.IDataReader rdr, string Column, string NullValue)
+		{
+			if (rdr[Column] != DBNull.Value)
+				return rdr.GetString(rdr.GetOrdinal(Column));
 			else
 				return NullValue;
 		}
