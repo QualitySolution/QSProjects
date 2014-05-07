@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
+using NLog;
 
 namespace QSSupportLib
 {
 	public class BaseParam
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		public string Product 
 		{
 			get{return All.ContainsKey("product_name") ? All["product_name"] : null;}
@@ -26,24 +29,56 @@ namespace QSSupportLib
 			get{return All.ContainsKey("serial_number") ? All["serial_number"] : null;}
 		}
 
-		Dictionary<string, string> All;
+		public Dictionary<string, string> All;
 
-		public BaseParam (MySqlConnection con)
+		public BaseParam (DbConnection con)
 		{
 			All = new Dictionary<string, string>();
 			string sql = "SELECT * FROM base_parameters";
-			MySqlCommand cmd = new MySqlCommand(sql, con);
-			MySqlDataReader rdr = cmd.ExecuteReader();
-			string temp;
-			while(rdr.Read())
+			DbCommand cmd = con.CreateCommand();
+			cmd.CommandText = sql;
+			using (DbDataReader rdr = cmd.ExecuteReader())
 			{
-				if(rdr["str_value"] == DBNull.Value)
-					temp = "";
-				else
-					temp = rdr.GetString(1);
-				All.Add(rdr.GetString("name"), temp);
+				while (rdr.Read())
+				{
+					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+				}
 			}
-			rdr.Close();
+		}
+
+		public void UpdateParameter(DbConnection con, string name, string value)
+		{
+			string sql;
+			logger.Debug("Изменяем параметр базы {0}={1}", name, value);
+			if (All.ContainsKey(name))
+				sql = "UPDATE base_parameters SET str_value = @str_value WHERE name = @name";
+			else
+				sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value)";
+			try 
+			{
+				DbCommand cmd = con.CreateCommand();
+				cmd.CommandText = sql;
+				DbParameter paramName = cmd.CreateParameter();
+				paramName.ParameterName = "@name";
+				cmd.Parameters.Add(paramName);
+				DbParameter paramValue = cmd.CreateParameter();
+				paramValue.ParameterName = "@str_value";
+				cmd.Parameters.Add(paramValue);
+				cmd.ExecuteNonQuery();
+
+				if (All.ContainsKey(name))
+					All[name] = value;
+				else
+					All.Add(name, value);
+
+				logger.Debug("Ок");
+			} 
+			catch (Exception ex) 
+			{
+				logger.ErrorException("Ошибка изменения параметра", ex);
+				throw ex;
+			}
+
 		}
 	}
 }
