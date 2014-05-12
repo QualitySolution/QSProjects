@@ -85,53 +85,29 @@ namespace QSProjectsLib
 			this.buttonNo.CanFocus = true;
 			this.buttonNo.Name = "buttonNo";
 			this.buttonNo.UseUnderline = true;
-			// Container child buttonNo.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w9 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w10 = new global::Gtk.HBox ();
-			w10.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w11 = new global::Gtk.Image ();
-			w11.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-no", global::Gtk.IconSize.Menu);
-			w10.Add (w11);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w13 = new global::Gtk.Label ();
-			w13.LabelProp = global::Mono.Unix.Catalog.GetString ("_Нет");
-			w13.UseUnderline = true;
-			w10.Add (w13);
-			w9.Add (w10);
-			this.buttonNo.Add (w9);
+			this.buttonNo.Label = global::Mono.Unix.Catalog.GetString ("_Нет");
+			global::Gtk.Image w9 = new global::Gtk.Image ();
+			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-no", global::Gtk.IconSize.Menu);
+			this.buttonNo.Image = w9;
 			this.AddActionWidget (this.buttonNo, -9);
-			global::Gtk.ButtonBox.ButtonBoxChild w17 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonNo]));
-			w17.Expand = false;
-			w17.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w10 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonNo]));
+			w10.Expand = false;
+			w10.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonYes = new global::Gtk.Button ();
 			this.buttonYes.CanDefault = true;
 			this.buttonYes.CanFocus = true;
 			this.buttonYes.Name = "buttonYes";
 			this.buttonYes.UseUnderline = true;
-			// Container child buttonYes.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w18 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w19 = new global::Gtk.HBox ();
-			w19.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w20 = new global::Gtk.Image ();
-			w20.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-yes", global::Gtk.IconSize.Menu);
-			w19.Add (w20);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w22 = new global::Gtk.Label ();
-			w22.LabelProp = global::Mono.Unix.Catalog.GetString ("_Да");
-			w22.UseUnderline = true;
-			w19.Add (w22);
-			w18.Add (w19);
-			this.buttonYes.Add (w18);
+			this.buttonYes.Label = global::Mono.Unix.Catalog.GetString ("_Да");
+			global::Gtk.Image w11 = new global::Gtk.Image ();
+			w11.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-yes", global::Gtk.IconSize.Menu);
+			this.buttonYes.Image = w11;
 			this.AddActionWidget (this.buttonYes, -8);
-			global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonYes]));
-			w26.Position = 1;
-			w26.Expand = false;
-			w26.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w12 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonYes]));
+			w12.Position = 1;
+			w12.Expand = false;
+			w12.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}

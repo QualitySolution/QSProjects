@@ -1,13 +1,15 @@
 using System;
 using Gtk;
-using MySql.Data.MySqlClient;
+using System.Data.Common;
 using System.Collections.Generic;
 using QSProjectsLib;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public partial class Delete : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		bool ErrorHappens = false;
 		string ErrorString;
 		
@@ -35,7 +37,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine (ex.ToString ());
+				logger.ErrorException("При заполнении объектов удаления произошла ошибка!", ex);
 				ErrorHappens = true;
 				ErrorString = ex.ToString ();
 			}
@@ -103,14 +105,13 @@ namespace QSProjectsLib
 			int DelCount = 0;
 			int ClearCount = 0;
 			int GroupCount;
-			MySqlCommand cmd;
-			MySqlDataReader rdr;
+			DbCommand cmd;
+			DbDataReader rdr;
 
 			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
 				ErrorString = "Нет описания для таблицы " + Table;
-				Console.WriteLine(ErrorString);
-				QSMain.OnNewStatusText(ErrorString);
+				logger.Error(ErrorString);
 				ErrorHappens = true;
 				return 0;
 			}
@@ -124,11 +125,10 @@ namespace QSProjectsLib
 				{
 					GroupCount = 0;
 					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
-					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					if(pair.Value.SqlParam.ParamStr != "")
-						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
-					if(pair.Value.SqlParam.ParamInt != "")
-						cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
+					cmd = QSMain.ConnectionDB.CreateCommand();
+					cmd.CommandText = sql;
+					AddParameters(cmd, pair.Value.SqlParam, ParametersIn);
+
 					rdr = cmd.ExecuteReader();
 					if(!rdr.HasRows)
 					{
@@ -142,16 +142,16 @@ namespace QSProjectsLib
 						IndexIntParam = rdr.GetOrdinal(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt);
 					if(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr != "")
 						IndexStrParam = rdr.GetOrdinal(QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr);
-					List<object[]> ReadedDate = new List<object[]>();
+					List<object[]> ReadedData = new List<object[]>();
 					while(rdr.Read())
 					{
 						object[] Fields = new object[rdr.FieldCount];
 						rdr.GetValues(Fields);
-						ReadedDate.Add(Fields);
+						ReadedData.Add(Fields);
 					}
 					rdr.Close ();
 
-					foreach(object[] row in ReadedDate)
+					foreach(object[] row in ReadedData)
 					{
 						ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(QSMain.ProjectTables[pair.Key].DisplayString, row));
 						if(QSMain.ProjectTables[pair.Key].DeleteItems.Count > 0 || QSMain.ProjectTables[pair.Key].ClearItems.Count > 0)
@@ -185,11 +185,10 @@ namespace QSProjectsLib
 				{
 					GroupCount = 0;
 					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
-					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					if(pair.Value.SqlParam.ParamStr != "")
-						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
-					if(pair.Value.SqlParam.ParamInt != "")
-						cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
+					cmd = QSMain.ConnectionDB.CreateCommand();
+					cmd.CommandText = sql;
+					AddParameters(cmd, pair.Value.SqlParam, ParametersIn);
+
 					rdr = cmd.ExecuteReader();
 					if(!rdr.HasRows)
 					{
@@ -220,14 +219,13 @@ namespace QSProjectsLib
 
 		private void DeleteObjects(string Table, TableInfo.Params ParametersIn)
 		{
-			MySqlCommand cmd;
-			MySqlDataReader rdr;
+			DbCommand cmd;
+			DbDataReader rdr;
 			string sql;
 			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
 				ErrorString = "Нет описания для таблицы " + Table;
-				Console.WriteLine(ErrorString);
-				QSMain.OnNewStatusText(ErrorString);
+				logger.Error(ErrorString);
 				ErrorHappens = true;
 				return;
 			}
@@ -238,38 +236,34 @@ namespace QSProjectsLib
 					if(QSMain.ProjectTables[pair.Key].DeleteItems.Count > 0 || QSMain.ProjectTables[pair.Key].ClearItems.Count > 0)
 					{
 						sql = "SELECT * FROM " +pair.Key + " " + pair.Value.sqlwhere;
-						cmd = new MySqlCommand(sql, QSMain.connectionDB);
-						if(pair.Value.SqlParam.ParamStr != "")
-							cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
-						if(pair.Value.SqlParam.ParamInt != "")
-							cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
+						cmd = QSMain.ConnectionDB.CreateCommand();
+						cmd.CommandText = sql;
+						AddParameters(cmd, pair.Value.SqlParam, ParametersIn);
 						rdr = cmd.ExecuteReader();
-						List<TableInfo.Params> ReadedDate = new List<TableInfo.Params>();
+						List<TableInfo.Params> ReadedData = new List<TableInfo.Params>();
 						string IntFieldName = QSMain.ProjectTables[pair.Key].PrimaryKey.ParamInt;
 						string StrFieldName = QSMain.ProjectTables[pair.Key].PrimaryKey.ParamStr;
 						while(rdr.Read())
 						{
 							TableInfo.Params OutParam = new TableInfo.Params();
 							if(IntFieldName != "")
-								OutParam.ParamInt = rdr.GetInt32(IntFieldName);
+								OutParam.ParamInt = rdr.GetInt32(rdr.GetOrdinal(IntFieldName));
 							if(StrFieldName != "")
-								OutParam.ParamStr = rdr.GetString(StrFieldName);
-							ReadedDate.Add(OutParam);
+								OutParam.ParamStr = rdr.GetString(rdr.GetOrdinal(StrFieldName));
+							ReadedData.Add(OutParam);
 						}
 						rdr.Close ();
 
-						foreach(TableInfo.Params row in ReadedDate)
+						foreach(TableInfo.Params row in ReadedData)
 						{
 							DeleteObjects (pair.Key, row);
 						}
 					}
 
 					sql = "DELETE FROM " + pair.Key + " " + pair.Value.sqlwhere;
-					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					if(pair.Value.SqlParam.ParamStr != "")
-						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
-					if(pair.Value.SqlParam.ParamInt != "")
-						cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
+					cmd = QSMain.ConnectionDB.CreateCommand();
+					cmd.CommandText = sql;
+					AddParameters(cmd, pair.Value.SqlParam, ParametersIn);
 					cmd.ExecuteNonQuery();
 				}
 			}
@@ -288,11 +282,9 @@ namespace QSProjectsLib
 						first = false;
 					}
 					sql += pair.Value.sqlwhere;
-					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					if(pair.Value.SqlParam.ParamStr != "")
-						cmd.Parameters.AddWithValue(pair.Value.SqlParam.ParamStr, ParametersIn.ParamStr);
-					if(pair.Value.SqlParam.ParamInt != "")
-						cmd.Parameters.AddWithValue (pair.Value.SqlParam.ParamInt, ParametersIn.ParamInt);
+					cmd = QSMain.ConnectionDB.CreateCommand();
+					cmd.CommandText = sql;
+					AddParameters(cmd, pair.Value.SqlParam, ParametersIn);
 					cmd.ExecuteNonQuery ();
 				}
 			}
@@ -311,12 +303,32 @@ namespace QSProjectsLib
 				sql += QSMain.ProjectTables[Table].PrimaryKey.ParamStr + " = @StrParam ";
 				FirstKey = false;
 			}
-			cmd = new MySqlCommand(sql, QSMain.connectionDB);
-			if(QSMain.ProjectTables[Table].PrimaryKey.ParamStr != "")
-				cmd.Parameters.AddWithValue("@StrParam", ParametersIn.ParamStr);
-			if(QSMain.ProjectTables[Table].PrimaryKey.ParamInt != "")
-				cmd.Parameters.AddWithValue("@IntParam", ParametersIn.ParamInt);
+			cmd = QSMain.ConnectionDB.CreateCommand();
+			cmd.CommandText = sql;
+			TableInfo.PrimaryKeys TempParams = new TableInfo.PrimaryKeys(
+				QSMain.ProjectTables[Table].PrimaryKey.ParamInt != "" ? "@IntParam" : "",
+				QSMain.ProjectTables[Table].PrimaryKey.ParamStr != "" ? "@StrParam" : ""
+			);
+			AddParameters(cmd, TempParams, ParametersIn);
 			cmd.ExecuteNonQuery();
+		}
+
+		void AddParameters(DbCommand cmd, TableInfo.PrimaryKeys SqlParam, TableInfo.Params ParametersIn)
+		{
+			if(SqlParam.ParamStr != "")
+			{
+				DbParameter parameterStr = cmd.CreateParameter();
+				parameterStr.ParameterName = SqlParam.ParamStr;
+				parameterStr.Value = ParametersIn.ParamStr;
+				cmd.Parameters.Add(parameterStr);
+			}
+			if(SqlParam.ParamInt != "")
+			{
+				DbParameter parameterInt = cmd.CreateParameter();
+				parameterInt.ParameterName = SqlParam.ParamInt;
+				parameterInt.Value = ParametersIn.ParamInt;
+				cmd.Parameters.Add(parameterInt);
+			}
 		}
 	}
 }
