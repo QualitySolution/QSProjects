@@ -98,12 +98,13 @@ namespace QSProjectsLib
 			private bool FirstInList = true;
 			private string ListSeparator = ", ";
 			private string BeforeFirst = "";
+			public QuoteType QuoteMode = QuoteType.None;
 
 			public SQLHelper(string text)
 			{
 				Text = text;
 			}
-
+				
 			public void AddAsList(string item, string separator)
 			{
 				ListSeparator = separator;
@@ -116,7 +117,12 @@ namespace QSProjectsLib
 					Text += BeforeFirst;
 				if (!FirstInList)
 					Text += ListSeparator;
-				Text += item;
+				if (QuoteMode == QuoteType.SingleQuotes)
+					Text += String.Format("'{0}'", item);
+				else if (QuoteMode == QuoteType.DoubleQuotes)
+					Text += String.Format("\"{0}\"", item);
+				else
+					Text += item;
 				FirstInList = false;
 			}
 
@@ -132,6 +138,8 @@ namespace QSProjectsLib
 				Text += text;
 			}
 		}
+
+		public enum QuoteType {None, SingleQuotes, DoubleQuotes};
 	}
 }
 
