@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/QSWidgetLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSWidgetLib.DatePicker" design-size="134 28">
+  <widget class="Gtk.Bin" id="QSWidgetLib.DatePicker" design-size="138 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -27,6 +27,7 @@
             <signal name="FocusOutEvent" handler="OnEntryDateFocusOutEvent" />
             <signal name="Changed" handler="OnEntryDateChanged" />
             <signal name="TextInserted" handler="OnEntryDateTextInserted" />
+            <signal name="Activated" handler="OnEntryDateActivated" />
           </widget>
           <packing>
             <property name="Position">0</property>

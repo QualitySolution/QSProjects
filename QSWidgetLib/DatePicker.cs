@@ -153,6 +153,11 @@ namespace QSWidgetLib
 				args.Position++;
 			}
 		}
+
+		protected void OnEntryDateActivated(object sender, EventArgs e)
+		{
+			this.ChildFocus (DirectionType.TabForward);
+		}
 	}
 }
 
