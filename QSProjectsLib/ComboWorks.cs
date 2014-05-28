@@ -90,7 +90,7 @@ namespace QSProjectsLib
 		/// 0 - Только элементы;
 		/// 1 - Есть пункт "Все" с кодом 0;
 		/// 2 - Есть пункт "Нет" с кодом -1;</param> </summary>
-		public static void ComboFillReference(ComboBox combo, string TableRef, ListMode listmode, bool SetDefault = true)
+		public static void ComboFillReference(ComboBox combo, string TableRef, ListMode listmode, bool SetDefault = true, string OrderBy = "")
 		{   			
 			combo.Clear ();
 			CellRendererText text = new CellRendererText ();
@@ -102,7 +102,9 @@ namespace QSProjectsLib
 			try
 			{
 				int count = 0;
-				string sql = "SELECT id, name FROM " + TableRef;
+				string sql = String.Format("SELECT id, name FROM {0} ", TableRef);
+				if(OrderBy != "")
+					sql += "ORDER BY " + OrderBy;
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 				cmd.CommandText = sql;
 				using( DbDataReader rdr = cmd.ExecuteReader())
