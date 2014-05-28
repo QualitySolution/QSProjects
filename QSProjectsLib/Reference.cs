@@ -348,6 +348,23 @@ namespace QSProjectsLib
 						cmd.Parameters.Add(param);
 					}
 					cmd.ExecuteNonQuery();
+
+					if(NewNode && OrdinalField != "")
+					{
+						cmd = QSMain.ConnectionDB.CreateCommand();
+						cmd.CommandText = @"select last_insert_rowid()";
+						int ItemId = Convert.ToInt32(cmd.ExecuteScalar());
+
+						cmd = QSMain.ConnectionDB.CreateCommand();
+						cmd.CommandText = String.Format("UPDATE {0} SET {1} = @id WHERE id = @id", TableRef, OrdinalField);
+						param = cmd.CreateParameter();
+						param.ParameterName = "@id";
+						param.Value = ItemId;
+						cmd.Parameters.Add(param);
+
+						cmd.ExecuteNonQuery();
+					}
+
 					QSMain.OnNewStatusText("Ok");
 				} 
 				catch (Exception ex) 
