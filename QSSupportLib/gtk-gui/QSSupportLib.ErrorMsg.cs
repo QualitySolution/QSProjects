@@ -51,6 +51,7 @@ namespace QSSupportLib
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
+			this.label3.Xalign = 0F;
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("К сожалению в программе произошла непредвиденная ошибка. \nВы можете помочь нам улучшить программу, сообщив нам об ошибке.\nДля этого отправьте на адрес info@qsolution.ru, сообщение с \nуказанием следующей информации:\n* Название программы и версия\n* Какие действия приводять к возникновению ошибки\n* Техническое сообщение об ошибке ");
 			this.vbox2.Add (this.label3);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label3]));
@@ -84,8 +85,6 @@ namespace QSSupportLib
 			this.hbox1.Add (this.vbox2);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
 			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
 			w1.Add (this.hbox1);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
 			w8.Position = 0;
@@ -128,7 +127,7 @@ namespace QSSupportLib
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 536;
-			this.DefaultHeight = 227;
+			this.DefaultHeight = 226;
 			this.Show ();
 			this.buttonCopy.Clicked += new global::System.EventHandler (this.OnButtonCopyClicked);
 		}

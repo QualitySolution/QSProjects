@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="536 227">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="536 226">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
@@ -45,6 +45,7 @@
                 <child>
                   <widget class="Gtk.Label" id="label3">
                     <property name="MemberName" />
+                    <property name="Xalign">0</property>
                     <property name="LabelProp" translatable="yes">К сожалению в программе произошла непредвиденная ошибка. 
 Вы можете помочь нам улучшить программу, сообщив нам об ошибке.
 Для этого отправьте на адрес info@qsolution.ru, сообщение с 
@@ -99,9 +100,7 @@
               </widget>
               <packing>
                 <property name="Position">1</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
           </widget>
