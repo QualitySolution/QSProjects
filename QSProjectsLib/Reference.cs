@@ -392,7 +392,7 @@ namespace QSProjectsLib
 			if(SimpleMode)
 			{
 				NewNode = false;
-				editNode = new Dialog("Редактирование" + nameNode, this, Gtk.DialogFlags.DestroyWithParent);
+				editNode = new Dialog("Редактирование " + nameNode, this, Gtk.DialogFlags.DestroyWithParent);
 				BuildSimpleEditorDialog ();
 				inputNameEntry.Text = NameOfNode;
 				inputDiscriptionEntry.Text = DiscriptionOfNode;
