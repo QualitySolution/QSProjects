@@ -34,7 +34,9 @@
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Posix" />
+    <Reference Include="Mono.Posix">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Nini">
       <HintPath>..\lib\Nini.dll</HintPath>
     </Reference>
@@ -71,6 +73,7 @@
     <Compile Include="gtk-gui\QSProjectsLib.Delete.cs" />
     <Compile Include="DBWorks.cs" />
     <Compile Include="ViewReportExt.cs" />
+    <Compile Include="DateWorks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -83,5 +86,8 @@
       <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
       <Name>QSSupportLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="icons\" />
   </ItemGroup>
 </Project>

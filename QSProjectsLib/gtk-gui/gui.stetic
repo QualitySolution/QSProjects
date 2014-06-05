@@ -990,7 +990,7 @@
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">Справочник</property>
-    <property name="Icon">stock:stock_addressbook LargeToolbar</property>
+    <property name="Icon">stock:gtk-directory LargeToolbar</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">3</property>
     <property name="HelpButton">False</property>

@@ -47,7 +47,7 @@ namespace QSProjectsLib
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "QSProjectsLib.Reference";
 			this.Title = global::Mono.Unix.Catalog.GetString ("Справочник");
-			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "stock_addressbook", global::Gtk.IconSize.LargeToolbar);
+			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "gtk-directory", global::Gtk.IconSize.LargeToolbar);
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child QSProjectsLib.Reference.VBox
 			global::Gtk.VBox w2 = this.VBox;
