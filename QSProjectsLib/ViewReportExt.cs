@@ -8,22 +8,19 @@ namespace QSProjectsLib
 	public class ViewReportExt
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+		public string Params = "";
+		private string reportName;
+		private string reportPath;
+		private XmlDocument xmlDoc;
 
-		public ViewReportExt()
+		public ViewReportExt(string ReportName, bool UserVar = false)
 		{
-		}
+			reportName = ReportName;
 
-		public static void Run(string ReportName, string Params)
-		{
-			Run(ReportName, Params, false);
-		}
+			reportPath = System.IO.Path.Combine( Directory.GetCurrentDirectory(), "Reports", ReportName + ".rdl");
 
-		public static void Run(string ReportName, string Params, bool UserVar)
-		{
-			string ReportPath = System.IO.Path.Combine( Directory.GetCurrentDirectory(), "Reports", ReportName + ".rdl");
-
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.Load(ReportPath);
+			xmlDoc = new XmlDocument();
+			xmlDoc.Load(reportPath);
 
 			foreach (XmlNode node in xmlDoc.GetElementsByTagName("ConnectString"))
 			{
@@ -32,13 +29,41 @@ namespace QSProjectsLib
 				else
 					node.InnerText = QSMain.ConnectionString;
 			}
+		}
 
-			ReportPath = System.IO.Path.Combine (System.IO.Path.GetTempPath (), ReportName + ".rdl");
-			xmlDoc.Save(ReportPath);
+		public string GetCommandText(string dataSetName)
+		{
+			XmlNode command = xmlDoc.SelectSingleNode ("/Report/DataSets/DataSet[@Name='Data']/Query/CommandText");
 
-			logger.Debug("Report:{0} Parameters:{1}", ReportName, Params);
-			string arg = "-r \"" + ReportPath +"\" -p \"" + Params + "\"";
+			if (command != null)
+				return command.InnerText;
+			else
+				return "";
+		}
+
+		public void SetCommandText(string dataSetName, string value)
+		{
+			XmlNode command = xmlDoc.SelectSingleNode ("/Report/DataSets/DataSet[@Name='Data']/Query/CommandText");
+
+			if (command != null)
+				command.InnerText = value;
+		}
+
+		public void Run()
+		{
+			string TempReportPath = System.IO.Path.Combine (System.IO.Path.GetTempPath (), reportName + ".rdl");
+			xmlDoc.Save(TempReportPath);
+
+			logger.Debug("Report:{0} Parameters:{1}", reportName, Params);
+			string arg = "-r \"" + TempReportPath +"\" -p \"" + Params + "\"";
 			System.Diagnostics.Process.Start ("RdlReader.exe", arg);
+		}
+
+		public static void Run(string ReportName, string Params, bool UserVar = false)
+		{
+			ViewReportExt viewext = new ViewReportExt (ReportName);
+			viewext.Params = Params;
+			viewext.Run ();
 		}
 	}
 }
