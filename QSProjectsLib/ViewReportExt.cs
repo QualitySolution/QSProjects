@@ -61,7 +61,7 @@ namespace QSProjectsLib
 
 		public static void Run(string ReportName, string Params, bool UserVar = false)
 		{
-			ViewReportExt viewext = new ViewReportExt (ReportName);
+			ViewReportExt viewext = new ViewReportExt (ReportName, UserVar);
 			viewext.Params = Params;
 			viewext.Run ();
 		}
