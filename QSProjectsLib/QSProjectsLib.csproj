@@ -74,6 +74,7 @@
     <Compile Include="DBWorks.cs" />
     <Compile Include="ViewReportExt.cs" />
     <Compile Include="DateWorks.cs" />
+    <Compile Include="StringWorks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
