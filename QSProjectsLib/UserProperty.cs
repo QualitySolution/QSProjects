@@ -2,11 +2,13 @@ using System;
 using Gtk;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public partial class UserProperty : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public bool NewUser;
 		string OriginLogin;
 		Dictionary<string, Gtk.CheckButton> RightCheckButtons;
@@ -33,7 +35,7 @@ namespace QSProjectsLib
 		{
 			NewUser = false;
 			
-			QSMain.OnNewStatusText(String.Format ("Запрос пользователя №{0}...", UserId));
+			logger.Info("Запрос пользователя №{0}...", UserId);
 			string sql = "SELECT * FROM users " +
 				"WHERE users.id = @id";
 			try
@@ -63,12 +65,11 @@ namespace QSProjectsLib
 				rdr.Close();
 				
 				this.Title = entryName.Text;
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка получения информации о пользователе!");
+				logger.ErrorException("Ошибка получения информации о пользователе!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 		}
@@ -109,7 +110,7 @@ namespace QSProjectsLib
 					" WHERE id = @id";
 			}
 			UpdatePrivileges ();
-			QSMain.OnNewStatusText("Запись пользователя...");
+			logger.Info("Запись пользователя...");
 			try 
 			{
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -132,20 +133,19 @@ namespace QSProjectsLib
 				cmd.ExecuteNonQuery();
 				if(QSMain.User.Login == entryLogin.Text)
 					QSMain.User.UpdateUserInfoByLogin ();
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 				Respond (ResponseType.Ok);
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка записи пользователя!");
+				logger.ErrorException("Ошибка записи пользователя!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 		}
 		
 		bool CreateLogin()
 		{
-			QSMain.OnNewStatusText("Создание учетной записи на сервере...");
+			logger.Info("Создание учетной записи на сервере...");
 			try 
 			{
 				//Проверка существует ли логин
@@ -187,7 +187,7 @@ namespace QSProjectsLib
 				catch (MySqlException ex)
 				{
 					if(ex.Number == 1045)
-						QSMain.OnNewStatusText ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
+						logger.WarnException ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.", ex);
 					else
 						return false;
 				}
@@ -202,13 +202,12 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue("@password", entryPassword.Text);
 				cmd.ExecuteNonQuery();
 				
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 				return true;
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка создания пользователя!");
+				logger.ErrorException("Ошибка создания пользователя!", ex);
 				QSMain.ErrorMessage(this,ex);
 				return false;
 			}
@@ -216,7 +215,7 @@ namespace QSProjectsLib
 		
 		bool RenameLogin()
 		{
-			QSMain.OnNewStatusText("Переименование учетной записи на сервере...");
+			logger.Info("Переименование учетной записи на сервере...");
 			try 
 			{
 				//Проверка существует ли логин
@@ -240,7 +239,7 @@ namespace QSProjectsLib
 				catch (MySqlException ex)
 				{
 					if(ex.Number == 1045)
-						QSMain.OnNewStatusText ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
+						logger.WarnException ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.", ex);
 					else
 						return false;
 				}
@@ -249,13 +248,12 @@ namespace QSProjectsLib
 				sql = String.Format("RENAME USER {0} TO {1}, {0}@localhost TO {1}@localhost", OriginLogin, entryLogin.Text);
 				cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.ExecuteNonQuery();
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 				return true;
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка переименования пользователя!");
+				logger.ErrorException("Ошибка переименования пользователя!", ex);
 				QSMain.ErrorMessage(this,ex);
 				return false;
 			}
@@ -263,7 +261,7 @@ namespace QSProjectsLib
 		
 		void ChangePassword()
 		{
-			QSMain.OnNewStatusText("Отправляем новый пароль на сервер...");
+			logger.Info("Отправляем новый пароль на сервер...");
 			string sql;
 			try 
 			{
@@ -273,19 +271,18 @@ namespace QSProjectsLib
 				sql = String.Format("SET PASSWORD FOR {0}@localhost = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
 				cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.ExecuteNonQuery();
-				QSMain.OnNewStatusText("Пароль изменен. Ok");
+				logger.Info("Пароль изменен. Ok");
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка установки пароля!");
+				logger.ErrorException("Ошибка установки пароля!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 		}
 		
 		void UpdatePrivileges()
 		{
-			QSMain.OnNewStatusText("Устанавливаем права...");
+			logger.Info("Устанавливаем права...");
 			try 
 			{
 				string privileges;
@@ -331,12 +328,11 @@ namespace QSProjectsLib
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					cmd.ExecuteNonQuery();
 				}
-				QSMain.OnNewStatusText("Права установлены. Ok");
+				logger.Info("Права установлены. Ok");
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка установки прав!");
+				logger.ErrorException("Ошибка установки прав!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 		}

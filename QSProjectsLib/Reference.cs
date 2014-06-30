@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using System.Data.Common;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public partial class Reference : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public static event EventHandler<RunReferenceItemDlgEventArgs> RunReferenceItemDlg;
 
 		bool SimpleMode, SelectMode, CanNew, CanEdit, CanDel;
@@ -159,7 +161,7 @@ namespace QSProjectsLib
 		
 		protected void UpdateList()
 		{
-			QSMain.OnNewStatusText("Получаем таблицу справочника "+ nameRef + "...");
+			logger.Info("Получаем таблицу справочника "+ nameRef + "...");
 			entryFilter.Text = "";
 			QSMain.CheckConnectionAlive();
 			try
@@ -188,12 +190,11 @@ namespace QSProjectsLib
 						RefListStore.AppendValues(Values);
 					}
 				}
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка получения таблицы!");
+				logger.ErrorException("Ошибка получения таблицы!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 			OnTreeviewrefCursorChanged((object)treeviewref,EventArgs.Empty);
@@ -290,7 +291,7 @@ namespace QSProjectsLib
 		{
 			if(args.ResponseId == ResponseType.Ok)
 			{
-				QSMain.OnNewStatusText("Запись " + nameNode + "...");
+				logger.Info("Запись " + nameNode + "...");
 				string sql, InsertDescriptString, UpdateDescriptString;
 				if(DescriptionField)
 				{
@@ -365,12 +366,11 @@ namespace QSProjectsLib
 						cmd.ExecuteNonQuery();
 					}
 
-					QSMain.OnNewStatusText("Ok");
+					logger.Info("Ok");
 				} 
 				catch (Exception ex) 
 				{
-					Console.WriteLine(ex.ToString());
-					QSMain.OnNewStatusText("Ошибка записи "+ nameNode + "!");
+					logger.ErrorException("Ошибка записи "+ nameNode + "!", ex);
 					QSMain.ErrorMessage(this,ex);
 				}
 			}
@@ -610,8 +610,7 @@ namespace QSProjectsLib
 			catch (Exception ex) 
 			{
 				trans.Rollback();
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка записи последовательности в "+ nameRef + "!");
+				logger.ErrorException("Ошибка записи последовательности в "+ nameRef + "!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 

@@ -1,10 +1,12 @@
 using System;
 using System.Data.Common;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public partial class ChangePassword : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public Mode WorkMode = Mode.DataBase;
 		private bool _canSetEmptyPassword = false;
 		public string NewPassword;
@@ -35,7 +37,7 @@ namespace QSProjectsLib
 			if(WorkMode == Mode.Manual)
 				return;
 
-			QSMain.OnNewStatusText("Отправляем новый пароль на сервер...");
+			logger.Info("Отправляем новый пароль на сервер...");
 			string sql;
 			sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
 			try 
@@ -43,12 +45,11 @@ namespace QSProjectsLib
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 				cmd.CommandText = sql;
 				cmd.ExecuteNonQuery();
-				QSMain.OnNewStatusText("Пароль изменен. Ok");
+				logger.Info("Пароль изменен. Ok");
 			} 
 			catch (Exception ex) 
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка установки пароля!");
+				logger.ErrorException("Ошибка установки пароля!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
 		}

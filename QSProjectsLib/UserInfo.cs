@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public class UserInfo
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public string Name, Login;
 		public int id;
 		public bool admin;
@@ -19,7 +21,7 @@ namespace QSProjectsLib
 
 		public bool TestUserExistByLogin(bool CreateNotExist)
 		{
-			QSMain.OnNewStatusText("Проверка наличия пользователя в базе...");
+			logger.Info("Проверка наличия пользователя в базе...");
 			try
 			{
 				string sql = "SELECT COUNT(*) AS cnt FROM users WHERE login = @login";
@@ -42,7 +44,7 @@ namespace QSProjectsLib
 					if (rdr["cnt"].ToString() == "0")
 						FirstUser = true;
 					rdr.Close();
-					QSMain.OnNewStatusText("Создаем пользователя");
+					logger.Info("Создаем пользователя");
 					sql = "INSERT INTO users (login, name, " + QSMain.AdminFieldName + ") " +
 						"VALUES (@login, @login, @admin)";
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -55,15 +57,14 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка проверки пользователя!");
+				logger.ErrorException("Ошибка проверки пользователя!", ex);
 				return false;
 			}
 		}
 		
 		public void UpdateUserInfoByLogin()
 		{
-			QSMain.OnNewStatusText("Чтение информации о пользователе...");
+			logger.Info("Чтение информации о пользователе...");
 			try
 			{
 				string sql = "SELECT * FROM users WHERE login = @login";
@@ -87,8 +88,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка чтения информации о пользователе!");
+				logger.ErrorException("Ошибка чтения информации о пользователе!", ex);
 			}	
 		}
 

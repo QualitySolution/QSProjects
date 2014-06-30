@@ -7,7 +7,7 @@ using NLog;
 
 namespace QSProjectsLib
 {
-	public class QSMain
+	public static class QSMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -20,6 +20,7 @@ namespace QSProjectsLib
 		public static string AdminFieldName;
 		public static UserInfo User;
 		//События
+		[Obsolete("Не вызывается в новой версии, используейте NLog, для получения сообщений.")]
 		public static event EventHandler<NewStatusTextEventArgs> NewStatusText;
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
 
@@ -55,25 +56,11 @@ namespace QSProjectsLib
 			}
 		}
 
-		public QSMain ()
-		{
-		}
-
 		//Событие строки состояния
+		[Obsolete("Не вызывается в новой версии, используейте NLog, для получения сообщений.")]
 		public class NewStatusTextEventArgs : EventArgs
 		{
 			public string NewText { get; set; }
-		}
-
-		internal static void OnNewStatusText(string NewText)
-		{
-			EventHandler<NewStatusTextEventArgs> handler = NewStatusText;
-			if (handler != null)
-			{
-				NewStatusTextEventArgs e = new NewStatusTextEventArgs();
-				e.NewText = NewText;
-				handler(null, e);
-			}
 		}
 
 		//Событие обновления справочников
@@ -97,7 +84,7 @@ namespace QSProjectsLib
 		{
 			if(connectionDB == null)
 			{
-				QSMain.OnNewStatusText("Не передано соединение с БД!");
+				logger.Warn("Не передано соединение с БД!");
 				return false;
 			}
 			return true;
@@ -148,16 +135,14 @@ namespace QSProjectsLib
 			if(!connectionDB.Ping())
 			{
 				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
-				QSMain.OnNewStatusText("Пытаемся восстановить соединение...");
+				logger.Info("Пытаемся восстановить соединение...");
 				try
 				{
 					connectionDB.Open();
 				}
 				catch (Exception ex) 
 				{
-					logger.Fatal("Пересоединится не удалось.");
-					logger.Fatal(ex.ToString());
-					//ErrorMessage(this,ex);
+					logger.FatalException("Пересоединится не удалось.", ex);
 					throw;
 				}
 			}

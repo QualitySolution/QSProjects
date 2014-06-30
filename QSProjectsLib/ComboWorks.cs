@@ -1,11 +1,13 @@
 using System;
 using System.Data.Common;
 using Gtk;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public class ComboWorks
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public enum ListMode {OnlyItems, WithAll, WithNo}
 
 		[Obsolete("Используейте метод с перечислением ListMode.")]
@@ -31,7 +33,7 @@ namespace QSProjectsLib
 			combo.Model = store;
 			combo.PackStart (text, false);
 			combo.AddAttribute (text, "text", 0);
-			QSMain.OnNewStatusText("Запрос элементов комбобокс...");
+			logger.Info("Запрос элементов комбобокс...");
 			try
 			{
 				int count = 0;
@@ -70,12 +72,11 @@ namespace QSProjectsLib
 					combo.Active = 1;
 				if(listmode == ListMode.OnlyItems && count == 1)
 					combo.Active = 0;
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка получения данных для комбобокс!");
+				logger.ErrorException("Ошибка получения данных для комбобокс!", ex);
 			}
 
 		}
@@ -98,7 +99,7 @@ namespace QSProjectsLib
 			combo.Model = store;
 			combo.PackStart (text, false);
 			combo.AddAttribute (text, "text", 0);
-			QSMain.OnNewStatusText("Запрос справочника " + TableRef + "...");
+			logger.Info("Запрос справочника " + TableRef + "...");
 			try
 			{
 				int count = 0;
@@ -130,12 +131,11 @@ namespace QSProjectsLib
 					combo.Active = 1;
 				if(SetDefault && listmode == ListMode.OnlyItems && count == 1)
 					combo.Active = 0;
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка получения данных справочника!");
+				logger.ErrorException("Ошибка получения данных справочника!", ex);
 			}
 			
 		}
@@ -145,8 +145,7 @@ namespace QSProjectsLib
 		public static void ComboFillUniqueValue(ComboBox combo, string tablename, string fieldname, bool SetDefault = true)
 		{
 			((ListStore)combo.Model).Clear();
-			//CellRendererText text = new CellRendererText ();
-			QSMain.OnNewStatusText(String.Format("Запрос всех значений {0}.{1} ...", tablename, fieldname));
+			logger.Info("Запрос всех значений {0}.{1} ...", tablename, fieldname);
 			try
 			{
 				int count = 0;
@@ -166,12 +165,11 @@ namespace QSProjectsLib
 				}
 				if(SetDefault && count == 1)
 					combo.Active = 0;
-				QSMain.OnNewStatusText("Ok");
+				logger.Info("Ok");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
-				QSMain.OnNewStatusText("Ошибка получения списка уникальных значений!");
+				logger.ErrorException("Ошибка получения списка уникальных значений!", ex);
 			}
 
 		}

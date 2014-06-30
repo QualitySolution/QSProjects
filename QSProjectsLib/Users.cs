@@ -2,11 +2,13 @@ using System;
 using Gtk;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public partial class Users : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		Gtk.ListStore UsersListStore;
 		
 		public Users ()
@@ -31,7 +33,7 @@ namespace QSProjectsLib
 		{
 			if(!QSMain.TestConnection ())
 				return;
-			QSMain.OnNewStatusText("Получаем таблицу пользователей...");
+			logger.Info("Получаем таблицу пользователей...");
 			
 			string sql = "SELECT * FROM users ";
 			MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -48,7 +50,7 @@ namespace QSProjectsLib
 			}
 			rdr.Close();
 			
-			QSMain.OnNewStatusText("Ok");
+			logger.Info("Ok");
 			
 			OnTreeviewUsersCursorChanged (null,null);
 		}
@@ -99,19 +101,18 @@ namespace QSProjectsLib
 			Delete winDel = new Delete();
 			if (winDel.RunDeletion("users", itemid))
 			{
-				QSMain.OnNewStatusText("Удаляем пользователя MySQL...");
+				logger.Info("Удаляем пользователя MySQL...");
 				string sql;
 				sql = String.Format("DROP USER {0}, {0}@localhost", loginname);
 				try 
 				{
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					cmd.ExecuteNonQuery();
-					QSMain.OnNewStatusText("Пользователь удалён. Ok");
+					logger.Info("Пользователь удалён. Ok");
 				} 
 				catch (Exception ex) 
 				{
-					Console.WriteLine(ex.ToString());
-					QSMain.OnNewStatusText("Ошибка удаления пользователя!");
+					logger.ErrorException("Ошибка удаления пользователя!", ex);
 					QSMain.ErrorMessage(this,ex);
 				}
 			}
