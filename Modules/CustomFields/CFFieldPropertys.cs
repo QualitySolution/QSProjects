@@ -39,8 +39,8 @@ namespace QSCustomFields
 					entryName.Text = rdr.GetString ("name");
 					//checkbuttonDisplay.Active = rdr.GetBoolean ("display");
 					//checkbuttonSearch.Active = rdr.GetBoolean ("search");
-					entryDBName.Text = rdr.GetString ("dbname");
-					OriginalFieldName = rdr.GetString ("dbname");
+					entryDBName.Text = rdr.GetString ("columnname");
+					OriginalFieldName = rdr.GetString ("columnname");
 					TableName = rdr.GetString ("tablename");
 				}
 
@@ -94,15 +94,15 @@ namespace QSCustomFields
 				// Работаем с внутренними данными
 				string sql;
 				if(newItem)
-					sql = String.Format ("INSERT INTO {0}(name, dbname, tablename)" +
-					                     "VALUES (@name, @dbname, @tablename)", CFMain.FieldsInfoTable);
+					sql = String.Format ("INSERT INTO {0}(name, columnname, tablename)" +
+					                     "VALUES (@name, @columnname, @tablename)", CFMain.FieldsInfoTable);
 				else
-					sql = String.Format ("UPDATE {0} SET name = @name, dbname = @dbname, tablename = @tablename WHERE id = @id",
+					sql = String.Format ("UPDATE {0} SET name = @name, columnname = @columnname, tablename = @tablename WHERE id = @id",
 					                     CFMain.FieldsInfoTable);
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB, trans);
 				cmd.Parameters.AddWithValue ("@id", entryID.Text);
 				cmd.Parameters.AddWithValue ("@name", entryName.Text);
-				cmd.Parameters.AddWithValue ("@dbname", entryDBName.Text);
+				cmd.Parameters.AddWithValue ("@columnname", entryDBName.Text);
 				cmd.Parameters.AddWithValue ("@tablename", TableName);
 				//cmd.Parameters.AddWithValue ("@display", checkbuttonDisplay.Active);
 				//cmd.Parameters.AddWithValue ("@search", checkbuttonSearch.Active);

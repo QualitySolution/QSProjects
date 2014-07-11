@@ -91,7 +91,7 @@ namespace QSCustomFields
 					while (rdr.Read ()) {
 						FieldsStore.AppendValues (rdr.GetInt32 ("id"),
 						                        rdr.GetString ("name"),
-						                          rdr.GetString ("dbname"));
+						                          rdr.GetString ("columnname"));
 					}
 				}
 				logger.Info ("Ок");
