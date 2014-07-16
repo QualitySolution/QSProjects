@@ -117,7 +117,7 @@ namespace QSProjectsLib
 
 		public class SQLHelper
 		{
-			public string Text;
+			private System.Text.StringBuilder text;
 
 			private bool FirstInList = true;
 			private string ListSeparator = ", ";
@@ -126,7 +126,21 @@ namespace QSProjectsLib
 
 			public SQLHelper(string text)
 			{
-				Text = text;
+				this.text = new System.Text.StringBuilder(text);
+			}
+
+			public SQLHelper(string text, params object[] args)
+			{
+				this.text = new System.Text.StringBuilder(String.Format (text, args));
+			}
+
+			public string Text {
+				get {
+					return text.ToString ();
+				}
+				set {
+					text = new System.Text.StringBuilder (value);
+				}
 			}
 				
 			public void AddAsList(string item, string separator)
@@ -138,15 +152,15 @@ namespace QSProjectsLib
 			public void AddAsList(string item)
 			{
 				if(FirstInList && BeforeFirst != "")
-					Text += BeforeFirst;
+					text.Append (BeforeFirst);
 				if (!FirstInList)
-					Text += ListSeparator;
+					text.Append (ListSeparator);
 				if (QuoteMode == QuoteType.SingleQuotes)
-					Text += String.Format("'{0}'", item);
+					text.AppendFormat("'{0}'", item);
 				else if (QuoteMode == QuoteType.DoubleQuotes)
-					Text += String.Format("\"{0}\"", item);
+					text.AppendFormat("\"{0}\"", item);
 				else
-					Text += item;
+					text.Append (item);
 				FirstInList = false;
 			}
 
@@ -159,8 +173,14 @@ namespace QSProjectsLib
 
 			public void Add(string text)
 			{
-				Text += text;
+				this.text.Append (text);
 			}
+
+			public void Add(string text, params object[] args)
+			{
+				this.text.AppendFormat (text, args);
+			}
+
 		}
 
 		public enum QuoteType {None, SingleQuotes, DoubleQuotes};
