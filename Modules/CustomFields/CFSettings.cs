@@ -35,14 +35,7 @@ namespace QSCustomFields
 			treeviewObjects.AppendColumn("Кол-во", new CellRendererText(), "text", (int)TablesCol.count);
 
 			treeviewObjects.Model = TablesStore;
-
-			foreach(CFTable table in CFMain.Tables)
-			{
-				TablesStore.AppendValues(table.DBName,
-					table.Title,
-					0
-				);
-			}
+			UpdateTablesInfo ();
 
 			//Создаем таблицу "Полей"
 			FieldsStore = new Gtk.ListStore (typeof (int), //0 - ID
@@ -114,8 +107,8 @@ namespace QSCustomFields
 			CFFieldPropertys win = new CFFieldPropertys();
 			win.TableName = CurrentTable.DBName;
 			win.Show ();
-			if((Gtk.ResponseType)win.Run () == Gtk.ResponseType.Ok)
-				UpdateFields();
+			if ((Gtk.ResponseType)win.Run () == Gtk.ResponseType.Ok)
+				TablesChanged ();
 			win.Destroy ();
 		}
 
@@ -129,8 +122,8 @@ namespace QSCustomFields
 			win.TableName = CurrentTable.DBName;
 			win.Fill (ItemId);
 			win.Show ();
-			if((Gtk.ResponseType)win.Run () == Gtk.ResponseType.Ok)
-				UpdateFields();
+			if ((Gtk.ResponseType)win.Run () == Gtk.ResponseType.Ok)
+				TablesChanged ();
 			win.Destroy ();
 		}
 
@@ -166,7 +159,7 @@ namespace QSCustomFields
 				cmd.ExecuteNonQuery ();
 
 				trans.Commit ();
-				UpdateFields ();
+				TablesChanged ();
 				logger.Info("Ok");
 			}
 			catch (Exception ex)
@@ -182,6 +175,24 @@ namespace QSCustomFields
 			buttonEdit.Click ();
 		}
 
+		private void TablesChanged()
+		{
+			CFMain.LoadTablesFields ();
+			UpdateTablesInfo ();
+			UpdateFields ();
+		}
+
+		private void UpdateTablesInfo()
+		{
+			TablesStore.Clear ();
+			foreach(CFTable table in CFMain.Tables)
+			{
+				TablesStore.AppendValues(table.DBName,
+				                         table.Title,
+				                         table.Fields.Count
+				                        );
+			}
+		}
 	}
 }
 

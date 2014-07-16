@@ -53,6 +53,8 @@
     <Compile Include="gtk-gui\QSCustomFields.CFSettings.cs" />
     <Compile Include="CFFieldPropertys.cs" />
     <Compile Include="gtk-gui\QSCustomFields.CFFieldPropertys.cs" />
+    <Compile Include="CustomFields.cs" />
+    <Compile Include="gtk-gui\QSCustomFields.CustomFields.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
