@@ -91,6 +91,30 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static string SQLReplaceWhere(string sql, string newWhere)
+		{
+			int startWhere = sql.IndexOf ("WHERE", StringComparison.OrdinalIgnoreCase);
+			if (startWhere < 0)
+				return sql;
+			string[] stopWords = new string[] {
+				"GROUP BY",
+				"HAVING",
+				"ORDER BY",
+				"LIMIT",
+				"PROCEDURE",
+				"INTO OUTFILE"
+			};
+			int endWhere = sql.Length - 1;
+			foreach(string word in stopWords)
+			{
+				int index = sql.IndexOf (word, startWhere, StringComparison.OrdinalIgnoreCase);
+				if (index >= 0)
+					endWhere = index;
+			}
+			sql = sql.Remove (startWhere + 5, endWhere - startWhere - 5);
+			return sql.Insert (startWhere + 6, String.Format (" {0} ", newWhere.Trim ()));
+		}
+
 		public class SQLHelper
 		{
 			public string Text;
