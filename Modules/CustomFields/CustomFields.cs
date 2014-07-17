@@ -78,6 +78,11 @@ namespace QSCustomFields
 
 		public void LoadDataFromDB(int id)
 		{
+			if(usedTable.Fields.Count < 1)
+			{
+				logger.Info ("Нет полей для загрузки.");
+				return;
+			}
 			logger.Info ("Загружаем данные настраиваемых полей для id={0}", id);
 			this.id = id;
 			DBWorks.SQLHelper sql = new DBWorks.SQLHelper ("SELECT ");
@@ -86,6 +91,7 @@ namespace QSCustomFields
 				sql.AddAsList (String.Format ("{0}.{1}", usedTable.DBName, field.ColumnName));
 			};
 			sql.Add (" FROM {0} WHERE {0}.id = @id ", usedTable.DBName);
+			logger.Debug (sql.Text);
 			try
 			{
 				MySqlCommand cmd = new MySqlCommand(sql.Text, (MySqlConnection)QSMain.ConnectionDB);
