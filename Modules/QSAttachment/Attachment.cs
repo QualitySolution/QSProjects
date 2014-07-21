@@ -215,7 +215,6 @@ namespace QSAttachment
 			cmd.Parameters.AddWithValue ("@item_id", ItemId);
 			cmd.Parameters.AddWithValue ("@size", 0);
 			cmd.Parameters.AddWithValue ("@file", null);
-
 			foreach(object[] row in FilesStore)
 			{
 				if ((int)row [(int)FilesCol.id] > 0)
@@ -225,8 +224,30 @@ namespace QSAttachment
 				cmd.Parameters ["@name"].Value = row [(int)FilesCol.name];
 				cmd.Parameters ["@size"].Value = file.LongLength;
 				cmd.Parameters ["@file"].Value = file;
-				cmd.ExecuteNonQuery ();
+				try
+				{
+					cmd.ExecuteNonQuery ();
+				}
+				catch(MySqlException ex)
+				{
+					if (ex.Number == 1153) {
+						logger.WarnException ("Превышен максимальный размер пакета для передачи на сервер.", ex);
+						string Text = "Превышен максимальный размер пакета для передачи на сервер базы данных. " +
+							"Некоторые файлы превысили ограничение и не будут записаны в базу данных. " +
+							"Это значение настраивается на сервере, по умолчанию для MySQL оно равняется 1Мб. " +
+							"Максимальный размер файла поддерживаемый программой составляет 16Мб, мы рекомендуем " +
+							"установить в настройках сервера параметр <b>max_allowed_packet=16M</b>. Подробнее о настройке здесь " +
+							"http://dev.mysql.com/doc/refman/5.6/en/packet-too-large.html";
+						MessageDialog md = new MessageDialog ((Gtk.Window)this.Toplevel, DialogFlags.Modal,
+						                                  MessageType.Error, 
+						                                  ButtonsType.Ok, Text);
+						md.Run ();
+						md.Destroy ();
+					} else
+						throw ex;
+				}
 			}
+
 			if (deletedItems.Count > 0) 
 			{
 				logger.Info ("Удаляем удаленные файлы на сервере...");
