@@ -93,6 +93,7 @@ namespace QSCustomFields
 				logger.ErrorException("Ошибка чтения полей "+ CurrentTable.DBName + "!", ex);
 				QSMain.ErrorMessage(this,ex);
 			}
+			OnTreeviewFieldsCursorChanged (treeviewFields, EventArgs.Empty);
 		}
 
 		protected void OnTreeviewFieldsCursorChanged (object sender, EventArgs e)
