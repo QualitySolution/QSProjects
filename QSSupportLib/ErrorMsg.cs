@@ -27,7 +27,7 @@ namespace QSSupportLib
 			                               MainSupport.ProjectVerion.Edition,
 			                               AppExpeption.ToString());
 			clipboard.Text = TextMsg;
-
+			clipboard.Store();
 		}
 	}
 }
