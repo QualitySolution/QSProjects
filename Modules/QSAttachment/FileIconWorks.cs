@@ -18,13 +18,18 @@ namespace QSAttachment
 
 		public static string GetIconResourceName(string extension)
 		{
+			extension = extension.TrimStart ('.');
 			if (extensionIcons.ContainsKey(extension))
 				return extensionIcons[extension];
 			else
 				return "QSAttachment.icons.text-x-generic.png";
 		}
 
-
+		public static Gdk.Pixbuf GetPixbufForFile(string filename)
+		{
+			string ext = System.IO.Path.GetExtension (filename);
+			return Gdk.Pixbuf.LoadFromResource (GetIconResourceName (ext));
+		}
 	}
 }
 

@@ -16,6 +16,8 @@ namespace QSAttachment
 		
 		private global::Gtk.Button buttonDelete;
 		
+		private global::Gtk.ScrolledWindow scrolledwindow1;
+		
 		private global::Gtk.IconView iconviewFiles;
 
 		protected virtual void Build ()
@@ -48,6 +50,7 @@ namespace QSAttachment
 			w2.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonOpen = new global::Gtk.Button ();
+			this.buttonOpen.Sensitive = false;
 			this.buttonOpen.CanFocus = true;
 			this.buttonOpen.Name = "buttonOpen";
 			this.buttonOpen.UseUnderline = true;
@@ -62,6 +65,7 @@ namespace QSAttachment
 			w4.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonSave = new global::Gtk.Button ();
+			this.buttonSave.Sensitive = false;
 			this.buttonSave.CanFocus = true;
 			this.buttonSave.Name = "buttonSave";
 			this.buttonSave.UseUnderline = true;
@@ -76,6 +80,7 @@ namespace QSAttachment
 			w6.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonDelete = new global::Gtk.Button ();
+			this.buttonDelete.Sensitive = false;
 			this.buttonDelete.CanFocus = true;
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.UseUnderline = true;
@@ -94,17 +99,28 @@ namespace QSAttachment
 			w9.Expand = false;
 			w9.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
+			this.scrolledwindow1 = new global::Gtk.ScrolledWindow ();
+			this.scrolledwindow1.CanFocus = true;
+			this.scrolledwindow1.Name = "scrolledwindow1";
+			this.scrolledwindow1.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child scrolledwindow1.Gtk.Container+ContainerChild
 			this.iconviewFiles = new global::Gtk.IconView ();
 			this.iconviewFiles.CanFocus = true;
 			this.iconviewFiles.Name = "iconviewFiles";
-			this.vbox1.Add (this.iconviewFiles);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.iconviewFiles]));
-			w10.Position = 1;
+			this.scrolledwindow1.Add (this.iconviewFiles);
+			this.vbox1.Add (this.scrolledwindow1);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.scrolledwindow1]));
+			w11.Position = 1;
 			this.Add (this.vbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
+			this.buttonOpen.Clicked += new global::System.EventHandler (this.OnButtonOpenClicked);
+			this.buttonSave.Clicked += new global::System.EventHandler (this.OnButtonSaveClicked);
+			this.buttonDelete.Clicked += new global::System.EventHandler (this.OnButtonDeleteClicked);
+			this.iconviewFiles.SelectionChanged += new global::System.EventHandler (this.OnIconviewFilesSelectionChanged);
 		}
 	}
 }

@@ -27,6 +27,7 @@
                 <property name="Icon">stock:gtk-add Menu</property>
                 <property name="Label" translatable="yes">_Добавить</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonAddClicked" />
               </widget>
               <packing>
                 <property name="Position">0</property>
@@ -38,11 +39,13 @@
             <child>
               <widget class="Gtk.Button" id="buttonOpen">
                 <property name="MemberName" />
+                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-open Menu</property>
                 <property name="Label" translatable="yes">Открыть</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonOpenClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -54,11 +57,13 @@
             <child>
               <widget class="Gtk.Button" id="buttonSave">
                 <property name="MemberName" />
+                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-harddisk Menu</property>
                 <property name="Label" translatable="yes">Сохранить на диск</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonSaveClicked" />
               </widget>
               <packing>
                 <property name="Position">2</property>
@@ -70,11 +75,13 @@
             <child>
               <widget class="Gtk.Button" id="buttonDelete">
                 <property name="MemberName" />
+                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-delete Menu</property>
                 <property name="Label" translatable="yes">Удалить</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonDeleteClicked" />
               </widget>
               <packing>
                 <property name="Position">3</property>
@@ -92,9 +99,17 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.IconView" id="iconviewFiles">
+          <widget class="Gtk.ScrolledWindow" id="scrolledwindow1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.IconView" id="iconviewFiles">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <signal name="SelectionChanged" handler="OnIconviewFilesSelectionChanged" />
+              </widget>
+            </child>
           </widget>
           <packing>
             <property name="Position">1</property>
