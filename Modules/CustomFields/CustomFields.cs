@@ -120,6 +120,9 @@ namespace QSCustomFields
 
 		public void SaveToDB(MySqlTransaction trans)
 		{
+			if(usedTable.Fields.Count < 1)
+				return;
+
 			logger.Info ("Сохраняем данные настраиваемых полей для id={0}", id);
 			DBWorks.SQLHelper sql = new DBWorks.SQLHelper ("UPDATE {0} SET ", usedTable.DBName);
 			foreach(CFFieldInfo field in usedTable.Fields)
