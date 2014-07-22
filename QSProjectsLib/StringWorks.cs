@@ -6,9 +6,15 @@ namespace QSProjectsLib
 {
 	public class StringWorks
 	{
-		public StringWorks ()
-		{
+		enum PowTwo : ulong{
+			Pow10 = 1024,
+			Pow20 = 1048576,
+			Pow30 = 1073741824,
+			Pow40 = 1099511627776,
+			Pow50 = 1125899906842620,
+			Pow60 = 1152921504606850000
 		}
+
 
 		public static class NaturalStringComparer
 		{
@@ -43,6 +49,23 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static string BytesToIECUnitsString(ulong bytes)
+		{
+			if (bytes < (ulong)PowTwo.Pow10)
+				return String.Format ("{0} Б", bytes);
+			else if(bytes < (ulong)PowTwo.Pow20)
+				return String.Format ("{0:N1} КиБ", (double)bytes/ (ulong)PowTwo.Pow10);
+			else if(bytes < (ulong)PowTwo.Pow30)
+				return String.Format ("{0:N1} МиБ", (double)bytes/ (ulong)PowTwo.Pow20);
+			else if(bytes < (ulong)PowTwo.Pow40)
+				return String.Format ("{0:N1} ГиБ", (double)bytes/ (ulong)PowTwo.Pow30);
+			else if(bytes < (ulong)PowTwo.Pow50)
+				return String.Format ("{0:N1} ТиБ", (double)bytes/ (ulong)PowTwo.Pow40);
+			else if(bytes < (ulong)PowTwo.Pow60)
+				return String.Format ("{0:N1} ПиБ", (double)bytes/ (ulong)PowTwo.Pow50);
+			else
+				return String.Format ("{0:N1} ЭиБ", (double)bytes/ (ulong)PowTwo.Pow60);
+		}
 	}
 }
 
