@@ -149,6 +149,11 @@ namespace QSProjectsLib
 				AddAsList (item);
 			}
 
+			public void AddAsList(string item, params object[] args)
+			{
+				AddAsList (String.Format(item, args));
+			}
+
 			public void AddAsList(string item)
 			{
 				if(FirstInList && BeforeFirst != "")
