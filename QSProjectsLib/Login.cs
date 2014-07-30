@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Gtk;
 using Nini.Config;
 using System.IO;
@@ -26,6 +27,13 @@ namespace QSProjectsLib
 		{
 			this.Build ();
 			DefaultServer = "localhost";
+			System.Reflection.Assembly ass = Assembly.GetCallingAssembly();
+			Version version = ass.GetName().Version;
+			string ver = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
+			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
+			string app = ((AssemblyTitleAttribute)att [0]).Title;
+			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
+			                                        app, ver);
 		}
 
 		public void SetDefaultNames(string ProjectName)

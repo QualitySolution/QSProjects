@@ -8,7 +8,7 @@
     <widget-library name="../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="369 379">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="351 337">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Вход в систему</property>
     <property name="Icon">stock:gtk-connect LargeToolbar</property>
@@ -37,13 +37,30 @@
               </packing>
             </child>
             <child>
+              <widget class="Gtk.Label" id="labelAppName">
+                <property name="MemberName" />
+                <property name="Xpad">25</property>
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">&lt;span foreground="gray" size="large" font_family="FifthLeg"&gt;QS: Платформа v.1.0&lt;/span&gt;</property>
+                <property name="UseMarkup">True</property>
+                <property name="Justify">Right</property>
+                <property name="SingleLineMode">True</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Table" id="table1">
                 <property name="MemberName" />
                 <property name="NRows">3</property>
                 <property name="NColumns">3</property>
                 <property name="RowSpacing">6</property>
                 <property name="ColumnSpacing">6</property>
-                <property name="BorderWidth">27</property>
+                <property name="BorderWidth">18</property>
                 <child>
                   <placeholder />
                 </child>
@@ -207,7 +224,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">1</property>
+                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -248,7 +265,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
