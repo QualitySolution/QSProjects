@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace QSProjectsLib
@@ -65,6 +66,16 @@ namespace QSProjectsLib
 				return String.Format ("{0:N1} ПиБ", (double)bytes/ (ulong)PowTwo.Pow50);
 			else
 				return String.Format ("{0:N1} ЭиБ", (double)bytes/ (ulong)PowTwo.Pow60);
+		}
+
+		public static string StringToPascalCase(string input)
+		{
+			if (input == null) return "";
+
+			TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+			string result = textInfo.ToTitleCase(input.Trim()).Replace(" ", "");
+
+			return result;
 		}
 	}
 }
