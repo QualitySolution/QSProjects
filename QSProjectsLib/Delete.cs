@@ -48,7 +48,7 @@ namespace QSProjectsLib
 				                                      ButtonsType.Close,
 				                                      "ошибка");
 				md.UseMarkup = false;
-				md.Text = "При выполнении поиска зависимостей удаляемого объекта произошла ошибка. Убедитесь, что версия базы данных соответствует версии программы. Если версия базы данных правильная, сообщите разработчику об ошибке в программе.\n" + ErrorString;
+				md.Text = "При выполнении поиска зависимостей удаляемого объекта произошла ошибка. Убедитесь, что версия базы данных соответствует версии программы. Если версия базы данных правильная, сообщите разработчику об ошибке в программе.\n\n" + ErrorString;
 				md.Run ();
 				md.Destroy();
 				this.Destroy ();
@@ -108,6 +108,7 @@ namespace QSProjectsLib
 			DbCommand cmd;
 			DbDataReader rdr;
 
+			logger.Debug ("Поиск зависимостей для таблицы {0}", Table);
 			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
 				ErrorString = "Нет описания для таблицы " + Table;
@@ -124,6 +125,13 @@ namespace QSProjectsLib
 				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in QSMain.ProjectTables[Table].DeleteItems)
 				{
 					GroupCount = 0;
+					if(!QSMain.ProjectTables.ContainsKey(pair.Key))
+					{
+						ErrorString = String.Format ("Зависимость удаления у таблицы {1} ссылается на таблицу {0} описания для которой нет.", pair.Key, Table);
+						logger.Error(ErrorString);
+						ErrorHappens = true;
+						return 0;
+					}
 					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
 					cmd = QSMain.ConnectionDB.CreateCommand();
 					cmd.CommandText = sql;
@@ -184,6 +192,13 @@ namespace QSProjectsLib
 				foreach(KeyValuePair<string, TableInfo.ClearDependenceItem> pair in QSMain.ProjectTables[Table].ClearItems)
 				{
 					GroupCount = 0;
+					if(!QSMain.ProjectTables.ContainsKey(pair.Key))
+					{
+						ErrorString = String.Format ("Зависимость очистки у таблицы {1} ссылается на таблицу {0} описания для которой нет.", pair.Key, Table);
+						logger.Error(ErrorString);
+						ErrorHappens = true;
+						return 0;
+					}
 					string sql = QSMain.ProjectTables[pair.Key].SqlSelect + pair.Value.sqlwhere;
 					cmd = QSMain.ConnectionDB.CreateCommand();
 					cmd.CommandText = sql;
