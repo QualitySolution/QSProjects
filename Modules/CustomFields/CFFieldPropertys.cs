@@ -221,6 +221,16 @@ namespace QSCustomFields
 			}
 			TestCanSave ();
 		}
+
+		protected void OnSpinSizeChanged(object sender, EventArgs e)
+		{
+			TestCanSave ();
+		}
+
+		protected void OnSpinDigitsChanged(object sender, EventArgs e)
+		{
+			TestCanSave ();
+		}
 	}
 }
 

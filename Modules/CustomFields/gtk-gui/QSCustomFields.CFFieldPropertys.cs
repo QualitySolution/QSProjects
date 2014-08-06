@@ -352,6 +352,8 @@ namespace QSCustomFields
 			this.DefaultWidth = 344;
 			this.DefaultHeight = 404;
 			this.Show ();
+			this.spinSize.Changed += new global::System.EventHandler (this.OnSpinSizeChanged);
+			this.spinDigits.Changed += new global::System.EventHandler (this.OnSpinDigitsChanged);
 			this.entryName.Changed += new global::System.EventHandler (this.OnEntryNameChanged);
 			this.entryDBName.Changed += new global::System.EventHandler (this.OnEntryDBNameChanged);
 			this.comboFieldType.Changed += new global::System.EventHandler (this.OnComboFieldTypeChanged);
