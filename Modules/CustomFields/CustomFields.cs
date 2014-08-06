@@ -59,16 +59,26 @@ namespace QSCustomFields
 				                             AttachOptions.Fill, AttachOptions.Fill, 0, 0);
 				FieldLables.Add(field.ID, NameLable);
 				Gtk.Widget ValueWidget;
-				switch (field.Type) {
-				case FieldTypes.varchar :
-					ValueWidget = new Entry();
+				Gtk.Widget AddToTableWidget;
+				switch (field.FieldType) {
+				case FieldTypes.TString :
+					AddToTableWidget = ValueWidget = new Entry();
 					((Entry)ValueWidget).MaxLength = field.Size;
 					break;
+				case FieldTypes.TCurrency:
+					AddToTableWidget = new HBox ();
+					string maxvalue = new string ('9', field.Size - field.Digits);
+					Adjustment adj = new Adjustment (0, double.Parse ("-" + maxvalue), double.Parse (maxvalue), 1, 10, 10);
+					ValueWidget = new SpinButton (adj, 1, (uint)field.Digits);
+					((HBox)AddToTableWidget).Add (ValueWidget);
+					string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+					((HBox)AddToTableWidget).PackEnd (new Label(curr), false,true, 6);
+					break;
 				default :
-					ValueWidget = new Label();
+					ValueWidget = AddToTableWidget = new Label();
 					break;
 				}
-				tableGrid.Attach((Widget)ValueWidget, 1, 2, Row, Row+1, 
+				tableGrid.Attach((Widget)AddToTableWidget, 1, 2, Row, Row+1, 
 				                 AttachOptions.Expand | AttachOptions.Fill, AttachOptions.Fill, 0, 0);
 				FieldWidgets.Add(field.ID, ValueWidget);
 				Row++;
@@ -101,10 +111,14 @@ namespace QSCustomFields
 					rdr.Read ();
 					foreach(CFFieldInfo field in usedTable.Fields)
 					{
-						switch (field.Type) {
-						case FieldTypes.varchar :
-							Entry wid = (Entry)FieldWidgets[field.ID];
-							wid.Text = DBWorks.GetString(rdr, field.ColumnName, "");
+						switch (field.FieldType) {
+						case FieldTypes.TString :
+							Entry stringWid = (Entry)FieldWidgets[field.ID];
+							stringWid.Text = DBWorks.GetString(rdr, field.ColumnName, "");
+							break;
+						case FieldTypes.TCurrency :
+							SpinButton moneyWid = (SpinButton)FieldWidgets[field.ID];
+							moneyWid.Value = DBWorks.GetDouble(rdr, field.ColumnName, 0);
 							break;
 						}
 					}
@@ -136,10 +150,14 @@ namespace QSCustomFields
 				cmd.Parameters.AddWithValue("@id", id);
 				foreach(CFFieldInfo field in usedTable.Fields)
 				{
-					switch (field.Type) {
-					case FieldTypes.varchar :
-						Entry wid = (Entry)FieldWidgets[field.ID];
-						cmd.Parameters.AddWithValue(field.ColumnName, DBWorks.ValueOrNull (wid.Text != "", wid.Text));
+					switch (field.FieldType) {
+					case FieldTypes.TString :
+						Entry stringWid = (Entry)FieldWidgets[field.ID];
+						cmd.Parameters.AddWithValue(field.ColumnName, DBWorks.ValueOrNull (stringWid.Text != "", stringWid.Text));
+						break;
+					case FieldTypes.TCurrency :
+						SpinButton moneyWid = (SpinButton)FieldWidgets[field.ID];
+						cmd.Parameters.AddWithValue(field.ColumnName, moneyWid.Value);
 						break;
 					}
 				}

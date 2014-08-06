@@ -37,6 +37,7 @@ namespace QSCustomFields
 						CFFieldInfo field = new CFFieldInfo();
 						field.ID = rdr.GetInt32 ("id");
 						field.Name = rdr.GetString ("name");
+						field.FieldType = (FieldTypes)Enum.Parse (typeof(FieldTypes), rdr.GetString("type"), true);
 						field.ColumnName = rdr.GetString ("columnname");
 						workTable.Fields.Add (field);
 					}
@@ -53,11 +54,25 @@ namespace QSCustomFields
 
 						if(schema.Rows.Count < 1)
 							throw new ApplicationException(String.Format ("Клонка {0}, не найдена в таблице {1}", field.ColumnName, table.DBName));
+						//Debug Только для дебага.
+						foreach (System.Data.DataRow row in schema.Rows)
+						{
+							foreach (System.Data.DataColumn col in schema.Columns)
+							{
+								logger.Debug("{0} = {1}", col.ColumnName, row[col]);
+							}
+							logger.Debug("============================");
+						}
 						//Заполняем тип
 						switch (schema.Rows[0]["DATA_TYPE"].ToString ()) {
 						case "varchar":
-							field.Type = FieldTypes.varchar;
+							field.DataType = FieldDataTypes.varchar;
 							field.Size = Convert.ToInt32 (schema.Rows[0]["CHARACTER_MAXIMUM_LENGTH"]);
+							break;
+						case "decimal":
+							field.DataType = FieldDataTypes.DECIMAL;
+							field.Size = Convert.ToInt32 (schema.Rows[0]["NUMERIC_PRECISION"]);
+							field.Digits = Convert.ToInt32 (schema.Rows[0]["NUMERIC_SCALE"]);
 							break;
 						default:
 							throw new ApplicationException(String.Format ("Тип поля {0} не поддерживается программой.", schema.Rows[0]["DATA_TYPE"]));
@@ -78,8 +93,14 @@ namespace QSCustomFields
 		}
 	}
 
+	public enum FieldDataTypes {
+		varchar,
+		DECIMAL
+	}
+
 	public enum FieldTypes {
-		varchar
+		TString,
+		TCurrency
 	}
 
 	public class CFTable
@@ -101,8 +122,10 @@ namespace QSCustomFields
 		public int ID;
 		public string Name;
 		public string ColumnName;
-		public FieldTypes Type;
+		public FieldTypes FieldType;
+		public FieldDataTypes DataType;
 		public int Size;
+		public int Digits;
 	}
 }
 
