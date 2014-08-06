@@ -93,7 +93,7 @@ namespace QSCustomFields
 			bool fieldTypeOk = comboFieldType.Active >= 0;
 			bool sizeOk = comboDataType.Active != (int)FieldDataTypes.DECIMAL || spinSize.ValueAsInt > spinDigits.ValueAsInt;
 
-			buttonOk.Sensitive = Nameok && DBNameOk && dataTypeOk && fieldTypeOk;
+			buttonOk.Sensitive = Nameok && DBNameOk && dataTypeOk && fieldTypeOk && sizeOk;
 		}
 
 		protected void OnButtonOkClicked (object sender, EventArgs e)
