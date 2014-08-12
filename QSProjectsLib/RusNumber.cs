@@ -184,8 +184,11 @@ namespace QSProjectsLib
             r.Insert(0, RusNumber.Str(n, true, "триллиард", "триллиарда", "триллиардов"));
             if(minus) r.Insert(0, "минус ");
 
-            r.Append(remainder.ToString("00 "));
-            r.Append(RusNumber.Case(remainder, juniorOne, juniorTwo, juniorFive));
+			if (juniorOne != "") 
+			{
+				r.Append (remainder.ToString ("00 "));
+				r.Append (RusNumber.Case (remainder, juniorOne, juniorTwo, juniorFive));
+			}
          
             //Делаем первую букву заглавной
             r[0] = char.ToUpper(r[0]);
