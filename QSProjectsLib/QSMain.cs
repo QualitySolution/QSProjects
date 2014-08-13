@@ -64,6 +64,24 @@ namespace QSProjectsLib
 			public string NewText { get; set; }
 		}
 
+		//Регистрируем правила Nlog для строки состояния
+		public static void MakeNewStatusTargetForNlog(string methodName, string className)
+		{
+			NLog.Config.LoggingConfiguration config = LogManager.Configuration;
+			if (config.FindTargetByName("status") != null)
+				return;
+			NLog.Targets.MethodCallTarget targetLog = new NLog.Targets.MethodCallTarget();
+			targetLog.Name = "status";
+			targetLog.MethodName = methodName;
+			targetLog.ClassName = className;
+			targetLog.Parameters.Add(new NLog.Targets.MethodCallParameter( "${message}"));
+			config.AddTarget("status", targetLog);
+			NLog.Config.LoggingRule rule = new NLog.Config.LoggingRule("*", LogLevel.Info, targetLog);
+			config.LoggingRules.Add(rule);
+
+			LogManager.Configuration = config;
+		}
+
 		//Событие обновления справочников
 		public class ReferenceUpdatedEventArgs : EventArgs
 		{
