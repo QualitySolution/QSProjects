@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Data.Common;
 using Gtk;
 using MySql.Data.MySqlClient;
@@ -190,6 +191,65 @@ namespace QSProjectsLib
 			md.Run ();
 			md.Destroy();
 		}
+
+		public static void RunAboutDialog()
+		{
+			AboutDialog dialog = new AboutDialog ();
+
+			System.Reflection.Assembly assembly = Assembly.GetCallingAssembly();
+			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
+
+			dialog.ProgramName = ((AssemblyTitleAttribute)att [0]).Title;;
+
+			Version version = assembly.GetName().Version;
+			dialog.Version = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIcon), false);
+			if (att.Length > 0)
+			{
+				dialog.Logo = new Gdk.Pixbuf(assembly, ((AssemblyLogoIcon)att[0]).ResourceName); //Gdk.Pixbuf.LoadFromResource();
+			}
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyDescriptionAttribute), false);
+
+			string comments = ((AssemblyDescriptionAttribute)att[0]).Description;
+
+			att = assembly.GetCustomAttributes (typeof(AssemblySupport), false);
+			if(att.Length > 0)
+			{
+				AssemblySupport sup = (AssemblySupport)att[0];
+				if (sup.ShowTechnologyUsed)
+					comments += String.Format("\nРазработана на MonoDevelop с использованием открытых технологий Mono, GTK#, Nlog{0}.", sup.TechnologyUsed != "" ? ", " + sup.TechnologyUsed : "");
+				if(sup.SupportInfo != "")
+					comments += sup.SupportInfo;
+				else 
+					comments += "\nТелефон тех. поддержки +7(812)575-79-44";
+			}
+			dialog.Comments = comments;
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyCopyrightAttribute), false);
+
+			dialog.Copyright = ((AssemblyCopyrightAttribute)att[0]).Copyright;
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyAuthor), false);
+
+			List<string> authors = new List<string>();
+			foreach(AssemblyAuthor author in att)
+			{
+				authors.Add(author.Name);
+			}
+			dialog.Authors = authors.ToArray();
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyAppWebsite), false);
+
+			if(att.Length > 0)
+				dialog.Website = ((AssemblyAppWebsite)att[0]).Link;
+
+			dialog.Run ();
+			dialog.Destroy();
+		}
 	}
+
+
 }
 

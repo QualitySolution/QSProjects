@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>QSProjectsLib</RootNamespace>
@@ -61,7 +59,6 @@
     <Compile Include="gtk-gui\QSProjectsLib.Users.cs" />
     <Compile Include="UserProperty.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.UserProperty.cs" />
-    <Compile Include="QSMain.cs" />
     <Compile Include="ChangePassword.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.ChangePassword.cs" />
     <Compile Include="ComboWorks.cs" />
@@ -76,6 +73,8 @@
     <Compile Include="DateWorks.cs" />
     <Compile Include="StringWorks.cs" />
     <Compile Include="RusNumber.cs" />
+    <Compile Include="QSMain.cs" />
+    <Compile Include="AssemblyAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -84,12 +83,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="icons\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\QSSupportLib\QSSupportLib.csproj">
       <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
       <Name>QSSupportLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="icons\" />
   </ItemGroup>
 </Project>
