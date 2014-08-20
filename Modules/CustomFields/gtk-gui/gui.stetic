@@ -327,6 +327,7 @@ DECIMAL</property>
                     <property name="ClimbRate">1</property>
                     <property name="Numeric">True</property>
                     <property name="Value">15</property>
+                    <signal name="Changed" handler="OnSpinSizeChanged" />
                   </widget>
                   <packing>
                     <property name="Position">0</property>
@@ -356,6 +357,7 @@ DECIMAL</property>
                     <property name="ClimbRate">1</property>
                     <property name="Numeric">True</property>
                     <property name="Value">2</property>
+                    <signal name="Changed" handler="OnSpinDigitsChanged" />
                   </widget>
                   <packing>
                     <property name="Position">2</property>
