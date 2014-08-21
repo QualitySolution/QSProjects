@@ -2,9 +2,10 @@
 
 namespace QSTDI
 {
-	public interface ITdiDialog : ITdiWidget
+	public interface ITdiDialog : ITdiTab
 	{
-
+		bool HasChanges { get;}
+		bool Save();
 	}
 }
 

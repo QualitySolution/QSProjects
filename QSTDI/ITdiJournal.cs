@@ -2,7 +2,7 @@
 
 namespace QSTDI
 {
-	public interface ITdiJournal : ITdiWidget
+	public interface ITdiJournal : ITdiTab
 	{
 	}
 }
