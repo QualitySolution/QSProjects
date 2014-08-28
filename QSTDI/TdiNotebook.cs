@@ -32,9 +32,16 @@ namespace QSTDI
 			closeButton.Clicked += OnCloseButtonClicked;
 			box.Add(closeButton);
 			box.ShowAll();
+			tab.CloseTab += HandleCloseTab;
 			this.AppendPage((Widget)tab, box);
 			this.ShowAll();
 			this.ShowTabs = true;
+		}
+
+		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
+		{
+			if(!e.AskSave || SaveIfNeed((ITdiTab)sender))
+				CloseTab((ITdiTab)sender);
 		}
 
 		void OnCloseButtonClicked (object sender, EventArgs e)
@@ -53,6 +60,12 @@ namespace QSTDI
 				return;
 			}
 
+			if(SaveIfNeed(tab))
+				CloseTab(tab);
+		}
+
+		private bool SaveIfNeed(ITdiTab tab)
+		{
 			if(tab is ITdiDialog && (tab as ITdiDialog).HasChanges)
 			{
 				string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
@@ -67,18 +80,20 @@ namespace QSTDI
 					if(!(tab as ITdiDialog).Save() )
 					{
 						logger.Warn("Вкладка не сохранена. Отмена закрытия...");
-						return;
+						return false;
 					}
 				}
 			}
+			return true;
+		}
 
+		private void CloseTab(ITdiTab tab)
+		{
 			//Закрываем вкладку
 			_tabs.Remove(tab);
 			this.Remove((Widget)tab);
 			(tab as Widget).Destroy();
 		}
-
-
 	}
 }
 

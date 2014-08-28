@@ -6,6 +6,7 @@ namespace QSTDI
 	{
 		string TabName { set; get;}
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
+		event EventHandler<TdiTabCloseEventArgs> CloseTab;
 	}
 
 	public class TdiTabNameChangedEventArgs : EventArgs
@@ -17,5 +18,16 @@ namespace QSTDI
 			NewName = newName;
 		}
 	}
+
+	public class TdiTabCloseEventArgs : EventArgs
+	{
+		public bool AskSave { get; private set; }
+
+		public TdiTabCloseEventArgs(bool askSave)
+		{
+			AskSave = askSave;
+		}
+	}
+
 }
 
