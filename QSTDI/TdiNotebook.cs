@@ -34,7 +34,7 @@ namespace QSTDI
 			box.ShowAll();
 			tab.CloseTab += HandleCloseTab;
 			this.AppendPage((Widget)tab, box);
-			this.ShowAll();
+			(tab as Widget).Show();
 			this.ShowTabs = true;
 		}
 
@@ -93,6 +93,7 @@ namespace QSTDI
 			_tabs.Remove(tab);
 			this.Remove((Widget)tab);
 			(tab as Widget).Destroy();
+			logger.Debug("Вкладка удалена");
 		}
 	}
 }
