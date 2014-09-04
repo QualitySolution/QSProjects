@@ -12,7 +12,10 @@ namespace QSTDI
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public ReadOnlyCollection<ITdiTab> Tabs;
+		public bool UseSliderTab = true;
 		private List<ITdiTab> _tabs;
+
+		public event EventHandler<TdiOpenObjDialogEventArgs> CreateDialogWidget;
 
 		public TdiNotebook()
 		{
@@ -32,6 +35,11 @@ namespace QSTDI
 			closeButton.Clicked += OnCloseButtonClicked;
 			box.Add(closeButton);
 			box.ShowAll();
+			if(UseSliderTab && tab is ITdiJournal)
+			{
+				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab);
+				tab = slider;
+			}
 			tab.CloseTab += HandleCloseTab;
 			this.AppendPage((Widget)tab, box);
 			(tab as Widget).Show();
@@ -66,7 +74,16 @@ namespace QSTDI
 
 		private bool SaveIfNeed(ITdiTab tab)
 		{
-			if(tab is ITdiDialog && (tab as ITdiDialog).HasChanges)
+			ITdiDialog dlg;
+
+			if (tab is ITdiDialog)
+				dlg = tab as ITdiDialog;
+			else if (tab is TdiSliderTab && (tab as TdiSliderTab).ActiveDialog != null)
+				dlg = (tab as TdiSliderTab).ActiveDialog;
+			else
+				return true;
+
+			if(dlg.HasChanges)
 			{
 				string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
 				MessageDialog md = new MessageDialog ( (Window)this.Toplevel, DialogFlags.Modal,
@@ -77,7 +94,7 @@ namespace QSTDI
 				md.Destroy();
 				if(result == (int)ResponseType.Yes)
 				{
-					if(!(tab as ITdiDialog).Save() )
+					if(!dlg.Save() )
 					{
 						logger.Warn("Вкладка не сохранена. Отмена закрытия...");
 						return false;
@@ -85,6 +102,17 @@ namespace QSTDI
 				}
 			}
 			return true;
+		}
+
+		internal ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
+		{
+			if (CreateDialogWidget != null)
+			{
+				CreateDialogWidget(this, eventArgs);
+				return eventArgs.ResultDialogWidget;
+			}
+			else
+				return null;
 		}
 
 		private void CloseTab(ITdiTab tab)
