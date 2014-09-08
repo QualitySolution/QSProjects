@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Gtk;
 
 namespace QSSupportLib
@@ -71,6 +72,14 @@ namespace QSSupportLib
 			}
 
 			return null;
+		}
+
+		public static string GetTitle()
+		{
+			System.Reflection.Assembly assembly = Assembly.GetCallingAssembly();
+			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
+
+			return ((AssemblyTitleAttribute)att [0]).Title;
 		}
 
 	}
