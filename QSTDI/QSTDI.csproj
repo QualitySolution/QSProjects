@@ -44,6 +44,7 @@
     <Compile Include="ITdiTab.cs" />
     <Compile Include="TdiSliderTab.cs" />
     <Compile Include="ITdiTabParent.cs" />
+    <Compile Include="TdiHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

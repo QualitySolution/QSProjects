@@ -5,7 +5,7 @@ namespace QSTDI
 	public interface ITdiTab
 	{
 		string TabName { set; get;}
-		ITdiTabParent TabParent { set;}
+		ITdiTabParent TabParent { set; get;}
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		event EventHandler<TdiTabCloseEventArgs> CloseTab;
 	}
