@@ -33,6 +33,11 @@ namespace QSOrmProject
 			return ClassMapingList.Find(c => c.ObjectClass == objectClass).DialogClass;
 		}
 
+		public static OrmObjectMaping GetObjectDiscription(System.Type type)
+		{
+			return OrmMain.ClassMapingList.Find(m => m.ObjectClass == type);
+		}
+
 		public static void NotifyObjectUpdated(object subject)
 		{
 			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subject.GetType());
@@ -45,12 +50,21 @@ namespace QSOrmProject
 	{
 		public System.Type ObjectClass;
 		public System.Type DialogClass;
+		public string RefColumnMappings;
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 
 		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass)
 		{
 			ObjectClass = objectClass;
 			DialogClass = dialogClass;
+			RefColumnMappings = String.Empty;
+		}
+
+		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass, string columnMaping)
+		{
+			ObjectClass = objectClass;
+			DialogClass = dialogClass;
+			RefColumnMappings = columnMaping;
 		}
 
 		public void RaiseObjectUpdated(int id)

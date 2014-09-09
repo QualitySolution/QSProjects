@@ -14,10 +14,13 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
 		private ICriteria objectsCriteria;
-		public event EventHandler<TdiOpenObjDialogEventArgs> OpenObjDialog;
-		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
+
+		public ITdiTabParent TabParent { set; get;}
+
+		public event EventHandler<TdiOpenObjDialogEventArgs> OpenObjDialog;
+		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 
 		public ISession Session
 		{
@@ -77,14 +80,13 @@ namespace QSOrmProject
 			}
 
 		}
-
-		//public OrmReference(System.Type objType, IList objList, string columsMapping)
-		public OrmReference(System.Type objType, ISession listSession, ICriteria objList, string columsMapping)
+			
+		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping)
 		{
 			this.Build();
 			Mode = OrmReferenceMode.Normal;
 			objectType = objType;
-			objectsCriteria = objList;
+			objectsCriteria = listCriteria;
 			Session = listSession;
 			OrmObjectMaping map = OrmMain.ClassMapingList.Find(m => m.ObjectClass == objectType);
 			if(map != null)
@@ -97,6 +99,12 @@ namespace QSOrmProject
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
 			UpdateSum();
+		}
+
+		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria)
+		{
+			OrmObjectMaping map = OrmMain.GetObjectDiscription(objType);
+			OrmReference(objType, listSession, listCriteria, map.RefColumnMappings);
 		}
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
