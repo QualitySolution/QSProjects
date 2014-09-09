@@ -4,12 +4,14 @@ using NLog;
 
 namespace QSTDI
 {
-	public class TdiSliderTab : Gtk.HBox, ITdiTab
+	public class TdiSliderTab : Gtk.HBox, ITdiTab, ITdiTabParent
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ITdiJournal journal;
 		private ITdiDialog activeDialog;
 		private VSeparator separator;
+
+		public ITdiTabParent TabParent { set; get;}
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
@@ -51,6 +53,7 @@ namespace QSTDI
 					journal.CloseTab += OnJournalClose;
 					this.PackStart((Widget)Journal);
 					(Journal as Widget).Show();
+					journal.TabParent = this;
 				}
 			}
 		}
@@ -91,6 +94,7 @@ namespace QSTDI
 						this.PackEnd((Widget)activeDialog);
 						this.PackEnd(separator, false, true, 6);
 						(ActiveDialog as Widget).Show();
+						activeDialog.TabParent = this;
 					}
 				}
 
@@ -137,6 +141,14 @@ namespace QSTDI
 		public TdiSliderTab(ITdiJournal jour)
 		{
 			Journal = jour;
+		}
+
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		{
+			if(masterTab == Journal || masterTab == ActiveDialog)
+				TabParent.AddSlaveTab(this as ITdiTab, slaveTab);
+			else
+				TabParent.AddSlaveTab(masterTab, slaveTab);
 		}
 	}
 }

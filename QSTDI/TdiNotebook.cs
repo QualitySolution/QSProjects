@@ -7,24 +7,24 @@ using NLog;
 namespace QSTDI
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public class TdiNotebook : Gtk.Notebook
+	public class TdiNotebook : Gtk.Notebook, ITdiTabParent
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		public ReadOnlyCollection<ITdiTab> Tabs;
+		public ReadOnlyCollection<TdiTabInfo> Tabs;
 		public bool UseSliderTab = true;
-		private List<ITdiTab> _tabs;
+		private List<TdiTabInfo> _tabs;
 
 		public event EventHandler<TdiOpenObjDialogEventArgs> CreateDialogWidget;
 
 		public TdiNotebook()
 		{
-			_tabs = new List<ITdiTab>();
-			Tabs = new ReadOnlyCollection<ITdiTab>(_tabs);
+			_tabs = new List<TdiTabInfo>();
+			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
 		}
 
-		public void AddTab(ITdiTab tab)
+		public void AddTab(ITdiTab tab, int after = -1)
 		{
 			HBox box = new HBox();
 			Label nameLable = new Label(tab.TabName);
@@ -41,9 +41,44 @@ namespace QSTDI
 				tab = slider;
 			}
 			tab.CloseTab += HandleCloseTab;
-			this.AppendPage((Widget)tab, box);
+			tab.TabNameChanged += OnTabNameChanged;
+			int inserted;
+			if (after >= 0)
+				inserted = this.InsertPage((Widget)tab, box, after + 1);
+			else
+				inserted = this.AppendPage((Widget)tab, box);
+			tab.TabParent = this;
 			(tab as Widget).Show();
 			this.ShowTabs = true;
+			_tabs.Add(new TdiTabInfo(tab, nameLable));
+			this.CurrentPage = inserted;
+		}
+
+		void OnTabNameChanged (object sender, TdiTabNameChangedEventArgs e)
+		{
+			ITdiTab tab = sender as ITdiTab;
+			TdiTabInfo info = _tabs.Find(i => i.MasterTab == tab);
+			if (_tabs.Exists(i => i.SlaveTabs.Contains(tab)))
+				info.TabNameLabel.LabelProp = ">" + e.NewName;
+			else
+				info.TabNameLabel.LabelProp = e.NewName;
+		}
+
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		{
+			TdiTabInfo info = _tabs.Find(t => t.MasterTab == masterTab);
+			if (info == null)
+				throw new NullReferenceException("Мастер вкладка не найдена в списке активных вкладок.");
+
+			if(UseSliderTab && slaveTab is ITdiJournal)
+			{
+				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)slaveTab);
+				slaveTab = slider;
+			}
+
+			info.SlaveTabs.Add(slaveTab);
+			this.AddTab(slaveTab);
+			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
 		}
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
@@ -75,6 +110,20 @@ namespace QSTDI
 		private bool SaveIfNeed(ITdiTab tab)
 		{
 			ITdiDialog dlg;
+
+			TdiTabInfo info = _tabs.Find(i => i.MasterTab == tab);
+			if(info.SlaveTabs.Count > 0)
+			{
+				string Message = "Сначала надо закрыть подчиненую вкладку.";
+				MessageDialog md = new MessageDialog ( (Window)this.Toplevel, DialogFlags.Modal,
+					MessageType.Warning, 
+					ButtonsType.Ok,
+					Message);
+				md.Run ();
+				md.Destroy();
+				this.CurrentPage = this.PageNum(info.SlaveTabs[0] as Widget);
+				return false;
+			}
 
 			if (tab is ITdiDialog)
 				dlg = tab as ITdiDialog;
@@ -118,10 +167,25 @@ namespace QSTDI
 		private void CloseTab(ITdiTab tab)
 		{
 			//Закрываем вкладку
-			_tabs.Remove(tab);
+			_tabs.RemoveAll(t => t.MasterTab == tab);
+			_tabs.ForEach(t => t.SlaveTabs.RemoveAll(s => s == tab));
 			this.Remove((Widget)tab);
 			(tab as Widget).Destroy();
 			logger.Debug("Вкладка удалена");
+		}
+	}
+
+	public class TdiTabInfo
+	{
+		public ITdiTab MasterTab;
+		public Label TabNameLabel;
+		public List<ITdiTab> SlaveTabs;
+
+		public TdiTabInfo(ITdiTab master, Label label)
+		{
+			MasterTab = master;
+			TabNameLabel = label;
+			SlaveTabs = new List<ITdiTab>();
 		}
 	}
 }
