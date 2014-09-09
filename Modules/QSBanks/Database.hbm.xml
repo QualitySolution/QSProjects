@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+ auto-import="true" assembly="QSBanks" namespace="QSBanks">
+	<class name="Bank" lazy="true" table="banks">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+	 	<property name="Name" column="name" />
+	 	<property name="Bik" column="bik" />
+	 	<property name="CorAccount" column="cor_account" />
+	 	<property name="Region" column="region" />
+	 	<property name="City" column="city" />
+ 	</class>
+ 	<class name="Account" lazy="true" table="accounts">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+	 	<property name="Name" column="name" />
+	 	<property name="Number" column="number" />
+	 	<many-to-one name="InBank" class="Bank" column="bank_id" />
+ 	</class>
+
+</hibernate-mapping>
