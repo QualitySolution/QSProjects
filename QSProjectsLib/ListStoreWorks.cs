@@ -1,10 +1,14 @@
 using System;
+using System.Data.Common;
 using Gtk;
+using NLog;
 
 namespace QSProjectsLib
 {
 	public static class ListStoreWorks
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		public static bool SearchListStore( ListStore list, int id, out TreeIter iter)
 		{
 			return SearchListStore (list, id, 1, out iter);
@@ -43,6 +47,37 @@ namespace QSProjectsLib
 			}
 			return false;		
 		}
+
+		/// <summary>Заполняет комбобокс уникальными значениями поля
+		/// </summary>
+		public static ListStore CreateWithUniqueValue(string tablename, string fieldname)
+		{
+			logger.Info("Запрос всех значений {0}.{1} ...", tablename, fieldname);
+			ListStore list = new ListStore (typeof(string));
+			try
+			{
+				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = sql;
+				using(DbDataReader rdr = cmd.ExecuteReader())
+				{
+					while (rdr.Read())
+					{
+						if(rdr[0] != DBNull.Value)
+						{
+							list.AppendValues(rdr.GetString(0));
+						}
+					}
+				}
+				logger.Info("Ok");
+			}
+			catch (Exception ex)
+			{
+				logger.ErrorException("Ошибка получения списка уникальных значений!", ex);
+			}
+			return list;
+		}
+
 
 	}
 }
