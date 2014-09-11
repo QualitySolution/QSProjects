@@ -201,9 +201,8 @@ namespace QSOrmProject
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.buttonSelect.Hide ();
-			this.vseparatorSelect.Hide ();
 			this.Hide ();
+			this.buttonSelect.Clicked += new global::System.EventHandler (this.OnButtonSelectClicked);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
 			this.entrySearch.Changed += new global::System.EventHandler (this.OnEntrySearchChanged);

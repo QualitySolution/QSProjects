@@ -21,6 +21,7 @@ namespace QSOrmProject
 
 		public event EventHandler<TdiOpenObjDialogEventArgs> OpenObjDialog;
 		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
+		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
 		public ISession Session
 		{
@@ -81,30 +82,32 @@ namespace QSOrmProject
 
 		}
 			
-		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping)
+		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria)
 		{
 			this.Build();
 			Mode = OrmReferenceMode.Normal;
 			objectType = objType;
 			objectsCriteria = listCriteria;
 			Session = listSession;
-			OrmObjectMaping map = OrmMain.ClassMapingList.Find(m => m.ObjectClass == objectType);
-			if(map != null)
+			OrmObjectMaping map = OrmMain.GetObjectDiscription(objType);
+			if (map != null)
+			{
 				map.ObjectUpdated += OnRefObjectUpdated;
+				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
+			}
 			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttibutes), true);
 			if (att.Length > 0)
 				this.TabName = (att[0] as OrmSubjectAttibutes).JournalName;
-			datatreeviewRef.ColumnMappings = columsMapping;
 			UpdateObjectList();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
 			UpdateSum();
 		}
 
-		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria)
+		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping) 
+			: this(objType, listSession, listCriteria)
 		{
-			OrmObjectMaping map = OrmMain.GetObjectDiscription(objType);
-			OrmReference(objType, listSession, listCriteria, map.RefColumnMappings);
+			datatreeviewRef.ColumnMappings = columsMapping;
 		}
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
@@ -190,7 +193,21 @@ namespace QSOrmProject
 
 		protected void OnDatatreeviewRefRowActivated(object o, Gtk.RowActivatedArgs args)
 		{
-			buttonEdit.Click();
+			if (Mode == OrmReferenceMode.Select)
+				buttonSelect.Click();
+			else
+				buttonEdit.Click();
+		}
+
+		protected void OnButtonSelectClicked(object sender, EventArgs e)
+		{
+			if(ObjectSelected != null)
+			{
+				ObjectSelected(this, new OrmReferenceObjectSectedEventArgs(
+					datatreeviewRef.GetSelectedObjects()[0]
+				));
+			}
+			OnCloseTab();
 		}
 	}
 
@@ -198,5 +215,16 @@ namespace QSOrmProject
 		Normal,
 		Select
 	}
+
+	public class OrmReferenceObjectSectedEventArgs : EventArgs
+	{
+		public object Subject { get; private set; }
+
+		public OrmReferenceObjectSectedEventArgs(object subject)
+		{
+			Subject= subject;
+		}
+	}
+
 }
 
