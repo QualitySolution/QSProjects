@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Cfg;
 using QSTDI;
+using Gtk;
 
 namespace QSOrmProject
 {
@@ -43,6 +44,16 @@ namespace QSOrmProject
 			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subject.GetType());
 			if (map != null)
 				map.RaiseObjectUpdated(subject);
+		}
+
+		public static IOrmDialog FindMyDialog(Widget child)
+		{
+			if (child.Parent is IOrmDialog)
+				return child.Parent as IOrmDialog;
+			else if (child.Parent.IsTopLevel)
+				return null;
+			else
+				return FindMyDialog(child.Parent);
 		}
 	}
 
