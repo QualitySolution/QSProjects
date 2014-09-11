@@ -51,6 +51,9 @@
     <Compile Include="AddressRF.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.AddressRF.cs" />
     <Compile Include="CompanyName.cs" />
+    <Compile Include="ImageViewer.cs" />
+    <Compile Include="VImagesList.cs" />
+    <Compile Include="gtk-gui\QSWidgetLib.VImagesList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
