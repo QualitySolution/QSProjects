@@ -440,7 +440,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSBanks.AccountDlg" design-size="300 300">
+  <widget class="Gtk.Bin" id="QSBanks.AccountDlg" design-size="320 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -507,9 +507,6 @@
             <property name="InheritedBoundaryDataSource">False</property>
             <property name="InheritedDataSource">False</property>
             <property name="InheritedBoundaryDataSource">False</property>
-            <child>
-              <placeholder />
-            </child>
             <child>
               <placeholder />
             </child>
@@ -641,6 +638,28 @@
                 <property name="XFill">True</property>
                 <property name="XShrink">False</property>
                 <property name="YExpand">True</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="QSOrmProject.EntryReference" id="entryreferenceBank">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+                <property name="DisplayFields">Name</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
                 <property name="YFill">True</property>
                 <property name="YShrink">False</property>
               </packing>

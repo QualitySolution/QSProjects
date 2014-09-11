@@ -8,7 +8,7 @@ using QSOrmProject;
 namespace QSBanks
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog
+	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
@@ -88,6 +88,7 @@ namespace QSBanks
 
 		private void ConfigureDlg()
 		{
+			entryreferenceBank.SubjectType = typeof(Bank);
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
 		}

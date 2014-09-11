@@ -11,7 +11,7 @@ namespace QSBanks
 		{
 			return new List<OrmObjectMaping>
 			{
-				new OrmObjectMaping(typeof(Bank), typeof(BankDlg)),
+				new OrmObjectMaping(typeof(Bank), typeof(BankDlg), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];"),
 				new OrmObjectMaping(typeof(Account), typeof(AccountDlg)),
 			};
 		}
