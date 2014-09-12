@@ -261,6 +261,25 @@ namespace QSAttachment
 				cmd.ExecuteNonQuery ();
 			}
 		}
+
+		protected void OnButtonScanClicked(object sender, EventArgs e)
+		{
+			GetFromScanner scanWin = new GetFromScanner ();
+			scanWin.Show ();
+			int result =  scanWin.Run ();
+			if(result == (int)ResponseType.Ok)
+			{
+				FilesStore.AppendValues (-1,
+				                         scanWin.FileName,
+				                         scanWin.File.LongLength,
+				                         FileIconWorks.GetPixbufForFile (scanWin.FileName),
+				                         scanWin.File
+				                        );
+
+			}
+			scanWin.Destroy ();
+		}
+
 	}
 }
 

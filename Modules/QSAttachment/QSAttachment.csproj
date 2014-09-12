@@ -43,6 +43,9 @@
       <HintPath>..\..\lib\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="itextsharp">
+      <HintPath>..\..\..\LeaseAgreement\packages\iTextSharp.5.5.2\lib\itextsharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -50,6 +53,8 @@
     <Compile Include="Attachment.cs" />
     <Compile Include="gtk-gui\QSAttachment.Attachment.cs" />
     <Compile Include="FileIconWorks.cs" />
+    <Compile Include="GetFromScanner.cs" />
+    <Compile Include="gtk-gui\QSAttachment.GetFromScanner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -60,11 +65,24 @@
     <EmbeddedResource Include="icons\text-x-generic.png" />
     <EmbeddedResource Include="icons\x-office-document.png" />
     <EmbeddedResource Include="icons\x-office-spreadsheet.png" />
+    <EmbeddedResource Include="icons\scanner16.png" />
+    <EmbeddedResource Include="icons\scanner32.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QSScan\QSScan.csproj">
+      <Project>{DB2EEB00-FF15-4AF8-887D-E3261C31B173}</Project>
+      <Name>QSScan</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
