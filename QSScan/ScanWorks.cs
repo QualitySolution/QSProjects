@@ -43,7 +43,6 @@ namespace QSScan
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
 
 			_twain32.OpenDSM();
-
 		}
 
 		private void _twain_TwainStateChanged(object sender,Twain32.TwainStateEventArgs e) {
@@ -129,7 +128,7 @@ namespace QSScan
 		{
 			logger.Debug("Run Twain");
 			_twain32.OpenDataSource();
-
+			logger.Debug("DataSource is opened.");
 			//Feeder
 			if((this._twain32.IsCapSupported(TwCap.Duplex)&TwQC.Get)!=0) {
 				var _duplexCapValue=(ushort)this._twain32.GetCap(TwCap.Duplex);
@@ -151,6 +150,7 @@ namespace QSScan
 					}
 				}
 			}
+			logger.Debug("Run Acquire");
 			_twain32.Acquire();
 			logger.Debug("After Acquire");
 		}
