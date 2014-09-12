@@ -5,6 +5,7 @@ using System.Drawing;
 using Gdk;
 using Saraff.Twain;
 using NLog;
+using Gtk;
 
 namespace QSScan
 {
@@ -52,6 +53,8 @@ namespace QSScan
 				this.Close();
 			}
 			this._isEnable=(e.TwainState&Twain32.TwainStateFlag.DSEnabled)!=0;
+			while (Gtk.Application.EventsPending ())
+				Gtk.Application.RunIteration ();
 		}
 
 		private void _twain32_EndXfer(object sender,Twain32.EndXferEventArgs e) 
