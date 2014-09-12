@@ -42,8 +42,15 @@ namespace QSScan
 			logger.Debug("Setup Twain");
 			_twain32 = new Twain32 (new System.ComponentModel.Container());
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
+			_twain32.AcquireError += OnTwainAcquireError;
 
 			_twain32.OpenDSM();
+		}
+
+		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
+		{
+			logger.ErrorException ("Ошибка в процессе сканирования", e.Exception);
+			this.Close ();
 		}
 
 		private void _twain_TwainStateChanged(object sender,Twain32.TwainStateEventArgs e) {
