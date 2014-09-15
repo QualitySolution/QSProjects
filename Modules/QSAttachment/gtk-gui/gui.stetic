@@ -5,9 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/QSAttachment.dll" internal="true" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../../QSScan/bin/Debug/QSScan.dll" />
+    <widget-library name="../bin/Debug/QSAttachment.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSAttachment.Attachment" design-size="555 300">
     <property name="MemberName" />
@@ -141,6 +142,7 @@
     <property name="MemberName" />
     <property name="Title" translatable="yes">Получение изображений со сканера</property>
     <property name="Icon">resource:QSAttachment.icons.scanner32.png</property>
+    <property name="TypeHint">Dialog</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
     <property name="Buttons">2</property>
@@ -391,6 +393,7 @@
             <property name="Type">StockItem</property>
             <property name="StockId">gtk-ok</property>
             <property name="ResponseId">-5</property>
+            <signal name="Clicked" handler="OnButtonOkClicked" />
             <property name="label">gtk-ok</property>
           </widget>
           <packing>
