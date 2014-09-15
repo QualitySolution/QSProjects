@@ -39,6 +39,7 @@ namespace QSAttachment
 			this.Name = "QSAttachment.GetFromScanner";
 			this.Title = global::Mono.Unix.Catalog.GetString ("Получение изображений со сканера");
 			this.Icon = global::Gdk.Pixbuf.LoadFromResource ("QSAttachment.icons.scanner32.png");
+			this.TypeHint = ((global::Gdk.WindowTypeHint)(1));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			// Internal child QSAttachment.GetFromScanner.VBox
@@ -134,7 +135,8 @@ namespace QSAttachment
 			// Container child table1.Gtk.Table+TableChild
 			this.labelInfo = new global::Gtk.Label ();
 			this.labelInfo.Name = "labelInfo";
-			this.labelInfo.LabelProp = global::Mono.Unix.Catalog.GetString ("<span background = \"red\">Внимание!</span> В этом режиме будет сохранено только первое изображение.");
+			this.labelInfo.LabelProp = global::Mono.Unix.Catalog.GetString ("<span background = \"red\">Внимание!</span> В этом режиме будет сохранено только пе" +
+			"рвое изображение.");
 			this.labelInfo.UseMarkup = true;
 			this.labelInfo.Wrap = true;
 			this.table1.Add (this.labelInfo);
@@ -210,6 +212,7 @@ namespace QSAttachment
 			this.entryFileName.Changed += new global::System.EventHandler (this.OnEntryFileNameChanged);
 			this.comboFormat.Changed += new global::System.EventHandler (this.OnCombobox1Changed);
 			this.buttonScan.Clicked += new global::System.EventHandler (this.OnButtonScanClicked);
+			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
 }

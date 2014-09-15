@@ -67,7 +67,8 @@ namespace QSAttachment
 				logger.Debug("init scan");
 				scan = new ScanWorks();
 				logger.Info ("Получение изображений со сканера...");
-				//MainClass.WaitRedraw();
+				while (Gtk.Application.EventsPending ())
+					Gtk.Application.RunIteration ();
 				logger.Debug("run scanner");
 
 				scan.ImageTransfer += delegate(object s, ScanWorks.ImageTransferEventArgs arg) 
@@ -82,7 +83,8 @@ namespace QSAttachment
 						progressScan.Adjustment.Value++;
 					else
 						progressScan.Pulse();
-					//MainClass.WaitRedraw();
+					while (Gtk.Application.EventsPending ())
+						Gtk.Application.RunIteration ();
 				};
 
 				scan.GetImages(false);
@@ -123,7 +125,8 @@ namespace QSAttachment
 			iTextSharp.text.Document document = new iTextSharp.text.Document();
 			using (var stream = new MemoryStream ())
 			{
-				iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+				var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
+				writer.CloseStream = false;
 				document.Open();
 				foreach(Pixbuf pix in vimageslist1.Images)
 				{
