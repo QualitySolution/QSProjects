@@ -12,7 +12,7 @@ namespace QSWidgetLib
 		private Dictionary<Period, bool> ShowRadio;
 		private Dictionary<Period, RadioButton> RadioButtons;
 		private RadioModeType _RadioMode;
-		private bool UsingRadio;
+		private bool IsRadioChange;
 		public event EventHandler DatesChanged;
 
 		public enum Period {None, Today, Week, Month, ThreeMonth, SixMonth, Year, AllTime, CurWeek, CurMonth, CurQuarter, CurYear};
@@ -174,55 +174,79 @@ namespace QSWidgetLib
 
 		protected void OnRadioTodayClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.Date;
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioWeekClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.AddDays(-7);
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioMonthClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.AddMonths(-1);
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 		
 		protected void OnRadio3monthClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.AddMonths(-3);
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadio6monthClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.AddMonths(-6);
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 		
 		protected void OnRadioYearClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = DateTime.Now.AddYears(-1);
 			EndDate.Date = DateTime.Now.Date;
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 		
 		protected void OnRadioAllClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = new DateTime(1, 1, 1);
 			EndDate.Date = new DateTime(1, 1, 1);
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioCurWeekClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			int Day;
 			if(DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
 				Day = 7;
@@ -230,33 +254,42 @@ namespace QSWidgetLib
 				Day = (int)DateTime.Now.DayOfWeek;
 			StartDate.Date = DateTime.Now.AddDays(1-Day);
 			EndDate.Date = DateTime.Now.AddDays(7-Day);
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioCurMonthClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			int Year = DateTime.Today.Year;
 			int Month = DateTime.Today.Month;
 			System.Globalization.Calendar cal = System.Globalization.CultureInfo.CurrentCulture.Calendar;
 			int LastDay = cal.GetDaysInMonth (Year, Month);
 			StartDate.Date = new DateTime(Year, Month, 1);
 			EndDate.Date = new DateTime(Year, Month, LastDay);
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioCurQuarterClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			int quarterNumber = (DateTime.Today.Month-1)/3+1;
 			StartDate.Date = new DateTime(DateTime.Today.Year, (quarterNumber-1)*3+1,1);
 			EndDate.Date = StartDate.Date.AddMonths(3).AddDays(-1);
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRadioCurYearClicked (object sender, EventArgs e)
 		{
+			if ((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
 			StartDate.Date = new DateTime(DateTime.Today.Year, 1, 1);
 			EndDate.Date = new DateTime(DateTime.Today.Year, 12, 31);
-			UsingRadio = true;
+			EndRadioChange ();
 		}
 
 		protected void OnRepackRadios()
@@ -305,12 +338,19 @@ namespace QSWidgetLib
 
 		protected void OnStartDateDateChanged (object sender, EventArgs e)
 		{
-			if(DatesChanged != null)
+			if(DatesChanged != null && !IsRadioChange)
 				DatesChanged(this, EventArgs.Empty);
 		}
 
 		protected void OnEndDateDateChanged (object sender, EventArgs e)
 		{
+			if(DatesChanged != null && !IsRadioChange)
+				DatesChanged(this, EventArgs.Empty);
+		}
+
+		private void EndRadioChange()
+		{
+			IsRadioChange = false;
 			if(DatesChanged != null)
 				DatesChanged(this, EventArgs.Empty);
 		}
