@@ -77,8 +77,13 @@ namespace QSTDI
 			}
 
 			info.SlaveTabs.Add(slaveTab);
-			this.AddTab(slaveTab);
+			this.AddTab(slaveTab, masterTab);
 			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
+		}
+
+		public void AddTab(ITdiTab tab, ITdiTab afterTab)
+		{
+			AddTab(tab, this.PageNum(afterTab as Widget));
 		}
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
@@ -167,8 +172,11 @@ namespace QSTDI
 		private void CloseTab(ITdiTab tab)
 		{
 			//Закрываем вкладку
+			bool IsCurrent = this.CurrentPageWidget == tab as Widget;
 			_tabs.RemoveAll(t => t.MasterTab == tab);
 			_tabs.ForEach(t => t.SlaveTabs.RemoveAll(s => s == tab));
+			if (IsCurrent)
+				this.PrevPage();
 			this.Remove((Widget)tab);
 			(tab as Widget).Destroy();
 			logger.Debug("Вкладка удалена");
