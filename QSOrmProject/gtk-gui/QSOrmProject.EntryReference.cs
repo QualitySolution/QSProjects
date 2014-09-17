@@ -26,7 +26,7 @@ namespace QSOrmProject
 			this.entryObject = new global::Gtk.Entry ();
 			this.entryObject.CanFocus = true;
 			this.entryObject.Name = "entryObject";
-			this.entryObject.IsEditable = true;
+			this.entryObject.IsEditable = false;
 			this.entryObject.InvisibleChar = '●';
 			this.hbox1.Add (this.entryObject);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.entryObject]));
@@ -48,6 +48,7 @@ namespace QSOrmProject
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonOpen = new global::Gtk.Button ();
 			this.buttonOpen.TooltipMarkup = "Открыть";
+			this.buttonOpen.Sensitive = false;
 			this.buttonOpen.CanFocus = true;
 			this.buttonOpen.Name = "buttonOpen";
 			this.buttonOpen.UseUnderline = true;

@@ -214,7 +214,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSOrmProject.EntryReference" design-size="218 33">
+  <widget class="Gtk.Bin" id="QSOrmProject.EntryReference" design-size="236 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -225,7 +225,7 @@
           <widget class="Gtk.Entry" id="entryObject">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="IsEditable">True</property>
+            <property name="IsEditable">False</property>
             <property name="InvisibleChar">●</property>
           </widget>
           <packing>
@@ -254,6 +254,7 @@
         <child>
           <widget class="Gtk.Button" id="buttonOpen">
             <property name="MemberName" />
+            <property name="Sensitive">False</property>
             <property name="Tooltip" translatable="yes">Открыть</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>

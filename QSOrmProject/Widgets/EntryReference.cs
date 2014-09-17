@@ -2,13 +2,18 @@
 using Gtk;
 using NHibernate;
 using QSTDI;
+using NLog;
 
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class EntryReference : Gtk.Bin
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public System.Type SubjectType;
+		//TODO Сделать подписку на событие для отслеживание изменений в имени после открытия диалога
+		//TODO Реализовать удаление
+		//TODO Реализовать удобный выбор через подбор
 
 		private object subject;
 		public object Subject
@@ -20,6 +25,7 @@ namespace QSOrmProject
 			set
 			{
 				subject = value;
+				buttonOpen.Sensitive = subject != null;
 				if(subject == null || displayFields == null)
 				{
 					entryObject.Text = String.Empty;
@@ -83,7 +89,10 @@ namespace QSOrmProject
 		{
 			ITdiTab mytab = TdiHelper.FindMyTab(this);
 			if (mytab == null)
+			{
+				logger.Warn("Родительская вкладка не найдена.");
 				return;
+			}
 				
 			IOrmDialog dlg = OrmMain.FindMyDialog(this);
 			ISession session;
@@ -107,7 +116,15 @@ namespace QSOrmProject
 
 		protected void OnButtonOpenClicked(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			ITdiTab mytab = TdiHelper.FindMyTab(this);
+			if (mytab == null)
+			{
+				logger.Warn("Родительская вкладка не найдена.");
+				return;
+			}
+
+			ITdiTab dlg = mytab.TabParent.OnCreateDialogWidget(new TdiOpenObjDialogEventArgs(Subject));
+			mytab.TabParent.AddTab(dlg, mytab);
 		}
 	}
 }
