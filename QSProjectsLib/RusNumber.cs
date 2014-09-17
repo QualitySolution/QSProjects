@@ -71,6 +71,11 @@ namespace QSProjectsLib
                 default: return five;
             }
         }
+
+		public static string FormatCase(int val, string one, string two, string five)
+		{
+			return String.Format (Case (val, one, two, five), val);
+		}
     };
 
     struct CurrencyInfo
