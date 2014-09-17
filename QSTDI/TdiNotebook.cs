@@ -158,7 +158,7 @@ namespace QSTDI
 			return true;
 		}
 
-		internal ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
+		public ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
 		{
 			if (CreateDialogWidget != null)
 			{
@@ -166,7 +166,10 @@ namespace QSTDI
 				return eventArgs.ResultDialogWidget;
 			}
 			else
+			{
+				logger.Warn("Нет подписчика на событие создания диалога. Диалог не создан.");
 				return null;
+			}
 		}
 
 		private void CloseTab(ITdiTab tab)

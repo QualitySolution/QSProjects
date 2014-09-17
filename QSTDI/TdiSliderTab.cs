@@ -150,6 +150,20 @@ namespace QSTDI
 			else
 				TabParent.AddSlaveTab(masterTab, slaveTab);
 		}
+
+		public void AddTab(ITdiTab tab, ITdiTab afterTab)
+		{
+			if(afterTab == Journal || afterTab == ActiveDialog)
+				TabParent.AddTab(tab, this as ITdiTab);
+			else
+				TabParent.AddTab(tab, afterTab);
+		}
+
+		public ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
+		{
+			return TabParent.OnCreateDialogWidget(eventArgs);
+		}
+
 	}
 }
 
