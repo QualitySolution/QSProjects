@@ -4,11 +4,13 @@ using NHibernate;
 using NHibernate.Cfg;
 using QSTDI;
 using Gtk;
+using NLog;
 
 namespace QSOrmProject
 {
 	public static class OrmMain
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMaping> ClassMapingList;
 
@@ -41,9 +43,12 @@ namespace QSOrmProject
 
 		public static void NotifyObjectUpdated(object subject)
 		{
-			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subject.GetType());
+			System.Type subjectType = NHibernateUtil.GetClass(subject);
+			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subjectType);
 			if (map != null)
 				map.RaiseObjectUpdated(subject);
+			else
+				logger.Warn("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
 		}
 
 		public static IOrmDialog FindMyDialog(Widget child)
