@@ -11,6 +11,8 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public System.Type SubjectType;
+		public event EventHandler Changed;
+
 		//TODO Сделать подписку на событие для отслеживание изменений в имени после открытия диалога
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
@@ -24,6 +26,8 @@ namespace QSOrmProject
 			}
 			set
 			{
+				if (subject == value)
+					return;
 				subject = value;
 				buttonOpen.Sensitive = subject != null;
 				if(subject == null || displayFields == null)
@@ -38,6 +42,7 @@ namespace QSOrmProject
 					values[i] = SubjectType.GetProperty(displayFields[i]).GetValue(Subject, null);
 				}
 				entryObject.Text = String.Format(DisplayFormatString, values);
+				OnChanged();
 			}
 		}
 
@@ -125,6 +130,12 @@ namespace QSOrmProject
 
 			ITdiTab dlg = mytab.TabParent.OnCreateDialogWidget(new TdiOpenObjDialogEventArgs(Subject));
 			mytab.TabParent.AddTab(dlg, mytab);
+		}
+
+		protected virtual void OnChanged()
+		{
+			if (Changed != null)
+				Changed(this, EventArgs.Empty);
 		}
 	}
 }

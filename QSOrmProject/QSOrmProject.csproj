@@ -57,6 +57,7 @@
     <Compile Include="OrmAttributes.cs" />
     <Compile Include="Widgets\EntryReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReference.cs" />
+    <Compile Include="DataWidgets\DataEntryReference.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -79,5 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
+    <Folder Include="DataWidgets\" />
   </ItemGroup>
 </Project>
