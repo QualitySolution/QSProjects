@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Bindings.Collections.Generic;
 using QSOrmProject;
 using NHibernate;
 using QSTDI;
@@ -9,6 +10,7 @@ namespace QSBanks
 	public partial class AccountsView : Gtk.Bin
 	{
 		private IAccountOwner accountOwner;
+		private GenericObservableList<Account> accountsList;
 		private ISession session;
 
 		public ISession Session
@@ -32,7 +34,8 @@ namespace QSBanks
 			set
 			{
 				accountOwner = value;
-				datatreeviewAccounts.DataSource = AccountOwner.Accounts;
+				accountsList = new GenericObservableList<Account>(AccountOwner.Accounts);
+				datatreeviewAccounts.ItemsDataSource = accountsList;
 			}
 		}
 
@@ -51,7 +54,7 @@ namespace QSBanks
 
 		void OnAccountUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			Session.Refresh(e.Subject);
+			Session.Lock(e.Subject, LockMode.Read);
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
@@ -59,8 +62,9 @@ namespace QSBanks
 			ITdiTab mytab = TdiHelper.FindMyTab(this);
 			if (mytab == null)
 				return;
-
-			AccountDlg dlg = new AccountDlg();
+				
+			AccountDlg dlg = new AccountDlg(Session);
+			accountsList.Add((Account)dlg.Subject);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -70,8 +74,13 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 
-			AccountDlg dlg = new AccountDlg(datatreeviewAccounts.GetSelectedObjects()[0] as Account);
+			AccountDlg dlg = new AccountDlg(Session, datatreeviewAccounts.GetSelectedObjects()[0] as Account);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
+		}
+
+		protected void OnDatatreeviewAccountsRowActivated(object o, Gtk.RowActivatedArgs args)
+		{
+			buttonEdit.Click();
 		}
 	}
 }

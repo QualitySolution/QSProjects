@@ -13,6 +13,15 @@ namespace QSBanks
 		public virtual string Number { get; set; }
 		#endregion
 
+		public virtual string BankName{
+			get{
+				if (InBank == null)
+					return String.Empty;
+				else
+					return InBank.Name;
+			}
+		}
+
 		public Account()
 		{
 			Name = String.Empty;

@@ -43,6 +43,8 @@
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
+                <property name="ColumnMappings">{QSBanks.Account} Name[Псевдоним]; BankName[В банке]; Number[Номер];</property>
+                <signal name="RowActivated" handler="OnDatatreeviewAccountsRowActivated" />
               </widget>
             </child>
           </widget>
@@ -468,21 +470,7 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="buttonCancel">
-                <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="Type">TextAndIcon</property>
-                <property name="Icon">stock:gtk-revert-to-saved Menu</property>
-                <property name="Label" translatable="yes">Отменить</property>
-                <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonCancelClicked" />
-              </widget>
-              <packing>
-                <property name="Position">1</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
               <placeholder />

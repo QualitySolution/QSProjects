@@ -62,9 +62,10 @@ namespace QSBanks
 		}
 
 
-		public AccountDlg()
+		public AccountDlg(ISession parentSession)
 		{
 			this.Build();
+			Session = parentSession;
 			NewItem = true;
 			subject = new Account();
 			ConfigureDlg();
@@ -78,10 +79,11 @@ namespace QSBanks
 			ConfigureDlg();
 		}
 
-		public AccountDlg(Account sub)
+		public AccountDlg(ISession parentSession, Account sub)
 		{
 			this.Build();
-			subject = Session.Load<Account>(sub.Id);
+			Session = parentSession;
+			subject = sub;
 			TabName = subject.Name;
 			ConfigureDlg();
 		}
@@ -95,9 +97,8 @@ namespace QSBanks
 
 		public bool Save()
 		{
-			logger.Info("Сохраняем банк...");
+			logger.Info("Сохраняем счет организации...");
 			Session.SaveOrUpdate(subject);
-			Session.Flush();
 			OrmMain.NotifyObjectUpdated(subject);
 			logger.Info("Ok");
 			return true;
@@ -105,14 +106,12 @@ namespace QSBanks
 
 		public override void Destroy()
 		{
-			Session.Close();
-			//adaptorOrg.Disconnect();
 			base.Destroy();
 		}
 
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
-			if (!this.HasChanges || Save())
+			if (Save())
 				OnCloseTab(false);
 		}
 
