@@ -88,7 +88,7 @@ namespace QSBanks
 
 		private void ConfigureDlg()
 		{
-			entryreferenceBank.SubjectType = typeof(Bank);
+			dataentryrefBank.SubjectType = typeof(Bank);
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
 		}

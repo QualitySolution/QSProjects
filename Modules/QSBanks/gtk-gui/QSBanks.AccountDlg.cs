@@ -18,6 +18,8 @@ namespace QSBanks
 		
 		private global::Gtk.DataBindings.DataEntry dataentryNumber;
 		
+		private global::Gtk.DataBindings.DataEntryReference dataentryrefBank;
+		
 		private global::Gtk.DataBindings.DataFrame dataframe1;
 		
 		private global::Gtk.Alignment GtkAlignment2;
@@ -27,8 +29,6 @@ namespace QSBanks
 		private global::Gtk.DataBindings.DataLabel datalabelBik;
 		
 		private global::Gtk.DataBindings.DataLabel datalabel2;
-		
-		private global::QSOrmProject.EntryReference entryreferenceBank;
 		
 		private global::Gtk.Label label1;
 		
@@ -98,11 +98,13 @@ namespace QSBanks
 			this.dataentryName.Name = "dataentryName";
 			this.dataentryName.IsEditable = true;
 			this.dataentryName.InvisibleChar = '●';
-			this.dataentryName.InheritedDataSource = false;
+			this.dataentryName.InheritedDataSource = true;
+			this.dataentryName.Mappings = "Name";
 			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.InheritedDataSource = false;
+			this.dataentryName.InheritedDataSource = true;
+			this.dataentryName.Mappings = "Name";
 			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.Editable = false;
+			this.dataentryName.Editable = true;
 			this.datatableMain.Add (this.dataentryName);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryName]));
 			w6.LeftAttach = ((uint)(1));
@@ -114,11 +116,13 @@ namespace QSBanks
 			this.dataentryNumber.Name = "dataentryNumber";
 			this.dataentryNumber.IsEditable = true;
 			this.dataentryNumber.InvisibleChar = '●';
-			this.dataentryNumber.InheritedDataSource = false;
+			this.dataentryNumber.InheritedDataSource = true;
+			this.dataentryNumber.Mappings = "Number";
 			this.dataentryNumber.InheritedBoundaryDataSource = false;
-			this.dataentryNumber.InheritedDataSource = false;
+			this.dataentryNumber.InheritedDataSource = true;
+			this.dataentryNumber.Mappings = "Number";
 			this.dataentryNumber.InheritedBoundaryDataSource = false;
-			this.dataentryNumber.Editable = false;
+			this.dataentryNumber.Editable = true;
 			this.datatableMain.Add (this.dataentryNumber);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryNumber]));
 			w7.TopAttach = ((uint)(1));
@@ -127,6 +131,25 @@ namespace QSBanks
 			w7.RightAttach = ((uint)(2));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child datatableMain.Gtk.Table+TableChild
+			this.dataentryrefBank = new global::Gtk.DataBindings.DataEntryReference ();
+			this.dataentryrefBank.Events = ((global::Gdk.EventMask)(256));
+			this.dataentryrefBank.Name = "dataentryrefBank";
+			this.dataentryrefBank.DisplayFields = new string[] {
+				"Name"
+			};
+			this.dataentryrefBank.InheritedDataSource = true;
+			this.dataentryrefBank.Mappings = "InBank";
+			this.dataentryrefBank.InheritedBoundaryDataSource = false;
+			this.dataentryrefBank.CursorPointsEveryType = false;
+			this.datatableMain.Add (this.dataentryrefBank);
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryrefBank]));
+			w8.TopAttach = ((uint)(2));
+			w8.BottomAttach = ((uint)(3));
+			w8.LeftAttach = ((uint)(1));
+			w8.RightAttach = ((uint)(2));
+			w8.XOptions = ((global::Gtk.AttachOptions)(4));
+			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
 			this.dataframe1 = new global::Gtk.DataBindings.DataFrame ();
 			this.dataframe1.Name = "dataframe1";
@@ -157,10 +180,10 @@ namespace QSBanks
 			this.datalabelBik.InheritedDataSource = false;
 			this.datalabelBik.InheritedBoundaryDataSource = false;
 			this.datavbox1.Add (this.datalabelBik);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.datavbox1 [this.datalabelBik]));
-			w8.Position = 0;
-			w8.Expand = false;
-			w8.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.datavbox1 [this.datalabelBik]));
+			w9.Position = 0;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child datavbox1.Gtk.Box+BoxChild
 			this.datalabel2 = new global::Gtk.DataBindings.DataLabel ();
 			this.datalabel2.Name = "datalabel2";
@@ -171,34 +194,19 @@ namespace QSBanks
 			this.datalabel2.InheritedDataSource = false;
 			this.datalabel2.InheritedBoundaryDataSource = false;
 			this.datavbox1.Add (this.datalabel2);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.datavbox1 [this.datalabel2]));
-			w9.Position = 1;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.datavbox1 [this.datalabel2]));
+			w10.Position = 1;
+			w10.Expand = false;
+			w10.Fill = false;
 			this.GtkAlignment2.Add (this.datavbox1);
 			this.dataframe1.Add (this.GtkAlignment2);
 			this.datatableMain.Add (this.dataframe1);
-			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataframe1]));
-			w12.TopAttach = ((uint)(3));
-			w12.BottomAttach = ((uint)(4));
-			w12.LeftAttach = ((uint)(1));
-			w12.RightAttach = ((uint)(2));
-			w12.XOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child datatableMain.Gtk.Table+TableChild
-			this.entryreferenceBank = new global::QSOrmProject.EntryReference ();
-			this.entryreferenceBank.Events = ((global::Gdk.EventMask)(256));
-			this.entryreferenceBank.Name = "entryreferenceBank";
-			this.entryreferenceBank.DisplayFields = new string[] {
-				"Name"
-			};
-			this.datatableMain.Add (this.entryreferenceBank);
-			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.entryreferenceBank]));
-			w13.TopAttach = ((uint)(2));
-			w13.BottomAttach = ((uint)(3));
+			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataframe1]));
+			w13.TopAttach = ((uint)(3));
+			w13.BottomAttach = ((uint)(4));
 			w13.LeftAttach = ((uint)(1));
 			w13.RightAttach = ((uint)(2));
 			w13.XOptions = ((global::Gtk.AttachOptions)(4));
-			w13.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
