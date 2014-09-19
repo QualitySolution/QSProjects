@@ -1,6 +1,7 @@
 ﻿using System;
 using Gtk;
 using NHibernate;
+using NHibernate.Proxy;
 using QSTDI;
 using NLog;
 
@@ -10,10 +11,9 @@ namespace QSOrmProject
 	public partial class EntryReference : Gtk.Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		public System.Type SubjectType;
+		private System.Type subjectType;
 		public event EventHandler Changed;
 
-		//TODO Сделать подписку на событие для отслеживание изменений в имени после открытия диалога
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
 
@@ -29,19 +29,7 @@ namespace QSOrmProject
 				if (subject == value)
 					return;
 				subject = value;
-				buttonOpen.Sensitive = subject != null;
-				if(subject == null || displayFields == null)
-				{
-					entryObject.Text = String.Empty;
-					return;
-				}
-
-				object[] values = new object[displayFields.Length];
-				for(int i = 0; i < displayFields.Length; i++)
-				{
-					values[i] = SubjectType.GetProperty(displayFields[i]).GetValue(Subject, null);
-				}
-				entryObject.Text = String.Format(DisplayFormatString, values);
+				UpdateWidget();
 				OnChanged();
 			}
 		}
@@ -50,12 +38,64 @@ namespace QSOrmProject
 		{
 			get
 			{
-				return SubjectType.Name;
+				return subjectType.Name;
 			}
 			set
 			{
-				SubjectType = System.Type.GetType(value);
+				subjectType = System.Type.GetType(value);
 			}
+		}
+
+		public System.Type SubjectType
+		{
+			get
+			{
+				return subjectType;
+			}
+			set
+			{
+				if(subjectType != null)
+				{
+					OrmObjectMaping map = OrmMain.GetObjectDiscription(subjectType);
+					map.ObjectUpdated -= OnExternalObjectUpdated;
+				}
+				subjectType = value;
+				if(subjectType != null)
+				{
+					OrmObjectMaping map = OrmMain.GetObjectDiscription(subjectType);
+					map.ObjectUpdated += OnExternalObjectUpdated;;
+				}
+			}
+		}
+
+		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
+		{
+			if(e.Subject.Equals(Subject))
+			{
+				IOrmDialog dlg = OrmMain.FindMyDialog(this);
+				if (dlg != null)
+					dlg.Session.Refresh(Subject);
+
+				UpdateWidget();
+				OnChanged();
+			}
+		}
+
+		private void UpdateWidget()
+		{
+			buttonOpen.Sensitive = subject != null;
+			if(subject == null || displayFields == null)
+			{
+				entryObject.Text = String.Empty;
+				return;
+			}
+
+			object[] values = new object[displayFields.Length];
+			for(int i = 0; i < displayFields.Length; i++)
+			{
+				values[i] = subjectType.GetProperty(displayFields[i]).GetValue(Subject, null);
+			}
+			entryObject.Text = String.Format(DisplayFormatString, values);
 		}
 
 		private string[] displayFields;
@@ -106,9 +146,9 @@ namespace QSOrmProject
 			else
 				session = OrmMain.Sessions.OpenSession();
 
-			var criteria = session.CreateCriteria(SubjectType);
+			var criteria = session.CreateCriteria(subjectType);
 
-			OrmReference SelectDialog = new OrmReference(SubjectType, session, criteria);
+			OrmReference SelectDialog = new OrmReference(subjectType, session, criteria);
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
 			mytab.TabParent.AddSlaveTab(mytab, SelectDialog);

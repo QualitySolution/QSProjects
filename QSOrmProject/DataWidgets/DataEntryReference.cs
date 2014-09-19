@@ -206,30 +206,6 @@ namespace Gtk.DataBindings
 		}
 		
 		/// <summary>
-		/// Reacts on when selected object has being changed from the outside
-		/// </summary>
-		/// <param name="aSender">
-		/// Notification sender object <see cref="System.Object"/>
-		/// </param>
-/*		private void SelectedObjectChanged (object aSender)
-		{
-			object obj = CurrentSelection.FinalTarget;
-			if (obj == null)
-				return;
-			TreePath tp;
-			TreeViewColumn tv;
-			GetCursor (out tp, out tv);
-			if (tp == null)
-				return;
-				
-			TreeIter iter;
-			if (internalModel.GetIter(out iter, tp) == false)
-				return;
-			
-//			InsertValuesFromObjectToIter (obj, iter);
-		}*/
-		
-		/// <summary>
 		/// Calls ControlAdaptors method to transfer data, so it can be wrapped
 		/// into widget specific things and all checkups
 		/// </summary>
@@ -262,27 +238,6 @@ namespace Gtk.DataBindings
 			adaptor.Value = Subject;
 		}
 		
-		protected override bool OnFocusInEvent (Gdk.EventFocus evnt)
-		{
-			bool res = base.OnFocusInEvent (evnt);
-			OnChanged();
-			return (res);
-		}
-
-		protected override bool OnFocusOutEvent (Gdk.EventFocus evnt)
-		{
-			bool res = base.OnFocusOutEvent (evnt);
-			OnChanged();
-			return (res);
-		}
-		
-		protected override bool OnFocused (DirectionType direction)
-		{
-			bool res = base.OnFocused (direction);
-			OnChanged();
-			return (res);
-		}
-		
 		/// <summary>
 		/// Overrides OnCursorChanged to handle changes
 		/// </summary>
@@ -291,28 +246,6 @@ namespace Gtk.DataBindings
 			base.OnChanged();
 			adaptor.DemandInstantPost();
 		}
-		
-		/// <summary>
-		/// Called when ItemsDataSource changes
-		/// </summary>
-/*		private void ListTargetChanged (IAdaptor aAdaptor)
-		{
-			cachedItems = null;
-			if (ItemsDataSource == null)
-				CurrentSelection.Target = null;
-			else {
-//				if ((ItemsDataSource is IAdaptor) == false)
-//					return;
-				object check = ConnectionProvider.ResolveTargetForObject(ItemsDataSource);
-				if (check != lastItems) {
-					lastItems = check;
-					check = ItemsDataSource;
-					ItemsDataSource = null;
-					ItemsDataSource = check;
-				}
-			}
-			Adaptor.CheckControl();
-		}*/
 		
 		/// <summary>
 		/// Creates adaptors associated with this IconView
