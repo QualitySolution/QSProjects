@@ -13,6 +13,7 @@ namespace QSBanks
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
 		private Adaptor adaptorOrg = new Adaptor();
+		private Adaptor adaptorBank = new Adaptor();
 		private Account subject;
 		private bool NewItem = false;
 
@@ -21,7 +22,7 @@ namespace QSBanks
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public bool HasChanges { 
-			get{return NewItem || Session.IsDirty();}
+			get{return false;}
 		}
 
 		private string _tabName = "Новый счет";
@@ -93,6 +94,7 @@ namespace QSBanks
 			dataentryrefBank.SubjectType = typeof(Bank);
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
+			datavboxBank.DataSource = adaptorBank;
 		}
 
 		public bool Save()
@@ -104,18 +106,7 @@ namespace QSBanks
 			return true;
 		}
 
-		public override void Destroy()
-		{
-			base.Destroy();
-		}
-
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
-		{
-			if (Save())
-				OnCloseTab(false);
-		}
-
-		protected void OnButtonCancelClicked(object sender, EventArgs e)
 		{
 			OnCloseTab(false);
 		}
@@ -126,6 +117,17 @@ namespace QSBanks
 				CloseTab(this, new TdiTabCloseEventArgs(askSave));
 		}
 
+		public override void Destroy()
+		{
+			Save();
+			base.Destroy();
+		}
+
+		protected void OnDataentryrefBankChanged(object sender, EventArgs e)
+		{
+			adaptorBank.Target = subject.InBank;
+			adaptorBank.GetRequest();
+		}
 	}
 }
 

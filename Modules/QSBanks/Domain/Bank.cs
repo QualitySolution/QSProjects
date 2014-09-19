@@ -23,6 +23,21 @@ namespace QSBanks
 			City = String.Empty;
 			Region = String.Empty;
 		}
+
+		public override bool Equals(Object obj)
+		{
+			Bank accountObj = obj as Bank; 
+			if (accountObj == null)
+				return false;
+			else
+				return Id.Equals(accountObj.Id);
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Id.GetHashCode(); 
+		}
+
 	}
 }
 

@@ -95,6 +95,7 @@ namespace QSBanks
 			this.dataentryBik.CanFocus = true;
 			this.dataentryBik.Name = "dataentryBik";
 			this.dataentryBik.IsEditable = true;
+			this.dataentryBik.MaxLength = 9;
 			this.dataentryBik.InvisibleChar = '●';
 			this.dataentryBik.InheritedDataSource = true;
 			this.dataentryBik.Mappings = "Bik";
@@ -116,6 +117,7 @@ namespace QSBanks
 			this.dataentryCity.CanFocus = true;
 			this.dataentryCity.Name = "dataentryCity";
 			this.dataentryCity.IsEditable = true;
+			this.dataentryCity.MaxLength = 45;
 			this.dataentryCity.InvisibleChar = '●';
 			this.dataentryCity.InheritedDataSource = true;
 			this.dataentryCity.Mappings = "City";
@@ -137,6 +139,7 @@ namespace QSBanks
 			this.dataentryCorAccount.CanFocus = true;
 			this.dataentryCorAccount.Name = "dataentryCorAccount";
 			this.dataentryCorAccount.IsEditable = true;
+			this.dataentryCorAccount.MaxLength = 25;
 			this.dataentryCorAccount.InvisibleChar = '●';
 			this.dataentryCorAccount.InheritedDataSource = true;
 			this.dataentryCorAccount.Mappings = "CorAccount";
@@ -158,6 +161,7 @@ namespace QSBanks
 			this.dataentryName.CanFocus = true;
 			this.dataentryName.Name = "dataentryName";
 			this.dataentryName.IsEditable = true;
+			this.dataentryName.MaxLength = 200;
 			this.dataentryName.InvisibleChar = '●';
 			this.dataentryName.InheritedDataSource = true;
 			this.dataentryName.Mappings = "Name";
@@ -176,6 +180,7 @@ namespace QSBanks
 			this.dataentryRegion.CanFocus = true;
 			this.dataentryRegion.Name = "dataentryRegion";
 			this.dataentryRegion.IsEditable = true;
+			this.dataentryRegion.MaxLength = 45;
 			this.dataentryRegion.InvisibleChar = '●';
 			this.dataentryRegion.InheritedDataSource = true;
 			this.dataentryRegion.Mappings = "Region";

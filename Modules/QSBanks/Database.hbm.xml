@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
  auto-import="true" assembly="QSBanks" namespace="QSBanks">
-	<class name="Bank" lazy="true" table="banks">
+	<class name="Bank" lazy="false" table="banks">
 		<id name="Id" column="id">
 			<generator class="native"></generator>
 	 	</id>
@@ -11,7 +11,7 @@
 	 	<property name="Region" column="region" />
 	 	<property name="City" column="city" />
  	</class>
- 	<class name="Account" lazy="true" table="accounts">
+ 	<class name="Account" lazy="false" table="accounts">
 		<id name="Id" column="id">
 			<generator class="native"></generator>
 	 	</id>

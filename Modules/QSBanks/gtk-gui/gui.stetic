@@ -7,6 +7,7 @@
   <import>
     <widget-library name="../../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
+    <widget-library name="../../../../gtk-databind-code/gtk-databind-lib/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="304 300">
@@ -190,6 +191,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">9</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Bik</property>
@@ -220,6 +222,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">45</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">City</property>
@@ -250,6 +253,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">25</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">CorAccount</property>
@@ -280,6 +284,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">200</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Name</property>
@@ -307,6 +312,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">45</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Region</property>
@@ -458,7 +464,7 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-save Menu</property>
-                <property name="Label" translatable="yes">Сохранить</property>
+                <property name="Label" translatable="yes">Закрыть</property>
                 <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="OnButtonSaveClicked" />
               </widget>
@@ -563,6 +569,7 @@
                 <property name="Mappings">InBank</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="CursorPointsEveryType">False</property>
+                <signal name="Changed" handler="OnDataentryrefBankChanged" />
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -595,7 +602,7 @@
                     <property name="Yalign">0</property>
                     <property name="LeftPadding">12</property>
                     <child>
-                      <widget class="Gtk.DataBindings.DataVBox" id="datavbox1">
+                      <widget class="Gtk.DataBindings.DataVBox" id="datavboxBank">
                         <property name="MemberName" />
                         <property name="Spacing">6</property>
                         <property name="InheritedDataSource">False</property>
@@ -606,10 +613,12 @@
                           <widget class="Gtk.DataBindings.DataLabel" id="datalabelBik">
                             <property name="MemberName" />
                             <property name="LabelProp" translatable="yes">datalabel1</property>
-                            <property name="InheritedDataSource">False</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">Bik</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                             <property name="Important">False</property>
-                            <property name="InheritedDataSource">False</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">Bik</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                           </widget>
                           <packing>
@@ -620,13 +629,15 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="Gtk.DataBindings.DataLabel" id="datalabel2">
+                          <widget class="Gtk.DataBindings.DataLabel" id="datalabelRegion">
                             <property name="MemberName" />
                             <property name="LabelProp" translatable="yes">datalabel2</property>
-                            <property name="InheritedDataSource">False</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">Region</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                             <property name="Important">False</property>
-                            <property name="InheritedDataSource">False</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">Region</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                           </widget>
                           <packing>
@@ -637,7 +648,23 @@
                           </packing>
                         </child>
                         <child>
-                          <placeholder />
+                          <widget class="Gtk.DataBindings.DataLabel" id="datalabelCity">
+                            <property name="MemberName" />
+                            <property name="LabelProp" translatable="yes">datalabel1</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">City</property>
+                            <property name="InheritedBoundaryDataSource">False</property>
+                            <property name="Important">False</property>
+                            <property name="InheritedDataSource">True</property>
+                            <property name="Mappings">City</property>
+                            <property name="InheritedBoundaryDataSource">False</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">2</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
                         </child>
                       </widget>
                     </child>
@@ -651,10 +678,11 @@
                 <property name="RightAttach">2</property>
                 <property name="AutoSize">True</property>
                 <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
                 <property name="XExpand">False</property>
                 <property name="XFill">True</property>
                 <property name="XShrink">False</property>
-                <property name="YExpand">True</property>
+                <property name="YExpand">False</property>
                 <property name="YFill">True</property>
                 <property name="YShrink">False</property>
               </packing>
