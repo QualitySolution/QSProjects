@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHibernate;
+using NHibernate.Proxy;
 using NHibernate.Cfg;
 using QSTDI;
 using Gtk;
@@ -33,11 +34,25 @@ namespace QSOrmProject
 		{
 			if (ClassMapingList == null)
 				throw new NullReferenceException("ORM Модуль не настроен. Нужно создать ClassMapingList.");
-			return ClassMapingList.Find(c => c.ObjectClass == objectClass).DialogClass;
+
+			if (objectClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
+				objectClass = objectClass.BaseType;
+
+			OrmObjectMaping map = ClassMapingList.Find(c => c.ObjectClass == objectClass);
+			if(map == null)
+			{
+				logger.Warn("Диалог для типа {0} не найден.", objectClass);
+				return null;
+			}
+			else
+				return map.DialogClass;
 		}
 
 		public static OrmObjectMaping GetObjectDiscription(System.Type type)
 		{
+			if (type.GetInterface(typeof(INHibernateProxy).FullName) != null)
+				type = type.BaseType;
+
 			return OrmMain.ClassMapingList.Find(m => m.ObjectClass == type);
 		}
 
