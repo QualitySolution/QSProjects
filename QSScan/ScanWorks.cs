@@ -19,6 +19,7 @@ namespace QSScan
 		private Twain32.ColorPalette palette;
 
 		public event EventHandler<ImageTransferEventArgs> ImageTransfer;
+		public event EventHandler<ScanWorksPulseEventArgs> Pulse;
 		int TotalImages = -1;
 		int CurrentImage = 0;
 
@@ -41,6 +42,28 @@ namespace QSScan
 			}
 		}
 
+		public int ScannerCount 
+		{
+			get{return _twain32.SourcesCount;}
+		}
+
+		public void SelectScanner(int i)
+		{
+			_twain32.SourceIndex = i;
+		}
+
+		public string[] GetScannerList()
+		{
+			string[] scanners = new string[_twain32.SourcesCount];
+
+			for(int i=0;i<this._twain32.SourcesCount;i++) 
+			{
+				scanners[i] = this._twain32.GetSourceProductName(i);
+			}
+
+			return scanners;
+		}
+
 		private void SetupTwain()
 		{
 			logger.Debug("Setup Twain");
@@ -48,7 +71,9 @@ namespace QSScan
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
 			_twain32.AcquireError += OnTwainAcquireError;
 
+			logger.Debug ("IsTwain2Enable = {0}", _twain32.IsTwain2Enable);
 			_twain32.OpenDSM();
+			logger.Debug ("IsTwain2Supported = {0}", _twain32.IsTwain2Supported);
 		}
 
 		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
@@ -150,7 +175,7 @@ namespace QSScan
 		{
 			try 
 			{
-				logger.Debug("On MemXfer Event {0} - {1}", e.ImageMemXfer.BytesWritten, e.ImageMemXfer.ImageData.Length);
+				logger.Debug("On MemXfer Event {0}", this.stream.Position);
 				int _bytesPerPixel=e.ImageInfo.BitsPerPixel>>3;
 				for(int i=0,_rowOffset=0; i<e.ImageMemXfer.Rows; i++,_rowOffset+=(int)e.ImageMemXfer.BytesPerRow) {
 					for(int ii=0,_colOffset=0; ii<e.ImageMemXfer.Columns; ii++,_colOffset+=_bytesPerPixel) {
@@ -174,6 +199,7 @@ namespace QSScan
 						}
 					}
 				}
+				OnPulse(e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
 			} 
 			catch(Exception ex) 
 			{
@@ -181,6 +207,19 @@ namespace QSScan
 				throw ex;
 			}
 
+		}
+
+		private void OnPulse(int imageSize, int imagePosition)
+		{
+			if(Pulse != null)
+			{
+				var args = new ScanWorksPulseEventArgs ();
+				args.CurrentImage = CurrentImage;
+				args.ImageByteSize = imageSize;
+				args.LoadedByteSize = imagePosition;
+				args.ProgressText = String.Format("Получение {0}-го изображения...", CurrentImage + 1);
+				Pulse (this, args);
+			}
 		}
 
 		private void RunTwain()
@@ -219,7 +258,7 @@ namespace QSScan
 		{
 			if (stream != null)
 				FinishImageTransfer ();
-			logger.Debug("SetupMemXfer");
+			logger.Debug("SetupMemXfer size={0}B", e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8);
 			try {
 				stream = new MemoryStream((int)e.BufferSize);
 				var _writer=new BinaryWriter(this.stream);
@@ -240,6 +279,7 @@ namespace QSScan
 					break;
 				}
 				_writer.Write(Encoding.ASCII.GetBytes(string.Format("# (C) SARAFF SOFTWARE 2013.\n{0} {1}\n{2}\n",e.ImageInfo.ImageWidth,e.ImageInfo.ImageLength,byte.MaxValue)));
+				OnPulse(e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
 			} catch(Exception ex) 
 			{
 				logger.ErrorException ("Ошибка при настройке буфера приема.", ex);
@@ -277,13 +317,6 @@ namespace QSScan
 			logger.Debug("Close Scanworks");
 			_twain32.Dispose();
 		}
-
-		public class ImageTransferEventArgs : EventArgs
-		{
-			public int AllImages { get; set; }
-			public Pixbuf Image { get; set; }
-		}
-
 	}
 }
 
