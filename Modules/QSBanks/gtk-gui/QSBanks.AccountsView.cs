@@ -19,6 +19,8 @@ namespace QSBanks
 		private global::Gtk.Button buttonEdit;
 		
 		private global::Gtk.Button buttonDelete;
+		
+		private global::Gtk.Button buttonDefault;
 
 		protected virtual void Build ()
 		{
@@ -53,7 +55,7 @@ namespace QSBanks
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
 			this.datatreeviewAccounts.InheritedDataSource = false;
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
-			this.datatreeviewAccounts.ColumnMappings = "{QSBanks.Account} Name[Псевдоним]; BankName[В банке]; Number[Номер];";
+			this.datatreeviewAccounts.ColumnMappings = "{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер];";
 			this.GtkScrolledWindow.Add (this.datatreeviewAccounts);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));
@@ -104,11 +106,26 @@ namespace QSBanks
 			w9.Position = 2;
 			w9.Expand = false;
 			w9.Fill = false;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.buttonDefault = new global::Gtk.Button ();
+			this.buttonDefault.CanFocus = true;
+			this.buttonDefault.Name = "buttonDefault";
+			this.buttonDefault.UseUnderline = true;
+			this.buttonDefault.Label = global::Mono.Unix.Catalog.GetString ("Основной");
+			global::Gtk.Image w10 = new global::Gtk.Image ();
+			w10.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-about", global::Gtk.IconSize.Menu);
+			this.buttonDefault.Image = w10;
+			this.hbox1.Add (this.buttonDefault);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonDefault]));
+			w11.PackType = ((global::Gtk.PackType)(1));
+			w11.Position = 3;
+			w11.Expand = false;
+			w11.Fill = false;
 			this.vbox1.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox1]));
-			w10.Position = 2;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox1]));
+			w12.Position = 2;
+			w12.Expand = false;
+			w12.Fill = false;
 			this.Add (this.vbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
@@ -117,6 +134,7 @@ namespace QSBanks
 			this.datatreeviewAccounts.RowActivated += new global::Gtk.RowActivatedHandler (this.OnDatatreeviewAccountsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
+			this.buttonDefault.Clicked += new global::System.EventHandler (this.OnButtonDefaultClicked);
 		}
 	}
 }

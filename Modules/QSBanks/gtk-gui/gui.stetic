@@ -10,7 +10,7 @@
     <widget-library name="../../../../gtk-databind-code/gtk-databind-lib/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="304 300">
+  <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="416 318">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -44,7 +44,7 @@
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="ColumnMappings">{QSBanks.Account} Name[Псевдоним]; BankName[В банке]; Number[Номер];</property>
+                <property name="ColumnMappings">{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер];</property>
                 <signal name="RowActivated" handler="OnDatatreeviewAccountsRowActivated" />
               </widget>
             </child>
@@ -103,6 +103,24 @@
               </widget>
               <packing>
                 <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="buttonDefault">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">stock:gtk-about Menu</property>
+                <property name="Label" translatable="yes">Основной</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonDefaultClicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>

@@ -13,6 +13,8 @@ namespace QSBanks
 		public virtual string Number { get; set; }
 		#endregion
 
+		public bool IsDefault { get; set; }
+
 		public virtual string BankName{
 			get{
 				if (InBank == null)

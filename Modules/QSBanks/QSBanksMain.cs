@@ -18,10 +18,5 @@ namespace QSBanks
 
 	}
 
-	public interface IAccountOwner
-	{
-		Account DefaultAccount { get; set;}
-		IList<Account> Accounts { get; set;}
-	}
 }
 

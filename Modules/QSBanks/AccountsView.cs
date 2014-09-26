@@ -50,6 +50,7 @@ namespace QSBanks
 		{
 			bool selected = datatreeviewAccounts.Selection.CountSelectedRows() > 0;
 			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
+			buttonDefault.Sensitive = selected && !(datatreeviewAccounts.GetSelectedObjects()[0] as Account).IsDefault;
 		}
 
 		void OnAccountUpdated (object sender, OrmObjectUpdatedEventArgs e)
@@ -81,6 +82,11 @@ namespace QSBanks
 		protected void OnDatatreeviewAccountsRowActivated(object o, Gtk.RowActivatedArgs args)
 		{
 			buttonEdit.Click();
+		}
+
+		protected void OnButtonDefaultClicked(object sender, EventArgs e)
+		{
+			AccountOwner.DefaultAccount = (datatreeviewAccounts.GetSelectedObjects()[0] as Account);
 		}
 	}
 }

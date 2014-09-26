@@ -94,8 +94,16 @@ namespace QSBanks
 		public bool Save()
 		{
 			logger.Info("Сохраняем банк...");
-			Session.SaveOrUpdate(subject);
-			Session.Flush();
+			try
+			{
+				Session.SaveOrUpdate(subject);
+				Session.Flush();
+			}
+			catch( Exception ex)
+			{
+				logger.ErrorException("Не удалось записать банк.", ex);
+				return false;
+			}
 			OrmMain.NotifyObjectUpdated(subject);
 			logger.Info("Ok");
 			return true;
