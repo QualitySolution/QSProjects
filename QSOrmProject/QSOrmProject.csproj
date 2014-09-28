@@ -28,9 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\..\Vodovoz\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
-    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\..\Vodovoz\packages\NHibernate.4.0.0.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
@@ -43,6 +40,9 @@
       <HintPath>..\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\..\Vodovoz\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +55,7 @@
     <Compile Include="Widgets\EntryReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReference.cs" />
     <Compile Include="DataWidgets\DataEntryReference.cs" />
+    <Compile Include="IDomainObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

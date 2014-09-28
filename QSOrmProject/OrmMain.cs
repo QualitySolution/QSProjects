@@ -84,6 +84,14 @@ namespace QSOrmProject
 		public string RefColumnMappings;
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 
+		public bool SimpleDialog
+		{
+			get
+			{
+				return (DialogClass == null);
+			}
+		}
+
 		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass)
 		{
 			ObjectClass = objectClass;
