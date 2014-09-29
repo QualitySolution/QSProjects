@@ -11,6 +11,8 @@ namespace QSOrmProject
 	public partial class EntryReference : Gtk.Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+
+		public bool CanEditReference = true;
 		private System.Type subjectType;
 		public event EventHandler Changed;
 
@@ -31,18 +33,6 @@ namespace QSOrmProject
 				subject = value;
 				UpdateWidget();
 				OnChanged();
-			}
-		}
-
-		public string SubjectTypeName
-		{
-			get
-			{
-				return subjectType.Name;
-			}
-			set
-			{
-				subjectType = System.Type.GetType(value);
 			}
 		}
 
@@ -83,7 +73,7 @@ namespace QSOrmProject
 
 		private void UpdateWidget()
 		{
-			buttonOpen.Sensitive = subject != null;
+			buttonOpen.Sensitive = CanEditReference && subject != null;
 			if(subject == null || displayFields == null)
 			{
 				entryObject.Text = String.Empty;
@@ -150,6 +140,7 @@ namespace QSOrmProject
 
 			OrmReference SelectDialog = new OrmReference(subjectType, session, criteria);
 			SelectDialog.Mode = OrmReferenceMode.Select;
+			SelectDialog.CanEdit = CanEditReference;
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
 			mytab.TabParent.AddSlaveTab(mytab, SelectDialog);
 		}

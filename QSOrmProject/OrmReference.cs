@@ -25,6 +25,20 @@ namespace QSOrmProject
 		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
+		private bool canEdit = true;
+		public bool CanEdit
+		{
+			get
+			{
+				return canEdit;
+			}
+			set
+			{
+				canEdit = value;
+				buttonAdd.Sensitive = canEdit;
+			}
+		}
+
 		public ISession Session
 		{
 			get
@@ -129,7 +143,8 @@ namespace QSOrmProject
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
 		{
 			bool selected = datatreeviewRef.Selection.CountSelectedRows() > 0;
-			buttonEdit.Sensitive = buttonSelect.Sensitive = buttonDelete.Sensitive = selected;
+			buttonSelect.Sensitive = selected;
+			buttonEdit.Sensitive = buttonDelete.Sensitive = canEdit && selected;
 		}
 
 		void FilterViewChanged (object aList)
