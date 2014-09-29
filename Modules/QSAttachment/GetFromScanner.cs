@@ -9,6 +9,7 @@ namespace QSAttachment
 	public partial class GetFromScanner : Gtk.Dialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private ScanWorks scan;
 
 		enum FileFormat {
 			jpeg,
@@ -26,6 +27,24 @@ namespace QSAttachment
 		public GetFromScanner ()
 		{
 			this.Build ();
+			try 
+			{
+				logger.Debug("init scan");
+				scan = new ScanWorks();
+				foreach(string scannerName in scan.GetScannerList ())
+				{
+					comboScanner.AppendText (scannerName);
+				}
+				if(scan.ScannerCount > 0)
+					comboScanner.Active = 0;
+			} 
+			catch (Exception ex) 
+			{
+				logger.ErrorException ("Не удалось инициализировать библиотеку Saraff.Twain.", ex);
+				QSProjectsLib.QSMain.ErrorMessage (this, ex);
+				Respond (Gtk.ResponseType.Reject);
+			}
+
 			TestCanSave ();
 		}
 
@@ -60,18 +79,14 @@ namespace QSAttachment
 
 		protected void OnButtonScanClicked(object sender, EventArgs e)
 		{
-			ScanWorks scan = null;
+
 			try
 			{
-				logger.Debug(Environment.OSVersion.Platform.ToString());
-				logger.Debug("init scan");
-				scan = new ScanWorks();
-				logger.Info ("Получение изображений со сканера...");
-				while (Gtk.Application.EventsPending ())
-					Gtk.Application.RunIteration ();
+				logger.Info ("Получение изображений со сканера {0}...", comboScanner.Active);
+				scan.SelectScanner (comboScanner.Active);
 				logger.Debug("run scanner");
 
-				scan.ImageTransfer += delegate(object s, ScanWorks.ImageTransferEventArgs arg) 
+				scan.ImageTransfer += delegate(object s, ImageTransferEventArgs arg) 
 				{
 					if(arg.AllImages > 0)
 						progressScan.Adjustment.Upper = arg.AllImages;
@@ -103,7 +118,7 @@ namespace QSAttachment
 				if(scan != null)
 					scan.Close ();
 			}
-
+			TestCanSave ();
 		}
 
 		protected void OnButtonOkClicked(object sender, EventArgs e)
@@ -150,6 +165,12 @@ namespace QSAttachment
 		{
 			File = vimageslist1.Images [0].SaveToBuffer ("jpeg");
 		}
+
+		protected void OnComboScannerChanged(object sender, EventArgs e)
+		{
+			buttonScan.Sensitive = comboScanner.Active >= 0;
+		}
+
 	}
 }
 
