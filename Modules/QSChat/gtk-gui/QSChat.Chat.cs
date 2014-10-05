@@ -6,6 +6,10 @@ namespace QSChat
 	{
 		private global::Gtk.VBox vbox2;
 		
+		private global::Gtk.HBox hbox2;
+		
+		private global::Gtk.Button buttonHistory;
+		
 		private global::Gtk.ScrolledWindow GtkScrolledWindowChat;
 		
 		private global::Gtk.TextView textviewChat;
@@ -29,6 +33,31 @@ namespace QSChat
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
+			this.hbox2 = new global::Gtk.HBox ();
+			this.hbox2.Name = "hbox2";
+			this.hbox2.Spacing = 6;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.buttonHistory = new global::Gtk.Button ();
+			this.buttonHistory.CanFocus = true;
+			this.buttonHistory.Name = "buttonHistory";
+			this.buttonHistory.UseUnderline = true;
+			this.buttonHistory.Relief = ((global::Gtk.ReliefStyle)(2));
+			this.buttonHistory.Label = global::Mono.Unix.Catalog.GetString ("Архив");
+			global::Gtk.Image w1 = new global::Gtk.Image ();
+			w1.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSChat.icons.document-open-recent.png");
+			this.buttonHistory.Image = w1;
+			this.hbox2.Add (this.buttonHistory);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonHistory]));
+			w2.PackType = ((global::Gtk.PackType)(1));
+			w2.Position = 1;
+			w2.Expand = false;
+			w2.Fill = false;
+			this.vbox2.Add (this.hbox2);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox2]));
+			w3.Position = 0;
+			w3.Expand = false;
+			w3.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
 			this.GtkScrolledWindowChat = new global::Gtk.ScrolledWindow ();
 			this.GtkScrolledWindowChat.Name = "GtkScrolledWindowChat";
 			this.GtkScrolledWindowChat.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
@@ -43,8 +72,8 @@ namespace QSChat
 			this.textviewChat.WrapMode = ((global::Gtk.WrapMode)(3));
 			this.GtkScrolledWindowChat.Add (this.textviewChat);
 			this.vbox2.Add (this.GtkScrolledWindowChat);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.GtkScrolledWindowChat]));
-			w2.Position = 1;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.GtkScrolledWindowChat]));
+			w5.Position = 1;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
@@ -63,32 +92,33 @@ namespace QSChat
 			this.textviewMessege.WrapMode = ((global::Gtk.WrapMode)(3));
 			this.GtkScrolledWindow1.Add (this.textviewMessege);
 			this.hbox1.Add (this.GtkScrolledWindow1);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.GtkScrolledWindow1]));
-			w4.Position = 0;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.GtkScrolledWindow1]));
+			w7.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonSend = new global::Gtk.Button ();
 			this.buttonSend.CanFocus = true;
 			this.buttonSend.Name = "buttonSend";
 			this.buttonSend.UseUnderline = true;
 			this.buttonSend.Label = global::Mono.Unix.Catalog.GetString ("Отправить");
-			global::Gtk.Image w5 = new global::Gtk.Image ();
-			w5.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSChat.icons.document-send.png");
-			this.buttonSend.Image = w5;
+			global::Gtk.Image w8 = new global::Gtk.Image ();
+			w8.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSChat.icons.document-send.png");
+			this.buttonSend.Image = w8;
 			this.hbox1.Add (this.buttonSend);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonSend]));
-			w6.Position = 1;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonSend]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
 			this.vbox2.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox1]));
-			w7.Position = 2;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox1]));
+			w10.Position = 2;
+			w10.Expand = false;
+			w10.Fill = false;
 			this.Add (this.vbox2);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.buttonHistory.Clicked += new global::System.EventHandler (this.OnButtonHistoryClicked);
 			this.textviewMessege.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnTextviewMessegeKeyPressEvent);
 			this.buttonSend.Clicked += new global::System.EventHandler (this.OnButtonSendClicked);
 		}

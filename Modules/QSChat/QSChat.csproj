@@ -52,6 +52,9 @@
     <Compile Include="gtk-gui\QSChat.Chat.cs" />
     <Compile Include="ChatVSlider.cs" />
     <Compile Include="gtk-gui\QSChat.ChatVSlider.cs" />
+    <Compile Include="ChatHistory.cs" />
+    <Compile Include="gtk-gui\QSChat.ChatHistory.cs" />
+    <Compile Include="QSChatMain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -59,6 +62,7 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\document-send.png" />
+    <EmbeddedResource Include="icons\document-open-recent.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />

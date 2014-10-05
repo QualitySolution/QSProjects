@@ -16,7 +16,38 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <placeholder />
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="buttonHistory">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">resource:QSChat.icons.document-open-recent.png</property>
+                <property name="Label" translatable="yes">Архив</property>
+                <property name="UseUnderline">True</property>
+                <property name="Relief">None</property>
+                <signal name="Clicked" handler="OnButtonHistoryClicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
         </child>
         <child>
           <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindowChat">
@@ -190,6 +221,96 @@
             <property name="AutoSize">False</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="QSChat.ChatHistory" design-size="546 348">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Архив чата</property>
+    <property name="Icon">resource:QSChat.icons.document-open-recent.png</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox2">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
+                <property name="MemberName" />
+                <property name="HscrollbarPolicy">Never</property>
+                <property name="ShadowType">In</property>
+                <child>
+                  <widget class="Gtk.TreeView" id="treeviewDates">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="ShowScrollbars">True</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+                <property name="MemberName" />
+                <property name="HscrollbarPolicy">Never</property>
+                <property name="ShadowType">In</property>
+                <child>
+                  <widget class="Gtk.TextView" id="textviewTalks">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="ShowScrollbars">True</property>
+                    <property name="Editable">False</property>
+                    <property name="Text" translatable="yes" />
+                    <property name="WrapMode">WordChar</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HButtonBox" id="hbuttonbox2">
+            <property name="MemberName" />
+            <property name="BorderWidth">3</property>
+            <property name="Size">1</property>
+            <property name="LayoutStyle">End</property>
+            <child>
+              <widget class="Gtk.Button" id="buttonClose">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="UseStock">True</property>
+                <property name="Type">StockItem</property>
+                <property name="StockId">gtk-close</property>
+                <signal name="Clicked" handler="OnButtonCloseClicked" />
+                <property name="label">gtk-close</property>
+              </widget>
+              <packing>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
           </packing>
         </child>
       </widget>

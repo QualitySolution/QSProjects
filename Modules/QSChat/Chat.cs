@@ -21,7 +21,7 @@ namespace QSChat
 		private DateTime lastMessageTime;
 		private DateTime lastShowTime;
 		private TextTagTable textTags;
-		private Dictionary<string, string> usersColors;
+		private ChatHistory historyWindow;
 		public int NewMessageCount;
 
 		private bool isHided = false;
@@ -75,42 +75,7 @@ namespace QSChat
 		public Chat()
 		{
 			this.Build();
-			textTags = new TextTagTable();
-			var tag = new TextTag("date");
-			tag.Justification = Justification.Center;
-			tag.Weight = Pango.Weight.Bold;
-			textTags.Add(tag);
-			tag = new TextTag("user1");
-			tag.Foreground = "#FF00FF";
-			textTags.Add(tag);
-			tag = new TextTag("user2");
-			tag.Foreground = "#9400D3";
-			textTags.Add(tag);
-			tag = new TextTag("user3");
-			tag.Foreground = "#191970";
-			textTags.Add(tag);
-			tag = new TextTag("user4");
-			tag.Foreground = "#7F0000";
-			textTags.Add(tag);
-			tag = new TextTag("user5");
-			tag.Foreground = "#FF8C00";
-			textTags.Add(tag);
-			tag = new TextTag("user6");
-			tag.Foreground = "#FFA500";
-			textTags.Add(tag);
-			tag = new TextTag("user7");
-			tag.Foreground = "#32CD32";
-			textTags.Add(tag);
-			tag = new TextTag("user8");
-			tag.Foreground = "#3CB371";
-			textTags.Add(tag);
-			tag = new TextTag("user9");
-			tag.Foreground = "#007F00";
-			textTags.Add(tag);
-			tag = new TextTag("user10");
-			tag.Foreground = "#FFFF00";
-			textTags.Add(tag);
-			usersColors = new Dictionary<string, string>();
+			textTags = QSChatMain.BuildTagTable();
 		}
 
 		private bool OnUpdateTimer()
@@ -149,7 +114,7 @@ namespace QSChat
 						tempBuffer.InsertWithTagsByName(ref iter, String.Format("\n{0:D}", mesDate.Date), "date");
 					}
 					tempBuffer.InsertWithTagsByName(ref iter, string.Format("\n({0:t}) {1}: ", mesDate, rdr.GetString("user")), 
-						GetUserTag(rdr.GetString("user")));
+						QSChatMain.GetUserTag(rdr.GetString("user")));
 					tempBuffer.Insert(ref iter, rdr.GetString("text"));
 
 					if (isHided && lastShowTime != default(DateTime) && mesDate > lastShowTime)
@@ -219,16 +184,24 @@ namespace QSChat
 			}
 		}
 
-		private string GetUserTag(string userName)
+		protected void OnButtonHistoryClicked(object sender, EventArgs e)
 		{
-			if (usersColors.ContainsKey(userName))
-				return usersColors[userName];
+			if(historyWindow == null)
+			{
+				historyWindow = new ChatHistory();
+				historyWindow.Destroyed += OnHistoryDestroyed;
+				historyWindow.Show();
+			}
 			else
 			{
-				string tagName = String.Format("user{0}", usersColors.Count % 10 + 1);
-				usersColors.Add(userName, tagName);
-				return tagName;
+				historyWindow.Present();
 			}
+		}
+
+		void OnHistoryDestroyed (object sender, EventArgs e)
+		{
+			historyWindow = null;
+			logger.Debug("History Destroyed");
 		}
 	}
 }
