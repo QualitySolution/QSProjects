@@ -29,6 +29,11 @@ namespace QSSupportLib
 			}
 		}
 
+		public static bool TestVersionSilent () 
+		{
+			return !(MainSupport.BaseParameters.Product == null && MainSupport.BaseParameters.Edition == null && MainSupport.BaseParameters.Version == null);
+		}
+
 		private static string TestVersionText()
 		{
 			string ErrorText;
