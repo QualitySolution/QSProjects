@@ -3,6 +3,7 @@ using System.IO;
 using QSScan;
 using NLog;
 using Gdk;
+using QSProjectsLib;
 
 namespace QSAttachment
 {
@@ -31,6 +32,8 @@ namespace QSAttachment
 			{
 				logger.Debug("init scan");
 				scan = new ScanWorks();
+				scan.Pulse += OnScanerPulse;
+				scan.ImageTransfer += OnScanerImageTransfer;
 				foreach(string scannerName in scan.GetScannerList ())
 				{
 					comboScanner.AppendText (scannerName);
@@ -46,6 +49,26 @@ namespace QSAttachment
 			}
 
 			TestCanSave ();
+		}
+
+		void OnScanerImageTransfer (object sender, ImageTransferEventArgs e)
+		{
+			progressScan.Text = "Завершаем загрузку...";
+			logger.Debug("ImageTransfer event");
+
+			vimageslist1.Images.Add (e.Image);
+
+			progressScan.Text = "Ок";
+			progressScan.Adjustment.Value = progressScan.Adjustment.Upper;
+			QSMain.WaitRedraw();
+		}
+
+		void OnScanerPulse (object sender, ScanWorksPulseEventArgs e)
+		{
+			progressScan.Text = e.ProgressText;
+			progressScan.Adjustment.Upper = e.ImageByteSize;
+			progressScan.Adjustment.Value = e.LoadedByteSize;
+			QSProjectsLib.QSMain.WaitRedraw ();
 		}
 
 		protected void OnCombobox1Changed(object sender, EventArgs e)
@@ -83,28 +106,14 @@ namespace QSAttachment
 			try
 			{
 				logger.Info ("Получение изображений со сканера {0}...", comboScanner.Active);
+				QSMain.WaitRedraw ();
 				scan.SelectScanner (comboScanner.Active);
 				logger.Debug("run scanner");
-
-				scan.ImageTransfer += delegate(object s, ImageTransferEventArgs arg) 
-				{
-					if(arg.AllImages > 0)
-						progressScan.Adjustment.Upper = arg.AllImages;
-					logger.Debug("ImageTransfer event");
-
-					vimageslist1.Images.Add (arg.Image);
-
-					if(arg.AllImages > 0)
-						progressScan.Adjustment.Value++;
-					else
-						progressScan.Pulse();
-					while (Gtk.Application.EventsPending ())
-						Gtk.Application.RunIteration ();
-				};
 
 				scan.GetImages(false);
 
 				progressScan.Fraction = 0;
+				progressScan.Text = "";
 				vimageslist1.UpdateList ();
 				logger.Info ("Ок");
 			}

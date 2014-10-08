@@ -6,6 +6,7 @@
   </configuration>
   <import>
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../../QSScan/bin/Debug/QSScan.dll" />
     <widget-library name="../bin/Debug/QSAttachment.dll" internal="true" />
   </import>
