@@ -102,6 +102,27 @@ namespace QSCustomFields
 			logger.Info("Записываем информацию о поле...");
 			try
 			{
+				//Проверяем нет ли уже такого поля в таблице.
+				if(newItem || OriginalFieldName != entryDBName.Text)
+				{
+					System.Data.DataTable schema = ((MySqlConnection)QSMain.ConnectionDB).GetSchema("Columns", new string[4] { null, 
+					((MySqlConnection)QSMain.ConnectionDB).Database,
+						TableName,
+						entryDBName.Text});
+
+					if(schema.Rows.Count > 0)
+					{
+						string Text = String.Format("Колонка с именем [{0}], уже существует в таблице [{1}].", entryDBName.Text, TableName);
+						logger.Warn (Text);
+						MessageDialog md = new MessageDialog ((Gtk.Window)this, DialogFlags.Modal,
+						                                      MessageType.Error, 
+						                                      ButtonsType.Ok, Text);
+						md.Run ();
+						md.Destroy ();
+						trans.Rollback ();
+						return;
+					}
+				}
 				// Работаем с внутренними данными
 				string sql;
 				if(newItem)
@@ -133,6 +154,7 @@ namespace QSCustomFields
 
 				trans.Commit ();
 				logger.Info("Ok");
+				Respond (ResponseType.Ok);
 			}
 			catch (Exception ex)
 			{

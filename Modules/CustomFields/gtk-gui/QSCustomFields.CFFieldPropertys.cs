@@ -61,7 +61,7 @@ namespace QSCustomFields
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table (((uint)(9)), ((uint)(2)), false);
+			this.table1 = new global::Gtk.Table (((uint)(8)), ((uint)(2)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
@@ -341,7 +341,7 @@ namespace QSCustomFields
 			this.buttonOk.UseStock = true;
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
-			this.AddActionWidget (this.buttonOk, -5);
+			w23.Add (this.buttonOk);
 			global::Gtk.ButtonBox.ButtonBoxChild w25 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w23 [this.buttonOk]));
 			w25.Position = 1;
 			w25.Expand = false;
@@ -350,7 +350,7 @@ namespace QSCustomFields
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 344;
-			this.DefaultHeight = 404;
+			this.DefaultHeight = 377;
 			this.Show ();
 			this.spinSize.Changed += new global::System.EventHandler (this.OnSpinSizeChanged);
 			this.spinDigits.Changed += new global::System.EventHandler (this.OnSpinDigitsChanged);
