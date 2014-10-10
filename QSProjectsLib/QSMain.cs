@@ -256,6 +256,7 @@ namespace QSProjectsLib
 			{
 				authors.Add(author.Name);
 			}
+			authors.Reverse();
 			dialog.Authors = authors.ToArray();
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyAppWebsite), false);
@@ -266,8 +267,15 @@ namespace QSProjectsLib
 			dialog.Run ();
 			dialog.Destroy();
 		}
+
+		public static void WaitRedraw()
+		{
+			while (Application.EventsPending ())
+			{
+				Gtk.Main.Iteration ();
+			}
+		}
+
 	}
-
-
 }
 
