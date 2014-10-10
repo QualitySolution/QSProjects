@@ -61,6 +61,8 @@ namespace QSWidgetLib
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose e)
 		{
+			if (ResizedPixbuf == null)
+				return false;
 			logger.Debug("Explose w={0}, h={1}", this.Allocation.Width, this.Allocation.Height) ;
 			int dest_x = this.Allocation.Width > ResizedPixbuf.Width ? (Allocation.Width - ResizedPixbuf.Width) / 2 : 0;
 			int dest_y = this.Allocation.Height > ResizedPixbuf.Height ? (Allocation.Height - ResizedPixbuf.Height) / 2 : 0;
@@ -107,5 +109,3 @@ namespace QSWidgetLib
 		}
 	} 
 }
-
-
