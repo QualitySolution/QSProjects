@@ -33,9 +33,6 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gtk-databind-lib">
-      <HintPath>..\..\..\gtk-databind-code\gtk-databind-lib\bin\Debug\gtk-databind-lib.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.dll</HintPath>
     </Reference>
@@ -74,11 +71,11 @@
       <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
       <Name>QSOrmProject</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\gtk-databind-code\gtk-databind-lib\System.Data.Bindings\System.Data.Bindings.csproj">
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\gtk-databind-code\gtk-databind-lib\gtk-databind-lib.csproj">
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\gtk-databind-lib.csproj">
       <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
       <Name>gtk-databind-lib</Name>
     </ProjectReference>
