@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
-using QSOrmProject;
 using NHibernate;
+using QSOrmProject;
 using QSTDI;
 
 namespace QSBanks
@@ -34,6 +35,8 @@ namespace QSBanks
 			set
 			{
 				accountOwner = value;
+				if(AccountOwner.Accounts == null)
+					AccountOwner.Accounts = new List<Account>();
 				accountsList = new GenericObservableList<Account>(AccountOwner.Accounts);
 				datatreeviewAccounts.ItemsDataSource = accountsList;
 			}
@@ -55,6 +58,8 @@ namespace QSBanks
 
 		void OnAccountUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
+			if (Session == null)
+				return;
 			Session.Lock(e.Subject, LockMode.Read);
 		}
 
