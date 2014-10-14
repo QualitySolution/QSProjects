@@ -203,9 +203,9 @@ namespace QSProjectsLib
 			return FieldsString;
 		}
 
-		public static void ErrorMessage(Window parent, Exception ex)
+		public static void ErrorMessage(Window parent, Exception ex, string userMessage = "")
 		{
-			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(parent, ex);
+			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(parent, ex, userMessage);
 			md.Run ();
 			md.Destroy();
 		}
