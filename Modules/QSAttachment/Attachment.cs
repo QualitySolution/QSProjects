@@ -41,6 +41,21 @@ namespace QSAttachment
 			iconviewFiles.Model = FilesStore;
 		}
 
+		public bool HasChanges
+		{
+			get
+			{
+				if (deletedItems.Count > 0)
+					return true;
+				foreach (object[] row in FilesStore)
+				{
+					if ((int)row[(int)FilesCol.id] == -1)
+						return true;
+				}
+				return false;
+			}
+		}
+
 		public void UpdateFileList()
 		{
 			if (TableName == "" || AttachToTable == "" || ItemId < 0)
