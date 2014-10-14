@@ -190,6 +190,7 @@ namespace QSOrmProject
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
+			datatreeviewRef.Selection.UnselectAll();
 			if (OrmMain.GetObjectDiscription(objectType).SimpleDialog)
 			{
 				RunSimpleDialog(null);
