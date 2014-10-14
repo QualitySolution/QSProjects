@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="536 226">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="536 280">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
@@ -43,11 +43,37 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
+                  <widget class="Gtk.Label" id="label1">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">К сожалению в программе произошла непредвиденная ошибка.</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="labelUserMessage">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">label2</property>
+                    <property name="Wrap">True</property>
+                    <property name="Selectable">True</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="Gtk.Label" id="label3">
                     <property name="MemberName" />
                     <property name="Xalign">0</property>
-                    <property name="LabelProp" translatable="yes">К сожалению в программе произошла непредвиденная ошибка. 
-Вы можете помочь нам улучшить программу, сообщив нам об ошибке.
+                    <property name="LabelProp" translatable="yes">Вы можете помочь нам улучшить программу, сообщив нам об ошибке.
 Для этого отправьте на адрес info@qsolution.ru, сообщение с 
 указанием следующей информации:
 * Название программы и версия
@@ -55,7 +81,7 @@
 * Техническое сообщение об ошибке </property>
                   </widget>
                   <packing>
-                    <property name="Position">0</property>
+                    <property name="Position">2</property>
                     <property name="AutoSize">False</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -93,7 +119,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">3</property>
                     <property name="AutoSize">True</property>
                   </packing>
                 </child>

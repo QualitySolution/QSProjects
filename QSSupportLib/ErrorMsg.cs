@@ -6,14 +6,17 @@ namespace QSSupportLib
 	public partial class ErrorMsg : Gtk.Dialog
 	{
 		Exception AppExpeption;
+		string message;
 
-		public ErrorMsg(Window parent, Exception ex)
+		public ErrorMsg(Window parent, Exception ex, string userMessage)
 		{
 			if(parent != null)
 				this.Parent = parent;
 			this.Build();
 
 			AppExpeption = ex;
+			message = userMessage;
+			labelUserMessage.LabelProp = userMessage;
 			textviewError.Buffer.Text = ex.ToString();
 		}
 
@@ -21,14 +24,15 @@ namespace QSSupportLib
 		{
 			Gtk.Clipboard clipboard = Gtk.Clipboard.Get(Gdk.Atom.Intern("CLIPBOARD", false));
 
-			string TextMsg = String.Format("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка:\n{3}", 
+			string TextMsg = String.Format("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {4}\n{3}", 
 			                               MainSupport.ProjectVerion.Product, 
 			                               MainSupport.ProjectVerion.Version.ToString(),
 			                               MainSupport.ProjectVerion.Edition,
-			                               AppExpeption.ToString());
+				AppExpeption.ToString(),
+				message
+			);
 			clipboard.Text = TextMsg;
 			clipboard.Store();
 		}
 	}
 }
-
