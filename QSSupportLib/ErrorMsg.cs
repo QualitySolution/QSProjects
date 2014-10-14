@@ -17,6 +17,7 @@ namespace QSSupportLib
 			AppExpeption = ex;
 			message = userMessage;
 			labelUserMessage.LabelProp = userMessage;
+			labelUserMessage.Visible = userMessage != "";
 			textviewError.Buffer.Text = ex.ToString();
 		}
 
