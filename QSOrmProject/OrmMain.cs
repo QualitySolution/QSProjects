@@ -12,22 +12,23 @@ namespace QSOrmProject
 	public static class OrmMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Configuration ormConfig;
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMaping> ClassMapingList;
 
 		public static void ConfigureOrm(string connectionString ,string[] assemblies)
 		{
-			var c = new Configuration(); 
+			ormConfig = new Configuration(); 
 
-			c.Configure();
-			c.SetProperty("connection.connection_string", connectionString);
+			ormConfig.Configure();
+			ormConfig.SetProperty("connection.connection_string", connectionString);
 
 			foreach(string ass in assemblies)
 			{
-				c.AddAssembly(ass);
+				ormConfig.AddAssembly(ass);
 			}
 
-			Sessions = c.BuildSessionFactory ();
+			Sessions = ormConfig.BuildSessionFactory ();
 		}
 
 		public static Type GetDialogType(System.Type objectClass)
@@ -74,6 +75,11 @@ namespace QSOrmProject
 				return null;
 			else
 				return FindMyDialog(child.Parent);
+		}
+
+		public static String GetDBTableName(System.Type objectClass)
+		{
+			return ormConfig.GetClassMapping(objectClass).RootTable.Name;
 		}
 	}
 
