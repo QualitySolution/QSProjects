@@ -203,6 +203,21 @@ namespace QSAttachment
 			FilesStore.Remove (ref iter);
 		}
 
+		public void SaveChanges()
+		{
+			MySqlTransaction trans = (MySqlTransaction)QSMain.ConnectionDB.BeginTransaction();
+			try
+			{
+				SaveChanges(trans);
+				trans.Commit();
+			}
+			catch(Exception ex)
+			{
+				trans.Rollback();
+				throw ex;
+			}
+		}
+
 		public void SaveChanges(MySqlTransaction trans)
 		{
 			logger.Info("Записывем изменения в списке файлов...");
