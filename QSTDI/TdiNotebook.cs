@@ -27,7 +27,7 @@ namespace QSTDI
 		public bool CloseAllTabs()
 		{
 			if (_tabs.Exists (t => (t.MasterTab is ITdiDialog && (t.MasterTab as ITdiDialog).HasChanges) ||
-			    (t.MasterTab is TdiSliderTab && (t.MasterTab as TdiSliderTab).ActiveDialog.HasChanges))) {
+				(t.MasterTab is TdiSliderTab && (t.MasterTab as TdiSliderTab).ActiveDialog != null && (t.MasterTab as TdiSliderTab).ActiveDialog.HasChanges))) {
 				string Message = "Вы действительно хотите закрыть программу? Все несохраненные изменения будут утеряны.";
 				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
 					                   MessageType.Question, 
@@ -35,23 +35,15 @@ namespace QSTDI
 					                   Message);
 				int result = md.Run ();
 				md.Destroy ();
-				if (result == (int)ResponseType.Yes) {
-					foreach (TdiTabInfo tabInfo in Tabs)
-						try {
-							CloseTab (tabInfo.MasterTab);
-						} catch (Exception e) {
-							logger.DebugException (e.Message, e);
-						}
-					return true;
-				} else return false;
+				if (result == (int)ResponseType.No) 
+					return false;
 			} 
-			else
-				foreach (TdiTabInfo tabInfo in Tabs)
-					try {
-						CloseTab (tabInfo.MasterTab);
-					} catch (Exception e) {
-						logger.DebugException (e.Message, e);
+
+			while(_tabs.Count > 0)
+			{
+				CloseTab (_tabs[0].MasterTab);
 			}
+
 			return true;
 		}
 
