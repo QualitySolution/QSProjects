@@ -12,12 +12,30 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		private bool sensitive = true;
 		public bool CanEditReference = true;
 		private System.Type subjectType;
 		public event EventHandler Changed;
 
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
+
+		public bool Sensitive
+		{
+			get {
+				return sensitive;
+			}
+			set {
+				if (sensitive == value)
+					return;
+				sensitive = value;
+				buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
+				if (buttonOpen.Sensitive != sensitive && sensitive == false)
+					buttonOpen.Sensitive = false;
+				if (subject != null && sensitive == true)
+					buttonOpen.Sensitive = true;
+			}
+		}
 
 		private object subject;
 		public object Subject
@@ -118,6 +136,7 @@ namespace QSOrmProject
 		public EntryReference()
 		{
 			this.Build();
+			buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
 		}
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)

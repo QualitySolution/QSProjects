@@ -216,7 +216,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSOrmProject.EntryReference" design-size="236 33">
+  <widget class="Gtk.Bin" id="QSOrmProject.EntryReference" design-size="236 34">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
