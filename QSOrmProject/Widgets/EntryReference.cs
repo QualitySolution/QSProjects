@@ -4,6 +4,7 @@ using NHibernate;
 using NHibernate.Proxy;
 using QSTDI;
 using NLog;
+using System.ComponentModel;
 
 namespace QSOrmProject
 {
@@ -20,6 +21,7 @@ namespace QSOrmProject
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
 
+		[Browsable (false)]
 		public new bool Sensitive
 		{
 			get {
