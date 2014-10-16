@@ -169,6 +169,12 @@ namespace QSOrmProject
 
 		protected void OnButtonOpenClicked(object sender, EventArgs e)
 		{
+			if(OrmMain.GetObjectDiscription(SubjectType).SimpleDialog)
+			{
+				OrmSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
+				return;
+			}
+
 			ITdiTab mytab = TdiHelper.FindMyTab(this);
 			if (mytab == null)
 			{

@@ -57,6 +57,7 @@
     <Compile Include="DataWidgets\DataEntryReference.cs" />
     <Compile Include="IDomainObject.cs" />
     <Compile Include="DataWidgets\DataImageViewer.cs" />
+    <Compile Include="OrmSimpleDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
