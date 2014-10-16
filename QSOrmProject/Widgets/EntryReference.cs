@@ -20,7 +20,7 @@ namespace QSOrmProject
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
 
-		public bool Sensitive
+		public new bool Sensitive
 		{
 			get {
 				return sensitive;
@@ -30,10 +30,7 @@ namespace QSOrmProject
 					return;
 				sensitive = value;
 				buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
-				if (buttonOpen.Sensitive != sensitive && sensitive == false)
-					buttonOpen.Sensitive = false;
-				if (subject != null && sensitive == true)
-					buttonOpen.Sensitive = true;
+				buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
 			}
 		}
 
@@ -136,7 +133,6 @@ namespace QSOrmProject
 		public EntryReference()
 		{
 			this.Build();
-			buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
 		}
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)
