@@ -81,6 +81,17 @@ namespace QSOrmProject
 		{
 			return ormConfig.GetClassMapping(objectClass).RootTable.Name;
 		}
+
+		public static bool EqualDomainObjects(object obj1, object obj2)
+		{
+			if (NHibernateUtil.GetClass(obj1) != NHibernateUtil.GetClass(obj2))
+				return false;
+
+			if (obj1 is IDomainObject)
+				return (obj1 as IDomainObject).Id == (obj2 as IDomainObject).Id;
+
+			return obj1.Equals(obj2);
+		}
 	}
 
 	public class OrmObjectMaping

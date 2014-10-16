@@ -77,7 +77,7 @@ namespace QSOrmProject
 
 		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			if(e.Subject.Equals(Subject))
+			if(OrmMain.EqualDomainObjects(e.Subject, Subject))
 			{
 				IOrmDialog dlg = OrmMain.FindMyDialog(this);
 				if (dlg != null)
