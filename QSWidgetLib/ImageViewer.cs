@@ -32,6 +32,7 @@ namespace QSWidgetLib
 			}
 			set {
 				_pixbuf = value;
+				OnSizeAllocated(this.Allocation);
 			}
 		}
 
