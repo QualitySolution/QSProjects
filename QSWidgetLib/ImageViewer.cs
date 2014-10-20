@@ -31,6 +31,8 @@ namespace QSWidgetLib
 				return _pixbuf;
 			}
 			set {
+				if (_pixbuf == value)
+					return;
 				_pixbuf = value;
 				OnSizeAllocated(this.Allocation);
 			}

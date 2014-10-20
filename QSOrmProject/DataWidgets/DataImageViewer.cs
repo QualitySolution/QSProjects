@@ -19,6 +19,8 @@ namespace QSOrmProject
 	//[GtkTypeWidgetFactoryProvider ("picturehandler", "DefaultFactoryCreate", typeof(Gdk.Pixbuf))]
 	public class DataImageViewer : ImageViewer, IAdaptableControl, IPostableControl
 	{
+		private byte[] oldUsedFile;
+
 		/// <summary>
 		/// Registered factory creation method
 		/// </summary>
@@ -178,7 +180,10 @@ namespace QSOrmProject
 					pixbuf = (Gdk.Pixbuf) adaptor.Value;
 				if(adaptor.Value is byte[])
 				{
-					pixbuf = new Gdk.Pixbuf(adaptor.Value as byte[]);
+					if (adaptor.Value as byte[] == oldUsedFile)
+						return;
+					oldUsedFile = adaptor.Value as byte[];
+					pixbuf = new Gdk.Pixbuf(oldUsedFile);
 				}
 			}
 				
