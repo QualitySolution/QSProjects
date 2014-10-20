@@ -56,6 +56,8 @@ namespace QSTDI
 			Button closeButton = new Button(closeImage);
 			closeButton.Relief = ReliefStyle.None;
 			closeButton.Clicked += OnCloseButtonClicked;
+			closeButton.ModifierStyle.Xthickness = 0;
+			closeButton.ModifierStyle.Ythickness = 0;
 			box.Add(closeButton);
 			box.ShowAll();
 			if(UseSliderTab && tab is ITdiJournal)
