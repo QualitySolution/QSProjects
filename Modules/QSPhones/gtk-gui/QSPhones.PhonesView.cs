@@ -45,7 +45,7 @@ namespace QSPhones
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.UseUnderline = true;
 			global::Gtk.Image w1 = new global::Gtk.Image ();
-			w1.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			w1.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			this.buttonDelete.Image = w1;
 			this.datatable1.Add (this.buttonDelete);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.datatable1 [this.buttonDelete]));
@@ -56,11 +56,15 @@ namespace QSPhones
 			// Container child datatable1.Gtk.Table+TableChild
 			this.comboType = new global::Gtk.DataBindings.DataComboBox ();
 			this.comboType.WidthRequest = 100;
+			this.comboType.CanFocus = true;
 			this.comboType.Name = "comboType";
-			this.comboType.InheritedDataSource = false;
+			this.comboType.InheritedDataSource = true;
+			this.comboType.Mappings = "NumberType";
+			this.comboType.ColumnMappings = "{QSPhones.PhoneType} Name[Имя]";
 			this.comboType.InheritedBoundaryDataSource = false;
 			this.comboType.CursorPointsEveryType = false;
-			this.comboType.InheritedDataSource = false;
+			this.comboType.InheritedDataSource = true;
+			this.comboType.Mappings = "NumberType";
 			this.comboType.InheritedBoundaryDataSource = false;
 			this.datatable1.Add (this.comboType);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.datatable1 [this.comboType]));
@@ -72,9 +76,11 @@ namespace QSPhones
 			this.entryAdditional.Name = "entryAdditional";
 			this.entryAdditional.IsEditable = true;
 			this.entryAdditional.InvisibleChar = '●';
-			this.entryAdditional.InheritedDataSource = false;
+			this.entryAdditional.InheritedDataSource = true;
+			this.entryAdditional.Mappings = "Additional";
 			this.entryAdditional.InheritedBoundaryDataSource = false;
-			this.entryAdditional.InheritedDataSource = false;
+			this.entryAdditional.InheritedDataSource = true;
+			this.entryAdditional.Mappings = "Additional";
 			this.entryAdditional.InheritedBoundaryDataSource = false;
 			this.entryAdditional.Editable = false;
 			this.datatable1.Add (this.entryAdditional);
@@ -90,9 +96,11 @@ namespace QSPhones
 			this.entryPhone.IsEditable = true;
 			this.entryPhone.WidthChars = 19;
 			this.entryPhone.InvisibleChar = '●';
-			this.entryPhone.InheritedDataSource = false;
+			this.entryPhone.InheritedDataSource = true;
+			this.entryPhone.Mappings = "Number";
 			this.entryPhone.InheritedBoundaryDataSource = false;
-			this.entryPhone.InheritedDataSource = false;
+			this.entryPhone.InheritedDataSource = true;
+			this.entryPhone.Mappings = "Number";
 			this.entryPhone.InheritedBoundaryDataSource = false;
 			this.entryPhone.Editable = false;
 			this.datatable1.Add (this.entryPhone);

@@ -2,12 +2,33 @@
 using System.Text.RegularExpressions;
 using Gtk;
 using Gtk.DataBindings;
+using NHibernate;
+using System.Data.Bindings.Collections;
 
 namespace QSPhones
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class PhonesView : Gtk.Bin
 	{
+		private ISession session;
+		private ObservableList list;
+
+		public ISession Session
+		{
+			get {
+				return session;
+			}
+			set {
+				session = value;
+				if (session != null) {
+					var criteria = session.CreateCriteria<PhoneType>();
+					list = new ObservableList (criteria.List ());
+					comboType.ItemsDataSource = list;
+				}
+			}
+		}
+
+
 		uint RowNum;
 
 		public PhonesView ()
@@ -16,10 +37,8 @@ namespace QSPhones
 			entryPhone.IsEditable = true;
 			entryAdditional.IsEditable = true;
 			entryPhone.MaxLength = 19;
+			comboType.Sensitive = true;
 			RowNum = datatable1.NRows;
-
-			//datat
-
 		}
 
 		protected void OnEntryPhoneTextInserted (object o, Gtk.TextInsertedArgs args)
@@ -44,28 +63,29 @@ namespace QSPhones
 		protected void OnEntryPhoneTextDeleted (object o, Gtk.TextDeletedArgs args)
 		{
 			FormatString (o);
-			if (args.StartPos > (o as DataEntry).Text.Length)
-				(o as DataEntry).Position = (o as DataEntry).Text.Length;
+			DataEntry Entry = o as DataEntry;
+			if (args.StartPos > Entry.Text.Length)
+				Entry.Position = Entry.Text.Length;
 			else
-				(o as DataEntry).Position = args.StartPos;
+				Entry.Position = args.StartPos;
 			if (args.StartPos == 16 && args.EndPos == 17) {			//Backspace
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (13, 1);
-				(o as DataEntry).Position = 13;
+				Entry.Text = Entry.Text.Remove (13, 1);
+				Entry.Position = 13;
 			} else if (args.StartPos == 11 && args.EndPos == 12) {
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (8, 1);
-				(o as DataEntry).Position = 8;
+				Entry.Text = Entry.Text.Remove (8, 1);
+				Entry.Position = 8;
 			} else if (args.StartPos == 5 && args.EndPos == 6) {
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (3, 1);
-				(o as DataEntry).Position = 3;
+				Entry.Text = Entry.Text.Remove (3, 1);
+				Entry.Position = 3;
 			} else if (args.StartPos == 14 && args.EndPos == 15) { 	//Delete
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (17, 1);
-				(o as DataEntry).Position = 17;
+				Entry.Text = Entry.Text.Remove (17, 1);
+				Entry.Position = 17;
 			} else if (args.StartPos == 9 && args.EndPos == 10) {
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (12, 1);
-				(o as DataEntry).Position = 12;
+				Entry.Text = Entry.Text.Remove (12, 1);
+				Entry.Position = 12;
 			} else if (args.StartPos == 4 && args.EndPos == 5) {
-				(o as DataEntry).Text = (o as DataEntry).Text.Remove (6, 1);
-				(o as DataEntry).Position = 6;
+				Entry.Text = Entry.Text.Remove (6, 1);
+				Entry.Position = 6;
 			}
 		}
 
@@ -97,6 +117,9 @@ namespace QSPhones
 			phoneDataCombo.InheritedDataSource = false;
 			phoneDataCombo.InheritedBoundaryDataSource = false;
 			phoneDataCombo.WidthRequest = 100;
+			phoneDataCombo.ItemsDataSource = list;
+			phoneDataCombo.Mappings = "NumberType";
+			phoneDataCombo.ColumnMappings = "{QSPhones.PhoneType} Name[Имя]";
 			datatable1.Attach (phoneDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
 
@@ -107,6 +130,7 @@ namespace QSPhones
 			phoneDataEntry.CanFocus = true;
 			phoneDataEntry.IsEditable = true;
 			phoneDataEntry.WidthChars = 19;
+			phoneDataEntry.MaxLength = 19;
 			phoneDataEntry.InheritedDataSource = false;
 			phoneDataEntry.InheritedBoundaryDataSource = false;
 			phoneDataEntry.InheritedDataSource = false;
@@ -132,7 +156,7 @@ namespace QSPhones
 			deleteButton.CanFocus = true;
 			deleteButton.UseUnderline = true;
 			Gtk.Image image = new Gtk.Image ();
-			image.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			image.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			deleteButton.Image = image;
 			deleteButton.Clicked += OnButtonDeleteClicked;
 			datatable1.Attach (deleteButton, (uint)5, (uint)6, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);

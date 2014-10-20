@@ -32,7 +32,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
-                <property name="Icon">stock:gtk-cancel Menu</property>
+                <property name="Icon">stock:gtk-delete Menu</property>
                 <property name="Label" translatable="yes" />
                 <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="OnButtonDeleteClicked" />
@@ -55,12 +55,16 @@
               <widget class="Gtk.DataBindings.DataComboBox" id="comboType">
                 <property name="MemberName" />
                 <property name="WidthRequest">100</property>
+                <property name="CanFocus">True</property>
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">NumberType</property>
+                <property name="ColumnMappings">{QSPhones.PhoneType} Name[Имя]</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="CursorPointsEveryType">False</property>
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">NumberType</property>
                 <property name="InheritedBoundaryDataSource">False</property>
               </widget>
               <packing>
@@ -81,9 +85,11 @@
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
                 <property name="InvisibleChar">●</property>
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">Additional</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">Additional</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="Editable">False</property>
               </widget>
@@ -108,9 +114,11 @@
                 <property name="IsEditable">True</property>
                 <property name="WidthChars">19</property>
                 <property name="InvisibleChar">●</property>
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">Number</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">False</property>
+                <property name="InheritedDataSource">True</property>
+                <property name="Mappings">Number</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="Editable">False</property>
                 <signal name="TextInserted" handler="OnEntryPhoneTextInserted" />
