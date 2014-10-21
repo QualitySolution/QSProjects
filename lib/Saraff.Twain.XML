@@ -1571,6 +1571,13 @@
             <param name="type">Управляемый тип.</param>
             <returns>Код типа данный twain.</returns>
         </member>
+        <member name="M:Saraff.Twain.TwTypeHelper.TypeOf(System.Object)">
+            <summary>
+            Возвращает соответствующий объекту twain-тип.
+            </summary>
+            <param name="obj">Объект.</param>
+            <returns>Код типа данный twain.</returns>
+        </member>
         <member name="M:Saraff.Twain.TwTypeHelper.SizeOf(Saraff.Twain.TwType)">
             <summary>
             Возвращает размер twain-типа в неуправляемом блоке памяти.
@@ -2197,6 +2204,14 @@
             <param name="value">The value.</param>
             <param name="type">The type.</param>
         </member>
+        <member name="M:Saraff.Twain.TwCapability.#ctor(Saraff.Twain.TwCap,System.String,Saraff.Twain.TwType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Saraff.Twain.TwCapability"/> class.
+            </summary>
+            <param name="cap">The cap.</param>
+            <param name="value">The value.</param>
+            <param name="type">The type.</param>
+        </member>
         <member name="M:Saraff.Twain.TwCapability.#ctor(Saraff.Twain.TwCap,Saraff.Twain.TwRange)">
             <summary>
             Initializes a new instance of the <see cref="T:Saraff.Twain.TwCapability"/> class.
@@ -2244,6 +2259,11 @@
         <member name="T:Saraff.Twain.TwOneValue">
             <summary>
             Container for one value.
+            </summary>
+        </member>
+        <member name="T:Saraff.Twain.TwOneCustumValue">
+            <summary>
+            Container for one custom value.
             </summary>
         </member>
         <member name="T:Saraff.Twain.TwRange">
