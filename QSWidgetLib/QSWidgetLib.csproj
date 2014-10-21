@@ -8,8 +8,6 @@
     <RootNamespace>QSWidgetLib</RootNamespace>
     <AssemblyName>QSWidgetLib</AssemblyName>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +52,7 @@
     <Compile Include="ImageViewer.cs" />
     <Compile Include="VImagesList.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.VImagesList.cs" />
+    <Compile Include="ValidatedEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
