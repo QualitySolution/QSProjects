@@ -102,8 +102,8 @@ namespace QSPhones
 					Number = Number.Insert (9, " - ");
 				if (Number.Length > 14)
 					Number = Number.Insert (14, " - ");
-				(o as DataEntry).Text = Number;
 			}
+			(o as DataEntry).Text = Number;
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
