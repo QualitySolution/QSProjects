@@ -41,6 +41,9 @@
     <Reference Include="NHibernate">
       <HintPath>..\..\..\Vodovoz\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\lib\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,14 +62,6 @@
     <EmbeddedResource Include="Database.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\gtk-databind-lib.csproj">
-      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
-      <Name>gtk-databind-lib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSTDI\QSTDI.csproj">
       <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
       <Name>QSTDI</Name>
@@ -82,6 +77,14 @@
     <ProjectReference Include="..\..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\gtk-databind-lib.csproj">
+      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
+      <Name>gtk-databind-lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

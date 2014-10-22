@@ -5,21 +5,21 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
-    <widget-library name="../bin/Debug/QSPhones.dll" internal="true" />
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
+    <widget-library name="../bin/Debug/QSPhones.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSPhones.PhonesView" design-size="391 68">
+  <widget class="Gtk.Bin" id="QSPhones.PhonesView" design-size="440 68">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
       <widget class="Gtk.VBox" id="vbox1">
         <property name="MemberName" />
         <child>
-          <widget class="Gtk.DataBindings.DataTable" id="datatable1">
+          <widget class="Gtk.DataBindings.DataTable" id="datatablePhones">
             <property name="MemberName" />
             <property name="NColumns">6</property>
             <property name="ColumnSpacing">6</property>
@@ -28,166 +28,33 @@
             <property name="InheritedDataSource">False</property>
             <property name="InheritedBoundaryDataSource">False</property>
             <child>
-              <widget class="Gtk.Button" id="buttonDelete">
-                <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="Type">TextAndIcon</property>
-                <property name="Icon">stock:gtk-delete Menu</property>
-                <property name="Label" translatable="yes" />
-                <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonDeleteClicked" />
-              </widget>
-              <packing>
-                <property name="LeftAttach">5</property>
-                <property name="RightAttach">6</property>
-                <property name="AutoSize">False</property>
-                <property name="XOptions">0</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">False</property>
-                <property name="XFill">False</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataComboBox" id="comboType">
-                <property name="MemberName" />
-                <property name="WidthRequest">100</property>
-                <property name="CanFocus">True</property>
-                <property name="IsTextCombo">False</property>
-                <property name="Items" translatable="yes" />
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">NumberType</property>
-                <property name="ColumnMappings">{QSPhones.PhoneType} Name[Имя]</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="CursorPointsEveryType">False</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">NumberType</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-              </widget>
-              <packing>
-                <property name="AutoSize">False</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">True</property>
-                <property name="XFill">True</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataEntry" id="entryAdditional">
-                <property name="MemberName" />
-                <property name="WidthRequest">50</property>
-                <property name="CanFocus">True</property>
-                <property name="IsEditable">True</property>
-                <property name="InvisibleChar">●</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Additional</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Additional</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">False</property>
-              </widget>
-              <packing>
-                <property name="LeftAttach">4</property>
-                <property name="RightAttach">5</property>
-                <property name="AutoSize">False</property>
-                <property name="XOptions">0</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">False</property>
-                <property name="XFill">False</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataEntry" id="entryPhone">
-                <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="IsEditable">True</property>
-                <property name="WidthChars">19</property>
-                <property name="InvisibleChar">●</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Number</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Number</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">False</property>
-                <signal name="TextInserted" handler="OnEntryPhoneTextInserted" />
-                <signal name="TextDeleted" handler="OnEntryPhoneTextDeleted" />
-              </widget>
-              <packing>
-                <property name="LeftAttach">2</property>
-                <property name="RightAttach">3</property>
-                <property name="AutoSize">False</property>
-                <property name="XOptions">0</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">False</property>
-                <property name="XFill">False</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
-              <widget class="Gtk.Label" id="label1">
-                <property name="MemberName" />
-                <property name="Xalign">1</property>
-                <property name="LabelProp" translatable="yes">+7</property>
-              </widget>
-              <packing>
-                <property name="LeftAttach">1</property>
-                <property name="RightAttach">2</property>
-                <property name="AutoSize">False</property>
-                <property name="XOptions">0</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">False</property>
-                <property name="XFill">False</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
             <child>
-              <widget class="Gtk.Label" id="label2">
-                <property name="MemberName" />
-                <property name="LabelProp" translatable="yes">доб.</property>
-              </widget>
-              <packing>
-                <property name="LeftAttach">3</property>
-                <property name="RightAttach">4</property>
-                <property name="AutoSize">False</property>
-                <property name="XOptions">0</property>
-                <property name="YOptions">0</property>
-                <property name="XExpand">False</property>
-                <property name="XFill">False</property>
-                <property name="XShrink">False</property>
-                <property name="YExpand">False</property>
-                <property name="YFill">False</property>
-                <property name="YShrink">False</property>
-              </packing>
+              <placeholder />
             </child>
           </widget>
           <packing>
             <property name="Position">0</property>
             <property name="AutoSize">True</property>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
           </packing>
         </child>
         <child>
           <widget class="Gtk.Button" id="buttonAdd">
             <property name="MemberName" />
+            <property name="Sensitive">False</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
             <property name="Icon">stock:gtk-add Menu</property>

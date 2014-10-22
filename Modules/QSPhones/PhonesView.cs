@@ -4,14 +4,20 @@ using Gtk;
 using Gtk.DataBindings;
 using NHibernate;
 using System.Data.Bindings.Collections;
+using System.Collections.Generic;
+using System.Data.Bindings.Collections.Generic;
+using System.Data.Bindings;
+using NLog;
 
 namespace QSPhones
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class PhonesView : Gtk.Bin
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
-		private ObservableList list;
+		private GenericObservableList<Phone> PhonesList;
+		private Adaptor PhoneTypesAdaptor = new Adaptor();
 
 		public ISession Session
 		{
@@ -22,23 +28,74 @@ namespace QSPhones
 				session = value;
 				if (session != null) {
 					var criteria = session.CreateCriteria<PhoneType>();
-					list = new ObservableList (criteria.List ());
-					comboType.ItemsDataSource = list;
+					PhoneTypesAdaptor.Target = new ObservableList (criteria.List ());
 				}
 			}
 		}
 
+		private IList<Phone> phones;
+		public IList<Phone> Phones
+		{
+			get {
+				return phones;
+			}
+			set {
+				if (phones == value)
+					return;
+				if (PhonesList != null)
+					CleanList();
+				phones = value;
+				buttonAdd.Sensitive = phones != null;
+				if (value != null) {
+					PhonesList = new GenericObservableList<Phone> (phones);
+					PhonesList.ElementAdded += OnPhoneListElementAdded;
+					PhonesList.ElementRemoved += OnPhoneListElementRemoved;
+					if (PhonesList.Count == 0)
+						PhonesList.Add(new Phone());
+					else
+					{
+						foreach (Phone phone in PhonesList)
+							AddPhoneRow(phone);
+					}
+				}
+			}
+		}
+
+		void OnPhoneListElementRemoved (object aList, int[] aIdx, object aObject)
+		{
+			Widget foundWidget = null;
+			foreach(Widget wid in datatablePhones.AllChildren)
+			{
+				if(wid is IAdaptableContainer && (wid as IAdaptableContainer).Adaptor.Adaptor.FinalTarget == aObject)
+				{
+					foundWidget = wid;
+					break;
+				}
+			}
+			if(foundWidget == null)
+			{
+				logger.Warn("Не найден виджет ассоциированный с удаленным телефоном.");
+				return;
+			}
+
+			Table.TableChild child = ((Table.TableChild)(this.datatablePhones [foundWidget]));
+			RemoveRow(child.TopAttach);
+		}
+
+		void OnPhoneListElementAdded (object aList, int[] aIdx)
+		{
+			foreach(int i in aIdx)
+			{
+				AddPhoneRow(PhonesList[i]);
+			}
+		}
 
 		uint RowNum;
 
 		public PhonesView ()
 		{
 			this.Build ();
-			entryPhone.IsEditable = true;
-			entryAdditional.IsEditable = true;
-			entryPhone.MaxLength = 19;
-			comboType.Sensitive = true;
-			RowNum = datatable1.NRows;
+			datatablePhones.NRows = RowNum = 0;
 		}
 
 		protected void OnEntryPhoneTextInserted (object o, Gtk.TextInsertedArgs args)
@@ -108,91 +165,98 @@ namespace QSPhones
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
-			datatable1.NRows = RowNum + 1;
+			PhonesList.Add(new Phone());
+		}
 
-			DataComboBox phoneDataCombo = new DataComboBox ();
-			phoneDataCombo.InheritedDataSource = false;
-			phoneDataCombo.InheritedBoundaryDataSource = false;
-			phoneDataCombo.CursorPointsEveryType = false;
-			phoneDataCombo.InheritedDataSource = false;
-			phoneDataCombo.InheritedBoundaryDataSource = false;
+		private void AddPhoneRow(Phone newPhone) 
+		{
+			datatablePhones.NRows = RowNum + 1;
+			Adaptor rowAdaptor = new Adaptor(newPhone);
+
+			DataComboBox phoneDataCombo = new DataComboBox (rowAdaptor, "NumberType");
 			phoneDataCombo.WidthRequest = 100;
-			phoneDataCombo.ItemsDataSource = list;
-			phoneDataCombo.Mappings = "NumberType";
+			phoneDataCombo.ItemsDataSource = PhoneTypesAdaptor;
 			phoneDataCombo.ColumnMappings = "{QSPhones.PhoneType} Name[Имя]";
-			datatable1.Attach (phoneDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
-
+			datatablePhones.Attach (phoneDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textPhoneLabel = new Gtk.Label ("+7");
-			datatable1.Attach (textPhoneLabel, (uint)1, (uint)2, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (textPhoneLabel, (uint)1, (uint)2, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataEntry phoneDataEntry = new DataEntry ();
+			DataEntry phoneDataEntry = new DataEntry (rowAdaptor, "Number");
 			phoneDataEntry.CanFocus = true;
 			phoneDataEntry.IsEditable = true;
 			phoneDataEntry.WidthChars = 19;
 			phoneDataEntry.MaxLength = 19;
-			phoneDataEntry.InheritedDataSource = false;
-			phoneDataEntry.InheritedBoundaryDataSource = false;
-			phoneDataEntry.InheritedDataSource = false;
-			phoneDataEntry.InheritedBoundaryDataSource = false;
 			phoneDataEntry.TextInserted += OnEntryPhoneTextInserted;
 			phoneDataEntry.TextDeleted += OnEntryPhoneTextDeleted;
-			datatable1.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textAdditionalLabel = new Gtk.Label ("доб.");
-			datatable1.Attach (textAdditionalLabel, (uint)3, (uint)4, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (textAdditionalLabel, (uint)3, (uint)4, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataEntry additionalDataEntry = new DataEntry ();
+			DataEntry additionalDataEntry = new DataEntry (rowAdaptor,"Additional");
 			additionalDataEntry.WidthRequest = 50;
-			additionalDataEntry.CanFocus = true;
-			additionalDataEntry.IsEditable = true;
-			additionalDataEntry.InheritedDataSource = false;
-			additionalDataEntry.InheritedBoundaryDataSource = false;
-			additionalDataEntry.InheritedDataSource = false;
-			additionalDataEntry.InheritedBoundaryDataSource = false;
-			datatable1.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
-			deleteButton.CanFocus = true;
-			deleteButton.UseUnderline = true;
 			Gtk.Image image = new Gtk.Image ();
-			image.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
+			image.Pixbuf = Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			deleteButton.Image = image;
 			deleteButton.Clicked += OnButtonDeleteClicked;
-			datatable1.Attach (deleteButton, (uint)5, (uint)6, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (deleteButton, (uint)5, (uint)6, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			datatable1.ShowAll ();
+			datatablePhones.ShowAll ();
 
 			RowNum++;
 		}
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			uint Row;
-			Table.TableChild child = ((Table.TableChild)(this.datatable1 [(Widget)sender]));
-			Row = child.TopAttach;
-			foreach (Widget w in datatable1.Children)
-				if (((Table.TableChild)(this.datatable1 [w])).TopAttach == Row) {
-					datatable1.Remove (w);
+			Table.TableChild child = ((Table.TableChild)(this.datatablePhones [(Widget)sender]));
+			RemoveRow(child.TopAttach);
+		}
+
+		private void RemoveRow(uint Row)
+		{
+			foreach (Widget w in datatablePhones.Children)
+				if (((Table.TableChild)(this.datatablePhones [w])).TopAttach == Row) {
+					datatablePhones.Remove (w);
 					w.Destroy ();
 				}
-			for (uint i = Row + 1; i < datatable1.NRows; i++)
+			for (uint i = Row + 1; i < datatablePhones.NRows; i++)
 				MoveRowUp (i);
-			datatable1.NRows = --RowNum;
+			datatablePhones.NRows = --RowNum;
 		}
 
 		protected void MoveRowUp(uint Row)
 		{
-			foreach (Widget w in datatable1.Children)
-				if (((Table.TableChild)(this.datatable1 [w])).TopAttach == Row) {
-					uint Left = ((Table.TableChild)(this.datatable1 [w])).LeftAttach;
-					uint Right = ((Table.TableChild)(this.datatable1 [w])).RightAttach;
-					datatable1.Remove (w);
+			foreach (Widget w in datatablePhones.Children)
+				if (((Table.TableChild)(this.datatablePhones [w])).TopAttach == Row) {
+					uint Left = ((Table.TableChild)(this.datatablePhones [w])).LeftAttach;
+					uint Right = ((Table.TableChild)(this.datatablePhones [w])).RightAttach;
+					datatablePhones.Remove (w);
 					if (w.GetType() == typeof(DataComboBox))
-						datatable1.Attach (w, Left, Right, Row - 1, Row, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
+						datatablePhones.Attach (w, Left, Right, Row - 1, Row, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 					else
-						datatable1.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+						datatablePhones.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 				}
+		}
+
+		private void CleanList()
+		{
+			while (PhonesList.Count > 0)
+			{
+				PhonesList.RemoveAt(0);
+			}
+		}
+
+		public void SaveChanges()
+		{
+			foreach(Phone phone in PhonesList)
+			{
+				if(phone.Number != "")
+					Session.SaveOrUpdate(phone);
+			}
 		}
 	}
 }
