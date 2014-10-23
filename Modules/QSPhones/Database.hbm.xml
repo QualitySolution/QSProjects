@@ -16,5 +16,18 @@
 	 	</id>
 		<property name="Name" column="name" />
 	</class>
+	<class name="Email" lazy="false" table="emails">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+	 	<property name="Address" column="address" />
+	 	<many-to-one name="EmailType" class="EmailType" column="type_id" />
+ 	</class>
+ 	<class name="EmailType" lazy="false" table="email_types">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+		<property name="Name" column="name" />
+	</class>
 
 </hibernate-mapping>

@@ -4,7 +4,7 @@ using QSOrmProject;
 namespace QSPhones
 {
 	[OrmSubjectAttibutes("Типы телефонов")]
-	public class PhoneType
+	public class PhoneType : IDomainObject
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
