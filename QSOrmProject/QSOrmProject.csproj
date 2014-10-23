@@ -58,6 +58,7 @@
     <Compile Include="IDomainObject.cs" />
     <Compile Include="DataWidgets\DataImageViewer.cs" />
     <Compile Include="OrmSimpleDialog.cs" />
+    <Compile Include="DataWidgets\DataValidatedEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -77,13 +78,13 @@
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gtk.DataBindings\gtk-databind-lib.csproj">
       <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
       <Name>gtk-databind-lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
