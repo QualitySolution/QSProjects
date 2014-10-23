@@ -1,6 +1,7 @@
 ﻿using System;
 using QSOrmProject;
 using System.Data.Bindings;
+using System.Text.RegularExpressions;
 
 namespace QSPhones
 {
@@ -9,7 +10,20 @@ namespace QSPhones
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
-		public virtual string Number { get; set; }
+		string number;
+		public virtual string Number
+		{
+			get
+			{
+				return number;
+			}
+			set
+			{
+				number = value;
+				DigitsNumber = Regex.Replace (Number, "[^0-9]", "");
+			}
+		}
+		public virtual string DigitsNumber { get; private set; }
 		public virtual string Additional { get; set; }
 
 		private PhoneType numberType;

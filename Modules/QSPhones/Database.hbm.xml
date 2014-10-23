@@ -6,6 +6,7 @@
 			<generator class="native"></generator>
 	 	</id>
 	 	<property name="Number" column="number" />
+	 	<property name="DigitsNumber" column="digits_number" />
 	 	<property name="Additional" column="additional" />
 	 	<many-to-one name="NumberType" class="PhoneType" column="type_id" />
  	</class>
