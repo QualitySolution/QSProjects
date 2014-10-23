@@ -212,8 +212,23 @@ namespace QSPhones
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			Table.TableChild child = ((Table.TableChild)(this.datatablePhones [(Widget)sender]));
-			RemoveRow(child.TopAttach);
+			Table.TableChild delButtonInfo = ((Table.TableChild)(this.datatablePhones [(Widget)sender]));
+			Widget foundWidget = null;
+			foreach(Widget wid in datatablePhones.AllChildren)
+			{
+				if(wid is IAdaptableContainer && delButtonInfo.TopAttach == (datatablePhones[wid] as Table.TableChild).TopAttach)
+				{
+					foundWidget = wid;
+					break;
+				}
+			}
+			if(foundWidget == null)
+			{
+				logger.Warn("Не найден виджет ассоциированный с удаленным телефоном.");
+				return;
+			}
+
+			PhonesList.Remove((Phone)(foundWidget as IAdaptableContainer).Adaptor.Adaptor.FinalTarget);
 		}
 
 		private void RemoveRow(uint Row)

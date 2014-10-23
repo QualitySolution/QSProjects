@@ -21,7 +21,7 @@ namespace QSPhones
 			this.vbox1.Name = "vbox1";
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.datatablePhones = new global::Gtk.DataBindings.DataTable (((uint)(1)), ((uint)(6)), false);
-			this.datatablePhones.Name = "datatable1";
+			this.datatablePhones.Name = "datatablePhones";
 			this.datatablePhones.ColumnSpacing = ((uint)(6));
 			this.datatablePhones.InheritedDataSource = false;
 			this.datatablePhones.InheritedBoundaryDataSource = false;
