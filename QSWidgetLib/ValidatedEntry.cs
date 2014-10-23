@@ -6,33 +6,25 @@ namespace QSWidgetLib
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class ValidatedEntry : Gtk.Entry
 	{
-		public enum Validation {
-			none,
-			numeric,
-			email,
-			single_word,
-			phone
-		};
-
-		private Validation validationType;
-		public Validation ValidationType {
+		private ValidationType validationMode;
+		public ValidationType ValidationMode {
 			get {
-				return validationType;
+				return validationMode;
 			}
 			set { 
-				validationType = value;
-				switch (validationType) {
-				case Validation.numeric:
+				validationMode = value;
+				switch (validationMode) {
+				case ValidationType.numeric:
 					this.TextInserted += NumericValidate;
 					break;
-				case Validation.phone:
+				case ValidationType.phone:
 					this.MaxLength = 19;
 					this.TextInserted += PhoneTextInserted;
 					this.TextDeleted += PhoneTextDeleted;
 					break;
-				case Validation.single_word:
+				case ValidationType.single_word:
 					break;
-				case Validation.email:
+				case ValidationType.email:
 					this.Changed += EmailValidate;
 					break;
 				default:
@@ -43,7 +35,7 @@ namespace QSWidgetLib
 
 		public ValidatedEntry () 
 		{
-			ValidationType = Validation.none;
+			ValidationMode = ValidationType.none;
 		}
 
 		protected void PhoneTextInserted (object o, Gtk.TextInsertedArgs args)
@@ -129,5 +121,13 @@ namespace QSWidgetLib
 				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal);
 		}
 	}
+
+	public enum ValidationType {
+		none,
+		numeric,
+		email,
+		single_word,
+		phone
+	};
 }
 
