@@ -84,6 +84,9 @@ namespace QSOrmProject
 
 		public static bool EqualDomainObjects(object obj1, object obj2)
 		{
+			if (obj1 == null || obj2 == null)
+				return false;
+
 			if (NHibernateUtil.GetClass(obj1) != NHibernateUtil.GetClass(obj2))
 				return false;
 
