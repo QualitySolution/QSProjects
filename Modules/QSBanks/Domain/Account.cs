@@ -1,16 +1,29 @@
 ﻿using System;
 using QSOrmProject;
+using System.Data.Bindings;
 
 namespace QSBanks
 {
 	[OrmSubjectAttibutes("Банковский счет")]
-	public class Account
+	public class Account : BaseNotifyPropertyChanged
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
-		public virtual Bank InBank { get; set; }
 		public virtual string Number { get; set; }
+
+		Bank inBank;
+		public virtual Bank InBank {
+			get {
+				return inBank;
+			}
+			set {
+				if (inBank == value)
+					return;
+				inBank = value;
+				OnPropertyChanged ("InBank");
+			}
+		}
 		#endregion
 
 		public bool IsDefault { get; set; }

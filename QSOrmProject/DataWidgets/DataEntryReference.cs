@@ -243,8 +243,8 @@ namespace Gtk.DataBindings
 		/// </summary>
 		protected override void OnChanged()
 		{
-			base.OnChanged();
 			adaptor.DemandInstantPost();
+			base.OnChanged();
 		}
 		
 		/// <summary>

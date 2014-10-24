@@ -94,7 +94,7 @@ namespace QSBanks
 			dataentryrefBank.SubjectType = typeof(Bank);
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
-			datavboxBank.DataSource = adaptorBank;
+			datatableBank.DataSource = adaptorBank;
 		}
 
 		public bool Save()
@@ -126,7 +126,6 @@ namespace QSBanks
 		protected void OnDataentryrefBankChanged(object sender, EventArgs e)
 		{
 			adaptorBank.Target = subject.InBank;
-			adaptorBank.GetRequest();
 		}
 	}
 }
