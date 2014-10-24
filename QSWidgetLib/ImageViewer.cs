@@ -98,7 +98,7 @@ namespace QSWidgetLib
 			if(ResizedPixbuf == null || ResizedPixbuf.Width != Width || ResizedPixbuf.Height != Heigth)
 				ResizedPixbuf = _pixbuf.ScaleSimple (Width,
 					Heigth,
-					InterpType.Bilinear);
+					InterpType.Nearest);
 			int ReqHeigth = _VerticalFit ? 1 : Heigth;
 			int ReqWidth = _HorizontalFit ? 1 : Width;
 
