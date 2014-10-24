@@ -11,7 +11,8 @@ namespace QSPhones
 		{
 			return new List<OrmObjectMaping>
 			{
-				new OrmObjectMaping(typeof(PhoneType), null, "{QSPhones.PhoneType} Name[Название];")
+				new OrmObjectMaping(typeof(PhoneType), null, "{QSPhones.PhoneType} Name[Название];"),
+				new OrmObjectMaping(typeof(EmailType), null, "{QSPhones.EmailType} Name[Название];")
 			};
 		}
 	}

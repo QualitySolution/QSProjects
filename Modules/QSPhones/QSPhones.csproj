@@ -53,6 +53,10 @@
     <Compile Include="Domain\Phone.cs" />
     <Compile Include="Domain\PhoneType.cs" />
     <Compile Include="QSPhonesMain.cs" />
+    <Compile Include="EmailsView.cs" />
+    <Compile Include="gtk-gui\QSPhones.EmailsView.cs" />
+    <Compile Include="Domain\Email.cs" />
+    <Compile Include="Domain\EmailType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
