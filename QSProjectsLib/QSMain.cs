@@ -12,6 +12,7 @@ namespace QSProjectsLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		public static Window ErrorDlgParrent;
 		public static DataProviders DBMS;
 		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;
@@ -203,8 +204,31 @@ namespace QSProjectsLib
 			return FieldsString;
 		}
 
+		public static void ErrorMessageWithLog(string userMessage, Logger logger, Exception ex, LogLevel level = null)
+		{
+			if (level == null)
+				level = LogLevel.Error;
+			logger.LogException(level, userMessage, ex);
+			ErrorMessage(ex, userMessage);
+		}
+
+		public static void ErrorMessageWithLog(Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
+		{
+			logger.LogException(level, userMessage, ex);
+			ErrorMessage(parent, ex, userMessage);
+		}
+
+		public static void ErrorMessage(Exception ex, string userMessage = "")
+		{
+			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(ErrorDlgParrent, ex, userMessage);
+			md.Run ();
+			md.Destroy();
+		}
+
 		public static void ErrorMessage(Window parent, Exception ex, string userMessage = "")
 		{
+			if (parent == null && ErrorDlgParrent != null)
+				parent = ErrorDlgParrent;
 			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(parent, ex, userMessage);
 			md.Run ();
 			md.Destroy();
