@@ -4,6 +4,7 @@ using System.Data.Bindings;
 using NHibernate;
 using QSTDI;
 using QSOrmProject;
+using Gtk;
 
 namespace QSBanks
 {
@@ -99,6 +100,12 @@ namespace QSBanks
 
 		public bool Save()
 		{
+			if(dataentryrefBank.Subject == null)
+			{
+				logger.Warn("В счете незаполнен банк, счет не сохраняем.");
+				return false;
+			}
+
 			logger.Info("Сохраняем счет организации...");
 			Session.SaveOrUpdate(subject);
 			OrmMain.NotifyObjectUpdated(subject);
@@ -113,6 +120,19 @@ namespace QSBanks
 
 		protected void OnCloseTab(bool askSave)
 		{
+			if(dataentryrefBank.Subject == null)
+			{
+				string Message = "В счете незаполнен банк, счет не будет сохранен. Всеравно закрыть вкладку?";
+				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
+					MessageType.Question, 
+					ButtonsType.YesNo,
+					Message);
+				int result = md.Run ();
+				md.Destroy ();
+				if (result == (int)ResponseType.No)
+					return;
+			}
+
 			if (CloseTab != null)
 				CloseTab(this, new TdiTabCloseEventArgs(askSave));
 		}
