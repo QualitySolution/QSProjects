@@ -1,7 +1,7 @@
 ﻿using System;
 using QSOrmProject;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[OrmSubjectAttibutes("Типы телефонов")]
 	public class PhoneType : IDomainObject

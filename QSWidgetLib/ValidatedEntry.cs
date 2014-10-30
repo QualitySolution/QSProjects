@@ -6,6 +6,7 @@ namespace QSWidgetLib
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class ValidatedEntry : Gtk.Entry
 	{
+		private Regex regex;
 		private ValidationType validationMode;
 		public ValidationType ValidationMode {
 			get {
@@ -22,10 +23,14 @@ namespace QSWidgetLib
 					this.TextInserted += PhoneTextInserted;
 					this.TextDeleted += PhoneTextDeleted;
 					break;
-				case ValidationType.single_word:
+				case ValidationType.price:
+					regex = new Regex (@"^[0-9]{1,6}(\.[0-9]{1,2})?$");
+					this.Changed += RegexValidate;
 					break;
 				case ValidationType.email:
-					this.Changed += EmailValidate;
+					regex = new Regex (@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
+						@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
+					this.Changed += RegexValidate;
 					break;
 				default:
 					break;
@@ -110,11 +115,9 @@ namespace QSWidgetLib
 			(sender as Gtk.Entry).Text = Text;
 		}
 
-		protected void EmailValidate(object sender, System.EventArgs Args)
+		protected void RegexValidate(object sender, System.EventArgs Args)
 		{
 			String Text = (sender as Gtk.Entry).Text;
-			Regex regex = new Regex (@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
-							@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
 			if (!regex.IsMatch(Text))
 				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal, new Gdk.Color(255,0,0));
 			else
@@ -127,7 +130,8 @@ namespace QSWidgetLib
 		numeric,
 		email,
 		single_word,
-		phone
+		phone,
+		price
 	};
 }
 

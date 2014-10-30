@@ -11,7 +11,7 @@ using NLog;
 using QSOrmProject;
 using QSWidgetLib;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class PhonesView : Gtk.Bin
@@ -113,7 +113,7 @@ namespace QSPhones
 			DataComboBox phoneDataCombo = new DataComboBox (rowAdaptor, "NumberType");
 			phoneDataCombo.WidthRequest = 100;
 			phoneDataCombo.ItemsDataSource = PhoneTypesAdaptor;
-			phoneDataCombo.ColumnMappings = "{QSPhones.PhoneType} Name[Имя]";
+			phoneDataCombo.ColumnMappings = "{QSContacts.PhoneType} Name[Имя]";
 			datatablePhones.Attach (phoneDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textPhoneLabel = new Gtk.Label ("+7");

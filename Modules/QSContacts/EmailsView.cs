@@ -10,7 +10,7 @@ using Gtk;
 using QSOrmProject;
 using QSWidgetLib;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class EmailsView : Gtk.Bin
@@ -112,7 +112,7 @@ namespace QSPhones
 			DataComboBox emailDataCombo = new DataComboBox (rowAdaptor, "EmailType");
 			emailDataCombo.WidthRequest = 100;
 			emailDataCombo.ItemsDataSource = EmailTypesAdaptor;
-			emailDataCombo.ColumnMappings = "{QSPhones.EmailType} Name[Имя]";
+			emailDataCombo.ColumnMappings = "{QSContacts.EmailType} Name[Имя]";
 			datatableEmails.Attach (emailDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
 			DataValidatedEntry emailDataEntry = new DataValidatedEntry (rowAdaptor, "Address");

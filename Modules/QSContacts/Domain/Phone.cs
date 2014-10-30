@@ -3,7 +3,7 @@ using QSOrmProject;
 using System.Data.Bindings;
 using System.Text.RegularExpressions;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[OrmSubjectAttibutes("Телефоны")]
 	public class Phone : BaseNotifyPropertyChanged

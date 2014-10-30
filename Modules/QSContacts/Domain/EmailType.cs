@@ -1,7 +1,7 @@
 ﻿using System;
 using QSOrmProject;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[OrmSubjectAttibutes("Типы e-mail адресов")]
 	public class EmailType : IDomainObject

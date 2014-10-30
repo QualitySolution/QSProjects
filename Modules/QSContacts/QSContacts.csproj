@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A236518F-E4D0-4CFF-B23F-769802B2821F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSPhones</RootNamespace>
-    <AssemblyName>QSPhones</AssemblyName>
+    <RootNamespace>QSContacts</RootNamespace>
+    <AssemblyName>QSContacts</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,14 +49,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="PhonesView.cs" />
-    <Compile Include="gtk-gui\QSPhones.PhonesView.cs" />
     <Compile Include="Domain\Phone.cs" />
     <Compile Include="Domain\PhoneType.cs" />
-    <Compile Include="QSPhonesMain.cs" />
     <Compile Include="EmailsView.cs" />
-    <Compile Include="gtk-gui\QSPhones.EmailsView.cs" />
     <Compile Include="Domain\Email.cs" />
     <Compile Include="Domain\EmailType.cs" />
+    <Compile Include="QSContactsMain.cs" />
+    <Compile Include="gtk-gui\QSContacts.PhonesView.cs" />
+    <Compile Include="gtk-gui\QSContacts.EmailsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

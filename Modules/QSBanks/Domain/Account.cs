@@ -26,7 +26,7 @@ namespace QSBanks
 		}
 		#endregion
 
-		public bool IsDefault { get; set; }
+		public virtual bool IsDefault { get; set; }
 
 		public virtual string BankName{
 			get{

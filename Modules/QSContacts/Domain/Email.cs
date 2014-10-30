@@ -2,7 +2,7 @@
 using QSOrmProject;
 using System.Data.Bindings;
 
-namespace QSPhones
+namespace QSContacts
 {
 	[OrmSubjectAttibutes("Телефоны")]
 	public class Email
