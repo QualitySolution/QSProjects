@@ -57,9 +57,11 @@ namespace QSContacts
 
 		void OnContactUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
+
 			if (Session == null)
 				return;
-			Session.Lock(e.Subject, LockMode.Read);
+			Session.Merge (e.Subject);
+			//Session.Lock(e.Subject, LockMode.Read);
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
