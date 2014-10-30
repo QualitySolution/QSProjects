@@ -16,6 +16,13 @@ namespace QSOrmProject
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMaping> ClassMapingList;
 
+		public static ISession OpenSession()
+		{
+			ISession session = Sessions.OpenSession();
+			session.FlushMode = FlushMode.Never;
+			return session;
+		}
+
 		public static void ConfigureOrm(string connectionString ,string[] assemblies)
 		{
 			ormConfig = new Configuration(); 
