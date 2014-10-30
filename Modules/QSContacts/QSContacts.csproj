@@ -44,6 +44,9 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="QSContacts">
+      <HintPath>bin\Debug\QSContacts.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,6 +60,12 @@
     <Compile Include="QSContactsMain.cs" />
     <Compile Include="gtk-gui\QSContacts.PhonesView.cs" />
     <Compile Include="gtk-gui\QSContacts.EmailsView.cs" />
+    <Compile Include="ContactsView.cs" />
+    <Compile Include="gtk-gui\QSContacts.ContactsView.cs" />
+    <Compile Include="Domain\Contact.cs" />
+    <Compile Include="Dialogs\ContactDlg.cs" />
+    <Compile Include="gtk-gui\QSContacts.ContactDlg.cs" />
+    <Compile Include="ContactBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -100,5 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />
+    <Folder Include="Dialogs\" />
   </ItemGroup>
 </Project>
