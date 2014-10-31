@@ -117,6 +117,7 @@ namespace QSContacts
 			this.datatreeviewContacts.RowActivated += new global::Gtk.RowActivatedHandler (this.OnDatatreeviewAccountsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
+			this.buttonDelete.Clicked += new global::System.EventHandler (this.OnButtonDeleteClicked);
 		}
 	}
 }

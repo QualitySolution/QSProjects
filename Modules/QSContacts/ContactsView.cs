@@ -57,11 +57,24 @@ namespace QSContacts
 
 		void OnContactUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-
-			if (Session == null)
+			if (Session == null || !Session.IsOpen)
 				return;
-			Session.Merge (e.Subject);
-			//Session.Lock(e.Subject, LockMode.Read);
+			bool flag = false;
+			for (int i = 0; i < contactsList.Count; i++) {
+				try {
+					Session.Refresh (contactsList[i]);
+				}
+				catch (NHibernate.UnresolvableObjectException) {
+					contactsList.Remove (contactsList [i]);
+					i--;
+				}
+				if ((e.Subject as Contact).Id == contactsList[i].Id)
+					flag = true;
+			}
+			if (!flag) {
+				Session.Load<Contact> ((e.Subject as Contact).Id);
+				contactsList.Add(Session.Get<Contact>((e.Subject as Contact).Id));
+			}
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
@@ -88,6 +101,15 @@ namespace QSContacts
 		protected void OnDatatreeviewAccountsRowActivated(object o, Gtk.RowActivatedArgs args)
 		{
 			buttonEdit.Click();
+		}
+
+		protected void OnButtonDeleteClicked (object sender, EventArgs e)
+		{
+			ITdiTab mytab = TdiHelper.FindMyTab(this);
+			if (mytab == null)
+				return;
+
+			contactsList.Remove (datatreeviewContacts.GetSelectedObjects () [0] as Contact);
 		}
 	}
 }
