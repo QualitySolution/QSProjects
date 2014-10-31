@@ -15,6 +15,7 @@ namespace QSOrmProject
 
 		private bool sensitive = true;
 		public bool CanEditReference = true;
+		public ICriteria ItemsCriteria;
 		private System.Type subjectType;
 		public event EventHandler Changed;
 
@@ -153,9 +154,10 @@ namespace QSOrmProject
 			else
 				session = OrmMain.Sessions.OpenSession();
 
-			var criteria = session.CreateCriteria(subjectType);
+			if(ItemsCriteria == null)
+				ItemsCriteria = session.CreateCriteria(subjectType);
 
-			OrmReference SelectDialog = new OrmReference(subjectType, session, criteria);
+			OrmReference SelectDialog = new OrmReference(subjectType, session, ItemsCriteria);
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			SelectDialog.CanEdit = CanEditReference;
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
