@@ -10,7 +10,7 @@ namespace QSContacts
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class ContactsView : Gtk.Bin
 	{
-		private IContact contact;
+		private IContactOwn contactOwn;
 		private GenericObservableList<Contact> contactsList;
 		private ISession session;
 
@@ -26,15 +26,15 @@ namespace QSContacts
 			}
 		}
 
-		public IContact Contact
+		public IContactOwn Contact
 		{
 			get
 			{
-				return contact;
+				return contactOwn;
 			}
 			set
 			{
-				contact = value;
+				contactOwn = value;
 				if(Contact.Contacts == null)
 					Contact.Contacts = new List<Contact>();
 				contactsList = new GenericObservableList<Contact>(Contact.Contacts);

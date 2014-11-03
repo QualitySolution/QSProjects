@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QSContacts
 {
-	public abstract class ContactBase : IContact
+	public abstract class ContactOwnBase : IContactOwn
 	{
 		private IList<Contact> contact;
 
@@ -19,12 +19,12 @@ namespace QSContacts
 
 		#endregion
 
-		public ContactBase()
+		public ContactOwnBase()
 		{
 		}
 	}
 
-	public interface IContact
+	public interface IContactOwn
 	{
 		IList<Contact> Contacts { get; set;}
 	}
