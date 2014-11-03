@@ -132,6 +132,40 @@ namespace QSOrmProject
 
 			return obj1.Equals(obj2);
 		}
+
+		/// <summary>
+		/// Создает произвольный диалог для класса из доменной модели приложения.
+		/// </summary>
+		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
+		/// <param name="objectClass">Класс объекта для которого нужно создать диалог.</param>
+		/// <param name="parameters">Параметры конструктора диалога.</param>
+		public static ITdiDialog CreateObjectDialog(System.Type objectClass, params object[] parameters)
+		{
+			System.Type dlgType = GetDialogType(objectClass);
+			if(dlgType == null)
+			{
+				InvalidOperationException ex = new InvalidOperationException(
+					String.Format("Для класса {0} нет привязанного диалога.", objectClass));
+				logger.Error(ex);
+				throw ex;
+			}
+			Type[] paramTypes = new Type[parameters.Length];	
+			for(int i = 0; i < parameters.Length; i++)
+			{
+				paramTypes [i] = parameters [i].GetType ();
+			}
+
+			System.Reflection.ConstructorInfo ci = dlgType.GetConstructor(paramTypes);
+			if(ci == null)
+			{
+				InvalidOperationException ex = new InvalidOperationException(
+					String.Format("Конструктор для диалога {0} с параметрами({1}) не найден.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
+				logger.Error(ex);
+				throw ex;
+			}
+			logger.Debug ("Вызываем конструктор диалога {0} c параметрами {1}.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
+			return (ITdiDialog)ci.Invoke(parameters);
+		}
 	}
 
 	public class OrmObjectMaping
