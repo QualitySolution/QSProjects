@@ -15,6 +15,7 @@ namespace QSOrmProject
 		private static Configuration ormConfig;
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMaping> ClassMapingList;
+		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
 
 		public static ISession OpenSession()
 		{
@@ -64,7 +65,11 @@ namespace QSOrmProject
 			return OrmMain.ClassMapingList.Find(m => m.ObjectClass == type);
 		}
 
-		public static void NotifyObjectUpdated(object subject)
+		/// <summary>
+		/// Уведомляем всех подписчиков об изменении объекта.
+		/// </summary>
+		/// <param name="subject">Subject.</param>
+		public static void NotifyObjectUpdated(object subject, bool clean = true)
 		{
 			System.Type subjectType = NHibernateUtil.GetClass(subject);
 			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subjectType);
@@ -72,6 +77,31 @@ namespace QSOrmProject
 				map.RaiseObjectUpdated(subject);
 			else
 				logger.Warn("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
+
+			// Чистим список от удаленных объектов.
+			if(clean)
+				delayedNotifies.RemoveAll (d => d.ParentObject == null || d.ChangedObject == null);
+
+			// Отсылаем уведомления дочерним объектам если они есть.
+			foreach(DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, subject)))
+			{
+				NotifyObjectUpdated (link.ChangedObject, false);
+				delayedNotifies.Remove (link);
+			}
+		}
+
+		/// <summary>
+		/// Просим отложенно уведомить подписчиков об изменении дочернего объекта,
+		/// при наступлении события обновления родителя.
+		/// </summary>
+		/// <param name="withObject">Уведомление сработает в момент обновления этого объекта.</param>
+		/// <param name="subject">Subject.</param>
+		public static void DelayedNotifyObjectUpdated(object withObject, object subject)
+		{
+			if(!delayedNotifies.Exists (d => d.ChangedObject == subject && d.ParentObject == withObject))
+			{
+				delayedNotifies.Add (new DelayedNotifyLink(withObject, subject));
+			}
 		}
 
 		public static IOrmDialog FindMyDialog(Widget child)
@@ -162,5 +192,27 @@ namespace QSOrmProject
 		}
 	}
 
+	internal class DelayedNotifyLink
+	{
+		private WeakReference parentObject;
+		public object ParentObject {
+			get {
+				return parentObject.Target;
+			}
+		}
+
+		private WeakReference changedObject;
+		public object ChangedObject {
+			get {
+				return changedObject.Target;
+			}
+		}
+
+		public DelayedNotifyLink(object parentObject, object changedObject)
+		{
+			this.parentObject = new WeakReference(parentObject);
+			this.changedObject = new WeakReference(changedObject);
+		}
+	}
 }
 
