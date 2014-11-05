@@ -89,7 +89,7 @@ namespace QSTDI
 				info.TabNameLabel.LabelProp = e.NewName;
 		}
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.MasterTab == masterTab);
 			if (info == null)
@@ -106,7 +106,7 @@ namespace QSTDI
 			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
 		}
 
-		public void AddTab(ITdiTab tab, ITdiTab afterTab)
+		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			AddTab(tab, this.PageNum(afterTab as Widget));
 		}
@@ -208,6 +208,18 @@ namespace QSTDI
 			this.Remove((Widget)tab);
 			(tab as Widget).Destroy();
 			logger.Debug("Вкладка удалена");
+		}
+
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab(object subject, ITdiTab masterTab, bool CanSlided = true)
+		{
+			return TdiBeforeCreateResultFlag.Ok;
+		}
+
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab(System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
+		{
+			if (subjectType == null) //Потому что при null, может вызваться эта функция.
+				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
+			return TdiBeforeCreateResultFlag.Ok;
 		}
 	}
 

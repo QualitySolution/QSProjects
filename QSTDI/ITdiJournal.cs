@@ -8,6 +8,7 @@ namespace QSTDI
 		event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 	}
 
+	[Obsolete("Данный класс как и событие в будущем будет удален. Используйте ITabParent для создания вкладки и OrmMain.CreateObjectDialog для создания диалога.")]
 	public class TdiOpenObjDialogEventArgs : EventArgs
 	{
 		public System.Type ObjectClass { get; private set; }

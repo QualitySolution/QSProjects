@@ -123,8 +123,11 @@ namespace QSTDI
 					MessageType.Question, 
 					ButtonsType.YesNo,
 					Message);
+				md.AddButton ("Отмена", ResponseType.Cancel);
 				int result = md.Run ();
 				md.Destroy();
+				if (result == (int)ResponseType.Cancel)
+					return;
 				if(result == (int)ResponseType.Yes)
 				{
 					if(!dlg.Save() )
@@ -143,7 +146,7 @@ namespace QSTDI
 			Journal = jour;
 		}
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
 		{
 			if(masterTab == Journal || masterTab == ActiveDialog)
 				TabParent.AddSlaveTab(this as ITdiTab, slaveTab);
@@ -151,8 +154,13 @@ namespace QSTDI
 				TabParent.AddSlaveTab(masterTab, slaveTab);
 		}
 
-		public void AddTab(ITdiTab tab, ITdiTab afterTab)
+		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
+			if (CanSlided && afterTab == Journal && tab is ITdiDialog) {
+				ActiveDialog = (ITdiDialog)tab;
+				return;
+			}
+
 			if(afterTab == Journal || afterTab == ActiveDialog)
 				TabParent.AddTab(tab, this as ITdiTab);
 			else
@@ -163,7 +171,27 @@ namespace QSTDI
 		{
 			return TabParent.OnCreateDialogWidget(eventArgs);
 		}
+			
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab(object subject, ITdiTab masterTab, bool CanSlided = true)
+		{
 
+			TdiBeforeCreateResultFlag result = TabParent.BeforeCreateNewTab (subject, masterTab);
+			if(CanSlided && ActiveDialog != null && result == TdiBeforeCreateResultFlag.Ok)
+			{
+				OnDialogClose(ActiveDialog, new TdiTabCloseEventArgs(true));
+				if (ActiveDialog != null)
+					result |= TdiBeforeCreateResultFlag.Canceled;
+			}
+
+			return result;
+		}
+
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab(System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
+		{
+			if (subjectType == null) //Потому что при null, может вызваться эта функция.
+				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
+			return TabParent.BeforeCreateNewTab (subjectType, masterTab);
+		}
 	}
 }
 
