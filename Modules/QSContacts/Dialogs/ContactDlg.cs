@@ -50,18 +50,16 @@ namespace QSContacts
 			this.Build();
 			ParentReference = parenReferance;
 			this.subject = subject;
-			TabName = subject.Name;
+			TabName = subject.Surname + " " + subject.Name + " " + subject.Lastname;
 			ConfigureDlg();
 		}
 
 		private void ConfigureDlg()
 		{
-			entryName.IsEditable = true;
-			entryComment.IsEditable = true;
-			entryPost.IsEditable = true;
+			entrySurname.IsEditable = entryName.IsEditable = entryLastname.IsEditable = entryPost.IsEditable = true;
+			dataComment.Editable = true;
 			adaptor.Target = subject;
 			datatable1.DataSource = adaptor;
-			enumFired.DataSource = adaptor;
 			emailsView.Session = Session;
 			if (subject.Emails == null)
 				subject.Emails = new List<Email>();

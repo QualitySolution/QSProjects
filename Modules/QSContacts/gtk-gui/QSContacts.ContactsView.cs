@@ -53,7 +53,7 @@ namespace QSContacts
 			this.datatreeviewContacts.InheritedBoundaryDataSource = false;
 			this.datatreeviewContacts.InheritedDataSource = false;
 			this.datatreeviewContacts.InheritedBoundaryDataSource = false;
-			this.datatreeviewContacts.ColumnMappings = "{QSContacts.Contact} Name[ФИО                                                                ]; Post[Должность];";
+			this.datatreeviewContacts.ColumnMappings = "{QSContacts.Contact} Surname[Фамилия ]; Name[Имя]; Lastname[Отчество ]; Post[Должность];";
 			this.GtkScrolledWindow.Add (this.datatreeviewContacts);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));

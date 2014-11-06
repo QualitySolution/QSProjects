@@ -11,9 +11,11 @@ namespace QSContacts
 		#region Свойства
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
+		public virtual string Surname { get; set; }
+		public virtual string Lastname { get; set; }
 		public virtual string Comment { get; set; }
 		public virtual string Post { get; set; }
-		public virtual Fired Fired { get; set; }
+		public virtual bool Fired { get; set; }
 		public virtual IList<QSContacts.Phone> Phones { get; set; }
 		public virtual IList<QSContacts.Email> Emails { get; set; }
 		#endregion
@@ -21,9 +23,11 @@ namespace QSContacts
 		public Contact ()
 		{
 			Name = String.Empty;
+			Surname = String.Empty;
+			Lastname = String.Empty;
 			Comment = String.Empty;
 			Post = String.Empty;
-			Fired = Fired.no;
+			Fired = false;
 		}
 
 		public override bool Equals(Object obj)
@@ -39,16 +43,6 @@ namespace QSContacts
 		{
 			return this.Id.GetHashCode(); 
 		}
-	}
-	public enum Fired{
-		[ItemTitleAttribute("Нет")] no,
-		[ItemTitleAttribute("Да")] yes
-	}
-
-	public class FiredStringType : NHibernate.Type.EnumStringType
-	{
-		public FiredStringType() : base(typeof(Fired))
-		{}
 	}
 }
 
