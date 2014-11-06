@@ -5,13 +5,13 @@ using NHibernate;
 using QSOrmProject;
 using QSTDI;
 
-namespace QSContacts
+namespace QSProxies
 {
-	[System.ComponentModel.ToolboxItem(true)]
-	public partial class ContactsView : Gtk.Bin
+	[System.ComponentModel.ToolboxItem (true)]
+	public partial class ProxiesView : Gtk.Bin
 	{
-		private IContactOwner contactOwner;
-		private GenericObservableList<Contact> contactsList;
+		private IProxyOwner proxyOwner;
+		private GenericObservableList<Proxy> proxiesList;
 		private ISession session;
 
 		public ISession Session
@@ -26,19 +26,19 @@ namespace QSContacts
 			}
 		}
 
-		public IContactOwner ContactOwner
+		public IProxyOwner ProxyOwner
 		{
 			get
 			{
-				return contactOwner;
+				return proxyOwner;
 			}
 			set
 			{
-				contactOwner = value;
-				if(ContactOwner.Contacts == null)
-					ContactOwner.Contacts = new List<Contact>();
-				contactsList = new GenericObservableList<Contact>(ContactOwner.Contacts);
-				datatreeviewContacts.ItemsDataSource = contactsList;
+				proxyOwner = value;
+				if(ProxyOwner.Proxies == null)
+					ProxyOwner.Proxies = new List<Proxy>();
+				proxiesList = new GenericObservableList<Proxy>(ProxyOwner.Proxies);
+				datatreeviewProxies.ItemsDataSource = proxiesList;
 			}
 		}
 
@@ -48,10 +48,10 @@ namespace QSContacts
 				parentReference = value;
 				if (parentReference != null) {
 					Session = parentReference.Session;
-					if (!(parentReference.ParentObject is IContactOwner)) {
-						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IContactOwner)));
+					if (!(parentReference.ParentObject is IProxyOwner)) {
+						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IProxyOwner)));
 					}
-					ContactOwner = (IContactOwner)parentReference.ParentObject;
+					ProxyOwner = (IProxyOwner)parentReference.ParentObject;
 				}
 			}
 			get {
@@ -59,15 +59,15 @@ namespace QSContacts
 			}
 		}
 
-		public ContactsView()
+		public ProxiesView()
 		{
 			this.Build();
-			datatreeviewContacts.Selection.Changed += OnSelectionChanged;
+			datatreeviewProxies.Selection.Changed += OnSelectionChanged;
 		}
 
 		void OnSelectionChanged (object sender, EventArgs e)
 		{
-			bool selected = datatreeviewContacts.Selection.CountSelectedRows() > 0;
+			bool selected = datatreeviewProxies.Selection.CountSelectedRows() > 0;
 			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
 		}
 
@@ -77,9 +77,9 @@ namespace QSContacts
 			if (mytab == null)
 				return;
 
-			var newContact = new Contact ();
-			contactsList.Add(newContact);
-			ContactDlg dlg = new ContactDlg(ParentReference, newContact);
+			var newProxy = new Proxy ();
+			proxiesList.Add(newProxy);
+			ProxyDlg dlg = new ProxyDlg(ParentReference, newProxy);
 
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
@@ -90,7 +90,7 @@ namespace QSContacts
 			if (mytab == null)
 				return;
 
-			ContactDlg dlg = new ContactDlg(ParentReference, datatreeviewContacts.GetSelectedObjects()[0] as Contact);
+			ProxyDlg dlg = new ProxyDlg(ParentReference, datatreeviewProxies.GetSelectedObjects()[0] as Proxy);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -101,12 +101,15 @@ namespace QSContacts
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab(this);
+			ITdiTab mytab = TdiHelper.FindMyTab (this);
 			if (mytab == null)
 				return;
 
-			contactsList.Remove (datatreeviewContacts.GetSelectedObjects () [0] as Contact);
+			proxiesList.Remove (datatreeviewProxies.GetSelectedObjects () [0] as Proxy);
 		}
+
+
+	
 	}
 }
 

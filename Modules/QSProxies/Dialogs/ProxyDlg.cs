@@ -5,18 +5,17 @@ using System.Data.Bindings;
 using QSOrmProject;
 using QSTDI;
 using System.Collections.Generic;
-using QSContacts;
 
-namespace QSContacts
+namespace QSProxies
 {
-
-	public partial class ContactDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
+	[System.ComponentModel.ToolboxItem (true)]
+	public partial class ProxyDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
-		private IContactOwner contactOwn;
+		private IProxyOwner proxyOwner;
 		private Adaptor adaptor = new Adaptor();
-		private Contact subject;
+		private Proxy subject;
 
 		OrmParentReference parentReference;
 		public OrmParentReference ParentReference {
@@ -24,11 +23,11 @@ namespace QSContacts
 				parentReference = value;
 				if (parentReference != null) {
 					Session = parentReference.Session;
-					if(!(parentReference.ParentObject is IContactOwner))
+					if(!(parentReference.ParentObject is IProxyOwner))
 					{
-						throw new ArgumentException (String.Format("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IContactOwner)));
+						throw new ArgumentException (String.Format("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IProxyOwner)));
 					}
-					this.contactOwn = (IContactOwner)parentReference.ParentObject;
+					this.proxyOwner = (IProxyOwner)parentReference.ParentObject;
 				}
 			}
 			get {
@@ -36,46 +35,36 @@ namespace QSContacts
 			}
 		}
 
-		public ContactDlg(OrmParentReference parentReference)
+		public ProxyDlg(OrmParentReference parentReference)
 		{
 			this.Build();
 			ParentReference = parentReference;
-			subject = new Contact();
-			contactOwn.Contacts.Add (subject);
+			subject = new Proxy();
+			proxyOwner.Proxies.Add (subject);
 			ConfigureDlg();
 		}
 
-		public ContactDlg(OrmParentReference parenReferance, Contact subject)
+		public ProxyDlg(OrmParentReference parenReferance, Proxy subject)
 		{
 			this.Build();
 			ParentReference = parenReferance;
 			this.subject = subject;
-			TabName = subject.Surname + " " + subject.Name + " " + subject.Lastname;
+			TabName = subject.Number;
 			ConfigureDlg();
 		}
 
 		private void ConfigureDlg()
 		{
-			entrySurname.IsEditable = entryName.IsEditable = entryLastname.IsEditable = entryPost.IsEditable = true;
-			dataComment.Editable = true;
+			entryNumber.IsEditable = true;
 			adaptor.Target = subject;
 			datatable1.DataSource = adaptor;
-			emailsView.Session = Session;
-			if (subject.Emails == null)
-				subject.Emails = new List<Email>();
-			emailsView.Emails = subject.Emails;
-			phonesView.Session = Session;
-			if (subject.Phones == null)
-				subject.Phones = new List<Phone>();
-			phonesView.Phones = subject.Phones;
 		}
 
 		#region ITdiTab implementation
 		public event EventHandler<QSTDI.TdiTabNameChangedEventArgs> TabNameChanged;
-
 		public event EventHandler<QSTDI.TdiTabCloseEventArgs> CloseTab;
 
-		private string _tabName = "Новое контактное лицо";
+		private string _tabName = "Новая доверенность";
 		public string TabName
 		{
 			get{return _tabName;}
@@ -97,11 +86,9 @@ namespace QSContacts
 
 		public bool Save ()
 		{
-			logger.Info("Сохраняем контактное лицо...");
-			phonesView.SaveChanges();
-			emailsView.SaveChanges ();
-			if(contactOwn != null)
-				OrmMain.DelayedNotifyObjectUpdated (contactOwn, subject);
+			logger.Info("Сохраняем доверенность...");
+			if(proxyOwner != null)
+				OrmMain.DelayedNotifyObjectUpdated (proxyOwner, subject);
 			return true;
 		}
 
@@ -127,18 +114,18 @@ namespace QSContacts
 		public object Subject {
 			get {return subject;}
 			set {
-				if (value is Contact)
-					subject = value as Contact;
+				if (value is Proxy)
+					subject = value as Proxy;
 			}
 		}
 		#endregion
 
-		protected void OnButtonSaveClicked (object sender, EventArgs e)
+		protected void OnButtonOkClicked (object sender, EventArgs e)
 		{
 			if (!this.HasChanges || Save())
 				OnCloseTab(false);
 		}
-
+			
 		protected void OnCloseTab(bool askSave)
 		{
 			if (CloseTab != null)

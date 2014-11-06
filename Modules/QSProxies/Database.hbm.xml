@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+ auto-import="true" assembly="QSProxies" namespace="QSProxies">
+	<class name="Proxy" lazy="false" table="counterparty_proxies">
+ 		<id name="Id" column="id">
+ 			<generator class="native"></generator>
+ 		</id>
+		<property name="Number" column="number" />
+		<property name="IssueDate" column="issue_date" />
+		<property name="StartDate" column="start_date" />
+		<property name="ExpirationDate" column="expiration_date" /> 
+	</class>
+</hibernate-mapping>
