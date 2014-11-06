@@ -9,53 +9,47 @@ using QSContacts;
 
 namespace QSContacts
 {
-	[System.ComponentModel.ToolboxItem (true)]
+
 	public partial class ContactDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ISession session;
+		private IContactOwn contactOwn;
 		private Adaptor adaptor = new Adaptor();
 		private Contact subject;
-		private bool NewItem = false;
 
-		public ContactDlg()
+		OrmParentReference parentReference;
+		public OrmParentReference ParentReference {
+			set {
+				parentReference = value;
+				if (parentReference != null) {
+					Session = parentReference.Session;
+					if(!(parentReference.ParentObject is IContactOwn))
+					{
+						throw new ArgumentException (String.Format("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IContactOwn)));
+					}
+					this.contactOwn = (IContactOwn)parentReference.ParentObject;
+				}
+			}
+			get {
+				return parentReference;
+			}
+		}
+
+		public ContactDlg(OrmParentReference parentReference)
 		{
 			this.Build();
-			NewItem = true;
+			ParentReference = parentReference;
 			subject = new Contact();
+			contactOwn.Contacts.Add (subject);
 			ConfigureDlg();
 		}
 
-		public ContactDlg(int id)
+		public ContactDlg(OrmParentReference parenReferance, Contact subject)
 		{
 			this.Build();
-			subject = Session.Load<Contact>(id);
-			TabName = subject.Name;
-			ConfigureDlg();
-		}
-
-		public ContactDlg(Contact sub)
-		{
-			this.Build();
-			subject = Session.Load<Contact> (sub.Id);
-			TabName = subject.Name;
-			ConfigureDlg();
-		}
-
-		public ContactDlg(ISession parentSession)
-		{
-			this.Build();
-			Session = parentSession;
-			NewItem = true;
-			subject = new Contact();
-			ConfigureDlg();
-		}
-
-		public ContactDlg(ISession parentSession, Contact sub)
-		{
-			this.Build();
-			Session = parentSession;
-			subject = sub;
+			ParentReference = parenReferance;
+			this.subject = subject;
 			TabName = subject.Name;
 			ConfigureDlg();
 		}
@@ -106,14 +100,15 @@ namespace QSContacts
 		public bool Save ()
 		{
 			logger.Info("Сохраняем контактное лицо...");
-			Session.SaveOrUpdate(subject);
 			phonesView.SaveChanges();
 			emailsView.SaveChanges ();
+			if(contactOwn != null)
+				OrmMain.DelayedNotifyObjectUpdated (contactOwn, subject);
 			return true;
 		}
 
 		public bool HasChanges {
-			get {return NewItem || Session.IsDirty();}
+			get {return Session.IsDirty();}
 		}
 
 		#endregion

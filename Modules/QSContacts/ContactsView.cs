@@ -26,7 +26,7 @@ namespace QSContacts
 			}
 		}
 
-		public IContactOwn Contact
+		public IContactOwn ContactOwn
 		{
 			get
 			{
@@ -35,17 +35,33 @@ namespace QSContacts
 			set
 			{
 				contactOwn = value;
-				if(Contact.Contacts == null)
-					Contact.Contacts = new List<Contact>();
-				contactsList = new GenericObservableList<Contact>(Contact.Contacts);
+				if(ContactOwn.Contacts == null)
+					ContactOwn.Contacts = new List<Contact>();
+				contactsList = new GenericObservableList<Contact>(ContactOwn.Contacts);
 				datatreeviewContacts.ItemsDataSource = contactsList;
+			}
+		}
+
+		OrmParentReference parentReference;
+		public OrmParentReference ParentReference {
+			set {
+				parentReference = value;
+				if (parentReference != null) {
+					Session = parentReference.Session;
+					if (!(parentReference.ParentObject is IContactOwn)) {
+						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IContactOwn)));
+					}
+					ContactOwn = (IContactOwn)parentReference.ParentObject;
+				}
+			}
+			get {
+				return parentReference;
 			}
 		}
 
 		public ContactsView()
 		{
 			this.Build();
-			OrmMain.ClassMapingList.Find(m => m.ObjectClass == typeof(Contact)).ObjectUpdated += OnContactUpdated;
 			datatreeviewContacts.Selection.Changed += OnSelectionChanged;
 		}
 
@@ -55,36 +71,16 @@ namespace QSContacts
 			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
 		}
 
-		void OnContactUpdated (object sender, OrmObjectUpdatedEventArgs e)
-		{
-			if (Session == null || !Session.IsOpen)
-				return;
-			bool flag = false;
-			for (int i = 0; i < contactsList.Count; i++) {
-				try {
-					Session.Refresh (contactsList[i]);
-				}
-				catch (NHibernate.UnresolvableObjectException) {
-					contactsList.Remove (contactsList [i]);
-					i--;
-				}
-				if ((e.Subject as Contact).Id == contactsList[i].Id)
-					flag = true;
-			}
-			if (!flag) {
-				Session.Load<Contact> ((e.Subject as Contact).Id);
-				contactsList.Add(Session.Get<Contact>((e.Subject as Contact).Id));
-			}
-		}
-
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
 			ITdiTab mytab = TdiHelper.FindMyTab(this);
 			if (mytab == null)
 				return;
 
-			ContactDlg dlg = new ContactDlg(Session);
-			contactsList.Add((Contact)dlg.Subject);
+			var newContact = new Contact ();
+			contactsList.Add(newContact);
+			ContactDlg dlg = new ContactDlg(ParentReference, newContact);
+
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -94,7 +90,7 @@ namespace QSContacts
 			if (mytab == null)
 				return;
 
-		    ContactDlg dlg = new ContactDlg(Session, datatreeviewContacts.GetSelectedObjects()[0] as Contact);
+			ContactDlg dlg = new ContactDlg(ParentReference, datatreeviewContacts.GetSelectedObjects()[0] as Contact);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
