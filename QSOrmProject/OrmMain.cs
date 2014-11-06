@@ -244,6 +244,8 @@ namespace QSOrmProject
 		public OrmObjectUpdatedEventArgs(object subject)
 		{
 			Subject= subject;
+			if (subject is IDomainObject)
+				Id = (subject as IDomainObject).Id;
 		}
 	}
 
