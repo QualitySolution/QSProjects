@@ -159,21 +159,7 @@ namespace QSOrmProject
 		public virtual void GetDataFromDataSource (object aSender)
 		{
 			adaptor.DataChanged = false;
-			// Translate enumeration value
-			// FIXME Возможно не надо.
-			/*if ((adaptor.Adaptor.FinalTarget != null) && (Mappings != "")) {
-				System.Type type = adaptor.Adaptor.Values[0].Value.GetType();
-				if (type.IsEnum == true) {
-					Array enumValues = Enum.GetValues (type);
-					for (int i=0; i<enumValues.Length; i++)
-						if (enumValues.GetValue(i).Equals(adaptor.Value)) {
-							string desc = enumValues.GetValue(i).ToString();
-							//System.Console.WriteLine(enumValues.GetValue(i).GetType().GetField(desc).GetEnumIcon().GetType());
-							pixbuf = (Gdk.Pixbuf) enumValues.GetValue(i).GetType().GetField(desc).GetEnumIcon();
-						}
-					return;
-				}
-			}*/
+
 			if (adaptor.Adaptor.HasDefaultMapping == true)
 			{
 				if(adaptor.Value is Gdk.Pixbuf)
