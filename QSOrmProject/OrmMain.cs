@@ -166,6 +166,27 @@ namespace QSOrmProject
 			logger.Debug ("Вызываем конструктор диалога {0} c параметрами {1}.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
 			return (ITdiDialog)ci.Invoke(parameters);
 		}
+
+		/// <summary>
+		/// Создаёт диалог для конкретного объекта доменной модели приложения.
+		/// </summary>
+		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
+		/// <param name="entity">Объект для которого нужно создать диалог.</param>
+		public static ITdiDialog CreateObjectDialog(object entity)
+		{
+			return CreateObjectDialog (NHibernateUtil.GetClass (entity), entity);
+		}
+
+		/// <summary>
+		/// Создаёт диалог для конкретного объекта доменной модели приложения.
+		/// </summary>
+		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
+		/// <param name="entity">Объект для которого нужно создать диалог.</param>
+		public static ITdiDialog CreateObjectDialog(OrmParentReference parentReference, object entity)
+		{
+			return CreateObjectDialog (NHibernateUtil.GetClass (entity), parentReference, entity);
+		}
+
 	}
 
 	public class OrmObjectMaping
