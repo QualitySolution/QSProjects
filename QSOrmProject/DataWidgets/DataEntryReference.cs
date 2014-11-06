@@ -226,6 +226,8 @@ namespace Gtk.DataBindings
 		public virtual void GetDataFromDataSource (object aSender)
 		{
 			adaptor.DataChanged = false;
+			if (adaptor.ValueType != SubjectType)
+				SubjectType = adaptor.ValueType;
 			Subject = adaptor.Value;
 		}
 		
