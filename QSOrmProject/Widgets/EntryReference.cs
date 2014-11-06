@@ -16,6 +16,7 @@ namespace QSOrmProject
 		private bool sensitive = true;
 		public bool CanEditReference = true;
 		public ICriteria ItemsCriteria;
+		public OrmParentReference ParentReference { get; set;}
 		private System.Type subjectType;
 		public event EventHandler Changed;
 
@@ -81,7 +82,7 @@ namespace QSOrmProject
 			if(OrmMain.EqualDomainObjects(e.Subject, Subject))
 			{
 				IOrmDialog dlg = OrmMain.FindMyDialog(this);
-				if (dlg != null)
+				if (dlg != null && !dlg.Session.Contains(e.Subject))
 					dlg.Session.Refresh(Subject);
 
 				UpdateWidget();
@@ -149,15 +150,25 @@ namespace QSOrmProject
 				
 			IOrmDialog dlg = OrmMain.FindMyDialog(this);
 			ISession session;
-			if (dlg != null)
-				session = dlg.Session;
+			OrmReference SelectDialog;
+
+			if (ParentReference != null)
+			{
+				session = ParentReference.Session;
+				SelectDialog = new OrmReference(subjectType, ParentReference);
+			}
 			else
-				session = OrmMain.Sessions.OpenSession();
+			{
+				if (dlg != null)
+					session = dlg.Session;
+				else
+					session = OrmMain.Sessions.OpenSession();
 
-			if(ItemsCriteria == null)
-				ItemsCriteria = session.CreateCriteria(subjectType);
+				if(ItemsCriteria == null)
+					ItemsCriteria = session.CreateCriteria(subjectType);
 
-			OrmReference SelectDialog = new OrmReference(subjectType, session, ItemsCriteria);
+				SelectDialog = new OrmReference(subjectType, session, ItemsCriteria);
+			}
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			SelectDialog.CanEdit = CanEditReference;
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
@@ -184,7 +195,11 @@ namespace QSOrmProject
 				return;
 			}
 
-			ITdiTab dlg = mytab.TabParent.OnCreateDialogWidget(new TdiOpenObjDialogEventArgs(Subject));
+			ITdiTab dlg;
+			if(ParentReference == null)
+				dlg = OrmMain.CreateObjectDialog (Subject);
+			else
+				dlg = OrmMain.CreateObjectDialog (ParentReference, Subject);
 			mytab.TabParent.AddTab(dlg, mytab);
 		}
 

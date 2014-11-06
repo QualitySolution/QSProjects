@@ -53,6 +53,18 @@ namespace QSOrmProject
 			}
 		}
 
+		OrmParentReference parentReference;
+		public OrmParentReference ParentReference {
+			set {
+				parentReference = value;
+				if (parentReference != null)
+					Session = parentReference.Session;
+			}
+			get {
+				return parentReference;
+			}
+		}
+
 		private string[] searchFields = new string[]{"Name"};
 		public string[] SearchFields
 		{
@@ -101,11 +113,30 @@ namespace QSOrmProject
 		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria)
 		{
 			this.Build();
-			Mode = OrmReferenceMode.Normal;
 			objectType = objType;
 			objectsCriteria = listCriteria;
 			Session = listSession;
-			OrmObjectMaping map = OrmMain.GetObjectDiscription(objType);
+			ConfigureDlg ();
+		}
+
+		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping) 
+			: this(objType, listSession, listCriteria)
+		{
+			datatreeviewRef.ColumnMappings = columsMapping;
+		}
+
+		public OrmReference(System.Type objType, OrmParentReference parentReference) 
+		{
+			this.Build();
+			objectType = objType;
+			ParentReference = parentReference;
+			ConfigureDlg ();
+		}
+
+		void ConfigureDlg()
+		{
+			Mode = OrmReferenceMode.Normal;
+			OrmObjectMaping map = OrmMain.GetObjectDiscription(objectType);
 			if (map != null)
 			{
 				map.ObjectUpdated += OnRefObjectUpdated;
@@ -120,21 +151,20 @@ namespace QSOrmProject
 			UpdateSum();
 		}
 
-		public OrmReference(System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping) 
-			: this(objType, listSession, listCriteria)
-		{
-			datatreeviewRef.ColumnMappings = columsMapping;
-		}
-
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			session.Clear();
+			//FIXME Проверить может очистка сессии не нужна, если нам ее передали.
+			if(parentReference != null)
+				session.Clear();
 			UpdateObjectList();
 		}
 
 		private void UpdateObjectList()
 		{
-			filterView = new ObservableFilterListView (objectsCriteria.List());
+			if(ParentReference == null)
+				filterView = new ObservableFilterListView (objectsCriteria.List());
+			else
+				filterView = new ObservableFilterListView (parentReference.List);
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
@@ -177,7 +207,7 @@ namespace QSOrmProject
 
 		public override void Destroy()
 		{
-			if(session != null)
+			if(session != null && ParentReference == null)
 				session.Close();
 			base.Destroy();
 		}
@@ -195,9 +225,17 @@ namespace QSOrmProject
 			{
 				OrmSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, null);
 			}
-			else if (OpenObjDialog != null)
+			else if (parentReference != null)
 			{
-				OpenObjDialog(this, new TdiOpenObjDialogEventArgs(objectType));
+				if (TabParent.BeforeCreateNewTab ((object)null, this).HasFlag (TdiBeforeCreateResultFlag.Canceled))
+					return;
+				TabParent.AddSlaveTab(this, OrmMain.CreateObjectDialog (objectType, ParentReference));
+			}
+			else
+			{
+				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag(TdiBeforeCreateResultFlag.Canceled))
+					return;
+				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType), this);
 			}
 		}
 
@@ -207,9 +245,17 @@ namespace QSOrmProject
 			{
 				OrmSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects()[0]);
 			}
-			else if (OpenObjDialog != null)
+			else if (parentReference != null)
 			{
-				OpenObjDialog(this, new TdiOpenObjDialogEventArgs(datatreeviewRef.GetSelectedObjects()[0]));
+				if (TabParent.BeforeCreateNewTab (datatreeviewRef.GetSelectedObjects()[0], this).HasFlag (TdiBeforeCreateResultFlag.Canceled))
+					return;
+				TabParent.AddSlaveTab(this, OrmMain.CreateObjectDialog (objectType, ParentReference, datatreeviewRef.GetSelectedObjects()[0]));
+			}
+			else
+			{
+				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag(TdiBeforeCreateResultFlag.Canceled))
+					return;
+				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, datatreeviewRef.GetSelectedObjects()[0]), this);
 			}
 		}
 
