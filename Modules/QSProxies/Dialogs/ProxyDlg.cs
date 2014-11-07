@@ -5,6 +5,7 @@ using System.Data.Bindings;
 using QSOrmProject;
 using QSTDI;
 using System.Collections.Generic;
+using QSContacts;
 
 namespace QSProxies
 {
@@ -58,6 +59,51 @@ namespace QSProxies
 			entryNumber.IsEditable = true;
 			adaptor.Target = subject;
 			datatable1.DataSource = adaptor;
+			personsView.Session = Session;
+			if (subject.Persons == null)
+				subject.Persons = new List<Person>();
+			personsView.Persons = subject.Persons;
+			datepickerExpiration.DataSource = adaptor;
+			datepickerStart.DataSource = adaptor;
+			datepickerIssue.DataSource = adaptor;
+			datepickerIssue.DateChanged += OnIssueDateChanged;
+			datepickerStart.DateChanged += OnStartDateChanged;
+			datepickerExpiration.DateChanged += OnExpirationDateChanged;
+		}
+
+		private void OnIssueDateChanged(object sender, EventArgs e)
+		{
+			if (datepickerIssue.Date != default(DateTime) && 
+				(datepickerStart.Date == default(DateTime) || datepickerStart.Date < datepickerIssue.Date)) {
+				datepickerStart.Date = datepickerIssue.Date;
+				if (datepickerExpiration.Date < datepickerStart.Date)
+					datepickerExpiration.Date = datepickerStart.Date;
+			}
+			CheckDates ();
+		}
+
+		private void OnStartDateChanged(object sender, EventArgs e)
+		{
+			if (datepickerStart.Date != default(DateTime) && datepickerExpiration.Date < datepickerStart.Date) {
+				datepickerExpiration.Date = datepickerStart.Date;
+			}
+			CheckDates ();
+		}
+		private void OnExpirationDateChanged(object sender, EventArgs e)
+		{
+			CheckDates ();
+		}
+
+		private void CheckDates()
+		{
+			if (datepickerExpiration.Date < datepickerStart.Date)
+				datepickerExpiration.ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
+			else
+				datepickerExpiration.ModifyText (Gtk.StateType.Normal, new Gdk.Color (0, 0, 0));
+			if (datepickerStart.Date < datepickerIssue.Date)
+				datepickerStart.ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
+			else
+				datepickerStart.ModifyText (Gtk.StateType.Normal, new Gdk.Color (0, 0, 0));
 		}
 
 		#region ITdiTab implementation

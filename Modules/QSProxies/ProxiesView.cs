@@ -107,9 +107,6 @@ namespace QSProxies
 
 			proxiesList.Remove (datatreeviewProxies.GetSelectedObjects () [0] as Proxy);
 		}
-
-
-	
 	}
 }
 
