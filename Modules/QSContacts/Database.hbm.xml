@@ -48,4 +48,13 @@
     		<one-to-many class="QSContacts.Email" />
 		</bag>
 	</class>
+	<class name="Person" lazy="false" table="persons">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+		<property name="Name" column="name" />
+		<property name="Surname" column="surname" />
+		<property name="Lastname" column="lastname" />
+	</class>
+	
 </hibernate-mapping>

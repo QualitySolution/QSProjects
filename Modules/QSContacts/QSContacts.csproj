@@ -63,6 +63,9 @@
     <Compile Include="Dialogs\ContactDlg.cs" />
     <Compile Include="gtk-gui\QSContacts.ContactDlg.cs" />
     <Compile Include="IContactOwner.cs" />
+    <Compile Include="gtk-gui\QSContacts.PersonsView.cs" />
+    <Compile Include="PersonsView.cs" />
+    <Compile Include="Domain\Person.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
