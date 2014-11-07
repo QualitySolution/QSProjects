@@ -78,7 +78,7 @@ namespace QSProxies
 			this.datepickerExpiration = new global::QSOrmProject.DataDatePicker ();
 			this.datepickerExpiration.Events = ((global::Gdk.EventMask)(256));
 			this.datepickerExpiration.Name = "datepickerExpiration";
-			this.datepickerExpiration.Date = new global::System.DateTime (635241312000000000);
+			this.datepickerExpiration.Date = new global::System.DateTime (0);
 			this.datepickerExpiration.IsEditable = true;
 			this.datepickerExpiration.AutoSeparation = false;
 			this.datepickerExpiration.InheritedDataSource = true;
@@ -96,7 +96,7 @@ namespace QSProxies
 			this.datepickerIssue = new global::QSOrmProject.DataDatePicker ();
 			this.datepickerIssue.Events = ((global::Gdk.EventMask)(256));
 			this.datepickerIssue.Name = "datepickerIssue";
-			this.datepickerIssue.Date = new global::System.DateTime (635241312000000000);
+			this.datepickerIssue.Date = new global::System.DateTime (0);
 			this.datepickerIssue.IsEditable = true;
 			this.datepickerIssue.AutoSeparation = false;
 			this.datepickerIssue.InheritedDataSource = true;
@@ -114,7 +114,7 @@ namespace QSProxies
 			this.datepickerStart = new global::QSOrmProject.DataDatePicker ();
 			this.datepickerStart.Events = ((global::Gdk.EventMask)(256));
 			this.datepickerStart.Name = "datepickerStart";
-			this.datepickerStart.Date = new global::System.DateTime (635241312000000000);
+			this.datepickerStart.Date = new global::System.DateTime (0);
 			this.datepickerStart.IsEditable = true;
 			this.datepickerStart.AutoSeparation = false;
 			this.datepickerStart.InheritedDataSource = true;

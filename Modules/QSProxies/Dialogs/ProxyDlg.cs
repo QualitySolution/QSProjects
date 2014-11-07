@@ -6,6 +6,7 @@ using QSOrmProject;
 using QSTDI;
 using System.Collections.Generic;
 using QSContacts;
+using Gtk;
 
 namespace QSProxies
 {
@@ -74,38 +75,40 @@ namespace QSProxies
 		private void OnIssueDateChanged(object sender, EventArgs e)
 		{
 			if (datepickerIssue.Date != default(DateTime) && 
-				(datepickerStart.Date == default(DateTime) || datepickerStart.Date < datepickerIssue.Date)) {
+				subject.StartDate == default(DateTime) && datepickerStart.Date < datepickerIssue.Date)
 				datepickerStart.Date = datepickerIssue.Date;
-				if (datepickerExpiration.Date < datepickerStart.Date)
-					datepickerExpiration.Date = datepickerStart.Date;
-			}
-			CheckDates ();
 		}
 
 		private void OnStartDateChanged(object sender, EventArgs e)
 		{
-			if (datepickerStart.Date != default(DateTime) && datepickerExpiration.Date < datepickerStart.Date) {
-				datepickerExpiration.Date = datepickerStart.Date;
+			if (datepickerStart.Date < datepickerIssue.Date) {
+				datepickerStart.Date = datepickerIssue.Date;
+				string Message = "Нельзя установить дату начала действия доверенности раньше даты ее выдачи.";
+				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
+					                   MessageType.Warning, 
+					                   ButtonsType.Close,
+					                   Message);
+				md.Run ();
+				md.Destroy ();
 			}
-			CheckDates ();
+			if (datepickerStart.Date != default(DateTime) && datepickerExpiration.Date < datepickerStart.Date)
+				datepickerExpiration.Date = datepickerStart.Date;
 		}
+
 		private void OnExpirationDateChanged(object sender, EventArgs e)
 		{
-			CheckDates ();
+			if (datepickerExpiration.Date < datepickerStart.Date) {
+				datepickerExpiration.Date = datepickerStart.Date;
+				string Message = "Нельзя установить дату окончания действия доверенности раньше даты начала ее действия.";
+				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
+					                   MessageType.Warning, 
+					                   ButtonsType.Close,
+					                   Message);
+				md.Run ();
+				md.Destroy ();
+			}
 		}
-
-		private void CheckDates()
-		{
-			if (datepickerExpiration.Date < datepickerStart.Date)
-				datepickerExpiration.ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
-			else
-				datepickerExpiration.ModifyText (Gtk.StateType.Normal, new Gdk.Color (0, 0, 0));
-			if (datepickerStart.Date < datepickerIssue.Date)
-				datepickerStart.ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
-			else
-				datepickerStart.ModifyText (Gtk.StateType.Normal, new Gdk.Color (0, 0, 0));
-		}
-
+			
 		#region ITdiTab implementation
 		public event EventHandler<QSTDI.TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<QSTDI.TdiTabCloseEventArgs> CloseTab;

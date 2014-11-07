@@ -181,7 +181,7 @@
               <widget class="QSOrmProject.DataDatePicker" id="datepickerExpiration">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
-                <property name="Date">635241312000000000</property>
+                <property name="Date">0</property>
                 <property name="IsEditable">True</property>
                 <property name="AutoSeparation">False</property>
                 <property name="InheritedDataSource">True</property>
@@ -208,7 +208,7 @@
               <widget class="QSOrmProject.DataDatePicker" id="datepickerIssue">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
-                <property name="Date">635241312000000000</property>
+                <property name="Date">0</property>
                 <property name="IsEditable">True</property>
                 <property name="AutoSeparation">False</property>
                 <property name="InheritedDataSource">True</property>
@@ -235,7 +235,7 @@
               <widget class="QSOrmProject.DataDatePicker" id="datepickerStart">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
-                <property name="Date">635241312000000000</property>
+                <property name="Date">0</property>
                 <property name="IsEditable">True</property>
                 <property name="AutoSeparation">False</property>
                 <property name="InheritedDataSource">True</property>
