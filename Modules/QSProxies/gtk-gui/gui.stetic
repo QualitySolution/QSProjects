@@ -53,6 +53,7 @@
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="ColumnMappings">{QSProxies.Proxy} Number[Номер]; Start[Начало действия]; Expiration[Окончание действия];</property>
+                <signal name="RowActivated" handler="OnDatatreeviewProxiesRowActivated" />
               </widget>
             </child>
           </widget>

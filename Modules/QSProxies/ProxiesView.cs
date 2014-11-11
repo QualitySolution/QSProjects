@@ -94,7 +94,7 @@ namespace QSProxies
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
-		protected void OnDatatreeviewAccountsRowActivated(object o, Gtk.RowActivatedArgs args)
+		protected void OnDatatreeviewProxiesRowActivated(object o, Gtk.RowActivatedArgs args)
 		{
 			buttonEdit.Click();
 		}

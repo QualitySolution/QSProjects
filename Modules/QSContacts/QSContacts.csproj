@@ -66,6 +66,7 @@
     <Compile Include="gtk-gui\QSContacts.PersonsView.cs" />
     <Compile Include="PersonsView.cs" />
     <Compile Include="Domain\Person.cs" />
+    <Compile Include="Domain\Post.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

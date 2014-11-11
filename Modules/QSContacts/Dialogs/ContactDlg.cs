@@ -56,9 +56,10 @@ namespace QSContacts
 
 		private void ConfigureDlg()
 		{
-			entrySurname.IsEditable = entryName.IsEditable = entryLastname.IsEditable = entryPost.IsEditable = true;
+			entrySurname.IsEditable = entryName.IsEditable = entryLastname.IsEditable = true;
 			dataComment.Editable = true;
 			adaptor.Target = subject;
+			referencePost.SubjectType = typeof(Post);
 			datatable1.DataSource = adaptor;
 			emailsView.Session = Session;
 			if (subject.Emails == null)

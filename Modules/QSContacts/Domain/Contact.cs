@@ -14,8 +14,8 @@ namespace QSContacts
 		public virtual string Surname { get; set; }
 		public virtual string Lastname { get; set; }
 		public virtual string Comment { get; set; }
-		public virtual string Post { get; set; }
 		public virtual bool Fired { get; set; }
+		public virtual Post Post { get; set; }
 		public virtual IList<QSContacts.Phone> Phones { get; set; }
 		public virtual IList<QSContacts.Email> Emails { get; set; }
 		#endregion
@@ -26,9 +26,10 @@ namespace QSContacts
 			Surname = String.Empty;
 			Lastname = String.Empty;
 			Comment = String.Empty;
-			Post = String.Empty;
 			Fired = false;
 		}
+
+		public string PostName { get { return Post.Name; } }
 
 		public override bool Equals(Object obj)
 		{
