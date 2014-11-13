@@ -28,7 +28,7 @@ namespace QSContacts
 			Comment = String.Empty;
 			Fired = false;
 		}
-
+		public string FullName { get { return String.Format("{0} {1} {2}", Surname, Name, Lastname); } }
 		public string PostName { get { return Post.Name; } }
 
 		public override bool Equals(Object obj)

@@ -96,6 +96,7 @@ namespace QSBanks
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
 			datatableBank.DataSource = adaptorBank;
+			dataentryNumber.MaxLength = 25;
 		}
 
 		public bool Save()
