@@ -28,7 +28,7 @@ namespace QSTDI
 		{
 			if (_tabs.Exists (t => (t.MasterTab is ITdiDialog && (t.MasterTab as ITdiDialog).HasChanges) ||
 				(t.MasterTab is TdiSliderTab && (t.MasterTab as TdiSliderTab).ActiveDialog != null && (t.MasterTab as TdiSliderTab).ActiveDialog.HasChanges))) {
-				string Message = "Вы действительно хотите закрыть программу? Все несохраненные изменения будут утеряны.";
+				string Message = "Вы действительно хотите закрыть все вкладки? Все несохраненные изменения будут утеряны.";
 				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
 					                   MessageType.Question, 
 					                   ButtonsType.YesNo,
@@ -41,6 +41,9 @@ namespace QSTDI
 
 			while(_tabs.Count > 0)
 			{
+				while (_tabs [0].SlaveTabs.Count > 0)
+					CloseTab (_tabs [0].SlaveTabs [0]);
+
 				CloseTab (_tabs[0].MasterTab);
 			}
 
@@ -113,6 +116,9 @@ namespace QSTDI
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
 		{
+			if(CheckClosingSlaveTabs((ITdiTab)sender))
+				return;
+
 			if(!e.AskSave || SaveIfNeed((ITdiTab)sender))
 				CloseTab((ITdiTab)sender);
 		}
@@ -133,27 +139,19 @@ namespace QSTDI
 				return;
 			}
 
+			if(CheckClosingSlaveTabs(tab))
+				return;
+
 			if(SaveIfNeed(tab))
 				CloseTab(tab);
 		}
 
 		private bool SaveIfNeed(ITdiTab tab)
 		{
-			ITdiDialog dlg;
-
-			TdiTabInfo info = _tabs.Find(i => i.MasterTab == tab);
-			if(info.SlaveTabs.Count > 0)
-			{
-				string Message = "Сначала надо закрыть подчиненую вкладку.";
-				MessageDialog md = new MessageDialog ( (Window)this.Toplevel, DialogFlags.Modal,
-					MessageType.Warning, 
-					ButtonsType.Ok,
-					Message);
-				md.Run ();
-				md.Destroy();
-				this.CurrentPage = this.PageNum(info.SlaveTabs[0] as Widget);
+			if (CheckClosingSlaveTabs (tab))
 				return false;
-			}
+
+			ITdiDialog dlg;
 
 			if (tab is ITdiDialog)
 				dlg = tab as ITdiDialog;
@@ -182,6 +180,25 @@ namespace QSTDI
 			}
 			return true;
 		}
+			
+		public bool CheckClosingSlaveTabs(ITdiTab tab)
+		{
+			TdiTabInfo info = _tabs.Find(i => i.MasterTab == tab);
+			if(info.SlaveTabs.Count > 0)
+			{
+				string Message = "Сначала надо закрыть подчиненую вкладку.";
+				MessageDialog md = new MessageDialog ( (Window)this.Toplevel, DialogFlags.Modal,
+					MessageType.Warning, 
+					ButtonsType.Ok,
+					Message);
+				md.Run ();
+				md.Destroy();
+				this.CurrentPage = this.PageNum(info.SlaveTabs[0] as Widget);
+				return true;
+			}
+
+			return false;
+		}
 
 		public ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
 		{
@@ -199,6 +216,11 @@ namespace QSTDI
 
 		private void CloseTab(ITdiTab tab)
 		{
+			TdiTabInfo info = _tabs.Find(i => i.MasterTab == tab);
+			if (info.SlaveTabs.Count > 0) {
+				throw new InvalidOperationException ("Вкладка не может быть закрыта, если у нее есть подчинёные вкладки.");
+			}
+
 			//Закрываем вкладку
 			bool IsCurrent = this.CurrentPageWidget == tab as Widget;
 			_tabs.RemoveAll(t => t.MasterTab == tab);
@@ -206,8 +228,8 @@ namespace QSTDI
 			if (IsCurrent)
 				this.PrevPage();
 			this.Remove((Widget)tab);
+			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy();
-			logger.Debug("Вкладка удалена");
 		}
 
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab(object subject, ITdiTab masterTab, bool CanSlided = true)

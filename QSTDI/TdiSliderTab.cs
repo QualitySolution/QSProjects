@@ -115,6 +115,9 @@ namespace QSTDI
 
 		protected void OnDialogClose(object sender, TdiTabCloseEventArgs arg)
 		{
+			if (TabParent.CheckClosingSlaveTabs (this as ITdiTab))
+				return;
+
 			ITdiDialog dlg = sender as ITdiDialog;
 			if(arg.AskSave && dlg.HasChanges)
 			{
@@ -165,6 +168,15 @@ namespace QSTDI
 				TabParent.AddTab(tab, this as ITdiTab);
 			else
 				TabParent.AddTab(tab, afterTab);
+		}
+
+		public bool CheckClosingSlaveTabs(ITdiTab tab)
+		{
+			//FIXME Если появятся подчиненые вкладки у журналов, нужно переделать проверку, что бы при закрыти диалога не требовалось зарывать подчиненные вкладки журнала.
+			if (tab == Journal || tab == ActiveDialog)
+				return TabParent.CheckClosingSlaveTabs (this as ITdiTab);
+			else
+				return TabParent.CheckClosingSlaveTabs (tab);
 		}
 
 		public ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
