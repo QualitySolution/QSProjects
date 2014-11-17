@@ -17,7 +17,7 @@ namespace QSOrmProject
 	[Description ("Adaptable Entry Widget")]
 	[GtkWidgetFactoryProvider ("string", "DefaultFactoryCreate")]
 	[GtkTypeWidgetFactoryProvider ("stringhandler", "DefaultFactoryCreate", typeof(string))]
-	public class DataValidatedEntry : ValidatedEntry, IAdaptableControl, ICustomDataEvents, IPostableControl, IEditable
+	public class DataValidatedEntry : ValidatedEntry, IAdaptableControl, ICustomDataEvents, IPostableControl
 	{
 		/// <summary>
 		/// Registered factory creation method
