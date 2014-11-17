@@ -42,6 +42,23 @@ namespace QSBanks
 			}
 		}
 
+		OrmParentReference parentReference;
+		public OrmParentReference ParentReference {
+			set {
+				parentReference = value;
+				if (parentReference != null) {
+					Session = parentReference.Session;
+					if (!(parentReference.ParentObject is IAccountOwner)) {
+						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
+					}
+					AccountOwner = (IAccountOwner)parentReference.ParentObject;
+				}
+			}
+			get {
+				return parentReference;
+			}
+		}
+
 		public AccountsView()
 		{
 			this.Build();
@@ -69,8 +86,7 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 				
-			AccountDlg dlg = new AccountDlg(Session);
-			accountsList.Add((Account)dlg.Subject);
+			AccountDlg dlg = new AccountDlg(ParentReference);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -80,7 +96,7 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 
-			AccountDlg dlg = new AccountDlg(Session, datatreeviewAccounts.GetSelectedObjects()[0] as Account);
+			AccountDlg dlg = new AccountDlg(ParentReference, datatreeviewAccounts.GetSelectedObjects()[0] as Account);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -92,6 +108,11 @@ namespace QSBanks
 		protected void OnButtonDefaultClicked(object sender, EventArgs e)
 		{
 			AccountOwner.DefaultAccount = (datatreeviewAccounts.GetSelectedObjects()[0] as Account);
+		}
+
+		protected void OnButtonDeleteClicked (object sender, EventArgs e)
+		{
+			throw new NotImplementedException ();
 		}
 	}
 }

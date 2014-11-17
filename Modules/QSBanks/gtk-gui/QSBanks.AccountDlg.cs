@@ -14,7 +14,7 @@ namespace QSBanks
 		
 		private global::Gtk.DataBindings.DataEntry dataentryName;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryNumber;
+		private global::QSOrmProject.DataValidatedEntry dataentryNumber;
 		
 		private global::Gtk.DataBindings.DataEntryReference dataentryrefBank;
 		
@@ -96,25 +96,21 @@ namespace QSBanks
 			this.dataentryName.InheritedDataSource = true;
 			this.dataentryName.Mappings = "Name";
 			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.Editable = true;
 			this.datatableMain.Add (this.dataentryName);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryName]));
 			w4.LeftAttach = ((uint)(1));
 			w4.RightAttach = ((uint)(2));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
-			this.dataentryNumber = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryNumber = new global::QSOrmProject.DataValidatedEntry ();
 			this.dataentryNumber.CanFocus = true;
 			this.dataentryNumber.Name = "dataentryNumber";
 			this.dataentryNumber.IsEditable = true;
+			this.dataentryNumber.MaxLength = 25;
 			this.dataentryNumber.InvisibleChar = '●';
 			this.dataentryNumber.InheritedDataSource = true;
 			this.dataentryNumber.Mappings = "Number";
 			this.dataentryNumber.InheritedBoundaryDataSource = false;
-			this.dataentryNumber.InheritedDataSource = true;
-			this.dataentryNumber.Mappings = "Number";
-			this.dataentryNumber.InheritedBoundaryDataSource = false;
-			this.dataentryNumber.Editable = true;
 			this.datatableMain.Add (this.dataentryNumber);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryNumber]));
 			w5.TopAttach = ((uint)(1));

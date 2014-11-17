@@ -9,14 +9,14 @@ using Gtk;
 namespace QSBanks
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
+	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private ISession session;
+		private ISession Session;
+		private IAccountOwner AccountOwner;
 		private Adaptor adaptorOrg = new Adaptor();
 		private Adaptor adaptorBank = new Adaptor();
 		private Account subject;
-		private bool NewItem = false;
 
 		public ITdiTabParent TabParent { set; get;}
 
@@ -40,17 +40,20 @@ namespace QSBanks
 
 		}
 
-		public ISession Session
-		{
-			get
-			{
-				if (session == null)
-					session = OrmMain.Sessions.OpenSession();
-				return session;
+		OrmParentReference parentReference;
+		public OrmParentReference ParentReference {
+			set {
+				parentReference = value;
+				if (parentReference != null) {
+					Session = parentReference.Session;
+					if (!(parentReference.ParentObject is IAccountOwner)) {
+						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
+					}
+					AccountOwner = (IAccountOwner)parentReference.ParentObject;
+				}
 			}
-			set
-			{
-				session = value;
+			get {
+				return parentReference;
 			}
 		}
 
@@ -64,27 +67,19 @@ namespace QSBanks
 		}
 
 
-		public AccountDlg(ISession parentSession)
+		public AccountDlg(OrmParentReference parentReference)
 		{
 			this.Build();
-			Session = parentSession;
-			NewItem = true;
+			ParentReference = parentReference;
 			subject = new Account();
+			AccountOwner.Accounts.Add (subject);
 			ConfigureDlg();
 		}
 
-		public AccountDlg(int id)
+		public AccountDlg(OrmParentReference parentReference, Account sub)
 		{
 			this.Build();
-			subject = Session.Load<Account>(id);
-			TabName = subject.Name;
-			ConfigureDlg();
-		}
-
-		public AccountDlg(ISession parentSession, Account sub)
-		{
-			this.Build();
-			Session = parentSession;
+			ParentReference = parentReference;
 			subject = sub;
 			TabName = subject.Name;
 			ConfigureDlg();
@@ -96,7 +91,7 @@ namespace QSBanks
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
 			datatableBank.DataSource = adaptorBank;
-			dataentryNumber.MaxLength = 25;
+			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
 		}
 
 		public bool Save()
@@ -108,8 +103,7 @@ namespace QSBanks
 			}
 
 			logger.Info("Сохраняем счет организации...");
-			Session.SaveOrUpdate(subject);
-			OrmMain.NotifyObjectUpdated(subject);
+			OrmMain.DelayedNotifyObjectUpdated(ParentReference.ParentObject, subject);
 			logger.Info("Ok");
 			return true;
 		}
@@ -121,6 +115,9 @@ namespace QSBanks
 
 		protected void OnCloseTab(bool askSave)
 		{
+			if (TabParent.CheckClosingSlaveTabs ((ITdiTab)this))
+				return;
+
 			if(dataentryrefBank.Subject == null)
 			{
 				string Message = "В счете незаполнен банк, счет не будет сохранен. Всеравно закрыть вкладку?";
@@ -134,13 +131,14 @@ namespace QSBanks
 					return;
 			}
 
+			Save ();
+
 			if (CloseTab != null)
 				CloseTab(this, new TdiTabCloseEventArgs(askSave));
 		}
 
 		public override void Destroy()
 		{
-			Save();
 			base.Destroy();
 		}
 

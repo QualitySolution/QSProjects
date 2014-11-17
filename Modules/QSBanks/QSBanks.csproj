@@ -82,6 +82,10 @@
       <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
       <Name>gtk-databind-lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />

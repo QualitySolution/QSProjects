@@ -9,6 +9,7 @@
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
+    <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="416 318">
     <property name="MemberName" />
@@ -100,6 +101,7 @@
                 <property name="Icon">stock:gtk-remove Menu</property>
                 <property name="Label" translatable="yes">Удалить</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonDeleteClicked" />
               </widget>
               <packing>
                 <property name="Position">2</property>
@@ -217,7 +219,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Bik</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
@@ -248,7 +249,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">City</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">4</property>
@@ -279,7 +279,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">CorAccount</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -310,7 +309,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Name</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>
@@ -338,7 +336,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Region</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">3</property>
@@ -533,7 +530,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Name</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>
@@ -549,18 +545,15 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataEntry" id="dataentryNumber">
+              <widget class="QSOrmProject.DataValidatedEntry" id="dataentryNumber">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
+                <property name="MaxLength">25</property>
                 <property name="InvisibleChar">●</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Number</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Number</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
