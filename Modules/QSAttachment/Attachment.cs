@@ -281,12 +281,13 @@ namespace QSAttachment
 			if (deletedItems.Count > 0) 
 			{
 				logger.Info ("Удаляем удаленные файлы на сервере...");
-				DBWorks.SQLHelper sqld = new DBWorks.SQLHelper ("DELETE FORM {0} WHERE id IN ", TableName);
+				DBWorks.SQLHelper sqld = new DBWorks.SQLHelper ("DELETE FROM {0} WHERE id IN ", TableName);
 				sqld.QuoteMode = DBWorks.QuoteType.SingleQuotes;
 				sqld.StartNewList ("(", ", ");
 				deletedItems.ForEach (delegate(int obj) {
 					sqld.AddAsList (obj.ToString ());
 				});
+				sqld.Add (")");
 				cmd = new MySqlCommand(sqld.Text, (MySqlConnection)QSMain.ConnectionDB, trans);
 				cmd.ExecuteNonQuery ();
 			}
