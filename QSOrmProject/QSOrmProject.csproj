@@ -61,6 +61,7 @@
     <Compile Include="DataWidgets\DataValidatedEntry.cs" />
     <Compile Include="OrmParentReference.cs" />
     <Compile Include="DataWidgets\DataDatePicker.cs" />
+    <Compile Include="Widgets\EnumMenuButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
