@@ -8,5 +8,10 @@ namespace QSOrmProject
 		ISession Session { get; }
 		object Subject { get; set; }
 	}
+
+	public interface IOrmSlaveDialog : IOrmDialog
+	{
+		OrmParentReference ParentReference { get; set;}
+	}
 }
 
