@@ -7,6 +7,9 @@ namespace QSWidgetLib
 	[ToolboxItem (true)]
 	public class MenuButton : Button
 	{
+		Label titleLabel;
+		HBox hbox;
+		Arrow arrow;
 		Menu popup_menu;
 
 		public Menu Menu {
@@ -18,11 +21,47 @@ namespace QSWidgetLib
 			}
 		}
 
+		[Browsable(false)]
+		public new string Label {
+			get { return titleLabel.Text; }
+			set { titleLabel.Text = value; }
+		}
+
+		Image image;
+		public new Image Image {
+			get {
+				return image;
+			}
+			set {
+				if (image == value)
+					return;
+				hbox.Remove (image);
+				image = value;
+
+				hbox.PackStart (Image, false, false, 1);
+				hbox.ReorderChild (Image, 0);
+			}
+		}
+
 		public MenuButton ()
 		{
-			var arrow = new Arrow (ArrowType.Down, ShadowType.None);
+			hbox = new HBox ();
+
+			Image = new Image ();
+			hbox.PackStart (Image, false, false, 1);
+			Image.Show ();
+
+			this.titleLabel = new Label ();
+			this.titleLabel.Xalign = 0;
+			hbox.PackStart (this.titleLabel, true, true, 1);
+			this.titleLabel.Show ();
+
+			this.arrow = new Arrow (ArrowType.Down, ShadowType.None);
+			hbox.PackStart (arrow, false, false, 1);
 			arrow.Show ();
-			this.Add (arrow);
+
+			this.Add (hbox);
+			hbox.Show ();
 		}
 
 		protected override void OnPressed ()
