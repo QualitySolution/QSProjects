@@ -36,6 +36,7 @@
     <Reference Include="NLog">
       <HintPath>..\lib\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="VImagesList.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.VImagesList.cs" />
     <Compile Include="ValidatedEntry.cs" />
+    <Compile Include="MenuButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,13 +63,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="icons\x-office-calendar.png" />
   </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <GtkDesignInfo generateGettext="False" />
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
   <ItemGroup>
     <Folder Include="icons\" />
   </ItemGroup>
