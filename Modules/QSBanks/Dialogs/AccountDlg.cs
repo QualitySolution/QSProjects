@@ -5,6 +5,7 @@ using NHibernate;
 using QSTDI;
 using QSOrmProject;
 using Gtk;
+using QSValidation;
 
 namespace QSBanks
 {
@@ -37,7 +38,6 @@ namespace QSBanks
 				if (TabNameChanged != null)
 					TabNameChanged(this, new TdiTabNameChangedEventArgs(value));
 			}
-
 		}
 
 		OrmParentReference parentReference;
@@ -96,12 +96,9 @@ namespace QSBanks
 
 		public bool Save()
 		{
-			if(dataentryrefBank.Subject == null)
-			{
-				logger.Warn("В счете незаполнен банк, счет не сохраняем.");
+			var valid = new QSValidator<Account> (subject);
+			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
 				return false;
-			}
-
 			logger.Info("Сохраняем счет организации...");
 			OrmMain.DelayedNotifyObjectUpdated(ParentReference.ParentObject, subject);
 			logger.Info("Ok");
@@ -117,19 +114,6 @@ namespace QSBanks
 		{
 			if (TabParent.CheckClosingSlaveTabs ((ITdiTab)this))
 				return;
-
-			if(dataentryrefBank.Subject == null)
-			{
-				string Message = "В счете незаполнен банк, счет не будет сохранен. Всеравно закрыть вкладку?";
-				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
-					MessageType.Question, 
-					ButtonsType.YesNo,
-					Message);
-				int result = md.Run ();
-				md.Destroy ();
-				if (result == (int)ResponseType.No)
-					return;
-			}
 
 			Save ();
 

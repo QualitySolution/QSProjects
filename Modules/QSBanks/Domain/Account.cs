@@ -1,6 +1,8 @@
 ﻿using System;
-using QSOrmProject;
 using System.Data.Bindings;
+using QSOrmProject;
+using System.ComponentModel.DataAnnotations;
+using DataAnnotationsExtensions;
 
 namespace QSBanks
 {
@@ -10,9 +12,13 @@ namespace QSBanks
 		#region Свойства
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
+
+		[StringLength(25, MinimumLength = 20, ErrorMessage = "Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.")]
+		[Digits(ErrorMessage = "Номер счета может содержать только цифры.")]
 		public virtual string Number { get; set; }
 
 		Bank inBank;
+		[Required(ErrorMessage = "Банк должен быть заполнен.")]
 		public virtual Bank InBank {
 			get {
 				return inBank;

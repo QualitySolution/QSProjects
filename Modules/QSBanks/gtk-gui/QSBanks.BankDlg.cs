@@ -103,7 +103,6 @@ namespace QSBanks
 			this.dataentryBik.InheritedDataSource = true;
 			this.dataentryBik.Mappings = "Bik";
 			this.dataentryBik.InheritedBoundaryDataSource = false;
-			this.dataentryBik.Editable = true;
 			this.datatableInfo.Add (this.dataentryBik);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryBik]));
 			w6.TopAttach = ((uint)(1));
@@ -125,7 +124,6 @@ namespace QSBanks
 			this.dataentryCity.InheritedDataSource = true;
 			this.dataentryCity.Mappings = "City";
 			this.dataentryCity.InheritedBoundaryDataSource = false;
-			this.dataentryCity.Editable = true;
 			this.datatableInfo.Add (this.dataentryCity);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryCity]));
 			w7.TopAttach = ((uint)(4));
@@ -147,7 +145,6 @@ namespace QSBanks
 			this.dataentryCorAccount.InheritedDataSource = true;
 			this.dataentryCorAccount.Mappings = "CorAccount";
 			this.dataentryCorAccount.InheritedBoundaryDataSource = false;
-			this.dataentryCorAccount.Editable = true;
 			this.datatableInfo.Add (this.dataentryCorAccount);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryCorAccount]));
 			w8.TopAttach = ((uint)(2));
@@ -169,7 +166,6 @@ namespace QSBanks
 			this.dataentryName.InheritedDataSource = true;
 			this.dataentryName.Mappings = "Name";
 			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.Editable = true;
 			this.datatableInfo.Add (this.dataentryName);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryName]));
 			w9.LeftAttach = ((uint)(1));
@@ -188,7 +184,6 @@ namespace QSBanks
 			this.dataentryRegion.InheritedDataSource = true;
 			this.dataentryRegion.Mappings = "Region";
 			this.dataentryRegion.InheritedBoundaryDataSource = false;
-			this.dataentryRegion.Editable = true;
 			this.datatableInfo.Add (this.dataentryRegion);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryRegion]));
 			w10.TopAttach = ((uint)(3));

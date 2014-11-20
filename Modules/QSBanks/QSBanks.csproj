@@ -43,6 +43,10 @@
     <Reference Include="NHibernate">
       <HintPath>..\..\..\Vodovoz\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\..\..\Vodovoz\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,13 +82,17 @@
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\gtk-databind-lib.csproj">
-      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
-      <Name>gtk-databind-lib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\Gtk.DataBindings.csproj">
+      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
+      <Name>Gtk.DataBindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QSValidation\QSValidation.csproj">
+      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
+      <Name>QSValidation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

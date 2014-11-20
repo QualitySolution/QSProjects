@@ -4,6 +4,7 @@ using NHibernate;
 using System.Data.Bindings;
 using QSTDI;
 using QSOrmProject;
+using QSValidation;
 
 namespace QSBanks
 {
@@ -93,6 +94,10 @@ namespace QSBanks
 
 		public bool Save()
 		{
+			var valid = new QSValidator<Bank> (subject);
+			if (valid.RunDlgIfNotValid ((Gtk.Window)this.Toplevel))
+				return false;
+
 			logger.Info("Сохраняем банк...");
 			try
 			{

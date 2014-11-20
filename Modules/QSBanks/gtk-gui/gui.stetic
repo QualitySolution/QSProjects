@@ -7,9 +7,10 @@
   <import>
     <widget-library name="../../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
-    <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
-    <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
+    <widget-library name="../../../QSValidation/bin/Debug/QSValidation.dll" />
+    <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="416 318">
     <property name="MemberName" />
