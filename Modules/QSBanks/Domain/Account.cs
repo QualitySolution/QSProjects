@@ -3,20 +3,18 @@ using System.Data.Bindings;
 using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
 using DataAnnotationsExtensions;
+using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
 	[OrmSubjectAttributes("Счета")]
-	public class Account : BaseNotifyPropertyChanged
+	public class Account : BaseNotifyPropertyChanged, IValidatableObject
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
-
 		[StringLength(25, MinimumLength = 20, ErrorMessage = "Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.")]
-		[Digits(ErrorMessage = "Номер счета может содержать только цифры.")]
 		public virtual string Number { get; set; }
-
 		Bank inBank;
 		[Required(ErrorMessage = "Банк должен быть заполнен.")]
 		public virtual Bank InBank {
@@ -62,6 +60,16 @@ namespace QSBanks
 		{
 			return this.Id.GetHashCode(); 
 		}
+
+		#region IValidatableObject implementation
+
+		public System.Collections.Generic.IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
+		{
+			if (!new Regex (@"^[0-9]*$").IsMatch (Number))
+				yield return new ValidationResult ("Номер счета может содержать только цифры.", new[]{"Number"});
+		}
+
+		#endregion
 	}
 }
 
