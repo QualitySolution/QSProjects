@@ -6,7 +6,7 @@ using DataAnnotationsExtensions;
 
 namespace QSBanks
 {
-	[OrmSubjectAttibutes("Банковский счет")]
+	[OrmSubjectAttributes("Счета")]
 	public class Account : BaseNotifyPropertyChanged
 	{
 		#region Свойства

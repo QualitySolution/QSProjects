@@ -3,7 +3,7 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Типы e-mail адресов")]
+	[OrmSubjectAttributes("Типы e-mail")]
 	public class EmailType : IDomainObject
 	{
 			#region Свойства

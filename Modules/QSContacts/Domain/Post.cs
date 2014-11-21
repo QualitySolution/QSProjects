@@ -3,7 +3,7 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Должности")]
+	[OrmSubjectAttributes("Должности")]
 	public class Post : IDomainObject
 	{
 		#region Свойства

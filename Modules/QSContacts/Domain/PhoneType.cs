@@ -3,7 +3,7 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Типы телефонов")]
+	[OrmSubjectAttributes("Типы телефонов")]
 	public class PhoneType : IDomainObject
 	{
 		#region Свойства

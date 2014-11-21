@@ -5,7 +5,7 @@ using System.Data.Bindings;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Контактные лица")]
+	[OrmSubjectAttributes("Контакты")]
 	public class Contact : BaseNotifyPropertyChanged, IDomainObject
 	{
 		#region Свойства

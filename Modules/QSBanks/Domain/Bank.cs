@@ -5,7 +5,7 @@ using DataAnnotationsExtensions;
 
 namespace QSBanks
 {
-	[OrmSubjectAttibutes("Банки")]
+	[OrmSubjectAttributes("Банки")]
 	public class Bank
 	{
 		#region Свойства

@@ -4,7 +4,7 @@ using System.Data.Bindings;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Телефоны")]
+	[OrmSubjectAttributes("E-mail")]
 	public class Email
 	{
 		public virtual int Id { get; set; }

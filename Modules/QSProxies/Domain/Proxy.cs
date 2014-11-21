@@ -6,7 +6,7 @@ using QSContacts;
 
 namespace QSProxies
 {
-	[OrmSubjectAttibutes("Доверенности")]
+	[OrmSubjectAttributes("Доверенности")]
 	public class Proxy : BaseNotifyPropertyChanged, IDomainObject
 	{
 		#region Свойства

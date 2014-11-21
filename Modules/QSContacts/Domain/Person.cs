@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace QSContacts
 {
-	[OrmSubjectAttibutes("Сотрудники")]
+	[OrmSubjectAttributes("Человек")]
 	public class Person
 	{
 		#region Свойства
