@@ -142,9 +142,9 @@ namespace QSOrmProject
 				map.ObjectUpdated += OnRefObjectUpdated;
 				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
 			}
-			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttibutes), true);
+			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttributes), true);
 			if (att.Length > 0)
-				this.TabName = (att[0] as OrmSubjectAttibutes).JournalName;
+				this.TabName = (att[0] as OrmSubjectAttributes).JournalName;
 			UpdateObjectList();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
