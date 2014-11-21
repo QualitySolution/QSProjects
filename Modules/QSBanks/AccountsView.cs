@@ -75,7 +75,7 @@ namespace QSBanks
 
 		void OnAccountUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			if (Session == null)
+			if (Session == null || !Session.IsOpen)
 				return;
 			Session.Lock(e.Subject, LockMode.Read);
 		}
