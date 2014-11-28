@@ -23,12 +23,16 @@ namespace QSValidation
 		{
 			Results = new List<ValidationResult>();
 			var vc = new ValidationContext(entity, null, null);
+
 			if(entity is IValidatableObject)
-			{
 				Results.AddRange ((entity as IValidatableObject).Validate (vc));
+
+			if (Results.Count > 0) {
+				IsValid = false;
+				Validator.TryValidateObject (entity, vc, Results, true);
 			}
-			IsValid = Validator.TryValidateObject
-				(entity, vc, Results, true);
+			else
+				IsValid = Validator.TryValidateObject(entity, vc, Results, true);
 
 			return IsValid;
 		}

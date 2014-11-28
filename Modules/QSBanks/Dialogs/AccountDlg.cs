@@ -115,7 +115,8 @@ namespace QSBanks
 			if (TabParent.CheckClosingSlaveTabs ((ITdiTab)this))
 				return;
 
-			Save ();
+			if (Save () == false)
+				return;
 
 			if (CloseTab != null)
 				CloseTab(this, new TdiTabCloseEventArgs(askSave));

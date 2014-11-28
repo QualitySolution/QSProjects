@@ -253,9 +253,13 @@ namespace QSOrmProject
 			}
 			else
 			{
+				object selected = null;
+				if (datatreeviewRef.GetSelectedObjects().Length > 0)
+					selected = datatreeviewRef.GetSelectedObjects () [0];
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag(TdiBeforeCreateResultFlag.Canceled))
 					return;
-				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, datatreeviewRef.GetSelectedObjects()[0]), this);
+				if (selected != null)
+					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selected), this);
 			}
 		}
 
