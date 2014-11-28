@@ -127,6 +127,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <signal name="SelectionChanged" handler="OnIconviewFilesSelectionChanged" />
+                <signal name="ItemActivated" handler="OnIconviewFilesItemActivated" />
               </widget>
             </child>
           </widget>

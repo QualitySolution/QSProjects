@@ -312,6 +312,11 @@ namespace QSAttachment
 			scanWin.Destroy ();
 		}
 
+		protected void OnIconviewFilesItemActivated (object o, ItemActivatedArgs args)
+		{
+			buttonOpen.Click ();
+		}
+
 	}
 }
 

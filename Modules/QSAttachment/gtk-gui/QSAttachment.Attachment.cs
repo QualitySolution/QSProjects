@@ -138,6 +138,7 @@ namespace QSAttachment
 			this.buttonSave.Clicked += new global::System.EventHandler (this.OnButtonSaveClicked);
 			this.buttonDelete.Clicked += new global::System.EventHandler (this.OnButtonDeleteClicked);
 			this.iconviewFiles.SelectionChanged += new global::System.EventHandler (this.OnIconviewFilesSelectionChanged);
+			this.iconviewFiles.ItemActivated += new global::Gtk.ItemActivatedHandler (this.OnIconviewFilesItemActivated);
 		}
 	}
 }
