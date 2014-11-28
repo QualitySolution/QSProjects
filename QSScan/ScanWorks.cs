@@ -30,7 +30,7 @@ namespace QSScan
 		{
 			Images = new List<Pixbuf>();
 
-			if(Environment.OSVersion.Platform == PlatformID.Win32NT)
+			if(Environment.OSVersion.Platform == PlatformID.Win32NT || Environment.OSVersion.Platform == PlatformID.Unix)
 			{
 				WorkWithTwain = true;
 				SetupTwain();
@@ -38,7 +38,7 @@ namespace QSScan
 			else
 			{
 				WorkWithTwain = false;
-				//FIXME Setup Linux scanner
+				//FIXME Setup MacOS scanner
 			}
 		}
 
@@ -73,6 +73,10 @@ namespace QSScan
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
 			_twain32.AcquireError += OnTwainAcquireError;
 
+			_twain32.SetupMemXferEvent += OnSetupMemXferEvent;
+			_twain32.MemXferEvent += OnMemXferEvent;
+			_twain32.AcquireCompleted += _twain32_AcquireCompleted;
+
 			logger.Debug ("IsTwain2Enable = {0}", _twain32.IsTwain2Enable);
 			_twain32.OpenDSM();
 			logger.Debug ("IsTwain2Supported = {0}", _twain32.IsTwain2Supported);
@@ -91,7 +95,7 @@ namespace QSScan
 				if (stream != null)
 					FinishImageTransfer ();
 				logger.Debug ("Сканирование закончено...");
-				this.Close();
+				_twain32.CloseDataSource ();
 			}
 			this._isEnable=(e.TwainState&Twain32.TwainStateFlag.DSEnabled)!=0;
 			while (Gtk.Application.EventsPending ())
@@ -121,6 +125,7 @@ namespace QSScan
 		private void _twain32_AcquireCompleted(object sender,EventArgs e) 
 		{
 			logger.Debug("Acquire Completed");
+			//FIXME Если не будет использоваться нативный режим событие не нужно.
 			TotalImages = _twain32.ImageCount;
 			for(int i = 0; i < _twain32.ImageCount; i++)
 			{
@@ -154,21 +159,11 @@ namespace QSScan
 			return PixImage;
 		}
 
-		public void GetImages(bool AllAtOnce)
+		public void GetImages()
 		{
 			if(WorkWithTwain)
 			{
-				if (AllAtOnce) // Получаем изображения или все сразу или по одному.
-					_twain32.AcquireCompleted += _twain32_AcquireCompleted;
-				else 
-				{
-					//_twain32.EndXfer += _twain32_EndXfer;
-					_twain32.SetupMemXferEvent += OnSetupMemXferEvent;
-					_twain32.MemXferEvent += OnMemXferEvent;
-					_twain32.AcquireCompleted += _twain32_AcquireCompleted;
-				}
 				RunTwain();
-				//FIXME Здесь для повторного использования того же класса нужно почистить события.
 			}
 
 		}
@@ -178,6 +173,7 @@ namespace QSScan
 			try 
 			{
 				logger.Debug("On MemXfer Event {0}", this.stream.Position);
+				//FIXME Некорректно работает с черно белыми изображениями на нашем сканере(нужно проверить)
 				int _bytesPerPixel=e.ImageInfo.BitsPerPixel>>3;
 				for(int i=0,_rowOffset=0; i<e.ImageMemXfer.Rows; i++,_rowOffset+=(int)e.ImageMemXfer.BytesPerRow) {
 					for(int ii=0,_colOffset=0; ii<e.ImageMemXfer.Columns; ii++,_colOffset+=_bytesPerPixel) {
