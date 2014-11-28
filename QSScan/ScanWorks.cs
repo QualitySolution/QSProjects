@@ -50,6 +50,8 @@ namespace QSScan
 		public void SelectScanner(int i)
 		{
 			_twain32.SourceIndex = i;
+			logger.Debug ("Selected Scaner {0}", i);
+			logger.Debug ("IsSourceTwain2Compatible = {0}", _twain32.GetIsSourceTwain2Compatible (i));
 		}
 
 		public string[] GetScannerList()
@@ -67,7 +69,7 @@ namespace QSScan
 		private void SetupTwain()
 		{
 			logger.Debug("Setup Twain");
-			_twain32 = new Twain32 (new System.ComponentModel.Container());
+			_twain32 = new Twain32 ();
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
 			_twain32.AcquireError += OnTwainAcquireError;
 
@@ -225,7 +227,15 @@ namespace QSScan
 		private void RunTwain()
 		{
 			logger.Debug("Run Twain");
-			_twain32.OpenDataSource();
+
+			logger.Debug ("IsTwain2Supported = {0}", _twain32.IsTwain2Supported);
+			logger.Debug ("IsTwain2Enable = {0}", _twain32.IsTwain2Enable);
+			if( _twain32.OpenDataSource() == false)
+			{
+				string text = "Не удалось открыть источник.";
+				logger.Error (text);
+				throw new InvalidOperationException (text);
+			}
 			logger.Debug("DataSource is opened.");
 			_twain32.Capabilities.XferMech.Set (TwSX.Memory);
 			//Feeder
