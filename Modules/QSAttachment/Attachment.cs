@@ -262,12 +262,13 @@ namespace QSAttachment
 				{
 					if (ex.Number == 1153) {
 						logger.WarnException ("Превышен максимальный размер пакета для передачи на сервер.", ex);
-						string Text = "Превышен максимальный размер пакета для передачи на сервер базы данных. " +
-							"Некоторые файлы превысили ограничение и не будут записаны в базу данных. " +
+						string Text = String.Format ("При передачи файла {0}, " +
+						                             "превышен максимальный размер пакета для передачи на сервер базы данных. " +
+						                             "Файл не будет сохранен. " +
 							"Это значение настраивается на сервере, по умолчанию для MySQL оно равняется 1Мб. " +
 							"Максимальный размер файла поддерживаемый программой составляет 16Мб, мы рекомендуем " +
 							"установить в настройках сервера параметр <b>max_allowed_packet=16M</b>. Подробнее о настройке здесь " +
-							"http://dev.mysql.com/doc/refman/5.6/en/packet-too-large.html";
+						                             "http://dev.mysql.com/doc/refman/5.6/en/packet-too-large.html", row [(int)FilesCol.name]);
 						MessageDialog md = new MessageDialog ((Gtk.Window)this.Toplevel, DialogFlags.Modal,
 						                                  MessageType.Error, 
 						                                  ButtonsType.Ok, Text);
@@ -309,6 +310,11 @@ namespace QSAttachment
 
 			}
 			scanWin.Destroy ();
+		}
+
+		protected void OnIconviewFilesItemActivated (object o, ItemActivatedArgs args)
+		{
+			buttonOpen.Click ();
 		}
 
 	}

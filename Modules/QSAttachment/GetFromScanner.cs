@@ -102,7 +102,6 @@ namespace QSAttachment
 
 		protected void OnButtonScanClicked(object sender, EventArgs e)
 		{
-
 			try
 			{
 				logger.Info ("Получение изображений со сканера {0}...", comboScanner.Active);
@@ -110,7 +109,7 @@ namespace QSAttachment
 				scan.SelectScanner (comboScanner.Active);
 				logger.Debug("run scanner");
 
-				scan.GetImages(false);
+				scan.GetImages();
 
 				progressScan.Fraction = 0;
 				progressScan.Text = "";
@@ -121,11 +120,6 @@ namespace QSAttachment
 			{
 				logger.ErrorException("Ошибка в работе со сканером!", ex);
 				throw ex;
-			}
-			finally
-			{
-				if(scan != null)
-					scan.Close ();
 			}
 			TestCanSave ();
 		}
