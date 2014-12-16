@@ -56,28 +56,35 @@ namespace QSAttachment
 			}
 		}
 
-		public void UpdateFileList()
+		public void UpdateFileList(bool copy = false)
 		{
 			if (TableName == "" || AttachToTable == "" || ItemId < 0)
 				return;
 			logger.Info ("Загружаем список файлов для {0}<{1}>", AttachToTable, ItemId);
-			string sql = String.Format("SELECT id, name, size FROM {0} WHERE item_group = @item_group AND item_id = @item_id",
-				TableName);
+			string filefield = copy ? ", file " : "";
+			string sql = String.Format("SELECT id, name, size{1} FROM {0} WHERE item_group = @item_group AND item_id = @item_id",
+			                           TableName, filefield);
 			try
 			{
 				MySqlCommand cmd = new MySqlCommand(sql, (MySqlConnection)QSMain.ConnectionDB);
 				cmd.Parameters.AddWithValue("@item_group", AttachToTable);
 				cmd.Parameters.AddWithValue("@item_id", ItemId);
 				FilesStore.Clear();
+				byte[] file = null;
 				using (MySqlDataReader rdr = cmd.ExecuteReader ()) 
 				{
 					while(rdr.Read ())
 					{
-						FilesStore.AppendValues(rdr.GetInt32("id"),
+						if(copy)
+						{
+							file = new byte[rdr.GetInt64("size")];
+							rdr.GetBytes(rdr.GetOrdinal("file"), 0, file, 0, rdr.GetInt32("size"));
+						}
+						FilesStore.AppendValues( copy ? -1 : rdr.GetInt32("id"),
 							rdr.GetString("name"),
 							rdr.GetInt64("size"),
 						                        FileIconWorks.GetPixbufForFile (rdr.GetString("name")),
-						                        null
+						                        copy ? file : null
 						);
 					}
 				}
@@ -235,7 +242,7 @@ namespace QSAttachment
 
 		public void SaveChanges(MySqlTransaction trans)
 		{
-			logger.Info("Записывем изменения в списке файлов...");
+			logger.Info("Записывам изменения в списке файлов...");
 			string sql = String.Format ("INSERT INTO {0} (name, item_group, item_id, size, file) " +
 			                            "VALUES (@name, @item_group, @item_id, @size, @file)", TableName);
 			MySqlCommand cmd = new MySqlCommand(sql, (MySqlConnection)QSMain.ConnectionDB, trans);
