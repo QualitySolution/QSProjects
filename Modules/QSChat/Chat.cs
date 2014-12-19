@@ -103,7 +103,7 @@ namespace QSChat
 			TextBuffer tempBuffer = new TextBuffer(textTags);
 			TextIter iter = tempBuffer.EndIter;
 			NewMessageCount = 0;
-			DateTime MaxDate = DateTime.MinValue;
+			DateTime MaxDate = default(DateTime);
 			using (MySqlDataReader rdr = cmd.ExecuteReader())
 			{
 				while (rdr.Read())
