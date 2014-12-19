@@ -64,8 +64,12 @@ namespace QSProjectsLib
 		{
 			public string NewText { get; set; }
 		}
-
-		//Регистрируем правила Nlog для строки состояния
+			
+		/// <summary>
+		/// Регистрируем правила Nlog для строки состояния
+		/// </summary>
+		/// <param name="methodName">Имя статического метода который будет вызываться при появлении сообщения.</param>
+		/// <param name="className">Имя класа в котором находится метод.</param>
 		public static void MakeNewStatusTargetForNlog(string methodName, string className)
 		{
 			NLog.Config.LoggingConfiguration config = LogManager.Configuration;
@@ -290,6 +294,28 @@ namespace QSProjectsLib
 
 			dialog.Run ();
 			dialog.Destroy();
+		}
+
+		public static void RunChangeLogDlg(Gtk.Window parent)
+		{
+			Dialog HistoryDialog = new Dialog("История версий программы", parent, Gtk.DialogFlags.DestroyWithParent);
+			HistoryDialog.Modal = true;
+			HistoryDialog.AddButton ("Закрыть", ResponseType.Close);
+
+			System.IO.StreamReader HistoryFile = new System.IO.StreamReader( "changes.txt");
+			TextView HistoryTextView = new TextView();
+			HistoryTextView.WidthRequest = 700;
+			HistoryTextView.WrapMode = WrapMode.Word;
+			HistoryTextView.Sensitive = false;
+			HistoryTextView.Buffer.Text = HistoryFile.ReadToEnd();
+			Gtk.ScrolledWindow ScrollW = new ScrolledWindow();
+			ScrollW.HeightRequest = 500;
+			ScrollW.Add (HistoryTextView);
+			HistoryDialog.VBox.Add (ScrollW);
+
+			HistoryDialog.ShowAll ();
+			HistoryDialog.Run ();
+			HistoryDialog.Destroy ();
 		}
 
 		public static void WaitRedraw()
