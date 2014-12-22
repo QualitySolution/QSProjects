@@ -39,7 +39,7 @@ namespace QSSupportLib
 			string ErrorText;
 
 			if (MainSupport.BaseParameters.Product == null) {
-				ErrorText = "Название продуката в базе данных не указано.";
+				ErrorText = "Название продукта в базе данных не указано.";
 				return ErrorText;
 			}
 

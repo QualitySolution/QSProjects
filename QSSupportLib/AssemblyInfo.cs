@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("QSSupportLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Библиотека QS для работы с подержкой Quality Solution")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Quality Solution")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("ghost03080")]
+[assembly: AssemblyCopyright("Quality Solution 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
