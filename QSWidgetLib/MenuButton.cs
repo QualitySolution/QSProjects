@@ -12,6 +12,17 @@ namespace QSWidgetLib
 		Arrow arrow;
 		Menu popup_menu;
 
+		bool useMarkup;
+		public bool UseMarkup {
+			get {
+				return useMarkup;
+			}
+			set {
+				useMarkup = value;
+				titleLabel.UseMarkup = value;
+			}
+		}
+
 		public Menu Menu {
 			get {
 				return popup_menu;
@@ -24,7 +35,11 @@ namespace QSWidgetLib
 		[Browsable(false)]
 		public new string Label {
 			get { return titleLabel.Text; }
-			set { titleLabel.Text = value; }
+			set { if (UseMarkup)
+					titleLabel.Markup = value;
+				else
+					titleLabel.Text = value; 
+			}
 		}
 
 		Image image;
