@@ -177,6 +177,8 @@ namespace QSTDI
 						return false;
 					}
 				}
+				if (result == (int)ResponseType.DeleteEvent)
+					return false;
 			}
 			return true;
 		}
