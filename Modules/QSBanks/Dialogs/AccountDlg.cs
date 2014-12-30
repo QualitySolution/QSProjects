@@ -10,14 +10,12 @@ using QSValidation;
 namespace QSBanks
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog
+	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private ISession Session;
-		private IAccountOwner AccountOwner;
+		private IAccountOwner accountOwner;
 		private Adaptor adaptorOrg = new Adaptor();
 		private Adaptor adaptorBank = new Adaptor();
-		private Account subject;
 
 		public ITdiTabParent TabParent { set; get;}
 
@@ -49,7 +47,7 @@ namespace QSBanks
 					if (!(parentReference.ParentObject is IAccountOwner)) {
 						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
 					}
-					AccountOwner = (IAccountOwner)parentReference.ParentObject;
+					this.accountOwner = (IAccountOwner)parentReference.ParentObject;
 				}
 			}
 			get {
@@ -57,14 +55,28 @@ namespace QSBanks
 			}
 		}
 
-		public object Subject
-		{
+		#region IOrmDialog implementation
+		private ISession session;
+		public NHibernate.ISession Session {
+			get {
+				if (session == null)
+					Session = OrmMain.Sessions.OpenSession ();
+				return session;
+			}
+			set {
+				session = value;
+			}
+		}
+
+		private Account subject;
+		public object Subject {
 			get {return subject;}
 			set {
 				if (value is Account)
 					subject = value as Account;
 			}
 		}
+		#endregion
 
 
 		public AccountDlg(OrmParentReference parentReference)
@@ -72,7 +84,7 @@ namespace QSBanks
 			this.Build();
 			ParentReference = parentReference;
 			subject = new Account();
-			AccountOwner.Accounts.Add (subject);
+			accountOwner.Accounts.Add (subject);
 			ConfigureDlg();
 		}
 
@@ -100,7 +112,8 @@ namespace QSBanks
 			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
 				return false;
 			logger.Info("Сохраняем счет организации...");
-			OrmMain.DelayedNotifyObjectUpdated(ParentReference.ParentObject, subject);
+			if (accountOwner != null)
+				OrmMain.DelayedNotifyObjectUpdated (accountOwner, subject);
 			logger.Info("Ok");
 			return true;
 		}
