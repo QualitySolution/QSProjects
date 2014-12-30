@@ -157,7 +157,7 @@ namespace QSOrmProject
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
 			//FIXME Проверить может очистка сессии не нужна, если нам ее передали.
-			if(parentReference != null)
+			if(parentReference == null)
 				session.Clear();
 			UpdateObjectList();
 		}
