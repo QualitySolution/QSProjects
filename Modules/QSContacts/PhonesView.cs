@@ -10,6 +10,7 @@ using NHibernate;
 using NLog;
 using QSOrmProject;
 using QSWidgetLib;
+using QSSupportLib;
 
 namespace QSContacts
 {
@@ -121,6 +122,8 @@ namespace QSContacts
 
 			DataValidatedEntry phoneDataEntry = new DataValidatedEntry (rowAdaptor, "Number");
 			phoneDataEntry.ValidationMode = ValidationType.phone;
+			if (MainSupport.BaseParameters.All.ContainsKey ("default_city_code") && newPhone.DigitsNumber == String.Empty)
+				phoneDataEntry.SetDefaultCityCode (MainSupport.BaseParameters.All["default_city_code"]);
 			phoneDataEntry.WidthChars = 19;
 			datatablePhones.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 

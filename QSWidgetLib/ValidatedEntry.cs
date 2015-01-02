@@ -50,7 +50,10 @@ namespace QSWidgetLib
 			case 1:
 				args.Position += 1;
 				break;
-			case 5:
+			case 4:
+				args.Position += 2;
+				break;
+			case 5: 
 				args.Position += 2;
 				break;
 			case 10:
@@ -60,6 +63,12 @@ namespace QSWidgetLib
 				args.Position += 3;
 				break;
 			}
+		}
+
+		public void SetDefaultCityCode(string code)
+		{
+			if (ValidationMode == ValidationType.phone)
+				this.Text = "(" + code + ") ";
 		}
 
 		protected void PhoneTextDeleted (object o, Gtk.TextDeletedArgs args)
@@ -98,7 +107,7 @@ namespace QSWidgetLib
 			if (Number != String.Empty) {
 				if (Number.Length > 0)
 					Number = Number.Insert (0, "(");
-				if (Number.Length > 4)
+				if (Number.Length > 3)
 					Number = Number.Insert (4, ") ");
 				if (Number.Length > 9)
 					Number = Number.Insert (9, " - ");

@@ -359,7 +359,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Lastname</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">False</property>
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -389,7 +388,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Name</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">False</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
@@ -420,7 +418,6 @@
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">Surname</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="Editable">False</property>
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>
@@ -453,7 +450,6 @@
                     <property name="InheritedDataSource">True</property>
                     <property name="Mappings">Comment</property>
                     <property name="InheritedBoundaryDataSource">False</property>
-                    <property name="Editable">False</property>
                   </widget>
                 </child>
               </widget>

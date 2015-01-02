@@ -29,6 +29,17 @@ namespace QSContacts
 			Fired = false;
 		}
 		public string FullName { get { return String.Format("{0} {1} {2}", Surname, Name, Lastname); } }
+		public string MainPhoneString 
+		{ 
+			get { 
+				if (Phones.Count > 0 && Phones [0].Number != String.Empty)
+					return String.Format ("{0}{1}", 
+						Phones [0].NumberType != null ? Phones [0].NumberType.Name + " " : String.Empty, 
+						Phones [0].Number);
+				else
+					return String.Empty; 
+			} 
+		}
 		public string PostName { get { return Post.Name; } }
 
 		public override bool Equals(Object obj)

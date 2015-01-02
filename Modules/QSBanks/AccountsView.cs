@@ -62,7 +62,6 @@ namespace QSBanks
 		public AccountsView()
 		{
 			this.Build();
-			OrmMain.ClassMapingList.Find(m => m.ObjectClass == typeof(Account)).ObjectUpdated += OnAccountUpdated;
 			datatreeviewAccounts.Selection.Changed += OnSelectionChanged;
 		}
 
@@ -72,21 +71,17 @@ namespace QSBanks
 			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
 			buttonDefault.Sensitive = selected && !(datatreeviewAccounts.GetSelectedObjects()[0] as Account).IsDefault;
 		}
-
-		void OnAccountUpdated (object sender, OrmObjectUpdatedEventArgs e)
-		{
-			if (Session == null || !Session.IsOpen)
-				return;
-			Session.Lock(e.Subject, LockMode.Read);
-		}
-
+			
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
 			ITdiTab mytab = TdiHelper.FindMyTab(this);
 			if (mytab == null)
 				return;
 				
-			AccountDlg dlg = new AccountDlg(ParentReference);
+			Account subject = new Account ();
+			accountsList.Add (subject);
+
+			AccountDlg dlg = new AccountDlg(ParentReference, subject);
 			mytab.TabParent.AddSlaveTab(mytab, dlg);
 		}
 
@@ -112,7 +107,11 @@ namespace QSBanks
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			throw new NotImplementedException ();
+			ITdiTab mytab = TdiHelper.FindMyTab (this);
+			if (mytab == null)
+				return;
+
+			accountsList.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 	}
 }

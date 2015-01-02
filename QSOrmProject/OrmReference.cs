@@ -7,6 +7,7 @@ using QSTDI;
 using NLog;
 using Gtk;
 using Gtk.DataBindings;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
@@ -141,6 +142,8 @@ namespace QSOrmProject
 			{
 				map.ObjectUpdated += OnRefObjectUpdated;
 				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
+				if (map.RefSearchFields != null)
+					SearchFields = map.RefSearchFields;
 			}
 			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttributes), true);
 			if (att.Length > 0)
@@ -154,7 +157,7 @@ namespace QSOrmProject
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
 			//FIXME Проверить может очистка сессии не нужна, если нам ее передали.
-			if(parentReference != null)
+			if(parentReference == null)
 				session.Clear();
 			UpdateObjectList();
 		}
@@ -184,13 +187,15 @@ namespace QSOrmProject
 
 		bool HandleIsVisibleInFilter (object aObject)
 		{
-			if(entrySearch.Text == "")
+			if(entrySearch.Text == "" || SearchFields.Length == 0)
 				return true;
-			foreach(string prop in SearchFields)
-			{
-				string Str = objectType.GetProperty(prop).GetValue(aObject, null).ToString();
-				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1)
-					return true;
+			foreach (string prop in SearchFields) {
+				if (objectType.GetProperty (prop) != null) {
+					string Str = objectType.GetProperty (prop).GetValue (aObject, null).ToString ();
+					if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1)
+						return true;
+				} else
+					logger.Error ("У объекта {0} не найден столбец поиска {1}", aObject.ToString (), prop);
 			}
 			return false;
 		}
