@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 
 namespace QSProjectsLib
 {
-    public class RusNumber
+	public static class RusNumber
     {
         private static string[] hunds =
         {
@@ -110,7 +110,7 @@ namespace QSProjectsLib
         }
     };
             
-    public class RusCurrency
+	public static class RusCurrency
     {
         private static HybridDictionary currencies = new HybridDictionary();
 
