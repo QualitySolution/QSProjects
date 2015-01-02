@@ -5,7 +5,6 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="351 337">

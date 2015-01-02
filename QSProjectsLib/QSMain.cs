@@ -25,6 +25,7 @@ namespace QSProjectsLib
 		[Obsolete("Не вызывается в новой версии, используейте NLog, для получения сообщений.")]
 		public static event EventHandler<NewStatusTextEventArgs> NewStatusText;
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
+		public static event EventHandler<RunErrorMessageDlgEventArgs> RunErrorMessageDlg;
 
 		//Перечисления
 		public enum DataProviders {MySQL, Factory};
@@ -63,6 +64,20 @@ namespace QSProjectsLib
 		public class NewStatusTextEventArgs : EventArgs
 		{
 			public string NewText { get; set; }
+		}
+
+		public class RunErrorMessageDlgEventArgs : EventArgs
+		{
+			public Window ParentWindow { get; set; }
+			public Exception Exception { get; set; }
+			public string UserMessage { get; set; }
+
+			public RunErrorMessageDlgEventArgs(Window parent, Exception ex, string userMessage)
+			{
+				ParentWindow = parent;
+				Exception = ex;
+				UserMessage = userMessage;
+			}
 		}
 			
 		/// <summary>
@@ -224,18 +239,28 @@ namespace QSProjectsLib
 
 		public static void ErrorMessage(Exception ex, string userMessage = "")
 		{
-			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(ErrorDlgParrent, ex, userMessage);
-			md.Run ();
-			md.Destroy();
+			ErrorMessage(ErrorDlgParrent, ex, userMessage);
 		}
 
 		public static void ErrorMessage(Window parent, Exception ex, string userMessage = "")
 		{
 			if (parent == null && ErrorDlgParrent != null)
 				parent = ErrorDlgParrent;
-			QSSupportLib.ErrorMsg md = new QSSupportLib.ErrorMsg(parent, ex, userMessage);
-			md.Run ();
-			md.Destroy();
+
+			if(RunErrorMessageDlg != null)
+			{
+				RunErrorMessageDlg (null, new RunErrorMessageDlgEventArgs (parent, ex, userMessage));
+			}
+			else
+			{
+				MessageDialog md = new MessageDialog ( parent, DialogFlags.DestroyWithParent,
+				                                      MessageType.Error, 
+				                                      ButtonsType.Ok, 
+				                                      userMessage != "" ? userMessage : ex.Message
+				                                      );
+				md.Run ();
+				md.Destroy();
+			}
 		}
 
 		public static void RunAboutDialog()

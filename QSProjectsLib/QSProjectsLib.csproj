@@ -87,10 +87,4 @@
   <ItemGroup>
     <Folder Include="icons\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\QSSupportLib\QSSupportLib.csproj">
-      <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
-      <Name>QSSupportLib</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
