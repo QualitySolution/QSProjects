@@ -7,6 +7,7 @@ using System.Xml;
 using System.Linq;
 using QSWidgetLib;
 using QSProjectsLib;
+using System.Threading;
 
 namespace QSSupportLib
 {
@@ -41,7 +42,14 @@ namespace QSSupportLib
 				logger.Warn ("Нет настроенных лент новостей, выходим...");
 				return;
 			}
-			logger.Info ("Получаем ленты новостей.");
+
+			Thread loadThread = new Thread (new ThreadStart (ThreadWorks));
+			loadThread.Start ();
+		}
+
+		private void ThreadWorks()
+		{
+			logger.Info ("Поток: Получаем ленты новостей.");
 			SyndicationFeed mainFeed = new SyndicationFeed(); 
 			foreach (var feed in MainNewsFeed.NewsFeeds) 
 			{ 
@@ -68,30 +76,32 @@ namespace QSSupportLib
 				mainFeed = tempFeed; 
 			}
 			logger.Info ("Создаем меню новостей..");
-			UnreadNewsCount = 0;
-			var newsMenu = new Menu ();
-			MenuItemId<SyndicationItem> newsItem;
-			foreach(var news in mainFeed.Items)
-			{
-				Label itemLabel = new Label ();
-				if (MainNewsFeed.ItemIsRead (news))
-					itemLabel.Text = news.Title.Text;
-				else {
-					itemLabel.Markup = String.Format ("<b>{0}</b>", news.Title.Text);
-					UnreadNewsCount++;
+			Application.Invoke (delegate {
+				logger.Info ("Запуск операций в основном потоке..");
+				UnreadNewsCount = 0;
+				var newsMenu = new Menu ();
+				MenuItemId<SyndicationItem> newsItem;
+				foreach (var news in mainFeed.Items) {
+					Label itemLabel = new Label ();
+					if (MainNewsFeed.ItemIsRead (news))
+						itemLabel.Text = news.Title.Text;
+					else {
+						itemLabel.Markup = String.Format ("<b>{0}</b>", news.Title.Text);
+						UnreadNewsCount++;
+					}
+					newsItem = new MenuItemId<SyndicationItem> ();
+					newsItem.Add (itemLabel);
+					newsItem.ID = news;
+					newsItem.TooltipMarkup = String.Format ("<b>{0:D}</b> {1}", news.PublishDate, news.Summary.Text);
+					newsItem.Activated += OnNewsActivated;
+					newsMenu.Append (newsItem);
 				}
-				newsItem = new MenuItemId<SyndicationItem> ();
-				newsItem.Add (itemLabel);
-				newsItem.ID = news;
-				newsItem.TooltipMarkup = String.Format ("<b>{0:D}</b> {1}", news.PublishDate, news.Summary.Text);
-				newsItem.Activated += OnNewsActivated;
-				newsMenu.Append (newsItem);
-			}
-			this.Submenu = newsMenu;
-			UpdateIcon ();
-			newsMenu.ShowAll ();
-			MainNewsFeed.SaveFirstRead ();
-			logger.Info("Ок");
+				this.Submenu = newsMenu;
+				UpdateIcon ();
+				newsMenu.ShowAll ();
+				MainNewsFeed.SaveFirstRead ();
+				logger.Info("Ок");
+			});
 		}
 
 		void OnNewsActivated (object sender, EventArgs e)

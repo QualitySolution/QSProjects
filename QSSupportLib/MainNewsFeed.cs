@@ -15,7 +15,7 @@ namespace QSSupportLib
 
 		public static void LoadReadFeed()
 		{
-			logger.Info ("Читаем таблицу прочитанных пользователем новостей...");
+			logger.Info ("Получаем таблицу прочитанных пользователем новостей...");
 			string sql = "SHOW TABLES LIKE 'read_news'";
 			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 			cmd.CommandText = sql;
