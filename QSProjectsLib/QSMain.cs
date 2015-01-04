@@ -22,8 +22,6 @@ namespace QSProjectsLib
 		public static string AdminFieldName;
 		public static UserInfo User;
 		//События
-		[Obsolete("Не вызывается в новой версии, используейте NLog, для получения сообщений.")]
-		public static event EventHandler<NewStatusTextEventArgs> NewStatusText;
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
 		public static event EventHandler<RunErrorMessageDlgEventArgs> RunErrorMessageDlg;
 
@@ -57,13 +55,6 @@ namespace QSProjectsLib
 						break;
 				}
 			}
-		}
-
-		//Событие строки состояния
-		[Obsolete("Не вызывается в новой версии, используейте NLog, для получения сообщений.")]
-		public class NewStatusTextEventArgs : EventArgs
-		{
-			public string NewText { get; set; }
 		}
 
 		public class RunErrorMessageDlgEventArgs : EventArgs
