@@ -12,36 +12,61 @@ namespace QSSupportLib
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public static List<NewsFeed> NewsFeeds;
+		public static bool NewsReadExist { get; private set;}
+
+		public static void CheckNewsReads()
+		{
+			logger.Info ("Проверяем существование таблицы 'read_news'...");
+			NewsReadExist = false;
+			string sql = "SHOW TABLES LIKE 'read_news'";
+			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+			cmd.CommandText = sql;
+			try
+			{
+				if(cmd.ExecuteScalar () == null)
+				{// Таблица не создана создаем.
+					logger.Info ("Таблицы с новостями нет в БД, создаем...");
+					cmd.CommandText = "CREATE TABLE `read_news` ( " +
+						"`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
+						"`user_id` INT UNSIGNED NULL," +
+						"`feed_id` VARCHAR(64) NOT NULL," +
+						"`items` TEXT NULL DEFAULT NULL," +
+						"PRIMARY KEY (`id`)," +
+						"INDEX `fk_read_news_user_id_idx` (`user_id` ASC)," +
+						"CONSTRAINT `fk_read_news_user_id`" +
+						"  FOREIGN KEY (`user_id`)" +
+						"  REFERENCES `users` (`id`)" +
+						"  ON DELETE CASCADE" +
+						"  ON UPDATE CASCADE)";
+					cmd.ExecuteNonQuery ();
+					NewsReadExist = true;
+				}
+			}
+			catch(MySql.Data.MySqlClient.MySqlException ex)
+			{
+				if(ex.Number == 1142)
+					logger.WarnException ("Таблица не создана, зайдите под администратором!", ex);
+				else
+					logger.WarnException ("Ошибка в момент создания таблицы с новостями", ex);
+			}
+			catch (Exception ex)
+			{
+				logger.WarnException ("Ошибка в момент создания таблицы с новостями", ex);
+			}
+		}
 
 		public static void LoadReadFeed()
 		{
 			logger.Info ("Получаем таблицу прочитанных пользователем новостей...");
-			string sql = "SHOW TABLES LIKE 'read_news'";
-			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
-			cmd.CommandText = sql;
-			if(cmd.ExecuteScalar () == null)
-			{// Таблица не создана создаем.
-				logger.Info ("Таблицы с новостями нет в БД, создаем...");
-				cmd.CommandText = "CREATE TABLE `read_news` ( " +
-				"`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
-				"`user_id` INT UNSIGNED NULL," +
-				"`feed_id` VARCHAR(64) NOT NULL," +
-				"`items` TEXT NULL DEFAULT NULL," +
-				"PRIMARY KEY (`id`)," +
-				"INDEX `fk_read_news_user_id_idx` (`user_id` ASC)," +
-				"CONSTRAINT `fk_read_news_user_id`" +
-				"  FOREIGN KEY (`user_id`)" +
-				"  REFERENCES `users` (`id`)" +
-				"  ON DELETE CASCADE" +
-				"  ON UPDATE CASCADE)";
-				cmd.ExecuteNonQuery ();
-			}
 
 			if (NewsFeeds == null)
 				NewsFeeds = new List<NewsFeed> ();
 
-			sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
-			cmd = QSMain.ConnectionDB.CreateCommand();
+			if (!NewsReadExist)
+				return;
+
+			string sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
+			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 			cmd.CommandText = sql;
 
 			DbParameter param = cmd.CreateParameter();
@@ -78,6 +103,9 @@ namespace QSSupportLib
 
 		public static void SaveFirstRead()
 		{
+			if (!NewsReadExist)
+				return;
+
 			NewsFeeds.FindAll (f => f.FirstRead).ForEach(delegate(NewsFeed feed) {
 				logger.Info ("Сохраняем новый feed({0})...", feed.Title);
 				string sql = "INSERT INTO read_news (user_id, feed_id, items) " +
@@ -107,6 +135,9 @@ namespace QSSupportLib
 
 		public static void UpdateFeedReads(NewsFeed feed)
 		{
+			if (!NewsReadExist)
+				return;
+
 			if (feed.FirstRead)
 				throw new InvalidOperationException ("Нельзя обновить новый фид с FirstRead = true");
 			logger.Info ("Обновляем прочитанные новости...");
