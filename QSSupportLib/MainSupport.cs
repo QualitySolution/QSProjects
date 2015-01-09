@@ -1,18 +1,20 @@
 using System;
 using System.Reflection;
 using Gtk;
+using QSProjectsLib;
 
 namespace QSSupportLib
 {
-	public class MainSupport
+	public static class MainSupport
 	{
 		public static BaseParam BaseParameters;
 		public static AppVersion ProjectVerion;
 
-		public MainSupport ()
+		static MainSupport()
 		{
+			QSMain.RunErrorMessageDlg += HandleRunErrorMessageDlg;
 		}
-		
+
 		public static void TestVersion(Window Parrent)
 		{
 			string TextMes = TestVersionText ();
@@ -87,5 +89,11 @@ namespace QSSupportLib
 			return ((AssemblyTitleAttribute)att [0]).Title;
 		}
 
+		static void HandleRunErrorMessageDlg (object sender, QSProjectsLib.QSMain.RunErrorMessageDlgEventArgs e)
+		{
+			ErrorMsg md = new QSSupportLib.ErrorMsg(e.ParentWindow, e.Exception, e.UserMessage);
+			md.Run ();
+			md.Destroy();
+		}
 	}
 }
