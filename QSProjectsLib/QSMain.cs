@@ -1,9 +1,10 @@
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Reflection;
+using System.Threading;
 using Gtk;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 using NLog;
 
 namespace QSProjectsLib
@@ -13,6 +14,10 @@ namespace QSProjectsLib
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public static Window ErrorDlgParrent;
+		public static Thread GuiThread;
+		public static Label StatusBarLabel;
+
+		//Работа с базой
 		public static DataProviders DBMS;
 		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;
@@ -91,6 +96,14 @@ namespace QSProjectsLib
 			config.LoggingRules.Add(rule);
 
 			LogManager.Configuration = config;
+		}
+
+		/// <summary>
+		/// Регистрируем правила Nlog для строки состояния
+		/// </summary>
+		public static void MakeNewStatusTargetForNlog()
+		{
+			MakeNewStatusTargetForNlog("StatusMessage", "QSProjectsLib.QSMain, QSProjectsLib");
 		}
 
 		//Событие обновления справочников
@@ -342,6 +355,30 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static void StatusMessage(string message)
+		{
+			if (GuiThread == Thread.CurrentThread) {
+				RealStatusMessage (message);
+			}
+			else
+			{
+				Console.WriteLine ("Another Thread");
+				Application.Invoke (delegate {
+					RealStatusMessage (message);
+				});
+			}
+		}
+
+		static void RealStatusMessage(string message)
+		{
+			if (StatusBarLabel == null)
+				return;
+			StatusBarLabel.Text = message;
+			while (GLib.MainContext.Pending())
+			{
+				Gtk.Main.Iteration();
+			}
+		}
 	}
 }
 
