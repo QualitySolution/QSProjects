@@ -39,8 +39,8 @@ namespace QSSupportLib
 						"  ON DELETE CASCADE" +
 						"  ON UPDATE CASCADE)";
 					cmd.ExecuteNonQuery ();
-					NewsReadExist = true;
 				}
+				NewsReadExist = true;
 			}
 			catch(MySql.Data.MySqlClient.MySqlException ex)
 			{
