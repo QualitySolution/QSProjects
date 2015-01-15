@@ -184,7 +184,7 @@ namespace QSProjectsLib
 				connectionDB.Open();
 				return;
 			}
-			catch (Exception ex) {
+			catch {
 				MessageDialog md = new MessageDialog (null, 
 					DialogFlags.DestroyWithParent,
 					MessageType.Question,
@@ -202,12 +202,26 @@ namespace QSProjectsLib
 
 		public static void CheckConnectionAlive()
 		{
+			WaitCheck wait = null;
+
 			if (DBMS != DataProviders.MySQL)
 				return;
 			Thread thread = new Thread (new ThreadStart (DoPing));
 			thread.Start ();
 			logger.Info ("Проверяем соединение...");
-			bool timeout = !thread.Join (15000);
+			int count = 0;
+			while (thread.IsAlive && count < 1000) {		//Ждем 1 секунду
+				Thread.Sleep (50);
+				count += 50;
+			}
+			if (thread.IsAlive) {							//Если секунда прошла, а пинг еще не закончился - показываем окно
+				wait = new WaitCheck ();
+				wait.Show ();
+				wait.StartProgressBar (connectionDB.ConnectionTimeout - 1);
+			}
+			bool timeout = !thread.Join (connectionDB.ConnectionTimeout * 1000 - 1000);
+			if (wait != null)
+				wait.Destroy ();
 			if(timeout || connectionDB.State != System.Data.ConnectionState.Open)
 			{
 				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
