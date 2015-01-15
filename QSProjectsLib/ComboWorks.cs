@@ -36,6 +36,7 @@ namespace QSProjectsLib
 			logger.Info("Запрос элементов комбобокс...");
 			try
 			{
+				QSMain.CheckConnectionAlive();
 				int count = 0;
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 				cmd.CommandText = SqlSelect;
@@ -102,6 +103,7 @@ namespace QSProjectsLib
 			logger.Info("Запрос справочника " + TableRef + "...");
 			try
 			{
+				QSMain.CheckConnectionAlive();
 				int count = 0;
 				string sql = String.Format("SELECT id, name FROM {0} ", TableRef);
 				if(OrderBy != "")
@@ -148,6 +150,7 @@ namespace QSProjectsLib
 			logger.Info("Запрос всех значений {0}.{1} ...", tablename, fieldname);
 			try
 			{
+				QSMain.CheckConnectionAlive();
 				int count = 0;
 				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();

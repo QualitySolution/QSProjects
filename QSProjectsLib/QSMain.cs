@@ -171,25 +171,51 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static void DoPing()
+		{
+			connectionDB.Ping ();
+		}
+
+		public static void TryConnect()
+		{
+			logger.Info("Пытаемся восстановить соединение...");
+			try
+			{
+				connectionDB.Open();
+				return;
+			}
+			catch (Exception ex) {
+				MessageDialog md = new MessageDialog (null, 
+					DialogFlags.DestroyWithParent,
+					MessageType.Question,
+					ButtonsType.YesNo,
+					"Соединение было разорвано. Повторить попытку подключения? В противном случае приложение завершит работу.");
+				ResponseType result = (ResponseType)md.Run ();
+				md.Destroy ();
+				if (result == ResponseType.Yes) {
+					TryConnect ();
+				} else {
+					Environment.Exit (1);
+				}
+			}
+		}
+
 		public static void CheckConnectionAlive()
 		{
 			if (DBMS != DataProviders.MySQL)
 				return;
-			if(!connectionDB.Ping())
+			Thread thread = new Thread (new ThreadStart (DoPing));
+			thread.Start ();
+			logger.Info ("Проверяем соединение...");
+			bool timeout = !thread.Join (15000);
+			if(timeout || connectionDB.State != System.Data.ConnectionState.Open)
 			{
 				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
-				logger.Info("Пытаемся восстановить соединение...");
-				try
-				{
-					connectionDB.Open();
-				}
-				catch (Exception ex) 
-				{
-					logger.FatalException("Пересоединится не удалось.", ex);
-					throw;
-				}
+				TryConnect ();
 			}
+			logger.Info ("Ок.");
 		}
+
 
 		public static string GetPermissionFieldsForSelect()
 		{
