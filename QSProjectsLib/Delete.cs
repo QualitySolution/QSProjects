@@ -107,7 +107,7 @@ namespace QSProjectsLib
 			int GroupCount;
 			DbCommand cmd;
 			DbDataReader rdr;
-
+			QSMain.CheckConnectionAlive();
 			logger.Debug ("Поиск зависимостей для таблицы {0}", Table);
 			if(!QSMain.ProjectTables.ContainsKey(Table))
 			{
@@ -244,6 +244,7 @@ namespace QSProjectsLib
 				ErrorHappens = true;
 				return;
 			}
+			QSMain.CheckConnectionAlive();
 			if(QSMain.ProjectTables[Table].DeleteItems.Count > 0)
 			{
 				foreach(KeyValuePair<string, TableInfo.DeleteDependenceItem> pair in QSMain.ProjectTables[Table].DeleteItems)

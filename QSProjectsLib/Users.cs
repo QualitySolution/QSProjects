@@ -33,6 +33,7 @@ namespace QSProjectsLib
 		{
 			if(!QSMain.TestConnection ())
 				return;
+			QSMain.CheckConnectionAlive();
 			logger.Info("Получаем таблицу пользователей...");
 			
 			string sql = "SELECT * FROM users ";
@@ -106,6 +107,7 @@ namespace QSProjectsLib
 				sql = String.Format("DROP USER {0}, {0}@localhost", loginname);
 				try 
 				{
+					QSMain.CheckConnectionAlive();
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					cmd.ExecuteNonQuery();
 					logger.Info("Пользователь удалён. Ok");

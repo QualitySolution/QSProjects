@@ -42,6 +42,7 @@ namespace QSProjectsLib
 			sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
 			try 
 			{
+				QSMain.CheckConnectionAlive();
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 				cmd.CommandText = sql;
 				cmd.ExecuteNonQuery();

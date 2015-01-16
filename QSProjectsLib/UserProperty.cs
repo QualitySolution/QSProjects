@@ -40,6 +40,7 @@ namespace QSProjectsLib
 				"WHERE users.id = @id";
 			try
 			{
+				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				
 				cmd.Parameters.AddWithValue("@id", UserId);
@@ -113,6 +114,7 @@ namespace QSProjectsLib
 			logger.Info("Запись пользователя...");
 			try 
 			{
+				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				
 				cmd.Parameters.AddWithValue("@id", entryID.Text);
@@ -150,6 +152,7 @@ namespace QSProjectsLib
 			{
 				//Проверка существует ли логин
 				string sql = "SELECT COUNT(*) FROM users WHERE login = @login";
+				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue("@login", entryLogin.Text);
 				if(Convert.ToInt32(cmd.ExecuteScalar()) > 0)
@@ -218,6 +221,7 @@ namespace QSProjectsLib
 			logger.Info("Переименование учетной записи на сервере...");
 			try 
 			{
+				QSMain.CheckConnectionAlive();
 				//Проверка существует ли логин
 				string sql = "SELECT COUNT(*) from mysql.user WHERE USER = @login";
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
@@ -265,6 +269,7 @@ namespace QSProjectsLib
 			string sql;
 			try 
 			{
+				QSMain.CheckConnectionAlive();
 				sql = String.Format("SET PASSWORD FOR {0} = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.ExecuteNonQuery();
@@ -291,6 +296,7 @@ namespace QSProjectsLib
 				else
 					privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW";
 				string sql = "GRANT " + privileges + " ON " + QSMain.connectionDB.Database +".* TO " + entryLogin.Text + ", " + entryLogin.Text + "@localhost";
+				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.ExecuteNonQuery();
 				if(checkAdmin.Active)

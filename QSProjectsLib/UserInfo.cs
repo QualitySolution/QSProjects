@@ -24,6 +24,7 @@ namespace QSProjectsLib
 			logger.Info("Проверка наличия пользователя в базе...");
 			try
 			{
+				QSMain.CheckConnectionAlive();
 				string sql = "SELECT COUNT(*) AS cnt FROM users WHERE login = @login";
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue("@login", Login);
@@ -68,6 +69,7 @@ namespace QSProjectsLib
 			try
 			{
 				string sql = "SELECT * FROM users WHERE login = @login";
+				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue("@login", Login);
 				MySqlDataReader rdr = cmd.ExecuteReader();

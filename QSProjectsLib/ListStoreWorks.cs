@@ -57,6 +57,7 @@ namespace QSProjectsLib
 			try
 			{
 				string sql = "SELECT DISTINCT " + fieldname + " FROM " + tablename;
+				QSMain.CheckConnectionAlive();
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
 				cmd.CommandText = sql;
 				using(DbDataReader rdr = cmd.ExecuteReader())
