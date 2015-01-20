@@ -5,11 +5,30 @@ using Nini.Config;
 using System.IO;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace QSProjectsLib
 {
+	public class Connection {
+		public string ConnectionName;
+		public string BaseName;
+		public string Server;
+		public string UserName;
+		public string IniName;
+
+		public Connection(string name, string baseName, string server, string user, string ini)
+		{
+			ConnectionName = name;
+			BaseName = baseName;
+			Server = server;
+			UserName = user;
+			IniName = ini;
+		}
+	}
+
 	public partial class Login : Gtk.Dialog
 	{
+		public List<Connection> Connections = new List<Connection>();
 		String ConnectionError;
 		public string BaseName;
 		public string ConfigFileName;
@@ -34,6 +53,13 @@ namespace QSProjectsLib
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
 			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
 			                                        app, ver);
+			entryServer.Sensitive = false;
+
+			comboboxConnections.Clear();
+			CellRendererText cell = new CellRendererText();
+			comboboxConnections.PackStart(cell, false);
+			comboboxConnections.AddAttribute(cell, "text", 0);
+
 		}
 
 		public void SetDefaultNames(string ProjectName)
@@ -45,14 +71,27 @@ namespace QSProjectsLib
 		public void UpdateFromGConf ()
 		{
 			string configfile = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), ConfigFileName);
+			IniConfig Config;
 			try
 			{
 				Configsource = new IniConfigSource(configfile);
 				Configsource.Reload();
-				entryServer.Text = Configsource.Configs["Login"].Get("Server");
-				entryUser.Text = Configsource.Configs["Login"].Get("UserLogin");
+				Config = (IniConfig)Configsource.Configs["Login"];
+				Connections.Add(new Connection(Config.Get("ConnectionName", "Соединение 1"),
+				                               Config.Get("DataBase", BaseName),
+				                               Config.Get("Server"),
+				                               Config.Get("UserLogin"),
+				                               "Login"));
+				for (int i = 0; i < Configsource.Configs.Count; i++) {
+					if ((Config = (IniConfig)Configsource.Configs["Login" + i.ToString()]) != null)
+						Connections.Add(new Connection(Config.Get("ConnectionName", "Без имени " + i.ToString()),
+						                               Config.Get("DataBase", BaseName),
+					                                   Config.Get("Server"),
+					                                   Config.Get("UserLogin"),
+						                               "Login" + i.ToString()));
+				}
 				entryPassword.GrabFocus();
-				BaseName = Configsource.Configs["Login"].Get("DataBase", BaseName);
+				UpdateCombo();
 			} 
 			catch (Exception ex)
 			{
@@ -108,8 +147,9 @@ namespace QSProjectsLib
 				QSMain.connectionDB.Open();
 				labelLoginInfo.Text = "";
 				buttonErrorInfo.Visible = false;
-				Configsource.Configs["Login"].Set("Server", entryServer.Text);
-				Configsource.Configs["Login"].Set("UserLogin", entryUser.Text);
+				String ini = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
+				Configsource.Configs[ini].Set("UserLogin", entryUser.Text);
+				Configsource.Configs["Default"].Set("Name", comboboxConnections.ActiveText);
 				Configsource.Save();
 				QSMain.ConnectionString = connStr;
 				QSMain.User.Login = entryUser.Text.ToLower();
@@ -153,6 +193,32 @@ namespace QSProjectsLib
 			                                     ButtonsType.Ok, DemoMessage);
 			md.Run ();
 			md.Destroy();
+		}
+
+		protected void UpdateCombo()
+		{
+			ListStore store = new ListStore(typeof (string));
+			comboboxConnections.Model = store;
+			foreach (Connection c in Connections)
+				store.AppendValues(c.ConnectionName);
+		}
+
+		protected void OnComboboxConnectionsChanged (object sender, EventArgs e)
+		{
+			Connection Selected = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText);
+			entryServer.Text = Selected.Server;
+			entryUser.Text = Selected.UserName;
+			BaseName = Selected.BaseName;
+			entryPassword.GrabFocus();
+		}
+
+		protected void OnButtonEditConnectionClicked (object sender, EventArgs e)
+		{
+			EditConnection dlg = new EditConnection (ref Connections, ref Configsource);
+			dlg.Run ();
+			dlg.Destroy ();
+			Connections.RemoveAll (m => m == null);
+			UpdateCombo ();
 		}
 	}
 }
