@@ -77,8 +77,8 @@
     <Compile Include="RusNumber.cs" />
     <Compile Include="QSMain.cs" />
     <Compile Include="AssemblyAttributes.cs" />
-    <Compile Include="WaitCheck.cs" />
-    <Compile Include="gtk-gui\QSProjectsLib.WaitCheck.cs" />
+    <Compile Include="WaitOperationDlg.cs" />
+    <Compile Include="gtk-gui\QSProjectsLib.WaitOperationDlg.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

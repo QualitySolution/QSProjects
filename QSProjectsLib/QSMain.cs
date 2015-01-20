@@ -33,6 +33,9 @@ namespace QSProjectsLib
 		//Перечисления
 		public enum DataProviders {MySQL, Factory};
 
+		//Внутриннии
+		internal static bool WaitResultIsOk;
+
 		private static DbConnection _ConnectionDB;
 		public static DbConnection ConnectionDB
 		{
@@ -135,6 +138,7 @@ namespace QSProjectsLib
 
 		public static void CheckServer(Window Parrent)
 		{
+			CheckConnectionAlive ();
 			string sql = "SHOW VARIABLES LIKE \"character_set_%\";";
 			MySqlCommand cmd = new MySqlCommand (sql, connectionDB);
 			string TextMes = "";
@@ -174,18 +178,31 @@ namespace QSProjectsLib
 		public static void DoPing()
 		{
 			connectionDB.Ping ();
+			logger.Debug ("Конец пинга соединения.");
+		}
+
+		public static void DoConnect()
+		{
+			WaitResultIsOk = true;
+			try
+			{
+				connectionDB.Open();
+			}
+			catch (Exception ex) {
+				logger.WarnException ("Не удалось соединится.", ex);
+				WaitResultIsOk = false;
+			}
 		}
 
 		public static void TryConnect()
 		{
 			logger.Info("Пытаемся восстановить соединение...");
-			try
+			bool timeout = WaitOperationDlg.RunOperationWithDlg (new ThreadStart (DoConnect),
+				connectionDB.ConnectionTimeout,
+				"Соединяемся с сервером MySQL."
+			);
+			if(!WaitResultIsOk || timeout)
 			{
-				connectionDB.Open();
-				return;
-			}
-			catch (Exception ex) {
-				logger.WarnException ("Не удалось соединится.", ex);
 				MessageDialog md = new MessageDialog (null, 
 					DialogFlags.DestroyWithParent,
 					MessageType.Question,
@@ -203,27 +220,18 @@ namespace QSProjectsLib
 
 		public static void CheckConnectionAlive()
 		{
-			WaitCheck wait = null;
-
 			if (DBMS != DataProviders.MySQL)
 				return;
-			Thread thread = new Thread (new ThreadStart (DoPing));
-			thread.Start ();
 			logger.Info ("Проверяем соединение...");
-			int count = 0;
-			while (thread.IsAlive && count < 1000) {		//Ждем 1 секунду
-				Thread.Sleep (50);
-				count += 50;
+
+			bool timeout = WaitOperationDlg.RunOperationWithDlg (new ThreadStart (DoPing),
+				connectionDB.ConnectionTimeout,
+				"Идет проверка соединения с базой данных.");
+			if(timeout && ConnectionDB.State == System.Data.ConnectionState.Open)
+			{
+				ConnectionDB.Close (); //На линуксе есть случаи когда состояние соедиения не корректное.
 			}
-			if (thread.IsAlive) {							//Если секунда прошла, а пинг еще не закончился - показываем окно
-				wait = new WaitCheck ();
-				wait.Show ();
-				wait.StartProgressBar (connectionDB.ConnectionTimeout - 1);
-			}
-			bool timeout = !thread.Join (connectionDB.ConnectionTimeout * 1000 - 1000);
-			if (wait != null)
-				wait.Destroy ();
-			if(timeout || connectionDB.State != System.Data.ConnectionState.Open)
+			if(connectionDB.State != System.Data.ConnectionState.Open)
 			{
 				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
 				TryConnect ();
