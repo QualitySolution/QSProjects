@@ -184,7 +184,8 @@ namespace QSProjectsLib
 				connectionDB.Open();
 				return;
 			}
-			catch {
+			catch (Exception ex) {
+				logger.WarnException ("Не удалось соединится.", ex);
 				MessageDialog md = new MessageDialog (null, 
 					DialogFlags.DestroyWithParent,
 					MessageType.Question,
