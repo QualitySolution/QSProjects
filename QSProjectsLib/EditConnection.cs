@@ -30,7 +30,6 @@ namespace QSProjectsLib
 			                                          typeof (string),  //Section
 			                                          typeof (int));    //Number in array
 			treeviewConnections.Model = connectionsListStore;
-			treeviewConnections.Selection.Changed += HandleChanged;
 			connectionColumn = new Gtk.TreeViewColumn ();
 			connectionColumn.Title = "Соединения";
 			connectionColumn.Visible = true;
@@ -54,6 +53,7 @@ namespace QSProjectsLib
 			entryServer.Text = (string)connectionsListStore.GetValue (iter, 1);
 			entryBase.Text = (string)connectionsListStore.GetValue (iter, 2);
 			treeviewConnections.Selection.SelectIter (iter);
+			treeviewConnections.Selection.Changed += HandleChanged;
 		}
 
 		void HandleChanged (object sender, EventArgs e)
@@ -80,15 +80,16 @@ namespace QSProjectsLib
 		{
 			if (!ValidateAndSave ())
 				return;
+			//connections.RemoveAll (m => m == null);
 			this.Respond (ResponseType.Ok);
 		}
 
 		protected bool ValidateAndSave ()
 		{
-			TreeIter tempIter;
-			connectionsListStore.GetIterFirst(out tempIter);
 			labelInfo.Text = "";
 			bool ok = true;
+			if (connectionsListStore.GetValue (iter, 0) == null)
+				return true;
 			int i = (int)connectionsListStore.GetValue(iter, 5);
 			for (int j = 0; j < connections.Count; j++) {
 				if (connections [j] == null)
@@ -147,12 +148,8 @@ namespace QSProjectsLib
 		{
 			if (ValidateAndSave ()) {
 				doNotCheck = true;
-				if (connections.Count != 0)
-					iter = connectionsListStore.AppendValues ("Новое соединение", "", "", "", "", -1);
-				else {
-					entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = true;
-					iter = connectionsListStore.AppendValues ("По умолчанию", "", "", "", "", -1);
-				}
+				iter = connectionsListStore.AppendValues ("Новое соединение", "", "", "", "", -1);
+				entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = true;
 				treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (iter), treeviewConnections.Columns [0]);
 				doNotCheck = false;
 			}
@@ -176,7 +173,7 @@ namespace QSProjectsLib
 			treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (iter), treeviewConnections.Columns [0]);
 			doNotCheck = false;
 			labelInfo.Text = "";
-			if (connections.Count == 0) {
+			if (connections.Count == connections.FindAll(m => m == null).Count) {
 				entryBase.Text = entryName.Text = entryServer.Text = "";
 				entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = false;
 			}

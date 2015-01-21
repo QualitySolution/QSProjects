@@ -6,6 +6,7 @@ using System.IO;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace QSProjectsLib
 {
@@ -59,7 +60,6 @@ namespace QSProjectsLib
 			CellRendererText cell = new CellRendererText();
 			comboboxConnections.PackStart(cell, false);
 			comboboxConnections.AddAttribute(cell, "text", 0);
-
 		}
 
 		public void SetDefaultNames(string ProjectName)
@@ -75,40 +75,48 @@ namespace QSProjectsLib
 			try
 			{
 				Configsource = new IniConfigSource(configfile);
-				Configsource.Reload();
-				Config = (IniConfig)Configsource.Configs["Login"];
-				Connections.Add(new Connection(Config.Get("ConnectionName", "Соединение 1"),
-				                               Config.Get("DataBase", BaseName),
-				                               Config.Get("Server"),
-				                               Config.Get("UserLogin"),
-				                               "Login"));
-				for (int i = 0; i < Configsource.Configs.Count; i++) {
-					if ((Config = (IniConfig)Configsource.Configs["Login" + i.ToString()]) != null)
-						Connections.Add(new Connection(Config.Get("ConnectionName", "Без имени " + i.ToString()),
+				Configsource.Reload();  //Читаем все конфиги
+				System.Collections.IEnumerator en = Configsource.Configs.GetEnumerator();
+				int i = 1;
+				while (en.MoveNext()) {
+					Config = (IniConfig)en.Current;
+					if (Regex.IsMatch(Config.Name, @"Login[0-9]*"))
+						Connections.Add(new Connection(Config.Get("ConnectionName", "Без имени " + (i++).ToString()),
 						                               Config.Get("DataBase", BaseName),
-					                                   Config.Get("Server"),
-					                                   Config.Get("UserLogin"),
-						                               "Login" + i.ToString()));
+						                               Config.Get("Server"),
+						                               Config.Get("UserLogin"),
+						                               Config.Name));
 				}
-				entryPassword.GrabFocus();
-				UpdateCombo();
+				if (Connections.Count == 0) {
+					Console.WriteLine("Конфигурационный файл не содержит соединений. Создаем новое.");
+					CreateDefaultConnection (configfile);
+				}
 			} 
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				Console.WriteLine(ex.Message);
 				Console.WriteLine("Конфигурационный фаил не найден. Создаем новый.");
-				Configsource = new IniConfigSource();
-				
-				IConfig config = Configsource.AddConfig("Login");
-				config.Set("UserLogin", DefaultLogin);
-				config.Set("Server", DefaultServer);
-				Configsource.Save(configfile);
-				
-				entryServer.Text = config.Get("Server");
-				entryUser.Text = config.Get("UserLogin");
+				Configsource = new IniConfigSource();		
+				CreateDefaultConnection (configfile);
+			}
+			finally {
+				entryPassword.GrabFocus();
+				UpdateCombo();
 			}
 		}
-		
+
+		protected void CreateDefaultConnection(string configfile)
+		{
+			IConfig config = Configsource.AddConfig("Login");
+			config.Set("UserLogin", DefaultLogin);
+			config.Set("Server", DefaultServer);
+			Configsource.Save(configfile);
+
+			Connections.Add(new Connection("Без имени", BaseName, DefaultServer, DefaultLogin, ""));
+
+			entryServer.Text = config.Get("Server");
+			entryUser.Text = config.Get("UserLogin");
+		}
+
 		protected virtual void OnButtonErrorInfoClicked (object sender, System.EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
@@ -201,6 +209,8 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues(c.ConnectionName);
+			if (comboboxConnections.Active == -1)
+				entryServer.Text = entryUser.Text = entryPassword.Text = "";
 		}
 
 		protected void OnComboboxConnectionsChanged (object sender, EventArgs e)
@@ -219,6 +229,7 @@ namespace QSProjectsLib
 			dlg.Destroy ();
 			Connections.RemoveAll (m => m == null);
 			UpdateCombo ();
+
 		}
 	}
 }
