@@ -29,12 +29,14 @@ namespace QSProjectsLib
 
 	public partial class Login : Gtk.Dialog
 	{
-		public List<Connection> Connections = new List<Connection>();
+		public List<Connection> Connections;
 		String ConnectionError;
+		public string SelectedConnection;
 		public string BaseName;
 		public string ConfigFileName;
 		public string DefaultLogin;
 		public string DefaultServer;
+		public string DefaultConnection;
 		public string DemoServer;
 		public string DemoMessage;
 		IniConfigSource Configsource;
@@ -46,6 +48,8 @@ namespace QSProjectsLib
 		public Login ()
 		{
 			this.Build ();
+			SelectedConnection = String.Empty;
+			Connections = new List<Connection>();
 			DefaultServer = "localhost";
 			System.Reflection.Assembly ass = Assembly.GetCallingAssembly();
 			Version version = ass.GetName().Version;
@@ -65,27 +69,30 @@ namespace QSProjectsLib
 		public void SetDefaultNames(string ProjectName)
 		{
 			BaseName = ProjectName;
+			DefaultConnection = "По умолчанию";
 			ConfigFileName = ProjectName + ".ini";
 		}
 		
 		public void UpdateFromGConf ()
 		{
 			string configfile = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), ConfigFileName);
-			IniConfig Config;
+			IConfig Config;
 			try
 			{
 				Configsource = new IniConfigSource(configfile);
 				Configsource.Reload();  //Читаем все конфиги
 				System.Collections.IEnumerator en = Configsource.Configs.GetEnumerator();
-				int i = 1;
 				while (en.MoveNext()) {
-					Config = (IniConfig)en.Current;
+					Config = (IConfig)en.Current;
 					if (Regex.IsMatch(Config.Name, @"Login[0-9]*"))
-						Connections.Add(new Connection(Config.Get("ConnectionName", "Без имени " + (i++).ToString()),
+						Connections.Add(new Connection(Config.Get("ConnectionName", DefaultConnection),
 						                               Config.Get("DataBase", BaseName),
 						                               Config.Get("Server"),
 						                               Config.Get("UserLogin"),
 						                               Config.Name));
+					else if (Config.Name == "Default") {
+						SelectedConnection = Config.Get("ConnectionName", String.Empty);
+					}
 				}
 				if (Connections.Count == 0) {
 					Console.WriteLine("Конфигурационный файл не содержит соединений. Создаем новое.");
@@ -99,6 +106,11 @@ namespace QSProjectsLib
 				CreateDefaultConnection (configfile);
 			}
 			finally {
+				if (Configsource.Configs ["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
+					Configsource.AddConfig ("Default");
+					Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+					Configsource.Save ();
+				}
 				entryPassword.GrabFocus();
 				UpdateCombo();
 			}
@@ -109,12 +121,18 @@ namespace QSProjectsLib
 			IConfig config = Configsource.AddConfig("Login");
 			config.Set("UserLogin", DefaultLogin);
 			config.Set("Server", DefaultServer);
-			Configsource.Save(configfile);
+			config.Set ("ConnectionName", DefaultConnection);
+			if (Configsource.Configs["Default"] == null)
+				Configsource.AddConfig("Default");
+			Configsource.Configs ["Default"].Set("ConnectionName", DefaultConnection);
 
-			Connections.Add(new Connection("Без имени", BaseName, DefaultServer, DefaultLogin, ""));
+			Configsource.Save(configfile);
+		
+			Connections.Add(new Connection(DefaultConnection, BaseName, DefaultServer, DefaultLogin, ""));
 
 			entryServer.Text = config.Get("Server");
 			entryUser.Text = config.Get("UserLogin");
+			SelectedConnection = DefaultConnection;
 		}
 
 		protected virtual void OnButtonErrorInfoClicked (object sender, System.EventArgs e)
@@ -157,7 +175,7 @@ namespace QSProjectsLib
 				buttonErrorInfo.Visible = false;
 				String ini = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
 				Configsource.Configs[ini].Set("UserLogin", entryUser.Text);
-				Configsource.Configs["Default"].Set("Name", comboboxConnections.ActiveText);
+				Configsource.Configs["Default"].Set("ConnectionName", comboboxConnections.ActiveText);
 				Configsource.Save();
 				QSMain.ConnectionString = connStr;
 				QSMain.User.Login = entryUser.Text.ToLower();
@@ -209,8 +227,27 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues(c.ConnectionName);
+			SelectedConnection = (String)Configsource.Configs ["Default"].Get ("ConnectionName", String.Empty);
+			if (SelectedConnection != String.Empty) {
+				if (Connections.Find (m => m.ConnectionName == SelectedConnection) == null) {
+					Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+					Configsource.Save ();
+					SelectedConnection = String.Empty;
+				} else {
+					TreeIter tempIter;
+					store.GetIterFirst (out tempIter);
+					do {
+						if ((string)store.GetValue (tempIter, 0) == SelectedConnection) {
+							comboboxConnections.SetActiveIter (tempIter);
+							break;
+						}
+					} while (store.IterNext (ref tempIter));
+				}
+			} else
+				comboboxConnections.Active = -1;
 			if (comboboxConnections.Active == -1)
 				entryServer.Text = entryUser.Text = entryPassword.Text = "";
+
 		}
 
 		protected void OnComboboxConnectionsChanged (object sender, EventArgs e)
@@ -227,9 +264,7 @@ namespace QSProjectsLib
 			EditConnection dlg = new EditConnection (ref Connections, ref Configsource);
 			dlg.Run ();
 			dlg.Destroy ();
-			Connections.RemoveAll (m => m == null);
 			UpdateCombo ();
-
 		}
 	}
 }

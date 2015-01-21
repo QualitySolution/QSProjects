@@ -13,6 +13,7 @@ namespace QSProjectsLib
 		Gtk.CellRendererText connectionCell;
 		TreeIter iter;
 		IniConfigSource config;
+		IConfig defaultConfig;
 		bool doNotCheck = false;
 
 		public EditConnection(ref List<Connection> Connections, ref IniConfigSource Config)
@@ -21,6 +22,7 @@ namespace QSProjectsLib
 			this.Title = "Настройка соединений";
 			connections = Connections;
 			config = Config;
+			defaultConfig = (IConfig)config.Configs ["Default"];
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255,0,0));
 
 			connectionsListStore = new Gtk.ListStore (typeof (string),  //Name
@@ -80,7 +82,7 @@ namespace QSProjectsLib
 		{
 			if (!ValidateAndSave ())
 				return;
-			//connections.RemoveAll (m => m == null);
+			connections.RemoveAll (m => m == null);
 			this.Respond (ResponseType.Ok);
 		}
 
@@ -116,6 +118,9 @@ namespace QSProjectsLib
 				if (i != -1) {
 					connections [i].BaseName = entryBase.Text;
 					connections [i].Server = entryServer.Text;
+					if (defaultConfig != null &&
+					    connections [i].ConnectionName == defaultConfig.Get ("ConnectionName", String.Empty))
+						defaultConfig.Set ("ConnectionName", entryName.Text);
 					connections [i].ConnectionName = entryName.Text;
 				} else {
 					connections.Add (new Connection (entryName.Text, entryBase.Text, entryServer.Text, "", ""));
