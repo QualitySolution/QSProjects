@@ -1819,8 +1819,8 @@
             <property name="CanDefault">True</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">stock:gtk-save Menu</property>
-            <property name="Label" translatable="yes">Сохранить</property>
+            <property name="Icon">stock:gtk-apply Menu</property>
+            <property name="Label" translatable="yes">ОК</property>
             <property name="UseUnderline">True</property>
             <property name="ResponseId">-1</property>
             <signal name="Clicked" handler="OnButtonOkClicked" />

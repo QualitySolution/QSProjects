@@ -87,8 +87,8 @@ namespace QSProjectsLib
 					if (Regex.IsMatch(Config.Name, @"Login[0-9]*"))
 						Connections.Add(new Connection(Config.Get("ConnectionName", DefaultConnection),
 						                               Config.Get("DataBase", BaseName),
-						                               Config.Get("Server"),
-						                               Config.Get("UserLogin"),
+						                               Config.Get("Server", "bazar"),
+						                               Config.Get("UserLogin", ""),
 						                               Config.Name));
 					else if (Config.Name == "Default") {
 						SelectedConnection = Config.Get("ConnectionName", String.Empty);
