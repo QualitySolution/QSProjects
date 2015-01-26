@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle ("QSContacts")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyDescription ("Модуль ввода контактной информации")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
+[assembly: AssemblyCompany ("Quality Solution")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Anri")]
+[assembly: AssemblyCopyright ("Quality Solution 2015")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
