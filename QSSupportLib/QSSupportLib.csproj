@@ -9,8 +9,6 @@
     <AssemblyName>QSSupportLib</AssemblyName>
     <ReleaseVersion>1</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +44,8 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -58,6 +58,9 @@
     <Compile Include="widgets\NewsMenuItem.cs" />
     <Compile Include="NewsFeed.cs" />
     <Compile Include="MainNewsFeed.cs" />
+    <Compile Include="IUpdateService.cs" />
+    <Compile Include="ISASService.cs" />
+    <Compile Include="Result.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,13 +73,13 @@
     <Folder Include="widgets\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
-      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
-      <Name>QSWidgetLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
