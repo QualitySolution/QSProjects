@@ -42,10 +42,7 @@
     <Reference Include="NLog">
       <HintPath>..\lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -58,9 +55,6 @@
     <Compile Include="widgets\NewsMenuItem.cs" />
     <Compile Include="NewsFeed.cs" />
     <Compile Include="MainNewsFeed.cs" />
-    <Compile Include="IUpdateService.cs" />
-    <Compile Include="ISASService.cs" />
-    <Compile Include="Result.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
