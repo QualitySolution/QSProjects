@@ -422,7 +422,7 @@ namespace QSProjectsLib
 		{
 			if (StatusBarLabel == null)
 				return;
-			StatusBarLabel.Text = message;
+			StatusBarLabel.LabelProp = message;
 			while (GLib.MainContext.Pending())
 			{
 				Gtk.Main.Iteration();
