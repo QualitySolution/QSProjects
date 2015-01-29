@@ -5,15 +5,20 @@ using NLog;
 
 namespace QSSaaS
 {
-	public static class Session
+	public class Session
 	{
 		public static String SaaSService = String.Empty;
-		private static Logger logger = LogManager.GetCurrentClassLogger ();
+		public static String SessionId = String.Empty;
+		private Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public static void Refresh(string session)
+		public static void Refresh()
 		{
 			if (SaaSService == String.Empty) {
 				logger.Error ("Не задан адрес сервиса!");
+				return;
+			}
+			if (SessionId == String.Empty) {
+				logger.Error ("Не задан ID сессии!");
 				return;
 			}
 			try{
@@ -21,10 +26,10 @@ namespace QSSaaS
 				var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
 				ISaaSService svc = factory.CreateChannel ();
 				if (!svc.refreshSession(SaaSService))
-					logger.Warn("Не удалось продлить сессию.");
+					logger.Warn("Не удалось продлить сессию " + SessionId + ".");
 				factory.Close();
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка при продлении сессии.", ex);
+				logger.ErrorException ("Ошибка при продлении сессии " + SessionId + ".", ex);
 			}
 		}
 	}
