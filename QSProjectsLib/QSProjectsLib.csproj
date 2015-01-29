@@ -92,4 +92,10 @@
   <ItemGroup>
     <Folder Include="icons\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
+      <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
+      <Name>QSSaaS</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

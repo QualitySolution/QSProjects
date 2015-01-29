@@ -10,20 +10,26 @@ using System.Text.RegularExpressions;
 
 namespace QSProjectsLib
 {
+	public enum ConnectionType {MySQL, SaaS};
+
 	public class Connection {
 		public string ConnectionName;
 		public string BaseName;
 		public string Server;
 		public string UserName;
 		public string IniName;
+		public string AccountLogin;
+		public ConnectionType Type;
 
-		public Connection(string name, string baseName, string server, string user, string ini)
+		public Connection(ConnectionType type, string name, string baseName, string server, string user, string ini, string account)
 		{
 			ConnectionName = name;
 			BaseName = baseName;
 			Server = server;
 			UserName = user;
 			IniName = ini;
+			AccountLogin = account;
+			Type = type;
 		}
 	}
 
@@ -39,6 +45,7 @@ namespace QSProjectsLib
 		public string DefaultConnection;
 		public string DemoServer;
 		public string DemoMessage;
+		private string server;
 		IniConfigSource Configsource;
 
 		public Gdk.Pixbuf Logo {
@@ -58,8 +65,6 @@ namespace QSProjectsLib
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
 			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
 			                                        app, ver);
-			entryServer.Sensitive = false;
-
 			comboboxConnections.Clear();
 			CellRendererText cell = new CellRendererText();
 			comboboxConnections.PackStart(cell, false);
@@ -84,12 +89,16 @@ namespace QSProjectsLib
 				System.Collections.IEnumerator en = Configsource.Configs.GetEnumerator();
 				while (en.MoveNext()) {
 					Config = (IConfig)en.Current;
-					if (Regex.IsMatch(Config.Name, @"Login[0-9]*"))
-						Connections.Add(new Connection(Config.Get("ConnectionName", DefaultConnection),
+					if (Regex.IsMatch(Config.Name, @"Login[0-9]*")) {
+						String type = Config.Get("Type", ((int)ConnectionType.MySQL).ToString());
+						Connections.Add(new Connection((ConnectionType)int.Parse(type),
+						                               Config.Get("ConnectionName", DefaultConnection),
 						                               Config.Get("DataBase", BaseName),
-						                               Config.Get("Server", "bazar"),
-						                               Config.Get("UserLogin", ""),
-						                               Config.Name));
+						                               Config.Get("Server", DefaultServer),
+						                               Config.Get("UserLogin", String.Empty),
+						                               Config.Name,
+						                               Config.Get("Account", String.Empty) ));
+					}
 					else if (Config.Name == "Default") {
 						SelectedConnection = Config.Get("ConnectionName", String.Empty);
 					}
@@ -128,9 +137,9 @@ namespace QSProjectsLib
 
 			Configsource.Save(configfile);
 		
-			Connections.Add(new Connection(DefaultConnection, BaseName, DefaultServer, DefaultLogin, ""));
+			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "", ""));
 
-			entryServer.Text = config.Get("Server");
+			server = config.Get("Server");
 			entryUser.Text = config.Get("UserLogin");
 			SelectedConnection = DefaultConnection;
 		}
@@ -150,7 +159,7 @@ namespace QSProjectsLib
 		{
             string host = "localhost";
             string port = "3306";
-            string[] uriSplit = entryServer.Text.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] uriSplit = server.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
             host = uriSplit[0];
             if (uriSplit.Length > 1)
             {
@@ -205,13 +214,6 @@ namespace QSProjectsLib
 			this.ChildFocus (DirectionType.TabForward);
 		}
 		
-		protected void OnEntryServerChanged (object sender, EventArgs e)
-		{
-			if(DemoServer == null)
-				return;
-			buttonDemo.Visible = entryServer.Text.ToLower() == DemoServer;
-		}
-		
 		protected void OnButtonDemoClicked (object sender, EventArgs e)
 		{
 			MessageDialog md = new MessageDialog( this, DialogFlags.DestroyWithParent,
@@ -246,17 +248,19 @@ namespace QSProjectsLib
 			} else
 				comboboxConnections.Active = -1;
 			if (comboboxConnections.Active == -1)
-				entryServer.Text = entryUser.Text = entryPassword.Text = "";
-
+				server = entryUser.Text = entryPassword.Text = "";
 		}
 
 		protected void OnComboboxConnectionsChanged (object sender, EventArgs e)
 		{
 			Connection Selected = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText);
-			entryServer.Text = Selected.Server;
+			server = Selected.Server;
 			entryUser.Text = Selected.UserName;
 			BaseName = Selected.BaseName;
 			entryPassword.GrabFocus();
+			if (DemoServer == null)
+				return;
+			buttonDemo.Visible = server.ToLower() == DemoServer;
 		}
 
 		protected void OnButtonEditConnectionClicked (object sender, EventArgs e)
