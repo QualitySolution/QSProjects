@@ -40,7 +40,13 @@ namespace QSContacts
 					return String.Empty; 
 			} 
 		}
-		public string PostName { get { return Post.Name; } }
+
+		public string PostName { get { 
+				if (Post == null)
+					return String.Empty;
+				else
+					return Post.Name;
+			} }
 
 		public override bool Equals(Object obj)
 		{
