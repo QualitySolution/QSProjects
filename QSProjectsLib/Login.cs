@@ -158,7 +158,7 @@ namespace QSProjectsLib
 					uriSplit = result.Server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 					login = result.Login;
 					QSMain.Use_SaaS = true;
-					QSMain.Session_ID = result.SessionID;
+					QSSaaS.Session.SessionId = result.SessionID;
 					factory.Close();
 				} catch (Exception ex) {
 					labelLoginInfo.Text = "Ошибка соединения с сервисом.";
