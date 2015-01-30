@@ -65,13 +65,13 @@ namespace QSOrmProject
 			{
 				if(subjectType != null)
 				{
-					OrmObjectMaping map = OrmMain.GetObjectDiscription(subjectType);
+					OrmObjectMapping map = OrmMain.GetObjectDiscription(subjectType);
 					map.ObjectUpdated -= OnExternalObjectUpdated;
 				}
 				subjectType = value;
 				if(subjectType != null)
 				{
-					OrmObjectMaping map = OrmMain.GetObjectDiscription(subjectType);
+					OrmObjectMapping map = OrmMain.GetObjectDiscription(subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;;
 				}
 			}
