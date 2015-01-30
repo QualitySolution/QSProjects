@@ -2,16 +2,22 @@
 using System.ServiceModel.Web;
 using System.ServiceModel;
 using NLog;
+using System.Threading;
 
 namespace QSSaaS
 {
 	public class Session
 	{
-		public static String SaaSService = String.Empty;
+		public static String SaaSService = "http://localhost:8080/SaaS";
 		public static String SessionId = String.Empty;
+
+		public static bool IsSaasConnection = false;
+
+		private static TimerCallback callback;
+		private static Timer timer;
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public static void Refresh(Object StateInfo)
+		private static void Refresh(Object StateInfo)
 		{
 			if (SaaSService == String.Empty) {
 				logger.Error ("Не задан адрес сервиса!");
@@ -31,6 +37,21 @@ namespace QSSaaS
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка при продлении сессии " + SessionId + ".", ex);
 			}
+		}
+
+		public static void CheckAndStartSessionRefresh()
+		{
+			if (!IsSaasConnection)
+				return;
+			callback = new TimerCallback (Refresh);
+			timer = new Timer (callback, null, 0, 300000);
+		}
+
+		public static void CheckAndStopSessionRefresh()
+		{
+			if (!IsSaasConnection)
+				return;
+			timer.Dispose ();
 		}
 	}
 }
