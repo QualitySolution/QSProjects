@@ -14,7 +14,7 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private static Configuration ormConfig;
 		public static ISessionFactory Sessions;
-		public static List<OrmObjectMapping> ClassMapingList;
+		public static List<OrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
 
 		public static ISession OpenSession()
@@ -41,13 +41,13 @@ namespace QSOrmProject
 
 		public static Type GetDialogType(System.Type objectClass)
 		{
-			if (ClassMapingList == null)
+			if (ClassMappingList == null)
 				throw new NullReferenceException("ORM Модуль не настроен. Нужно создать ClassMapingList.");
 
 			if (objectClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
 				objectClass = objectClass.BaseType;
 
-			OrmObjectMapping map = ClassMapingList.Find(c => c.ObjectClass == objectClass);
+			OrmObjectMapping map = ClassMappingList.Find(c => c.ObjectClass == objectClass);
 			if(map == null)
 			{
 				logger.Warn("Диалог для типа {0} не найден.", objectClass);
@@ -62,7 +62,7 @@ namespace QSOrmProject
 			if (type.GetInterface(typeof(INHibernateProxy).FullName) != null)
 				type = type.BaseType;
 
-			return OrmMain.ClassMapingList.Find(m => m.ObjectClass == type);
+			return OrmMain.ClassMappingList.Find(m => m.ObjectClass == type);
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace QSOrmProject
 		public static void NotifyObjectUpdated(object subject, bool clean = true)
 		{
 			System.Type subjectType = NHibernateUtil.GetClass(subject);
-			OrmObjectMapping map = ClassMapingList.Find(m => m.ObjectClass == subjectType);
+			OrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == subjectType);
 			if (map != null)
 				map.RaiseObjectUpdated(subject);
 			else
