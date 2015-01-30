@@ -18,8 +18,6 @@ namespace QSProjectsLib
 		public static Label StatusBarLabel;
 
 		//Работа с базой
-		public static bool Use_SaaS = false;
-		public static string Session_ID = String.Empty;
 		public static DataProviders DBMS;
 		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;

@@ -35,7 +35,7 @@ namespace QSProjectsLib
 		public Login ()
 		{
 			this.Build ();
-			QSSaaS.Session.SaaSService = "localhost:8080/SAS";
+			QSSaaS.Session.SaaSService = "http://localhost:8080/SaaS";
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection> ();
 			DefaultServer = "localhost";
@@ -140,7 +140,7 @@ namespace QSProjectsLib
 			string login = entryUser.Text;
 
 			if (Selected.Type == ConnectionType.MySQL) {
-				QSMain.Use_SaaS = false;
+				QSSaaS.Session.IsSaasConnection = false;
 				uriSplit = server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 			} else {
 				try {
@@ -157,7 +157,7 @@ namespace QSProjectsLib
 					}
 					uriSplit = result.Server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 					login = result.Login;
-					QSMain.Use_SaaS = true;
+					QSSaaS.Session.IsSaasConnection = true;
 					QSSaaS.Session.SessionId = result.SessionID;
 					factory.Close();
 				} catch (Exception ex) {
