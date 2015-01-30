@@ -61,6 +61,16 @@ namespace QSSaaS
 		/// <returns><c>true</c>, если сессия была обновлена <c>false</c> если нет.</returns>
 		/// <param name="session">ID сессии.</param>
 		bool refreshSession (string session);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Изменяет пароль пользователя в системе SaaS.
+		/// </summary>
+		/// <returns><c>true</c>, если пароль был успешно изменен, в противном случае <c>false</c>.</returns>
+		/// <param name="session">ID сессии.</param>
+		/// <param name="newPassword">Новый пароль.</param>
+		bool changePassword (string session, string newPassword);
 	}
 }
 

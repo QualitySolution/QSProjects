@@ -17,7 +17,19 @@ namespace QSSaaS
 		private static Timer timer;
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		private static void Refresh(Object StateInfo)
+		public static ISaaSService GetSaaSService ()
+		{
+			try {
+				Uri address = new Uri (SaaSService);
+				var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
+				return factory.CreateChannel ();
+			} catch (Exception ex) {
+				logger.ErrorException ("Ошибка создания подключения к SaaS сервису", ex);
+				return null;
+			}
+		}
+
+		private static void Refresh (Object StateInfo)
 		{
 			if (SaaSService == String.Empty) {
 				logger.Error ("Не задан адрес сервиса!");
@@ -27,19 +39,19 @@ namespace QSSaaS
 				logger.Error ("Не задан ID сессии!");
 				return;
 			}
-			try{
+			try {
 				Uri address = new Uri (SaaSService);
 				var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
 				ISaaSService svc = factory.CreateChannel ();
-				if (!svc.refreshSession(SessionId))
-					logger.Warn("Не удалось продлить сессию " + SessionId + ".");
-				factory.Close();
+				if (!svc.refreshSession (SessionId))
+					logger.Warn ("Не удалось продлить сессию " + SessionId + ".");
+				factory.Close ();
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка при продлении сессии " + SessionId + ".", ex);
 			}
 		}
 
-		public static void CheckAndStartSessionRefresh()
+		public static void CheckAndStartSessionRefresh ()
 		{
 			if (!IsSaasConnection)
 				return;
@@ -47,7 +59,7 @@ namespace QSSaaS
 			timer = new Timer (callback, null, 0, 300000);
 		}
 
-		public static void CheckAndStopSessionRefresh()
+		public static void CheckAndStopSessionRefresh ()
 		{
 			if (!IsSaasConnection)
 				return;
