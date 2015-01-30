@@ -2,14 +2,10 @@ using System;
 using System.Reflection;
 using Gtk;
 using Nini.Config;
-using System.IO;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using QSSaaS;
-using System.ServiceModel.Web;
-using System.ServiceModel;
 
 namespace QSProjectsLib
 {
@@ -140,13 +136,11 @@ namespace QSProjectsLib
 			string login = entryUser.Text;
 
 			if (Selected.Type == ConnectionType.MySQL) {
-				QSSaaS.Session.IsSaasConnection = false;
+				Session.IsSaasConnection = false;
 				uriSplit = server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 			} else {
 				try {
-					Uri address = new Uri (QSSaaS.Session.SaaSService);
-					var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
-					ISaaSService svc = factory.CreateChannel ();
+					ISaaSService svc = Session.GetSaaSService ();
 					UserAuthResult result = svc.authUser (entryUser.Text, entryPassword.Text, Selected.AccountLogin, Selected.BaseName);
 					if (!result.Success) {
 						labelLoginInfo.Text = "Ошибка соединения с сервисом.";
@@ -157,9 +151,8 @@ namespace QSProjectsLib
 					}
 					uriSplit = result.Server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 					login = result.Login;
-					QSSaaS.Session.IsSaasConnection = true;
-					QSSaaS.Session.SessionId = result.SessionID;
-					factory.Close();
+					Session.IsSaasConnection = true;
+					Session.SessionId = result.SessionID;
 				} catch (Exception ex) {
 					labelLoginInfo.Text = "Ошибка соединения с сервисом.";
 					buttonErrorInfo.Visible = true;
