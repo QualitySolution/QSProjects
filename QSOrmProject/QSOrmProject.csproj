@@ -64,6 +64,7 @@
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />
     <Compile Include="OrmObjectMapping.cs" />
+    <Compile Include="Widgets\EnumComboBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
