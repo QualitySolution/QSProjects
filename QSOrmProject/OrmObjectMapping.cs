@@ -6,6 +6,7 @@ namespace QSOrmProject
 	{
 		public System.Type ObjectClass;
 		public System.Type DialogClass;
+		public System.Type RefFilterClass;
 		public string[] RefSearchFields;
 		public string RefColumnMappings;
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
@@ -33,6 +34,11 @@ namespace QSOrmProject
 		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass, string columnMaping, string[] searchFields) : this(objectClass, dialogClass, columnMaping)
 		{
 			RefSearchFields = searchFields;
+		}
+
+		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass, System.Type filterClass, string columnMaping, string[] searchFields) : this(objectClass, dialogClass, columnMaping, searchFields)
+		{
+			RefFilterClass = filterClass;
 		}
 
 		public void RaiseObjectUpdated(int id)

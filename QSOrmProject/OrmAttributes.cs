@@ -9,4 +9,11 @@ namespace QSOrmProject
 		public OrmSubjectAttributes(string journalName) { JournalName = journalName; }
 	}
 
+	[AttributeUsage(AttributeTargets.Class)]
+	public class OrmDefaultIsFiltered : Attribute 
+	{
+		public bool DefaultIsFiltered;
+		public OrmDefaultIsFiltered(bool defaultIsFiltered) { DefaultIsFiltered = defaultIsFiltered; }
+	}
+
 }
