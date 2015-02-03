@@ -75,13 +75,25 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
-		/// Grants the base access.
+		/// Предоставляет пользователю доступ к базе.
 		/// </summary>
-		/// <returns><c>true</c>, if base access was granted, <c>false</c> otherwise.</returns>
-		/// <param name="userId">User identifier.</param>
-		/// <param name="accountId">Account identifier.</param>
-		/// <param name="db">Db.</param>
+		/// <returns><c>true</c>, если предоставление доступа прошло успешно, иначе <c>false</c>.</returns>
+		/// <param name="user">Логин пользователя.</param>
+		/// <param name="account">Логин аккаунта.</param>
+		/// <param name="db">Название базы данных.</param>
+		/// <param name="admin">Имеет ли пользователь административный доступ.</param>
 		bool grantBaseAccess (string user, string account, string db, bool admin);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Снимает доступ к базе для пользователя.
+		/// </summary>
+		/// <returns><c>true</c>, если операция прошла успешно, иначе <c>false</c>.</returns>
+		/// <param name="user">Логин пользователя.</param>
+		/// <param name="account">Логин аккаунта.</param>
+		/// <param name="db">Название базы данных.</param>
+		bool revokeBaseAccess (string user, string account, string db);
 	}
 }
 
