@@ -8,9 +8,10 @@ namespace QSSaaS
 {
 	public class Session
 	{
+		//Адрес сервера
 		public static String SaaSService = "http://localhost:8080/SaaS";
+		//Параметры сессии
 		public static String SessionId = String.Empty;
-
 		public static bool IsSaasConnection = false;
 
 		private static TimerCallback callback;

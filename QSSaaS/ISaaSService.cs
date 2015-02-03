@@ -71,6 +71,17 @@ namespace QSSaaS
 		/// <param name="session">ID сессии.</param>
 		/// <param name="newPassword">Новый пароль.</param>
 		bool changePassword (string session, string newPassword);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Grants the base access.
+		/// </summary>
+		/// <returns><c>true</c>, if base access was granted, <c>false</c> otherwise.</returns>
+		/// <param name="userId">User identifier.</param>
+		/// <param name="accountId">Account identifier.</param>
+		/// <param name="db">Db.</param>
+		bool grantBaseAccess (string user, string account, string db, bool admin);
 	}
 }
 
