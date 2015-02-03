@@ -41,7 +41,7 @@ namespace QSProjectsLib
 			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
 			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
-			                                        app, ver);
+				app, ver);
 			comboboxConnections.Clear ();
 			CellRendererText cell = new CellRendererText ();
 			comboboxConnections.PackStart (cell, false);
@@ -68,12 +68,12 @@ namespace QSProjectsLib
 					if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
 						String type = Config.Get ("Type", ((int)ConnectionType.MySQL).ToString ());
 						Connections.Add (new Connection ((ConnectionType)int.Parse (type),
-						                                 Config.Get ("ConnectionName", DefaultConnection),
-						                                 Config.Get ("DataBase", BaseName),
-						                                 Config.Get ("Server", DefaultServer),
-						                                 Config.Get ("UserLogin", String.Empty),
-						                                 Config.Name,
-						                                 Config.Get ("Account", String.Empty)));
+							Config.Get ("ConnectionName", DefaultConnection),
+							Config.Get ("DataBase", BaseName),
+							Config.Get ("Server", DefaultServer),
+							Config.Get ("UserLogin", String.Empty),
+							Config.Name,
+							Config.Get ("Account", String.Empty)));
 					} else if (Config.Name == "Default") {
 						SelectedConnection = Config.Get ("ConnectionName", String.Empty);
 					}
@@ -120,8 +120,8 @@ namespace QSProjectsLib
 		protected virtual void OnButtonErrorInfoClicked (object sender, System.EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-			                                      MessageType.Error, 
-			                                      ButtonsType.Close, "ошибка");
+				                   MessageType.Error, 
+				                   ButtonsType.Close, "ошибка");
 			md.UseMarkup = false;
 			md.Text = ConnectionError;
 			md.Run ();
@@ -131,7 +131,7 @@ namespace QSProjectsLib
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
 			Connection Selected = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText);
-			string connStr = String.Empty, host = "localhost", port = "3306";
+			string connStr, host, port = "3306";
 			string[] uriSplit = new string[2];
 			string login = entryUser.Text;
 
@@ -212,8 +212,8 @@ namespace QSProjectsLib
 		protected void OnButtonDemoClicked (object sender, EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-			                                      MessageType.Info, 
-			                                      ButtonsType.Ok, DemoMessage);
+				                   MessageType.Info, 
+				                   ButtonsType.Ok, DemoMessage);
 			md.Run ();
 			md.Destroy ();
 		}
