@@ -218,7 +218,9 @@ namespace QSProjectsLib
 				return;
 			selection.GetSelected (out iter);
 			int id = (int)connectionsListStore.GetValue (iter, 5);
+			treeviewConnections.Selection.Changed -= HandleChanged;
 			connectionsListStore.Remove (ref iter);
+			treeviewConnections.Selection.Changed += HandleChanged;
 			if (id != -1) {
 				config.Configs.Remove (config.Configs [connections [id].IniName]);
 				connections [id] = null;
