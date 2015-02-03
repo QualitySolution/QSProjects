@@ -13,6 +13,8 @@ namespace QSSaaS
 		//Параметры сессии
 		public static String SessionId = String.Empty;
 		public static bool IsSaasConnection = false;
+		public static string Account = String.Empty;
+		public static string BaseName = String.Empty;
 
 		private static TimerCallback callback;
 		private static Timer timer;
