@@ -41,7 +41,7 @@ namespace QSProjectsLib
 				return;
 			if (Session.IsSaasConnection) {
 				ISaaSService svc = Session.GetSaaSService ();
-				if (svc == null || !svc.changePassword (Session.SessionId, NewPassword)) {
+				if (svc == null || !svc.changeUserPasswordBySessionId (Session.SessionId, NewPassword)) {
 					logger.Error ("Ошибка установки пароля!");
 					return;
 				}

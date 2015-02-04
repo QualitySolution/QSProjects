@@ -9,6 +9,7 @@ namespace QSProjectsLib
 	public partial class UserProperty : Gtk.Dialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
+		private const string passFill = "n0tChanG3d";
 		public bool NewUser;
 		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
@@ -32,10 +33,9 @@ namespace QSProjectsLib
 		public void UserFill (int UserId)
 		{
 			NewUser = false;
-			
 			logger.Info ("Запрос пользователя №{0}...", UserId);
 			string sql = "SELECT * FROM users " +
-			             "WHERE users.id = @id";
+			              "WHERE users.id = @id";
 			try {
 				QSMain.CheckConnectionAlive ();
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
@@ -50,7 +50,7 @@ namespace QSProjectsLib
 				entryLogin.Text = rdr ["login"].ToString ();
 				OriginLogin = rdr ["login"].ToString ();
 				entryName.Text = rdr ["name"].ToString ();
-				entryPassword.Text = "nochanged";
+				entryPassword.Text = passFill;
 				
 				checkAdmin.Active = rdr.GetBoolean (QSMain.AdminFieldName);
 
@@ -76,9 +76,9 @@ namespace QSProjectsLib
 			if (entryLogin.Text == "root") {
 				string Message = "Операции с пользователем root запрещены.";
 				MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-				                                       MessageType.Warning, 
-				                                       ButtonsType.Ok,
-				                                       Message);
+				                                      MessageType.Warning, 
+				                                      ButtonsType.Ok,
+				                                      Message);
 				md.Run ();
 				md.Destroy ();
 				return;
@@ -93,7 +93,7 @@ namespace QSProjectsLib
 				if (OriginLogin != entryLogin.Text)
 				if (!RenameLogin ())
 					return;
-				if (entryPassword.Text != "nochanged")
+				if (entryPassword.Text != passFill)
 					ChangePassword ();
 				sql = "UPDATE users SET name = @name, login = @login, " + QSMain.AdminFieldName + " = @admin," +
 				"description = @description " +
@@ -112,7 +112,7 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
 				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
 					cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
-					                            Pair.Value.Active);
+					                             Pair.Value.Active);
 				}
 
 				if (textviewComments.Buffer.Text == "")
@@ -144,9 +144,9 @@ namespace QSProjectsLib
 					string Message = "Пользователь с логином " + entryLogin.Text + " уже существует в базе. " +
 					                 "Создание второго пользователя с таким же логином невозможно.";
 					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-					                                       MessageType.Warning, 
-					                                       ButtonsType.Ok,
-					                                       Message);
+					                                      MessageType.Warning, 
+					                                      ButtonsType.Ok,
+					                                      Message);
 					md.Run ();
 					md.Destroy ();
 					return false;
@@ -161,9 +161,9 @@ namespace QSProjectsLib
 						                 "Если он использовался для доступа к другим базам, может возникнуть путаница. " +
 						                 "Использовать этот логин?";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                       MessageType.Warning, 
-						                                       ButtonsType.YesNo,
-						                                       Message);
+						                                      MessageType.Warning, 
+						                                      ButtonsType.YesNo,
+						                                      Message);
 						bool result = (ResponseType)md.Run () == ResponseType.Yes;
 						md.Destroy ();
 						return result;
@@ -208,9 +208,9 @@ namespace QSProjectsLib
 						string Message = "Пользователь с логином " + entryLogin.Text + " уже существует на сервере. " +
 						                 "Переименование невозможно.";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                       MessageType.Error, 
-						                                       ButtonsType.Ok,
-						                                       Message);
+						                                      MessageType.Error, 
+						                                      ButtonsType.Ok,
+						                                      Message);
 						md.Destroy ();
 						return false;
 					}
