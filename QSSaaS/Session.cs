@@ -54,7 +54,7 @@ namespace QSSaaS
 			}
 		}
 
-		public static void CheckAndStartSessionRefresh ()
+		public static void StartSessionRefresh ()
 		{
 			if (!IsSaasConnection)
 				return;
@@ -62,7 +62,7 @@ namespace QSSaaS
 			timer = new Timer (callback, null, 0, 300000);
 		}
 
-		public static void CheckAndStopSessionRefresh ()
+		public static void StopSessionRefresh ()
 		{
 			if (!IsSaasConnection)
 				return;
