@@ -2,6 +2,14 @@
 
 namespace QSSaaS
 {
+	public enum ErrorType
+	{
+		None,
+		SqlError,
+		UserExists,
+		AccessDenied}
+	;
+
 	[DataContract]
 	public class Result
 	{
@@ -9,11 +17,18 @@ namespace QSSaaS
 		public bool Success;
 		[DataMember]
 		public string Description;
+		[DataMember]
+		public ErrorType Error = ErrorType.None;
 
 		public Result (bool success, string description = "")
 		{
 			Success = success;
 			Description = description;
+		}
+
+		public Result (bool success, ErrorType error, string description = "") : this (success, description)
+		{
+			Error = error;
 		}
 	}
 

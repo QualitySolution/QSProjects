@@ -49,9 +49,8 @@ namespace QSSaaS
 		/// <returns>True в случае успеха или false и описание ошибки в случае неудачи.</returns>
 		/// <param name="userLogin">Логин.</param>
 		/// <param name="userPass">Пароль.</param>
-		/// <param name="accountLogin">Логин аккаунта, к которому будет осуществляться привязка..</param>
-		/// <param name="accountPass">Пароль аккаунта, к которому будет осуществляться привязка.</param>
-		Result registerUser (string userLogin, string userPass, string accountLogin, string accountPass);
+		/// <param name="session">ID текущей сессии.</param>
+		Result registerUser (string userLogin, string userPass, string session);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
