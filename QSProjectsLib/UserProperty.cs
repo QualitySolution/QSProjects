@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
+using QSSaaS;
 
 namespace QSProjectsLib
 {
@@ -35,7 +36,7 @@ namespace QSProjectsLib
 			NewUser = false;
 			logger.Info ("Запрос пользователя №{0}...", UserId);
 			string sql = "SELECT * FROM users " +
-			              "WHERE users.id = @id";
+			             "WHERE users.id = @id";
 			try {
 				QSMain.CheckConnectionAlive ();
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
@@ -83,57 +84,77 @@ namespace QSProjectsLib
 				md.Destroy ();
 				return;
 			}
-			
-			if (NewUser) {
-				if (!CreateLogin ())
+			if (Session.IsSaasConnection) {
+				ISaaSService svc = Session.GetSaaSService ();
+				if (NewUser) {
+					Result result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
+					if (!result.Success) {
+						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+						                                      MessageType.Warning, 
+						                                      ButtonsType.Ok,
+						                                      result.Description);
+						md.Run ();
+						md.Destroy ();
+						return;
+					}
+					svc.grantBaseAccess (entryLogin.Text, Session.Account, Session.BaseName, checkAdmin.Active);
 					return;
-				sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
-				"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
-			} else {
-				if (OriginLogin != entryLogin.Text)
-				if (!RenameLogin ())
-					return;
-				if (entryPassword.Text != passFill)
-					ChangePassword ();
-				sql = "UPDATE users SET name = @name, login = @login, " + QSMain.AdminFieldName + " = @admin," +
-				"description = @description " +
-				QSMain.GetPermissionFieldsForUpdate () +
-				" WHERE id = @id";
-			}
-			UpdatePrivileges ();
-			logger.Info ("Запись пользователя...");
-			try {
-				QSMain.CheckConnectionAlive ();
-				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-				
-				cmd.Parameters.AddWithValue ("@id", entryID.Text);
-				cmd.Parameters.AddWithValue ("@name", entryName.Text);
-				cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
-				cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
-				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
-					cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
-					                             Pair.Value.Active);
-				}
+				} else {
 
-				if (textviewComments.Buffer.Text == "")
-					cmd.Parameters.AddWithValue ("@description", DBNull.Value);
-				else
-					cmd.Parameters.AddWithValue ("@description", textviewComments.Buffer.Text);
+				}
+			} else {
+				if (NewUser) {
+					if (!CreateLogin ())
+						return;
+					sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
+					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
+				} else {
+					if (OriginLogin != entryLogin.Text)
+					if (!RenameLogin ())
+						return;
+					if (entryPassword.Text != passFill)
+						ChangePassword ();
+					sql = "UPDATE users SET name = @name, login = @login, " + QSMain.AdminFieldName + " = @admin," +
+					"description = @description " +
+					QSMain.GetPermissionFieldsForUpdate () +
+					" WHERE id = @id";
+				}
+				UpdatePrivileges ();
+				logger.Info ("Запись пользователя...");
+				try {
+					QSMain.CheckConnectionAlive ();
+					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
 				
-				cmd.ExecuteNonQuery ();
-				if (QSMain.User.Login == entryLogin.Text)
-					QSMain.User.UpdateUserInfoByLogin ();
-				logger.Info ("Ok");
-				Respond (ResponseType.Ok);
-			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка записи пользователя!", ex);
-				QSMain.ErrorMessage (this, ex);
+					cmd.Parameters.AddWithValue ("@id", entryID.Text);
+					cmd.Parameters.AddWithValue ("@name", entryName.Text);
+					cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
+					cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
+					foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
+						cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
+						                             Pair.Value.Active);
+					}
+
+					if (textviewComments.Buffer.Text == "")
+						cmd.Parameters.AddWithValue ("@description", DBNull.Value);
+					else
+						cmd.Parameters.AddWithValue ("@description", textviewComments.Buffer.Text);
+				
+					cmd.ExecuteNonQuery ();
+					if (QSMain.User.Login == entryLogin.Text)
+						QSMain.User.UpdateUserInfoByLogin ();
+					logger.Info ("Ok");
+					Respond (ResponseType.Ok);
+				} catch (Exception ex) {
+					logger.ErrorException ("Ошибка записи пользователя!", ex);
+					QSMain.ErrorMessage (this, ex);
+				}
 			}
 		}
 
 		bool CreateLogin ()
 		{
 			logger.Info ("Создание учетной записи на сервере...");
+
 			try {
 				//Проверка существует ли логин
 				string sql = "SELECT COUNT(*) FROM users WHERE login = @login";
@@ -192,6 +213,7 @@ namespace QSProjectsLib
 				QSMain.ErrorMessage (this, ex);
 				return false;
 			}
+
 		}
 
 		bool RenameLogin ()
@@ -237,19 +259,27 @@ namespace QSProjectsLib
 		void ChangePassword ()
 		{
 			logger.Info ("Отправляем новый пароль на сервер...");
-			string sql;
-			try {
-				QSMain.CheckConnectionAlive ();
-				sql = String.Format ("SET PASSWORD FOR {0} = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
-				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-				cmd.ExecuteNonQuery ();
-				sql = String.Format ("SET PASSWORD FOR {0}@localhost = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
-				cmd = new MySqlCommand (sql, QSMain.connectionDB);
-				cmd.ExecuteNonQuery ();
-				logger.Info ("Пароль изменен. Ok");
-			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка установки пароля!", ex);
-				QSMain.ErrorMessage (this, ex);
+			if (Session.IsSaasConnection) {
+				ISaaSService svc = Session.GetSaaSService ();
+				if (!svc.changeUserPasswordByLogin (entryLogin.Text, Session.Account, entryPassword.Text))
+					logger.Error ("Ошибка установки пароля!");
+				else
+					logger.Info ("Пароль изменен. Ok");
+			} else {
+				string sql;
+				try {
+					QSMain.CheckConnectionAlive ();
+					sql = String.Format ("SET PASSWORD FOR {0} = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
+					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+					cmd.ExecuteNonQuery ();
+					sql = String.Format ("SET PASSWORD FOR {0}@localhost = PASSWORD('{1}')", entryLogin.Text, entryPassword.Text);
+					cmd = new MySqlCommand (sql, QSMain.connectionDB);
+					cmd.ExecuteNonQuery ();
+					logger.Info ("Пароль изменен. Ok");
+				} catch (Exception ex) {
+					logger.ErrorException ("Ошибка установки пароля!", ex);
+					QSMain.ErrorMessage (this, ex);
+				}
 			}
 		}
 
