@@ -15,14 +15,12 @@ namespace QSProjectsLib
 		String ConnectionError;
 		public string SelectedConnection;
 		public string BaseName;
-		public string ConfigFileName;
 		public string DefaultLogin;
 		public string DefaultServer;
 		public string DefaultConnection;
 		public string DemoServer;
 		public string DemoMessage;
 		private string server;
-		IniConfigSource Configsource;
 
 		public Gdk.Pixbuf Logo {
 			set{ imageLogo.Pixbuf = value; }
@@ -52,17 +50,17 @@ namespace QSProjectsLib
 		{
 			BaseName = ProjectName;
 			DefaultConnection = "По умолчанию";
-			ConfigFileName = ProjectName + ".ini";
+			QSMain.ConfigFileName = ProjectName + ".ini";
 		}
 
 		public void UpdateFromGConf ()
 		{
-			string configfile = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), ConfigFileName);
+			string configfile = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), QSMain.ConfigFileName);
 			IConfig Config;
 			try {
-				Configsource = new IniConfigSource (configfile);
-				Configsource.Reload ();  //Читаем все конфиги
-				System.Collections.IEnumerator en = Configsource.Configs.GetEnumerator ();
+				QSMain.Configsource = new IniConfigSource (configfile);
+				QSMain.Configsource.Reload ();  //Читаем все конфиги
+				System.Collections.IEnumerator en = QSMain.Configsource.Configs.GetEnumerator ();
 				while (en.MoveNext ()) {
 					Config = (IConfig)en.Current;
 					if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
@@ -85,13 +83,13 @@ namespace QSProjectsLib
 			} catch (Exception ex) {
 				Console.WriteLine (ex.Message);
 				Console.WriteLine ("Конфигурационный фаил не найден. Создаем новый.");
-				Configsource = new IniConfigSource ();		
+				QSMain.Configsource = new IniConfigSource ();		
 				CreateDefaultConnection (configfile);
 			} finally {
-				if (Configsource.Configs ["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
-					Configsource.AddConfig ("Default");
-					Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
-					Configsource.Save ();
+				if (QSMain.Configsource.Configs ["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
+					QSMain.Configsource.AddConfig ("Default");
+					QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+					QSMain.Configsource.Save ();
 				}
 				entryPassword.GrabFocus ();
 				UpdateCombo ();
@@ -100,15 +98,15 @@ namespace QSProjectsLib
 
 		protected void CreateDefaultConnection (string configfile)
 		{
-			IConfig config = Configsource.AddConfig ("Login");
+			IConfig config = QSMain.Configsource.AddConfig ("Login");
 			config.Set ("UserLogin", DefaultLogin);
 			config.Set ("Server", DefaultServer);
 			config.Set ("ConnectionName", DefaultConnection);
-			if (Configsource.Configs ["Default"] == null)
-				Configsource.AddConfig ("Default");
-			Configsource.Configs ["Default"].Set ("ConnectionName", DefaultConnection);
+			if (QSMain.Configsource.Configs ["Default"] == null)
+				QSMain.Configsource.AddConfig ("Default");
+			QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", DefaultConnection);
 
-			Configsource.Save (configfile);
+			QSMain.Configsource.Save (configfile);
 		
 			Connections.Add (new Connection (ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "", ""));
 
@@ -182,9 +180,9 @@ namespace QSProjectsLib
 				labelLoginInfo.Text = "";
 				buttonErrorInfo.Visible = false;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
-				Configsource.Configs [ini].Set ("UserLogin", entryUser.Text);
-				Configsource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
-				Configsource.Save ();
+				QSMain.Configsource.Configs [ini].Set ("UserLogin", entryUser.Text);
+				QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
+				QSMain.Configsource.Save ();
 				QSMain.ConnectionString = connStr;
 				QSMain.User.Login = entryUser.Text.ToLower ();
 				this.Respond (ResponseType.Ok);
@@ -226,11 +224,11 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues (c.ConnectionName);
-			SelectedConnection = (String)Configsource.Configs ["Default"].Get ("ConnectionName", String.Empty);
+			SelectedConnection = (String)QSMain.Configsource.Configs ["Default"].Get ("ConnectionName", String.Empty);
 			if (SelectedConnection != String.Empty) {
 				if (Connections.Find (m => m.ConnectionName == SelectedConnection) == null) {
-					Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
-					Configsource.Save ();
+					QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+					QSMain.Configsource.Save ();
 					SelectedConnection = String.Empty;
 				} else {
 					TreeIter tempIter;
@@ -262,7 +260,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonEditConnectionClicked (object sender, EventArgs e)
 		{
-			EditConnection dlg = new EditConnection (ref Connections, ref Configsource);
+			EditConnection dlg = new EditConnection (ref Connections, ref QSMain.Configsource);
 			dlg.Run ();
 			dlg.Destroy ();
 			UpdateCombo ();
