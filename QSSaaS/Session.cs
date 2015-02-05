@@ -9,7 +9,7 @@ namespace QSSaaS
 	public class Session
 	{
 		//Адрес сервера
-		public static String SaaSService = "http://localhost:8080/SaaS";
+		public static String SaaSService = "http://saas.qsolution.ru:8080/SaaS";
 		//Параметры сессии
 		public static String SessionId = String.Empty;
 		public static bool IsSaasConnection = false;
@@ -34,21 +34,14 @@ namespace QSSaaS
 
 		private static void Refresh (Object StateInfo)
 		{
-			if (SaaSService == String.Empty) {
-				logger.Error ("Не задан адрес сервиса!");
-				return;
-			}
 			if (SessionId == String.Empty) {
 				logger.Error ("Не задан ID сессии!");
 				return;
 			}
 			try {
-				Uri address = new Uri (SaaSService);
-				var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
-				ISaaSService svc = factory.CreateChannel ();
+				ISaaSService svc = GetSaaSService ();
 				if (!svc.refreshSession (SessionId))
 					logger.Warn ("Не удалось продлить сессию " + SessionId + ".");
-				factory.Close ();
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка при продлении сессии " + SessionId + ".", ex);
 			}
