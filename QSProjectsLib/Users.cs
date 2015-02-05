@@ -100,23 +100,25 @@ namespace QSProjectsLib
 			Delete winDel = new Delete ();
 			if (winDel.RunDeletion ("users", itemid)) {
 				logger.Info ("Удаляем пользователя MySQL...");
-				string sql;
-				sql = String.Format ("DROP USER {0}, {0}@localhost", loginname);
-				try {
-					QSMain.CheckConnectionAlive ();
-					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-					cmd.ExecuteNonQuery ();
-					logger.Info ("Пользователь удалён. Ok");
-				} catch (Exception ex) {
-					logger.ErrorException ("Ошибка удаления пользователя!", ex);
-					QSMain.ErrorMessage (this, ex);
+				if (QSSaaS.Session.IsSaasConnection) {
+					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
+					if (!svc.revokeBaseAccess (loginname, QSSaaS.Session.Account, QSSaaS.Session.BaseName))
+						logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
+				} else {
+					string sql;
+					sql = String.Format ("DROP USER {0}, {0}@localhost", loginname);
+					try {
+						QSMain.CheckConnectionAlive ();
+						MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+						cmd.ExecuteNonQuery ();
+						logger.Info ("Пользователь удалён. Ok");
+					} catch (Exception ex) {
+						logger.ErrorException ("Ошибка удаления пользователя!", ex);
+						QSMain.ErrorMessage (this, ex);
+					}
 				}
 			}
-			if (QSSaaS.Session.IsSaasConnection) {
-				QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
-				if (!svc.revokeBaseAccess (loginname, QSSaaS.Session.Account, QSSaaS.Session.BaseName))
-					logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
-			}
+
 			winDel.Destroy ();
 			UpdateUsers ();
 		}

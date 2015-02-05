@@ -35,8 +35,7 @@ namespace QSProjectsLib
 		{
 			NewUser = false;
 			logger.Info ("Запрос пользователя №{0}...", UserId);
-			string sql = "SELECT * FROM users " +
-			             "WHERE users.id = @id";
+			string sql = "SELECT * FROM users WHERE users.id = @id";
 			try {
 				QSMain.CheckConnectionAlive ();
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
@@ -49,6 +48,8 @@ namespace QSProjectsLib
 				
 				entryID.Text = rdr ["id"].ToString ();
 				entryLogin.Text = rdr ["login"].ToString ();
+				//Если SaaS - запретить редактировать логин.
+				entryLogin.Sensitive = !Session.IsSaasConnection;
 				OriginLogin = rdr ["login"].ToString ();
 				entryName.Text = rdr ["name"].ToString ();
 				entryPassword.Text = passFill;
@@ -85,22 +86,82 @@ namespace QSProjectsLib
 				return;
 			}
 			if (Session.IsSaasConnection) {
+				int dlgRes;
 				ISaaSService svc = Session.GetSaaSService ();
 				if (NewUser) {
-					Result result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
-					if (!result.Success) {
+					//Проверка существует ли логин
+					sql = "SELECT COUNT(*) FROM users WHERE login = @login";
+					QSMain.CheckConnectionAlive ();
+					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+					cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
+					if (Convert.ToInt32 (cmd.ExecuteScalar ()) > 0) {
+						string Message = "Пользователь с логином " + entryLogin.Text + " уже существует в базе. " +
+						                 "Создание второго пользователя с таким же логином невозможно.";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
 						                                      MessageType.Warning, 
 						                                      ButtonsType.Ok,
-						                                      result.Description);
+						                                      Message);
 						md.Run ();
 						md.Destroy ();
 						return;
 					}
-					svc.grantBaseAccess (entryLogin.Text, Session.Account, Session.BaseName, checkAdmin.Active);
-					return;
+					//Регистрируем пользователя в SaaS
+					Result result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
+					if (!result.Success) {
+						if (result.Error == ErrorType.UserExists) {
+							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+							                                      MessageType.Warning, 
+							                                      ButtonsType.YesNo,
+							                                      "Пользователь с таким логином уже существует. Предоставить ему доступ к базе?\n" +
+							                                      "ВНИМАНИЕ: Если вы указали новый пароль для пользователя, то он применен не будет.");
+							dlgRes = md.Run ();
+							md.Destroy ();
+							if ((ResponseType)dlgRes == ResponseType.No)
+								return;
+						} else {
+							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+							                                      MessageType.Warning, 
+							                                      ButtonsType.Close,
+							                                      result.Description);
+							md.Run ();
+							md.Destroy ();
+							return;
+						}
+					}
+					//Создаем запись в Users.
+					sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
+					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
 				} else {
-
+					if (entryPassword.Text != passFill) {
+						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+						                                      MessageType.Warning, 
+						                                      ButtonsType.YesNo,
+						                                      "Изменение пароля произойдет во всех базах, к которым пользователь имеет доступ.\nПродолжить?");
+						dlgRes = md.Run ();
+						md.Destroy ();
+						if ((ResponseType)dlgRes == ResponseType.Yes && !svc.changeUserPasswordByLogin (entryLogin.Text, Session.Account, entryPassword.Text)) {
+							MessageDialog md1 = new MessageDialog (this, DialogFlags.DestroyWithParent,
+							                                       MessageType.Warning, 
+							                                       ButtonsType.Close,
+							                                       "Ошибка изменения пароля пользователя.");
+							md1.Run ();
+							md1.Destroy ();
+							return;
+						} else if ((ResponseType)dlgRes != ResponseType.Yes)
+							return;
+					}
+					sql = "UPDATE users SET name = @name, " + QSMain.AdminFieldName + " = @admin," +
+					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
+				}
+				//Предоставляем пользователю доступ к базе
+				if (!svc.grantBaseAccess (entryLogin.Text, Session.Account, Session.BaseName, checkAdmin.Active)) {
+					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
+					                                      MessageType.Warning, 
+					                                      ButtonsType.Close,
+					                                      "Ошибка предоставления доступа к базе данных.");
+					md.Run ();
+					md.Destroy ();
+					return;
 				}
 			} else {
 				if (NewUser) {
@@ -109,46 +170,44 @@ namespace QSProjectsLib
 					sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
 					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
 				} else {
-					if (OriginLogin != entryLogin.Text)
-					if (!RenameLogin ())
+					if (OriginLogin != entryLogin.Text && !RenameLogin ())
 						return;
 					if (entryPassword.Text != passFill)
 						ChangePassword ();
 					sql = "UPDATE users SET name = @name, login = @login, " + QSMain.AdminFieldName + " = @admin," +
-					"description = @description " +
-					QSMain.GetPermissionFieldsForUpdate () +
-					" WHERE id = @id";
+					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
 				UpdatePrivileges ();
 				logger.Info ("Запись пользователя...");
-				try {
-					QSMain.CheckConnectionAlive ();
-					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-				
-					cmd.Parameters.AddWithValue ("@id", entryID.Text);
-					cmd.Parameters.AddWithValue ("@name", entryName.Text);
-					cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
-					cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
-					foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
-						cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
-						                             Pair.Value.Active);
-					}
-
-					if (textviewComments.Buffer.Text == "")
-						cmd.Parameters.AddWithValue ("@description", DBNull.Value);
-					else
-						cmd.Parameters.AddWithValue ("@description", textviewComments.Buffer.Text);
-				
-					cmd.ExecuteNonQuery ();
-					if (QSMain.User.Login == entryLogin.Text)
-						QSMain.User.UpdateUserInfoByLogin ();
-					logger.Info ("Ok");
-					Respond (ResponseType.Ok);
-				} catch (Exception ex) {
-					logger.ErrorException ("Ошибка записи пользователя!", ex);
-					QSMain.ErrorMessage (this, ex);
-				}
 			}
+			try {
+				QSMain.CheckConnectionAlive ();
+				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+				
+				cmd.Parameters.AddWithValue ("@id", entryID.Text);
+				cmd.Parameters.AddWithValue ("@name", entryName.Text);
+				cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
+				cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
+				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
+					cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
+					                             Pair.Value.Active);
+				}
+
+				if (textviewComments.Buffer.Text == "")
+					cmd.Parameters.AddWithValue ("@description", DBNull.Value);
+				else
+					cmd.Parameters.AddWithValue ("@description", textviewComments.Buffer.Text);
+				
+				cmd.ExecuteNonQuery ();
+				if (QSMain.User.Login == entryLogin.Text)
+					QSMain.User.UpdateUserInfoByLogin ();
+				logger.Info ("Ok");
+				Respond (ResponseType.Ok);
+			} catch (Exception ex) {
+				logger.ErrorException ("Ошибка записи пользователя!", ex);
+				QSMain.ErrorMessage (this, ex);
+			}
+
 		}
 
 		bool CreateLogin ()
