@@ -9,7 +9,7 @@ using QSSaaS;
 
 namespace QSProjectsLib
 {
-	public partial class Login : Gtk.Dialog
+	public partial class Login : Dialog
 	{
 		public List<Connection> Connections;
 		String ConnectionError;
@@ -29,11 +29,10 @@ namespace QSProjectsLib
 		public Login ()
 		{
 			this.Build ();
-			QSSaaS.Session.SaaSService = "http://localhost:8080/SaaS";
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection> ();
 			DefaultServer = "localhost";
-			System.Reflection.Assembly ass = Assembly.GetCallingAssembly ();
+			Assembly ass = Assembly.GetCallingAssembly ();
 			Version version = ass.GetName ().Version;
 			string ver = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
 			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
