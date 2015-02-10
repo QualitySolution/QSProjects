@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSUpdater</RootNamespace>
     <AssemblyName>QSUpdater</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,10 +32,42 @@
   <ItemGroup>
     <Compile Include="IUpdateService.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="TestUpdate.cs" />
+    <Compile Include="UpdaterDialog.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\QSUpdater.UpdaterDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="NLog">
+      <HintPath>..\lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Nini">
+      <HintPath>..\lib\Nini.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QSSupportLib\QSSupportLib.csproj">
+      <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
+      <Name>QSSupportLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
+      <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
+      <Name>QSProjectsLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
