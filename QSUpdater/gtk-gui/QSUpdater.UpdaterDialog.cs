@@ -12,14 +12,15 @@ namespace QSUpdater
 		
 		private global::Gtk.Button buttonOk;
 		
-		private global::Gtk.Button buttonCancle;
+		private global::Gtk.Button buttonCancel;
 
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSUpdater.UpdaterDialog
 			this.Name = "QSUpdater.UpdaterDialog";
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+			this.Title = global::Mono.Unix.Catalog.GetString ("Обновление");
+			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
 			// Internal child QSUpdater.UpdaterDialog.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
@@ -75,14 +76,14 @@ namespace QSUpdater
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancle = new global::Gtk.Button ();
-			this.buttonCancle.CanDefault = true;
-			this.buttonCancle.CanFocus = true;
-			this.buttonCancle.Name = "buttonCancle";
-			this.buttonCancle.UseUnderline = true;
-			this.buttonCancle.Label = global::Mono.Unix.Catalog.GetString ("Нет");
-			this.AddActionWidget (this.buttonCancle, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonCancle]));
+			this.buttonCancel = new global::Gtk.Button ();
+			this.buttonCancel.CanDefault = true;
+			this.buttonCancel.CanFocus = true;
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.UseUnderline = true;
+			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("Нет");
+			this.AddActionWidget (this.buttonCancel, -6);
+			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonCancel]));
 			w7.Position = 1;
 			w7.Expand = false;
 			w7.Fill = false;
@@ -91,6 +92,7 @@ namespace QSUpdater
 			}
 			this.DefaultWidth = 400;
 			this.DefaultHeight = 300;
+			this.infoLabel.Hide ();
 			this.Show ();
 		}
 	}
