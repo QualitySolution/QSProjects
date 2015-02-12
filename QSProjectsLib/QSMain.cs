@@ -297,6 +297,20 @@ namespace QSProjectsLib
 
 		public static void ErrorMessage(Window parent, Exception ex, string userMessage = "")
 		{
+			if (GuiThread == Thread.CurrentThread) {
+				RealErrorMessage (parent, ex, userMessage);
+			}
+			else
+			{
+				logger.Debug ("From Another Thread");
+				Application.Invoke (delegate {
+					RealErrorMessage (parent, ex, userMessage);
+				});
+			}
+		}
+
+		private static void RealErrorMessage(Window parent, Exception ex, string userMessage = "")
+		{
 			if (parent == null && ErrorDlgParrent != null)
 				parent = ErrorDlgParrent;
 
