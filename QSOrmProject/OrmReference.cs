@@ -19,6 +19,7 @@ namespace QSOrmProject
 		private ICriteria objectsCriteria;
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
+		private IReferenceFilter filterWidget;
 
 		public ITdiTabParent TabParent { set; get;}
 
@@ -51,6 +52,32 @@ namespace QSOrmProject
 			set
 			{
 				session = value;
+			}
+		}
+
+		System.Type filterClass;
+		public System.Type FilterClass {
+			get {
+				return filterClass;
+			}
+			set {
+				if (filterClass == value)
+					return;
+				if(filterWidget != null)
+				{
+					hboxFilter.Remove (filterWidget as Widget);
+					(filterWidget as Widget).Destroy();
+					checkShowFilter.Visible = true;
+					filterWidget = null;
+				}
+				if(value != null && value.GetInterface ("IReferenceFilter") == null)
+				{
+					throw new NotSupportedException ("FilterClass должен реализовывать интерфейс IReferenceFilter.");
+				}
+				filterClass = value;
+				checkShowFilter.Visible = filterClass != null;
+				if (CheckDefaultLoadFilterAtt () || checkShowFilter.Active)
+					CreateFilterWidget ();
 			}
 		}
 
@@ -137,13 +164,15 @@ namespace QSOrmProject
 		void ConfigureDlg()
 		{
 			Mode = OrmReferenceMode.Normal;
-			OrmObjectMaping map = OrmMain.GetObjectDiscription(objectType);
+			OrmObjectMapping map = OrmMain.GetObjectDiscription(objectType);
 			if (map != null)
 			{
 				map.ObjectUpdated += OnRefObjectUpdated;
 				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
 				if (map.RefSearchFields != null)
 					SearchFields = map.RefSearchFields;
+				if (map.RefFilterClass != null)
+					FilterClass = map.RefFilterClass;
 			}
 			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttributes), true);
 			if (att.Length > 0)
@@ -164,13 +193,26 @@ namespace QSOrmProject
 
 		private void UpdateObjectList()
 		{
+			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
 			if(ParentReference == null)
-				filterView = new ObservableFilterListView (objectsCriteria.List());
+			{
+				if(filterWidget == null)
+					filterView = new ObservableFilterListView (objectsCriteria.List());
+				else
+					filterView = new ObservableFilterListView (filterWidget.FiltredCriteria.List());
+			}
 			else
+			{
 				filterView = new ObservableFilterListView (parentReference.List);
+				if (filterWidget != null)
+					logger.Warn ("Фильтры(FilterClass) в режиме ParentReference не поддерживаются.");
+			}
+				
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
+			UpdateSum ();
+			logger.Info ("Ok.");
 		}
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
@@ -291,6 +333,49 @@ namespace QSOrmProject
 				));
 			}
 			OnCloseTab();
+		}
+
+		private void CreateFilterWidget()
+		{
+			Type[] paramTypes = new Type[]{typeof(ISession)};	
+
+			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor(paramTypes);
+			if(ci == null)
+			{
+				InvalidOperationException ex = new InvalidOperationException(
+					String.Format("Конструктор в класе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
+				logger.Error(ex);
+				throw ex;
+			}
+			logger.Debug ("Вызываем конструктор фильтра {0} c параметрами {1}.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
+			filterWidget = (IReferenceFilter)ci.Invoke(new object[] {Session});
+			filterWidget.BaseCriteria = objectsCriteria;
+			filterWidget.Refiltered += OnFilterWidgetRefiltered;
+			hboxFilter.Add (filterWidget as Widget);
+			(filterWidget as Widget).ShowAll ();
+		}
+
+		protected void OnCheckShowFilterToggled (object sender, EventArgs e)
+		{
+			hboxFilter.Visible = checkShowFilter.Active;
+			if (checkShowFilter.Active && filterWidget == null)
+				CreateFilterWidget ();
+		}
+
+		void OnFilterWidgetRefiltered (object sender, EventArgs e)
+		{
+			UpdateObjectList ();
+		}
+
+		private bool CheckDefaultLoadFilterAtt()
+		{
+			if (FilterClass == null)
+				return false;
+			foreach(var att in FilterClass.GetCustomAttributes (typeof(OrmDefaultIsFiltered), true))
+			{
+				return (att as OrmDefaultIsFiltered).DefaultIsFiltered;
+			}
+			return false;
 		}
 	}
 

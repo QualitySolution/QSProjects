@@ -14,7 +14,7 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private static Configuration ormConfig;
 		public static ISessionFactory Sessions;
-		public static List<OrmObjectMaping> ClassMapingList;
+		public static List<OrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
 
 		public static ISession OpenSession()
@@ -41,13 +41,13 @@ namespace QSOrmProject
 
 		public static Type GetDialogType(System.Type objectClass)
 		{
-			if (ClassMapingList == null)
+			if (ClassMappingList == null)
 				throw new NullReferenceException("ORM Модуль не настроен. Нужно создать ClassMapingList.");
 
 			if (objectClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
 				objectClass = objectClass.BaseType;
 
-			OrmObjectMaping map = ClassMapingList.Find(c => c.ObjectClass == objectClass);
+			OrmObjectMapping map = ClassMappingList.Find(c => c.ObjectClass == objectClass);
 			if(map == null)
 			{
 				logger.Warn("Диалог для типа {0} не найден.", objectClass);
@@ -57,12 +57,12 @@ namespace QSOrmProject
 				return map.DialogClass;
 		}
 
-		public static OrmObjectMaping GetObjectDiscription(System.Type type)
+		public static OrmObjectMapping GetObjectDiscription(System.Type type)
 		{
 			if (type.GetInterface(typeof(INHibernateProxy).FullName) != null)
 				type = type.BaseType;
 
-			return OrmMain.ClassMapingList.Find(m => m.ObjectClass == type);
+			return OrmMain.ClassMappingList.Find(m => m.ObjectClass == type);
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace QSOrmProject
 		public static void NotifyObjectUpdated(object subject, bool clean = true)
 		{
 			System.Type subjectType = NHibernateUtil.GetClass(subject);
-			OrmObjectMaping map = ClassMapingList.Find(m => m.ObjectClass == subjectType);
+			OrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == subjectType);
 			if (map != null)
 				map.RaiseObjectUpdated(subject);
 			else
@@ -187,52 +187,6 @@ namespace QSOrmProject
 			return CreateObjectDialog (NHibernateUtil.GetClass (entity), parentReference, entity);
 		}
 
-	}
-
-	public class OrmObjectMaping
-	{
-		public System.Type ObjectClass;
-		public System.Type DialogClass;
-		public string[] RefSearchFields;
-		public string RefColumnMappings;
-		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
-
-		public bool SimpleDialog
-		{
-			get
-			{
-				return (DialogClass == null);
-			}
-		}
-
-		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass)
-		{
-			ObjectClass = objectClass;
-			DialogClass = dialogClass;
-			RefColumnMappings = String.Empty;
-		}
-
-		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass, string columnMaping) : this(objectClass, dialogClass)
-		{
-			RefColumnMappings = columnMaping;
-		}
-
-		public OrmObjectMaping(System.Type objectClass, System.Type dialogClass, string columnMaping, string[] searchFields) : this(objectClass, dialogClass, columnMaping)
-		{
-			RefSearchFields = searchFields;
-		}
-
-		public void RaiseObjectUpdated(int id)
-		{
-			if (ObjectUpdated != null)
-				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(id));
-		}
-
-		public void RaiseObjectUpdated(object subject)
-		{
-			if (ObjectUpdated != null)
-				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(subject));
-		}
 	}
 
 	public class OrmObjectUpdatedEventArgs : EventArgs

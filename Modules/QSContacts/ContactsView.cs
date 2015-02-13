@@ -59,6 +59,15 @@ namespace QSContacts
 			}
 		}
 
+		public string ColumnMappings {
+			get{
+				return datatreeviewContacts.ColumnMappings;
+			}
+			set{
+				datatreeviewContacts.ColumnMappings = value;
+			}
+		}
+
 		public ContactsView()
 		{
 			this.Build();

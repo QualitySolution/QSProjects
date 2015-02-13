@@ -7,12 +7,12 @@ namespace QSBanks
 	public static class QSBanksMain
 	{
 
-		public static List<OrmObjectMaping> GetModuleMaping()
+		public static List<OrmObjectMapping> GetModuleMaping()
 		{
-			return new List<OrmObjectMaping>
+			return new List<OrmObjectMapping>
 			{
-				new OrmObjectMaping(typeof(Bank), typeof(BankDlg), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];", new string[] {"Bik", "Name", "City"}),
-				new OrmObjectMaping(typeof(Account), typeof(AccountDlg)),
+				new OrmObjectMapping(typeof(Bank), typeof(BankDlg), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];", new string[] {"Bik", "Name", "City"}),
+				new OrmObjectMapping(typeof(Account), typeof(AccountDlg)),
 			};
 		}
 

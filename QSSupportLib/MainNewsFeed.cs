@@ -62,8 +62,10 @@ namespace QSSupportLib
 			if (NewsFeeds == null)
 				NewsFeeds = new List<NewsFeed> ();
 
-			if (!NewsReadExist)
+			if (!NewsReadExist) {
+				logger.Warn ("Нет табилицы с прочитанными новостями, или не вызван метод CheckNewsReads.");
 				return;
+			}
 
 			string sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
 			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
@@ -107,6 +109,7 @@ namespace QSSupportLib
 				return;
 
 			NewsFeeds.FindAll (f => f.FirstRead).ForEach(delegate(NewsFeed feed) {
+				QSMain.CheckConnectionAlive();
 				logger.Info ("Сохраняем новый feed({0})...", feed.Title);
 				string sql = "INSERT INTO read_news (user_id, feed_id, items) " +
 					"VALUES (@user_id, @feed_id, @items)";
@@ -140,6 +143,7 @@ namespace QSSupportLib
 
 			if (feed.FirstRead)
 				throw new InvalidOperationException ("Нельзя обновить новый фид с FirstRead = true");
+			QSMain.CheckConnectionAlive();
 			logger.Info ("Обновляем прочитанные новости...");
 			string sql = "UPDATE read_news SET items = @items WHERE id = @id";
 			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
