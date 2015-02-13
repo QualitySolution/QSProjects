@@ -17,6 +17,7 @@ namespace QSProjectsLib
 		public string BaseName;
 		public string DefaultLogin;
 		public string DefaultServer;
+		public static string DefaultBase;
 		public string DefaultConnection;
 		public string DemoServer;
 		public string DemoMessage;
@@ -47,7 +48,7 @@ namespace QSProjectsLib
 
 		public void SetDefaultNames (string ProjectName)
 		{
-			BaseName = ProjectName;
+			BaseName = DefaultBase = ProjectName;
 			DefaultConnection = "По умолчанию";
 			QSMain.ConfigFileName = ProjectName + ".ini";
 		}

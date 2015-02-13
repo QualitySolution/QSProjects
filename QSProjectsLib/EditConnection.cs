@@ -202,7 +202,7 @@ namespace QSProjectsLib
 		{
 			if (ValidateAndSave ()) {
 				doNotCheck = true;
-				iter = connectionsListStore.AppendValues ("Новое соединение", "", "", "", "", -1, "", ConnectionType.MySQL);
+				iter = connectionsListStore.AppendValues ("Новое соединение", "", Login.DefaultBase, "", "", -1, "", ConnectionType.MySQL);
 				entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = entryLogin.Sensitive = true;
 				treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (iter), treeviewConnections.Columns [0]);
 				comboConnectionType.Active = 0;
