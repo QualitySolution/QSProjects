@@ -8,7 +8,7 @@ namespace QSUpdater
 	public partial class UpdaterDialog : Gtk.Dialog
 	{
 		public static bool updChecker;
-		public static string checkVersion = "";
+		public static string checkVersion = String.Empty;
 
 		public UpdaterDialog ()
 		{
