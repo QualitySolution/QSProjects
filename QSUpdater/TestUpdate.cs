@@ -18,16 +18,11 @@ namespace QSUpdater
 		public static Uri address;
 		public static UpdateResult res;
 		public static MenuItem updMenu;
-		private static ProgressBar updPr;
 		public static Window updWin;
-		public static string updMessage;
-		public static string noties = "Не проверять это обновление при запуске продукта";
-		private static string tempPath = System.IO.Path.GetTempPath ();
-		public static string newVersion = null;
-		public static string checkVersion = String.Empty;
-		public static string checkResult = String.Empty;
+		public static string updMessage, checkVersion, checkResult, serialNumber, newVersion;
 
-		public static string serialNumber = null;
+		static string tempPath = System.IO.Path.GetTempPath ();
+		static ProgressBar updPr;
 
 		static public void LoadUpd ()
 		{
@@ -39,10 +34,10 @@ namespace QSUpdater
 		{
 			try {
 				logger.Info ("Получаем данные от сервера");
-				address = new Uri ("http://localhost:8080/Updater");
+				address = new Uri ("http://saas.qsolution.ru:2048/Updater");
 				var factory = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address);
 				svc = factory.CreateChannel ();
-				res = svc.CheckUpd (MainSupport.ProjectVerion.Product, MainSupport.ProjectVerion.Edition, serialNumber, MainSupport.ProjectVerion.Version.Major, MainSupport.ProjectVerion.Version.Minor, MainSupport.ProjectVerion.Version.Build, MainSupport.ProjectVerion.Version.Revision); 
+				res = svc.checkUpdate (MainSupport.ProjectVerion.Product, MainSupport.ProjectVerion.Edition, serialNumber, MainSupport.ProjectVerion.Version.Major, MainSupport.ProjectVerion.Version.Minor, MainSupport.ProjectVerion.Version.Build, MainSupport.ProjectVerion.Version.Revision); 
 
 				Application.Invoke (delegate {
 					newVersion = res.NewVersion;
@@ -86,7 +81,7 @@ namespace QSUpdater
 				updDlg.Destroy ();
 
 				if ((ResponseType)result == ResponseType.Ok) {
-					logger.Info("Скачивание обновления началось.");
+					logger.Info ("Скачивание обновления началось.");
 					updWin = new Window ("Подождите...");
 					updWin.SetSizeRequest (300, 25); 
 					updWin.Resizable = false;
@@ -112,9 +107,9 @@ namespace QSUpdater
 				updMessage = "Извините, сервер обновления не работает.";
 				Window win = new Window ("");
 				MessageDialog md = new MessageDialog (win, DialogFlags.DestroyWithParent,
-				                                      MessageType.Error, 
-				                                      ButtonsType.Ok,
-				                                      updMessage);
+					                   MessageType.Error, 
+					                   ButtonsType.Ok,
+					                   updMessage);
 				md.Run ();
 				md.Destroy ();
 			}
@@ -122,30 +117,11 @@ namespace QSUpdater
 
 		protected static void ConfigFileUpdater ()
 		{
-			if (UpdaterDialog.updChecker) {
-
-				if (QSMain.Configsource.Configs ["Updater"] == null) {
-					QSMain.Configsource.AddConfig ("Updater");
-					QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
-					QSMain.Configsource.Configs ["Updater"].Set ("Check", "False");
-					QSMain.Configsource.Save ();
-				} else {
-					QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
-					QSMain.Configsource.Configs ["Updater"].Set ("Check", "False");
-					QSMain.Configsource.Save ();
-				}
-			} else {
-				if (QSMain.Configsource.Configs ["Updater"] == null) {
-					QSMain.Configsource.AddConfig ("Updater");
-					QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
-					QSMain.Configsource.Configs ["Updater"].Set ("Check", "True");
-					QSMain.Configsource.Save ();
-				} else {
-					QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
-					QSMain.Configsource.Configs ["Updater"].Set ("Check", "True");
-					QSMain.Configsource.Save ();
-				}
-			}
+			if (QSMain.Configsource.Configs ["Updater"] == null)
+				QSMain.Configsource.AddConfig ("Updater");
+			QSMain.Configsource.Configs ["Updater"].Set ("Check", (UpdaterDialog.updChecker ? "False" : "True"));
+			QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
+			QSMain.Configsource.Save ();
 		}
 
 		protected static void ProgressChanged (object sender, DownloadProgressChangedEventArgs e)
