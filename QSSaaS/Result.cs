@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System;
 
 namespace QSSaaS
 {
@@ -9,6 +10,43 @@ namespace QSSaaS
 		UserExists,
 		AccessDenied}
 	;
+
+	[DataContract]
+	public class AccountInfo
+	{
+		[DataMember]
+		public bool IsActive;
+		[DataMember]
+		public int ActiveSessions;
+		[DataMember]
+		public int BasesCount;
+		[DataMember]
+		public double SpaceUsed;
+		[DataMember]
+		public int MaxSessions;
+		[DataMember]
+		public int MaxBases;
+		[DataMember]
+		public int MaxSpace;
+		[DataMember]
+		public decimal SubscriberFee;
+		[DataMember]
+		public DateTime EndDate;
+
+		public AccountInfo (bool isActive, int activeSessions, int basesCount, double spaceUsed, 
+		                    int maxSessions, int maxBases, int maxSpace, decimal subscriberFee, DateTime endDate)
+		{
+			IsActive = isActive;
+			ActiveSessions = activeSessions;
+			BasesCount = basesCount;
+			SpaceUsed = spaceUsed;
+			MaxSessions = maxSessions;
+			MaxBases = maxBases;
+			MaxSpace = maxSpace;
+			SubscriberFee = subscriberFee;
+			EndDate = endDate;
+		}
+	}
 
 	[DataContract]
 	public class Result

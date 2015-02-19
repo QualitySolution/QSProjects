@@ -37,7 +37,15 @@ namespace QSUpdater
 				address = new Uri ("http://saas.qsolution.ru:2048/Updater");
 				var factory = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address);
 				svc = factory.CreateChannel ();
-				res = svc.checkUpdate (MainSupport.ProjectVerion.Product, MainSupport.ProjectVerion.Edition, serialNumber, MainSupport.ProjectVerion.Version.Major, MainSupport.ProjectVerion.Version.Minor, MainSupport.ProjectVerion.Version.Build, MainSupport.ProjectVerion.Version.Revision); 
+				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
+					                    MainSupport.ProjectVerion.Product,
+					                    MainSupport.ProjectVerion.Edition,
+					                    serialNumber,
+					                    MainSupport.ProjectVerion.Version.Major, 
+					                    MainSupport.ProjectVerion.Version.Minor, 
+					                    MainSupport.ProjectVerion.Version.Build, 
+					                    MainSupport.ProjectVerion.Version.Revision); 
+				res = svc.checkForUpdate (parameters);
 
 				Application.Invoke (delegate {
 					newVersion = res.NewVersion;
@@ -51,8 +59,7 @@ namespace QSUpdater
 						} else if (checkVersion != newVersion)
 							ShowDialog ();
 					} 
-				}
-				);
+				});
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
 			}

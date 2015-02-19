@@ -1,6 +1,4 @@
-﻿using System;
-using System.ServiceModel;
-using System.ServiceModel.Web;
+﻿using System.ServiceModel;
 
 namespace QSUpdater
 {
@@ -8,8 +6,6 @@ namespace QSUpdater
 	public interface IUpdateService
 	{
 		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		UpdateResult checkUpdate (string productName, string productEdition, string serial, long major, long minor, long build, long revision);
+		UpdateResult checkForUpdate (string parameters);
 	}
 }
-

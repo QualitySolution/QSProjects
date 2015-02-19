@@ -18,6 +18,10 @@ namespace QSSaaS
 		AccountAuthResult authAccount (string login, string pass);
 
 		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		AccountInfo getAccountInfo (string session_id);
+
+		[OperationContract]
 		/// <summary>
 		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
 		/// </summary>
