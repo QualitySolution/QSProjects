@@ -9,30 +9,24 @@ namespace QSUpdater
 		public static bool updChecker;
 		public static string checkVersion = String.Empty;
 
-		public UpdaterDialog ()
+		public UpdaterDialog (string text)
 		{
 			this.Build ();
-			UpdLabel.Markup = TestUpdate.updMessage;
-			checkVersion = TestUpdate.res.NewVersion;
-			this.Destroyed += HandleDestroyed;
-			infoLabel.Visible = (TestUpdate.res.InfoLink != String.Empty);
-			infoLabel.Markup = String.Format ("<b><a href=\" " + TestUpdate.res.InfoLink + "\" title=\"Перейти на сайт компании\">Что нового?</a></b>");
+			UpdLabel.Markup = text;
+			checkVersion = CheckUpdate.res.NewVersion;
+			infoLabel.Visible = (CheckUpdate.res.InfoLink != String.Empty);
+			infoLabel.Markup = String.Format ("<b><a href=\" " + CheckUpdate.res.InfoLink + "\" title=\"Перейти на сайт компании\">Посмотреть полное описание обновления.</a></b>");
 			infoLabel.AddEvents ((int)EventMask.ButtonPressMask);
 			infoLabel.ButtonPressEvent += delegate (object o, ButtonPressEventArgs args) {
-				System.Diagnostics.Process.Start (TestUpdate.res.InfoLink);
+				System.Diagnostics.Process.Start (CheckUpdate.res.InfoLink);
 			};
 				
-			Updcb.Active = (TestUpdate.checkResult == "False" && TestUpdate.checkVersion == TestUpdate.res.NewVersion);
+			//Updcb.Active = (CheckUpdate.checkResult == "False" && CheckUpdate.checkVersion == CheckUpdate.res.NewVersion);
 
-			if (!TestUpdate.res.HasUpdate) {
-				Updcb.Visible = buttonOk.Visible = false;
+			if (!CheckUpdate.res.HasUpdate) {
+				buttonSkip.Visible = buttonOk.Visible = false;
 				buttonCancel.Label = "Закрыть";
 			}
-		}
-
-		void HandleDestroyed (object sender, EventArgs e)
-		{
-			updChecker = Updcb.Active;
 		}
 	}
 }

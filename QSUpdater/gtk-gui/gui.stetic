@@ -9,21 +9,23 @@
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSUpdater.UpdaterDialog" design-size="400 300">
+  <widget class="Gtk.Dialog" id="QSUpdater.UpdaterDialog" design-size="566 212">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Обновление</property>
     <property name="WindowPosition">Center</property>
-    <property name="Buttons">2</property>
+    <property name="BorderWidth">10</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <property name="Buttons">3</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">
       <widget class="Gtk.VBox" id="dialog1_VBox">
         <property name="MemberName" />
-        <property name="BorderWidth">2</property>
         <child>
-          <widget class="Gtk.Label" id="infoLabel">
+          <widget class="Gtk.Label" id="UpdLabel">
             <property name="MemberName" />
-            <property name="Visible">False</property>
-            <property name="Xalign">1</property>
+            <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes">Текст обновления</property>
             <property name="UseMarkup">True</property>
           </widget>
           <packing>
@@ -34,9 +36,11 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="UpdLabel">
+          <widget class="Gtk.Label" id="infoLabel">
             <property name="MemberName" />
+            <property name="Visible">False</property>
             <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes">Что нового?</property>
             <property name="UseMarkup">True</property>
           </widget>
           <packing>
@@ -44,23 +48,7 @@
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.CheckButton" id="Updcb">
-            <property name="MemberName" />
-            <property name="CanFocus">True</property>
-            <property name="Label" translatable="yes">Не проверять это обновление при запуске продукта</property>
-            <property name="DrawIndicator">True</property>
-            <property name="HasLabel">True</property>
-            <property name="UseUnderline">True</property>
-          </widget>
-          <packing>
-            <property name="PackType">End</property>
-            <property name="Position">3</property>
-            <property name="AutoSize">True</property>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
+            <property name="Padding">10</property>
           </packing>
         </child>
       </widget>
@@ -68,19 +56,15 @@
     <child internal-child="ActionArea">
       <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
         <property name="MemberName" />
-        <property name="Spacing">10</property>
-        <property name="BorderWidth">5</property>
-        <property name="Size">2</property>
-        <property name="LayoutStyle">End</property>
+        <property name="Size">3</property>
         <child>
-          <widget class="Gtk.Button" id="buttonOk">
+          <widget class="Gtk.Button" id="buttonSkip">
             <property name="MemberName" />
-            <property name="CanDefault">True</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextOnly</property>
-            <property name="Label" translatable="yes">Да</property>
+            <property name="Label" translatable="yes">Пропустить обновление</property>
             <property name="UseUnderline">True</property>
-            <property name="ResponseId">-5</property>
+            <property name="ResponseId">-9</property>
           </widget>
           <packing>
             <property name="Expand">False</property>
@@ -93,12 +77,28 @@
             <property name="CanDefault">True</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextOnly</property>
-            <property name="Label" translatable="yes">Нет</property>
+            <property name="Label" translatable="yes">Напомнить позже</property>
             <property name="UseUnderline">True</property>
             <property name="ResponseId">-6</property>
           </widget>
           <packing>
             <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Скачать и установить</property>
+            <property name="UseUnderline">True</property>
+            <property name="ResponseId">-5</property>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
