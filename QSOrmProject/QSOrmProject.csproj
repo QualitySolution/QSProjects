@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +68,7 @@
     <Compile Include="IReferenceFilter.cs" />
     <Compile Include="OrmObjectMapping.cs" />
     <Compile Include="Widgets\EnumComboBox.cs" />
+    <Compile Include="PropertyChangedBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -76,10 +80,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
-      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
-      <Name>QSTDI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
@@ -95,6 +95,10 @@
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
+      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
+      <Name>QSTDI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
