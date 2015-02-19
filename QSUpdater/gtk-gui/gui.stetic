@@ -5,9 +5,9 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSSupportLib/bin/Release/QSSupportLib.dll" />
-    <widget-library name="../../QSProjectsLib/bin/Release/QSProjectsLib.dll" />
-    <widget-library name="../bin/Release/QSUpdater.dll" internal="true" />
+    <widget-library name="../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
+    <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QSUpdater.UpdaterDialog" design-size="400 300">
     <property name="MemberName" />

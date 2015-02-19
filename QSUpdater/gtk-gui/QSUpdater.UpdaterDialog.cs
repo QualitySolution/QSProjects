@@ -49,7 +49,7 @@ namespace QSUpdater
 			this.Updcb = new global::Gtk.CheckButton ();
 			this.Updcb.CanFocus = true;
 			this.Updcb.Name = "Updcb";
-			this.Updcb.Label = "";
+			this.Updcb.Label = global::Mono.Unix.Catalog.GetString ("Не проверять это обновление при запуске продукта");
 			this.Updcb.DrawIndicator = true;
 			this.Updcb.UseUnderline = true;
 			w1.Add (this.Updcb);
