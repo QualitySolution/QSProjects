@@ -11,7 +11,7 @@ using NLog;
 
 namespace QSUpdater
 {
-	public class TestUpdate
+	public class CheckUpdate
 	{
 		public static Logger logger = LogManager.GetCurrentClassLogger ();
 		public static IUpdateService svc;
@@ -24,7 +24,7 @@ namespace QSUpdater
 		static string tempPath = System.IO.Path.GetTempPath ();
 		static ProgressBar updPr;
 
-		static public void LoadUpd ()
+		static public void StartCheckUpdateThread ()
 		{
 			Thread loadThread = new Thread (new ThreadStart (ThreadWorks));
 			loadThread.Start ();
@@ -38,13 +38,13 @@ namespace QSUpdater
 				var factory = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address);
 				svc = factory.CreateChannel ();
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
-					                    MainSupport.ProjectVerion.Product,
-					                    MainSupport.ProjectVerion.Edition,
-					                    serialNumber,
-					                    MainSupport.ProjectVerion.Version.Major, 
-					                    MainSupport.ProjectVerion.Version.Minor, 
-					                    MainSupport.ProjectVerion.Version.Build, 
-					                    MainSupport.ProjectVerion.Version.Revision); 
+				                                   MainSupport.ProjectVerion.Product,
+				                                   MainSupport.ProjectVerion.Edition,
+				                                   serialNumber,
+				                                   MainSupport.ProjectVerion.Version.Major, 
+				                                   MainSupport.ProjectVerion.Version.Minor, 
+				                                   MainSupport.ProjectVerion.Version.Build, 
+				                                   MainSupport.ProjectVerion.Version.Revision); 
 				res = svc.checkForUpdate (parameters);
 
 				Application.Invoke (delegate {
@@ -67,23 +67,19 @@ namespace QSUpdater
 
 		public static void ShowDialog ()
 		{
+			UpdaterDialog updDlg;
 			try {
-				if (res.HasUpdate) {
-					updMessage = string.Format ("<b>\nДоступна новая версия программы " + res.NewVersion + ". Мы предлагаем вам ее загрузить и установить.</b>" +
-					"\n\nВаша версия программного продукта: " + MainSupport.ProjectVerion.Version + "." +
-					"\n\n<b>Вы хотите скачать и установить новую версию?</b>\n\n");
-				    
-					if (res.UpdateDescription != String.Empty)
-						updMessage = string.Format ("<b>\nДоступна новая версия программы: " + res.NewVersion + ". Мы предлагаем вам ее загрузить и установить.</b>" +
-						"\n\nВаша версия программного продукта: " + MainSupport.ProjectVerion.Version + ".\n\nИнформация об обновлении:\n" + res.UpdateDescription +
-						"\n\n<b>Вы хотите скачать и установить новую версию?</b>\n\n");
-
-				} else
-					updMessage = string.Format ("<b>\nВаша версия программного продукта: " + MainSupport.ProjectVerion.Version + ".</b>" +
-					"\n\nНа данный момент это актуальная версия продукта.\n");
-
-				UpdaterDialog updDlg = new UpdaterDialog ();
-				updDlg.Resizable = false;
+				if (res.HasUpdate)
+					updDlg = new UpdaterDialog (String.Format ("<b>Доступна новая версия программы!</b>\n" +
+					"Доступная версия: {0}. (У вас установлена версия {1})\n" +
+					"Вы хотите скачать и установить новую версию?\n\n" +
+					(res.UpdateDescription != String.Empty ? "Информация об обновлении:\n{2}\n\n" : "{2}"), 
+					                                           res.NewVersion, 
+					                                           MainSupport.ProjectVerion.Version,
+					                                           res.UpdateDescription));
+				else
+					updDlg = new UpdaterDialog (String.Format ("<b>Ваша версия программного продукта: {0}.</b>\n\n" +
+					"На данный момент это актуальная версия продукта.\n", MainSupport.ProjectVerion.Version));
 				int result = updDlg.Run ();
 				updDlg.Destroy ();
 
@@ -106,27 +102,26 @@ namespace QSUpdater
 					webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler (ProgressChanged);
 					webClient.DownloadFileAsync (new Uri (res.FileLink), tempPath + @"\QSInstaller.exe");
 
-				} else if ((ResponseType)result == ResponseType.Cancel)
-				if (res.HasUpdate)
-					ConfigFileUpdater ();
+				} else if (res.HasUpdate)
+					ConfigFileUpdater ((ResponseType)result == ResponseType.Cancel);
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
 				updMessage = "Извините, сервер обновления не работает.";
 				Window win = new Window ("");
 				MessageDialog md = new MessageDialog (win, DialogFlags.DestroyWithParent,
-					                   MessageType.Error, 
-					                   ButtonsType.Ok,
-					                   updMessage);
+				                                      MessageType.Error, 
+				                                      ButtonsType.Ok,
+				                                      updMessage);
 				md.Run ();
 				md.Destroy ();
 			}
 		}
 
-		protected static void ConfigFileUpdater ()
+		protected static void ConfigFileUpdater (bool check)
 		{
 			if (QSMain.Configsource.Configs ["Updater"] == null)
 				QSMain.Configsource.AddConfig ("Updater");
-			QSMain.Configsource.Configs ["Updater"].Set ("Check", (UpdaterDialog.updChecker ? "False" : "True"));
+			QSMain.Configsource.Configs ["Updater"].Set ("Check", check);
 			QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", UpdaterDialog.checkVersion);
 			QSMain.Configsource.Save ();
 		}
