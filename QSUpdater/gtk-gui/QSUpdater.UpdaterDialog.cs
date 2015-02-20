@@ -4,15 +4,15 @@ namespace QSUpdater
 {
 	public partial class UpdaterDialog
 	{
-		private global::Gtk.Label infoLabel;
-		
 		private global::Gtk.Label UpdLabel;
 		
-		private global::Gtk.CheckButton Updcb;
+		private global::Gtk.Label infoLabel;
 		
-		private global::Gtk.Button buttonOk;
+		private global::Gtk.Button buttonSkip;
 		
 		private global::Gtk.Button buttonCancel;
+		
+		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()
 		{
@@ -21,77 +21,77 @@ namespace QSUpdater
 			this.Name = "QSUpdater.UpdaterDialog";
 			this.Title = global::Mono.Unix.Catalog.GetString ("Обновление");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
+			this.BorderWidth = ((uint)(10));
+			this.Resizable = false;
+			this.AllowGrow = false;
 			// Internal child QSUpdater.UpdaterDialog.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
-			w1.BorderWidth = ((uint)(2));
-			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.infoLabel = new global::Gtk.Label ();
-			this.infoLabel.Name = "infoLabel";
-			this.infoLabel.Xalign = 1F;
-			this.infoLabel.UseMarkup = true;
-			w1.Add (this.infoLabel);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.infoLabel]));
-			w2.Position = 0;
-			w2.Expand = false;
-			w2.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.UpdLabel = new global::Gtk.Label ();
 			this.UpdLabel.Name = "UpdLabel";
 			this.UpdLabel.Xalign = 0F;
+			this.UpdLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Текст обновления");
 			this.UpdLabel.UseMarkup = true;
 			w1.Add (this.UpdLabel);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1 [this.UpdLabel]));
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.UpdLabel]));
+			w2.Position = 0;
+			w2.Expand = false;
+			w2.Fill = false;
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.infoLabel = new global::Gtk.Label ();
+			this.infoLabel.Name = "infoLabel";
+			this.infoLabel.Xalign = 0F;
+			this.infoLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Что нового?");
+			this.infoLabel.UseMarkup = true;
+			w1.Add (this.infoLabel);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1 [this.infoLabel]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
-			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.Updcb = new global::Gtk.CheckButton ();
-			this.Updcb.CanFocus = true;
-			this.Updcb.Name = "Updcb";
-			this.Updcb.Label = global::Mono.Unix.Catalog.GetString ("Не проверять это обновление при запуске продукта");
-			this.Updcb.DrawIndicator = true;
-			this.Updcb.UseUnderline = true;
-			w1.Add (this.Updcb);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(w1 [this.Updcb]));
-			w4.PackType = ((global::Gtk.PackType)(1));
-			w4.Position = 3;
-			w4.Expand = false;
-			w4.Fill = false;
+			w3.Padding = ((uint)(10));
 			// Internal child QSUpdater.UpdaterDialog.ActionArea
-			global::Gtk.HButtonBox w5 = this.ActionArea;
-			w5.Name = "dialog1_ActionArea";
-			w5.Spacing = 10;
-			w5.BorderWidth = ((uint)(5));
-			w5.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w4 = this.ActionArea;
+			w4.Name = "dialog1_ActionArea";
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button ();
-			this.buttonOk.CanDefault = true;
-			this.buttonOk.CanFocus = true;
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Да");
-			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonOk]));
-			w6.Expand = false;
-			w6.Fill = false;
+			this.buttonSkip = new global::Gtk.Button ();
+			this.buttonSkip.CanFocus = true;
+			this.buttonSkip.Name = "buttonSkip";
+			this.buttonSkip.UseUnderline = true;
+			this.buttonSkip.Label = global::Mono.Unix.Catalog.GetString ("Пропустить обновление");
+			this.AddActionWidget (this.buttonSkip, -9);
+			global::Gtk.ButtonBox.ButtonBoxChild w5 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4 [this.buttonSkip]));
+			w5.Expand = false;
+			w5.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("Нет");
+			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("Напомнить позже");
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w5 [this.buttonCancel]));
-			w7.Position = 1;
+			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4 [this.buttonCancel]));
+			w6.Position = 1;
+			w6.Expand = false;
+			w6.Fill = false;
+			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+			this.buttonOk = new global::Gtk.Button ();
+			this.buttonOk.CanDefault = true;
+			this.buttonOk.CanFocus = true;
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.UseUnderline = true;
+			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Скачать и установить");
+			this.AddActionWidget (this.buttonOk, -5);
+			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w4 [this.buttonOk]));
+			w7.Position = 2;
 			w7.Expand = false;
 			w7.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
+			this.DefaultWidth = 566;
+			this.DefaultHeight = 212;
 			this.infoLabel.Hide ();
 			this.Show ();
 		}
