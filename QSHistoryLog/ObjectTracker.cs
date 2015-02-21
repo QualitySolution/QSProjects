@@ -111,19 +111,21 @@ namespace QSHistoryLog
 			changeSetId = cmd.LastInsertedId;
 
 			logger.Debug ("Записываем изменения полей в ChangeSet-е.");
-			sql = "INSERT INTO history_changes (changeset_id, field, old_value, new_value) " +
-				"VALUES (@changeset_id, @field, @old_value, @new_value)";
+			sql = "INSERT INTO history_changes (changeset_id, path, type, old_value, new_value) " +
+				"VALUES (@changeset_id, @path, @type, @old_value, @new_value)";
 
 			cmd = new MySqlCommand(sql, trans.Connection, trans);
 			cmd.Prepare ();
 			cmd.Parameters.AddWithValue ("changeset_id", changeSetId);
-			cmd.Parameters.Add ("field", MySqlDbType.String);
+			cmd.Parameters.Add ("path", MySqlDbType.String);
+			cmd.Parameters.Add ("type", MySqlDbType.Enum);
 			cmd.Parameters.Add ("old_value", MySqlDbType.Text);
 			cmd.Parameters.Add ("new_value", MySqlDbType.Text);
 				
 			foreach(ChangeSet onechange in listOfChanges)
 			{
-				cmd.Parameters ["field"].Value = onechange.Path;
+				cmd.Parameters ["path"].Value = onechange.Path;
+				cmd.Parameters ["type"].Value = onechange.ChangeType;
 				cmd.Parameters ["old_value"].Value = onechange.ValueA;
 				cmd.Parameters ["new_value"].Value = onechange.ValueB;
 				cmd.ExecuteNonQuery ();
