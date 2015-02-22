@@ -3,10 +3,10 @@
 namespace QSOrmProject
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class OrmSubjectAttributes : Attribute 
+	public class OrmSubjectAttribute : Attribute 
 	{
 		public string JournalName;
-		public OrmSubjectAttributes(string journalName) { JournalName = journalName; }
+		public OrmSubjectAttribute(string journalName) { JournalName = journalName; }
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]

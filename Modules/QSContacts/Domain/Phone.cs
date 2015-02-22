@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace QSContacts
 {
-	[OrmSubjectAttributes("Телефоны")]
+	[OrmSubject("Телефоны")]
 	public class Phone : BaseNotifyPropertyChanged
 	{
 		#region Свойства

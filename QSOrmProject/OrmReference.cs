@@ -174,9 +174,9 @@ namespace QSOrmProject
 				if (map.RefFilterClass != null)
 					FilterClass = map.RefFilterClass;
 			}
-			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttributes), true);
+			object[] att = objectType.GetCustomAttributes(typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0)
-				this.TabName = (att[0] as OrmSubjectAttributes).JournalName;
+				this.TabName = (att[0] as OrmSubjectAttribute).JournalName;
 			UpdateObjectList();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
