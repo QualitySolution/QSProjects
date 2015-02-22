@@ -70,6 +70,8 @@
     <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
+    <Compile Include="OneWidgetDialog.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.OneWidgetDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
