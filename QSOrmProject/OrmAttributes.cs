@@ -10,10 +10,10 @@ namespace QSOrmProject
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class OrmDefaultIsFiltered : Attribute 
+	public class OrmDefaultIsFilteredAttribute : Attribute 
 	{
 		public bool DefaultIsFiltered;
-		public OrmDefaultIsFiltered(bool defaultIsFiltered) { DefaultIsFiltered = defaultIsFiltered; }
+		public OrmDefaultIsFilteredAttribute(bool defaultIsFiltered) { DefaultIsFiltered = defaultIsFiltered; }
 	}
 
 }

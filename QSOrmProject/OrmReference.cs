@@ -371,9 +371,9 @@ namespace QSOrmProject
 		{
 			if (FilterClass == null)
 				return false;
-			foreach(var att in FilterClass.GetCustomAttributes (typeof(OrmDefaultIsFiltered), true))
+			foreach(var att in FilterClass.GetCustomAttributes (typeof(OrmDefaultIsFilteredAttribute), true))
 			{
-				return (att as OrmDefaultIsFiltered).DefaultIsFiltered;
+				return (att as OrmDefaultIsFilteredAttribute).DefaultIsFiltered;
 			}
 			return false;
 		}
