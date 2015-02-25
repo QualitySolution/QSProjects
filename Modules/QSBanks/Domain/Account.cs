@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
-	[OrmSubjectAttributes("Счета")]
+	[OrmSubject("Счета")]
 	public class Account : BaseNotifyPropertyChanged, IValidatableObject
 	{
 		#region Свойства

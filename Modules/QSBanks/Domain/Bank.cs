@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
-	[OrmSubjectAttributes("Банки")]
+	[OrmSubject("Банки")]
 	public class Bank: IValidatableObject
 	{
 		#region Свойства

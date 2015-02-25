@@ -12,6 +12,8 @@ namespace QSOrmProject
 	[GtkTypeWidgetFactoryProvider ("stringhandler", "DefaultFactoryCreate", typeof(string))]
 	public class DataDatePicker : QSWidgetLib.DatePicker, IAdaptableControl, ICustomDataEvents, IPostableControl
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		public static IAdaptableControl DefaultFactoryCreate (FactoryInvocationArgs aArgs)
 		{
 			IAdaptableControl wdg;
@@ -139,6 +141,7 @@ namespace QSOrmProject
 		/// </param>
 		public virtual void GetDataFromDataSource (object aSender)
 		{
+			logger.Debug ("Get {0} From DataSource", adaptor.Value);
 			adaptor.DataChanged = false;
 			if (adaptor.Value != null && adaptor.Value is DateTime)
 				Date = (DateTime)adaptor.Value;
