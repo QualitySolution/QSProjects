@@ -7,6 +7,7 @@ namespace QSOrmProject
 	{
 		public string JournalName;
 		public string Name;
+		public OrmSubjectAttribute() {}
 		public OrmSubjectAttribute(string journalName) { JournalName = journalName; }
 	}
 
