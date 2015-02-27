@@ -6,7 +6,7 @@ namespace QSUpdater
 {
 	public partial class UpdaterDialog : Gtk.Dialog
 	{
-		public UpdaterDialog (string text, UpdateResult result)
+		public UpdaterDialog (string text, UpdateResult result, bool updateRequired)
 		{
 			this.Build ();
 			UpdLabel.Markup = text;
@@ -16,10 +16,15 @@ namespace QSUpdater
 			infoLabel.ButtonPressEvent += delegate {
 				System.Diagnostics.Process.Start (result.InfoLink);
 			};
-			if (!result.HasUpdate) {
-				buttonSkip.Visible = buttonOk.Visible = false;
+			if (updateRequired)
+				this.DeleteEvent += delegate {
+					Environment.Exit (0);
+				};
+			buttonSkip.Visible = !updateRequired;
+			if (updateRequired || !result.HasUpdate)
 				buttonCancel.Label = "Закрыть";
-			}
+			if (!result.HasUpdate)
+				buttonSkip.Visible = buttonOk.Visible = false;
 		}
 	}
 }

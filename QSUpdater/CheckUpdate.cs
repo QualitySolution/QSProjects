@@ -11,6 +11,37 @@ using NLog;
 
 namespace QSUpdater
 {
+	[Flags]
+	public enum UpdaterFlags
+	{
+		/// <summary>
+		/// Запуск с параметрами по умолчанию.
+		/// </summary>
+		None = 0,
+		/// <summary>
+		/// Показать диалог вне зависимости от результата проверки.
+		/// </summary>
+		ShowAnyway = 1,
+		/// <summary>
+		/// Запустить диалог в фоновом потоке.
+		/// </summary>
+		StartInThread = 2,
+		/// <summary>
+		/// Не продолжать работу без обновления.
+		/// </summary>
+		UpdateRequired = 4
+	}
+
+	public class FlagsHelper
+	{
+		public static bool IsSet<T> (T flags, T flag) where T: struct
+		{
+			return (((int)(object)flags & (int)(object)flag) != 0);
+		}
+	}
+
+
+	//TODO: Add serial number into updater and into application
 	public class CheckUpdate
 	{
 		static string checkVersion, checkResult, serialNumber, tempPath = System.IO.Path.GetTempPath ();
@@ -20,13 +51,19 @@ namespace QSUpdater
 		static Uri address = new Uri ("http://saas.qsolution.ru:2048/Updater");
 		static Window updateWindow = new Window ("Подождите...");
 
-		static public void StartCheckUpdateThread (bool showAnyway = false)
+		static public void StartCheckUpdateThread (UpdaterFlags flags)
 		{
-			Thread loadThread = new Thread (() => ThreadWorks (showAnyway));
-			loadThread.Start ();
+			if (FlagsHelper.IsSet (flags, UpdaterFlags.StartInThread)) {
+				Thread loadThread = new Thread (() => ThreadWorks (FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway),
+				                                                   FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired)));
+				loadThread.Start ();
+				if (FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired))
+					loadThread.Join ();
+			} else
+				ThreadWorks (FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway), FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired));
 		}
 
-		static void ThreadWorks (bool showAnyway)
+		static void ThreadWorks (bool showAnyway, bool updateRequired)
 		{
 			try {
 				logger.Info ("Получаем данные от сервера");
@@ -48,17 +85,41 @@ namespace QSUpdater
 					}
 					if (showAnyway || (updateResult.HasUpdate &&
 					    (checkResult == "True" || checkResult == String.Empty || checkVersion != updateResult.NewVersion)))
-						ShowDialog ();
+						ShowDialog (updateRequired);
 				});
 			} catch (Exception ex) {
-				if (showAnyway)
-					ShowErrorDialog ();
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
+				if (showAnyway)
+					ShowErrorDialog ("Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже.");
+				if (updateRequired)
+					Environment.Exit (1);
 			}
 		}
 
-		static void ShowDialog ()
+		static void ShowDialog (bool updateRequired)
 		{
+			string message = String.Empty;
+			if (updateResult.HasUpdate && !updateRequired)
+				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
+				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
+				"Вы хотите скачать и установить новую версию?\n\n" +
+				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
+				                         updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
+			else if (updateResult.HasUpdate && updateRequired)
+				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
+				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
+				"<b>Для продолжения работы вам необходимо установить данное обновление.</b>\n\n" +
+				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
+				                         updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
+			else if (!updateResult.HasUpdate && !updateRequired)
+				message = String.Format ("<b>Ваша версия программного продукта: {0}.</b>\n\n" +
+				"На данный момент это самая последняя версия.\n" +
+				"Обновление не требуется.", MainSupport.ProjectVerion.Version);
+			else if (!updateResult.HasUpdate && updateRequired) {
+				ShowErrorDialog ("Требуемое обновление не найдено.\n" +
+				"Пожалуйста, свяжитесь с нами по адресу info@qsolution.ru");
+				Environment.Exit (1);
+			}
 			VBox vbox = new VBox ();
 			WebClient webClient = new WebClient ();
 			webClient.DownloadFileCompleted += delegate {
@@ -76,17 +137,7 @@ namespace QSUpdater
 			});
 
 			try {
-				UpdaterDialog updaterDialog;
-				if (updateResult.HasUpdate)
-					updaterDialog = new UpdaterDialog (String.Format ("<b>Доступна новая версия программы!</b>\n" +
-					"Доступная версия: {0}. (У вас установлена версия {1})\n" +
-					"Вы хотите скачать и установить новую версию?\n\n" +
-					(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
-					                                                  updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription), updateResult);
-				else
-					updaterDialog = new UpdaterDialog (String.Format ("<b>Ваша версия программного продукта: {0}.</b>\n\n" +
-					"На данный момент это актуальная версия продукта.\n", MainSupport.ProjectVerion.Version), updateResult);
-					                                                                       
+				UpdaterDialog updaterDialog = new UpdaterDialog (message, updateResult, updateRequired);
 				int result = updaterDialog.Run ();
 				updaterDialog.Destroy ();
 
@@ -95,29 +146,33 @@ namespace QSUpdater
 					updateWindow.SetSizeRequest (300, 25); 
 					updateWindow.Resizable = false;
 					updateWindow.SetPosition (WindowPosition.Center);
-					updateProgress = new ProgressBar ();
+					if (updateRequired)
+						updateWindow.DeleteEvent += delegate {
+							Environment.Exit (0);
+						};
 					updateWindow.Add (vbox); 
+					updateProgress = new ProgressBar ();
 					updateProgress.Text = "Новая версия скачивается, подождите...";
 					vbox.PackStart (updateProgress, true, true, 0);
-
 					updateWindow.ShowAll ();
 					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath + @"\QSInstaller.exe");
-
+				} else if (updateRequired) {
+					Environment.Exit (0);
 				} else if (updateResult.HasUpdate)
 					ConfigFileUpdater ((ResponseType)result == ResponseType.Cancel);
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
-				ShowErrorDialog ();
+				ShowErrorDialog ("Извините, сервер обновления не работает.");
 			}
 		}
 
-		static void ShowErrorDialog ()
+		static void ShowErrorDialog (string description)
 		{
 			Window win = new Window ("Ошибка");
 			MessageDialog md = new MessageDialog (win, DialogFlags.DestroyWithParent,
 			                                      MessageType.Error, 
 			                                      ButtonsType.Ok,
-			                                      "Извините, сервер обновления не работает.");
+			                                      description);
 			md.Run ();
 			md.Destroy ();
 		}
