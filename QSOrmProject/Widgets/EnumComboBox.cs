@@ -119,6 +119,9 @@ namespace QSOrmProject
 			foreach (FieldInfo info in ItemsEnum.GetFields()) {
 				AppendEnumItem (info);
 			}
+
+			if (ShowSpecialStateAll || ShowSpecialStateNot)
+				Active = 0;
 		}
 
 		private void AppendEnumItem(FieldInfo info)
