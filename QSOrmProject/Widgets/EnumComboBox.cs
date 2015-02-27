@@ -106,14 +106,14 @@ namespace QSOrmProject
 			if (ItemsEnum.IsEnum == false)
 				throw new NotSupportedException (string.Format("ItemsEnum only supports enum types, specified was {0}", ItemsEnum));
 
-			//Заполняем саециальные поля
+			//Заполняем специальные поля
 			if(ShowSpecialStateAll)
 			{
-				AppendEnumItem (typeof(SpecialEnumComboState).GetField ("All"));
+				AppendEnumItem (typeof(SpecialComboState).GetField ("All"));
 			}
 			if(ShowSpecialStateNot)
 			{
-				AppendEnumItem (typeof(SpecialEnumComboState).GetField ("Not"));
+				AppendEnumItem (typeof(SpecialComboState).GetField ("Not"));
 			}
 
 			foreach (FieldInfo info in ItemsEnum.GetFields()) {
@@ -154,18 +154,10 @@ namespace QSOrmProject
 			}
 			else
 			{
-				SelectedItem = SpecialEnumComboState.None;
+				SelectedItem = SpecialComboState.None;
 			}
 		}
 	}
 
-	public enum SpecialEnumComboState {
-		[ItemTitleAttribute("Ничего")]
-		None,
-		[ItemTitleAttribute("Все")]
-		All,
-		[ItemTitleAttribute("Нет")]
-		Not
-	}
 }
 
