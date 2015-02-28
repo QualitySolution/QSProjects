@@ -11,11 +11,11 @@ namespace QSOrmProject
 {
 
 	public enum SpecialComboState {
-		[ItemTitleAttribute("Ничего")]
+		[ItemTitle("Ничего")]
 		None,
-		[ItemTitleAttribute("Все")]
+		[ItemTitle("Все")]
 		All,
-		[ItemTitleAttribute("Нет")]
+		[ItemTitle("Нет")]
 		Not
 	}
 }
