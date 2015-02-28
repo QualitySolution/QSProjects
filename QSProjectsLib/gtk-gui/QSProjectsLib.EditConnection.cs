@@ -59,6 +59,7 @@ namespace QSProjectsLib
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSProjectsLib.EditConnection
 			this.Name = "QSProjectsLib.EditConnection";
+			this.Title = global::Mono.Unix.Catalog.GetString ("Редактор подключений");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child QSProjectsLib.EditConnection.VBox
 			global::Gtk.VBox w1 = this.VBox;
@@ -115,11 +116,10 @@ namespace QSProjectsLib
 			this.vbox2.Add (this.hbox3);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox3]));
 			w8.Position = 1;
+			w8.Expand = false;
 			this.hbox1.Add (this.vbox2);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
 			w9.Position = 0;
-			w9.Expand = false;
-			w9.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.vbox3 = new global::Gtk.VBox ();
 			this.vbox3.Name = "vbox3";
@@ -286,14 +286,10 @@ namespace QSProjectsLib
 			this.hbox1.Add (this.vbox3);
 			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox3]));
 			w25.Position = 1;
-			w25.Expand = false;
-			w25.Fill = false;
 			w25.Padding = ((uint)(20));
 			w1.Add (this.hbox1);
 			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
 			w26.Position = 0;
-			w26.Expand = false;
-			w26.Fill = false;
 			// Internal child QSProjectsLib.EditConnection.ActionArea
 			global::Gtk.HButtonBox w27 = this.ActionArea;
 			w27.Name = "dialog1_ActionArea";
@@ -332,8 +328,8 @@ namespace QSProjectsLib
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 547;
-			this.DefaultHeight = 393;
+			this.DefaultWidth = 567;
+			this.DefaultHeight = 400;
 			this.Show ();
 			this.treeviewConnections.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewConnectionsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);

@@ -103,6 +103,7 @@ namespace QSProjectsLib
 			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.buttonEditConnection = new global::Gtk.Button ();
+			this.buttonEditConnection.TooltipMarkup = "Редактор подключений";
 			this.buttonEditConnection.CanFocus = true;
 			this.buttonEditConnection.Name = "buttonEditConnection";
 			this.buttonEditConnection.UseUnderline = true;
@@ -182,7 +183,7 @@ namespace QSProjectsLib
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Выберите соединение:");
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Подключение:");
 			this.label4.Justify = ((global::Gtk.Justification)(1));
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
@@ -267,8 +268,8 @@ namespace QSProjectsLib
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 406;
-			this.DefaultHeight = 313;
+			this.DefaultWidth = 343;
+			this.DefaultHeight = 329;
 			this.buttonDemo.Hide ();
 			this.buttonErrorInfo.Hide ();
 			this.Show ();
