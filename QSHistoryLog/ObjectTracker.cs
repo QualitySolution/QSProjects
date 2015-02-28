@@ -22,7 +22,7 @@ namespace QSHistoryLog
 
 		private long changeSetId;
 
-		public ChangeSetType operation = ChangeSetType.create;
+		public ChangeSetType operation = ChangeSetType.Create;
 		public bool HasChanges;
 
 		public ObjectTracker ()
@@ -37,14 +37,14 @@ namespace QSHistoryLog
 		public void TakeFirst(T subject)
 		{
 			lastSnapshot = null;
-			operation = ChangeSetType.change;
+			operation = ChangeSetType.Change;
 			firstSnapshot = new ObjectSnapshot (subject);
 		}
 
 		public void TakeEmpty(T subject)
 		{
 			lastSnapshot = null;
-			operation = ChangeSetType.create;
+			operation = ChangeSetType.Create;
 			firstSnapshot = new ObjectSnapshot (subject);
 		}
 
