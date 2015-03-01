@@ -51,6 +51,9 @@
       <HintPath>..\..\Gtk.DataBindings\bin\Debug\gtk-databind-lib.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="DiffPlex">
+      <HintPath>..\..\LeaseAgreement\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +64,8 @@
     <Compile Include="gtk-gui\QSHistoryLog.HistoryView.cs" />
     <Compile Include="Domain\HistoryChangeSet.cs" />
     <Compile Include="Domain\FieldChange.cs" />
+    <Compile Include="PangoRender.cs" />
+    <Compile Include="SideBySideFullDiffBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

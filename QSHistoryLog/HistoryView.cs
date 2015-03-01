@@ -12,6 +12,7 @@ namespace QSHistoryLog
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		List<HistoryChangeSet> ChangeSets;
+		bool canUpdate = false;
 
 		public HistoryView ()
 		{
@@ -20,10 +21,15 @@ namespace QSHistoryLog
 			comboAction.ItemsEnum = typeof(ChangeSetType);
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll);
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
+			canUpdate = true;
+			UpdateJournal ();
 		}
 
 		void UpdateJournal()
 		{
+			if (!canUpdate)
+				return;
+
 			logger.Info("Получаем журнал изменений...");
 			MySqlCommand cmd = (MySqlCommand)QSMain.ConnectionDB.CreateCommand ();
 			DBWorks.SQLHelper sql = new DBWorks.SQLHelper("SELECT history_changeset.*, users.name as username FROM history_changeset " +
@@ -58,7 +64,7 @@ namespace QSHistoryLog
 			if (!selectperiod.IsAllTime) {
 				sql.AddAsList ("history_changeset.datetime BETWEEN @startdate AND @enddate");
 				cmd.Parameters.AddWithValue ("startdate", selectperiod.DateBegin);
-				cmd.Parameters.AddWithValue ("enddate", selectperiod.DateEnd);
+				cmd.Parameters.AddWithValue ("enddate", selectperiod.DateEnd.AddDays (1));
 			}
 
 			logger.Debug (sql.Text);
@@ -111,6 +117,13 @@ namespace QSHistoryLog
 		protected void OnSelectperiodDatesChanged (object sender, EventArgs e)
 		{
 			UpdateJournal ();
+		}
+
+		protected void OnDatatreeChangesetsCursorChanged (object sender, EventArgs e)
+		{
+			logger.Debug("ChangeSet is Changed");
+			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetCurrentObject ();
+			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
 		}
 	}
 }
