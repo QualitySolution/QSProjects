@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using QSOrmProject;
 using System.Data.Bindings;
 using System.Reflection;
 using System.Linq;
+using SIT.Components.ObjectComparer;
 
 namespace QSHistoryLog
 {
@@ -12,6 +12,32 @@ namespace QSHistoryLog
 	{
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc>();
 		const string FieldNameSeparator = ".";
+
+		static Context mainContext;
+		public static Context MainContext {
+			private set {
+				mainContext = value;
+			}
+			get {if (mainContext == null) {
+					mainContext = new Context ();
+					if (mainContext.Configuration == null)
+						mainContext.Configuration = new Configuration ();
+					mainContext.Configuration.CheckStopRecursionFunc = HandleMainCheckStopRecursion;
+				}
+				return mainContext;
+			}
+		}
+
+		static bool HandleMainCheckStopRecursion (Context context, object parentValue, Type parentType, object childValue, MemberInfo childPi)
+		{
+			if (childPi is PropertyInfo) {
+				var pi = childPi as PropertyInfo;
+				//Корректно сохраняем дату и время.
+				if (pi.PropertyType == typeof(DateTime))
+					return true;
+			}
+			return false;
+		}
 
 		public static void AddClass(Type type)
 		{

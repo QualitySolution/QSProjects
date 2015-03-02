@@ -38,19 +38,19 @@ namespace QSHistoryLog
 		{
 			lastSnapshot = null;
 			operation = ChangeSetType.Change;
-			firstSnapshot = new ObjectSnapshot (subject);
+			firstSnapshot = new ObjectSnapshot (subject, HistoryMain.MainContext);
 		}
 
 		public void TakeEmpty(T subject)
 		{
 			lastSnapshot = null;
 			operation = ChangeSetType.Create;
-			firstSnapshot = new ObjectSnapshot (subject);
+			firstSnapshot = new ObjectSnapshot (subject, HistoryMain.MainContext);
 		}
 
 		public void TakeLast(T subject)
 		{
-			lastSnapshot = new ObjectSnapshot (subject);
+			lastSnapshot = new ObjectSnapshot (subject, HistoryMain.MainContext);
 			ReadObjectDiscription (subject);
 		}
 
