@@ -66,6 +66,7 @@
     <Compile Include="Domain\FieldChange.cs" />
     <Compile Include="PangoRender.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
+    <Compile Include="HistoryObjectDesc.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

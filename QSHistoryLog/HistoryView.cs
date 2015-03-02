@@ -35,7 +35,7 @@ namespace QSHistoryLog
 			MySqlCommand cmd = (MySqlCommand)QSMain.ConnectionDB.CreateCommand ();
 			DBWorks.SQLHelper sql = new DBWorks.SQLHelper("SELECT history_changeset.*, users.name as username FROM history_changeset " +
 			                                              "LEFT JOIN users ON history_changeset.user_id = users.id " );
-			if(entrySearch.Text != "")
+			if(entrySearch.Text != "" || comboProperty.SelectedItem is HistoryFieldDesc)
 				sql.Add ("LEFT JOIN history_changes ON history_changeset.id = history_changes.changeset_id ");
 
 			sql.StartNewList (" WHERE ", " AND ");
@@ -60,6 +60,12 @@ namespace QSHistoryLog
 			{
 				sql.AddAsList ("(history_changes.old_value LIKE @searchtext OR history_changes.new_value LIKE @searchtext)");
 				cmd.Parameters.AddWithValue ("searchtext", String.Format ("%{0}%", entrySearch.Text));
+			}
+
+			if(comboProperty.SelectedItem is HistoryFieldDesc)
+			{
+				sql.AddAsList ("history_changes.path LIKE @property");
+				cmd.Parameters.AddWithValue ("property", String.Format ("%{0}%", (comboProperty.SelectedItem as HistoryFieldDesc).FieldName));
 			}
 
 			if (!selectperiod.IsAllTime) {
@@ -97,6 +103,7 @@ namespace QSHistoryLog
 
 		protected void OnDatacomboObjectEnumItemSelected (object sender, QSOrmProject.EnumItemClickedEventArgs e)
 		{
+			PropertyComboFill ();
 			UpdateJournal ();
 		}
 
@@ -125,6 +132,21 @@ namespace QSHistoryLog
 			logger.Debug("ChangeSet is Changed");
 			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetCurrentObject ();
 			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
+		}
+
+		void PropertyComboFill()
+		{
+			canUpdate = false;
+			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
+				comboProperty.ItemsDataSource = (datacomboObject.SelectedItem as HistoryObjectDesc).NamedProperties;
+			} else
+				comboProperty.ItemsDataSource = null;
+			canUpdate = true;
+		}
+
+		protected void OnComboPropertyEnumItemSelected (object sender, EnumItemClickedEventArgs e)
+		{
+			UpdateJournal ();
 		}
 	}
 }
