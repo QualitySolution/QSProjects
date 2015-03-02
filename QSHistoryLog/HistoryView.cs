@@ -3,11 +3,12 @@ using QSProjectsLib;
 using QSWidgetLib;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using System.Data.Bindings;
+using QSOrmProject;
 
 namespace QSHistoryLog
 {
 	[System.ComponentModel.DisplayName("Просмотр журнала изменений")]
+	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class HistoryView : Gtk.Bin
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
