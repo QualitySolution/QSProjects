@@ -119,10 +119,10 @@ namespace Gtk.DataBindings
 
 			//FIXME Временное решение нужно
 			Adaptor tempAdaptor = new Adaptor ();
-			tempAdaptor.Mappings = columnMappings;
+			MappedProperty mp = new MappedProperty (tempAdaptor, columnMappings);
 			foreach (object subject in (ItemsDataSource as IEnumerable)) {
 				tempAdaptor.Target = subject;
-				comboListStore.AppendValues (tempAdaptor.GetDefaultMappingValue (), subject);
+				comboListStore.AppendValues (mp.Value, subject);
 			}
 
 			if (ShowSpecialStateAll || ShowSpecialStateNot)
