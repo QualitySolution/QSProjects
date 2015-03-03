@@ -1,14 +1,10 @@
 using System;
-using System.Data.Common;
+using System.Collections.Generic;
 
 namespace QSProjectsLib
 {
-	public class DBWorks
+	public static class DBWorks
 	{
-		public DBWorks()
-		{
-		}
-
 		public static bool GetBoolean(System.Data.IDataReader rdr, string Column, bool NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
@@ -91,6 +87,17 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static object IdPropertyOrNull<T>(T value) where T : class
+		{
+			if (value == null)
+				return DBNull.Value;
+			var prop = typeof(T).GetProperty ("Id");
+			if (prop == null)
+				throw new ArgumentException ("Для работы метода тип {0}, должен иметь свойство Id.");
+
+			return prop.GetValue (value, null);
+		}
+
 		public static string SQLReplaceWhere(string sql, string newWhere)
 		{
 			int startWhere = sql.IndexOf ("WHERE", StringComparison.OrdinalIgnoreCase);
@@ -113,6 +120,22 @@ namespace QSProjectsLib
 			}
 			sql = sql.Remove (startWhere + 5, endWhere - startWhere - 5);
 			return sql.Insert (startWhere + 6, String.Format (" {0} ", newWhere.Trim ()));
+		}
+
+		public static T FineById<T>(List<T> list, object id) where T : class
+		{
+			if (id == null || id == DBNull.Value)
+				return null;
+			var prop = typeof(T).GetProperty ("Id");
+			ulong idNum = Convert.ToUInt64 (id);
+			if (prop == null)
+				throw new ArgumentException ("Для работы метода тип {0}, должен иметь свойство Id.");
+			foreach(T item in list)
+			{
+				if (Convert.ToUInt64(prop.GetValue (item, null)) == idNum)
+					return item;
+			}
+			return null;
 		}
 
 		public class SQLHelper
