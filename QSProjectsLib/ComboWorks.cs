@@ -129,6 +129,8 @@ namespace QSProjectsLib
 						count++;
 					}
 				}
+				if(SetDefault && listmode != ListMode.OnlyItems)
+					combo.Active = 0;
 				if(SetDefault && listmode == ListMode.WithNo && count == 1)
 					combo.Active = 1;
 				if(SetDefault && listmode == ListMode.OnlyItems && count == 1)
