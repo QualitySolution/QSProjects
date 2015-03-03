@@ -35,15 +35,15 @@
     <Reference Include="System" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Drawing" />
-    <Reference Include="NLog">
-      <HintPath>..\lib\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="Saraff.Twain">
       <HintPath>..\lib\Saraff.Twain.dll</HintPath>
     </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="NLog">
+      <HintPath>..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -51,4 +51,7 @@
     <Compile Include="ScanWorksEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

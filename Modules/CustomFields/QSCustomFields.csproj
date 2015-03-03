@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6F734571-AD4F-4D8A-8CF0-1D94394889A3}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -40,10 +40,10 @@
       <HintPath>..\..\lib\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="NLog">
-      <HintPath>..\..\lib\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="NLog">
+      <HintPath>..\..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,5 +67,8 @@
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

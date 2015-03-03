@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSSaaS</RootNamespace>
     <AssemblyName>QSSaaS</AssemblyName>
-    <ReleaseVersion>2.2</ReleaseVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -44,7 +44,10 @@
     <Reference Include="System.Security" />
     <Reference Include="System" />
     <Reference Include="NLog">
-      <HintPath>..\lib\NLog.dll</HintPath>
+      <HintPath>..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

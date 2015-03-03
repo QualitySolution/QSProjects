@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSAttachment</RootNamespace>
     <AssemblyName>QSAttachment</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +34,6 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="NLog">
-      <HintPath>..\..\lib\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="MySql.Data">
@@ -41,7 +41,10 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="itextsharp">
-      <HintPath>..\..\..\LeaseAgreement\packages\iTextSharp.5.5.2\lib\itextsharp.dll</HintPath>
+      <HintPath>..\..\..\LeaseAgreement\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
