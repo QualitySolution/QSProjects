@@ -13,19 +13,25 @@ namespace QSHistoryLog
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc>();
 		const string FieldNameSeparator = ".";
 
-		static Context mainContext;
-		public static Context MainContext {
-			private set {
-				mainContext = value;
-			}
-			get {if (mainContext == null) {
-					mainContext = new Context ();
-					if (mainContext.Configuration == null)
-						mainContext.Configuration = new Configuration ();
-					mainContext.Configuration.CheckStopRecursionFunc = HandleMainCheckStopRecursion;
+		static Context qsContext;
+		public static Context QSContext {
+			get {if (qsContext == null) {
+					qsContext = createQSHistoryContext ();
 				}
-				return mainContext;
+				return qsContext;
 			}
+		}
+
+		static Context createQSHistoryContext()
+		{
+			var mainContext = new Context ();
+			if (mainContext.Configuration == null)
+				mainContext.Configuration = new Configuration ();
+			if (mainContext.Cache == null)
+				mainContext.Cache = new Cache ();
+			mainContext.Configuration.CheckStopRecursionFunc = HandleMainCheckStopRecursion;
+
+			return mainContext;
 		}
 
 		static bool HandleMainCheckStopRecursion (Context context, object parentValue, Type parentType, object childValue, MemberInfo childPi)
