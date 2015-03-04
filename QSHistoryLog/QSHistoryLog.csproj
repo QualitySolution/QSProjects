@@ -67,6 +67,7 @@
     <Compile Include="PangoRender.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
     <Compile Include="HistoryObjectDesc.cs" />
+    <Compile Include="QSHistoryMetadataReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

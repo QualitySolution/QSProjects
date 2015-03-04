@@ -30,6 +30,7 @@ namespace QSHistoryLog
 			if (mainContext.Cache == null)
 				mainContext.Cache = new Cache ();
 			mainContext.Configuration.CheckStopRecursionFunc = HandleMainCheckStopRecursion;
+			mainContext.MetadataReader = new QSHistoryMetadataReader (mainContext);
 
 			return mainContext;
 		}
@@ -41,6 +42,14 @@ namespace QSHistoryLog
 				//Корректно сохраняем дату и время.
 				if (pi.PropertyType == typeof(DateTime))
 					return true;
+				//Не идем в нутрь обьектов доменной модели
+				if (pi.PropertyType.IsClass)
+				{
+					if (pi.PropertyType.GetProperty ("Title") != null 
+					    || pi.PropertyType.GetProperty ("Name") != null)
+						return true;
+				}
+					
 			}
 			return false;
 		}
