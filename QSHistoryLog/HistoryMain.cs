@@ -10,19 +10,21 @@ namespace QSHistoryLog
 {
 	public static class HistoryMain
 	{
-		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc>();
+		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
 		const string FieldNameSeparator = ".";
 
 		static Context qsContext;
+
 		public static Context QSContext {
-			get {if (qsContext == null) {
+			get {
+				if (qsContext == null) {
 					qsContext = createQSHistoryContext ();
 				}
 				return qsContext;
 			}
 		}
 
-		static Context createQSHistoryContext()
+		static Context createQSHistoryContext ()
 		{
 			var mainContext = new Context ();
 			if (mainContext.Configuration == null)
@@ -43,9 +45,8 @@ namespace QSHistoryLog
 				if (pi.PropertyType == typeof(DateTime))
 					return true;
 				//Не идем в нутрь обьектов доменной модели
-				if (pi.PropertyType.IsClass)
-				{
-					if (pi.PropertyType.GetProperty ("Title") != null 
+				if (pi.PropertyType.IsClass) {
+					if (pi.PropertyType.GetProperty ("Title") != null
 					    || pi.PropertyType.GetProperty ("Name") != null)
 						return true;
 				}
@@ -54,12 +55,12 @@ namespace QSHistoryLog
 			return false;
 		}
 
-		public static void AddClass(Type type)
+		public static void AddClass (Type type)
 		{
 			ObjectsDesc.Add (new HistoryObjectDesc (type));
 		}
 
-		public static string ResolveFieldNameFromPath(string path, bool cutClass = true)
+		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
 		{
 			string result = String.Empty;
 			string[] parts = path.Split ('.');
@@ -71,31 +72,27 @@ namespace QSHistoryLog
 			if (desc == null && classType != null)
 				desc = new HistoryObjectDesc (classType);
 
-			if(!cutClass)
-			{
+			if (!cutClass) {
 				if (desc != null)
 					result = desc.DisplayName + FieldNameSeparator;
 				else
 					result = parts [0] + FieldNameSeparator;
 			}
 				
-			if(classType == null)
-				for(int i = 1; i < parts.Length; i++)
+			if (classType == null)
+				for (int i = 1; i < parts.Length; i++)
 					result += parts [i] + FieldNameSeparator;
-			else if(parts.Length > 1)
-			{
+			else if (parts.Length > 1) {
 				result += ResolveFieldName (classType, parts.Where ((val, idx) => idx != 0).ToArray ());
 			}
 					
 			return result.TrimEnd (FieldNameSeparator.ToCharArray ());
 		}
 
-		private static Type FineClass(string className)
+		private static Type FineClass (string className)
 		{
-			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
-			{
-				foreach (Type t in a.GetTypes())
-				{
+			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
+				foreach (Type t in a.GetTypes()) {
 					if (t.Name == className)
 						return t;
 				}
@@ -103,9 +100,9 @@ namespace QSHistoryLog
 			return null;
 		}
 
-		private static string ResolveFieldName(Type parentClass, string[] path)
+		private static string ResolveFieldName (Type parentClass, string[] path)
 		{
-			var field = parentClass.GetProperty (path[0]);
+			var field = parentClass.GetProperty (path [0]);
 			if (field == null)
 				return String.Join (FieldNameSeparator, path);
 				
@@ -113,26 +110,30 @@ namespace QSHistoryLog
 			string name = att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : path [0];
 
 			if (path.Length > 1)
-				return name + FieldNameSeparator + 
-					ResolveFieldName (field.PropertyType, path.Where ((val, idx) => idx != 0).ToArray ());
+				return name + FieldNameSeparator +
+				ResolveFieldName (field.PropertyType, path.Where ((val, idx) => idx != 0).ToArray ());
 			else
 				return name + FieldNameSeparator;
 		}
 	}
 
-	public enum ChangeSetType{
-		[ItemTitle("Создание")]
+	public enum ChangeSetType
+	{
+		[ItemTitle ("Создание")]
 		Create,
-		[ItemTitle("Изменение")]
+		[ItemTitle ("Изменение")]
 		Change,
-		[ItemTitle("Удаление")]
+		[ItemTitle ("Удаление")]
 		Delete
 	}
 
-	public interface IFileTrace {
-		string Name { set; get;}
-		ulong Size { set; get;}
-		bool IsChanged { set; get;}
+	public interface IFileTrace
+	{
+		string Name { set; get; }
+
+		ulong Size { set; get; }
+
+		bool IsChanged { set; get; }
 	}
 }
 
