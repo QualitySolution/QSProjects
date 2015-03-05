@@ -6,8 +6,9 @@ using QSSupportLib;
 using Gtk;
 using QSProjectsLib;
 using System.Net;
-using System.ComponentModel;
 using NLog;
+using System.Diagnostics;
+using System.IO;
 
 namespace QSUpdater
 {
@@ -40,31 +41,32 @@ namespace QSUpdater
 		}
 	}
 
-
 	//TODO: Add serial number into updater and into application
 	public class CheckUpdate
 	{
-		static string checkVersion, checkResult, serialNumber, tempPath = System.IO.Path.GetTempPath ();
 		static Logger logger = LogManager.GetCurrentClassLogger ();
-		static ProgressBar updateProgress;
 		static UpdateResult updateResult;
-		static Uri address = new Uri ("http://saas.qsolution.ru:2048/Updater");
 		static Window updateWindow = new Window ("Подождите...");
 
 		static public void StartCheckUpdateThread (UpdaterFlags flags)
 		{
 			if (FlagsHelper.IsSet (flags, UpdaterFlags.StartInThread)) {
-				Thread loadThread = new Thread (() => ThreadWorks (FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway),
-				                                                   FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired)));
+				Thread loadThread = new Thread (() => ThreadWorks (flags));
 				loadThread.Start ();
 				if (FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired))
 					loadThread.Join ();
 			} else
-				ThreadWorks (FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway), FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired));
+				ThreadWorks (flags);
 		}
 
-		static void ThreadWorks (bool showAnyway, bool updateRequired)
+		static void ThreadWorks (UpdaterFlags flags)
 		{
+			string checkVersion = String.Empty, checkResult = String.Empty, serialNumber = String.Empty;
+			bool showAnyway = FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway);
+			bool updateRequired = FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired);
+			bool isMainThread = !FlagsHelper.IsSet (flags, UpdaterFlags.StartInThread);
+			Uri address = new Uri ("http://saas.qsolution.ru:2048/Updater");
+
 			try {
 				logger.Info ("Получаем данные от сервера");
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
@@ -78,15 +80,19 @@ namespace QSUpdater
 				IUpdateService service = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address)
 					.CreateChannel ();
 				updateResult = service.checkForUpdate (parameters);
-				Application.Invoke (delegate {
-					if (QSMain.Configsource.Configs ["Updater"] != null) {
-						checkVersion = QSMain.Configsource.Configs ["Updater"].Get ("NewVersion", String.Empty);
-						checkResult = QSMain.Configsource.Configs ["Updater"].Get ("Check", String.Empty);
-					}
-					if (showAnyway || (updateResult.HasUpdate &&
-					    (checkResult == "True" || checkResult == String.Empty || checkVersion != updateResult.NewVersion)))
+				if (QSMain.Configsource.Configs ["Updater"] != null) {
+					checkVersion = QSMain.Configsource.Configs ["Updater"].Get ("NewVersion", String.Empty);
+					checkResult = QSMain.Configsource.Configs ["Updater"].Get ("Check", String.Empty);
+				}
+				if (showAnyway || (updateResult.HasUpdate &&
+				    (checkResult == "True" || checkResult == String.Empty || checkVersion != updateResult.NewVersion))) { 
+					if (isMainThread)
 						ShowDialog (updateRequired);
-				});
+					else
+						Application.Invoke (delegate {
+							ShowDialog (updateRequired);
+						});
+				}
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
 				if (showAnyway)
@@ -99,6 +105,36 @@ namespace QSUpdater
 		static void ShowDialog (bool updateRequired)
 		{
 			string message = String.Empty;
+			string tempPath = Path.Combine (Path.GetTempPath (), 
+			                                String.Format (@"\QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 18)));
+			ProgressBar updateProgress;
+			updateProgress = new ProgressBar ();
+			updateProgress.Text = "Новая версия скачивается, подождите...";
+			VBox vbox = new VBox ();
+			vbox.PackStart (updateProgress, true, true, 0);
+			WebClient webClient = new WebClient ();
+			webClient.DownloadFileCompleted += delegate {
+				if (updateWindow.IsMapped) {
+					logger.Info ("Скачивание обновления завершено. Запускаем установку...");
+					Process File = new Process ();
+					File.StartInfo.FileName = tempPath;
+					updateWindow.Destroy ();
+					File.Start ();
+					Application.Quit ();
+				}
+			};
+			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
+				updateProgress.Fraction = e.ProgressPercentage / 100.0;
+			});
+			updateWindow.SetSizeRequest (300, 25); 
+			updateWindow.Resizable = false;
+			updateWindow.SetPosition (WindowPosition.Center);
+			if (updateRequired)
+				updateWindow.DeleteEvent += delegate {
+					Environment.Exit (0);
+				};
+			updateWindow.Add (vbox); 
+
 			if (updateResult.HasUpdate && !updateRequired)
 				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
 				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
@@ -120,46 +156,20 @@ namespace QSUpdater
 				"Пожалуйста, свяжитесь с нами по адресу info@qsolution.ru");
 				Environment.Exit (1);
 			}
-			VBox vbox = new VBox ();
-			WebClient webClient = new WebClient ();
-			webClient.DownloadFileCompleted += delegate {
-				if (updateWindow.IsMapped) {
-					logger.Info ("Скачивание обновления завершено. Запускаем установку...");
-					System.Diagnostics.Process File = new System.Diagnostics.Process ();
-					File.StartInfo.FileName = tempPath + @"\QSInstaller.exe";
-					updateWindow.Destroy ();
-					File.Start ();
-					Application.Quit ();
-				}
-			};
-			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
-				updateProgress.Fraction = e.ProgressPercentage / 100.0;
-			});
 
 			try {
 				UpdaterDialog updaterDialog = new UpdaterDialog (message, updateResult, updateRequired);
-				int result = updaterDialog.Run ();
+				ResponseType result = (ResponseType)updaterDialog.Run ();
 				updaterDialog.Destroy ();
 
-				if ((ResponseType)result == ResponseType.Ok) {
-					logger.Info ("Скачивание обновления началось.");
-					updateWindow.SetSizeRequest (300, 25); 
-					updateWindow.Resizable = false;
-					updateWindow.SetPosition (WindowPosition.Center);
-					if (updateRequired)
-						updateWindow.DeleteEvent += delegate {
-							Environment.Exit (0);
-						};
-					updateWindow.Add (vbox); 
-					updateProgress = new ProgressBar ();
-					updateProgress.Text = "Новая версия скачивается, подождите...";
-					vbox.PackStart (updateProgress, true, true, 0);
+				if (result == ResponseType.Ok) {
 					updateWindow.ShowAll ();
-					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath + @"\QSInstaller.exe");
+					logger.Info ("Скачивание обновления началось.");
+					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath);
 				} else if (updateRequired) {
 					Environment.Exit (0);
 				} else if (updateResult.HasUpdate)
-					ConfigFileUpdater ((ResponseType)result == ResponseType.Cancel);
+					ConfigFileUpdater (result == ResponseType.Cancel || result == ResponseType.DeleteEvent);
 			} catch (Exception ex) {
 				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
 				ShowErrorDialog ("Извините, сервер обновления не работает.");
