@@ -49,6 +49,7 @@ namespace QSHistoryLog
 					    || pi.PropertyType.GetProperty ("Name") != null)
 						return true;
 				}
+				//Корректно сохраняем IFileTrace
 			}
 			return false;
 		}
@@ -130,8 +131,8 @@ namespace QSHistoryLog
 
 	public interface IFileTrace {
 		string Name { set; get;}
-		long Size { set; get;}
-		bool IsChaged { set; get;}
+		ulong Size { set; get;}
+		bool IsChanged { set; get;}
 	}
 }
 

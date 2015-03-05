@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using SIT.Components.ObjectComparer;
+using QSProjectsLib;
 
 namespace QSHistoryLog 
 {
@@ -51,7 +52,6 @@ namespace QSHistoryLog
 
                 if (ca is CompareClassAttribute)
                     data.IdPropertyName = (ca as CompareClassAttribute).IdPropertyName;
-
             }
             if (value == null) {
                 return;
@@ -81,6 +81,13 @@ namespace QSHistoryLog
                 data.Name = value.GetType().Name;
 
             data.Value = value;
+
+			if(value is IFileTrace)
+			{
+				var file = value as IFileTrace;
+				data.Value = file.IsChanged ? "*": "" 
+					+ StringWorks.BytesToIECUnitsString ((ulong)file.Size);
+			}
 
 			//Для классов бизнес модели
 			if(value.GetType ().IsClass)
