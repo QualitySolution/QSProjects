@@ -49,7 +49,6 @@ namespace QSHistoryLog
 					    || pi.PropertyType.GetProperty ("Name") != null)
 						return true;
 				}
-					
 			}
 			return false;
 		}
