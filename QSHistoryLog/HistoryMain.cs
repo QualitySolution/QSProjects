@@ -127,5 +127,11 @@ namespace QSHistoryLog
 		[ItemTitle("Удаление")]
 		Delete
 	}
+
+	public interface IFileTrace {
+		string Name { set; get;}
+		long Size { set; get;}
+		bool IsChaged { set; get;}
+	}
 }
 
