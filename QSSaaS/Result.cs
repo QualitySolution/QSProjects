@@ -12,6 +12,27 @@ namespace QSSaaS
 	;
 
 	[DataContract]
+	public class Base
+	{
+		[DataMember]
+		public int Id;
+		[DataMember]
+		public string Name;
+		[DataMember]
+		public string Product;
+		[DataMember]
+		public double Size;
+
+		public Base (int id, string name, string product, double size)
+		{
+			Id = id;
+			Name = name;
+			Product = product;
+			Size = size;
+		}
+	}
+
+	[DataContract]
 	public class AccountInfo
 	{
 		[DataMember]

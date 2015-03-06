@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Collections.Generic;
 
 namespace QSSaaS
 {
@@ -30,7 +31,8 @@ namespace QSSaaS
 		/// <param name="pass">Пароль пользователя.</param>
 		/// <param name="account">Учетная запись.</param>
 		/// <param name="bd">Название базы данных.</param>
-		UserAuthResult authUser (string login, string pass, string account, string db);
+		UserAuthResult authUser (string args);
+		//string login, string pass, string account, string db);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -108,6 +110,10 @@ namespace QSSaaS
 		/// <param name="account">Логин аккаунта.</param>
 		/// <param name="db">Название базы данных.</param>
 		bool revokeBaseAccess (string user, string account, string db);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		List<Base> getAccountBases (string sessionId);
 	}
 }
 
