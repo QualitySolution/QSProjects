@@ -131,7 +131,7 @@ namespace QSHistoryLog
 	{
 		string Name { set; get; }
 
-		ulong Size { set; get; }
+		uint Size { set; get; }
 
 		bool IsChanged { set; get; }
 	}
