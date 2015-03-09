@@ -70,8 +70,8 @@ namespace QSHistoryLog
 
 			if (!selectperiod.IsAllTime) {
 				sql.AddAsList ("history_changeset.datetime BETWEEN @startdate AND @enddate");
-				cmd.Parameters.AddWithValue ("startdate", selectperiod.DateBegin);
-				cmd.Parameters.AddWithValue ("enddate", selectperiod.DateEnd.AddDays (1));
+				cmd.Parameters.AddWithValue ("startdate", selectperiod.DateBegin.ToUniversalTime ());
+				cmd.Parameters.AddWithValue ("enddate", selectperiod.DateEnd.AddDays (1).ToUniversalTime ());
 			}
 
 			logger.Debug (sql.Text);
@@ -87,7 +87,7 @@ namespace QSHistoryLog
 						Id = rdr.GetInt32 ("id"),
 						UserId = DBWorks.GetInt (rdr, "user_id", -1),
 						UserName = DBWorks.GetString (rdr, "username", "Неизвестный"),
-						ChangeTime = rdr.GetDateTime ("datetime"),
+						ChangeTime = rdr.GetDateTime ("datetime").ToLocalTime (),
 						Operation = (ChangeSetType)Enum.Parse (typeof(ChangeSetType), rdr.GetString ("operation")),
 						ObjectName = rdr.GetString ("object_name"),
 						ObjectId = rdr.GetInt32 ("object_id"),
@@ -148,6 +148,7 @@ namespace QSHistoryLog
 		{
 			UpdateJournal ();
 		}
+			
 	}
 }
 
