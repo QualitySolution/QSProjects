@@ -101,12 +101,6 @@ namespace QSHistoryLog
 			logger.Info(RusNumber.FormatCase (ChangeSets.Count, "Загружен {0} набор изменений.", "Загружено {0} набора изменений.", "Загружено {0} наборов изменений."));
 		}
 
-		protected void OnDatacomboObjectEnumItemSelected (object sender, QSOrmProject.EnumItemClickedEventArgs e)
-		{
-			PropertyComboFill ();
-			UpdateJournal ();
-		}
-
 		protected void OnComboUsersChanged (object sender, EventArgs e)
 		{
 			UpdateJournal ();
@@ -144,11 +138,16 @@ namespace QSHistoryLog
 			canUpdate = true;
 		}
 
-		protected void OnComboPropertyEnumItemSelected (object sender, EnumItemClickedEventArgs e)
+		protected void OnDatacomboObjectItemSelected (object sender, EnumItemClickedEventArgs e)
+		{
+			PropertyComboFill ();
+			UpdateJournal ();
+		}
+
+		protected void OnComboPropertyItemSelected (object sender, EnumItemClickedEventArgs e)
 		{
 			UpdateJournal ();
 		}
-			
 	}
 }
 

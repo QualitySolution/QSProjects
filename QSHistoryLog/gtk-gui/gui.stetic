@@ -59,9 +59,11 @@
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
                 <property name="ColumnMappings">DisplayName</property>
+                <property name="InheritedDataSource">False</property>
+                <property name="InheritedBoundaryDataSource">False</property>
                 <property name="ShowSpecialStateAll">True</property>
                 <property name="ShowSpecialStateNot">False</property>
-                <signal name="EnumItemSelected" handler="OnComboPropertyEnumItemSelected" />
+                <signal name="ItemSelected" handler="OnComboPropertyItemSelected" />
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
@@ -108,9 +110,11 @@
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
                 <property name="ColumnMappings">DisplayName</property>
+                <property name="InheritedDataSource">False</property>
+                <property name="InheritedBoundaryDataSource">False</property>
                 <property name="ShowSpecialStateAll">True</property>
                 <property name="ShowSpecialStateNot">False</property>
-                <signal name="EnumItemSelected" handler="OnDatacomboObjectEnumItemSelected" />
+                <signal name="ItemSelected" handler="OnDatacomboObjectItemSelected" />
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>

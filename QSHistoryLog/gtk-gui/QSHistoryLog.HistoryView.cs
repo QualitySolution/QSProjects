@@ -77,6 +77,8 @@ namespace QSHistoryLog {
 			this.comboProperty = new global::Gtk.DataBindings.DataSpecComboBox();
 			this.comboProperty.Name = "comboProperty";
 			this.comboProperty.ColumnMappings = "DisplayName";
+			this.comboProperty.InheritedDataSource = false;
+			this.comboProperty.InheritedBoundaryDataSource = false;
 			this.comboProperty.ShowSpecialStateAll = true;
 			this.comboProperty.ShowSpecialStateNot = false;
 			this.table1.Add(this.comboProperty);
@@ -102,6 +104,8 @@ namespace QSHistoryLog {
 			this.datacomboObject = new global::Gtk.DataBindings.DataSpecComboBox();
 			this.datacomboObject.Name = "datacomboObject";
 			this.datacomboObject.ColumnMappings = "DisplayName";
+			this.datacomboObject.InheritedDataSource = false;
+			this.datacomboObject.InheritedBoundaryDataSource = false;
 			this.datacomboObject.ShowSpecialStateAll = true;
 			this.datacomboObject.ShowSpecialStateNot = false;
 			this.table1.Add(this.datacomboObject);
@@ -302,9 +306,9 @@ namespace QSHistoryLog {
 			this.Hide();
 			this.selectperiod.DatesChanged += new global::System.EventHandler(this.OnSelectperiodDatesChanged);
 			this.buttonSearch.Clicked += new global::System.EventHandler(this.OnButtonSearchClicked);
-			this.datacomboObject.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnDatacomboObjectEnumItemSelected);
+			this.datacomboObject.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnDatacomboObjectItemSelected);
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);
-			this.comboProperty.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnComboPropertyEnumItemSelected);
+			this.comboProperty.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnComboPropertyItemSelected);
 			this.comboAction.EnumItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnComboActionEnumItemSelected);
 			this.datatreeChangesets.CursorChanged += new global::System.EventHandler(this.OnDatatreeChangesetsCursorChanged);
 		}
