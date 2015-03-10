@@ -57,9 +57,17 @@ namespace QSHistoryLog
                 return;
             }
 
+			if(value is KeyValuePair<string, object>)
+			{
+				//FIXME быстрый фикс сохранения коллекций.
+				data.Name = ((KeyValuePair<string, object>)value).Key;
+				data.Value = ((KeyValuePair<string, object>)value).Value;
+				data.TypeName = value.GetType().FullName;
+				return;
+			}
+
             if (string.IsNullOrEmpty(data.TypeName))
                 data.TypeName = value.GetType().FullName;
-
 
             if (string.IsNullOrEmpty(data.Name)) {
                 
