@@ -14,15 +14,9 @@
 // Boston, MA 02111-1307, USA.
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Reflection;
 using System.Data.Bindings;
-using System.Data.Bindings.Cached;
-using System.Data.Bindings.Collections;
 using QSOrmProject;
-using Gtk;
 
 namespace Gtk.DataBindings
 {
@@ -256,20 +250,11 @@ namespace Gtk.DataBindings
 		{
 			// Allocate selection adaptor
 			currentSelection = new GtkAdaptor();
-//			currentSelection.OnDataChange += SelectedObjectChanged;
 			internalModel.ClearSelection += delegate() {
 				if (CurrentSelection != null)
 					CurrentSelection.Target = null;
 			};
 			
-			// Create and connect ListAdaptor with this TreeView
-/*			listadaptor = new GtkListAdaptor(false, null, this, false); 
-			listadaptor.OnListChanged += DSChanged;
-			listadaptor.OnElementAdded += DSElementAdded;
-			listadaptor.OnElementChanged += DSElementChanged;
-			listadaptor.OnElementRemoved += DSElementRemoved;
-			listadaptor.OnTargetChange += ListTargetChanged;*/
-//			listadaptor.OnTargetChange += ItemsTargetChanged;
 			// Create Adaptor
 			adaptor = new GtkControlAdaptor (this, false);
 			adaptor.DisableMappingsDataTransfer = true;
@@ -278,7 +263,6 @@ namespace Gtk.DataBindings
 				if (adaptor != null)
 					adaptor.CheckControl();
 			};			
-//			columnadaptor = new GtkAdaptor();
 		}
 
 		/// <summary>
