@@ -40,6 +40,26 @@ namespace QSCustomFields
 			}
 		}
 
+		public Dictionary<string, object> FieldsValues
+		{
+			get{
+				var result = new Dictionary<string, object> ();
+				foreach (CFFieldInfo field in usedTable.Fields) {
+					switch (field.FieldType) {
+					case FieldTypes.TString:
+						Entry stringWid = (Entry)FieldWidgets [field.ID];
+						result.Add (field.ColumnName, stringWid.Text);
+						break;
+					case FieldTypes.TCurrency:
+						SpinButton moneyWid = (SpinButton)FieldWidgets [field.ID];
+						result.Add (field.ColumnName, moneyWid.Value);
+						break;
+					}
+				}
+				return result;
+			}
+		}
+
 		void UpdateWidgets()
 		{
 			FieldLables = new Dictionary<int, Label>();
