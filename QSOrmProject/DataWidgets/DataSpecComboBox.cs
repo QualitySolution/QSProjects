@@ -59,6 +59,15 @@ namespace Gtk.DataBindings
 				if (selectedItem == value)
 					return;
 				selectedItem = value;
+				TreeIter iter;
+				if (value == null)
+				{
+					this.Active = (ShowSpecialStateAll || ShowSpecialStateNot) ? 0 : -1;
+					return;
+				}
+				if(ListStoreWorks.SearchListStore (comboListStore, value, 1, out iter ))
+					SetActiveIter(iter);
+
 				OnEnumItemSelected ();
 			}
 		}
