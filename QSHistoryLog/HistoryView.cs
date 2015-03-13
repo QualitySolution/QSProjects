@@ -148,6 +148,11 @@ namespace QSHistoryLog
 		{
 			UpdateJournal ();
 		}
+
+		protected void OnEntrySearchActivated (object sender, EventArgs e)
+		{
+			buttonSearch.Click ();
+		}
 	}
 }
 

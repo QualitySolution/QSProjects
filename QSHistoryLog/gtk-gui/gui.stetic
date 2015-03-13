@@ -140,6 +140,7 @@
                     <property name="CanFocus">True</property>
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">●</property>
+                    <signal name="Activated" handler="OnEntrySearchActivated" />
                   </widget>
                   <packing>
                     <property name="Position">0</property>

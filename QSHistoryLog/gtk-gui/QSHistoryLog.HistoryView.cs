@@ -305,6 +305,7 @@ namespace QSHistoryLog {
 			}
 			this.Hide();
 			this.selectperiod.DatesChanged += new global::System.EventHandler(this.OnSelectperiodDatesChanged);
+			this.entrySearch.Activated += new global::System.EventHandler(this.OnEntrySearchActivated);
 			this.buttonSearch.Clicked += new global::System.EventHandler(this.OnButtonSearchClicked);
 			this.datacomboObject.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnDatacomboObjectItemSelected);
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);
