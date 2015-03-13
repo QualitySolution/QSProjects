@@ -18,23 +18,25 @@ namespace QSHistoryLog
 		public virtual DateTime ChangeTime { get; set; }
 		public virtual ChangeSetType Operation { get; set; }
 		public virtual string ObjectName { get; set; }
-		public virtual int ObjectId { get; set; }
+		public virtual int ItemId { get; set; }
 
-		string objectTitle;
 		public virtual string ObjectTitle {
 			get {
-				if(String.IsNullOrEmpty (objectTitle))
-				{
 					var Descript = HistoryMain.ObjectsDesc.Find (d => d.ObjectName == ObjectName);
 					return Descript != null ? Descript.DisplayName : ObjectName;
-				}
-				else
-					return objectTitle;
-			}
-			set {
-				objectTitle = value;
 			}
 		}
+
+		string itemTitle;
+		public virtual string ItemTitle {
+			get {
+					return itemTitle;
+			}
+			set {
+				itemTitle = value;
+			}
+		}
+
 
 		IList<FieldChange> changes;
 		public virtual IList<FieldChange> Changes {

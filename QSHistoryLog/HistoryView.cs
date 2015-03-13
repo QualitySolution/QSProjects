@@ -90,8 +90,8 @@ namespace QSHistoryLog
 						ChangeTime = rdr.GetDateTime ("datetime").ToLocalTime (),
 						Operation = (ChangeSetType)Enum.Parse (typeof(ChangeSetType), rdr.GetString ("operation")),
 						ObjectName = rdr.GetString ("object_name"),
-						ObjectId = rdr.GetInt32 ("object_id"),
-						ObjectTitle = DBWorks.GetString (rdr, "object_title", String.Empty)
+						ItemId = rdr.GetInt32 ("object_id"),
+						ItemTitle = DBWorks.GetString (rdr, "object_title", String.Empty)
 					};
 
 					ChangeSets.Add (changeset);
@@ -147,6 +147,11 @@ namespace QSHistoryLog
 		protected void OnComboPropertyItemSelected (object sender, EnumItemClickedEventArgs e)
 		{
 			UpdateJournal ();
+		}
+
+		protected void OnEntrySearchActivated (object sender, EventArgs e)
+		{
+			buttonSearch.Click ();
 		}
 	}
 }

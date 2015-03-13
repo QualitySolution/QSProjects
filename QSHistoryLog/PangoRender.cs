@@ -31,7 +31,7 @@ namespace QSHistoryLog
 					logger.Debug ("Imaginary line {0}", line.Text);
 				}
 			}
-			return result.ToString ().TrimEnd ('\n');
+			return result.ToString ().TrimEnd (Environment.NewLine.ToCharArray ());
 		}
 
 		private static string RenderDiffWords(DiffPiece line)

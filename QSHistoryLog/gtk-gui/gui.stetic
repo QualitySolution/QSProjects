@@ -140,6 +140,7 @@
                     <property name="CanFocus">True</property>
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">●</property>
+                    <signal name="Activated" handler="OnEntrySearchActivated" />
                   </widget>
                   <packing>
                     <property name="Position">0</property>
@@ -341,7 +342,7 @@
                     <property name="InheritedBoundaryDataSource">False</property>
                     <property name="InheritedDataSource">False</property>
                     <property name="InheritedBoundaryDataSource">False</property>
-                    <property name="ColumnMappings">{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; ObjectTitle[Объект]; OperationText[Действие]</property>
+                    <property name="ColumnMappings">{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; ObjectTitle[Тип объекта]; ItemTitle[Объект]; OperationText[Действие]</property>
                     <signal name="CursorChanged" handler="OnDatatreeChangesetsCursorChanged" />
                   </widget>
                 </child>

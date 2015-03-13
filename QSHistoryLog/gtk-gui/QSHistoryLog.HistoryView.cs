@@ -250,7 +250,7 @@ namespace QSHistoryLog {
 			this.datatreeChangesets.InheritedBoundaryDataSource = false;
 			this.datatreeChangesets.InheritedDataSource = false;
 			this.datatreeChangesets.InheritedBoundaryDataSource = false;
-			this.datatreeChangesets.ColumnMappings = "{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; ObjectTitle[Объект]; OperationText[Действие]";
+			this.datatreeChangesets.ColumnMappings = "{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; ObjectTitle[Тип объекта]; ItemTitle[Объект]; OperationText[Действие]";
 			this.GtkScrolledWindow.Add(this.datatreeChangesets);
 			this.vpaned1.Add(this.GtkScrolledWindow);
 			global::Gtk.Paned.PanedChild w17 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.GtkScrolledWindow]));
@@ -305,6 +305,7 @@ namespace QSHistoryLog {
 			}
 			this.Hide();
 			this.selectperiod.DatesChanged += new global::System.EventHandler(this.OnSelectperiodDatesChanged);
+			this.entrySearch.Activated += new global::System.EventHandler(this.OnEntrySearchActivated);
 			this.buttonSearch.Clicked += new global::System.EventHandler(this.OnButtonSearchClicked);
 			this.datacomboObject.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnDatacomboObjectItemSelected);
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);

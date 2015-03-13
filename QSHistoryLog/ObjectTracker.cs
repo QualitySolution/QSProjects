@@ -64,6 +64,10 @@ namespace QSHistoryLog
 			prop = typeof(T).GetProperty ("Title");
 			if (prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
+
+			prop = typeof(T).GetProperty ("Name");
+			if (prop != null)
+				objectTitle = (string)prop.GetValue (subject, null);
 		}
 
 		public bool Compare()
