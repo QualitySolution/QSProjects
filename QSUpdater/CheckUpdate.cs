@@ -9,6 +9,7 @@ using System.Net;
 using NLog;
 using System.Diagnostics;
 using System.IO;
+using System.ComponentModel;
 
 namespace QSUpdater
 {
@@ -113,8 +114,8 @@ namespace QSUpdater
 			VBox vbox = new VBox ();
 			vbox.PackStart (updateProgress, true, true, 0);
 			WebClient webClient = new WebClient ();
-			webClient.DownloadFileCompleted += delegate {
-				if (updateWindow.IsMapped) {
+			webClient.DownloadFileCompleted += (sender, e) => Application.Invoke (delegate {
+				if (updateWindow.IsMapped && e.Error == null && !e.Cancelled) {
 					logger.Info ("Скачивание обновления завершено. Запускаем установку...");
 					Process File = new Process ();
 					File.StartInfo.FileName = tempPath;
@@ -125,8 +126,9 @@ namespace QSUpdater
 					} catch (Exception ex) {
 						logger.ErrorException ("Не удалось запустить скачанный установщик.", ex);
 					}
-				}
-			};
+				} else
+					logger.Error ("Не удалось скачать файл обновления. {0}", (e.Error != null ? e.Error.Message : ""));
+			});
 			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
 				updateProgress.Fraction = e.ProgressPercentage / 100.0;
 			});
