@@ -71,13 +71,13 @@ namespace QSUpdater
 			try {
 				logger.Info ("Получаем данные от сервера");
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
-				                                   MainSupport.ProjectVerion.Product,
-				                                   MainSupport.ProjectVerion.Edition,
-				                                   serialNumber,
-				                                   MainSupport.ProjectVerion.Version.Major, 
-				                                   MainSupport.ProjectVerion.Version.Minor, 
-				                                   MainSupport.ProjectVerion.Version.Build, 
-				                                   MainSupport.ProjectVerion.Version.Revision); 
+					                    MainSupport.ProjectVerion.Product,
+					                    MainSupport.ProjectVerion.Edition,
+					                    serialNumber,
+					                    MainSupport.ProjectVerion.Version.Major, 
+					                    MainSupport.ProjectVerion.Version.Minor, 
+					                    MainSupport.ProjectVerion.Version.Build, 
+					                    MainSupport.ProjectVerion.Version.Revision); 
 				IUpdateService service = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address)
 					.CreateChannel ();
 				updateResult = service.checkForUpdate (parameters);
@@ -107,7 +107,7 @@ namespace QSUpdater
 		{
 			string message = String.Empty;
 			string tempPath = Path.Combine (Path.GetTempPath (), 
-			                                String.Format (@"QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 8)));
+				                  String.Format (@"QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 8)));
 			ProgressBar updateProgress;
 			updateProgress = new ProgressBar ();
 			updateProgress.Text = "Новая версия скачивается, подождите...";
@@ -115,19 +115,21 @@ namespace QSUpdater
 			vbox.PackStart (updateProgress, true, true, 0);
 			WebClient webClient = new WebClient ();
 			webClient.DownloadFileCompleted += (sender, e) => Application.Invoke (delegate {
+				updateWindow.Destroy ();
 				if (updateWindow.IsMapped && e.Error == null && !e.Cancelled) {
 					logger.Info ("Скачивание обновления завершено. Запускаем установку...");
 					Process File = new Process ();
 					File.StartInfo.FileName = tempPath;
-					updateWindow.Destroy ();
 					try {
 						File.Start ();
 						Application.Quit ();
 					} catch (Exception ex) {
+						ShowErrorDialog ("Не удалось запустить скачанный файл.");
 						logger.ErrorException ("Не удалось запустить скачанный установщик.", ex);
 					}
-				} else
-					logger.Error ("Не удалось скачать файл обновления. {0}", (e.Error != null ? e.Error.Message : ""));
+				} else if (e.Error != null)
+					ShowErrorDialog ("Не удалось скачать файл.");
+				logger.ErrorException ("Не удалось скачать файл обновления.", e.Error);
 			});
 			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
 				updateProgress.Fraction = e.ProgressPercentage / 100.0;
@@ -146,13 +148,13 @@ namespace QSUpdater
 				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
 				"Вы хотите скачать и установить новую версию?\n\n" +
 				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
-				                         updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
+					updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
 			else if (updateResult.HasUpdate && updateRequired)
 				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
 				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
 				"<b>Для продолжения работы вам необходимо установить данное обновление.</b>\n\n" +
 				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
-				                         updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
+					updateResult.NewVersion, MainSupport.ProjectVerion.Version, updateResult.UpdateDescription);
 			else if (!updateResult.HasUpdate && !updateRequired)
 				message = String.Format ("<b>Ваша версия программного продукта: {0}.</b>\n\n" +
 				"На данный момент это самая последняя версия.\n" +
@@ -172,7 +174,7 @@ namespace QSUpdater
 					updateWindow.ShowAll ();
 					logger.Info ("Скачивание обновления началось.");
 					#if DEBUG
-					logger.Info ("Скачиваем из {0} в {1}", updateResult.FileLink, tempPath);
+					logger.Debug ("Скачиваем из {0} в {1}", updateResult.FileLink, tempPath);
 					#endif
 					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath);
 				} else if (updateRequired) {
@@ -189,9 +191,9 @@ namespace QSUpdater
 		{
 			Window win = new Window ("Ошибка");
 			MessageDialog md = new MessageDialog (win, DialogFlags.DestroyWithParent,
-			                                      MessageType.Error, 
-			                                      ButtonsType.Ok,
-			                                      description);
+				                   MessageType.Error, 
+				                   ButtonsType.Ok,
+				                   description);
 			md.Run ();
 			md.Destroy ();
 		}
