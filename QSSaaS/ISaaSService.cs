@@ -22,6 +22,7 @@ namespace QSSaaS
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		AccountInfo getAccountInfo (string session_id);
 
+		[Obsolete]
 		[OperationContract]
 		/// <summary>
 		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
@@ -32,7 +33,17 @@ namespace QSSaaS
 		/// <param name="account">Учетная запись.</param>
 		/// <param name="bd">Название базы данных.</param>
 		UserAuthResult authUser (string args);
-		//string login, string pass, string account, string db);
+
+		[OperationContract]
+		/// <summary>
+		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
+		/// </summary>
+		/// <returns>Идентификатор сессии или сообщение об ошибке.</returns>
+		/// <param name="login">Логин пользователя.</param>
+		/// <param name="pass">Пароль пользователя.</param>
+		/// <param name="account">Учетная запись.</param>
+		/// <param name="bd">Название базы данных.</param>
+		UserAuthorizeResult authorizeUser (string args);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
