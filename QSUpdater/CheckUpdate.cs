@@ -115,8 +115,9 @@ namespace QSUpdater
 			vbox.PackStart (updateProgress, true, true, 0);
 			WebClient webClient = new WebClient ();
 			webClient.DownloadFileCompleted += (sender, e) => Application.Invoke (delegate {
+				var isMapped = updateWindow.IsMapped;
 				updateWindow.Destroy ();
-				if (updateWindow.IsMapped && e.Error == null && !e.Cancelled) {
+				if (isMapped && e.Error == null && !e.Cancelled) {
 					logger.Info ("Скачивание обновления завершено. Запускаем установку...");
 					Process File = new Process ();
 					File.StartInfo.FileName = tempPath;
@@ -194,6 +195,7 @@ namespace QSUpdater
 				                   MessageType.Error, 
 				                   ButtonsType.Ok,
 				                   description);
+			md.Show ();
 			md.Run ();
 			md.Destroy ();
 		}
