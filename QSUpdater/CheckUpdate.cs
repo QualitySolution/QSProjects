@@ -119,8 +119,12 @@ namespace QSUpdater
 					Process File = new Process ();
 					File.StartInfo.FileName = tempPath;
 					updateWindow.Destroy ();
-					File.Start ();
-					Application.Quit ();
+					try {
+						File.Start ();
+						Application.Quit ();
+					} catch (Exception ex) {
+						logger.ErrorException ("Не удалось запустить скачанный установщик.", ex);
+					}
 				}
 			};
 			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
@@ -165,6 +169,9 @@ namespace QSUpdater
 				if (result == ResponseType.Ok) {
 					updateWindow.ShowAll ();
 					logger.Info ("Скачивание обновления началось.");
+					#if DEBUG
+					logger.Info ("Скачиваем из {0} в {1}", updateResult.FileLink, tempPath);
+					#endif
 					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath);
 				} else if (updateRequired) {
 					Environment.Exit (0);
