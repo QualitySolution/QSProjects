@@ -311,7 +311,6 @@ namespace QSHistoryLog {
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);
 			this.comboProperty.ItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnComboPropertyItemSelected);
 			this.comboAction.EnumItemSelected += new global::System.EventHandler<QSOrmProject.EnumItemClickedEventArgs>(this.OnComboActionEnumItemSelected);
-			this.datatreeChangesets.CursorChanged += new global::System.EventHandler(this.OnDatatreeChangesetsCursorChanged);
 		}
 	}
 }
