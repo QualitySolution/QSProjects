@@ -22,8 +22,16 @@ namespace QSHistoryLog
 			comboAction.ItemsEnum = typeof(ChangeSetType);
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll);
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
+			datatreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 			canUpdate = true;
 			UpdateJournal ();
+		}
+
+		void OnChangeSetSelectionChanged (object sender, EventArgs e)
+		{
+			logger.Debug("ChangeSet is Changed");
+			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetCurrentObject ();
+			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
 		}
 
 		void UpdateJournal()
@@ -119,13 +127,6 @@ namespace QSHistoryLog
 		protected void OnSelectperiodDatesChanged (object sender, EventArgs e)
 		{
 			UpdateJournal ();
-		}
-
-		protected void OnDatatreeChangesetsCursorChanged (object sender, EventArgs e)
-		{
-			logger.Debug("ChangeSet is Changed");
-			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetCurrentObject ();
-			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
 		}
 
 		void PropertyComboFill()
