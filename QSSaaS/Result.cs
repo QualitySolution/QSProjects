@@ -128,5 +128,30 @@ namespace QSSaaS
 			IsAdmin = isAdmin;
 		}
 	}
+
+	[DataContract]
+	public class UserAuthorizeResult : AccountAuthResult
+	{
+		[DataMember]
+		public string Server;
+		[DataMember]
+		public bool IsAdmin;
+		[DataMember]
+		public string Login;
+		[DataMember]
+		public string BaseName;
+
+		public UserAuthorizeResult (bool success, string description = "") : base (success, description)
+		{
+		}
+
+		public UserAuthorizeResult (bool success, string sessionID, string server, string login, string baseName, bool isAdmin = false) : base (success, sessionID, "")
+		{
+			Login = login;
+			Server = server;
+			IsAdmin = isAdmin;
+			BaseName = baseName;
+		}
+	}
 }
 
