@@ -294,13 +294,13 @@ namespace Gtk.DataBindings
 		public virtual void GetDataFromDataSource (object aSender)
 		{
 			adaptor.DataChanged = false;
+			if (Model.IterNChildren () == 0)
+				return;
 			TreeIter iter;
 			if (adaptor.Value == null)
 			{
 				this.Active = (ShowSpecialStateAll || ShowSpecialStateNot) ? 0 : -1;
-				return;
-			}
-			if(ListStoreWorks.SearchListStore (comboListStore, adaptor.Value, 1, out iter ))
+			} else if(ListStoreWorks.SearchListStore (comboListStore, adaptor.Value, 1, out iter ))
 				SetActiveIter(iter);
 		}
 
