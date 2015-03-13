@@ -106,7 +106,7 @@ namespace QSUpdater
 		{
 			string message = String.Empty;
 			string tempPath = Path.Combine (Path.GetTempPath (), 
-			                                String.Format (@"\QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 18)));
+			                                String.Format (@"QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 8)));
 			ProgressBar updateProgress;
 			updateProgress = new ProgressBar ();
 			updateProgress.Text = "Новая версия скачивается, подождите...";
