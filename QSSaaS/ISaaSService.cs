@@ -125,6 +125,18 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		List<Base> getAccountBases (string sessionId);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		List<User> getAccountUsers (string sessionId);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		Dictionary<String, String> getAvailableProducts ();
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		bool createNewBase (string sessionId, string baseName, string product);
 	}
 }
 

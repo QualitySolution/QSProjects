@@ -33,6 +33,24 @@ namespace QSSaaS
 	}
 
 	[DataContract]
+	public class User
+	{
+		[DataMember]
+		public int Id;
+		[DataMember]
+		public string Login;
+		[DataMember]
+		public string Active;
+
+		public User (int id, string login, string active)
+		{
+			Id = id;
+			Login = login;
+			Active = active;
+		}
+	}
+
+	[DataContract]
 	public class AccountInfo
 	{
 		[DataMember]
