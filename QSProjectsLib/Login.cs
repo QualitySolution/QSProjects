@@ -128,6 +128,8 @@ namespace QSProjectsLib
 
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
+			if (comboboxConnections.Active == -1)
+				return;
 			Connection Selected = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText);
 			string connStr, host, port = "3306";
 			string[] uriSplit = new string[2];
@@ -243,7 +245,7 @@ namespace QSProjectsLib
 					} while (store.IterNext (ref tempIter));
 				}
 			} else
-				comboboxConnections.Active = -1;
+				comboboxConnections.Active = 0;
 			if (comboboxConnections.Active == -1)
 				server = entryUser.Text = entryPassword.Text = "";
 		}
