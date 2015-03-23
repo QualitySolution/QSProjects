@@ -333,10 +333,8 @@ MySQL,
 			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 
 			dialog.ProgramName = ((AssemblyTitleAttribute)att [0]).Title;
-			;
 
-			Version version = assembly.GetName ().Version;
-			dialog.Version = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
+			dialog.Version = StringWorks.VersionToShortString (assembly.GetName ().Version);
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIcon), false);
 			if (att.Length > 0) {
