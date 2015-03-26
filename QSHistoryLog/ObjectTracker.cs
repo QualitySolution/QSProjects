@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using SIT.Components.ObjectComparer;
+using QSOrmProject;
 using QSProjectsLib;
+using KellermanSoftware.CompareNetObjects;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<T>
+	public class ObjectTracker<T> where T : class
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		Snapshot firstSnapshot;
-		Snapshot lastSnapshot;
-		CompareItem compare;
-		ChangeSet changeset;
-		List<ChangeSet> listOfChanges;
+		object firstObject, lastObject;
+		ComparisonResult compare;
 
 		private string objectName;
 		public int ObjectId;
@@ -23,7 +21,15 @@ namespace QSHistoryLog
 		private long changeSetId;
 
 		public ChangeSetType operation = ChangeSetType.Create;
-		public bool HasChanges;
+
+		public bool HasChanges {
+			get {
+				if (compare != null)
+					return !compare.AreEqual;
+				else
+					return false;
+			}
+		}
 
 		public ObjectTracker ()
 		{
@@ -36,21 +42,24 @@ namespace QSHistoryLog
 
 		public void TakeFirst(T subject)
 		{
-			lastSnapshot = null;
+			lastObject = null;
+			compare = null;
 			operation = ChangeSetType.Change;
-			firstSnapshot = new ObjectSnapshot (subject, HistoryMain.QSContext);
+			firstObject = ObjectCloner.Clone (subject);
 		}
 
 		public void TakeEmpty(T subject)
 		{
-			lastSnapshot = null;
+			lastObject = null;
+			compare = null;
 			operation = ChangeSetType.Create;
-			firstSnapshot = new ObjectSnapshot (subject, HistoryMain.QSContext);
+			firstObject = ObjectCloner.Clone (subject);
 		}
 
 		public void TakeLast(T subject)
 		{
-			lastSnapshot = new ObjectSnapshot (subject, HistoryMain.QSContext);
+			compare = null;
+			lastObject = ObjectCloner.Clone (subject);
 			ReadObjectDiscription (subject);
 		}
 
@@ -66,32 +75,28 @@ namespace QSHistoryLog
 				objectTitle = (string)prop.GetValue (subject, null);
 
 			prop = typeof(T).GetProperty ("Name");
-			if (prop != null)
+			if (String.IsNullOrEmpty (objectTitle) && prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
 		}
 
+		/// <summary>
+		/// Возвращает true если объекты различаются.
+		/// </summary>
 		public bool Compare()
 		{
-			if (firstSnapshot == null)
+			if (firstObject == null)
 				throw new InvalidOperationException ("Перед сравнением необходимо сделать первый снимок c помощью TakeFirst или TakeEmpty.");
 
-			if (lastSnapshot == null)
+			if (lastObject == null)
 				throw new InvalidOperationException ("Перед сравнением необходимо сделать последний снимок c помощью TakeLast");
 
-			compare = new ObjectCompareItem();
-			compare.Create (firstSnapshot, lastSnapshot);
-			changeset = new ChangeSet ();
-			changeset.Create (compare);
+			compare = HistoryMain.QSCompareLogic.Compare (firstObject, lastObject);
 
-			listOfChanges = changeset.Flatten ();
-			HasChanges = listOfChanges.Count > 0;
-			return HasChanges;
+			return !compare.AreEqual;
 		}
 
 		public void SaveChangeSet(MySqlTransaction trans)
 		{
-			if (listOfChanges == null)
-				Compare ();
 			if (!HasChanges) {
 				logger.Warn ("Нет изменнений. Нечего записывать.");
 				return;
@@ -115,8 +120,8 @@ namespace QSHistoryLog
 			changeSetId = cmd.LastInsertedId;
 
 			logger.Debug ("Записываем изменения полей в ChangeSet-е.");
-			sql = "INSERT INTO history_changes (changeset_id, path, type, old_value, new_value) " +
-				"VALUES (@changeset_id, @path, @type, @old_value, @new_value)";
+			sql = "INSERT INTO history_changes (changeset_id, path, type, old_id, old_value, new_id, new_value) " +
+				"VALUES (@changeset_id, @path, @type, @old_id, @old_value, @new_id, @new_value)";
 
 			cmd = new MySqlCommand(sql, trans.Connection, trans);
 			cmd.Prepare ();
@@ -125,16 +130,20 @@ namespace QSHistoryLog
 			cmd.Parameters.Add ("type", MySqlDbType.Enum);
 			cmd.Parameters.Add ("old_value", MySqlDbType.Text);
 			cmd.Parameters.Add ("new_value", MySqlDbType.Text);
+			cmd.Parameters.Add ("old_id", MySqlDbType.UInt32);
+			cmd.Parameters.Add ("new_id", MySqlDbType.UInt32);
 				
-			foreach(ChangeSet onechange in listOfChanges)
+			foreach(var onechange in compare.Differences)
 			{
-				cmd.Parameters ["path"].Value = onechange.Path;
-				cmd.Parameters ["type"].Value = onechange.ChangeType;
-				cmd.Parameters ["old_value"].Value = onechange.ValueA;
-				cmd.Parameters ["new_value"].Value = onechange.ValueB;
+				cmd.Parameters ["path"].Value = objectName + onechange.PropertyName;
+				cmd.Parameters ["type"].Value = "Changed";
+				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
+				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
+				cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1.Target);
+				cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2.Target);
 				cmd.ExecuteNonQuery ();
 			}
-			logger.Debug ("Зафиксированы изменения в {0} полях.", listOfChanges.Count);
+			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
 		}
 	}
 		

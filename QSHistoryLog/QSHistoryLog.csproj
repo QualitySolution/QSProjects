@@ -51,6 +51,9 @@
     <Reference Include="DiffPlex">
       <HintPath>..\..\LeaseAgreement\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
     </Reference>
+    <Reference Include="KellermanSoftware.Compare-Net-Objects">
+      <HintPath>..\..\LeaseAgreement\packages\CompareNETObjects.3.02.0.0\lib\net40\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,11 +67,12 @@
     <Compile Include="PangoRender.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
     <Compile Include="HistoryObjectDesc.cs" />
-    <Compile Include="QSHistoryMetadataReader.cs" />
+    <Compile Include="Comparers\DomainObjectComparer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="QSHistoryMetadataReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
@@ -91,10 +95,6 @@
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectComparer\ObjectComparer\ObjectComparer.csproj">
-      <Project>{7272A03D-E7FB-4BD6-BB0D-BAC52FC1E43D}</Project>
-      <Name>ObjectComparer</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -103,5 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />
+    <Folder Include="Comparers\" />
   </ItemGroup>
 </Project>

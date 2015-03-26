@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Bindings;
 using MySql.Data.MySqlClient;
 using QSProjectsLib;
-using SIT.Components.ObjectComparer;
 
 namespace QSHistoryLog
 {
@@ -83,7 +82,7 @@ namespace QSHistoryLog
 					var change = new FieldChange {
 						Id = rdr.GetInt32 ("id"),
 						Path = rdr.GetString ("path"),
-						Type = (ChangeType)Enum.Parse (typeof(ChangeType), rdr.GetString ("type")),
+						Type = (FieldChangeType)Enum.Parse (typeof(FieldChangeType), rdr.GetString ("type")),
 						OldValue = rdr.GetString ("old_value"),
 						NewValue = rdr.GetString ("new_value")
 					};

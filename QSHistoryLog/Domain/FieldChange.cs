@@ -1,8 +1,8 @@
 ﻿using System;
-using SIT.Components.ObjectComparer;
+using System.Data.Bindings;
+using System.Text;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
-using System.Text;
 
 namespace QSHistoryLog
 {
@@ -11,7 +11,7 @@ namespace QSHistoryLog
 		public virtual int Id { get; set; }
 
 		public virtual string Path { get; set; }
-		public virtual ChangeType Type { get; set; }
+		public virtual FieldChangeType Type { get; set; }
 		public virtual string OldValue { get; set; }
 		public virtual string NewValue { get; set; }
 
@@ -47,19 +47,9 @@ namespace QSHistoryLog
 
 		public string TypeText
 		{
-			get {
-				switch (Type) {
-				case ChangeType.Added:
-					return "Добавлено";
-				case ChangeType.Changed:
-					return "Изменено";
-				case ChangeType.Removed:
-					return "Удалено";
-				case ChangeType.Unchanged:
-					return "Без изменений";
-				default:
-					return String.Empty;
-				}}
+			get { 
+					return Type.GetEnumTitle ();
+				}
 		}
 
 		public FieldChange ()
