@@ -74,6 +74,7 @@
     <Compile Include="DialogWorksAttributes.cs" />
     <Compile Include="DataWidgets\DataCompanyName.cs" />
     <Compile Include="ObjectCloner.cs" />
+    <Compile Include="DataWidgets\DataTimeEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
