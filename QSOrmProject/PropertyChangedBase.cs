@@ -7,37 +7,47 @@ namespace QSOrmProject
 {
 	public abstract class PropertyChangedBase : INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged(string propertyName)
+		public void FirePropertyChanged ()
 		{
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+			if (PropertyChanged != null)
+				PropertyChanged.Invoke (null, null);
 		}
 
-		protected bool SetField<T>(ref T field, T value, string propertyName)
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged (string propertyName)
 		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			PropertyChangedEventHandler handler = PropertyChanged;
+			if (handler != null)
+				handler (this, new PropertyChangedEventArgs (propertyName));
+		}
+
+		protected bool SetField<T> (ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals (field, value))
+				return false;
 			field = value;
-			OnPropertyChanged(propertyName);
+			OnPropertyChanged (propertyName);
 			return true;
 		}
 
 		//No string implementation
-		protected virtual void OnPropertyChanged<T>(Expression<Func<T>> selectorExpression)
+		protected virtual void OnPropertyChanged<T> (Expression<Func<T>> selectorExpression)
 		{
 			if (selectorExpression == null)
-				throw new ArgumentNullException("selectorExpression");
+				throw new ArgumentNullException ("selectorExpression");
 			MemberExpression body = selectorExpression.Body as MemberExpression;
 			if (body == null)
-				throw new ArgumentException("The body must be a member expression");
-			OnPropertyChanged(body.Member.Name);
+				throw new ArgumentException ("The body must be a member expression");
+			OnPropertyChanged (body.Member.Name);
 		}
 
-		protected bool SetField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+		protected bool SetField<T> (ref T field, T value, Expression<Func<T>> selectorExpression)
 		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			if (EqualityComparer<T>.Default.Equals (field, value))
+				return false;
 			field = value;
-			OnPropertyChanged(selectorExpression);
+			OnPropertyChanged (selectorExpression);
 			return true;
 		}
 	}
