@@ -6,12 +6,15 @@ using QSOrmProject;
 
 namespace QSHistoryLog
 {
+	public delegate string GetDicKeyTitle(string key);
 
 	public class HistoryObjectDesc
 	{
 		public string ObjectName { get; set;}
 		public Type ObjectType { get; set;}
 		public string DisplayName { get; set;}
+
+		public Dictionary<string, GetDicKeyTitle> PropertiesKeyTitleFunc;
 
 		public IEnumerable<HistoryFieldDesc> NamedProperties{
 			get {
@@ -32,6 +35,7 @@ namespace QSHistoryLog
 
 		public HistoryObjectDesc(Type type)
 		{
+			PropertiesKeyTitleFunc = new Dictionary<string, GetDicKeyTitle> ();
 			ObjectType = type;
 			ObjectName = type.Name;
 
@@ -41,7 +45,6 @@ namespace QSHistoryLog
 			else
 				DisplayName = ObjectName;
 		}
-			
 	}
 
 	public class HistoryFieldDesc

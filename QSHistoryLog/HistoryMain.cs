@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Linq;
 using KellermanSoftware.CompareNetObjects;
 using QSOrmProject;
+using System.Text.RegularExpressions;
 
 namespace QSHistoryLog
 {
@@ -31,21 +32,25 @@ namespace QSHistoryLog
 			logic.Config.CompareReadOnly = false;
 			logic.Config.CompareStaticFields = false;
 			logic.Config.CompareStaticProperties = false;
+			logic.Config.IgnoreCollectionOrder = true;
 			logic.Config.MaxDifferences = 10000;
 			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
 
 			return logic;
 		}
 
-		public static void AddClass (Type type)
+		public static HistoryObjectDesc AddClass (Type type)
 		{
-			ObjectsDesc.Add (new HistoryObjectDesc (type));
+			var desc = new HistoryObjectDesc (type);
+			ObjectsDesc.Add (desc);
+			return desc;
 		}
 
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
 		{
 			string result = String.Empty;
 			string[] parts = path.Split ('.');
+
 			if (parts.Length <= 0)
 				return result;
 			var desc = ObjectsDesc.Find (d => d.ObjectName == parts [0]);
@@ -84,12 +89,31 @@ namespace QSHistoryLog
 
 		private static string ResolveFieldName (Type parentClass, string[] path)
 		{
-			var field = parentClass.GetProperty (path [0]);
+			var reg = Regex.Match (path [0], @"^(.*)\[(.*)\]$");
+			string prop = reg.Groups [1].Value;
+			string key = reg.Groups [2].Value;
+
+			var field = parentClass.GetProperty (prop);
 			if (field == null)
 				return String.Join (FieldNameSeparator, path);
 				
 			var att = field.GetCustomAttributes (typeof(DisplayAttribute), false);
 			string name = att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : path [0];
+
+			if(!String.IsNullOrEmpty (key))
+			{
+				var desc = ObjectsDesc.Find (d => d.ObjectType == parentClass);
+				if(desc != null)
+				{
+					if(desc.PropertiesKeyTitleFunc.ContainsKey (prop))
+					{
+						var title = desc.PropertiesKeyTitleFunc[prop] (key);
+						if (!String.IsNullOrEmpty (title))
+							key = title;
+					}
+				}
+				name += String.Format ("[{0}]", key);
+			}
 
 			if (path.Length > 1)
 				return name + FieldNameSeparator +

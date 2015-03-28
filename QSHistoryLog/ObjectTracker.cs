@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using QSOrmProject;
 using QSProjectsLib;
 using KellermanSoftware.CompareNetObjects;
+using System.Text.RegularExpressions;
 
 namespace QSHistoryLog
 {
@@ -135,12 +136,16 @@ namespace QSHistoryLog
 				
 			foreach(var onechange in compare.Differences)
 			{
-				cmd.Parameters ["path"].Value = objectName + onechange.PropertyName;
+				cmd.Parameters ["path"].Value = objectName + Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
 				cmd.Parameters ["type"].Value = "Changed";
 				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
 				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
-				cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1.Target);
-				cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2.Target);
+				if (onechange.ChildPropertyName == "Id") {
+					cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1.Target);
+					cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2.Target);
+				} else
+					cmd.Parameters ["old_id"].Value = cmd.Parameters ["new_id"].Value = DBNull.Value;
+
 				cmd.ExecuteNonQuery ();
 			}
 			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
