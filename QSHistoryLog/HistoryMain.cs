@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Bindings;
 using System.Reflection;
 using System.Linq;
-using SIT.Components.ObjectComparer;
+using KellermanSoftware.CompareNetObjects;
+using QSOrmProject;
+using System.Text.RegularExpressions;
 
 namespace QSHistoryLog
 {
@@ -13,57 +15,42 @@ namespace QSHistoryLog
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
 		const string FieldNameSeparator = ".";
 
-		static Context qsContext;
+		static CompareLogic qsCompareLogic;
 
-		public static Context QSContext {
+		public static CompareLogic QSCompareLogic {
 			get {
-				if (qsContext == null) {
-					qsContext = createQSHistoryContext ();
+				if (qsCompareLogic == null) {
+					qsCompareLogic = createQSCompareLogic ();
 				}
-				return qsContext;
+				return qsCompareLogic;
 			}
 		}
 
-		static Context createQSHistoryContext ()
+		static CompareLogic createQSCompareLogic ()
 		{
-			var mainContext = new Context ();
-			if (mainContext.Configuration == null)
-				mainContext.Configuration = new Configuration ();
-			if (mainContext.Cache == null)
-				mainContext.Cache = new Cache ();
-			mainContext.Configuration.CheckStopRecursionFunc = HandleMainCheckStopRecursion;
-			mainContext.MetadataReader = new QSHistoryMetadataReader (mainContext);
+			var logic = new CompareLogic ();
+			logic.Config.CompareReadOnly = false;
+			logic.Config.CompareStaticFields = false;
+			logic.Config.CompareStaticProperties = false;
+			logic.Config.IgnoreCollectionOrder = true;
+			logic.Config.MaxDifferences = 10000;
+			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
 
-			return mainContext;
+			return logic;
 		}
 
-		static bool HandleMainCheckStopRecursion (Context context, object parentValue, Type parentType, object childValue, MemberInfo childPi)
+		public static HistoryObjectDesc AddClass (Type type)
 		{
-			if (childPi is PropertyInfo) {
-				var pi = childPi as PropertyInfo;
-				//Корректно сохраняем дату и время.
-				if (pi.PropertyType == typeof(DateTime))
-					return true;
-				//Не идем в нутрь обьектов доменной модели
-				if (pi.PropertyType.IsClass) {
-					if (pi.PropertyType.GetProperty ("Title") != null
-					    || pi.PropertyType.GetProperty ("Name") != null)
-						return true;
-				}
-				//Корректно сохраняем IFileTrace
-			}
-			return false;
-		}
-
-		public static void AddClass (Type type)
-		{
-			ObjectsDesc.Add (new HistoryObjectDesc (type));
+			var desc = new HistoryObjectDesc (type);
+			ObjectsDesc.Add (desc);
+			return desc;
 		}
 
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
 		{
 			string result = String.Empty;
 			string[] parts = path.Split ('.');
+
 			if (parts.Length <= 0)
 				return result;
 			var desc = ObjectsDesc.Find (d => d.ObjectName == parts [0]);
@@ -102,18 +89,52 @@ namespace QSHistoryLog
 
 		private static string ResolveFieldName (Type parentClass, string[] path)
 		{
-			var field = parentClass.GetProperty (path [0]);
+			var reg = Regex.Match (path [0], @"^(.*)\[(.*)\]$");
+			string prop = reg.Groups [1].Value;
+			string key = reg.Groups [2].Value;
+
+			var field = parentClass.GetProperty (prop);
 			if (field == null)
 				return String.Join (FieldNameSeparator, path);
 				
 			var att = field.GetCustomAttributes (typeof(DisplayAttribute), false);
 			string name = att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : path [0];
 
+			if(!String.IsNullOrEmpty (key))
+			{
+				var desc = ObjectsDesc.Find (d => d.ObjectType == parentClass);
+				if(desc != null)
+				{
+					if(desc.PropertiesKeyTitleFunc.ContainsKey (prop))
+					{
+						var title = desc.PropertiesKeyTitleFunc[prop] (key);
+						if (!String.IsNullOrEmpty (title))
+							key = title;
+					}
+				}
+				name += String.Format ("[{0}]", key);
+			}
+
 			if (path.Length > 1)
 				return name + FieldNameSeparator +
 				ResolveFieldName (field.PropertyType, path.Where ((val, idx) => idx != 0).ToArray ());
 			else
 				return name + FieldNameSeparator;
+		}
+
+		internal static string GetObjectTilte(object value)
+		{
+			var prop = value.GetType ().GetProperty ("Title");
+			if (prop != null) {
+				return String.Format ("[{0}]", prop.GetValue (value, null));
+			}
+
+			prop = value.GetType ().GetProperty ("Name");
+			if (prop != null) {
+				return String.Format ("[{0}]", prop.GetValue (value, null));
+			}
+
+			return value.ToString ();
 		}
 	}
 
@@ -125,6 +146,18 @@ namespace QSHistoryLog
 		Change,
 		[ItemTitle ("Удаление")]
 		Delete
+	}
+
+	public enum FieldChangeType
+	{
+		[ItemTitle ("Добавлено")]
+		Added,
+		[ItemTitle ("Изменено")]
+		Changed,
+		[ItemTitle ("Удалено")]
+		Removed,
+		[ItemTitle ("Без изменений")]
+		Unchanged
 	}
 
 	public interface IFileTrace

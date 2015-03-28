@@ -91,7 +91,7 @@ namespace QSProjectsLib
 		{
 			if (value == null)
 				return DBNull.Value;
-			var prop = typeof(T).GetProperty ("Id");
+			var prop = value.GetType ().GetProperty ("Id");
 			if (prop == null)
 				throw new ArgumentException ("Для работы метода тип {0}, должен иметь свойство Id.");
 
