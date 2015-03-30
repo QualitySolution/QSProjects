@@ -20,6 +20,7 @@ namespace QSOrmProject
 				{
 					System.Reflection.ConstructorInfo ci = objectType.GetConstructor(new Type[] { });
 					tempObject = ci.Invoke(new object[] { });
+					dialogSession.Persist (tempObject);
 				}
 				else
 				{
@@ -55,7 +56,6 @@ namespace QSOrmProject
 				int result = editDialog.Run();
 				if(result == (int)ResponseType.Ok)
 				{ 
-					dialogSession.SaveOrUpdate(tempObject);
 					dialogSession.Flush();
 					OrmMain.NotifyObjectUpdated(tempObject);
 				}
