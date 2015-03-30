@@ -15,14 +15,13 @@ namespace QSBanks
 		private ISession session;
 		private Adaptor adaptorOrg = new Adaptor();
 		private Bank subject;
-		private bool NewItem = false;
 
 		public ITdiTabParent TabParent { set; get;}
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public bool HasChanges { 
-			get{return NewItem || Session.IsDirty();}
+			get{return Session.IsDirty();}
 		}
 
 		private string _tabName = "Новый банк";
@@ -65,8 +64,8 @@ namespace QSBanks
 		public BankDlg()
 		{
 			this.Build();
-			NewItem = true;
 			subject = new Bank();
+			Session.Persist (subject);
 			ConfigureDlg();
 		}
 
@@ -101,7 +100,6 @@ namespace QSBanks
 			logger.Info("Сохраняем банк...");
 			try
 			{
-				Session.SaveOrUpdate(subject);
 				Session.Flush();
 			}
 			catch( Exception ex)
