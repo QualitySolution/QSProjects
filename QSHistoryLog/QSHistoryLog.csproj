@@ -35,9 +35,6 @@
     <Reference Include="MySql.Data">
       <HintPath>..\lib\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -48,11 +45,14 @@
       <HintPath>..\..\Gtk.DataBindings\bin\Debug\gtk-databind-lib.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="DiffPlex">
-      <HintPath>..\..\LeaseAgreement\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
-    </Reference>
     <Reference Include="KellermanSoftware.Compare-Net-Objects">
-      <HintPath>..\..\LeaseAgreement\packages\CompareNETObjects.3.02.0.0\lib\net40\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+      <HintPath>..\packages\CompareNETObjects.3.02.0.0\lib\net40\KellermanSoftware.Compare-NET-Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="DiffPlex">
+      <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

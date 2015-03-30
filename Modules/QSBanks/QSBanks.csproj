@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSBanks</RootNamespace>
     <AssemblyName>QSBanks</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,19 +35,19 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="NLog">
-      <HintPath>..\..\lib\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
-      <HintPath>..\..\..\Vodovoz\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
-      <HintPath>..\..\..\Vodovoz\packages\NHibernate.4.0.1.4000\lib\net40\NHibernate.dll</HintPath>
+      <HintPath>..\..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="DataAnnotationsExtensions">
-      <HintPath>..\..\..\Vodovoz\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+      <HintPath>..\..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

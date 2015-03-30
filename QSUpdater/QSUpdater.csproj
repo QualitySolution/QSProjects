@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSUpdater</RootNamespace>
     <AssemblyName>QSUpdater</AssemblyName>
-    <ReleaseVersion>2.2</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -59,7 +58,7 @@
     <Reference Include="System.Data" />
     <Reference Include="Mono.Posix" />
     <Reference Include="NLog">
-      <HintPath>..\..\bazar\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

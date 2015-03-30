@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSAttachment</RootNamespace>
     <AssemblyName>QSAttachment</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -40,11 +39,11 @@
       <HintPath>..\..\lib\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="itextsharp">
-      <HintPath>..\..\..\LeaseAgreement\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

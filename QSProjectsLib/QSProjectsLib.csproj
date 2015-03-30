@@ -51,7 +51,7 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="NLog">
-      <HintPath>..\..\LeaseAgreement\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -96,12 +96,12 @@
     <Folder Include="icons\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
       <Name>QSSaaS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
