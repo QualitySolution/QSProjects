@@ -151,8 +151,10 @@ namespace QSOrmProject
 		{
 			adaptor.DataChanged = false;
 			if (adaptor.Value != null) {
-				if (adaptor.ValueType == typeof(DateTime) && (DateTime)adaptor.Value != Time)
-					Time = (DateTime)adaptor.Value;
+				if (adaptor.ValueType == typeof(DateTime) && (DateTime)adaptor.Value != DateTime)
+					DateTime = (DateTime)adaptor.Value;
+				else if (adaptor.ValueType == typeof(TimeSpan) && (TimeSpan)adaptor.Value != Time)
+					Time = (TimeSpan)adaptor.Value;
 				else if (adaptor.ValueType == typeof(String) && adaptor.Value.ToString () != Text)
 					Text = adaptor.Value.ToString ();
 			} else
@@ -166,7 +168,9 @@ namespace QSOrmProject
 		{
 			adaptor.DataChanged = false;
 			if (adaptor.Value != null) {
-				if (adaptor.ValueType == typeof(DateTime) && (DateTime)adaptor.Value != Time)
+				if (adaptor.ValueType == typeof(DateTime) && (DateTime)adaptor.Value != DateTime)
+					adaptor.Value = DateTime;
+				else if (adaptor.ValueType == typeof(TimeSpan) && (TimeSpan)adaptor.Value != Time)
 					adaptor.Value = Time;
 				else if (adaptor.ValueType == typeof(String) && adaptor.Value.ToString () != Text)
 					adaptor.Value = Text;

@@ -38,7 +38,7 @@ namespace QSWidgetLib
 			}
 		}
 
-		public DateTime Time {
+		public DateTime DateTime {
 			get {
 				DateTime result;
 				DateTime.TryParse (Text, out result);
@@ -52,11 +52,25 @@ namespace QSWidgetLib
 			}
 		}
 
+		public TimeSpan Time {
+			get {
+				TimeSpan result;
+				TimeSpan.TryParse (Text, out result);
+				return result;
+			}
+			set {
+				if (ShowSeconds)
+					Text = value.ToString ("g");
+				else
+					Text = value.ToString ("hh\\:mm");
+			}
+		}
+
 		protected override void OnChanged ()
 		{
 			base.OnChanged ();
-			DateTime outDate;
-			if (DateTime.TryParse (Text, out outDate))
+			TimeSpan outTime;
+			if (TimeSpan.TryParse (Text, out outTime))
 				ModifyText (StateType.Normal);
 			else
 				ModifyText (StateType.Normal, new Gdk.Color (255, 0, 0)); 
