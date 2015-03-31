@@ -1,48 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using QSOrmProject;
 
 namespace QSBanks
 {
-	public abstract class AccountOwnerBase : IAccountOwner
+	public abstract class AccountOwnerBase : PropertyChangedBase, IAccountOwner
 	{
 		IList<Account> accounts;
-		public virtual IList<Account> Accounts
-		{
-			get
-			{
-				return accounts;
-			}
-			set
-			{
+
+		public virtual IList<Account> Accounts {
+			get { return accounts; }
+			set {
 				accounts = value;
-				UpdateDefault();
+				UpdateDefault ();
 			}
 		}
 
 		Account defaultAccount;
-		public virtual Account DefaultAccount
-		{
-			get
-			{
-				return defaultAccount;
-			}
-			set
-			{
+
+		public virtual Account DefaultAccount {
+			get { return defaultAccount; }
+			set {
 				defaultAccount = value;
-				UpdateDefault();
+				UpdateDefault ();
 			}
 		}
 
-		public AccountOwnerBase()
+		public AccountOwnerBase ()
 		{
 		}
 
-		private void UpdateDefault()
+		private void UpdateDefault ()
 		{
 			if (Accounts == null)
 				return;
-			foreach(Account acc in Accounts)
-			{
+			foreach (Account acc in Accounts) {
 				acc.IsDefault = (acc == DefaultAccount);
 			}
 		}
@@ -50,8 +42,9 @@ namespace QSBanks
 
 	public interface IAccountOwner
 	{
-		Account DefaultAccount { get; set;}
-		IList<Account> Accounts { get; set;}
+		Account DefaultAccount { get; set; }
+
+		IList<Account> Accounts { get; set; }
 	}
 }
 
