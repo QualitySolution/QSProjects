@@ -72,12 +72,12 @@ namespace QSUpdater
 				logger.Info ("Получаем данные от сервера");
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 					                    MainSupport.ProjectVerion.Product,
-					                    MainSupport.ProjectVerion.Edition,
+				                                   MainSupport.ProjectVerion.Edition,
 					                    serialNumber,
-					                    MainSupport.ProjectVerion.Version.Major, 
-					                    MainSupport.ProjectVerion.Version.Minor, 
-					                    MainSupport.ProjectVerion.Version.Build, 
-					                    MainSupport.ProjectVerion.Version.Revision); 
+				                                   MainSupport.ProjectVerion.Version.Major, 
+				                                   MainSupport.ProjectVerion.Version.Minor, 
+				                                   MainSupport.ProjectVerion.Version.Build, 
+				                                   MainSupport.ProjectVerion.Version.Revision); 
 				IUpdateService service = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address)
 					.CreateChannel ();
 				updateResult = service.checkForUpdate (parameters);

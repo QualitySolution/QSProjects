@@ -8,7 +8,18 @@ namespace QSSupportLib
 	public static class MainSupport
 	{
 		public static BaseParam BaseParameters;
-		public static AppVersion ProjectVerion;
+
+		private static AppVersion projectVerion;
+		public static AppVersion ProjectVerion {
+			get {
+				if (projectVerion == null)
+					projectVerion = new AppVersion ();
+				return projectVerion;
+			}
+			set {
+				projectVerion = value;
+			}
+		}
 
 		static MainSupport ()
 		{
@@ -27,9 +38,9 @@ namespace QSSupportLib
 			if (MainSupport.BaseParameters.Edition == null)
 				ErrorText = "Редакция базы не указана!\nРедакция продукта: " + ProjectVerion.Edition +
 				"\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
-			if (MainSupport.BaseParameters.Edition != ProjectVerion.Edition)
+			if (!ProjectVerion.AllowEdition.Contains (MainSupport.BaseParameters.Edition))
 				ErrorText = "Редакция продукта не совпадает с редакцией базы данных.\nРедакция продукта: " +
-				ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
+					ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
 			//Если найдены ошибки.
 			if (ErrorText != String.Empty) {
 				MessageDialog error = new MessageDialog (Parent, DialogFlags.DestroyWithParent,

@@ -35,6 +35,15 @@ namespace QSProjectsLib
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly)]
+	public class AssemblyEditionAttribute : Attribute 
+	{
+		public string Edition;
+		public string[] AllowEdition;
+		public AssemblyEditionAttribute(string edition) { Edition = edition; }
+		public AssemblyEditionAttribute() { }
+	}
+
+	[AttributeUsage(AttributeTargets.Assembly)]
 	public class AssemblyAppWebsite : Attribute 
 	{
 		public string Link;
