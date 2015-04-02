@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Data.Bindings;
 using System.Data.Bindings.Collections;
 using NHibernate;
 using QSTDI;
 using NLog;
 using Gtk;
-using Gtk.DataBindings;
-using QSProjectsLib;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -210,7 +206,6 @@ namespace QSOrmProject
 			UpdateObjectList();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
-			UpdateSum();
 		}
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
