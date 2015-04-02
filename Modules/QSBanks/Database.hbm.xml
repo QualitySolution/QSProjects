@@ -10,6 +10,7 @@
 	 	<property name="CorAccount" column="cor_account" />
 	 	<property name="Region" column="region" />
 	 	<property name="City" column="city" />
+	 	<property name="Deleted" column="deleted" />
  	</class>
  	<class name="Account" lazy="false" table="accounts">
 		<id name="Id" column="id">
@@ -17,6 +18,7 @@
 	 	</id>
 	 	<property name="Name" column="name" />
 	 	<property name="Number" column="number" />
+	 	<property name="Inactive" column="inactive" />
 	 	<many-to-one name="InBank" class="Bank" column="bank_id" />
  	</class>
 

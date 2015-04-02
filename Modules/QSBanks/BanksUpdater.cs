@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.Text;
 using NHibernate;
 using QSOrmProject;
+using NHibernate.Criterion;
+using QSSupportLib;
+using QSProjectsLib;
+using Gtk;
 
 namespace QSBanks
 {
@@ -16,91 +20,133 @@ namespace QSBanks
 		const string ARCHIVE_LINK = @"http://cbrates.rbc.ru/bnk/bnk.zip";
 		const string BANKS_LIST_FILE = "bnkseek.txt";
 
-		public static void Update ()
+		public static int updatePeriod = 3;
+
+		public static void Update (bool forceUpdate)
 		{
-			
-			//Получаем версию дату изменения справочника.
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create (ARCHIVE_LINK);
-			request.Method = "HEAD";
-			HttpWebResponse resp = (HttpWebResponse)request.GetResponse ();
-			Console.WriteLine (resp.LastModified);
+			int accountsDeactivated = 0, banksRemoved = 0, banksDeactivated = 0, banksAdded = 0, banksFixed = 0;
+			DateTime lastModified = new DateTime ();
 
-			//TODO: Сравнение даты и если новый - спросить действие.
+			if (MainSupport.BaseParameters.All.ContainsKey ("last_banks_update"))
+				lastModified = DateTime.Parse (MainSupport.BaseParameters.All ["last_banks_update"]);
 
-			//Качаем архив.
-			String zipFileName = Path.Combine (Path.GetTempPath (), String.Format ("bnk.zip"));
-			using (WebClient webClient = new WebClient ()) {
-				webClient.DownloadFile (new Uri (ARCHIVE_LINK), zipFileName);
+			if (!forceUpdate && (DateTime.Now - lastModified).Days < updatePeriod)
+				return;
+
+			if (!forceUpdate) {
+				MessageDialog md = new MessageDialog (null, 
+					                   DialogFlags.DestroyWithParent, 
+					                   MessageType.Question,
+					                   ButtonsType.YesNo,
+					                   "Cправочник банков обновлялся более 2-х дней назад. Обновить?");
+				md.Show ();
+				int Result = md.Run ();
+				md.Destroy ();
+				if ((ResponseType)Result != ResponseType.Yes)
+					return;
 			}
+			
+			//Качаем архив.
+			List<Bank> loadedBanksList = getBanksFromRbc ();
+			//Получаем имеющиеся банки.
+			ISession session = OrmMain.OpenSession ();
+			List<Bank> oldBanksList = (List<Bank>)session.CreateCriteria<Bank> ()
+				.Add (Restrictions.Eq ("Deleted", false)).List<Bank> ();
+			List<Account> accountsList = (List<Account>)session.CreateCriteria<Account> ()
+				.Add (Restrictions.Eq ("Inactive", false)).List<Account> ();
+
+			//Добавляем новые и исправляем старые
+			foreach (Bank loadedBank in loadedBanksList) {
+				int i;
+				if ((i = oldBanksList.FindIndex (oldBank => oldBank.Bik == loadedBank.Bik)) != -1) {
+					if (Bank.EqualsWithoutId (oldBanksList [i], loadedBank))
+						continue;
+					oldBanksList [i].City = loadedBank.City;
+					oldBanksList [i].CorAccount = loadedBank.CorAccount;
+					oldBanksList [i].Name = loadedBank.Name;
+					oldBanksList [i].Region = loadedBank.Bik.Length > 4 ? loadedBank.Bik.Substring (2, 2) : "";
+					banksFixed++;
+					continue;
+				}
+				oldBanksList.Add (loadedBank);
+				session.Persist (loadedBank);
+				banksAdded++;
+			}
+			//Удаляем неактуальные банки
+			foreach (Bank oldBank in oldBanksList) {
+				if (loadedBanksList.FindIndex (loadedBank => loadedBank.City == oldBank.City &&
+				    loadedBank.Bik == oldBank.Bik &&
+				    loadedBank.CorAccount == oldBank.CorAccount &&
+				    loadedBank.Name == oldBank.Name &&
+				    loadedBank.Region == oldBank.Region) == -1) {
+					int accountIdx = -1;
+					if ((accountIdx = accountsList.FindIndex (a => a.InBank == oldBank)) == -1) {
+						session.Delete (oldBank);
+						banksRemoved++;
+					} else {
+						oldBank.Deleted = accountsList [accountIdx].Inactive = true;
+						accountsDeactivated++;
+						banksDeactivated++;
+						continue;
+					}
+				}
+			}
+			session.Flush ();
+			session.Close ();
+			//Выводим статистику
+			MessageDialog infoDlg = new MessageDialog (null, 
+				                        DialogFlags.DestroyWithParent, 
+				                        MessageType.Info,
+				                        ButtonsType.Ok,
+				                        "Обновление справочника успешно завершено.\n" +
+				                        "Добавлено банков: {0}\nИсправлено банков: {1}\nУдалено банков: {2}\n" +
+				                        "Деактивировано счетов: {3}\nДеактивировано банков: {4}",
+				                        banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated);
+			infoDlg.Show ();
+			infoDlg.Run ();
+			infoDlg.Destroy ();
+			//Записываем дату
+			MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, "last_banks_update", lastModified.ToString ());
+		}
+
+		static List<Bank> getBanksFromRbc ()
+		{
+			String zipFileName = Path.Combine (Path.GetTempPath (), String.Format ("bnk.zip"));
+			using (WebClient webClient = new WebClient ())
+				webClient.DownloadFile (new Uri (ARCHIVE_LINK), zipFileName);
+
 			//Распаковываем архив
 			MemoryStream zipStream = new MemoryStream ();
-			ZipConstants.DefaultCodePage = System.Text.Encoding.UTF8.CodePage;
+			ZipConstants.DefaultCodePage = Encoding.UTF8.CodePage;
 			using (FileStream fs = new FileStream (zipFileName, FileMode.Open, FileAccess.Read)) {
 				byte[] buffer = new byte[4096];
 				StreamUtils.Copy (fs, zipStream, buffer);
 			}
 			ZipFile banksZip = new ZipFile (zipStream);
-			//Читаем файл с банками
-			ZipEntry entry = banksZip.GetEntry (BANKS_LIST_FILE);
-			List<Bank> actualBanksList = new List<Bank> ();
-			using (Stream banks = banksZip.GetInputStream (entry))
-			using (StreamReader sr = new StreamReader (banks, Encoding.GetEncoding (1251))) {
-				string bankInfo;
 
-				while (!String.IsNullOrEmpty ((bankInfo = sr.ReadLine ()))) {
-					var bank = Regex.Match (bankInfo, @"^\d+\t(.+)\t\d+\t(.+)\t\t(\d+)\t(\d*)$");
-					Bank b = new Bank ();
-					b.City = bank.Groups [1].Value;
-					b.Name = bank.Groups [2].Value;
-					b.Bik = bank.Groups [3].Value;
-					b.CorAccount = bank.Groups [4].Value;
-					b.Region = b.Bik.Length > 4 ? b.Bik.Substring (2, 2) : "";
-					actualBanksList.Add (b);
+			//Читаем файл с банками
+			ZipEntry zipEntry = banksZip.GetEntry (BANKS_LIST_FILE);
+			List<Bank> loadedBanksList = new List<Bank> ();
+			using (Stream banks = banksZip.GetInputStream (zipEntry))
+			using (StreamReader sr = new StreamReader (banks, Encoding.GetEncoding (1251))) {
+				string bankInfoString;
+				while (!String.IsNullOrEmpty ((bankInfoString = sr.ReadLine ()))) {
+					var bankRegexMatch = Regex.Match (bankInfoString, @"^\d+\t(.+)\t\d+\t(.+)\t\t(\d+)\t(\d*)$");
+					Bank bank = new Bank ();
+					bank.City = bankRegexMatch.Groups [1].Value;
+					bank.Name = bankRegexMatch.Groups [2].Value;
+					bank.Bik = bankRegexMatch.Groups [3].Value;
+					bank.CorAccount = bankRegexMatch.Groups [4].Value;
+					bank.Region = bank.Bik.Length > 4 ? bank.Bik.Substring (2, 2) : "";
+					loadedBanksList.Add (bank);
 				}
 			}
 			zipStream.Close ();
+
 			//Удаляем казначейства и прочие организации, не имеющие кор. счета.
-			actualBanksList.RemoveAll (m => String.IsNullOrEmpty (m.CorAccount));
-			//Получаем имеющиеся банки.
-			ISession session = OrmMain.OpenSession ();
-			List<Bank> oldBanksList = (List<Bank>)session.CreateCriteria<Bank> ().List<Bank> ();
-			List<Account> accountsList = (List<Account>)session.CreateCriteria<Account> ().List<Account> ();
-			//Добавляем новые и исправляем старые
-			int accountsDeactivated = 0, banksRemoved = 0, banksDeactivated = 0, banksAdded = 0, banksFixed = 0;
-			foreach (Bank b in actualBanksList) {
-				if (oldBanksList.FindIndex (m => m == b) != -1)
-					continue;
-				int i;
-				if ((i = oldBanksList.FindIndex (m => m.Bik == b.Bik)) != -1) {
-					oldBanksList [i].City = b.City;
-					oldBanksList [i].CorAccount = b.CorAccount;
-					oldBanksList [i].Name = b.Name;
-					oldBanksList [i].Region = b.Bik.Length > 4 ? b.Bik.Substring (2, 2) : "";
-					banksFixed++;
-					continue;
-				}
-				oldBanksList.Add (b);
-				banksAdded++;
-			}
-			//Удаляем неактуальные банки
-			foreach (Bank b in oldBanksList) {
-				if (actualBanksList.FindIndex (m => m.City == b.City &&
-				    m.Bik == b.Bik &&
-				    m.CorAccount == b.CorAccount &&
-				    m.Name == b.Name &&
-				    m.Region == b.Region) == -1) {
-					if (accountsList.FindIndex (a => a.InBank == b) == -1) {
-						//oldBanksList.Remove (b);
-						banksRemoved++;
-					} else {
-						accountsDeactivated++;
-						banksDeactivated++;
-						continue; //TODO: Поставить банку значение удален и счету значение неактивен.
-					}
-				}
-			}
-			//TODO: Сохранение изменений в базу. Созранение даты последнего обновления.
-			session.Close ();
+			loadedBanksList.RemoveAll (m => String.IsNullOrEmpty (m.CorAccount));
+
+			return loadedBanksList;
 		}
 	}
 }
