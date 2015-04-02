@@ -1,34 +1,63 @@
 ﻿using System;
 using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
 	[OrmSubject ("Банки")]
-	public class Bank: IValidatableObject
+	public class Bank: PropertyChangedBase, IValidatableObject
 	{
 		#region Свойства
 
 		public virtual int Id { get; set; }
 
+		string name;
+
 		[Required (ErrorMessage = "Название банка должно быть заполнено.")]
-		public virtual string Name { get; set; }
+		public virtual string Name {
+			get { return name; }
+			set { SetField (ref name, value, () => Name); }
+		}
+
+		string bik;
 
 		[StringLength (9, MinimumLength = 9, ErrorMessage = "Бик должен состоять из 8 цифр.")]
-		public virtual string Bik { get; set; }
+		public virtual string Bik {
+			get { return bik; }
+			set { SetField (ref bik, value, () => Bik); }
+		}
+
+		string corAccount;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер кореспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
-		public virtual string CorAccount { get; set; }
+		public virtual string CorAccount {
+			get { return corAccount; }
+			set { SetField (ref corAccount, value, () => CorAccount); }
+		}
+
+		string city;
 
 		[Required (ErrorMessage = "Город является обязательным полем.")]
-		public virtual string City { get; set; }
+		public virtual string City {
+			get { return city; }
+			set { SetField (ref city, value, () => City); }
+		}
+
+		string region;
 
 		[Required (ErrorMessage = "Регион является обязательным полем.")]
-		public virtual string Region { get; set; }
+		public virtual string Region {
+			get { return region; }
+			set { SetField (ref region, value, () => Region); }
+		}
 
-		public virtual bool Deleted { get; set; }
+		bool deleted;
+
+		public virtual bool Deleted {
+			get { return deleted; }
+			set { SetField (ref deleted, value, () => Deleted); }
+		}
 
 		#endregion
 

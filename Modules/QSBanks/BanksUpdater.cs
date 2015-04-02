@@ -1,26 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Core;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Text;
-using NHibernate;
-using QSOrmProject;
-using NHibernate.Criterion;
-using QSSupportLib;
-using QSProjectsLib;
+using System.Text.RegularExpressions;
 using Gtk;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
+using NHibernate;
+using NHibernate.Criterion;
+using NLog;
+using QSOrmProject;
+using QSProjectsLib;
+using QSSupportLib;
 
 namespace QSBanks
 {
 	public static class BanksUpdater
 	{
+		static Logger logger = LogManager.GetCurrentClassLogger ();
+
 		const string ARCHIVE_LINK = @"http://cbrates.rbc.ru/bnk/bnk.zip";
 		const string BANKS_LIST_FILE = "bnkseek.txt";
 
-		public static int updatePeriod = 3;
+		public static int UpdatePeriod = 3;
+
+		static Window updateWindow = new Window ("Идет обновление справочника банков...");
+
+		public static void ShowProgress ()
+		{
+			Label updateInProgress = new Label ();
+			updateInProgress.Text = "Пожалуйста, подождите...";
+			updateInProgress.Justify = Justification.Center;
+			VBox vbox = new VBox ();
+			vbox.PackStart (updateInProgress, true, true, 0);
+			vbox.ShowAll ();
+			updateWindow.SetSizeRequest (300, 25); 
+			updateWindow.Resizable = false;
+			updateWindow.SetPosition (WindowPosition.Center);
+			updateWindow.Add (vbox);
+
+			updateWindow.ShowAll ();
+			QSMain.WaitRedraw ();
+		}
 
 		public static void Update (bool forceUpdate)
 		{
@@ -30,7 +52,7 @@ namespace QSBanks
 			if (MainSupport.BaseParameters.All.ContainsKey ("last_banks_update"))
 				lastModified = DateTime.Parse (MainSupport.BaseParameters.All ["last_banks_update"]);
 
-			if (!forceUpdate && (DateTime.Now - lastModified).Days < updatePeriod)
+			if (!forceUpdate && (DateTime.Now - lastModified).Days < UpdatePeriod)
 				return;
 
 			if (!forceUpdate) {
@@ -39,15 +61,30 @@ namespace QSBanks
 					                   MessageType.Question,
 					                   ButtonsType.YesNo,
 					                   "Cправочник банков обновлялся более 2-х дней назад. Обновить?");
+				md.SetPosition (WindowPosition.Center);
 				md.Show ();
 				int Result = md.Run ();
 				md.Destroy ();
 				if ((ResponseType)Result != ResponseType.Yes)
 					return;
 			}
-			
+			ShowProgress ();
 			//Качаем архив.
 			List<Bank> loadedBanksList = getBanksFromRbc ();
+			if (loadedBanksList == null) {
+				updateWindow.Destroy ();
+				MessageDialog error = new MessageDialog (null,
+					                      DialogFlags.DestroyWithParent,
+					                      MessageType.Error,
+					                      ButtonsType.Ok,
+					                      "Не удалось загрузить обновленный справочник банков.\n" +
+					                      "Пожалуйста проверьте интернет соединение или повторите попытку позже.");
+				error.SetPosition (WindowPosition.Center);
+				error.ShowAll ();
+				error.Run ();
+				error.Destroy ();
+				return;
+			}
 			//Получаем имеющиеся банки.
 			ISession session = OrmMain.OpenSession ();
 			List<Bank> oldBanksList = (List<Bank>)session.CreateCriteria<Bank> ()
@@ -93,6 +130,10 @@ namespace QSBanks
 			}
 			session.Flush ();
 			session.Close ();
+
+			Application.Invoke (delegate {
+				updateWindow.Destroy ();
+			});
 			//Выводим статистику
 			MessageDialog infoDlg = new MessageDialog (null, 
 				                        DialogFlags.DestroyWithParent, 
@@ -102,18 +143,24 @@ namespace QSBanks
 				                        "Добавлено банков: {0}\nИсправлено банков: {1}\nУдалено банков: {2}\n" +
 				                        "Деактивировано счетов: {3}\nДеактивировано банков: {4}",
 				                        banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated);
+			infoDlg.SetPosition (WindowPosition.Center);
 			infoDlg.Show ();
 			infoDlg.Run ();
 			infoDlg.Destroy ();
 			//Записываем дату
-			MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, "last_banks_update", lastModified.ToString ());
+			MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, "last_banks_update", DateTime.Now.ToString ());
 		}
 
 		static List<Bank> getBanksFromRbc ()
 		{
 			String zipFileName = Path.Combine (Path.GetTempPath (), String.Format ("bnk.zip"));
-			using (WebClient webClient = new WebClient ())
-				webClient.DownloadFile (new Uri (ARCHIVE_LINK), zipFileName);
+			try {
+				using (WebClient webClient = new WebClient ())
+					webClient.DownloadFile (new Uri (ARCHIVE_LINK), zipFileName);
+			} catch (Exception ex) {
+				logger.ErrorException ("Не удалось загрузить обновленную информацию о банках с сайта РБК.", ex);
+				return null;
+			}
 
 			//Распаковываем архив
 			MemoryStream zipStream = new MemoryStream ();
