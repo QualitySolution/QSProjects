@@ -6,39 +6,42 @@ using QSTDI;
 using QSOrmProject;
 using Gtk;
 using QSValidation;
+using NHibernate.Criterion;
 
 namespace QSBanks
 {
-	[System.ComponentModel.ToolboxItem(true)]
+	[System.ComponentModel.ToolboxItem (true)]
 	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private IAccountOwner accountOwner;
-		private Adaptor adaptorOrg = new Adaptor();
-		private Adaptor adaptorBank = new Adaptor();
+		private Adaptor adaptorOrg = new Adaptor ();
+		private Adaptor adaptorBank = new Adaptor ();
 
-		public ITdiTabParent TabParent { set; get;}
+		public ITdiTabParent TabParent { set; get; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+
 		public bool HasChanges { 
-			get{return false;}
+			get { return false; }
 		}
 
 		private string _tabName = "Новый счет";
-		public string TabName
-		{
-			get{return _tabName;}
-			set{
+
+		public string TabName {
+			get { return _tabName; }
+			set {
 				if (_tabName == value)
 					return;
 				_tabName = value;
 				if (TabNameChanged != null)
-					TabNameChanged(this, new TdiTabNameChangedEventArgs(value));
+					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
 			}
 		}
 
 		OrmParentReference parentReference;
+
 		public OrmParentReference ParentReference {
 			set {
 				parentReference = value;
@@ -50,80 +53,82 @@ namespace QSBanks
 					this.accountOwner = (IAccountOwner)parentReference.ParentObject;
 				}
 			}
-			get {
-				return parentReference;
-			}
+			get { return parentReference; }
 		}
 
 		#region IOrmDialog implementation
+
 		private ISession session;
+
 		public NHibernate.ISession Session {
 			get {
 				if (session == null)
 					Session = OrmMain.Sessions.OpenSession ();
 				return session;
 			}
-			set {
-				session = value;
-			}
+			set { session = value; }
 		}
 
 		private Account subject;
+
 		public object Subject {
-			get {return subject;}
+			get { return subject; }
 			set {
 				if (value is Account)
 					subject = value as Account;
 			}
 		}
+
 		#endregion
 
 
-		public AccountDlg(OrmParentReference parentReference)
+		public AccountDlg (OrmParentReference parentReference)
 		{
-			this.Build();
+			this.Build ();
 			ParentReference = parentReference;
-			subject = new Account();
+			subject = new Account ();
 			accountOwner.Accounts.Add (subject);
-			ConfigureDlg();
+			ConfigureDlg ();
 		}
 
-		public AccountDlg(OrmParentReference parentReference, Account sub)
+		public AccountDlg (OrmParentReference parentReference, Account sub)
 		{
-			this.Build();
+			this.Build ();
 			ParentReference = parentReference;
 			subject = sub;
 			TabName = subject.Name;
-			ConfigureDlg();
+			ConfigureDlg ();
 		}
 
-		private void ConfigureDlg()
+		private void ConfigureDlg ()
 		{
 			dataentryrefBank.SubjectType = typeof(Bank);
 			adaptorOrg.Target = subject;
 			datatableMain.DataSource = adaptorOrg;
 			datatableBank.DataSource = adaptorBank;
 			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
+			dataentryrefBank.ItemsCriteria = Session.CreateCriteria<Bank> ()
+				.Add (Restrictions.Eq ("Deleted", false));
 		}
 
-		public bool Save()
+		public bool Save ()
 		{
 			var valid = new QSValidator<Account> (subject);
 			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
 				return false;
-			logger.Info("Сохраняем счет организации...");
+			logger.Info ("Сохраняем счет организации...");
 			if (accountOwner != null)
 				OrmMain.DelayedNotifyObjectUpdated (accountOwner, subject);
-			logger.Info("Ok");
+			logger.Info ("Ok");
 			return true;
 		}
 
-		protected void OnButtonSaveClicked(object sender, EventArgs e)
+		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
-			OnCloseTab(false);
+			OnCloseTab (false);
 		}
 
-		protected void OnCloseTab(bool askSave)
+		protected void OnCloseTab (bool askSave)
 		{
 			if (TabParent.CheckClosingSlaveTabs ((ITdiTab)this))
 				return;
@@ -132,15 +137,15 @@ namespace QSBanks
 				return;
 
 			if (CloseTab != null)
-				CloseTab(this, new TdiTabCloseEventArgs(askSave));
+				CloseTab (this, new TdiTabCloseEventArgs (askSave));
 		}
 
-		public override void Destroy()
+		public override void Destroy ()
 		{
-			base.Destroy();
+			base.Destroy ();
 		}
 
-		protected void OnDataentryrefBankChanged(object sender, EventArgs e)
+		protected void OnDataentryrefBankChanged (object sender, EventArgs e)
 		{
 			adaptorBank.Target = subject.InBank;
 		}

@@ -8,132 +8,130 @@ using QSValidation;
 
 namespace QSBanks
 {
-	[System.ComponentModel.ToolboxItem(true)]
+	[System.ComponentModel.ToolboxItem (true)]
 	public partial class BankDlg : Gtk.Bin, QSTDI.ITdiDialog
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private ISession session;
-		private Adaptor adaptorOrg = new Adaptor();
+		private Adaptor adaptorOrg = new Adaptor ();
 		private Bank subject;
 
-		public ITdiTabParent TabParent { set; get;}
+		public ITdiTabParent TabParent { set; get; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+
 		public bool HasChanges { 
-			get{return Session.IsDirty();}
+			get { return Session.IsDirty (); }
 		}
 
 		private string _tabName = "Новый банк";
-		public string TabName
-		{
-			get{return _tabName;}
-			set{
+
+		public string TabName {
+			get { return _tabName; }
+			set {
 				if (_tabName == value)
 					return;
 				_tabName = value;
 				if (TabNameChanged != null)
-					TabNameChanged(this, new TdiTabNameChangedEventArgs(value));
+					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
 			}
 
 		}
 
-		public ISession Session
-		{
+		public ISession Session {
 			get
 			{
 				if (session == null)
-					session = OrmMain.Sessions.OpenSession();
+					session = OrmMain.Sessions.OpenSession ();
 				return session;
 			}
-			set
-			{
-				session = value;
-			}
+			set { session = value; }
 		}
 
-		public object Subject
-		{
-			get {return subject;}
+		public object Subject {
+			get { return subject; }
 			set {
 				if (value is Bank)
 					subject = value as Bank;
 			}
 		}
 
-		public BankDlg()
+		public BankDlg ()
 		{
-			this.Build();
-			subject = new Bank();
+			this.Build ();
+			subject = new Bank ();
 			Session.Persist (subject);
-			ConfigureDlg();
+			ConfigureDlg ();
 		}
 
-		public BankDlg(int id)
+		public BankDlg (int id)
 		{
-			this.Build();
-			subject = Session.Load<Bank>(id);
+			this.Build ();
+			subject = Session.Load<Bank> (id);
 			TabName = subject.Name;
-			ConfigureDlg();
+			ConfigureDlg ();
 		}
 
-		public BankDlg(Bank sub)
+		public BankDlg (Bank sub)
 		{
-			this.Build();
-			subject = Session.Load<Bank>(sub.Id);
+			this.Build ();
+			subject = Session.Load<Bank> (sub.Id);
 			TabName = subject.Name;
-			ConfigureDlg();
+			ConfigureDlg ();
 		}
 
-		private void ConfigureDlg()
+		private void ConfigureDlg ()
 		{
+			buttonSave.Sensitive = dataentryBik.Sensitive = dataentryCity.Sensitive = 
+				dataentryCorAccount.Sensitive = dataentryName.Sensitive = dataentryRegion.Sensitive = false;
+			if (subject.Deleted) {
+				labelDeleted.Markup = "<span foreground=\"red\">Данного банка больше не существует.</span>";
+			}
 			adaptorOrg.Target = subject;
 			datatableInfo.DataSource = adaptorOrg;
 		}
 
-		public bool Save()
+		public bool Save ()
 		{
 			var valid = new QSValidator<Bank> (subject);
 			if (valid.RunDlgIfNotValid ((Gtk.Window)this.Toplevel))
 				return false;
 
-			logger.Info("Сохраняем банк...");
-			try
-			{
-				Session.Flush();
-			}
-			catch( Exception ex)
-			{
-				logger.ErrorException("Не удалось записать банк.", ex);
+			logger.Info ("Сохраняем банк...");
+			try {
+				Session.Flush ();
+			} catch (Exception ex) {
+				logger.ErrorException ("Не удалось записать банк.", ex);
 				return false;
 			}
-			OrmMain.NotifyObjectUpdated(subject);
-			logger.Info("Ok");
+			OrmMain.NotifyObjectUpdated (subject);
+			logger.Info ("Ok");
 			return true;
 		}
 
-		public override void Destroy()
+		public override void Destroy ()
 		{
-			Session.Close();
+			Session.Close ();
 			//adaptorOrg.Disconnect();
-			base.Destroy();
+			base.Destroy ();
 		}
 
-		protected void OnButtonSaveClicked(object sender, EventArgs e)
+		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
-			if (!this.HasChanges || Save())
-				OnCloseTab(false);
+			if (!this.HasChanges || Save ())
+				OnCloseTab (false);
 		}
 
-		protected void OnButtonCancelClicked(object sender, EventArgs e)
+		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			OnCloseTab(false);
+			OnCloseTab (false);
 		}
 
-		protected void OnCloseTab(bool askSave)
+		protected void OnCloseTab (bool askSave)
 		{
 			if (CloseTab != null)
-				CloseTab(this, new TdiTabCloseEventArgs(askSave));
+				CloseTab (this, new TdiTabCloseEventArgs (askSave));
 		}
 
 	}
