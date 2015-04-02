@@ -131,9 +131,8 @@ namespace QSBanks
 			session.Flush ();
 			session.Close ();
 
-			Application.Invoke (delegate {
-				updateWindow.Destroy ();
-			});
+			OrmMain.NotifyObjectUpdated (new Bank ());
+			updateWindow.Destroy ();
 			//Выводим статистику
 			MessageDialog infoDlg = new MessageDialog (null, 
 				                        DialogFlags.DestroyWithParent, 
