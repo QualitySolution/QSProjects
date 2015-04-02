@@ -65,6 +65,8 @@
     <Compile Include="Dialogs\BankDlg.cs" />
     <Compile Include="AccountOwnerBase.cs" />
     <Compile Include="BanksUpdater.cs" />
+    <Compile Include="BankFilter.cs" />
+    <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

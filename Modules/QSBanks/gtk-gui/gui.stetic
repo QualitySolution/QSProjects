@@ -10,6 +10,8 @@
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../../QSValidation/bin/Debug/QSValidation.dll" />
+    <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
+    <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="436 318">
@@ -849,6 +851,31 @@
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="QSBanks.BankFilter" design-size="300 21">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HBox" id="hbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.CheckButton" id="checkShowDeleted">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Показывать удаленные</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Toggled" handler="OnCheckShowDeletedToggled" />
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
           </packing>
         </child>
       </widget>
