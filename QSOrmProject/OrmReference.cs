@@ -8,6 +8,8 @@ using NLog;
 using Gtk;
 using Gtk.DataBindings;
 using QSProjectsLib;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace QSOrmProject
 {
@@ -104,8 +106,36 @@ namespace QSOrmProject
 			{
 				searchFields = value;
 				hboxSearch.Visible = searchFields != null && searchFields.Length > 0;
+				searchPropCache = null; //Скидываем кеш
 			}
 		}
+
+		private List<PropertyInfo> searchPropCache;
+		protected List<PropertyInfo> SearchPropCache
+		{
+			get
+			{
+				if (searchPropCache != null)
+					return searchPropCache;
+
+				if (SearchFields == null)
+					return null;
+
+				searchPropCache = new List<PropertyInfo>();
+
+				foreach (string prop in SearchFields) {
+					var propInfo = objectType.GetProperty (prop);
+					if (propInfo != null) {
+						searchPropCache.Add (propInfo);
+					} else
+						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", objectType, prop);
+				}
+
+				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
+				return searchPropCache;
+			}
+		}
+
 
 		private OrmReferenceMode mode;
 		public OrmReferenceMode Mode
@@ -229,16 +259,17 @@ namespace QSOrmProject
 
 		bool HandleIsVisibleInFilter (object aObject)
 		{
+			logger.Debug ("Вход в фильтрацию.");
 			if(entrySearch.Text == "" || SearchFields.Length == 0)
 				return true;
-			foreach (string prop in SearchFields) {
-				if (objectType.GetProperty (prop) != null) {
-					string Str = objectType.GetProperty (prop).GetValue (aObject, null).ToString ();
-					if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1)
-						return true;
-				} else
-					logger.Error ("У объекта {0} не найден столбец поиска {1}", aObject.ToString (), prop);
+			foreach (var prop in SearchPropCache) {
+				string Str = prop.GetValue (aObject, null).ToString ();
+				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1) {
+					logger.Debug ("Выход нашли");
+					return true;
+				}
 			}
+			logger.Debug ("Выход не нашли.");
 			return false;
 		}
 
