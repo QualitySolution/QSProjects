@@ -205,7 +205,6 @@ namespace QSOrmProject
 				this.TabName = (att[0] as OrmSubjectAttribute).JournalName;
 			UpdateObjectList();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
-			datatreeviewRef.ItemsDataSource = filterView;
 		}
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
