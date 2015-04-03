@@ -11,7 +11,7 @@ using NHibernate.Criterion;
 namespace QSBanks
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class AccountDlg : Gtk.Bin, QSTDI.ITdiDialog, IOrmDialog
+	public partial class AccountDlg : Bin, ITdiDialog, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private IAccountOwner accountOwner;
@@ -74,8 +74,11 @@ namespace QSBanks
 		public object Subject {
 			get { return subject; }
 			set {
-				if (value is Account)
+				if (value is Account) {
 					subject = value as Account;
+					if (subject.Inactive)
+						labelInactive.Markup = "<span foreground=\"red\">Данный счет находится в более не существующем банке.</span>";
+				}
 			}
 		}
 
@@ -86,7 +89,7 @@ namespace QSBanks
 		{
 			this.Build ();
 			ParentReference = parentReference;
-			subject = new Account ();
+			Subject = new Account ();
 			accountOwner.Accounts.Add (subject);
 			ConfigureDlg ();
 		}
@@ -95,7 +98,7 @@ namespace QSBanks
 		{
 			this.Build ();
 			ParentReference = parentReference;
-			subject = sub;
+			Subject = sub;
 			TabName = subject.Name;
 			ConfigureDlg ();
 		}
@@ -113,6 +116,7 @@ namespace QSBanks
 
 		public bool Save ()
 		{
+			subject.Inactive = subject.InBank == null || subject.InBank.Deleted;
 			var valid = new QSValidator<Account> (subject);
 			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
 				return false;
@@ -148,6 +152,9 @@ namespace QSBanks
 		protected void OnDataentryrefBankChanged (object sender, EventArgs e)
 		{
 			adaptorBank.Target = subject.InBank;
+			subject.Inactive = subject.InBank == null || subject.InBank.Deleted;				
+			labelInactive.Markup = subject.Inactive ? "<span foreground=\"red\">Данный счет находится в более не существующем банке.</span>" : "";
+			
 		}
 	}
 }
