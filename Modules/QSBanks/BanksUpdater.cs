@@ -57,7 +57,7 @@ namespace QSBanks
 
 			if (!forceUpdate) {
 				MessageDialog md = new MessageDialog (null, 
-					                   DialogFlags.DestroyWithParent, 
+					                   DialogFlags.Modal, 
 					                   MessageType.Question,
 					                   ButtonsType.YesNo,
 					                   "Cправочник банков обновлялся более 2-х дней назад. Обновить?");
@@ -74,7 +74,7 @@ namespace QSBanks
 			if (loadedBanksList == null) {
 				updateWindow.Destroy ();
 				MessageDialog error = new MessageDialog (null,
-					                      DialogFlags.DestroyWithParent,
+					                      DialogFlags.Modal,
 					                      MessageType.Error,
 					                      ButtonsType.Ok,
 					                      "Не удалось загрузить обновленный справочник банков.\n" +
@@ -116,18 +116,20 @@ namespace QSBanks
 				    loadedBank.CorAccount == oldBank.CorAccount &&
 				    loadedBank.Name == oldBank.Name &&
 				    loadedBank.Region == oldBank.Region) == -1) {
-					int accountIdx = -1;
-					if ((accountIdx = accountsList.FindIndex (a => a.InBank == oldBank)) == -1) {
+					if ((accountsList.FindIndex (a => a.InBank == oldBank)) == -1) {
 						session.Delete (oldBank);
 						banksRemoved++;
-					} else {
-						oldBank.Deleted = accountsList [accountIdx].Inactive = true;
-						accountsDeactivated++;
-						banksDeactivated++;
-						continue;
-					}
+					} else
+						oldBank.Deleted = true;
 				}
 			}
+
+			//Деактивируем счета
+			foreach (Account acc in accountsList)
+				if (acc.InBank != null && acc.InBank.Deleted) {
+					acc.Inactive = true;
+					accountsDeactivated++;
+				}
 			session.Flush ();
 			session.Close ();
 
@@ -135,7 +137,7 @@ namespace QSBanks
 			updateWindow.Destroy ();
 			//Выводим статистику
 			MessageDialog infoDlg = new MessageDialog (null, 
-				                        DialogFlags.DestroyWithParent, 
+				                        DialogFlags.Modal, 
 				                        MessageType.Info,
 				                        ButtonsType.Ok,
 				                        "Обновление справочника успешно завершено.\n" +

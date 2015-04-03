@@ -55,7 +55,7 @@ namespace QSBanks
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
 			this.datatreeviewAccounts.InheritedDataSource = false;
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
-			this.datatreeviewAccounts.ColumnMappings = "{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер];";
+			this.datatreeviewAccounts.ColumnMappings = "{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер]; Inactive[Не активен];";
 			this.GtkScrolledWindow.Add (this.datatreeviewAccounts);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));

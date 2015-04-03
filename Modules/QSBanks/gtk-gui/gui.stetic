@@ -48,7 +48,7 @@
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="ColumnMappings">{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер];</property>
+                <property name="ColumnMappings">{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер]; Inactive[Не активен];</property>
                 <signal name="RowActivated" handler="OnDatatreeviewAccountsRowActivated" />
               </widget>
             </child>
