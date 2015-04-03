@@ -24,7 +24,7 @@ namespace QSBanks
 		
 		private global::Gtk.DataBindings.DataEntry dataentryName;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryRegion;
+		private global::Gtk.DataBindings.DataLabel datalabel1;
 		
 		private global::Gtk.Label label1;
 		
@@ -182,20 +182,18 @@ namespace QSBanks
 			w10.RightAttach = ((uint)(2));
 			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.dataentryRegion = new global::Gtk.DataBindings.DataEntry ();
-			this.dataentryRegion.CanFocus = true;
-			this.dataentryRegion.Name = "dataentryRegion";
-			this.dataentryRegion.IsEditable = true;
-			this.dataentryRegion.MaxLength = 45;
-			this.dataentryRegion.InvisibleChar = '●';
-			this.dataentryRegion.InheritedDataSource = true;
-			this.dataentryRegion.Mappings = "Region";
-			this.dataentryRegion.InheritedBoundaryDataSource = false;
-			this.dataentryRegion.InheritedDataSource = true;
-			this.dataentryRegion.Mappings = "Region";
-			this.dataentryRegion.InheritedBoundaryDataSource = false;
-			this.datatableInfo.Add (this.dataentryRegion);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryRegion]));
+			this.datalabel1 = new global::Gtk.DataBindings.DataLabel ();
+			this.datalabel1.Name = "datalabel1";
+			this.datalabel1.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel1");
+			this.datalabel1.InheritedDataSource = true;
+			this.datalabel1.Mappings = "GetRegionString";
+			this.datalabel1.InheritedBoundaryDataSource = false;
+			this.datalabel1.Important = false;
+			this.datalabel1.InheritedDataSource = true;
+			this.datalabel1.Mappings = "GetRegionString";
+			this.datalabel1.InheritedBoundaryDataSource = false;
+			this.datatableInfo.Add (this.datalabel1);
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.datalabel1]));
 			w11.TopAttach = ((uint)(3));
 			w11.BottomAttach = ((uint)(4));
 			w11.LeftAttach = ((uint)(1));

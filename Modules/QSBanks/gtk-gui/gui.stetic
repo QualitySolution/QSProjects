@@ -338,17 +338,15 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataEntry" id="dataentryRegion">
+              <widget class="Gtk.DataBindings.DataLabel" id="datalabel1">
                 <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="IsEditable">True</property>
-                <property name="MaxLength">45</property>
-                <property name="InvisibleChar">●</property>
+                <property name="LabelProp" translatable="yes">datalabel1</property>
                 <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Region</property>
+                <property name="Mappings">GetRegionString</property>
                 <property name="InheritedBoundaryDataSource">False</property>
+                <property name="Important">False</property>
                 <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Region</property>
+                <property name="Mappings">GetRegionString</property>
                 <property name="InheritedBoundaryDataSource">False</property>
               </widget>
               <packing>

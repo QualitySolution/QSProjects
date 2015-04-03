@@ -84,7 +84,7 @@ namespace QSBanks
 		private void ConfigureDlg ()
 		{
 			buttonSave.Sensitive = dataentryBik.Sensitive = dataentryCity.Sensitive = 
-				dataentryCorAccount.Sensitive = dataentryName.Sensitive = dataentryRegion.Sensitive = false;
+				dataentryCorAccount.Sensitive = dataentryName.Sensitive = false;
 			if (subject.Deleted) {
 				labelDeleted.Markup = "<span foreground=\"red\">Данного банка больше не существует.</span>";
 			}

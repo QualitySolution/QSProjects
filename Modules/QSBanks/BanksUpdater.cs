@@ -22,6 +22,7 @@ namespace QSBanks
 
 		const string ARCHIVE_LINK = @"http://cbrates.rbc.ru/bnk/bnk.zip";
 		const string BANKS_LIST_FILE = "bnkseek.txt";
+		const string BANKS_REGIONS_FILE = "reg.txt";
 
 		public static int UpdatePeriod = 3;
 
@@ -101,7 +102,7 @@ namespace QSBanks
 					oldBanksList [i].City = loadedBank.City;
 					oldBanksList [i].CorAccount = loadedBank.CorAccount;
 					oldBanksList [i].Name = loadedBank.Name;
-					oldBanksList [i].Region = loadedBank.Bik.Length > 4 ? loadedBank.Bik.Substring (2, 2) : "";
+					oldBanksList [i].Region = loadedBank.Region;
 					banksFixed++;
 					continue;
 				}
@@ -172,8 +173,25 @@ namespace QSBanks
 			}
 			ZipFile banksZip = new ZipFile (zipStream);
 
+			//Загружаем список регионов.
+			ZipEntry zipEntry = banksZip.GetEntry (BANKS_REGIONS_FILE);
+			List<BankRegion> regions = new List<BankRegion> ();
+			using (Stream banks = banksZip.GetInputStream (zipEntry))
+			using (StreamReader sr = new StreamReader (banks, Encoding.GetEncoding (1251))) {
+				string regionInfoString;
+				while (!String.IsNullOrEmpty ((regionInfoString = sr.ReadLine ()))) {
+					var regionRegexMatch = Regex.Match (regionInfoString, @"^(\d+)\t(.+)\t(.*)$");
+					BankRegion region = new BankRegion ();
+					region.RegionNum = Int32.Parse (regionRegexMatch.Groups [1].Value);
+					region.Region = regionRegexMatch.Groups [2].Value;
+					region.City = regionRegexMatch.Groups [3].Value;
+					regions.Add (region);
+				}
+			}
+			regions = fillRegions (regions);
+
 			//Читаем файл с банками
-			ZipEntry zipEntry = banksZip.GetEntry (BANKS_LIST_FILE);
+			zipEntry = banksZip.GetEntry (BANKS_LIST_FILE);
 			List<Bank> loadedBanksList = new List<Bank> ();
 			using (Stream banks = banksZip.GetInputStream (zipEntry))
 			using (StreamReader sr = new StreamReader (banks, Encoding.GetEncoding (1251))) {
@@ -185,16 +203,55 @@ namespace QSBanks
 					bank.Name = bankRegexMatch.Groups [2].Value;
 					bank.Bik = bankRegexMatch.Groups [3].Value;
 					bank.CorAccount = bankRegexMatch.Groups [4].Value;
-					bank.Region = bank.Bik.Length > 4 ? bank.Bik.Substring (2, 2) : "";
+					bank.Region = bank.Bik.Length > 4 ? 
+						regions.Find (m => m.RegionNum == Int32.Parse (bank.Bik.Substring (2, 2))) : null;
 					loadedBanksList.Add (bank);
 				}
 			}
-			zipStream.Close ();
-
 			//Удаляем казначейства и прочие организации, не имеющие кор. счета.
 			loadedBanksList.RemoveAll (m => String.IsNullOrEmpty (m.CorAccount));
 
+			zipStream.Close ();
+
 			return loadedBanksList;
+		}
+
+		static List<BankRegion> fillRegions (List<BankRegion> newRegions)
+		{
+			ISession session = OrmMain.OpenSession ();
+			List<BankRegion> oldRegionsList = (List<BankRegion>)session.CreateCriteria<BankRegion> ().List<BankRegion> ();
+			List<Bank> banksList = (List<Bank>)session.CreateCriteria<Bank> ().List<Bank> ();
+
+			foreach (BankRegion region in newRegions) {
+				int i;
+				if ((i = oldRegionsList.FindIndex (oldR => oldR.RegionNum == region.RegionNum)) != -1) {
+					if (BankRegion.EqualsWithoutId (oldRegionsList [i], region))
+						continue;
+					oldRegionsList [i].City = region.City;
+					oldRegionsList [i].Region = region.City;
+				}
+				oldRegionsList.Add (region);
+				session.Persist (region);
+				continue;
+				//Тут могла бы быть ваша статистика.
+			}
+			//Удаляем старые
+			foreach (BankRegion oldR in oldRegionsList) {
+				if (newRegions.FindIndex (newR => newR.City == oldR.City &&
+				    newR.Region == oldR.Region &&
+				    newR.RegionNum == oldR.RegionNum) == -1) {
+					List<Bank> banksToFix = banksList.FindAll (bank => bank.Region == oldR);
+					if (banksToFix.Count > 0) {
+						foreach (Bank b in banksToFix)
+							b.Region = null;
+					}
+					session.Delete (oldR);
+				}
+			}
+			session.Flush ();
+			oldRegionsList = (List<BankRegion>)session.CreateCriteria<BankRegion> ().List<BankRegion> ();
+			session.Close ();
+			return oldRegionsList;
 		}
 	}
 }

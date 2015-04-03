@@ -29,6 +29,13 @@ namespace QSBanks
 			set { SetField (ref city, value, () => City); }
 		}
 
+		public static bool EqualsWithoutId (BankRegion first, BankRegion second)
+		{
+			return (first.City == second.City &&
+			first.Region == second.Region &&
+			first.RegionNum == second.RegionNum);
+		}
+
 		public BankRegion ()
 		{
 			Region = string.Empty;

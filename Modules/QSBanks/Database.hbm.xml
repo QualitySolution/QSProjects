@@ -8,7 +8,7 @@
 	 	<property name="Name" column="name" />
 	 	<property name="Bik" column="bik" />
 	 	<property name="CorAccount" column="cor_account" />
-	 	<property name="Region" column="region" />
+	 	<many-to-one name="Region" class="BankRegion" column="region_id" />
 	 	<property name="City" column="city" />
 	 	<property name="Deleted" column="deleted" />
  	</class>
