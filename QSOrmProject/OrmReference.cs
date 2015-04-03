@@ -18,6 +18,8 @@ namespace QSOrmProject
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
 		private IReferenceFilter filterWidget;
+		private uint totalSearchFinished;
+		private DateTime searchStarted;
 
 		public ITdiTabParent TabParent { set; get;}
 
@@ -253,17 +255,15 @@ namespace QSOrmProject
 
 		bool HandleIsVisibleInFilter (object aObject)
 		{
-			logger.Debug ("Вход в фильтрацию.");
 			if(entrySearch.Text == "" || SearchFields.Length == 0)
 				return true;
+			totalSearchFinished++;
 			foreach (var prop in SearchPropCache) {
 				string Str = prop.GetValue (aObject, null).ToString ();
 				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1) {
-					logger.Debug ("Выход нашли");
 					return true;
 				}
 			}
-			logger.Debug ("Выход не нашли.");
 			return false;
 		}
 
@@ -274,7 +274,12 @@ namespace QSOrmProject
 
 		protected void OnEntrySearchChanged(object sender, EventArgs e)
 		{
+			searchStarted = DateTime.Now;
+			totalSearchFinished = 0;
 			filterView.Refilter();
+			var delay = DateTime.Now.Subtract (searchStarted);
+			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
+				totalSearchFinished, delay.TotalSeconds, delay.TotalMilliseconds / totalSearchFinished);
 		}
 
 		public override void Destroy()
