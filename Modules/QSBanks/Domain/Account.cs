@@ -2,7 +2,6 @@
 using System.Data.Bindings;
 using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
-using DataAnnotationsExtensions;
 using System.Text.RegularExpressions;
 
 namespace QSBanks

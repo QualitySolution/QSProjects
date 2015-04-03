@@ -21,5 +21,12 @@
 	 	<property name="Inactive" column="inactive" />
 	 	<many-to-one name="InBank" class="Bank" column="bank_id" />
  	</class>
-
+ 	<class name="BankRegion" lazy="false" table="bank_regions">
+		<id name="Id" column="id">
+			<generator class="native"></generator>
+	 	</id>
+	 	<property name="Region" column="region" />
+	 	<property name="City" column="city" />
+	 	<property name="RegionNum" column="region_num" />
+ 	</class>
 </hibernate-mapping>

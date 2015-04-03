@@ -67,6 +67,7 @@
     <Compile Include="BanksUpdater.cs" />
     <Compile Include="BankFilter.cs" />
     <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
+    <Compile Include="Domain\BankRegion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
