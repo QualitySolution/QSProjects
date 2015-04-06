@@ -137,7 +137,13 @@ namespace QSHistoryLog
 			foreach(var onechange in compare.Differences)
 			{
 				cmd.Parameters ["path"].Value = objectName + Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				cmd.Parameters ["type"].Value = "Changed";
+				if(onechange.Object1.Target == null)
+					cmd.Parameters ["type"].Value = FieldChangeType.Added;
+				else if(onechange.Object2.Target == null)
+					cmd.Parameters ["type"].Value = FieldChangeType.Removed;
+				else
+					cmd.Parameters ["type"].Value = FieldChangeType.Changed;
+
 				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
 				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
 				if (onechange.ChildPropertyName == "Id") {
