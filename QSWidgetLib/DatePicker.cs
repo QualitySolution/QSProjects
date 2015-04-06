@@ -7,15 +7,13 @@ namespace QSWidgetLib
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class DatePicker : Gtk.Bin
 	{
-		protected DateTime date;
-		protected bool _IsEmpty;
+		protected DateTime? date = null;
 		public event EventHandler DateChanged;
 		protected Dialog editDate;
 
 		public DatePicker ()
 		{
 			this.Build ();
-			_IsEmpty = true;
 		}
 
 		public string DateText {
@@ -23,7 +21,8 @@ namespace QSWidgetLib
 				return entryDate.Text;
 			}
 		}
-		public DateTime Date {
+
+		public DateTime? DateOrNull {
 			get {
 				return date;
 			}
@@ -31,21 +30,31 @@ namespace QSWidgetLib
 				if (date == value)
 					return;
 				date = value;
-				if(date.Year == 1 && date.DayOfYear == 1)
-					Clear ();
-				else
-				{
-					_IsEmpty = false;
-					entryDate.Text = date.ToShortDateString();
-				}
+
+				entryDate.Text = date.HasValue ? date.Value.ToShortDateString () : String.Empty;
+
 				if(DateChanged != null)
 					DateChanged(this, EventArgs.Empty);
 			}
 		}
 
+		public DateTime Date {
+			get {
+				return date.GetValueOrDefault ();
+			}
+			set {
+				if (value.Year == 1 && value.DayOfYear == 1)
+					DateOrNull = null;
+				else
+				{
+					DateOrNull = value;
+				}
+			}
+		}
+
 		public bool IsEmpty {
 			get {
-				return _IsEmpty;
+				return !date.HasValue;
 			}
 
 		}
@@ -64,13 +73,6 @@ namespace QSWidgetLib
 			set { _AutoSeparation = value;}
 		}
 
-		public void Clear()
-		{
-			_IsEmpty = true;
-			entryDate.Text = "";
-			date = new DateTime(1, 1, 1);
-		}
-
 		protected void OnButtonEditDateClicked (object sender, EventArgs e)
 		{
 			Gtk.Window parentWin = (Gtk.Window) this.Toplevel;
@@ -83,17 +85,14 @@ namespace QSWidgetLib
 				CalendarDisplayOptions.ShowDayNames | 
 					CalendarDisplayOptions.ShowWeekNumbers;
 			SelectDate.DaySelectedDoubleClick += OnCalendarDaySelectedDoubleClick;
-			if(_IsEmpty)
-				SelectDate.Date = DateTime.Now.Date;
-			else
-				SelectDate.Date = date;
+			SelectDate.Date = date ?? DateTime.Now.Date;
+			
 			editDate.VBox.Add(SelectDate);
 			editDate.ShowAll();
 			int response = editDate.Run ();
 			if(response == (int)ResponseType.Ok)
 			{
-				Date = SelectDate.GetDate();
-				entryDate.Text = Date.ToShortDateString();
+				DateOrNull = SelectDate.GetDate();
 			}
 			SelectDate.Destroy();
 			editDate.Destroy ();
@@ -106,20 +105,20 @@ namespace QSWidgetLib
 
 		protected void OnEntryDateFocusOutEvent (object o, FocusOutEventArgs args)
 		{
-			DateTime outDate;
 			if(entryDate.Text == "")
 			{
-				Clear();
+				DateOrNull = null;
 				return;
 			}
+
+			DateTime outDate;
 			if(DateTime.TryParse(((Entry)o).Text, out outDate))
 			{
-				entryDate.Text = outDate.ToShortDateString();
-				Date = outDate;
+				DateOrNull = outDate;
 			}
 			else
 			{
-				entryDate.Text = date.ToShortDateString();
+				entryDate.Text = date.Value.ToShortDateString();
 			}
 		}
 
@@ -141,8 +140,6 @@ namespace QSWidgetLib
 		{
 			if(!_AutoSeparation)
 				return;
-			//Console.WriteLine(String.Format("T:{0} L:{1} P:{2}", args.Text, args.Length, args.Position));
-			//Console.WriteLine(String.Format("E:{0} L:{1}", entryDate.Text, entryDate.Text.Length));
 			if(args.Length == 1 && 
 			   (args.Position == 3 || args.Position == 6) && 
 			   args.Text != System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator &&

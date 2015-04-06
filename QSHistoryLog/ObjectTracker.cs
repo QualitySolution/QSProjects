@@ -136,8 +136,15 @@ namespace QSHistoryLog
 				
 			foreach(var onechange in compare.Differences)
 			{
+				FixDisplay (onechange);
 				cmd.Parameters ["path"].Value = objectName + Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				cmd.Parameters ["type"].Value = "Changed";
+				if(onechange.Object1.Target == null)
+					cmd.Parameters ["type"].Value = FieldChangeType.Added;
+				else if(onechange.Object2.Target == null)
+					cmd.Parameters ["type"].Value = FieldChangeType.Removed;
+				else
+					cmd.Parameters ["type"].Value = FieldChangeType.Changed;
+
 				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
 				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
 				if (onechange.ChildPropertyName == "Id") {
@@ -150,7 +157,23 @@ namespace QSHistoryLog
 			}
 			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
 		}
+
+		private void FixDisplay(Difference diff)
+		{
+			if (diff.Object1.Target is DateTime) {
+				if ((DateTime)diff.Object1.Target == default(DateTime)) {
+					diff.Object1.Target = null;
+					diff.Object1Value = String.Empty;
+				} else if (((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
+					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString ();
+
+				if ((DateTime)diff.Object2.Target == default(DateTime)) {
+					diff.Object2.Target = null;
+					diff.Object2Value = String.Empty;
+				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
+					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
+			}
+		}
 	}
-		
 }
 
