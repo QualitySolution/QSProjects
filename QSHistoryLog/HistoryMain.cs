@@ -89,9 +89,14 @@ namespace QSHistoryLog
 
 		private static string ResolveFieldName (Type parentClass, string[] path)
 		{
+			string prop, key = String.Empty;
 			var reg = Regex.Match (path [0], @"^(.*)\[(.*)\]$");
-			string prop = reg.Groups [1].Value;
-			string key = reg.Groups [2].Value;
+			if (reg.Success) {
+				prop = reg.Groups [1].Value;
+				key = reg.Groups [2].Value;
+			} else {
+				prop = path [0];
+			}
 
 			var field = parentClass.GetProperty (prop);
 			if (field == null)
