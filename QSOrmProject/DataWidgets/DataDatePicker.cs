@@ -143,7 +143,7 @@ namespace QSOrmProject
 		{
 			logger.Debug ("Get {0} From DataSource", adaptor.Value);
 			adaptor.DataChanged = false;
-			if (adaptor.Value != null && adaptor.Value is DateTime)
+			if (adaptor.Value is DateTime)
 				Date = (DateTime)adaptor.Value;
 			else
 				Date = default(DateTime);
@@ -155,7 +155,7 @@ namespace QSOrmProject
 		public virtual void PutDataToDataSource (object aSender)
 		{
 			adaptor.DataChanged = false;
-			if (adaptor.Value != null)
+			if (adaptor.Value != null && (DateTime)adaptor.Value != Date)
 				adaptor.Value = Date;
 		}
 			
@@ -166,15 +166,7 @@ namespace QSOrmProject
 		{
 			adaptor.DemandInstantPost();
 		}
-
-		/// <summary>
-		/// Exposes OnOverwrite method
-		/// </summary>
-		/*public virtual void ToggleOverwrite()
-		{
-			OnToggleOverwrite();
-		}*/
-
+			
 		/// <summary>
 		/// Creates Widget 
 		/// </summary>
@@ -213,16 +205,6 @@ namespace QSOrmProject
 			this.DateChanged += OnChange;
 			adaptor = new GtkControlAdaptor (this, true, aDataSource, aMappings);
 		}
-
-		/// <summary>
-		/// Destroys and disconnects Widget
-		/// </summary>
-		~DataDatePicker()
-		{
-			adaptor.Disconnect();
-			adaptor = null;
-		}
-
 	}
 }
 
