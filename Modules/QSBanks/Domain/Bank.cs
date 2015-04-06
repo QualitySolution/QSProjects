@@ -75,7 +75,7 @@ namespace QSBanks
 			first.City == second.City &&
 			first.CorAccount == second.CorAccount &&
 			first.Name == second.Name &&
-			first.Region == second.Region &&
+			first.Region.Equals (second.Region) &&
 			first.Deleted == second.Deleted);
 		}
 

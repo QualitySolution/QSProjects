@@ -24,7 +24,7 @@ namespace QSBanks
 		const string BANKS_LIST_FILE = "bnkseek.txt";
 		const string BANKS_REGIONS_FILE = "reg.txt";
 
-		public static int UpdatePeriod = 3;
+		public static int UpdatePeriod = 14;
 
 		static Window updateWindow = new Window ("Идет обновление справочника банков...");
 
@@ -61,7 +61,7 @@ namespace QSBanks
 					                   DialogFlags.Modal, 
 					                   MessageType.Question,
 					                   ButtonsType.YesNo,
-					                   "Cправочник банков обновлялся более 2-х дней назад. Обновить?");
+					                   "Cправочник банков обновлялся более \n2-х недель назад. Обновить?");
 				md.SetPosition (WindowPosition.Center);
 				md.Show ();
 				int Result = md.Run ();
@@ -116,7 +116,7 @@ namespace QSBanks
 				    loadedBank.Bik == oldBank.Bik &&
 				    loadedBank.CorAccount == oldBank.CorAccount &&
 				    loadedBank.Name == oldBank.Name &&
-				    loadedBank.Region == oldBank.Region) == -1) {
+				    loadedBank.Region.Equals (oldBank.Region)) == -1) {
 					if ((accountsList.FindIndex (a => a.InBank == oldBank)) == -1) {
 						session.Delete (oldBank);
 						banksRemoved++;

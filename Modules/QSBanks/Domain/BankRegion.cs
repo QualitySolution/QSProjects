@@ -36,6 +36,17 @@ namespace QSBanks
 			first.RegionNum == second.RegionNum);
 		}
 
+		public override bool Equals (object obj)
+		{
+			if (!(obj is BankRegion))
+				return false;
+			
+			return (City == (obj as BankRegion).City &&
+			Id == (obj as BankRegion).Id &&
+			RegionNum == (obj as BankRegion).RegionNum &&
+			Region == (obj as BankRegion).Region);
+		}
+
 		public BankRegion ()
 		{
 			Region = string.Empty;
