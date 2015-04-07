@@ -137,14 +137,23 @@ namespace QSBanks
 			OrmMain.NotifyObjectUpdated (new Bank ());
 			updateWindow.Destroy ();
 			//Выводим статистику
+			string message;
+			bool wasUpdated = ((accountsDeactivated | banksAdded | banksDeactivated | banksFixed | banksRemoved) != 0);
+			if (!wasUpdated)
+				message = "Обновление не требуется.";
+			else
+				message = String.Format ("Обновление справочника успешно завершено.\n\n" +
+				"Добавлено банков: {0}\nИсправлено банков: {1}\nУдалено банков: {2}\n" +
+				"Деактивировано счетов: {3}\nДеактивировано банков: {4}",
+					banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated);
 			MessageDialog infoDlg = new MessageDialog (null, 
 				                        DialogFlags.Modal, 
 				                        MessageType.Info,
 				                        ButtonsType.Ok,
-				                        "Обновление справочника успешно завершено.\n" +
-				                        "Добавлено банков: {0}\nИсправлено банков: {1}\nУдалено банков: {2}\n" +
-				                        "Деактивировано счетов: {3}\nДеактивировано банков: {4}",
-				                        banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated);
+				                        message);
+			//Если будет нужен более подробный вывод того, что произошло.
+			//if (wasUpdated)
+			//	infoDlg.AddButton ("Подробнее...", 42);
 			infoDlg.SetPosition (WindowPosition.Center);
 			infoDlg.Show ();
 			infoDlg.Run ();
