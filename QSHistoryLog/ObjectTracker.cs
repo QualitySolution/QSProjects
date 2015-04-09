@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using QSOrmProject;
 using QSProjectsLib;
@@ -46,7 +45,7 @@ namespace QSHistoryLog
 			lastObject = null;
 			compare = null;
 			operation = ChangeSetType.Change;
-			firstObject = ObjectCloner.Clone (subject);
+			firstObject = NClone.Clone.ObjectGraph (subject);
 		}
 
 		public void TakeEmpty(T subject)
@@ -54,13 +53,13 @@ namespace QSHistoryLog
 			lastObject = null;
 			compare = null;
 			operation = ChangeSetType.Create;
-			firstObject = ObjectCloner.Clone (subject);
+			firstObject = NClone.Clone.ObjectGraph (subject);
 		}
 
 		public void TakeLast(T subject)
 		{
 			compare = null;
-			lastObject = ObjectCloner.Clone (subject);
+			lastObject = NClone.Clone.ObjectGraph (subject);
 			ReadObjectDiscription (subject);
 		}
 
@@ -138,9 +137,9 @@ namespace QSHistoryLog
 			{
 				FixDisplay (onechange);
 				cmd.Parameters ["path"].Value = objectName + Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				if(onechange.Object1.Target == null)
+				if(onechange.Object1 == null || onechange.Object1.Target == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Added;
-				else if(onechange.Object2.Target == null)
+				else if(onechange.Object2 == null || onechange.Object2.Target == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Removed;
 				else
 					cmd.Parameters ["type"].Value = FieldChangeType.Changed;
@@ -160,7 +159,7 @@ namespace QSHistoryLog
 
 		private void FixDisplay(Difference diff)
 		{
-			if (diff.Object1.Target is DateTime) {
+			if (diff.Object1 != null && diff.Object1.Target is DateTime) {
 				if ((DateTime)diff.Object1.Target == default(DateTime)) {
 					diff.Object1.Target = null;
 					diff.Object1Value = String.Empty;
