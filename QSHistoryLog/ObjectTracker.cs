@@ -136,12 +136,13 @@ namespace QSHistoryLog
 				
 			foreach(var onechange in compare.Differences)
 			{
-				FixDisplay (onechange);
+				if (!FixDisplay (onechange))
+					continue;
 				string modifedPropName = Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				if (onechange.ParentObject1 != null) {
-					var id = HistoryMain.GetObjectId (onechange.ParentObject1.Target);
+				if (onechange.ParentObject2 != null) {
+					var id = HistoryMain.GetObjectId (onechange.ParentObject2.Target);
 					if(id.HasValue)
-						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject1.Target));//FIXME Тут неочевидно появляются квадратные скобки
+						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
 				}
 				cmd.Parameters ["path"].Value = objectName + modifedPropName;
 				if(onechange.Object1 == null || onechange.Object1.Target == null)
@@ -163,8 +164,10 @@ namespace QSHistoryLog
 			}
 			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
 		}
-
-		private void FixDisplay(Difference diff)
+			
+		/// <returns><c>false</c> если нужно не сохранять элемент.</returns>
+		/// <param name="diff">Diff.</param>
+		private bool FixDisplay(Difference diff)
 		{
 			if (diff.Object1 != null && diff.Object1.Target is DateTime) {
 				if ((DateTime)diff.Object1.Target == default(DateTime)) {
@@ -179,6 +182,22 @@ namespace QSHistoryLog
 				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
 					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
 			}
+
+			if(diff.ParentObject1 != null && diff.ParentObject1.Target is IFileTrace)
+			{
+				if (Regex.IsMatch (diff.PropertyName, @".*Size$"))
+					return false;
+				if(Regex.IsMatch (diff.PropertyName, @".*IsChanged$"))
+				{   
+					diff.PropertyName = diff.PropertyName.Replace ("IsChanged", "Size");
+					diff.Object1Value = diff.ParentObject1 != null && diff.ParentObject1.Target != null 
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject1.Target as IFileTrace).Size) : String.Empty;
+					diff.Object2Value = diff.ParentObject2 != null && diff.ParentObject2.Target != null 
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2.Target as IFileTrace).Size) : String.Empty;
+				}
+			}
+
+			return true;
 		}
 	}
 }
