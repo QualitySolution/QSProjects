@@ -1,10 +1,9 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
-using QSOrmProject;
 using QSProjectsLib;
 using KellermanSoftware.CompareNetObjects;
 using System.Text.RegularExpressions;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace QSHistoryLog
 {
@@ -181,6 +180,15 @@ namespace QSHistoryLog
 					diff.Object2Value = String.Empty;
 				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
 					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
+			}
+
+			if(diff.ParentObject2 != null && diff.ParentObject2.Target.GetType ().IsGenericType 
+			   && diff.ParentObject2.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			   && diff.Object1 == null)
+			{
+				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[+]");
+				diff.Object1Value = String.Empty;
+				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2.Target);
 			}
 
 			if(diff.ParentObject1 != null && diff.ParentObject1.Target is IFileTrace)
