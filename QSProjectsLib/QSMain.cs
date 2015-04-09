@@ -37,7 +37,7 @@ namespace QSProjectsLib
 		//Перечисления
 		public enum DataProviders
 		{
-MySQL,
+			MySQL,
 			Factory}
 
 		;
@@ -168,9 +168,9 @@ MySQL,
 			}
 			if (TextMes != "") {
 				MessageDialog VersionError = new MessageDialog (Parrent, DialogFlags.DestroyWithParent,
-				                                                MessageType.Warning, 
-				                                                ButtonsType.Close, 
-				                                                TextMes);
+					                             MessageType.Warning, 
+					                             ButtonsType.Close, 
+					                             TextMes);
 				VersionError.Run ();
 				VersionError.Destroy ();
 			}
@@ -182,33 +182,30 @@ MySQL,
 			logger.Debug ("Конец пинга соединения.");
 		}
 
-		public static void DoConnect()
+		public static void DoConnect ()
 		{
 			WaitResultIsOk = true;
-			try
-			{
-				connectionDB.Open();
-			}
-			catch (Exception ex) {
+			try {
+				connectionDB.Open ();
+			} catch (Exception ex) {
 				logger.WarnException ("Не удалось соединится.", ex);
 				WaitResultIsOk = false;
 			}
 		}
 
-		public static void TryConnect()
+		public static void TryConnect ()
 		{
-			logger.Info("Пытаемся восстановить соединение...");
+			logger.Info ("Пытаемся восстановить соединение...");
 			bool timeout = WaitOperationDlg.RunOperationWithDlg (new ThreadStart (DoConnect),
-				connectionDB.ConnectionTimeout,
-				"Соединяемся с сервером MySQL."
-			);
-			if(!WaitResultIsOk || timeout)
-			{
+				               connectionDB.ConnectionTimeout,
+				               "Соединяемся с сервером MySQL."
+			               );
+			if (!WaitResultIsOk || timeout) {
 				MessageDialog md = new MessageDialog (null, 
-				                                      DialogFlags.DestroyWithParent,
-				                                      MessageType.Question,
-				                                      ButtonsType.YesNo,
-				                                      "Соединение было разорвано. Повторить попытку подключения? В противном случае приложение завершит работу.");
+					                   DialogFlags.DestroyWithParent,
+					                   MessageType.Question,
+					                   ButtonsType.YesNo,
+					                   "Соединение было разорвано. Повторить попытку подключения? В противном случае приложение завершит работу.");
 				ResponseType result = (ResponseType)md.Run ();
 				md.Destroy ();
 				if (result == ResponseType.Yes) {
@@ -226,15 +223,13 @@ MySQL,
 			logger.Info ("Проверяем соединение...");
 
 			bool timeout = WaitOperationDlg.RunOperationWithDlg (new ThreadStart (DoPing),
-				connectionDB.ConnectionTimeout,
-				"Идет проверка соединения с базой данных.");
-			if(timeout && ConnectionDB.State == System.Data.ConnectionState.Open)
-			{
+				               connectionDB.ConnectionTimeout,
+				               "Идет проверка соединения с базой данных.");
+			if (timeout && ConnectionDB.State == System.Data.ConnectionState.Open) {
 				ConnectionDB.Close (); //На линуксе есть случаи когда состояние соедиения не корректное.
 			}
-			if(connectionDB.State != System.Data.ConnectionState.Open)
-			{
-				logger.Warn("Соединение с сервером разорвано, пробуем пересоединится...");
+			if (connectionDB.State != System.Data.ConnectionState.Open) {
+				logger.Warn ("Соединение с сервером разорвано, пробуем пересоединится...");
 				TryConnect ();
 			}
 			logger.Info ("Ок.");
@@ -297,9 +292,7 @@ MySQL,
 		{
 			if (GuiThread == Thread.CurrentThread) {
 				RealErrorMessage (parent, ex, userMessage);
-			}
-			else
-			{
+			} else {
 				logger.Debug ("From Another Thread");
 				Application.Invoke (delegate {
 					RealErrorMessage (parent, ex, userMessage);
@@ -307,7 +300,7 @@ MySQL,
 			}
 		}
 
-		private static void RealErrorMessage(Window parent, Exception ex, string userMessage = "")
+		private static void RealErrorMessage (Window parent, Exception ex, string userMessage = "")
 		{
 			if (parent == null && ErrorDlgParrent != null)
 				parent = ErrorDlgParrent;
@@ -316,9 +309,9 @@ MySQL,
 				RunErrorMessageDlg (null, new RunErrorMessageDlgEventArgs (parent, ex, userMessage));
 			} else {
 				MessageDialog md = new MessageDialog (parent, DialogFlags.DestroyWithParent,
-				                                       MessageType.Error, 
-				                                       ButtonsType.Ok, 
-				                                       userMessage != "" ? userMessage : ex.Message
+					                   MessageType.Error, 
+					                   ButtonsType.Ok, 
+					                   userMessage != "" ? userMessage : ex.Message
 				                   );
 				md.Run ();
 				md.Destroy ();
@@ -424,9 +417,21 @@ MySQL,
 		{
 			if (StatusBarLabel == null)
 				return;
-			while (GLib.MainContext.Pending()) {
-				Gtk.Main.Iteration();
+			while (GLib.MainContext.Pending ()) {
+				Gtk.Main.Iteration ();
 			}
+		}
+
+		public static void SubscribeToUnhadledExceptions ()
+		{
+			AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {
+				logger.FatalException ("Поймано необработаное исключение в Application Domain.", (Exception)e.ExceptionObject);
+				QSMain.ErrorMessage ((Exception)e.ExceptionObject);
+			};
+			GLib.ExceptionManager.UnhandledException += delegate(GLib.UnhandledExceptionArgs a) {
+				logger.FatalException ("Поймано необработаное исключение в GTK.", (Exception)a.ExceptionObject);
+				QSMain.ErrorMessage ((Exception)a.ExceptionObject);
+			};
 		}
 	}
 }
