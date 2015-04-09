@@ -5,7 +5,6 @@ using System.Data.Bindings;
 using System.Reflection;
 using System.Linq;
 using KellermanSoftware.CompareNetObjects;
-using QSOrmProject;
 using System.Text.RegularExpressions;
 
 namespace QSHistoryLog
@@ -34,6 +33,7 @@ namespace QSHistoryLog
 			logic.Config.CompareStaticProperties = false;
 			logic.Config.IgnoreCollectionOrder = true;
 			logic.Config.MaxDifferences = 10000;
+			logic.Config.MaxStructDepth = 10;
 			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
 
 			return logic;
@@ -46,10 +46,19 @@ namespace QSHistoryLog
 			return desc;
 		}
 
+		/// <summary>
+		/// Adds the type for the identifier comparation in collectoions.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		public static void AddIdComparationType(Type type)
+		{
+			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, new string[] { "Id" });
+		}
+
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
 		{
 			string result = String.Empty;
-			string[] parts = path.Split ('.');
+			string[] parts = Regex.Split (path, @"\.(.*\[.*\]|.+)(?:\.|$)");
 
 			if (parts.Length <= 0)
 				return result;
@@ -120,9 +129,14 @@ namespace QSHistoryLog
 				name += String.Format ("[{0}]", key);
 			}
 
-			if (path.Length > 1)
-				return name + FieldNameSeparator +
-				ResolveFieldName (field.PropertyType, path.Where ((val, idx) => idx != 0).ToArray ());
+			if (path.Length > 1) {
+				string recusiveFieldName;
+				if(field.PropertyType.IsGenericType && field.PropertyType.GetGenericTypeDefinition () == typeof(List<>))
+					recusiveFieldName = ResolveFieldName (field.PropertyType.GetGenericArguments ()[0], path.Where ((val, idx) => idx != 0).ToArray ());
+				else
+					recusiveFieldName =	ResolveFieldName (field.PropertyType, path.Where ((val, idx) => idx != 0).ToArray ());
+				return name + FieldNameSeparator + recusiveFieldName;
+			}
 			else
 				return name + FieldNameSeparator;
 		}
@@ -141,6 +155,13 @@ namespace QSHistoryLog
 
 			return value.ToString ();
 		}
+
+		internal static int? GetObjectId(object value)
+		{
+			var prop = value.GetType ().GetProperty ("Id");
+			return prop != null ? (int?)prop.GetValue (value, null) : null;
+		}
+
 	}
 
 	public enum ChangeSetType

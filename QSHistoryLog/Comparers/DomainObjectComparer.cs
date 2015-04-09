@@ -3,6 +3,7 @@ using KellermanSoftware.CompareNetObjects.TypeComparers;
 using KellermanSoftware.CompareNetObjects;
 using QSOrmProject;
 using System.Reflection;
+using System.Collections;
 
 namespace QSHistoryLog
 {
@@ -49,8 +50,11 @@ namespace QSHistoryLog
 				prop2 = parms.Object2.GetType ().GetProperty ("Id");
 
 			if (prop1 != null && prop2 != null &&
-				(int)prop1.GetValue (parms.Object1, null) == (int)prop2.GetValue (parms.Object2, null))
+			    (int)prop1.GetValue (parms.Object1, null) == (int)prop2.GetValue (parms.Object2, null)) {
+				if (parms.ParentObject1 is IList)
+					base.CompareType (parms);
 				return;
+			}
 
 			Difference difference = new Difference
 			{

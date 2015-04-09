@@ -4,6 +4,7 @@ using QSOrmProject;
 using QSProjectsLib;
 using KellermanSoftware.CompareNetObjects;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace QSHistoryLog
 {
@@ -136,7 +137,13 @@ namespace QSHistoryLog
 			foreach(var onechange in compare.Differences)
 			{
 				FixDisplay (onechange);
-				cmd.Parameters ["path"].Value = objectName + Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
+				string modifedPropName = Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
+				if (onechange.ParentObject1 != null) {
+					var id = HistoryMain.GetObjectId (onechange.ParentObject1.Target);
+					if(id.HasValue)
+						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject1.Target));//FIXME Тут неочевидно появляются квадратные скобки
+				}
+				cmd.Parameters ["path"].Value = objectName + modifedPropName;
 				if(onechange.Object1 == null || onechange.Object1.Target == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Added;
 				else if(onechange.Object2 == null || onechange.Object2.Target == null)
