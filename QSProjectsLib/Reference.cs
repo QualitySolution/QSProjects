@@ -467,22 +467,23 @@ namespace QSProjectsLib
 		
 		protected void OnRemoveActionActivated (object sender, System.EventArgs e)
 		{
-			Delete winDelete = new Delete();
 			TreeIter iter;
 			treeviewref.Selection.GetSelected(out iter);
 			SelectedID = (int) filter.GetValue(iter, 0);
 			bool result;
 			if (QSMain.IsOrmDeletionConfigered) {
 				result = QSMain.OnOrmDeletion (TableRef, SelectedID);
-			} else
+			} else {
+				Delete winDelete = new Delete();
 				result = winDelete.RunDeletion (TableRef, SelectedID);
+				winDelete.Destroy();
+			}
 
 			if(result)
 			{
 				UpdateList();
 				RefChanged = true;
 			}
-			winDelete.Destroy();
 		}
 		
 		protected void BuildSimpleEditorDialog()

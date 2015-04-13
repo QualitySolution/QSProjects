@@ -97,8 +97,19 @@ namespace QSProjectsLib
 			treeviewUsers.Selection.GetSelected (out iter);
 			int itemid = (int)UsersListStore.GetValue (iter, 0);
 			string loginname = UsersListStore.GetValue (iter, 1).ToString ();
-			Delete winDel = new Delete ();
-			if (winDel.RunDeletion ("users", itemid)) {
+			bool result;
+			if(QSMain.IsOrmDeletionConfigered)
+			{
+				result = QSMain.OnOrmDeletion ("users", itemid);
+			}
+			else 
+			{
+				Delete winDel = new Delete ();
+				result = winDel.RunDeletion ("users", itemid);
+				winDel.Destroy ();
+			}
+
+			if (result) {
 				logger.Info ("Удаляем пользователя MySQL...");
 				if (QSSaaS.Session.IsSaasConnection) {
 					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
@@ -119,7 +130,6 @@ namespace QSProjectsLib
 				}
 			}
 
-			winDel.Destroy ();
 			UpdateUsers ();
 		}
 	}
