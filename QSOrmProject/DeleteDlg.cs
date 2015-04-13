@@ -23,18 +23,33 @@ namespace QSOrmProject
 			treeviewObjects.Model = ObjectsTreeStore;
 			treeviewObjects.ShowAll ();
 		}
-		
+
+		public bool RunDeletion(string table, int id)
+		{
+			logger.Debug ("Поиск зависимостей для объекта таблицы {0}...", table);
+			var info = DeleteConfig.ClassInfos.Find (i => i.TableName == table);
+			if(info == null)
+				throw new InvalidOperationException (String.Format ("Удаление для объектов таблицы {0} не настроено в DeleteConfig", table));
+
+			return Run (info, Convert.ToUInt32 (id));
+		}
+
 		public bool RunDeletion(Type objectClass, int id)
+		{
+			logger.Debug ("Поиск зависимостей для класса {0}...", objectClass);
+			var info = DeleteConfig.ClassInfos.Find (i => i.ObjectClass == objectClass);
+			if(info == null)
+				throw new InvalidOperationException (String.Format ("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
+
+			return Run (info, Convert.ToUInt32 (id));
+		}
+
+		private bool Run(DeleteInfo info, uint id)
 		{
 			int CountReferenceItems = 0;
 			bool result = false;
-			var info = DeleteConfig.ClassInfos.Find (i => i.ObjectClass == objectClass);
 			try
 			{
-				logger.Debug ("Поиск зависимостей для класса {0}...", objectClass);
-				if(info == null)
-					throw new InvalidOperationException (String.Format ("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
-
 				PreparedOperation = new DeleteOperation () {
 					ItemId = Convert.ToUInt32 (id),
 					TableName = info.TableName,

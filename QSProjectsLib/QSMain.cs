@@ -34,13 +34,18 @@ namespace QSProjectsLib
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
 		public static event EventHandler<RunErrorMessageDlgEventArgs> RunErrorMessageDlg;
 
+		/// <summary>
+		/// Используется для интеграции QSProjectsLib и новым механизмом удаления в QSOrmProject,
+		/// для других целей использовать не желательно.
+		/// </summary>
+		public static event EventHandler<RunOrmDeletionEventArgs> RunOrmDeletion;
+
 		//Перечисления
 		public enum DataProviders
 		{
 			MySQL,
-			Factory}
-
-		;
+			Factory
+		};
 
 		//Внутриннии
 		internal static bool WaitResultIsOk;
@@ -131,6 +136,35 @@ namespace QSProjectsLib
 				handler (null, e);
 			}
 		}
+
+		public class RunOrmDeletionEventArgs : EventArgs
+		{
+			public string TableName { get; set; }
+			public int ObjectId { get; set; }
+			public bool Result { get; set; }
+		}
+
+		public static bool IsOrmDeletionConfigered
+		{
+			get {
+				return RunOrmDeletion != null;
+			}
+		}
+
+		internal static bool OnOrmDeletion (string table, int id)
+		{
+			EventHandler<RunOrmDeletionEventArgs> handler = RunOrmDeletion;
+			if (handler != null) {
+				var e = new RunOrmDeletionEventArgs {
+					TableName = table,
+					ObjectId = id
+				};
+				handler (null, e);
+				return e.Result;
+			}
+			return false;
+		}
+
 
 		internal static bool TestConnection ()
 		{

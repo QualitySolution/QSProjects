@@ -4,7 +4,26 @@ using System.Collections.Generic;
 namespace QSOrmProject
 {
 	public static class DeleteConfig{
-		internal static List<DeleteInfo> ClassInfos = new List<DeleteInfo>();
+		private static List<DeleteInfo> classInfos;
+
+		internal static List<DeleteInfo> ClassInfos {
+			get {if(classInfos == null)
+				{
+					classInfos = new List<DeleteInfo> ();
+					QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
+				}
+				return classInfos;
+			}
+		}
+
+		/// <summary>
+		/// Необходимо для интеграции с библиотекой QSProjectsLib
+		/// </summary>
+		static void RunDeletionFromProjectLib (object sender, QSProjectsLib.QSMain.RunOrmDeletionEventArgs e)
+		{
+			var deleteWin = new DeleteDlg ();
+			e.Result = deleteWin.RunDeletion (e.TableName, e.ObjectId);
+		}
 
 		public static void AddDeleteInfo(DeleteInfo info)
 		{

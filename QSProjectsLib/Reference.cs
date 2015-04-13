@@ -470,8 +470,14 @@ namespace QSProjectsLib
 			Delete winDelete = new Delete();
 			TreeIter iter;
 			treeviewref.Selection.GetSelected(out iter);
-			SelectedID = (int) filter.GetValue(iter,0);
-			if(winDelete.RunDeletion(TableRef, SelectedID))
+			SelectedID = (int) filter.GetValue(iter, 0);
+			bool result;
+			if (QSMain.IsOrmDeletionConfigered) {
+				result = QSMain.OnOrmDeletion (TableRef, SelectedID);
+			} else
+				result = winDelete.RunDeletion (TableRef, SelectedID);
+
+			if(result)
 			{
 				UpdateList();
 				RefChanged = true;
