@@ -9,6 +9,7 @@
     <AssemblyName>QSAttachment</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +55,7 @@
     <Compile Include="FileIconWorks.cs" />
     <Compile Include="GetFromScanner.cs" />
     <Compile Include="gtk-gui\QSAttachment.GetFromScanner.cs" />
+    <Compile Include="AttachedFile.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

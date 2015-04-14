@@ -54,6 +54,18 @@ namespace QSAttachment
 			}
 		}
 
+		public IEnumerable<AttachedFile> AttachedFiles{
+			get {
+				foreach(object[] file in FilesStore)
+				{
+					yield return new AttachedFile {
+						Id = (int)file [(int)FilesCol.id],
+						Name = (string)file [(int)FilesCol.name]
+					};
+				}
+			}
+		}
+
 		public void UpdateFileList (bool copy = false)
 		{
 			if (TableName == "" || AttachToTable == "" || ItemId < 0)
