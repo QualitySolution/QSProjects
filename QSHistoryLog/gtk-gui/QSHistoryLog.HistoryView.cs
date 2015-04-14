@@ -250,7 +250,7 @@ namespace QSHistoryLog {
 			this.datatreeChangesets.InheritedBoundaryDataSource = false;
 			this.datatreeChangesets.InheritedDataSource = false;
 			this.datatreeChangesets.InheritedBoundaryDataSource = false;
-			this.datatreeChangesets.ColumnMappings = "{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; ObjectTitle[Тип объекта]; ItemTitle[Объект]; OperationText[Действие]";
+			this.datatreeChangesets.ColumnMappings = "{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; OperationText[Действие]; ObjectTitle[Тип объекта]; ItemTitle[Объект];";
 			this.GtkScrolledWindow.Add(this.datatreeChangesets);
 			this.vpaned1.Add(this.GtkScrolledWindow);
 			global::Gtk.Paned.PanedChild w17 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.GtkScrolledWindow]));
