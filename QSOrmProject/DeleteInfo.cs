@@ -16,6 +16,8 @@ namespace QSOrmProject
 			}
 		}
 
+		public static event EventHandler<AfterDeletionEventArgs> AfterDeletion;
+
 		/// <summary>
 		/// Необходимо для интеграции с библиотекой QSProjectsLib
 		/// </summary>
@@ -32,7 +34,17 @@ namespace QSOrmProject
 
 			ClassInfos.Add (info);
 		}
-				
+			
+		internal static void OnAfterDeletion(System.Data.Common.DbTransaction trans, List<DeletedItem> items)
+		{
+			if(AfterDeletion != null)
+			{
+				AfterDeletion (null, new AfterDeletionEventArgs {
+					CurTransaction = trans,
+					DeletedItems = items
+				});
+			}
+		}
 	}
 
 	public class DeleteInfo
@@ -52,6 +64,12 @@ namespace QSOrmProject
 			ClearItems = new List<ClearDependenceInfo>();
 		}
 	
+	}
+		
+	public class AfterDeletionEventArgs : EventArgs
+	{
+		public System.Data.Common.DbTransaction CurTransaction;
+		public List<DeletedItem> DeletedItems;
 	}
 
 	public class DeleteDependenceInfo

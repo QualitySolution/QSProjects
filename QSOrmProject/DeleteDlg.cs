@@ -12,6 +12,7 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		TreeStore ObjectsTreeStore;
 		DeleteOperation PreparedOperation;
+		private List<DeletedItem> DeletedItems = new List<DeletedItem>();
 
 		public DeleteDlg ()
 		{
@@ -51,10 +52,28 @@ namespace QSOrmProject
 			try
 			{
 				PreparedOperation = new DeleteOperation () {
-					ItemId = Convert.ToUInt32 (id),
+					ItemId = id,
 					TableName = info.TableName,
 					WhereStatment = "WHERE id = @id"
 				};
+						
+				var cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.CommandText = info.SqlSelect + "WHERE id = @id";
+				AddParameterWithId(cmd, id);
+
+				using (DbDataReader rdr = cmd.ExecuteReader ()) {
+					rdr.Read ();
+					int IndexOfIdParam = rdr.GetOrdinal ("id");
+					object[] Fields = new object[rdr.FieldCount];
+					rdr.GetValues (Fields);
+
+					DeletedItems.Add (new DeletedItem{
+						ItemClass = info.ObjectClass,
+						ItemId = id,
+						Title = String.Format (info.DisplayString, Fields)
+					});
+				}
+
 				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter(), Convert.ToUInt32 (id));
 			}
 			catch (Exception ex)
@@ -67,16 +86,29 @@ namespace QSOrmProject
 			{
 				if(CountReferenceItems < 10)
 					treeviewObjects.ExpandAll ();
-				this.Title = String.Format("Удалить {0}?", info.ObjectName);
+				this.Title = String.Format("Удалить {0}?", DeletedItems[0].Title);
 				result = (ResponseType)this.Run () == ResponseType.Yes;
 			}
 			else
 			{
 				this.Hide();
-				result = SimpleDialog(info.ObjectName) == ResponseType.Yes;
+				result = SimpleDialog(DeletedItems[0].Title) == ResponseType.Yes;
 			}
-			if(result)
-				PreparedOperation.Execute ();
+			if (result) {
+				var trans = QSMain.ConnectionDB.BeginTransaction ();
+				try
+				{
+					PreparedOperation.Execute (trans);
+					DeleteConfig.OnAfterDeletion (trans, DeletedItems);
+					trans.Commit();
+				}
+				catch(Exception ex)
+				{
+					trans.Rollback ();
+					QSMain.ErrorMessageWithLog ("Ошибка при удалении", logger, ex);
+					result = false;
+				}
+			}
 			this.Destroy ();
 			return result;
 		}
@@ -85,7 +117,7 @@ namespace QSOrmProject
 		{
 			MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
 	                              MessageType.Question, 
-                                  ButtonsType.YesNo,"Вы уверены что хотите удалить "+ ObjectName + "?");
+			                                      ButtonsType.YesNo,"Вы уверены что хотите удалить <b>"+ ObjectName + "</b>?");
 			ResponseType result = (ResponseType)md.Run ();
 			md.Destroy();
 			return result;
@@ -149,6 +181,11 @@ namespace QSOrmProject
 						foreach(object[] row in ReadedData)
 						{
 							ItemIter = ObjectsTreeStore.AppendValues(GroupIter, String.Format(childClassInfo.DisplayString, row));
+							DeletedItems.Add (new DeletedItem{
+								ItemClass = childClassInfo.ObjectClass,
+								ItemId = (uint)row[IndexOfIdParam],
+								Title = String.Format(childClassInfo.DisplayString, row)
+							});
 							if(childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0)
 							{
 								Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, (uint)row[IndexOfIdParam]);
@@ -167,6 +204,7 @@ namespace QSOrmProject
 					ObjectsTreeStore.Remove (ref DeleteIter);
 			}
 
+			//TODO Сделать возможность журналирования очистки полей у объектов.
 			if(currentDeletion.ClearItems.Count > 0)
 			{
 				if(!ObjectsTreeStore.IterIsValid(parentIter))
@@ -228,13 +266,13 @@ namespace QSOrmProject
 			parameterId.Value = id;
 			cmd.Parameters.Add(parameterId);
 		}
-
+			
 		abstract class Operation
 		{
 			public uint ItemId;
 			public List<Operation> ChildOperations = new List<Operation>();
 
-			public abstract void Execute();
+			public abstract void Execute(DbTransaction trans);
 		}
 
 		class DeleteOperation : Operation
@@ -242,11 +280,12 @@ namespace QSOrmProject
 			public string TableName;
 			public string WhereStatment;
 
-			public override void Execute()
+			public override void Execute(DbTransaction trans)
 			{
-				ChildOperations.ForEach (o => o.Execute ());
+				ChildOperations.ForEach (o => o.Execute (trans));
 
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.Transaction = trans;
 				cmd.CommandText = String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment);
 				AddParameterWithId(cmd, ItemId);
 				cmd.ExecuteNonQuery();
@@ -259,7 +298,7 @@ namespace QSOrmProject
 			public string WhereStatment;
 			public string[] CleanFields;
 
-			public override void Execute()
+			public override void Execute(DbTransaction trans)
 			{
 				var sql = new DBWorks.SQLHelper("UPDATE {0} SET ", TableName);
 				sql.StartNewList ("", ", ");
@@ -270,11 +309,20 @@ namespace QSOrmProject
 				sql.Add (WhereStatment);
 
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
+				cmd.Transaction = trans;
 				cmd.CommandText = sql.Text;
 				AddParameterWithId(cmd, ItemId);
 				cmd.ExecuteNonQuery();
 			}
 		}
 	}
+
+	public class DeletedItem
+	{
+		public uint ItemId;
+		public Type ItemClass;
+		public string Title;
+	}
+
 }
 

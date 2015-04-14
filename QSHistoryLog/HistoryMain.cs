@@ -6,11 +6,14 @@ using System.Reflection;
 using System.Linq;
 using KellermanSoftware.CompareNetObjects;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using QSProjectsLib;
 
 namespace QSHistoryLog
 {
 	public static class HistoryMain
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
 		const string FieldNameSeparator = ".";
 
@@ -162,6 +165,45 @@ namespace QSHistoryLog
 			return prop != null ? (int?)prop.GetValue (value, null) : null;
 		}
 
+		public static void SubscribeToDeletion()
+		{
+			QSOrmProject.DeleteConfig.AfterDeletion += OnOrmAfterDeletion;
+		}
+
+		static void OnOrmAfterDeletion (object sender, QSOrmProject.AfterDeletionEventArgs e)
+		{
+			logger.Debug ("Записываем ChangeSet-ы удаления в БД.");
+			string sql = "INSERT INTO history_changeset (datetime, user_id, operation, object_name, object_id, object_title) " +
+				"VALUES ( UTC_TIMESTAMP(), @user_id, @operation, @object_name, @object_id, @object_title)";
+			var trans = (MySqlTransaction)e.CurTransaction;
+
+			MySqlCommand cmd = new MySqlCommand(sql, trans.Connection, trans);
+			cmd.Prepare ();
+
+			cmd.Parameters.AddWithValue("user_id", QSMain.User.id);
+			cmd.Parameters.AddWithValue("operation", ChangeSetType.Delete.ToString ("G"));
+			cmd.Parameters.Add("object_name", MySqlDbType.String);
+			cmd.Parameters.Add("object_id", MySqlDbType.UInt32);
+			cmd.Parameters.Add("object_title", MySqlDbType.String);
+
+			uint count = 0;
+
+			foreach(var item in e.DeletedItems)
+			{
+				if(!ObjectsDesc.Exists (d => d.ObjectType == item.ItemClass))
+				{
+					logger.Debug ("Запись в историю информации об удалении объекта, попущена так как не найдено описание класса {0}.", item.ItemClass);
+					continue;
+				}
+				cmd.Parameters ["object_name"].Value = item.ItemClass.Name;
+				cmd.Parameters ["object_id"].Value = item.ItemId;
+				cmd.Parameters ["object_title"].Value = item.Title;
+
+				cmd.ExecuteNonQuery();
+				count++;
+			}
+			logger.Debug ("Зафиксировано в журнал удаление {0} объектов.", count);
+		}
 	}
 
 	public enum ChangeSetType
