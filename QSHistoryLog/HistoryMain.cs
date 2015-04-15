@@ -180,7 +180,7 @@ namespace QSHistoryLog
 			MySqlCommand cmd = new MySqlCommand(sql, trans.Connection, trans);
 			cmd.Prepare ();
 
-			cmd.Parameters.AddWithValue("user_id", QSMain.User.id);
+			cmd.Parameters.Add("user_id", MySqlDbType.UInt32);
 			cmd.Parameters.AddWithValue("operation", ChangeSetType.Delete.ToString ("G"));
 			cmd.Parameters.Add("object_name", MySqlDbType.String);
 			cmd.Parameters.Add("object_id", MySqlDbType.UInt32);
@@ -195,6 +195,13 @@ namespace QSHistoryLog
 					logger.Debug ("Запись в историю информации об удалении объекта, попущена так как не найдено описание класса {0}.", item.ItemClass);
 					continue;
 				}
+
+				//Обход проблемы удаления пользователем самого себя
+				if (item.ItemClass.Name == "User" && item.ItemId == QSMain.User.id)
+					cmd.Parameters ["user_id"].Value = null;
+				else
+					cmd.Parameters ["user_id"].Value = QSMain.User.id;
+
 				cmd.Parameters ["object_name"].Value = item.ItemClass.Name;
 				cmd.Parameters ["object_id"].Value = item.ItemId;
 				cmd.Parameters ["object_title"].Value = item.Title;
