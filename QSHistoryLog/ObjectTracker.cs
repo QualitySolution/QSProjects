@@ -168,6 +168,7 @@ namespace QSHistoryLog
 		/// <param name="diff">Diff.</param>
 		private bool FixDisplay(Difference diff)
 		{
+			//DateTime
 			if (diff.Object1 != null && diff.Object1.Target is DateTime) {
 				if ((DateTime)diff.Object1.Target == default(DateTime)) {
 					diff.Object1.Target = null;
@@ -182,6 +183,7 @@ namespace QSHistoryLog
 					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
 			}
 
+			//Добавление и удаление объектов в коллекциях
 			if(diff.ParentObject2 != null && diff.ParentObject2.Target.GetType ().IsGenericType 
 			   && diff.ParentObject2.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
 			   && diff.Object1 == null)
@@ -190,7 +192,16 @@ namespace QSHistoryLog
 				diff.Object1Value = String.Empty;
 				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2.Target);
 			}
+			if(diff.ParentObject1 != null && diff.ParentObject1.Target.GetType ().IsGenericType 
+			   && diff.ParentObject1.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			   && diff.Object2 == null)
+			{
+				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[-]");
+				diff.Object2Value = String.Empty;
+				diff.Object1Value = HistoryMain.GetObjectTilte (diff.Object1.Target);
+			}
 
+			//IFileTrace
 			if(diff.ParentObject1 != null && diff.ParentObject1.Target is IFileTrace)
 			{
 				if (Regex.IsMatch (diff.PropertyName, @".*Size$"))
