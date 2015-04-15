@@ -304,7 +304,7 @@ namespace QSOrmProject
 				sql.StartNewList ("", ", ");
 				foreach (string FieldName in CleanFields)
 				{
-					sql.AddAsList ("{0} = NULL ", FieldName);
+					sql.AddAsList("{0} = NULL ", args:FieldName);
 				}
 				sql.Add (WhereStatment);
 
