@@ -58,6 +58,11 @@ namespace QSHistoryLog
 			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, new string[] { "Id" });
 		}
 
+		public static void AddIdComparationType(Type type, string[] fields)
+		{
+			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, fields);
+		}
+
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
 		{
 			string result = String.Empty;
