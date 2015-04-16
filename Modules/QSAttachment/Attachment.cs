@@ -13,6 +13,7 @@ namespace QSAttachment
 	public partial class Attachment : Gtk.Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
+		public static uint MaxFileNameLength = 120;
 		private ListStore FilesStore;
 		private List<int> deletedItems;
 		public string TableName = "files";
@@ -120,8 +121,19 @@ namespace QSAttachment
 						file = ms.ToArray ();
 					}
 				}
+				string fileName = System.IO.Path.GetFileName (Chooser.Filename);
+				//При необходимости обрезаем имя файла.
+				if(fileName.Length > MaxFileNameLength)
+				{
+					string ext = System.IO.Path.GetExtension (fileName);
+					string name = System.IO.Path.GetFileNameWithoutExtension (fileName);
+					fileName = String.Format ("{0}{1}",
+					                          name.Remove ((int)MaxFileNameLength - ext.Length),
+												ext);
+				}
+
 				FilesStore.AppendValues (-1,
-				                         System.IO.Path.GetFileName (Chooser.Filename),
+					                     fileName,
 				                         file.LongLength,
 				                         FileIconWorks.GetPixbufForFile (Chooser.Filename),
 				                         file
