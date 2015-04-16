@@ -131,12 +131,13 @@ namespace QSHistoryLog
 
 		void PropertyComboFill()
 		{
+			bool lastStateUpdate = canUpdate;
 			canUpdate = false;
 			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
 				comboProperty.ItemsDataSource = (datacomboObject.SelectedItem as HistoryObjectDesc).NamedProperties;
 			} else
 				comboProperty.ItemsDataSource = null;
-			canUpdate = true;
+			canUpdate = lastStateUpdate;
 		}
 
 		protected void OnDatacomboObjectItemSelected (object sender, EnumItemClickedEventArgs e)
