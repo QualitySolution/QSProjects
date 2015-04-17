@@ -7,6 +7,7 @@ namespace QSSupportLib
 {
 	public static class MainSupport
 	{
+		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		public static BaseParam BaseParameters;
 
 		private static AppVersion projectVerion;
@@ -136,6 +137,25 @@ namespace QSSupportLib
 			ErrorMsg md = new QSSupportLib.ErrorMsg (e.ParentWindow, e.Exception, e.UserMessage);
 			md.Run ();
 			md.Destroy ();
+		}
+
+		public static void LoadBaseParameters()
+		{
+			try
+			{
+				MainSupport.BaseParameters = new BaseParam(QSMain.connectionDB);
+			}
+			catch(MySql.Data.MySqlClient.MySqlException e)
+			{
+				logger.FatalException ("Не удалось получить информацию о версии базы данных.", e);
+				MessageDialog BaseError = new MessageDialog (QSMain.ErrorDlgParrent, DialogFlags.DestroyWithParent,
+					MessageType.Warning, 
+					ButtonsType.Close, 
+					"Не удалось получить информацию о версии базы данных.");
+				BaseError.Run();
+				BaseError.Destroy();
+				Environment.Exit(0);
+			}
 		}
 	}
 }
