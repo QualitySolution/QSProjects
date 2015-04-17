@@ -98,6 +98,11 @@ namespace QSWidgetLib
 			editDate.Destroy ();
 		}
 
+		public void Clear()
+		{
+			DateOrNull = null;
+		}
+
 		protected void OnEntryDateFocusInEvent (object o, FocusInEventArgs args)
 		{
 			entryDate.SelectRegion(0,10);
