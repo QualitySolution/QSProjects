@@ -146,7 +146,7 @@ namespace QSUpdater
 
 			if (updateResult.HasUpdate && !updateRequired)
 				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
-				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
+				"Доступная версия: {0} (У вас установлена версия {1})\n" +
 				"Вы хотите скачать и установить новую версию?\n\n" +
 				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
 				                         StringWorks.VersionToShortString (updateResult.NewVersion),
@@ -154,14 +154,14 @@ namespace QSUpdater
 				                         updateResult.UpdateDescription);
 			else if (updateResult.HasUpdate && updateRequired)
 				message = String.Format ("<b>Доступна новая версия программы!</b>\n" +
-				"Доступная версия: {0}. (У вас установлена версия {1})\n" +
+				"Доступная версия: {0} (У вас установлена версия {1})\n" +
 				"<b>Для продолжения работы вам необходимо установить данное обновление.</b>\n\n" +
 				(updateResult.UpdateDescription != String.Empty ? "<b>Информация об обновлении:</b>\n{2}" : "{2}"), 
 				                         StringWorks.VersionToShortString (updateResult.NewVersion),
 				                         StringWorks.VersionToShortString (MainSupport.ProjectVerion.Version),
 				                         updateResult.UpdateDescription);
 			else if (!updateResult.HasUpdate && !updateRequired)
-				message = String.Format ("<b>Ваша версия программного продукта: {0}.</b>\n\n" +
+				message = String.Format ("<b>Ваша версия программного продукта: {0}</b>\n\n" +
 				"На данный момент это самая последняя версия.\n" +
 				                         "Обновление не требуется.", 
 				                         StringWorks.VersionToShortString ( MainSupport.ProjectVerion.Version));
