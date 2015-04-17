@@ -30,8 +30,10 @@ namespace QSSupportLib
 
 			var att = assembly.GetCustomAttributes (typeof(AssemblyEditionAttribute), false);
 
-			if (att.Length > 0) { 
-				AllowEdition = new List<string>( ((AssemblyEditionAttribute)att [0]).AllowEdition);
+			if (att.Length > 0) {
+				AllowEdition = new List<string>();
+				if(((AssemblyEditionAttribute)att [0]).AllowEdition != null)
+					AllowEdition.AddRange( ((AssemblyEditionAttribute)att [0]).AllowEdition);
 				Edition = ((AssemblyEditionAttribute)att [0]).Edition;
 				if (!AllowEdition.Contains (Edition))
 					AllowEdition.Add (Edition);
