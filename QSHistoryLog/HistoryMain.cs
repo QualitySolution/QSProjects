@@ -31,7 +31,8 @@ namespace QSHistoryLog
 		static CompareLogic createQSCompareLogic ()
 		{
 			var logic = new CompareLogic ();
-			logic.Config.CompareReadOnly = false;
+			//Должно стоять в true иначе не работает сравнение на винде Dictionary, так как в KeyValuePair поля со значением canWrite = false
+			logic.Config.CompareReadOnly = true; 
 			logic.Config.CompareStaticFields = false;
 			logic.Config.CompareStaticProperties = false;
 			logic.Config.IgnoreCollectionOrder = true;
