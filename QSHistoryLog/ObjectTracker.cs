@@ -92,6 +92,8 @@ namespace QSHistoryLog
 
 			compare = HistoryMain.QSCompareLogic.Compare (firstObject, lastObject);
 
+			logger.Debug (compare.DifferencesString);
+
 			return !compare.AreEqual;
 		}
 
@@ -138,7 +140,7 @@ namespace QSHistoryLog
 				if (!FixDisplay (onechange))
 					continue;
 				string modifedPropName = Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				if (onechange.ParentObject2 != null) {
+				if (onechange.ParentObject2 != null && onechange.ParentObject2.Target != null) {
 					var id = HistoryMain.GetObjectId (onechange.ParentObject2.Target);
 					if(id.HasValue)
 						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
@@ -184,7 +186,8 @@ namespace QSHistoryLog
 			}
 
 			//Добавление и удаление объектов в коллекциях
-			if(diff.ParentObject2 != null && diff.ParentObject2.Target.GetType ().IsGenericType 
+			if(diff.ParentObject2 != null && diff.ParentObject2.Target != null 
+			   && diff.ParentObject2.Target.GetType ().IsGenericType 
 			   && diff.ParentObject2.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
 			   && diff.Object1 == null)
 			{
@@ -192,7 +195,8 @@ namespace QSHistoryLog
 				diff.Object1Value = String.Empty;
 				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2.Target);
 			}
-			if(diff.ParentObject1 != null && diff.ParentObject1.Target.GetType ().IsGenericType 
+			if(diff.ParentObject1 != null && diff.ParentObject1.Target != null 
+			   && diff.ParentObject1.Target.GetType ().IsGenericType 
 			   && diff.ParentObject1.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
 			   && diff.Object2 == null)
 			{
