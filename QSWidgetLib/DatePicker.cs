@@ -117,13 +117,13 @@ namespace QSWidgetLib
 			}
 
 			DateTime outDate;
-			if(DateTime.TryParse(((Entry)o).Text, out outDate))
+			if(DateTime.TryParse(entryDate.Text, out outDate))
 			{
 				DateOrNull = outDate;
 			}
 			else
 			{
-				entryDate.Text = date.Value.ToShortDateString();
+				entryDate.Text = date.HasValue ? date.Value.ToShortDateString () : String.Empty;
 			}
 		}
 
