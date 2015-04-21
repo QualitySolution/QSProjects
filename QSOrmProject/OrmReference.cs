@@ -225,6 +225,10 @@ namespace QSOrmProject
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
 			datatreeviewRef.ItemsDataSource = filterView;
+			if (typeof(ISpecialRowsRender).IsAssignableFrom (objectType)) {
+				foreach (TreeViewColumn col in datatreeviewRef.Columns)
+					col.SetCellDataFunc (col.Cells [0], new TreeCellDataFunc (RenderCell));
+			}
 			UpdateSum ();
 			logger.Info ("Ok.");
 		}
@@ -382,6 +386,13 @@ namespace QSOrmProject
 			}
 			return false;
 		}
+
+		private void RenderCell (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+		{
+			object o = ((datatreeviewRef.Model as TreeModelAdapter)
+				.Implementor as Gtk.DataBindings.MappingsImplementor).NodeFromIter (iter);
+			(cell as CellRendererText).Foreground = (o as ISpecialRowsRender).TextColor;
+		}
 	}
 
 	[Flags]
@@ -406,5 +417,9 @@ namespace QSOrmProject
 		}
 	}
 
+	public interface ISpecialRowsRender
+	{
+		string TextColor { get; }
+	}
 }
 
