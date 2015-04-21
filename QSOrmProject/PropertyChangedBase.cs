@@ -7,13 +7,13 @@ namespace QSOrmProject
 {
 	public abstract class PropertyChangedBase : INotifyPropertyChanged
 	{
-		public void FirePropertyChanged ()
+		public virtual void FirePropertyChanged ()
 		{
 			if (PropertyChanged != null)
 				PropertyChanged.Invoke (null, null);
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public virtual event PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void OnPropertyChanged (string propertyName)
 		{

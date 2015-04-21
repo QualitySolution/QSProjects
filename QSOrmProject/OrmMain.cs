@@ -11,80 +11,76 @@ namespace QSOrmProject
 {
 	public static class OrmMain
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private static Configuration ormConfig;
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMapping> ClassMappingList;
-		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
+		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
 
-		public static ISession OpenSession()
+		public static ISession OpenSession ()
 		{
-			ISession session = Sessions.OpenSession();
+			ISession session = Sessions.OpenSession ();
 			session.FlushMode = FlushMode.Never;
 			return session;
 		}
 
-		public static void ConfigureOrm(string connectionString ,string[] assemblies)
+		public static void ConfigureOrm (string connectionString, string[] assemblies)
 		{
-			ormConfig = new Configuration(); 
+			ormConfig = new Configuration (); 
 
-			ormConfig.Configure();
-			ormConfig.SetProperty("connection.connection_string", connectionString);
+			ormConfig.Configure ();
+			ormConfig.SetProperty ("connection.connection_string", connectionString);
 
-			foreach(string ass in assemblies)
-			{
-				ormConfig.AddAssembly(ass);
+			foreach (string ass in assemblies) {
+				ormConfig.AddAssembly (ass);
 			}
 
 			Sessions = ormConfig.BuildSessionFactory ();
 		}
 
-		public static Type GetDialogType(System.Type objectClass)
+		public static Type GetDialogType (System.Type objectClass)
 		{
 			if (ClassMappingList == null)
-				throw new NullReferenceException("ORM Модуль не настроен. Нужно создать ClassMapingList.");
+				throw new NullReferenceException ("ORM Модуль не настроен. Нужно создать ClassMapingList.");
 
-			if (objectClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
+			if (objectClass.GetInterface (typeof(INHibernateProxy).FullName) != null)
 				objectClass = objectClass.BaseType;
 
-			OrmObjectMapping map = ClassMappingList.Find(c => c.ObjectClass == objectClass);
-			if(map == null)
-			{
-				logger.Warn("Диалог для типа {0} не найден.", objectClass);
+			OrmObjectMapping map = ClassMappingList.Find (c => c.ObjectClass == objectClass);
+			if (map == null) {
+				logger.Warn ("Диалог для типа {0} не найден.", objectClass);
 				return null;
-			}
-			else
+			} else
 				return map.DialogClass;
 		}
 
-		public static OrmObjectMapping GetObjectDiscription(System.Type type)
+		public static OrmObjectMapping GetObjectDiscription (System.Type type)
 		{
-			if (type.GetInterface(typeof(INHibernateProxy).FullName) != null)
+			if (type.GetInterface (typeof(INHibernateProxy).FullName) != null)
 				type = type.BaseType;
 
-			return OrmMain.ClassMappingList.Find(m => m.ObjectClass == type);
+			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == type);
 		}
 
 		/// <summary>
 		/// Уведомляем всех подписчиков об изменении объекта.
 		/// </summary>
 		/// <param name="subject">Subject.</param>
-		public static void NotifyObjectUpdated(object subject, bool clean = true)
+		public static void NotifyObjectUpdated (object subject, bool clean = true)
 		{
-			System.Type subjectType = NHibernateUtil.GetClass(subject);
-			OrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == subjectType);
+			System.Type subjectType = NHibernateUtil.GetClass (subject);
+			OrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
 			if (map != null)
-				map.RaiseObjectUpdated(subject);
+				map.RaiseObjectUpdated (subject);
 			else
-				logger.Warn("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
+				logger.Warn ("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
 
 			// Чистим список от удаленных объектов.
-			if(clean)
+			if (clean)
 				delayedNotifies.RemoveAll (d => d.ParentObject == null || d.ChangedObject == null);
 
 			// Отсылаем уведомления дочерним объектам если они есть.
-			foreach(DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, subject)))
-			{
+			foreach (DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, subject))) {
 				NotifyObjectUpdated (link.ChangedObject, false);
 				delayedNotifies.Remove (link);
 			}
@@ -96,41 +92,42 @@ namespace QSOrmProject
 		/// </summary>
 		/// <param name="withObject">Уведомление сработает в момент обновления этого объекта.</param>
 		/// <param name="subject">Subject.</param>
-		public static void DelayedNotifyObjectUpdated(object withObject, object subject)
+		public static void DelayedNotifyObjectUpdated (object withObject, object subject)
 		{
-			if(!delayedNotifies.Exists (d => d.ChangedObject == subject && d.ParentObject == withObject))
-			{
-				delayedNotifies.Add (new DelayedNotifyLink(withObject, subject));
+			if (!delayedNotifies.Exists (d => d.ChangedObject == subject && d.ParentObject == withObject)) {
+				delayedNotifies.Add (new DelayedNotifyLink (withObject, subject));
 			}
 		}
 
-		public static IOrmDialog FindMyDialog(Widget child)
+		public static IOrmDialog FindMyDialog (Widget child)
 		{
-			if (child.Parent is IOrmDialog)
+			if (child.Parent == null)
+				return null;
+			else if (child.Parent is IOrmDialog)
 				return child.Parent as IOrmDialog;
 			else if (child.Parent.IsTopLevel)
 				return null;
 			else
-				return FindMyDialog(child.Parent);
+				return FindMyDialog (child.Parent);
 		}
 
-		public static String GetDBTableName(System.Type objectClass)
+		public static String GetDBTableName (System.Type objectClass)
 		{
-			return ormConfig.GetClassMapping(objectClass).RootTable.Name;
+			return ormConfig.GetClassMapping (objectClass).RootTable.Name;
 		}
 
-		public static bool EqualDomainObjects(object obj1, object obj2)
+		public static bool EqualDomainObjects (object obj1, object obj2)
 		{
 			if (obj1 == null || obj2 == null)
 				return false;
 
-			if (NHibernateUtil.GetClass(obj1) != NHibernateUtil.GetClass(obj2))
+			if (NHibernateUtil.GetClass (obj1) != NHibernateUtil.GetClass (obj2))
 				return false;
 
 			if (obj1 is IDomainObject)
 				return (obj1 as IDomainObject).Id == (obj2 as IDomainObject).Id;
 
-			return obj1.Equals(obj2);
+			return obj1.Equals (obj2);
 		}
 
 		/// <summary>
@@ -139,32 +136,29 @@ namespace QSOrmProject
 		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
 		/// <param name="objectClass">Класс объекта для которого нужно создать диалог.</param>
 		/// <param name="parameters">Параметры конструктора диалога.</param>
-		public static ITdiDialog CreateObjectDialog(System.Type objectClass, params object[] parameters)
+		public static ITdiDialog CreateObjectDialog (System.Type objectClass, params object[] parameters)
 		{
-			System.Type dlgType = GetDialogType(objectClass);
-			if(dlgType == null)
-			{
-				InvalidOperationException ex = new InvalidOperationException(
-					String.Format("Для класса {0} нет привязанного диалога.", objectClass));
-				logger.Error(ex);
+			System.Type dlgType = GetDialogType (objectClass);
+			if (dlgType == null) {
+				InvalidOperationException ex = new InvalidOperationException (
+					                               String.Format ("Для класса {0} нет привязанного диалога.", objectClass));
+				logger.Error (ex);
 				throw ex;
 			}
 			Type[] paramTypes = new Type[parameters.Length];	
-			for(int i = 0; i < parameters.Length; i++)
-			{
+			for (int i = 0; i < parameters.Length; i++) {
 				paramTypes [i] = parameters [i].GetType ();
 			}
 
-			System.Reflection.ConstructorInfo ci = dlgType.GetConstructor(paramTypes);
-			if(ci == null)
-			{
-				InvalidOperationException ex = new InvalidOperationException(
-					String.Format("Конструктор для диалога {0} с параметрами({1}) не найден.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
-				logger.Error(ex);
+			System.Reflection.ConstructorInfo ci = dlgType.GetConstructor (paramTypes);
+			if (ci == null) {
+				InvalidOperationException ex = new InvalidOperationException (
+					                               String.Format ("Конструктор для диалога {0} с параметрами({1}) не найден.", dlgType.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
+				logger.Error (ex);
 				throw ex;
 			}
-			logger.Debug ("Вызываем конструктор диалога {0} c параметрами {1}.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
-			return (ITdiDialog)ci.Invoke(parameters);
+			logger.Debug ("Вызываем конструктор диалога {0} c параметрами {1}.", dlgType.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
+			return (ITdiDialog)ci.Invoke (parameters);
 		}
 
 		/// <summary>
@@ -172,7 +166,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
 		/// <param name="entity">Объект для которого нужно создать диалог.</param>
-		public static ITdiDialog CreateObjectDialog(object entity)
+		public static ITdiDialog CreateObjectDialog (object entity)
 		{
 			return CreateObjectDialog (NHibernateUtil.GetClass (entity), entity);
 		}
@@ -182,7 +176,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
 		/// <param name="entity">Объект для которого нужно создать диалог.</param>
-		public static ITdiDialog CreateObjectDialog(OrmParentReference parentReference, object entity)
+		public static ITdiDialog CreateObjectDialog (OrmParentReference parentReference, object entity)
 		{
 			return CreateObjectDialog (NHibernateUtil.GetClass (entity), parentReference, entity);
 		}
@@ -192,16 +186,17 @@ namespace QSOrmProject
 	public class OrmObjectUpdatedEventArgs : EventArgs
 	{
 		public int Id { get; private set; }
+
 		public object Subject { get; private set; }
 
-		public OrmObjectUpdatedEventArgs(int id)
+		public OrmObjectUpdatedEventArgs (int id)
 		{
 			Id = id;
 		}
 
-		public OrmObjectUpdatedEventArgs(object subject)
+		public OrmObjectUpdatedEventArgs (object subject)
 		{
-			Subject= subject;
+			Subject = subject;
 			if (subject is IDomainObject)
 				Id = (subject as IDomainObject).Id;
 		}
@@ -210,23 +205,21 @@ namespace QSOrmProject
 	internal class DelayedNotifyLink
 	{
 		private WeakReference parentObject;
+
 		public object ParentObject {
-			get {
-				return parentObject.Target;
-			}
+			get { return parentObject.Target; }
 		}
 
 		private WeakReference changedObject;
+
 		public object ChangedObject {
-			get {
-				return changedObject.Target;
-			}
+			get { return changedObject.Target; }
 		}
 
-		public DelayedNotifyLink(object parentObject, object changedObject)
+		public DelayedNotifyLink (object parentObject, object changedObject)
 		{
-			this.parentObject = new WeakReference(parentObject);
-			this.changedObject = new WeakReference(changedObject);
+			this.parentObject = new WeakReference (parentObject);
+			this.changedObject = new WeakReference (changedObject);
 		}
 	}
 }
