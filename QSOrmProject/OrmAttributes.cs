@@ -2,20 +2,32 @@
 
 namespace QSOrmProject
 {
-	[AttributeUsage(AttributeTargets.Class)]
-	public class OrmSubjectAttribute : Attribute 
+	[AttributeUsage (AttributeTargets.Class)]
+	public class OrmSubjectAttribute : Attribute
 	{
 		public string JournalName;
 		public string Name;
-		public OrmSubjectAttribute() {}
-		public OrmSubjectAttribute(string journalName) { JournalName = journalName; }
+		public OrmReferenceMode DefaultJournalMode = OrmReferenceMode.Normal;
+
+		public OrmSubjectAttribute ()
+		{
+		}
+
+		public OrmSubjectAttribute (string journalName)
+		{
+			JournalName = journalName;
+		}
 	}
 
-	[AttributeUsage(AttributeTargets.Class)]
-	public class OrmDefaultIsFilteredAttribute : Attribute 
+	[AttributeUsage (AttributeTargets.Class)]
+	public class OrmDefaultIsFilteredAttribute : Attribute
 	{
 		public bool DefaultIsFiltered;
-		public OrmDefaultIsFilteredAttribute(bool defaultIsFiltered) { DefaultIsFiltered = defaultIsFiltered; }
+
+		public OrmDefaultIsFilteredAttribute (bool defaultIsFiltered)
+		{
+			DefaultIsFiltered = defaultIsFiltered;
+		}
 	}
 
 }
