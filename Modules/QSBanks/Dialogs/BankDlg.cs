@@ -83,8 +83,8 @@ namespace QSBanks
 
 		private void ConfigureDlg ()
 		{
-			buttonSave.Sensitive = dataentryBik.Sensitive = dataentryCity.Sensitive = 
-				dataentryCorAccount.Sensitive = dataentryName.Sensitive = false;
+			buttonSave.Sensitive = dataentryBik.IsEditable = dataentryCity.IsEditable = 
+				dataentryCorAccount.IsEditable = dataentryName.IsEditable = false;
 			if (subject.Deleted) {
 				labelDeleted.Markup = "<span foreground=\"red\">Данного банка больше не существует.</span>";
 			}
