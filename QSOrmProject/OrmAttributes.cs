@@ -7,7 +7,7 @@ namespace QSOrmProject
 	{
 		public string JournalName;
 		public string Name;
-		public OrmReferenceMode DefaultJournalMode = OrmReferenceMode.Normal;
+		public ReferenceButtonMode DefaultJournalMode = ReferenceButtonMode.CanAll;
 
 		public OrmSubjectAttribute ()
 		{

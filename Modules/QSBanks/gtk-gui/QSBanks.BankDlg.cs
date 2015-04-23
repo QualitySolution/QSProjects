@@ -185,6 +185,7 @@ namespace QSBanks
 			this.datalabel1 = new global::Gtk.DataBindings.DataLabel ();
 			this.datalabel1.Name = "datalabel1";
 			this.datalabel1.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel1");
+			this.datalabel1.Selectable = true;
 			this.datalabel1.InheritedDataSource = true;
 			this.datalabel1.Mappings = "GetRegionString";
 			this.datalabel1.InheritedBoundaryDataSource = false;

@@ -142,7 +142,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSBanks.BankDlg" design-size="245 228">
+  <widget class="Gtk.Bin" id="QSBanks.BankDlg" design-size="245 236">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -341,6 +341,7 @@
               <widget class="Gtk.DataBindings.DataLabel" id="datalabel1">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">datalabel1</property>
+                <property name="Selectable">True</property>
                 <property name="InheritedDataSource">True</property>
                 <property name="Mappings">GetRegionString</property>
                 <property name="InheritedBoundaryDataSource">False</property>
