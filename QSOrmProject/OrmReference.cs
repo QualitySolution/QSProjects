@@ -27,16 +27,6 @@ namespace QSOrmProject
 		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
-		private bool canEdit = true;
-
-		public bool CanEdit {
-			get { return canEdit; }
-			set {
-				canEdit = value;
-				buttonAdd.Sensitive = canEdit;
-			}
-		}
-
 		public ISession Session {
 			get
 			{
@@ -125,17 +115,26 @@ namespace QSOrmProject
 			get { return mode; }
 			set {
 				mode = value;
-				hboxSelect.Visible = mode.HasFlag (OrmReferenceMode.CanSelect);
-				buttonAdd.Sensitive = mode.HasFlag (OrmReferenceMode.CanAdd);
-				buttonEdit.Sensitive = mode.HasFlag (OrmReferenceMode.CanEdit);
-				buttonDelete.Sensitive = mode.HasFlag (OrmReferenceMode.CanDelete);
+				hboxSelect.Visible = (mode == OrmReferenceMode.Select);
+			}
+		}
+
+		private ReferenceButtonMode buttonMode;
+
+		public ReferenceButtonMode ButtonMode {
+			get { return buttonMode; }
+			set {
+				buttonMode = value;
+				buttonAdd.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanAdd);
+				buttonEdit.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanEdit);
+				buttonDelete.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanDelete);
 				Image image = new Image ();
 				image.Pixbuf = Stetic.IconLoader.LoadIcon (
 					this, 
-					mode.HasFlag (OrmReferenceMode.TreatEditAsOpen) ? "gtk-open" : "gtk-edit", 
+					buttonMode.HasFlag (ReferenceButtonMode.TreatEditAsOpen) ? "gtk-open" : "gtk-edit", 
 					IconSize.Menu);
 				buttonEdit.Image = image;
-				buttonEdit.Label = mode.HasFlag (OrmReferenceMode.TreatEditAsOpen) ? "Открыть" : "Изменить";
+				buttonEdit.Label = buttonMode.HasFlag (ReferenceButtonMode.TreatEditAsOpen) ? "Открыть" : "Изменить";
 			}
 		}
 
@@ -194,7 +193,7 @@ namespace QSOrmProject
 			object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0) {
 				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
-				Mode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
 			}
 			UpdateObjectList ();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
@@ -237,7 +236,8 @@ namespace QSOrmProject
 		{
 			bool selected = datatreeviewRef.Selection.CountSelectedRows () > 0;
 			buttonSelect.Sensitive = selected;
-			buttonEdit.Sensitive = buttonDelete.Sensitive = canEdit && selected;
+			buttonEdit.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) && selected;
+			buttonDelete.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) && selected;
 		}
 
 		void FilterViewChanged (object aList)
@@ -330,9 +330,9 @@ namespace QSOrmProject
 
 		protected void OnDatatreeviewRefRowActivated (object o, Gtk.RowActivatedArgs args)
 		{
-			if (Mode.HasFlag (OrmReferenceMode.CanSelect))
+			if (Mode == OrmReferenceMode.Select)
 				buttonSelect.Click ();
-			else if (Mode.HasFlag (OrmReferenceMode.CanEdit))
+			else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
 				buttonEdit.Click ();
 		}
 
@@ -394,18 +394,23 @@ namespace QSOrmProject
 			(cell as CellRendererText).Foreground = (o as ISpecialRowsRender).TextColor;
 		}
 	}
+		
+	public enum OrmReferenceMode
+	{
+		Normal,
+		Select
+	}
 
 	[Flags]
-	public enum OrmReferenceMode
+	public enum ReferenceButtonMode
 	{
 		CanAdd = 1,
 		CanEdit = 2,
 		CanDelete = 4,
-		Normal = 7,
-		CanSelect = 8,
-		All = 15,
-		TreatEditAsOpen = 16
+		CanAll = 7,
+		TreatEditAsOpen = 8
 	}
+
 
 	public class OrmReferenceObjectSectedEventArgs : EventArgs
 	{

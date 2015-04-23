@@ -140,8 +140,9 @@ namespace QSOrmProject
 
 				SelectDialog = new OrmReference (subjectType, session, ItemsCriteria);
 			}
-			SelectDialog.Mode = SelectDialog.Mode | OrmReferenceMode.CanSelect;
-			SelectDialog.CanEdit = CanEditReference;
+			SelectDialog.Mode = OrmReferenceMode.Select;
+			if (!CanEditReference)
+				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
 			mytab.TabParent.AddSlaveTab (mytab, SelectDialog);
 		}

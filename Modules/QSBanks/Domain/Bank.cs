@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
-	[OrmSubject (JournalName = "Банки", DefaultJournalMode = OrmReferenceMode.CanEdit | OrmReferenceMode.TreatEditAsOpen)]
+	[OrmSubject (JournalName = "Банки", DefaultJournalMode = ReferenceButtonMode.CanEdit | ReferenceButtonMode.TreatEditAsOpen)]
 	public class Bank: PropertyChangedBase, IValidatableObject
 	{
 		#region Свойства
