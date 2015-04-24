@@ -9,9 +9,10 @@ namespace QSOrmProject
 		object Subject { get; set; }
 	}
 
-	public interface IOrmSlaveDialog : IOrmDialog
+	public interface IOrmSlaveDialog
 	{
 		OrmParentReference ParentReference { get; set;}
+		object Subject { get; set; }
 	}
 }
 
