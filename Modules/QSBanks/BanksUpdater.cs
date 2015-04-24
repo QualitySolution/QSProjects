@@ -24,7 +24,7 @@ namespace QSBanks
 		const string BANKS_LIST_FILE = "bnkseek.txt";
 		const string BANKS_REGIONS_FILE = "reg.txt";
 
-		public static int UpdatePeriod = 14;
+		public static int UpdatePeriod = 7;
 
 		static Window updateWindow = new Window ("Идет обновление справочника банков...");
 
