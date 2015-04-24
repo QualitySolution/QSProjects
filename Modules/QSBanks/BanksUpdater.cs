@@ -24,7 +24,7 @@ namespace QSBanks
 		const string BANKS_LIST_FILE = "bnkseek.txt";
 		const string BANKS_REGIONS_FILE = "reg.txt";
 
-		public static int UpdatePeriod = 7;
+		public static int UpdatePeriod = 5;
 
 		static Window updateWindow = new Window ("Идет обновление справочника банков...");
 
@@ -53,7 +53,8 @@ namespace QSBanks
 			if (MainSupport.BaseParameters.All.ContainsKey ("last_banks_update"))
 				lastModified = DateTime.Parse (MainSupport.BaseParameters.All ["last_banks_update"]);
 
-			if (!forceUpdate && (DateTime.Now - lastModified).Days < UpdatePeriod)
+			int withoutUpdate = (int)DateTime.Now.Subtract (lastModified).TotalDays;
+			if (!forceUpdate && withoutUpdate < UpdatePeriod)
 				return;
 
 			if (!forceUpdate) {
@@ -61,7 +62,10 @@ namespace QSBanks
 					                   DialogFlags.Modal, 
 					                   MessageType.Question,
 					                   ButtonsType.YesNo,
-					                   "Cправочник банков обновлялся более \n2-х недель назад. Обновить?");
+					RusNumber.FormatCase (withoutUpdate, "Cправочник банков обновлялся\n{0} день назад. Обновить?",
+						"Cправочник банков обновлялся\n{0} дня назад. Обновить?", 
+						"Cправочник банков обновлялся\n{0} дней назад. Обновить?")
+				);
 				md.SetPosition (WindowPosition.Center);
 				md.Show ();
 				int Result = md.Run ();
