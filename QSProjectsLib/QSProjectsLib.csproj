@@ -84,6 +84,7 @@
     <Compile Include="WaitOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.WaitOperationDlg.cs" />
     <Compile Include="CurrencyWorks.cs" />
+    <Compile Include="InformationHandbook.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
