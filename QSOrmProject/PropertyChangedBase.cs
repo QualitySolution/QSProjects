@@ -18,8 +18,15 @@ namespace QSOrmProject
 		protected virtual void OnPropertyChanged (string propertyName)
 		{
 			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null)
+			if (handler != null) {
+				var att = this.GetType ().GetProperty (propertyName).GetCustomAttributes (typeof(PropertyChangedAlsoAttribute), true);
 				handler (this, new PropertyChangedEventArgs (propertyName));
+				if(att != null)
+				{
+					foreach(string propName in (att[0] as PropertyChangedAlsoAttribute).PropertiesNames)
+						handler (this, new PropertyChangedEventArgs (propName));
+				}
+			}
 		}
 
 		protected bool SetField<T> (ref T field, T value, string propertyName)
@@ -51,5 +58,7 @@ namespace QSOrmProject
 			return true;
 		}
 	}
+
+
 }
 
