@@ -1,10 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using Gtk;
 using NHibernate;
-using NHibernate.Proxy;
-using QSTDI;
 using NLog;
-using System.ComponentModel;
+using QSTDI;
 
 namespace QSOrmProject
 {
@@ -45,9 +45,25 @@ namespace QSOrmProject
 			set {
 				if (subject == value)
 					return;
+				if(subject is INotifyPropertyChanged)
+				{
+					(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
+				}
 				subject = value;
+				if(subject is INotifyPropertyChanged)
+				{
+					(subject as INotifyPropertyChanged).PropertyChanged += OnSubjectPropertyChanged;
+				}
 				UpdateWidget ();
 				OnChanged ();
+			}
+		}
+
+		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if(DisplayFields.Contains (e.PropertyName))
+			{
+				UpdateWidget ();
 			}
 		}
 
