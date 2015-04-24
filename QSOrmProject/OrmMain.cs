@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using NHibernate;
-using NHibernate.Proxy;
-using NHibernate.Cfg;
-using QSTDI;
+using System.Linq;
 using Gtk;
+using NHibernate;
+using NHibernate.Cfg;
+using NHibernate.Proxy;
 using NLog;
+using QSTDI;
 
 namespace QSOrmProject
 {
@@ -16,6 +17,7 @@ namespace QSOrmProject
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
+		private static DateTime lastCleaning;
 
 		public static ISession OpenSession ()
 		{
@@ -63,27 +65,33 @@ namespace QSOrmProject
 		}
 
 		/// <summary>
-		/// Уведомляем всех подписчиков об изменении объекта.
+		/// Уведомляем всех подписчиков об изменении указанных объектов.
+		/// Объекты в списке могут быть разных типов, метод разделит списки уведомлений, по типам объектов.
 		/// </summary>
 		/// <param name="subject">Subject.</param>
-		public static void NotifyObjectUpdated (object subject, bool clean = true)
+		public static void NotifyObjectUpdated (params object[] updatedSubjects)
 		{
-			System.Type subjectType = NHibernateUtil.GetClass (subject);
-			OrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
-			if (map != null)
-				map.RaiseObjectUpdated (subject);
-			else
-				logger.Warn ("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
-
 			// Чистим список от удаленных объектов.
-			if (clean)
+			if (DateTime.Now.Subtract (lastCleaning).TotalSeconds > 1) {
 				delayedNotifies.RemoveAll (d => d.ParentObject == null || d.ChangedObject == null);
-
-			// Отсылаем уведомления дочерним объектам если они есть.
-			foreach (DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, subject))) {
-				NotifyObjectUpdated (link.ChangedObject, false);
-				delayedNotifies.Remove (link);
+				lastCleaning = DateTime.Now;
 			}
+
+			foreach(Type subjectType in updatedSubjects.Select(s => NHibernateUtil.GetClass (s)).Distinct ())
+			{
+				OrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
+				if (map != null)
+					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateUtil.GetClass (s) == subjectType).ToArray ());
+				else
+					logger.Warn ("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
+
+				// Отсылаем уведомления дочерним объектам если они есть.
+				foreach (DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, updatedSubjects[0]))) {
+					NotifyObjectUpdated (link.ChangedObject);
+					delayedNotifies.Remove (link);
+				}
+
+			}				
 		}
 
 		/// <summary>
@@ -185,20 +193,11 @@ namespace QSOrmProject
 
 	public class OrmObjectUpdatedEventArgs : EventArgs
 	{
-		public int Id { get; private set; }
+		public object[] UpdatedSubjects { get; private set; }
 
-		public object Subject { get; private set; }
-
-		public OrmObjectUpdatedEventArgs (int id)
+		public OrmObjectUpdatedEventArgs (params object[] updatedSubjects)
 		{
-			Id = id;
-		}
-
-		public OrmObjectUpdatedEventArgs (object subject)
-		{
-			Subject = subject;
-			if (subject is IDomainObject)
-				Id = (subject as IDomainObject).Id;
+			UpdatedSubjects = updatedSubjects;
 		}
 	}
 

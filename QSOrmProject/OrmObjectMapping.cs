@@ -41,16 +41,10 @@ namespace QSOrmProject
 			RefFilterClass = filterClass;
 		}
 
-		public void RaiseObjectUpdated(int id)
+		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
 			if (ObjectUpdated != null)
-				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(id));
-		}
-
-		public void RaiseObjectUpdated(object subject)
-		{
-			if (ObjectUpdated != null)
-				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(subject));
+				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
 		}
 
 	}

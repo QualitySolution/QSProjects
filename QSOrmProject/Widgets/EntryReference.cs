@@ -85,9 +85,10 @@ namespace QSOrmProject
 
 		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			if (OrmMain.EqualDomainObjects (e.Subject, Subject)) {
+			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => OrmMain.EqualDomainObjects (s, Subject));
+			if (foundUpdatedObject != null) {
 				IOrmDialog dlg = OrmMain.FindMyDialog (this);
-				if (dlg != null && !dlg.Session.Contains (e.Subject))
+				if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
 					dlg.Session.Refresh (Subject);
 
 				UpdateWidget ();
