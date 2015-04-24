@@ -21,7 +21,7 @@ namespace QSOrmProject
 			if (handler != null) {
 				var att = this.GetType ().GetProperty (propertyName).GetCustomAttributes (typeof(PropertyChangedAlsoAttribute), true);
 				handler (this, new PropertyChangedEventArgs (propertyName));
-				if(att != null)
+				if(att.Length > 0)
 				{
 					foreach(string propName in (att[0] as PropertyChangedAlsoAttribute).PropertiesNames)
 						handler (this, new PropertyChangedEventArgs (propName));
