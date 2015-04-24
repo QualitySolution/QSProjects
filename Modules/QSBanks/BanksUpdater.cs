@@ -98,55 +98,59 @@ namespace QSBanks
 				.Add (Restrictions.Eq ("Inactive", false)).List<Account> ();
 
 			//Добавляем новые и исправляем старые
+			var UpdatedObject = new List<object> ();
 			foreach (Bank loadedBank in loadedBanksList) {
-				int i;
-				if ((i = oldBanksList.FindIndex (oldBank => oldBank.Bik == loadedBank.Bik)) != -1) {
-					if (Bank.EqualsWithoutId (oldBanksList [i], loadedBank))
+				Bank foundBank = oldBanksList.Find (oldBank => oldBank.Bik == loadedBank.Bik);
+				if (foundBank != null) {
+					if (Bank.EqualsWithoutId (foundBank, loadedBank))
 						continue;
-					oldBanksList [i].City = loadedBank.City;
-					oldBanksList [i].CorAccount = loadedBank.CorAccount;
-					oldBanksList [i].Name = loadedBank.Name;
-					oldBanksList [i].Region = loadedBank.Region;
+					foundBank.City = loadedBank.City;
+					foundBank.CorAccount = loadedBank.CorAccount;
+					foundBank.Name = loadedBank.Name;
+					foundBank.Region = loadedBank.Region;
+					UpdatedObject.Add (foundBank);
 					banksFixed++;
-					continue;
+				} else {
+					oldBanksList.Add (loadedBank);
+					session.Persist (loadedBank);
+					UpdatedObject.Add (loadedBank);
+					banksAdded++;
 				}
-				oldBanksList.Add (loadedBank);
-				session.Persist (loadedBank);
-				banksAdded++;
 			}
 			//Удаляем неактуальные банки
-			foreach (Bank oldBank in oldBanksList) {
-				if (loadedBanksList.FindIndex (loadedBank => loadedBank.City == oldBank.City &&
-				    loadedBank.Bik == oldBank.Bik &&
-				    loadedBank.CorAccount == oldBank.CorAccount &&
-				    loadedBank.Name == oldBank.Name &&
-				    loadedBank.Region.Equals (oldBank.Region)) == -1) {
-					if ((accountsList.FindIndex (a => a.InBank == oldBank)) == -1) {
-						session.Delete (oldBank);
-						banksRemoved++;
-					} else
-						oldBank.Deleted = true;
+			foreach (Bank forRemoveBank in oldBanksList.FindAll 
+				(oldBank => !loadedBanksList.Exists (loadedBank => Bank.EqualsWithoutId (loadedBank, oldBank))))
+			{
+				if (accountsList.Exists (a => a.InBank == forRemoveBank)) {
+					if (forRemoveBank.Deleted)
+						continue;
+					forRemoveBank.Deleted = true;
+					UpdatedObject.Add (forRemoveBank);
+					banksDeactivated++;
+				} else {
+					session.Delete (forRemoveBank);
+					banksRemoved++;
 				}
 			}
 
 			//Деактивируем счета
-			foreach (Account acc in accountsList)
-				if (acc.InBank != null && acc.InBank.Deleted) {
-					acc.Inactive = true;
-					accountsDeactivated++;
-				}
+			foreach (Account acc in accountsList.FindAll (a => !a.Inactive && a.InBank != null && a.InBank.Deleted)){
+				acc.Inactive = true;
+				UpdatedObject.Add (acc);
+				accountsDeactivated++;
+			}
 			session.Flush ();
 			session.Close ();
 
-			OrmMain.NotifyObjectUpdated (new Bank ());
+			OrmMain.NotifyObjectUpdated (UpdatedObject.ToArray ());
 			updateWindow.Destroy ();
 			//Выводим статистику
 			string message;
 			bool wasUpdated = ((accountsDeactivated | banksAdded | banksDeactivated | banksFixed | banksRemoved) != 0);
 			if (!wasUpdated)
-				message = "Обновление не требуется.";
+				message = "Данные справочника актуальны.";
 			else
-				message = String.Format ("Обновление справочника успешно завершено.\n\n" +
+				message = String.Format ("Обновление справочника банков успешно завершено.\n\n" +
 				"Добавлено банков: {0}\nИсправлено банков: {1}\nУдалено банков: {2}\n" +
 				"Деактивировано счетов: {3}\nДеактивировано банков: {4}",
 					banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated);
