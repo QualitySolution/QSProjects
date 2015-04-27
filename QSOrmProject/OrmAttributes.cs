@@ -6,13 +6,14 @@ namespace QSOrmProject
 	public class OrmSubjectAttribute : Attribute
 	{
 		public string JournalName;
-		public string Name;
+		public string ObjectName;
 		public ReferenceButtonMode DefaultJournalMode = ReferenceButtonMode.CanAll;
 
 		public OrmSubjectAttribute ()
 		{
 		}
 
+		[Obsolete("Используйте заполнение атрибута через параметры.")]
 		public OrmSubjectAttribute (string journalName)
 		{
 			JournalName = journalName;

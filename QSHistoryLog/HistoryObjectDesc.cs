@@ -40,8 +40,8 @@ namespace QSHistoryLog
 			ObjectName = type.Name;
 
 			var att = type.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
-			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).Name))
-				DisplayName = (att [0] as OrmSubjectAttribute).Name;
+			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
+				DisplayName = (att [0] as OrmSubjectAttribute).ObjectName;
 			else
 				DisplayName = ObjectName;
 		}

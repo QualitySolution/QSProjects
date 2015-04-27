@@ -79,7 +79,7 @@ namespace QSOrmProject
 				if (String.IsNullOrEmpty (ObjectsName))
 					ObjectsName = (attArray [0] as OrmSubjectAttribute).JournalName;
 				if (String.IsNullOrEmpty (ObjectName))
-					ObjectName = (attArray [0] as OrmSubjectAttribute).Name;
+					ObjectName = (attArray [0] as OrmSubjectAttribute).ObjectName;
 			}
 
 			if (String.IsNullOrEmpty (TableName) && OrmMain.ormConfig != null) {
