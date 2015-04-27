@@ -58,7 +58,7 @@ namespace QSOrmProject
 				};
 						
 				var cmd = QSMain.ConnectionDB.CreateCommand();
-				cmd.CommandText = info.SqlSelect + "WHERE id = @id";
+				cmd.CommandText = info.PreparedSqlSelect + "WHERE id = @id";
 				AddParameterWithId(cmd, id);
 
 				using (DbDataReader rdr = cmd.ExecuteReader ()) {
@@ -147,7 +147,7 @@ namespace QSOrmProject
 						throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
 						                                                    currentDeletion.ObjectClass, currentDeletion.TableName, delItem.ObjectClass, delItem.TableName));
 
-					string sql = childClassInfo.SqlSelect + delItem.WhereStatment;
+					string sql = childClassInfo.PreparedSqlSelect + delItem.WhereStatment;
 					cmd = QSMain.ConnectionDB.CreateCommand();
 					cmd.CommandText = sql;
 					AddParameterWithId(cmd, parentOperation.ItemId);
@@ -218,7 +218,7 @@ namespace QSOrmProject
 					if (childClassInfo == null)
 						throw new InvalidOperationException(String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanItem.ObjectClass));
 
-					string sql = childClassInfo.SqlSelect + cleanItem.WhereStatment;
+					string sql = childClassInfo.PreparedSqlSelect + cleanItem.WhereStatment;
 					cmd = QSMain.ConnectionDB.CreateCommand();
 					cmd.CommandText = sql;
 					AddParameterWithId(cmd, parentOperation.ItemId);
