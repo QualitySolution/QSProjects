@@ -13,7 +13,7 @@ namespace QSOrmProject
 	public static class OrmMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private static Configuration ormConfig;
+		internal static Configuration ormConfig;
 		public static ISessionFactory Sessions;
 		public static List<OrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
