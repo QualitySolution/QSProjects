@@ -7,9 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,6 +78,7 @@
     <Compile Include="DeleteDlg.cs" />
     <Compile Include="gtk-gui\QSOrmProject.DeleteDlg.cs" />
     <Compile Include="DeleteInfo.cs" />
+    <Compile Include="PropertyUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
