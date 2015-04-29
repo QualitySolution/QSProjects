@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Bindings;
-using System.Reflection;
 using System.Linq;
-using KellermanSoftware.CompareNetObjects;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QSOrmProject.Deletion;
 using QSProjectsLib;
 
 namespace QSHistoryLog
@@ -173,10 +174,10 @@ namespace QSHistoryLog
 
 		public static void SubscribeToDeletion()
 		{
-			QSOrmProject.DeleteConfig.AfterDeletion += OnOrmAfterDeletion;
+			DeleteConfig.AfterDeletion += OnOrmAfterDeletion;
 		}
 
-		static void OnOrmAfterDeletion (object sender, QSOrmProject.AfterDeletionEventArgs e)
+		static void OnOrmAfterDeletion (object sender, AfterDeletionEventArgs e)
 		{
 			logger.Debug ("Записываем ChangeSet-ы удаления в БД.");
 			string sql = "INSERT INTO history_changeset (datetime, user_id, operation, object_name, object_id, object_title) " +
