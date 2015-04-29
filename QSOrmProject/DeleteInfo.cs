@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using NHibernate;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -141,6 +144,20 @@ namespace QSOrmProject
 			else
 				return DeleteConfig.ClassInfos.Find (i => i.TableName == TableName);
 		}
+
+		/// <summary>
+		/// Создает класс описания удаления на основе свойства объекта беря информацию из NHibernate.
+		/// Удалятся все объекты указанного типа, указанное свойство которых равно удаляемому объекту.
+		/// </summary>
+		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
+		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
+		public static DeleteDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
+			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string fieldName = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			return new DeleteDependenceInfo(typeof(TObject),
+				String.Format ("WHERE {0} = @id", fieldName)
+			);
+		}
 	}
 
 	public class ClearDependenceInfo
@@ -174,6 +191,20 @@ namespace QSOrmProject
 				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
 			else
 				return DeleteConfig.ClassInfos.Find (i => i.TableName == TableName);
+		}
+
+		/// <summary>
+		/// Создает класс описания очистки колонки на основе свойства беря информацию из NHibernate
+		/// </summary>
+		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
+		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
+		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
+			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string fieldName = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			return new ClearDependenceInfo(typeof(TObject),
+				String.Format ("WHERE {0} = @id", fieldName),
+				new string[] {fieldName}
+			);
 		}
 	}
 
