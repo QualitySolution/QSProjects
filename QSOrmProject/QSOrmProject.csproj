@@ -75,10 +75,13 @@
     <Compile Include="DataWidgets\DataCompanyName.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="DataWidgets\DataTimeEntry.cs" />
-    <Compile Include="DeleteDlg.cs" />
-    <Compile Include="gtk-gui\QSOrmProject.DeleteDlg.cs" />
-    <Compile Include="DeleteInfo.cs" />
     <Compile Include="PropertyUtil.cs" />
+    <Compile Include="Deletion\DeleteDlg.cs" />
+    <Compile Include="Deletion\DeleteInfo.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteDlg.cs" />
+    <Compile Include="Deletion\DeleteConfig.cs" />
+    <Compile Include="Deletion\DeleteDependenceInfo.cs" />
+    <Compile Include="Deletion\ClearDependenceInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -111,6 +114,7 @@
   <ItemGroup>
     <Folder Include="Widgets\" />
     <Folder Include="DataWidgets\" />
+    <Folder Include="Deletion\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

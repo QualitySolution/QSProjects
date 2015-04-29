@@ -1,11 +1,11 @@
 using System;
-using Gtk;
-using System.Data.Common;
 using System.Collections.Generic;
-using QSProjectsLib;
+using System.Data.Common;
+using Gtk;
 using NLog;
+using QSProjectsLib;
 
-namespace QSOrmProject
+namespace QSOrmProject.Deletion
 {
 	public partial class DeleteDlg : Gtk.Dialog
 	{

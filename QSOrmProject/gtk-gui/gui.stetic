@@ -5,11 +5,11 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
-    <widget-library name="../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
-    <widget-library name="../bin/Debug/QSOrmProject.dll" internal="true" />
+    <widget-library name="../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
+    <widget-library name="../bin/Debug/QSOrmProject.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSOrmProject.OrmReference" design-size="499 300">
     <property name="MemberName" />
@@ -349,7 +349,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSOrmProject.DeleteDlg" design-size="654 513">
+  <widget class="Gtk.Dialog" id="QSOrmProject.Deletion.DeleteDlg" design-size="654 513">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Удаление</property>
     <property name="Icon">stock:gtk-delete Dialog</property>
