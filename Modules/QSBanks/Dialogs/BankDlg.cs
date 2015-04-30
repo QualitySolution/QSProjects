@@ -43,7 +43,7 @@ namespace QSBanks
 			get
 			{
 				if (session == null)
-					session = OrmMain.Sessions.OpenSession ();
+					session = OrmMain.OpenSession ();
 				return session;
 			}
 			set { session = value; }
