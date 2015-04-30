@@ -14,7 +14,7 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		internal static Configuration ormConfig;
-		public static ISessionFactory Sessions;
+		internal static ISessionFactory Sessions;
 		public static List<OrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
 		private static DateTime lastCleaning;
@@ -77,8 +77,7 @@ namespace QSOrmProject
 				lastCleaning = DateTime.Now;
 			}
 
-			foreach(Type subjectType in updatedSubjects.Select(s => NHibernateUtil.GetClass (s)).Distinct ())
-			{
+			foreach (Type subjectType in updatedSubjects.Select(s => NHibernateUtil.GetClass (s)).Distinct ()) {
 				OrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
 				if (map != null)
 					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateUtil.GetClass (s) == subjectType).ToArray ());
