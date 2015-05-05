@@ -28,8 +28,20 @@ namespace QSProjectsLib
 		public static string ConnectionString;
 		public static Dictionary<string, UserPermission> ProjectPermission;
 		public static Dictionary<string, TableInfo> ProjectTables;
-		public static string AdminFieldName;
 		public static UserInfo User;
+
+		private static string adminFieldName = "admin";
+		public static string AdminFieldName {
+			get {
+				return adminFieldName;
+			}
+			set {
+				adminFieldName = value;
+				logger.Warn ("В установке полю AdminFieldName значения admin нет необходимости, оно имеет его по умолчанию. " +
+					"Другое название колонки в базе приведет к некорректной работе c SAAS.");
+			}
+		}
+
 		//События
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
 		public static event EventHandler<RunErrorMessageDlgEventArgs> RunErrorMessageDlg;

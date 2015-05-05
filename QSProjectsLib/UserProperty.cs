@@ -200,7 +200,7 @@ namespace QSProjectsLib
 				
 				cmd.ExecuteNonQuery ();
 				if (QSMain.User.Login == entryLogin.Text)
-					QSMain.User.UpdateUserInfoByLogin ();
+					QSMain.User.LoadUserInfo ();
 				logger.Info ("Ok");
 				Respond (ResponseType.Ok);
 			} catch (Exception ex) {
