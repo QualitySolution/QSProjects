@@ -5,7 +5,7 @@ namespace QSUpdater
 	[ServiceContract]
 	public interface IUpdateService
 	{
-		[OperationContract]
+		[OperationContract (IsInitiating = true, IsTerminating = true)]
 		UpdateResult checkForUpdate (string parameters);
 	}
 }
