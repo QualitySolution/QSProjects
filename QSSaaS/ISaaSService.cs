@@ -71,6 +71,17 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
+		/// Регистрация пользователя
+		/// </summary>
+		/// <returns>True в случае успеха или false и описание ошибки в случае неудачи.</returns>
+		/// <param name="userLogin">Логин.</param>
+		/// <param name="userPass">Пароль.</param>
+		/// <param name="session">ID текущей сессии.</param>
+		Result registerUserV2 (string userLogin, string userPass, string session, string userName);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
 		/// Продлевает сессию еще на 20 минут.
 		/// </summary>
 		/// <returns><c>true</c>, если сессия была обновлена <c>false</c> если нет.</returns>
@@ -137,6 +148,10 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		bool createNewBase (string sessionId, string baseName, string product);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		bool createUserInBase (string sessionId);
 	}
 }
 
