@@ -169,6 +169,10 @@ namespace QSTDI
 						return false;
 					}
 				}
+				if (result == (int)ResponseType.No) {
+					(dlg as Bin).Destroy ();
+					return true;
+				}
 				if (result == (int)ResponseType.DeleteEvent)
 					return false;
 			}
