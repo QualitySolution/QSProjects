@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSHistoryLog</RootNamespace>
     <AssemblyName>QSHistoryLog</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,14 +47,14 @@
     <Reference Include="DiffPlex">
       <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.0.0\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="NClone">
       <HintPath>..\packages\NClone.1.1.1\lib\net40\NClone.dll</HintPath>
     </Reference>
     <Reference Include="KellermanSoftware.Compare-Net-Objects">
       <HintPath>..\lib\KellermanSoftware.Compare-Net-Objects.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.1\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
