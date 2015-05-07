@@ -106,7 +106,15 @@ namespace QSOrmProject
 
 			object[] values = new object[displayFields.Length];
 			for (int i = 0; i < displayFields.Length; i++) {
-				values [i] = subjectType.GetProperty (displayFields [i]).GetValue (Subject, null);
+				if(String.IsNullOrWhiteSpace(displayFields [i]))
+				{
+					logger.Warn("Пустая строка в списке полей DisplayFields. Пропускаем...");
+					continue;
+				}
+				var prop = subjectType.GetProperty(displayFields[i]);
+				if (prop == null)
+					throw new InvalidOperationException(String.Format("Поле {0} у класса {1} не найдено.", displayFields[i], SubjectType));
+				values [i] = prop.GetValue (Subject, null);
 			}
 			entryObject.Text = String.Format (DisplayFormatString, values);
 		}
@@ -144,7 +152,6 @@ namespace QSOrmProject
 			OrmReference SelectDialog;
 
 			if (ParentReference != null) {
-				session = ParentReference.Session;
 				SelectDialog = new OrmReference (subjectType, ParentReference);
 			} else {
 				if (dlg != null)
