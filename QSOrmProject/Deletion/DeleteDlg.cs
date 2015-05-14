@@ -57,7 +57,8 @@ namespace QSOrmProject.Deletion
 				};
 						
 				var cmd = QSMain.ConnectionDB.CreateCommand ();
-				cmd.CommandText = info.PreparedSqlSelect + "WHERE id = @id";
+				cmd.CommandText = info.PreparedSqlSelect + 
+					String.Format ("WHERE {0}.id = @id", info.TableName);
 				AddParameterWithId (cmd, id);
 
 				using (DbDataReader rdr = cmd.ExecuteReader ()) {
