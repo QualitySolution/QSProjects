@@ -9,8 +9,6 @@
     <AssemblyName>QSSupportLib</AssemblyName>
     <ReleaseVersion>1</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +44,7 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.3.2.1\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -58,6 +57,10 @@
     <Compile Include="widgets\NewsMenuItem.cs" />
     <Compile Include="NewsFeed.cs" />
     <Compile Include="MainNewsFeed.cs" />
+    <Compile Include="widgets\SerialNumberEntry.cs" />
+    <Compile Include="SerialEncoding\Base58Encoding.cs" />
+    <Compile Include="SerialEncoding\ArrayHelpers.cs" />
+    <Compile Include="SerialEncoding\SerialCommon.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="widgets\" />
+    <Folder Include="SerialEncoding\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
