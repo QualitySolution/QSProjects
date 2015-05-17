@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Numerics;
 
 namespace QSSupportLib.Serial
 {
@@ -8,6 +9,8 @@ namespace QSSupportLib.Serial
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		public const int SplitBy = 4;
+		public const string ProductCharDictionary = "0abcdefghijklmnopqrstuvwxyz";
+
 
 		public static string AddHyphens(string dirtyNumber)
 		{
@@ -26,6 +29,21 @@ namespace QSSupportLib.Serial
 				untilHyphen--;
 			}
 			return result.ToString();
+		}
+
+		public static string GetProductFromBinary(byte[] array, int start)
+		{
+			byte[] productPart = ArrayHelpers.SubArray<byte>(array, start);
+			BigInteger intData = new BigInteger(productPart);
+
+			string result = "";
+			while (intData > 0)
+			{
+				int remainder = (int)(intData % ProductCharDictionary.Length);
+				intData /= ProductCharDictionary.Length;
+				result = ProductCharDictionary[remainder] + result;
+			}
+			return result;
 		}
 
 	}
