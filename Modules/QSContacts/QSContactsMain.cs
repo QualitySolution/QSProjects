@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace QSContacts
 {
-	public static class QSContactsMain
+	public static partial class QSContactsMain
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public static List<OrmObjectMapping> GetModuleMaping ()
 		{

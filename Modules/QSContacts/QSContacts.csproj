@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSContacts</RootNamespace>
     <AssemblyName>QSContacts</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,6 +61,7 @@
     <Compile Include="PersonsView.cs" />
     <Compile Include="Domain\Person.cs" />
     <Compile Include="Domain\Post.cs" />
+    <Compile Include="ConfigureDeletion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
