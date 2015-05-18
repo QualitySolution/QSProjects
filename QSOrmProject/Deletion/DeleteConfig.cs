@@ -34,6 +34,26 @@ namespace QSOrmProject.Deletion
 
 			ClassInfos.Add (info);
 		}
+
+		public static void AddDeleteDependence<ToClass>(DeleteDependenceInfo deleteDependence)
+		{
+			var info = ClassInfos.Find (i => i.ObjectClass == typeof(ToClass));
+
+			if(info == null)
+				throw new InvalidOperationException (String.Format ("Описание удаления для класса {0} не найдено.", typeof(ToClass)));
+
+			info.DeleteItems.Add(deleteDependence);
+		}
+
+		public static void AddClearDependence<ToClass>(ClearDependenceInfo clearDependence)
+		{
+			var info = ClassInfos.Find (i => i.ObjectClass == typeof(ToClass));
+
+			if(info == null)
+				throw new InvalidOperationException (String.Format ("Описание удаления для класса {0} не найдено.", typeof(ToClass)));
+
+			info.ClearItems.Add(clearDependence);
+		}
 			
 		internal static void OnAfterDeletion(System.Data.Common.DbTransaction trans, List<DeletedItem> items)
 		{
