@@ -82,5 +82,35 @@ namespace QSSupportLib
 			}
 
 		}
+
+		public void RemoveParameter(DbConnection con, string name)
+		{
+			string sql;
+			logger.Debug("Удаляем параметр базы {0}", name);
+			if (All.ContainsKey(name))
+				sql = "DELETE FROM base_parameters WHERE name = @name";
+			else
+				throw new ArgumentException("Нет указанного параметра базы", name);
+			try 
+			{
+				DbCommand cmd = con.CreateCommand();
+				cmd.CommandText = sql;
+				DbParameter paramName = cmd.CreateParameter();
+				paramName.ParameterName = "@name";
+				paramName.Value = name;
+				cmd.Parameters.Add(paramName);
+				cmd.ExecuteNonQuery();
+
+				All.Remove(name);
+				logger.Debug("Ок");
+			} 
+			catch (Exception ex) 
+			{
+				logger.ErrorException("Ошибка удаления параметра", ex);
+				throw ex;
+			}
+
+		}
+
 	}
 }
