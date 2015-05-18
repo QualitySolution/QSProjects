@@ -44,6 +44,19 @@ namespace QSContacts
 			}.FillFromMetaInfo ()
 			);
 
+			DeleteConfig.AddDeleteInfo (new DeleteInfo {
+				ObjectClass = typeof(Person),
+				SqlSelect = "SELECT id, lastname, name FROM @tablename ",
+				DisplayString = "{1} {2}"
+			}.FillFromMetaInfo ()
+			);
+
+			DeleteConfig.AddDeleteInfo (new DeleteInfo {
+				ObjectClass = typeof(Post),
+				SqlSelect = "SELECT id, name FROM @tablename ",
+				DisplayString = "{1}"
+			}.FillFromMetaInfo ()
+			);
 		}
 	}
 }
