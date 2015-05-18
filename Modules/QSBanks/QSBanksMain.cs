@@ -4,8 +4,9 @@ using QSOrmProject;
 
 namespace QSBanks
 {
-	public static class QSBanksMain
+	public static partial class QSBanksMain
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public static List<OrmObjectMapping> GetModuleMaping ()
 		{

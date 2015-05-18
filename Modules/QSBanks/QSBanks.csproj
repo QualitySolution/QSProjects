@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSBanks</RootNamespace>
     <AssemblyName>QSBanks</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,6 +68,7 @@
     <Compile Include="BankFilter.cs" />
     <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
     <Compile Include="Domain\BankRegion.cs" />
+    <Compile Include="ConfigureDeletion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
