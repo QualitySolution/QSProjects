@@ -61,6 +61,9 @@
     <Compile Include="SerialEncoding\Base58Encoding.cs" />
     <Compile Include="SerialEncoding\ArrayHelpers.cs" />
     <Compile Include="SerialEncoding\SerialCommon.cs" />
+    <Compile Include="Dialogs\EditSerialNumber.cs" />
+    <Compile Include="gtk-gui\QSSupportLib.EditSerialNumber.cs" />
+    <Compile Include="SerialEncoding\SNEncoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -72,6 +75,7 @@
   <ItemGroup>
     <Folder Include="widgets\" />
     <Folder Include="SerialEncoding\" />
+    <Folder Include="Dialogs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
