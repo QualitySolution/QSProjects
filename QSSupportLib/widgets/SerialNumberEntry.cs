@@ -43,6 +43,8 @@ namespace QSSupportLib
 		{
 			string digits = Text.Replace("-", "");
 			string newStr = SerialCommon.AddHyphens(digits);
+			if(Text.EndsWith("-"))
+				newStr += "-";
 			int oldHyphens = (Position > Text.Length ? Text : Text.Substring(0,  Position))
 				.Count(c => c == '-');
 			int PosForNewstr = Position + (newStr.Length - Text.Length);
