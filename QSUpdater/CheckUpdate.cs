@@ -73,7 +73,7 @@ namespace QSUpdater
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 					                    MainSupport.ProjectVerion.Product,
 				                                   MainSupport.ProjectVerion.Edition,
-					                    serialNumber,
+												   MainSupport.BaseParameters.SerialNumber,
 				                                   MainSupport.ProjectVerion.Version.Major, 
 				                                   MainSupport.ProjectVerion.Version.Minor, 
 				                                   MainSupport.ProjectVerion.Version.Build, 
