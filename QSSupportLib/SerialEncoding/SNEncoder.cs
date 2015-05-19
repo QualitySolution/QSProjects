@@ -24,6 +24,10 @@ namespace QSSupportLib.Serial
 				Clear();
 
 				string digits = value.Replace("-", "");
+
+				if (digits.Length < 10)
+					return;
+
 				byte[] summaryArray;
 
 				try
