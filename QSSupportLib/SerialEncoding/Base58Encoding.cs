@@ -10,11 +10,11 @@ namespace QSSupportLib.Serial
 	// Implements https://en.bitcoin.it/wiki/Base58Check_encoding
 	public static class Base58Encoding
 	{
-		public const int CheckSumSizeInBytes = 4;
+		public const int CheckSumSizeInBytes = 1;
 
 		public static byte[] AddCheckSum(byte[] data)
 		{
-			Contract.Requires<ArgumentNullException>(data != null);
+			//Contract.Requires<ArgumentNullException>(data != null);
 			Contract.Ensures(Contract.Result<byte[]>().Length == data.Length + CheckSumSizeInBytes);
 			byte[] checkSum = GetCheckSum(data);
 			byte[] dataWithCheckSum = ArrayHelpers.ConcatArrays(data, checkSum);
@@ -24,7 +24,7 @@ namespace QSSupportLib.Serial
 		//Returns null if the checksum is invalid
 		public static byte[] VerifyAndRemoveCheckSum(byte[] data)
 		{
-			Contract.Requires<ArgumentNullException>(data != null);
+			//Contract.Requires<ArgumentNullException>(data != null);
 			Contract.Ensures(Contract.Result<byte[]>() == null || Contract.Result<byte[]>().Length + CheckSumSizeInBytes == data.Length);
 			byte[] result = ArrayHelpers.SubArray(data, 0, data.Length - CheckSumSizeInBytes);
 			byte[] givenCheckSum = ArrayHelpers.SubArray(data, data.Length - CheckSumSizeInBytes);
@@ -68,7 +68,7 @@ namespace QSSupportLib.Serial
 
 		public static string EncodeWithCheckSum(byte[] data)
 		{
-			Contract.Requires<ArgumentNullException>(data != null);
+			//Contract.Requires<ArgumentNullException>(data != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 			return Encode(AddCheckSum(data));
 		}
@@ -103,7 +103,7 @@ namespace QSSupportLib.Serial
 		// Throws `FormatException` if s is not a valid Base58 string, or the checksum is invalid
 		public static byte[] DecodeWithCheckSum(string s)
 		{
-			Contract.Requires<ArgumentNullException>(s != null);
+			//Contract.Requires<ArgumentNullException>(s != null);
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 			var dataWithCheckSum = Decode(s);
 			var dataWithoutCheckSum = VerifyAndRemoveCheckSum(dataWithCheckSum);
@@ -114,7 +114,7 @@ namespace QSSupportLib.Serial
 
 		private static byte[] GetCheckSum(byte[] data)
 		{
-			Contract.Requires<ArgumentNullException>(data != null);
+			//Contract.Requires<ArgumentNullException>(data != null);
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
 			SHA256 sha256 = new SHA256Managed();

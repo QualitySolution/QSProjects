@@ -28,7 +28,7 @@ namespace QSSupportLib.Serial
 
 				try
 				{
-					summaryArray = Base58Encoding.Decode(digits);
+					summaryArray = Base58Encoding.DecodeWithCheckSum(digits);
 				}
 				catch (FormatException ex)
 				{
