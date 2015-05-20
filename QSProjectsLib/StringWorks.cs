@@ -122,7 +122,7 @@ namespace QSProjectsLib
 
 		public static string VersionToShortString (Version version)
 		{
-			return version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
+			return version.ToString (version.Revision <= 0 ? (version.Build <= 0 ? 2 : 3) : 4);
 		}
 
 		public static string VersionToShortString (string version)
