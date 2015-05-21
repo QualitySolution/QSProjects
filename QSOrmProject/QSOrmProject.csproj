@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,6 +82,7 @@
     <Compile Include="Deletion\DeleteConfig.cs" />
     <Compile Include="Deletion\DeleteDependenceInfo.cs" />
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
+    <Compile Include="Deletion\DeletionCheck.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -92,10 +91,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
-      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
-      <Name>QSWidgetLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
@@ -103,6 +98,10 @@
     <ProjectReference Include="..\..\Gtk.DataBindings\Gtk.DataBindings.csproj">
       <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
       <Name>Gtk.DataBindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>

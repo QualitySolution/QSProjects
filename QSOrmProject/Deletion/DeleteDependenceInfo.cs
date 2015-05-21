@@ -12,9 +12,21 @@ namespace QSOrmProject.Deletion
 		public string TableName;
 
 		/// <summary>
+		/// Используется только для проверки зависимостей в NHibernate, не нужно для удаления
+		/// </summary>
+		public string PropertyName;
+
+		/// <summary>
 		/// В выражении можно использовать параметр @id для получения id удаляемого объекта.
 		/// </summary>
 		public string WhereStatment;
+
+		public DeleteDependenceInfo(Type objectClass, string sqlwhere, string property)
+		{
+			ObjectClass = objectClass;
+			WhereStatment = sqlwhere;
+			PropertyName = property;
+		}
 
 		public DeleteDependenceInfo(Type objectClass, string sqlwhere)
 		{
@@ -46,7 +58,8 @@ namespace QSOrmProject.Deletion
 			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
 			string fieldName = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(typeof(TObject),
-				String.Format ("WHERE {0} = @id", fieldName)
+				String.Format ("WHERE {0} = @id", fieldName),
+				propName
 			);
 		}
 

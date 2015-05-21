@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QSOrmProject.Deletion
 {
-	public static class DeleteConfig{
+	public static partial class DeleteConfig{
 		private static List<DeleteInfo> classInfos;
 
 		internal static List<DeleteInfo> ClassInfos {
