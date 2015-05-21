@@ -45,6 +45,18 @@ namespace QSOrmProject.Deletion
 					}
 				}
 			}
+				
+			foreach(var mapping in OrmMain.ormConfig.ClassMappings)
+			{
+				if(!ClassInfos.Exists(i => i.ObjectClass == mapping.MappedClass))
+				{
+					logger.Warn("#Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.",
+						mapping.MappedClass
+					);
+				}
+			}
+
+			logger.Info("Проверка настроек удаления завершена.");
 		}
 	}
 }
