@@ -53,6 +53,23 @@ namespace QSOrmProject.Deletion
 				}
 			}
 
+            //Проверяем что все прописанные в зависимостях свойства имеют тип удаляемого объекта.
+            foreach(var info in ClassInfos)
+            {
+                info.DeleteItems.FindAll(d => !String.IsNullOrEmpty(d.PropertyName) && d.ObjectClass.GetProperty(d.PropertyName).PropertyType != info.ObjectClass)
+                    .ForEach(d => logger.Warn("#Свойство {0}.{1} определенное в зависимости удаления для класса {2}, имеет другой тип.",
+                        d.ObjectClass.Name,
+                        d.PropertyName,
+                        info.ObjectClass
+                    ));
+                info.ClearItems.FindAll(d => !String.IsNullOrEmpty(d.PropertyName) && d.ObjectClass.GetProperty(d.PropertyName).PropertyType != info.ObjectClass)
+                    .ForEach(d => logger.Warn("#Свойство {0}.{1} определенное в зависимости очистки для класса {2}, имеет другой тип.",
+                        d.ObjectClass.Name,
+                        d.PropertyName,
+                        info.ObjectClass
+                    ));
+            }
+
 			logger.Info("Проверка настроек удаления завершена.");
 		}
 	}
