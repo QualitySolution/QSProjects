@@ -22,7 +22,6 @@ namespace QSOrmProject.Deletion
 
 				foreach(var prop in classMap.PropertyIterator.Where(p => p.IsEntityRelation))
 				{
-					//Console.WriteLine("{0} - {1}", prop.Name, prop.PersistentClass);
 					var propType = prop.Type.ReturnedClass;
 					var relatedClassInfo = ClassInfos.Find(c => c.ObjectClass == propType);
 					if(relatedClassInfo == null)
@@ -35,7 +34,7 @@ namespace QSOrmProject.Deletion
 					}
 
 					if(!relatedClassInfo.DeleteItems.Exists(r => r.PropertyName == prop.Name) 
-						&& !relatedClassInfo.ClearItems.Exists(r => r.ClearFields.Contains(prop.Name)))
+						&& !relatedClassInfo.ClearItems.Exists(r => r.PropertyName == prop.Name))
 					{
 						logger.Warn("#Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
 							info.ObjectClass.Name,

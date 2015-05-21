@@ -12,6 +12,11 @@ namespace QSOrmProject.Deletion
 		public string[] ClearFields;
 
 		/// <summary>
+		/// Используется только для проверки зависимостей в NHibernate, не нужно для удаления
+		/// </summary>
+		public string PropertyName;
+
+		/// <summary>
 		/// В выражении можно использовать параметр @id для получения id удаляемого объекта.
 		/// </summary>
 		public string WhereStatment;
@@ -38,6 +43,12 @@ namespace QSOrmProject.Deletion
 				return DeleteConfig.ClassInfos.Find (i => i.TableName == TableName);
 		}
 
+		public ClearDependenceInfo AddCheckProperty(string property)
+		{
+			PropertyName = property;
+			return this;
+		}
+
 		/// <summary>
 		/// Создает класс описания очистки колонки на основе свойства беря информацию из NHibernate
 		/// </summary>
@@ -49,7 +60,7 @@ namespace QSOrmProject.Deletion
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				new string[] {fieldName}
-			);
+			).AddCheckProperty(propName);
 		}
 	}
 
