@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace QSOrmProject.Deletion
 {
@@ -7,20 +8,26 @@ namespace QSOrmProject.Deletion
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
+		public static List<Type> IgnoreMissingClass = new List<Type> ();
+
 		public static void DeletionCheck()
 		{
-			foreach(var info in ClassInfos)
+			logger.Info("Проверка правил удаления по информации NHibernate.");
+			foreach(var mapping in OrmMain.ormConfig.ClassMappings)
 			{
-				logger.Info("Проверка зависимостей удаления в {0}", info.ObjectClass);
-				var classMap = OrmMain.ormConfig.GetClassMapping(info.ObjectClass);
-				if(classMap == null)
+				var info = ClassInfos.Find(i => i.ObjectClass == mapping.MappedClass);
+
+				if(info == null	&& !IgnoreMissingClass.Contains(mapping.MappedClass))
 				{
-					logger.Warn("#Мапинг для класса {0} не найден.",
-						info.ObjectClass);
+					logger.Warn("#Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.",
+						mapping.MappedClass
+					);
 					continue;
 				}
 
-				foreach(var prop in classMap.PropertyIterator.Where(p => p.IsEntityRelation))
+				logger.Info("Проверка зависимостей удаления в {0}", mapping.MappedClass);
+
+				foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation))
 				{
 					var propType = prop.Type.ReturnedClass;
 					var relatedClassInfo = ClassInfos.Find(c => c.ObjectClass == propType);
@@ -43,16 +50,6 @@ namespace QSOrmProject.Deletion
 						);
 						continue;
 					}
-				}
-			}
-				
-			foreach(var mapping in OrmMain.ormConfig.ClassMappings)
-			{
-				if(!ClassInfos.Exists(i => i.ObjectClass == mapping.MappedClass))
-				{
-					logger.Warn("#Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.",
-						mapping.MappedClass
-					);
 				}
 			}
 
