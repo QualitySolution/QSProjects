@@ -53,11 +53,14 @@ namespace QSOrmProject.Deletion
 					}
 				}
 
+                // Проверка зависимостей в коллекциях
                 foreach(var prop in mapping.PropertyIterator.Where(p => p.Type.IsCollectionType))
                 {
                     if (!(prop.Value is Bag))
                         continue;
                     var collectionMap = (prop.Value as Bag);
+                    if (collectionMap.IsInverse)
+                        continue;
                     Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
                     var classInfo = ClassInfos.Find(c => c.ObjectClass == itemType);
                     if(classInfo == null)
