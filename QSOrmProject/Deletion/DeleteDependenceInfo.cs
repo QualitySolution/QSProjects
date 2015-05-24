@@ -48,6 +48,12 @@ namespace QSOrmProject.Deletion
 				return DeleteConfig.ClassInfos.Find (i => i.TableName == TableName);
 		}
 
+        public DeleteDependenceInfo AddCheckProperty(string property)
+        {
+            PropertyName = property;
+            return this;
+        }
+
 		/// <summary>
 		/// Создает класс описания удаления на основе свойства объекта беря информацию из NHibernate.
 		/// Удалятся все объекты указанного типа, указанное свойство которых равно удаляемому объекту.
@@ -71,7 +77,7 @@ namespace QSOrmProject.Deletion
 		public static DeleteDependenceInfo CreateFromBag<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
 			var collectionMap = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
-			Type itemType = (collectionMap.Element as NHibernate.Mapping.OneToMany).AssociatedClass.MappedClass;
+			Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
 			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(itemType,
 				String.Format ("WHERE {0} = @id", fieldName)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using NHibernate.Mapping;
 
 namespace QSOrmProject.Deletion
 {
@@ -51,6 +52,35 @@ namespace QSOrmProject.Deletion
 						continue;
 					}
 				}
+
+                foreach(var prop in mapping.PropertyIterator.Where(p => p.Type.IsCollectionType))
+                {
+                    if (!(prop.Value is Bag))
+                        continue;
+                    var collectionMap = (prop.Value as Bag);
+                    Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
+                    var classInfo = ClassInfos.Find(c => c.ObjectClass == itemType);
+                    if(classInfo == null)
+                    {
+                        logger.Warn("#Класс {0} не имеет правил удаления, но используется в коллекции {1}.{2}.",
+                            itemType,
+                            mapping.MappedClass.Name,
+                            prop.Name);
+                        continue;
+                    }
+
+                    if(!classInfo.DeleteItems.Exists(r => r.PropertyName == prop.Name) 
+                        && !classInfo.ClearItems.Exists(r => r.PropertyName == prop.Name))
+                    {
+                        logger.Warn("#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
+                            mapping.MappedClass.Name,
+                            prop.Name,
+                            itemType.Name
+                        );
+                        continue;
+                    }
+                }
+
 			}
 
             //Проверяем что все прописанные в зависимостях свойства имеют тип удаляемого объекта.
