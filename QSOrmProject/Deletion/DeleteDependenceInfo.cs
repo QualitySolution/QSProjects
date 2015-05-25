@@ -55,6 +55,15 @@ namespace QSOrmProject.Deletion
             return this;
         }
 
+        public DeleteDependenceInfo AddCheckProperty<TObject>(Expression<Func<TObject, object>> propertyRefExpr)
+        {
+			if (ObjectClass != typeof(TObject))
+				throw new InvalidOperationException(String.Format("Тип {0} должен соответствовать типу правила({1})", typeof(TObject).Name, ObjectClass.Name));
+            string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+            PropertyName = propName;
+            return this;
+        }
+
         public DeleteDependenceInfo AddCheckCollection(string property)
         {
             CollectionName = property;
