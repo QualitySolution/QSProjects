@@ -23,8 +23,7 @@ namespace QSOrmProject.Deletion
 		/// </summary>
 		static void RunDeletionFromProjectLib (object sender, QSProjectsLib.QSMain.RunOrmDeletionEventArgs e)
 		{
-			var deleteWin = new DeleteDlg ();
-			e.Result = deleteWin.RunDeletion (e.TableName, e.ObjectId);
+			e.Result = OrmMain.DeleteObject (e.TableName, e.ObjectId);
 		}
 
 		public static void AddDeleteInfo(DeleteInfo info)
@@ -71,5 +70,12 @@ namespace QSOrmProject.Deletion
 	{
 		public System.Data.Common.DbTransaction CurTransaction;
 		public List<DeletedItem> DeletedItems;
+	}
+
+	public class DeletedItem
+	{
+		public uint ItemId;
+		public Type ItemClass;
+		public string Title;
 	}
 }

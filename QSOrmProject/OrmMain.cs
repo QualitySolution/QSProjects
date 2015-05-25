@@ -7,6 +7,7 @@ using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
 using QSTDI;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
@@ -186,6 +187,30 @@ namespace QSOrmProject
 		public static ITdiDialog CreateObjectDialog (OrmParentReference parentReference, object entity)
 		{
 			return CreateObjectDialog (NHibernateUtil.GetClass (entity), parentReference, entity);
+		}
+
+		public static bool DeleteObject(string table, int id)
+		{
+			var delete = new Deletion.DeleteCore();
+			try{
+				return delete.RunDeletion(table, id);	
+			}catch (Exception ex)
+			{
+				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
+				return false;
+			}
+		}
+
+		public static bool DeleteObject(Type objectClass, int id)
+		{
+			var delete = new Deletion.DeleteCore();
+			try{
+				return delete.RunDeletion(objectClass, id);
+			}catch (Exception ex)
+			{
+				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
+				return false;
+			}
 		}
 
 	}

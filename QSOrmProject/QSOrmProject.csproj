@@ -83,6 +83,7 @@
     <Compile Include="Deletion\DeleteDependenceInfo.cs" />
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
+    <Compile Include="Deletion\DeleteCore.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
