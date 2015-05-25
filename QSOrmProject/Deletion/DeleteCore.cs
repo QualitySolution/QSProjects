@@ -114,14 +114,13 @@ namespace QSOrmProject.Deletion
 					string sql = childClassInfo.PreparedSqlSelect + delItem.WhereStatment;
 					cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = sql;
-					AddParameterWithId (cmd, parentOperation.ItemId);
+					AddParameterWithId (cmd, currentId);
 
 					List<object[]> ReadedData = new List<object[]> ();
 					int IndexOfIdParam;
 
 					using (DbDataReader rdr = cmd.ExecuteReader ()) {
 						if (!rdr.HasRows) {
-							rdr.Close ();
 							continue;
 						}
 						GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
@@ -180,7 +179,7 @@ namespace QSOrmProject.Deletion
 					string sql = childClassInfo.PreparedSqlSelect + cleanItem.WhereStatment;
 					cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = sql;
-					AddParameterWithId (cmd, parentOperation.ItemId);
+					AddParameterWithId (cmd, currentId);
 
 					using (DbDataReader rdr = cmd.ExecuteReader ()) {
 						if (!rdr.HasRows) {
