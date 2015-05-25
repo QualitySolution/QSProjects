@@ -72,8 +72,18 @@ namespace QSOrmProject.Deletion
                         continue;
                     }
 
-                    if(!classInfo.DeleteItems.Exists(r => r.PropertyName == prop.Name) 
-                        && !classInfo.ClearItems.Exists(r => r.PropertyName == prop.Name))
+                    if(info == null)
+                    {
+                        logger.Warn("#Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
+                            mapping.MappedClass.Name,
+                            prop.Name,
+                            itemType.Name
+                        );
+                        continue;
+                    }
+
+                    if(!info.DeleteItems.Exists(r => r.CollectionName == prop.Name) 
+                        && !info.ClearItems.Exists(r => r.PropertyName == prop.Name))
                     {
                         logger.Warn("#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
                             mapping.MappedClass.Name,

@@ -15,6 +15,7 @@ namespace QSOrmProject.Deletion
 		/// Используется только для проверки зависимостей в NHibernate, не нужно для удаления
 		/// </summary>
 		public string PropertyName;
+        public string CollectionName;
 
 		/// <summary>
 		/// В выражении можно использовать параметр @id для получения id удаляемого объекта.
@@ -54,6 +55,12 @@ namespace QSOrmProject.Deletion
             return this;
         }
 
+        public DeleteDependenceInfo AddCheckCollection(string property)
+        {
+            CollectionName = property;
+            return this;
+        }
+
 		/// <summary>
 		/// Создает класс описания удаления на основе свойства объекта беря информацию из NHibernate.
 		/// Удалятся все объекты указанного типа, указанное свойство которых равно удаляемому объекту.
@@ -81,7 +88,7 @@ namespace QSOrmProject.Deletion
 			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(itemType,
 				String.Format ("WHERE {0} = @id", fieldName)
-			);
+            ).AddCheckCollection(propName);
 		}
 
 	}
