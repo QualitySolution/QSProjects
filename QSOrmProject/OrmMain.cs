@@ -213,6 +213,22 @@ namespace QSOrmProject
 			}
 		}
 
+		public static bool DeleteObject(object subject)
+		{
+			if (!(subject is IDomainObject))
+				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
+			var objectClass = NHibernateUtil.GetClass(subject);
+			int id = (subject as IDomainObject).Id;
+			var delete = new Deletion.DeleteCore();
+			try{
+				return delete.RunDeletion(objectClass, id);
+			}catch (Exception ex)
+			{
+				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
+				return false;
+			}
+		}
+			
 	}
 
 	public class OrmObjectUpdatedEventArgs : EventArgs
