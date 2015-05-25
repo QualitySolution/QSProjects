@@ -231,6 +231,7 @@ namespace QSOrmProject
 			this.buttonSelect.Clicked += new global::System.EventHandler (this.OnButtonSelectClicked);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
+			this.buttonDelete.Clicked += new global::System.EventHandler (this.OnButtonDeleteClicked);
 			this.checkShowFilter.Toggled += new global::System.EventHandler (this.OnCheckShowFilterToggled);
 			this.entrySearch.Changed += new global::System.EventHandler (this.OnEntrySearchChanged);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler (this.OnButtonSearchClearClicked);

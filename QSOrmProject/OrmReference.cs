@@ -393,6 +393,16 @@ namespace QSOrmProject
 				.Implementor as Gtk.DataBindings.MappingsImplementor).NodeFromIter (iter);
 			(cell as CellRendererText).Foreground = (o as ISpecialRowsRender).TextColor;
 		}
+
+		protected void OnButtonDeleteClicked(object sender, EventArgs e)
+		{
+			if (parentReference != null) {
+				throw new NotImplementedException();
+			} else {
+				if (OrmMain.DeleteObject(datatreeviewRef.GetSelectedObjects()[0]))
+					UpdateObjectList();
+			}
+		}
 	}
 		
 	public enum OrmReferenceMode
