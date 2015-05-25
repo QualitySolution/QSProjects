@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QSSupportLib;
 using QSProjectsLib;
 using System.IO;
+using Gtk;
 
 namespace QSUpdater.DB
 {
@@ -34,7 +35,9 @@ namespace QSUpdater.DB
 		
 			while(microUpdates.Exists(u => u.Source == currentDB))
 			{
-				var update = microUpdates.Find(u => u.Source == currentDB);
+                if (!QSMain.User.admin)
+                    NotAdminErrorAndExit();
+                var update = microUpdates.Find(u => u.Source == currentDB);
 				logger.Info("Обновляемся до {0}", StringWorks.VersionToShortString(update.Destanation));
 				var trans = QSMain.ConnectionDB.BeginTransaction();
 				try
@@ -70,6 +73,19 @@ namespace QSUpdater.DB
 					StringWorks.VersionToShortString(currentDB)
 				);
 		}
+
+        private static void NotAdminErrorAndExit()
+        {
+            MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
+                MessageType.Error, 
+                ButtonsType.Close,
+                "Для работы текущей версии программы необходимо провести микро обновление базы, " +
+                "но у вас нет для этого прав. Зайдите в программу под администратором.");
+            md.Show ();
+            md.Run ();
+            md.Destroy ();
+            Environment.Exit(1);
+        }
 	}
 
 	class UpdateHop
