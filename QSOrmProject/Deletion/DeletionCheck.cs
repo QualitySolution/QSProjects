@@ -27,7 +27,6 @@ namespace QSOrmProject.Deletion
 				}
 
 				logger.Info("Проверка зависимостей удаления в {0}", mapping.MappedClass);
-
 				foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation))
 				{
 					var propType = prop.Type.ReturnedClass;
@@ -41,8 +40,8 @@ namespace QSOrmProject.Deletion
 						continue;
 					}
 
-					if(!relatedClassInfo.DeleteItems.Exists(r => r.PropertyName == prop.Name) 
-						&& !relatedClassInfo.ClearItems.Exists(r => r.PropertyName == prop.Name))
+					if(!relatedClassInfo.DeleteItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name) 
+						&& !relatedClassInfo.ClearItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name))
 					{
 						logger.Warn("#Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
 							info.ObjectClass.Name,
@@ -82,8 +81,8 @@ namespace QSOrmProject.Deletion
                         continue;
                     }
 
-                    if(!info.DeleteItems.Exists(r => r.CollectionName == prop.Name) 
-                        && !info.ClearItems.Exists(r => r.PropertyName == prop.Name))
+					if(!info.DeleteItems.Exists(r => r.ObjectClass == itemType && r.CollectionName == prop.Name)) 
+						//&& !info.ClearItems.Exists(r => r.itemType == mapping.MappedClass && r.PropertyName == prop.Name))
                     {
                         logger.Warn("#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
                             mapping.MappedClass.Name,
