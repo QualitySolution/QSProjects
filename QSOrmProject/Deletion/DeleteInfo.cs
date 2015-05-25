@@ -24,7 +24,7 @@ namespace QSOrmProject.Deletion
 
 		public string PreparedSqlSelect{
 			get { //Заменяем название таблицы и добавляем пробел, если его нет.
-				return SqlSelect.Replace ("@tablename", TableName).TrimEnd (' ') + " ";
+				return SqlSelect.Replace ("@tablename", String.Format("`{0}`", TableName)).TrimEnd (' ') + " ";
 			}
 		}
 
