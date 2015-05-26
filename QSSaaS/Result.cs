@@ -41,12 +41,15 @@ namespace QSSaaS
 		public string Login;
 		[DataMember]
 		public string Active;
+		[DataMember]
+		public string Name;
 
-		public User (int id, string login, string active)
+		public User (int id, string login, string active, string name)
 		{
 			Id = id;
 			Login = login;
 			Active = active;
+			Name = name;
 		}
 	}
 
