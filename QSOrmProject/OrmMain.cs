@@ -23,7 +23,7 @@ namespace QSOrmProject
 		public static ISession OpenSession ()
 		{
 			ISession session = Sessions.OpenSession ();
-			session.FlushMode = FlushMode.Never;
+			//session.FlushMode = FlushMode.Never;
 			return session;
 		}
 

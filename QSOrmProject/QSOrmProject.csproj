@@ -55,7 +55,6 @@
     <Compile Include="Widgets\EntryReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReference.cs" />
     <Compile Include="DataWidgets\DataEntryReference.cs" />
-    <Compile Include="IDomainObject.cs" />
     <Compile Include="DataWidgets\DataImageViewer.cs" />
     <Compile Include="OrmSimpleDialog.cs" />
     <Compile Include="DataWidgets\DataValidatedEntry.cs" />
@@ -84,6 +83,10 @@
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
+    <Compile Include="DomainModel\IUnitOfWork.cs" />
+    <Compile Include="DomainModel\UnitOfWork.cs" />
+    <Compile Include="DomainModel\IDomainObject.cs" />
+    <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -117,6 +120,7 @@
     <Folder Include="Widgets\" />
     <Folder Include="DataWidgets\" />
     <Folder Include="Deletion\" />
+    <Folder Include="DomainModel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
