@@ -83,10 +83,11 @@
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
-    <Compile Include="DomainModel\IUnitOfWork.cs" />
     <Compile Include="DomainModel\UnitOfWork.cs" />
     <Compile Include="DomainModel\IDomainObject.cs" />
     <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
+    <Compile Include="DomainModel\IUnitOfWorkGeneric.cs" />
+    <Compile Include="DomainModel\IUnitOfWork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

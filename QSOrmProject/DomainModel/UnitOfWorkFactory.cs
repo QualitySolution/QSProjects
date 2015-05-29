@@ -11,13 +11,13 @@ namespace QSOrmProject
 			return uow;
 		} */
 
-		public static IUnitOfWork<TEntity> CreateForRoot<TEntity>(int id) where TEntity : IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id) where TEntity : IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>(id);
 			return uow;
 		}
 
-		public static IUnitOfWork<TEntity> CreateWithNewRoot<TEntity>() where TEntity : IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>() where TEntity : IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>();
 			return uow;

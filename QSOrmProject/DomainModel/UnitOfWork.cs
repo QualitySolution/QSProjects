@@ -5,13 +5,18 @@ using NHibernate.Linq;
 
 namespace QSOrmProject
 {
-	public class UnitOfWork<TRootEntity> : IUnitOfWork<TRootEntity> where TRootEntity : IDomainObject, new()
+	public class UnitOfWork<TRootEntity> : IUnitOfWorkGeneric<TRootEntity> where TRootEntity : IDomainObject, new()
 	{
 		private ITransaction transaction;
 
 		private ISession session;
 
-		public TRootEntity RootObject { get; private set;}
+		public object RootObject {
+			get { return Root;}
+		}
+
+		public TRootEntity Root { get; private set;}
+
 		public bool IsNew { get; private set;}
 
 		public bool HasChanges
@@ -34,13 +39,13 @@ namespace QSOrmProject
 		public UnitOfWork()
 		{
 			IsNew = true;
-			RootObject = new TRootEntity();
+			Root = new TRootEntity();
 		}
 
 		public UnitOfWork(int id)
 		{
 			IsNew = false;
-			RootObject = GetById<TRootEntity>(id);
+			Root = GetById<TRootEntity>(id);
 		}
 
 		public void Commit()
@@ -104,7 +109,7 @@ namespace QSOrmProject
 
 		public void Save()
 		{
-			Save(RootObject);
+			Save(Root);
 		}
 
 		public void Delete<T>(int id) where T : IDomainObject

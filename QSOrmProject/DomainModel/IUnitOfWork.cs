@@ -2,10 +2,9 @@
 
 namespace QSOrmProject
 {
-	public interface IUnitOfWork<TRootEntity> : IDisposable 
-		where TRootEntity : IDomainObject, new()
+	public interface IUnitOfWork : IDisposable 
 	{
-		TRootEntity RootObject { get;}
+		object RootObject{ get;}
 
 		bool HasChanges{ get;}
 
