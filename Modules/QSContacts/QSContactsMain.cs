@@ -8,6 +8,8 @@ namespace QSContacts
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		public static int MinSavePhoneLength = 7;
+
 		public static List<OrmObjectMapping> GetModuleMaping ()
 		{
 			return new List<OrmObjectMapping> {

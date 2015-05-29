@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data.Bindings;
 using System.Data.Bindings.Collections;
 using System.Data.Bindings.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Linq;
 using Gtk;
 using Gtk.DataBindings;
 using NHibernate;
 using NLog;
 using QSOrmProject;
-using QSWidgetLib;
 using QSSupportLib;
+using QSWidgetLib;
 
 namespace QSContacts
 {
@@ -204,10 +204,12 @@ namespace QSContacts
 
 		public void SaveChanges()
 		{
+			PhonesList.Where(p => p.Number.Length < QSContactsMain.MinSavePhoneLength)
+				.ToList().ForEach(p => PhonesList.Remove(p));
+			
 			foreach(Phone phone in PhonesList)
 			{
-				if(phone.Number != "")
-					Session.SaveOrUpdate(phone);
+				Session.SaveOrUpdate(phone);
 			}
 		}
 	}
