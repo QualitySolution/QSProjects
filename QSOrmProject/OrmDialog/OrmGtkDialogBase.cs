@@ -26,6 +26,7 @@ namespace QSOrmProject
 			{
 				uowGeneric = value;
 				subjectAdaptor.Target = UoWGeneric.Root;
+				OnTabNameChanged();
 			}
 		}
 
@@ -73,8 +74,7 @@ namespace QSOrmProject
 				if (tabName == value)
 					return;
 				tabName = value;
-				if (TabNameChanged != null)
-					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
+				OnTabNameChanged();
 			}
 
 		}
@@ -110,6 +110,12 @@ namespace QSOrmProject
 			UoWGeneric.Dispose();
 			subjectAdaptor.Disconnect ();
 			base.Destroy ();
+		}
+
+		protected void OnTabNameChanged()
+		{
+			if (TabNameChanged != null)
+				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
 		}
 
 		public OrmGtkDialogBase()
