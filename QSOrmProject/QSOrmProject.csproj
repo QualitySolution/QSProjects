@@ -50,7 +50,6 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="OrmReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.OrmReference.cs" />
-    <Compile Include="IOrmDialog.cs" />
     <Compile Include="OrmAttributes.cs" />
     <Compile Include="Widgets\EntryReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReference.cs" />
@@ -88,6 +87,9 @@
     <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
     <Compile Include="DomainModel\IUnitOfWorkGeneric.cs" />
     <Compile Include="DomainModel\IUnitOfWork.cs" />
+    <Compile Include="OrmDialog\IOrmDialog.cs" />
+    <Compile Include="OrmDialog\OrmGtkDialogBase.cs" />
+    <Compile Include="DomainModel\DomainHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -122,6 +124,7 @@
     <Folder Include="DataWidgets\" />
     <Folder Include="Deletion\" />
     <Folder Include="DomainModel\" />
+    <Folder Include="OrmDialog\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
