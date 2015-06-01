@@ -153,17 +153,7 @@ namespace QSHistoryLog
 
 		internal static string GetObjectTilte(object value)
 		{
-			var prop = value.GetType ().GetProperty ("Title");
-			if (prop != null) {
-				return String.Format ("[{0}]", prop.GetValue (value, null));
-			}
-
-			prop = value.GetType ().GetProperty ("Name");
-			if (prop != null) {
-				return String.Format ("[{0}]", prop.GetValue (value, null));
-			}
-
-			return value.ToString ();
+			return String.Format ("[{0}]", QSOrmProject.DomainHelper.GetObjectTilte(value));
 		}
 
 		internal static int? GetObjectId(object value)
