@@ -40,7 +40,7 @@ namespace QSOrmProject
 			}
 		}
 
-		public bool HasChanges { 
+		public virtual bool HasChanges { 
 			get { return UoWGeneric.HasChanges; }
 		}
 
