@@ -1,5 +1,4 @@
 ﻿using System;
-using NLog;
 using NHibernate;
 using System.Data.Bindings;
 using QSTDI;
@@ -8,132 +7,45 @@ using QSValidation;
 
 namespace QSBanks
 {
-	[System.ComponentModel.ToolboxItem (true)]
-	public partial class BankDlg : Gtk.Bin, QSTDI.ITdiDialog
+	public partial class BankDlg : OrmGtkDialogBase<Bank>
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private ISession session;
-		private Adaptor adaptorOrg = new Adaptor ();
-		private Bank subject;
-
-		public ITdiTabParent TabParent { set; get; }
-
-		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
-
-		public bool HasChanges { 
-			get { return Session.IsDirty (); }
-		}
-
-		private string _tabName = "Новый банк";
-
-		public string TabName {
-			get { return _tabName; }
-			set {
-				if (_tabName == value)
-					return;
-				_tabName = value;
-				if (TabNameChanged != null)
-					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
-			}
-
-		}
-
-		public ISession Session {
-			get
-			{
-				if (session == null)
-					session = OrmMain.OpenSession ();
-				return session;
-			}
-			set { session = value; }
-		}
-
-		public object Subject {
-			get { return subject; }
-			set {
-				if (value is Bank)
-					subject = value as Bank;
-			}
-		}
-
-		public BankDlg ()
-		{
-			this.Build ();
-			subject = new Bank ();
-			Session.Persist (subject);
-			ConfigureDlg ();
-		}
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		public BankDlg (int id)
 		{
 			this.Build ();
-			subject = Session.Load<Bank> (id);
-			TabName = subject.Name;
+			UoWGeneric = UnitOfWorkFactory.CreateForRoot<Bank> (id);
 			ConfigureDlg ();
 		}
 
-		public BankDlg (Bank sub)
-		{
-			this.Build ();
-			subject = Session.Load<Bank> (sub.Id);
-			TabName = subject.Name;
-			ConfigureDlg ();
-		}
+		public BankDlg (Bank sub) : this(sub.Id) {}
 
 		private void ConfigureDlg ()
 		{
 			buttonSave.Sensitive = dataentryBik.IsEditable = dataentryCity.IsEditable = 
 				dataentryCorAccount.IsEditable = dataentryName.IsEditable = false;
-			if (subject.Deleted) {
-				labelDeleted.Markup = "<span foreground=\"red\">Данного банка больше не существует.</span>";
+			if (UoWGeneric.Root.Deleted) {
+				labelDeleted.Markup = "<span foreground=\"red\">Банк удалён.</span>";
 			}
-			adaptorOrg.Target = subject;
-			datatableInfo.DataSource = adaptorOrg;
+			datatableInfo.DataSource = subjectAdaptor;
 		}
 
-		public bool Save ()
-		{
-			var valid = new QSValidator<Bank> (subject);
+		public override bool Save ()
+		{ //FIXME Если функция не понадобится в других проектах возможно ее нужно удалить. 
+			var valid = new QSValidator<Bank> (UoWGeneric.Root);
 			if (valid.RunDlgIfNotValid ((Gtk.Window)this.Toplevel))
 				return false;
 
 			logger.Info ("Сохраняем банк...");
 			try {
-				Session.Flush ();
+				UoWGeneric.Save();
 			} catch (Exception ex) {
-				logger.ErrorException ("Не удалось записать банк.", ex);
+				logger.ErrorException("Не удалось записать банк.", ex);
 				return false;
 			}
-			OrmMain.NotifyObjectUpdated (subject);
 			logger.Info ("Ok");
 			return true;
 		}
-
-		public override void Destroy ()
-		{
-			Session.Close ();
-			//adaptorOrg.Disconnect();
-			base.Destroy ();
-		}
-
-		protected void OnButtonSaveClicked (object sender, EventArgs e)
-		{
-			if (!this.HasChanges || Save ())
-				OnCloseTab (false);
-		}
-
-		protected void OnButtonCancelClicked (object sender, EventArgs e)
-		{
-			OnCloseTab (false);
-		}
-
-		protected void OnCloseTab (bool askSave)
-		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
-		}
-
 	}
 }
 
