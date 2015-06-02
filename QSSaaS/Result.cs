@@ -113,6 +113,30 @@ namespace QSSaaS
 	}
 
 	[DataContract]
+	public class UserBaseAccess
+	{
+		[DataMember]
+		public int Id;
+		[DataMember]
+		public string BaseName;
+		[DataMember]
+		public string ProductName;
+		[DataMember]
+		public int HasAccess;
+		[DataMember]
+		public int IsAdmin;
+
+		public UserBaseAccess (int id, string baseName, string productName, int hasAccess = 0, int isAdmin = 0)
+		{
+			Id = id;
+			BaseName = baseName;
+			ProductName = productName;
+			HasAccess = hasAccess;
+			IsAdmin = isAdmin;
+		}
+	}
+
+	[DataContract]
 	public class AccountAuthResult : Result
 	{
 		[DataMember]

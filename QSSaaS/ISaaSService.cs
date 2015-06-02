@@ -152,6 +152,18 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		bool createUserInBase (string sessionId);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		int getAccountConnectionsCount (string sessionId);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		User getUserInfo (string sessionId, int uid);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		List<UserBaseAccess> getUserBaseAccess (string sessionId, int uid);
 	}
 }
 
