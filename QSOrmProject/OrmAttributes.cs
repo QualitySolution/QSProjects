@@ -1,12 +1,124 @@
 ﻿using System;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
 	[AttributeUsage (AttributeTargets.Class)]
 	public class OrmSubjectAttribute : Attribute
 	{
-		public string JournalName;
-		public string ObjectName;
+		private string journalName;
+
+		public string JournalName {
+			get {
+				if (String.IsNullOrWhiteSpace (journalName) && AllNames != null)
+					return StringWorks.StringToTitleCase (AllNames.NominativePlural);
+				else
+					return journalName;
+			}
+			set {
+				journalName = value;
+			}
+		}
+
+		private string objectName;
+
+		public string ObjectName {
+			get {
+				if (String.IsNullOrWhiteSpace (objectName) && AllNames != null)
+					return AllNames.Nominative;
+				else
+					return objectName;
+			}
+			set {
+				objectName = value;
+			}
+		}
+
+		/// <summary>
+		/// Именительный падеж (Кто? Что?)
+		/// </summary>
+		public string Nominative {
+			get {
+				return AllNames.Nominative;
+			}
+			set {
+				AllNames.Nominative = value;
+			}
+		}
+
+		/// <summary>
+		/// Именительный падеж (Кто? Что?) можественное число.
+		/// </summary>
+		public string NominativePlural {
+			get {
+				return AllNames.NominativePlural;
+			}
+			set {
+				AllNames.NominativePlural = value;
+			}
+		}
+
+		/// <summary>
+		/// Род
+		/// </summary>
+		public GrammaticalGender Gender {
+			get {
+				return AllNames.Gender;
+			}
+			set {
+				AllNames.Gender = value;
+			}
+		}
+
+		/// <summary>
+		/// Родительный падеж (Кого? Чего?)
+		/// </summary>
+		public string Genitive {
+			get {
+				return AllNames.Genitive;
+			}
+			set {
+				AllNames.Genitive = value;
+			}
+		}
+
+		/// <summary>
+		/// Родительный падеж (Кого? Чего?) можественное число.
+		/// </summary>
+		public string GenitivePlural {
+			get {
+				return AllNames.GenitivePlural;
+			}
+			set {
+				AllNames.GenitivePlural = value;
+			}
+		}
+
+		/// <summary>
+		/// Винительный падеж (Кого? Что?)
+		/// </summary>
+		public string Accusative {
+			get {
+				return AllNames.Accusative;
+			}
+			set {
+				AllNames.Accusative = value;
+			}
+		}
+
+		/// <summary>
+		/// Винительный падеж (Кого? Что?) можественное число.
+		/// </summary>
+		public string AccusativePlural {
+			get {
+				return AllNames.AccusativePlural;
+			}
+			set {
+				AllNames.AccusativePlural = value;
+			}
+		}
+
+		public SubjectName AllNames = new SubjectName();
 		public ReferenceButtonMode DefaultJournalMode = ReferenceButtonMode.CanAll;
 
 		public OrmSubjectAttribute ()
@@ -16,7 +128,7 @@ namespace QSOrmProject
 		[Obsolete("Используйте заполнение атрибута через параметры.")]
 		public OrmSubjectAttribute (string journalName)
 		{
-			JournalName = journalName;
+			this.journalName = journalName;
 		}
 	}
 

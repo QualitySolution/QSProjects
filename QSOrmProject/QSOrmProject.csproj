@@ -90,6 +90,7 @@
     <Compile Include="OrmDialog\IOrmDialog.cs" />
     <Compile Include="OrmDialog\OrmGtkDialogBase.cs" />
     <Compile Include="DomainModel\DomainHelper.cs" />
+    <Compile Include="CommonDialogs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
