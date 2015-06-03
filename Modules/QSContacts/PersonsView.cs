@@ -7,6 +7,7 @@ using System.Data.Bindings;
 using Gtk;
 using QSOrmProject;
 using QSWidgetLib;
+using System.Linq;
 
 namespace QSContacts
 {
@@ -189,10 +190,14 @@ namespace QSContacts
 
 		public void SaveChanges()
 		{
+			PersonsList.Where(p => String.IsNullOrWhiteSpace (p.Name) 
+				&& String.IsNullOrWhiteSpace (p.Lastname)
+				&& String.IsNullOrWhiteSpace (p.Surname)
+			).ToList().ForEach(p => PersonsList.Remove(p));
+
 			foreach(Person person in PersonsList)
 			{
-				if(person.Name != String.Empty && person.Surname != String.Empty)
-					Session.SaveOrUpdate(person);
+				Session.SaveOrUpdate(person);
 			}
 		}
 
