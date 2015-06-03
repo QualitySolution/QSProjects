@@ -120,6 +120,19 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		public static string StringToTitleCase (string input)
+		{
+			if (String.IsNullOrWhiteSpace (input))
+				return "";
+
+			TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+
+			string result = input.Trim ();
+			result = textInfo.ToUpper (result [0]) + result.Substring (1);
+
+			return result;
+		}
+
 		public static string VersionToShortString (Version version)
 		{
 			return version.ToString (version.Revision <= 0 ? (version.Build <= 0 ? 2 : 3) : 4);
