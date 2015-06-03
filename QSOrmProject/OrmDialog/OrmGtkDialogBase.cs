@@ -1,7 +1,8 @@
 ﻿using System;
-using Gtk;
-using QSTDI;
 using System.Data.Bindings;
+using Gtk;
+using QSProjectsLib;
+using QSTDI;
 
 namespace QSOrmProject
 {
@@ -60,7 +61,21 @@ namespace QSOrmProject
 					{
 						var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 						if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
-							return "Новый(ая) " + (att [0] as OrmSubjectAttribute).ObjectName; //FIXME Желательно добавить склонение
+						{
+							var subAtt = (att [0] as OrmSubjectAttribute);
+
+							switch(subAtt.AllNames.Gender){
+								case GrammaticalGender.Masculine: 
+									return "Новый " + subAtt.ObjectName;
+								case GrammaticalGender.Feminine :
+									return "Новая " + subAtt.ObjectName;
+								case GrammaticalGender.Neuter :
+									return "Новое " + subAtt.ObjectName;
+								default:
+									return "Новый(ая) " + subAtt.ObjectName;
+							}
+						}
+							
 					}
 					else
 					{
