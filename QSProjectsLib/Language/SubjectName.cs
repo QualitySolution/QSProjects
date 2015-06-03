@@ -44,9 +44,9 @@ namespace QSProjectsLib
 	public enum GrammaticalGender
 	{
 		/// <summary>
-		/// Средний род
+		/// Не указан
 		/// </summary>
-		Neuter,
+		Unknown,
 		/// <summary>
 		/// Мужской род
 		/// </summary>
@@ -54,7 +54,11 @@ namespace QSProjectsLib
 		/// <summary>
 		/// Женский род
 		/// </summary>
-		Feminine
+		Feminine,
+		/// <summary>
+		/// Средний род
+		/// </summary>
+		Neuter
 	}
 }
 
