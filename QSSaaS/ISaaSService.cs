@@ -109,7 +109,7 @@ namespace QSSaaS
 		/// <param name="newPassword">Новый пароль пользователя.</param>
 		bool changeUserPasswordByLogin (string login, string account, string newPassword);
 
-
+		[Obsolete ("Возможно не требуется")]
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
@@ -122,6 +122,7 @@ namespace QSSaaS
 		/// <param name="admin">Имеет ли пользователь административный доступ.</param>
 		bool grantBaseAccess (string user, string account, string db, bool admin);
 
+		[Obsolete ("Возможно не требуется")]
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
@@ -164,6 +165,22 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
 		List<UserBaseAccess> getUserBaseAccess (string sessionId, int uid);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool changeBaseAccess (string sessionId, int uId, int baseId, bool hasAccess, bool isAdmin, bool existed);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool changeUserPassword (string sessionId, int uId, string newPassword);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool changeUserName (string sessionId, int uId, string newName);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool createOrUpdateUserInDstBase (string sessionId, string login, string name, bool admin, int bid);
 	}
 }
 
