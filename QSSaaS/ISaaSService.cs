@@ -109,7 +109,6 @@ namespace QSSaaS
 		/// <param name="newPassword">Новый пароль пользователя.</param>
 		bool changeUserPasswordByLogin (string login, string account, string newPassword);
 
-		[Obsolete ("Возможно не требуется")]
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
@@ -122,7 +121,6 @@ namespace QSSaaS
 		/// <param name="admin">Имеет ли пользователь административный доступ.</param>
 		bool grantBaseAccess (string user, string account, string db, bool admin);
 
-		[Obsolete ("Возможно не требуется")]
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
@@ -185,6 +183,10 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
 		List<BaseUserAccess> getBaseUserAccess (string sessionId, int bid);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool changeBaseName (string sessionId, int bId, string newName);
 	}
 }
 
