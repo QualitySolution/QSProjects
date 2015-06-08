@@ -181,6 +181,10 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
 		bool createOrUpdateUserInDstBase (string sessionId, string login, string name, bool admin, int bid);
+
+		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		List<BaseUserAccess> getBaseUserAccess (string sessionId, int bid);
 	}
 }
 
