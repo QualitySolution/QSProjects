@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Collections.Generic;
 
 namespace QSSaaS
 {
@@ -73,10 +72,24 @@ namespace QSSaaS
 
 		[OperationContract]
 		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Изменяет уровень доступа пользователя к базе данных.
+		/// </summary>
+		/// <returns><c>true</c>, при успешном выполнении, <c>false</c> в противном случае.</returns>
+		/// <param name="sessionId">Идентификатор сессии.</param>
+		/// <param name="user">Имя пользователя.</param>
+		/// <param name="db">Название базы данных.</param>
+		/// <param name="grant">Если <c>true</c> - устанавливает или обновляет права доступа. В противном случае - отбирает.</param>
+		/// <param name="isAdmin">Дает административные права, если <c>true</c>.</param>
 		bool changeBaseAccessFromProgram (string sessionId, string user, string db, bool grant, bool isAdmin = false);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Создает пользователя в конечной базе данных.
+		/// </summary>
+		/// <returns><c>true</c>, если пользователь был создан, <c>false</c> в противном случае.</returns>
+		/// <param name="sessionId">Идентификатор сессии.</param>
 		bool createUserInBase (string sessionId);
 
 		#region Obsolete
@@ -123,7 +136,6 @@ namespace QSSaaS
 		bool revokeBaseAccess (string user, string account, string db);
 
 		#endregion
-
 	}
 }
 
