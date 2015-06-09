@@ -16,7 +16,7 @@ namespace QSProjectsLib
 			
 			//Создаем таблицу "Пользователей"
 			UsersListStore = new Gtk.ListStore (typeof(int), typeof(string), typeof(string), 
-			                                    typeof(bool));
+				typeof(bool));
 			
 			treeviewUsers.AppendColumn ("Код", new Gtk.CellRendererText (), "text", 0);
 			treeviewUsers.AppendColumn ("Логин", new Gtk.CellRendererText (), "text", 1);
@@ -43,9 +43,9 @@ namespace QSProjectsLib
 			UsersListStore.Clear ();
 			while (rdr.Read ()) {
 				UsersListStore.AppendValues (int.Parse (rdr ["id"].ToString ()),
-				                             rdr ["login"].ToString (),
-				                             rdr ["name"].ToString (),
-				                             (bool)rdr ["admin"]);
+					rdr ["login"].ToString (),
+					rdr ["name"].ToString (),
+					(bool)rdr ["admin"]);
 			}
 			rdr.Close ();
 			
@@ -98,12 +98,9 @@ namespace QSProjectsLib
 			int itemid = (int)UsersListStore.GetValue (iter, 0);
 			string loginname = UsersListStore.GetValue (iter, 1).ToString ();
 			bool result;
-			if(QSMain.IsOrmDeletionConfigered)
-			{
+			if (QSMain.IsOrmDeletionConfigered) {
 				result = QSMain.OnOrmDeletion ("users", itemid);
-			}
-			else 
-			{
+			} else {
 				Delete winDel = new Delete ();
 				result = winDel.RunDeletion ("users", itemid);
 				winDel.Destroy ();
@@ -113,7 +110,7 @@ namespace QSProjectsLib
 				logger.Info ("Удаляем пользователя MySQL...");
 				if (QSSaaS.Session.IsSaasConnection) {
 					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
-					if (!svc.revokeBaseAccess (loginname, QSSaaS.Session.Account, QSSaaS.Session.BaseName))
+					if (!svc.changeBaseAccessFromProgram (loginname, QSSaaS.Session.Account, QSSaaS.Session.BaseName, false))
 						logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
 				} else {
 					string sql;
@@ -124,11 +121,10 @@ namespace QSProjectsLib
 						cmd.ExecuteNonQuery ();
 						logger.Info ("Пользователь удалён. Ok");
 
-						if(QSMain.User.id == itemid)
-						{
+						if (QSMain.User.id == itemid) {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-							                              MessageType.Warning, ButtonsType.Close,
-							                                      "Был удален пользователь, под которым Вы подключились к базе данных, чтобы недопустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
+								                   MessageType.Warning, ButtonsType.Close,
+								                   "Был удален пользователь, под которым Вы подключились к базе данных, чтобы недопустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
 							md.Run ();
 							md.Destroy ();
 							Environment.Exit (0);

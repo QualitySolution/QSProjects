@@ -78,9 +78,9 @@ namespace QSProjectsLib
 			if (entryLogin.Text == "root") {
 				string Message = "Операции с пользователем root запрещены.";
 				MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-				                                      MessageType.Warning, 
-				                                      ButtonsType.Ok,
-				                                      Message);
+					                   MessageType.Warning, 
+					                   ButtonsType.Ok,
+					                   Message);
 				md.Run ();
 				md.Destroy ();
 				return;
@@ -98,9 +98,9 @@ namespace QSProjectsLib
 						string Message = "Пользователь с логином " + entryLogin.Text + " уже существует в базе. " +
 						                 "Создание второго пользователя с таким же логином невозможно.";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                      MessageType.Warning, 
-						                                      ButtonsType.Ok,
-						                                      Message);
+							                   MessageType.Warning, 
+							                   ButtonsType.Ok,
+							                   Message);
 						md.Run ();
 						md.Destroy ();
 						return;
@@ -110,19 +110,19 @@ namespace QSProjectsLib
 					if (!result.Success) {
 						if (result.Error == ErrorType.UserExists) {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-							                                      MessageType.Warning, 
-							                                      ButtonsType.YesNo,
-							                                      "Пользователь с таким логином уже существует. Предоставить ему доступ к базе?\n" +
-							                                      "ВНИМАНИЕ: Если вы указали новый пароль для пользователя, то он применен не будет.");
+								                   MessageType.Warning, 
+								                   ButtonsType.YesNo,
+								                   "Пользователь с таким логином уже существует. Предоставить ему доступ к базе?\n" +
+								                   "ВНИМАНИЕ: Если вы указали новый пароль для пользователя, то он применен не будет.");
 							dlgRes = md.Run ();
 							md.Destroy ();
 							if ((ResponseType)dlgRes == ResponseType.No)
 								return;
 						} else {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-							                                      MessageType.Warning, 
-							                                      ButtonsType.Close,
-							                                      result.Description);
+								                   MessageType.Warning, 
+								                   ButtonsType.Close,
+								                   result.Description);
 							md.Run ();
 							md.Destroy ();
 							return;
@@ -134,16 +134,16 @@ namespace QSProjectsLib
 				} else {
 					if (entryPassword.Text != passFill) {
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                      MessageType.Warning, 
-						                                      ButtonsType.YesNo,
-						                                      "Изменение пароля произойдет во всех базах, к которым пользователь имеет доступ.\nПродолжить?");
+							                   MessageType.Warning, 
+							                   ButtonsType.YesNo,
+							                   "Изменение пароля произойдет во всех базах, к которым пользователь имеет доступ.\nПродолжить?");
 						dlgRes = md.Run ();
 						md.Destroy ();
 						if ((ResponseType)dlgRes == ResponseType.Yes && !svc.changeUserPasswordByLogin (entryLogin.Text, Session.Account, entryPassword.Text)) {
 							MessageDialog md1 = new MessageDialog (this, DialogFlags.DestroyWithParent,
-							                                       MessageType.Warning, 
-							                                       ButtonsType.Close,
-							                                       "Ошибка изменения пароля пользователя.");
+								                    MessageType.Warning, 
+								                    ButtonsType.Close,
+								                    "Ошибка изменения пароля пользователя.");
 							md1.Run ();
 							md1.Destroy ();
 							return;
@@ -154,11 +154,11 @@ namespace QSProjectsLib
 					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
 				//Предоставляем пользователю доступ к базе
-				if (!svc.grantBaseAccess (entryLogin.Text, Session.Account, Session.BaseName, checkAdmin.Active)) {
+				if (!svc.changeBaseAccessFromProgram (entryLogin.Text, Session.Account, Session.BaseName, true, checkAdmin.Active)) {
 					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-					                                      MessageType.Warning, 
-					                                      ButtonsType.Close,
-					                                      "Ошибка предоставления доступа к базе данных.");
+						                   MessageType.Warning, 
+						                   ButtonsType.Close,
+						                   "Ошибка предоставления доступа к базе данных.");
 					md.Run ();
 					md.Destroy ();
 					return;
@@ -190,7 +190,7 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
 				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
 					cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
-					                             Pair.Value.Active);
+						Pair.Value.Active);
 				}
 
 				if (textviewComments.Buffer.Text == "")
@@ -224,9 +224,9 @@ namespace QSProjectsLib
 					string Message = "Пользователь с логином " + entryLogin.Text + " уже существует в базе. " +
 					                 "Создание второго пользователя с таким же логином невозможно.";
 					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-					                                      MessageType.Warning, 
-					                                      ButtonsType.Ok,
-					                                      Message);
+						                   MessageType.Warning, 
+						                   ButtonsType.Ok,
+						                   Message);
 					md.Run ();
 					md.Destroy ();
 					return false;
@@ -241,9 +241,9 @@ namespace QSProjectsLib
 						                 "Если он использовался для доступа к другим базам, может возникнуть путаница. " +
 						                 "Использовать этот логин?";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                      MessageType.Warning, 
-						                                      ButtonsType.YesNo,
-						                                      Message);
+							                   MessageType.Warning, 
+							                   ButtonsType.YesNo,
+							                   Message);
 						bool result = (ResponseType)md.Run () == ResponseType.Yes;
 						md.Destroy ();
 						return result;
@@ -289,9 +289,9 @@ namespace QSProjectsLib
 						string Message = "Пользователь с логином " + entryLogin.Text + " уже существует на сервере. " +
 						                 "Переименование невозможно.";
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                                      MessageType.Error, 
-						                                      ButtonsType.Ok,
-						                                      Message);
+							                   MessageType.Error, 
+							                   ButtonsType.Ok,
+							                   Message);
 						md.Destroy ();
 						return false;
 					}
