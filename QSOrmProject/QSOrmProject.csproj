@@ -94,6 +94,7 @@
     <Compile Include="Widgets\OrmTreeView.cs" />
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
     <Compile Include="RepresentationModel\ColumnInfo.cs" />
+    <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
