@@ -45,6 +45,36 @@ namespace QSOrmProject
 			md.Destroy ();
 			return result;
 		}
+
+		public static bool SaveBeforePrint(Type savingEntity, string whatPrint)
+		{
+			string  savingName = "НЕ УКАЗАНО";
+
+			var att = savingEntity.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			if (att.Length > 0) {
+				if(!String.IsNullOrWhiteSpace ((att [0] as OrmSubjectAttribute).AllNames.Prepositional))
+				{
+					savingName = (att [0] as OrmSubjectAttribute).AllNames.Prepositional;
+				}
+				else
+				{
+					savingName = (att [0] as OrmSubjectAttribute).ObjectName;
+				}
+			}
+
+			string message = String.Format ("Перед печатью {0}, необходимо сохранить изменения в {1}. Сохранить?",
+				whatPrint,
+				savingName
+			);
+			var md = new MessageDialog ( QSMain.ErrorDlgParrent, DialogFlags.Modal,
+				MessageType.Question, 
+				ButtonsType.YesNo,
+				message);
+			bool result = (ResponseType)md.Run () == ResponseType.Yes;
+			md.Destroy ();
+			return result;
+		}
+
 	}
 }
 
