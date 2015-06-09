@@ -9,32 +9,6 @@ namespace QSSaaS
 	public interface ISaaSService
 	{
 		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		/// <summary>
-		/// Авторизация аккаунта с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
-		/// </summary>
-		/// <returns>Идентификатор сессии или сообщение об ошибке.</returns>
-		/// <param name="login">Логин аккаунта.</param>
-		/// <param name="pass">Пароль аккаунта.</param>
-		AccountAuthResult authAccount (string login, string pass);
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		AccountInfo getAccountInfo (string session_id);
-
-		[Obsolete]
-		[OperationContract]
-		/// <summary>
-		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
-		/// </summary>
-		/// <returns>Идентификатор сессии или сообщение об ошибке.</returns>
-		/// <param name="login">Логин пользователя.</param>
-		/// <param name="pass">Пароль пользователя.</param>
-		/// <param name="account">Учетная запись.</param>
-		/// <param name="bd">Название базы данных.</param>
-		UserAuthResult authUser (string args);
-
-		[OperationContract]
 		/// <summary>
 		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
 		/// </summary>
@@ -44,18 +18,6 @@ namespace QSSaaS
 		/// <param name="account">Учетная запись.</param>
 		/// <param name="bd">Название базы данных.</param>
 		UserAuthorizeResult authorizeUser (string args);
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		/// <summary>
-		/// Регистрация учетной записи.
-		/// </summary>
-		/// <returns>True в случае успеха или false и описание ошибки в случае неудачи.</returns>
-		/// <param name="login">Логин.</param>
-		/// <param name="pass">Пароль.</param>
-		/// <param name="customer">Наименование клиента.</param>
-		/// <param name="email">Email клиента.</param>
-		Result registerAccount (string login, string pass, string customer, string email);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -71,7 +33,7 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
-		/// Регистрация пользователя
+		/// Регистрация пользователя с указанием его отображаемого имени.
 		/// </summary>
 		/// <returns>True в случае успеха или false и описание ошибки в случае неудачи.</returns>
 		/// <param name="userLogin">Логин.</param>
@@ -110,6 +72,32 @@ namespace QSSaaS
 		bool changeUserPasswordByLogin (string login, string account, string newPassword);
 
 		[OperationContract]
+		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
+		bool changeBaseAccessFromProgram (string sessionId, string user, string db, bool grant, bool isAdmin = false);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		bool createUserInBase (string sessionId);
+
+		#region Obsolete
+
+		[Obsolete ("Данный метод устарел и может быть удален в ближайшем будущем. " +
+		"Он не позволяет получить реальное название базы и работает только в случае их совпадения." +
+		"Рекомендуется использовать authorizeUser(string args) в котором данная проблема исправлена.")]
+		[OperationContract]
+		/// <summary>
+		/// Авторизация пользователя с выдачей идентификатора сессии и созданием соответствующей записи в журнале.
+		/// </summary>
+		/// <returns>Идентификатор сессии или сообщение об ошибке.</returns>
+		/// <param name="login">Логин пользователя.</param>
+		/// <param name="pass">Пароль пользователя.</param>
+		/// <param name="account">Учетная запись.</param>
+		/// <param name="bd">Название базы данных.</param>
+		UserAuthResult authUser (string args);
+
+		[Obsolete ("Данный метод устарел и может быть удален в ближайшем будущем. " +
+		"Вместо него следует использовать changeBaseAccessFromProgram с аргументом grant=true.")]
+		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
 		/// Предоставляет пользователю доступ к базе.
@@ -121,6 +109,8 @@ namespace QSSaaS
 		/// <param name="admin">Имеет ли пользователь административный доступ.</param>
 		bool grantBaseAccess (string user, string account, string db, bool admin);
 
+		[Obsolete ("Данный метод устарел и может быть удален в ближайшем будущем. " +
+		"Вместо него следует использовать changeBaseAccessFromProgram с аргументом grant=false.")]
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
@@ -132,61 +122,8 @@ namespace QSSaaS
 		/// <param name="db">Название базы данных.</param>
 		bool revokeBaseAccess (string user, string account, string db);
 
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<Base> getAccountBases (string sessionId);
+		#endregion
 
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<User> getAccountUsers (string sessionId);
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		Dictionary<String, String> getAvailableProducts ();
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		bool createNewBase (string sessionId, string baseName, string product);
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		bool createUserInBase (string sessionId);
-
-		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		int getAccountConnectionsCount (string sessionId);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		User getUserInfo (string sessionId, int uid);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		List<UserBaseAccess> getUserBaseAccess (string sessionId, int uid);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		bool changeBaseAccess (string sessionId, int uId, int baseId, bool hasAccess, bool isAdmin, bool existed);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		bool changeUserPassword (string sessionId, int uId, string newPassword);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		bool changeUserName (string sessionId, int uId, string newName);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		bool createOrUpdateUserInDstBase (string sessionId, string login, string name, bool admin, int bid);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		List<BaseUserAccess> getBaseUserAccess (string sessionId, int bid);
-
-		[OperationContract]
-		[WebGetAttribute (ResponseFormat = WebMessageFormat.Json)]
-		bool changeBaseName (string sessionId, int bId, string newName);
 	}
 }
 

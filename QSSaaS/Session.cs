@@ -12,6 +12,7 @@ namespace QSSaaS
 		public static String ServiceAddress = "http://saas.qsolution.ru:2048/";
 		public static String SaaSService = ServiceAddress + "SaaS";
 		public static String UpdaterService = ServiceAddress + "Updater";
+		public static String ControlPanel = ServiceAddress + "ControlPanel";
 		//Параметры сессии
 		public static String SessionId = String.Empty;
 		public static bool IsSaasConnection = false;
