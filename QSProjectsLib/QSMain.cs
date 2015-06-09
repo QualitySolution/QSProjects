@@ -31,14 +31,13 @@ namespace QSProjectsLib
 		public static UserInfo User;
 
 		private static string adminFieldName = "admin";
+
 		public static string AdminFieldName {
-			get {
-				return adminFieldName;
-			}
+			get { return adminFieldName; }
 			set {
 				adminFieldName = value;
 				logger.Warn ("В установке полю AdminFieldName значения admin нет необходимости, оно имеет его по умолчанию. " +
-					"Другое название колонки в базе приведет к некорректной работе c SAAS.");
+				"Другое название колонки в базе приведет к некорректной работе c SAAS.");
 			}
 		}
 
@@ -56,8 +55,9 @@ namespace QSProjectsLib
 		public enum DataProviders
 		{
 			MySQL,
-			Factory
-		};
+			Factory}
+
+		;
 
 		//Внутриннии
 		internal static bool WaitResultIsOk;
@@ -152,15 +152,14 @@ namespace QSProjectsLib
 		public class RunOrmDeletionEventArgs : EventArgs
 		{
 			public string TableName { get; set; }
+
 			public int ObjectId { get; set; }
+
 			public bool Result { get; set; }
 		}
 
-		public static bool IsOrmDeletionConfigered
-		{
-			get {
-				return RunOrmDeletion != null;
-			}
+		public static bool IsOrmDeletionConfigered {
+			get { return RunOrmDeletion != null; }
 		}
 
 		internal static bool OnOrmDeletion (string table, int id)
@@ -319,13 +318,13 @@ namespace QSProjectsLib
 		{
 			if (level == null)
 				level = LogLevel.Error;
-			logger.LogException (level, userMessage, ex);
+			logger.Log (level, userMessage, ex);
 			ErrorMessage (ex, userMessage);
 		}
 
 		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
-			logger.LogException (level, userMessage, ex);
+			logger.Log (level, userMessage, ex);
 			ErrorMessage (parent, ex, userMessage);
 		}
 
