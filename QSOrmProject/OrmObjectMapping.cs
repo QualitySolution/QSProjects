@@ -1,15 +1,51 @@
 ﻿using System;
+using System.Linq;
+using QSOrmProject.UpdateNotification;
 
 namespace QSOrmProject
 {
-	public class OrmObjectMapping
+	public class OrmObjectMapping<TEntity> : IOrmObjectMapping
 	{
-		public System.Type ObjectClass;
-		public System.Type DialogClass;
-		public System.Type RefFilterClass;
-		public string[] RefSearchFields;
-		public string RefColumnMappings;
+		public Type ObjectClass {
+			get {
+				return typeof(TEntity);
+			}
+		}
+
+		Type dialogClass;
+
+		public Type DialogClass {
+			get {
+				return dialogClass;
+			}
+		}
+
+		private Type refFilterClass;
+
+		public Type RefFilterClass {
+			get {
+				return refFilterClass;
+			}
+		}
+
+		private string[] refSearchFields;
+
+		public string[] RefSearchFields {
+			get {
+				return refSearchFields;
+			}
+		}
+
+		private string refColumnMappings;
+
+		public string RefColumnMappings {
+			get {
+				return refColumnMappings;
+			}
+		}
+
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
+		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric;
 
 		public bool SimpleDialog
 		{
@@ -19,30 +55,37 @@ namespace QSOrmProject
 			}
 		}
 
-		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass)
+		public OrmObjectMapping(System.Type dialogClass)
 		{
-			ObjectClass = objectClass;
-			DialogClass = dialogClass;
-			RefColumnMappings = String.Empty;
+			this.dialogClass = dialogClass;
+			refColumnMappings = String.Empty;
 		}
 
-		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass, string columnMaping) : this(objectClass, dialogClass)
+		public OrmObjectMapping(System.Type dialogClass, string columnMaping) : this(dialogClass)
 		{
-			RefColumnMappings = columnMaping;
+			refColumnMappings = columnMaping;
 		}
 
-		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass, string columnMaping, string[] searchFields) : this(objectClass, dialogClass, columnMaping)
+		public OrmObjectMapping(System.Type dialogClass, string columnMaping, string[] searchFields) : this(dialogClass, columnMaping)
 		{
-			RefSearchFields = searchFields;
+			this.refSearchFields = searchFields;
 		}
 
-		public OrmObjectMapping(System.Type objectClass, System.Type dialogClass, System.Type filterClass, string columnMaping, string[] searchFields) : this(objectClass, dialogClass, columnMaping, searchFields)
+		public OrmObjectMapping(System.Type dialogClass, System.Type filterClass, string columnMaping, string[] searchFields) : this(dialogClass, columnMaping, searchFields)
 		{
-			RefFilterClass = filterClass;
+			this.refFilterClass = filterClass;
 		}
-
+			
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
+			RaiseObjectUpdatedGeneric (updatedSubjects.Cast<TEntity> ().ToArray ());
+		}
+
+		public void RaiseObjectUpdatedGeneric(params TEntity[] updatedSubjects)
+		{
+			if (ObjectUpdatedGeneric != null)
+				ObjectUpdatedGeneric(this, new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects));
+
 			if (ObjectUpdated != null)
 				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
 		}

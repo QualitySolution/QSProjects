@@ -8,12 +8,12 @@ namespace QSBanks
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public static List<OrmObjectMapping> GetModuleMaping ()
+		public static List<IOrmObjectMapping> GetModuleMaping ()
 		{
-			return new List<OrmObjectMapping> {
-				new OrmObjectMapping (typeof(Bank), typeof(BankDlg), typeof(BankFilter), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];", new string[] { "Bik", "Name", "City" }),
-				new OrmObjectMapping (typeof(Account), typeof(AccountDlg)),
-				new OrmObjectMapping (typeof(BankRegion), null)
+			return new List<IOrmObjectMapping> {
+				new OrmObjectMapping<Bank> (typeof(BankDlg), typeof(BankFilter), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];", new string[] { "Bik", "Name", "City" }),
+				new OrmObjectMapping<Account> (typeof(AccountDlg)),
+				new OrmObjectMapping<BankRegion> (null)
 			};
 		}
 

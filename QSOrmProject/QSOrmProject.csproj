@@ -60,7 +60,6 @@
     <Compile Include="DataWidgets\DataDatePicker.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />
-    <Compile Include="OrmObjectMapping.cs" />
     <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
@@ -95,6 +94,9 @@
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
     <Compile Include="RepresentationModel\ColumnInfo.cs" />
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
+    <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
+    <Compile Include="OrmObjectMapping.cs" />
+    <Compile Include="IOrmObjectMapping.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -131,6 +133,7 @@
     <Folder Include="DomainModel\" />
     <Folder Include="OrmDialog\" />
     <Folder Include="RepresentationModel\" />
+    <Folder Include="UpdateNotification\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

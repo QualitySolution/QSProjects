@@ -71,12 +71,12 @@ namespace QSOrmProject
 			get { return subjectType; }
 			set {
 				if (subjectType != null) {
-					OrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
+					IOrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
 					map.ObjectUpdated -= OnExternalObjectUpdated;
 				}
 				subjectType = value;
 				if (subjectType != null) {
-					OrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
+					IOrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;
 				}
 			}
