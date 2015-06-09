@@ -33,7 +33,7 @@ namespace QSOrmProject
 				switch(column.Type)
 				{
 				case ColumnType.Text:
-					this.AppendColumn (column.Name, new CellRendererText (), "text", column.DataColumn);
+					this.AppendColumn (column.Name, new CellRendererText (), column.GetAttributes ());
 					break;
 				}
 			}
