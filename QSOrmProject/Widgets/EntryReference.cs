@@ -78,7 +78,6 @@ namespace QSOrmProject
 				if (subjectType != null) {
 					OrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;
-					;
 				}
 			}
 		}
@@ -87,9 +86,10 @@ namespace QSOrmProject
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => OrmMain.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
-				IOrmDialog dlg = OrmMain.FindMyDialog (this);
-				if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
-					dlg.Session.Refresh (Subject);
+				IOrmDialogNew dlg = OrmMain.FindMyDialog (this);
+				//FIXME Возможно не нужно подписываться пока закомментируем
+				//if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
+				//	dlg.Session.Refresh (Subject);
 
 				UpdateWidget ();
 				OnChanged ();
@@ -147,7 +147,7 @@ namespace QSOrmProject
 				return;
 			}
 				
-			IOrmDialog dlg = OrmMain.FindMyDialog (this);
+			IOrmDialogNew dlg = OrmMain.FindMyDialog (this);
 			ISession session;
 			OrmReference SelectDialog;
 
@@ -155,7 +155,7 @@ namespace QSOrmProject
 				SelectDialog = new OrmReference (subjectType, ParentReference);
 			} else {
 				if (dlg != null)
-					session = dlg.Session;
+					session = dlg.UoW.Session;
 				else
 					session = OrmMain.Sessions.OpenSession ();
 

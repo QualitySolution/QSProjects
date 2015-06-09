@@ -107,12 +107,12 @@ namespace QSOrmProject
 			}
 		}
 
-		public static IOrmDialog FindMyDialog (Widget child)
+		public static IOrmDialogNew FindMyDialog (Widget child)
 		{
 			if (child.Parent == null)
 				return null;
-			else if (child.Parent is IOrmDialog)
-				return child.Parent as IOrmDialog;
+			else if (child.Parent is IOrmDialogNew)
+				return child.Parent as IOrmDialogNew;
 			else if (child.Parent.IsTopLevel)
 				return null;
 			else

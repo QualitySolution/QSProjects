@@ -14,9 +14,6 @@ namespace QSOrmProject
 
 	public interface IOrmDialogNew
 	{
-		[Obsolete("Только для совместитомсти. Будет удалено после окончательного переезда.")]
-		ISession Session { get; }
-
 		IUnitOfWork UoW { get; }
 		object Subject { get; }
 	}
