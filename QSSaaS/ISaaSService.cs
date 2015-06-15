@@ -27,7 +27,7 @@ namespace QSSaaS
 		/// <param name="userLogin">Логин.</param>
 		/// <param name="userPass">Пароль.</param>
 		/// <param name="session">ID текущей сессии.</param>
-		Result registerUser (string userLogin, string userPass, string session);
+		Response registerUser (string userLogin, string userPass, string session);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -38,7 +38,7 @@ namespace QSSaaS
 		/// <param name="userLogin">Логин.</param>
 		/// <param name="userPass">Пароль.</param>
 		/// <param name="session">ID текущей сессии.</param>
-		Result registerUserV2 (string userLogin, string userPass, string session, string userName);
+		Response registerUserV2 (string userLogin, string userPass, string session, string userName);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
