@@ -39,6 +39,16 @@ namespace QSProjectsLib
 		/// </summary>
 		public string AccusativePlural;
 
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?)
+		/// </summary>
+		public string Prepositional;
+
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?) можественное число.
+		/// </summary>
+		public string PrepositionalPlural;
+
 	}
 
 	public enum GrammaticalGender

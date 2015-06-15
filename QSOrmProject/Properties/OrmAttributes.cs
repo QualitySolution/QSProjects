@@ -118,6 +118,30 @@ namespace QSOrmProject
 			}
 		}
 
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?)
+		/// </summary>
+		public string Prepositional {
+			get {
+				return AllNames.Prepositional;
+			}
+			set {
+				AllNames.Prepositional = value;
+			}
+		}
+
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?) можественное число.
+		/// </summary>
+		public string PrepositionalPlural {
+			get {
+				return AllNames.PrepositionalPlural;
+			}
+			set {
+				AllNames.PrepositionalPlural = value;
+			}
+		}
+
 		public SubjectName AllNames = new SubjectName();
 		public ReferenceButtonMode DefaultJournalMode = ReferenceButtonMode.CanAll;
 

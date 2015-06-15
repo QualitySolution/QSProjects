@@ -16,7 +16,7 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		internal static Configuration ormConfig;
 		internal static ISessionFactory Sessions;
-		public static List<OrmObjectMapping> ClassMappingList;
+		public static List<IOrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
 		private static DateTime lastCleaning;
 
@@ -49,7 +49,7 @@ namespace QSOrmProject
 			if (objectClass.GetInterface (typeof(INHibernateProxy).FullName) != null)
 				objectClass = objectClass.BaseType;
 
-			OrmObjectMapping map = ClassMappingList.Find (c => c.ObjectClass == objectClass);
+			IOrmObjectMapping map = ClassMappingList.Find (c => c.ObjectClass == objectClass);
 			if (map == null) {
 				logger.Warn ("Диалог для типа {0} не найден.", objectClass);
 				return null;
@@ -57,12 +57,17 @@ namespace QSOrmProject
 				return map.DialogClass;
 		}
 
-		public static OrmObjectMapping GetObjectDiscription (System.Type type)
+		public static IOrmObjectMapping GetObjectDiscription (System.Type type)
 		{
 			if (type.GetInterface (typeof(INHibernateProxy).FullName) != null)
 				type = type.BaseType;
 
 			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == type);
+		}
+
+		public static OrmObjectMapping<TEntity> GetObjectDiscription<TEntity> ()
+		{
+			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == typeof(TEntity)) as OrmObjectMapping<TEntity>;
 		}
 
 		/// <summary>
@@ -79,7 +84,7 @@ namespace QSOrmProject
 			}
 
 			foreach (Type subjectType in updatedSubjects.Select(s => NHibernateUtil.GetClass (s)).Distinct ()) {
-				OrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
+				IOrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
 				if (map != null)
 					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateUtil.GetClass (s) == subjectType).ToArray ());
 				else
@@ -107,12 +112,12 @@ namespace QSOrmProject
 			}
 		}
 
-		public static IOrmDialog FindMyDialog (Widget child)
+		public static IOrmDialogNew FindMyDialog (Widget child)
 		{
 			if (child.Parent == null)
 				return null;
-			else if (child.Parent is IOrmDialog)
-				return child.Parent as IOrmDialog;
+			else if (child.Parent is IOrmDialogNew)
+				return child.Parent as IOrmDialogNew;
 			else if (child.Parent.IsTopLevel)
 				return null;
 			else

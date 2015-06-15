@@ -181,7 +181,7 @@ namespace QSOrmProject
 		void ConfigureDlg ()
 		{
 			Mode = OrmReferenceMode.Normal;
-			OrmObjectMapping map = OrmMain.GetObjectDiscription (objectType);
+			IOrmObjectMapping map = OrmMain.GetObjectDiscription (objectType);
 			if (map != null) {
 				map.ObjectUpdated += OnRefObjectUpdated;
 				datatreeviewRef.ColumnMappings = map.RefColumnMappings;

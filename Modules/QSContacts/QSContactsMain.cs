@@ -10,11 +10,11 @@ namespace QSContacts
 
 		public static int MinSavePhoneLength = 7;
 
-		public static List<OrmObjectMapping> GetModuleMaping ()
+		public static List<IOrmObjectMapping> GetModuleMaping ()
 		{
-			return new List<OrmObjectMapping> {
-				new OrmObjectMapping (typeof(PhoneType), null, "{QSContacts.PhoneType} Name[Название];"),
-				new OrmObjectMapping (typeof(EmailType), null, "{QSContacts.EmailType} Name[Название];")
+			return new List<IOrmObjectMapping> {
+				new OrmObjectMapping<PhoneType> (null, "{QSContacts.PhoneType} Name[Название];"),
+				new OrmObjectMapping<EmailType> (null, "{QSContacts.EmailType} Name[Название];")
 			};
 		}
 	}

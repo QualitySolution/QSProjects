@@ -1,11 +1,12 @@
 ﻿using System;
-using Gtk;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Gtk;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationModelBase : IRepresentationModel
+	public abstract class RepresentationModelBase<TEntity> : IRepresentationModel
 	{
 		#region IRepresentationModel implementation
 
@@ -33,8 +34,17 @@ namespace QSOrmProject.RepresentationModel
 				.ForEach ((ColumnInfo column) => column.SetAttributeProperty(attibuteName, propertyRefExpr));
 		}
 
-		public RepresentationModelBase ()
+		protected abstract bool NeedUpdateFunc (TEntity updatedSubject);
+
+		protected RepresentationModelBase ()
 		{
+			OrmMain.GetObjectDiscription<TEntity>().ObjectUpdatedGeneric += OnExternalUpdate;
+		}
+
+		void OnExternalUpdate (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedGenericEventArgs<TEntity> e)
+		{
+			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
+				UpdateNodes ();
 		}
 	}
 }

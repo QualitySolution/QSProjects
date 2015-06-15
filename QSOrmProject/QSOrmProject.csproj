@@ -60,7 +60,6 @@
     <Compile Include="DataWidgets\DataDatePicker.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />
-    <Compile Include="OrmObjectMapping.cs" />
     <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
@@ -80,7 +79,6 @@
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
-    <Compile Include="DomainModel\UnitOfWork.cs" />
     <Compile Include="DomainModel\IDomainObject.cs" />
     <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
     <Compile Include="DomainModel\IUnitOfWorkGeneric.cs" />
@@ -95,6 +93,11 @@
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
     <Compile Include="RepresentationModel\ColumnInfo.cs" />
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
+    <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
+    <Compile Include="OrmObjectMapping.cs" />
+    <Compile Include="IOrmObjectMapping.cs" />
+    <Compile Include="DomainModel\UnitOfWorkWithoutRoot.cs" />
+    <Compile Include="DomainModel\UnitOfWork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -131,6 +134,7 @@
     <Folder Include="DomainModel\" />
     <Folder Include="OrmDialog\" />
     <Folder Include="RepresentationModel\" />
+    <Folder Include="UpdateNotification\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
