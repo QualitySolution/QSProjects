@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSValidation</RootNamespace>
     <AssemblyName>QSValidation</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +43,7 @@
     <Compile Include="gtk-gui\QSValidation.ResultsListDlg.cs" />
     <Compile Include="ResultItem.cs" />
     <Compile Include="gtk-gui\QSValidation.ResultItem.cs" />
+    <Compile Include="ValidationAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
