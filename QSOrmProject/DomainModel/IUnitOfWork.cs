@@ -4,7 +4,7 @@ namespace QSOrmProject
 {
 	public interface IUnitOfWork : IDisposable 
 	{
-		NHibernate.ISession  Session{ get;}
+		NHibernate.ISession Session{ get;}
 
 		object RootObject{ get;}
 
@@ -14,6 +14,8 @@ namespace QSOrmProject
 
 		void Save<TEntity>(TEntity entity) where TEntity : IDomainObject;
 		void Save();
+
+		T GetById<T>(int id) where T : IDomainObject;
 
 		void Commit();
 	}
