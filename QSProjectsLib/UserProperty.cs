@@ -106,7 +106,7 @@ namespace QSProjectsLib
 						return;
 					}
 					//Регистрируем пользователя в SaaS
-					Response result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
+					Result result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
 					if (!result.Success) {
 						if (result.Error == ErrorType.UserExists) {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
