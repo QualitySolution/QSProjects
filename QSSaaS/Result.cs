@@ -8,37 +8,11 @@ namespace QSSaaS
 		None,
 		SqlError,
 		UserExists,
-		AccessDenied,
-		SessionsLimitReached}
+		AccessDenied}
 	;
 
 	[DataContract]
-	public class Response
-	{
-		[DataMember]
-		public bool Success;
-		[DataMember]
-		public string Description;
-		[DataMember]
-		public ErrorType Error;
-
-		public Response ()
-		{
-			Success = true;
-			Description = String.Empty;
-			Error = ErrorType.None;
-		}
-
-		public Response (ErrorType errorType, string description)
-		{
-			Success = false;
-			Error = errorType;
-			Description = description;
-		}
-	}
-
-	[DataContract]
-	public class Base : Response
+	public class Base
 	{
 		[DataMember]
 		public int Id;
@@ -48,10 +22,6 @@ namespace QSSaaS
 		public string Product;
 		[DataMember]
 		public double Size;
-
-		public Base ()
-		{
-		}
 
 		public Base (int id, string name, string product, double size)
 		{
@@ -63,7 +33,7 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class User : Response
+	public class User
 	{
 		[DataMember]
 		public int Id;
@@ -73,10 +43,6 @@ namespace QSSaaS
 		public string Active;
 		[DataMember]
 		public string Name;
-
-		public User (ErrorType errorType, string description) : base (errorType, description)
-		{
-		}
 
 		public User (int id, string login, string active, string name)
 		{
@@ -88,7 +54,7 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class AccountInfo : Response
+	public class AccountInfo
 	{
 		[DataMember]
 		public bool IsActive;
@@ -109,10 +75,6 @@ namespace QSSaaS
 		[DataMember]
 		public DateTime EndDate;
 
-		public AccountInfo (ErrorType errorType, string description) : base (errorType, description)
-		{
-		}
-
 		public AccountInfo (bool isActive, int activeSessions, int basesCount, double spaceUsed, 
 		                    int maxSessions, int maxBases, int maxSpace, decimal subscriberFee, DateTime endDate)
 		{
@@ -129,7 +91,29 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class UserBaseAccess : Response
+	public class Result
+	{
+		[DataMember]
+		public bool Success;
+		[DataMember]
+		public string Description;
+		[DataMember]
+		public ErrorType Error = ErrorType.None;
+
+		public Result (bool success, string description = "")
+		{
+			Success = success;
+			Description = description;
+		}
+
+		public Result (bool success, ErrorType error, string description = "") : this (success, description)
+		{
+			Error = error;
+		}
+	}
+
+	[DataContract]
+	public class UserBaseAccess
 	{
 		[DataMember]
 		public int Id;
@@ -142,10 +126,6 @@ namespace QSSaaS
 		[DataMember]
 		public int IsAdmin;
 
-		public UserBaseAccess (ErrorType errorType, string description) : base (errorType, description)
-		{
-		}
-
 		public UserBaseAccess (int id, string baseName, string productName, int hasAccess = 0, int isAdmin = 0)
 		{
 			Id = id;
@@ -157,7 +137,7 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class BaseUserAccess : Response
+	public class BaseUserAccess
 	{
 		[DataMember]
 		public int Id;
@@ -170,10 +150,6 @@ namespace QSSaaS
 		[DataMember]
 		public int IsAdmin;
 
-		public BaseUserAccess (ErrorType errorType, string description) : base (errorType, description)
-		{
-		}
-
 		public BaseUserAccess (int id, string userName, string userLogin, int hasAccess = 0, int isAdmin = 0)
 		{
 			Id = id;
@@ -185,26 +161,24 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class AccountAuthResult : Response
+	public class AccountAuthResult : Result
 	{
 		[DataMember]
 		public string SessionID;
 
-		public AccountAuthResult (ErrorType errorType, string description) : base (errorType, description)
+		public AccountAuthResult (bool success, string description = "") : base (success, description)
 		{
 		}
 
-		public AccountAuthResult (string sessionID)
+		public AccountAuthResult (bool success, string sessionID, string description) : base (success, description)
 		{
 			SessionID = sessionID;
 		}
 	}
 
 	[DataContract]
-	public class UserAuthResult : Response
+	public class UserAuthResult : AccountAuthResult
 	{
-		[DataMember]
-		public string SessionID;
 		[DataMember]
 		public string Server;
 		[DataMember]
@@ -212,13 +186,12 @@ namespace QSSaaS
 		[DataMember]
 		public string Login;
 
-		public UserAuthResult (ErrorType errorType, string description) : base (errorType, description)
+		public UserAuthResult (bool success, string description = "") : base (success, description)
 		{
 		}
 
-		public UserAuthResult (string sessionID, string server, string login, bool isAdmin = false)
+		public UserAuthResult (bool success, string sessionID, string server, string login, bool isAdmin = false) : base (success, sessionID, "")
 		{
-			SessionID = sessionID;
 			Login = login;
 			Server = server;
 			IsAdmin = isAdmin;
@@ -226,7 +199,7 @@ namespace QSSaaS
 	}
 
 	[DataContract]
-	public class UserAuthorizeResult : Response
+	public class UserAuthorizeResult : AccountAuthResult
 	{
 		[DataMember]
 		public string Server;
@@ -236,16 +209,13 @@ namespace QSSaaS
 		public string Login;
 		[DataMember]
 		public string BaseName;
-		[DataMember]
-		public string SessionID;
 
-		public UserAuthorizeResult (ErrorType errorType, string description) : base (errorType, description)
+		public UserAuthorizeResult (bool success, string description = "") : base (success, description)
 		{
 		}
 
-		public UserAuthorizeResult (string sessionID, string server, string login, string baseName, bool isAdmin = false)
+		public UserAuthorizeResult (bool success, string sessionID, string server, string login, string baseName, bool isAdmin = false) : base (success, sessionID, "")
 		{
-			SessionID = sessionID;
 			Login = login;
 			Server = server;
 			IsAdmin = isAdmin;

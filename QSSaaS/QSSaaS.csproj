@@ -31,8 +31,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ISaaSService.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="Session.cs" />
-    <Compile Include="Response.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ServiceModel.Web" />
