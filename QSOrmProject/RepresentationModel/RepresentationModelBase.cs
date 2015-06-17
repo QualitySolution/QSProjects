@@ -14,7 +14,11 @@ namespace QSOrmProject.RepresentationModel
 
 		public abstract Type NodeType { get; }
 
-		public abstract Type ObjectType { get; }
+		public Type ObjectType {
+			get {
+				return typeof(TEntity);
+			}
+		}
 
 		public NodeStore NodeStore { get; set;}
 
