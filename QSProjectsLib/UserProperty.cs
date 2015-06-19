@@ -62,6 +62,7 @@ namespace QSProjectsLib
 				entryPassword.Text = passFill;
 				entryEmail.Text = email;
 				checkDeactivated.Active = deactivated;
+				checkDeactivated.Sensitive = QSMain.User.Login != OriginLogin;
 				checkAdmin.Active = rdr.GetBoolean (QSMain.AdminFieldName);
 
 				if (deactivated && Session.IsSaasConnection) {
