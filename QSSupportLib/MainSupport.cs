@@ -11,6 +11,7 @@ namespace QSSupportLib
 		public static BaseParam BaseParameters;
 
 		private static AppVersion projectVerion;
+
 		public static AppVersion ProjectVerion {
 			get {
 				if (projectVerion == null)
@@ -41,7 +42,7 @@ namespace QSSupportLib
 				"\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
 			if (!ProjectVerion.AllowEdition.Contains (MainSupport.BaseParameters.Edition))
 				ErrorText = "Редакция продукта не совпадает с редакцией базы данных.\nРедакция продукта: " +
-					ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
+				ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition + "\n";
 			//Если найдены ошибки.
 			if (ErrorText != String.Empty) {
 				MessageDialog error = new MessageDialog (Parent, DialogFlags.DestroyWithParent,
@@ -54,8 +55,7 @@ namespace QSSupportLib
 				return false;
 			}
 			string[] ver = MainSupport.BaseParameters.Version.Split ('.');
-			if (ProjectVerion.Version.Major < long.Parse (ver [0]) ||
-			    (ProjectVerion.Version.Major == long.Parse (ver [0]) && ProjectVerion.Version.Minor < long.Parse (ver [1])))
+			if (ProjectVerion.Version.Major != long.Parse (ver [0]) || ProjectVerion.Version.Minor != long.Parse (ver [1]))
 				return false;
 			return true;
 		}
@@ -139,22 +139,19 @@ namespace QSSupportLib
 			md.Destroy ();
 		}
 
-		public static void LoadBaseParameters()
+		public static void LoadBaseParameters ()
 		{
-			try
-			{
-				MainSupport.BaseParameters = new BaseParam(QSMain.connectionDB);
-			}
-			catch(MySql.Data.MySqlClient.MySqlException e)
-			{
+			try {
+				MainSupport.BaseParameters = new BaseParam (QSMain.connectionDB);
+			} catch (MySql.Data.MySqlClient.MySqlException e) {
 				logger.FatalException ("Не удалось получить информацию о версии базы данных.", e);
 				MessageDialog BaseError = new MessageDialog (QSMain.ErrorDlgParrent, DialogFlags.DestroyWithParent,
-					MessageType.Warning, 
-					ButtonsType.Close, 
-					"Не удалось получить информацию о версии базы данных.");
-				BaseError.Run();
-				BaseError.Destroy();
-				Environment.Exit(0);
+				                                             MessageType.Warning, 
+				                                             ButtonsType.Close, 
+				                                             "Не удалось получить информацию о версии базы данных.");
+				BaseError.Run ();
+				BaseError.Destroy ();
+				Environment.Exit (0);
 			}
 		}
 	}
