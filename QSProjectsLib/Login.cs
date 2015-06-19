@@ -24,7 +24,7 @@ namespace QSProjectsLib
 		private string server;
 
 		public Gdk.Pixbuf Logo {
-			set{ imageLogo.Pixbuf = value; }
+			set { imageLogo.Pixbuf = value; }
 		}
 
 		public Login ()
@@ -66,12 +66,12 @@ namespace QSProjectsLib
 					if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
 						String type = Config.Get ("Type", ((int)ConnectionType.MySQL).ToString ());
 						Connections.Add (new Connection ((ConnectionType)int.Parse (type),
-						                                 Config.Get ("ConnectionName", DefaultConnection),
-						                                 Config.Get ("DataBase", BaseName),
-						                                 Config.Get ("Server", DefaultServer),
-						                                 Config.Get ("UserLogin", String.Empty),
-						                                 Config.Name,
-						                                 Config.Get ("Account", String.Empty)));
+							Config.Get ("ConnectionName", DefaultConnection),
+							Config.Get ("DataBase", BaseName),
+							Config.Get ("Server", DefaultServer),
+							Config.Get ("UserLogin", String.Empty),
+							Config.Name,
+							Config.Get ("Account", String.Empty)));
 					} else if (Config.Name == "Default") {
 						SelectedConnection = Config.Get ("ConnectionName", String.Empty);
 					}
@@ -118,8 +118,8 @@ namespace QSProjectsLib
 		protected virtual void OnButtonErrorInfoClicked (object sender, System.EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-			                                      MessageType.Error, 
-			                                      ButtonsType.Close, "ошибка");
+				                   MessageType.Error, 
+				                   ButtonsType.Close, "ошибка");
 			md.UseMarkup = false;
 			md.Text = ConnectionError;
 			md.Run ();
@@ -142,7 +142,7 @@ namespace QSProjectsLib
 				try {
 					ISaaSService svc = Session.GetSaaSService ();
 					string parameters = String.Format ("login.{0};pass.{1};account.{2};db.{3};",
-					                                   entryUser.Text, entryPassword.Text, Selected.AccountLogin, Selected.BaseName); 
+						                    entryUser.Text, entryPassword.Text, Selected.AccountLogin, Selected.BaseName); 
 					UserAuthorizeResult result = svc.authorizeUser (parameters);
 					if (!result.Success) {
 						labelLoginInfo.Text = "Ошибка соединения с сервисом.";
@@ -181,6 +181,19 @@ namespace QSProjectsLib
 				}
 				
 				QSMain.connectionDB.Open ();
+
+				string sql = "SELECT deactivated FROM users WHERE login = @login";
+				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+				cmd.Parameters.AddWithValue ("@login", entryUser.Text);
+				MySqlDataReader rdr = cmd.ExecuteReader ();
+				if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
+					labelLoginInfo.Text = "Доступ запрещен.";
+					rdr.Close ();
+					QSMain.connectionDB.Close ();
+					return;
+				}
+				rdr.Close ();
+
 				labelLoginInfo.Text = "";
 				buttonErrorInfo.Visible = false;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
@@ -188,7 +201,7 @@ namespace QSProjectsLib
 				QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
 				QSMain.Configsource.Save ();
 				QSMain.ConnectionString = connStr;
-				QSMain.User = new UserInfo(entryUser.Text.ToLower ());
+				QSMain.User = new UserInfo (entryUser.Text.ToLower ());
 				this.Respond (ResponseType.Ok);
 			} catch (MySqlException ex) {
 				if (ex.Number == 1045)
@@ -216,8 +229,8 @@ namespace QSProjectsLib
 		protected void OnButtonDemoClicked (object sender, EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-			                                      MessageType.Info, 
-			                                      ButtonsType.Ok, DemoMessage);
+				                   MessageType.Info, 
+				                   ButtonsType.Ok, DemoMessage);
 			md.Run ();
 			md.Destroy ();
 		}

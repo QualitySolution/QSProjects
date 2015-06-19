@@ -16,13 +16,15 @@ namespace QSProjectsLib
 			
 			//Создаем таблицу "Пользователей"
 			UsersListStore = new Gtk.ListStore (typeof(int), typeof(string), typeof(string), 
-				typeof(bool));
+				typeof(bool), typeof(bool), typeof(string));
 			
 			treeviewUsers.AppendColumn ("Код", new Gtk.CellRendererText (), "text", 0);
 			treeviewUsers.AppendColumn ("Логин", new Gtk.CellRendererText (), "text", 1);
 			treeviewUsers.AppendColumn ("Имя", new Gtk.CellRendererText (), "text", 2);
 			treeviewUsers.AppendColumn ("Администратор", new Gtk.CellRendererToggle (), "active", 3);
-			
+			foreach (var col in treeviewUsers.Columns) {
+				col.AddAttribute (col.CellRenderers [0], "foreground", 5);
+			}
 			treeviewUsers.Model = UsersListStore;
 			treeviewUsers.ShowAll ();
 			UpdateUsers ();
@@ -42,10 +44,18 @@ namespace QSProjectsLib
 			
 			UsersListStore.Clear ();
 			while (rdr.Read ()) {
+				bool deactivated = false;
+				try {
+					deactivated = DBWorks.GetBoolean (rdr, "deactivated", false);
+				} catch {
+					logger.Warn ("В базе отсутствует поле deactivated!");
+				}
 				UsersListStore.AppendValues (int.Parse (rdr ["id"].ToString ()),
 					rdr ["login"].ToString (),
 					rdr ["name"].ToString (),
-					(bool)rdr ["admin"]);
+					(bool)rdr ["admin"],
+					deactivated,
+					deactivated ? "grey" : "black");
 			}
 			rdr.Close ();
 			

@@ -45,7 +45,14 @@ namespace QSProjectsLib
 				MySqlDataReader rdr = cmd.ExecuteReader ();
 				
 				rdr.Read ();
-				
+				bool deactivated = false;
+				string email = String.Empty;
+				try {
+					deactivated = DBWorks.GetBoolean (rdr, "deactivated", false);
+					email = DBWorks.GetString (rdr, "email", String.Empty);
+				} catch {
+				}
+
 				entryID.Text = rdr ["id"].ToString ();
 				entryLogin.Text = rdr ["login"].ToString ();
 				//Если SaaS - запретить редактировать логин.
@@ -53,11 +60,20 @@ namespace QSProjectsLib
 				OriginLogin = rdr ["login"].ToString ();
 				entryName.Text = rdr ["name"].ToString ();
 				entryPassword.Text = passFill;
-				
+				entryEmail.Text = email;
+				checkDeactivated.Active = deactivated;
 				checkAdmin.Active = rdr.GetBoolean (QSMain.AdminFieldName);
+
+				if (deactivated && Session.IsSaasConnection) {
+					entryName.Sensitive = entryPassword.Sensitive = entryEmail.Sensitive = false;
+					checkDeactivated.Sensitive = checkAdmin.Sensitive = false;
+					textviewComments.Sensitive = false;
+
+				}
 
 				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
 					Pair.Value.Active = rdr.GetBoolean (QSMain.ProjectPermission [Pair.Key].DataBaseName);
+					Pair.Value.Sensitive = (deactivated && Session.IsSaasConnection);
 				}
 				
 				textviewComments.Buffer.Text = rdr ["description"].ToString ();
@@ -106,7 +122,7 @@ namespace QSProjectsLib
 						return;
 					}
 					//Регистрируем пользователя в SaaS
-					Result result = svc.registerUser (entryLogin.Text, entryPassword.Text, Session.SessionId);
+					Result result = svc.registerUserV3 (entryLogin.Text, entryPassword.Text, Session.SessionId, entryName.Text, entryEmail.Text);
 					if (!result.Success) {
 						if (result.Error == ErrorType.UserExists) {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
@@ -129,8 +145,8 @@ namespace QSProjectsLib
 						}
 					}
 					//Создаем запись в Users.
-					sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
-					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
+					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
+					"VALUES (@name, @login, @deactivated, @email, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
 				} else {
 					if (entryPassword.Text != passFill) {
 						MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
@@ -150,11 +166,11 @@ namespace QSProjectsLib
 						} else if ((ResponseType)dlgRes != ResponseType.Yes)
 							return;
 					}
-					sql = "UPDATE users SET name = @name, " + QSMain.AdminFieldName + " = @admin," +
+					sql = "UPDATE users SET name = @name, deactivated = @deactivated, email = @email, " + QSMain.AdminFieldName + " = @admin," +
 					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
 				//Предоставляем пользователю доступ к базе
-				if (!svc.changeBaseAccessFromProgram (entryLogin.Text, Session.Account, Session.BaseName, true, checkAdmin.Active)) {
+				if (!svc.changeBaseAccessFromProgram (Session.SessionId, entryLogin.Text, Session.BaseName, !checkDeactivated.Active, checkAdmin.Active)) {
 					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
 						                   MessageType.Warning, 
 						                   ButtonsType.Close,
@@ -167,14 +183,14 @@ namespace QSProjectsLib
 				if (NewUser) {
 					if (!CreateLogin ())
 						return;
-					sql = "INSERT INTO users (name, login, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
-					"VALUES (@name, @login, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
+					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect () + ") " +
+					"VALUES (@name, @login, @deactivated, @email, @admin, @description" + QSMain.GetPermissionFieldsForInsert () + ")";
 				} else {
 					if (OriginLogin != entryLogin.Text && !RenameLogin ())
 						return;
 					if (entryPassword.Text != passFill)
 						ChangePassword ();
-					sql = "UPDATE users SET name = @name, login = @login, " + QSMain.AdminFieldName + " = @admin," +
+					sql = "UPDATE users SET name = @name, deactivated = @deactivated, email = @email, login = @login, " + QSMain.AdminFieldName + " = @admin," +
 					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
 				UpdatePrivileges ();
@@ -188,6 +204,8 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue ("@name", entryName.Text);
 				cmd.Parameters.AddWithValue ("@login", entryLogin.Text);
 				cmd.Parameters.AddWithValue ("@admin", checkAdmin.Active);
+				cmd.Parameters.AddWithValue ("@deactivated", checkDeactivated.Active);
+				cmd.Parameters.AddWithValue ("@email", entryEmail.Text);
 				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
 					cmd.Parameters.AddWithValue ("@" + QSMain.ProjectPermission [Pair.Key].DataBaseName, 
 						Pair.Value.Active);
