@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="DBUpdater\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DBUpdater\" />
