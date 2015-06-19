@@ -120,7 +120,7 @@ namespace QSProjectsLib
 				logger.Info ("Удаляем пользователя MySQL...");
 				if (QSSaaS.Session.IsSaasConnection) {
 					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
-					if (!svc.changeBaseAccessFromProgram (loginname, QSSaaS.Session.Account, QSSaaS.Session.BaseName, false))
+					if (!svc.changeBaseAccessFromProgram (QSSaaS.Session.SessionId, loginname, QSSaaS.Session.BaseName, false))
 						logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
 				} else {
 					string sql;
