@@ -43,6 +43,18 @@ namespace QSSaaS
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
+		/// Регистрация пользователя с указанием его отображаемого имени.
+		/// </summary>
+		/// <returns>True в случае успеха или false и описание ошибки в случае неудачи.</returns>
+		/// <param name="userLogin">Логин.</param>
+		/// <param name="userPass">Пароль.</param>
+		/// <param name="session">ID текущей сессии.</param>
+		/// <param name="email">Почта.</param>
+		Result registerUserV3 (string userLogin, string userPass, string session, string userName, string email);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
 		/// Продлевает сессию еще на 20 минут.
 		/// </summary>
 		/// <returns><c>true</c>, если сессия была обновлена <c>false</c> если нет.</returns>
