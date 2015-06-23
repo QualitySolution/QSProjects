@@ -131,6 +131,25 @@ namespace Gtk.DataBindings
 				AppendEnumItem (typeof(SpecialComboState).GetField ("Not"));
 			}
 
+			if (String.IsNullOrWhiteSpace (ColumnMappings) && ItemsDataSource is IList)
+			{
+				var list = ItemsDataSource as IList;
+				if(list.Count > 0)
+				{
+					var example = list [0];
+					if (example.GetType ().GetProperty ("Name") != null)
+						columnMappings = "Name";
+					if (example.GetType ().GetProperty ("Title") != null)
+						columnMappings = "Title";
+				}
+			}
+
+			if (String.IsNullOrWhiteSpace (ColumnMappings))
+			{
+				logger.Warn ("Свойство ColumnMappings пустое, заполение комбобокса {0} пропущено.", Name);
+				return;
+			}
+
 			//FIXME Временное решение, нужно сделать через биндинг
 			Adaptor tempAdaptor = new Adaptor ();
 			MappedProperty mp = new MappedProperty (tempAdaptor, columnMappings);
