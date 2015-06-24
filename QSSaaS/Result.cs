@@ -43,13 +43,16 @@ namespace QSSaaS
 		public string Active;
 		[DataMember]
 		public string Name;
+		[DataMember]
+		public string Email;
 
-		public User (int id, string login, string active, string name)
+		public User (int id, string login, string active, string name, string email)
 		{
 			Id = id;
 			Login = login;
 			Active = active;
 			Name = name;
+			Email = email;
 		}
 	}
 
