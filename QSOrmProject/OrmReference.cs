@@ -414,6 +414,7 @@ namespace QSOrmProject
 	[Flags]
 	public enum ReferenceButtonMode
 	{
+		None = 0,
 		CanAdd = 1,
 		CanEdit = 2,
 		CanDelete = 4,
