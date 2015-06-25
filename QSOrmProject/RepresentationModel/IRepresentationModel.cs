@@ -10,6 +10,8 @@ namespace QSOrmProject.RepresentationModel
 
 		Type ObjectType { get;}
 
+		IUnitOfWork UoW { get;}
+
 		NodeStore NodeStore { get; }
 
 		List<IColumnInfo> Columns { get;}

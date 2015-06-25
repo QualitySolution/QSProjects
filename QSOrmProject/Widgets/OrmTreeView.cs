@@ -50,6 +50,12 @@ namespace QSOrmProject
 			else
 				return (int)id;
 		}
+
+		public object GetSelectedNode()
+		{
+			return NodeSelection.SelectedNode as object;
+		}
+
 	}
 }
 

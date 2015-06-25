@@ -98,6 +98,8 @@
     <Compile Include="IOrmObjectMapping.cs" />
     <Compile Include="DomainModel\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\UnitOfWork.cs" />
+    <Compile Include="ReferenceRepresentation.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.ReferenceRepresentation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -138,5 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="DomainModel\BusinessObjectBase.cs" />
+    <None Include="DomainModel\IBusinessObject.cs" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,17 @@ namespace QSOrmProject.RepresentationModel
 	{
 		#region IRepresentationModel implementation
 
+		IUnitOfWork uow;
+
+		public IUnitOfWork UoW {
+			get {
+				return uow;
+			}
+			set {
+				uow = value;
+			}
+		}
+
 		public abstract void UpdateNodes ();
 
 		public abstract Type NodeType { get; }
