@@ -10,6 +10,8 @@ namespace QSTDI
 		private ITdiJournal journal;
 		private ITdiDialog activeDialog;
 		private VSeparator separator;
+		private VBox dialogVBox;
+		private Label dialogTilteLabel;
 
 		public ITdiTabParent TabParent { set; get;}
 
@@ -82,7 +84,9 @@ namespace QSTDI
 					if(activeDialog != null)
 					{
 						activeDialog.CloseTab -= OnDialogClose;
-						this.Remove((Widget)activeDialog);
+						activeDialog.TabNameChanged -= ActiveDialog_TabNameChanged;
+						dialogVBox.Destroy ();
+						this.Remove(dialogVBox);
 						this.Remove(separator);
 					}
 					activeDialog = value;
@@ -91,14 +95,32 @@ namespace QSTDI
 						activeDialog.CloseTab += OnDialogClose;
 						separator = new VSeparator();
 						separator.Show();
-						this.PackEnd((Widget)activeDialog);
+						dialogTilteLabel = new Label ();
+						SetNewDialogTitle (ActiveDialog.TabName);
+						dialogVBox = new VBox ();
+						dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
+						dialogVBox.PackStart ((Widget)activeDialog);
+						this.PackEnd(dialogVBox);
 						this.PackEnd(separator, false, true, 6);
+						dialogTilteLabel.Show ();
+						dialogVBox.Show ();
 						(ActiveDialog as Widget).Show();
 						activeDialog.TabParent = this;
+						activeDialog.TabNameChanged += ActiveDialog_TabNameChanged;
 					}
 				}
 
 			}
+		}
+
+		void ActiveDialog_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
+		{
+			SetNewDialogTitle (ActiveDialog.TabName);
+		}
+
+		void SetNewDialogTitle(string tilte)
+		{
+			dialogTilteLabel.Markup = String.Format ("<b>{0}</b>", tilte);
 		}
 
 		void OnJournalTabNameChanged(object sender, TdiTabNameChangedEventArgs arg)
