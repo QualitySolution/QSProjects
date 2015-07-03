@@ -3,6 +3,8 @@ using System.Data.Bindings;
 using Gtk;
 using QSProjectsLib;
 using QSTDI;
+using System.ComponentModel;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -55,15 +57,15 @@ namespace QSOrmProject
 			get {
 				if(!String.IsNullOrWhiteSpace(tabName))
 					return tabName;
-				if (UoW != null)
+				if (UoW != null && UoW.RootObject != null)
 				{
+					var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+					OrmSubjectAttribute subAtt = (att.FirstOrDefault () as OrmSubjectAttribute);
+
 					if(UoW.IsNew)
 					{
-						var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
-						if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
+						if (subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
 						{
-							var subAtt = (att [0] as OrmSubjectAttribute);
-
 							switch(subAtt.AllNames.Gender){
 								case GrammaticalGender.Masculine: 
 									return "Новый " + subAtt.ObjectName;
@@ -75,14 +77,35 @@ namespace QSOrmProject
 									return "Новый(ая) " + subAtt.ObjectName;
 							}
 						}
-							
 					}
 					else
 					{
-						return DomainHelper.GetObjectTilte(UoW.RootObject);
-					}
-				}
+						var notifySubject = UoW.RootObject as INotifyPropertyChanged;
 
+						var prop = UoW.RootObject.GetType ().GetProperty ("Title");
+						if (prop != null) {
+							if(notifySubject != null)
+							{
+								notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
+								notifySubject.PropertyChanged += Subject_TitlePropertyChanged;
+							}
+							return prop.GetValue (UoW.RootObject, null).ToString();
+						}
+
+						prop = UoW.RootObject.GetType ().GetProperty ("Name");
+						if (prop != null) {
+							if (notifySubject != null) {
+								notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
+								notifySubject.PropertyChanged += Subject_NamePropertyChanged;
+							}
+							return prop.GetValue (UoW.RootObject, null).ToString();
+						}
+
+						if(subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
+							return StringWorks.StringToTitleCase (subAtt.ObjectName);
+					}
+					return UoW.RootObject.ToString ();
+				}
 				return String.Empty;
 			}
 			set {
@@ -92,6 +115,18 @@ namespace QSOrmProject
 				OnTabNameChanged();
 			}
 
+		}
+
+		void Subject_NamePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Name")
+				OnTabNameChanged ();
+		}
+
+		void Subject_TitlePropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Title")
+				OnTabNameChanged ();
 		}
 
 		public abstract bool Save ();
