@@ -21,7 +21,9 @@ namespace QSTDI
 		public string TabName
 		{
 			get{
-				if (journal != null)
+				if (activeDialog != null)
+					return String.Format ("[{0}] {1}",journal.TabName, activeDialog.TabName);
+				else if (journal != null)
 					return journal.TabName;
 				else
 					return "Пустой слайдер";
@@ -96,7 +98,6 @@ namespace QSTDI
 						separator = new VSeparator();
 						separator.Show();
 						dialogTilteLabel = new Label ();
-						SetNewDialogTitle (ActiveDialog.TabName);
 						dialogVBox = new VBox ();
 						dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
 						dialogVBox.PackStart ((Widget)activeDialog);
@@ -107,6 +108,7 @@ namespace QSTDI
 						(ActiveDialog as Widget).Show();
 						activeDialog.TabParent = this;
 						activeDialog.TabNameChanged += ActiveDialog_TabNameChanged;
+						ActiveDialog_TabNameChanged (this, new TdiTabNameChangedEventArgs(ActiveDialog.TabName));
 					}
 				}
 
@@ -116,6 +118,7 @@ namespace QSTDI
 		void ActiveDialog_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
 		{
 			SetNewDialogTitle (ActiveDialog.TabName);
+			OnSladerTabChanged ();
 		}
 
 		void SetNewDialogTitle(string tilte)
@@ -125,8 +128,13 @@ namespace QSTDI
 
 		void OnJournalTabNameChanged(object sender, TdiTabNameChangedEventArgs arg)
 		{
+			OnSladerTabChanged ();
+		}
+
+		private void OnSladerTabChanged()
+		{
 			if (TabNameChanged != null)
-				TabNameChanged(this, arg);
+				TabNameChanged(this, new TdiTabNameChangedEventArgs (TabName));
 		}
 
 		protected void OnJournalClose(object sender, TdiTabCloseEventArgs arg)
@@ -164,6 +172,7 @@ namespace QSTDI
 			}
 			ActiveDialog = null;
 			(dlg as Widget).Destroy();
+			OnSladerTabChanged ();
 		}
 
 		public TdiSliderTab(ITdiJournal jour)
