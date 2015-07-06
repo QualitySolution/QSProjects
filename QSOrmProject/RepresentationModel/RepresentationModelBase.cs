@@ -23,6 +23,25 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		private IRepresentationFilter representationFilter;
+
+		public IRepresentationFilter RepresentationFilter {
+			get { return representationFilter;
+			}
+			protected set { 
+				if (representationFilter != null)
+					representationFilter.Refiltered -= RepresentationFilter_Refiltered;
+				representationFilter = value;
+				if(representationFilter != null)
+					representationFilter.Refiltered += RepresentationFilter_Refiltered;
+			}
+		}
+
+		void RepresentationFilter_Refiltered (object sender, EventArgs e)
+		{
+			UpdateNodes ();
+		}
+
 		public abstract void UpdateNodes ();
 
 		public abstract Type NodeType { get; }

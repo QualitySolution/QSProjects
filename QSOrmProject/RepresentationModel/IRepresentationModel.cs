@@ -12,6 +12,8 @@ namespace QSOrmProject.RepresentationModel
 
 		IUnitOfWork UoW { get;}
 
+		IRepresentationFilter RepresentationFilter{ get;}
+
 		NodeStore NodeStore { get; }
 
 		List<IColumnInfo> Columns { get;}

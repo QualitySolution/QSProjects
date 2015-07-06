@@ -17,7 +17,7 @@ namespace QSOrmProject
 		private ICriteria objectsCriteria;
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
-		private IReferenceFilter filterWidget;
+		private IRepresentationFilter filterWidget;
 		private uint totalSearchFinished;
 		private DateTime searchStarted;
 		private IRepresentationModel representationModel;
@@ -25,6 +25,26 @@ namespace QSOrmProject
 		public ITdiTabParent TabParent { set; get; }
 
 		public event EventHandler<ReferenceRepresentationSelectedEventArgs> ObjectSelected;
+
+		public IRepresentationFilter FilterWidget {
+			get {
+				return filterWidget;
+			}
+			private set {
+				if (filterWidget == value)
+					return;
+				if (filterWidget != null) {
+					hboxFilter.Remove (filterWidget as Widget);
+					(filterWidget as Widget).Destroy ();
+					checkShowFilter.Visible = true;
+					filterWidget = null;
+				}
+				filterWidget = value;
+				checkShowFilter.Visible = filterWidget != null;
+				hboxFilter.Add (filterWidget as Widget);
+				(filterWidget as Widget).ShowAll ();
+			}
+		}
 
 /*		private IUnitOfWork uow;
 
@@ -52,29 +72,8 @@ namespace QSOrmProject
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
 				ormtableview.RepresentationModel = RepresentationModel;
-			}
-		}
-
-		System.Type filterClass;
-
-		public System.Type FilterClass {
-			get { return filterClass; }
-			set {
-				if (filterClass == value)
-					return;
-				if (filterWidget != null) {
-					hboxFilter.Remove (filterWidget as Widget);
-					(filterWidget as Widget).Destroy ();
-					checkShowFilter.Visible = true;
-					filterWidget = null;
-				}
-				if (value != null && value.GetInterface ("IReferenceFilter") == null) {
-					throw new NotSupportedException ("FilterClass должен реализовывать интерфейс IReferenceFilter.");
-				}
-				filterClass = value;
-				checkShowFilter.Visible = filterClass != null;
-				if (CheckDefaultLoadFilterAtt () || checkShowFilter.Active)
-					CreateFilterWidget ();
+				if (RepresentationModel.RepresentationFilter != null)
+					FilterWidget = RepresentationModel.RepresentationFilter;
 			}
 		}
 
@@ -312,45 +311,14 @@ namespace QSOrmProject
 			OnCloseTab ();
 		}
 
-		private void CreateFilterWidget ()
-		{
-			Type[] paramTypes = new Type[]{ typeof(ISession) };	
-
-			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor (paramTypes);
-			if (ci == null) {
-				InvalidOperationException ex = new InvalidOperationException (
-					                               String.Format ("Конструктор в класе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
-				logger.Error (ex);
-				throw ex;
-			}
-			logger.Debug ("Вызываем конструктор фильтра {0} c параметрами {1}.", filterClass.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
-			filterWidget = (IReferenceFilter)ci.Invoke (new object[] { RepresentationModel.UoW.Session });
-			filterWidget.BaseCriteria = objectsCriteria;
-			filterWidget.Refiltered += OnFilterWidgetRefiltered;
-			hboxFilter.Add (filterWidget as Widget);
-			(filterWidget as Widget).ShowAll ();
-		}
-
 		protected void OnCheckShowFilterToggled (object sender, EventArgs e)
 		{
 			hboxFilter.Visible = checkShowFilter.Active;
-			if (checkShowFilter.Active && filterWidget == null)
-				CreateFilterWidget ();
 		}
 
 		void OnFilterWidgetRefiltered (object sender, EventArgs e)
 		{
 			UpdateObjectList ();
-		}
-
-		private bool CheckDefaultLoadFilterAtt ()
-		{
-			if (FilterClass == null)
-				return false;
-			foreach (var att in FilterClass.GetCustomAttributes (typeof(OrmDefaultIsFilteredAttribute), true)) {
-				return (att as OrmDefaultIsFilteredAttribute).DefaultIsFiltered;
-			}
-			return false;
 		}
 
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
