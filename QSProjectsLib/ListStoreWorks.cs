@@ -31,6 +31,19 @@ namespace QSProjectsLib
 			return false;		
 		}
 
+		public static bool SearchListStore<TObject>(ListStore list, Func<TObject, bool> searchFunc, int column, out TreeIter iter)
+		{   
+			if(!list.GetIterFirst(out iter))
+				return false;
+			do {
+				object item = list.GetValue (iter, column);
+
+				if(item is TObject && searchFunc((TObject)item))
+					return true;
+			} while (list.IterNext (ref iter));
+			return false;
+		}
+
 		public static bool SearchListStore( ListStore list, string text, out TreeIter iter)
 		{   // Перебираем список, ищем Строку, возвращаем iter
 			if(list.GetIterFirst(out iter))
