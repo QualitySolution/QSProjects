@@ -84,8 +84,11 @@ namespace QSTDI
 		{
 			ITdiTab tab = sender as ITdiTab;
 			TdiTabInfo info = _tabs.Find (i => i.MasterTab == tab);
-			if (_tabs.Exists (i => i.SlaveTabs.Contains (tab)))
+			TdiTabInfo masterTabInfo = _tabs.Find (i => i.SlaveTabs.Contains (tab));
+			if (masterTabInfo != null) {
 				info.TabNameLabel.LabelProp = ">" + e.NewName;
+				info.TabNameLabel.TooltipText = String.Format ("Открыто из {0}", masterTabInfo.MasterTab.TabName);
+			}
 			else
 				info.TabNameLabel.LabelProp = e.NewName;
 		}
