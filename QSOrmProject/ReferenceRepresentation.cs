@@ -24,8 +24,6 @@ namespace QSOrmProject
 
 		public ITdiTabParent TabParent { set; get; }
 
-		public event EventHandler<TdiOpenObjDialogEventArgs> OpenObjDialog;
-		public event EventHandler<TdiOpenObjDialogEventArgs> DeleteObj;
 		public event EventHandler<ReferenceRepresentationSelectedEventArgs> ObjectSelected;
 
 /*		private IUnitOfWork uow;

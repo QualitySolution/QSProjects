@@ -14,8 +14,6 @@ namespace QSTDI
 		/// <param name="tab">Вкладка для проверки.</param>
 		bool CheckClosingSlaveTabs(ITdiTab tab);
 
-		ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs);
-
 		/// <summary>
 		/// Выполняем первую стадию создания новой вкладки с диалогом.
 		/// </summary>

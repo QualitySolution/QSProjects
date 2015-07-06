@@ -47,30 +47,17 @@ namespace QSTDI
 					if(journal != null)
 					{
 						journal.TabNameChanged -= OnJournalTabNameChanged;
-						journal.OpenObjDialog -= OnJournalOpenObjDialog;
 						journal.CloseTab -= OnJournalClose;
 						this.Remove((Widget)journal);
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
-					journal.OpenObjDialog += OnJournalOpenObjDialog;
 					journal.CloseTab += OnJournalClose;
 					this.PackStart((Widget)Journal);
 					(Journal as Widget).Show();
 					journal.TabParent = this;
 				}
 			}
-		}
-
-		void OnJournalOpenObjDialog (object sender, TdiOpenObjDialogEventArgs e)
-		{
-			if(ActiveDialog != null)
-			{
-				OnDialogClose(ActiveDialog, new TdiTabCloseEventArgs(true));
-				if (ActiveDialog != null)
-					return;
-			}
-			ActiveDialog = (this.Parent as TdiNotebook).OnCreateDialogWidget(e);
 		}
 
 		public ITdiDialog ActiveDialog
@@ -208,11 +195,6 @@ namespace QSTDI
 				return TabParent.CheckClosingSlaveTabs (this as ITdiTab);
 			else
 				return TabParent.CheckClosingSlaveTabs (tab);
-		}
-
-		public ITdiDialog OnCreateDialogWidget(TdiOpenObjDialogEventArgs eventArgs)
-		{
-			return TabParent.OnCreateDialogWidget(eventArgs);
 		}
 			
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab(object subject, ITdiTab masterTab, bool CanSlided = true)

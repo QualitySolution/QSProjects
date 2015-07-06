@@ -15,8 +15,6 @@ namespace QSTDI
 		public bool UseSliderTab = true;
 		private List<TdiTabInfo> _tabs;
 
-		public event EventHandler<TdiOpenObjDialogEventArgs> CreateDialogWidget;
-
 		public TdiNotebook ()
 		{
 			_tabs = new List<TdiTabInfo> ();
@@ -198,17 +196,6 @@ namespace QSTDI
 			}
 
 			return false;
-		}
-
-		public ITdiDialog OnCreateDialogWidget (TdiOpenObjDialogEventArgs eventArgs)
-		{
-			if (CreateDialogWidget != null) {
-				CreateDialogWidget (this, eventArgs);
-				return eventArgs.ResultDialogWidget;
-			} else {
-				logger.Warn ("Нет подписчика на событие создания диалога. Диалог не создан.");
-				return null;
-			}
 		}
 
 		private void CloseTab (ITdiTab tab)
