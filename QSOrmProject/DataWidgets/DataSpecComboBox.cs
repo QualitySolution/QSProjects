@@ -65,8 +65,13 @@ namespace Gtk.DataBindings
 					this.Active = (ShowSpecialStateAll || ShowSpecialStateNot) ? 0 : -1;
 					return;
 				}
-				if(ListStoreWorks.SearchListStore (comboListStore, value, 1, out iter ))
-					SetActiveIter(iter);
+				if (value is IDomainObject) {
+					if (ListStoreWorks.SearchListStore<IDomainObject> (comboListStore, item => item.Id == ((IDomainObject)value).Id, 1, out iter))
+						SetActiveIter (iter);
+				} else {
+					if (ListStoreWorks.SearchListStore (comboListStore, value, 1, out iter))
+						SetActiveIter (iter);
+				}
 
 				OnEnumItemSelected ();
 			}
