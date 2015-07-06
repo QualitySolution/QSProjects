@@ -100,6 +100,7 @@
     <Compile Include="DomainModel\UnitOfWork.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="gtk-gui\QSOrmProject.ReferenceRepresentation.cs" />
+    <Compile Include="UpdateNotification\OrmObjectUpdatedEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

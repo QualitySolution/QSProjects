@@ -235,17 +235,7 @@ namespace QSOrmProject
 		}
 			
 	}
-
-	public class OrmObjectUpdatedEventArgs : EventArgs
-	{
-		public object[] UpdatedSubjects { get; private set; }
-
-		public OrmObjectUpdatedEventArgs (params object[] updatedSubjects)
-		{
-			UpdatedSubjects = updatedSubjects;
-		}
-	}
-
+		
 	internal class DelayedNotifyLink
 	{
 		private WeakReference parentObject;

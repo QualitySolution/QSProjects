@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using NHibernate;
 using NLog;
+using QSOrmProject.UpdateNotification;
 using QSTDI;
 
 namespace QSOrmProject

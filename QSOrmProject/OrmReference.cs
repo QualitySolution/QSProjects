@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Data.Bindings.Collections;
-using NHibernate;
-using QSTDI;
-using NLog;
-using Gtk;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Data.Bindings.Collections;
+using System.Reflection;
+using Gtk;
+using NHibernate;
+using NLog;
+using QSOrmProject.UpdateNotification;
+using QSTDI;
 
 namespace QSOrmProject
 {

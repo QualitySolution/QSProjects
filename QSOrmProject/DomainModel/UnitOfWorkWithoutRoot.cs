@@ -105,17 +105,6 @@ namespace QSOrmProject
 		{
 			Session.Delete(Session.Load<T>(id));
 		}
-
-		public void SubcribeOnChanges(Type type)
-		{
-			var map = OrmMain.GetObjectDiscription (type);
-			map.ObjectUpdated+= OnOutObjectUpdated;
-		}
-
-		void OnOutObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
-		{
-			
-		}
 	}
 }
 
