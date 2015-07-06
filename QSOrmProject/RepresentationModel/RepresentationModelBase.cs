@@ -8,6 +8,8 @@ namespace QSOrmProject.RepresentationModel
 {
 	public abstract class RepresentationModelBase<TEntity> : IRepresentationModel
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		#region IRepresentationModel implementation
 
 		IUnitOfWork uow;
@@ -78,7 +80,11 @@ namespace QSOrmProject.RepresentationModel
 		{
 			foreach(var type in subcribeOnTypes)
 			{
-				OrmMain.GetObjectDiscription(type).ObjectUpdated += OnExternalUpdateCommon;
+				var map = OrmMain.GetObjectDiscription (type);
+				if (map != null)
+					map.ObjectUpdated += OnExternalUpdateCommon;
+				else
+					logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", type);
 			}
 		}
 
