@@ -64,7 +64,11 @@ namespace QSOrmProject.RepresentationModel
 
 		public abstract void UpdateNodes ();
 
-		public abstract Type NodeType { get; }
+		public Type NodeType {
+			get {
+				return typeof(TNode);
+			}
+		}
 
 		public Type ObjectType {
 			get {
