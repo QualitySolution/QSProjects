@@ -269,7 +269,7 @@ namespace QSProjectsLib
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 343;
-			this.DefaultHeight = 329;
+			this.DefaultHeight = 336;
 			this.buttonDemo.Hide ();
 			this.buttonErrorInfo.Hide ();
 			this.Show ();

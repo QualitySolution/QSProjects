@@ -39,7 +39,7 @@ namespace QSProjectsLib
 			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
 			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
-				app, ver);
+			                                        app, ver);
 			comboboxConnections.Clear ();
 			CellRendererText cell = new CellRendererText ();
 			comboboxConnections.PackStart (cell, false);
@@ -66,12 +66,12 @@ namespace QSProjectsLib
 					if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
 						String type = Config.Get ("Type", ((int)ConnectionType.MySQL).ToString ());
 						Connections.Add (new Connection ((ConnectionType)int.Parse (type),
-							Config.Get ("ConnectionName", DefaultConnection),
-							Config.Get ("DataBase", BaseName),
-							Config.Get ("Server", DefaultServer),
-							Config.Get ("UserLogin", String.Empty),
-							Config.Name,
-							Config.Get ("Account", String.Empty)));
+						                                 Config.Get ("ConnectionName", DefaultConnection),
+						                                 Config.Get ("DataBase", BaseName),
+						                                 Config.Get ("Server", DefaultServer),
+						                                 Config.Get ("UserLogin", String.Empty),
+						                                 Config.Name,
+						                                 Config.Get ("Account", String.Empty)));
 					} else if (Config.Name == "Default") {
 						SelectedConnection = Config.Get ("ConnectionName", String.Empty);
 					}
@@ -118,8 +118,8 @@ namespace QSProjectsLib
 		protected virtual void OnButtonErrorInfoClicked (object sender, System.EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-				                   MessageType.Error, 
-				                   ButtonsType.Close, "ошибка");
+			                                      MessageType.Error, 
+			                                      ButtonsType.Close, "ошибка");
 			md.UseMarkup = false;
 			md.Text = ConnectionError;
 			md.Run ();
@@ -142,7 +142,7 @@ namespace QSProjectsLib
 				try {
 					ISaaSService svc = Session.GetSaaSService ();
 					string parameters = String.Format ("login.{0};pass.{1};account.{2};db.{3};",
-						                    entryUser.Text, entryPassword.Text, Selected.AccountLogin, Selected.BaseName); 
+					                                   entryUser.Text, entryPassword.Text, Selected.AccountLogin, Selected.BaseName); 
 					UserAuthorizeResult result = svc.authorizeUser (parameters);
 					if (!result.Success) {
 						labelLoginInfo.Text = "Ошибка соединения с сервисом.";
@@ -185,15 +185,18 @@ namespace QSProjectsLib
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue ("@login", entryUser.Text);
-				MySqlDataReader rdr = cmd.ExecuteReader ();
-				if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
-					labelLoginInfo.Text = "Доступ запрещен.";
+				try {
+					MySqlDataReader rdr = cmd.ExecuteReader ();
+				
+					if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
+						labelLoginInfo.Text = "Доступ запрещен.";
+						rdr.Close ();
+						QSMain.connectionDB.Close ();
+						return;
+					}
 					rdr.Close ();
-					QSMain.connectionDB.Close ();
-					return;
+				} catch {
 				}
-				rdr.Close ();
-
 				labelLoginInfo.Text = "";
 				buttonErrorInfo.Visible = false;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
@@ -229,8 +232,8 @@ namespace QSProjectsLib
 		protected void OnButtonDemoClicked (object sender, EventArgs e)
 		{
 			MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-				                   MessageType.Info, 
-				                   ButtonsType.Ok, DemoMessage);
+			                                      MessageType.Info, 
+			                                      ButtonsType.Ok, DemoMessage);
 			md.Run ();
 			md.Destroy ();
 		}
