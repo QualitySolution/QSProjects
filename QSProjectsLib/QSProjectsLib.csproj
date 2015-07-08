@@ -85,6 +85,7 @@
     <Compile Include="InformationHandbook.cs" />
     <Compile Include="DebugWorks.cs" />
     <Compile Include="Language\SubjectName.cs" />
+    <Compile Include="MessageDialogWorks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
