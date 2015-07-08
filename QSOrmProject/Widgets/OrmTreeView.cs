@@ -1,12 +1,15 @@
 ﻿using System;
+using Gtk.DataBindings;
 using QSOrmProject.RepresentationModel;
-using Gtk;
-using QSProjectsLib;
 
 namespace QSOrmProject
 {
+
+	/// <summary>
+	/// Оставлено для совместимости.
+	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
-	public class OrmTableView : NodeView
+	public class OrmTableView : DataTreeView
 	{
 
 		IRepresentationModel representationModel;
@@ -17,7 +20,9 @@ namespace QSOrmProject
 			set {if (representationModel == value)
 					return;
 				representationModel = value;
-				PreparedView ();
+				ColumnMappingConfig = RepresentationModel.TreeViewConfig;
+				RepresentationModel.UpdateNodes ();
+				ItemsDataSource = RepresentationModel.ItemsList;
 			}
 		}
 
@@ -26,34 +31,15 @@ namespace QSOrmProject
 			
 		}
 
-		void PreparedView()
-		{
-			foreach (IColumnInfo column in RepresentationModel.Columns)
-			{
-				switch(column.Type)
-				{
-				case ColumnType.Text:
-					this.AppendColumn (column.Name, new CellRendererText (), column.GetAttributes ());
-					break;
-				}
-			}
-
-			NodeStore = representationModel.NodeStore;
-		}
-
 		public int GetSelectedId()
 		{
-			var node = NodeSelection.SelectedNode as object;
-			var id = DBWorks.IdPropertyOrNull (node);
-			if (id == null)
-				return -1;
-			else
-				return (int)id;
+			var node = GetSelectedObjects ()[0];
+			return DomainHelper.GetId (node);
 		}
 
 		public object GetSelectedNode()
 		{
-			return NodeSelection.SelectedNode as object;
+			return GetSelectedObjects ()[0];
 		}
 
 	}

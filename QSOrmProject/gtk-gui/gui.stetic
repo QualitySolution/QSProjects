@@ -5,8 +5,8 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
+    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../bin/Debug/QSOrmProject.dll" internal="true" />
@@ -455,10 +455,15 @@
             <property name="MemberName" />
             <property name="ShadowType">In</property>
             <child>
-              <widget class="QSOrmProject.OrmTableView" id="ormtableview">
+              <widget class="Gtk.DataBindings.DataTreeView" id="ormtableview">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
+                <property name="CursorPointsEveryType">False</property>
+                <property name="InheritedDataSource">False</property>
+                <property name="InheritedBoundaryDataSource">False</property>
+                <property name="InheritedDataSource">False</property>
+                <property name="InheritedBoundaryDataSource">False</property>
                 <signal name="RowActivated" handler="OnOrmtableviewRowActivated" />
               </widget>
             </child>

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using Gtk;
+using Gtk.DataBindings;
+using System.Collections;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationModelBase<TEntity> : IRepresentationModel
+	public abstract class RepresentationModelBase<TEntity, TNode> : IRepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -23,6 +23,15 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		public IList ItemsList { get; private set;}
+
+		protected void SetItemsSource(IList<TNode> list)
+		{
+			ItemsList = (IList)list;
+		}
+
+		public abstract IMappingConfig TreeViewConfig { get;}
+
 		private IRepresentationFilter representationFilter;
 
 		public IRepresentationFilter RepresentationFilter {
@@ -34,6 +43,17 @@ namespace QSOrmProject.RepresentationModel
 				representationFilter = value;
 				if(representationFilter != null)
 					representationFilter.Refiltered += RepresentationFilter_Refiltered;
+			}
+		}
+
+		public IEnumerable<string> SearchFields {
+			get {
+				foreach(var prop in typeof(TNode).GetProperties ())
+				{
+					var att = prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).FirstOrDefault ();
+					if (att != null)
+						yield return prop.Name;
+				}
 			}
 		}
 
@@ -52,23 +72,7 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
-		public NodeStore NodeStore { get; set;}
-
-		private List<IColumnInfo> columns = new List<IColumnInfo> ();
-
-		public List<IColumnInfo> Columns {
-			get {
-				return columns;
-			}
-		}
-
 		#endregion
-
-		public void SetRowAttribute<TVMNode> (string attibuteName, Expression<Func<TVMNode, object>> propertyRefExpr)
-		{
-			Columns.ConvertAll (c => (ColumnInfo) c)
-				.ForEach ((ColumnInfo column) => column.SetAttributeProperty(attibuteName, propertyRefExpr));
-		}
 
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.
