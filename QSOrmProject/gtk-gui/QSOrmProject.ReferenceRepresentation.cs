@@ -34,7 +34,7 @@ namespace QSOrmProject
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		
-		private global::QSOrmProject.OrmTableView ormtableview;
+		private global::Gtk.DataBindings.DataTreeView ormtableview;
 		
 		private global::Gtk.Label labelSum;
 
@@ -197,9 +197,14 @@ namespace QSOrmProject
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.ormtableview = new global::QSOrmProject.OrmTableView ();
+			this.ormtableview = new global::Gtk.DataBindings.DataTreeView ();
 			this.ormtableview.CanFocus = true;
 			this.ormtableview.Name = "ormtableview";
+			this.ormtableview.CursorPointsEveryType = false;
+			this.ormtableview.InheritedDataSource = false;
+			this.ormtableview.InheritedBoundaryDataSource = false;
+			this.ormtableview.InheritedDataSource = false;
+			this.ormtableview.InheritedBoundaryDataSource = false;
 			this.GtkScrolledWindow.Add (this.ormtableview);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gtk;
+using Gtk.DataBindings;
+using System.Collections;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -14,9 +15,11 @@ namespace QSOrmProject.RepresentationModel
 
 		IRepresentationFilter RepresentationFilter{ get;}
 
-		NodeStore NodeStore { get; }
+		IMappingConfig TreeViewConfig { get;}
 
-		List<IColumnInfo> Columns { get;}
+		IList ItemsList { get;}
+
+		IEnumerable<string> SearchFields { get;}
 
 		void UpdateNodes();
 	}

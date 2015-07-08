@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Data.Bindings.Collections;
-using NHibernate;
-using QSTDI;
-using NLog;
-using Gtk;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Gtk;
+using NLog;
 using QSOrmProject.RepresentationModel;
+using QSTDI;
+using QSOrmProject;
+using System.Data.Bindings.Collections;
 
 namespace QSOrmProject
 {
@@ -14,7 +15,6 @@ namespace QSOrmProject
 	public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private ICriteria objectsCriteria;
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
 		private IRepresentationFilter filterWidget;
@@ -71,9 +71,12 @@ namespace QSOrmProject
 					return;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
-				ormtableview.RepresentationModel = RepresentationModel;
+				ormtableview.ColumnMappingConfig = RepresentationModel.TreeViewConfig;
 				if (RepresentationModel.RepresentationFilter != null)
 					FilterWidget = RepresentationModel.RepresentationFilter;
+				SearchFields = RepresentationModel.SearchFields.ToArray ();
+				RepresentationModel.UpdateNodes ();
+				UpdateObjectList ();
 			}
 		}
 
@@ -102,19 +105,18 @@ namespace QSOrmProject
 				searchPropCache = new List<PropertyInfo> ();
 
 				foreach (string prop in SearchFields) {
-					var propInfo = objectType.GetProperty (prop);
+					var propInfo = RepresentationModel.NodeType.GetProperty (prop);
 					if (propInfo != null) {
 						searchPropCache.Add (propInfo);
 					} else
-						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", objectType, prop);
+						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", RepresentationModel.NodeType, prop);
 				}
 
 				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
 				return searchPropCache;
 			}
 		}
-
-
+			
 		private OrmReferenceMode mode;
 
 		public OrmReferenceMode Mode {
@@ -161,15 +163,6 @@ namespace QSOrmProject
 
 		}
 
-/*		public ReferenceRepresentation (System.Type objType, ISession listSession, ICriteria listCriteria)
-		{
-			this.Build ();
-			objectType = objType;
-			objectsCriteria = listCriteria;
-			Session = listSession;
-			ConfigureDlg ();
-		}
-*/
 		public ReferenceRepresentation (IRepresentationModel representation)
 		{
 			this.Build ();
@@ -180,46 +173,25 @@ namespace QSOrmProject
 		void ConfigureDlg ()
 		{
 			Mode = OrmReferenceMode.Normal;
-			IOrmObjectMapping map = OrmMain.GetObjectDiscription (objectType);
-			if (map != null) {
-				if (map.RefSearchFields != null)
-					SearchFields = map.RefSearchFields;
-				//if (map.RefFilterClass != null)
-					//FilterClass = map.RefFilterClass;
-			}
 			object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0) {
 				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
 				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
 			}
-			RepresentationModel.UpdateNodes ();
 			ormtableview.Selection.Changed += OnTreeviewSelectionChanged;
 		}
 
 		private void UpdateObjectList ()
 		{
-/*			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
-			if (ParentReference == null) {
-				if (filterWidget == null)
-					filterView = new ObservableFilterListView (objectsCriteria.List ());
-				else
-					filterView = new ObservableFilterListView (filterWidget.FiltredCriteria.List ());
-			} else {
-				filterView = new ObservableFilterListView (parentReference.List);
-				if (filterWidget != null)
-					logger.Warn ("Фильтры(FilterClass) в режиме ParentReference не поддерживаются.");
-			}
+			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
+			filterView = new ObservableFilterListView (RepresentationModel.ItemsList);
 				
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
-			datatreeviewRef.ItemsDataSource = filterView;
-			if (typeof(ISpecialRowsRender).IsAssignableFrom (objectType)) {
-				foreach (TreeViewColumn col in datatreeviewRef.Columns)
-					col.SetCellDataFunc (col.Cells [0], new TreeCellDataFunc (RenderCell));
-			}
+			ormtableview.ItemsDataSource = filterView;
 			UpdateSum ();
 			logger.Info ("Ok.");
-*/		}
+		}
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
 		{
@@ -287,11 +259,12 @@ namespace QSOrmProject
 				throw new NotImplementedException ();
 				//OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
 			} else {
-				int selected = ormtableview.GetSelectedId ();
+				var node = ormtableview.GetSelectedObjects ()[0];
+				int selectedId = DomainHelper.GetId (node);
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
-				if (selected > 0)
-					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selected), this);
+				if (selectedId > 0)
+					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selectedId), this);
 			}
 		}
 
@@ -304,9 +277,10 @@ namespace QSOrmProject
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
 			if (ObjectSelected != null) {
-				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (
-					ormtableview.GetSelectedId (), ormtableview.GetSelectedNode ()
-				));
+				var node = ormtableview.GetSelectedObjects ()[0];
+				int selectedId = DomainHelper.GetId (node);
+
+				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selectedId, node));
 			}
 			OnCloseTab ();
 		}
@@ -316,14 +290,12 @@ namespace QSOrmProject
 			hboxFilter.Visible = checkShowFilter.Active;
 		}
 
-		void OnFilterWidgetRefiltered (object sender, EventArgs e)
-		{
-			UpdateObjectList ();
-		}
-
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
-			if (OrmMain.DeleteObject(objectType, ormtableview.GetSelectedId ()))
+			var node = ormtableview.GetSelectedObjects ()[0];
+			int selectedId = DomainHelper.GetId (node);
+
+			if (OrmMain.DeleteObject(objectType, selectedId))
 				RepresentationModel.UpdateNodes ();
 		}
 
