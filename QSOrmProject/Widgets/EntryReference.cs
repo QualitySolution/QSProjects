@@ -85,7 +85,7 @@ namespace QSOrmProject
 
 		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => OrmMain.EqualDomainObjects (s, Subject));
+			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
 				IOrmDialogNew dlg = OrmMain.FindMyDialog (this);
 				//FIXME Возможно не нужно подписываться пока закомментируем
