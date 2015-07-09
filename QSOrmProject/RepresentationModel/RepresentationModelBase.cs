@@ -15,41 +15,35 @@ namespace QSOrmProject.RepresentationModel
 		IUnitOfWork uow;
 
 		public IUnitOfWork UoW {
-			get {
-				return uow;
-			}
-			set {
-				uow = value;
-			}
+			get { return uow; }
+			set { uow = value; }
 		}
 
-		public IList ItemsList { get; private set;}
+		public IList ItemsList { get; private set; }
 
-		protected void SetItemsSource(IList<TNode> list)
+		protected void SetItemsSource (IList<TNode> list)
 		{
 			ItemsList = (IList)list;
 		}
 
-		public abstract IMappingConfig TreeViewConfig { get;}
+		public abstract IMappingConfig TreeViewConfig { get; }
 
 		private IRepresentationFilter representationFilter;
 
 		public IRepresentationFilter RepresentationFilter {
-			get { return representationFilter;
-			}
+			get { return representationFilter; }
 			protected set { 
 				if (representationFilter != null)
 					representationFilter.Refiltered -= RepresentationFilter_Refiltered;
 				representationFilter = value;
-				if(representationFilter != null)
+				if (representationFilter != null)
 					representationFilter.Refiltered += RepresentationFilter_Refiltered;
 			}
 		}
 
 		public IEnumerable<string> SearchFields {
 			get {
-				foreach(var prop in typeof(TNode).GetProperties ())
-				{
+				foreach (var prop in typeof(TNode).GetProperties ()) {
 					var att = prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).FirstOrDefault ();
 					if (att != null)
 						yield return prop.Name;
@@ -65,15 +59,11 @@ namespace QSOrmProject.RepresentationModel
 		public abstract void UpdateNodes ();
 
 		public Type NodeType {
-			get {
-				return typeof(TNode);
-			}
+			get { return typeof(TNode); }
 		}
 
 		public Type ObjectType {
-			get {
-				return typeof(TEntity);
-			}
+			get { return typeof(TEntity); }
 		}
 
 		#endregion
@@ -90,7 +80,11 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelBase ()
 		{
-			OrmMain.GetObjectDiscription<TEntity>().ObjectUpdatedGeneric += OnExternalUpdate;
+			var description = OrmMain.GetObjectDiscription<TEntity> ();
+			if (description != null)
+				description.ObjectUpdatedGeneric += OnExternalUpdate;
+			else
+				logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", typeof(TEntity));
 		}
 
 		/// <summary>
@@ -103,10 +97,9 @@ namespace QSOrmProject.RepresentationModel
 		/// <summary>
 		/// Создает новый базовый клас и подписывается на обновления указанных типов, при этом конструкторе необходима реализация NeedUpdateFunc (object updatedSubject);
 		/// </summary>
-		protected RepresentationModelBase (params Type[] subcribeOnTypes )
+		protected RepresentationModelBase (params Type[] subcribeOnTypes)
 		{
-			foreach(var type in subcribeOnTypes)
-			{
+			foreach (var type in subcribeOnTypes) {
 				var map = OrmMain.GetObjectDiscription (type);
 				if (map != null)
 					map.ObjectUpdated += OnExternalUpdateCommon;
