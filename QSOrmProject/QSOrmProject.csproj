@@ -103,6 +103,8 @@
     <Compile Include="UpdateNotification\OrmObjectUpdatedEventArgs.cs" />
     <Compile Include="RepresentationModel\IRepresentationFilter.cs" />
     <Compile Include="RepresentationModel\RepresentationAttributies.cs" />
+    <Compile Include="Widgets\EntryReferenceVM.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.EntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

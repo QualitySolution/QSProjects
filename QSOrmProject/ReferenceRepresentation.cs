@@ -46,23 +46,6 @@ namespace QSOrmProject
 			}
 		}
 
-/*		private IUnitOfWork uow;
-
-		public IUnitOfWork UoW {
-			get {
-				return uow;
-			}
-			set {if (uow == value)
-				return;
-				uow = value;
-				stockbalancefilter1.Uow = value;
-				var vm = new ViewModel.StockBalanceVM(value);
-				vm.Filter = stockbalancefilter1;
-				datatreeviewBalance.RepresentationModel = vm;
-				datatreeviewBalance.RepresentationModel.UpdateNodes ();
-			}
-		}
-*/
 		protected IRepresentationModel RepresentationModel {
 			get {
 				return representationModel;
