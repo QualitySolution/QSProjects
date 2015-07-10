@@ -31,7 +31,12 @@ namespace QSOrmProject.RepresentationModel
 		private IRepresentationFilter representationFilter;
 
 		public IRepresentationFilter RepresentationFilter {
-			get { return representationFilter; }
+			get { if (representationFilter != null)
+					return representationFilter;
+				if (CreateRepresentationFilter != null)
+					representationFilter = CreateRepresentationFilter();
+				return representationFilter;
+			}
 			protected set { 
 				if (representationFilter != null)
 					representationFilter.Refiltered -= RepresentationFilter_Refiltered;
@@ -40,6 +45,12 @@ namespace QSOrmProject.RepresentationModel
 					representationFilter.Refiltered += RepresentationFilter_Refiltered;
 			}
 		}
+
+		/// <summary>
+		/// Функция создания нового фильтра необходима для отложенной загрузки.
+		/// </summary>
+		/// <value>The create representation filter.</value>
+		public Func<IRepresentationFilter> CreateRepresentationFilter { get; set;}
 
 		public IEnumerable<string> SearchFields {
 			get {
