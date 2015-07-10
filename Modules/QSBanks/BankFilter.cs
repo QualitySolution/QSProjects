@@ -9,7 +9,7 @@ namespace QSBanks
 	[OrmDefaultIsFiltered (true)]
 	public partial class BankFilter : Gtk.Bin, IReferenceFilter
 	{
-		public ISession Session { set; get; }
+		public IUnitOfWork UoW { set; get;}
 
 		public ICriteria BaseCriteria { set; get; }
 
@@ -28,9 +28,10 @@ namespace QSBanks
 			}
 		}
 
-		public BankFilter (ISession session)
+		public BankFilter (IUnitOfWork uow)
 		{
 			this.Build ();
+			UoW = uow;
 			IsFiltred = false;
 		}
 

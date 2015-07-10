@@ -5,7 +5,7 @@ namespace QSOrmProject
 {
 	public interface IReferenceFilter
 	{
-		ISession Session { set; get;}
+		IUnitOfWork UoW { set; get;}
 		ICriteria BaseCriteria { set; get;}
 		ICriteria FiltredCriteria { get;}
 
