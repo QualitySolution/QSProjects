@@ -14,7 +14,7 @@ namespace QSOrmProject
 	public partial class OrmReference : Gtk.Bin, ITdiJournal
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private ISession session;
+		private IUnitOfWork uow;
 		private ICriteria objectsCriteria;
 		private System.Type objectType;
 		private ObservableFilterListView filterView;
@@ -26,14 +26,14 @@ namespace QSOrmProject
 
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
-		public ISession Session {
+		public IUnitOfWork Uow {
 			get
 			{
-				if (session == null)
-					session = OrmMain.Sessions.OpenSession ();
-				return session;
+				if (uow == null)
+					uow = UnitOfWorkFactory.CreateWithoutRoot ();
+				return uow;
 			}
-			set { session = value; }
+			set { uow = value; }
 		}
 
 		System.Type filterClass;
@@ -65,7 +65,7 @@ namespace QSOrmProject
 			set {
 				parentReference = value;
 				if (parentReference != null)
-					Session = parentReference.Session;
+					Uow = parentReference.UoW;
 			}
 			get { return parentReference; }
 		}
@@ -151,20 +151,27 @@ namespace QSOrmProject
 				if (TabNameChanged != null)
 					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
 			}
-
 		}
 
-		public OrmReference (System.Type objType, ISession listSession, ICriteria listCriteria)
+		public OrmReference(System.Type objType) 
+			: this(objType, UnitOfWorkFactory.CreateWithoutRoot ())
+		{}
+
+		public OrmReference(System.Type objType, IUnitOfWork uow) 
+			: this(objType, uow, uow.Session.CreateCriteria (objType))
+		{}
+
+		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria)
 		{
 			this.Build ();
 			objectType = objType;
 			objectsCriteria = listCriteria;
-			Session = listSession;
+			Uow = uow;
 			ConfigureDlg ();
 		}
 
-		public OrmReference (System.Type objType, ISession listSession, ICriteria listCriteria, string columsMapping)
-			: this (objType, listSession, listCriteria)
+		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria, string columsMapping)
+			: this (objType, uow, listCriteria)
 		{
 			datatreeviewRef.ColumnMappings = columsMapping;
 		}
@@ -201,8 +208,8 @@ namespace QSOrmProject
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
 			//FIXME Проверить может очистка сессии не нужна, если нам ее передали.
-			if (parentReference == null)
-				session.Clear ();
+			//if (parentReference == null)
+			//	Uow.Session.Clear ();
 			UpdateObjectList ();
 		}
 
@@ -271,13 +278,6 @@ namespace QSOrmProject
 			var delay = DateTime.Now.Subtract (searchStarted);
 			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
 				totalSearchFinished, delay.TotalSeconds, delay.TotalMilliseconds / totalSearchFinished);
-		}
-
-		public override void Destroy ()
-		{
-			if (session != null && ParentReference == null)
-				session.Close ();
-			base.Destroy ();
 		}
 
 		protected void OnCloseTab ()
@@ -357,7 +357,7 @@ namespace QSOrmProject
 				throw ex;
 			}
 			logger.Debug ("Вызываем конструктор фильтра {0} c параметрами {1}.", filterClass.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
-			filterWidget = (IReferenceFilter)ci.Invoke (new object[] { Session });
+			filterWidget = (IReferenceFilter)ci.Invoke (new object[] { Uow });
 			filterWidget.BaseCriteria = objectsCriteria;
 			filterWidget.Refiltered += OnFilterWidgetRefiltered;
 			hboxFilter.Add (filterWidget as Widget);
