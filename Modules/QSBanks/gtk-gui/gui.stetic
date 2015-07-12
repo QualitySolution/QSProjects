@@ -48,7 +48,7 @@
                 <property name="InheritedBoundaryDataSource">False</property>
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
-                <property name="ColumnMappings">{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер]; Inactive[Не активен];</property>
+                <property name="ColumnMappings" />
                 <signal name="RowActivated" handler="OnDatatreeviewAccountsRowActivated" />
               </widget>
             </child>
@@ -483,7 +483,7 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <widget class="Gtk.HBox" id="hbox1">
+          <widget class="Gtk.HBox" id="hbox4">
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
@@ -492,7 +492,7 @@
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-save Menu</property>
-                <property name="Label" translatable="yes">Закрыть</property>
+                <property name="Label" translatable="yes">Сохранить</property>
                 <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="OnButtonSaveClicked" />
               </widget>
@@ -504,18 +504,41 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Label" id="labelInactive">
+              <widget class="Gtk.Button" id="buttonCancel">
                 <property name="MemberName" />
-                <property name="Justify">Center</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">stock:gtk-revert-to-saved Menu</property>
+                <property name="Label" translatable="yes">Отменить</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonCancelClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
-                <property name="AutoSize">False</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
               </packing>
+            </child>
+            <child>
+              <placeholder />
             </child>
           </widget>
           <packing>
             <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="labelInactive">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="Justify">Center</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -699,11 +722,11 @@
                             <property name="MemberName" />
                             <property name="LabelProp" translatable="yes">datalabel2</property>
                             <property name="InheritedDataSource">True</property>
-                            <property name="Mappings">Region</property>
+                            <property name="Mappings">GetRegionString</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                             <property name="Important">False</property>
                             <property name="InheritedDataSource">True</property>
-                            <property name="Mappings">Region</property>
+                            <property name="Mappings">GetRegionString</property>
                             <property name="InheritedBoundaryDataSource">False</property>
                           </widget>
                           <packing>
@@ -861,7 +884,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

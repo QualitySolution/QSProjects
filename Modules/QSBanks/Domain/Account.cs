@@ -6,8 +6,11 @@ using System.Text.RegularExpressions;
 
 namespace QSBanks
 {
-	[OrmSubject ("Счета")]
-	public class Account : BaseNotifyPropertyChanged, IValidatableObject
+	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+		Nominative = "расчётный счет",
+		NominativePlural = "расчётные счета"
+	)]
+	public class Account : BaseNotifyPropertyChanged, IValidatableObject, IDomainObject
 	{
 		#region Свойства
 
@@ -29,6 +32,7 @@ namespace QSBanks
 				if (inBank == value)
 					return;
 				inBank = value;
+				Inactive = InBank == null || InBank.Deleted;
 				OnPropertyChanged ("InBank");
 			}
 		}
