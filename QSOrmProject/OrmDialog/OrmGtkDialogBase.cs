@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace QSOrmProject
 {
-	public abstract class OrmGtkDialogBase<TEntity> : Bin, ITdiDialog, IOrmDialogNew, IOrmDialog 
+	public abstract class OrmGtkDialogBase<TEntity> : Bin, ITdiDialog, IOrmDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {
