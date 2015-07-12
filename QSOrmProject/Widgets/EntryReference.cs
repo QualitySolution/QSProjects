@@ -149,21 +149,21 @@ namespace QSOrmProject
 			}
 				
 			IOrmDialogNew dlg = OrmMain.FindMyDialog (this);
-			ISession session;
+			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
 
 			if (ParentReference != null) {
 				SelectDialog = new OrmReference (subjectType, ParentReference);
 			} else {
 				if (dlg != null)
-					session = dlg.UoW.Session;
+					localUoW = dlg.UoW;
 				else
-					session = OrmMain.Sessions.OpenSession ();
+					localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
 				if (ItemsCriteria == null)
-					ItemsCriteria = session.CreateCriteria (subjectType);
+					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
 
-				SelectDialog = new OrmReference (subjectType, session, ItemsCriteria);
+				SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
 			}
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			if (!CanEditReference)

@@ -347,7 +347,7 @@ namespace QSOrmProject
 
 		private void CreateFilterWidget ()
 		{
-			Type[] paramTypes = new Type[]{ typeof(ISession) };	
+			Type[] paramTypes = new Type[]{ typeof(IUnitOfWork) };	
 
 			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor (paramTypes);
 			if (ci == null) {

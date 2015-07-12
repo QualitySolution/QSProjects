@@ -6,13 +6,13 @@ namespace QSOrmProject
 {
 	public class OrmParentReference
 	{
-		public ISession Session{ get; private set;}
+		public IUnitOfWork UoW;
 		public object ParentObject{ get; private set;}
 		public string ListProperty{ get; private set;}
 
-		public OrmParentReference (ISession session, object parent, string listProperty)
+		public OrmParentReference (IUnitOfWork uow, object parent, string listProperty)
 		{
-			Session = session;
+			UoW = uow;
 			var objectType = NHibernateUtil.GetClass (parent);
 			if(objectType.GetProperty (listProperty) == null)
 				throw new ArgumentException (String.Format ("Класс {0}, не содержит свойства {1}.", objectType, listProperty));
