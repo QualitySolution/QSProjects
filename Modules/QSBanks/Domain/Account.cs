@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Data.Bindings;
-using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using QSOrmProject;
 
 namespace QSBanks
 {
@@ -10,36 +9,52 @@ namespace QSBanks
 		Nominative = "расчётный счет",
 		NominativePlural = "расчётные счета"
 	)]
-	public class Account : BaseNotifyPropertyChanged, IValidatableObject, IDomainObject
+	public class Account : PropertyChangedBase, IValidatableObject, IDomainObject
 	{
 		#region Свойства
 
 		public virtual int Id { get; set; }
 
-		public virtual string Name { get; set; }
+		string name;
+
+		public virtual string Name {
+			get { return name; }
+			set { SetField (ref name, value, () => Name); }
+		}
+
+		string number;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.")]
-		public virtual string Number { get; set; }
+		public virtual string Number {
+			get { return number; }
+			set { SetField (ref number, value, () => Number); }
+		}
 
-		public virtual bool Inactive { get; set; }
+		bool inactive;
+
+		public virtual bool Inactive {
+			get { return inactive; }
+			set { SetField (ref inactive, value, () => Inactive); }
+		}
 
 		Bank inBank;
 
 		[Required (ErrorMessage = "Банк должен быть заполнен.")]
 		public virtual Bank InBank {
 			get { return inBank; }
-			set {
-				if (inBank == value)
-					return;
-				inBank = value;
+			set {SetField (ref inBank, value, () => InBank);
 				Inactive = InBank == null || InBank.Deleted;
-				OnPropertyChanged ("InBank");
 			}
 		}
 
 		#endregion
 
-		public virtual bool IsDefault { get; set; }
+		bool isDefault;
+
+		public virtual bool IsDefault {
+			get { return isDefault; }
+			set { SetField (ref isDefault, value, () => IsDefault); }
+		}
 
 		public virtual string BankName {
 			get{
@@ -54,20 +69,6 @@ namespace QSBanks
 		{
 			Name = String.Empty;
 			Number = String.Empty;
-		}
-
-		public override bool Equals (Object obj)
-		{
-			Account accountObj = obj as Account; 
-			if (accountObj == null)
-				return false;
-			else
-				return Id.Equals (accountObj.Id);
-		}
-
-		public override int GetHashCode ()
-		{
-			return this.Id.GetHashCode (); 
 		}
 
 		#region IValidatableObject implementation
