@@ -5,6 +5,7 @@ using NHibernate;
 using QSOrmProject;
 using QSTDI;
 using Gtk;
+using Gtk.DataBindings;
 
 namespace QSBanks
 {
@@ -13,39 +14,29 @@ namespace QSBanks
 	{
 		private IAccountOwner accountOwner;
 		private GenericObservableList<Account> accountsList;
-		private ISession session;
 
-		public ISession Session {
-			get { return session; }
-			set { session = value; }
-		}
+		public IUnitOfWork UoW { get; set;}
 
-		public IAccountOwner AccountOwner {
-			get { return accountOwner; }
-			set {
-				accountOwner = value;
-				if (AccountOwner.Accounts == null)
-					AccountOwner.Accounts = new List<Account> ();
-				accountsList = new GenericObservableList<Account> (AccountOwner.Accounts);
-				datatreeviewAccounts.ItemsDataSource = accountsList;
-				datatreeviewAccounts.Columns [1].SetCellDataFunc (datatreeviewAccounts.Columns [1].Cells [0], new Gtk.TreeCellDataFunc (RenderAccountName));
-				datatreeviewAccounts.Columns [2].SetCellDataFunc (datatreeviewAccounts.Columns [2].Cells [0], new Gtk.TreeCellDataFunc (RenderAccountName));
-				datatreeviewAccounts.Columns [3].SetCellDataFunc (datatreeviewAccounts.Columns [3].Cells [0], new Gtk.TreeCellDataFunc (RenderAccountName));
-				datatreeviewAccounts.Columns [4].Visible = false;
-			}
-		}
+		IParentReference<Account> parentReference;
 
-		OrmParentReference parentReference;
-
-		public OrmParentReference ParentReference {
+		public IParentReference<Account> ParentReference {
 			set {
 				parentReference = value;
 				if (parentReference != null) {
-					Session = parentReference.Session;
-					if (!(parentReference.ParentObject is IAccountOwner)) {
+					UoW = parentReference.ParentUoW;
+					accountsList = ParentReference.GetObservableList ();
+					datatreeviewAccounts.ItemsDataSource = accountsList;
+					datatreeviewAccounts.ColumnMappingConfig = FluentMappingConfig<Account>.Create ()
+						.AddColumn ("Осн.").SetDataProperty (node => node.IsDefault)
+						.AddColumn ("Псевдоним").SetDataProperty (node => node.Name)
+						.AddColumn ("В банке").AddTextRenderer (a => a.InBank.Name)
+						.AddColumn ("Номер").AddTextRenderer (a => a.Number)
+						.RowCells ().AddSetter<CellRendererText> ((c, a) => c.Foreground = a.Inactive ? "grey" : "black")
+						.Finish ();
+					/*	if (!(parentReference.ParentObject is IAccountOwner)) {
 						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
 					}
-					AccountOwner = (IAccountOwner)parentReference.ParentObject;
+					AccountOwner = (IAccountOwner)parentReference.ParentObject;*/
 				}
 			}
 			get { return parentReference; }
@@ -55,14 +46,6 @@ namespace QSBanks
 		{
 			this.Build ();
 			datatreeviewAccounts.Selection.Changed += OnSelectionChanged;
-		}
-
-		private void RenderAccountName (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-		{
-			if ((bool)model.GetValue (iter, 4) == true)
-				(cell as CellRendererText).Foreground = "grey";
-			else
-				(cell as CellRendererText).Foreground = "black";
 		}
 
 		void OnSelectionChanged (object sender, EventArgs e)
