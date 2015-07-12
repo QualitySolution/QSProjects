@@ -8,10 +8,11 @@ using NHibernate.Linq;
 namespace QSOrmProject
 {
 	public class ChildUnitOfWork<TParentEntity, TChildEntity> : IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> 
-		where TChildEntity : IDomainObject, new()
+		where TChildEntity : class, IDomainObject, new()
 		where TParentEntity : IDomainObject, new()
 	{
 		private List<object> ObjectToSave = new List<object> ();
+		private TChildEntity externalRootVersion;
 
 		public object RootObject {
 			get { return Root;}
@@ -33,7 +34,7 @@ namespace QSOrmProject
 		{
 			get
 			{
-				return IsNew; //FIXME нужно вручную отслеживать измения
+				return IsNew || !ObjectCloner.CompareFields (Root, externalRootVersion); 
 			}
 		}
 
@@ -59,7 +60,8 @@ namespace QSOrmProject
 		{
 			IsNew = false;
 			ParentReference = parentReference;
-			Root = root;
+			externalRootVersion = root;
+			Root = ObjectCloner.Clone (externalRootVersion);
 		}
 
 		public void Commit()
@@ -67,10 +69,6 @@ namespace QSOrmProject
 			if(IsNew)
 			{
 				ParentReference.AddNewChild (ParentUoW.Root, Root);
-			}
-			else
-			{
-				//FIXME скопировать измения.
 			}
 
 			foreach(var obj in ObjectToSave)
@@ -96,15 +94,16 @@ namespace QSOrmProject
 
 		public void Save<TEntity>(TEntity entity) where TEntity : IDomainObject
 		{
-			ObjectToSave.Add (entity);
-
 			if (RootObject.Equals(entity))
 			{
+				ObjectCloner.FieldsCopy (Root, ref externalRootVersion);
+				ObjectToSave.Add (externalRootVersion);
 				Commit();
 				OrmMain.DelayedNotifyObjectUpdated (ParentUoW.RootObject, entity);
 			}
 			else
 			{
+				ObjectToSave.Add (entity);
 				OrmMain.DelayedNotifyObjectUpdated(RootObject, entity);
 			}
 		}

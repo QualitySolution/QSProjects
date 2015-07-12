@@ -6,7 +6,7 @@ using System.Data.Bindings.Collections.Generic;
 namespace QSOrmProject
 {
 	public class ParentReferenceGeneric<TParentEntity, TChildEntity> : IParentReference<TChildEntity>
-		where TChildEntity : IDomainObject, new()
+		where TChildEntity : class, IDomainObject, new()
 		where TParentEntity : IDomainObject, new()
 	{
 		Expression<Func<TParentEntity, IList<TChildEntity>>> ListPropertyExpr;
