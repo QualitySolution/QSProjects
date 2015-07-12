@@ -9,14 +9,14 @@ namespace QSOrmProject
 		[Obsolete ("Будет удалено после окончательного переезда")]
 		ISession Session { get; }
 
-		object Subject { get; }
+		object EntityObject { get; }
 	}
 
 	public interface IOrmDialogNew
 	{
 		IUnitOfWork UoW { get; }
 
-		object Subject { get; }
+		object EntityObject { get; }
 	}
 
 	public interface IOrmSlaveDialog

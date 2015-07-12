@@ -47,7 +47,11 @@ namespace QSOrmProject
 			get { return UoWGeneric.HasChanges; }
 		}
 
-		public object Subject {
+		public object EntityObject {
+			get { return UoWGeneric.Root; }
+		}
+
+		public TEntity Entity {
 			get { return UoWGeneric.Root; }
 		}
 			
