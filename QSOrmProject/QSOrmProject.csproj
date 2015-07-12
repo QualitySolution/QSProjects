@@ -105,6 +105,9 @@
     <Compile Include="RepresentationModel\RepresentationAttributies.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReferenceVM.cs" />
+    <Compile Include="DomainModel\ChildUnitOfWork.cs" />
+    <Compile Include="ParentReferenceGeneric.cs" />
+    <Compile Include="ParentReferenceConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

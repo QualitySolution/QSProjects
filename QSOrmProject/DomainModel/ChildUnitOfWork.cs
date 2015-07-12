@@ -33,7 +33,7 @@ namespace QSOrmProject
 		{
 			get
 			{
-				return IsNew || Session.IsDirty();
+				return IsNew; //FIXME нужно вручную отслеживать измения
 			}
 		}
 
@@ -64,7 +64,15 @@ namespace QSOrmProject
 
 		public void Commit()
 		{
-			//TODO не реализовано
+			if(IsNew)
+			{
+				ParentReference.AddNewChild (ParentUoW.Root, Root);
+			}
+			else
+			{
+				//FIXME скопировать измения.
+			}
+
 			foreach(var obj in ObjectToSave)
 			{
 				Session.SaveOrUpdate (obj);

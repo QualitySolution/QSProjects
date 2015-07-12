@@ -11,7 +11,20 @@ namespace QSOrmProject
 	{
 		Expression<Func<TParentEntity, IList<TChildEntity>>> ListPropertyExpr;
 
-		public Action<TParentEntity, TChildEntity> AddNewChild { get; set;}
+		Action<TParentEntity, TChildEntity> addNewChild;
+		public Action<TParentEntity, TChildEntity> AddNewChild {
+			get { if (addNewChild == null)
+				{
+					var config = ParentReferenceConfig.FindDefaultActions<TParentEntity,TChildEntity> ();
+					if (config != null)
+						return config.AddNewChild;
+				}
+				return addNewChild;
+			}
+			set {
+				addNewChild = value;
+			}
+		}
 
 		public IUnitOfWorkGeneric<TParentEntity> ParentUoWGeneric { get; private set;}
 
