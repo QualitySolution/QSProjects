@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
-using NHibernate;
-using QSOrmProject;
-using QSTDI;
 using Gtk;
 using Gtk.DataBindings;
+using QSOrmProject;
+using QSTDI;
 
 namespace QSBanks
 {
@@ -13,7 +11,6 @@ namespace QSBanks
 	public partial class AccountsView : Gtk.Bin
 	{
 		private IAccountOwner accountOwner;
-		private GenericObservableList<Account> accountsList;
 
 		public IUnitOfWork UoW { get; set;}
 
@@ -24,19 +21,18 @@ namespace QSBanks
 				parentReference = value;
 				if (parentReference != null) {
 					UoW = parentReference.ParentUoW;
-					accountsList = ParentReference.GetObservableList ();
-					datatreeviewAccounts.ItemsDataSource = accountsList;
 					datatreeviewAccounts.ColumnMappingConfig = FluentMappingConfig<Account>.Create ()
 						.AddColumn ("Осн.").SetDataProperty (node => node.IsDefault)
 						.AddColumn ("Псевдоним").SetDataProperty (node => node.Name)
-						.AddColumn ("В банке").AddTextRenderer (a => a.InBank.Name)
+						.AddColumn ("В банке").AddTextRenderer (a => a.InBank != null ? a.InBank.Name : "нет")
 						.AddColumn ("Номер").AddTextRenderer (a => a.Number)
 						.RowCells ().AddSetter<CellRendererText> ((c, a) => c.Foreground = a.Inactive ? "grey" : "black")
 						.Finish ();
-					/*	if (!(parentReference.ParentObject is IAccountOwner)) {
+					if (!(parentReference.ParentObject is IAccountOwner)) {
 						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
 					}
-					AccountOwner = (IAccountOwner)parentReference.ParentObject;*/
+					accountOwner = (IAccountOwner)parentReference.ParentObject;
+					datatreeviewAccounts.ItemsDataSource = accountOwner.ObservableAccounts;
 				}
 			}
 			get { return parentReference; }
@@ -61,10 +57,7 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 				
-			Account subject = new Account ();
-			accountsList.Add (subject);
-
-			AccountDlg dlg = new AccountDlg (ParentReference, subject);
+			AccountDlg dlg = new AccountDlg (ParentReference);
 			mytab.TabParent.AddSlaveTab (mytab, dlg);
 		}
 
@@ -85,7 +78,7 @@ namespace QSBanks
 
 		protected void OnButtonDefaultClicked (object sender, EventArgs e)
 		{
-			AccountOwner.DefaultAccount = (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+			accountOwner.DefaultAccount = (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
@@ -93,8 +86,9 @@ namespace QSBanks
 			ITdiTab mytab = TdiHelper.FindMyTab (this);
 			if (mytab == null)
 				return;
-
-			accountsList.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+			
+			//FIXME добавить проверку на корретное удаление зависимостей.
+			accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 	}
 }

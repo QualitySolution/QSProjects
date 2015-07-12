@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QSOrmProject;
+using System.Data.Bindings.Collections.Generic;
 
 namespace QSBanks
 {
@@ -13,6 +14,17 @@ namespace QSBanks
 			set {
 				accounts = value;
 				UpdateDefault ();
+				observableAccounts = null;
+			}
+		}
+
+		GenericObservableList<Account> observableAccounts;
+		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
+		public GenericObservableList<Account> ObservableAccounts {
+			get {
+				if (observableAccounts == null)
+					observableAccounts = new GenericObservableList<Account> (Accounts);
+				return observableAccounts;
 			}
 		}
 
@@ -38,13 +50,20 @@ namespace QSBanks
 				acc.IsDefault = (acc == DefaultAccount);
 			}
 		}
+
+		public void AddAccount(Account account)
+		{
+			ObservableAccounts.Add (account);
+		}
 	}
 
 	public interface IAccountOwner
 	{
 		Account DefaultAccount { get; set; }
 
-		IList<Account> Accounts { get; set; }
+		IList<Account> Accounts { get;}
+
+		GenericObservableList<Account> ObservableAccounts { get;}
 	}
 }
 

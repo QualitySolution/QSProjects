@@ -30,7 +30,6 @@ namespace QSBanks
 			this.Name = "QSBanks.AccountsView";
 			// Container child QSBanks.AccountsView.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox ();
-			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
@@ -55,7 +54,7 @@ namespace QSBanks
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
 			this.datatreeviewAccounts.InheritedDataSource = false;
 			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
-			this.datatreeviewAccounts.ColumnMappings = "{QSBanks.Account} IsDefault[Осн.]; Name[Псевдоним]; BankName[В банке]; Number[Номер]; Inactive[Не активен];";
+			this.datatreeviewAccounts.ColumnMappings = "";
 			this.GtkScrolledWindow.Add (this.datatreeviewAccounts);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));
