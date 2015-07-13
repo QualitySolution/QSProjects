@@ -78,18 +78,13 @@ namespace QSOrmProject
 			
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
-			RaiseObjectUpdatedGeneric (updatedSubjects.Cast<TEntity> ().ToArray ());
-		}
-
-		public void RaiseObjectUpdatedGeneric(params TEntity[] updatedSubjects)
-		{
 			if (ObjectUpdatedGeneric != null)
-				ObjectUpdatedGeneric(this, new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects));
+				ObjectUpdatedGeneric(this, 
+					new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects.Cast<TEntity> ().ToArray ()));
 
 			if (ObjectUpdated != null)
 				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
 		}
-
 	}
 }
 
