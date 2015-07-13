@@ -1,6 +1,6 @@
 ﻿using System;
-using NHibernate;
 using System.Linq;
+using NHibernate;
 using NHibernate.Linq;
 
 namespace QSOrmProject
@@ -87,6 +87,11 @@ namespace QSOrmProject
 		public T GetById<T>(int id) where T : IDomainObject
 		{
 			return Session.Get<T>(id);
+		}
+
+		public object GetById(Type clazz, int id)
+		{
+			return Session.Get(clazz, id);
 		}
 
 		public void Save<TEntity>(TEntity entity) where TEntity : IDomainObject

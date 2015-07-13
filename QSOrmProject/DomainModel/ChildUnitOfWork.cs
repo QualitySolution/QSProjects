@@ -92,6 +92,11 @@ namespace QSOrmProject
 			return Session.Get<T>(id);
 		}
 
+		public object GetById(Type clazz, int id)
+		{
+			return Session.Get(clazz, id);
+		}
+
 		public void Save<TEntity>(TEntity entity) where TEntity : IDomainObject
 		{
 			if (RootObject.Equals(entity))

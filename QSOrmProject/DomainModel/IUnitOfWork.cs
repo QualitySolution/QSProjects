@@ -17,6 +17,8 @@ namespace QSOrmProject
 
 		T GetById<T>(int id) where T : IDomainObject;
 
+		object GetById(Type clazz, int id);
+
 		void Commit();
 	}
 }
