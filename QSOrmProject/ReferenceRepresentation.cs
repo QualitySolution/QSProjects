@@ -12,7 +12,7 @@ using System.Data.Bindings.Collections;
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal
+	public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private System.Type objectType;
@@ -62,6 +62,20 @@ namespace QSOrmProject
 				UpdateObjectList ();
 			}
 		}
+
+		#region IOrmDialog implementation
+
+		public IUnitOfWork UoW {
+			get { return RepresentationModel.UoW;
+			}
+		}
+
+		public object EntityObject {
+			get { return null;
+			}
+		}
+
+		#endregion
 
 		private string[] searchFields = new string[]{ "Name" };
 
