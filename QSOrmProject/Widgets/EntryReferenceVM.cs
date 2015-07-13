@@ -95,9 +95,9 @@ namespace QSOrmProject
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
 				IOrmDialog dlg = OrmMain.FindMyDialog (this);
-				//FIXME Возможно не нужно подписываться пока закомментируем
-				//if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
-				//dlg.UoW.Session.Refresh (Subject);
+
+				if (dlg != null && !dlg.UoW.Session.Contains (foundUpdatedObject))
+					dlg.UoW.Session.Refresh (Subject);
 
 				UpdateWidget ();
 				OnChanged ();
