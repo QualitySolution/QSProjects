@@ -170,12 +170,8 @@ namespace QSOrmProject
 
 		void SelectDialog_ObjectSelected (object sender, ReferenceRepresentationSelectedEventArgs e)
 		{
-			
-		}
-
-		void OnSelectDialogObjectSelected (object sender, OrmReferenceObjectSectedEventArgs e)
-		{
-			Subject = e.Subject;
+			var dlg = OrmMain.FindMyDialog (this);
+			Subject = dlg.UoW.GetById (SubjectType, e.ObjectId);
 		}
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
