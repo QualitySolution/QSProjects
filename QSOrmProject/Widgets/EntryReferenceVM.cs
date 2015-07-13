@@ -17,6 +17,7 @@ namespace QSOrmProject
 		private System.Type subjectType;
 		private bool sensitive = true;
 		public bool CanEditReference = true;
+		public Func<object, string> ObjectDisplayFunc;
 
 		public event EventHandler Changed;
 
@@ -71,10 +72,7 @@ namespace QSOrmProject
 
 		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if(DisplayFields.Contains (e.PropertyName))
-			{
-				UpdateWidget ();
-			}
+			UpdateWidget ();
 		}
 
 		public System.Type SubjectType {
@@ -99,7 +97,7 @@ namespace QSOrmProject
 				IOrmDialog dlg = OrmMain.FindMyDialog (this);
 				//FIXME Возможно не нужно подписываться пока закомментируем
 				//if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
-				//	dlg.Session.Refresh (Subject);
+				//dlg.UoW.Session.Refresh (Subject);
 
 				UpdateWidget ();
 				OnChanged ();
@@ -109,39 +107,18 @@ namespace QSOrmProject
 		private void UpdateWidget ()
 		{
 			buttonOpen.Sensitive = CanEditReference && subject != null;
-			if (subject == null || displayFields == null) {
+			if (subject == null) {
 				entryObject.Text = String.Empty;
 				return;
 			}
 
-			object[] values = new object[displayFields.Length];
-			for (int i = 0; i < displayFields.Length; i++) {
-				if(String.IsNullOrWhiteSpace(displayFields [i]))
-				{
-					logger.Warn("Пустая строка в списке полей DisplayFields. Пропускаем...");
-					continue;
-				}
-				var prop = subjectType.GetProperty(displayFields[i]);
-				if (prop == null)
-					throw new InvalidOperationException(String.Format("Поле {0} у класса {1} не найдено.", displayFields[i], SubjectType));
-				values [i] = prop.GetValue (Subject, null);
+			if(ObjectDisplayFunc != null)
+			{
+				entryObject.Text = ObjectDisplayFunc (Subject);
+				return;
 			}
-			entryObject.Text = String.Format (DisplayFormatString, values);
-		}
 
-		private string[] displayFields;
-
-		public string[] DisplayFields {
-			get { return displayFields; }
-			set { displayFields = value; }
-		}
-
-		private string displayFormatString;
-
-		public string DisplayFormatString {
-			get { return (displayFormatString == null || displayFormatString == String.Empty) 
-					? "{0}" : displayFormatString; }
-			set { displayFormatString = value; }
+			entryObject.Text = DomainHelper.GetObjectTilte (Subject);
 		}
 
 		public EntryReferenceVM ()
