@@ -7,6 +7,7 @@ using NHibernate;
 using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
+using NHibernate.Criterion;
 
 namespace QSOrmProject
 {
@@ -159,6 +160,10 @@ namespace QSOrmProject
 
 		public OrmReference(System.Type objType, IUnitOfWork uow) 
 			: this(objType, uow, uow.Session.CreateCriteria (objType))
+		{}
+
+		public OrmReference(IUnitOfWork uow, QueryOver query) 
+			: this(query.DetachedCriteria.GetRootEntityTypeIfAvailable (), uow, query.DetachedCriteria.GetExecutableCriteria (uow.Session))
 		{}
 
 		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria)
