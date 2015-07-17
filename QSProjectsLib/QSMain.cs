@@ -186,14 +186,24 @@ namespace QSProjectsLib
 			return true;
 		}
 
-		public static void CheckServer (Window Parrent)
+		public static void CheckServer ()
 		{
-			CheckConnectionAlive ();
+			CheckServer (null);
+		}
+
+		/// <summary>
+		/// Проверка локали сервера.
+		/// </summary>
+		/// <param name="parent">Если Parent = null, сообщение будет выводиться в nlog. В противном случае в диалоговое окно.</param>
+		public static void CheckServer (Window parent)
+		{
 			string sql = "SHOW VARIABLES LIKE \"character_set_%\";";
 			MySqlCommand cmd = new MySqlCommand (sql, connectionDB);
 			string TextMes = "";
+			logger.Debug (sql);
 			using (MySqlDataReader rdr = cmd.ExecuteReader ()) {
 				while (rdr.Read ()) {
+					logger.Debug (String.Format ("{0} = {1}", rdr ["Variable_name"], rdr ["Value"]));
 					switch (rdr ["Variable_name"].ToString ()) {
 					case "character_set_server":
 						if (rdr ["Value"].ToString () != "utf8") {
@@ -212,12 +222,16 @@ namespace QSProjectsLib
 				}
 			}
 			if (TextMes != "") {
-				MessageDialog VersionError = new MessageDialog (Parrent, DialogFlags.DestroyWithParent,
-					                             MessageType.Warning, 
-					                             ButtonsType.Close, 
-					                             TextMes);
-				VersionError.Run ();
-				VersionError.Destroy ();
+				if (parent != null) {
+					MessageDialog VersionError = new MessageDialog (parent, DialogFlags.DestroyWithParent,
+						                             MessageType.Warning, 
+						                             ButtonsType.Close, 
+						                             TextMes);
+					VersionError.Run ();
+					VersionError.Destroy ();
+				} else {
+					logger.Warn (TextMes);
+				}
 			}
 		}
 
