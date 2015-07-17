@@ -9,7 +9,6 @@
     <AssemblyName>QSUpdater</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,7 +59,7 @@
     <Reference Include="System.Data" />
     <Reference Include="Mono.Posix" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.1\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.0.1\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +78,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="DBUpdater\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DBUpdater\" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

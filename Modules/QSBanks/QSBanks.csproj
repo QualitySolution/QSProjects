@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSBanks</RootNamespace>
     <AssemblyName>QSBanks</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +50,7 @@
       <HintPath>..\..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.3.2.1\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.0.1\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,8 +116,10 @@
   <ItemGroup>
     <Folder Include="Domain\" />
     <Folder Include="Dialogs\" />
+    <Folder Include="Representations\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Representations\AccountsVM.cs" />
   </ItemGroup>
 </Project>
