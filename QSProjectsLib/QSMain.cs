@@ -383,7 +383,7 @@ namespace QSProjectsLib
 		{
 			AboutDialog dialog = new AboutDialog ();
 
-			System.Reflection.Assembly assembly = Assembly.GetCallingAssembly ();
+			Assembly assembly = Assembly.GetCallingAssembly ();
 			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 
 			dialog.ProgramName = ((AssemblyTitleAttribute)att [0]).Title;
@@ -397,7 +397,17 @@ namespace QSProjectsLib
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyDescriptionAttribute), false);
 
-			string comments = ((AssemblyDescriptionAttribute)att [0]).Description;
+			string comments = String.Empty;
+
+			object[] betaAtt = assembly.GetCustomAttributes (typeof(AssemblyBetaBuildAttribute), false);
+			if(betaAtt.Length > 0)
+			{
+				var buildDate = System.IO.File.GetLastWriteTime(assembly.Location);
+				comments += String.Format ("Бета редакция от {0:g}\n", buildDate);
+			}
+
+			comments += ((AssemblyDescriptionAttribute)att [0]).Description;
+
 
 			att = assembly.GetCustomAttributes (typeof(AssemblySupport), false);
 			if (att.Length > 0) {

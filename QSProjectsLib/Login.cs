@@ -38,8 +38,21 @@ namespace QSProjectsLib
 			string ver = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
 			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
-			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>",
-			                                        app, ver);
+
+			object[] betaAtt = ass.GetCustomAttributes (typeof(AssemblyBetaBuildAttribute), false);
+			if(betaAtt.Length > 0)
+			{
+				var buildDate = System.IO.File.GetLastWriteTime(ass.Location);
+				labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>" +
+					"\n<span foreground=\"gray\" font_family=\"Philosopher\">beta ({2:g})</span>",
+					app, ver, buildDate);
+			}
+			else
+			{
+				labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>",
+					app, ver);
+			}	
+
 			comboboxConnections.Clear ();
 			CellRendererText cell = new CellRendererText ();
 			comboboxConnections.PackStart (cell, false);

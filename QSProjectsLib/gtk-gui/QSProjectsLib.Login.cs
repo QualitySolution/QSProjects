@@ -72,7 +72,6 @@ namespace QSProjectsLib
 			this.labelAppName.LabelProp = global::Mono.Unix.Catalog.GetString ("<span foreground=\"gray\" size=\"large\" font_family=\"Philosopher\"><b>QS: Платформа v.1.0</b></span>");
 			this.labelAppName.UseMarkup = true;
 			this.labelAppName.Justify = ((global::Gtk.Justification)(1));
-			this.labelAppName.SingleLineMode = true;
 			this.vbox2.Add (this.labelAppName);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.labelAppName]));
 			w3.Position = 1;

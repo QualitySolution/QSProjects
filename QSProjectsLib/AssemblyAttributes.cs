@@ -50,4 +50,9 @@ namespace QSProjectsLib
 		public AssemblyAppWebsite(string link) { Link = link; }
 	}
 
+	[AttributeUsage(AttributeTargets.Assembly)]
+	public class AssemblyBetaBuildAttribute : Attribute 
+	{
+		
+	}
 }
