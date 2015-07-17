@@ -45,13 +45,13 @@ namespace QSSupportLib
 			catch(MySql.Data.MySqlClient.MySqlException ex)
 			{
 				if(ex.Number == 1142)
-					logger.WarnException ("Таблица не создана, зайдите под администратором!", ex);
+					logger.Warn (ex, "Таблица не создана, зайдите под администратором!");
 				else
-					logger.WarnException ("Ошибка в момент создания таблицы с новостями", ex);
+					logger.Warn (ex, "Ошибка в момент создания таблицы с новостями");
 			}
 			catch (Exception ex)
 			{
-				logger.WarnException ("Ошибка в момент создания таблицы с новостями", ex);
+				logger.Warn (ex, "Ошибка в момент создания таблицы с новостями");
 			}
 		}
 

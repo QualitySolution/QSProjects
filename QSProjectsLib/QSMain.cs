@@ -247,7 +247,7 @@ namespace QSProjectsLib
 			try {
 				connectionDB.Open ();
 			} catch (Exception ex) {
-				logger.WarnException ("Не удалось соединится.", ex);
+				logger.Warn (ex, "Не удалось соединится.");
 				WaitResultIsOk = false;
 			}
 		}
@@ -328,13 +328,15 @@ namespace QSProjectsLib
 			return FieldsString;
 		}
 
-		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = LogLevel.Error)
+		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
+			if (level == null)
+				level = LogLevel.Error;
 			logger.Log (level, ex, userMessage);
 			ErrorMessage (ex, userMessage);
 		}
 
-		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = LogLevel.Error)
+		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
 			logger.Log (level, ex, userMessage);
 			ErrorMessage (parent, ex, userMessage);
@@ -482,11 +484,11 @@ namespace QSProjectsLib
 		public static void SubscribeToUnhadledExceptions ()
 		{
 			AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {
-				logger.FatalException ("Поймано необработаное исключение в Application Domain.", (Exception)e.ExceptionObject);
+				logger.Fatal ((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
 				QSMain.ErrorMessage ((Exception)e.ExceptionObject);
 			};
 			GLib.ExceptionManager.UnhandledException += delegate(GLib.UnhandledExceptionArgs a) {
-				logger.FatalException ("Поймано необработаное исключение в GTK.", (Exception)a.ExceptionObject);
+				logger.Fatal ((Exception)a.ExceptionObject, "Поймано необработаное исключение в GTK.");
 				QSMain.ErrorMessage ((Exception)a.ExceptionObject);
 			};
 		}

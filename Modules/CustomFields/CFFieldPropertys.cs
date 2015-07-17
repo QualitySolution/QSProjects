@@ -78,7 +78,7 @@ namespace QSCustomFields
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения информации о поле!", ex);
+				logger.Error (ex, "Ошибка получения информации о поле!");
 				QSMain.ErrorMessage(this,ex);
 			}
 
@@ -159,7 +159,7 @@ namespace QSCustomFields
 			catch (Exception ex)
 			{
 				trans.Rollback ();
-				logger.ErrorException("Ошибка сохранения поля!", ex);
+				logger.Error (ex, "Ошибка сохранения поля!");
 				QSMain.ErrorMessage(this,ex);
 			}
 		}

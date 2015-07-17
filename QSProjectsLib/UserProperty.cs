@@ -83,7 +83,7 @@ namespace QSProjectsLib
 				this.Title = entryName.Text;
 				logger.Info ("Ok");
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка получения информации о пользователе!", ex);
+				logger.Error (ex, "Ошибка получения информации о пользователе!");
 				QSMain.ErrorMessage (this, ex);
 			}
 		}
@@ -223,7 +223,7 @@ namespace QSProjectsLib
 				logger.Info ("Ok");
 				Respond (ResponseType.Ok);
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка записи пользователя!", ex);
+				logger.Error (ex, "Ошибка записи пользователя!");
 				QSMain.ErrorMessage (this, ex);
 			}
 
@@ -269,7 +269,7 @@ namespace QSProjectsLib
 					}
 				} catch (MySqlException ex) {
 					if (ex.Number == 1045)
-						logger.WarnException ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.", ex);
+						logger.Warn (ex, "Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
 					else
 						return false;
 				}
@@ -287,7 +287,7 @@ namespace QSProjectsLib
 				logger.Info ("Ok");
 				return true;
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка создания пользователя!", ex);
+				logger.Error (ex, "Ошибка создания пользователя!");
 				QSMain.ErrorMessage (this, ex);
 				return false;
 			}
@@ -316,7 +316,7 @@ namespace QSProjectsLib
 					}
 				} catch (MySqlException ex) {
 					if (ex.Number == 1045)
-						logger.WarnException ("Нет доступа к таблице пользователей, пробую создать пользователя в слепую.", ex);
+						logger.Warn (ex, "Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
 					else
 						return false;
 				}
@@ -328,7 +328,7 @@ namespace QSProjectsLib
 				logger.Info ("Ok");
 				return true;
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка переименования пользователя!", ex);
+				logger.Error (ex, "Ошибка переименования пользователя!");
 				QSMain.ErrorMessage (this, ex);
 				return false;
 			}
@@ -355,7 +355,7 @@ namespace QSProjectsLib
 					cmd.ExecuteNonQuery ();
 					logger.Info ("Пароль изменен. Ok");
 				} catch (Exception ex) {
-					logger.ErrorException ("Ошибка установки пароля!", ex);
+					logger.Error (ex, "Ошибка установки пароля!");
 					QSMain.ErrorMessage (this, ex);
 				}
 			}
@@ -402,7 +402,7 @@ namespace QSProjectsLib
 				}
 				logger.Info ("Права установлены. Ok");
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка установки прав!", ex);
+				logger.Error (ex, "Ошибка установки прав!");
 				QSMain.ErrorMessage (this, ex);
 			}
 		}

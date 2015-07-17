@@ -98,7 +98,7 @@ namespace QSAttachment
 				logger.Info ("Ок");
 			} catch (Exception ex) {
 				string mes = "Ошибка списка файлов!";
-				logger.ErrorException (mes, ex);
+				logger.Error (ex, mes);
 				throw new ApplicationException (mes, ex);
 			}
 		}
@@ -183,7 +183,7 @@ namespace QSAttachment
 				return file;
 			} catch (Exception ex) {
 				string mes = "Получения файла из базы!";
-				logger.ErrorException (mes, ex);
+				logger.Error (ex, mes);
 				throw new ApplicationException (mes, ex);
 			}
 		}
@@ -270,7 +270,7 @@ namespace QSAttachment
 					cmd.ExecuteNonQuery ();
 				} catch (MySqlException ex) {
 					if (ex.Number == 1153) {
-						logger.WarnException ("Превышен максимальный размер пакета для передачи на сервер.", ex);
+						logger.Warn (ex, "Превышен максимальный размер пакета для передачи на сервер.");
 						string Text = String.Format ("При передачи файла {0}, " +
 						              "превышен максимальный размер пакета для передачи на сервер базы данных. " +
 						              "Файл не будет сохранен. " +
@@ -284,7 +284,7 @@ namespace QSAttachment
 						md.Run ();
 						md.Destroy ();
 					} else if (ex.Number == 1118) {
-						logger.WarnException ("Ошибка: превышена допустимая длина строки.", ex);
+						logger.Warn (ex, "Ошибка: превышена допустимая длина строки.");
 						string Text = String.Format ("При передачи файла {0} была превышена максимально допустимая " +
 						              "длина строки в БД MySQL. Файл не будет сохранен. Также эта ошибка может " +
 						              "возникать при отсутствии возможности записи в log файл. В качестве возможного решения данной " +

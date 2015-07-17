@@ -147,7 +147,7 @@ namespace QSCustomFields
 			}catch (Exception ex)
 			{
 				string mes = "Ошибка чтения данных для настраиваемых полей!";
-				logger.ErrorException(mes, ex);
+				logger.Error(ex, mes);
 				throw new ApplicationException (mes, ex);
 			}
 		}
@@ -186,7 +186,7 @@ namespace QSCustomFields
 			}catch (Exception ex)
 			{
 				string mes = "Ошибка чтения данных для настраиваемых полей!";
-				logger.ErrorException(mes, ex);
+				logger.Error(ex, mes);
 				throw new ApplicationException (mes, ex);
 			}
 		}

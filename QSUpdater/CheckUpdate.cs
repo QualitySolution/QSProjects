@@ -95,7 +95,7 @@ namespace QSUpdater
 						});
 				}
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
+				logger.Error (ex, "Ошибка доступа к серверу обновления.");
 				if (showAnyway)
 					ShowErrorDialog ("Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже.");
 				if (updateRequired)
@@ -126,11 +126,11 @@ namespace QSUpdater
 						Application.Quit ();
 					} catch (Exception ex) {
 						ShowErrorDialog ("Не удалось запустить скачанный файл.");
-						logger.ErrorException ("Не удалось запустить скачанный установщик.", ex);
+						logger.Error (ex, "Не удалось запустить скачанный установщик.");
 					}
 				} else if (e.Error != null)
 					ShowErrorDialog ("Не удалось скачать файл.");
-				logger.ErrorException ("Не удалось скачать файл обновления.", e.Error);
+				logger.Error (e.Error, "Не удалось скачать файл обновления.");
 			});
 			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
 				updateProgress.Fraction = e.ProgressPercentage / 100.0;
@@ -188,7 +188,7 @@ namespace QSUpdater
 				} else if (updateResult.HasUpdate)
 					ConfigFileUpdater (result == ResponseType.Cancel || result == ResponseType.DeleteEvent);
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка доступа к серверу обновления.", ex);
+				logger.Error (ex, "Ошибка доступа к серверу обновления.");
 				ShowErrorDialog ("Извините, сервер обновления не работает.");
 			}
 		}

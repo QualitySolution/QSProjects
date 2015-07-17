@@ -40,7 +40,7 @@ namespace QSBanks
 			try {
 				UoWGeneric.Save();
 			} catch (Exception ex) {
-				logger.ErrorException("Не удалось записать банк.", ex);
+				logger.Error(ex, "Не удалось записать банк.");
 				return false;
 			}
 			logger.Info ("Ok");

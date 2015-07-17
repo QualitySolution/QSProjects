@@ -166,7 +166,7 @@ namespace QSChat
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Не удалось отправить сообщение.", ex);
+				logger.Error(ex, "Не удалось отправить сообщение.");
 				return;
 			}
 			textviewMessege.Buffer.Text = "";

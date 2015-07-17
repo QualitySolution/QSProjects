@@ -84,7 +84,7 @@ namespace QSScan
 
 		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
 		{
-			logger.ErrorException ("Ошибка в процессе сканирования", e.Exception);
+			logger.Error (e.Exception, "Ошибка в процессе сканирования");
 			this.Close ();
 		}
 
@@ -201,7 +201,7 @@ namespace QSScan
 			} 
 			catch(Exception ex) 
 			{
-				logger.ErrorException ("Ошибка при получении изображения.", ex);
+				logger.Error (ex, "Ошибка при получении изображения.");
 				throw ex;
 			}
 
@@ -288,7 +288,7 @@ namespace QSScan
 				OnPulse(e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
 			} catch(Exception ex) 
 			{
-				logger.ErrorException ("Ошибка при настройке буфера приема.", ex);
+				logger.Error (ex, "Ошибка при настройке буфера приема.");
 				throw ex;
 			}
 

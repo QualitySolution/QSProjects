@@ -37,7 +37,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("При заполнении объектов удаления произошла ошибка!", ex);
+				logger.Error(ex, "При заполнении объектов удаления произошла ошибка!");
 				ErrorHappens = true;
 				ErrorString = ex.ToString ();
 			}

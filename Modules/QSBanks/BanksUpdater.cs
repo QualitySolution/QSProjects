@@ -177,7 +177,7 @@ namespace QSBanks
 				using (WebClient webClient = new WebClient ())
 					webClient.DownloadFile (new Uri (ARCHIVE_LINK), zipFileName);
 			} catch (Exception ex) {
-				logger.ErrorException ("Не удалось загрузить обновленную информацию о банках с сайта РБК.", ex);
+				logger.Error (ex, "Не удалось загрузить обновленную информацию о банках с сайта РБК.");
 				return null;
 			}
 

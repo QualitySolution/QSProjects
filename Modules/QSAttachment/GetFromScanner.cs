@@ -43,7 +43,7 @@ namespace QSAttachment
 			} 
 			catch (Exception ex) 
 			{
-				logger.ErrorException ("Не удалось инициализировать библиотеку Saraff.Twain.", ex);
+				logger.Error (ex, "Не удалось инициализировать библиотеку Saraff.Twain.");
 				QSProjectsLib.QSMain.ErrorMessage (this, ex);
 				Respond (Gtk.ResponseType.Reject);
 			}
@@ -118,7 +118,7 @@ namespace QSAttachment
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка в работе со сканером!", ex);
+				logger.Error(ex, "Ошибка в работе со сканером!");
 				throw ex;
 			}
 			TestCanSave ();

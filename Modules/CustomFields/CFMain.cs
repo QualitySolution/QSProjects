@@ -82,7 +82,7 @@ namespace QSCustomFields
 				logger.Info ("Ок");
 			}catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка чтения полей!", ex);
+				logger.Error(ex, "Ошибка чтения полей!");
 				throw ex;
 			}
 		}

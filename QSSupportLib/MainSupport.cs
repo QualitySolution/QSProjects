@@ -144,7 +144,7 @@ namespace QSSupportLib
 			try {
 				MainSupport.BaseParameters = new BaseParam (QSMain.connectionDB);
 			} catch (MySql.Data.MySqlClient.MySqlException e) {
-				logger.FatalException ("Не удалось получить информацию о версии базы данных.", e);
+				logger.Fatal (e, "Не удалось получить информацию о версии базы данных.", e);
 				MessageDialog BaseError = new MessageDialog (QSMain.ErrorDlgParrent, DialogFlags.DestroyWithParent,
 				                                             MessageType.Warning, 
 				                                             ButtonsType.Close, 

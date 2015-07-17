@@ -77,7 +77,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения данных для комбобокс!", ex);
+				logger.Error(ex, "Ошибка получения данных для комбобокс!");
 			}
 
 		}
@@ -139,7 +139,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения данных справочника!", ex);
+				logger.Error(ex, "Ошибка получения данных справочника!");
 			}
 			
 		}
@@ -174,7 +174,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения списка уникальных значений!", ex);
+				logger.Error(ex, "Ошибка получения списка уникальных значений!");
 			}
 
 		}

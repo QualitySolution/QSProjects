@@ -77,7 +77,7 @@ namespace QSSupportLib
 			} 
 			catch (Exception ex) 
 			{
-				logger.ErrorException("Ошибка изменения параметра", ex);
+				logger.Error(ex, "Ошибка изменения параметра");
 				throw ex;
 			}
 
@@ -106,7 +106,7 @@ namespace QSSupportLib
 			} 
 			catch (Exception ex) 
 			{
-				logger.ErrorException("Ошибка удаления параметра", ex);
+				logger.Error(ex, "Ошибка удаления параметра");
 				throw ex;
 			}
 

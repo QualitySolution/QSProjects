@@ -90,7 +90,7 @@ namespace QSCustomFields
 				logger.Info ("Ок");
 			}catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка чтения полей "+ CurrentTable.DBName + "!", ex);
+				logger.Error(ex, "Ошибка чтения полей {0}!", CurrentTable.DBName);
 				QSMain.ErrorMessage(this,ex);
 			}
 			OnTreeviewFieldsCursorChanged (treeviewFields, EventArgs.Empty);
@@ -166,7 +166,7 @@ namespace QSCustomFields
 			catch (Exception ex)
 			{
 				trans.Rollback ();
-				logger.Error("Ошибка удаления поля!", ex);
+				logger.Error(ex, "Ошибка удаления поля!");
 				QSMain.ErrorMessage(this,ex);
 			}
 		}

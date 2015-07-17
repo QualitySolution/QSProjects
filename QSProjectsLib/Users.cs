@@ -140,7 +140,7 @@ namespace QSProjectsLib
 							Environment.Exit (0);
 						}
 					} catch (Exception ex) {
-						logger.ErrorException ("Ошибка удаления пользователя!", ex);
+						logger.Error (ex, "Ошибка удаления пользователя!");
 						QSMain.ErrorMessage (this, ex);
 					}
 				}

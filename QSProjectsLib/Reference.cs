@@ -194,7 +194,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения таблицы!", ex);
+				logger.Error(ex, "Ошибка получения таблицы!");
 				QSMain.ErrorMessage(this,ex);
 			}
 			OnTreeviewrefCursorChanged((object)treeviewref,EventArgs.Empty);
@@ -370,7 +370,7 @@ namespace QSProjectsLib
 				} 
 				catch (Exception ex) 
 				{
-					logger.ErrorException("Ошибка записи "+ nameNode + "!", ex);
+					logger.Error(ex, "Ошибка записи {0}!", nameNode);
 					QSMain.ErrorMessage(this,ex);
 				}
 			}
@@ -617,7 +617,7 @@ namespace QSProjectsLib
 			catch (Exception ex) 
 			{
 				trans.Rollback();
-				logger.ErrorException("Ошибка записи последовательности в "+ nameRef + "!", ex);
+				logger.Error(ex, "Ошибка записи последовательности в {0}!", nameRef);
 				QSMain.ErrorMessage(this,ex);
 			}
 

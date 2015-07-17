@@ -67,7 +67,7 @@ namespace QSSupportLib
 				}
 				catch(Exception ex)
 				{
-					logger.WarnException ("Не удалось прочитать feed", ex);
+					logger.Warn (ex, "Не удалось прочитать feed");
 					continue;
 				}
 				SyndicationFeed tempFeed = new SyndicationFeed( 

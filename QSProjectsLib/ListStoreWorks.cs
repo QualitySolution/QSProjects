@@ -87,7 +87,7 @@ namespace QSProjectsLib
 			}
 			catch (Exception ex)
 			{
-				logger.ErrorException("Ошибка получения списка уникальных значений!", ex);
+				logger.Error(ex, "Ошибка получения списка уникальных значений!");
 			}
 			return list;
 		}

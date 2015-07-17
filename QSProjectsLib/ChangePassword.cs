@@ -57,7 +57,7 @@ namespace QSProjectsLib
 					cmd.ExecuteNonQuery ();
 					logger.Info ("Пароль изменен. Ok");
 				} catch (Exception ex) {
-					logger.ErrorException ("Ошибка установки пароля!", ex);
+					logger.Error (ex, "Ошибка установки пароля!");
 					QSMain.ErrorMessage (this, ex);
 				}
 			}

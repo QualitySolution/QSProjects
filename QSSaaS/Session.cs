@@ -30,7 +30,7 @@ namespace QSSaaS
 				var factory = new WebChannelFactory<ISaaSService> (new WebHttpBinding { AllowCookies = true }, address);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка создания подключения к SaaS сервису", ex);
+				logger.Error (ex, "Ошибка создания подключения к SaaS сервису");
 				return null;
 			}
 		}
@@ -46,7 +46,7 @@ namespace QSSaaS
 				if (!svc.refreshSession (SessionId))
 					logger.Warn ("Не удалось продлить сессию " + SessionId + ".");
 			} catch (Exception ex) {
-				logger.ErrorException ("Ошибка при продлении сессии " + SessionId + ".", ex);
+				logger.Error (ex, "Ошибка при продлении сессии {0}.", SessionId);
 			}
 		}
 
