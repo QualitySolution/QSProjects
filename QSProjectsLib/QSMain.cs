@@ -338,6 +338,8 @@ namespace QSProjectsLib
 
 		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
+			if (level == null)
+				level = LogLevel.Error;
 			logger.Log (level, ex, userMessage);
 			ErrorMessage (parent, ex, userMessage);
 		}
