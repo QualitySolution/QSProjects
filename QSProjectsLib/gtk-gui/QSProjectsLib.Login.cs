@@ -69,7 +69,7 @@ namespace QSProjectsLib
 			this.labelAppName.Name = "labelAppName";
 			this.labelAppName.Xpad = 25;
 			this.labelAppName.Xalign = 1F;
-			this.labelAppName.LabelProp = global::Mono.Unix.Catalog.GetString ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">QS: Платформа v.1.0</span>");
+			this.labelAppName.LabelProp = global::Mono.Unix.Catalog.GetString ("<span foreground=\"gray\" size=\"large\" font_family=\"Philosopher\"><b>QS: Платформа v.1.0</b></span>");
 			this.labelAppName.UseMarkup = true;
 			this.labelAppName.Justify = ((global::Gtk.Justification)(1));
 			this.labelAppName.SingleLineMode = true;

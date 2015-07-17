@@ -40,7 +40,7 @@
                 <property name="MemberName" />
                 <property name="Xpad">25</property>
                 <property name="Xalign">1</property>
-                <property name="LabelProp" translatable="yes">&lt;span foreground="gray" size="large" font_family="FifthLeg"&gt;QS: Платформа v.1.0&lt;/span&gt;</property>
+                <property name="LabelProp" translatable="yes">&lt;span foreground="gray" size="large" font_family="Philosopher"&gt;&lt;b&gt;QS: Платформа v.1.0&lt;/b&gt;&lt;/span&gt;</property>
                 <property name="UseMarkup">True</property>
                 <property name="Justify">Right</property>
                 <property name="SingleLineMode">True</property>

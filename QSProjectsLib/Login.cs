@@ -38,7 +38,7 @@ namespace QSProjectsLib
 			string ver = version.ToString (version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
 			object[] att = ass.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
 			string app = ((AssemblyTitleAttribute)att [0]).Title;
-			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"large\" font_family=\"FifthLeg\">{0} v.{1}</span>",
+			labelAppName.LabelProp = String.Format ("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>",
 			                                        app, ver);
 			comboboxConnections.Clear ();
 			CellRendererText cell = new CellRendererText ();
