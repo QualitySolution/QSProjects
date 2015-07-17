@@ -328,17 +328,15 @@ namespace QSProjectsLib
 			return FieldsString;
 		}
 
-		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = null)
+		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = LogLevel.Error)
 		{
-			if (level == null)
-				level = LogLevel.Error;
-			logger.Log (level, userMessage, ex);
+			logger.Log (level, ex, userMessage);
 			ErrorMessage (ex, userMessage);
 		}
 
-		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
+		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = LogLevel.Error)
 		{
-			logger.Log (level, userMessage, ex);
+			logger.Log (level, ex, userMessage);
 			ErrorMessage (parent, ex, userMessage);
 		}
 
