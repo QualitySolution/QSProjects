@@ -12,7 +12,7 @@ namespace QSProjectsLib
 	public partial class Login : Dialog
 	{
 		public List<Connection> Connections;
-		String ConnectionError;
+		String connectionError;
 		public string SelectedConnection;
 		public string BaseName;
 		public string DefaultLogin;
@@ -23,8 +23,20 @@ namespace QSProjectsLib
 		public string DemoMessage;
 		private string server;
 
+		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		public Gdk.Pixbuf Logo {
 			set { imageLogo.Pixbuf = value; }
+		}
+
+		private String ConnectionError {
+			get {
+				return connectionError;
+			}
+			set {
+				connectionError = value;
+				buttonErrorInfo.Visible = !String.IsNullOrWhiteSpace (connectionError);
+			}
 		}
 
 		public Login ()
@@ -148,6 +160,9 @@ namespace QSProjectsLib
 			string[] uriSplit = new string[2];
 			string login = entryUser.Text;
 
+			labelLoginInfo.Text = "Соединяемся....";
+			QSMain.WaitRedraw ();
+
 			if (Selected.Type == ConnectionType.MySQL) {
 				Session.IsSaasConnection = false;
 				uriSplit = server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -159,9 +174,8 @@ namespace QSProjectsLib
 					UserAuthorizeResult result = svc.authorizeUser (parameters);
 					if (!result.Success) {
 						labelLoginInfo.Text = "Ошибка соединения с сервисом.";
-						buttonErrorInfo.Visible = true;
 						ConnectionError = "Описание: " + result.Description;
-						Console.WriteLine (result.Description);
+						logger.Warn (result.Description);
 						return;
 					}
 					uriSplit = result.Server.Split (new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -172,9 +186,8 @@ namespace QSProjectsLib
 					Session.BaseName = BaseName = result.BaseName;
 				} catch (Exception ex) {
 					labelLoginInfo.Text = "Ошибка соединения с сервисом.";
-					buttonErrorInfo.Visible = true;
 					ConnectionError = "Описание ошибки: " + ex.Message;
-					Console.WriteLine (ex.Message);
+					logger.Warn (ex);
 					return;
 				}
 			}
@@ -188,29 +201,22 @@ namespace QSProjectsLib
 			QSMain.connectionDB = new MySqlConnection (connStr);
 			try {
 				Console.WriteLine ("Connecting to MySQL...");
-				labelLoginInfo.Text = "Соединяемся....";
-				while (GLib.MainContext.Pending ()) {
-					Gtk.Main.Iteration ();
-				}
 				
 				QSMain.connectionDB.Open ();
 
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue ("@login", entryUser.Text);
-				try {
-					using(MySqlDataReader rdr = cmd.ExecuteReader ())
-					{
-						if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
-							labelLoginInfo.Text = "Доступ запрещен.";
-							QSMain.connectionDB.Close ();
-							return;
-						}
+				using(MySqlDataReader rdr = cmd.ExecuteReader ())
+				{
+					if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
+						labelLoginInfo.Text = "Пользователь деактивирован.";
+						ConnectionError = "Пользователь под которым вы пытаетесь войти, деактивирован в настройках базы.";
+						QSMain.connectionDB.Close ();
+						return;
 					}
-				} catch {
 				}
-				labelLoginInfo.Text = "";
-				buttonErrorInfo.Visible = false;
+				labelLoginInfo.Text = ConnectionError = String.Empty;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
 				QSMain.Configsource.Configs [ini].Set ("UserLogin", entryUser.Text);
 				QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
@@ -223,9 +229,9 @@ namespace QSProjectsLib
 					labelLoginInfo.Text = "Доступ запрещен.\nПроверьте логин и пароль.";
 				else
 					labelLoginInfo.Text = "Ошибка соединения с базой данных.";
-				buttonErrorInfo.Visible = true;
+
 				ConnectionError = "Строка соединения: " + connStr + "\nИсключение: " + ex.ToString ();
-				Console.WriteLine (ex.ToString ());
+				logger.Warn (ex);
 				QSMain.connectionDB.Close ();
 			}
 			
