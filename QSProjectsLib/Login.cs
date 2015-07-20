@@ -199,15 +199,14 @@ namespace QSProjectsLib
 				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
 				cmd.Parameters.AddWithValue ("@login", entryUser.Text);
 				try {
-					MySqlDataReader rdr = cmd.ExecuteReader ();
-				
-					if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
-						labelLoginInfo.Text = "Доступ запрещен.";
-						rdr.Close ();
-						QSMain.connectionDB.Close ();
-						return;
+					using(MySqlDataReader rdr = cmd.ExecuteReader ())
+					{
+						if (!rdr.Read () || DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
+							labelLoginInfo.Text = "Доступ запрещен.";
+							QSMain.connectionDB.Close ();
+							return;
+						}
 					}
-					rdr.Close ();
 				} catch {
 				}
 				labelLoginInfo.Text = "";
