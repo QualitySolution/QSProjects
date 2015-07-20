@@ -16,6 +16,18 @@ namespace QSProjectsLib
 		IConfig defaultConfig;
 		bool doNotCheck = false;
 
+		enum connectionStoreCol
+		{
+			Name,
+			Server,
+			Base,
+			User,
+			Section,
+			NumberInArray,
+			AccountLogin,
+			ConnectionType
+		}
+
 		public EditConnection (ref List<Connection> Connections, ref IniConfigSource Config)
 		{
 			this.Build ();
@@ -274,6 +286,13 @@ namespace QSProjectsLib
 		protected void OnEntryServerFocusOutEvent (object o, FocusOutEventArgs args)
 		{
 			entryName.ModifyText (StateType.Normal, new Gdk.Color (0, 0, 0));
+		}
+
+		protected void OnEntryNameChanged (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			treeviewConnections.Selection.GetSelected (out iter);
+			connectionsListStore.SetValue (iter, (int)connectionStoreCol.Name, entryName.Text);
 		}
 	}
 }

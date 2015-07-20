@@ -328,8 +328,8 @@ namespace QSProjectsLib
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 567;
-			this.DefaultHeight = 400;
+			this.DefaultWidth = 557;
+			this.DefaultHeight = 398;
 			this.Show ();
 			this.treeviewConnections.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewConnectionsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
@@ -338,6 +338,7 @@ namespace QSProjectsLib
 			this.entryServer.TextDeleted += new global::Gtk.TextDeletedHandler (this.OnEntryServerTextDeleted);
 			this.entryServer.FocusInEvent += new global::Gtk.FocusInEventHandler (this.OnEntryServerFocusInEvent);
 			this.entryServer.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryServerFocusOutEvent);
+			this.entryName.Changed += new global::System.EventHandler (this.OnEntryNameChanged);
 			this.comboConnectionType.Changed += new global::System.EventHandler (this.OnComboConnectionTypeChanged);
 			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}

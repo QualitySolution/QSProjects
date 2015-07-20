@@ -483,7 +483,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.UserProperty" design-size="530 347">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.UserProperty" design-size="511 348">
     <property name="MemberName" />
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
@@ -681,7 +681,7 @@
                       <widget class="Gtk.Label" id="label4">
                         <property name="MemberName" />
                         <property name="Xalign">1</property>
-                        <property name="LabelProp" translatable="yes">Имя:</property>
+                        <property name="LabelProp" translatable="yes">Отображаемой имя:</property>
                       </widget>
                       <packing>
                         <property name="TopAttach">1</property>
@@ -700,6 +700,7 @@
                     <child>
                       <widget class="Gtk.Label" id="label6">
                         <property name="MemberName" />
+                        <property name="Xalign">1</property>
                         <property name="LabelProp" translatable="yes">Пароль:</property>
                       </widget>
                       <packing>
@@ -1548,7 +1549,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.EditConnection" design-size="567 400">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.EditConnection" design-size="557 398">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Редактор подключений</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -1696,6 +1697,7 @@
                         <property name="CanFocus">True</property>
                         <property name="IsEditable">True</property>
                         <property name="InvisibleChar">●</property>
+                        <signal name="Changed" handler="OnEntryNameChanged" />
                       </widget>
                       <packing>
                         <property name="TopAttach">1</property>
