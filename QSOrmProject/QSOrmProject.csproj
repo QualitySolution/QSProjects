@@ -108,6 +108,7 @@
     <Compile Include="DomainModel\ChildUnitOfWork.cs" />
     <Compile Include="ParentReference\ParentReferenceConfig.cs" />
     <Compile Include="ParentReference\ParentReferenceSaveWithRoot.cs" />
+    <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -11,7 +11,7 @@ namespace Gtk.DataBindings
 	/// </remarks>
 	[ToolboxItem (true)]
 	[Category ("Databound Widgets")]
-	public class DataEntryReference : EntryReference, IPostableControl, IAdaptableControl
+	public class DataEntryReferenceVM : EntryReferenceVM, IPostableControl, IAdaptableControl
 	{
 		private ControlAdaptor adaptor = null;
 		private MappingsImplementor internalModel = null;
@@ -270,7 +270,7 @@ namespace Gtk.DataBindings
 		/// <summary>
 		/// Creates Widget 
 		/// </summary>
-		public DataEntryReference()
+		public DataEntryReferenceVM()
 			: base()
 		{
 			internalModel = new MappingsImplementor (this);
@@ -283,7 +283,7 @@ namespace Gtk.DataBindings
 		/// <param name="aMappings">
 		/// Mappings with this widget <see cref="System.String"/>
 		/// </param>
-		public DataEntryReference (string aMappings)
+		public DataEntryReferenceVM (string aMappings)
 			: base()
 		{
 			internalModel = new MappingsImplementor (this);
@@ -300,7 +300,7 @@ namespace Gtk.DataBindings
 		/// <param name="aMappings">
 		/// Mappings with this widget <see cref="System.String"/>
 		/// </param>
-		public DataEntryReference (object aDataSource, string aMappings)
+		public DataEntryReferenceVM (object aDataSource, string aMappings)
 			: base()
 		{
 			internalModel = new MappingsImplementor (this);
@@ -312,7 +312,7 @@ namespace Gtk.DataBindings
 		/// <summary>
 		/// Destroys and disconnects Widget
 		/// </summary>
-		~DataEntryReference()
+		~DataEntryReferenceVM()
 		{
 			Disconnect();
 		}
