@@ -58,9 +58,21 @@ namespace QSOrmProject
 				if (RepresentationModel.RepresentationFilter != null)
 					FilterWidget = RepresentationModel.RepresentationFilter;
 				SearchFields = RepresentationModel.SearchFields.ToArray ();
+				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				RepresentationModel.UpdateNodes ();
-				UpdateObjectList ();
 			}
+		}
+
+		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
+		{
+			logger.Info ("Обновляем таблицу справочника<{0}>...", objectType.Name);
+			filterView = new ObservableFilterListView (RepresentationModel.ItemsList);
+
+			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
+			filterView.ListChanged += FilterViewChanged;
+			ormtableview.ItemsDataSource = filterView;
+			UpdateSum ();
+			logger.Info ("Ok.");
 		}
 
 		#region IOrmDialog implementation
@@ -176,18 +188,6 @@ namespace QSOrmProject
 				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
 			}
 			ormtableview.Selection.Changed += OnTreeviewSelectionChanged;
-		}
-
-		private void UpdateObjectList ()
-		{
-			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
-			filterView = new ObservableFilterListView (RepresentationModel.ItemsList);
-				
-			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
-			filterView.ListChanged += FilterViewChanged;
-			ormtableview.ItemsDataSource = filterView;
-			UpdateSum ();
-			logger.Info ("Ok.");
 		}
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
