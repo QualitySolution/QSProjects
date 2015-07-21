@@ -5,12 +5,19 @@ namespace QSProjectsLib
 	public partial class Users
 	{
 		private global::Gtk.VBox vbox2;
+		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
+		
 		private global::Gtk.TreeView treeviewUsers;
+		
 		private global::Gtk.HBox hbox1;
+		
 		private global::Gtk.Button buttonAdd;
+		
 		private global::Gtk.Button buttonEdit;
+		
 		private global::Gtk.Button buttonDelete;
+		
 		private global::Gtk.Button buttonClose;
 
 		protected virtual void Build ()
