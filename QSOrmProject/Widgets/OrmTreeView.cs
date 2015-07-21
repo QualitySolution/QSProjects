@@ -11,6 +11,7 @@ namespace QSOrmProject
 	[System.ComponentModel.ToolboxItem (true)]
 	public class OrmTableView : DataTreeView
 	{
+		bool itemsSelfSet = true;
 
 		IRepresentationModel representationModel;
 		public IRepresentationModel RepresentationModel {
@@ -22,7 +23,26 @@ namespace QSOrmProject
 				representationModel = value;
 				ColumnMappingConfig = RepresentationModel.TreeViewConfig;
 				RepresentationModel.UpdateNodes ();
-				ItemsDataSource = RepresentationModel.ItemsList;
+				base.ItemsDataSource = RepresentationModel.ItemsList;
+				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
+			}
+		}
+
+		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
+		{
+			if(itemsSelfSet)
+				base.ItemsDataSource = RepresentationModel.ItemsList;
+		}
+
+		public override object ItemsDataSource {
+			get
+			{
+				return base.ItemsDataSource;
+			}
+			set
+			{
+				base.ItemsDataSource = value;
+				itemsSelfSet = value == null;
 			}
 		}
 

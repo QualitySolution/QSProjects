@@ -19,6 +19,8 @@ namespace QSOrmProject.RepresentationModel
 
 		IList ItemsList { get;}
 
+		event EventHandler ItemsListUpdated;
+
 		IEnumerable<string> SearchFields { get;}
 
 		void UpdateNodes();

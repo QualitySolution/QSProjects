@@ -19,11 +19,20 @@ namespace QSOrmProject.RepresentationModel
 			set { uow = value; }
 		}
 
+		public event EventHandler ItemsListUpdated;
+
+		protected void OnItemsListUpdated()
+		{
+			if (ItemsListUpdated != null)
+				ItemsListUpdated (this, EventArgs.Empty);
+		}
+
 		public IList ItemsList { get; private set; }
 
 		protected void SetItemsSource (IList<TNode> list)
 		{
 			ItemsList = (IList)list;
+			OnItemsListUpdated ();
 		}
 
 		public abstract IMappingConfig TreeViewConfig { get; }
