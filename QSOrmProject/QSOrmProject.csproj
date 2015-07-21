@@ -107,7 +107,7 @@
     <Compile Include="gtk-gui\QSOrmProject.EntryReferenceVM.cs" />
     <Compile Include="DomainModel\ChildUnitOfWork.cs" />
     <Compile Include="ParentReference\ParentReferenceConfig.cs" />
-    <Compile Include="ParentReference\ParentReferenceGeneric.cs" />
+    <Compile Include="ParentReference\ParentReferenceSaveWithRoot.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -18,7 +18,7 @@ namespace QSOrmProject
 			get { return Root;}
 		}
 
-		public ParentReferenceGeneric<TParentEntity, TChildEntity> ParentReference { get; private set;}
+		public ParentReferenceSaveWithRoot<TParentEntity, TChildEntity> ParentReference { get; private set;}
 
 		public IUnitOfWorkGeneric<TParentEntity> ParentUoW {
 			get {
@@ -49,14 +49,14 @@ namespace QSOrmProject
 			}
 		}
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference )
+		public ChildUnitOfWork(ParentReferenceSaveWithRoot<TParentEntity, TChildEntity> parentReference )
 		{
 			IsNew = true;
 			ParentReference = parentReference;
 			Root = new TChildEntity();
 		}
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root)
+		public ChildUnitOfWork(ParentReferenceSaveWithRoot<TParentEntity, TChildEntity> parentReference, TChildEntity root)
 		{
 			IsNew = false;
 			ParentReference = parentReference;

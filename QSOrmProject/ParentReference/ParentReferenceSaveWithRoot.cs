@@ -5,7 +5,7 @@ using System.Data.Bindings.Collections.Generic;
 
 namespace QSOrmProject
 {
-	public class ParentReferenceGeneric<TParentEntity, TChildEntity> : IParentReference<TChildEntity>
+	public class ParentReferenceSaveWithRoot<TParentEntity, TChildEntity> : IParentReference<TChildEntity>
 		where TChildEntity : class, IDomainObject, new()
 		where TParentEntity : IDomainObject, new()
 	{
@@ -43,7 +43,7 @@ namespace QSOrmProject
 
 		#endregion
 
-		public ParentReferenceGeneric (IUnitOfWorkGeneric<TParentEntity> parentUoW, Expression<Func<TParentEntity, IList<TChildEntity>>> propertyRefExpr)
+		public ParentReferenceSaveWithRoot (IUnitOfWorkGeneric<TParentEntity> parentUoW, Expression<Func<TParentEntity, IList<TChildEntity>>> propertyRefExpr)
 		{
 			ParentUoWGeneric = parentUoW;
 			ListPropertyExpr = propertyRefExpr;
