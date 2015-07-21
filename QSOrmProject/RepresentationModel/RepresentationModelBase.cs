@@ -34,7 +34,7 @@ namespace QSOrmProject.RepresentationModel
 			get { if (representationFilter != null)
 					return representationFilter;
 				if (CreateRepresentationFilter != null)
-					representationFilter = CreateRepresentationFilter();
+					RepresentationFilter = CreateRepresentationFilter();
 				return representationFilter;
 			}
 			protected set { 
