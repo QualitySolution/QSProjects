@@ -241,9 +241,19 @@ namespace QSOrmProject
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
 			ormtableview.Selection.UnselectAll ();
-			if (OrmMain.GetObjectDiscription (objectType).SimpleDialog) {
+			var classDiscript = OrmMain.GetObjectDiscription (objectType);
+			if (classDiscript.SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
-			} else {
+			} 
+			else if(RepresentationModel is IRepresentationModelWithParent)
+			{
+				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
+					return;
+				TabParent.AddTab (
+					OrmMain.CreateObjectDialog (objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent), this);
+			}
+			else 
+			{
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
 				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType), this);

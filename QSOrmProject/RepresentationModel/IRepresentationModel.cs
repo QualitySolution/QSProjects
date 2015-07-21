@@ -25,5 +25,10 @@ namespace QSOrmProject.RepresentationModel
 
 		void UpdateNodes();
 	}
+
+	public interface IRepresentationModelWithParent
+	{
+		object GetParent { get;}
+	}
 }
 
