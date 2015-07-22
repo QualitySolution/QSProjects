@@ -10,19 +10,22 @@ namespace QSValidation
 		List<ValidationResult> Results;
 		public bool IsValid;
 
+		public IDictionary<object, object> ContextItems = null;
+
 		public QSValidator ()
 		{
 		}
 
-		public QSValidator (T entity)
+		public QSValidator (T entity, IDictionary<object, object> contextItems = null)
 		{
+			ContextItems = contextItems;
 			Validate (entity);
 		}
 
 		public bool Validate(T entity)
 		{
 			Results = new List<ValidationResult>();
-			var vc = new ValidationContext(entity, null, null);
+			var vc = new ValidationContext(entity, null, ContextItems);
 
 			if(entity is IValidatableObject)
 				Results.AddRange ((entity as IValidatableObject).Validate (vc));
