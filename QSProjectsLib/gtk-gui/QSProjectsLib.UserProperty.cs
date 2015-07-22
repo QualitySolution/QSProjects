@@ -179,7 +179,7 @@ namespace QSProjectsLib
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Имя:");
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Отображаемой имя:");
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 			w10.TopAttach = ((uint)(1));
@@ -189,6 +189,7 @@ namespace QSProjectsLib
 			// Container child table1.Gtk.Table+TableChild
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
+			this.label6.Xalign = 1F;
 			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("Пароль:");
 			this.table1.Add (this.label6);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
@@ -325,8 +326,8 @@ namespace QSProjectsLib
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 530;
-			this.DefaultHeight = 347;
+			this.DefaultWidth = 511;
+			this.DefaultHeight = 348;
 			this.Show ();
 			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
