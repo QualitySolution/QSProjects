@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data.Bindings;
 using Gtk;
 using QSOrmProject;
-using QSWidgetLib;
 using System.Linq;
 
 namespace QSContacts
@@ -106,7 +105,7 @@ namespace QSContacts
 			Gtk.Label labelSurame = new Gtk.Label ("Фамилия:");
 			datatablePersons.Attach (labelSurame, (uint)0, (uint)1, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry nameDataEntry = new DataValidatedEntry (rowAdaptor, "Surname");
+			DataValidatedEntry nameDataEntry = new DataValidatedEntry (rowAdaptor, "Lastname");
 			nameDataEntry.WidthChars = 20;
 			datatablePersons.Attach (nameDataEntry, (uint)1, (uint)2, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
@@ -117,12 +116,12 @@ namespace QSContacts
 			nameDataEntry.WidthChars = 20;
 			datatablePersons.Attach (surnameDataEntry, (uint)3, (uint)4, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
-			Gtk.Label labelLastname = new Gtk.Label ("Отчество:");
-			datatablePersons.Attach (labelLastname, (uint)4, (uint)5, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			Gtk.Label labelPatronymic = new Gtk.Label ("Отчество:");
+			datatablePersons.Attach (labelPatronymic, (uint)4, (uint)5, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry lastnameDataEntry = new DataValidatedEntry (rowAdaptor, "Lastname");
+			DataValidatedEntry PatronymicDataEntry = new DataValidatedEntry (rowAdaptor, "PatronymicName");
 			nameDataEntry.WidthChars = 20;
-			datatablePersons.Attach (lastnameDataEntry, (uint)5, (uint)6, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePersons.Attach (PatronymicDataEntry, (uint)5, (uint)6, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
 			Gtk.Image image = new Gtk.Image ();
@@ -192,7 +191,7 @@ namespace QSContacts
 		{
 			PersonsList.Where(p => String.IsNullOrWhiteSpace (p.Name) 
 				&& String.IsNullOrWhiteSpace (p.Lastname)
-				&& String.IsNullOrWhiteSpace (p.Surname)
+				&& String.IsNullOrWhiteSpace (p.PatronymicName)
 			).ToList().ForEach(p => PersonsList.Remove(p));
 
 			foreach(Person person in PersonsList)

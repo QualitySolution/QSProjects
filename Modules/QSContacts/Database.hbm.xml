@@ -34,8 +34,8 @@
 			<generator class="native"></generator>
 	 	</id>
 		<property name="Name" column="name" />
-		<property name="Surname" column="surname" />
-		<property name="Lastname" column="lastname" />
+		<property name="PatronymicName" column="patronymic" />
+		<property name="Lastname" column="surname" />
 	</class>
 	<class name="Post" lazy="false" table="post">
 		<id name="Id" column="id">
