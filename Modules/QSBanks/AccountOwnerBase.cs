@@ -40,6 +40,7 @@ namespace QSBanks
 
 		public AccountOwnerBase ()
 		{
+			accounts = new List<Account> ();
 		}
 
 		private void UpdateDefault ()
