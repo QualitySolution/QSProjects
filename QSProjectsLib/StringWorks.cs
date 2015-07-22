@@ -86,9 +86,16 @@ namespace QSProjectsLib
 			}
 		}
 
-		public static string PersonNameWithInitials (string Lastname, string Name, string Surname)
+		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
 		{
-			return String.Format ("{0} {1}.{2}.", Lastname, Name [0], Surname [0]);
+			string result = String.Empty;
+			if(lastname.Length > 0)
+				result += String.Format ("{0} ", lastname);
+			if (name.Length > 0)
+				result += String.Format ("{0}.", name [0]);
+			if(patronymicName.Length > 0)
+				result += String.Format ("{0}.", patronymicName [0]);
+			return result;
 		}
 
 		public static string BytesToIECUnitsString (ulong bytes)
