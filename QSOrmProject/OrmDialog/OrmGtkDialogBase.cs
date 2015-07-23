@@ -35,6 +35,7 @@ namespace QSOrmProject
 
 
 		//FIXME Временно для совместимости
+		[Obsolete("Используйте UnitOfWork, это свойство будет удалено.")]
 		public NHibernate.ISession Session
 		{
 			get
