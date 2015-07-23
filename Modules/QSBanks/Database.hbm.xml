@@ -18,6 +18,7 @@
 	 	</id>
 	 	<property name="Name" column="name" />
 	 	<property name="Number" column="number" />
+	 	<property name="Code1c" column="code_1c" />
 	 	<property name="Inactive" column="inactive" />
 	 	<many-to-one name="InBank" class="Bank" column="bank_id" />
  	</class>

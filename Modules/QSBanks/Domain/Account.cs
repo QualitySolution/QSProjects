@@ -30,6 +30,13 @@ namespace QSBanks
 			set { SetField (ref number, value, () => Number); }
 		}
 
+		string? code1c;
+
+		public virtual string? Code1c {
+			get { return code1c; }
+			set { SetField (ref code1c, value, () => Code1c); }
+		}
+
 		bool inactive;
 
 		public virtual bool Inactive {
