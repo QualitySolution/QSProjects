@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentNHibernate.Cfg;
 using Gtk;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
-using QSTDI;
 using QSProjectsLib;
+using QSTDI;
 
 namespace QSOrmProject
 {
@@ -15,6 +16,7 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		internal static Configuration ormConfig;
+		internal static FluentConfiguration fluenConfig;
 		internal static ISessionFactory Sessions;
 		public static List<IOrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
@@ -27,6 +29,11 @@ namespace QSOrmProject
 			return session;
 		}
 
+		/// <summary>
+		/// Настройка Nhibernate только с загрузкой мапинга из XML.
+		/// </summary>
+		/// <param name="connectionString">Connection string.</param>
+		/// <param name="assemblies">Assemblies.</param>
 		public static void ConfigureOrm (string connectionString, string[] assemblies)
 		{
 			ormConfig = new Configuration (); 
@@ -39,6 +46,31 @@ namespace QSOrmProject
 			}
 
 			Sessions = ormConfig.BuildSessionFactory ();
+		}
+
+		/// <summary>
+		/// Настройка Nhibernate c одновременной загрузкой мапинга из XML и Fluent конфигураций.
+		/// </summary>
+		/// <param name="connectionString">Connection string.</param>
+		/// <param name="assemblies">Assemblies.</param>
+		public static void ConfigureOrm (string connectionString, System.Reflection.Assembly[] assemblies)
+		{
+			ormConfig = new Configuration (); 
+
+			ormConfig.Configure ();
+			ormConfig.SetProperty ("connection.connection_string", connectionString);
+
+			fluenConfig = Fluently.Configure (ormConfig);
+
+			fluenConfig.Mappings (m => {
+				foreach (var ass in assemblies)
+				{
+					m.HbmMappings.AddFromAssembly (ass);
+					m.FluentMappings.AddFromAssembly (ass);
+				}
+			});
+
+			Sessions = fluenConfig.BuildSessionFactory ();
 		}
 
 		public static Type GetDialogType (System.Type objectClass)
