@@ -35,6 +35,22 @@ namespace QSOrmProject
 			throw new ArgumentException ("No property reference expression was found.",
 				"propertyRefExpr");
 		}
+
+		public static MemberInfo GetMemberInfo<TObject> (Expression<Func<TObject, object>> propertyRefExpr)
+		{
+			MemberExpression memberExpr = propertyRefExpr.Body as MemberExpression;
+			if (memberExpr == null) {
+				UnaryExpression unaryExpr = propertyRefExpr as UnaryExpression;
+				if (unaryExpr != null && unaryExpr.NodeType == ExpressionType.Convert)
+					memberExpr = unaryExpr.Operand as MemberExpression;
+			}
+
+			if (memberExpr != null && memberExpr.Member.MemberType == MemberTypes.Property)
+				return memberExpr.Member;
+			else
+				return null;
+		}
+
 	}
 }
 
