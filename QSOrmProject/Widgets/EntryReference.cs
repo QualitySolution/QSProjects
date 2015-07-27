@@ -18,6 +18,12 @@ namespace QSOrmProject
 		public bool CanEditReference = true;
 		public ICriteria ItemsCriteria;
 
+		/// <summary>
+		/// Используется для ложной обработки строки отображения сущьности. На вход передается объект сущьности. на выходе должна получится строка.
+		/// Если ObjectDisplayFunc == null, сущьность отображается через функцию DomainHelper.GetObjectTilte, то есть по свойствам Title или Name.
+		/// </summary>
+		public Func<object, string> ObjectDisplayFunc;
+
 		public OrmParentReference ParentReference { get; set; }
 
 		private System.Type subjectType;
@@ -99,6 +105,12 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
+			if (displayFields == null)
+			{
+				UpdateWidgetNew ();
+				return;
+			}
+
 			buttonOpen.Sensitive = CanEditReference && subject != null;
 			if (subject == null || displayFields == null) {
 				entryObject.Text = String.Empty;
@@ -120,8 +132,26 @@ namespace QSOrmProject
 			entryObject.Text = String.Format (DisplayFormatString, values);
 		}
 
+		private void UpdateWidgetNew ()
+		{
+			buttonOpen.Sensitive = CanEditReference && subject != null;
+			if (subject == null) {
+				entryObject.Text = String.Empty;
+				return;
+			}
+
+			if(ObjectDisplayFunc != null)
+			{
+				entryObject.Text = ObjectDisplayFunc (Subject);
+				return;
+			}
+
+			entryObject.Text = DomainHelper.GetObjectTilte (Subject);
+		}
+
 		private string[] displayFields;
 
+		[Obsolete("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
 		public string[] DisplayFields {
 			get { return displayFields; }
 			set { displayFields = value; }
@@ -129,6 +159,7 @@ namespace QSOrmProject
 
 		private string displayFormatString;
 
+		[Obsolete("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
 		public string DisplayFormatString {
 			get { return (displayFormatString == null || displayFormatString == String.Empty) 
 					? "{0}" : displayFormatString; }
