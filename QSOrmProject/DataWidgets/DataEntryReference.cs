@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Data.Bindings;
 using QSOrmProject;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Gtk.DataBindings
 {
@@ -104,6 +106,13 @@ namespace Gtk.DataBindings
 		public string BoundaryMappings { 
 			get { return (adaptor.BoundaryMappings); }
 			set { adaptor.BoundaryMappings = value; }
+		}
+
+		public void PropertyMapping<TSubject>(Expression<Func<TSubject, object>> dataProperty)
+		{
+			var info = PropertyUtil.GetMemberInfo (dataProperty);
+			SubjectType = (info as PropertyInfo).PropertyType;
+			Mappings = info.Name;
 		}
 		
 		/// <summary>
