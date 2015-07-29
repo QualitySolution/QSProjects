@@ -46,6 +46,7 @@
     <Compile Include="ITdiTabParent.cs" />
     <Compile Include="TdiHelper.cs" />
     <Compile Include="TdiTabBase.cs" />
+    <Compile Include="WidgetOnTdiTabBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
