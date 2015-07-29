@@ -15,7 +15,17 @@ namespace QSOrmProject
 			get { return Root;}
 		}
 
-		public TRootEntity Root { get; private set;}
+		TRootEntity root;
+		public TRootEntity Root {
+			get {
+				return root;
+			}
+			private set {
+				root = value;
+				if (Root is IBusinessObject)
+					(Root as IBusinessObject).UoW = this;
+			}
+		}
 
 		public bool IsNew { get; private set;}
 

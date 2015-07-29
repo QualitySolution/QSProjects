@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -114,6 +112,8 @@
     <Compile Include="ParentReference\ParentReferenceConfig.cs" />
     <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
     <Compile Include="ParentReference\ParentReferenceGeneric.cs" />
+    <Compile Include="DomainModel\IBusinessObject.cs" />
+    <Compile Include="DomainModel\BusinessObjectBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -155,7 +155,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="DomainModel\BusinessObjectBase.cs" />
-    <None Include="DomainModel\IBusinessObject.cs" />
   </ItemGroup>
 </Project>
