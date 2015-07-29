@@ -114,6 +114,7 @@
     <Compile Include="ParentReference\ParentReferenceGeneric.cs" />
     <Compile Include="DomainModel\IBusinessObject.cs" />
     <Compile Include="DomainModel\BusinessObjectBase.cs" />
+    <Compile Include="DomainModel\UnitOfWorkBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
