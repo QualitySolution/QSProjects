@@ -152,6 +152,11 @@ namespace QSProjectsLib
 				this.text = new System.Text.StringBuilder(text);
 			}
 
+			public SQLHelper()
+			{
+				this.text = new System.Text.StringBuilder();
+			}
+
 			public SQLHelper(string text, params object[] args)
 			{
 				this.text = new System.Text.StringBuilder(String.Format (text, args));
