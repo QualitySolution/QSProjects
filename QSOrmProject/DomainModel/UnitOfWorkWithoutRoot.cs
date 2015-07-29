@@ -108,7 +108,15 @@ namespace QSOrmProject
 
 		public void Delete<T>(int id) where T : IDomainObject
 		{
-			Session.Delete(Session.Load<T>(id));
+			Delete(Session.Load<T>(id));
+		}
+
+		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
+		{
+			if(transaction == null)
+				transaction = Session.BeginTransaction();
+
+			Session.Delete (entity);
 		}
 	}
 }

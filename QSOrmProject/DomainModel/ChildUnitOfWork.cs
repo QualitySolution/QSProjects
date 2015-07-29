@@ -12,6 +12,7 @@ namespace QSOrmProject
 		where TParentEntity : IDomainObject, new()
 	{
 		private List<object> ObjectToSave = new List<object> ();
+		private List<object> ObjectToDelete = new List<object> ();
 		private TChildEntity externalRootVersion;
 
 		public object RootObject {
@@ -71,6 +72,11 @@ namespace QSOrmProject
 				ParentReference.AddNewChild (ParentUoW.Root, Root);
 			}
 
+			foreach(var obj in ObjectToDelete)
+			{
+				Session.Delete (obj);
+			}
+
 			foreach(var obj in ObjectToSave)
 			{
 				Session.SaveOrUpdate (obj);
@@ -120,7 +126,12 @@ namespace QSOrmProject
 
 		public void Delete<T>(int id) where T : IDomainObject
 		{
-			Session.Delete(Session.Load<T>(id));
+			Delete(Session.Load<T>(id));
+		}
+
+		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
+		{
+			ObjectToDelete.Add (entity);
 		}
 	}
 }

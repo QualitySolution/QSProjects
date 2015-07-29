@@ -20,6 +20,8 @@ namespace QSOrmProject
 		object GetById(Type clazz, int id);
 
 		void Commit();
+
+		void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject;
 	}
 }
 
