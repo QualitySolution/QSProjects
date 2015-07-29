@@ -8,6 +8,7 @@ using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
 using NHibernate.Criterion;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -212,9 +213,13 @@ namespace QSOrmProject
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			//FIXME Проверить может очистка сессии не нужна, если нам ее передали.
-			//if (parentReference == null)
-			//	Uow.Session.Clear ();
+			//Обновлляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
+			foreach(var entity in e.UpdatedSubjects.OfType<IDomainObject> ())
+			{
+				var curEntity = filterView.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
+				if (curEntity != null)
+					Uow.Session.Refresh (curEntity);
+			}
 			UpdateObjectList ();
 		}
 
