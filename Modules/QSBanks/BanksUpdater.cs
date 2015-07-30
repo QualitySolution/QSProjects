@@ -58,19 +58,11 @@ namespace QSBanks
 				return;
 
 			if (!forceUpdate) {
-				MessageDialog md = new MessageDialog (null, 
-					                   DialogFlags.Modal, 
-					                   MessageType.Question,
-					                   ButtonsType.YesNo,
+				if (!MessageDialogWorks.RunQuestionDialog (
+					    lastModified == default(DateTime) ? "Справочник банков никогда не обновлялся. Обновить?" :
 					RusNumber.FormatCase (withoutUpdate, "Cправочник банков обновлялся\n{0} день назад. Обновить?",
-						"Cправочник банков обновлялся\n{0} дня назад. Обновить?", 
-						"Cправочник банков обновлялся\n{0} дней назад. Обновить?")
-				);
-				md.SetPosition (WindowPosition.Center);
-				md.Show ();
-				int Result = md.Run ();
-				md.Destroy ();
-				if ((ResponseType)Result != ResponseType.Yes)
+						    "Cправочник банков обновлялся\n{0} дня назад. Обновить?", 
+						    "Cправочник банков обновлялся\n{0} дней назад. Обновить?")))
 					return;
 			}
 			ShowProgress ();
@@ -119,8 +111,7 @@ namespace QSBanks
 			}
 			//Удаляем неактуальные банки
 			foreach (Bank forRemoveBank in oldBanksList.FindAll 
-				(oldBank => !loadedBanksList.Exists (loadedBank => Bank.EqualsWithoutId (loadedBank, oldBank))))
-			{
+				(oldBank => !loadedBanksList.Exists (loadedBank => Bank.EqualsWithoutId (loadedBank, oldBank)))) {
 				if (accountsList.Exists (a => a.InBank == forRemoveBank)) {
 					if (forRemoveBank.Deleted)
 						continue;
@@ -134,7 +125,7 @@ namespace QSBanks
 			}
 
 			//Деактивируем счета
-			foreach (Account acc in accountsList.FindAll (a => !a.Inactive && a.InBank != null && a.InBank.Deleted)){
+			foreach (Account acc in accountsList.FindAll (a => !a.Inactive && a.InBank != null && a.InBank.Deleted)) {
 				acc.Inactive = true;
 				UpdatedObject.Add (acc);
 				accountsDeactivated++;
@@ -167,7 +158,7 @@ namespace QSBanks
 			infoDlg.Run ();
 			infoDlg.Destroy ();
 			//Записываем дату
-			MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, "last_banks_update", DateTime.Now.ToString ());
+			MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, "last_banks_update", DateTime.Now.ToString ("O"));
 		}
 
 		static List<Bank> getBanksFromRbc ()
