@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using NHibernate;
+using NHibernate.Criterion;
 using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
@@ -18,8 +19,10 @@ namespace QSOrmProject
 		public bool CanEditReference = true;
 		public ICriteria ItemsCriteria;
 
+		public QueryOver ItemsQuery { get; set; }
+
 		/// <summary>
-		/// Используется для ложной обработки строки отображения сущьности. На вход передается объект сущьности. на выходе должна получится строка.
+		/// Используется для cложной обработки строки отображения сущьности. На вход передается объект сущьности. на выходе должна получится строка.
 		/// Если ObjectDisplayFunc == null, сущьность отображается через функцию DomainHelper.GetObjectTilte, то есть по свойствам Title или Name.
 		/// </summary>
 		public Func<object, string> ObjectDisplayFunc;
@@ -191,10 +194,17 @@ namespace QSOrmProject
 				else
 					localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
-				if (ItemsCriteria == null)
-					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
+				if(ItemsQuery != null)
+				{
+					SelectDialog = new OrmReference (localUoW, ItemsQuery);
+				}
+				else
+				{
+					if (ItemsCriteria == null)
+						ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
 
-				SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
+					SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
+				}
 			}
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			if (!CanEditReference)
