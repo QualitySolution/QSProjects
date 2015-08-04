@@ -49,12 +49,12 @@ namespace QSBanks
 			dataentryrefBank.ItemsCriteria = Session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false));
 			(Entity as INotifyPropertyChanged).PropertyChanged += OnAccountPropertyChanged;
+			datalabelBik.Text = datalabelRegion.Text = datalabelCity.Text = String.Empty;
 		}
 
 		void OnAccountPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if( e.PropertyName == PropertyUtil.GetName<Account> (a => a.InBank))
-			{
+			if (e.PropertyName == PropertyUtil.GetName<Account> (a => a.InBank)) {
 				labelInactive.Markup = Entity.Inactive ? "<span foreground=\"red\">Данный счет находится в более не существующем банке.</span>" : "";
 				labelInactive.Visible = Entity.Inactive;
 			}
