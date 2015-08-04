@@ -15,30 +15,24 @@ using QSWidgetLib;
 namespace QSContacts
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class PhonesView : Gtk.Bin
+	public partial class PhonesView : Bin
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private ISession session;
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private GenericObservableList<Phone> PhonesList;
-		private Adaptor PhoneTypesAdaptor = new Adaptor();
+		private Adaptor PhoneTypesAdaptor = new Adaptor ();
+		private IUnitOfWork uow;
 
-		public ISession Session
-		{
-			get {
-				return session;
-			}
-			set {
-				session = value;
-				if (session != null) {
-					var criteria = session.CreateCriteria<PhoneType>();
-					PhoneTypesAdaptor.Target = new ObservableList (criteria.List ());
-				}
+		public IUnitOfWork UoW {
+			get { return uow; }
+			set { 
+				uow = value;
+				PhoneTypesAdaptor.Target = PhoneTypeRepository.GetPhoneTypes (uow);
 			}
 		}
 
 		private IList<Phone> phones;
-		public IList<Phone> Phones
-		{
+
+		public IList<Phone> Phones {
 			get {
 				return phones;
 			}
@@ -46,7 +40,7 @@ namespace QSContacts
 				if (phones == value)
 					return;
 				if (PhonesList != null)
-					CleanList();
+					CleanList ();
 				phones = value;
 				buttonAdd.Sensitive = phones != null;
 				if (value != null) {
@@ -54,11 +48,10 @@ namespace QSContacts
 					PhonesList.ElementAdded += OnPhoneListElementAdded;
 					PhonesList.ElementRemoved += OnPhoneListElementRemoved;
 					if (PhonesList.Count == 0)
-						PhonesList.Add(new Phone());
-					else
-					{
+						PhonesList.Add (new Phone ());
+					else {
 						foreach (Phone phone in PhonesList)
-							AddPhoneRow(phone);
+							AddPhoneRow (phone);
 					}
 				}
 			}
@@ -67,29 +60,25 @@ namespace QSContacts
 		void OnPhoneListElementRemoved (object aList, int[] aIdx, object aObject)
 		{
 			Widget foundWidget = null;
-			foreach(Widget wid in datatablePhones.AllChildren)
-			{
-				if(wid is IAdaptableContainer && (wid as IAdaptableContainer).Adaptor.Adaptor.FinalTarget == aObject)
-				{
+			foreach (Widget wid in datatablePhones.AllChildren) {
+				if (wid is IAdaptableContainer && (wid as IAdaptableContainer).Adaptor.Adaptor.FinalTarget == aObject) {
 					foundWidget = wid;
 					break;
 				}
 			}
-			if(foundWidget == null)
-			{
-				logger.Warn("Не найден виджет ассоциированный с удаленным телефоном.");
+			if (foundWidget == null) {
+				logger.Warn ("Не найден виджет ассоциированный с удаленным телефоном.");
 				return;
 			}
 
 			Table.TableChild child = ((Table.TableChild)(this.datatablePhones [foundWidget]));
-			RemoveRow(child.TopAttach);
+			RemoveRow (child.TopAttach);
 		}
 
 		void OnPhoneListElementAdded (object aList, int[] aIdx)
 		{
-			foreach(int i in aIdx)
-			{
-				AddPhoneRow(PhonesList[i]);
+			foreach (int i in aIdx) {
+				AddPhoneRow (PhonesList [i]);
 			}
 		}
 
@@ -103,13 +92,13 @@ namespace QSContacts
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
-			PhonesList.Add(new Phone());
+			PhonesList.Add (new Phone ());
 		}
 
-		private void AddPhoneRow(Phone newPhone) 
+		private void AddPhoneRow (Phone newPhone)
 		{
 			datatablePhones.NRows = RowNum + 1;
-			Adaptor rowAdaptor = new Adaptor(newPhone);
+			Adaptor rowAdaptor = new Adaptor (newPhone);
 
 			DataComboBox phoneDataCombo = new DataComboBox (rowAdaptor, "NumberType");
 			phoneDataCombo.WidthRequest = 100;
@@ -123,14 +112,14 @@ namespace QSContacts
 			DataValidatedEntry phoneDataEntry = new DataValidatedEntry (rowAdaptor, "Number");
 			phoneDataEntry.ValidationMode = ValidationType.phone;
 			if (MainSupport.BaseParameters.All.ContainsKey ("default_city_code") && newPhone.DigitsNumber == String.Empty)
-				phoneDataEntry.SetDefaultCityCode (MainSupport.BaseParameters.All["default_city_code"]);
+				phoneDataEntry.SetDefaultCityCode (MainSupport.BaseParameters.All ["default_city_code"]);
 			phoneDataEntry.WidthChars = 19;
 			datatablePhones.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textAdditionalLabel = new Gtk.Label ("доб.");
 			datatablePhones.Attach (textAdditionalLabel, (uint)3, (uint)4, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataEntry additionalDataEntry = new DataEntry (rowAdaptor,"Additional");
+			DataEntry additionalDataEntry = new DataEntry (rowAdaptor, "Additional");
 			additionalDataEntry.WidthRequest = 50;
 			additionalDataEntry.MaxLength = 10;
 			datatablePhones.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
@@ -151,24 +140,21 @@ namespace QSContacts
 		{
 			Table.TableChild delButtonInfo = ((Table.TableChild)(this.datatablePhones [(Widget)sender]));
 			Widget foundWidget = null;
-			foreach(Widget wid in datatablePhones.AllChildren)
-			{
-				if(wid is IAdaptableContainer && delButtonInfo.TopAttach == (datatablePhones[wid] as Table.TableChild).TopAttach)
-				{
+			foreach (Widget wid in datatablePhones.AllChildren) {
+				if (wid is IAdaptableContainer && delButtonInfo.TopAttach == (datatablePhones [wid] as Table.TableChild).TopAttach) {
 					foundWidget = wid;
 					break;
 				}
 			}
-			if(foundWidget == null)
-			{
-				logger.Warn("Не найден виджет ассоциированный с удаленным телефоном.");
+			if (foundWidget == null) {
+				logger.Warn ("Не найден виджет ассоциированный с удаленным телефоном.");
 				return;
 			}
 
-			PhonesList.Remove((Phone)(foundWidget as IAdaptableContainer).Adaptor.Adaptor.FinalTarget);
+			PhonesList.Remove ((Phone)(foundWidget as IAdaptableContainer).Adaptor.Adaptor.FinalTarget);
 		}
 
-		private void RemoveRow(uint Row)
+		private void RemoveRow (uint Row)
 		{
 			foreach (Widget w in datatablePhones.Children)
 				if (((Table.TableChild)(this.datatablePhones [w])).TopAttach == Row) {
@@ -180,37 +166,31 @@ namespace QSContacts
 			datatablePhones.NRows = --RowNum;
 		}
 
-		protected void MoveRowUp(uint Row)
+		protected void MoveRowUp (uint Row)
 		{
 			foreach (Widget w in datatablePhones.Children)
 				if (((Table.TableChild)(this.datatablePhones [w])).TopAttach == Row) {
 					uint Left = ((Table.TableChild)(this.datatablePhones [w])).LeftAttach;
 					uint Right = ((Table.TableChild)(this.datatablePhones [w])).RightAttach;
 					datatablePhones.Remove (w);
-					if (w.GetType() == typeof(DataComboBox))
+					if (w.GetType () == typeof(DataComboBox))
 						datatablePhones.Attach (w, Left, Right, Row - 1, Row, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 					else
 						datatablePhones.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 				}
 		}
 
-		private void CleanList()
+		private void CleanList ()
 		{
-			while (PhonesList.Count > 0)
-			{
-				PhonesList.RemoveAt(0);
+			while (PhonesList.Count > 0) {
+				PhonesList.RemoveAt (0);
 			}
 		}
 
-		public void SaveChanges()
+		public void SaveChanges ()
 		{
-			PhonesList.Where(p => p.Number.Length < QSContactsMain.MinSavePhoneLength)
-				.ToList().ForEach(p => PhonesList.Remove(p));
-			
-			foreach(Phone phone in PhonesList)
-			{
-				Session.SaveOrUpdate(phone);
-			}
+			PhonesList.Where (p => p.Number.Length < QSContactsMain.MinSavePhoneLength)
+				.ToList ().ForEach (p => PhonesList.Remove (p));
 		}
 	}
 }
