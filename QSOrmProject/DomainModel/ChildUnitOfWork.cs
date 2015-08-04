@@ -16,10 +16,10 @@ namespace QSOrmProject
 		private TChildEntity externalRootVersion;
 
 		public object RootObject {
-			get { return Root;}
+			get { return Root; }
 		}
 
-		public ParentReferenceGeneric<TParentEntity, TChildEntity> ParentReference { get; private set;}
+		public ParentReferenceGeneric<TParentEntity, TChildEntity> ParentReference { get; private set; }
 
 		public IUnitOfWorkGeneric<TParentEntity> ParentUoW {
 			get {
@@ -27,14 +27,12 @@ namespace QSOrmProject
 			}
 		}
 
-		public TChildEntity Root { get; private set;}
+		public TChildEntity Root { get; private set; }
 
-		public bool IsNew { get; private set;}
+		public bool IsNew { get; private set; }
 
-		public bool HasChanges
-		{
-			get
-			{
+		public bool HasChanges {
+			get {
 				return IsNew || !ObjectCloner.CompareFields (Root, externalRootVersion); 
 			}
 		}
@@ -50,14 +48,14 @@ namespace QSOrmProject
 			}
 		}
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference )
+		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference)
 		{
 			IsNew = true;
 			ParentReference = parentReference;
-			Root = new TChildEntity();
+			Root = new TChildEntity ();
 		}
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root)
+		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root)
 		{
 			IsNew = false;
 			ParentReference = parentReference;
@@ -65,71 +63,68 @@ namespace QSOrmProject
 			Root = ObjectCloner.Clone (externalRootVersion);
 		}
 
-		public void Commit()
+		public void Commit ()
 		{
-			if(IsNew)
-			{
+			if (IsNew) {
 				ParentReference.AddNewChild (ParentUoW.Root, Root);
 			}
 
-			foreach(var obj in ObjectToDelete)
-			{
+			foreach (var obj in ObjectToDelete) {
 				Session.Delete (obj);
 			}
 
-			foreach(var obj in ObjectToSave)
-			{
+			foreach (var obj in ObjectToSave) {
 				Session.SaveOrUpdate (obj);
 			}
 		}
 
-		public void Dispose()
+		public void Dispose ()
 		{
 			
 		}
 
-		public IQueryable<T> GetAll<T>() where T : IDomainObject
+		public IQueryable<T> GetAll<T> () where T : IDomainObject
 		{
-			return Session.Query<T>();
+			return Session.Query<T> ();
 		}
 
-		public T GetById<T>(int id) where T : IDomainObject
+		public T GetById<T> (int id) where T : IDomainObject
 		{
-			return Session.Get<T>(id);
+			return Session.Get<T> (id);
 		}
 
-		public object GetById(Type clazz, int id)
+		public object GetById (Type clazz, int id)
 		{
-			return Session.Get(clazz, id);
+			return Session.Get (clazz, id);
 		}
 
-		public void Save<TEntity>(TEntity entity) where TEntity : IDomainObject
+		public void Save<TEntity> (TEntity entity) where TEntity : IDomainObject
 		{
-			if (RootObject.Equals(entity))
-			{
-				ObjectCloner.FieldsCopy (Root, ref externalRootVersion);
+			if (RootObject.Equals (entity)) {
+				if (externalRootVersion == null)
+					externalRootVersion = Root;
+				else
+					ObjectCloner.FieldsCopy (Root, ref externalRootVersion);
 				ObjectToSave.Add (externalRootVersion);
-				Commit();
+				Commit ();
 				OrmMain.DelayedNotifyObjectUpdated (ParentUoW.RootObject, entity);
-			}
-			else
-			{
+			} else {
 				ObjectToSave.Add (entity);
-				OrmMain.DelayedNotifyObjectUpdated(RootObject, entity);
+				OrmMain.DelayedNotifyObjectUpdated (RootObject, entity);
 			}
 		}
 
-		public void Save()
+		public void Save ()
 		{
-			Save(Root);
+			Save (Root);
 		}
 
-		public void Delete<T>(int id) where T : IDomainObject
+		public void Delete<T> (int id) where T : IDomainObject
 		{
-			Delete(Session.Load<T>(id));
+			Delete (Session.Load<T> (id));
 		}
 
-		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
+		public void Delete<TEntity> (TEntity entity) where TEntity : IDomainObject
 		{
 			ObjectToDelete.Add (entity);
 		}
