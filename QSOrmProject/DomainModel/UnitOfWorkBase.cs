@@ -38,7 +38,8 @@ namespace QSOrmProject
 			}
 			catch
 			{
-				transaction.Rollback();
+				if(transaction.IsActive)
+					transaction.Rollback();
 				throw;
 			}
 			finally
