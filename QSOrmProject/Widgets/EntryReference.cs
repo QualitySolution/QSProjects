@@ -92,6 +92,13 @@ namespace QSOrmProject
 			}
 		}
 
+		public void SetObjectDisplayFunc<TObject> (Func<TObject, string> displayFunc) where TObject : class
+		{
+			if(typeof(TObject) != SubjectType)
+				throw new InvalidCastException (String.Format ("SubjectType = {0}, а DisplayFunc задается для {1}", SubjectType, typeof(TObject)));
+			ObjectDisplayFunc = o => displayFunc (o as TObject);
+		}
+
 		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
@@ -108,7 +115,7 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
-			if (displayFields == null)
+			if (displayFields == null || ObjectDisplayFunc != null)
 			{
 				UpdateWidgetNew ();
 				return;
