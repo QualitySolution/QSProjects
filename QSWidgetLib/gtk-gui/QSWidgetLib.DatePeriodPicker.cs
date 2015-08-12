@@ -35,7 +35,7 @@ namespace QSWidgetLib
 			this.buttonPickDatePeriod.Name = "buttonPickDatePeriod";
 			this.buttonPickDatePeriod.UseUnderline = true;
 			global::Gtk.Image w2 = new global::Gtk.Image ();
-			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSWidgetLib.icons.x-office-calendar.png");
+			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("period.png");
 			this.buttonPickDatePeriod.Image = w2;
 			this.hbox1.Add (this.buttonPickDatePeriod);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonPickDatePeriod]));

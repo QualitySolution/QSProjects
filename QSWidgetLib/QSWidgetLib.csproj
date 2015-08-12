@@ -69,6 +69,9 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\x-office-calendar.png" />
+    <EmbeddedResource Include="icons\period.png">
+      <LogicalName>period.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />
