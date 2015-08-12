@@ -31,8 +31,10 @@ namespace QSOrmProject
 
 		protected bool SetField<T> (ref T field, T value, string propertyName)
 		{
-			if (EqualityComparer<T>.Default.Equals (field, value))
-				return false;
+			if (NHibernate.NHibernateUtil.IsInitialized (value)) {
+				if (EqualityComparer<T>.Default.Equals (field, value))
+					return false;
+			}
 			field = value;
 			OnPropertyChanged (propertyName);
 			return true;
@@ -51,8 +53,10 @@ namespace QSOrmProject
 
 		protected bool SetField<T> (ref T field, T value, Expression<Func<T>> selectorExpression)
 		{
-			if (EqualityComparer<T>.Default.Equals (field, value))
-				return false;
+			if (NHibernate.NHibernateUtil.IsInitialized (value)) {
+				if(EqualityComparer<T>.Default.Equals (field, value))
+					return false;
+			}
 			field = value;
 			OnPropertyChanged (selectorExpression);
 			return true;
