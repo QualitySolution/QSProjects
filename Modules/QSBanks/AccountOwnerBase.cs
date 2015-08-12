@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using QSOrmProject;
 using System.Data.Bindings.Collections.Generic;
+using NHibernate;
 
 namespace QSBanks
 {
@@ -12,9 +13,11 @@ namespace QSBanks
 		public virtual IList<Account> Accounts {
 			get { return accounts; }
 			set {
-				accounts = value;
-				UpdateDefault ();
-				observableAccounts = null;
+				if(SetField (ref accounts, value, () => Accounts))
+				{
+					UpdateDefault ();
+					observableAccounts = null;
+				}
 			}
 		}
 
@@ -45,7 +48,7 @@ namespace QSBanks
 
 		private void UpdateDefault ()
 		{
-			if (Accounts == null)
+			if (Accounts == null || !NHibernateUtil.IsInitialized(Accounts))
 				return;
 			foreach (Account acc in Accounts) {
 				acc.IsDefault = (acc == DefaultAccount);
