@@ -59,6 +59,9 @@
     <Compile Include="ParallelEditing.cs" />
     <Compile Include="DatePeriodPicker.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.DatePeriodPicker.cs" />
+    <Compile Include="LegalName.cs" />
+    <Compile Include="gtk-gui\QSWidgetLib.LegalName.cs" />
+    <Compile Include="CommonValues.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
