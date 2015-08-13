@@ -193,7 +193,7 @@ namespace QSOrmProject
 		void ConfigureDlg ()
 		{
 			Mode = OrmReferenceMode.Normal;
-			IOrmObjectMapping map = OrmMain.GetObjectDiscription (objectType);
+			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 			if (map != null) {
 				map.ObjectUpdated += OnRefObjectUpdated;
 				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
@@ -299,7 +299,7 @@ namespace QSOrmProject
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
 			datatreeviewRef.Selection.UnselectAll ();
-			if (OrmMain.GetObjectDiscription (objectType).SimpleDialog) {
+			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
 			} else if (parentReference != null) {
 				if (TabParent.BeforeCreateNewTab ((object)null, this).HasFlag (TdiBeforeCreateResultFlag.Canceled))
@@ -314,7 +314,7 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
-			if (OrmMain.GetObjectDiscription (objectType).SimpleDialog) {
+			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
 			} else if (parentReference != null) {
 				if (TabParent.BeforeCreateNewTab (datatreeviewRef.GetSelectedObjects () [0], this).HasFlag (TdiBeforeCreateResultFlag.Canceled))

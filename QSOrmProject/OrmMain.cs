@@ -89,7 +89,7 @@ namespace QSOrmProject
 				return map.DialogClass;
 		}
 
-		public static IOrmObjectMapping GetObjectDiscription (System.Type type)
+		public static IOrmObjectMapping GetObjectDescription (System.Type type)
 		{
 			if (type.GetInterface (typeof(INHibernateProxy).FullName) != null)
 				type = type.BaseType;
@@ -97,7 +97,7 @@ namespace QSOrmProject
 			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == type);
 		}
 
-		public static OrmObjectMapping<TEntity> GetObjectDiscription<TEntity> ()
+		public static OrmObjectMapping<TEntity> GetObjectDescription<TEntity> ()
 		{
 			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == typeof(TEntity)) as OrmObjectMapping<TEntity>;
 		}

@@ -79,12 +79,12 @@ namespace QSOrmProject
 			get { return subjectType; }
 			set {
 				if (subjectType != null) {
-					IOrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
+					IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
 					map.ObjectUpdated -= OnExternalObjectUpdated;
 				}
 				subjectType = value;
 				if (subjectType != null) {
-					IOrmObjectMapping map = OrmMain.GetObjectDiscription (subjectType);
+					IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;
 				}
 			}
@@ -153,7 +153,7 @@ namespace QSOrmProject
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
-			if (OrmMain.GetObjectDiscription (SubjectType).SimpleDialog) {
+			if (OrmMain.GetObjectDescription (SubjectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
 				return;
 			}

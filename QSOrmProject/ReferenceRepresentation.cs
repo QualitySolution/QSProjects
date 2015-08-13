@@ -50,7 +50,8 @@ namespace QSOrmProject
 			get {
 				return representationModel;
 			}
-			set { if (representationModel == value)
+			set {
+				if (representationModel == value)
 					return;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
@@ -78,12 +79,14 @@ namespace QSOrmProject
 		#region IOrmDialog implementation
 
 		public IUnitOfWork UoW {
-			get { return RepresentationModel.UoW;
+			get {
+				return RepresentationModel.UoW;
 			}
 		}
 
 		public object EntityObject {
-			get { return null;
+			get {
+				return null;
 			}
 		}
 
@@ -103,8 +106,7 @@ namespace QSOrmProject
 		private List<PropertyInfo> searchPropCache;
 
 		protected List<PropertyInfo> SearchPropCache {
-			get
-			{
+			get {
 				if (searchPropCache != null)
 					return searchPropCache;
 
@@ -125,7 +127,7 @@ namespace QSOrmProject
 				return searchPropCache;
 			}
 		}
-			
+
 		private OrmReferenceMode mode;
 
 		public OrmReferenceMode Mode {
@@ -194,8 +196,8 @@ namespace QSOrmProject
 		{
 			bool selected = ormtableview.Selection.CountSelectedRows () > 0;
 			buttonSelect.Sensitive = selected;
-			buttonEdit.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) && selected;
-			buttonDelete.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) && selected;
+			buttonEdit.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanEdit) && selected;
+			buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
 		}
 
 		void FilterViewChanged (object aList)
@@ -241,19 +243,15 @@ namespace QSOrmProject
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
 			ormtableview.Selection.UnselectAll ();
-			var classDiscript = OrmMain.GetObjectDiscription (objectType);
+			var classDiscript = OrmMain.GetObjectDescription (objectType);
 			if (classDiscript.SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
-			} 
-			else if(RepresentationModel is IRepresentationModelWithParent)
-			{
+			} else if (RepresentationModel is IRepresentationModelWithParent) {
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
 				TabParent.AddTab (
 					OrmMain.CreateObjectDialog (objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent), this);
-			}
-			else 
-			{
+			} else {
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
 				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType), this);
@@ -262,11 +260,15 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
-			if (OrmMain.GetObjectDiscription (objectType).SimpleDialog) {
+			var description = OrmMain.GetObjectDescription (objectType);
+			if (description == null) {
+				throw new NotImplementedException (String.Format ("Не реализован OrmObjectMapping для типа {0}", objectType));
+			}
+			if (description.SimpleDialog) {
 				throw new NotImplementedException ();
 				//OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
 			} else {
-				var node = ormtableview.GetSelectedObjects ()[0];
+				var node = ormtableview.GetSelectedObjects () [0];
 				int selectedId = DomainHelper.GetId (node);
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
@@ -284,7 +286,7 @@ namespace QSOrmProject
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
 			if (ObjectSelected != null) {
-				var node = ormtableview.GetSelectedObjects ()[0];
+				var node = ormtableview.GetSelectedObjects () [0];
 				int selectedId = DomainHelper.GetId (node);
 
 				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selectedId, node));
@@ -297,12 +299,12 @@ namespace QSOrmProject
 			hboxFilter.Visible = checkShowFilter.Active;
 		}
 
-		protected void OnButtonDeleteClicked(object sender, EventArgs e)
+		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			var node = ormtableview.GetSelectedObjects ()[0];
+			var node = ormtableview.GetSelectedObjects () [0];
 			int selectedId = DomainHelper.GetId (node);
 
-			if (OrmMain.DeleteObject(objectType, selectedId))
+			if (OrmMain.DeleteObject (objectType, selectedId))
 				RepresentationModel.UpdateNodes ();
 		}
 
@@ -314,10 +316,11 @@ namespace QSOrmProject
 				buttonEdit.Click ();
 		}
 	}
-		
+
 	public class ReferenceRepresentationSelectedEventArgs : EventArgs
 	{
 		public int ObjectId { get; private set; }
+
 		public object VMNode { get; private set; }
 
 		public ReferenceRepresentationSelectedEventArgs (int id, object node)

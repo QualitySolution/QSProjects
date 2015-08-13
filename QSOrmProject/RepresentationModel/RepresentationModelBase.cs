@@ -100,7 +100,7 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelBase ()
 		{
-			var description = OrmMain.GetObjectDiscription<TEntity> ();
+			var description = OrmMain.GetObjectDescription<TEntity> ();
 			if (description != null)
 				description.ObjectUpdatedGeneric += OnExternalUpdate;
 			else
@@ -120,7 +120,7 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelBase (params Type[] subcribeOnTypes)
 		{
 			foreach (var type in subcribeOnTypes) {
-				var map = OrmMain.GetObjectDiscription (type);
+				var map = OrmMain.GetObjectDescription (type);
 				if (map != null)
 					map.ObjectUpdated += OnExternalUpdateCommon;
 				else
