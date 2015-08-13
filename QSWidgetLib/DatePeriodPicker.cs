@@ -19,7 +19,11 @@ namespace QSWidgetLib
 				return startDate;
 			}
 			set {
-				startDate = value;
+				if(value != startDate)
+				{
+					startDate = value;
+					OnPeriodChanged ();
+				}
 			}
 		}
 
@@ -40,7 +44,11 @@ namespace QSWidgetLib
 				return endDate;
 			}
 			set {
-				endDate = value;
+				if(value != endDate)
+				{
+					endDate = value;
+					OnPeriodChanged ();
+				}
 			}
 		}
 
@@ -80,7 +88,12 @@ namespace QSWidgetLib
 		private void  UpdateEntryText ()
 		{
 			if (StartDateOrNull.HasValue && EndDateOrNull.HasValue)
-				entryDate.Text = String.Format ("{0:d} - {1:d}", StartDate, EndDate);
+			{
+				if(StartDateOrNull.Value == EndDateOrNull.Value)
+					entryDate.Text = String.Format ("{0:d}", StartDate);
+				else
+					entryDate.Text = String.Format ("{0:d} - {1:d}", StartDate, EndDate);
+			}
 			else if (!StartDateOrNull.HasValue && !EndDateOrNull.HasValue)
 				entryDate.Text = String.Empty;
 			else if(StartDateOrNull.HasValue)
