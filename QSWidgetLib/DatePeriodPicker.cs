@@ -9,26 +9,47 @@ namespace QSWidgetLib
 	{
 		#region Fields
 
-		protected DateTime? startDate = null;
+		Label periodSummary;
+		Calendar StartDateCalendar, EndDateCalendar;
+
+		private DateTime? startDate;
+
+		public DateTime? StartDateOrNull {
+			get {
+				return startDate;
+			}
+			set {
+				startDate = value;
+			}
+		}
 
 		public DateTime StartDate { 
-			get { return !startDate.HasValue ? DateTime.Now : startDate.Value.Date; }
+			get { return startDate.HasValue ? startDate.Value : default(DateTime); }
 			set { 
-				if (value != default(DateTime)) {
-					startDate = value;
-					OnDateChanged ();
+				if (value != startDate) {
+					startDate = value != default(DateTime) ? (DateTime?)value : null;
+					OnPeriodChanged ();
 				}
 			}
 		}
 
 		private DateTime? endDate = null;
 
+		public DateTime? EndDateOrNull {
+			get {
+				return endDate;
+			}
+			set {
+				endDate = value;
+			}
+		}
+
 		public DateTime EndDate { 
-			get { return !endDate.HasValue ? DateTime.Now : endDate.Value.Date; }
+			get { return endDate.HasValue ? endDate.Value : default(DateTime); }
 			set { 
-				if (value != default(DateTime)) {
-					endDate = value; 
-					OnDateChanged ();
+				if (value != endDate) {
+					endDate = value != default(DateTime) ? (DateTime?)value : null;
+					OnPeriodChanged ();
 				}
 			}
 		}
@@ -39,12 +60,13 @@ namespace QSWidgetLib
 
 		#region Events
 
-		public event EventHandler DateChanged;
+		public event EventHandler PeriodChanged;
 
-		private void OnDateChanged ()
+		private void OnPeriodChanged ()
 		{
-			if (DateChanged != null)
-				DateChanged (this, EventArgs.Empty);
+			UpdateEntryText ();
+			if (PeriodChanged != null)
+				PeriodChanged (this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -57,7 +79,14 @@ namespace QSWidgetLib
 
 		private void  UpdateEntryText ()
 		{
-			entryDate.Text = String.Format ("{0} - {1}", StartDate.ToShortDateString (), EndDate.ToShortDateString ());
+			if (StartDateOrNull.HasValue && EndDateOrNull.HasValue)
+				entryDate.Text = String.Format ("{0:d} - {1:d}", StartDate, EndDate);
+			else if (!StartDateOrNull.HasValue && !EndDateOrNull.HasValue)
+				entryDate.Text = String.Empty;
+			else if(StartDateOrNull.HasValue)
+				entryDate.Text = String.Format ("начиная с {0:d}", StartDate);
+			else if(EndDateOrNull.HasValue)
+				entryDate.Text = String.Format ("до {0:d}", EndDate);
 		}
 
 		#region Event handlers
@@ -66,20 +95,25 @@ namespace QSWidgetLib
 		{
 			#region Widget creation
 			Window parentWin = (Window)Toplevel;
-			var selectDate = new Dialog ("Укажите дату", parentWin, DialogFlags.DestroyWithParent);
+			var selectDate = new Dialog ("Укажите период", parentWin, DialogFlags.DestroyWithParent);
 			selectDate.Modal = true;
 			selectDate.AddButton ("Отмена", ResponseType.Cancel);
 			selectDate.AddButton ("Ok", ResponseType.Ok);
 
+			periodSummary = new Label();
+			selectDate.VBox.Add(periodSummary);
+
 			HBox hbox = new HBox (true, 6);
 
-			Calendar StartDateCalendar = new Calendar ();
+			StartDateCalendar = new Calendar ();
 			StartDateCalendar.DisplayOptions = DisplayOptions;
-			StartDateCalendar.Date = StartDate;
+			StartDateCalendar.Date = StartDateOrNull ?? DateTime.Today;
+			StartDateCalendar.DaySelected += StartDateCalendar_DaySelected;
 
-			Calendar EndDateCalendar = new Calendar ();
+			EndDateCalendar = new Calendar ();
 			EndDateCalendar.DisplayOptions = DisplayOptions;
-			EndDateCalendar.Date = EndDate;
+			EndDateCalendar.Date = EndDateOrNull ?? DateTime.Today;
+			EndDateCalendar.DaySelected += EndDateCalendar_DaySelected;
 
 			hbox.Add (StartDateCalendar);
 			hbox.Add (EndDateCalendar);
@@ -90,9 +124,9 @@ namespace QSWidgetLib
 
 			int response = selectDate.Run ();
 			if (response == (int)ResponseType.Ok) {
-				StartDate = StartDateCalendar.GetDate ();
-				EndDate = EndDateCalendar.GetDate ();
-				UpdateEntryText ();
+				startDate = StartDateCalendar.GetDate ();
+				endDate = EndDateCalendar.GetDate ();
+				OnPeriodChanged ();
 			}
 
 			#region Destroy
@@ -101,6 +135,34 @@ namespace QSWidgetLib
 			hbox.Destroy ();
 			selectDate.Destroy ();
 			#endregion
+		}
+
+		void EndDateCalendar_DaySelected (object sender, EventArgs e)
+		{
+			UpdatePeriodInDialog ();
+		}
+
+		void StartDateCalendar_DaySelected (object sender, EventArgs e)
+		{
+			UpdatePeriodInDialog ();
+		}
+
+		void UpdatePeriodInDialog()
+		{
+			string text;
+			if(StartDateCalendar.Date.Year != EndDateCalendar.Date.Year)
+				text = String.Format("{0:D} - {1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
+			else if(StartDateCalendar.Date.Month != EndDateCalendar.Date.Month)
+				text = String.Format("{0:dd MMMMM}-{1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
+			else if(StartDateCalendar.Date.Day != EndDateCalendar.Date.Day)
+				text = String.Format("{0:dd}-{1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
+			else
+				text = String.Format("{0:D}", StartDateCalendar.Date);
+
+			if (StartDateCalendar.Date <= EndDateCalendar.Date)
+				periodSummary.Markup = text;
+			else
+				periodSummary.Markup = String.Format ("<span foreground=\"red\">{0}</span>", text);
 		}
 
 		protected void OnEntryDateActivated (object sender, EventArgs e)
