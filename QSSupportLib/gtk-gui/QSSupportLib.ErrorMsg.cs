@@ -16,6 +16,22 @@ namespace QSSupportLib
 		
 		private global::Gtk.Label label3;
 		
+		private global::Gtk.Table table1;
+		
+		private global::Gtk.Entry entryEmail;
+		
+		private global::Gtk.ScrolledWindow GtkScrolledWindow1;
+		
+		private global::Gtk.TextView textviewDescription;
+		
+		private global::Gtk.Label label2;
+		
+		private global::Gtk.Label label4;
+		
+		private global::Gtk.Label label5;
+		
+		private global::Gtk.HSeparator hseparator1;
+		
 		private global::Gtk.Expander expander1;
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
@@ -23,6 +39,8 @@ namespace QSSupportLib
 		private global::Gtk.TextView textviewError;
 		
 		private global::Gtk.Label GtkLabel1;
+		
+		private global::Gtk.Button buttonSendReport;
 		
 		private global::Gtk.Button buttonCopy;
 		
@@ -86,12 +104,96 @@ namespace QSSupportLib
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Вы можете помочь нам улучшить программу, сообщив нам об ошибке.\nДля этого отправьте на адрес info@qsolution.ru, сообщение с \nуказанием следующей информации:\n* Название программы и версия\n* Какие действия приводять к возникновению ошибки\n* Техническое сообщение об ошибке ");
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Вы можете помочь нам улучшить программу и исправить данную проблему. \nДля этого воспользуйтесь формой отправки отчета об ошибке.\n");
+			this.label3.Justify = ((global::Gtk.Justification)(3));
 			this.vbox2.Add (this.label3);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.label3]));
 			w5.Position = 2;
 			w5.Expand = false;
 			w5.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.table1 = new global::Gtk.Table (((uint)(3)), ((uint)(2)), false);
+			this.table1.Name = "table1";
+			this.table1.RowSpacing = ((uint)(6));
+			this.table1.ColumnSpacing = ((uint)(6));
+			// Container child table1.Gtk.Table+TableChild
+			this.entryEmail = new global::Gtk.Entry ();
+			this.entryEmail.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.";
+			this.entryEmail.CanFocus = true;
+			this.entryEmail.Name = "entryEmail";
+			this.entryEmail.IsEditable = true;
+			this.entryEmail.InvisibleChar = '●';
+			this.table1.Add (this.entryEmail);
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryEmail]));
+			w6.TopAttach = ((uint)(2));
+			w6.BottomAttach = ((uint)(3));
+			w6.LeftAttach = ((uint)(1));
+			w6.RightAttach = ((uint)(2));
+			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.GtkScrolledWindow1 = new global::Gtk.ScrolledWindow ();
+			this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
+			this.GtkScrolledWindow1.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child GtkScrolledWindow1.Gtk.Container+ContainerChild
+			this.textviewDescription = new global::Gtk.TextView ();
+			this.textviewDescription.TooltipMarkup = "В этом поле опишите последовательность действий, которая привела к возникновению ошибки.";
+			this.textviewDescription.CanFocus = true;
+			this.textviewDescription.Name = "textviewDescription";
+			this.GtkScrolledWindow1.Add (this.textviewDescription);
+			this.table1.Add (this.GtkScrolledWindow1);
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.GtkScrolledWindow1]));
+			w8.TopAttach = ((uint)(1));
+			w8.BottomAttach = ((uint)(2));
+			w8.LeftAttach = ((uint)(1));
+			w8.RightAttach = ((uint)(2));
+			w8.XOptions = ((global::Gtk.AttachOptions)(4));
+			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label2 = new global::Gtk.Label ();
+			this.label2.TooltipMarkup = "В этом поле опишите последовательность действий, которая привела к возникновению ошибки.";
+			this.label2.Name = "label2";
+			this.label2.Xalign = 1F;
+			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Описание:");
+			this.table1.Add (this.label2);
+			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
+			w9.TopAttach = ((uint)(1));
+			w9.BottomAttach = ((uint)(2));
+			w9.XOptions = ((global::Gtk.AttachOptions)(4));
+			w9.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label4 = new global::Gtk.Label ();
+			this.label4.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.";
+			this.label4.Name = "label4";
+			this.label4.Xalign = 1F;
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("E-mail:");
+			this.table1.Add (this.label4);
+			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
+			w10.TopAttach = ((uint)(2));
+			w10.BottomAttach = ((uint)(3));
+			w10.XOptions = ((global::Gtk.AttachOptions)(4));
+			w10.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label5 = new global::Gtk.Label ();
+			this.label5.Name = "label5";
+			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Для отправки отчета, пожалуйста, заполните следующие поля:");
+			this.table1.Add (this.label5);
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
+			w11.RightAttach = ((uint)(2));
+			w11.XOptions = ((global::Gtk.AttachOptions)(4));
+			w11.YOptions = ((global::Gtk.AttachOptions)(4));
+			this.vbox2.Add (this.table1);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.table1]));
+			w12.Position = 3;
+			w12.Expand = false;
+			w12.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.hseparator1 = new global::Gtk.HSeparator ();
+			this.hseparator1.Name = "hseparator1";
+			this.vbox2.Add (this.hseparator1);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hseparator1]));
+			w13.Position = 4;
+			w13.Expand = false;
+			w13.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.expander1 = new global::Gtk.Expander (null);
 			this.expander1.CanFocus = true;
@@ -114,20 +216,33 @@ namespace QSSupportLib
 			this.GtkLabel1.UseUnderline = true;
 			this.expander1.LabelWidget = this.GtkLabel1;
 			this.vbox2.Add (this.expander1);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.expander1]));
-			w8.Position = 3;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.expander1]));
+			w16.Position = 5;
 			this.hbox1.Add (this.vbox2);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
-			w9.Position = 1;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
+			w17.Position = 1;
 			w1.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
-			w10.Position = 0;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
+			w18.Position = 0;
 			// Internal child QSSupportLib.ErrorMsg.ActionArea
-			global::Gtk.HButtonBox w11 = this.ActionArea;
-			w11.Name = "dialog1_ActionArea";
-			w11.Spacing = 10;
-			w11.BorderWidth = ((uint)(5));
-			w11.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w19 = this.ActionArea;
+			w19.Name = "dialog1_ActionArea";
+			w19.Spacing = 10;
+			w19.BorderWidth = ((uint)(5));
+			w19.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
+			this.buttonSendReport = new global::Gtk.Button ();
+			this.buttonSendReport.CanFocus = true;
+			this.buttonSendReport.Name = "buttonSendReport";
+			this.buttonSendReport.UseUnderline = true;
+			this.buttonSendReport.Label = global::Mono.Unix.Catalog.GetString ("Отправить отчет");
+			global::Gtk.Image w20 = new global::Gtk.Image ();
+			w20.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSSupportLib.icons.send-error-report.png");
+			this.buttonSendReport.Image = w20;
+			this.AddActionWidget (this.buttonSendReport, 0);
+			global::Gtk.ButtonBox.ButtonBoxChild w21 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w19 [this.buttonSendReport]));
+			w21.Expand = false;
+			w21.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCopy = new global::Gtk.Button ();
 			this.buttonCopy.TooltipMarkup = "Копирует сообщение в буфер обмена.";
@@ -135,13 +250,14 @@ namespace QSSupportLib
 			this.buttonCopy.Name = "buttonCopy";
 			this.buttonCopy.UseUnderline = true;
 			this.buttonCopy.Label = global::Mono.Unix.Catalog.GetString ("Скопировать");
-			global::Gtk.Image w12 = new global::Gtk.Image ();
-			w12.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-copy", global::Gtk.IconSize.Menu);
-			this.buttonCopy.Image = w12;
-			w11.Add (this.buttonCopy);
-			global::Gtk.ButtonBox.ButtonBoxChild w13 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w11 [this.buttonCopy]));
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Image w22 = new global::Gtk.Image ();
+			w22.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-copy", global::Gtk.IconSize.Menu);
+			this.buttonCopy.Image = w22;
+			w19.Add (this.buttonCopy);
+			global::Gtk.ButtonBox.ButtonBoxChild w23 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w19 [this.buttonCopy]));
+			w23.Position = 1;
+			w23.Expand = false;
+			w23.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -149,20 +265,21 @@ namespace QSSupportLib
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Понятно");
-			global::Gtk.Image w14 = new global::Gtk.Image ();
-			w14.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-close", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w14;
+			global::Gtk.Image w24 = new global::Gtk.Image ();
+			w24.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-close", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w24;
 			this.AddActionWidget (this.buttonOk, -7);
-			global::Gtk.ButtonBox.ButtonBoxChild w15 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w11 [this.buttonOk]));
-			w15.Position = 1;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w25 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w19 [this.buttonOk]));
+			w25.Position = 2;
+			w25.Expand = false;
+			w25.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 536;
-			this.DefaultHeight = 280;
+			this.DefaultWidth = 531;
+			this.DefaultHeight = 296;
 			this.Show ();
+			this.buttonSendReport.Clicked += new global::System.EventHandler (this.OnButtonSendReportClicked);
 			this.buttonCopy.Clicked += new global::System.EventHandler (this.OnButtonCopyClicked);
 		}
 	}

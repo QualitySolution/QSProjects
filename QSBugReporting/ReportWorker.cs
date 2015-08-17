@@ -5,13 +5,13 @@ using NLog;
 
 namespace QSBugReporting
 {
-	public class ReportWorker
+	public static class ReportWorker
 	{
 		public static String ServiceAddress = "http://saas.qsolution.ru:2048/BugReporting";
 
 		static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public IBugReportingService GetReportService ()
+		public static IBugReportingService GetReportService ()
 		{
 			try {
 				var address = new Uri (ServiceAddress);

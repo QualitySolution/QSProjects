@@ -5,18 +5,18 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="536 280">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="531 296">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
     <property name="TypeHint">Dialog</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
-    <property name="Buttons">2</property>
+    <property name="Buttons">3</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">
       <widget class="Gtk.VBox" id="dialog1_VBox">
@@ -75,16 +75,153 @@
                   <widget class="Gtk.Label" id="label3">
                     <property name="MemberName" />
                     <property name="Xalign">0</property>
-                    <property name="LabelProp" translatable="yes">Вы можете помочь нам улучшить программу, сообщив нам об ошибке.
-Для этого отправьте на адрес info@qsolution.ru, сообщение с 
-указанием следующей информации:
-* Название программы и версия
-* Какие действия приводять к возникновению ошибки
-* Техническое сообщение об ошибке </property>
+                    <property name="LabelProp" translatable="yes">Вы можете помочь нам улучшить программу и исправить данную проблему. 
+Для этого воспользуйтесь формой отправки отчета об ошибке.
+</property>
+                    <property name="Justify">Fill</property>
                   </widget>
                   <packing>
                     <property name="Position">2</property>
                     <property name="AutoSize">False</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Table" id="table1">
+                    <property name="MemberName" />
+                    <property name="NRows">3</property>
+                    <property name="NColumns">2</property>
+                    <property name="RowSpacing">6</property>
+                    <property name="ColumnSpacing">6</property>
+                    <child>
+                      <widget class="Gtk.Entry" id="entryEmail">
+                        <property name="MemberName" />
+                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
+                        <property name="CanFocus">True</property>
+                        <property name="IsEditable">True</property>
+                        <property name="InvisibleChar">●</property>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">2</property>
+                        <property name="BottomAttach">3</property>
+                        <property name="LeftAttach">1</property>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">False</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">True</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
+                        <property name="MemberName" />
+                        <property name="ShadowType">In</property>
+                        <child>
+                          <widget class="Gtk.TextView" id="textviewDescription">
+                            <property name="MemberName" />
+                            <property name="Tooltip" translatable="yes">В этом поле опишите последовательность действий, которая привела к возникновению ошибки.</property>
+                            <property name="CanFocus">True</property>
+                            <property name="ShowScrollbars">True</property>
+                            <property name="Text" translatable="yes" />
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
+                        <property name="LeftAttach">1</property>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="label2">
+                        <property name="MemberName" />
+                        <property name="Tooltip" translatable="yes">В этом поле опишите последовательность действий, которая привела к возникновению ошибки.</property>
+                        <property name="Xalign">1</property>
+                        <property name="LabelProp" translatable="yes">Описание:</property>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="label4">
+                        <property name="MemberName" />
+                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
+                        <property name="Xalign">1</property>
+                        <property name="LabelProp" translatable="yes">E-mail:</property>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">2</property>
+                        <property name="BottomAttach">3</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="label5">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">Для отправки отчета, пожалуйста, заполните следующие поля:</property>
+                      </widget>
+                      <packing>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HSeparator" id="hseparator1">
+                    <property name="MemberName" />
+                  </widget>
+                  <packing>
+                    <property name="Position">4</property>
+                    <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
                   </packing>
@@ -121,7 +258,7 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="Position">3</property>
+                    <property name="Position">5</property>
                     <property name="AutoSize">True</property>
                   </packing>
                 </child>
@@ -144,8 +281,24 @@
         <property name="MemberName" />
         <property name="Spacing">10</property>
         <property name="BorderWidth">5</property>
-        <property name="Size">2</property>
+        <property name="Size">3</property>
         <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonSendReport">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextAndIcon</property>
+            <property name="Icon">resource:QSSupportLib.icons.send-error-report.png</property>
+            <property name="Label" translatable="yes">Отправить отчет</property>
+            <property name="UseUnderline">True</property>
+            <property name="ResponseId">0</property>
+            <signal name="Clicked" handler="OnButtonSendReportClicked" />
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
         <child>
           <widget class="Gtk.Button" id="buttonCopy">
             <property name="MemberName" />
@@ -159,6 +312,7 @@
             <signal name="Clicked" handler="OnButtonCopyClicked" />
           </widget>
           <packing>
+            <property name="Position">1</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
@@ -175,7 +329,7 @@
             <property name="ResponseId">-7</property>
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
