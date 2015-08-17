@@ -2,6 +2,7 @@
 *.userprefs
 *.usertasks
 *~
+*.DS_Store
 
 #Mono Project Files
 bin/
