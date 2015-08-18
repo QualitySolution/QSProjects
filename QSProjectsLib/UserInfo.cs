@@ -8,23 +8,30 @@ namespace QSProjectsLib
 {
 	public class UserInfo
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private string login;
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
 		private bool loadedInConstructor = false;
 
+
+		[Obsolete ("Поле устарело и будет удалено 18.08.16. Используйте вместо него поле Id. ")]
+		public int id { get { return Id; } }
+
+		public int Id;
+
+		[Obsolete ("Поле устарело и будет удалено 18.08.16. Используйте вместо него поле Admin. ")]
+		public bool admin { get { return Admin; } }
+
+		public bool Admin;
+
+		string login;
+
+		public string Login { get { return login; } }
+
+		public string Email;
 		public string Name;
-		public int id;
-		public bool admin;
 		public Dictionary<string, bool> Permissions;
 
-		public string Login {
-			get {
-				return login;
-			}
-		}
-
-		[Obsolete("Используйте конструктор с логином. P.S. В новых версиях экземпляр класса создается автоматически из диалога входа.")]
+		[Obsolete ("Используйте конструктор с логином. P.S. В новых версиях экземпляр класса создается автоматически из диалога входа.")]
 		public UserInfo ()
 		{
 
@@ -36,82 +43,77 @@ namespace QSProjectsLib
 			LoadUserInfo ();
 		}
 
-		[Obsolete("Устаревший интерфейс, метод вызывать не нужно, проверка происходит в конструкторе.")]
-		public bool TestUserExistByLogin(bool CreateNotExist)
+		[Obsolete ("Устаревший интерфейс, метод вызывать не нужно, проверка происходит в конструкторе.")]
+		public bool TestUserExistByLogin (bool CreateNotExist)
 		{
-			logger.Info("Проверка наличия пользователя в базе...");
+			logger.Info ("Проверка наличия пользователя в базе...");
 			if (loadedInConstructor) {
-				logger.Warn ("Информация о пользователе загружена в момент входа, это старый метот, его вызов не требуется.");
+				logger.Warn ("Информация о пользователе загружена в момент входа, это старый метод, его вызов не требуется.");
 				return true;
 			}
-			try
-			{
-				QSMain.CheckConnectionAlive();
-				string sql = "SELECT COUNT(*) AS cnt FROM users WHERE login = @login";
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", login);
-				MySqlDataReader rdr = cmd.ExecuteReader();
-				rdr.Read();
+			try {
+				QSMain.CheckConnectionAlive ();
+
 				bool Exist = false;
-				if (rdr["cnt"].ToString() != "0")
-					Exist = true;
-				rdr.Close();
+				string sql = "SELECT COUNT(*) AS cnt FROM users WHERE login = @login";
+
+				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+				cmd.Parameters.AddWithValue ("@login", login);
+
+				using (var rdr = cmd.ExecuteReader ()) {
+					rdr.Read ();
+					Exist = (rdr ["cnt"].ToString () != "0");
+				}
 				
-				if( CreateNotExist && !Exist)
-				{
+				if (CreateNotExist && !Exist) {
 					CreateUserRow ();
 					Exist = true;
 				}
 				return Exist;
-			}
-			catch (Exception ex)
-			{
-				logger.ErrorException("Ошибка проверки пользователя!", ex);
+			} catch (Exception ex) {
+				logger.ErrorException ("Ошибка проверки пользователя!", ex);
 				return false;
 			}
 		}
 
-		[Obsolete("Устаревший интерфейс, метод вызывать не нужно! загрузка инфы происходит в конструкторе.")]
-		public void UpdateUserInfoByLogin()
+		[Obsolete ("Устаревший интерфейс, метод вызывать не нужно! загрузка инфы происходит в конструкторе.")]
+		public void UpdateUserInfoByLogin ()
 		{
-			logger.Info("Чтение информации о пользователе...");
+			logger.Info ("Чтение информации о пользователе...");
 			if (loadedInConstructor) {
 				logger.Warn ("Информация о пользовтеле загружена в момент входа, вызов функции не требуется при старте программы. Если нужно обновить информацию используйте метод LoadUserInfo");
 				return;
 			}
-			try
-			{
+			try {
 				string sql = "SELECT * FROM users WHERE login = @login";
-				QSMain.CheckConnectionAlive();
-				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", login);
-				MySqlDataReader rdr = cmd.ExecuteReader();
-				rdr.Read();
+				QSMain.CheckConnectionAlive ();
+				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+				cmd.Parameters.AddWithValue ("@login", login);
+				using (var rdr = cmd.ExecuteReader ()) {
+					rdr.Read ();
 
-				Name = rdr["name"].ToString();
-				id = rdr.GetInt32("id");
-				admin = rdr.GetBoolean (QSMain.AdminFieldName);
+					Name = rdr ["name"].ToString ();
+					Id = rdr.GetInt32 ("id");
+					Admin = rdr.GetBoolean (QSMain.AdminFieldName);
 
-				Permissions = new Dictionary<string, bool>();
-				foreach( KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission)
-				{
-					string FieldName = Right.Value.DataBaseName;
-					Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
+					Permissions = new Dictionary<string, bool> ();
+					foreach (KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission) {
+						string FieldName = Right.Value.DataBaseName;
+						Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
+					}
+
 				}
-
-				rdr.Close();
-			}
-			catch (Exception ex)
-			{
-				logger.ErrorException("Ошибка чтения информации о пользователе!", ex);
+				Email = tryGetUserEmail ();
+			} catch (Exception ex) {
+				logger.ErrorException ("Ошибка чтения информации о пользователе!", ex);
 			}	
 		}
 
-		private void CreateUserRow()
+		private void CreateUserRow ()
 		{
 			bool FirstUser = false;
 			string sql = "SELECT COUNT(*) AS cnt FROM users";
-			var cmd = new MySqlCommand(sql, QSMain.connectionDB);
+			var cmd = new MySqlCommand (sql, QSMain.connectionDB);
 			using (var rdr = cmd.ExecuteReader ()) {
 				rdr.Read ();
 				if (rdr ["cnt"].ToString () == "0")
@@ -127,61 +129,77 @@ namespace QSProjectsLib
 			cmd.ExecuteNonQuery ();
 		}
 
-		public void LoadUserInfo()
+		public void LoadUserInfo ()
 		{
-			logger.Info("Чтение информации о пользователе...");
-			if(login == "root")
-			{
+			logger.Info ("Чтение информации о пользователе...");
+			if (login == "root") {
 				logger.Info ("Вход под root, отмена чтения...");
-                admin = true;
+				Admin = true;
 				return;
 			}
 
 			string sql = "SELECT * FROM users WHERE login = @login";
-			MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-			cmd.Parameters.AddWithValue("@login", login);
-			MySqlDataReader rdr = cmd.ExecuteReader();
+			MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+			cmd.Parameters.AddWithValue ("@login", login);
+			MySqlDataReader rdr = cmd.ExecuteReader ();
 
-			if(!rdr.HasRows)
-			{
+			if (!rdr.HasRows) {
 				rdr.Close ();
-				if(Session.IsSaasConnection)
-				{
+				if (Session.IsSaasConnection) {
 					logger.Info ("Создаем описание пользователя в базе через SAAS...");
 					var srv = Session.GetSaaSService ();
-					if(!srv.createUserInBase (Session.SessionId))
-					{
+					if (!srv.createUserInBase (Session.SessionId)) {
 						throw new ApplicationException ("Сервер SAAS ответил отказом, на попытку добавить пользователя.");
 					}
-				}
-				else
+				} else
 					CreateUserRow ();
 				//Перечитываем инфу.
-				rdr = cmd.ExecuteReader();
+				rdr = cmd.ExecuteReader ();
 			}
-			if(!rdr.HasRows)
+			if (!rdr.HasRows)
 				throw new ApplicationException (String.Format ("В БД нет пользователя с логином {0}", Login));
 
-			rdr.Read();
+			rdr.Read ();
 
-			Name = rdr["name"].ToString();
-			id = rdr.GetInt32("id");
-			admin = rdr.GetBoolean (QSMain.AdminFieldName);
+			Name = rdr ["name"].ToString ();
+			Id = rdr.GetInt32 ("id");
+			Admin = rdr.GetBoolean (QSMain.AdminFieldName);
 
-			Permissions = new Dictionary<string, bool>();
-			foreach( KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission)
-			{
+
+			Permissions = new Dictionary<string, bool> ();
+			foreach (KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission) {
 				string FieldName = Right.Value.DataBaseName;
 				Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
 			}
 
-			rdr.Close();
+			rdr.Close ();
+			Email = tryGetUserEmail ();
 			loadedInConstructor = true;
 		}
-			
-		public void ChangeUserPassword( Gtk.Window Parrent)
+
+		string tryGetUserEmail ()
 		{
-			ChangePassword win = new ChangePassword();
+			try {
+				string sql = "SELECT email FROM users WHERE @id = id;";
+				var cmd = new MySqlCommand (sql, QSMain.connectionDB);
+				cmd.Parameters.AddWithValue ("@id", Id);
+				using (var rdr = cmd.ExecuteReader ()) {
+					if (rdr.Read ())
+						return DBWorks.GetString (rdr, "email", String.Empty);
+				} 
+			} catch (MySqlException myEx) {
+				if (myEx.Number == 1054) {
+					logger.Warn (myEx, "В базе отсутствует поле email в таблице users. Требуется обновление версии базы.");
+					return String.Empty;
+				} else
+					throw myEx;
+			}
+			return String.Empty;
+		}
+
+		public void ChangeUserPassword (Gtk.Window Parrent)
+		{
+			ChangePassword win = new ChangePassword ();
 			//win.ParentWindow = Parrent;
 			win.TransientFor = Parrent;
 			win.Show ();
@@ -196,7 +214,7 @@ namespace QSProjectsLib
 		public string DisplayName;
 		public string Description;
 
-		public UserPermission(string DataBaseName, string DisplayName, string Description)
+		public UserPermission (string DataBaseName, string DisplayName, string Description)
 		{
 			this.DataBaseName = DataBaseName;
 			this.DisplayName = DisplayName;

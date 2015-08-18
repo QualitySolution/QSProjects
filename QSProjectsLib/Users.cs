@@ -131,7 +131,7 @@ namespace QSProjectsLib
 						cmd.ExecuteNonQuery ();
 						logger.Info ("Пользователь удалён. Ok");
 
-						if (QSMain.User.id == itemid) {
+						if (QSMain.User.Id == itemid) {
 							MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
 								                   MessageType.Warning, ButtonsType.Close,
 								                   "Был удален пользователь, под которым Вы подключились к базе данных, чтобы недопустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
