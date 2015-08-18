@@ -203,19 +203,28 @@ namespace QSProjectsLib
 				Console.WriteLine ("Connecting to MySQL...");
 				
 				QSMain.connectionDB.Open ();
-
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
-				MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue ("@login", entryUser.Text);
-				using(MySqlDataReader rdr = cmd.ExecuteReader ())
+				try
 				{
-					if (rdr.Read () && DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
-						labelLoginInfo.Text = "Пользователь деактивирован.";
-						ConnectionError = "Пользователь под которым вы пытаетесь войти, деактивирован в настройках базы.";
-						QSMain.connectionDB.Close ();
-						return;
+					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+					cmd.Parameters.AddWithValue ("@login", entryUser.Text);
+					using(MySqlDataReader rdr = cmd.ExecuteReader ())
+					{
+						if (rdr.Read () && DBWorks.GetBoolean (rdr, "deactivated", false) == true) {
+							labelLoginInfo.Text = "Пользователь деактивирован.";
+							ConnectionError = "Пользователь под которым вы пытаетесь войти, деактивирован в настройках базы.";
+							QSMain.connectionDB.Close ();
+							return;
+						}
 					}
+				} catch(MySqlException myEx)
+				{
+					if(myEx.Number == 1054)
+						logger.Warn (myEx, "Возможно не установлен микро-обновление, пропускаем проверку отключен ли пользователь.");
+					else
+						throw myEx;
 				}
+
 				labelLoginInfo.Text = ConnectionError = String.Empty;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
 				QSMain.Configsource.Configs [ini].Set ("UserLogin", entryUser.Text);
