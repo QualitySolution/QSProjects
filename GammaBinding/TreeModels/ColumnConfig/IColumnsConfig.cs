@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public interface IColumnsConfig
 	{

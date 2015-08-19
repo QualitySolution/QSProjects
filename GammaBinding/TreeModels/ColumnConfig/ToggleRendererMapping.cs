@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using GammaBinding.Gtk.Cells;
+using Gamma.GtkWidgets.Cells;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public class ToggleRendererMapping<TNode> : RendererMappingBase<NodeCellRendererToggle<TNode>, TNode>
 	{

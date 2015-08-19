@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public class RowMapping<TNode>
 	{

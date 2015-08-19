@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Gtk;
 
-namespace GammaBinding.Gtk.Cells
+namespace Gamma.GtkWidgets.Cells
 {
 	public class NodeCellRendererToggle<TNode> : CellRendererToggle, INodeCellRenderer
 	{

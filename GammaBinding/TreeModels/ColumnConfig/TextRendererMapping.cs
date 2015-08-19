@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using GammaBinding.Gtk.Cells;
+using Gamma.GtkWidgets.Cells;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public class TextRendererMapping<TNode> : RendererMappingBase<NodeCellRendererText<TNode>, TNode>
 	{

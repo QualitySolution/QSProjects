@@ -1,7 +1,7 @@
 ﻿using System;
-using GammaBinding.Gtk.Cells;
+using Gamma.GtkWidgets.Cells;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public interface IRendererMapping
 	{

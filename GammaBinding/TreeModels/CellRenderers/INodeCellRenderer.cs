@@ -1,6 +1,6 @@
 using System;
 
-namespace GammaBinding.Gtk.Cells
+namespace Gamma.GtkWidgets.Cells
 {
 
 	public interface INodeCellRenderer

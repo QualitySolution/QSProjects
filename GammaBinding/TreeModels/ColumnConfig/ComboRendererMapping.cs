@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.Utilities;
-using GammaBinding.Gtk.Cells;
+using Gamma.GtkWidgets.Cells;
 using Gtk;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public class ComboRendererMapping<TNode> : RendererMappingBase<NodeCellRendererCombo<TNode>, TNode>
 	{

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Gamma.Utilities;
-using GammaBinding.Gtk.Cells;
+using Gamma.GtkWidgets.Cells;
 using Gtk;
 
-namespace GammaBinding.ColumnConfig
+namespace Gamma.ColumnConfig
 {
 	public class NumberRendererMapping<TNode> : RendererMappingBase<NodeCellRendererSpin<TNode>, TNode>
 	{

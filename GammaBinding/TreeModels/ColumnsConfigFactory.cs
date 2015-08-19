@@ -1,5 +1,5 @@
 ﻿using System;
-using GammaBinding.ColumnConfig;
+using Gamma.ColumnConfig;
 
 namespace GammaBinding
 {

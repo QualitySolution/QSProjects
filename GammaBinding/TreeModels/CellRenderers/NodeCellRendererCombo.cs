@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Gtk;
 
-namespace GammaBinding.Gtk.Cells
+namespace Gamma.GtkWidgets.Cells
 {
 	public class NodeCellRendererCombo<TNode> : CellRendererCombo, INodeCellRenderer
 	{
