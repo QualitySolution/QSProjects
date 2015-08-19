@@ -52,6 +52,7 @@
     <Compile Include="TreeModels\ColumnConfig\ToggleRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\IColumnsConfig.cs" />
     <Compile Include="TreeModels\ColumnConfig\FluentColumnsConfig.cs" />
+    <Compile Include="TreeModels\ColumnsConfigFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
