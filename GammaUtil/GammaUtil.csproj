@@ -5,9 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1BF2A638-420D-456C-96A7-36873A0FB894}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GammaUtil</RootNamespace>
+    <RootNamespace>Gamma.Utilities</RootNamespace>
     <AssemblyName>GammaUtil</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +32,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyUtil.cs" />
+    <Compile Include="TypeUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
