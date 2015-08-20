@@ -46,9 +46,9 @@ namespace QSSupportLib
 			//Если найдены ошибки.
 			if (ErrorText != String.Empty) {
 				MessageDialog error = new MessageDialog (Parent, DialogFlags.DestroyWithParent,
-				                                         MessageType.Warning, 
-				                                         ButtonsType.Close, 
-				                                         ErrorText);
+					                      MessageType.Warning, 
+					                      ButtonsType.Close, 
+					                      ErrorText);
 				error.Run ();
 				error.Destroy ();
 				Environment.Exit (1);
@@ -67,9 +67,9 @@ namespace QSSupportLib
 			
 			if (TextMes != null) {
 				MessageDialog VersionError = new MessageDialog (Parent, DialogFlags.DestroyWithParent,
-				                                                MessageType.Warning, 
-				                                                ButtonsType.Close, 
-				                                                TextMes);
+					                             MessageType.Warning, 
+					                             ButtonsType.Close, 
+					                             TextMes);
 				VersionError.Run ();
 				VersionError.Destroy ();
 				Environment.Exit (0);
@@ -146,9 +146,9 @@ namespace QSSupportLib
 			} catch (MySql.Data.MySqlClient.MySqlException e) {
 				logger.Fatal (e, "Не удалось получить информацию о версии базы данных.", e);
 				MessageDialog BaseError = new MessageDialog (QSMain.ErrorDlgParrent, DialogFlags.DestroyWithParent,
-				                                             MessageType.Warning, 
-				                                             ButtonsType.Close, 
-				                                             "Не удалось получить информацию о версии базы данных.");
+					                          MessageType.Warning, 
+					                          ButtonsType.Close, 
+					                          "Не удалось получить информацию о версии базы данных.");
 				BaseError.Run ();
 				BaseError.Destroy ();
 				Environment.Exit (0);

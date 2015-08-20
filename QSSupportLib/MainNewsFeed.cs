@@ -73,7 +73,7 @@ namespace QSSupportLib
 
 			DbParameter param = cmd.CreateParameter();
 			param.ParameterName = "@user_id";
-			param.Value = QSMain.User.id;
+			param.Value = QSMain.User.Id;
 			cmd.Parameters.Add(param);
 
 			using (DbDataReader rdr = cmd.ExecuteReader())
@@ -118,7 +118,7 @@ namespace QSSupportLib
 
 				DbParameter param = cmd.CreateParameter();
 				param.ParameterName = "@user_id";
-				param.Value = QSMain.User.id;
+				param.Value = QSMain.User.Id;
 				cmd.Parameters.Add(param);
 
 				param = cmd.CreateParameter();
