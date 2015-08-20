@@ -64,6 +64,8 @@
     <Compile Include="Dialogs\EditSerialNumber.cs" />
     <Compile Include="gtk-gui\QSSupportLib.EditSerialNumber.cs" />
     <Compile Include="SerialEncoding\SNEncoder.cs" />
+    <Compile Include="Dialogs\ApplicationConfigDialog.cs" />
+    <Compile Include="gtk-gui\QSSupportLib.ApplicationConfigDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
