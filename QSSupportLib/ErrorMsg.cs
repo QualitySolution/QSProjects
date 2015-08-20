@@ -22,7 +22,7 @@ namespace QSSupportLib
 			labelUserMessage.Visible = userMessage != "";
 			textviewError.Buffer.Text = ex.ToString ();
 			buttonSendReport.Sensitive = false;
-			//TODO FIXME Вставить email из пользователя.
+			entryEmail.Text = QSMain.User.Email;
 
 			this.SetPosition (WindowPosition.CenterOnParent);
 
