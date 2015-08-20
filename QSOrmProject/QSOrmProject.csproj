@@ -121,6 +121,7 @@
     <Compile Include="GammaBinding\BindingBridge.cs" />
     <Compile Include="GammaBinding\IBindingSource.cs" />
     <Compile Include="GammaBinding\IBindingControler.cs" />
+    <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
