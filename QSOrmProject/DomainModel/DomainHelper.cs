@@ -1,5 +1,6 @@
 ﻿using System;
 using NHibernate;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
@@ -46,6 +47,20 @@ namespace QSOrmProject
 				return (obj1 as IDomainObject).Id == (obj2 as IDomainObject).Id;
 
 			return obj1.Equals (obj2);
+		}
+
+		public static SubjectName GetSubjectNames(object subject)
+		{
+			return GetSubjectNames (subject.GetType ());
+		}
+
+		public static SubjectName GetSubjectNames(Type subjectType)
+		{
+			object[] att = subjectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			if (att.Length > 0) {
+				return (att [0] as OrmSubjectAttribute).AllNames;
+			} else
+				return null;
 		}
 	}
 }
