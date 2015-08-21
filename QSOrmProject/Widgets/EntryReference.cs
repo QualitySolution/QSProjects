@@ -7,6 +7,7 @@ using NHibernate.Criterion;
 using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
@@ -194,6 +195,17 @@ namespace QSOrmProject
 			OrmReference SelectDialog;
 
 			if (ParentReference != null) {
+				if(ParentReference.UoW.IsNew && ParentReference.UoW.RootObject == ParentReference.ParentObject)
+				{
+					var childNames = DomainHelper.GetSubjectNames (SubjectType);
+					var parrentNames = DomainHelper.GetSubjectNames (ParentReference.ParentObject);
+
+					MessageDialogWorks.RunWarningDialog (String.Format ("Необходимо сохранить основной объект «{0}», прежде чем выбирать «{1}» из подчинённого справочника.",
+						parrentNames.Accusative,
+						childNames.AccusativePlural
+					));
+					return;
+				}
 				SelectDialog = new OrmReference (subjectType, ParentReference);
 			} else {
 				if (dlg != null)
