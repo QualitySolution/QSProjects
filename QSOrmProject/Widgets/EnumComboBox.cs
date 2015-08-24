@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Bindings;
 using System.Reflection;
 using Gtk;
 using NLog;
-using QSWidgetLib;
+using System.Collections.Generic;
 
 namespace QSOrmProject
 {
@@ -13,12 +12,33 @@ namespace QSOrmProject
 	[Category ("QS Widgets")]
 	public class EnumComboBox : ComboBox
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private ListStore comboListStore;
+		static Logger logger = LogManager.GetCurrentClassLogger ();
+		ListStore comboListStore;
+		List<object> fieldsToHide = new List<object> ();
+
+		public void AddEnumToHideList (object[] items)
+		{
+			fieldsToHide.AddRange (items);
+			ResetLayout ();
+		}
+
+		public void RemoveEnumFromHideList (object[] items)
+		{
+			foreach (object item in items)
+				if (fieldsToHide.Contains (item))
+					fieldsToHide.Remove (item);
+			ResetLayout ();
+		}
+
+		public void ClearEnumHideList ()
+		{
+			fieldsToHide.Clear ();
+			ResetLayout ();
+		}
 
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemSelected;
 
-		[Browsable(true)]
+		[Browsable (true)]
 		public String ItemsEnumName {
 			get {
 				return ItemsEnum.AssemblyQualifiedName;
@@ -27,14 +47,15 @@ namespace QSOrmProject
 				if (String.IsNullOrEmpty (value))
 					return;
 
-				ItemsEnum = System.Type.GetType(value);
+				ItemsEnum = Type.GetType (value);
 				if (ItemsEnum == null)
 					logger.Warn ("Тип {0}, не найден. Свойству ItemsEnumName должна назначатся строка в формате '<namespace>.<enumtype>, <Assembly>'", value);
 			}
 		}
 
-		System.Type itemsEnum;
-		public System.Type ItemsEnum {
+		Type itemsEnum;
+
+		public Type ItemsEnum {
 			get {
 				return itemsEnum;
 			}
@@ -47,7 +68,8 @@ namespace QSOrmProject
 			}
 		}
 
-		private object selectedItem;
+		object selectedItem;
+
 		public object SelectedItem {
 			get {
 				return selectedItem;
@@ -59,9 +81,10 @@ namespace QSOrmProject
 				OnEnumItemSelected ();
 			}
 		}
-			
-		private bool showSpecialStateAll = false;
-		[Browsable(true)]
+
+		bool showSpecialStateAll;
+
+		[Browsable (true)]
 		public bool ShowSpecialStateAll {
 			get {
 				return showSpecialStateAll;
@@ -72,8 +95,9 @@ namespace QSOrmProject
 			}
 		}
 
-		private bool showSpecialStateNot = false;
-		[Browsable(true)]
+		bool showSpecialStateNot;
+
+		[Browsable (true)]
 		public bool ShowSpecialStateNot {
 			get {
 				return showSpecialStateNot;
@@ -84,35 +108,33 @@ namespace QSOrmProject
 			}
 		}
 
-		public EnumComboBox () : base()
+		public EnumComboBox ()
 		{
 			comboListStore = new ListStore (typeof(object), typeof(string));
 			CellRendererText text = new CellRendererText ();
 			Model = comboListStore;
-			this.PackStart (text, false);
-			this.AddAttribute (text, "text", 1);
+			PackStart (text, false);
+			AddAttribute (text, "text", 1);
 		}
 
 		/// <summary>
 		/// Обновляет данные виджета
 		/// </summary>
-		private void ResetLayout()
+		void ResetLayout ()
 		{
 			comboListStore.Clear ();
 
 			if (ItemsEnum == null)
 				return;
 
-			if (ItemsEnum.IsEnum == false)
-				throw new NotSupportedException (string.Format("ItemsEnum only supports enum types, specified was {0}", ItemsEnum));
+			if (!ItemsEnum.IsEnum)
+				throw new NotSupportedException (string.Format ("ItemsEnum only supports enum types, specified was {0}", ItemsEnum));
 
 			//Заполняем специальные поля
-			if(ShowSpecialStateAll)
-			{
+			if (ShowSpecialStateAll) {
 				AppendEnumItem (typeof(SpecialComboState).GetField ("All"));
 			}
-			if(ShowSpecialStateNot)
-			{
+			if (ShowSpecialStateNot) {
 				AppendEnumItem (typeof(SpecialComboState).GetField ("Not"));
 			}
 
@@ -124,9 +146,11 @@ namespace QSOrmProject
 				Active = 0;
 		}
 
-		private void AppendEnumItem(FieldInfo info)
+		void AppendEnumItem (FieldInfo info)
 		{
-			if (info.Name.Equals("value__"))
+			if (info.Name.Equals ("value__"))
+				return;
+			if (fieldsToHide.Contains (info.GetValue (null)))
 				return;
 			string item = info.GetEnumTitle ();
 			//string hint = info.GetEnumHint ();
@@ -140,8 +164,7 @@ namespace QSOrmProject
 
 		void OnEnumItemSelected ()
 		{
-			if(EnumItemSelected != null)
-			{
+			if (EnumItemSelected != null) {
 				EnumItemSelected (this, new EnumItemClickedEventArgs (SelectedItem));
 			}
 		}
@@ -151,12 +174,9 @@ namespace QSOrmProject
 			base.OnChanged ();
 			TreeIter iter;
 
-			if(this.GetActiveIter (out iter))
-			{
+			if (GetActiveIter (out iter)) {
 				SelectedItem = Model.GetValue (iter, 0);
-			}
-			else
-			{
+			} else {
 				SelectedItem = SpecialComboState.None;
 			}
 		}
