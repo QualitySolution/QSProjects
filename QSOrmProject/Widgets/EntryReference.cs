@@ -17,7 +17,8 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
 		private bool sensitive = true;
-		public bool CanEditReference = true;
+
+		private bool canEditReference = true;
 		public ICriteria ItemsCriteria;
 
 		public QueryOver ItemsQuery { get; set; }
@@ -33,6 +34,17 @@ namespace QSOrmProject
 		private System.Type subjectType;
 
 		public event EventHandler Changed;
+
+		//[Browsable(true)] FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
+		[DefaultValue(true)]
+		public bool CanEditReference {
+			get {
+				return canEditReference;
+			}
+			set {
+				canEditReference = value;
+			}
+		}
 
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
