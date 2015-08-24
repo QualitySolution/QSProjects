@@ -1,7 +1,7 @@
 ﻿using System;
 using Gamma.ColumnConfig;
 
-namespace GammaBinding
+namespace Gamma.GtkWidgets
 {
 	public static class ColumnsConfigFactory
 	{

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>GammaBinding</RootNamespace>
+    <RootNamespace>Gamma.Binding</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -53,6 +53,8 @@
     <Compile Include="TreeModels\ColumnConfig\IColumnsConfig.cs" />
     <Compile Include="TreeModels\ColumnConfig\FluentColumnsConfig.cs" />
     <Compile Include="TreeModels\ColumnsConfigFactory.cs" />
+    <Compile Include="TreeModels\IyTreeModel.cs" />
+    <Compile Include="TreeModels\ObservableListTreeModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,6 +66,10 @@
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
