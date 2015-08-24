@@ -227,10 +227,10 @@ namespace QSOrmProject
 		{
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
 			if (ParentReference == null) {
-				if (filterWidget == null)
-					filterView = new ObservableFilterListView (objectsCriteria.List ());
-				else
-					filterView = new ObservableFilterListView (filterWidget.FiltredCriteria.List ());
+				ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
+				if (OrmMain.GetObjectDescription (objectType).SimpleDialog)
+					baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
+				filterView = new ObservableFilterListView (baseCriteria.List ());
 			} else {
 				filterView = new ObservableFilterListView (parentReference.List);
 				if (filterWidget != null)
