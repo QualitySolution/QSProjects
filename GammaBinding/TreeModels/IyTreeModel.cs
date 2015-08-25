@@ -3,9 +3,12 @@ using Gtk;
 
 namespace Gamma.Binding
 {
-	public interface IyTreeModel
+	public interface IyTreeModel : TreeModelImplementor
 	{
-		TreeModel Adapter { get; set;}
+		TreeModel Adapter { get;}
+
+		object GetNodeAtPath(TreePath aPath);
+		object NodeFromIter (TreeIter iter);
 	}
 }
 
