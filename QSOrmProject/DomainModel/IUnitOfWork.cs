@@ -10,6 +10,8 @@ namespace QSOrmProject
 
 		bool IsNew { get;}
 
+		bool IsAlive { get;}
+
 		bool HasChanges{ get;}
 
 		void Save<TEntity>(TEntity entity) where TEntity : IDomainObject;

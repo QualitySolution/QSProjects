@@ -130,12 +130,26 @@ namespace QSOrmProject.RepresentationModel
 
 		void OnExternalUpdate (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedGenericEventArgs<TEntity> e)
 		{
+			if (!UoW.IsAlive)
+			{
+				logger.Warn ("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
+				this);
+				return;
+			}
+				
 			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
 				UpdateNodes ();
 		}
 
 		void OnExternalUpdateCommon (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedEventArgs e)
 		{
+			if (!UoW.IsAlive)
+			{
+				logger.Warn ("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
+					this);
+				return;
+			}
+				
 			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
 				UpdateNodes ();
 		}

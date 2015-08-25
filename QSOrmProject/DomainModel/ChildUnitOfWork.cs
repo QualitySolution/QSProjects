@@ -19,6 +19,9 @@ namespace QSOrmProject
 			get { return Root; }
 		}
 
+		public bool IsAlive { get{ return ParentUoW.IsAlive;
+			}}
+
 		public ParentReferenceGeneric<TParentEntity, TChildEntity> ParentReference { get; private set; }
 
 		public IUnitOfWorkGeneric<TParentEntity> ParentUoW {

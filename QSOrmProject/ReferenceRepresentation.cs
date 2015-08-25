@@ -286,7 +286,7 @@ namespace QSOrmProject
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
 			if (ObjectSelected != null) {
-				var node = ormtableview.GetSelectedObjects () [0];
+				var node = ormtableview.GetSelectedObject ();
 				int selectedId = DomainHelper.GetId (node);
 
 				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selectedId, node));
