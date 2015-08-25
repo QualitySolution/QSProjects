@@ -14,18 +14,7 @@ namespace Gamma.ColumnConfig
 		public EnumRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty)
 			: base(column)
 		{
-			cellRenderer.DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
-
-			MemberExpression memberExpr = dataProperty.Body as MemberExpression;
-			if (memberExpr == null) {
-				UnaryExpression unaryExpr = dataProperty.Body as UnaryExpression;
-				if (unaryExpr != null && unaryExpr.NodeType == ExpressionType.Convert)
-					memberExpr = unaryExpr.Operand as MemberExpression;
-			}
-			if (memberExpr == null)
-				throw new InvalidProgramException ();
-
-			var prop = memberExpr.Member as PropertyInfo;
+			var prop = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
 
 			if(prop == null || !prop.PropertyType.IsEnum)
 				throw new InvalidProgramException ();

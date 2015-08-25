@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace Gamma.GtkWidgets.Cells
 {
@@ -7,6 +8,7 @@ namespace Gamma.GtkWidgets.Cells
 	{
 		void RenderNode(object node);
 		string DataPropertyName { get;}
+		PropertyInfo DataPropertyInfo { get; }
 	}
 
 }

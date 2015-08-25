@@ -13,7 +13,7 @@ namespace Gamma.ColumnConfig
 		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty)
 			: base(column)
 		{
-			cellRenderer.DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
 			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", dataProperty.Compile ().Invoke (n)));
 		}
 

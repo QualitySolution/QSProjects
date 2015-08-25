@@ -28,7 +28,7 @@ namespace Gamma.ColumnConfig
 		public override INodeCellRenderer GetRenderer ()
 		{
 			var cell = new NodeCellRendererText<TNode> ();
-			cell.DataPropertyName = DataPropertyName;
+			//cell.DataPropertyName = DataPropertyName;
 			cell.LambdaSetters = LambdaSetters;
 			return cell;
 		}
