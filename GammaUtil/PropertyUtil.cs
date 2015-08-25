@@ -51,6 +51,10 @@ namespace Gamma.Utilities
 				return null;
 		}
 
+		public static PropertyInfo GetPropertyInfo<TObject> (Expression<Func<TObject, object>> propertyRefExpr)
+		{
+			return GetMemberInfo (propertyRefExpr) as PropertyInfo;
+		}
 	}
 }
 
