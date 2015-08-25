@@ -55,6 +55,7 @@
     <Compile Include="TreeModels\ColumnsConfigFactory.cs" />
     <Compile Include="TreeModels\IyTreeModel.cs" />
     <Compile Include="TreeModels\ObservableListTreeModel.cs" />
+    <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

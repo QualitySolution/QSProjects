@@ -19,6 +19,12 @@ namespace Gamma.Binding
 			sourceList = list;
 		}
 
+		protected IObservableList SourceList {
+			get {
+				return sourceList;
+			}
+		}
+
 		#region IyTreeModel implementation
 
 		public TreeModel Adapter {
@@ -101,7 +107,10 @@ namespace Gamma.Binding
 
 		public int IterNChildren (TreeIter iter)
 		{
-			throw new NotImplementedException ();
+			if (iter.Equals (TreeIter.Zero))
+				return SourceList.Count;
+			else
+				return 0;
 		}
 
 		public bool IterNthChild (out TreeIter iter, TreeIter parent, int n)
@@ -121,7 +130,8 @@ namespace Gamma.Binding
 
 		public bool IterParent (out TreeIter iter, TreeIter child)
 		{
-			throw new NotImplementedException ();
+			iter = TreeIter.Zero;
+			return false;
 		}
 
 		public void RefNode (TreeIter iter)

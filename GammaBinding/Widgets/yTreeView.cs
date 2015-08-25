@@ -29,7 +29,12 @@ namespace Gamma.GtkWidgets
 			get { return itemsDataSource; }
 			set {
 				if (value is IObservableList)
-					YTreeModel = new ObservableListTreeModel (value as IObservableList);
+				{
+					if(Reorderable)
+						YTreeModel = new ObservableListReorderableTreeModel (value as IObservableList);
+					else
+						YTreeModel = new ObservableListTreeModel (value as IObservableList);
+				}
 				else
 					return;
 				itemsDataSource = value; }
@@ -167,9 +172,7 @@ namespace Gamma.GtkWidgets
 					);
 				}
 			}
-
 		}
-
 	}
 }
 
