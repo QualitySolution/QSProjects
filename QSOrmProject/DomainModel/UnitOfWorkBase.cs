@@ -16,6 +16,9 @@ namespace QSOrmProject
 
 		public bool IsNew { get; protected set;}
 
+		public bool IsAlive { get{ return Session.IsOpen;
+			}}
+
 		public ISession Session {
 			get {
 				if (session == null)
