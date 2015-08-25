@@ -5,6 +5,7 @@ using Gamma.Binding;
 using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
+using System.Collections;
 
 namespace Gamma.GtkWidgets
 {
@@ -34,6 +35,10 @@ namespace Gamma.GtkWidgets
 						YTreeModel = new ObservableListReorderableTreeModel (value as IObservableList);
 					else
 						YTreeModel = new ObservableListTreeModel (value as IObservableList);
+				}
+				else if(value is IList)
+				{
+					YTreeModel = new ListTreeModel (value as IList);
 				}
 				else
 					return;
