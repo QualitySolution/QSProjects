@@ -58,6 +58,11 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static string PrintStackTrace()
+		{
+			return Environment.StackTrace;
+		}
+
 	}
 }
 
