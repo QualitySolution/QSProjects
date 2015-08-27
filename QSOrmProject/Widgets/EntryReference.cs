@@ -35,7 +35,7 @@ namespace QSOrmProject
 
 		public event EventHandler Changed;
 
-		//[Browsable(true)] FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
+		[Browsable(false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
 		[DefaultValue(true)]
 		public bool CanEditReference {
 			get {
