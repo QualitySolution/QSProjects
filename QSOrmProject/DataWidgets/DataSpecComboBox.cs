@@ -18,6 +18,7 @@ namespace Gtk.DataBindings
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ListStore comboListStore;
 		private ControlAdaptor adaptor;
+		private bool onInit = false;
 
 		enum comboDataColumns {
 			Title,
@@ -118,6 +119,7 @@ namespace Gtk.DataBindings
 		/// </summary>
 		private void ResetLayout()
 		{
+			onInit = true;
 			comboListStore.Clear ();
 
 			if (ItemsDataSource == null)
@@ -152,6 +154,7 @@ namespace Gtk.DataBindings
 			if (String.IsNullOrWhiteSpace (ColumnMappings))
 			{
 				logger.Warn ("Свойство ColumnMappings пустое, заполение комбобокса {0} пропущено.", Name);
+				onInit = false;
 				return;
 			}
 
@@ -165,6 +168,7 @@ namespace Gtk.DataBindings
 
 			if (ShowSpecialStateAll || ShowSpecialStateNot)
 				Active = 0;
+			onInit = false;
 		}
 
 		private void AppendEnumItem(FieldInfo info)
@@ -191,6 +195,8 @@ namespace Gtk.DataBindings
 
 		protected override void OnChanged ()
 		{
+			if (onInit)
+				return;
 			base.OnChanged ();
 			TreeIter iter;
 
@@ -334,6 +340,8 @@ namespace Gtk.DataBindings
 		public virtual void PutDataToDataSource (object aSender)
 		{
 			adaptor.DataChanged = false;
+			if (adaptor.Value == SelectedItem)
+				return;
 			if (SelectedItem is SpecialComboState)
 				adaptor.Value = null;
 			else
