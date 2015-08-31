@@ -58,12 +58,18 @@
     <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
     <Compile Include="TreeModels\ListTreeModel.cs" />
     <Compile Include="Widgets\yLabel.cs" />
+    <Compile Include="Core\BindingBridge.cs" />
+    <Compile Include="Core\BindingControler.cs" />
+    <Compile Include="Core\BindingSource.cs" />
+    <Compile Include="Core\IBindingControler.cs" />
+    <Compile Include="Core\IBindingSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Widgets\" />
     <Folder Include="Properties\Новая папка\" />
     <Folder Include="TreeModels\" />
+    <Folder Include="Core\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
