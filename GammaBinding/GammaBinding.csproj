@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Gamma.Binding</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +57,7 @@
     <Compile Include="TreeModels\ObservableListTreeModel.cs" />
     <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
     <Compile Include="TreeModels\ListTreeModel.cs" />
+    <Compile Include="Widgets\yLabel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
