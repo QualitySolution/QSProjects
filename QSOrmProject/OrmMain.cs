@@ -99,6 +99,8 @@ namespace QSOrmProject
 
 		public static OrmObjectMapping<TEntity> GetObjectDescription<TEntity> ()
 		{
+			if (ClassMappingList == null)
+				return null;
 			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == typeof(TEntity)) as OrmObjectMapping<TEntity>;
 		}
 
