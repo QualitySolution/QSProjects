@@ -63,6 +63,7 @@
     <Compile Include="Core\BindingSource.cs" />
     <Compile Include="Core\IBindingControler.cs" />
     <Compile Include="Core\IBindingSource.cs" />
+    <Compile Include="Core\IBindingBridge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

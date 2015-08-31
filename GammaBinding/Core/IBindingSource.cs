@@ -4,12 +4,12 @@ namespace Gamma.Binding.Core
 {
 	public interface IBindingSource
 	{
-		BindingBridge[] AllBridges { get;}
+		IBindingBridge[] AllBridges { get;}
 		IBindingControler Controler{ get;}
 
-		BindingBridge[] GetBackwardBridges(string targetPropName);
-		object GetValueFromSource(BindingBridge bridge);
-		bool SetValueToSource(BindingBridge bridge, object value);
+		IBindingBridge[] GetBackwardBridges(string targetPropName);
+		object GetValueFromSource(IBindingBridge bridge);
+		bool SetValueToSource(IBindingBridge bridge, object value);
 		void InitializeFromSource();
 	}
 }

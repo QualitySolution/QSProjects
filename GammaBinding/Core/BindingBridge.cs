@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingBridge
+	public class BindingBridge : IBindingBridge
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
 		public PropertyInfo TargetPropertyInfo { get; private set;}
@@ -40,13 +40,27 @@ namespace Gamma.Binding.Core
 			else
 				throw new ArgumentException ("Невозможно вычислить направление биндинга, необходимо что бы хотябы одно свойство имело возможность записи, а другое чтение.");
 		}
-	}
 
-	public enum BridgeMode
-	{
-		OnlyFromSource,
-		BackwardFromTarget,
-		TwoWay
+		public void SourcePropertyUpdated (string propertyName, object source)
+		{
+			if(SourcePropertyName == propertyName)
+				MyBindingSource.Controler.TargetSetValue (TargetPropertyInfo, SourcePropertyInfo.GetValue (source, null));
+		}
+
+		public object GetValueFromSource (object sourceObject)
+		{
+			return SourcePropertyInfo.GetValue (sourceObject, null);
+		}
+
+		public bool SetValueToSource (object sourceObject, object value)
+		{
+			if(SourcePropertyInfo.GetValue (sourceObject, null) != value)
+			{
+				SourcePropertyInfo.SetValue (sourceObject, value, null);
+				return true;
+			}
+			return false;
+		}
 	}
 }
 

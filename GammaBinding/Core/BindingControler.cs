@@ -24,7 +24,7 @@ namespace Gamma.Binding.Core
 			widget = targetWidget;
 		}
 
-		internal void TargetSetValue(PropertyInfo property, object value)
+		public void TargetSetValue(PropertyInfo property, object value)
 		{
 			property.SetValue (widget, value, null);
 		}

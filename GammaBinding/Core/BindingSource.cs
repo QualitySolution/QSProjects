@@ -19,9 +19,9 @@ namespace Gamma.Binding.Core
 			}
 		}
 
-		readonly List<BindingBridge> Bridges = new List<BindingBridge> ();
+		readonly List<IBindingBridge> Bridges = new List<IBindingBridge> ();
 
-		public BindingBridge[] AllBridges {
+		public IBindingBridge[] AllBridges {
 			get {
 				return Bridges.ToArray ();
 			}
@@ -51,41 +51,37 @@ namespace Gamma.Binding.Core
 
 		void DataSource_PropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			foreach(var bridge in Bridges.FindAll (b => b.SourcePropertyName == e.PropertyName && b.Mode != BridgeMode.BackwardFromTarget))
+			foreach(var bridge in Bridges.FindAll (b => b.Mode != BridgeMode.BackwardFromTarget))
 			{
-				myControler.TargetSetValue (bridge.TargetPropertyInfo, bridge.SourcePropertyInfo.GetValue (sender, null));
+				bridge.SourcePropertyUpdated (e.PropertyName, sender);
 			}
 		}
 
-		public BindingBridge[] GetBackwardBridges(string targetPropName)
+		public IBindingBridge[] GetBackwardBridges(string targetPropName)
 		{
 			return Bridges.Where (b => b.TargetPropertyName == targetPropName).ToArray ();
 		}
 
-		public object GetValueFromSource(BindingBridge bridge)
+		public object GetValueFromSource(IBindingBridge bridge)
 		{
 			if (!Bridges.Contains (bridge))
 				throw new InvalidOperationException ("Bridge не из этого источника.");
-			return bridge.SourcePropertyInfo.GetValue (DataSource, null);
+			return bridge.GetValueFromSource (DataSource);
 		}
 
-		public bool SetValueToSource(BindingBridge bridge, object value)
+		public bool SetValueToSource(IBindingBridge bridge, object value)
 		{
 			if (!Bridges.Contains (bridge))
 				throw new InvalidOperationException ("Bridge не из этого источника.");
-			if(bridge.SourcePropertyInfo.GetValue (DataSource, null) != value)
-			{
-				bridge.SourcePropertyInfo.SetValue (DataSource, value, null);
-				return true;
-			}
-			return false;
+
+			return bridge.SetValueToSource (DataSource, value);
 		}
 
 		public void InitializeFromSource()
 		{
 			foreach(var bridge in Bridges.Where (b => b.Mode != BridgeMode.BackwardFromTarget))
 			{
-				myControler.TargetSetValue (bridge.TargetPropertyInfo, bridge.SourcePropertyInfo.GetValue (DataSource, null));
+				myControler.TargetSetValue (bridge.TargetPropertyInfo, bridge.GetValueFromSource(DataSource));
 			}
 		}
 
