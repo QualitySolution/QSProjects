@@ -10,6 +10,7 @@ using System.Collections;
 namespace Gamma.GtkWidgets
 {
 	[ToolboxItem (true)]
+	[Category ("Gamma Gtk")]
 	public class yTreeView : TreeView
 	{
 		IColumnsConfig columnsConfig;
