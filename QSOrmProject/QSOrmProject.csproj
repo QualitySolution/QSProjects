@@ -116,11 +116,6 @@
     <Compile Include="DomainModel\BusinessObjectBase.cs" />
     <Compile Include="DomainModel\UnitOfWorkBase.cs" />
     <Compile Include="DataWidgets\DataLegalName.cs" />
-    <Compile Include="GammaBinding\BindingControler.cs" />
-    <Compile Include="GammaBinding\BindingSource.cs" />
-    <Compile Include="GammaBinding\BindingBridge.cs" />
-    <Compile Include="GammaBinding\IBindingSource.cs" />
-    <Compile Include="GammaBinding\IBindingControler.cs" />
     <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
   </ItemGroup>
@@ -155,6 +150,10 @@
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
@@ -165,7 +164,6 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="UpdateNotification\" />
     <Folder Include="ParentReference\" />
-    <Folder Include="GammaBinding\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
