@@ -108,6 +108,14 @@ namespace Gamma.Binding.Core
 			return this;
 		}
 
+		public BindingSource<TSource, TTarget> AddFuncBinding(Expression<Func<TSource, object>> sourceGetter, Expression<Func<TTarget, object>> targetProperty)
+		{
+			PropertyInfo targetInfo = PropertyUtil.GetMemberInfo (targetProperty) as PropertyInfo;
+			Bridges.Add (new FuncBindingBridge<TSource>(this, sourceGetter, targetInfo));
+
+			return this;
+		}
+
 		#endregion
 	}
 }

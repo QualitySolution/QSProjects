@@ -59,6 +59,14 @@ namespace Gamma.Binding.Core
 			return sourceControl;
 		}
 
+		public BindingSource<TSource, TWidget> AddFuncBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)
+			where TSource : class, INotifyPropertyChanged
+		{
+			var sourceControl = AddSource (source);
+			sourceControl.AddFuncBinding (sourceProperty, targetProperty);
+			return sourceControl;
+		}
+
 		public BindingSource<TSource, TWidget> AddSource<TSource>(TSource source)
 			where TSource : class, INotifyPropertyChanged
 		{
