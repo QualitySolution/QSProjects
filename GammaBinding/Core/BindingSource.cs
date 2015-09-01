@@ -102,7 +102,7 @@ namespace Gamma.Binding.Core
 
 		public BindingSource<TSource, TTarget> AddBinding(Expression<Func<TSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty)
 		{
-			PropertyInfo sourceInfo = PropertyUtil.GetMemberInfo (sourceProperty) as PropertyInfo;
+			PropertyInfo sourceInfo = PropertyUtil.GetPropertyInfo (sourceProperty);
 			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
 			Bridges.Add (new BindingBridge(this, sourceInfo, targetInfo));
 

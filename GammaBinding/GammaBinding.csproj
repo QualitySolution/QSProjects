@@ -31,6 +31,7 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +70,10 @@
     <Compile Include="GtkWidgets\yTreeView.cs" />
     <Compile Include="GtkWidgets\yLabel.cs" />
     <Compile Include="GtkWidgets\yTextView.cs" />
+    <Compile Include="Widgets\EventArgs\EnumItemClickedEventArgs.cs" />
+    <Compile Include="Widgets\yEnumComboBox.cs" />
+    <Compile Include="Widgets\Additions\Enums.cs" />
+    <Compile Include="GtkHelpers\ListStoreHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -76,6 +81,10 @@
     <Folder Include="Core\" />
     <Folder Include="Core\Helpers\" />
     <Folder Include="GtkWidgets\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Widgets\EventArgs\" />
+    <Folder Include="Widgets\Additions\" />
+    <Folder Include="GtkHelpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
