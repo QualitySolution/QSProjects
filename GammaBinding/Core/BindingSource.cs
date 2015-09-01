@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.Utilities;
+using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
@@ -81,7 +82,7 @@ namespace Gamma.Binding.Core
 		{
 			foreach(var bridge in Bridges.Where (b => b.Mode != BridgeMode.BackwardFromTarget))
 			{
-				myControler.TargetSetValue (bridge.TargetPropertyInfo, bridge.GetValueFromSource(DataSource));
+				myControler.TargetSetValue (bridge.TargetPropertyChain, bridge.GetValueFromSource(DataSource));
 			}
 		}
 
@@ -102,7 +103,7 @@ namespace Gamma.Binding.Core
 		public BindingSource<TSource, TTarget> AddBinding(Expression<Func<TSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty)
 		{
 			PropertyInfo sourceInfo = PropertyUtil.GetMemberInfo (sourceProperty) as PropertyInfo;
-			PropertyInfo targetInfo = PropertyUtil.GetMemberInfo (targetProperty) as PropertyInfo;
+			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
 			Bridges.Add (new BindingBridge(this, sourceInfo, targetInfo));
 
 			return this;
@@ -110,7 +111,7 @@ namespace Gamma.Binding.Core
 
 		public BindingSource<TSource, TTarget> AddFuncBinding(Expression<Func<TSource, object>> sourceGetter, Expression<Func<TTarget, object>> targetProperty)
 		{
-			PropertyInfo targetInfo = PropertyUtil.GetMemberInfo (targetProperty) as PropertyInfo;
+			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
 			Bridges.Add (new FuncBindingBridge<TSource>(this, sourceGetter, targetInfo));
 
 			return this;

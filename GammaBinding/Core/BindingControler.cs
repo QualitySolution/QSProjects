@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.Utilities;
+using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
@@ -19,14 +20,42 @@ namespace Gamma.Binding.Core
 			BackwardProperties = backwards;
 		}
 
+		public BindingControler (TWidget targetWidget, Expression<Func<TWidget, object>>[] backwardsExp) : this(targetWidget)
+		{
+			BackwardProperties = backwardsExp.Select (exp => 
+				String.Join (".", PropertyChainFromExp.Get (exp).Select (p => p.Name)))
+				.ToArray ();
+		}
+
 		public BindingControler (TWidget targetWidget)
 		{
 			widget = targetWidget;
 		}
 
-		public void TargetSetValue(PropertyInfo property, object value)
+		public void TargetSetValue(PropertyInfo[] propertyChain, object value)
 		{
-			property.SetValue (widget, value, null);
+			object target = widget;
+			PropertyInfo lastProp = null;
+			foreach(PropertyInfo curProp in propertyChain)
+			{
+				if (lastProp != null)
+					target = lastProp.GetValue (target, null);
+				lastProp = curProp;
+			}
+			lastProp.SetValue (target, value, null);
+		}
+
+		public object TargetGetValue(PropertyInfo[] propertyChain)
+		{
+			object target = widget;
+			PropertyInfo lastProp = null;
+			foreach(PropertyInfo curProp in propertyChain)
+			{
+				if (lastProp != null)
+					target = lastProp.GetValue (target, null);
+				lastProp = curProp;
+			}
+			return lastProp.GetValue (target, null);
 		}
 
 		internal bool SourceSetValue(string property, object value)
@@ -47,8 +76,11 @@ namespace Gamma.Binding.Core
 
 		public void FireChange(Expression<Func<TWidget, object>> targetProperty)
 		{
-			PropertyInfo targetInfo = PropertyUtil.GetMemberInfo (targetProperty) as PropertyInfo;
-			SourceSetValue (targetInfo.Name, targetInfo.GetValue (widget, null));
+			var chain = PropertyChainFromExp.Get (targetProperty);
+			SourceSetValue (
+				PropertyChainFromExp.GetChainName (chain),
+				TargetGetValue (chain)
+			);
 		}
 
 		public BindingSource<TSource, TWidget> AddBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)

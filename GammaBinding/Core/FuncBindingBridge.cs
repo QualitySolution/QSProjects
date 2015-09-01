@@ -13,25 +13,25 @@ namespace Gamma.Binding.Core
 
 		private Func<TSource, object> getter;
 
-		public PropertyInfo TargetPropertyInfo { get; private set;}
+		public PropertyInfo[] TargetPropertyChain { get; private set;}
 
 		public IBindingSource MyBindingSource { get; private set;}
 
 		public BridgeMode Mode { get; private set;}
 
 		public string TargetPropertyName{
-			get { return TargetPropertyInfo.Name;
+			get { return String.Join (".", TargetPropertyChain.Select (p => p.Name));
 			}
 		}
 
-		public FuncBindingBridge (IBindingSource source, Expression<Func<TSource, object>> sourceGetter, PropertyInfo targetPropery)
+		public FuncBindingBridge (IBindingSource source, Expression<Func<TSource, object>> sourceGetter, PropertyInfo[] targetProperyChain)
 		{
 			MyBindingSource = source;
 			getter = sourceGetter.Compile ();
 			readExpression (sourceGetter);
-			TargetPropertyInfo = targetPropery;
-			bool fromSource = true && TargetPropertyInfo.CanWrite;
-			bool fromTarget = false && TargetPropertyInfo.CanRead 
+			TargetPropertyChain = targetProperyChain;
+			bool fromSource = true && TargetPropertyChain.Last ().CanWrite;
+			bool fromTarget = false && TargetPropertyChain.Last ().CanRead 
 				&& MyBindingSource.Controler.BackwardProperties.Contains (TargetPropertyName);
 			if (fromSource && fromTarget)
 				Mode = BridgeMode.TwoWay;
@@ -46,7 +46,7 @@ namespace Gamma.Binding.Core
 		public void SourcePropertyUpdated (string propertyName, object source)
 		{
 			if(SourceProperies.Contains (propertyName))
-				MyBindingSource.Controler.TargetSetValue (TargetPropertyInfo, GetValueFromSource (source));
+				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, GetValueFromSource (source));
 		}
 
 		public object GetValueFromSource (object sourceObject)

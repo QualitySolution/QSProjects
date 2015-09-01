@@ -7,7 +7,7 @@ namespace Gamma.Binding.Core
 	{
 		BridgeMode Mode { get;}
 
-		PropertyInfo TargetPropertyInfo { get;}
+		PropertyInfo[] TargetPropertyChain { get;}
 
 		string TargetPropertyName { get;}
 

@@ -7,7 +7,7 @@ namespace Gamma.Binding.Core
 	public class BindingBridge : IBindingBridge
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
-		public PropertyInfo TargetPropertyInfo { get; private set;}
+		public PropertyInfo[] TargetPropertyChain { get; private set;}
 
 		public IBindingSource MyBindingSource { get; private set;}
 
@@ -19,17 +19,17 @@ namespace Gamma.Binding.Core
 		}
 
 		public string TargetPropertyName{
-			get { return TargetPropertyInfo.Name;
+			get { return String.Join (".", TargetPropertyChain.Select (p => p.Name));
 			}
 		}
 
-		public BindingBridge (IBindingSource source, PropertyInfo sourcePropery, PropertyInfo targetPropery)
+		public BindingBridge (IBindingSource source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain)
 		{
 			MyBindingSource = source;
 			SourcePropertyInfo = sourcePropery;
-			TargetPropertyInfo = targetPropery;
-			bool fromSource = SourcePropertyInfo.CanRead && TargetPropertyInfo.CanWrite;
-			bool fromTarget = SourcePropertyInfo.CanWrite && TargetPropertyInfo.CanRead 
+			TargetPropertyChain = targetProperyChain;
+			bool fromSource = SourcePropertyInfo.CanRead && TargetPropertyChain.Last ().CanWrite;
+			bool fromTarget = SourcePropertyInfo.CanWrite && TargetPropertyChain.Last ().CanRead 
 				&& MyBindingSource.Controler.BackwardProperties.Contains (TargetPropertyName);
 			if (fromSource && fromTarget)
 				Mode = BridgeMode.TwoWay;
@@ -44,7 +44,7 @@ namespace Gamma.Binding.Core
 		public void SourcePropertyUpdated (string propertyName, object source)
 		{
 			if(SourcePropertyName == propertyName)
-				MyBindingSource.Controler.TargetSetValue (TargetPropertyInfo, SourcePropertyInfo.GetValue (source, null));
+				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, SourcePropertyInfo.GetValue (source, null));
 		}
 
 		public object GetValueFromSource (object sourceObject)

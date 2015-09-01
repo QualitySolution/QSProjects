@@ -7,7 +7,7 @@ namespace Gamma.Binding.Core
 	{
 		string[] BackwardProperties { get;}
 
-		void TargetSetValue(PropertyInfo property, object value);
+		void TargetSetValue(PropertyInfo[] propertyChain, object value);
 	}
 }
 
