@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Gamma.Utilities;
 using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
@@ -74,13 +73,15 @@ namespace Gamma.Binding.Core
 			return anyseted;
 		}
 
-		public void FireChange(Expression<Func<TWidget, object>> targetProperty)
+		public void FireChange(params Expression<Func<TWidget, object>>[] targetProperties)
 		{
-			var chain = PropertyChainFromExp.Get (targetProperty);
-			SourceSetValue (
-				PropertyChainFromExp.GetChainName (chain),
-				TargetGetValue (chain)
-			);
+			foreach (var Property in targetProperties) {
+				var chain = PropertyChainFromExp.Get (Property);
+				SourceSetValue (
+					PropertyChainFromExp.GetChainName (chain),
+					TargetGetValue (chain)
+				);
+			}
 		}
 
 		public BindingSource<TSource, TWidget> AddBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)
