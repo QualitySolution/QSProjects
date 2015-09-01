@@ -67,11 +67,12 @@
     <Compile Include="Core\FuncBindingBridge.cs" />
     <Compile Include="Core\Helpers\ExpressionVisitor.cs" />
     <Compile Include="Core\Helpers\FetchPropertyFromExpression.cs" />
+    <Compile Include="Widgets\yTextView.cs" />
+    <Compile Include="Core\Helpers\PropertyChainFromExp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Widgets\" />
-    <Folder Include="Properties\Новая папка\" />
     <Folder Include="TreeModels\" />
     <Folder Include="Core\" />
     <Folder Include="Core\Helpers\" />
