@@ -40,7 +40,7 @@ namespace Gamma.Utilities
 		{
 			MemberExpression memberExpr = propertyRefExpr.Body as MemberExpression;
 			if (memberExpr == null) {
-				UnaryExpression unaryExpr = propertyRefExpr as UnaryExpression;
+				UnaryExpression unaryExpr = propertyRefExpr.Body as UnaryExpression;
 				if (unaryExpr != null && unaryExpr.NodeType == ExpressionType.Convert)
 					memberExpr = unaryExpr.Operand as MemberExpression;
 			}
