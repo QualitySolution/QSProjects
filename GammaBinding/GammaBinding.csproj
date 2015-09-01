@@ -34,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Widgets\yTreeView.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererCombo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererSpin.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererText.cs" />
@@ -57,7 +56,6 @@
     <Compile Include="TreeModels\ObservableListTreeModel.cs" />
     <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
     <Compile Include="TreeModels\ListTreeModel.cs" />
-    <Compile Include="Widgets\yLabel.cs" />
     <Compile Include="Core\BindingBridge.cs" />
     <Compile Include="Core\BindingControler.cs" />
     <Compile Include="Core\BindingSource.cs" />
@@ -67,15 +65,17 @@
     <Compile Include="Core\FuncBindingBridge.cs" />
     <Compile Include="Core\Helpers\ExpressionVisitor.cs" />
     <Compile Include="Core\Helpers\FetchPropertyFromExpression.cs" />
-    <Compile Include="Widgets\yTextView.cs" />
     <Compile Include="Core\Helpers\PropertyChainFromExp.cs" />
+    <Compile Include="GtkWidgets\yTreeView.cs" />
+    <Compile Include="GtkWidgets\yLabel.cs" />
+    <Compile Include="GtkWidgets\yTextView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Widgets\" />
     <Folder Include="TreeModels\" />
     <Folder Include="Core\" />
     <Folder Include="Core\Helpers\" />
+    <Folder Include="GtkWidgets\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
