@@ -179,6 +179,26 @@ namespace Gamma.GtkWidgets
 				}
 			}
 		}
+
+		public object[] GetSelectedObjects()
+		{
+			TreePath[] tp = Selection.GetSelectedRows();
+			object[] rows = new object[tp.Length];
+			for (int i=0; i<rows.Length; i++) {
+				rows[i] = YTreeModel.GetNodeAtPath (tp[i]);
+			}
+			return (rows);
+		}
+
+		public object GetSelectedObject()
+		{
+			TreeIter iter;
+			if (Selection.GetSelected (out iter))
+				return YTreeModel.NodeFromIter (iter);
+			else
+				return null;
+		}
+
 	}
 }
 
