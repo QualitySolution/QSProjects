@@ -17,8 +17,36 @@ namespace Gamma.Binding
 		{
 			adapter = new TreeModelAdapter (this);
 			sourceList = list;
+			sourceList.ElementChanged += SourceList_ElementChanged;
+			sourceList.ElementAdded += SourceList_ElementAdded;
+			sourceList.ElementRemoved += SourceList_ElementRemoved;
 		}
 
+		void SourceList_ElementRemoved (object aList, int[] aIdx, object aObject)
+		{
+			TreePath path = new TreePath(aIdx);
+
+			Adapter.EmitRowDeleted (path);
+		}
+
+		void SourceList_ElementAdded (object aList, int[] aIdx)
+		{
+			object value = (aList as IList) [aIdx[0]];
+			TreeIter iter = IterFromNode(value);
+			TreePath path = PathFromNode (value);
+
+			Adapter.EmitRowInserted (path, iter);
+		}
+
+		void SourceList_ElementChanged (object aList, int[] aIdx)
+		{
+			object value = (aList as IList) [aIdx[0]];
+			TreeIter iter = IterFromNode(value);
+			TreePath path = PathFromNode (value);
+
+			Adapter.EmitRowChanged (path, iter);
+		}
+			
 		protected IObservableList SourceList {
 			get {
 				return sourceList;
