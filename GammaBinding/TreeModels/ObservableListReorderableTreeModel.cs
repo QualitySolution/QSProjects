@@ -36,7 +36,7 @@ namespace Gamma.Binding
 			if(Tree.GetRowDragData(data, out srcModel, out srcPath))
 			{
 				Console.WriteLine("DragDataReceived srcPath={0}", srcPath);
-				object row = GetNodeAtPath (srcPath);
+				object row = NodeAtPath (srcPath);
 				SourceList.RemoveAt (srcPath.Indices[0]);
 				if (srcPath.Indices [0] < path.Indices [0])
 					path.Prev ();

@@ -97,7 +97,7 @@ namespace Gamma.GtkWidgets
 			var cell = o as INodeCellRenderer;
 			if(cell != null)
 			{
-				object obj = YTreeModel.GetNodeAtPath (new TreePath(args.Path));
+				object obj = YTreeModel.NodeAtPath (new TreePath(args.Path));
 				if (cell.DataPropertyInfo != null) {
 					object propValue = cell.DataPropertyInfo.GetValue (obj, null);
 					var spin = o as CellRendererSpin;
@@ -185,7 +185,7 @@ namespace Gamma.GtkWidgets
 			TreePath[] tp = Selection.GetSelectedRows();
 			object[] rows = new object[tp.Length];
 			for (int i=0; i<rows.Length; i++) {
-				rows[i] = YTreeModel.GetNodeAtPath (tp[i]);
+				rows[i] = YTreeModel.NodeAtPath (tp[i]);
 			}
 			return (rows);
 		}

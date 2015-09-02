@@ -7,7 +7,7 @@ namespace Gamma.Binding
 	{
 		TreeModel Adapter { get;}
 
-		object GetNodeAtPath(TreePath aPath);
+		object NodeAtPath(TreePath aPath);
 		object NodeFromIter (TreeIter iter);
 	}
 }

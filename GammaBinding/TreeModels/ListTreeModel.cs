@@ -48,7 +48,7 @@ namespace Gamma.Binding
 
 			iter = TreeIter.Zero;
 
-			object node = GetNodeAtPath (path); //FIXME Will be optimized
+			object node = NodeAtPath (path); //FIXME Will be optimized
 			if (node == null)
 				return (false);
 
@@ -157,7 +157,7 @@ namespace Gamma.Binding
 
 		#endregion
 
-		public object GetNodeAtPath (TreePath aPath)
+		public object NodeAtPath (TreePath aPath)
 		{
 			if (sourceList == null)
 				return (null);
