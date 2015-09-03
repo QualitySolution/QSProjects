@@ -63,11 +63,11 @@ namespace QSSupportLib
 			var svc = QSBugReporting.ReportWorker.GetReportService ();
 			var result = svc.SubmitBugReport (MainSupport.ProjectVerion.Product,
 				             MainSupport.ProjectVerion.Version.ToString (), 
-				             String.Format ("{0}\n{1}", AppExpeption, message), 
-				             textviewDescription.Buffer.Text, 
+				             String.Format ("{0}\n{1}", AppExpeption, message.Replace (" ", "%20")), 
+				             textviewDescription.Buffer.Text.Replace (" ", "%20"), 
 				             entryEmail.Text);
 			if (result) {
-				this.Respond (Gtk.ResponseType.Ok);
+				this.Respond (ResponseType.Ok);
 			} else
 				MessageDialogWorks.RunWarningDialog ("Отправка сообщения не удалась.\n" +
 				"Проверьте ваше интернет соединение или повторите попытку позднее.");
