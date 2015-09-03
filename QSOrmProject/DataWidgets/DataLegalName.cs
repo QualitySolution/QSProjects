@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using GammaBinding;
+using Gamma.Binding.Core;
 using QSWidgetLib;
 
 namespace QSOrmProject

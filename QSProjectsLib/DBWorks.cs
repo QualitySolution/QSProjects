@@ -5,6 +5,7 @@ namespace QSProjectsLib
 {
 	public static class DBWorks
 	{
+		#region OnlyValues
 		public static bool GetBoolean(System.Data.IDataReader rdr, string Column, bool NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
@@ -68,6 +69,49 @@ namespace QSProjectsLib
 			else
 				return NullValue;
 		}
+		#endregion
+
+		#region NullableValues
+		public static bool? GetBoolean(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr[Column] != DBNull.Value ? (bool?)rdr.GetBoolean (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static int? GetInt(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (int?)rdr.GetInt32 (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static long? GetLong(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (long?)rdr.GetInt64 (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static decimal? GetDecimal(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (decimal?)rdr.GetDecimal (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static float? GetFloat(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (float?)rdr.GetFloat (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static double? GetDouble(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (double?)rdr.GetDouble (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static DateTime? GetDateTime(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? (DateTime?)rdr.GetDateTime (rdr.GetOrdinal (Column)) : null;
+		}
+
+		public static string GetString(System.Data.IDataReader rdr, string Column)
+		{
+			return rdr [Column] != DBNull.Value ? rdr.GetString (rdr.GetOrdinal (Column)) : null;
+		}
+		#endregion
 
 		/// <summary>
 		/// Return values if condition is true else DBNull.

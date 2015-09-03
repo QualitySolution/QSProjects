@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,14 +39,14 @@
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.0.1\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="FluentNHibernate">
       <HintPath>..\packages\FluentNHibernate.2.0.1.0\lib\net40\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.1.0\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -116,11 +118,6 @@
     <Compile Include="DomainModel\BusinessObjectBase.cs" />
     <Compile Include="DomainModel\UnitOfWorkBase.cs" />
     <Compile Include="DataWidgets\DataLegalName.cs" />
-    <Compile Include="GammaBinding\BindingControler.cs" />
-    <Compile Include="GammaBinding\BindingSource.cs" />
-    <Compile Include="GammaBinding\BindingBridge.cs" />
-    <Compile Include="GammaBinding\IBindingSource.cs" />
-    <Compile Include="GammaBinding\IBindingControler.cs" />
     <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
   </ItemGroup>
@@ -151,6 +148,10 @@
       <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
       <Name>QSTDI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
@@ -165,7 +166,6 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="UpdateNotification\" />
     <Folder Include="ParentReference\" />
-    <Folder Include="GammaBinding\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

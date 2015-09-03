@@ -10,6 +10,7 @@ namespace QSOrmProject
 {
 	[ToolboxItem (true)]
 	[Category ("QS Widgets")]
+	[Obsolete("Используйте аналог yEnumComboBox, все исправления будут в нем, этот виджет не будет поддерживаться и будет удален просле 01.09.2016.")]
 	public class EnumComboBox : ComboBox
 	{
 		static Logger logger = LogManager.GetCurrentClassLogger ();

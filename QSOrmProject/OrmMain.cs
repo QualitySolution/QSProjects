@@ -99,6 +99,8 @@ namespace QSOrmProject
 
 		public static OrmObjectMapping<TEntity> GetObjectDescription<TEntity> ()
 		{
+			if (ClassMappingList == null)
+				return null;
 			return OrmMain.ClassMappingList.Find (m => m.ObjectClass == typeof(TEntity)) as OrmObjectMapping<TEntity>;
 		}
 
@@ -109,6 +111,8 @@ namespace QSOrmProject
 		/// <param name="subject">Subject.</param>
 		public static void NotifyObjectUpdated (params object[] updatedSubjects)
 		{
+			if (ClassMappingList == null)
+				return;
 			// Чистим список от удаленных объектов.
 			if (DateTime.Now.Subtract (lastCleaning).TotalSeconds > 1) {
 				delayedNotifies.RemoveAll (d => d.ParentObject == null || d.ChangedObject == null);

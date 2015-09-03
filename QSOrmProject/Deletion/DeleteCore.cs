@@ -51,6 +51,8 @@ namespace QSOrmProject.Deletion
 				var cmd = QSMain.ConnectionDB.CreateCommand ();
 				cmd.CommandText = info.PreparedSqlSelect + 
 					String.Format ("WHERE {0}.id = @id", info.TableName);
+
+				logger.Debug ("Запрос основного объекта SQL={0}", cmd.CommandText);
 				AddParameterWithId (cmd, id);
 
 				using (DbDataReader rdr = cmd.ExecuteReader ()) {
@@ -114,6 +116,7 @@ namespace QSOrmProject.Deletion
 					string sql = childClassInfo.PreparedSqlSelect + delItem.WhereStatment;
 					cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = sql;
+					logger.Debug ("Запрос удаляемых объектов в зависимой таблицы SQL={0}", cmd.CommandText);
 					AddParameterWithId (cmd, currentId);
 
 					List<object[]> ReadedData = new List<object[]> ();
@@ -180,6 +183,7 @@ namespace QSOrmProject.Deletion
 					cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = sql;
 					AddParameterWithId (cmd, currentId);
+					logger.Debug ("Запрос очищаемых ссылок SQL={0}", cmd.CommandText);
 
 					using (DbDataReader rdr = cmd.ExecuteReader ()) {
 						if (!rdr.HasRows) {
@@ -244,6 +248,7 @@ namespace QSOrmProject.Deletion
 				cmd.Transaction = trans;
 				cmd.CommandText = String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment);
 				AddParameterWithId (cmd, ItemId);
+				logger.Debug ("Выполение удаления SQL={0}", cmd.CommandText);
 				cmd.ExecuteNonQuery ();
 			}
 		}
@@ -267,6 +272,7 @@ namespace QSOrmProject.Deletion
 				cmd.Transaction = trans;
 				cmd.CommandText = sql.Text;
 				AddParameterWithId (cmd, ItemId);
+				logger.Debug ("Выполнение очистки ссылок SQL={0}", cmd.CommandText);
 				cmd.ExecuteNonQuery ();
 			}
 		}
