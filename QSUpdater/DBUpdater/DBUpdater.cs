@@ -35,7 +35,7 @@ namespace QSUpdater.DB
 		
 			while(microUpdates.Exists(u => u.Source == currentDB))
 			{
-                if (!QSMain.User.admin)
+                if (!QSMain.User.Admin)
                     NotAdminErrorAndExit();
                 var update = microUpdates.Find(u => u.Source == currentDB);
 				logger.Info("Обновляемся до {0}", StringWorks.VersionToShortString(update.Destanation));
