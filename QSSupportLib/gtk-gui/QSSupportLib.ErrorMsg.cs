@@ -239,7 +239,7 @@ namespace QSSupportLib
 			global::Gtk.Image w20 = new global::Gtk.Image ();
 			w20.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("QSSupportLib.icons.send-error-report.png");
 			this.buttonSendReport.Image = w20;
-			this.AddActionWidget (this.buttonSendReport, 0);
+			w19.Add (this.buttonSendReport);
 			global::Gtk.ButtonBox.ButtonBoxChild w21 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w19 [this.buttonSendReport]));
 			w21.Expand = false;
 			w21.Fill = false;
@@ -276,8 +276,8 @@ namespace QSSupportLib
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 531;
-			this.DefaultHeight = 296;
+			this.DefaultWidth = 546;
+			this.DefaultHeight = 314;
 			this.Show ();
 			this.buttonSendReport.Clicked += new global::System.EventHandler (this.OnButtonSendReportClicked);
 			this.buttonCopy.Clicked += new global::System.EventHandler (this.OnButtonCopyClicked);

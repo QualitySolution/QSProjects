@@ -2,11 +2,15 @@ using System;
 using Gtk;
 using QSProjectsLib;
 using System.Text.RegularExpressions;
+using NLog;
+using System.Linq;
+using NLog.Targets;
 
 namespace QSSupportLib
 {
 	public partial class ErrorMsg : Gtk.Dialog
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		Exception AppExpeption;
 		string message;
 
@@ -61,16 +65,46 @@ namespace QSSupportLib
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
 			var svc = QSBugReporting.ReportWorker.GetReportService ();
+			if(svc == null)
+			{
+				MessageDialogWorks.RunErrorDialog ("Не удалось установить соединение с сервером Quality Solution.");
+				return;
+			}
+			string logFileName = GetLogFile ();
+			string logContent = String.Empty;
+			if(!String.IsNullOrWhiteSpace (logFileName))
+			{
+				try
+				{
+					logContent = System.IO.File.ReadAllText(logFileName);
+				}
+				catch(Exception ex)
+				{
+					logger.Error (ex, "Не смогли прочитать лог файл {0}, для отправки.");
+				}
+			}
+
 			var result = svc.SubmitBugReport (MainSupport.ProjectVerion.Product,
 				             MainSupport.ProjectVerion.Version.ToString (), 
-				             String.Format ("{0}\n{1}", AppExpeption, message.Replace (" ", "%20")), 
-				             textviewDescription.Buffer.Text.Replace (" ", "%20"), 
-				             entryEmail.Text);
+							 String.Format ("{0}{1}", 
+					String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message),
+					AppExpeption),
+				             textviewDescription.Buffer.Text,
+				             entryEmail.Text,
+							 QSMain.User.Name,
+							 logContent
+			);
 			if (result) {
 				this.Respond (ResponseType.Ok);
 			} else
 				MessageDialogWorks.RunWarningDialog ("Отправка сообщения не удалась.\n" +
-				"Проверьте ваше интернет соединение или повторите попытку позднее.");
+				"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
+		}
+			
+		private string GetLogFile()
+		{
+			var fileTarget = LogManager.Configuration.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
+			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
 		}
 	}
 }

@@ -9,7 +9,7 @@
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="531 296">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="546 314">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
@@ -291,7 +291,7 @@
             <property name="Icon">resource:QSSupportLib.icons.send-error-report.png</property>
             <property name="Label" translatable="yes">Отправить отчет</property>
             <property name="UseUnderline">True</property>
-            <property name="ResponseId">0</property>
+            <property name="ResponseId">-1</property>
             <signal name="Clicked" handler="OnButtonSendReportClicked" />
           </widget>
           <packing>
