@@ -23,7 +23,8 @@ namespace QSProjectsLib
 			treeviewUsers.AppendColumn ("Имя", new Gtk.CellRendererText (), "text", 2);
 			treeviewUsers.AppendColumn ("Администратор", new Gtk.CellRendererToggle (), "active", 3);
 			foreach (var col in treeviewUsers.Columns) {
-				col.AddAttribute (col.CellRenderers [0], "foreground", 5);
+				if(col.CellRenderers [0] is CellRendererText)
+					col.AddAttribute (col.CellRenderers [0], "foreground", 5);
 			}
 			treeviewUsers.Model = UsersListStore;
 			treeviewUsers.ShowAll ();
