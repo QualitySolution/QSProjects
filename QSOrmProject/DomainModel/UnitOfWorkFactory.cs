@@ -25,13 +25,24 @@ namespace QSOrmProject
 		}
 
 		/// <summary>
-		/// Создаем Unit of Work и новым экземляром сущности
+		/// Создаем Unit of Work с новым экземляром сущности
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
 		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>() where TEntity : IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>();
+			return uow;
+		}
+
+		/// <summary>
+		/// Создаем Unit of Work с новым экземляром сущности переданным в виде аргумента
+		/// </summary>
+		/// <returns>UnitOfWork.</returns>
+		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity) where TEntity : IDomainObject, new()
+		{
+			var uow = new UnitOfWork<TEntity>(entity);
 			return uow;
 		}
 

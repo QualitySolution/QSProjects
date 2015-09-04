@@ -35,6 +35,12 @@ namespace QSOrmProject
 			Root = new TRootEntity();
 		}
 
+		public UnitOfWork(TRootEntity root)
+		{
+			IsNew = true;
+			Root = root;
+		}
+
 		public UnitOfWork(int id)
 		{
 			IsNew = false;
