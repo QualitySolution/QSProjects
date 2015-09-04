@@ -31,6 +31,19 @@ namespace QSProjectsLib
 			md.Run ();
 			md.Destroy ();
 		}
+
+		public static void RunErrorDialog (string error)
+		{
+			MessageDialog md = new MessageDialog (null,
+				DialogFlags.Modal,
+				MessageType.Error,
+				ButtonsType.Ok,
+				error);
+			md.SetPosition (WindowPosition.Center);
+			md.ShowAll ();
+			md.Run ();
+			md.Destroy ();
+		}
 	}
 }
 
