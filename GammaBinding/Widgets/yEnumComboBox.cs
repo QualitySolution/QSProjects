@@ -45,7 +45,7 @@ namespace Gamma.Widgets
 			ResetLayout ();
 		}
 
-		public event EventHandler<EnumItemClickedEventArgs> EnumItemSelected;
+		public event EventHandler<ItemSelectedEventArgs> EnumItemSelected;
 
 		[Browsable (true)]
 		public String ItemsEnumName {
@@ -202,7 +202,7 @@ namespace Gamma.Widgets
 		void OnEnumItemSelected ()
 		{
 			if (EnumItemSelected != null) {
-				EnumItemSelected (this, new EnumItemClickedEventArgs (SelectedItem));
+				EnumItemSelected (this, new ItemSelectedEventArgs (SelectedItem));
 			}
 		}
 
