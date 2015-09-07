@@ -11,7 +11,17 @@ namespace Gamma.Binding.Core
 	public class BindingControler<TWidget> : IBindingControler
 	{
 		TWidget widget;
-		public string[] BackwardProperties { get; private set;}
+		string[] backwardProperties = new string[0];
+
+		public string[] BackwardProperties {
+			get {
+				return backwardProperties;
+			}
+			private set {
+				backwardProperties = value;
+			}
+		}
+
 		List<IBindingSource> Sources = new List<IBindingSource> ();
 
 		public BindingControler (TWidget targetWidget, string[] backwards) : this(targetWidget)
