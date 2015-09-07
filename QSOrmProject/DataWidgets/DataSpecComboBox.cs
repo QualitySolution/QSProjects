@@ -13,6 +13,7 @@ namespace Gtk.DataBindings
 {
 	[ToolboxItem (true)]
 	[Category ("QS Widgets")]
+	[Obsolete("Используйте аналог ySpecComboBox на Gamma Binding, этот виджет не будет поддерживаться и будет удален просле 07.09.2016.")]
 	public class DataSpecComboBox : ComboBox, IAdaptableControl, IPostableControl
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();

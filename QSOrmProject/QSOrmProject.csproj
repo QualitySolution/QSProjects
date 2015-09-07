@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -120,6 +118,7 @@
     <Compile Include="DataWidgets\DataLegalName.cs" />
     <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
+    <Compile Include="yWidgets\ySpecComboBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -166,6 +165,7 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="UpdateNotification\" />
     <Folder Include="ParentReference\" />
+    <Folder Include="yWidgets\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
