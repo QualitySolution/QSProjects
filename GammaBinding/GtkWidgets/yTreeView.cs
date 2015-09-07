@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Data.Bindings;
 using Gamma.Binding;
+using Gamma.Binding.Core;
 using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
-using System.Collections;
 
 namespace Gamma.GtkWidgets
 {
@@ -13,6 +14,8 @@ namespace Gamma.GtkWidgets
 	[Category ("Gamma Gtk")]
 	public class yTreeView : TreeView
 	{
+		public BindingControler<yTreeView> Binding { get; private set;}
+
 		IColumnsConfig columnsConfig;
 		public IColumnsConfig ColumnsConfig {
 			get {
@@ -60,6 +63,7 @@ namespace Gamma.GtkWidgets
 
 		public yTreeView ()
 		{
+			Binding = new BindingControler<yTreeView> (this);
 		}
 
 		bool ReconfigureColumns ()
