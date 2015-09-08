@@ -85,17 +85,17 @@ namespace QSSupportLib
 			}
 
 			//FIXME Костыль из за бага в mono.
-			logContent = logContent.Replace ("=", "≡");
+			logContent = logContent.Replace ("=", "≡").Replace (" ", "%20");
 				
 			var result = svc.SubmitBugReport (MainSupport.ProjectVerion.Product,
 				             MainSupport.ProjectVerion.Version.ToString (), 
 							 String.Format ("{0}{1}", 
-					String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message.Replace ("=", "≡")),
-					AppExpeption.ToString ().Replace ("=", "≡")),
-				textviewDescription.Buffer.Text.Replace ("=", "≡"),
+					String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message.Replace ("=", "≡").Replace (" ", "%20")),
+					AppExpeption.ToString ().Replace ("=", "≡").Replace (" ", "%20")),
+				textviewDescription.Buffer.Text.Replace ("=", "≡").Replace (" ", "%20"),
 				             entryEmail.Text,
-							 QSMain.User.Name,
-							 logContent
+				QSMain.User.Name.Replace (" ", "%20"),
+				logContent
 			);
 			if (result) {
 				this.Respond (ResponseType.Ok);
