@@ -17,7 +17,8 @@ namespace QSSaaS
 		public static String SessionId = String.Empty;
 		public static bool IsSaasConnection = false;
 		public static string Account = String.Empty;
-		public static string BaseName = String.Empty;
+		public static string SaasBaseName = String.Empty;
+		public static string SQLBaseName = String.Empty;
 
 		private static TimerCallback callback;
 		private static Timer timer;

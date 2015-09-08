@@ -183,7 +183,8 @@ namespace QSProjectsLib
 					Session.IsSaasConnection = true;
 					Session.SessionId = result.SessionID;
 					Session.Account = Selected.AccountLogin;
-					Session.BaseName = BaseName = result.BaseName;
+					Session.SaasBaseName = BaseName;
+					Session.SQLBaseName = result.BaseName;
 				} catch (Exception ex) {
 					labelLoginInfo.Text = "Ошибка соединения с сервисом.";
 					ConnectionError = "Описание ошибки: " + ex.Message;

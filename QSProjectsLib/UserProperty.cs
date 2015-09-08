@@ -171,7 +171,7 @@ namespace QSProjectsLib
 					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
 				//Предоставляем пользователю доступ к базе
-				if (!svc.changeBaseAccessFromProgram (Session.SessionId, entryLogin.Text, Session.BaseName, !checkDeactivated.Active, checkAdmin.Active)) {
+				if (!svc.changeBaseAccessFromProgram (Session.SessionId, entryLogin.Text, Session.SaasBaseName, !checkDeactivated.Active, checkAdmin.Active)) {
 					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
 						                   MessageType.Warning, 
 						                   ButtonsType.Close,
