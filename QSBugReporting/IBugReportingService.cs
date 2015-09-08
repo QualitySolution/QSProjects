@@ -8,7 +8,8 @@ namespace QSBugReporting
 	{
 		[OperationContract]
 		[WebInvoke (BodyStyle = WebMessageBodyStyle.Wrapped,
-			ResponseFormat = WebMessageFormat.Json
+			ResponseFormat = WebMessageFormat.Xml,
+			Method = "GET"
 		)]
 		bool SubmitBugReport (string product, string version, string stackTrace, string description, string email, string userName, string logFile);
 	}
