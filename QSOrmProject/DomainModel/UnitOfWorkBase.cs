@@ -37,6 +37,7 @@ namespace QSOrmProject
 			try
 			{
 				transaction.Commit();
+				IsNew = false;
 				OrmMain.NotifyObjectUpdated(entityToSave.ToArray ());
 			}
 			catch

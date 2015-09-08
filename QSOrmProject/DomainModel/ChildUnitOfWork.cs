@@ -70,6 +70,7 @@ namespace QSOrmProject
 		{
 			if (IsNew) {
 				ParentReference.AddNewChild (ParentUoW.Root, Root);
+				IsNew = false;
 			}
 
 			foreach (var obj in ObjectToDelete) {
