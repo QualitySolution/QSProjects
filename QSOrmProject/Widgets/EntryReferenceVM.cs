@@ -10,7 +10,7 @@ using QSOrmProject.RepresentationModel;
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class EntryReferenceVM : Gtk.Bin
+	public partial class EntryReferenceVM : WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
@@ -128,12 +128,22 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
-			if (mytab == null) {
-				logger.Warn ("Родительская вкладка не найдена.");
-				return;
+			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
+			if(modelWithParent != null)
+			{
+				if(MyOrmDialog != null && MyOrmDialog.UoW.IsNew 
+					&& MyOrmDialog.EntityObject == modelWithParent.GetParent)
+				{
+					if(CommonDialogs.SaveBeforeSelectFromChildReference (modelWithParent.GetParent.GetType (), SubjectType))
+					{
+						if (!MyTdiDialog.Save ())
+							return;
+					}
+					else
+						return;
+				}
 			}
-				
+
 			ReferenceRepresentation SelectDialog;
 
 			SelectDialog = new ReferenceRepresentation (RepresentationModel);
@@ -142,7 +152,7 @@ namespace QSOrmProject
 			if (!CanEditReference)
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += SelectDialog_ObjectSelected;
-			mytab.TabParent.AddSlaveTab (mytab, SelectDialog);
+			MyTab.TabParent.AddSlaveTab (MyTab, SelectDialog);
 		}
 
 		void SelectDialog_ObjectSelected (object sender, ReferenceRepresentationSelectedEventArgs e)

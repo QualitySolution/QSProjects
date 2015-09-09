@@ -46,6 +46,25 @@ namespace QSOrmProject
 			return result;
 		}
 
+		public static bool SaveBeforeSelectFromChildReference(Type savingEntity, Type childEntity)
+		{
+			var childNames = DomainHelper.GetSubjectNames (childEntity);
+			var parrentNames = DomainHelper.GetSubjectNames (savingEntity);
+
+			string message = String.Format ("Необходимо сохранить основной объект «{0}», прежде чем выбирать «{1}» из подчинённого справочника. Сохранить?",
+				parrentNames.Accusative,
+				childNames.AccusativePlural
+			);
+
+			var md = new MessageDialog ( QSMain.ErrorDlgParrent, DialogFlags.Modal,
+				MessageType.Question, 
+				ButtonsType.YesNo,
+				message);
+			bool result = (ResponseType)md.Run () == ResponseType.Yes;
+			md.Destroy ();
+			return result;
+		}
+
 		public static bool SaveBeforePrint(Type savingEntity, string whatPrint)
 		{
 			string  savingName = "НЕ УКАЗАНО";
