@@ -15,7 +15,7 @@ namespace QSBugReporting
 		{
 			try {
 				var address = new Uri (ServiceAddress);
-				var factory = new WebChannelFactory<IBugReportingService> (new WebHttpBinding { AllowCookies = true }, address);
+				var factory = new ChannelFactory<IBugReportingService> (new BasicHttpBinding(), ServiceAddress);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
 				logger.Error (ex, "Ошибка создания подключения к сервису BugReporting.");

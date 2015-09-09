@@ -7,10 +7,7 @@ namespace QSBugReporting
 	public interface IBugReportingService
 	{
 		[OperationContract]
-		[WebInvoke (BodyStyle = WebMessageBodyStyle.Wrapped,
-			ResponseFormat = WebMessageFormat.Xml,
-			Method = "GET"
-		)]
-		bool SubmitBugReport (string product, string version, string stackTrace, string description, string email, string userName, string logFile);
+		[WebInvoke]
+		bool SubmitBugReport (BugMessage bug);
 	}
 }

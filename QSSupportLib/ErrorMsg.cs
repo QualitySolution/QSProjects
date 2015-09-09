@@ -83,20 +83,20 @@ namespace QSSupportLib
 					logger.Error (ex, "Не смогли прочитать лог файл {0}, для отправки.");
 				}
 			}
-
-			//FIXME Костыль из за бага в mono.
-			logContent = logContent.Replace ("=", "≡").Replace (" ", "%20");
 				
-			var result = svc.SubmitBugReport (MainSupport.ProjectVerion.Product,
-				             MainSupport.ProjectVerion.Version.ToString (), 
-							 String.Format ("{0}{1}", 
-					String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message.Replace ("=", "≡").Replace (" ", "%20")),
-					AppExpeption.ToString ().Replace ("=", "≡").Replace (" ", "%20")),
-				textviewDescription.Buffer.Text.Replace ("=", "≡").Replace (" ", "%20"),
-				             entryEmail.Text,
-				QSMain.User.Name.Replace (" ", "%20"),
-				logContent
-			);
+			var result = svc.SubmitBugReport ( 
+				new QSBugReporting.BugMessage {
+					product = MainSupport.ProjectVerion.Product,
+					version = MainSupport.ProjectVerion.Version.ToString (),
+					stackTrace = String.Format ("{0}{1}", 
+						String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message),
+						AppExpeption),
+					description = textviewDescription.Buffer.Text,
+					email = entryEmail.Text,
+					userName = QSMain.User.Name,
+					logFile = logContent
+			});
+
 			if (result) {
 				this.Respond (ResponseType.Ok);
 			} else
