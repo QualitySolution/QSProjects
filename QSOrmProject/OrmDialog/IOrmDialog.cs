@@ -12,8 +12,6 @@ namespace QSOrmProject
 
 	public interface IOrmSlaveDialog
 	{
-		OrmParentReference ParentReference { get; set; }
-
 		object Subject { get; set; }
 	}
 

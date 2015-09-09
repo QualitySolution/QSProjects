@@ -7,12 +7,11 @@ using NHibernate.Criterion;
 using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
-using QSProjectsLib;
 
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class EntryReference : Gtk.Bin
+	public partial class EntryReference : WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
@@ -28,8 +27,6 @@ namespace QSOrmProject
 		/// Если ObjectDisplayFunc == null, сущьность отображается через функцию DomainHelper.GetObjectTilte, то есть по свойствам Title или Name.
 		/// </summary>
 		public Func<object, string> ObjectDisplayFunc;
-
-		public OrmParentReference ParentReference { get; set; }
 
 		private System.Type subjectType;
 
@@ -196,52 +193,32 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
-			if (mytab == null) {
-				logger.Warn ("Родительская вкладка не найдена.");
-				return;
-			}
-				
 			IOrmDialog dlg = OrmMain.FindMyDialog (this);
 			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
 
-			if (ParentReference != null) {
-				if(ParentReference.UoW.IsNew && ParentReference.UoW.RootObject == ParentReference.ParentObject)
-				{
-					var childNames = DomainHelper.GetSubjectNames (SubjectType);
-					var parrentNames = DomainHelper.GetSubjectNames (ParentReference.ParentObject);
+			if (dlg != null)
+				localUoW = dlg.UoW;
+			else
+				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
-					MessageDialogWorks.RunWarningDialog (String.Format ("Необходимо сохранить основной объект «{0}», прежде чем выбирать «{1}» из подчинённого справочника.",
-						parrentNames.Accusative,
-						childNames.AccusativePlural
-					));
-					return;
-				}
-				SelectDialog = new OrmReference (subjectType, ParentReference);
-			} else {
-				if (dlg != null)
-					localUoW = dlg.UoW;
-				else
-					localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
-
-				if(ItemsQuery != null)
-				{
-					SelectDialog = new OrmReference (localUoW, ItemsQuery);
-				}
-				else
-				{
-					if (ItemsCriteria == null)
-						ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
-
-					SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
-				}
+			if(ItemsQuery != null)
+			{
+				SelectDialog = new OrmReference (localUoW, ItemsQuery);
 			}
+			else
+			{
+				if (ItemsCriteria == null)
+					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
+
+				SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
+			}
+
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			if (!CanEditReference)
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
-			mytab.TabParent.AddSlaveTab (mytab, SelectDialog);
+			MyTab.TabParent.AddSlaveTab (MyTab, SelectDialog);
 		}
 
 		void OnSelectDialogObjectSelected (object sender, OrmReferenceObjectSectedEventArgs e)
@@ -256,18 +233,8 @@ namespace QSOrmProject
 				return;
 			}
 
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
-			if (mytab == null) {
-				logger.Warn ("Родительская вкладка не найдена.");
-				return;
-			}
-
-			ITdiTab dlg;
-			if (ParentReference == null)
-				dlg = OrmMain.CreateObjectDialog (Subject);
-			else
-				dlg = OrmMain.CreateObjectDialog (ParentReference, Subject);
-			mytab.TabParent.AddTab (dlg, mytab);
+			ITdiTab dlg = OrmMain.CreateObjectDialog (Subject);
+			MyTab.TabParent.AddTab (dlg, MyTab);
 		}
 
 		protected virtual void OnChanged ()

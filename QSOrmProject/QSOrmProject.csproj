@@ -59,7 +59,6 @@
     <Compile Include="DataWidgets\DataImageViewer.cs" />
     <Compile Include="OrmSimpleDialog.cs" />
     <Compile Include="DataWidgets\DataValidatedEntry.cs" />
-    <Compile Include="OrmParentReference.cs" />
     <Compile Include="DataWidgets\DataDatePicker.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />

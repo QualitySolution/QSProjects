@@ -206,16 +206,6 @@ namespace QSOrmProject
 			return CreateObjectDialog (NHibernateUtil.GetClass (entity), entity);
 		}
 
-		/// <summary>
-		/// Создаёт диалог для конкретного объекта доменной модели приложения.
-		/// </summary>
-		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
-		/// <param name="entity">Объект для которого нужно создать диалог.</param>
-		public static ITdiDialog CreateObjectDialog (OrmParentReference parentReference, object entity)
-		{
-			return CreateObjectDialog (NHibernateUtil.GetClass (entity), parentReference, entity);
-		}
-
 		public static bool DeleteObject(string table, int id)
 		{
 			var delete = new Deletion.DeleteCore();

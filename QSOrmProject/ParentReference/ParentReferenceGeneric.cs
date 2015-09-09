@@ -91,4 +91,3 @@ namespace QSOrmProject
 		object ParentObject { get;}
 	}
 }
-

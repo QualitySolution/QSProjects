@@ -61,17 +61,6 @@ namespace QSOrmProject
 			}
 		}
 
-		OrmParentReference parentReference;
-
-		public OrmParentReference ParentReference {
-			set {
-				parentReference = value;
-				if (parentReference != null)
-					Uow = parentReference.UoW;
-			}
-			get { return parentReference; }
-		}
-
 		private string[] searchFields = new string[]{ "Name" };
 
 		public string[] SearchFields {
@@ -182,14 +171,6 @@ namespace QSOrmProject
 			datatreeviewRef.ColumnMappings = columsMapping;
 		}
 
-		public OrmReference (System.Type objType, OrmParentReference parentReference)
-		{
-			this.Build ();
-			objectType = objType;
-			ParentReference = parentReference;
-			ConfigureDlg ();
-		}
-
 		void ConfigureDlg ()
 		{
 			Mode = OrmReferenceMode.Normal;
@@ -226,16 +207,11 @@ namespace QSOrmProject
 		private void UpdateObjectList ()
 		{
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
-			if (ParentReference == null) {
-				ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
-				if (OrmMain.GetObjectDescription (objectType).SimpleDialog)
-					baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
-				filterView = new ObservableFilterListView (baseCriteria.List ());
-			} else {
-				filterView = new ObservableFilterListView (parentReference.List);
-				if (filterWidget != null)
-					logger.Warn ("Фильтры(FilterClass) в режиме ParentReference не поддерживаются.");
-			}
+
+			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
+			if (OrmMain.GetObjectDescription (objectType).SimpleDialog)
+				baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
+			filterView = new ObservableFilterListView (baseCriteria.List ());
 				
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
@@ -301,10 +277,6 @@ namespace QSOrmProject
 			datatreeviewRef.Selection.UnselectAll ();
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
-			} else if (parentReference != null) {
-				if (TabParent.BeforeCreateNewTab ((object)null, this).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				TabParent.AddSlaveTab (this, OrmMain.CreateObjectDialog (objectType, ParentReference));
 			} else {
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
@@ -316,10 +288,6 @@ namespace QSOrmProject
 		{
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
-			} else if (parentReference != null) {
-				if (TabParent.BeforeCreateNewTab (datatreeviewRef.GetSelectedObjects () [0], this).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				TabParent.AddSlaveTab (this, OrmMain.CreateObjectDialog (objectType, ParentReference, datatreeviewRef.GetSelectedObjects () [0]));
 			} else {
 				object selected = null;
 				if (datatreeviewRef.GetSelectedObjects ().Length > 0)
@@ -405,12 +373,8 @@ namespace QSOrmProject
 
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
-			if (parentReference != null) {
-				throw new NotImplementedException();
-			} else {
-				if (OrmMain.DeleteObject(datatreeviewRef.GetSelectedObjects()[0]))
-					UpdateObjectList();
-			}
+			if (OrmMain.DeleteObject(datatreeviewRef.GetSelectedObjects()[0]))
+				UpdateObjectList();
 		}
 	}
 		
