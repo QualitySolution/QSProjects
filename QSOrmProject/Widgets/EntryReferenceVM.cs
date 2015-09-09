@@ -75,7 +75,7 @@ namespace QSOrmProject
 			UpdateWidget ();
 		}
 
-		public System.Type SubjectType {
+		protected Type SubjectType {
 			get { return subjectType; }
 			set {
 				if (subjectType != null) {
