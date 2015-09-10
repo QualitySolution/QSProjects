@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using NLog;
 using QSOsm;
+using System.ServiceModel.Web;
 
 namespace QSOsm
 {
@@ -11,14 +12,14 @@ namespace QSOsm
 
 		static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public static IOsmService GetReportService ()
+		public static IOsmService GetOsmService ()
 		{
 			try {
-				var address = new Uri (ServiceAddress);
-				var factory = new ChannelFactory<IOsmService> (new WebHttpBinding (), ServiceAddress);
+				Uri address = new Uri (ServiceAddress);
+				var factory = new WebChannelFactory<IOsmService> (new WebHttpBinding { AllowCookies = true }, address);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка создания подключения к сервису Osm.");
+				logger.Error (ex, "Ошибка создания подключения к Osm сервису");
 				return null;
 			}
 		}
