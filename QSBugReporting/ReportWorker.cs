@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ServiceModel.Web;
 using System.ServiceModel;
 using NLog;
 
@@ -15,7 +14,7 @@ namespace QSBugReporting
 		{
 			try {
 				var address = new Uri (ServiceAddress);
-				var factory = new ChannelFactory<IBugReportingService> (new BasicHttpBinding(), ServiceAddress);
+				var factory = new ChannelFactory<IBugReportingService> (new BasicHttpBinding (), ServiceAddress);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
 				logger.Error (ex, "Ошибка создания подключения к сервису BugReporting.");
