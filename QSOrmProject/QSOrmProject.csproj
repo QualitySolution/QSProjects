@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -118,6 +121,7 @@
     <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
     <Compile Include="yWidgets\ySpecComboBox.cs" />
+    <Compile Include="Widgets\RepresentationTreeView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -146,13 +150,13 @@
       <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
       <Name>QSTDI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
