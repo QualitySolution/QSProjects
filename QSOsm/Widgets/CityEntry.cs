@@ -48,7 +48,9 @@ namespace QSOsm
 			var cities = svc.GetCities ();
 			completionListStore = new ListStore (typeof(long), typeof(string));
 			foreach (var city in cities) {
-				completionListStore.AppendValues (city.OsmId, String.Format ("{0} {1}", city.Name, city.SuburbDistrict));
+				completionListStore.AppendValues (
+					city.OsmId, 
+					String.IsNullOrWhiteSpace (city.SuburbDistrict) ? city.Name : String.Format ("{0} ({1})", city.Name, city.SuburbDistrict));
 			}
 			this.Completion.Model = completionListStore;
 			this.Completion.TextColumn = 1;
