@@ -8,8 +8,6 @@ namespace QSOrmProject.RepresentationModel
 		IUnitOfWork UoW { get;}
 
 		event EventHandler Refiltered;
-
-		bool IsFiltred { get;}
 	}
 }
 
