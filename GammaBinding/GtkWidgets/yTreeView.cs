@@ -186,12 +186,17 @@ namespace Gamma.GtkWidgets
 
 		public object[] GetSelectedObjects()
 		{
+			return GetSelectedObjects<object> ();
+		}
+
+		public TNode[] GetSelectedObjects<TNode>()
+		{
 			TreePath[] tp = Selection.GetSelectedRows();
-			object[] rows = new object[tp.Length];
+			TNode[] rows = new TNode[tp.Length];
 			for (int i=0; i<rows.Length; i++) {
-				rows[i] = YTreeModel.NodeAtPath (tp[i]);
+				rows[i] = (TNode)YTreeModel.NodeAtPath (tp[i]);
 			}
-			return (rows);
+			return rows;
 		}
 
 		public object GetSelectedObject()
