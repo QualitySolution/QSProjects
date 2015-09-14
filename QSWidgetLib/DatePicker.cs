@@ -32,10 +32,14 @@ namespace QSWidgetLib
 				date = value;
 
 				entryDate.Text = date.HasValue ? date.Value.ToShortDateString () : String.Empty;
-
-				if(DateChanged != null)
-					DateChanged(this, EventArgs.Empty);
+				OnDateChanged ();
 			}
+		}
+
+		public virtual void OnDateChanged()
+		{
+			if(DateChanged != null)
+				DateChanged(this, EventArgs.Empty);
 		}
 
 		public DateTime Date {

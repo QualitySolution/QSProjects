@@ -122,6 +122,7 @@
     <Compile Include="Widgets\EnumListComboBox.cs" />
     <Compile Include="yWidgets\ySpecComboBox.cs" />
     <Compile Include="Widgets\RepresentationTreeView.cs" />
+    <Compile Include="yWidgets\yDatePicker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

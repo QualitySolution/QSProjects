@@ -6,6 +6,7 @@ using System.Data.Bindings;
 namespace QSOrmProject
 {
 	[ToolboxItem (true)]
+	[Obsolete("Используйте аналог yDatePicker на Gamma Binding, этот виджет не будет поддерживаться и будет удален просле 14.09.2016.")]
 	[Category ("Databound Widgets")]
 	[Description ("Adaptable Entry Widget")]
 	[GtkWidgetFactoryProvider ("string", "DefaultFactoryCreate")]
