@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data.Bindings;
-using System.Reflection;
 using Gtk;
 using NLog;
 using System.Collections;
@@ -9,7 +8,7 @@ using QSOrmProject;
 using QSProjectsLib;
 using Gamma.Widgets;
 
-namespace QSOrmProject.Gamma
+namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[Category ("QS Widgets")]
@@ -19,7 +18,10 @@ namespace QSOrmProject.Gamma
 
 		public override object SelectedItem {
 			get {
-				return  base.SelectedItem;
+				if(SelectedItemStrictTyped)
+					return base.SelectedItem is SpecialComboState ? null : base.SelectedItem;
+				else
+					return base.SelectedItem;
 			}
 			set {
 				if (base.SelectedItem == value)
@@ -45,7 +47,13 @@ namespace QSOrmProject.Gamma
 				}
 			}
 		}
-			
+
+		/// <summary>
+		/// При установки этого значения в true SelectedItem будет возвращать только значения из списка.
+		/// Служебные значения enum-а SpecialComboState будут преобразовываться в null.
+		/// </summary>
+		public bool SelectedItemStrictTyped = true;
+
 		private bool showSpecialStateAll = false;
 		[Browsable(true)]
 		public bool ShowSpecialStateAll {
