@@ -40,6 +40,7 @@ namespace QSHistoryLog
 			logic.Config.MaxDifferences = 10000;
 			logic.Config.MaxStructDepth = 10;
 			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
+			logic.Config.AttributesToIgnore.Add (typeof(IgnoreHistoryTraceAttribute));
 
 			return logic;
 		}
