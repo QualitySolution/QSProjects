@@ -60,10 +60,18 @@ namespace QSOrmProject
 
 		void RunDlg(ITdiTab dlg)
 		{
-			var window = new OneWidgetDialog (dlg as Gtk.Widget);
-			window.Show ();
-			window.Run ();
-			window.Destroy ();
+			if (dlg is Gtk.Dialog) {
+				var window = dlg as Gtk.Dialog;
+				window.Show ();
+				window.Run ();
+				window.Destroy ();
+			} else if (dlg is Gtk.Widget) {
+				var window = new OneWidgetDialog (dlg as Gtk.Widget);
+				window.Show ();
+				window.Run ();
+				window.Destroy ();
+			} else
+				throw new NotImplementedException ();
 		}
 
 		public bool CheckClosingSlaveTabs (ITdiTab tab)

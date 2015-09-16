@@ -125,6 +125,7 @@
     <Compile Include="yWidgets\yEntryReference.cs" />
     <Compile Include="WithoutTDI\OneWidgetDialog.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkDialogBase.cs" />
+    <Compile Include="WithoutTDI\FakeTDIDialogGtkDialogBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
