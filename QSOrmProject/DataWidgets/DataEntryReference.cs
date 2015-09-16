@@ -12,6 +12,7 @@ namespace Gtk.DataBindings
 	/// set on model should return Exception
 	/// </remarks>
 	[ToolboxItem (true)]
+	[Obsolete("Используйте аналог yEntryReference на Gamma Binding, этот виджет не будет поддерживаться и будет удален просле 16.09.2016.")]
 	[Category ("Databound Widgets")]
 	public class DataEntryReference : EntryReference, IPostableControl, IAdaptableControl
 	{
