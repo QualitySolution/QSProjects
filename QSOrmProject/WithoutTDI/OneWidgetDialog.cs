@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using Gtk;
+using QSTDI;
 
 namespace QSOrmProject
 {
 	public partial class OneWidgetDialog : Gtk.Dialog
 	{
+		ITdiTab tdiTab;
+
 		public OneWidgetDialog (Widget widget)
 		{
 			this.Build ();
@@ -21,7 +24,27 @@ namespace QSOrmProject
 			att = widget.GetType ().GetCustomAttributes (typeof(DisplayNameAttribute), true);
 			if (att.Length > 0)
 				Title = (att [0] as DisplayNameAttribute).DisplayName;
+
+			tdiTab = widget as ITdiTab;
+			if(tdiTab != null)
+			{
+				if(!String.IsNullOrWhiteSpace (tdiTab.TabName))
+					Title = tdiTab.TabName;
+				tdiTab.TabNameChanged += TdiTab_TabNameChanged;
+				tdiTab.CloseTab += TdiTab_CloseTab;
+			}
+
 			this.ReshowWithInitialSize ();
+		}
+
+		void TdiTab_CloseTab (object sender, TdiTabCloseEventArgs e)
+		{
+			Respond (ResponseType.Close);
+		}
+
+		void TdiTab_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
+		{
+			Title = tdiTab.TabName;
 		}
 	}
 }

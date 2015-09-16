@@ -68,7 +68,6 @@
     <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
-    <Compile Include="OneWidgetDialog.cs" />
     <Compile Include="gtk-gui\QSOrmProject.OneWidgetDialog.cs" />
     <Compile Include="DataWidgets\DataSpecComboBox.cs" />
     <Compile Include="Enums.cs" />
@@ -123,6 +122,9 @@
     <Compile Include="yWidgets\ySpecComboBox.cs" />
     <Compile Include="Widgets\RepresentationTreeView.cs" />
     <Compile Include="yWidgets\yDatePicker.cs" />
+    <Compile Include="yWidgets\yEntryReference.cs" />
+    <Compile Include="WithoutTDI\OneWidgetDialog.cs" />
+    <Compile Include="WithoutTDI\FakeTDITabGtkDialogBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -170,6 +172,7 @@
     <Folder Include="UpdateNotification\" />
     <Folder Include="ParentReference\" />
     <Folder Include="yWidgets\" />
+    <Folder Include="WithoutTDI\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
