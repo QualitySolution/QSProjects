@@ -13,6 +13,7 @@ using System.Linq;
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem (true)]
+	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class OrmReference : Gtk.Bin, ITdiJournal
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
