@@ -14,7 +14,7 @@ namespace QSOsm
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<OsmStreet> GetStreets (string City, long OsmId);
+		List<OsmStreet> GetStreets (long OsmId);
 
 	}
 }

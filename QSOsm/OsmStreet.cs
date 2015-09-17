@@ -8,12 +8,15 @@ namespace QSOsm
 	public class OsmStreet
 	{
 		[DataMember]
+		public long CityOsmId;
+		[DataMember]
 		public string Name;
 		[DataMember]
 		public string District;
 
-		public OsmStreet (string name, string district)
+		public OsmStreet (long cityId, string name, string district)
 		{
+			CityOsmId = cityId;
 			Name = name;
 			District = district;
 		}

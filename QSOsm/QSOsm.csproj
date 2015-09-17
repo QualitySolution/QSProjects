@@ -46,6 +46,7 @@
     <Compile Include="OsmStreet.cs" />
     <Compile Include="OsmWorker.cs" />
     <Compile Include="Widgets\CityEntry.cs" />
+    <Compile Include="Widgets\StreetEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

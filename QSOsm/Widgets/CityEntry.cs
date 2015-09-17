@@ -13,14 +13,19 @@ namespace QSOsm
 	{
 		const int CityColumn = 1;
 		const int DistrictColumn = 2;
+		const int OsmIdColumn = 3;
+
+		public event EventHandler CitySelected;
 
 		private ListStore completionListStore;
-
-		private delegate List<OsmCity> GetCitiesDelegate ();
 
 		private bool queryIsRunning = false;
 
 		public BindingControler<CityEntry> Binding { get; private set; }
+
+		long osmId;
+
+		public long OsmId { get { return osmId; } }
 
 		string city;
 
@@ -67,8 +72,15 @@ namespace QSOsm
 		{
 			City = args.Model.GetValue (args.Iter, CityColumn).ToString ();
 			CityDistrict = args.Model.GetValue (args.Iter, DistrictColumn).ToString ();
+			osmId = (long)args.Model.GetValue (args.Iter, OsmIdColumn);
+			OnCitySelected ();
 		}
 
+		protected virtual void OnCitySelected ()
+		{
+			if (CitySelected != null)
+				CitySelected (null, EventArgs.Empty);
+		}
 
 		void CityEntryTextInserted (object o, TextInsertedArgs args)
 		{
@@ -84,12 +96,13 @@ namespace QSOsm
 		{
 			IOsmService svc = OsmWorker.GetOsmService ();
 			var cities = svc.GetCities ();
-			completionListStore = new ListStore (typeof(string), typeof(string), typeof(string));
+			completionListStore = new ListStore (typeof(string), typeof(string), typeof(string), typeof(long));
 			foreach (var c in cities) {
 				completionListStore.AppendValues (
 					String.IsNullOrWhiteSpace (c.SuburbDistrict) ? c.Name : String.Format ("{0} ({1})", c.Name, c.SuburbDistrict),
 					c.Name,
-					c.SuburbDistrict
+					c.SuburbDistrict,
+					c.OsmId
 				);
 			}
 			this.Completion.Model = completionListStore;
