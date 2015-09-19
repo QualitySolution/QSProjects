@@ -131,7 +131,7 @@ namespace Gamma.Binding.Core
 
 		public void InitializeFromSource()
 		{
-			Sources.ForEach (s => s.InitializeFromSource());
+			Sources.ForEach (s => s.RunInitializeFromSource());
 		}
 	}
 }

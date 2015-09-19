@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using System.Linq.Expressions;
-using System.Collections.Generic;
 using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class FuncBindingBridge<TSource> : IBindingBridgeInternal
+	internal class FuncBindingBridge<TSource> : IBindingBridgeInternal
 	{
 		private string[] SourceProperies;
 

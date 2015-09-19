@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingBridge : IBindingBridgeInternal
+	internal class BindingBridge : IBindingBridgeInternal
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
 		public PropertyInfo[] TargetPropertyChain { get; private set;}

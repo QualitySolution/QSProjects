@@ -89,15 +89,15 @@ namespace Gamma.Binding.Core
 			return bridge.SetValueToSource (DataSource, value);
 		}
 
-		#endregion
-
-		public void InitializeFromSource()
+		void IBindingSourceInternal.RunInitializeFromSource()
 		{
 			foreach(var bridge in Bridges.Where (b => b.Mode != BridgeMode.BackwardFromTarget))
 			{
 				myControler.TargetSetValue (bridge.TargetPropertyChain, bridge.GetValueFromSource(DataSource));
 			}
 		}
+
+		#endregion
 
 		#region config
 
@@ -128,6 +128,11 @@ namespace Gamma.Binding.Core
 			Bridges.Add (new FuncBindingBridge<TSource>(this, sourceGetter, targetInfo));
 
 			return this;
+		}
+
+		public void InitializeFromSource()
+		{
+			myControler.InitializeFromSource ();
 		}
 
 		#endregion
