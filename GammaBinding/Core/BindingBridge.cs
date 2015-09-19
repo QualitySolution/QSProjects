@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingBridge : IBindingBridge
+	public class BindingBridge : IBindingBridgeInternal
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
 		public PropertyInfo[] TargetPropertyChain { get; private set;}
 
-		public IBindingSource MyBindingSource { get; private set;}
+		internal IBindingSourceInternal MyBindingSource { get; private set;}
 
 		public BridgeMode Mode { get; private set;}
 
@@ -23,7 +23,7 @@ namespace Gamma.Binding.Core
 			}
 		}
 
-		public BindingBridge (IBindingSource source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain)
+		internal BindingBridge (IBindingSourceInternal source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain)
 		{
 			MyBindingSource = source;
 			SourcePropertyInfo = sourcePropery;
@@ -41,18 +41,18 @@ namespace Gamma.Binding.Core
 				throw new ArgumentException ("Невозможно вычислить направление биндинга, необходимо что бы хотябы одно свойство имело возможность записи, а другое чтение.");
 		}
 
-		public void SourcePropertyUpdated (string propertyName, object source)
+		void IBindingBridgeInternal.SourcePropertyUpdated (string propertyName, object source)
 		{
 			if(SourcePropertyName == propertyName)
 				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, SourcePropertyInfo.GetValue (source, null));
 		}
 
-		public object GetValueFromSource (object sourceObject)
+		object IBindingBridgeInternal.GetValueFromSource (object sourceObject)
 		{
 			return SourcePropertyInfo.GetValue (sourceObject, null);
 		}
 
-		public bool SetValueToSource (object sourceObject, object value)
+		bool IBindingBridgeInternal.SetValueToSource (object sourceObject, object value)
 		{
 			if(SourcePropertyInfo.GetValue (sourceObject, null) != value)
 			{

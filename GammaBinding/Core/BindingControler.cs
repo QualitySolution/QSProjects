@@ -8,7 +8,7 @@ using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingControler<TWidget> : IBindingControler
+	public class BindingControler<TWidget> : IBindingControlerInternal, IBindingControler
 	{
 		TWidget widget;
 		string[] backwardProperties = new string[0];
@@ -22,7 +22,7 @@ namespace Gamma.Binding.Core
 			}
 		}
 
-		List<IBindingSource> Sources = new List<IBindingSource> ();
+		List<IBindingSourceInternal> Sources = new List<IBindingSourceInternal> ();
 
 		public BindingControler (TWidget targetWidget, string[] backwards) : this(targetWidget)
 		{
@@ -41,7 +41,14 @@ namespace Gamma.Binding.Core
 			widget = targetWidget;
 		}
 
-		public void TargetSetValue(PropertyInfo[] propertyChain, object value)
+		#region internal
+
+		void IBindingControlerInternal.TargetSetValue(PropertyInfo[] propertyChain, object value)
+		{
+			this.TargetSetValue(propertyChain, value);
+		}
+
+		internal void TargetSetValue(PropertyInfo[] propertyChain, object value)
 		{
 			object target = widget;
 			PropertyInfo lastProp = null;
@@ -54,7 +61,7 @@ namespace Gamma.Binding.Core
 			lastProp.SetValue (target, value, null);
 		}
 
-		public object TargetGetValue(PropertyInfo[] propertyChain)
+		internal object TargetGetValue(PropertyInfo[] propertyChain)
 		{
 			object target = widget;
 			PropertyInfo lastProp = null;
@@ -82,6 +89,8 @@ namespace Gamma.Binding.Core
 			}
 			return anyseted;
 		}
+
+		#endregion
 
 		public void FireChange(params Expression<Func<TWidget, object>>[] targetProperties)
 		{

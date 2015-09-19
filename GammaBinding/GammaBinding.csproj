@@ -61,8 +61,6 @@
     <Compile Include="Core\BindingControler.cs" />
     <Compile Include="Core\BindingSource.cs" />
     <Compile Include="Core\IBindingControler.cs" />
-    <Compile Include="Core\IBindingSource.cs" />
-    <Compile Include="Core\IBindingBridge.cs" />
     <Compile Include="Core\FuncBindingBridge.cs" />
     <Compile Include="Core\Helpers\ExpressionVisitor.cs" />
     <Compile Include="Core\Helpers\FetchPropertyFromExpression.cs" />
@@ -75,6 +73,8 @@
     <Compile Include="GtkHelpers\ListStoreHelper.cs" />
     <Compile Include="Widgets\yListComboBox.cs" />
     <Compile Include="Widgets\EventArgs\ItemSelectedEventArgs.cs" />
+    <Compile Include="Core\IBindingSourceInternal.cs" />
+    <Compile Include="Core\IBindingBridgeInternal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

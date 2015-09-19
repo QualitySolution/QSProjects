@@ -7,7 +7,7 @@ using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class FuncBindingBridge<TSource> : IBindingBridge
+	public class FuncBindingBridge<TSource> : IBindingBridgeInternal
 	{
 		private string[] SourceProperies;
 
@@ -15,7 +15,7 @@ namespace Gamma.Binding.Core
 
 		public PropertyInfo[] TargetPropertyChain { get; private set;}
 
-		public IBindingSource MyBindingSource { get; private set;}
+		internal IBindingSourceInternal MyBindingSource { get; private set;}
 
 		public BridgeMode Mode { get; private set;}
 
@@ -24,7 +24,7 @@ namespace Gamma.Binding.Core
 			}
 		}
 
-		public FuncBindingBridge (IBindingSource source, Expression<Func<TSource, object>> sourceGetter, PropertyInfo[] targetProperyChain)
+		internal FuncBindingBridge (IBindingSourceInternal source, Expression<Func<TSource, object>> sourceGetter, PropertyInfo[] targetProperyChain)
 		{
 			MyBindingSource = source;
 			getter = sourceGetter.Compile ();
@@ -43,13 +43,18 @@ namespace Gamma.Binding.Core
 				throw new ArgumentException ("Невозможно вычислить направление биндинга, необходимо что бы хотябы одно свойство имело возможность записи, а другое чтение.");
 		}
 
-		public void SourcePropertyUpdated (string propertyName, object source)
+		void IBindingBridgeInternal.SourcePropertyUpdated (string propertyName, object source)
 		{
 			if(SourceProperies.Contains (propertyName))
 				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, GetValueFromSource (source));
 		}
 
-		public object GetValueFromSource (object sourceObject)
+		object IBindingBridgeInternal.GetValueFromSource (object sourceObject)
+		{
+			return this.GetValueFromSource (sourceObject);
+		}
+
+		internal object GetValueFromSource (object sourceObject)
 		{
 			if(sourceObject is TSource)
 				return getter ((TSource)sourceObject);
@@ -57,7 +62,7 @@ namespace Gamma.Binding.Core
 				throw new InvalidCastException (String.Format ("sourceObject should be {0} type.", typeof(TSource)));
 		}
 
-		public bool SetValueToSource (object sourceObject, object value)
+		bool IBindingBridgeInternal.SetValueToSource (object sourceObject, object value)
 		{
 			throw new NotImplementedException ();
 		}

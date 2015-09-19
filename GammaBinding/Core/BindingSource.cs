@@ -9,24 +9,11 @@ using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingSource<TSource, TTarget> : IBindingSource
+	public class BindingSource<TSource, TTarget> : IBindingSourceInternal
 		where TSource : class, INotifyPropertyChanged
 	{
 		BindingControler<TTarget> myControler;
-
-		public IBindingControler Controler {
-			get {
-				return myControler;
-			}
-		}
-
-		readonly List<IBindingBridge> Bridges = new List<IBindingBridge> ();
-
-		public IBindingBridge[] AllBridges {
-			get {
-				return Bridges.ToArray ();
-			}
-		}
+		readonly List<IBindingBridgeInternal> Bridges = new List<IBindingBridgeInternal> ();
 
 		TSource dataSource;
 
@@ -62,25 +49,47 @@ namespace Gamma.Binding.Core
 			}
 		}
 
-		public IBindingBridge[] GetBackwardBridges(string targetPropName)
+		#region internal
+
+		IBindingBridgeInternal[] IBindingSourceInternal.AllBridges {
+			get {
+				return Bridges.ToArray ();
+			}
+		}
+
+		IBindingControlerInternal IBindingSourceInternal.Controler {
+			get {
+				return myControler;
+			}
+		}
+
+		internal IBindingControlerInternal Controler {
+			get {
+				return myControler;
+			}
+		}
+
+		IBindingBridgeInternal[] IBindingSourceInternal.GetBackwardBridges(string targetPropName)
 		{
 			return Bridges.Where (b => b.TargetPropertyName == targetPropName).ToArray ();
 		}
 
-		public object GetValueFromSource(IBindingBridge bridge)
+		object IBindingSourceInternal.GetValueFromSource(IBindingBridgeInternal bridge)
 		{
 			if (!Bridges.Contains (bridge))
 				throw new InvalidOperationException ("Bridge не из этого источника.");
 			return bridge.GetValueFromSource (DataSource);
 		}
 
-		public bool SetValueToSource(IBindingBridge bridge, object value)
+		bool IBindingSourceInternal.SetValueToSource(IBindingBridgeInternal bridge, object value)
 		{
 			if (!Bridges.Contains (bridge))
 				throw new InvalidOperationException ("Bridge не из этого источника.");
 
 			return bridge.SetValueToSource (DataSource, value);
 		}
+
+		#endregion
 
 		public void InitializeFromSource()
 		{

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Gamma.Binding.Core
 {
-	public interface IBindingBridge
+	internal interface IBindingBridgeInternal
 	{
 		BridgeMode Mode { get;}
 
