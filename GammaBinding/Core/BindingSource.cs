@@ -44,6 +44,10 @@ namespace Gamma.Binding.Core
 			}
 		}
 
+		public object DataSourceObject {
+			get { return DataSource;}
+		}
+
 		public BindingSource (BindingControler<TTarget> controler, TSource source)
 		{
 			myControler = controler;

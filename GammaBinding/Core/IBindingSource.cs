@@ -8,6 +8,8 @@ namespace Gamma.Binding.Core
 		IBindingControler Controler{ get;}
 
 		IBindingBridge[] GetBackwardBridges(string targetPropName);
+		object DataSourceObject { get;}
+
 		object GetValueFromSource(IBindingBridge bridge);
 		bool SetValueToSource(IBindingBridge bridge, object value);
 		void InitializeFromSource();
