@@ -12,6 +12,7 @@ namespace Gamma.Binding.Core
 	{
 		TWidget widget;
 		string[] backwardProperties = new string[0];
+		List<PropertyInfo[]> delayFiredChains = new List<PropertyInfo[]> ();
 
 		public string[] BackwardProperties {
 			get {
@@ -49,6 +50,15 @@ namespace Gamma.Binding.Core
 		{
 			IsSourceBatchUpdate = false;
 			Sources.ForEach (s => s.RunDelayedUpdates ());
+		}
+
+		internal bool IsTargetBatchUpdate { get; set;}
+
+		internal void FinishTargetUpdateBatch()
+		{
+			IsTargetBatchUpdate = false;
+			delayFiredChains.ForEach (
+				c => SourceSetValue (PropertyChainFromExp.GetChainName (c), TargetGetValue (c)));
 		}
 
 		void IBindingControlerInternal.TargetSetValue(PropertyInfo[] propertyChain, object value)
@@ -106,10 +116,18 @@ namespace Gamma.Binding.Core
 				IsSourceBatchUpdate = true;
 			foreach (var Property in targetProperties) {
 				var chain = PropertyChainFromExp.Get (Property);
-				SourceSetValue (
-					PropertyChainFromExp.GetChainName (chain),
-					TargetGetValue (chain)
-				);
+				if (IsTargetBatchUpdate)
+				{
+					if(!delayFiredChains.Exists (c => PropertyChainFromExp.GetChainName (chain) == PropertyChainFromExp.GetChainName (c)))
+						delayFiredChains.Add (chain);
+				}
+				else
+				{
+					SourceSetValue (
+						PropertyChainFromExp.GetChainName (chain),
+						TargetGetValue (chain)
+					);
+				}
 			}
 			if (targetProperties.Length > 1)
 				FinishSourceUpdateBatch ();
@@ -143,7 +161,9 @@ namespace Gamma.Binding.Core
 
 		public void InitializeFromSource()
 		{
+			IsTargetBatchUpdate = true;
 			Sources.ForEach (s => s.RunInitializeFromSource());
+			FinishTargetUpdateBatch ();
 		}
 	}
 }
