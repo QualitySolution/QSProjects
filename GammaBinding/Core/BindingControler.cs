@@ -8,7 +8,7 @@ using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingControler<TWidget> : IBindingControlerInternal, IBindingControler
+	public class BindingControler<TWidget> : IBindingControlerInternal
 	{
 		TWidget widget;
 		string[] backwardProperties = new string[0];
@@ -42,6 +42,14 @@ namespace Gamma.Binding.Core
 		}
 
 		#region internal
+
+		internal bool IsSourceBatchUpdate { get; set;}
+
+		internal void FinishSourceUpdateBatch()
+		{
+			IsSourceBatchUpdate = false;
+			Sources.ForEach (s => s.RunDelayedUpdates ());
+		}
 
 		void IBindingControlerInternal.TargetSetValue(PropertyInfo[] propertyChain, object value)
 		{
@@ -78,7 +86,7 @@ namespace Gamma.Binding.Core
 		{
 			bool anyseted = false;
 			if (!BackwardProperties.Contains (property))
-				throw new InvalidOperationException (String.Format ("Свойство {0}, не задано в качестве возвращающего значения в источник.", property));
+				throw new InvalidOperationException (String.Format ("Property {0} is not set as backward.", property));
 			foreach(var source in Sources)
 			{
 				foreach(var bridge in source.GetBackwardBridges (property))
@@ -94,6 +102,8 @@ namespace Gamma.Binding.Core
 
 		public void FireChange(params Expression<Func<TWidget, object>>[] targetProperties)
 		{
+			if (targetProperties.Length > 1)
+				IsSourceBatchUpdate = true;
 			foreach (var Property in targetProperties) {
 				var chain = PropertyChainFromExp.Get (Property);
 				SourceSetValue (
@@ -101,6 +111,8 @@ namespace Gamma.Binding.Core
 					TargetGetValue (chain)
 				);
 			}
+			if (targetProperties.Length > 1)
+				FinishSourceUpdateBatch ();
 		}
 
 		public BindingSource<TSource, TWidget> AddBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)

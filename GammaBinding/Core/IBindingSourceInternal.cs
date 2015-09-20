@@ -13,6 +13,7 @@ namespace Gamma.Binding.Core
 		object GetValueFromSource(IBindingBridgeInternal bridge);
 		bool SetValueToSource(IBindingBridgeInternal bridge, object value);
 		void RunInitializeFromSource();
+		void RunDelayedUpdates();
 	}
 }
 

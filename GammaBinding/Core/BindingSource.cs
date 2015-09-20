@@ -14,6 +14,7 @@ namespace Gamma.Binding.Core
 	{
 		BindingControler<TTarget> myControler;
 		readonly List<IBindingBridgeInternal> Bridges = new List<IBindingBridgeInternal> ();
+		List<string> delayedUpdateProperties = new List<string>();
 
 		TSource dataSource;
 
@@ -43,9 +44,18 @@ namespace Gamma.Binding.Core
 
 		void DataSource_PropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			foreach(var bridge in Bridges.FindAll (b => b.Mode != BridgeMode.BackwardFromTarget))
-			{
-				bridge.SourcePropertyUpdated (e.PropertyName, sender);
+			if (myControler.IsSourceBatchUpdate) {
+				if(!delayedUpdateProperties.Contains (e.PropertyName))
+					delayedUpdateProperties.Add (e.PropertyName);
+			} else {
+				PropertyUpdated (e.PropertyName);
+			}
+		}
+
+		void PropertyUpdated(string propertyName)
+		{
+			foreach (var bridge in Bridges.FindAll (b => b.Mode != BridgeMode.BackwardFromTarget)) {
+				bridge.SourcePropertyUpdated (propertyName, DataSource);
 			}
 		}
 
@@ -95,6 +105,12 @@ namespace Gamma.Binding.Core
 			{
 				myControler.TargetSetValue (bridge.TargetPropertyChain, bridge.GetValueFromSource(DataSource));
 			}
+		}
+
+		void IBindingSourceInternal.RunDelayedUpdates()
+		{
+			delayedUpdateProperties.ForEach (PropertyUpdated);
+			delayedUpdateProperties.Clear ();
 		}
 
 		#endregion
