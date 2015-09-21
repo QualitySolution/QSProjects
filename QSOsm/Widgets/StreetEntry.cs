@@ -16,7 +16,7 @@ namespace QSOsm
 
 		private ListStore completionListStore;
 
-		private bool queryIsRunning = false;
+		private Thread queryThread;
 
 		public BindingControler<StreetEntry> Binding { get; private set; }
 
@@ -85,12 +85,11 @@ namespace QSOsm
 
 		void OnCityIdSet ()
 		{
-			if (completionListStore == null && !queryIsRunning) {
-				Thread queryThread = new Thread (fillAutocomplete);
-				queryThread.IsBackground = true;
-				queryIsRunning = true;
-				queryThread.Start ();
-			}
+			if (queryThread != null && queryThread.IsAlive)
+				queryThread.Abort ();
+			queryThread = new Thread (fillAutocomplete);
+			queryThread.IsBackground = true;
+			queryThread.Start ();
 		}
 
 		private void fillAutocomplete ()
@@ -107,8 +106,6 @@ namespace QSOsm
 			}
 			this.Completion.Model = completionListStore;
 			this.Completion.TextColumn = 0;
-
-			queryIsRunning = false;
 		}
 
 		protected override void OnChanged ()

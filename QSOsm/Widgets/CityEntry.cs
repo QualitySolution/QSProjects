@@ -54,6 +54,11 @@ namespace QSOsm
 		void UpdateText ()
 		{
 			this.Text = String.IsNullOrWhiteSpace (CityDistrict) ? City : String.Format ("{0} ({1})", City, CityDistrict);
+			if (osmId == default(long) && City != default(string) && CityDistrict != default(string)) {
+				IOsmService svc = OsmWorker.GetOsmService ();
+				osmId = svc.GetCityId (City, CityDistrict);
+				OnCitySelected ();
+			}
 		}
 
 		public CityEntry ()
