@@ -16,7 +16,10 @@ namespace QSOsm
 		{
 			try {
 				Uri address = new Uri (ServiceAddress);
-				var factory = new WebChannelFactory<IOsmService> (new WebHttpBinding { AllowCookies = true }, address);
+				var factory = new WebChannelFactory<IOsmService> (new WebHttpBinding { 
+					AllowCookies = true,
+					MaxReceivedMessageSize = 1048576
+				}, address);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
 				logger.Error (ex, "Ошибка создания подключения к Osm сервису");
