@@ -4,6 +4,7 @@ using Gamma.Binding.Core;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace QSOsm
 {
@@ -65,7 +66,7 @@ namespace QSOsm
 		{
 			this.Text = String.IsNullOrWhiteSpace (StreetDistrict) ? Street : String.Format ("{0} ({1})", Street, StreetDistrict);
 		}
-
+			
 		public StreetEntry ()
 		{
 			Binding = new BindingControler<StreetEntry> (this, new Expression<Func<StreetEntry, object>>[] {
@@ -75,10 +76,13 @@ namespace QSOsm
 			this.Completion = new EntryCompletion ();
 			this.Completion.TextColumn = (int)columns.VisibleText;
 			this.Completion.MatchSelected += Completion_MatchSelected;
-			this.Completion.MatchFunc = delegate(EntryCompletion completion, string key, TreeIter iter) {	
-				var val = completion.Model.GetValue (iter, (int)columns.Street).ToString ().ToLower ();
-				return val.Contains (key.ToLower ());
-			};
+			this.Completion.MatchFunc = Completion_MatchFunc;
+		}
+
+		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
+		{
+			var val = completion.Model.GetValue (iter, (int)columns.Street).ToString ().ToLower ();
+			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (key.ToLower ())));
 		}
 
 		[GLib.ConnectBefore]
