@@ -43,6 +43,10 @@ namespace QSOsm
 		/// <returns>The point region (Saint-Petersburg or Leningrad region).</returns>
 		/// <param name="OsmId">Point OSM identifier.</param>
 		string GetPointRegion (long OsmId);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		List<string> GetHouseNumbers (long CityOSMId, string Street, string District);
 	}
 }
 
