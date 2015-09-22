@@ -21,6 +21,8 @@ namespace QSOsm
 
 		private ListStore completionListStore;
 
+		public event EventHandler StreetSelected;
+
 		private Thread queryThread;
 
 		public BindingControler<StreetEntry> Binding { get; private set; }
@@ -65,8 +67,9 @@ namespace QSOsm
 		void UpdateText ()
 		{
 			this.Text = String.IsNullOrWhiteSpace (StreetDistrict) ? Street : String.Format ("{0} ({1})", Street, StreetDistrict);
+			OnStreetSelected ();
 		}
-			
+
 		public StreetEntry ()
 		{
 			Binding = new BindingControler<StreetEntry> (this, new Expression<Func<StreetEntry, object>>[] {
@@ -121,6 +124,12 @@ namespace QSOsm
 		{
 			Binding.FireChange (w => w.Street, w => w.StreetDistrict);
 			base.OnChanged ();
+		}
+
+		protected virtual void OnStreetSelected ()
+		{
+			if (StreetSelected != null)
+				StreetSelected (null, EventArgs.Empty);
 		}
 	}
 }
