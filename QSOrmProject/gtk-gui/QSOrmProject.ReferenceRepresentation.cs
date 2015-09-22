@@ -58,6 +58,7 @@ namespace QSOrmProject
 			this.hboxSelect.Spacing = 6;
 			// Container child hboxSelect.Gtk.Box+BoxChild
 			this.buttonSelect = new global::Gtk.Button ();
+			this.buttonSelect.Sensitive = false;
 			this.buttonSelect.CanFocus = true;
 			this.buttonSelect.Name = "buttonSelect";
 			this.buttonSelect.UseUnderline = true;
@@ -99,6 +100,7 @@ namespace QSOrmProject
 			w6.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonEdit = new global::Gtk.Button ();
+			this.buttonEdit.Sensitive = false;
 			this.buttonEdit.CanFocus = true;
 			this.buttonEdit.Name = "buttonEdit";
 			this.buttonEdit.UseUnderline = true;
@@ -113,6 +115,7 @@ namespace QSOrmProject
 			w8.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonDelete = new global::Gtk.Button ();
+			this.buttonDelete.Sensitive = false;
 			this.buttonDelete.CanFocus = true;
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.UseUnderline = true;

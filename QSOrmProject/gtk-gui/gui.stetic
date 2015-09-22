@@ -270,6 +270,7 @@
                 <child>
                   <widget class="Gtk.Button" id="buttonSelect">
                     <property name="MemberName" />
+                    <property name="Sensitive">False</property>
                     <property name="CanFocus">True</property>
                     <property name="Type">TextAndIcon</property>
                     <property name="Icon">stock:gtk-index Menu</property>
@@ -323,6 +324,7 @@
             <child>
               <widget class="Gtk.Button" id="buttonEdit">
                 <property name="MemberName" />
+                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-edit Menu</property>
@@ -340,6 +342,7 @@
             <child>
               <widget class="Gtk.Button" id="buttonDelete">
                 <property name="MemberName" />
+                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextAndIcon</property>
                 <property name="Icon">stock:gtk-remove Menu</property>
