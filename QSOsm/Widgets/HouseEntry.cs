@@ -49,10 +49,21 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
-			this.Completion.TextColumn = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 			this.Completion.MatchFunc = Completion_MatchFunc;
+			var cell = new CellRendererText ();
+			this.Completion.PackStart (cell, true);
+			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
 		}
+
+		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		{
+			var houseNumber = (string)tree_model.GetValue (iter, 0);
+			string pattern = String.Format ("{0}", Regex.Escape (Text.ToLower ()));
+			houseNumber = Regex.Replace (houseNumber, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			(cell as CellRendererText).Markup = houseNumber;
+		}
+
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
@@ -64,6 +75,7 @@ namespace QSOsm
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
 			House = args.Model.GetValue (args.Iter, 0).ToString ();
+			args.RetVal = true;
 		}
 
 
