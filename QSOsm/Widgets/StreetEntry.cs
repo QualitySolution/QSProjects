@@ -14,7 +14,6 @@ namespace QSOsm
 	{
 		enum columns
 		{
-			VisibleText,
 			Street,
 			District
 		}
@@ -74,9 +73,20 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
-			this.Completion.TextColumn = (int)columns.VisibleText;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 			this.Completion.MatchFunc = Completion_MatchFunc;
+			var cell = new CellRendererText ();
+			this.Completion.PackStart (cell, true);
+			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
+		}
+
+		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		{
+			var street = (string)tree_model.GetValue (iter, (int)columns.Street);
+			var district = (string)tree_model.GetValue (iter, (int)columns.District);
+			string pattern = String.Format ("\\b{0}", Regex.Escape (Text.ToLower ()));
+			street = Regex.Replace (street, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace(district) ? street : String.Format ("{0} ({1})", street, district);
 		}
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
@@ -90,8 +100,8 @@ namespace QSOsm
 		{
 			Street = args.Model.GetValue (args.Iter, (int)columns.Street).ToString ();
 			StreetDistrict = args.Model.GetValue (args.Iter, (int)columns.District).ToString ();
+			args.RetVal = true;
 		}
-
 
 		void OnCityIdSet ()
 		{
@@ -106,10 +116,9 @@ namespace QSOsm
 		{
 			IOsmService svc = OsmWorker.GetOsmService ();
 			var streets = svc.GetStreets (CityId);
-			completionListStore = new ListStore (typeof(string), typeof(string), typeof(string));
+			completionListStore = new ListStore (typeof(string), typeof(string));
 			foreach (var s in streets) {
 				completionListStore.AppendValues (
-					String.IsNullOrWhiteSpace (s.District) ? s.Name : String.Format ("{0} ({1})", s.Name, s.District),
 					s.Name,
 					s.District
 				);
