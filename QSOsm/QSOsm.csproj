@@ -47,6 +47,7 @@
     <Compile Include="OsmWorker.cs" />
     <Compile Include="Widgets\CityEntry.cs" />
     <Compile Include="Widgets\StreetEntry.cs" />
+    <Compile Include="Widgets\HouseEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
