@@ -68,6 +68,7 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
+			this.Completion.TextColumn = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 			this.TextInserted += CityEntryTextInserted;
 		}
@@ -111,8 +112,6 @@ namespace QSOsm
 				);
 			}
 			this.Completion.Model = completionListStore;
-			this.Completion.TextColumn = 0;
-
 			queryIsRunning = false;
 		}
 

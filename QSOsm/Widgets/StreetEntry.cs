@@ -69,10 +69,12 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
+			this.Completion.TextColumn = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
-//			this.Completion.MatchFunc = delegate(EntryCompletion completion, string key, TreeIter iter) {
-//				
-//			}
+			this.Completion.MatchFunc = delegate(EntryCompletion completion, string key, TreeIter iter) {	
+				var val = completion.Model.GetValue (iter, StreetColumn).ToString ().ToLower ();
+				return val.Contains (key.ToLower ());
+			};
 		}
 
 		[GLib.ConnectBefore]
@@ -105,7 +107,6 @@ namespace QSOsm
 				);
 			}
 			this.Completion.Model = completionListStore;
-			this.Completion.TextColumn = 0;
 		}
 
 		protected override void OnChanged ()
