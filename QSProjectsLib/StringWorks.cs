@@ -52,8 +52,15 @@ namespace QSProjectsLib
 			{ "ОПК", "Огороднический потребительский кооператив" }
 		};
 
+		public class NaturalStringComparerNonStatic : IComparer<string>
+		{
+			public int Compare (string x, string y)
+			{
+				return NaturalStringComparer.Compare (x, y);
+			}
+		}
 
-		public static class NaturalStringComparer
+		public class NaturalStringComparer
 		{
 			private static readonly Regex _re = new Regex (@"(?<=\D)(?=\d)|(?<=\d)(?=\D)", RegexOptions.Compiled);
 
@@ -89,11 +96,11 @@ namespace QSProjectsLib
 		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
 		{
 			string result = String.Empty;
-			if(lastname.Length > 0)
+			if (lastname.Length > 0)
 				result += String.Format ("{0} ", lastname);
 			if (name.Length > 0)
 				result += String.Format ("{0}.", name [0]);
-			if(patronymicName.Length > 0)
+			if (patronymicName.Length > 0)
 				result += String.Format ("{0}.", patronymicName [0]);
 			return result;
 		}
