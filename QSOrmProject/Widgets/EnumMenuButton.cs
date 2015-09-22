@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Bindings;
+using System.Linq;
 using System.Reflection;
 using Gtk;
 using NLog;
@@ -17,6 +18,7 @@ namespace QSOrmProject
 
 		Dictionary<ImageMenuItem, object> MenuItems;
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemClicked;
+		List<object> sensitiveFalseItems = new List<object> ();
 
 		[Browsable(true)]
 		public String ItemsEnumName {
@@ -86,6 +88,8 @@ namespace QSOrmProject
 				if (!String.IsNullOrEmpty (hint))
 					item.TooltipText = hint;
 				item.Activated += OnMenuItemActivated;
+				if (sensitiveFalseItems.Contains (info.GetValue (null)))
+					item.Sensitive = false;
 				MenuItems.Add (item, info.GetValue (null));
 				Menu.Add (item);
 			}
@@ -99,6 +103,18 @@ namespace QSOrmProject
 				object item = MenuItems [(ImageMenuItem)sender];
 				EnumItemClicked (this, new EnumItemClickedEventArgs (item));
 			}
+		}
+
+		public void SetSensitive(object enumItem, bool sensitive)
+		{
+			var menuitem = MenuItems.First (pair => enumItem.Equals (pair.Value)).Key;
+			menuitem.Sensitive = sensitive;
+			if(sensitive)
+				if (!sensitiveFalseItems.Contains (enumItem))
+					sensitiveFalseItems.Add (enumItem);
+			else
+				if (sensitiveFalseItems.Contains (enumItem))
+					sensitiveFalseItems.Remove (enumItem);
 		}
 	}
 
