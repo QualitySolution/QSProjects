@@ -11,8 +11,12 @@ namespace QSOsm
 	[System.ComponentModel.Category ("Gamma OSM Widgets")]
 	public class StreetEntry : Entry
 	{
-		const int StreetColumn = 1;
-		const int DistrictColumn = 2;
+		enum columns
+		{
+			VisibleText,
+			Street,
+			District
+		}
 
 		private ListStore completionListStore;
 
@@ -69,10 +73,10 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
-			this.Completion.TextColumn = 0;
+			this.Completion.TextColumn = (int)columns.VisibleText;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 			this.Completion.MatchFunc = delegate(EntryCompletion completion, string key, TreeIter iter) {	
-				var val = completion.Model.GetValue (iter, StreetColumn).ToString ().ToLower ();
+				var val = completion.Model.GetValue (iter, (int)columns.Street).ToString ().ToLower ();
 				return val.Contains (key.ToLower ());
 			};
 		}
@@ -80,8 +84,8 @@ namespace QSOsm
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			Street = args.Model.GetValue (args.Iter, StreetColumn).ToString ();
-			StreetDistrict = args.Model.GetValue (args.Iter, DistrictColumn).ToString ();
+			Street = args.Model.GetValue (args.Iter, (int)columns.Street).ToString ();
+			StreetDistrict = args.Model.GetValue (args.Iter, (int)columns.District).ToString ();
 		}
 
 
