@@ -33,6 +33,7 @@ namespace QSHistoryLog
 
 		public ObjectTracker ()
 		{
+			TakeEmpty (Activator.CreateInstance<T> () );
 		}
 
 		public ObjectTracker (T subject)
