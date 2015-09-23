@@ -49,6 +49,7 @@ namespace QSOsm
 			});
 
 			this.Completion = new EntryCompletion ();
+			this.Completion.MinimumKeyLength = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 			this.Completion.MatchFunc = Completion_MatchFunc;
 			var cell = new CellRendererText ();
