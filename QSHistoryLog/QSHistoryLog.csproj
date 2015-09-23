@@ -48,9 +48,6 @@
     <Reference Include="DiffPlex">
       <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
     </Reference>
-    <Reference Include="NClone">
-      <HintPath>..\packages\NClone.1.1.1\lib\net40\NClone.dll</HintPath>
-    </Reference>
     <Reference Include="KellermanSoftware.Compare-Net-Objects">
       <HintPath>..\lib\KellermanSoftware.Compare-Net-Objects.dll</HintPath>
     </Reference>
@@ -72,6 +69,7 @@
     <Compile Include="HistoryObjectDesc.cs" />
     <Compile Include="Comparers\DomainObjectComparer.cs" />
     <Compile Include="HistoryAttributes.cs" />
+    <Compile Include="ObjectCloner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

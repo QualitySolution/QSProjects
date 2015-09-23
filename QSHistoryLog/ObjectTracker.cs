@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<T> where T : class
+	public class ObjectTracker<T> where T : class, new()
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -45,7 +45,7 @@ namespace QSHistoryLog
 			lastObject = null;
 			compare = null;
 			operation = ChangeSetType.Change;
-			firstObject = NClone.Clone.ObjectGraph (subject);
+			firstObject = ObjectCloner.Clone (subject);
 		}
 
 		public void TakeEmpty(T subject)
@@ -53,13 +53,13 @@ namespace QSHistoryLog
 			lastObject = null;
 			compare = null;
 			operation = ChangeSetType.Create;
-			firstObject = NClone.Clone.ObjectGraph (subject);
+			firstObject = ObjectCloner.Clone (subject);
 		}
 
 		public void TakeLast(T subject)
 		{
 			compare = null;
-			lastObject = NClone.Clone.ObjectGraph (subject);
+			lastObject = ObjectCloner.Clone (subject);
 			ReadObjectDiscription (subject);
 		}
 
