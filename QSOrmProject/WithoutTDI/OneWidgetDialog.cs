@@ -5,7 +5,7 @@ using QSTDI;
 
 namespace QSOrmProject
 {
-	public partial class OneWidgetDialog : Gtk.Dialog
+	public partial class OneWidgetDialog : FakeTDITabGtkDialogBase
 	{
 		ITdiTab tdiTab;
 
@@ -30,6 +30,7 @@ namespace QSOrmProject
 			{
 				if(!String.IsNullOrWhiteSpace (tdiTab.TabName))
 					Title = tdiTab.TabName;
+				tdiTab.TabParent = this;
 				tdiTab.TabNameChanged += TdiTab_TabNameChanged;
 				tdiTab.CloseTab += TdiTab_CloseTab;
 			}
