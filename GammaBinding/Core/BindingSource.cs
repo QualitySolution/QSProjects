@@ -39,7 +39,7 @@ namespace Gamma.Binding.Core
 		public BindingSource (BindingControler<TTarget> controler, TSource source)
 		{
 			myControler = controler;
-			dataSource = source;
+			DataSource = source;
 		}
 
 		void DataSource_PropertyChanged (object sender, PropertyChangedEventArgs e)
