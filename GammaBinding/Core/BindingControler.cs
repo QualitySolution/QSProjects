@@ -112,7 +112,8 @@ namespace Gamma.Binding.Core
 
 		public void FireChange(params Expression<Func<TWidget, object>>[] targetProperties)
 		{
-			if (targetProperties.Length > 1)
+			bool needSetSourceAsBatch = !IsTargetBatchUpdate && targetProperties.Length > 1;
+			if (needSetSourceAsBatch)
 				IsSourceBatchUpdate = true;
 			foreach (var Property in targetProperties) {
 				var chain = PropertyChainFromExp.Get (Property);
@@ -129,7 +130,7 @@ namespace Gamma.Binding.Core
 					);
 				}
 			}
-			if (targetProperties.Length > 1)
+			if (needSetSourceAsBatch)
 				FinishSourceUpdateBatch ();
 		}
 
