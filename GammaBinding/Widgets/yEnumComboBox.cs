@@ -84,7 +84,7 @@ namespace Gamma.Widgets
 				return selectedItem;
 			}
 			set {
-				if (selectedItem == value)
+				if (selectedItem == value || (selectedItem != null && selectedItem.Equals (value))) //Second expression needed to correct check enums value wrapped in object
 					return;
 
 				TreeIter iter;

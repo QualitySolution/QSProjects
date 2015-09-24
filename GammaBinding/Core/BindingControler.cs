@@ -76,7 +76,9 @@ namespace Gamma.Binding.Core
 					target = lastProp.GetValue (target, null);
 				lastProp = curProp;
 			}
-			lastProp.SetValue (target, value, null);
+
+			if(lastProp.GetValue (target, null) != value)
+				lastProp.SetValue (target, value, null);
 		}
 
 		internal object TargetGetValue(PropertyInfo[] propertyChain)
