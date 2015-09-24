@@ -12,6 +12,8 @@ namespace QSOsm
 	[System.ComponentModel.Category ("Gamma OSM Widgets")]
 	public class HouseEntry : Entry
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		private ListStore completionListStore;
 
 		private Thread queryThread;
@@ -91,6 +93,14 @@ namespace QSOsm
 
 		private void fillAutocomplete ()
 		{
+			if(String.IsNullOrWhiteSpace (Street.Name))
+			{
+				if (completionListStore != null)
+					completionListStore.Clear ();
+				return;
+			}
+				
+			logger.Info ("Запрос домов на {0}...", Street.Name);
 			IOsmService svc = OsmWorker.GetOsmService ();
 			var houses = svc.GetHouseNumbers (Street.CityOsmId, Street.Name, Street.District);
 			completionListStore = new ListStore (typeof(string));
@@ -98,6 +108,7 @@ namespace QSOsm
 				completionListStore.AppendValues (h);
 			}
 			this.Completion.Model = completionListStore;
+			logger.Debug ("Получено {0} домов...", houses.Count);
 		}
 
 		protected override void OnChanged ()

@@ -18,6 +18,8 @@ namespace QSOsm
 			District
 		}
 
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		private ListStore completionListStore;
 
 		public event EventHandler StreetSelected;
@@ -117,6 +119,7 @@ namespace QSOsm
 
 		private void fillAutocomplete ()
 		{
+			logger.Info ("Запрос улиц...");
 			IOsmService svc = OsmWorker.GetOsmService ();
 			var streets = svc.GetStreets (CityId);
 			completionListStore = new ListStore (typeof(string), typeof(string));
@@ -127,6 +130,7 @@ namespace QSOsm
 				);
 			}
 			this.Completion.Model = completionListStore;
+			logger.Debug ("Получено {0} улиц...", streets.Count);
 		}
 
 		protected override void OnChanged ()

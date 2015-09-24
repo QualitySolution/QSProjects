@@ -15,6 +15,8 @@ namespace QSOsm
 		const int DistrictColumn = 2;
 		const int OsmIdColumn = 3;
 
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		public event EventHandler CitySelected;
 
 		private ListStore completionListStore;
@@ -55,8 +57,10 @@ namespace QSOsm
 		{
 			this.Text = String.IsNullOrWhiteSpace (CityDistrict) ? City : String.Format ("{0} ({1})", City, CityDistrict);
 			if (osmId == default(long) && City != default(string) && CityDistrict != default(string)) {
+				logger.Debug ("Запрос id для города {0}({1})...", City, CityDistrict);
 				IOsmService svc = OsmWorker.GetOsmService ();
 				osmId = svc.GetCityId (City, CityDistrict);
+				logger.Debug ("id={0}", osmId);
 				OnCitySelected ();
 			}
 		}
@@ -100,6 +104,7 @@ namespace QSOsm
 
 		private void fillAutocomplete ()
 		{
+			logger.Info ("Запрос городов...");
 			IOsmService svc = OsmWorker.GetOsmService ();
 			var cities = svc.GetCities ();
 			completionListStore = new ListStore (typeof(string), typeof(string), typeof(string), typeof(long));
@@ -111,6 +116,7 @@ namespace QSOsm
 					c.OsmId
 				);
 			}
+			logger.Debug ("Получено {0} городов...", cities.Count);
 			this.Completion.Model = completionListStore;
 			queryIsRunning = false;
 		}

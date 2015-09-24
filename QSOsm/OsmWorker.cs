@@ -12,14 +12,19 @@ namespace QSOsm
 
 		static Logger logger = LogManager.GetCurrentClassLogger ();
 
+		static WebChannelFactory<IOsmService> factory;
+
 		public static IOsmService GetOsmService ()
 		{
 			try {
-				Uri address = new Uri (ServiceAddress);
-				var factory = new WebChannelFactory<IOsmService> (new WebHttpBinding { 
-					AllowCookies = true,
-					MaxReceivedMessageSize = 1048576
-				}, address);
+				if(factory == null || factory.State == CommunicationState.Closed)
+				{
+					Uri address = new Uri (ServiceAddress);
+					factory = new WebChannelFactory<IOsmService> (new WebHttpBinding { 
+						AllowCookies = true,
+						MaxReceivedMessageSize = 1048576
+						}, address);
+				}
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
 				logger.Error (ex, "Ошибка создания подключения к Osm сервису");
