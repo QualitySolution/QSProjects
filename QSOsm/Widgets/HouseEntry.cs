@@ -20,15 +20,25 @@ namespace QSOsm
 
 		public BindingControler<HouseEntry> Binding { get; private set; }
 
-		string house;
+		public bool? OsmCompletion { 
+			get{
+				if (String.IsNullOrEmpty (osmhouse))
+					return null;
+				return osmhouse == House;
+			}
+		}
+
+		string osmhouse;
 
 		public string House {
 			get {
-				return house;
+				return Text;
 			}
 			set {
-				house = value;
-				this.Text = House;
+				if (Text == value)
+					return;
+				
+				this.Text = value;
 			}
 		}
 
@@ -40,6 +50,7 @@ namespace QSOsm
 			}
 			set {
 				street = value;
+				osmhouse = null;
 				OnStreetSet ();
 			}
 		}
@@ -47,7 +58,9 @@ namespace QSOsm
 		public HouseEntry ()
 		{
 			Binding = new BindingControler<HouseEntry> (this, new Expression<Func<HouseEntry, object>>[] {
-				(w => w.House)
+				(w => w.House),
+				(w => w.OsmCompletion),
+				(w => w.Text)
 			});
 
 			this.Completion = new EntryCompletion ();
@@ -77,7 +90,7 @@ namespace QSOsm
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			House = args.Model.GetValue (args.Iter, 0).ToString ();
+			House = osmhouse = args.Model.GetValue (args.Iter, 0).ToString ();
 			args.RetVal = true;
 		}
 
@@ -113,7 +126,9 @@ namespace QSOsm
 
 		protected override void OnChanged ()
 		{
-			Binding.FireChange (w => w.House);
+			if (HasFocus && osmhouse == null)
+				osmhouse = "not set";
+			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion);
 			base.OnChanged ();
 		}
 	}
