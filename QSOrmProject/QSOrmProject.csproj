@@ -7,9 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -98,8 +95,6 @@
     <Compile Include="RepresentationModel\ColumnInfo.cs" />
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
-    <Compile Include="OrmObjectMapping.cs" />
-    <Compile Include="IOrmObjectMapping.cs" />
     <Compile Include="DomainModel\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\UnitOfWork.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
@@ -126,6 +121,8 @@
     <Compile Include="WithoutTDI\OneWidgetDialog.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkDialogBase.cs" />
     <Compile Include="WithoutTDI\FakeTDIDialogGtkDialogBase.cs" />
+    <Compile Include="DomainMapping\OrmObjectMapping.cs" />
+    <Compile Include="DomainMapping\IOrmObjectMapping.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -174,6 +171,7 @@
     <Folder Include="ParentReference\" />
     <Folder Include="yWidgets\" />
     <Folder Include="WithoutTDI\" />
+    <Folder Include="DomainMapping\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

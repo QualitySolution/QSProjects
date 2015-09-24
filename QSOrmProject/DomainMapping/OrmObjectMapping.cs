@@ -2,7 +2,7 @@
 using System.Linq;
 using QSOrmProject.UpdateNotification;
 
-namespace QSOrmProject
+namespace QSOrmProject.DomainMapping
 {
 	public class OrmObjectMapping<TEntity> : IOrmObjectMapping
 	{

@@ -7,6 +7,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
+using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 using QSTDI;
 
