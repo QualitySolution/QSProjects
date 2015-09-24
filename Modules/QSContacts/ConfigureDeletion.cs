@@ -46,7 +46,7 @@ namespace QSContacts
 
 			DeleteConfig.AddDeleteInfo (new DeleteInfo {
 				ObjectClass = typeof(Person),
-				SqlSelect = "SELECT id, lastname, name FROM @tablename ",
+				SqlSelect = "SELECT id, surname, name FROM @tablename ",
 				DisplayString = "{1} {2}"
 			}.FillFromMetaInfo ()
 			);
