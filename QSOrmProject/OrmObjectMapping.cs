@@ -55,6 +55,11 @@ namespace QSOrmProject
 			}
 		}
 
+		private OrmObjectMapping()
+		{
+			
+		}
+
 		public OrmObjectMapping(System.Type dialogClass)
 		{
 			this.dialogClass = dialogClass;
@@ -85,6 +90,27 @@ namespace QSOrmProject
 			if (ObjectUpdated != null)
 				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
 		}
+
+		#region FluentConfig
+
+		public static OrmObjectMapping<TEntity> Create()
+		{
+			return new OrmObjectMapping<TEntity> ();
+		}
+
+		public OrmObjectMapping<TEntity> Dialog(Type dialogClass)
+		{
+			this.dialogClass = dialogClass;
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
+		{
+			this.refFilterClass = filterClass;
+			return this;
+		}
+
+		#endregion
 	}
 }
 
