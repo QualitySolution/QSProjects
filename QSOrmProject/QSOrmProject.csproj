@@ -123,6 +123,7 @@
     <Compile Include="WithoutTDI\FakeTDIDialogGtkDialogBase.cs" />
     <Compile Include="DomainMapping\OrmObjectMapping.cs" />
     <Compile Include="DomainMapping\IOrmObjectMapping.cs" />
+    <Compile Include="DomainMapping\SimpleDisplay.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

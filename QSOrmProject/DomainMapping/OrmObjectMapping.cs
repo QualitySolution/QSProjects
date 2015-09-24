@@ -32,7 +32,10 @@ namespace QSOrmProject.DomainMapping
 
 		public string[] RefSearchFields {
 			get {
-				return refSearchFields;
+				if (simpleDislpay == null)
+					return refSearchFields;
+				else
+					return simpleDislpay.SearchFields.ToArray ();
 			}
 		}
 
@@ -40,9 +43,21 @@ namespace QSOrmProject.DomainMapping
 
 		public string RefColumnMappings {
 			get {
-				return refColumnMappings;
+				if(simpleDislpay == null)
+					return refColumnMappings;
+				else
+				{
+					string mapping = "{" + typeof(TEntity).FullName + "}";
+					foreach(var pair in simpleDislpay.ColumnsFields)
+					{
+						mapping += String.Format (" {0}[{1}];", pair.Value, pair.Key);
+					}
+					return mapping;
+				}
 			}
 		}
+
+		private SimpleDisplay<TEntity> simpleDislpay;
 
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric;
@@ -108,6 +123,12 @@ namespace QSOrmProject.DomainMapping
 		{
 			this.refFilterClass = filterClass;
 			return this;
+		}
+
+		public SimpleDisplay<TEntity> SimpleDisplay()
+		{
+			simpleDislpay = new SimpleDisplay<TEntity> (this);
+			return simpleDislpay;
 		}
 
 		#endregion
