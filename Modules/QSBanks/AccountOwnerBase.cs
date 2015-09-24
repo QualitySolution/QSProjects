@@ -26,7 +26,10 @@ namespace QSBanks
 		public GenericObservableList<Account> ObservableAccounts {
 			get {
 				if (observableAccounts == null)
+				{
 					observableAccounts = new GenericObservableList<Account> (Accounts);
+					UpdateDefault ();
+				}
 				return observableAccounts;
 			}
 		}
@@ -36,8 +39,10 @@ namespace QSBanks
 		public virtual Account DefaultAccount {
 			get { return defaultAccount; }
 			set {
-				defaultAccount = value;
-				UpdateDefault ();
+				if(SetField (ref defaultAccount, value, () => DefaultAccount))
+				{
+					UpdateDefault ();
+				}
 			}
 		}
 
@@ -51,7 +56,7 @@ namespace QSBanks
 			if (Accounts == null || !NHibernateUtil.IsInitialized(Accounts))
 				return;
 			foreach (Account acc in Accounts) {
-				acc.IsDefault = (acc == DefaultAccount);
+				acc.IsDefault = (DomainHelper.EqualDomainObjects (acc, DefaultAccount));
 			}
 		}
 
