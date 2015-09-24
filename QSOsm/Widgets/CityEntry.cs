@@ -59,6 +59,11 @@ namespace QSOsm
 			if (osmId == default(long) && City != default(string) && CityDistrict != default(string)) {
 				logger.Debug ("Запрос id для города {0}({1})...", City, CityDistrict);
 				IOsmService svc = OsmWorker.GetOsmService ();
+				if(svc == null)
+				{
+					logger.Warn ("Не удалось получить id города.");
+					return;
+				}
 				osmId = svc.GetCityId (City, CityDistrict);
 				logger.Debug ("id={0}", osmId);
 				OnCitySelected ();
