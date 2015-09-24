@@ -1,6 +1,7 @@
 ﻿using System;
-using QSOrmProject;
 using System.Collections.Generic;
+using QSOrmProject;
+using QSOrmProject.DomainMapping;
 
 namespace QSContacts
 {
