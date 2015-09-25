@@ -67,7 +67,7 @@ namespace Gamma.Binding
 
 		public void GetValue (TreeIter iter, int column, ref GLib.Value value)
 		{
-			throw new NotImplementedException ();
+			value.Val = NodeFromIter (iter);
 		}
 
 		public bool IterNext (ref TreeIter iter)
