@@ -21,6 +21,9 @@ namespace Gamma.Widgets
 			Item
 		}
 
+		[Browsable(true)]
+		public bool AddIfNotExist { get; set;}
+
 		IEnumerable itemsList;
 		public virtual IEnumerable ItemsList {
 			get {
@@ -58,7 +61,15 @@ namespace Gamma.Widgets
 
 				TreeIter iter = TreeIter.Zero;
 				if (value != null && !ListStoreHelper.SearchListStore (comboListStore, value, (int)comboDataColumns.Item, out iter))
-					return;
+				{
+					if (AddIfNotExist == false)
+						return;
+
+					iter = comboListStore.AppendValues (
+						RenderTextFunc == null ? value.ToString () : RenderTextFunc(value),
+						value
+					);
+				}
 
 				selectedItem = value;
 
@@ -94,7 +105,8 @@ namespace Gamma.Widgets
 
 		protected virtual void ResetLayout ()
 		{
-			comboListStore.Clear ();
+			Model = comboListStore = new ListStore (typeof(string), typeof(object));
+
 
 			if (ItemsList == null)
 				return;
