@@ -42,6 +42,8 @@ namespace Gamma.Widgets
 					{
 						base.SelectedItem = ((ListStore)Model).GetValue (iter, (int)comboDataColumns.Item);
 					}
+					else if(AddIfNotExist)
+						base.SelectedItem = value;
 				} else {
 					base.SelectedItem = value;
 				}
