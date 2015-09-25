@@ -166,7 +166,7 @@ namespace QSProjectsLib
 			return sql.Insert (startWhere + 6, String.Format (" {0} ", newWhere.Trim ()));
 		}
 
-		public static T FineById<T>(List<T> list, object id) where T : class
+		public static T FineById<T>(IList<T> list, object id) where T : class
 		{
 			if (id == null || id == DBNull.Value)
 				return null;
