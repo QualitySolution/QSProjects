@@ -13,7 +13,6 @@ namespace QSBugReporting
 		public static IBugReportingService GetReportService ()
 		{
 			try {
-				var address = new Uri (ServiceAddress);
 				var factory = new ChannelFactory<IBugReportingService> (new BasicHttpBinding (), ServiceAddress);
 				return factory.CreateChannel ();
 			} catch (Exception ex) {
