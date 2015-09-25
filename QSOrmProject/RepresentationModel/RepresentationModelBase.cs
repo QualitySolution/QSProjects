@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk.DataBindings;
 using System.Collections;
+using System.Reflection;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -27,12 +28,24 @@ namespace QSOrmProject.RepresentationModel
 				ItemsListUpdated (this, EventArgs.Empty);
 		}
 
-		public IList ItemsList { get; private set; }
+		List<TNode> filtredItemsList;
+
+		IList<TNode> itemsList;
+
+		public IList ItemsList {
+			get {
+				return filtredItemsList ?? itemsList as IList;
+			}
+		}
 
 		protected void SetItemsSource (IList<TNode> list)
 		{
-			ItemsList = (IList)list;
-			OnItemsListUpdated ();
+			itemsList = list;
+
+			if (String.IsNullOrWhiteSpace (SearchString))
+				OnItemsListUpdated ();
+			else
+				OnSearchRefilter ();
 		}
 
 		public abstract IMappingConfig TreeViewConfig { get; }
@@ -84,6 +97,21 @@ namespace QSOrmProject.RepresentationModel
 
 		public Type ObjectType {
 			get { return typeof(TEntity); }
+		}
+
+		string searchString;
+
+		public string SearchString {
+			get{
+				return searchString;
+			}
+			set{
+				if (searchString == value)
+					return;
+
+				searchString = value;
+				OnSearchRefilter ();
+			}
 		}
 
 		#endregion
@@ -154,6 +182,41 @@ namespace QSOrmProject.RepresentationModel
 				UpdateNodes ();
 		}
 
+		private PropertyInfo[] searchPropCache;
+
+		protected PropertyInfo[] SearchPropCache {
+			get {
+				if (searchPropCache != null)
+					return searchPropCache;
+
+				searchPropCache = typeof(TNode).GetProperties ()
+					.Where (prop => prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).Length > 0)
+					.ToArray ();
+
+				return searchPropCache;
+			}
+		}
+
+		protected void OnSearchRefilter()
+		{
+			if (String.IsNullOrWhiteSpace (SearchString))
+				filtredItemsList = null;
+			else
+				filtredItemsList = itemsList.Where (SearchFilterFunc).ToList ();
+			
+			OnItemsListUpdated ();
+		}
+
+		private bool SearchFilterFunc(TNode item)
+		{
+			foreach (var prop in SearchPropCache) {
+				string Str = (prop.GetValue (item, null) ?? String.Empty).ToString ();
+				if (Str.IndexOf (searchString, StringComparison.CurrentCultureIgnoreCase) > -1) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }
 
