@@ -22,6 +22,7 @@ namespace Gamma.Widgets
 		}
 
 		[Browsable(true)]
+		[DefaultValue(false)]
 		public bool AddIfNotExist { get; set;}
 
 		IEnumerable itemsList;
