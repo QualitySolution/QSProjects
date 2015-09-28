@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationModelBase<TEntity, TNode> : IRepresentationModel
+	public abstract class RepresentationModelBase<TNode>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -95,10 +95,6 @@ namespace QSOrmProject.RepresentationModel
 			get { return typeof(TNode); }
 		}
 
-		public Type ObjectType {
-			get { return typeof(TEntity); }
-		}
-
 		string searchString;
 
 		public string SearchString {
@@ -115,72 +111,6 @@ namespace QSOrmProject.RepresentationModel
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Запрос у модели о необходимости обновления списка если объект изменился.
-		/// </summary>
-		/// <returns><c>true</c>, если небходимо обновлять список.</returns>
-		/// <param name="updatedSubject">Обновившийся объект</param>
-		protected abstract bool NeedUpdateFunc (TEntity updatedSubject);
-
-		/// <summary>
-		/// Создает новый базовый клас и подписывается на обновления для типа TEntity, при этом конструкторе необходима реализация NeedUpdateFunc (TEntity updatedSubject)
-		/// </summary>
-		protected RepresentationModelBase ()
-		{
-			var description = OrmMain.GetObjectDescription<TEntity> ();
-			if (description != null)
-				description.ObjectUpdatedGeneric += OnExternalUpdate;
-			else
-				logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", typeof(TEntity));
-		}
-
-		/// <summary>
-		/// Запрос у модели о необходимости обновления списка если объект изменился.
-		/// </summary>
-		/// <returns><c>true</c>, если небходимо обновлять список.</returns>
-		/// <param name="updatedSubject">Обновившийся объект</param>
-		protected abstract bool NeedUpdateFunc (object updatedSubject);
-
-		/// <summary>
-		/// Создает новый базовый клас и подписывается на обновления указанных типов, при этом конструкторе необходима реализация NeedUpdateFunc (object updatedSubject);
-		/// </summary>
-		protected RepresentationModelBase (params Type[] subcribeOnTypes)
-		{
-			foreach (var type in subcribeOnTypes) {
-				var map = OrmMain.GetObjectDescription (type);
-				if (map != null)
-					map.ObjectUpdated += OnExternalUpdateCommon;
-				else
-					logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", type);
-			}
-		}
-
-		void OnExternalUpdate (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedGenericEventArgs<TEntity> e)
-		{
-			if (!UoW.IsAlive)
-			{
-				logger.Warn ("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
-				this);
-				return;
-			}
-				
-			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
-				UpdateNodes ();
-		}
-
-		void OnExternalUpdateCommon (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedEventArgs e)
-		{
-			if (!UoW.IsAlive)
-			{
-				logger.Warn ("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
-					this);
-				return;
-			}
-				
-			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
-				UpdateNodes ();
-		}
 
 		private PropertyInfo[] searchPropCache;
 

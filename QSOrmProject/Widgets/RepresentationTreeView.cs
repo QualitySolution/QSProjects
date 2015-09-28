@@ -4,10 +4,6 @@ using Gamma.GtkWidgets;
 
 namespace QSOrmProject
 {
-
-	/// <summary>
-	/// Оставлено для совместимости.
-	/// </summary>
 	[System.ComponentModel.ToolboxItem (true)]
 	public class RepresentationTreeView : yTreeView
 	{

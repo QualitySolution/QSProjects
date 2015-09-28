@@ -93,7 +93,6 @@
     <Compile Include="Widgets\OrmTreeView.cs" />
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
     <Compile Include="RepresentationModel\ColumnInfo.cs" />
-    <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
     <Compile Include="DomainModel\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\UnitOfWork.cs" />
@@ -124,6 +123,9 @@
     <Compile Include="DomainMapping\OrmObjectMapping.cs" />
     <Compile Include="DomainMapping\IOrmObjectMapping.cs" />
     <Compile Include="DomainMapping\SimpleDisplay.cs" />
+    <Compile Include="RepresentationModel\RepresentationModelEntityBase.cs" />
+    <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
+    <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
