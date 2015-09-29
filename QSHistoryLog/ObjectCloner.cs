@@ -4,6 +4,7 @@ using System.Reflection;
 using QSOrmProject;
 using System.Collections;
 using System.Linq;
+using NHibernate;
 
 namespace QSHistoryLog
 {
@@ -29,7 +30,8 @@ namespace QSHistoryLog
 
 			foreach (FieldInfo f in fields)
 			{
-				if( (f.GetCustomAttributes (typeof(HistoryTraceGoDeepAttribute), true)).Length > 0)
+				if( (f.GetCustomAttributes (typeof(HistoryTraceGoDeepAttribute), true)).Length > 0
+				   || (f.GetCustomAttributes (typeof(HistoryDeepCloneItemsAttribute), true)).Length > 0)
 				{
 					var value = f.GetValue (sourceObject);
 
@@ -81,8 +83,17 @@ namespace QSHistoryLog
 		{
 			if (cloneObject is ICloneable)
 				return (T)(cloneObject as ICloneable).Clone ();
-			if (typeof(T).IsClass)
-				return (T)Clone ((object)cloneObject);
+			if(cloneObject is object)
+			{
+				Type itemType = NHibernateUtil.GetClass (cloneObject);
+				if(itemType.IsClass)
+				{
+					object newObject = Activator.CreateInstance (itemType);
+					FieldsCopy (cloneObject, ref newObject);
+
+					return (T)newObject;
+				}					
+			}
 			throw new NotSupportedException ();
 		}
 
