@@ -43,7 +43,7 @@ namespace QSHistoryLog
 							f.SetValue (destinationObject, CloneList(value as IList));
 					}
 					else 
-						f.SetValue (destinationObject, Clone (value));
+						f.SetValue (destinationObject, CloneSingle (value));
 				}
 				else
 					f.SetValue (destinationObject, f.GetValue (sourceObject));
@@ -79,21 +79,22 @@ namespace QSHistoryLog
 		}
 
 
-		private static T CloneSingle<T>(T cloneObject)
+		private static object CloneSingle(object cloneObject)
 		{
+			if (cloneObject == null)
+				return null;
 			if (cloneObject is ICloneable)
-				return (T)(cloneObject as ICloneable).Clone ();
-			if(cloneObject is object)
+				return (cloneObject as ICloneable).Clone ();
+			
+			Type itemType = NHibernateUtil.GetClass (cloneObject);
+			if(itemType.IsClass)
 			{
-				Type itemType = NHibernateUtil.GetClass (cloneObject);
-				if(itemType.IsClass)
-				{
-					object newObject = Activator.CreateInstance (itemType);
-					FieldsCopy (cloneObject, ref newObject);
+				object newObject = Activator.CreateInstance (itemType);
+				FieldsCopy (cloneObject, ref newObject);
 
-					return (T)newObject;
-				}					
-			}
+				return newObject;
+			}					
+
 			throw new NotSupportedException ();
 		}
 
