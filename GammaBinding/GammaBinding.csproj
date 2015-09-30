@@ -75,6 +75,7 @@
     <Compile Include="Widgets\EventArgs\ItemSelectedEventArgs.cs" />
     <Compile Include="Core\IBindingSourceInternal.cs" />
     <Compile Include="Core\IBindingBridgeInternal.cs" />
+    <Compile Include="GtkWidgets\ySpinButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
