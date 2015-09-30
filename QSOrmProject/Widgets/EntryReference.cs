@@ -18,9 +18,31 @@ namespace QSOrmProject
 		private bool sensitive = true;
 
 		private bool canEditReference = true;
-		public ICriteria ItemsCriteria;
 
-		public QueryOver ItemsQuery { get; set; }
+		private ICriteria itemsCriteria;
+
+		public ICriteria ItemsCriteria {
+			get {
+				return itemsCriteria;
+			}
+			set {
+				itemsCriteria = value;
+
+				SubjectType = itemsCriteria.GetRootEntityTypeIfAvailable ();
+			}
+		}
+
+		QueryOver itemsQuery;
+		public QueryOver ItemsQuery {
+			get {
+				return itemsQuery;
+			}
+			set {
+				itemsQuery = value;
+
+				SubjectType = ItemsQuery.DetachedCriteria.GetRootEntityTypeIfAvailable ();
+			}
+		}
 
 		/// <summary>
 		/// Используется для cложной обработки строки отображения сущьности. На вход передается объект сущьности. на выходе должна получится строка.
@@ -228,6 +250,9 @@ namespace QSOrmProject
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
+			if (SubjectType == null)
+				throw new NullReferenceException ("SubjectType не задан.");
+
 			if (OrmMain.GetObjectDescription (SubjectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
 				return;
