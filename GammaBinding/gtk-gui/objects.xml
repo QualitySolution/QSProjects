@@ -1,0 +1,51 @@
+<objects attr-sync="on">
+  <object type="Gamma.GtkWidgets.ySpinButton" palette-category="Gamma Gtk" init-properties="Lower Upper StepIncrement" allow-children="false" icon="spinbutton.png" base-type="Gtk.SpinButton">
+    <itemgroups>
+      <itemgroup label="ySpinButton Properties">
+        <property name="ValueAsDecimal" />
+      </itemgroup>
+    </itemgroups>
+  </object>
+  <object type="Gamma.GtkWidgets.yTreeView" palette-category="Gamma Gtk" allow-children="false" icon="treeview.png" base-type="Gtk.TreeView">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yLabel" palette-category="Gamma Gtk" allow-children="false" icon="label.png" base-type="Gtk.Label">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yTextView" palette-category="Gamma Gtk" allow-children="false" icon="textview.png" base-type="Gtk.TextView">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.Widgets.yEnumComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
+    <itemgroups>
+      <itemgroup label="yEnumComboBox Properties">
+        <property name="ItemsEnumName" />
+        <property name="ShowSpecialStateAll" />
+        <property name="ShowSpecialStateNot" />
+      </itemgroup>
+    </itemgroups>
+    <signals>
+      <itemgroup label="yEnumComboBox Signals">
+        <signal name="EnumItemSelected" />
+      </itemgroup>
+    </signals>
+  </object>
+  <object type="Gamma.Widgets.yListComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
+    <itemgroups>
+      <itemgroup label="yListComboBox Properties">
+        <property name="AddIfNotExist" />
+      </itemgroup>
+    </itemgroups>
+    <signals>
+      <itemgroup label="yListComboBox Signals">
+        <signal name="ItemSelected" />
+      </itemgroup>
+    </signals>
+  </object>
+  <object type="Gamma.Binding.Test" palette-category="General" allow-children="false" base-type="Gtk.Bin">
+    <itemgroups />
+    <signals />
+  </object>
+</objects>

@@ -32,6 +32,8 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Core\IBindingSourceInternal.cs" />
     <Compile Include="Core\IBindingBridgeInternal.cs" />
     <Compile Include="GtkWidgets\ySpinButton.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -87,6 +90,7 @@
     <Folder Include="Widgets\EventArgs\" />
     <Folder Include="Widgets\Additions\" />
     <Folder Include="GtkHelpers\" />
+    <Folder Include="icons\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
@@ -97,5 +101,33 @@
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\objects.xml">
+      <LogicalName>objects.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\spinbutton.png">
+      <LogicalName>spinbutton.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\treeview.png">
+      <LogicalName>treeview.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\label.png">
+      <LogicalName>label.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\textview.png">
+      <LogicalName>textview.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\combo.png">
+      <LogicalName>combo.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gtk-gui\objects.xml">
+      <Link>Properties\objects.xml</Link>
+    </None>
   </ItemGroup>
 </Project>
