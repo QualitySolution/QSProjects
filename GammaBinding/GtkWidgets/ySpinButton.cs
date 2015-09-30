@@ -16,6 +16,7 @@ namespace Gamma.GtkWidgets
 			Binding = new BindingControler<ySpinButton> (this, new Expression<Func<ySpinButton, object>>[] {
 				(w => w.Value),
 				(w => w.ValueAsInt),
+				(w => w.ValueAsDecimal),
 			});
 		}
 
@@ -24,6 +25,7 @@ namespace Gamma.GtkWidgets
 			Binding = new BindingControler<ySpinButton> (this, new Expression<Func<ySpinButton, object>>[] {
 				(w => w.Value),
 				(w => w.ValueAsInt),
+				(w => w.ValueAsDecimal),
 			});
 		}
 
@@ -31,7 +33,8 @@ namespace Gamma.GtkWidgets
 		{
 			Binding.FireChange (
 				(w => w.Value),
-				(w => w.ValueAsInt)
+				(w => w.ValueAsInt),
+				(w => w.ValueAsDecimal)
 			);
 			base.OnValueChanged ();
 		}
