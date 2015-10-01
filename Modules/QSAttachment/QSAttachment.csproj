@@ -40,10 +40,10 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="itextsharp">
-      <HintPath>..\..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
+      <HintPath>..\..\packages\iTextSharp.5.5.7\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.4.1.0\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.1.2\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

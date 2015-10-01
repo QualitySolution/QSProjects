@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Bindings;
 using System.Linq;
 using System.Reflection;
+using Gamma.Utilities;
 using Gtk;
 using NLog;
 using QSWidgetLib;
@@ -75,17 +75,17 @@ namespace QSOrmProject
 			Menu = new Gtk.Menu ();
 
 			string hint;
-			Gdk.Pixbuf p;
+			//Gdk.Pixbuf p;
 			ImageMenuItem item;
 
 			foreach (FieldInfo info in ItemsEnum.GetFields()) {
 				if (info.Name.Equals("value__")) continue;
 				item = new ImageMenuItem(info.GetEnumTitle ());
-				hint = info.GetEnumHint ();
-				p = (Gdk.Pixbuf) info.GetEnumIcon();
-				if (p != null)
-					item.Image = new Gtk.Image (p);
-				if (!String.IsNullOrEmpty (hint))
+				hint = info.GetFieldDescription ();
+				//p = (Gdk.Pixbuf) info.GetEnumIcon();
+				//if (p != null)
+				//	item.Image = new Gtk.Image (p);
+				if (!String.IsNullOrWhiteSpace (hint))
 					item.TooltipText = hint;
 				item.Activated += OnMenuItemActivated;
 				if (sensitiveFalseItems.Contains (info.GetValue (null)))
