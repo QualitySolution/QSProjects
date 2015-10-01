@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -22,6 +23,29 @@ namespace QSOsm.DTO
 			Name = name;
 			SuburbDistrict = suburbDistrict;
 			LocalityType = localityType;
+		}
+
+		public static LocalityType GetLocalityTypeByName (string localityName)
+		{
+			localityName = localityName.Trim ();
+			switch (localityName) {
+			case "city":
+				return LocalityType.city;
+			case "town":
+				return LocalityType.town;
+			case "village":
+				return LocalityType.village;
+			case "allotments":
+				return LocalityType.allotments;
+			case "hamlet":
+				return LocalityType.hamlet;
+			case "farm":
+				return LocalityType.farm;
+			case "isolated_dwelling":
+				return LocalityType.isolated_dwelling;
+			default:
+				throw new NotSupportedException (String.Format ("Тип поселения \"{0}\" не поддерживается.", localityName));
+			}
 		}
 	}
 

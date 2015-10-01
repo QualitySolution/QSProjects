@@ -33,7 +33,7 @@ namespace QSOsm
 		/// <returns>The city identifier.</returns>
 		/// <param name="City">City name.</param>
 		/// <param name="District">District.</param>
-		long GetCityId (string City, string District);
+		long GetCityId (string City, string District, LocalityType? Locality = null);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
