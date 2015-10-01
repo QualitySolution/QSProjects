@@ -119,6 +119,18 @@ namespace QSOrmProject.DomainMapping
 			return this;
 		}
 
+		public OrmObjectMapping<TEntity> Dialog<TDialog>()
+		{
+			this.dialogClass = typeof(TDialog);
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> JournalFilter<TFilter>()
+		{
+			this.refFilterClass = typeof(TFilter);
+			return this;
+		}
+
 		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
 		{
 			this.refFilterClass = filterClass;
