@@ -35,7 +35,7 @@
   <object type="Gamma.Widgets.yListComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
     <itemgroups>
       <itemgroup label="yListComboBox Properties">
-        <property name="AddIfNotExist" />
+        <property name="AddIfNotExist" default="false" />
       </itemgroup>
     </itemgroups>
     <signals>
@@ -43,9 +43,5 @@
         <signal name="ItemSelected" />
       </itemgroup>
     </signals>
-  </object>
-  <object type="Gamma.Binding.Test" palette-category="General" allow-children="false" base-type="Gtk.Bin">
-    <itemgroups />
-    <signals />
   </object>
 </objects>
