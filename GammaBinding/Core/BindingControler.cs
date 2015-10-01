@@ -78,7 +78,7 @@ namespace Gamma.Binding.Core
 			}
 
 			object currentValue = lastProp.GetValue (target, null);
-			if((currentValue == null && value != null) || !currentValue.Equals (value))
+			if((currentValue == null && value != null) || (currentValue != null && !currentValue.Equals (value)))
 				lastProp.SetValue (target, value, null);
 		}
 
