@@ -88,11 +88,13 @@ namespace QSOsm
 
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var street = (string)tree_model.GetValue (iter, (int)columns.Street);
+			var streetName = (string)tree_model.GetValue (iter, (int)columns.Street);
 			var district = (string)tree_model.GetValue (iter, (int)columns.District);
 			string pattern = String.Format ("\\b{0}", Regex.Escape (Text.ToLower ()));
-			street = Regex.Replace (street, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
-			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace (district) ? street : String.Format ("{0} ({1})", street, district);
+			streetName = Regex.Replace (streetName, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace (district) ? 
+				streetName : 
+				String.Format ("{0} ({1})", streetName, district);
 		}
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
