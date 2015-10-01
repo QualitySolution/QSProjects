@@ -35,7 +35,7 @@
   <object type="Gamma.Widgets.yListComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
     <itemgroups>
       <itemgroup label="yListComboBox Properties">
-        <property name="AddIfNotExist" default="false" />
+        <property name="AddIfNotExist" />
       </itemgroup>
     </itemgroups>
     <signals>
