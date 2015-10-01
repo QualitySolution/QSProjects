@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -23,13 +24,11 @@ namespace QSOsm
 
 		public bool? OsmCompletion { 
 			get {
-				if (String.IsNullOrEmpty (osmhouse))
+				if (completionListStore == null)
 					return null;
-				return osmhouse == House;
+				return completionListStore.Cast<object[]> ().Any (row => (string)row [0] == House);
 			}
 		}
-
-		string osmhouse;
 
 		public string House {
 			get {
@@ -38,7 +37,6 @@ namespace QSOsm
 			set {
 				if (Text == value)
 					return;
-				
 				this.Text = value;
 			}
 		}
@@ -51,7 +49,6 @@ namespace QSOsm
 			}
 			set {
 				street = value;
-				osmhouse = null;
 				OnStreetSet ();
 			}
 		}
@@ -91,7 +88,7 @@ namespace QSOsm
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			House = osmhouse = args.Model.GetValue (args.Iter, 0).ToString ();
+			House = args.Model.GetValue (args.Iter, 0).ToString ();
 			args.RetVal = true;
 		}
 
@@ -126,8 +123,6 @@ namespace QSOsm
 
 		protected override void OnChanged ()
 		{
-			if (HasFocus && osmhouse == null)
-				osmhouse = "not set";
 			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion);
 			base.OnChanged ();
 		}
