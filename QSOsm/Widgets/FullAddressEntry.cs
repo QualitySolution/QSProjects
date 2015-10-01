@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -28,7 +29,7 @@ namespace QSOsm
 		[Display (Name = "Район области")]
 		public virtual string CityInDistrict {
 			get { return entryCity.CityDistrict; }
-			set { entryCity.CityDistrict = value;}
+			set { entryCity.CityDistrict = value; }
 		}
 
 		[Display (Name = "Улица")]
@@ -48,7 +49,7 @@ namespace QSOsm
 			get { return entryBuilding.House; }
 			set { entryBuilding.House = value; }
 		}
-			
+
 		public FullAddressEntry ()
 		{
 			this.Build ();
@@ -67,7 +68,7 @@ namespace QSOsm
 			};
 
 			entryStreet.StreetSelected += (sender, e) => {
-				entryBuilding.Street = new QSOsm.OsmStreet (entryStreet.CityId, entryStreet.Street, entryStreet.StreetDistrict);
+				entryBuilding.Street = new OsmStreet (entryStreet.CityId, entryStreet.Street, entryStreet.StreetDistrict);
 			};
 
 		}

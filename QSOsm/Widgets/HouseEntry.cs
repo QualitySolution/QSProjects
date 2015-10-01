@@ -1,10 +1,11 @@
 ﻿using System;
-using Gtk;
-using Gamma.Binding.Core;
-using System.Linq.Expressions;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Gamma.Binding.Core;
+using Gtk;
+using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -21,7 +22,7 @@ namespace QSOsm
 		public BindingControler<HouseEntry> Binding { get; private set; }
 
 		public bool? OsmCompletion { 
-			get{
+			get {
 				if (String.IsNullOrEmpty (osmhouse))
 					return null;
 				return osmhouse == House;
@@ -106,8 +107,7 @@ namespace QSOsm
 
 		private void fillAutocomplete ()
 		{
-			if(String.IsNullOrWhiteSpace (Street.Name))
-			{
+			if (String.IsNullOrWhiteSpace (Street.Name)) {
 				if (completionListStore != null)
 					completionListStore.Clear ();
 				return;

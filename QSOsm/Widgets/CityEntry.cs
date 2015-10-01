@@ -1,9 +1,10 @@
 ﻿using System;
-using Gtk;
-using Gamma.Binding.Core;
-using System.Linq.Expressions;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
+using Gamma.Binding.Core;
+using Gtk;
+using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -59,8 +60,7 @@ namespace QSOsm
 			if (osmId == default(long) && City != default(string) && CityDistrict != default(string)) {
 				logger.Debug ("Запрос id для города {0}({1})...", City, CityDistrict);
 				IOsmService svc = OsmWorker.GetOsmService ();
-				if(svc == null)
-				{
+				if (svc == null) {
 					logger.Warn ("Не удалось получить id города.");
 					return;
 				}
@@ -99,7 +99,7 @@ namespace QSOsm
 
 		void CityEntryTextInserted (object o, TextInsertedArgs args)
 		{
-			if (completionListStore == null && !queryIsRunning) {
+			if (this.HasFocus && completionListStore == null && !queryIsRunning) {
 				Thread queryThread = new Thread (fillAutocomplete);
 				queryThread.IsBackground = true;
 				queryIsRunning = true;

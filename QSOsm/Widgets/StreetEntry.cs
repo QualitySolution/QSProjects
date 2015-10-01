@@ -1,10 +1,11 @@
 ﻿using System;
-using Gtk;
-using Gamma.Binding.Core;
-using System.Linq.Expressions;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Gamma.Binding.Core;
+using Gtk;
+using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -91,7 +92,7 @@ namespace QSOsm
 			var district = (string)tree_model.GetValue (iter, (int)columns.District);
 			string pattern = String.Format ("\\b{0}", Regex.Escape (Text.ToLower ()));
 			street = Regex.Replace (street, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
-			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace(district) ? street : String.Format ("{0} ({1})", street, district);
+			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace (district) ? street : String.Format ("{0} ({1})", street, district);
 		}
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
