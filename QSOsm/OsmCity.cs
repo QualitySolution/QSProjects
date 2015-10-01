@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace QSOsm
+namespace QSOsm.DTO
 {
 	[DataContract]
 	public class OsmCity
@@ -13,13 +13,37 @@ namespace QSOsm
 		public string Name;
 		[DataMember]
 		public string SuburbDistrict;
+		[DataMember]
+		public LocalityType LocalityType;
 
-		public OsmCity (long osmId, string name, string suburbDistrict)
+		public OsmCity (long osmId, string name, string suburbDistrict, LocalityType localityType)
 		{
 			OsmId = osmId;
 			Name = name;
 			SuburbDistrict = suburbDistrict;
+			LocalityType = localityType;
 		}
+	}
+
+	/// <summary>
+	/// Тип населенного пункта. Маленькими буквами для совпадения с соответствующими типами в OSM.
+	/// </summary>
+	public enum LocalityType
+	{
+		[Display (Name = "Город")]
+		city,
+		[Display (Name = "Малый город")]
+		town,
+		[Display (Name = "Населенный пункт")]
+		village,
+		[Display (Name = "Дачный поселок")]
+		allotments,
+		[Display (Name = "Деревня")]
+		hamlet,
+		[Display (Name = "Ферма")]
+		farm,
+		[Display (Name = "Хутор")]
+		isolated_dwelling
 	}
 
 	public class OsmCityComparer : IComparer<OsmCity>
