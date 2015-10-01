@@ -22,6 +22,18 @@ namespace Gamma.Utilities
 			return (aFieldInfo.Name);
 		}
 
+		/// <summary>
+		/// Return Description prpprety from DisplayAttribute.
+		/// </summary>
+		/// <returns>The field description.</returns>
+		/// <param name="aFieldInfo">A field info.</param>
+		public static string GetFieldDescription (this FieldInfo aFieldInfo)
+		{
+			var attrs = (DisplayAttribute[]) aFieldInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
+			if ((attrs != null) && (attrs.Length > 0))
+				return (attrs[0].GetDescription ());
+			return null;
+		}
 	}
 }
 
