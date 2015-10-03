@@ -61,14 +61,15 @@ namespace Gamma.Widgets
 					return;
 
 				TreeIter iter = TreeIter.Zero;
-				if (value != null && !ListStoreHelper.SearchListStore (comboListStore, value, (int)comboDataColumns.Item, out iter))
+				if (value != null && !ListStoreHelper.SearchListStore<object> (comboListStore, 
+					o => value.Equals (UnWrapValueIfNeed(o)), (int)comboDataColumns.Item, out iter))
 				{
 					if (AddIfNotExist == false)
 						return;
 
 					iter = comboListStore.AppendValues (
 						RenderTextFunc == null ? value.ToString () : RenderTextFunc(value),
-						value
+						WrapValueIfNeed (value)
 					);
 				}
 
@@ -108,14 +109,13 @@ namespace Gamma.Widgets
 		{
 			Model = comboListStore = new ListStore (typeof(string), typeof(object));
 
-
 			if (ItemsList == null)
 				return;
 
 			foreach (var item in ItemsList) {
 				comboListStore.AppendValues (
 					RenderTextFunc == null ? item.ToString () : RenderTextFunc(item),
-					item
+					WrapValueIfNeed (item)
 				);
 			}
 		}
@@ -135,11 +135,35 @@ namespace Gamma.Widgets
 			TreeIter iter;
 
 			if (GetActiveIter (out iter)) {
-				SelectedItem = Model.GetValue (iter, (int)comboDataColumns.Item);
+				SelectedItem = UnWrapValueIfNeed (Model.GetValue (iter, (int)comboDataColumns.Item));
 			} else {
 				SelectedItem = null;
 			}
 			base.OnChanged ();
+		}
+
+		protected object WrapValueIfNeed(object value)
+		{
+			if (value is string)
+				return new KeepInObject (value);
+			else
+				return value;
+		}
+
+		protected object UnWrapValueIfNeed(object value)
+		{
+			return value is KeepInObject ? ((KeepInObject)value).Value :  value;
+		}
+
+		//HACK workaround can not save to object column of ListStore simple types
+		protected struct KeepInObject
+		{
+			public object Value;
+
+			public KeepInObject(object value)
+			{
+				Value = value;
+			}
 		}
 	}
 
