@@ -183,6 +183,15 @@ namespace QSOrmProject
 			if (Changed != null)
 				Changed (this, EventArgs.Empty);
 		}
+
+		[GLib.ConnectBefore]
+		protected void OnEntryObjectKeyPressEvent (object o, KeyPressEventArgs args)
+		{
+			if(args.Event.Key == Gdk.Key.Delete)
+			{
+				Subject = null;
+			}
+		}
 	}
 }
 

@@ -65,6 +65,7 @@ namespace QSOrmProject
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.entryObject.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnEntryObjectKeyPressEvent);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
 			this.buttonOpen.Clicked += new global::System.EventHandler (this.OnButtonOpenClicked);
 		}

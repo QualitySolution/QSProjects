@@ -508,6 +508,7 @@
             <property name="CanFocus">True</property>
             <property name="IsEditable">False</property>
             <property name="InvisibleChar">●</property>
+            <signal name="KeyPressEvent" handler="OnEntryObjectKeyPressEvent" />
           </widget>
           <packing>
             <property name="Position">0</property>
@@ -567,6 +568,7 @@
             <property name="CanFocus">True</property>
             <property name="IsEditable">False</property>
             <property name="InvisibleChar">●</property>
+            <signal name="KeyPressEvent" handler="OnEntryObjectKeyPressEvent" />
           </widget>
           <packing>
             <property name="Position">0</property>
