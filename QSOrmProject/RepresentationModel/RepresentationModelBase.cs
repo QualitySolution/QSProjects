@@ -48,7 +48,8 @@ namespace QSOrmProject.RepresentationModel
 				OnSearchRefilter ();
 		}
 
-		public abstract IMappingConfig TreeViewConfig { get; }
+		public virtual IMappingConfig TreeViewConfig { get{ throw new NotImplementedException ();
+			} }
 
 		private IRepresentationFilter representationFilter;
 
