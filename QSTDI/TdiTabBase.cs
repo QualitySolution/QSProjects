@@ -20,7 +20,7 @@ namespace QSTDI
 		public string TabName {
 			get { return tabName;
 			}
-			set {
+			protected set {
 				if (tabName == value)
 					return;
 				tabName = value;
@@ -29,6 +29,8 @@ namespace QSTDI
 		}
 
 		public ITdiTabParent TabParent { set; get; }
+
+		public bool FailInitialize { get; protected set;}
 
 		#endregion
 

@@ -27,6 +27,8 @@ namespace QSOrmProject
 
 		public ITdiTabParent TabParent { set; get; }
 
+		public bool FailInitialize { get; protected set;}
+
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
 		public IUnitOfWork Uow {

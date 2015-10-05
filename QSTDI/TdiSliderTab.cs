@@ -169,6 +169,14 @@ namespace QSTDI
 
 		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
 		{
+			if(slaveTab.FailInitialize)
+			{
+				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
+					slaveTab.TabName
+				);
+				return;
+			}
+
 			if(masterTab == Journal || masterTab == ActiveDialog)
 				TabParent.AddSlaveTab(this as ITdiTab, slaveTab);
 			else
@@ -177,6 +185,14 @@ namespace QSTDI
 
 		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
+			if(tab.FailInitialize)
+			{
+				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
+					tab.TabName
+				);
+				return;
+			}
+
 			if (CanSlided && afterTab == Journal && tab is ITdiDialog) {
 				ActiveDialog = (ITdiDialog)tab;
 				return;
@@ -186,6 +202,11 @@ namespace QSTDI
 				TabParent.AddTab(tab, this as ITdiTab);
 			else
 				TabParent.AddTab(tab, afterTab);
+		}
+
+		public bool FailInitialize {
+			get { return Journal != null ? Journal.FailInitialize : false;
+			}
 		}
 
 		public bool CheckClosingSlaveTabs(ITdiTab tab)

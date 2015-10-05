@@ -141,6 +141,8 @@ namespace QSOrmProject
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
+		public bool FailInitialize { get; protected set;}
+
 		protected void OnCloseTab (bool askSave)
 		{
 			if (CloseTab != null)

@@ -24,6 +24,8 @@ namespace QSOrmProject
 
 		public ITdiTabParent TabParent { set; get; }
 
+		public bool FailInitialize { get; protected set;}
+
 		public event EventHandler<ReferenceRepresentationSelectedEventArgs> ObjectSelected;
 
 		public IRepresentationFilter FilterWidget {

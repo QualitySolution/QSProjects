@@ -27,6 +27,8 @@ namespace QSOrmProject
 				OnTabNameChanged ();
 			}
 		}
+
+		public bool FailInitialize { get; protected set;}
 			
 		public ITdiTabParent TabParent {
 			get { return this; }

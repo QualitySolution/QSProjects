@@ -4,10 +4,11 @@ namespace QSTDI
 {
 	public interface ITdiTab
 	{
-		string TabName { set; get;}
+		string TabName { get;}
 		ITdiTabParent TabParent { set; get;}
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		bool FailInitialize { get;}
 	}
 
 	public class TdiTabNameChangedEventArgs : EventArgs

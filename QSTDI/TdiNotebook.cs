@@ -49,6 +49,13 @@ namespace QSTDI
 
 		public void AddTab (ITdiTab tab, int after = -1)
 		{
+			if(tab.FailInitialize)
+			{
+				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
+					tab.TabName
+				);
+				return;
+			}
 			HBox box = new HBox ();
 			Label nameLable = new Label (tab.TabName);
 			box.Add (nameLable);
