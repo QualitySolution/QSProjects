@@ -44,6 +44,19 @@ namespace QSProjectsLib
 			md.Run ();
 			md.Destroy ();
 		}
+
+		public static void RunInfoDialog (string message)
+		{
+			MessageDialog md = new MessageDialog (null,
+				DialogFlags.Modal,
+				MessageType.Info,
+				ButtonsType.Ok,
+				message);
+			md.SetPosition (WindowPosition.Center);
+			md.ShowAll ();
+			md.Run ();
+			md.Destroy ();
+		}
 	}
 }
 
