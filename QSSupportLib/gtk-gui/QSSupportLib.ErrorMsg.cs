@@ -118,7 +118,7 @@ namespace QSSupportLib
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
 			this.entryEmail = new global::Gtk.Entry ();
-			this.entryEmail.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.";
+			this.entryEmail.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.";
 			this.entryEmail.CanFocus = true;
 			this.entryEmail.Name = "entryEmail";
 			this.entryEmail.IsEditable = true;
@@ -165,7 +165,7 @@ namespace QSSupportLib
 			this.label4.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.";
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("E-mail:");
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Ваш e-mail:");
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 			w10.TopAttach = ((uint)(2));

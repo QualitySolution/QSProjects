@@ -97,7 +97,7 @@
                     <child>
                       <widget class="Gtk.Entry" id="entryEmail">
                         <property name="MemberName" />
-                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
+                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
                         <property name="CanFocus">True</property>
                         <property name="IsEditable">True</property>
                         <property name="InvisibleChar">●</property>
@@ -173,7 +173,7 @@
                         <property name="MemberName" />
                         <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
                         <property name="Xalign">1</property>
-                        <property name="LabelProp" translatable="yes">E-mail:</property>
+                        <property name="LabelProp" translatable="yes">Ваш e-mail:</property>
                       </widget>
                       <packing>
                         <property name="TopAttach">2</property>
