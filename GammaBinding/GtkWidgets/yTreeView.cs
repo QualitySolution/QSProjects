@@ -208,6 +208,14 @@ namespace Gamma.GtkWidgets
 				return null;
 		}
 
+		public TNode GetSelectedObject<TNode> ()
+		{
+			TreeIter iter;
+			if (Selection.GetSelected (out iter))
+				return (TNode)YTreeModel.NodeFromIter (iter);
+			else
+				return default(TNode);
+		}
 	}
 }
 
