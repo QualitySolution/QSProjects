@@ -119,8 +119,7 @@ namespace QSOrmProject
 			set {
 				buttonMode = value;
 				buttonAdd.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanAdd);
-				buttonEdit.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanEdit);
-				buttonDelete.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanDelete);
+				OnTreeviewSelectionChanged (this, EventArgs.Empty);
 				Image image = new Image ();
 				image.Pixbuf = Stetic.IconLoader.LoadIcon (
 					this, 
