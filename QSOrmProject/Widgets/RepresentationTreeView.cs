@@ -55,9 +55,8 @@ namespace QSOrmProject
 
 		public object GetSelectedNode()
 		{
-			return GetSelectedObjects ()[0];
+			return GetSelectedObject ();
 		}
-
 	}
 }
 
