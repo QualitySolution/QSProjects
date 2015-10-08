@@ -86,7 +86,7 @@ namespace QSOsm
 					logger.Warn ("Не удалось получить id города.");
 					return;
 				}
-				osmId = svc.GetCityId (City, CityDistrict);
+				osmId = svc.GetCityId (City, CityDistrict, Locality.ToString ());
 				logger.Debug ("id={0}", osmId);
 				OnCitySelected ();
 			}

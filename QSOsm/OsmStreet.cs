@@ -7,17 +7,20 @@ namespace QSOsm.DTO
 	public class OsmStreet
 	{
 		[DataMember]
-		public long CityOsmId;
+		public long Id;
+		[DataMember]
+		public long CityId;
 		[DataMember]
 		public string Name;
 		[DataMember]
-		public string District;
+		public string Districts;
 
-		public OsmStreet (long cityId, string name, string district)
+		public OsmStreet (long id, long cityId, string name, string districts)
 		{
-			CityOsmId = cityId;
+			Id = id;
+			CityId = cityId;
 			Name = name;
-			District = district;
+			Districts = districts;
 		}
 	}
 
@@ -27,11 +30,7 @@ namespace QSOsm.DTO
 
 		public int Compare (OsmStreet x, OsmStreet y)
 		{
-			if (x.Name.CompareTo (y.Name) != 0)
-				return x.Name.CompareTo (y.Name);
-			if (x.District.CompareTo (y.District) != 0)
-				return x.District.CompareTo (y.District);
-			return 0;
+			return x.Name.CompareTo (y.Name);
 		}
 
 		#endregion

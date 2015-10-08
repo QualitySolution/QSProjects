@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using QSOsm.DTO;
+using System.Collections.Generic;
 
 namespace QSOsm
 {
@@ -68,7 +69,7 @@ namespace QSOsm
 			};
 
 			entryStreet.StreetSelected += (sender, e) => {
-				entryBuilding.Street = new OsmStreet (entryStreet.CityId, entryStreet.Street, entryStreet.StreetDistrict);
+				entryBuilding.Street = new OsmStreet (-1, entryStreet.CityId, entryStreet.Street, entryStreet.StreetDistrict);
 			};
 
 		}

@@ -129,7 +129,7 @@ namespace QSOsm
 			foreach (var s in streets) {
 				completionListStore.AppendValues (
 					s.Name,
-					s.District
+					s.Districts.ToString ()
 				);
 			}
 			this.Completion.Model = completionListStore;

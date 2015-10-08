@@ -23,7 +23,7 @@ namespace QSOsm
 		/// </summary>
 		/// <returns>The streets.</returns>
 		/// <param name="OsmId">City OSM identifier.</param>
-		List<OsmStreet> GetStreets (long OsmId);
+		List<OsmStreet> GetStreets (long cityId);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -33,7 +33,7 @@ namespace QSOsm
 		/// <returns>The city identifier.</returns>
 		/// <param name="City">City name.</param>
 		/// <param name="District">District.</param>
-		long GetCityId (string City, string District, LocalityType? Locality = null);
+		long GetCityId (string City, string District, string Locality);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -46,7 +46,13 @@ namespace QSOsm
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<string> GetHouseNumbers (long CityOSMId, string Street, string District);
+		List<string> GetHouseNumbersWithoutDistrict (long cityId, string street);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		List<string> GetHouseNumbers (long cityId, string street, string districts);
+
+
 	}
 }
 

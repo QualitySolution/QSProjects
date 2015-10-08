@@ -112,7 +112,12 @@ namespace QSOsm
 				
 			logger.Info ("Запрос домов на {0}...", Street.Name);
 			IOsmService svc = OsmWorker.GetOsmService ();
-			var houses = svc.GetHouseNumbers (Street.CityOsmId, Street.Name, Street.District);
+
+			List<string> houses;
+			if (Street.Districts == null)
+				houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
+			else
+				houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
 			completionListStore = new ListStore (typeof(string));
 			foreach (var h in houses) {
 				completionListStore.AppendValues (h);
