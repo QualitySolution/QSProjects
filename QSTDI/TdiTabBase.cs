@@ -45,6 +45,11 @@ namespace QSTDI
 			if (TabNameChanged != null)
 				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
 		}
+
+		protected void OpenNewTab(ITdiTab tab)
+		{
+			TabParent.AddTab (tab, this);
+		}
 	}
 }
 
