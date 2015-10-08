@@ -95,8 +95,13 @@ namespace QSOsm
 
 		void OnStreetSet ()
 		{
-			if (queryThread != null && queryThread.IsAlive)
-				queryThread.Abort ();
+			if (queryThread != null && queryThread.IsAlive) {
+				try {
+					queryThread.Abort ();
+				} catch (ThreadAbortException ex) {
+					logger.Warn ("fillAutocomplete() thread for houses was aborted.");
+				}
+			}
 			queryThread = new Thread (fillAutocomplete);
 			queryThread.IsBackground = true;
 			queryThread.Start ();

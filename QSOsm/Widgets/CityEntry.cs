@@ -176,6 +176,8 @@ namespace QSOsm
 			logger.Debug ("Получено {0} городов...", cities.Count);
 			this.Completion.Model = completionListStore;
 			queryIsRunning = false;
+			if (this.HasFocus)
+				this.Completion.Complete ();
 		}
 
 		protected override void OnChanged ()

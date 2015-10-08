@@ -113,8 +113,13 @@ namespace QSOsm
 
 		void OnCityIdSet ()
 		{
-			if (queryThread != null && queryThread.IsAlive)
-				queryThread.Abort ();
+			if (queryThread != null && queryThread.IsAlive) {
+				try {
+					queryThread.Abort ();
+				} catch (ThreadAbortException ex) {
+					logger.Warn ("fillAutocomplete() thread for city streets was aborted.");
+				}
+			}
 			queryThread = new Thread (fillAutocomplete);
 			queryThread.IsBackground = true;
 			queryThread.Start ();
@@ -129,11 +134,13 @@ namespace QSOsm
 			foreach (var s in streets) {
 				completionListStore.AppendValues (
 					s.Name,
-					s.Districts.ToString ()
+					s.Districts
 				);
 			}
 			this.Completion.Model = completionListStore;
 			logger.Debug ("Получено {0} улиц...", streets.Count);
+			if (this.HasFocus)
+				this.Completion.Complete ();
 		}
 
 		protected override void OnChanged ()
