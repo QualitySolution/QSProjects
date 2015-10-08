@@ -96,11 +96,11 @@ namespace QSProjectsLib
 		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
 		{
 			string result = String.Empty;
-			if (lastname.Length > 0)
+			if (!String.IsNullOrWhiteSpace (lastname))
 				result += String.Format ("{0} ", lastname);
-			if (name.Length > 0)
+			if (!String.IsNullOrWhiteSpace (name))
 				result += String.Format ("{0}.", name [0]);
-			if (patronymicName.Length > 0)
+			if (!String.IsNullOrWhiteSpace (patronymicName))
 				result += String.Format ("{0}.", patronymicName [0]);
 			return result;
 		}

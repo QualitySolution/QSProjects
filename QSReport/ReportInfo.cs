@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using QSProjectsLib;
 
 namespace QSReport
@@ -15,7 +16,15 @@ namespace QSReport
 
 		public string GetPath()
 		{
-			return System.IO.Path.Combine (System.IO.Directory.GetCurrentDirectory (), "Reports", Identifier + ".rdl");
+			var splited = Identifier.Split ('.').ToList ();
+			var ReportName = splited.Last ();
+			splited.RemoveAt (splited.Count - 1);
+			var parts = new List<string> ();
+			parts.Add (System.IO.Directory.GetCurrentDirectory ());
+			parts.Add ("Reports");
+			parts.AddRange (splited);
+			parts.Add (ReportName + ".rdl");
+			return System.IO.Path.Combine (parts.ToArray ());
 		}
 
 		public Uri GetReportUri()
