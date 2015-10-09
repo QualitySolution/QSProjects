@@ -29,9 +29,11 @@ namespace QSOrmProject.Deletion
 				answer = (ResponseType)fullDlg.Run () == ResponseType.Yes;
 				fullDlg.Destroy();
 			} else {
-				MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
+				MessageDialog md = new MessageDialog (null, DialogFlags.Modal,
 					MessageType.Question, 
 					ButtonsType.YesNo, "Вы уверены что хотите удалить <b>" + core.DeletedItems [0].Title + "</b>?");
+				md.Title = String.Format ("Удалить {0}?", core.DeletedItems [0].Title);
+
 				answer = (ResponseType)md.Run () == ResponseType.Yes;
 				md.Destroy();
 			}
