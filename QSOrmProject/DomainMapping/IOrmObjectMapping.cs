@@ -11,6 +11,7 @@ namespace QSOrmProject
 		string[] RefSearchFields { get;}
 		string RefColumnMappings { get;}
 		bool SimpleDialog { get;}
+		string EditPermisionName { get;}
 		event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		void RaiseObjectUpdated(params object[] updatedSubjects);
 	}

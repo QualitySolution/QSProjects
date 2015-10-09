@@ -57,6 +57,8 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
+		public string EditPermisionName { get; set;}
+
 		private SimpleDisplay<TEntity> simpleDislpay;
 
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
@@ -134,6 +136,12 @@ namespace QSOrmProject.DomainMapping
 		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
 		{
 			this.refFilterClass = filterClass;
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> EditPermision(string permisionName)
+		{
+			this.EditPermisionName = permisionName;
 			return this;
 		}
 

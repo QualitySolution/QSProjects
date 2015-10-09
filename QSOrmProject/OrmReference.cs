@@ -9,6 +9,7 @@ using QSOrmProject.UpdateNotification;
 using QSTDI;
 using NHibernate.Criterion;
 using System.Linq;
+using QSProjectsLib;
 
 namespace QSOrmProject
 {
@@ -189,6 +190,13 @@ namespace QSOrmProject
 			if (att.Length > 0) {
 				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
 				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+			}
+			if(!String.IsNullOrWhiteSpace (map.EditPermisionName))
+			{
+				if(!QSMain.User.Permissions[map.EditPermisionName])
+				{
+					ButtonMode &= ~ReferenceButtonMode.CanAll;
+				}
 			}
 			UpdateObjectList ();
 			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
