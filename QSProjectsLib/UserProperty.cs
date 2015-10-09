@@ -65,16 +65,13 @@ namespace QSProjectsLib
 				checkDeactivated.Sensitive = QSMain.User.Login != OriginLogin;
 				checkAdmin.Active = rdr.GetBoolean (QSMain.AdminFieldName);
 
-				if (deactivated && Session.IsSaasConnection) {
+				if (deactivated && Session.IsSaasConnection) { //FIXME Очень странное условие. Нужно разобраться. Что делает этот блок и зачем?
 					entryName.Sensitive = entryPassword.Sensitive = entryEmail.Sensitive = false;
 					checkDeactivated.Sensitive = checkAdmin.Sensitive = false;
-					textviewComments.Sensitive = false;
-
 				}
 
 				foreach (KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
 					Pair.Value.Active = rdr.GetBoolean (QSMain.ProjectPermission [Pair.Key].DataBaseName);
-					Pair.Value.Sensitive = (deactivated && Session.IsSaasConnection);
 				}
 				
 				textviewComments.Buffer.Text = rdr ["description"].ToString ();
