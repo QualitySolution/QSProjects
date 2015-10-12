@@ -43,7 +43,7 @@ namespace QSReport
 				if (param.Value is IEnumerable)
 					value = BuildMiltiValue (param.Value as IEnumerable);
 				else
-					value = param.Value.ToString ();
+					value = ValueToValidString (param.Value);
 
 				parametersBuild.AddAsList (String.Format ("{0}={1}", param.Key, value), "&");
 			}
@@ -56,9 +56,16 @@ namespace QSReport
 
 			foreach(var value in values)
 			{
-				valuesBuild.AddAsList (value.ToString (), ",");
+				valuesBuild.AddAsList (ValueToValidString (value), ",");
 			}
 			return valuesBuild.Text;
+		}
+
+		private string ValueToValidString(object value)
+		{
+			if (value is DateTime)
+				return ((DateTime)value).ToString ("O");
+			return value.ToString ();
 		}
 
 		public ReportInfo ()
