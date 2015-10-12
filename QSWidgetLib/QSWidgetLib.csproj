@@ -64,6 +64,8 @@
     <Compile Include="LegalName.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.LegalName.cs" />
     <Compile Include="CommonValues.cs" />
+    <Compile Include="SidePanels\LeftSidePanel.cs" />
+    <Compile Include="gtk-gui\QSWidgetLib.LeftSidePanel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -77,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />
+    <Folder Include="SidePanels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
