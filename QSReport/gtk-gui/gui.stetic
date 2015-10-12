@@ -9,19 +9,43 @@
     <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../bin/Debug/QSReport.dll" internal="true" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
   </import>
   <widget class="Gtk.Bin" id="QSReport.ReportViewDlg" design-size="475 218">
     <action-group name="Default" />
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
-      <widget class="fyiReporting.RdlGtkViewer.ReportViewer" id="reportviewer1">
+      <widget class="Gtk.HBox" id="hbox1">
         <property name="MemberName" />
-        <property name="WidthRequest">0</property>
-        <property name="HeightRequest">0</property>
-        <property name="Events">ButtonPressMask</property>
-        <property name="ShowErrors">False</property>
-        <property name="ShowParameters">False</property>
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="QSWidgetLib.LeftSidePanel" id="panelParameters">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <property name="Title">Параметры</property>
+            <property name="IsHided">False</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="fyiReporting.RdlGtkViewer.ReportViewer" id="reportviewer1">
+            <property name="MemberName" />
+            <property name="WidthRequest">0</property>
+            <property name="HeightRequest">0</property>
+            <property name="Events">ButtonPressMask</property>
+            <property name="ShowErrors">False</property>
+            <property name="ShowParameters">False</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
       </widget>
     </child>
   </widget>
