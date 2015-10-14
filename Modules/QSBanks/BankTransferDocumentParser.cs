@@ -2,12 +2,15 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace QSBanks
 {
 	public class BankTransferDocumentParser
 	{
 		public string DocumentPath { get; private set; }
+
+		public List<TransferDocument> TransferDocuments;
 
 		private Dictionary<string, string> documentProperties;
 		private List<Dictionary<string, string>> accounts;
@@ -73,11 +76,50 @@ namespace QSBanks
 							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
 								documents [i].Add (dataArray [0], dataArray [1]);
+							} else if (dataArray.Length == 1) {
+								documents [i].Add (dataArray [0], String.Empty);
 							}
 						}
 						data = reader.ReadLine ();
 					}
 				}
+			}
+			fillData ();
+		}
+
+		private void fillData ()
+		{
+			var culture = CultureInfo.CreateSpecificCulture ("ru-RU");
+			TransferDocuments = new List<TransferDocument> ();
+			foreach (var document in documents) {
+				TransferDocument doc = new TransferDocument ();
+				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
+				doc.Number = document ["Номер"];
+				doc.Date = DateTime.Parse (document ["Дата"], culture);
+				doc.Total = Decimal.Parse (document ["Сумма"]);
+				doc.PayerAccount = document ["ПлательщикСчет"];
+				if (!String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
+					doc.WriteoffDate = DateTime.Parse (document ["ДатаСписано"], culture);
+				doc.PayerName = document ["Плательщик"];
+				doc.PayerInn = document ["ПлательщикИНН"];
+				doc.PayerKpp = document ["ПлательщикКПП"];
+				doc.PayerCheckingAccount = document ["ПлательщикРасчСчет"];
+				doc.PayerBank = document ["ПлательщикБанк1"];
+				doc.PayerBik = document ["ПлательщикБИК"];
+				doc.PayerCorrespondentAccount = document ["ПлательщикКорсчет"];
+				doc.RecipientAccount = document ["ПолучательСчет"];
+				if (!String.IsNullOrWhiteSpace (document ["ДатаПоступило"]))
+					doc.ReceiptDate = DateTime.Parse (document ["ДатаПоступило"], culture);
+				doc.RecipientName = document ["Получатель"];
+				doc.RecipientInn = document ["ПолучательИНН"];
+				doc.RecepientKpp = document ["ПолучательКПП"];
+				doc.RecipientCheckingAccount = document ["ПолучательРасчСчет"];
+				doc.RecepientBank = document ["ПолучательБанк1"];
+				doc.RecepientBik = document ["ПолучательБИК"];
+				doc.RecepientCorrespondentAccount = document ["ПолучательКорсчет"];
+				doc.PaymentPurpose = document ["НазначениеПлатежа"];
+
+				TransferDocuments.Add (doc);
 			}
 		}
 	}

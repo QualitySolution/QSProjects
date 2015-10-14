@@ -71,6 +71,7 @@
     <Compile Include="ConfigureDeletion.cs" />
     <Compile Include="Repositories\BankRepository.cs" />
     <Compile Include="BankTransferDocumentParser.cs" />
+    <Compile Include="TransferDocument.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
