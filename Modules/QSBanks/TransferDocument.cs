@@ -31,10 +31,10 @@ namespace QSBanks
 		public DateTime? ReceiptDate;
 		public string RecipientInn;
 		public string RecipientName;
-		public string RecepientKpp;
-		public string RecepientBank;
-		public string RecepientBik;
-		public string RecepientCorrespondentAccount;
+		public string RecipientKpp;
+		public string RecipientBank;
+		public string RecipientBik;
+		public string RecipientCorrespondentAccount;
 		public string PaymentPurpose;
 
 		#endregion

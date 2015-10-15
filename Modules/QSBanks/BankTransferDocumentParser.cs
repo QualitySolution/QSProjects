@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Globalization;
+using QSProjectsLib;
 
 namespace QSBanks
 {
@@ -11,15 +13,15 @@ namespace QSBanks
 		public string DocumentPath { get; private set; }
 
 		public List<TransferDocument> TransferDocuments;
+		public Dictionary<string, string> DocumentProperties;
+		public List<Dictionary<string, string>> Accounts;
 
-		private Dictionary<string, string> documentProperties;
-		private List<Dictionary<string, string>> accounts;
 		private List<Dictionary<string, string>> documents;
 
 		public BankTransferDocumentParser (string documentPath)
 		{
-			documentProperties = new Dictionary<string, string> ();
-			accounts = new List<Dictionary<string, string>> ();
+			DocumentProperties = new Dictionary<string, string> ();
+			Accounts = new List<Dictionary<string, string>> ();
 			documents = new List<Dictionary<string, string>> ();
 			DocumentPath = documentPath;
 		}
@@ -43,7 +45,7 @@ namespace QSBanks
 						if (!String.IsNullOrWhiteSpace (data)) {
 							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
-								documentProperties.Add (dataArray [0], dataArray [1]);
+								DocumentProperties.Add (dataArray [0], dataArray [1]);
 							}
 						}
 						data = reader.ReadLine ();
@@ -55,11 +57,11 @@ namespace QSBanks
 						if (!String.IsNullOrWhiteSpace (data)) {
 							if (data.StartsWith ("СекцияРасчСчет"))
 								i++;
-							if (accounts.Count <= i)
-								accounts.Add (new Dictionary<string, string> ());
+							if (Accounts.Count <= i)
+								Accounts.Add (new Dictionary<string, string> ());
 							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
-								accounts [i].Add (dataArray [0], dataArray [1]);
+								Accounts [i].Add (dataArray [0], dataArray [1]);
 							}
 						}
 						data = reader.ReadLine ();
@@ -84,6 +86,7 @@ namespace QSBanks
 					}
 				}
 			}
+			//Создаем список на основе доменной модели документа.
 			fillData ();
 		}
 
@@ -112,13 +115,22 @@ namespace QSBanks
 					doc.ReceiptDate = DateTime.Parse (document ["ДатаПоступило"], culture);
 				doc.RecipientName = document ["Получатель"];
 				doc.RecipientInn = document ["ПолучательИНН"];
-				doc.RecepientKpp = document ["ПолучательКПП"];
+				doc.RecipientKpp = document ["ПолучательКПП"];
 				doc.RecipientCheckingAccount = document ["ПолучательРасчСчет"];
-				doc.RecepientBank = document ["ПолучательБанк1"];
-				doc.RecepientBik = document ["ПолучательБИК"];
-				doc.RecepientCorrespondentAccount = document ["ПолучательКорсчет"];
+				doc.RecipientBank = document ["ПолучательБанк1"];
+				doc.RecipientBik = document ["ПолучательБИК"];
+				doc.RecipientCorrespondentAccount = document ["ПолучательКорсчет"];
 				doc.PaymentPurpose = document ["НазначениеПлатежа"];
 
+				string value;
+				value = StringWorks.Replaces.Values.FirstOrDefault (doc.PayerName.Contains);
+				if (!String.IsNullOrWhiteSpace (value)) {
+					doc.PayerName = doc.PayerName.Replace (value, StringWorks.Replaces.Keys.FirstOrDefault (key => StringWorks.Replaces [key] == value));
+				}
+				value = StringWorks.Replaces.Values.FirstOrDefault (doc.RecipientName.Contains);
+				if (!String.IsNullOrWhiteSpace (value)) {
+					doc.RecipientName = doc.RecipientName.Replace (value, StringWorks.Replaces.Keys.FirstOrDefault (key => StringWorks.Replaces [key] == value));
+				}
 				TransferDocuments.Add (doc);
 			}
 		}
