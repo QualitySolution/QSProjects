@@ -1,10 +1,11 @@
 ﻿using System;
 using Gtk;
 using NLog;
+using System.Collections.Generic;
 
 namespace QSTDI
 {
-	public class TdiSliderTab : Gtk.HBox, ITdiTab, ITdiTabParent
+	public class TdiSliderTab : Gtk.HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ITdiJournal journal;
@@ -86,11 +87,11 @@ namespace QSTDI
 						separator.Show();
 						dialogTilteLabel = new Label ();
 						dialogVBox = new VBox ();
-						dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
+						//dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
 						dialogVBox.PackStart ((Widget)activeDialog);
 						this.PackEnd(dialogVBox);
 						this.PackEnd(separator, false, true, 6);
-						dialogTilteLabel.Show ();
+						//dialogTilteLabel.Show ();
 						dialogVBox.Show ();
 						(ActiveDialog as Widget).Show();
 						activeDialog.TabParent = this;
@@ -122,6 +123,7 @@ namespace QSTDI
 		{
 			if (TabNameChanged != null)
 				TabNameChanged(this, new TdiTabNameChangedEventArgs (TabName));
+			OnPathUpdate ();
 		}
 
 		protected void OnJournalClose(object sender, TdiTabCloseEventArgs arg)
@@ -238,6 +240,29 @@ namespace QSTDI
 				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
 			return TabParent.BeforeCreateNewTab (subjectType, masterTab);
 		}
+
+		#region ITdiTabWithPath implementation
+
+		public event EventHandler PathChanged;
+
+		public string[] PathNames {
+			get {
+				var names = new List<string> ();
+				if (Journal != null)
+					names.Add (Journal.TabName);
+				if (ActiveDialog != null)
+					names.Add (ActiveDialog.TabName);
+				return names.ToArray ();
+			}
+		}
+
+		protected void OnPathUpdate()
+		{
+			if (PathChanged != null)
+				PathChanged (this, EventArgs.Empty);
+		}
+
+		#endregion
 	}
 }
 

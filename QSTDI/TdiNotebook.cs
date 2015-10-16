@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Gtk;
 using NLog;
 
@@ -73,13 +74,14 @@ namespace QSTDI
 			}
 			tab.CloseTab += HandleCloseTab;
 			tab.TabNameChanged += OnTabNameChanged;
+			var vbox = new TabVBox (tab);
 			int inserted;
 			if (after >= 0)
-				inserted = this.InsertPage ((Widget)tab, box, after + 1);
+				inserted = this.InsertPage (vbox, box, after + 1);
 			else
-				inserted = this.AppendPage ((Widget)tab, box);
+				inserted = this.AppendPage (vbox, box);
 			tab.TabParent = this;
-			(tab as Widget).Show ();
+			vbox.Show ();
 			this.ShowTabs = true;
 			_tabs.Add (new TdiTabInfo (tab, nameLable));
 			this.CurrentPage = inserted;
@@ -131,10 +133,10 @@ namespace QSTDI
 		void OnCloseButtonClicked (object sender, EventArgs e)
 		{
 			Widget boxWidget = (sender as Widget).Parent;
-			ITdiTab tab = null;
+			TabVBox tab = null;
 			foreach (Widget wid in this.Children) {
 				if (this.GetTabLabel (wid) == boxWidget)
-					tab = (ITdiTab)wid;
+					tab = (TabVBox)wid;
 			}
 
 			if (tab == null) {
@@ -142,11 +144,11 @@ namespace QSTDI
 				return;
 			}
 
-			if (CheckClosingSlaveTabs (tab))
+			if (CheckClosingSlaveTabs (tab.Tab))
 				return;
 
-			if (SaveIfNeed (tab))
-				CloseTab (tab);
+			if (SaveIfNeed (tab.Tab))
+				CloseTab (tab.Tab);
 		}
 
 		private bool SaveIfNeed (ITdiTab tab)
@@ -213,14 +215,16 @@ namespace QSTDI
 			}
 
 			//Закрываем вкладку
-			bool IsCurrent = this.CurrentPageWidget == tab as Widget;
+			TabVBox tabBox = this.Children.SingleOrDefault (w => (w as TabVBox).Tab == tab) as TabVBox;
+			bool IsCurrent = this.CurrentPageWidget == tabBox;
 			_tabs.RemoveAll (t => t.MasterTab == tab);
 			_tabs.ForEach (t => t.SlaveTabs.RemoveAll (s => s == tab));
 			if (IsCurrent)
 				this.PrevPage ();
-			this.Remove ((Widget)tab);
+			this.Remove (tabBox);
 			logger.Debug ("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy ();
+			tabBox.Destroy ();
 		}
 
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
