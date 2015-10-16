@@ -28,6 +28,7 @@ namespace QSBanks
 
 		public void Parse ()
 		{
+			int i;
 			//TODO Сделать выбор кодировки. Возможна кодировка DOS 866.
 			using (var reader = new StreamReader (DocumentPath, Encoding.GetEncoding (1251))) {
 
@@ -45,6 +46,14 @@ namespace QSBanks
 						if (!String.IsNullOrWhiteSpace (data)) {
 							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
+								i = 1;
+								if (DocumentProperties.ContainsKey (dataArray [0])) {
+									while (DocumentProperties.ContainsKey (dataArray [0] + i)) {
+										i++;
+									}
+									dataArray [0] += i;
+									i = 1;
+								}
 								DocumentProperties.Add (dataArray [0], dataArray [1]);
 							}
 						}
@@ -52,7 +61,7 @@ namespace QSBanks
 					}
 
 					//Читаем рассчетные счета
-					int i = -1;
+					i = -1;
 					while (!data.StartsWith ("СекцияДокумент")) {
 						if (!String.IsNullOrWhiteSpace (data)) {
 							if (data.StartsWith ("СекцияРасчСчет"))
@@ -101,9 +110,12 @@ namespace QSBanks
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
 				doc.Total = Decimal.Parse (document ["Сумма"]);
 				doc.PayerAccount = document ["ПлательщикСчет"];
-				if (!String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
+				if (document.ContainsKey ("ДатаСписано") && !String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
 					doc.WriteoffDate = DateTime.Parse (document ["ДатаСписано"], culture);
-				doc.PayerName = document ["Плательщик"];
+				if (document.ContainsKey ("Плательщик"))
+					doc.PayerName = document ["Плательщик"];
+				else
+					doc.PayerName = document ["Плательщик1"];
 				doc.PayerInn = document ["ПлательщикИНН"];
 				doc.PayerKpp = document ["ПлательщикКПП"];
 				doc.PayerCheckingAccount = document ["ПлательщикРасчСчет"];
@@ -111,9 +123,12 @@ namespace QSBanks
 				doc.PayerBik = document ["ПлательщикБИК"];
 				doc.PayerCorrespondentAccount = document ["ПлательщикКорсчет"];
 				doc.RecipientAccount = document ["ПолучательСчет"];
-				if (!String.IsNullOrWhiteSpace (document ["ДатаПоступило"]))
+				if (document.ContainsKey ("ДатаПоступило") && !String.IsNullOrWhiteSpace (document ["ДатаПоступило"]))
 					doc.ReceiptDate = DateTime.Parse (document ["ДатаПоступило"], culture);
-				doc.RecipientName = document ["Получатель"];
+				if (document.ContainsKey ("Получатель"))
+					doc.RecipientName = document ["Получатель"];
+				else
+					doc.RecipientName = document ["Получатель1"];
 				doc.RecipientInn = document ["ПолучательИНН"];
 				doc.RecipientKpp = document ["ПолучательКПП"];
 				doc.RecipientCheckingAccount = document ["ПолучательРасчСчет"];
