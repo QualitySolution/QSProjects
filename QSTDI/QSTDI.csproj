@@ -48,6 +48,7 @@
     <Compile Include="TdiTabBase.cs" />
     <Compile Include="WidgetOnTdiTabBase.cs" />
     <Compile Include="TabVBox.cs" />
+    <Compile Include="ITdiTabWithPath.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
