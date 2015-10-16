@@ -87,11 +87,11 @@ namespace QSTDI
 						separator.Show();
 						dialogTilteLabel = new Label ();
 						dialogVBox = new VBox ();
-						dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
+						//dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
 						dialogVBox.PackStart ((Widget)activeDialog);
 						this.PackEnd(dialogVBox);
 						this.PackEnd(separator, false, true, 6);
-						dialogTilteLabel.Show ();
+						//dialogTilteLabel.Show ();
 						dialogVBox.Show ();
 						(ActiveDialog as Widget).Show();
 						activeDialog.TabParent = this;
