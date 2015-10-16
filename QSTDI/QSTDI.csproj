@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSTDI</RootNamespace>
     <AssemblyName>QSTDI</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +47,7 @@
     <Compile Include="TdiHelper.cs" />
     <Compile Include="TdiTabBase.cs" />
     <Compile Include="WidgetOnTdiTabBase.cs" />
+    <Compile Include="TabVBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
