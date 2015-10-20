@@ -116,6 +116,10 @@ namespace QSBanks
 					doc.PayerName = document ["Плательщик"];
 				else
 					doc.PayerName = document ["Плательщик1"];
+				if (doc.PayerName.Contains ("р/с"))
+					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("р/с"));
+				if (doc.PayerName.Contains ("//"))
+					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("//"));
 				doc.PayerInn = document ["ПлательщикИНН"];
 				doc.PayerKpp = document ["ПлательщикКПП"];
 				doc.PayerCheckingAccount = document ["ПлательщикРасчСчет"];
@@ -129,6 +133,10 @@ namespace QSBanks
 					doc.RecipientName = document ["Получатель"];
 				else
 					doc.RecipientName = document ["Получатель1"];
+				if (doc.RecipientName.Contains ("р/с"))
+					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("р/с"));
+				if (doc.RecipientName.Contains ("//"))
+					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("//"));
 				doc.RecipientInn = document ["ПолучательИНН"];
 				doc.RecipientKpp = document ["ПолучательКПП"];
 				doc.RecipientCheckingAccount = document ["ПолучательРасчСчет"];
