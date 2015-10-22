@@ -6,7 +6,7 @@ namespace QSBanks
 	{
 		private global::Gtk.VBox vbox1;
 		
-		private global::Gtk.Label label1;
+		private global::Gtk.Label labelTitle;
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		
@@ -32,12 +32,12 @@ namespace QSBanks
 			this.vbox1 = new global::Gtk.VBox ();
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
-			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Банковские счета организации");
-			this.vbox1.Add (this.label1);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.label1]));
+			this.labelTitle = new global::Gtk.Label ();
+			this.labelTitle.Name = "labelTitle";
+			this.labelTitle.Xalign = 0F;
+			this.labelTitle.LabelProp = global::Mono.Unix.Catalog.GetString ("Банковские счета организации");
+			this.vbox1.Add (this.labelTitle);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.labelTitle]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;

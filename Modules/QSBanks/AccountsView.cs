@@ -12,7 +12,7 @@ namespace QSBanks
 	{
 		private IAccountOwner accountOwner;
 
-		public IUnitOfWork UoW { get; set;}
+		public IUnitOfWork UoW { get; set; }
 
 		IParentReference<Account> parentReference;
 
@@ -42,6 +42,15 @@ namespace QSBanks
 		{
 			this.Build ();
 			datatreeviewAccounts.Selection.Changed += OnSelectionChanged;
+		}
+
+		/// <summary>
+		/// Установка заголовка окна, если не подходит значение по-умолчанию.
+		/// </summary>
+		/// <param name="title">Новый заголовок.</param>
+		public void SetTitle (string title)
+		{
+			labelTitle.Text = title;
 		}
 
 		void OnSelectionChanged (object sender, EventArgs e)
