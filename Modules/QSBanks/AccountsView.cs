@@ -96,8 +96,8 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 			
-			//FIXME добавить проверку на корретное удаление зависимостей.
-			accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+			if (OrmMain.DeleteObject (typeof(Account), (datatreeviewAccounts.GetSelectedObjects () [0] as Account).Id))
+				accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 	}
 }
