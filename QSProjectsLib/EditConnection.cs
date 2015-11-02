@@ -2,250 +2,239 @@
 using Gtk;
 using System.Collections.Generic;
 using Nini.Config;
+using System.Linq;
 
 namespace QSProjectsLib
 {
-	public partial class EditConnection : Gtk.Dialog
+	public partial class EditConnection : Dialog
 	{
+		ListStore connectionsListStore = new ListStore (typeof(string), typeof(Connection));
+		List<string> sectionsToDelete = new List<string> ();
 		List<Connection> connections;
-		Gtk.ListStore connectionsListStore;
-		Gtk.TreeViewColumn connectionColumn;
-		Gtk.CellRendererText connectionCell;
-		TreeIter iter;
-		IniConfigSource config;
-		IConfig defaultConfig;
-		bool doNotCheck = false;
+		TreeIter currentIter;
+		string lastEdited;
 
-		enum connectionStoreCol
+		public event EventHandler EditingDone;
+
+		protected virtual void OnEditingDone ()
 		{
-			Name,
-			Server,
-			Base,
-			User,
-			Section,
-			NumberInArray,
-			AccountLogin,
-			ConnectionType
+			if (EditingDone != null)
+				EditingDone (null, EventArgs.Empty);
 		}
 
-		public EditConnection (ref List<Connection> Connections, ref IniConfigSource Config)
+		public EditConnection (List<Connection> Connections)
 		{
 			this.Build ();
 			this.Title = "Настройка соединений";
 			connections = Connections;
-			config = Config;
-			defaultConfig = (IConfig)config.Configs ["Default"];
+		
 			labelInfo.ModifyFg (StateType.Normal, new Gdk.Color (255, 0, 0));
 			entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
 			comboConnectionType.Active = 0;
 
-			connectionsListStore = new Gtk.ListStore (typeof(string),  //0 - Name
-			                                          typeof(string),  //1 - Server
-			                                          typeof(string),  //2 - Base
-			                                          typeof(string),  //3 - User
-			                                          typeof(string),  //4 - Section
-			                                          typeof(int),     //5 - Number in array
-			                                          typeof(string),  //6 - Account login
-			                                          typeof(ConnectionType));//7 - Connection type
-			treeviewConnections.Model = connectionsListStore;
-			connectionColumn = new Gtk.TreeViewColumn ();
+			//Creating connections treeview
+			treeConnections.Model = connectionsListStore;
+
+			TreeViewColumn connectionColumn = new TreeViewColumn ();
 			connectionColumn.Title = "Соединения";
-			connectionColumn.Visible = true;
-			connectionCell = new CellRendererText ();
+			CellRendererText connectionCell = new CellRendererText ();
 			connectionCell.Editable = false;
 			connectionColumn.PackStart (connectionCell, true);
 			connectionColumn.AddAttribute (connectionCell, "text", 0);
 
-			treeviewConnections.AppendColumn (connectionColumn);
+			treeConnections.AppendColumn (connectionColumn);
 
-			for (int i = 0; i < connections.Count; i++)
-				connectionsListStore.AppendValues (connections [i].ConnectionName, 
-				                                   connections [i].Server, 
-				                                   connections [i].BaseName, 
-				                                   connections [i].UserName, 
-				                                   connections [i].IniName,
-				                                   i,
-				                                   connections [i].AccountLogin,
-				                                   connections [i].Type);
-				                                   
-			connectionsListStore.GetIterFirst (out iter);
-			entryName.Text = (string)connectionsListStore.GetValue (iter, 0);
-			if ((ConnectionType)connectionsListStore.GetValue (iter, 7) == ConnectionType.MySQL)
-				entryServer.Text = (string)connectionsListStore.GetValue (iter, 1);
-			else {
+			//Filling in info
+			for (int i = 0; i < Connections.Count; i++)
+				connectionsListStore.AppendValues (Connections [i].ConnectionName, Connections [i]);
+
+			//Selecting first node and filling in its information
+			var conn = Connections [0];
+			entryName.Text = conn.ConnectionName;
+			entryBase.Text = conn.BaseName;
+			if (conn.Type == ConnectionType.MySQL) {
+				comboConnectionType.Active = 0;
+				entryLogin.Text = String.Empty;
+				entryServer.Text = conn.Server;
+			} else {
 				comboConnectionType.Active = 1;
-				entryLogin.Text = (string)connectionsListStore.GetValue (iter, 6);
+				entryServer.Text = String.Empty;
+				entryLogin.Text = conn.AccountLogin;
 			}
-			entryBase.Text = (string)connectionsListStore.GetValue (iter, 2);
-			treeviewConnections.Selection.SelectIter (iter);
-			treeviewConnections.Selection.Changed += HandleChanged;
+
+			treeConnections.Model.GetIterFirst (out currentIter);
+			treeConnections.Selection.SelectIter (currentIter);
+			treeConnections.Selection.Changed += HandleChanged;
 		}
 
 		void HandleChanged (object sender, EventArgs e)
 		{
-			TreeIter TempIter;
-			treeviewConnections.Selection.GetSelected (out TempIter);
-			treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (TempIter), treeviewConnections.Columns [0]);
-
+			TreeIter iter;
+			treeConnections.Selection.GetSelected (out iter);
+			treeConnections.ActivateRow (treeConnections.Model.GetPath (iter), treeConnections.Columns [0]);
 		}
 
 		protected void OnTreeviewConnectionsRowActivated (object o, RowActivatedArgs args)
 		{
-			if (doNotCheck || (!doNotCheck && ValidateAndSave ())) {
-				connectionsListStore.GetIterFromString (out iter, args.Path.ToString ());
-				entryName.Text = (string)connectionsListStore.GetValue (iter, 0);
-				if ((ConnectionType)connectionsListStore.GetValue (iter, 7) == ConnectionType.MySQL) {
-					comboConnectionType.Active = 0;
-					entryLogin.Text = String.Empty;
-					entryServer.Text = (string)connectionsListStore.GetValue (iter, 1);
-				} else {
-					comboConnectionType.Active = 1;
-					entryServer.Text = String.Empty;
-					entryLogin.Text = (string)connectionsListStore.GetValue (iter, 6);
-				}
-				entryBase.Text = (string)connectionsListStore.GetValue (iter, 2);
+			//Validating current connection before switching to other one.
+			if (!CheckAndSaveBeforeSwitch ()) {
+				treeConnections.Selection.SelectIter (currentIter);
+				return;
 			}
-			treeviewConnections.Selection.SelectIter (iter);
+			TreeIter iter;
+			treeConnections.Model.GetIterFromString (out iter, args.Path.ToString ());
 
+			var conn = (Connection)connectionsListStore.GetValue (iter, 1);
+			entryName.Text = conn.ConnectionName;
+			entryBase.Text = conn.BaseName;
+			if (conn.Type == ConnectionType.MySQL) {
+				comboConnectionType.Active = 0;
+				entryLogin.Text = String.Empty;
+				entryServer.Text = conn.Server;
+			} else {
+				comboConnectionType.Active = 1;
+				entryServer.Text = String.Empty;
+				entryLogin.Text = conn.AccountLogin;
+			}
+
+			currentIter = iter;
+		}
+
+		protected bool CheckAndSaveBeforeSwitch ()
+		{
+			//If iter is null - row is removed and there is nothing to check here.
+			if (currentIter.Equals (TreeIter.Zero))
+				return true;
+			labelInfo.Text = String.Empty;
+			//Checking current input
+			if (String.IsNullOrWhiteSpace (entryName.Text)) {
+				labelInfo.Text += "Название подключения не заполнено.\n";
+				return false;
+			}
+			if (String.IsNullOrWhiteSpace (entryServer.Text) && comboConnectionType.Active == 0) {
+				labelInfo.Text += "Адрес сервера не заполнен.\n";
+				return false;
+			}
+			if (String.IsNullOrWhiteSpace (entryLogin.Text) && comboConnectionType.Active == 1) {
+				labelInfo.Text += "Учетная запись не заполнена.\n";
+				return false;
+			}
+			if (String.IsNullOrWhiteSpace (entryBase.Text)) {
+				labelInfo.Text += "Название базы не заполнено.";
+				return false;
+			}
+
+			TreeIter iter;
+			if (!treeConnections.Model.GetIterFirst (out iter))
+				return false;
+			do {
+				if (iter.Equals (currentIter))
+					continue;
+				var conn = (Connection)treeConnections.Model.GetValue (iter, 1);
+				if (conn.ConnectionName == entryName.Text) {
+					labelInfo.Text += "Подключение с таким названием уже существует.\n";
+					return false;
+				}
+			} while (treeConnections.Model.IterNext (ref iter));
+
+			//If everything is OK - saving updated values to treestore.
+			var connection = (Connection)treeConnections.Model.GetValue (currentIter, 1);
+			if (connection == null)
+				return false;
+			connection.ConnectionName = entryName.Text;
+			connection.BaseName = entryBase.Text;
+			connection.Type = (comboConnectionType.Active == 0 ? ConnectionType.MySQL : ConnectionType.SaaS);
+			if (connection.Type == ConnectionType.MySQL) {
+				connection.Server = entryServer.Text;
+				connection.AccountLogin = String.Empty;
+			} else {
+				connection.Server = String.Empty;
+				connection.AccountLogin = entryLogin.Text;
+			}
+			treeConnections.Model.SetValue (currentIter, 0, connection.ConnectionName);
+			treeConnections.Model.SetValue (currentIter, 1, connection);
+			lastEdited = connection.ConnectionName;
+			return true;
 		}
 
 		protected void OnButtonOkClicked (object sender, EventArgs e)
 		{
-			if (!ValidateAndSave ())
+			if (!CheckAndSaveBeforeSwitch ())
 				return;
-			connections.RemoveAll (m => m == null);
+			Delete ();
+			Save ();
+			OnEditingDone ();
 			this.Respond (ResponseType.Ok);
 		}
 
-		protected bool ValidateAndSave ()
+		protected void Delete ()
 		{
-			labelInfo.Text = "";
-			bool ok = true;
-			if (connectionsListStore.GetValue (iter, 0) == null)
-				return true;
-			int i = (int)connectionsListStore.GetValue (iter, 5);
-			for (int j = 0; j < connections.Count; j++) {
-				if (connections [j] == null)
-					continue;
-				if (connections [j].ConnectionName == entryName.Text && j != i) {
-					labelInfo.Text += "Подключение с таким названием уже существует.\n";
-					ok = false;
-					break;
-				}
+			foreach (string section in sectionsToDelete) {
+				var config = QSMain.Configsource.Configs [section];
+				if (config != null)
+					QSMain.Configsource.Configs.Remove (config);
 			}
-			if (entryName.Text.Replace (" ", "") == String.Empty) {
-				labelInfo.Text += "Название подключения не заполнено.\n";
-				ok = false;
-			}
-			if (entryServer.Text.Replace (" ", "") == String.Empty && comboConnectionType.Active == 0) {
-				labelInfo.Text += "Адрес сервера не заполнен.\n";
-				ok = false;
-			}
-			if (entryLogin.Text.Replace (" ", "") == String.Empty && comboConnectionType.Active == 1) {
-				labelInfo.Text += "Учетная запись не заполнена.\n";
-				ok = false;
-			}
-			if (entryBase.Text.Replace (" ", "") == String.Empty) {
-				labelInfo.Text += "Название базы не заполнено.";
-				ok = false;
-			}
-				
-			if (ok) {
-				//Если соединение уже есть в конфиге - обновляем
-				if (i != -1) {
-					connections [i].BaseName = entryBase.Text;
-					if (comboConnectionType.Active == 0) {
-						connections [i].Type = ConnectionType.MySQL;
-						connections [i].Server = entryServer.Text;
-						connections [i].AccountLogin = String.Empty;
-					} else {
-						connections [i].Type = ConnectionType.SaaS;
-						connections [i].AccountLogin = entryLogin.Text;
-						connections [i].Server = String.Empty;
-					}
-					if (defaultConfig != null &&
-					    connections [i].ConnectionName == defaultConfig.Get ("ConnectionName", String.Empty))
-						defaultConfig.Set ("ConnectionName", entryName.Text);
-					connections [i].ConnectionName = entryName.Text;
-				} 
-				//Если соединения нет - записываем и присваеваем ID
-				else {
-					if (comboConnectionType.Active == 0)
-						connections.Add (new Connection (ConnectionType.MySQL, entryName.Text, entryBase.Text, entryServer.Text, "", "", ""));
-					else
-						connections.Add (new Connection (ConnectionType.SaaS, entryName.Text, entryBase.Text, "", "", "", entryLogin.Text));
-					i = connections.Count - 1;
-					connectionsListStore.SetValue (iter, 5, i);
-					int j = 0;
-					while (true) {
-						if (connections.Find (m => m.IniName == "Login" + j.ToString ()) == null)
-							break;
-						j++;
-					}
-					connectionsListStore.SetValue (iter, 4, "Login" + j.ToString ());
-					connections [i].IniName = "Login" + j.ToString ();
-				}
-				connectionsListStore.SetValue (iter, 0, entryName.Text);
+			QSMain.Configsource.Save ();
+		}
 
-				if (comboConnectionType.Active == 0) {
-					connectionsListStore.SetValue (iter, 1, entryServer.Text);
-					connectionsListStore.SetValue (iter, 6, String.Empty);
-					connectionsListStore.SetValue (iter, 7, ConnectionType.MySQL);
-				} else {
-					connectionsListStore.SetValue (iter, 1, String.Empty);
-					connectionsListStore.SetValue (iter, 6, entryLogin.Text);
-					connectionsListStore.SetValue (iter, 7, ConnectionType.SaaS);
+		protected void Save ()
+		{
+			TreeIter iter;
+			if (!treeConnections.Model.GetIterFirst (out iter))
+				return;
+			do {
+				var connection = (Connection)treeConnections.Model.GetValue (iter, 1);
+				if (String.IsNullOrWhiteSpace (connection.IniName)) {
+					int i = 0;
+					for (;; i++) {
+						if (connections.Find (m => m.IniName == ("Login" + i)) == null)
+							break;
+					}
+					connection.IniName = "Login" + i;
 				}
-				connectionsListStore.SetValue (iter, 2, entryBase.Text);
-				String IniSection = connections [i].IniName;
-				if (config.Configs [IniSection] == null)
-					config.Configs.Add (IniSection);
-				config.Configs [IniSection].Set ("ConnectionName", connections [i].ConnectionName);
-				config.Configs [IniSection].Set ("Server", connections [i].Server);
-				config.Configs [IniSection].Set ("Type", ((int)connections [i].Type).ToString ());
-				config.Configs [IniSection].Set ("Account", connections [i].AccountLogin);
-				config.Configs [IniSection].Set ("DataBase", connections [i].BaseName);
-				config.Save ();
-			}
-			return ok;
+				var section = connection.IniName;
+				if (QSMain.Configsource.Configs [section] == null)
+					QSMain.Configsource.Configs.Add (section);
+				QSMain.Configsource.Configs [section].Set ("ConnectionName", connection.ConnectionName);
+				QSMain.Configsource.Configs [section].Set ("Server", connection.Server);
+				QSMain.Configsource.Configs [section].Set ("Type", ((int)connection.Type).ToString ());
+				QSMain.Configsource.Configs [section].Set ("Account", connection.AccountLogin);
+				QSMain.Configsource.Configs [section].Set ("DataBase", connection.BaseName);
+			} while (treeConnections.Model.IterNext (ref iter));
+
+			if (QSMain.Configsource.Configs ["Default"] == null)
+				QSMain.Configsource.AddConfig ("Default");
+			QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", lastEdited);
+			
+			QSMain.Configsource.Save ();	
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
-			if (ValidateAndSave ()) {
-				doNotCheck = true;
-				iter = connectionsListStore.AppendValues ("Новое соединение", "", Login.DefaultBase, "", "", -1, "", ConnectionType.MySQL);
-				entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = entryLogin.Sensitive = true;
-				treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (iter), treeviewConnections.Columns [0]);
-				comboConnectionType.Active = 0;
-				doNotCheck = false;
-			}
+			TreeIter iter;
+			if (!CheckAndSaveBeforeSwitch ())
+				return;
+			iter = connectionsListStore.AppendValues ("Новое соединение", 
+				new Connection (ConnectionType.MySQL,
+					"Новое соединение",
+					Login.DefaultBase,
+					"", "", "", ""));
+			treeConnections.Selection.SelectIter (iter);
 		}
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			doNotCheck = true;
-			TreeSelection selection = treeviewConnections.Selection;
-			if (selection.CountSelectedRows () != 1)
+			if (treeConnections.Selection.CountSelectedRows () != 1)
 				return;
-			selection.GetSelected (out iter);
-			int id = (int)connectionsListStore.GetValue (iter, 5);
-			treeviewConnections.Selection.Changed -= HandleChanged;
+			TreeIter iter;
+			treeConnections.Selection.GetSelected (out iter);
+			sectionsToDelete.Add (((Connection)connectionsListStore.GetValue (iter, 1)).IniName);
+			treeConnections.Selection.Changed -= HandleChanged;
 			connectionsListStore.Remove (ref iter);
-			treeviewConnections.Selection.Changed += HandleChanged;
-			if (id != -1) {
-				config.Configs.Remove (config.Configs [connections [id].IniName]);
-				connections [id] = null;
-				config.Save ();
-			}
+			treeConnections.Selection.Changed += HandleChanged;
+			currentIter = TreeIter.Zero;
 			connectionsListStore.GetIterFirst (out iter);
-			treeviewConnections.ActivateRow (treeviewConnections.Model.GetPath (iter), treeviewConnections.Columns [0]);
-			doNotCheck = false;
-			labelInfo.Text = "";
-			if (connections.Count == connections.FindAll (m => m == null).Count) {
-				entryBase.Text = entryName.Text = entryServer.Text = entryLogin.Text = "";
-				entryBase.Sensitive = entryName.Sensitive = entryServer.Sensitive = entryLogin.Sensitive = false;
-			}
+			treeConnections.Selection.SelectIter (iter);
 		}
 
 		protected void OnComboConnectionTypeChanged (object sender, EventArgs e)
@@ -291,8 +280,8 @@ namespace QSProjectsLib
 		protected void OnEntryNameChanged (object sender, EventArgs e)
 		{
 			TreeIter iter;
-			treeviewConnections.Selection.GetSelected (out iter);
-			connectionsListStore.SetValue (iter, (int)connectionStoreCol.Name, entryName.Text);
+			treeConnections.Selection.GetSelected (out iter);
+			connectionsListStore.SetValue (iter, 0, entryName.Text);
 		}
 	}
 }

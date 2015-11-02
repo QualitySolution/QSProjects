@@ -10,7 +10,7 @@ namespace QSProjectsLib
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		
-		private global::Gtk.TreeView treeviewConnections;
+		private global::Gtk.TreeView treeConnections;
 		
 		private global::Gtk.HBox hbox3;
 		
@@ -78,12 +78,12 @@ namespace QSProjectsLib
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.treeviewConnections = new global::Gtk.TreeView ();
-			this.treeviewConnections.WidthRequest = 150;
-			this.treeviewConnections.HeightRequest = 300;
-			this.treeviewConnections.CanFocus = true;
-			this.treeviewConnections.Name = "treeviewConnections";
-			this.GtkScrolledWindow.Add (this.treeviewConnections);
+			this.treeConnections = new global::Gtk.TreeView ();
+			this.treeConnections.WidthRequest = 150;
+			this.treeConnections.HeightRequest = 300;
+			this.treeConnections.CanFocus = true;
+			this.treeConnections.Name = "treeConnections";
+			this.GtkScrolledWindow.Add (this.treeConnections);
 			this.vbox2.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.GtkScrolledWindow]));
 			w3.Position = 0;
@@ -329,9 +329,9 @@ namespace QSProjectsLib
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 557;
-			this.DefaultHeight = 398;
+			this.DefaultHeight = 407;
 			this.Show ();
-			this.treeviewConnections.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewConnectionsRowActivated);
+			this.treeConnections.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewConnectionsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
 			this.buttonDelete.Clicked += new global::System.EventHandler (this.OnButtonDeleteClicked);
 			this.entryServer.TextInserted += new global::Gtk.TextInsertedHandler (this.OnEntryServerTextInserted);

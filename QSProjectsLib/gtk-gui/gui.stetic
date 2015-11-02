@@ -1549,7 +1549,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.EditConnection" design-size="557 398">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.EditConnection" design-size="557 407">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Редактор подключений</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -1572,7 +1572,7 @@
                     <property name="MemberName" />
                     <property name="ShadowType">In</property>
                     <child>
-                      <widget class="Gtk.TreeView" id="treeviewConnections">
+                      <widget class="Gtk.TreeView" id="treeConnections">
                         <property name="MemberName" />
                         <property name="WidthRequest">150</property>
                         <property name="HeightRequest">300</property>
