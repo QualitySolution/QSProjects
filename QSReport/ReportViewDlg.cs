@@ -21,7 +21,7 @@ namespace QSReport
 
 			panelParameters.Visible = false;
 
-			reportviewer1.LoadReport (reportInfo.GetReportUri (), reportInfo.GetParametersString (), QSMain.ConnectionString);
+			reportviewer1.LoadReport (reportInfo.GetReportUri (), reportInfo.GetParametersString (), QSMain.ConnectionString, true);
 		}
 
 		public ReportViewDlg (IParametersWidget widget)
@@ -44,7 +44,9 @@ namespace QSReport
 			logger.Debug (String.Format ("Report Parameters[{0}]", e.Info.GetParametersString ()));
 			reportviewer1.LoadReport (e.Info.GetReportUri (),
 				e.Info.GetParametersString (),
-				QSMain.ConnectionString);
+				QSMain.ConnectionString,
+				true
+			);
 		}
 	}
 }
