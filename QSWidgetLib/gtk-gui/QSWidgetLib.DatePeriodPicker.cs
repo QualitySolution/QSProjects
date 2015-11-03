@@ -24,7 +24,7 @@ namespace QSWidgetLib
 			this.entryDate = new global::Gtk.Entry ();
 			this.entryDate.CanFocus = true;
 			this.entryDate.Name = "entryDate";
-			this.entryDate.IsEditable = true;
+			this.entryDate.IsEditable = false;
 			this.entryDate.InvisibleChar = '●';
 			this.hbox1.Add (this.entryDate);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.entryDate]));
@@ -51,6 +51,7 @@ namespace QSWidgetLib
 			this.entryDate.Changed += new global::System.EventHandler (this.OnEntryDateChanged);
 			this.entryDate.TextInserted += new global::Gtk.TextInsertedHandler (this.OnEntryDateTextInserted);
 			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryDateFocusOutEvent);
+			this.entryDate.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnEntryDateKeyPressEvent);
 			this.buttonPickDatePeriod.Clicked += new global::System.EventHandler (this.OnButtonPickDatePeriodClicked);
 		}
 	}

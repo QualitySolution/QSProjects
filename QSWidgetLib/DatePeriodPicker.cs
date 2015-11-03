@@ -239,6 +239,16 @@ namespace QSWidgetLib
 			}
 			return true;
 		}
+
+		[GLib.ConnectBefore]
+		protected void OnEntryDateKeyPressEvent (object o, KeyPressEventArgs args)
+		{
+			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
+			{
+				endDate = null; // Что бы событие вызывалось 1 раз.
+				StartDateOrNull = null;
+			}
+		}
 	}
 }
 
