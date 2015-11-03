@@ -271,7 +271,7 @@ namespace QSOrmProject
 		[GLib.ConnectBefore]
 		protected void OnEntryObjectKeyPressEvent (object o, KeyPressEventArgs args)
 		{
-			if(args.Event.Key == Gdk.Key.Delete)
+			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
 			{
 				Subject = null;
 			}
