@@ -101,14 +101,17 @@ namespace QSBanks
 
 		private void fillData ()
 		{
+			//Для разбора дат и сумм.
 			var culture = CultureInfo.CreateSpecificCulture ("ru-RU");
+			culture.NumberFormat.NumberDecimalSeparator = ".";
+
 			TransferDocuments = new List<TransferDocument> ();
 			foreach (var document in documents) {
 				TransferDocument doc = new TransferDocument ();
 				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
 				doc.Number = document ["Номер"];
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
-				doc.Total = Decimal.Parse (document ["Сумма"]);
+				doc.Total = Decimal.Parse (document ["Сумма"], culture.NumberFormat);
 				doc.PayerAccount = document ["ПлательщикСчет"];
 				if (document.ContainsKey ("ДатаСписано") && !String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
 					doc.WriteoffDate = DateTime.Parse (document ["ДатаСписано"], culture);
