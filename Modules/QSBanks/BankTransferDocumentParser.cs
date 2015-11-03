@@ -84,7 +84,7 @@ namespace QSBanks
 								i++;
 							if (documents.Count <= i)
 								documents.Add (new Dictionary<string, string> ());
-							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+							var dataArray = data.Split (new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
 								documents [i].Add (dataArray [0], dataArray [1]);
 							} else if (dataArray.Length == 1) {
@@ -119,10 +119,11 @@ namespace QSBanks
 					doc.PayerName = document ["Плательщик"];
 				else
 					doc.PayerName = document ["Плательщик1"];
-				if (doc.PayerName.Contains ("р/с"))
+				if (doc.PayerName.Contains ("р/с") && !String.IsNullOrWhiteSpace (doc.PayerName.Substring (0, doc.PayerName.IndexOf ("р/с"))))
 					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("р/с"));
-				if (doc.PayerName.Contains ("//"))
+				if (doc.PayerName.Contains ("//") && !String.IsNullOrWhiteSpace (doc.PayerName.Substring (0, doc.PayerName.IndexOf ("//"))))
 					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("//"));
+
 				doc.PayerInn = document ["ПлательщикИНН"];
 				doc.PayerKpp = document ["ПлательщикКПП"];
 				doc.PayerCheckingAccount = document ["ПлательщикРасчСчет"];
@@ -136,9 +137,9 @@ namespace QSBanks
 					doc.RecipientName = document ["Получатель"];
 				else
 					doc.RecipientName = document ["Получатель1"];
-				if (doc.RecipientName.Contains ("р/с"))
+				if (doc.RecipientName.Contains ("р/с") && !String.IsNullOrWhiteSpace (doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("р/с"))))
 					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("р/с"));
-				if (doc.RecipientName.Contains ("//"))
+				if (doc.RecipientName.Contains ("//") && !String.IsNullOrWhiteSpace (doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("//"))))
 					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("//"));
 				doc.RecipientInn = document ["ПолучательИНН"];
 				doc.RecipientKpp = document ["ПолучательКПП"];
