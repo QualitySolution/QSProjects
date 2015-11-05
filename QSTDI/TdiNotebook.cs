@@ -118,7 +118,7 @@ namespace QSTDI
 
 		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
-			AddTab (tab, this.PageNum (afterTab as Widget));
+			AddTab (tab, this.PageNum (GetTabBoxForTab (afterTab)));
 		}
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
@@ -215,7 +215,7 @@ namespace QSTDI
 			}
 
 			//Закрываем вкладку
-			TabVBox tabBox = this.Children.SingleOrDefault (w => (w as TabVBox).Tab == tab) as TabVBox;
+			TabVBox tabBox = GetTabBoxForTab (tab);
 			bool IsCurrent = this.CurrentPageWidget == tabBox;
 			_tabs.RemoveAll (t => t.MasterTab == tab);
 			_tabs.ForEach (t => t.SlaveTabs.RemoveAll (s => s == tab));
@@ -225,6 +225,11 @@ namespace QSTDI
 			logger.Debug ("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy ();
 			tabBox.Destroy ();
+		}
+
+		private TabVBox GetTabBoxForTab(ITdiTab tab)
+		{
+			return this.Children.SingleOrDefault (w => (w as TabVBox).Tab == tab) as TabVBox;
 		}
 
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
