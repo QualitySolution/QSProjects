@@ -79,6 +79,10 @@ namespace Gamma.Widgets
 
 		object selectedItem;
 
+		/// <summary>
+		/// Return selected values or SpecialComboState enum.
+		/// </summary>
+		/// <value>The selected item.</value>
 		public object SelectedItem {
 			get {
 				return selectedItem;
