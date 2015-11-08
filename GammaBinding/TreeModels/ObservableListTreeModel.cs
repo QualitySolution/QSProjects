@@ -13,6 +13,8 @@ namespace Gamma.Binding
 		IObservableList sourceList;
 		IEnumerator cachedEnumerator;
 
+		public event EventHandler RenewAdapter;
+
 		public ObservableListTreeModel (IObservableList list)
 		{
 			adapter = new TreeModelAdapter (this);
@@ -20,6 +22,19 @@ namespace Gamma.Binding
 			sourceList.ElementChanged += SourceList_ElementChanged;
 			sourceList.ElementAdded += SourceList_ElementAdded;
 			sourceList.ElementRemoved += SourceList_ElementRemoved;
+			sourceList.ListChanged += SourceList_ListChanged;
+		}
+
+		void SourceList_ListChanged (object aList)
+		{
+			adapter = new TreeModelAdapter (this);
+			OnRenewAdapter ();
+		}
+
+		void OnRenewAdapter()
+		{
+			if (RenewAdapter != null)
+				RenewAdapter (this, EventArgs.Empty);
 		}
 
 		void SourceList_ElementRemoved (object aList, int[] aIdx, object aObject)
@@ -100,8 +115,11 @@ namespace Gamma.Binding
 
 		public bool IterNext (ref TreeIter iter)
 		{
+			if((sourceList == null) || (sourceList.Count == 0))
+				return (false);
+
 			object node = NodeFromIter (iter);
-			if ((node == null) || (sourceList == null) || (sourceList.Count == 0))
+			if (node == null)
 				return (false);
 			object lastNode;
 			//Check for "Collection was modified" Exception
@@ -240,8 +258,6 @@ namespace Gamma.Binding
 				return false;
 			}
 		}
-
-
 	}
 }
 

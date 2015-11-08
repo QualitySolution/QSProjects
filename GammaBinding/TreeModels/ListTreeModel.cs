@@ -13,6 +13,8 @@ namespace Gamma.Binding
 		IList sourceList;
 		IEnumerator cachedEnumerator;
 
+		public event EventHandler RenewAdapter;
+
 		public ListTreeModel (IList list)
 		{
 			adapter = new TreeModelAdapter (this);

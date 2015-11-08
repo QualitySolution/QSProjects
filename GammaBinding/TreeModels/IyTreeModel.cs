@@ -9,6 +9,8 @@ namespace Gamma.Binding
 
 		object NodeAtPath(TreePath aPath);
 		object NodeFromIter (TreeIter iter);
+
+		event EventHandler RenewAdapter;
 	}
 }
 

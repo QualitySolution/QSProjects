@@ -56,9 +56,21 @@ namespace Gamma.GtkWidgets
 				return yTreeModel;
 			}
 			set {
+				if (yTreeModel == value)
+					return;
+				if (yTreeModel != null)
+					yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
 				yTreeModel = value;
+				if(yTreeModel != null)
+					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
 			}
+		}
+
+		void YTreeModel_RenewAdapter (object sender, EventArgs e)
+		{
+			Model = null;
+			Model = YTreeModel.Adapter;
 		}
 
 		public yTreeView ()
