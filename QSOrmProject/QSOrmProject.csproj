@@ -128,6 +128,7 @@
     <Compile Include="RepresentationModel\RepresentationModelEntityBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
+    <Compile Include="WithoutTDI\FakeTDITabGtkWindowBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
