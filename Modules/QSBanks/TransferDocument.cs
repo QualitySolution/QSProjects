@@ -46,6 +46,8 @@ namespace QSBanks
 				return TransferDocumentType.BankOrder;
 			case "Платежное поручение":
 				return TransferDocumentType.PaymentDraft;
+			case "Инкассовое поручение":
+				return TransferDocumentType.IncassDraft;
 			default: 
 				throw new NotSupportedException (String.Format ("Тип банковского документа {0} неизвестен.", type));
 			}
@@ -57,7 +59,9 @@ namespace QSBanks
 		[ItemTitleAttribute ("Банковский ордер")]
 		BankOrder,
 		[ItemTitleAttribute ("Платежное поручение")]
-		PaymentDraft
+		PaymentDraft,
+		[ItemTitleAttribute ("Инкассовое поручение")]
+		IncassDraft
 	}
 
 	public class TransferDocumentTypeStringType : NHibernate.Type.EnumStringType

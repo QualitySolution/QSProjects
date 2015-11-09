@@ -12,7 +12,7 @@ namespace QSBanks
 	{
 		private IAccountOwner accountOwner;
 
-		public IUnitOfWork UoW { get; set;}
+		public IUnitOfWork UoW { get; set; }
 
 		IParentReference<Account> parentReference;
 
@@ -42,6 +42,15 @@ namespace QSBanks
 		{
 			this.Build ();
 			datatreeviewAccounts.Selection.Changed += OnSelectionChanged;
+		}
+
+		/// <summary>
+		/// Установка заголовка окна, если не подходит значение по-умолчанию.
+		/// </summary>
+		/// <param name="title">Новый заголовок.</param>
+		public void SetTitle (string title)
+		{
+			labelTitle.Text = title;
 		}
 
 		void OnSelectionChanged (object sender, EventArgs e)
@@ -87,8 +96,8 @@ namespace QSBanks
 			if (mytab == null)
 				return;
 			
-			//FIXME добавить проверку на корретное удаление зависимостей.
-			accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+			if (OrmMain.DeleteObject (typeof(Account), (datatreeviewAccounts.GetSelectedObjects () [0] as Account).Id))
+				accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 	}
 }

@@ -128,7 +128,7 @@ namespace QSOsm
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
 			var val = completion.Model.GetValue (iter, (int)columns.City).ToString ().ToLower ();
-			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (key.ToLower ())));
+			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (this.Text.ToLower ())));
 		}
 
 		[GLib.ConnectBefore]

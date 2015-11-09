@@ -45,7 +45,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Numerics" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.1.2\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.2.0\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

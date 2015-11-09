@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Gtk;
 using MySql.Data.MySqlClient;
-using NLog;
 using Nini.Config;
+using NLog;
 
 namespace QSProjectsLib
 {
@@ -385,10 +386,12 @@ namespace QSProjectsLib
 
 			Assembly assembly = Assembly.GetCallingAssembly ();
 			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
+			AssemblyEditionAttribute editionAtt = assembly.GetCustomAttributes (typeof(AssemblyEditionAttribute), false).OfType<AssemblyEditionAttribute> ().FirstOrDefault ();
 
 			dialog.ProgramName = ((AssemblyTitleAttribute)att [0]).Title;
 
-			dialog.Version = StringWorks.VersionToShortString (assembly.GetName ().Version);
+			dialog.Version = StringWorks.VersionToShortString (assembly.GetName ().Version) 
+				+ (editionAtt != null && editionAtt.Edition != "gpl" ? String.Format ("({0})", editionAtt.Edition) : String.Empty);
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIcon), false);
 			if (att.Length > 0) {

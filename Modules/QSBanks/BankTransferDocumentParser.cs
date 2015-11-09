@@ -28,6 +28,7 @@ namespace QSBanks
 
 		public void Parse ()
 		{
+			int i;
 			//TODO Сделать выбор кодировки. Возможна кодировка DOS 866.
 			using (var reader = new StreamReader (DocumentPath, Encoding.GetEncoding (1251))) {
 
@@ -45,6 +46,14 @@ namespace QSBanks
 						if (!String.IsNullOrWhiteSpace (data)) {
 							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
+								i = 1;
+								if (DocumentProperties.ContainsKey (dataArray [0])) {
+									while (DocumentProperties.ContainsKey (dataArray [0] + i)) {
+										i++;
+									}
+									dataArray [0] += i;
+									i = 1;
+								}
 								DocumentProperties.Add (dataArray [0], dataArray [1]);
 							}
 						}
@@ -52,7 +61,7 @@ namespace QSBanks
 					}
 
 					//Читаем рассчетные счета
-					int i = -1;
+					i = -1;
 					while (!data.StartsWith ("СекцияДокумент")) {
 						if (!String.IsNullOrWhiteSpace (data)) {
 							if (data.StartsWith ("СекцияРасчСчет"))
@@ -75,7 +84,7 @@ namespace QSBanks
 								i++;
 							if (documents.Count <= i)
 								documents.Add (new Dictionary<string, string> ());
-							var dataArray = data.Split (new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+							var dataArray = data.Split (new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
 							if (dataArray.Length == 2) {
 								documents [i].Add (dataArray [0], dataArray [1]);
 							} else if (dataArray.Length == 1) {
@@ -92,18 +101,29 @@ namespace QSBanks
 
 		private void fillData ()
 		{
+			//Для разбора дат и сумм.
 			var culture = CultureInfo.CreateSpecificCulture ("ru-RU");
+			culture.NumberFormat.NumberDecimalSeparator = ".";
+
 			TransferDocuments = new List<TransferDocument> ();
 			foreach (var document in documents) {
 				TransferDocument doc = new TransferDocument ();
 				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
 				doc.Number = document ["Номер"];
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
-				doc.Total = Decimal.Parse (document ["Сумма"]);
+				doc.Total = Decimal.Parse (document ["Сумма"], culture.NumberFormat);
 				doc.PayerAccount = document ["ПлательщикСчет"];
-				if (!String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
+				if (document.ContainsKey ("ДатаСписано") && !String.IsNullOrWhiteSpace (document ["ДатаСписано"]))
 					doc.WriteoffDate = DateTime.Parse (document ["ДатаСписано"], culture);
-				doc.PayerName = document ["Плательщик"];
+				if (document.ContainsKey ("Плательщик"))
+					doc.PayerName = document ["Плательщик"];
+				else
+					doc.PayerName = document ["Плательщик1"];
+				if (doc.PayerName.Contains ("р/с") && !String.IsNullOrWhiteSpace (doc.PayerName.Substring (0, doc.PayerName.IndexOf ("р/с"))))
+					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("р/с"));
+				if (doc.PayerName.Contains ("//") && !String.IsNullOrWhiteSpace (doc.PayerName.Substring (0, doc.PayerName.IndexOf ("//"))))
+					doc.PayerName = doc.PayerName.Substring (0, doc.PayerName.IndexOf ("//"));
+
 				doc.PayerInn = document ["ПлательщикИНН"];
 				doc.PayerKpp = document ["ПлательщикКПП"];
 				doc.PayerCheckingAccount = document ["ПлательщикРасчСчет"];
@@ -111,9 +131,16 @@ namespace QSBanks
 				doc.PayerBik = document ["ПлательщикБИК"];
 				doc.PayerCorrespondentAccount = document ["ПлательщикКорсчет"];
 				doc.RecipientAccount = document ["ПолучательСчет"];
-				if (!String.IsNullOrWhiteSpace (document ["ДатаПоступило"]))
+				if (document.ContainsKey ("ДатаПоступило") && !String.IsNullOrWhiteSpace (document ["ДатаПоступило"]))
 					doc.ReceiptDate = DateTime.Parse (document ["ДатаПоступило"], culture);
-				doc.RecipientName = document ["Получатель"];
+				if (document.ContainsKey ("Получатель"))
+					doc.RecipientName = document ["Получатель"];
+				else
+					doc.RecipientName = document ["Получатель1"];
+				if (doc.RecipientName.Contains ("р/с") && !String.IsNullOrWhiteSpace (doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("р/с"))))
+					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("р/с"));
+				if (doc.RecipientName.Contains ("//") && !String.IsNullOrWhiteSpace (doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("//"))))
+					doc.RecipientName = doc.RecipientName.Substring (0, doc.RecipientName.IndexOf ("//"));
 				doc.RecipientInn = document ["ПолучательИНН"];
 				doc.RecipientKpp = document ["ПолучательКПП"];
 				doc.RecipientCheckingAccount = document ["ПолучательРасчСчет"];

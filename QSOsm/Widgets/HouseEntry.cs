@@ -82,7 +82,7 @@ namespace QSOsm
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
 			var val = (string)completion.Model.GetValue (iter, 0);
-			return Regex.IsMatch (val, String.Format ("{0}", Regex.Escape (key)), RegexOptions.IgnoreCase);
+			return Regex.IsMatch (val, String.Format ("{0}", Regex.Escape (this.Text)), RegexOptions.IgnoreCase);
 		}
 
 		[GLib.ConnectBefore]
