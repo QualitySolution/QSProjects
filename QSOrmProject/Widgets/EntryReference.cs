@@ -7,9 +7,16 @@ using NHibernate.Criterion;
 using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
+using System.Text.RegularExpressions;
 
 namespace QSOrmProject
 {
+	enum completionCol
+	{
+		Tilte,
+		Item
+	}
+
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class EntryReference : WidgetOnDialogBase
 	{
@@ -17,7 +24,11 @@ namespace QSOrmProject
 
 		private bool sensitive = true;
 
+		private bool entryChangedByUser = true;
+
 		private bool canEditReference = true;
+
+		private ListStore completionListStore;
 
 		private ICriteria itemsCriteria;
 
@@ -64,9 +75,6 @@ namespace QSOrmProject
 				canEditReference = value;
 			}
 		}
-
-		//TODO Реализовать удаление
-		//TODO Реализовать удобный выбор через подбор
 
 		[Browsable (false)]
 		public new bool Sensitive {
@@ -177,18 +185,25 @@ namespace QSOrmProject
 		private void UpdateWidgetNew ()
 		{
 			buttonOpen.Sensitive = CanEditReference && subject != null;
-			if (subject == null) {
-				entryObject.Text = String.Empty;
-				return;
+
+			entryChangedByUser = false;
+			entryObject.Text = GetObjectTitle (Subject);
+			entryChangedByUser = true;
+		}
+
+		//Используется только новое отображение объекта
+		private string GetObjectTitle(object item)
+		{
+			if (item == null) {
+				return String.Empty;
 			}
 
 			if(ObjectDisplayFunc != null)
 			{
-				entryObject.Text = ObjectDisplayFunc (Subject);
-				return;
+				return ObjectDisplayFunc (item);
 			}
 
-			entryObject.Text = DomainHelper.GetObjectTilte (Subject);
+			return DomainHelper.GetObjectTilte (Subject);
 		}
 
 		private string[] displayFields;
@@ -211,6 +226,34 @@ namespace QSOrmProject
 		public EntryReference ()
 		{
 			this.Build ();
+
+			entryObject.Completion = new EntryCompletion ();
+			entryObject.Completion.MatchSelected += Completion_MatchSelected;
+			entryObject.Completion.MatchFunc = Completion_MatchFunc;
+			var cell = new CellRendererText ();
+			entryObject.Completion.PackStart (cell, true);
+			entryObject.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
+		}
+
+		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		{
+			var title = (string)tree_model.GetValue (iter, (int)completionCol.Tilte);
+			string pattern = String.Format ("\\b{0}", Regex.Escape (entryObject.Text.ToLower ()));
+			(cell as CellRendererText).Markup = 
+				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+		}
+
+		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
+		{
+			var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ().ToLower ();
+			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (entryObject.Text.ToLower ())));
+		}
+
+		[GLib.ConnectBefore]
+		void Completion_MatchSelected (object o, MatchSelectedArgs args)
+		{
+			Subject = args.Model.GetValue (args.Iter, (int)completionCol.Item);
+			args.RetVal = true;
 		}
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
@@ -268,13 +311,52 @@ namespace QSOrmProject
 				Changed (this, EventArgs.Empty);
 		}
 
-		[GLib.ConnectBefore]
-		protected void OnEntryObjectKeyPressEvent (object o, KeyPressEventArgs args)
+		private void fillAutocomplete ()
 		{
-			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
+			logger.Info ("Запрос данных для автодополнения...");
+			completionListStore = new ListStore (typeof(string), typeof(object));
+
+			IUnitOfWork localUoW;
+
+			if (MyOrmDialog != null)
+				localUoW = MyOrmDialog.UoW;
+			else
+				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
+
+			if(ItemsQuery != null)
 			{
-				Subject = null;
+				ItemsCriteria = ItemsQuery.DetachedCriteria.GetExecutableCriteria (localUoW.Session);
 			}
+			else
+			{
+				if (ItemsCriteria == null)
+					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
+			}
+
+			foreach (var item in ItemsCriteria.List ()) {
+				completionListStore.AppendValues (
+					GetObjectTitle (item),
+					item
+				);
+			}
+			entryObject.Completion.Model = completionListStore;
+			logger.Debug ("Получено {0} строк автодополения...", completionListStore.IterNChildren ());
+			//if (this.HasFocus)
+			//	this.Completion.Complete ();
+		}
+
+		protected void OnEntryObjectChanged (object sender, EventArgs e)
+		{
+			if (entryChangedByUser && completionListStore == null)
+				fillAutocomplete ();
+		}
+
+		protected void OnEntryObjectFocusOutEvent (object o, FocusOutEventArgs args)
+		{
+			if (string.IsNullOrWhiteSpace (entryObject.Text))
+				Subject = null;
+			else
+				UpdateWidgetNew ();
 		}
 	}
 }

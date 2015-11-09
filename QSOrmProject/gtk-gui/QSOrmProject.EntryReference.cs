@@ -26,7 +26,7 @@ namespace QSOrmProject
 			this.entryObject = new global::Gtk.Entry ();
 			this.entryObject.CanFocus = true;
 			this.entryObject.Name = "entryObject";
-			this.entryObject.IsEditable = false;
+			this.entryObject.IsEditable = true;
 			this.entryObject.InvisibleChar = '●';
 			this.hbox1.Add (this.entryObject);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.entryObject]));
@@ -65,7 +65,8 @@ namespace QSOrmProject
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
-			this.entryObject.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnEntryObjectKeyPressEvent);
+			this.entryObject.Changed += new global::System.EventHandler (this.OnEntryObjectChanged);
+			this.entryObject.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryObjectFocusOutEvent);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);
 			this.buttonOpen.Clicked += new global::System.EventHandler (this.OnButtonOpenClicked);
 		}

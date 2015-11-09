@@ -508,9 +508,10 @@
           <widget class="Gtk.Entry" id="entryObject">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="IsEditable">False</property>
+            <property name="IsEditable">True</property>
             <property name="InvisibleChar">●</property>
-            <signal name="KeyPressEvent" handler="OnEntryObjectKeyPressEvent" />
+            <signal name="Changed" handler="OnEntryObjectChanged" />
+            <signal name="FocusOutEvent" handler="OnEntryObjectFocusOutEvent" />
           </widget>
           <packing>
             <property name="Position">0</property>
