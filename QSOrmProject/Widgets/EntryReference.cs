@@ -103,7 +103,7 @@ namespace QSOrmProject
 
 		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if(DisplayFields.Contains (e.PropertyName))
+			if(DisplayFields==null || DisplayFields.Contains (e.PropertyName))
 			{
 				UpdateWidget ();
 			}
