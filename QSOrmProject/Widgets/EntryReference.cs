@@ -8,6 +8,8 @@ using NLog;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace QSOrmProject
 {
@@ -29,6 +31,8 @@ namespace QSOrmProject
 		private bool canEditReference = true;
 
 		private ListStore completionListStore;
+
+		private string[] searchFields;
 
 		private ICriteria itemsCriteria;
 
@@ -128,7 +132,34 @@ namespace QSOrmProject
 				if (subjectType != null) {
 					IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;
+					searchFields = map.RefSearchFields;
 				}
+			}
+		}
+
+		private List<PropertyInfo> searchPropCache;
+
+		protected List<PropertyInfo> SearchPropCache {
+			get
+			{
+				if (searchPropCache != null)
+					return searchPropCache;
+
+				if (searchFields == null)
+					return null;
+
+				searchPropCache = new List<PropertyInfo> ();
+
+				foreach (string prop in searchFields) {
+					var propInfo = SubjectType.GetProperty (prop);
+					if (propInfo != null) {
+						searchPropCache.Add (propInfo);
+					} else
+						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", SubjectType, prop);
+				}
+
+				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
+				return searchPropCache;
 			}
 		}
 
@@ -179,7 +210,9 @@ namespace QSOrmProject
 					throw new InvalidOperationException(String.Format("Поле {0} у класса {1} не найдено.", displayFields[i], SubjectType));
 				values [i] = prop.GetValue (Subject, null);
 			}
+			entryChangedByUser = false;
 			entryObject.Text = String.Format (DisplayFormatString, values);
+			entryChangedByUser = true;
 		}
 
 		private void UpdateWidgetNew ()
@@ -203,7 +236,7 @@ namespace QSOrmProject
 				return ObjectDisplayFunc (item);
 			}
 
-			return DomainHelper.GetObjectTilte (Subject);
+			return DomainHelper.GetObjectTilte (item);
 		}
 
 		private string[] displayFields;
@@ -238,15 +271,29 @@ namespace QSOrmProject
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
 			var title = (string)tree_model.GetValue (iter, (int)completionCol.Tilte);
-			string pattern = String.Format ("\\b{0}", Regex.Escape (entryObject.Text.ToLower ()));
+			string pattern = String.Format ("{0}", Regex.Escape (entryObject.Text));
 			(cell as CellRendererText).Markup = 
 				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 		}
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ().ToLower ();
-			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (entryObject.Text.ToLower ())));
+			if(searchFields == null)
+			{
+				var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ();
+				return val.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1;
+			}
+			else
+			{
+				var val = completion.Model.GetValue (iter, (int)completionCol.Item);
+				foreach (var prop in SearchPropCache) {
+					string Str = prop.GetValue (val, null).ToString ();
+					if (Str.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1) {
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 
 		[GLib.ConnectBefore]
