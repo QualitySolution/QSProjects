@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Gamma.GtkWidgets.Cells;
+using Gamma.Utilities;
 
 namespace Gamma.ColumnConfig
 {
@@ -11,7 +12,7 @@ namespace Gamma.ColumnConfig
 		public ToggleRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, bool>> dataProperty)
 			: base(column)
 		{
-			//cellRenderer.DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (dataProperty);
 			cellRenderer.LambdaSetters.Add ((c, n) => c.Active = dataProperty.Compile ().Invoke (n));
 		}
 
@@ -46,6 +47,7 @@ namespace Gamma.ColumnConfig
 			cellRenderer.Activatable = on;
 			return this;
 		}
+
 	}
 }
 

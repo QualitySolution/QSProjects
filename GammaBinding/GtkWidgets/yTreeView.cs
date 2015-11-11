@@ -99,6 +99,10 @@ namespace Gamma.GtkWidgets
 					{
 						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
 					}
+					if(cell is CellRendererToggle)
+					{
+						(cell as CellRendererToggle).Toggled += OnToggledCell;
+					}
 					tvc.PackStart (cell, render.IsExpand);
 					tvc.SetCellDataFunc (cell, NodeRenderColumnFunc);
 				}
@@ -106,6 +110,20 @@ namespace Gamma.GtkWidgets
 			}
 
 			return true;
+		}
+
+		void OnToggledCell (object o, ToggledArgs args)
+		{
+			var cell = o as INodeCellRenderer;
+			if(cell != null)
+			{
+				object obj = YTreeModel.NodeAtPath (new TreePath(args.Path));
+				if (cell.DataPropertyInfo != null) {
+					object propValue = cell.DataPropertyInfo.GetValue (obj, null);
+
+					cell.DataPropertyInfo.SetValue (obj, !Convert.ToBoolean (propValue), null);
+				}
+			}
 		}
 
 		private void OnNumbericNodeCellEditingStarted (object o, Gtk.EditingStartedArgs args)
