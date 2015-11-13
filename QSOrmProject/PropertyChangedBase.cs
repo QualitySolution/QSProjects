@@ -15,7 +15,7 @@ namespace QSOrmProject
 
 		public virtual event PropertyChangedEventHandler PropertyChanged;
 
-		protected virtual void OnPropertyChanged (string propertyName)
+		protected void OnPropertyChanged (string propertyName)
 		{
 			PropertyChangedEventHandler handler = PropertyChanged;
 			if (handler != null) {
@@ -41,7 +41,7 @@ namespace QSOrmProject
 		}
 
 		//No string implementation
-		protected virtual void OnPropertyChanged<T> (Expression<Func<T>> selectorExpression)
+		protected void OnPropertyChanged<T> (Expression<Func<T>> selectorExpression)
 		{
 			if (selectorExpression == null)
 				throw new ArgumentNullException ("selectorExpression");
