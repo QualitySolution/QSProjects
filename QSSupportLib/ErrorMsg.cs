@@ -5,14 +5,21 @@ using System.Text.RegularExpressions;
 using NLog;
 using System.Linq;
 using NLog.Targets;
+using System.Collections.Generic;
 
 namespace QSSupportLib
 {
 	public partial class ErrorMsg : Gtk.Dialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		Exception AppExpeption;
+		List<Exception> AppExceptions;
 		string message;
+
+		protected string AppExceptionText
+		{
+			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));
+			}
+		}
 
 		public ErrorMsg (Window parent, Exception ex, string userMessage)
 		{
@@ -20,11 +27,11 @@ namespace QSSupportLib
 				this.Parent = parent;
 			this.Build ();
 
-			AppExpeption = ex;
+			AppExceptions.Add (ex);
 			message = userMessage;
 			labelUserMessage.LabelProp = userMessage;
 			labelUserMessage.Visible = userMessage != "";
-			textviewError.Buffer.Text = ex.ToString ();
+			OnExeptionTextUpdate ();
 			buttonSendReport.Sensitive = false;
 			entryEmail.Text = QSMain.User.Email;
 
@@ -32,6 +39,17 @@ namespace QSSupportLib
 
 			textviewDescription.Buffer.Changed += InputsChanged;
 			entryEmail.Changed += InputsChanged;
+		}
+
+		public void AddAnotherException(Exception ex, string userMessage)
+		{
+			AppExceptions.Add (ex);
+			OnExeptionTextUpdate ();
+		}
+
+		public void OnExeptionTextUpdate()
+		{
+			textviewError.Buffer.Text = AppExceptionText;
 		}
 
 		void InputsChanged (object sender, EventArgs e)
@@ -55,7 +73,7 @@ namespace QSSupportLib
 				                 MainSupport.ProjectVerion.Product, 
 				                 MainSupport.ProjectVerion.Version,
 				                 MainSupport.ProjectVerion.Edition,
-				                 AppExpeption,
+								 AppExceptionText,
 				                 message
 			                 );
 			clipboard.Text = TextMsg;
@@ -90,7 +108,7 @@ namespace QSSupportLib
 					version = MainSupport.ProjectVerion.Version.ToString (),
 					stackTrace = String.Format ("{0}{1}", 
 						String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message),
-						AppExpeption),
+						AppExceptionText),
 					description = textviewDescription.Buffer.Text,
 					email = entryEmail.Text,
 					userName = QSMain.User.Name,

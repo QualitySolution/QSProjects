@@ -10,6 +10,8 @@ namespace QSSupportLib
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		public static BaseParam BaseParameters;
 
+		private static ErrorMsg currentCrashDlg;
+
 		private static AppVersion projectVerion;
 
 		public static AppVersion ProjectVerion {
@@ -132,11 +134,22 @@ namespace QSSupportLib
 			return ((AssemblyTitleAttribute)att [0]).Title;
 		}
 
-		static void HandleRunErrorMessageDlg (object sender, QSProjectsLib.QSMain.RunErrorMessageDlgEventArgs e)
+		static void HandleRunErrorMessageDlg (object sender, QSMain.RunErrorMessageDlgEventArgs e)
 		{
-			ErrorMsg md = new QSSupportLib.ErrorMsg (e.ParentWindow, e.Exception, e.UserMessage);
-			md.Run ();
-			md.Destroy ();
+			if(currentCrashDlg != null)
+			{
+				logger.Debug ("Добавляем исключение в уже созданное окно.");
+				currentCrashDlg.AddAnotherException (e.Exception, e.UserMessage);
+			}
+			else
+			{
+				logger.Debug ("Создание окна отправки отчета о падении.");
+				currentCrashDlg = new ErrorMsg (e.ParentWindow, e.Exception, e.UserMessage);
+				currentCrashDlg.Run ();
+				currentCrashDlg.Destroy ();
+				currentCrashDlg = null;
+				logger.Debug ("Окно отправки отчета, уничтожено.");
+			}
 		}
 
 		public static void LoadBaseParameters ()
