@@ -23,7 +23,7 @@ namespace QSBanks
 
 		GenericObservableList<Account> observableAccounts;
 		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
-		public GenericObservableList<Account> ObservableAccounts {
+		public virtual GenericObservableList<Account> ObservableAccounts {
 			get {
 				if (observableAccounts == null)
 				{
@@ -60,7 +60,7 @@ namespace QSBanks
 			}
 		}
 
-		public void AddAccount(Account account)
+		public virtual void AddAccount(Account account)
 		{
 			ObservableAccounts.Add (account);
 		}

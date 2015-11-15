@@ -12,7 +12,7 @@
 	 	<property name="City" column="city" />
 	 	<property name="Deleted" column="deleted" />
  	</class>
- 	<class name="Account" lazy="false" table="accounts">
+ 	<class name="Account" table="accounts">
 		<id name="Id" column="id">
 			<generator class="native"></generator>
 	 	</id>

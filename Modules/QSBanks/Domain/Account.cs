@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QSOrmProject;
+using System.Collections.Generic;
 
 namespace QSBanks
 {
@@ -80,7 +81,7 @@ namespace QSBanks
 
 		#region IValidatableObject implementation
 
-		public System.Collections.Generic.IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
+		public virtual IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
 		{
 			if (!new Regex (@"^[0-9]*$").IsMatch (Number))
 				yield return new ValidationResult ("Номер счета может содержать только цифры.", new[]{ "Number" });
