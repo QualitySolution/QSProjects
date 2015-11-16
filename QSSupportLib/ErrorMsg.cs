@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Gtk;
 using QSProjectsLib;
 using System.Text.RegularExpressions;
@@ -12,7 +13,7 @@ namespace QSSupportLib
 	public partial class ErrorMsg : Gtk.Dialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		List<Exception> AppExceptions;
+		List<Exception> AppExceptions = new List<Exception> ();
 		string message;
 
 		protected string AppExceptionText
