@@ -13,9 +13,21 @@ namespace QSUpdater.DB
 
 		static readonly List<UpdateHop> microUpdates = new List<UpdateHop>();
 
+		static readonly List<UpdateHop> updates = new List<UpdateHop>();
+
 		public static void AddMicroUpdate( Version source, Version destination, string scriptResource)
 		{
 			microUpdates.Add(new UpdateHop
+				{
+					Source = source,
+					Destanation = destination,
+					Resource = scriptResource
+				});
+		}
+
+		public static void AddUpdate( Version source, Version destination, string scriptResource)
+		{
+			updates.Add(new UpdateHop
 				{
 					Source = source,
 					Destanation = destination,
@@ -36,7 +48,7 @@ namespace QSUpdater.DB
 			while(microUpdates.Exists(u => u.Source == currentDB))
 			{
                 if (!QSMain.User.Admin)
-                    NotAdminErrorAndExit();
+					NotAdminErrorAndExit(true);
                 var update = microUpdates.Find(u => u.Source == currentDB);
 				logger.Info("Обновляемся до {0}", StringWorks.VersionToShortString(update.Destanation));
 				var trans = QSMain.ConnectionDB.BeginTransaction();
@@ -74,21 +86,54 @@ namespace QSUpdater.DB
 				);
 		}
 
-        private static void NotAdminErrorAndExit()
+        private static void NotAdminErrorAndExit(bool isMicro)
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
                 MessageType.Error, 
                 ButtonsType.Close,
-                "Для работы текущей версии программы необходимо провести микро обновление базы, " +
-                "но у вас нет для этого прав. Зайдите в программу под администратором.");
+				String.Format (
+					"Для работы текущей версии программы необходимо провести{0} обновление базы, " +
+					"но у вас нет для этого прав. Зайдите в программу под администратором.",
+					isMicro ? " микро" : ""
+				));
             md.Show ();
             md.Run ();
             md.Destroy ();
             Environment.Exit(1);
         }
+
+		public static bool TryUpdates()
+		{
+			logger.Debug (System.Reflection.Assembly.GetCallingAssembly().FullName);
+			Version currentDB = Version.Parse(MainSupport.BaseParameters.Version);
+			var appVersion = MainSupport.ProjectVerion.Version;
+			if (currentDB.Major == appVersion.Major && currentDB.Minor == appVersion.Minor)
+			{
+				logger.Warn ("Обновление не требуется.");
+				return true;
+			}
+
+			var update = updates.Find(u => u.Source == currentDB);
+			if(update != null)
+			{
+				if (!QSMain.User.Admin)
+					NotAdminErrorAndExit(false);
+
+				var dlg = new DBUpdateProcess (update);
+				dlg.Show ();
+				dlg.Run ();
+				if(!dlg.Success)
+					Environment.Exit(1);
+				dlg.Destroy ();
+
+				MainSupport.LoadBaseParameters ();
+				if (appVersion.Major != update.Destanation.Major && appVersion.Minor != update.Destanation.Minor)
+					TryUpdates ();
+			}
+		}
 	}
 
-	class UpdateHop
+	public class UpdateHop
 	{
 		public Version Source;
 		public Version Destanation;
