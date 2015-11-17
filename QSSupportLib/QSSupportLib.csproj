@@ -68,6 +68,7 @@
     <Compile Include="SerialEncoding\SNEncoder.cs" />
     <Compile Include="Dialogs\ApplicationConfigDialog.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ApplicationConfigDialog.cs" />
+    <Compile Include="CheckBaseVersion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
