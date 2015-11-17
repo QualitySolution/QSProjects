@@ -106,9 +106,9 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSUpdater.DB.DBUpdateProcess" design-size="486 203">
+  <widget class="Gtk.Dialog" id="QSUpdater.DB.DBUpdateProcess" design-size="486 165">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">Выполнение обновления базы</property>
+    <property name="Title" translatable="yes">Обновления базы данных</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
@@ -119,7 +119,7 @@
         <child>
           <widget class="Gtk.Label" id="label1">
             <property name="MemberName" />
-            <property name="LabelProp" translatable="yes">Обновление базы до следующей версии приведет к невозможности использовать базу с предыдущей версией программы. Нужно будет обновить программу так же на других компьютерах. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.</property>
+            <property name="LabelProp" translatable="yes">После обновления базы, предыдущие версии программы не будут работать. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.</property>
             <property name="Wrap">True</property>
           </widget>
           <packing>
