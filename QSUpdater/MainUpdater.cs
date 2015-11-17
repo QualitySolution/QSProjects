@@ -19,7 +19,7 @@ namespace QSUpdater
 
 			if(CheckBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater && updateApp)
 			{
-				CheckUpdate.StartCheckUpdateThread (UpdaterFlags.ShowAnyway | UpdaterFlags.UpdateRequired);
+				CheckUpdate.StartCheckUpdateThread (UpdaterFlags.None);
 			}
 
 			if(CheckBaseVersion.ResultFlags != CheckBaseResult.Ok)
