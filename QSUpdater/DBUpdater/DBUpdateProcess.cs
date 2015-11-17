@@ -44,7 +44,7 @@ namespace QSUpdater.DB
 						return;
 				}
 
-				logger.Info("Обновяем базу данных до версии {0}", StringWorks.VersionToShortString(updateHop.Destanation));
+				logger.Info("Обновляем базу данных до версии {0}", StringWorks.VersionToShortString(updateHop.Destanation));
 				logger.Info ("Проверяем все ли микро обновления установленны.");
 				ExecuteMicroUpdates ();
 
@@ -97,6 +97,7 @@ namespace QSUpdater.DB
 					if (!Directory.Exists (dir))
 						Directory.CreateDirectory (dir);
 
+					logger.Debug (entryFileName.Text);
 					mb.ExportProgressChanged += Mb_ExportProgressChanged;
 					mb.ExportToFile(entryFileName.Text);
 				}
