@@ -42,6 +42,7 @@
     <Compile Include="DBUpdater\DBUpdater.cs" />
     <Compile Include="DBUpdater\DBUpdateProcess.cs" />
     <Compile Include="gtk-gui\QSUpdater.DB.DBUpdateProcess.cs" />
+    <Compile Include="MainUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />

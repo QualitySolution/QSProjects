@@ -9,7 +9,6 @@ using System.Net;
 using NLog;
 using System.Diagnostics;
 using System.IO;
-using System.ComponentModel;
 
 namespace QSUpdater
 {

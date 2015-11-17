@@ -11,9 +11,9 @@ namespace QSUpdater.DB
 	{
 		static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		static readonly List<UpdateHop> microUpdates = new List<UpdateHop>();
+		internal static readonly List<UpdateHop> microUpdates = new List<UpdateHop>();
 
-		static readonly List<UpdateHop> updates = new List<UpdateHop>();
+		internal static readonly List<UpdateHop> updates = new List<UpdateHop>();
 
 		public static void AddMicroUpdate( Version source, Version destination, string scriptResource)
 		{
@@ -102,16 +102,13 @@ namespace QSUpdater.DB
             Environment.Exit(1);
         }
 
-		public static bool TryUpdates()
+		public static void TryUpdate()
 		{
 			logger.Debug (System.Reflection.Assembly.GetCallingAssembly().FullName);
 			Version currentDB = Version.Parse(MainSupport.BaseParameters.Version);
 			var appVersion = MainSupport.ProjectVerion.Version;
 			if (currentDB.Major == appVersion.Major && currentDB.Minor == appVersion.Minor)
-			{
-				logger.Warn ("Обновление не требуется.");
-				return true;
-			}
+				return;
 
 			var update = updates.Find(u => u.Source == currentDB);
 			if(update != null)
@@ -128,7 +125,11 @@ namespace QSUpdater.DB
 
 				MainSupport.LoadBaseParameters ();
 				if (appVersion.Major != update.Destanation.Major && appVersion.Minor != update.Destanation.Minor)
-					TryUpdates ();
+					TryUpdate ();
+			}
+			else
+			{
+				logger.Error ("Версия базы не соответствует программе, но обновление не найдено");
 			}
 		}
 	}
