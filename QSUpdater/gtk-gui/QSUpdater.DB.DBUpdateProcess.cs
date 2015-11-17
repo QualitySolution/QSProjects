@@ -6,7 +6,17 @@ namespace QSUpdater.DB
 	{
 		private global::Gtk.Label label1;
 		
-		private global::Gtk.ProgressBar progressbar1;
+		private global::Gtk.CheckButton checkCreateBackup;
+		
+		private global::Gtk.HBox hbox1;
+		
+		private global::Gtk.Entry entryFileName;
+		
+		private global::Gtk.Button buttonFileChooser;
+		
+		private global::Gtk.ProgressBar progressbarTotal;
+		
+		private global::Gtk.ProgressBar progressbarOperation;
 		
 		private global::Gtk.Expander expander1;
 		
@@ -25,7 +35,7 @@ namespace QSUpdater.DB
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSUpdater.DB.DBUpdateProcess
 			this.Name = "QSUpdater.DB.DBUpdateProcess";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Выполнение обновления базы");
+			this.Title = global::Mono.Unix.Catalog.GetString ("Обновления базы данных");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child QSUpdater.DB.DBUpdateProcess.VBox
 			global::Gtk.VBox w1 = this.VBox;
@@ -34,7 +44,7 @@ namespace QSUpdater.DB
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Обновление базы до следующей версии приведет к невозможности использовать базу с предыдущей версией программы. Нужно будет обновить программу так же на других компьютерах. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.");
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("После обновления базы, предыдущие версии программы не будут работать. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.");
 			this.label1.Wrap = true;
 			w1.Add (this.label1);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.label1]));
@@ -42,13 +52,66 @@ namespace QSUpdater.DB
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.progressbar1 = new global::Gtk.ProgressBar ();
-			this.progressbar1.Name = "progressbar1";
-			w1.Add (this.progressbar1);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1 [this.progressbar1]));
+			this.checkCreateBackup = new global::Gtk.CheckButton ();
+			this.checkCreateBackup.CanFocus = true;
+			this.checkCreateBackup.Name = "checkCreateBackup";
+			this.checkCreateBackup.Label = global::Mono.Unix.Catalog.GetString ("Создать резервную копию перед обновлением");
+			this.checkCreateBackup.Active = true;
+			this.checkCreateBackup.DrawIndicator = true;
+			this.checkCreateBackup.UseUnderline = true;
+			w1.Add (this.checkCreateBackup);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(w1 [this.checkCreateBackup]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.hbox1 = new global::Gtk.HBox ();
+			this.hbox1.Name = "hbox1";
+			this.hbox1.Spacing = 6;
+			this.hbox1.BorderWidth = ((uint)(6));
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.entryFileName = new global::Gtk.Entry ();
+			this.entryFileName.CanFocus = true;
+			this.entryFileName.Name = "entryFileName";
+			this.entryFileName.IsEditable = false;
+			this.entryFileName.InvisibleChar = '●';
+			this.hbox1.Add (this.entryFileName);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.entryFileName]));
+			w4.Position = 0;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.buttonFileChooser = new global::Gtk.Button ();
+			this.buttonFileChooser.CanFocus = true;
+			this.buttonFileChooser.Name = "buttonFileChooser";
+			this.buttonFileChooser.UseUnderline = true;
+			global::Gtk.Image w5 = new global::Gtk.Image ();
+			w5.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-directory", global::Gtk.IconSize.Menu);
+			this.buttonFileChooser.Image = w5;
+			this.hbox1.Add (this.buttonFileChooser);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonFileChooser]));
+			w6.Position = 1;
+			w6.Expand = false;
+			w6.Fill = false;
+			w1.Add (this.hbox1);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
+			w7.Position = 2;
+			w7.Expand = false;
+			w7.Fill = false;
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.progressbarTotal = new global::Gtk.ProgressBar ();
+			this.progressbarTotal.Name = "progressbarTotal";
+			w1.Add (this.progressbarTotal);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(w1 [this.progressbarTotal]));
+			w8.Position = 3;
+			w8.Expand = false;
+			w8.Fill = false;
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.progressbarOperation = new global::Gtk.ProgressBar ();
+			this.progressbarOperation.Name = "progressbarOperation";
+			w1.Add (this.progressbarOperation);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(w1 [this.progressbarOperation]));
+			w9.Position = 4;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.expander1 = new global::Gtk.Expander (null);
 			this.expander1.CanFocus = true;
@@ -70,14 +133,14 @@ namespace QSUpdater.DB
 			this.GtkLabel2.UseUnderline = true;
 			this.expander1.LabelWidget = this.GtkLabel2;
 			w1.Add (this.expander1);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1 [this.expander1]));
-			w6.Position = 2;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(w1 [this.expander1]));
+			w12.Position = 5;
 			// Internal child QSUpdater.DB.DBUpdateProcess.ActionArea
-			global::Gtk.HButtonBox w7 = this.ActionArea;
-			w7.Name = "dialog1_ActionArea";
-			w7.Spacing = 10;
-			w7.BorderWidth = ((uint)(5));
-			w7.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w13 = this.ActionArea;
+			w13.Name = "dialog1_ActionArea";
+			w13.Spacing = 10;
+			w13.BorderWidth = ((uint)(5));
+			w13.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -87,9 +150,9 @@ namespace QSUpdater.DB
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w8 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w7 [this.buttonCancel]));
-			w8.Expand = false;
-			w8.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w14 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w13 [this.buttonCancel]));
+			w14.Expand = false;
+			w14.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -98,17 +161,20 @@ namespace QSUpdater.DB
 			this.buttonOk.UseStock = true;
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-execute";
-			w7.Add (this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w9 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w7 [this.buttonOk]));
-			w9.Position = 1;
-			w9.Expand = false;
-			w9.Fill = false;
+			w13.Add (this.buttonOk);
+			global::Gtk.ButtonBox.ButtonBoxChild w15 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w13 [this.buttonOk]));
+			w15.Position = 1;
+			w15.Expand = false;
+			w15.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 486;
-			this.DefaultHeight = 203;
+			this.DefaultHeight = 381;
+			this.progressbarOperation.Hide ();
 			this.Show ();
+			this.checkCreateBackup.Toggled += new global::System.EventHandler (this.OnCheckCreateBackupToggled);
+			this.buttonFileChooser.Clicked += new global::System.EventHandler (this.OnButtonFileChooserClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
