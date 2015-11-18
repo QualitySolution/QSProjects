@@ -8,14 +8,16 @@ namespace QSReport
 {
 	public class ReportInfo
 	{
-		public string Identifier { get; set;}
+		public string Identifier { get; set; }
 
-		public string Title { get; set;}
+		public string Title { get; set; }
 
 		public Dictionary<string, object> Parameters;
 
-		public string GetPath()
+		public string GetPath ()
 		{
+			if (!String.IsNullOrWhiteSpace (Path))
+				return Path;
 			var splited = Identifier.Split ('.').ToList ();
 			var ReportName = splited.Last ();
 			splited.RemoveAt (splited.Count - 1);
@@ -27,18 +29,19 @@ namespace QSReport
 			return System.IO.Path.Combine (parts.ToArray ());
 		}
 
-		public Uri GetReportUri()
+		public Uri GetReportUri ()
 		{
-			return new Uri(GetPath ());
+			return new Uri (GetPath ());
 		}
 
-		public string GetParametersString()
+		public string Path { get; set; }
+
+		public string GetParametersString ()
 		{
 			if (Parameters == null)
 				return String.Empty;
 			var parametersBuild = new DBWorks.SQLHelper ();
-			foreach(var param in Parameters)
-			{
+			foreach (var param in Parameters) {
 				string value;
 				if (param.Value is IEnumerable)
 					value = BuildMiltiValue (param.Value as IEnumerable);
@@ -50,18 +53,17 @@ namespace QSReport
 			return parametersBuild.Text;
 		}
 
-		private string BuildMiltiValue(IEnumerable values)
+		private string BuildMiltiValue (IEnumerable values)
 		{
 			var valuesBuild = new DBWorks.SQLHelper ();
 
-			foreach(var value in values)
-			{
+			foreach (var value in values) {
 				valuesBuild.AddAsList (ValueToValidString (value), ",");
 			}
 			return valuesBuild.Text;
 		}
 
-		private string ValueToValidString(object value)
+		private string ValueToValidString (object value)
 		{
 			if (value is DateTime)
 				return ((DateTime)value).ToString ("O");
