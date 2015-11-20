@@ -24,6 +24,7 @@
         <property name="ItemsEnumName" />
         <property name="ShowSpecialStateAll" />
         <property name="ShowSpecialStateNot" />
+        <property name="UseShortTitle" />
       </itemgroup>
     </itemgroups>
     <signals>

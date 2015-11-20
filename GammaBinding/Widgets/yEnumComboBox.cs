@@ -125,6 +125,19 @@ namespace Gamma.Widgets
 			}
 		}
 
+		bool useShortTitle;
+
+		[Browsable (true)]
+		public bool UseShortTitle {
+			get {
+				return useShortTitle;
+			}
+			set {
+				useShortTitle = value;
+				ResetLayout ();
+			}
+		}
+
 		bool showSpecialStateAll;
 
 		[Browsable (true)]
@@ -199,7 +212,7 @@ namespace Gamma.Widgets
 				return;
 			if (fieldsToHide.Contains (info.GetValue (null)))
 				return;
-			string item = info.GetEnumTitle ();
+			string item = UseShortTitle ? info.GetShortTitle () : info.GetEnumTitle ();
 			comboListStore.AppendValues (item, info.GetValue (null));
 		}
 
