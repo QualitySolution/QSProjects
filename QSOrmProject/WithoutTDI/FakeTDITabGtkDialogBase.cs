@@ -17,13 +17,14 @@ namespace QSOrmProject
 
 		private string tabName = String.Empty;
 
-		public string TabName {
+		public virtual string TabName {
 			get { return tabName;
 			}
 			set {
 				if (tabName == value)
 					return;
 				tabName = value;
+				Title = TabName;
 				OnTabNameChanged ();
 			}
 		}
