@@ -50,7 +50,6 @@ namespace QSSupportLib
 			return true;
 		}
 
-		[Obsolete("Используйте вместо этой проверки класс CheckBaseVersion. (Удалить после 17.11.16)")]
 		public static void TestVersion (Window Parent)
 		{
 			if (CheckBaseVersion.Check ()) {
