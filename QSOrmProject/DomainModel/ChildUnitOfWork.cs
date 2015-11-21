@@ -118,6 +118,11 @@ namespace QSOrmProject
 			}
 		}
 
+		public void TrySave(object entity)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void Save ()
 		{
 			Save (Root);

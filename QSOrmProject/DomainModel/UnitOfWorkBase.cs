@@ -93,6 +93,17 @@ namespace QSOrmProject
 				entityToSave.Add (entity);
 		}
 
+		public virtual void TrySave(object entity)
+		{
+			if(transaction == null)
+				transaction = Session.BeginTransaction();
+
+			Session.SaveOrUpdate(entity);
+
+			if (!entityToSave.Contains (entity))
+				entityToSave.Add (entity);
+		}
+
 		public void Delete<T>(int id) where T : IDomainObject
 		{
 			Delete(Session.Load<T>(id));

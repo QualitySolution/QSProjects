@@ -17,6 +17,12 @@ namespace QSOrmProject
 		void Save<TEntity>(TEntity entity) where TEntity : IDomainObject;
 		void Save();
 
+		/// <summary>
+		/// Пытаемся сохранить сущность в виде объекта, без указания типа сущности.
+		/// По возможности используйте дженерик метод Save().
+		/// </summary>
+		void TrySave(object entity);
+
 		T GetById<T>(int id) where T : IDomainObject;
 
 		object GetById(Type clazz, int id);
