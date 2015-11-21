@@ -74,6 +74,25 @@ namespace QSOrmProject
 			Sessions = fluenConfig.BuildSessionFactory ();
 		}
 
+		/// <summary>
+		/// Настройка Nhibernate только с Fluent конфигураций.
+		/// </summary>
+		/// <param name="connectionString">Connection string.</param>
+		/// <param name="assemblies">Assemblies.</param>
+		public static void ConfigureOrm (FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies)
+		{
+			fluenConfig = Fluently.Configure ().Database(database);
+
+			fluenConfig.Mappings (m => {
+				foreach (var ass in assemblies)
+				{
+					m.FluentMappings.AddFromAssembly (ass);
+				}
+			});
+
+			Sessions = fluenConfig.BuildSessionFactory ();
+		}
+
 		public static Type GetDialogType (System.Type objectClass)
 		{
 			if (ClassMappingList == null)
