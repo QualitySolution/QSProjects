@@ -45,4 +45,8 @@
       </itemgroup>
     </signals>
   </object>
+  <object type="Gamma.GtkWidgets.yEntry" palette-category="Gamma Gtk" allow-children="false" icon="entry.png" base-type="Gtk.Entry">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Gamma.Binding</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,6 +82,7 @@
     <Compile Include="Core\IBindingBridgeInternal.cs" />
     <Compile Include="GtkWidgets\ySpinButton.cs" />
     <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="GtkWidgets\yEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -123,6 +127,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="icons\combo.png">
       <LogicalName>combo.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\entry.png">
+      <LogicalName>entry.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
