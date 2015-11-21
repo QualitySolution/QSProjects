@@ -109,7 +109,6 @@
     <Compile Include="DomainModel\IBusinessObject.cs" />
     <Compile Include="DomainModel\BusinessObjectBase.cs" />
     <Compile Include="DomainModel\UnitOfWorkBase.cs" />
-    <Compile Include="DataWidgets\DataLegalName.cs" />
     <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
     <Compile Include="yWidgets\ySpecComboBox.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="WithoutTDI\FakeTDITabGtkWindowBase.cs" />
     <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
     <Compile Include="yWidgets\yImageViewer.cs" />
+    <Compile Include="yWidgets\yLegalName.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

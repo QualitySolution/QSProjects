@@ -6,13 +6,13 @@ using QSWidgetLib;
 namespace QSOrmProject
 {
 	[ToolboxItem (true)]
-	public class DataLegalName : LegalName
+	public class yLegalName : LegalName
 	{
-		public BindingControler<DataLegalName> Binding { get; private set;}
+		public BindingControler<yLegalName> Binding { get; private set;}
 
-		public DataLegalName ()
+		public yLegalName ()
 		{
-			Binding = new BindingControler<DataLegalName> (this, new string[]{
+			Binding = new BindingControler<yLegalName> (this, new string[]{
 				this.GetPropertyName (w => w.OwnName),
 				this.GetPropertyName (w => w.Ownership),
 				this.GetPropertyName (w => w.FullName)
