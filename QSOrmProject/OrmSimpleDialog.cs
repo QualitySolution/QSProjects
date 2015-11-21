@@ -12,21 +12,19 @@ namespace QSOrmProject
 
 		public static void RunSimpleDialog(Window parent, System.Type objectType, object editObject)
 		{
-			using (ISession dialogSession = OrmMain.Sessions.OpenSession())
+			using (IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot ())
 			{
 				//Создаем объект редактирования
 				object tempObject;
 				if(editObject == null)
 				{
-					System.Reflection.ConstructorInfo ci = objectType.GetConstructor(new Type[] { });
-					tempObject = ci.Invoke(new object[] { });
-					dialogSession.Persist (tempObject);
+					tempObject = Activator.CreateInstance (objectType);
 				}
 				else
 				{
 					if(editObject is IDomainObject)
 					{
-						tempObject = dialogSession.Load(objectType, (editObject as IDomainObject).Id);
+						tempObject = uow.GetById(objectType, (editObject as IDomainObject).Id);
 					}
 					else
 					{
@@ -56,7 +54,8 @@ namespace QSOrmProject
 				int result = editDialog.Run();
 				if(result == (int)ResponseType.Ok)
 				{ 
-					dialogSession.Flush();
+					uow.TrySave (tempObject);
+					uow.Commit ();
 					OrmMain.NotifyObjectUpdated(tempObject);
 				}
 				editDialog.Destroy();
