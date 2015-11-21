@@ -22,10 +22,16 @@ namespace QSWidgetLib
 		}
 
 		private Pixbuf ResizedPixbuf;
+
+		[Obsolete("Используйте Pixbuf. (Будет удалено после 21.11.16)")]
+		public Pixbuf pixbuf{
+			get{ return Pixbuf;	}
+			set{ Pixbuf = value; }
+		}
 			
 		Pixbuf _pixbuf;
 		[GLib.Property ("pixbuf", "Get/Set pixbuf", "This is the description")]
-		public Pixbuf pixbuf
+		public Pixbuf Pixbuf
 		{
 			get {
 				return _pixbuf;
@@ -34,7 +40,25 @@ namespace QSWidgetLib
 				if (_pixbuf == value)
 					return;
 				_pixbuf = value;
+				ResizedPixbuf = null;
 				OnSizeAllocated(this.Allocation);
+				QueueDraw ();
+			}
+		}
+			
+		private byte[] imageFile;
+		/// <summary>
+		/// Файл в виде массива байт с изображением в формате который поддерживает Pixbuf.
+		/// </summary>
+		/// <value>The image file.</value>
+		public byte[] ImageFile{
+			get{ return imageFile;
+			}
+			set{
+				if (imageFile == value)
+					return;
+				imageFile = value;
+				Pixbuf = new Pixbuf(imageFile);
 			}
 		}
 
