@@ -129,6 +129,8 @@
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkWindowBase.cs" />
+    <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
+    <Compile Include="yWidgets\yImageViewer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -153,10 +155,6 @@
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
-      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
-      <Name>QSTDI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
@@ -164,6 +162,10 @@
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
       <Name>GammaBinding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
+      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
+      <Name>QSTDI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ namespace QSOrmProject
 	/// </summary>
 	[ToolboxItem (true)]
 	[Category ("Databound Widgets")]
+	[Obsolete("Используйте аналог yImageViewer на Gamma Binding, этот виджет не будет поддерживаться и будет удален просле 21.11.2016.")]
 	//[GtkWidgetFactoryProvider ("pixbuf", "DefaultFactoryCreate")]
 	//[GtkWidgetFactoryProvider ("picture", "DefaultFactoryCreate")]
 	//[GtkTypeWidgetFactoryProvider ("picturehandler", "DefaultFactoryCreate", typeof(Gdk.Pixbuf))]
