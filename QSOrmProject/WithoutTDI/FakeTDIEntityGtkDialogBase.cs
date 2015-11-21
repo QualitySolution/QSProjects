@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Data.Bindings;
-using Gtk;
-using QSProjectsLib;
 using QSTDI;
-using System.ComponentModel;
 using System.Linq;
+using QSProjectsLib;
+using System.ComponentModel;
 
 namespace QSOrmProject
 {
-	public abstract class OrmGtkDialogBase<TEntity> : Bin, ITdiDialog, IOrmDialog
+	public abstract class FakeTDIEntityGtkDialogBase<TEntity> : FakeTDITabGtkDialogBase, ITdiDialog, IOrmDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {
@@ -28,7 +26,7 @@ namespace QSOrmProject
 			protected set
 			{
 				uowGeneric = value;
-				subjectAdaptor.Target = UoWGeneric.Root;
+				Title = TabName;
 				OnTabNameChanged();
 			}
 		}
@@ -55,13 +53,11 @@ namespace QSOrmProject
 		public TEntity Entity {
 			get { return UoWGeneric.Root; }
 		}
-			
-		private string tabName = String.Empty;
 
 		public string TabName {
 			get {
-				if(!String.IsNullOrWhiteSpace(tabName))
-					return tabName;
+				if(!String.IsNullOrWhiteSpace(base.TabName))
+					return TabName;
 				if (UoW != null && UoW.RootObject != null)
 				{
 					var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
@@ -72,14 +68,14 @@ namespace QSOrmProject
 						if (subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
 						{
 							switch(subAtt.AllNames.Gender){
-								case GrammaticalGender.Masculine: 
-									return "Новый " + subAtt.ObjectName;
-								case GrammaticalGender.Feminine :
-									return "Новая " + subAtt.ObjectName;
-								case GrammaticalGender.Neuter :
-									return "Новое " + subAtt.ObjectName;
-								default:
-									return "Новый(ая) " + subAtt.ObjectName;
+							case GrammaticalGender.Masculine: 
+								return "Новый " + subAtt.ObjectName;
+							case GrammaticalGender.Feminine :
+								return "Новая " + subAtt.ObjectName;
+							case GrammaticalGender.Neuter :
+								return "Новое " + subAtt.ObjectName;
+							default:
+								return "Новый(ая) " + subAtt.ObjectName;
 							}
 						}
 					}
@@ -114,10 +110,9 @@ namespace QSOrmProject
 				return String.Empty;
 			}
 			set {
-				if (tabName == value)
+				if (base.TabName == value)
 					return;
-				tabName = value;
-				OnTabNameChanged();
+				base.TabName = value;
 			}
 
 		}
@@ -125,32 +120,22 @@ namespace QSOrmProject
 		void Subject_NamePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "Name")
+			{
+				Title = TabName;
 				OnTabNameChanged ();
+			}
 		}
 
 		void Subject_TitlePropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "Title")
+			{
+				Title = TabName;
 				OnTabNameChanged ();
+			}
 		}
 
 		public abstract bool Save ();
-
-		public ITdiTabParent TabParent { set; get; }
-
-		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
-
-		public bool FailInitialize { get; protected set;}
-
-		protected void OnCloseTab (bool askSave)
-		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
-		}
-
-		[Obsolete("Не используйте, свойство будет удалено после отключения Gtk.Bindings")]
-		protected Adaptor subjectAdaptor = new Adaptor ();
 
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
@@ -166,17 +151,10 @@ namespace QSOrmProject
 		public override void Destroy ()
 		{
 			UoWGeneric.Dispose();
-			subjectAdaptor.Disconnect ();
 			base.Destroy ();
 		}
 
-		protected void OnTabNameChanged()
-		{
-			if (TabNameChanged != null)
-				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
-		}
-
-		public OrmGtkDialogBase()
+		public FakeTDIEntityGtkDialogBase ()
 		{
 		}
 	}
