@@ -157,9 +157,10 @@ namespace Gamma.Binding.Core
 			where TSource : class, INotifyPropertyChanged
 		{
 			BindingSource<TSource, TWidget> bSource = Sources.Find (s => s.DataSourceObject == source) as BindingSource<TSource, TWidget>;
-			if(bSource == null)
+			if (bSource == null) {
 				bSource = new BindingSource<TSource, TWidget> (this, source);
-			Sources.Add (bSource);
+				Sources.Add (bSource);
+			}
 			return bSource;
 		}
 
