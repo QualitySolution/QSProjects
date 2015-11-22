@@ -145,6 +145,14 @@ namespace Gamma.Binding.Core
 			return sourceControl;
 		}
 
+		public BindingSource<TSource, TWidget> AddBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty, IValueConverter converter)
+			where TSource : class, INotifyPropertyChanged
+		{
+			var sourceControl = AddSource (source);
+			sourceControl.AddBinding (sourceProperty, targetProperty, converter);
+			return sourceControl;
+		}
+
 		public BindingSource<TSource, TWidget> AddFuncBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)
 			where TSource : class, INotifyPropertyChanged
 		{

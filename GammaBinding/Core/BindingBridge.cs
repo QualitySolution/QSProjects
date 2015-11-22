@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Globalization;
 
 namespace Gamma.Binding.Core
 {
@@ -8,6 +9,9 @@ namespace Gamma.Binding.Core
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
 		public PropertyInfo[] TargetPropertyChain { get; private set;}
+		public IValueConverter ValueConverter { get; private set;}
+		public object ConverterParameter { get; private set;}
+		public CultureInfo ConverterCulture { get; private set;}
 
 		internal IBindingSourceInternal MyBindingSource { get; private set;}
 
@@ -21,6 +25,19 @@ namespace Gamma.Binding.Core
 		public string TargetPropertyName{
 			get { return String.Join (".", TargetPropertyChain.Select (p => p.Name));
 			}
+		}
+
+		internal BindingBridge (IBindingSourceInternal source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain, IValueConverter converter)
+			: this(source, sourcePropery, targetProperyChain)
+		{
+			ValueConverter = converter;
+		}
+
+		internal BindingBridge (IBindingSourceInternal source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain, IValueConverter converter, object converterParameter, CultureInfo converterCulture)
+			: this(source, sourcePropery, targetProperyChain, converter)
+		{
+			ConverterParameter = converterParameter;
+			ConverterCulture = converterCulture;
 		}
 
 		internal BindingBridge (IBindingSourceInternal source, PropertyInfo sourcePropery, PropertyInfo[] targetProperyChain)
@@ -44,19 +61,36 @@ namespace Gamma.Binding.Core
 		void IBindingBridgeInternal.SourcePropertyUpdated (string propertyName, object source)
 		{
 			if(SourcePropertyName == propertyName)
-				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, SourcePropertyInfo.GetValue (source, null));
+			{
+				MyBindingSource.Controler.TargetSetValue (TargetPropertyChain, (this as IBindingBridgeInternal).GetValueFromSource (source));
+			}
 		}
 
 		object IBindingBridgeInternal.GetValueFromSource (object sourceObject)
 		{
-			return SourcePropertyInfo.GetValue (sourceObject, null);
+			if(ValueConverter != null)
+				return ValueConverter.Convert (
+					SourcePropertyInfo.GetValue (sourceObject, null),
+					TargetPropertyChain.Last ().PropertyType,
+					ConverterParameter,
+					ConverterCulture ?? CultureInfo.CurrentUICulture
+					);
+			else
+				return SourcePropertyInfo.GetValue (sourceObject, null);
 		}
 
 		bool IBindingBridgeInternal.SetValueToSource (object sourceObject, object value)
 		{
-			if(SourcePropertyInfo.GetValue (sourceObject, null) != value)
+			object prepared = ValueConverter == null ? value
+				: ValueConverter.ConvertBack ( value,
+					SourcePropertyInfo.PropertyType,
+					ConverterParameter,
+					ConverterCulture ?? CultureInfo.CurrentUICulture
+				);
+
+			if(SourcePropertyInfo.GetValue (sourceObject, null) != prepared)
 			{
-				SourcePropertyInfo.SetValue (sourceObject, value, null);
+				SourcePropertyInfo.SetValue (sourceObject, prepared, null);
 				return true;
 			}
 			return false;

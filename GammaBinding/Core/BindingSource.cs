@@ -129,11 +129,35 @@ namespace Gamma.Binding.Core
 			return myControler.AddBinding (source, sourceProperty, targetProperty);
 		}
 
+		public BindingSource<TNewSource, TTarget> AddBinding<TNewSource>(TNewSource source, Expression<Func<TNewSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty, IValueConverter converter)
+			where TNewSource : class, INotifyPropertyChanged
+		{
+			return myControler.AddBinding (source, sourceProperty, targetProperty, converter);
+		}
+
 		public BindingSource<TSource, TTarget> AddBinding(Expression<Func<TSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty)
 		{
 			PropertyInfo sourceInfo = PropertyUtil.GetPropertyInfo (sourceProperty);
 			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
 			Bridges.Add (new BindingBridge(this, sourceInfo, targetInfo));
+
+			return this;
+		}
+
+		public BindingSource<TSource, TTarget> AddBinding(Expression<Func<TSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty, IValueConverter converter)
+		{
+			PropertyInfo sourceInfo = PropertyUtil.GetPropertyInfo (sourceProperty);
+			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
+			Bridges.Add (new BindingBridge(this, sourceInfo, targetInfo, converter));
+
+			return this;
+		}
+
+		public BindingSource<TSource, TTarget> AddBinding(Expression<Func<TSource, object>> sourceProperty, Expression<Func<TTarget, object>> targetProperty, IValueConverter converter, object converterParameter, System.Globalization.CultureInfo converterCulture)
+		{
+			PropertyInfo sourceInfo = PropertyUtil.GetPropertyInfo (sourceProperty);
+			PropertyInfo[] targetInfo = PropertyChainFromExp.Get (targetProperty.Body);
+			Bridges.Add (new BindingBridge(this, sourceInfo, targetInfo, converter, converterParameter, converterCulture));
 
 			return this;
 		}

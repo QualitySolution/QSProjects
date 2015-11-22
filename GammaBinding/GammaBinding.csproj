@@ -83,6 +83,7 @@
     <Compile Include="GtkWidgets\ySpinButton.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="GtkWidgets\yEntry.cs" />
+    <Compile Include="Binding\IValueConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -95,6 +96,7 @@
     <Folder Include="Widgets\Additions\" />
     <Folder Include="GtkHelpers\" />
     <Folder Include="icons\" />
+    <Folder Include="Binding\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
