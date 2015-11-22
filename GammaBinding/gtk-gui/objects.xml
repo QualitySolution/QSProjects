@@ -50,7 +50,11 @@
     <signals />
   </object>
   <object type="Gamma.GtkWidgets.yComboBox" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
-    <itemgroups />
+    <itemgroups>
+      <itemgroup label="yComboBox Properties">
+        <property name="ActiveText" />
+      </itemgroup>
+    </itemgroups>
     <signals />
   </object>
 </objects>

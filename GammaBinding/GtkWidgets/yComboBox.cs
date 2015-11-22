@@ -19,6 +19,16 @@ namespace Gamma.GtkWidgets
 			});
 		}
 
+		public new string ActiveText
+		{
+			get{ return base.ActiveText;}
+			set{
+				TreeIter iter;
+				if(Gamma.GtkHelpers.ListStoreHelper.SearchListStore ((ListStore)Model, value, 0, out iter))
+					SetActiveIter (iter);
+			}
+		}
+
 		protected override void OnChanged ()
 		{
 			Binding.FireChange (w => w.Active, w => w.ActiveText);
