@@ -49,4 +49,8 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yComboBox" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

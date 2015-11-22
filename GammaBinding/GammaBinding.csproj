@@ -84,6 +84,7 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="GtkWidgets\yEntry.cs" />
     <Compile Include="Binding\IValueConverter.cs" />
+    <Compile Include="GtkWidgets\yComboBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
