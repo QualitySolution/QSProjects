@@ -23,8 +23,11 @@ namespace Gamma.GtkWidgets
 		{
 			get{ return base.ActiveText;}
 			set{
+				var list = Model as ListStore;
+				if (list == null)
+					return;
 				TreeIter iter;
-				if(Gamma.GtkHelpers.ListStoreHelper.SearchListStore ((ListStore)Model, value, 0, out iter))
+				if(Gamma.GtkHelpers.ListStoreHelper.SearchListStore (list, value, 0, out iter))
 					SetActiveIter (iter);
 			}
 		}
