@@ -178,6 +178,14 @@ namespace Gamma.Binding.Core
 			Sources.ForEach (s => s.RunInitializeFromSource());
 			FinishTargetUpdateBatch ();
 		}
+
+		public void RefreshFromSource()
+		{
+			IsTargetBatchUpdate = true;
+			Sources.ForEach (s => s.RunInitializeFromSource());
+			FinishTargetUpdateBatch ();
+		}
+
 	}
 }
 
