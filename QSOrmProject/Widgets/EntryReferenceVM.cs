@@ -36,9 +36,9 @@ namespace QSOrmProject
 			}
 		}
 
-		private IRepresentationModelGamma representationModel;
+		private IRepresentationModel representationModel;
 
-		public IRepresentationModelGamma RepresentationModel {
+		public IRepresentationModel RepresentationModel {
 			get {
 				return representationModel;
 			}

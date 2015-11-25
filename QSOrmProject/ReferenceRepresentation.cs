@@ -14,7 +14,7 @@ namespace QSOrmProject
 		private System.Type objectType;
 		private IRepresentationFilter filterWidget;
 		private DateTime searchStarted;
-		private IRepresentationModelGamma representationModel;
+		private IRepresentationModel representationModel;
 
 		public ITdiTabParent TabParent { set; get; }
 
@@ -42,7 +42,7 @@ namespace QSOrmProject
 			}
 		}
 
-		protected IRepresentationModelGamma RepresentationModel {
+		protected IRepresentationModel RepresentationModel {
 			get {
 				return representationModel;
 			}
@@ -125,7 +125,7 @@ namespace QSOrmProject
 
 		}
 
-		public ReferenceRepresentation (IRepresentationModelGamma representation)
+		public ReferenceRepresentation (IRepresentationModel representation)
 		{
 			this.Build ();
 			RepresentationModel = representation;

@@ -9,8 +9,8 @@ namespace QSOrmProject
 	{
 		bool itemsSelfSet = true;
 
-		IRepresentationModelGamma representationModel;
-		public IRepresentationModelGamma RepresentationModel {
+		IRepresentationModel representationModel;
+		public IRepresentationModel RepresentationModel {
 			get {
 				return representationModel;
 			}

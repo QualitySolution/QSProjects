@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gtk.DataBindings;
 using System.Collections;
 using System.Reflection;
+using Gamma.ColumnConfig;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -48,8 +48,7 @@ namespace QSOrmProject.RepresentationModel
 				OnSearchRefilter ();
 		}
 
-		public virtual IMappingConfig TreeViewConfig { get{ throw new NotImplementedException ();
-			} }
+		public abstract IColumnsConfig ColumnsConfig { get;}
 
 		private IRepresentationFilter representationFilter;
 
