@@ -113,7 +113,7 @@ namespace QSHistoryLog
 
 			MySqlCommand cmd = new MySqlCommand(sql, trans.Connection, trans);
 
-			cmd.Parameters.AddWithValue("@user_id", QSMain.User.id);
+			cmd.Parameters.AddWithValue("@user_id", QSMain.User.Id);
 			cmd.Parameters.AddWithValue("@operation", operation.ToString("G"));
 			cmd.Parameters.AddWithValue("@object_name", objectName);
 			cmd.Parameters.AddWithValue("@object_id", ObjectId);

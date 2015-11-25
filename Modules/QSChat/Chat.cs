@@ -160,7 +160,7 @@ namespace QSChat
 			try
 			{
 				MySqlCommand cmd = new MySqlCommand(sql, (MySqlConnection)QSMain.ConnectionDB);
-				cmd.Parameters.AddWithValue("@user_id", ChatUser.id);
+				cmd.Parameters.AddWithValue("@user_id", ChatUser.Id);
 				cmd.Parameters.AddWithValue("@text", textviewMessege.Buffer.Text);
 				cmd.ExecuteNonQuery();
 			}

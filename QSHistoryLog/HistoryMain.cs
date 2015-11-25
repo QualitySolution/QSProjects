@@ -195,10 +195,10 @@ namespace QSHistoryLog
 				}
 
 				//Обход проблемы удаления пользователем самого себя
-				if (item.ItemClass.Name == "User" && item.ItemId == QSMain.User.id)
+				if (item.ItemClass.Name == "User" && item.ItemId == QSMain.User.Id)
 					cmd.Parameters ["user_id"].Value = null;
 				else
-					cmd.Parameters ["user_id"].Value = QSMain.User.id;
+					cmd.Parameters ["user_id"].Value = QSMain.User.Id;
 
 				cmd.Parameters ["object_name"].Value = item.ItemClass.Name;
 				cmd.Parameters ["object_id"].Value = item.ItemId;
