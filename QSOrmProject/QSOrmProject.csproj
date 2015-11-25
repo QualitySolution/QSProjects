@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,16 +98,13 @@
     <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
     <Compile Include="DomainModel\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\UnitOfWork.cs" />
-    <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="gtk-gui\QSOrmProject.ReferenceRepresentation.cs" />
     <Compile Include="UpdateNotification\OrmObjectUpdatedEventArgs.cs" />
     <Compile Include="RepresentationModel\IRepresentationFilter.cs" />
     <Compile Include="RepresentationModel\RepresentationAttributies.cs" />
-    <Compile Include="Widgets\EntryReferenceVM.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReferenceVM.cs" />
     <Compile Include="DomainModel\ChildUnitOfWork.cs" />
     <Compile Include="ParentReference\ParentReferenceConfig.cs" />
-    <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
     <Compile Include="ParentReference\ParentReferenceGeneric.cs" />
     <Compile Include="DomainModel\IBusinessObject.cs" />
     <Compile Include="DomainModel\BusinessObjectBase.cs" />
@@ -128,6 +128,9 @@
     <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
     <Compile Include="yWidgets\yImageViewer.cs" />
     <Compile Include="yWidgets\yLegalName.cs" />
+    <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
+    <Compile Include="ReferenceRepresentation.cs" />
+    <Compile Include="Widgets\EntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

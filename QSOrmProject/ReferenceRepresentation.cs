@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Gtk;
 using NLog;
 using QSOrmProject.RepresentationModel;
 using QSTDI;
 using QSOrmProject;
-using System.Data.Bindings.Collections;
 
 namespace QSOrmProject
 {
@@ -16,11 +12,9 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private System.Type objectType;
-		private ObservableFilterListView filterView;
 		private IRepresentationFilter filterWidget;
-		private uint totalSearchFinished;
 		private DateTime searchStarted;
-		private IRepresentationModel representationModel;
+		private IRepresentationModelGamma representationModel;
 
 		public ITdiTabParent TabParent { set; get; }
 
@@ -48,7 +42,7 @@ namespace QSOrmProject
 			}
 		}
 
-		protected IRepresentationModel RepresentationModel {
+		protected IRepresentationModelGamma RepresentationModel {
 			get {
 				return representationModel;
 			}
@@ -57,25 +51,17 @@ namespace QSOrmProject
 					return;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
-				ormtableview.ColumnMappingConfig = RepresentationModel.TreeViewConfig;
+				ormtableview.RepresentationModel = RepresentationModel;
 				if (RepresentationModel.RepresentationFilter != null)
 					FilterWidget = RepresentationModel.RepresentationFilter;
-				SearchFields = RepresentationModel.SearchFields.ToArray ();
 				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
-				RepresentationModel.UpdateNodes ();
+				hboxSearch.Visible = RepresentationModel.SearchFieldsExist;
 			}
 		}
 
 		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
 		{
-			logger.Info ("Обновляем таблицу справочника<{0}>...", objectType.Name);
-			filterView = new ObservableFilterListView (RepresentationModel.ItemsList);
-
-			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
-			filterView.ListChanged += FilterViewChanged;
-			ormtableview.ItemsDataSource = filterView;
 			UpdateSum ();
-			logger.Info ("Ok.");
 		}
 
 		#region IOrmDialog implementation
@@ -93,42 +79,6 @@ namespace QSOrmProject
 		}
 
 		#endregion
-
-		private string[] searchFields = new string[]{ "Name" };
-
-		public string[] SearchFields {
-			get { return searchFields; }
-			set {
-				searchFields = value;
-				hboxSearch.Visible = searchFields != null && searchFields.Length > 0;
-				searchPropCache = null; //Скидываем кеш
-			}
-		}
-
-		private List<PropertyInfo> searchPropCache;
-
-		protected List<PropertyInfo> SearchPropCache {
-			get {
-				if (searchPropCache != null)
-					return searchPropCache;
-
-				if (SearchFields == null)
-					return null;
-
-				searchPropCache = new List<PropertyInfo> ();
-
-				foreach (string prop in SearchFields) {
-					var propInfo = RepresentationModel.NodeType.GetProperty (prop);
-					if (propInfo != null) {
-						searchPropCache.Add (propInfo);
-					} else
-						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", RepresentationModel.NodeType, prop);
-				}
-
-				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
-				return searchPropCache;
-			}
-		}
 
 		private OrmReferenceMode mode;
 
@@ -175,7 +125,7 @@ namespace QSOrmProject
 
 		}
 
-		public ReferenceRepresentation (IRepresentationModel representation)
+		public ReferenceRepresentation (IRepresentationModelGamma representation)
 		{
 			this.Build ();
 			RepresentationModel = representation;
@@ -201,25 +151,6 @@ namespace QSOrmProject
 			buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
 		}
 
-		void FilterViewChanged (object aList)
-		{
-			UpdateSum ();
-		}
-
-		bool HandleIsVisibleInFilter (object aObject)
-		{
-			if (entrySearch.Text == "" || SearchFields.Length == 0)
-				return true;
-			totalSearchFinished++;
-			foreach (var prop in SearchPropCache) {
-				string Str = prop.GetValue (aObject, null).ToString ();
-				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1) {
-					return true;
-				}
-			}
-			return false;
-		}
-
 		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
 		{
 			entrySearch.Text = String.Empty;
@@ -228,11 +159,9 @@ namespace QSOrmProject
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
 			searchStarted = DateTime.Now;
-			totalSearchFinished = 0;
-			filterView.Refilter ();
+			RepresentationModel.SearchString = entrySearch.Text;
 			var delay = DateTime.Now.Subtract (searchStarted);
-			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
-				totalSearchFinished, delay.TotalSeconds, delay.TotalMilliseconds / totalSearchFinished);
+			logger.Debug ("Поиск нашел {0} элементов за {1} секунд.", RepresentationModel.ItemsList.Count, delay.TotalSeconds);
 		}
 
 		protected void OnCloseTab ()
@@ -269,8 +198,7 @@ namespace QSOrmProject
 				throw new NotImplementedException ();
 				//OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
 			} else {
-				var node = ormtableview.GetSelectedObjects () [0];
-				int selectedId = DomainHelper.GetId (node);
+				int selectedId = ormtableview.GetSelectedId ();
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
 				if (selectedId > 0)
@@ -280,8 +208,8 @@ namespace QSOrmProject
 
 		protected void UpdateSum ()
 		{
-			labelSum.LabelProp = String.Format ("Количество: {0}", filterView.Count);
-			logger.Debug ("Количество обновлено {0}", filterView.Count);
+			labelSum.LabelProp = String.Format ("Количество: {0}", RepresentationModel.ItemsList.Count);
+			logger.Debug ("Количество обновлено {0}", RepresentationModel.ItemsList.Count);
 		}
 
 		protected void OnButtonSelectClicked (object sender, EventArgs e)

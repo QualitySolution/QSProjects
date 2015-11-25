@@ -24,6 +24,8 @@ namespace QSOrmProject.RepresentationModel
 
 		IEnumerable<string> SearchFields { get;}
 
+		bool SearchFieldsExist { get;}
+
 		string SearchString { get; set;}
 
 		void UpdateNodes();

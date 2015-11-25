@@ -85,6 +85,11 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		public bool SearchFieldsExist{
+			get { return SearchFields.Any ();
+			}
+		}
+
 		void RepresentationFilter_Refiltered (object sender, EventArgs e)
 		{
 			UpdateNodes ();
