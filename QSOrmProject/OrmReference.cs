@@ -13,7 +13,6 @@ using QSProjectsLib;
 
 namespace QSOrmProject
 {
-	[System.ComponentModel.ToolboxItem (true)]
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class OrmReference : Gtk.Bin, ITdiJournal
 	{
@@ -101,7 +100,6 @@ namespace QSOrmProject
 				return searchPropCache;
 			}
 		}
-
 
 		private OrmReferenceMode mode;
 

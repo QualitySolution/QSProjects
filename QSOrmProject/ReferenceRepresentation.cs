@@ -7,7 +7,7 @@ using QSOrmProject;
 
 namespace QSOrmProject
 {
-	[System.ComponentModel.ToolboxItem (true)]
+	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, IOrmDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
