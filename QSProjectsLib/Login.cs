@@ -195,7 +195,7 @@ namespace QSProjectsLib
 				port = uriSplit [1];
 			}
 
-			connStr = string.Format ("server={0};user={1};database={2};port={3};password={4};", host, login, BaseName, port, entryPassword.Text);
+			connStr = string.Format ("server={0};port={3};uid={1};pwd={4};database={2};", host, login, BaseName, port, entryPassword.Text);
 			
 			QSMain.connectionDB = new MySqlConnection (connStr);
 			try {
@@ -230,8 +230,10 @@ namespace QSProjectsLib
 				QSMain.User = new UserInfo (entryUser.Text.ToLower ());
 				this.Respond (ResponseType.Ok);
 			} catch (MySqlException ex) {
-				if (ex.Number == 1045)
+				if (ex.Number == 1045 || ex.Number == 0)
 					labelLoginInfo.Text = "Доступ запрещен.\nПроверьте логин и пароль.";
+				else if (ex.Number == 1042)
+					labelLoginInfo.Text = "Не удалось подключиться к серверу БД.";
 				else
 					labelLoginInfo.Text = "Ошибка соединения с базой данных.";
 
