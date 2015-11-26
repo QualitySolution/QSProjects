@@ -24,6 +24,7 @@ namespace QSOrmProject
 		private IReferenceFilter filterWidget;
 		private uint totalSearchFinished;
 		private DateTime searchStarted;
+		private bool inUpdating;
 
 		public ITdiTabParent TabParent { set; get; }
 
@@ -202,7 +203,7 @@ namespace QSOrmProject
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
-			//Обновлляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
+			//Обновляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
 			foreach(var entity in e.UpdatedSubjects.OfType<IDomainObject> ())
 			{
 				var curEntity = filterView.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
@@ -215,7 +216,7 @@ namespace QSOrmProject
 		private void UpdateObjectList ()
 		{
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
-
+			inUpdating = true;
 			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog)
 				baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
@@ -229,6 +230,7 @@ namespace QSOrmProject
 					col.SetCellDataFunc (col.Cells [0], new TreeCellDataFunc (RenderCell));
 			}
 			UpdateSum ();
+			inUpdating = false;
 			logger.Info ("Ok.");
 		}
 
@@ -242,7 +244,8 @@ namespace QSOrmProject
 
 		void FilterViewChanged (object aList)
 		{
-			UpdateSum ();
+			if(!inUpdating)
+				UpdateSum ();
 		}
 
 		bool HandleIsVisibleInFilter (object aObject)
@@ -359,7 +362,8 @@ namespace QSOrmProject
 
 		void OnFilterWidgetRefiltered (object sender, EventArgs e)
 		{
-			UpdateObjectList ();
+			if(!inUpdating)
+				UpdateObjectList ();
 		}
 
 		private bool CheckDefaultLoadFilterAtt ()
