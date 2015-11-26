@@ -223,7 +223,7 @@ namespace QSOrmProject
 		/// <param name="entity">Объект для которого нужно создать диалог.</param>
 		public static ITdiDialog CreateObjectDialog (object entity)
 		{
-			return CreateObjectDialog (NHibernateProxyHelper.GetClassWithoutInitializingProxy (entity), entity);
+			return CreateObjectDialog (NHibernateProxyHelper.GuessClass (entity), entity);
 		}
 
 		public static bool DeleteObject(string table, int id)
