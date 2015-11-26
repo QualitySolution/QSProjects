@@ -121,7 +121,7 @@ namespace QSProjectsLib
 
 		protected void CreateDefaultConnection (string configfile)
 		{
-			IConfig config = QSMain.Configsource.AddConfig ("Login");
+			IConfig config = QSMain.Configsource.AddConfig ("Login0");
 			config.Set ("UserLogin", DefaultLogin);
 			config.Set ("Server", DefaultServer);
 			config.Set ("ConnectionName", DefaultConnection);
