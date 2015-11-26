@@ -30,6 +30,14 @@ namespace QSSupportLib
 			QSMain.RunErrorMessageDlg += HandleRunErrorMessageDlg;
 		}
 
+		/// <summary>
+		/// Пока пустая функция для вызова инициализации библиотеки заранее. Дабы вызвался статический конструктор.
+		/// </summary>
+		public static void Init()
+		{
+			
+		}
+
 		[Obsolete("Используйте вместо этой проверки класс CheckBaseVersion. (Удалить после 17.11.16)")]
 		public static bool CheckVersion (Window Parent)
 		{
