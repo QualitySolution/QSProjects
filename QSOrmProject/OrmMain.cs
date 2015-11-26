@@ -254,7 +254,7 @@ namespace QSOrmProject
 		{
 			if (!(subject is IDomainObject))
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
-			var objectClass = NHibernateUtil.GetClass(subject);
+			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
 			var delete = new Deletion.DeleteCore();
 			try{
@@ -265,7 +265,6 @@ namespace QSOrmProject
 				return false;
 			}
 		}
-			
 	}
 		
 	internal class DelayedNotifyLink
