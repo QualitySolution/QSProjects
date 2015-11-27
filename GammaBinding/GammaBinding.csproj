@@ -7,9 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Gamma.Binding</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +82,7 @@
     <Compile Include="GtkWidgets\yEntry.cs" />
     <Compile Include="Binding\IValueConverter.cs" />
     <Compile Include="GtkWidgets\yComboBox.cs" />
+    <Compile Include="GtkWidgets\yCheckButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
