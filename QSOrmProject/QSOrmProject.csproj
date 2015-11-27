@@ -126,6 +126,7 @@
     <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
+    <Compile Include="yWidgets\yEntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
