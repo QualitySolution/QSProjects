@@ -9,9 +9,9 @@ namespace Gamma.GtkWidgets
 	[System.ComponentModel.Category ("Gamma Gtk")]
 	public class ySpinButton : SpinButton
 	{
-		public BindingControler<ySpinButton> Binding { get; private set;}
+		public BindingControler<ySpinButton> Binding { get; private set; }
 
-		public ySpinButton (double min, double max, double step) : base(min, max, step)
+		public ySpinButton (double min, double max, double step) : base (min, max, step)
 		{
 			Binding = new BindingControler<ySpinButton> (this, new Expression<Func<ySpinButton, object>>[] {
 				(w => w.Value),
@@ -20,7 +20,7 @@ namespace Gamma.GtkWidgets
 			});
 		}
 
-		public ySpinButton (Adjustment adjustment, double climb_rate, uint digits) : base(adjustment, climb_rate, digits)
+		public ySpinButton (Adjustment adjustment, double climb_rate, uint digits) : base (adjustment, climb_rate, digits)
 		{
 			Binding = new BindingControler<ySpinButton> (this, new Expression<Func<ySpinButton, object>>[] {
 				(w => w.Value),
@@ -39,13 +39,14 @@ namespace Gamma.GtkWidgets
 			base.OnValueChanged ();
 		}
 
-		public decimal ValueAsDecimal
-		{
-			get{ return Convert.ToDecimal (Value);
-			}
-			set{
-				Value = Convert.ToDouble (value);
-			}
+		public decimal ValueAsDecimal {
+			get { return Convert.ToDecimal (Value); }
+			set { Value = Convert.ToDouble (value); }
+		}
+
+		new public int ValueAsInt {
+			get { return Convert.ToInt32 (Value); }
+			set { Value = Convert.ToDouble (value); }
 		}
 	}
 }

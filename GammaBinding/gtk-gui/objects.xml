@@ -3,6 +3,7 @@
     <itemgroups>
       <itemgroup label="ySpinButton Properties">
         <property name="ValueAsDecimal" />
+        <property name="ValueAsInt" />
       </itemgroup>
     </itemgroups>
   </object>
