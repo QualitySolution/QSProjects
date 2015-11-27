@@ -11,11 +11,12 @@ namespace Gtk.DataBindings
 	/// </remarks>
 	[ToolboxItem (true)]
 	[Category ("Databound Widgets")]
+	[Obsolete ("Используйте аналог yEntryReferenceVM на Gamma Binding, этот виджет не будет поддерживаться и будет удален просле 16.09.2016.")]
 	public class DataEntryReferenceVM : EntryReferenceVM, IPostableControl, IAdaptableControl
 	{
 		private ControlAdaptor adaptor = null;
 		private MappingsImplementor internalModel = null;
-		
+
 		/// <summary>
 		/// Resolves ControlAdaptor in read-only mode
 		/// </summary>
@@ -23,7 +24,7 @@ namespace Gtk.DataBindings
 		public ControlAdaptor Adaptor {
 			get { return (adaptor); }
 		}
-		
+
 		/// <summary>
 		/// Defines if DataSource is inherited fom parent controls or not
 		/// </summary>
@@ -32,7 +33,7 @@ namespace Gtk.DataBindings
 			get { return (adaptor.InheritedDataSource); }
 			set { adaptor.InheritedDataSource = value; }
 		}
-		
+
 		/// <summary>
 		/// DataSource object control is connected to
 		/// </summary>
@@ -43,6 +44,7 @@ namespace Gtk.DataBindings
 		}
 
 		private bool cursorPointsEveryType = true;
+
 		/// <summary>
 		/// Defines if CurrentSelection adaptor should point every type of object
 		/// if false then pointing is limited to defualt type
@@ -60,7 +62,7 @@ namespace Gtk.DataBindings
 			get { return (internalModel.ItemsDataSource); }
 			set { internalModel.ItemsDataSource = value; }
 		}
-		
+
 		/// <summary>
 		/// Link to Mappings in connected Adaptor 
 		/// </summary>
@@ -69,7 +71,7 @@ namespace Gtk.DataBindings
 			get { return (adaptor.Mappings); }
 			set { adaptor.Mappings = value; }
 		}
-		
+
 		/// <summary>
 		/// Link to Column Mappings in connected Adaptor 
 		/// </summary>
@@ -78,7 +80,7 @@ namespace Gtk.DataBindings
 			get { return (internalModel.Mappings); }
 			set { internalModel.Mappings = value; }
 		}
-			
+
 		/// <summary>
 		/// Defines if DataSource is inherited fom parent controls or not
 		/// </summary>
@@ -87,7 +89,7 @@ namespace Gtk.DataBindings
 			get { return (adaptor.InheritedBoundaryDataSource); }
 			set { adaptor.InheritedBoundaryDataSource = value; }
 		}
-		
+
 		/// <summary>
 		/// DataSource object control is connected to
 		/// </summary>
@@ -96,7 +98,7 @@ namespace Gtk.DataBindings
 			get { return (adaptor.BoundaryDataSource); }
 			set { adaptor.BoundaryDataSource = value; }
 		}
-		
+
 		/// <summary>
 		/// Link to Mappings in connected Adaptor 
 		/// </summary>
@@ -105,7 +107,7 @@ namespace Gtk.DataBindings
 			get { return (adaptor.BoundaryMappings); }
 			set { adaptor.BoundaryMappings = value; }
 		}
-		
+
 		/// <summary>
 		/// Overrides basic Get data behaviour
 		///
@@ -121,7 +123,7 @@ namespace Gtk.DataBindings
 			add { adaptor.CustomGetData += value; }
 			remove { adaptor.CustomGetData -= value; }
 		}
-		
+
 		/// <summary>
 		/// Overrides basic Post data behaviour
 		///
@@ -137,7 +139,7 @@ namespace Gtk.DataBindings
 			add { adaptor.CustomPostData += value; }
 			remove { adaptor.CustomPostData -= value; }
 		}
-		
+
 		/// <summary>
 		/// Overrides basic Get data behaviour
 		///
@@ -150,6 +152,7 @@ namespace Gtk.DataBindings
 		///     public delegate void UserGetDataEvent (ControlAdaptor Adaptor);
 		/// </summary>
 		private Adaptor currentSelection = null;
+
 		/// <summary>
 		/// Allows controls to bind on the selection in this TreeView
 		/// </summary>
@@ -165,7 +168,7 @@ namespace Gtk.DataBindings
 		public object ListItems {
 			get { return (internalModel.ListItems); }
 		}
-		
+
 		/// <summary>
 		/// Gets activated on every cell to set user parameters on how to draw this cell.
 		/// Difference between classic render column is that here arguments passed are not 
@@ -183,7 +186,7 @@ namespace Gtk.DataBindings
 			add { internalModel.CellLayoutDescription += value; }
 			remove { internalModel.CellLayoutDescription -= value; }
 		}
-		
+
 		/// <summary>
 		/// Calls ControlAdaptors method to transfer data, so it can be wrapped
 		/// into widget specific things and all checkups
@@ -195,7 +198,7 @@ namespace Gtk.DataBindings
 		{
 			Adaptor.InvokeAdapteeDataChange (this, aSender);
 		}
-		
+
 		/// <summary>
 		/// Notification method activated from Adaptor 
 		/// </summary>
@@ -209,7 +212,7 @@ namespace Gtk.DataBindings
 				SubjectType = adaptor.ValueType;
 			Subject = adaptor.Value;
 		}
-		
+
 		/// <summary>
 		/// Updates parent object to DataSource object
 		/// </summary>
@@ -218,23 +221,23 @@ namespace Gtk.DataBindings
 			adaptor.DataChanged = false;
 			adaptor.Value = Subject;
 		}
-		
+
 		/// <summary>
 		/// Overrides OnCursorChanged to handle changes
 		/// </summary>
-		protected override void OnChanged()
+		protected override void OnChanged ()
 		{
-			adaptor.DemandInstantPost();
-			base.OnChanged();
+			adaptor.DemandInstantPost ();
+			base.OnChanged ();
 		}
-		
+
 		/// <summary>
 		/// Creates adaptors associated with this IconView
 		/// </summary>
-		internal virtual void CreateAdaptors()
+		internal virtual void CreateAdaptors ()
 		{
 			// Allocate selection adaptor
-			currentSelection = new GtkAdaptor();
+			currentSelection = new GtkAdaptor ();
 			internalModel.ClearSelection += delegate() {
 				if (CurrentSelection != null)
 					CurrentSelection.Target = null;
@@ -246,37 +249,37 @@ namespace Gtk.DataBindings
 
 			internalModel.CheckControl += delegate() {
 				if (adaptor != null)
-					adaptor.CheckControl();
+					adaptor.CheckControl ();
 			};			
 		}
 
 		/// <summary>
 		/// Disconnects everything inside this class
 		/// </summary>
-		public virtual void Disconnect()
+		public virtual void Disconnect ()
 		{
 			if (CurrentSelection != null) {
-				CurrentSelection.Disconnect();
+				CurrentSelection.Disconnect ();
 				currentSelection = null;
 			}
 			if (adaptor != null) {
-				adaptor.Disconnect();
+				adaptor.Disconnect ();
 				adaptor = null;
 			}
-			internalModel.Disconnect();
+			internalModel.Disconnect ();
 			internalModel = null;
 		}
-		
+
 		/// <summary>
 		/// Creates Widget 
 		/// </summary>
-		public DataEntryReferenceVM()
-			: base()
+		public DataEntryReferenceVM ()
+			: base ()
 		{
 			internalModel = new MappingsImplementor (this);
-			CreateAdaptors();
+			CreateAdaptors ();
 		}
-		
+
 		/// <summary>
 		/// Creates Widget 
 		/// </summary>
@@ -284,13 +287,13 @@ namespace Gtk.DataBindings
 		/// Mappings with this widget <see cref="System.String"/>
 		/// </param>
 		public DataEntryReferenceVM (string aMappings)
-			: base()
+			: base ()
 		{
 			internalModel = new MappingsImplementor (this);
-			CreateAdaptors();
+			CreateAdaptors ();
 			Mappings = aMappings;
 		}
-		
+
 		/// <summary>
 		/// Creates Widget 
 		/// </summary>
@@ -301,20 +304,20 @@ namespace Gtk.DataBindings
 		/// Mappings with this widget <see cref="System.String"/>
 		/// </param>
 		public DataEntryReferenceVM (object aDataSource, string aMappings)
-			: base()
+			: base ()
 		{
 			internalModel = new MappingsImplementor (this);
-			CreateAdaptors();
+			CreateAdaptors ();
 			DataSource = aDataSource;
 			Mappings = aMappings;
 		}
-		
+
 		/// <summary>
 		/// Destroys and disconnects Widget
 		/// </summary>
-		~DataEntryReferenceVM()
+		~DataEntryReferenceVM ()
 		{
-			Disconnect();
+			Disconnect ();
 		}
 	}
 }
