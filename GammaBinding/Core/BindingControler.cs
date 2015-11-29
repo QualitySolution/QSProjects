@@ -145,6 +145,13 @@ namespace Gamma.Binding.Core
 			return sourceControl;
 		}
 
+		public BindingObjectSource<TWidget> AddBinding(object source, string sourcePropertyName, Expression<Func<TWidget, object>> targetProperty)
+		{
+			var sourceControl = AddSource (source);
+			sourceControl.AddBinding (sourcePropertyName, targetProperty);
+			return sourceControl;
+		}
+
 		public BindingSource<TSource, TWidget> AddBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty, IValueConverter converter)
 			where TSource : class, INotifyPropertyChanged
 		{
@@ -153,8 +160,22 @@ namespace Gamma.Binding.Core
 			return sourceControl;
 		}
 
+		public BindingObjectSource<TWidget> AddBinding(object source, string sourcePropertyName, Expression<Func<TWidget, object>> targetProperty, IValueConverter converter)
+		{
+			var sourceControl = AddSource (source);
+			sourceControl.AddBinding (sourcePropertyName, targetProperty, converter);
+			return sourceControl;
+		}
+
 		public BindingSource<TSource, TWidget> AddFuncBinding<TSource>(TSource source, Expression<Func<TSource, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)
 			where TSource : class, INotifyPropertyChanged
+		{
+			var sourceControl = AddSource (source);
+			sourceControl.AddFuncBinding (sourceProperty, targetProperty);
+			return sourceControl;
+		}
+
+		public BindingObjectSource<TWidget> AddFuncBinding(object source, Expression<Func<object, object>> sourceProperty, Expression<Func<TWidget, object>> targetProperty)
 		{
 			var sourceControl = AddSource (source);
 			sourceControl.AddFuncBinding (sourceProperty, targetProperty);
@@ -167,6 +188,16 @@ namespace Gamma.Binding.Core
 			BindingSource<TSource, TWidget> bSource = Sources.Find (s => s.DataSourceObject == source) as BindingSource<TSource, TWidget>;
 			if (bSource == null) {
 				bSource = new BindingSource<TSource, TWidget> (this, source);
+				Sources.Add (bSource);
+			}
+			return bSource;
+		}
+
+		public BindingObjectSource<TWidget> AddSource(object source)
+		{
+			BindingObjectSource<TWidget> bSource = Sources.OfType<BindingObjectSource<TWidget>> ().FirstOrDefault (s => s.DataSourceObject == source);
+			if (bSource == null) {
+				bSource = new BindingObjectSource<TWidget> (this, source);
 				Sources.Add (bSource);
 			}
 			return bSource;
