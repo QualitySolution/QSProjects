@@ -15,6 +15,8 @@ namespace QSOrmProject
 
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
+		public event EventHandler<EntitySavedEventArgs> EntitySaved;
+
 		private string tabName = String.Empty;
 
 		public virtual string TabName {
@@ -48,6 +50,12 @@ namespace QSOrmProject
 		{
 			if (TabNameChanged != null)
 				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
+		}
+
+		protected void OnEntitySaved (object entity, bool tabClosed = false)
+		{
+			if (EntitySaved != null)
+				EntitySaved (this, new EntitySavedEventArgs (entity, tabClosed));
 		}
 
 		#region ITdiTabParent implementation

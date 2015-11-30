@@ -54,7 +54,7 @@ namespace QSOrmProject
 			get { return UoWGeneric.Root; }
 		}
 
-		public string TabName {
+		public override string TabName {
 			get {
 				if(!String.IsNullOrWhiteSpace(base.TabName))
 					return TabName;
@@ -140,12 +140,20 @@ namespace QSOrmProject
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
 			if (!this.HasChanges || Save ())
+			{
+				OnEntitySaved (true);
 				OnCloseTab (false);
+			}
 		}
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
 			OnCloseTab (false);
+		}
+
+		protected void OnEntitySaved (bool tabClosed = false)
+		{
+			OnEntitySaved (Entity, tabClosed);
 		}
 
 		public override void Destroy ()

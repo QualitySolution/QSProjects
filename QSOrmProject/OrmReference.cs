@@ -300,12 +300,29 @@ namespace QSOrmProject
 		{
 			datatreeviewRef.Selection.UnselectAll ();
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
+				SelectObject(OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
 			} else {
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
-				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType), this);
+				var NewItemDlg = OrmMain.CreateObjectDialog (objectType);
+				NewItemDlg.EntitySaved += NewItemDlg_EntitySaved;
+				TabParent.AddTab (NewItemDlg, this);
 			}
+		}
+
+		private void SelectObject(object item)
+		{
+			if (item == null)
+				return;
+
+			var ownItem = filterView.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
+			datatreeviewRef.SelectObject (ownItem);
+		}
+
+		void NewItemDlg_EntitySaved (object sender, EntitySavedEventArgs e)
+		{
+			if (e.TabClosed)
+				SelectObject (e.Entity);
 		}
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)

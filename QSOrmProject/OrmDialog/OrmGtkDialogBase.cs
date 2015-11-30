@@ -140,6 +140,7 @@ namespace QSOrmProject
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
 		public bool FailInitialize { get; protected set;}
 
@@ -149,13 +150,22 @@ namespace QSOrmProject
 				CloseTab (this, new TdiTabCloseEventArgs (askSave));
 		}
 
+		protected void OnEntitySaved (bool tabClosed = false)
+		{
+			if (EntitySaved != null)
+				EntitySaved (this, new EntitySavedEventArgs (Entity, tabClosed));
+		}
+
 		[Obsolete("Не используйте, свойство будет удалено после отключения Gtk.Bindings")]
 		protected Adaptor subjectAdaptor = new Adaptor ();
 
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
 			if (!this.HasChanges || Save ())
+			{
+				OnEntitySaved (true);
 				OnCloseTab (false);
+			}
 		}
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
