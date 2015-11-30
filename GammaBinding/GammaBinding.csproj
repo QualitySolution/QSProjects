@@ -142,5 +142,6 @@
     <None Include="gtk-gui\objects.xml">
       <Link>Properties\objects.xml</Link>
     </None>
+    <None Include="icons\checkbutton.png" />
   </ItemGroup>
 </Project>

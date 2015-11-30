@@ -58,8 +58,8 @@
     </itemgroups>
     <signals />
   </object>
-  <object type="Gamma.GtkWidgets.yCheckButton" palette-category="Gamma Gtk" allow-children="false" base-type="Gtk.CheckButton">
-    <itemgroups></itemgroups>
+  <object type="Gamma.GtkWidgets.yCheckButton" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.CheckButton">
+    <itemgroups />
     <signals />
   </object>
 </objects>
