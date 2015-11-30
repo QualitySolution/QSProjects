@@ -5,6 +5,7 @@ using Gtk;
 using NLog;
 using QSProjectsLib;
 using System.Linq;
+using NHibernate.Criterion;
 
 namespace QSOrmProject
 {
@@ -45,7 +46,7 @@ namespace QSOrmProject
 				editDialogTable.Attach(LableName, 0, 1, 0, 1);
 				yEntry inputNameEntry = new yEntry();
 				inputNameEntry.WidthRequest = 300;
-				inputNameEntry.Binding.AddBinding(tempObject, "Name", w => w.Text);
+				inputNameEntry.Binding.AddBinding(tempObject, "Name", w => w.Text).InitializeFromSource ();
 				editDialogTable.Attach(inputNameEntry, 1, 2, 0, 1);
 				editDialog.VBox.Add(editDialogTable);
 
@@ -57,10 +58,24 @@ namespace QSOrmProject
 					string name = (string) tempObject.GetPropertyValue ("Name");
 					if(String.IsNullOrWhiteSpace (name))
 					{
-						var att = tempObject.GetType ().GetCustomAttributes (typeof(OrmSubjectAttribute), true).SingleOrDefault () as OrmSubjectAttribute;
+						var att = DomainHelper.GetSubjectNames (tempObject);
 						string subjectName = att != null ? att.Accusative : null;
 						MessageDialogWorks.RunWarningDialog (String.Format ("Название {0} пустое и не будет сохранено.",
 							string.IsNullOrEmpty (subjectName) ? "элемента справочника" : subjectName
+						));
+						editDialog.Destroy();
+						return;
+					}
+					var list = uow.Session.CreateCriteria (objectType)
+						.Add (Restrictions.Eq ("Name", name))
+						.Add (Restrictions.Not(Restrictions.IdEq (DomainHelper.GetId (tempObject))))
+						.List ();
+					if(list.Count > 0)
+					{
+						var att = DomainHelper.GetSubjectNames (tempObject);
+						string subjectName = att != null ? StringWorks.StringToTitleCase (att.Nominative) : null;
+						MessageDialogWorks.RunWarningDialog (String.Format ("{0} с таким названием уже существует.",
+							string.IsNullOrEmpty (subjectName) ? "Элемент справочника" : subjectName
 						));
 						editDialog.Destroy();
 						return;
