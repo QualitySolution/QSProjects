@@ -1,7 +1,10 @@
 ﻿using System;
-using NLog;
-using Gtk;
 using Gamma.GtkWidgets;
+using Gamma.Utilities;
+using Gtk;
+using NLog;
+using QSProjectsLib;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -51,6 +54,17 @@ namespace QSOrmProject
 				int result = editDialog.Run();
 				if(result == (int)ResponseType.Ok)
 				{ 
+					string name = (string) tempObject.GetPropertyValue ("Name");
+					if(String.IsNullOrWhiteSpace (name))
+					{
+						var att = tempObject.GetType ().GetCustomAttributes (typeof(OrmSubjectAttribute), true).SingleOrDefault () as OrmSubjectAttribute;
+						string subjectName = att != null ? att.Accusative : null;
+						MessageDialogWorks.RunWarningDialog (String.Format ("Название {0} пустое и не будет сохранено.",
+							string.IsNullOrEmpty (subjectName) ? "элемента справочника" : subjectName
+						));
+						editDialog.Destroy();
+						return;
+					}
 					uow.TrySave (tempObject);
 					uow.Commit ();
 					OrmMain.NotifyObjectUpdated(tempObject);
