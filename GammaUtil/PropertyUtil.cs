@@ -84,6 +84,11 @@ namespace Gamma.Utilities
 		{
 			return GetMemberInfo (propertyRefExpr) as PropertyInfo;
 		}
+
+		public static object GetPropertyValue(this object subject, string propertyName)
+		{
+			return subject.GetType ().GetProperty (propertyName).GetValue (subject, null);
+		}
 	}
 }
 
