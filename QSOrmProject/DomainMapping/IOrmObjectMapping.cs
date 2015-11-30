@@ -1,5 +1,6 @@
 ﻿using System;
 using QSOrmProject.UpdateNotification;
+using QSOrmProject.DomainMapping;
 
 namespace QSOrmProject
 {
@@ -11,6 +12,7 @@ namespace QSOrmProject
 		string[] RefSearchFields { get;}
 		string RefColumnMappings { get;}
 		bool SimpleDialog { get;}
+		ITableView TableView { get;}
 		string EditPermisionName { get;}
 		event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		void RaiseObjectUpdated(params object[] updatedSubjects);

@@ -7,6 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOrmProject</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -115,7 +118,6 @@
     <Compile Include="WithoutTDI\FakeTDIDialogGtkDialogBase.cs" />
     <Compile Include="DomainMapping\OrmObjectMapping.cs" />
     <Compile Include="DomainMapping\IOrmObjectMapping.cs" />
-    <Compile Include="DomainMapping\SimpleDisplay.cs" />
     <Compile Include="RepresentationModel\RepresentationModelEntityBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
@@ -127,6 +129,8 @@
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
     <Compile Include="yWidgets\yEntryReferenceVM.cs" />
+    <Compile Include="DomainMapping\TableView.cs" />
+    <Compile Include="DomainMapping\ITableView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

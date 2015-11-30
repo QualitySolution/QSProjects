@@ -32,10 +32,10 @@ namespace QSOrmProject.DomainMapping
 
 		public string[] RefSearchFields {
 			get {
-				if (simpleDislpay == null)
+				if (tableView == null)
 					return refSearchFields;
 				else
-					return simpleDislpay.SearchFields.ToArray ();
+					return TableView.SearchBy.ToArray ();
 			}
 		}
 
@@ -43,12 +43,12 @@ namespace QSOrmProject.DomainMapping
 
 		public string RefColumnMappings {
 			get {
-				if(simpleDislpay == null)
+				if(tableView == null)
 					return refColumnMappings;
 				else
 				{
 					string mapping = "{" + typeof(TEntity).FullName + "}";
-					foreach(var pair in simpleDislpay.ColumnsFields)
+					foreach(var pair in tableView.ColumnsFields)
 					{
 						mapping += String.Format (" {0}[{1}];", pair.Value, pair.Key);
 					}
@@ -59,7 +59,13 @@ namespace QSOrmProject.DomainMapping
 
 		public string EditPermisionName { get; set;}
 
-		private SimpleDisplay<TEntity> simpleDislpay;
+		private TableView<TEntity> tableView;
+
+		public ITableView TableView {
+			get {
+				return tableView;
+			}
+		}
 
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric;
@@ -145,10 +151,10 @@ namespace QSOrmProject.DomainMapping
 			return this;
 		}
 
-		public SimpleDisplay<TEntity> SimpleDisplay()
+		public TableView<TEntity> DefaultTableView()
 		{
-			simpleDislpay = new SimpleDisplay<TEntity> (this);
-			return simpleDislpay;
+			tableView = new TableView<TEntity> (this);
+			return tableView;
 		}
 
 		#endregion

@@ -215,11 +215,25 @@ namespace QSOrmProject
 
 		private void UpdateObjectList ()
 		{
+			if (inUpdating)
+				return;
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
 			inUpdating = true;
 			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
-			if (OrmMain.GetObjectDescription (objectType).SimpleDialog)
+
+			var map = OrmMain.GetObjectDescription (objectType);
+			if (map.SimpleDialog)
 				baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
+			else if(map.TableView.OrderBy.Count > 0)
+			{
+				foreach(var ord in map.TableView.OrderBy)
+				{
+					if(ord.Direction == QSOrmProject.DomainMapping.OrderDirection.Desc)
+						baseCriteria = baseCriteria.AddOrder (Order.Desc (ord.PropertyName));
+					else
+						baseCriteria = baseCriteria.AddOrder (Order.Asc (ord.PropertyName));
+				}
+			}
 			filterView = new ObservableFilterListView (baseCriteria.List ());
 				
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
@@ -244,8 +258,7 @@ namespace QSOrmProject
 
 		void FilterViewChanged (object aList)
 		{
-			if(!inUpdating)
-				UpdateSum ();
+			UpdateSum ();
 		}
 
 		bool HandleIsVisibleInFilter (object aObject)
@@ -362,8 +375,7 @@ namespace QSOrmProject
 
 		void OnFilterWidgetRefiltered (object sender, EventArgs e)
 		{
-			if(!inUpdating)
-				UpdateObjectList ();
+			UpdateObjectList ();
 		}
 
 		private bool CheckDefaultLoadFilterAtt ()
