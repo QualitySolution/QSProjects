@@ -4,7 +4,6 @@ using Gamma.Utilities;
 using Gtk;
 using NLog;
 using QSProjectsLib;
-using System.Linq;
 using NHibernate.Criterion;
 
 namespace QSOrmProject
@@ -13,7 +12,14 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		public static void RunSimpleDialog(Window parent, System.Type objectType, object editObject)
+		/// <summary>
+		/// Запуск простого диалога редактирования справочника
+		/// </summary>
+		/// <returns>Возвращает экземпляр сохраненного объекта, загруженного в сессии диалога. То есть не переданный объект.
+		/// Если пользователь отказался от сохранения возвращаем null.
+		/// </returns>
+		/// <param name="editObject">Объект для редактирования. Если null создаем новый объект.</param>
+		public static object RunSimpleDialog(Window parent, System.Type objectType, object editObject)
 		{
 			using (IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot ())
 			{
@@ -31,8 +37,7 @@ namespace QSOrmProject
 					}
 					else
 					{
-						logger.Error("У объекта переданного для запуска простого диалога, нет интерфейса IDomainObject, объект не может быть открыт.");
-						return;
+						throw new InvalidCastException ("У объекта переданного для запуска простого диалога, нет интерфейса IDomainObject, объект не может быть открыт.");
 					}
 				}
 
@@ -60,11 +65,13 @@ namespace QSOrmProject
 					{
 						var att = DomainHelper.GetSubjectNames (tempObject);
 						string subjectName = att != null ? att.Accusative : null;
-						MessageDialogWorks.RunWarningDialog (String.Format ("Название {0} пустое и не будет сохранено.",
-							string.IsNullOrEmpty (subjectName) ? "элемента справочника" : subjectName
-						));
+						string msg = String.Format ("Название {0} пустое и не будет сохранено.",
+							             string.IsNullOrEmpty (subjectName) ? "элемента справочника" : subjectName
+						             );
+						MessageDialogWorks.RunWarningDialog (msg);
+						logger.Warn (msg);
 						editDialog.Destroy();
-						return;
+						return null;
 					}
 					var list = uow.Session.CreateCriteria (objectType)
 						.Add (Restrictions.Eq ("Name", name))
@@ -74,17 +81,20 @@ namespace QSOrmProject
 					{
 						var att = DomainHelper.GetSubjectNames (tempObject);
 						string subjectName = att != null ? StringWorks.StringToTitleCase (att.Nominative) : null;
-						MessageDialogWorks.RunWarningDialog (String.Format ("{0} с таким названием уже существует.",
-							string.IsNullOrEmpty (subjectName) ? "Элемент справочника" : subjectName
-						));
+						string msg = String.Format ("{0} с таким названием уже существует.",
+							             string.IsNullOrEmpty (subjectName) ? "Элемент справочника" : subjectName
+						             );
+						MessageDialogWorks.RunWarningDialog (msg);
+						logger.Warn (msg);
 						editDialog.Destroy();
-						return;
+						return list[0];
 					}
 					uow.TrySave (tempObject);
 					uow.Commit ();
 					OrmMain.NotifyObjectUpdated(tempObject);
 				}
 				editDialog.Destroy();
+				return tempObject;
 			}
 		}
 
