@@ -1,8 +1,7 @@
 ﻿using System;
-using NHibernate;
 using NLog;
 using Gtk;
-using Gtk.DataBindings;
+using Gamma.GtkWidgets;
 
 namespace QSOrmProject
 {
@@ -41,13 +40,11 @@ namespace QSOrmProject
 				Label LableName = new Label("Название:");
 				LableName.Justify = Justification.Right;
 				editDialogTable.Attach(LableName, 0, 1, 0, 1);
-				DataEntry inputNameEntry = new DataEntry();
+				yEntry inputNameEntry = new yEntry();
 				inputNameEntry.WidthRequest = 300;
+				inputNameEntry.Binding.AddBinding(tempObject, "Name", w => w.Text);
 				editDialogTable.Attach(inputNameEntry, 1, 2, 0, 1);
 				editDialog.VBox.Add(editDialogTable);
-
-				inputNameEntry.Mappings = "Name";
-				inputNameEntry.DataSource = tempObject;
 
 				//Запускаем диалог
 				editDialog.ShowAll();
