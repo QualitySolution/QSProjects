@@ -13,7 +13,7 @@ using QSProjectsLib;
 
 namespace QSOrmProject
 {
-	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
+	[WidgetWindow (DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class OrmReference : Gtk.Bin, ITdiJournal
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
@@ -28,13 +28,12 @@ namespace QSOrmProject
 
 		public ITdiTabParent TabParent { set; get; }
 
-		public bool FailInitialize { get; protected set;}
+		public bool FailInitialize { get; protected set; }
 
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
 		public IUnitOfWork Uow {
-			get
-			{
+			get {
 				if (uow == null)
 					uow = UnitOfWorkFactory.CreateWithoutRoot ();
 				return uow;
@@ -79,8 +78,7 @@ namespace QSOrmProject
 		private List<PropertyInfo> searchPropCache;
 
 		protected List<PropertyInfo> SearchPropCache {
-			get
-			{
+			get {
 				if (searchPropCache != null)
 					return searchPropCache;
 
@@ -146,17 +144,20 @@ namespace QSOrmProject
 			}
 		}
 
-		public OrmReference(System.Type objType) 
-			: this(objType, UnitOfWorkFactory.CreateWithoutRoot ())
-		{}
+		public OrmReference (System.Type objType)
+			: this (objType, UnitOfWorkFactory.CreateWithoutRoot ())
+		{
+		}
 
-		public OrmReference(System.Type objType, IUnitOfWork uow) 
-			: this(objType, uow, uow.Session.CreateCriteria (objType))
-		{}
+		public OrmReference (System.Type objType, IUnitOfWork uow)
+			: this (objType, uow, uow.Session.CreateCriteria (objType))
+		{
+		}
 
-		public OrmReference(IUnitOfWork uow, QueryOver query) 
-			: this(query.DetachedCriteria.GetRootEntityTypeIfAvailable (), uow, query.DetachedCriteria.GetExecutableCriteria (uow.Session))
-		{}
+		public OrmReference (IUnitOfWork uow, QueryOver query)
+			: this (query.DetachedCriteria.GetRootEntityTypeIfAvailable (), uow, query.DetachedCriteria.GetExecutableCriteria (uow.Session))
+		{
+		}
 
 		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria)
 		{
@@ -190,10 +191,8 @@ namespace QSOrmProject
 				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
 				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
 			}
-			if(!String.IsNullOrWhiteSpace (map.EditPermisionName))
-			{
-				if(!QSMain.User.Permissions[map.EditPermisionName])
-				{
+			if (!String.IsNullOrWhiteSpace (map.EditPermisionName)) {
+				if (!QSMain.User.Permissions [map.EditPermisionName]) {
 					ButtonMode &= ~ReferenceButtonMode.CanAll;
 				}
 			}
@@ -204,8 +203,7 @@ namespace QSOrmProject
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
 		{
 			//Обновляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
-			foreach(var entity in e.UpdatedSubjects.OfType<IDomainObject> ())
-			{
+			foreach (var entity in e.UpdatedSubjects.OfType<IDomainObject> ()) {
 				var curEntity = filterView.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
 				if (curEntity != null)
 					Uow.Session.Refresh (curEntity);
@@ -224,11 +222,9 @@ namespace QSOrmProject
 			var map = OrmMain.GetObjectDescription (objectType);
 			if (map.SimpleDialog)
 				baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
-			else if(map.TableView.OrderBy.Count > 0)
-			{
-				foreach(var ord in map.TableView.OrderBy)
-				{
-					if(ord.Direction == QSOrmProject.DomainMapping.OrderDirection.Desc)
+			else if (map.TableView != null && map.TableView.OrderBy.Count > 0) {
+				foreach (var ord in map.TableView.OrderBy) {
+					if (ord.Direction == QSOrmProject.DomainMapping.OrderDirection.Desc)
 						baseCriteria = baseCriteria.AddOrder (Order.Desc (ord.PropertyName));
 					else
 						baseCriteria = baseCriteria.AddOrder (Order.Asc (ord.PropertyName));
@@ -252,8 +248,8 @@ namespace QSOrmProject
 		{
 			bool selected = datatreeviewRef.Selection.CountSelectedRows () > 0;
 			buttonSelect.Sensitive = selected;
-			buttonEdit.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) && selected;
-			buttonDelete.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) && selected;
+			buttonEdit.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanEdit) && selected;
+			buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
 		}
 
 		void FilterViewChanged (object aList)
@@ -300,7 +296,7 @@ namespace QSOrmProject
 		{
 			datatreeviewRef.Selection.UnselectAll ();
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				SelectObject(OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
+				SelectObject (OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
 			} else {
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
@@ -310,7 +306,7 @@ namespace QSOrmProject
 			}
 		}
 
-		private void SelectObject(object item)
+		private void SelectObject (object item)
 		{
 			if (item == null)
 				return;
@@ -412,13 +408,13 @@ namespace QSOrmProject
 			(cell as CellRendererText).Foreground = (o as ISpecialRowsRender).TextColor;
 		}
 
-		protected void OnButtonDeleteClicked(object sender, EventArgs e)
+		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			if (OrmMain.DeleteObject(datatreeviewRef.GetSelectedObjects()[0]))
-				UpdateObjectList();
+			if (OrmMain.DeleteObject (datatreeviewRef.GetSelectedObjects () [0]))
+				UpdateObjectList ();
 		}
 	}
-		
+
 	public enum OrmReferenceMode
 	{
 		Normal,
