@@ -58,16 +58,10 @@ namespace QSSupportLib
 			return true;
 		}
 
-		public static void TestVersion (Window Parent)
+		public static void TestVersion (Window parent)
 		{
 			if (CheckBaseVersion.Check ()) {
-				MessageDialog VersionError = new MessageDialog (Parent, DialogFlags.DestroyWithParent,
-					                             MessageType.Warning, 
-					                             ButtonsType.Close, 
-												CheckBaseVersion.TextMessage);
-				VersionError.Run ();
-				VersionError.Destroy ();
-				Environment.Exit (0);
+				CheckBaseVersion.ShowErrorMessage (parent);
 			}
 		}
 

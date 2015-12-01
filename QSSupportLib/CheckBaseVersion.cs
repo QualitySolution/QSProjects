@@ -1,5 +1,6 @@
 ﻿using System;
 using QSProjectsLib;
+using Gtk;
 
 namespace QSSupportLib
 {
@@ -69,6 +70,17 @@ namespace QSSupportLib
 			}
 
 			return false;
+		}
+
+		public static void ShowErrorMessage (Window parent)
+		{
+			MessageDialog VersionError = new MessageDialog (parent, DialogFlags.DestroyWithParent,
+				MessageType.Warning, 
+				ButtonsType.Close, 
+				TextMessage);
+			VersionError.Run ();
+			VersionError.Destroy ();
+			Environment.Exit (0);
 		}
 	}
 
