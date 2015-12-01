@@ -39,19 +39,13 @@ namespace QSSupportLib
 		}
 
 		[Obsolete("Используйте вместо этой проверки класс CheckBaseVersion. (Удалить после 17.11.16)")]
-		public static bool CheckVersion (Window Parent)
+		public static bool CheckVersion (Window parent)
 		{
 			//Если найдены ошибки.
 			if (CheckBaseVersion.Check ()) {
 				if (CheckBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater)
 					return false;
-				MessageDialog error = new MessageDialog (Parent, DialogFlags.DestroyWithParent,
-					                      MessageType.Warning, 
-					                      ButtonsType.Close, 
-					CheckBaseVersion.TextMessage);
-				error.Run ();
-				error.Destroy ();
-				Environment.Exit (1);
+				CheckBaseVersion.ShowErrorMessage (parent);
 				return false;
 			}
 
