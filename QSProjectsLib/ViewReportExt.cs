@@ -9,6 +9,7 @@ namespace QSProjectsLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public string Params = "";
+		private string TempReportPath;
 		private string reportName;
 		private string reportPath;
 		private XmlDocument xmlDoc;
@@ -16,9 +17,9 @@ namespace QSProjectsLib
 		public ViewReportExt(string ReportName, bool UserVar = false)
 		{
 			reportName = ReportName;
-
+	
 			reportPath = System.IO.Path.Combine( Directory.GetCurrentDirectory(), "Reports", ReportName + ".rdl");
-
+			TempReportPath = System.IO.Path.Combine (System.IO.Path.GetTempPath (), reportName + ".rdl");
 			xmlDoc = new XmlDocument();
 			xmlDoc.Load(reportPath);
 
@@ -49,11 +50,12 @@ namespace QSProjectsLib
 				command.InnerText = value;
 		}
 
+		public void SaveToTemp(){
+			xmlDoc.Save(TempReportPath);
+		}
+
 		public void Run()
 		{
-			string TempReportPath = System.IO.Path.Combine (System.IO.Path.GetTempPath (), reportName + ".rdl");
-			xmlDoc.Save(TempReportPath);
-
 			logger.Debug("Report:{0} Parameters:{1}", reportName, Params);
 			string arg = "-r \"" + TempReportPath +"\" -p \"" + Params + "\"";
 			System.Diagnostics.Process.Start ("RdlReader.exe", arg);
@@ -63,7 +65,21 @@ namespace QSProjectsLib
 		{
 			ViewReportExt viewext = new ViewReportExt (ReportName, UserVar);
 			viewext.Params = Params;
+			viewext.SaveToTemp ();
 			viewext.Run ();
+		}
+
+		public static void RunWithSubreports(string ReportName, string Params, string[] subReportNames, bool UserVar=false)
+		{
+			foreach (string subReportName in subReportNames) {
+				ViewReportExt subReport = new ViewReportExt (subReportName, UserVar);
+				subReport.Params = Params;
+				subReport.SaveToTemp();
+			}
+			ViewReportExt report = new ViewReportExt (ReportName, UserVar);
+			report.Params = Params;
+			report.SaveToTemp ();
+			report.Run ();
 		}
 	}
 }
