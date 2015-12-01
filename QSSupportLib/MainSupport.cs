@@ -88,7 +88,7 @@ namespace QSSupportLib
 		public static void LoadBaseParameters ()
 		{
 			try {
-				MainSupport.BaseParameters = new BaseParam (QSMain.connectionDB);
+				MainSupport.BaseParameters = new BaseParam (QSMain.ConnectionDB);
 			} catch (MySql.Data.MySqlClient.MySqlException e) {
 				logger.Fatal (e, "Не удалось получить информацию о версии базы данных.", e);
 				MessageDialog BaseError = new MessageDialog (QSMain.ErrorDlgParrent, DialogFlags.DestroyWithParent,
