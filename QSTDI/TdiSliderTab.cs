@@ -7,96 +7,84 @@ namespace QSTDI
 {
 	public class TdiSliderTab : Gtk.HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private ITdiJournal journal;
 		private ITdiDialog activeDialog;
 		private VSeparator separator;
 		private VBox dialogVBox;
 		private Label dialogTilteLabel;
 
-		public ITdiTabParent TabParent { set; get;}
+		public ITdiTabParent TabParent { set; get; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
-		public string TabName
-		{
-			get{
+		public string TabName {
+			get {
 				if (activeDialog != null)
-					return String.Format ("[{0}] {1}",journal.TabName, activeDialog.TabName);
+					return String.Format ("[{0}] {1}", journal.TabName, activeDialog.TabName);
 				else if (journal != null)
 					return journal.TabName;
 				else
 					return "Пустой слайдер";
 			}
-			set{
-				throw new NotSupportedException("Нельзя напрямую задавать имя вкладки.");
+			set {
+				throw new NotSupportedException ("Нельзя напрямую задавать имя вкладки.");
 			}
 
 		}
 
-		public ITdiJournal Journal
-		{
-			get
-			{
+		public ITdiJournal Journal {
+			get {
 				return journal;
 			}
-			set
-			{
-				if (journal != value)
-				{
-					if(journal != null)
-					{
+			set {
+				if (journal != value) {
+					if (journal != null) {
 						journal.TabNameChanged -= OnJournalTabNameChanged;
 						journal.CloseTab -= OnJournalClose;
-						this.Remove((Widget)journal);
+						this.Remove ((Widget)journal);
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
 					journal.CloseTab += OnJournalClose;
-					this.PackStart((Widget)Journal);
-					(Journal as Widget).Show();
+					this.PackStart ((Widget)Journal);
+					(Journal as Widget).Show ();
 					journal.TabParent = this;
 				}
 			}
 		}
 
-		public ITdiDialog ActiveDialog
-		{
-			get
-			{
+		public ITdiDialog ActiveDialog {
+			get {
 				return activeDialog;
 			}
-			set
-			{
-				if (activeDialog != value)
-				{
-					if(activeDialog != null)
-					{
+			set {
+				if (activeDialog != value) {
+					if (activeDialog != null) {
 						activeDialog.CloseTab -= OnDialogClose;
 						activeDialog.TabNameChanged -= ActiveDialog_TabNameChanged;
 						dialogVBox.Destroy ();
-						this.Remove(dialogVBox);
-						this.Remove(separator);
+						this.Remove (dialogVBox);
+						this.Remove (separator);
 					}
 					activeDialog = value;
-					if (value != null)
-					{
+					if (value != null) {
 						activeDialog.CloseTab += OnDialogClose;
-						separator = new VSeparator();
-						separator.Show();
+						separator = new VSeparator ();
+						separator.Show ();
 						dialogTilteLabel = new Label ();
 						dialogVBox = new VBox ();
 						//dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
 						dialogVBox.PackStart ((Widget)activeDialog);
-						this.PackEnd(dialogVBox);
-						this.PackEnd(separator, false, true, 6);
+						this.PackEnd (dialogVBox);
+						this.PackEnd (separator, false, true, 6);
 						//dialogTilteLabel.Show ();
 						dialogVBox.Show ();
-						(ActiveDialog as Widget).Show();
+						(ActiveDialog as Widget).Show ();
 						activeDialog.TabParent = this;
 						activeDialog.TabNameChanged += ActiveDialog_TabNameChanged;
-						ActiveDialog_TabNameChanged (this, new TdiTabNameChangedEventArgs(ActiveDialog.TabName));
+						ActiveDialog_TabNameChanged (this, new TdiTabNameChangedEventArgs (ActiveDialog.TabName));
 					}
 				}
 
@@ -109,86 +97,81 @@ namespace QSTDI
 			OnSladerTabChanged ();
 		}
 
-		void SetNewDialogTitle(string tilte)
+		void SetNewDialogTitle (string tilte)
 		{
 			dialogTilteLabel.Markup = String.Format ("<b>{0}</b>", tilte);
 		}
 
-		void OnJournalTabNameChanged(object sender, TdiTabNameChangedEventArgs arg)
+		void OnJournalTabNameChanged (object sender, TdiTabNameChangedEventArgs arg)
 		{
 			OnSladerTabChanged ();
 		}
 
-		private void OnSladerTabChanged()
+		private void OnSladerTabChanged ()
 		{
 			if (TabNameChanged != null)
-				TabNameChanged(this, new TdiTabNameChangedEventArgs (TabName));
+				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
 			OnPathUpdate ();
 		}
 
-		protected void OnJournalClose(object sender, TdiTabCloseEventArgs arg)
+		protected void OnJournalClose (object sender, TdiTabCloseEventArgs arg)
 		{
 			if (CloseTab != null)
-				CloseTab(this, arg);
+				CloseTab (this, arg);
 		}
 
-		protected void OnDialogClose(object sender, TdiTabCloseEventArgs arg)
+		protected void OnDialogClose (object sender, TdiTabCloseEventArgs arg)
 		{
 			if (TabParent.CheckClosingSlaveTabs (this as ITdiTab))
 				return;
 
 			ITdiDialog dlg = sender as ITdiDialog;
-			if(arg.AskSave && dlg.HasChanges)
-			{
+			if (arg.AskSave && dlg.HasChanges) {
 				string Message = "Объект изменён. Сохранить изменения перед закрытием?";
-				MessageDialog md = new MessageDialog ( (Window)this.Toplevel, DialogFlags.Modal,
-					MessageType.Question, 
-					ButtonsType.YesNo,
-					Message);
+				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
+					                   MessageType.Question, 
+					                   ButtonsType.YesNo,
+					                   Message);
 				md.AddButton ("Отмена", ResponseType.Cancel);
 				int result = md.Run ();
-				md.Destroy();
+				md.Destroy ();
 				if (result == (int)ResponseType.Cancel)
 					return;
-				if(result == (int)ResponseType.Yes)
-				{
-					if(!dlg.Save() )
-					{
-						logger.Warn("Объект не сохранён. Отмена закрытия...");
+				if (result == (int)ResponseType.Yes) {
+					if (!dlg.Save ()) {
+						logger.Warn ("Объект не сохранён. Отмена закрытия...");
 						return;
 					}
 				}
 			}
 			ActiveDialog = null;
-			(dlg as Widget).Destroy();
+			(dlg as Widget).Destroy ();
 			OnSladerTabChanged ();
 		}
 
-		public TdiSliderTab(ITdiJournal jour)
+		public TdiSliderTab (ITdiJournal jour)
 		{
 			Journal = jour;
 		}
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
+		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
 		{
-			if(slaveTab.FailInitialize)
-			{
+			if (slaveTab.FailInitialize) {
 				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
 					slaveTab.TabName
 				);
 				return;
 			}
 
-			if(masterTab == Journal || masterTab == ActiveDialog)
-				TabParent.AddSlaveTab(this as ITdiTab, slaveTab);
+			if (masterTab == Journal || masterTab == ActiveDialog)
+				TabParent.AddSlaveTab (this as ITdiTab, slaveTab);
 			else
-				TabParent.AddSlaveTab(masterTab, slaveTab);
+				TabParent.AddSlaveTab (masterTab, slaveTab);
 		}
 
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
-			if(tab.FailInitialize)
-			{
+			if (tab.FailInitialize) {
 				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
 					tab.TabName
 				);
@@ -200,18 +183,19 @@ namespace QSTDI
 				return;
 			}
 
-			if(afterTab == Journal || afterTab == ActiveDialog)
-				TabParent.AddTab(tab, this as ITdiTab);
+			if (afterTab == Journal || afterTab == ActiveDialog)
+				TabParent.AddTab (tab, this as ITdiTab);
 			else
-				TabParent.AddTab(tab, afterTab);
+				TabParent.AddTab (tab, afterTab);
 		}
 
 		public bool FailInitialize {
-			get { return Journal != null ? Journal.FailInitialize : false;
+			get {
+				return Journal != null ? Journal.FailInitialize : false;
 			}
 		}
 
-		public bool CheckClosingSlaveTabs(ITdiTab tab)
+		public bool CheckClosingSlaveTabs (ITdiTab tab)
 		{
 			//FIXME Если появятся подчиненые вкладки у журналов, нужно переделать проверку, что бы при закрыти диалога не требовалось зарывать подчиненные вкладки журнала.
 			if (tab == Journal || tab == ActiveDialog)
@@ -219,14 +203,13 @@ namespace QSTDI
 			else
 				return TabParent.CheckClosingSlaveTabs (tab);
 		}
-			
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab(object subject, ITdiTab masterTab, bool CanSlided = true)
+
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
 		{
 
 			TdiBeforeCreateResultFlag result = TabParent.BeforeCreateNewTab (subject, masterTab);
-			if(CanSlided && ActiveDialog != null && result == TdiBeforeCreateResultFlag.Ok)
-			{
-				OnDialogClose(ActiveDialog, new TdiTabCloseEventArgs(true));
+			if (CanSlided && ActiveDialog != null && result == TdiBeforeCreateResultFlag.Ok) {
+				OnDialogClose (ActiveDialog, new TdiTabCloseEventArgs (true));
 				if (ActiveDialog != null)
 					result |= TdiBeforeCreateResultFlag.Canceled;
 			}
@@ -234,11 +217,19 @@ namespace QSTDI
 			return result;
 		}
 
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab(System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
+		public TdiBeforeCreateResultFlag BeforeCreateNewTab (System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
 		{
 			if (subjectType == null) //Потому что при null, может вызваться эта функция.
 				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
 			return TabParent.BeforeCreateNewTab (subjectType, masterTab);
+		}
+
+		public override void Destroy ()
+		{
+			if (ActiveDialog != null)
+				(ActiveDialog as Widget).Destroy ();
+			(Journal as Widget).Destroy ();
+			base.Destroy ();
 		}
 
 		#region ITdiTabWithPath implementation
@@ -256,7 +247,7 @@ namespace QSTDI
 			}
 		}
 
-		protected void OnPathUpdate()
+		protected void OnPathUpdate ()
 		{
 			if (PathChanged != null)
 				PathChanged (this, EventArgs.Empty);
