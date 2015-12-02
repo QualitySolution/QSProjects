@@ -22,6 +22,7 @@ namespace QSOrmProject
 		public static List<IOrmObjectMapping> ClassMappingList;
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink> ();
 		private static DateTime lastCleaning;
+		public static int Count = 0;
 
 		public static ISession OpenSession ()
 		{
