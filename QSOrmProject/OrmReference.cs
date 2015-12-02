@@ -26,6 +26,8 @@ namespace QSOrmProject
 		private DateTime searchStarted;
 		private bool inUpdating;
 
+		int number = -1;
+
 		public ITdiTabParent TabParent { set; get; }
 
 		public bool FailInitialize { get; protected set; }
@@ -176,6 +178,9 @@ namespace QSOrmProject
 
 		void ConfigureDlg ()
 		{
+			OrmMain.Count++;
+			number = OrmMain.Count;
+			logger.Debug ("Открытие {0}", number);
 			Mode = OrmReferenceMode.Normal;
 			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 			if (map != null) {
@@ -215,6 +220,7 @@ namespace QSOrmProject
 		{
 			if (inUpdating)
 				return;
+			logger.Debug ("Обновление в диалоге {0}", number);
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
 			inUpdating = true;
 			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
@@ -288,6 +294,7 @@ namespace QSOrmProject
 
 		protected void OnCloseTab ()
 		{
+			logger.Debug ("Закрытие диалога {0}", number);
 			if (CloseTab != null)
 				CloseTab (this, new TdiTabCloseEventArgs (false));
 		}
