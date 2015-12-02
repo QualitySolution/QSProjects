@@ -48,6 +48,7 @@ namespace QSOrmProject
 		}
 
 		QueryOver itemsQuery;
+
 		public QueryOver ItemsQuery {
 			get {
 				return itemsQuery;
@@ -69,8 +70,8 @@ namespace QSOrmProject
 
 		public event EventHandler Changed;
 
-		[Browsable(false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
-		[DefaultValue(true)]
+		[Browsable (false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
+		[DefaultValue (true)]
 		public bool CanEditReference {
 			get {
 				return canEditReference;
@@ -99,13 +100,11 @@ namespace QSOrmProject
 			set {
 				if (subject == value)
 					return;
-				if(subject is INotifyPropertyChanged)
-				{
+				if (subject is INotifyPropertyChanged) {
 					(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 				}
 				subject = value;
-				if(subject is INotifyPropertyChanged)
-				{
+				if (subject is INotifyPropertyChanged) {
 					(subject as INotifyPropertyChanged).PropertyChanged += OnSubjectPropertyChanged;
 				}
 				UpdateWidget ();
@@ -115,8 +114,7 @@ namespace QSOrmProject
 
 		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if(DisplayFields==null || DisplayFields.Contains (e.PropertyName))
-			{
+			if (DisplayFields == null || DisplayFields.Contains (e.PropertyName)) {
 				UpdateWidget ();
 			}
 		}
@@ -140,8 +138,7 @@ namespace QSOrmProject
 		private List<PropertyInfo> searchPropCache;
 
 		protected List<PropertyInfo> SearchPropCache {
-			get
-			{
+			get {
 				if (searchPropCache != null)
 					return searchPropCache;
 
@@ -165,7 +162,7 @@ namespace QSOrmProject
 
 		public void SetObjectDisplayFunc<TObject> (Func<TObject, string> displayFunc) where TObject : class
 		{
-			if(typeof(TObject) != SubjectType)
+			if (typeof(TObject) != SubjectType)
 				throw new InvalidCastException (String.Format ("SubjectType = {0}, а DisplayFunc задается для {1}", SubjectType, typeof(TObject)));
 			ObjectDisplayFunc = o => displayFunc (o as TObject);
 		}
@@ -186,8 +183,7 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
-			if (displayFields == null || ObjectDisplayFunc != null)
-			{
+			if (displayFields == null || ObjectDisplayFunc != null) {
 				UpdateWidgetNew ();
 				return;
 			}
@@ -200,14 +196,13 @@ namespace QSOrmProject
 
 			object[] values = new object[displayFields.Length];
 			for (int i = 0; i < displayFields.Length; i++) {
-				if(String.IsNullOrWhiteSpace(displayFields [i]))
-				{
-					logger.Warn("Пустая строка в списке полей DisplayFields. Пропускаем...");
+				if (String.IsNullOrWhiteSpace (displayFields [i])) {
+					logger.Warn ("Пустая строка в списке полей DisplayFields. Пропускаем...");
 					continue;
 				}
-				var prop = subjectType.GetProperty(displayFields[i]);
+				var prop = subjectType.GetProperty (displayFields [i]);
 				if (prop == null)
-					throw new InvalidOperationException(String.Format("Поле {0} у класса {1} не найдено.", displayFields[i], SubjectType));
+					throw new InvalidOperationException (String.Format ("Поле {0} у класса {1} не найдено.", displayFields [i], SubjectType));
 				values [i] = prop.GetValue (Subject, null);
 			}
 			entryChangedByUser = false;
@@ -225,14 +220,13 @@ namespace QSOrmProject
 		}
 
 		//Используется только новое отображение объекта
-		private string GetObjectTitle(object item)
+		private string GetObjectTitle (object item)
 		{
 			if (item == null) {
 				return String.Empty;
 			}
 
-			if(ObjectDisplayFunc != null)
-			{
+			if (ObjectDisplayFunc != null) {
 				return ObjectDisplayFunc (item);
 			}
 
@@ -241,7 +235,7 @@ namespace QSOrmProject
 
 		private string[] displayFields;
 
-		[Obsolete("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
+		[Obsolete ("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
 		public string[] DisplayFields {
 			get { return displayFields; }
 			set { displayFields = value; }
@@ -249,10 +243,12 @@ namespace QSOrmProject
 
 		private string displayFormatString;
 
-		[Obsolete("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
+		[Obsolete ("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
 		public string DisplayFormatString {
-			get { return (displayFormatString == null || displayFormatString == String.Empty) 
-					? "{0}" : displayFormatString; }
+			get {
+				return (displayFormatString == null || displayFormatString == String.Empty) 
+					? "{0}" : displayFormatString;
+			}
 			set { displayFormatString = value; }
 		}
 
@@ -278,13 +274,10 @@ namespace QSOrmProject
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			if(searchFields == null)
-			{
+			if (searchFields == null) {
 				var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ();
 				return val.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1;
-			}
-			else
-			{
+			} else {
 				var val = completion.Model.GetValue (iter, (int)completionCol.Item);
 				foreach (var prop in SearchPropCache) {
 					string Str = prop.GetValue (val, null).ToString ();
@@ -314,12 +307,9 @@ namespace QSOrmProject
 			else
 				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
-			if(ItemsQuery != null)
-			{
+			if (ItemsQuery != null) {
 				SelectDialog = new OrmReference (localUoW, ItemsQuery);
-			}
-			else
-			{
+			} else {
 				if (ItemsCriteria == null)
 					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
 
@@ -370,12 +360,9 @@ namespace QSOrmProject
 			else
 				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
-			if(ItemsQuery != null)
-			{
+			if (ItemsQuery != null) {
 				ItemsCriteria = ItemsQuery.DetachedCriteria.GetExecutableCriteria (localUoW.Session);
-			}
-			else
-			{
+			} else {
 				if (ItemsCriteria == null)
 					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
 			}
@@ -404,6 +391,13 @@ namespace QSOrmProject
 				Subject = null;
 			else
 				UpdateWidgetNew ();
+		}
+
+		public override void Destroy ()
+		{
+			logger.Debug ("EntryReference Destroy() called.");
+			SubjectType = null;
+			base.Destroy ();
 		}
 	}
 }

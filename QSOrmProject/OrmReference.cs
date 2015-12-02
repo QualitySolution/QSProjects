@@ -413,6 +413,16 @@ namespace QSOrmProject
 			if (OrmMain.DeleteObject (datatreeviewRef.GetSelectedObjects () [0]))
 				UpdateObjectList ();
 		}
+
+		public override void Destroy ()
+		{
+			logger.Debug ("OrmReference Destroy() called.");
+			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+			if (map != null) {
+				map.ObjectUpdated -= OnRefObjectUpdated;
+			}
+			base.Destroy ();
+		}
 	}
 
 	public enum OrmReferenceMode
