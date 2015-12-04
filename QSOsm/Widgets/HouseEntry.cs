@@ -16,6 +16,8 @@ namespace QSOsm
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
+		public event EventHandler CompletionLoaded;
+
 		private ListStore completionListStore;
 
 		private Thread queryThread;
@@ -111,24 +113,26 @@ namespace QSOsm
 		{
 			if (String.IsNullOrWhiteSpace (Street.Name)) {
 				if (completionListStore != null)
-					completionListStore.Clear ();
-				return;
-			}
+					completionListStore.Clear ();				
+			} else {
 				
-			logger.Info ("Запрос домов на {0}...", Street.Name);
-			IOsmService svc = OsmWorker.GetOsmService ();
+				logger.Info ("Запрос домов на {0}...", Street.Name);
+				IOsmService svc = OsmWorker.GetOsmService ();
 
-			List<string> houses;
-			if (Street.Districts == null)
-				houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
-			else
-				houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
-			completionListStore = new ListStore (typeof(string));
-			foreach (var h in houses) {
-				completionListStore.AppendValues (h);
+				List<string> houses;
+				if (Street.Districts == null)
+					houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
+				else
+					houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
+				completionListStore = new ListStore (typeof(string));
+				foreach (var h in houses) {
+					completionListStore.AppendValues (h);
+				}
+				this.Completion.Model = completionListStore;
+				logger.Debug ("Получено {0} домов...", houses.Count);
 			}
-			this.Completion.Model = completionListStore;
-			logger.Debug ("Получено {0} домов...", houses.Count);
+			if (CompletionLoaded != null)
+				Gtk.Application.Invoke(CompletionLoaded);
 		}
 
 		protected override void OnChanged ()
