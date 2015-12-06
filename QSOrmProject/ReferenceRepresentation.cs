@@ -49,12 +49,14 @@ namespace QSOrmProject
 			set {
 				if (representationModel == value)
 					return;
+				if(representationModel != null)
+					RepresentationModel.ItemsListUpdated -= RepresentationModel_ItemsListUpdated;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
+				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				ormtableview.RepresentationModel = RepresentationModel;
 				if (RepresentationModel.RepresentationFilter != null)
 					FilterWidget = RepresentationModel.RepresentationFilter;
-				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				hboxSearch.Visible = RepresentationModel.SearchFieldsExist;
 			}
 		}
