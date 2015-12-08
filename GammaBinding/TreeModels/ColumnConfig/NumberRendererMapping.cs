@@ -55,9 +55,19 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		/// <summary>
+		/// If you enable editing don't forget add Adjustment
+		/// </summary>
 		public NumberRendererMapping<TNode> Editing (bool on = true)
 		{
 			cellRenderer.Editable = on;
+			return this;
+		}
+
+		public NumberRendererMapping<TNode> Editing (Adjustment adjustment)
+		{
+			cellRenderer.Adjustment = adjustment;
+			cellRenderer.Editable = true;
 			return this;
 		}
 
