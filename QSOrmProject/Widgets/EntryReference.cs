@@ -274,7 +274,7 @@ namespace QSOrmProject
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			if (searchFields == null) {
+			if (searchFields==null || searchFields.Length == 0) {
 				var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ();
 				return val.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1;
 			} else {
@@ -355,8 +355,10 @@ namespace QSOrmProject
 
 			IUnitOfWork localUoW;
 
-			if (MyOrmDialog != null)
-				localUoW = MyOrmDialog.UoW;
+			var dlg = OrmMain.FindMyDialog (this);
+
+			if (dlg != null)
+				localUoW = dlg.UoW;
 			else
 				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
 
