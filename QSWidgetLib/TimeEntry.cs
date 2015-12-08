@@ -1,12 +1,15 @@
 ﻿using System;
 using Gtk;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace QSWidgetLib
 {
 	[ToolboxItem (true)]
 	public class TimeEntry : Gtk.Entry
 	{
+		static readonly char[] timeSeparators={'-', ':', '.','/','\\',','};
+
 		bool showSeconds;
 
 		public bool ShowSeconds {
@@ -41,7 +44,7 @@ namespace QSWidgetLib
 		public DateTime DateTime {
 			get {
 				DateTime result;
-				DateTime.TryParse (Text, out result);
+				TryParseDateTime (Text, out result);
 				return result;
 			}
 			set {
@@ -55,7 +58,7 @@ namespace QSWidgetLib
 		public TimeSpan Time {
 			get {
 				TimeSpan result;
-				TimeSpan.TryParse (Text, out result);
+				TryParseTimeSpan (Text, out result);
 				return result;
 			}
 			set {
@@ -66,14 +69,62 @@ namespace QSWidgetLib
 			}
 		}
 
+		protected bool TryParseTimeSpan(string text, out TimeSpan result){
+			CultureInfo culture = CultureInfo.InvariantCulture;
+			string formattedText;
+			result = new TimeSpan ();
+			return TryFormat(text, out formattedText) 
+				&& TimeSpan.TryParseExact (formattedText, "hh\\:mm", culture, out result);
+		}
+
+		protected bool TryParseDateTime(string text, out DateTime result){
+			CultureInfo culture = CultureInfo.InvariantCulture;
+			string formattedText;
+			result = new DateTime();
+			return TryFormat(text, out formattedText) 
+				&& DateTime.TryParseExact (formattedText, "hh\\:mm", culture, DateTimeStyles.None, out result);
+		}
+
+		protected bool TryFormat(string text,out string result){
+			var split = text.Split (timeSeparators);
+			if (split.Length > 2) {
+				result = "";
+				return false;
+			} else if (split.Length == 1) {
+				string padded = (text.Length < 3) 
+					? text.PadRight (text.Length + 2, '0')
+					: text;	
+				split = new string[]{
+					padded.Substring(0,padded.Length-2),
+					padded.Substring(padded.Length-2,2)
+				};
+			}
+			string hours = split[0];
+			string minutes = split [1];
+			hours = hours.PadLeft (2, '0');
+			minutes = minutes.PadLeft (2, '0');
+			result = hours + ":" + minutes;
+			return true;
+		}
+			
 		protected override void OnChanged ()
 		{
 			base.OnChanged ();
 			TimeSpan outTime;
-			if (TimeSpan.TryParse (Text, out outTime))
+			if (TryParseTimeSpan(Text,out outTime))
 				ModifyText (StateType.Normal);
 			else
 				ModifyText (StateType.Normal, new Gdk.Color (255, 0, 0)); 
+		}
+
+		protected override bool OnFocusOutEvent (Gdk.EventFocus evnt)
+		{
+			var result = base.OnFocusOutEvent (evnt);
+			TimeSpan timeSpan;
+			if(TryParseTimeSpan(Text,out timeSpan)){
+				Text = timeSpan.ToString();
+			}
+			return result;
 		}
 	}
 }
