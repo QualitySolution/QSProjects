@@ -9,7 +9,7 @@ namespace QSOrmProject.RepresentationModel
 
 		public Type ObjectType {
 			get {
-				throw new NotSupportedException ();
+				return null;
 			}
 		}
 

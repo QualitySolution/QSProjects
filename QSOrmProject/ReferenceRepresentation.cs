@@ -137,10 +137,14 @@ namespace QSOrmProject
 		void ConfigureDlg ()
 		{
 			Mode = OrmReferenceMode.Normal;
-			object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
-			if (att.Length > 0) {
-				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
-				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+			buttonAdd.Visible = buttonEdit.Visible = buttonDelete.Visible = objectType != null;
+			if(objectType != null)
+			{
+				object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+				if (att.Length > 0) {
+					this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
+					ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+				}
 			}
 			ormtableview.Selection.Changed += OnTreeviewSelectionChanged;
 		}
