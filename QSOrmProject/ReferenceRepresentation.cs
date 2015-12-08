@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Gtk;
 using NLog;
+using QSOrmProject;
 using QSOrmProject.RepresentationModel;
 using QSTDI;
-using QSOrmProject;
 
 namespace QSOrmProject
 {
@@ -88,7 +89,8 @@ namespace QSOrmProject
 			get { return mode; }
 			set {
 				mode = value;
-				hboxSelect.Visible = (mode == OrmReferenceMode.Select);
+				hboxSelect.Visible = (mode == OrmReferenceMode.Select || mode == OrmReferenceMode.MultiSelect);
+				ormtableview.Selection.Mode = (mode == OrmReferenceMode.MultiSelect) ? SelectionMode.Multiple : SelectionMode.Single;
 			}
 		}
 
@@ -220,11 +222,13 @@ namespace QSOrmProject
 
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
-			if (ObjectSelected != null) {
-				var node = ormtableview.GetSelectedObject ();
-				int selectedId = DomainHelper.GetId (node);
+			if (ObjectSelected != null) 
+			{
+				var selected = ormtableview.GetSelectedObjects ()
+					.Select (node => new RepresentationSelectResult (DomainHelper.GetId (node), node))
+					.ToArray ();
 
-				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selectedId, node));
+				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selected));
 			}
 			OnCloseTab ();
 		}
@@ -254,13 +258,34 @@ namespace QSOrmProject
 
 	public class ReferenceRepresentationSelectedEventArgs : EventArgs
 	{
-		public int ObjectId { get; private set; }
+		public int ObjectId {
+			get {
+				return Selected[0].EntityId;
+			}
+		}
+			
+		public object VMNode {
+			get {
+				return Selected[0].VMNode;
+			}
+		}
 
+		public RepresentationSelectResult[] Selected { get; private set; }
+
+		public ReferenceRepresentationSelectedEventArgs (RepresentationSelectResult[] selected)
+		{
+			Selected = selected;
+		}
+	}
+
+	public class RepresentationSelectResult
+	{
+		public int EntityId { get; private set; }
 		public object VMNode { get; private set; }
 
-		public ReferenceRepresentationSelectedEventArgs (int id, object node)
+		public RepresentationSelectResult(int id, object node)
 		{
-			ObjectId = id;
+			EntityId = id;
 			VMNode = node;
 		}
 	}

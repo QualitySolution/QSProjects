@@ -435,7 +435,8 @@ namespace QSOrmProject
 	public enum OrmReferenceMode
 	{
 		Normal,
-		Select
+		Select,
+		MultiSelect
 	}
 
 	[Flags]
