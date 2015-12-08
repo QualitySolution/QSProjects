@@ -250,7 +250,7 @@ namespace QSOrmProject
 
 		protected void OnOrmtableviewRowActivated (object o, RowActivatedArgs args)
 		{
-			if (Mode == OrmReferenceMode.Select)
+			if (Mode == OrmReferenceMode.Select || Mode == OrmReferenceMode.MultiSelect)
 				buttonSelect.Click ();
 			else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
 				buttonEdit.Click ();
