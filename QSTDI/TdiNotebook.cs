@@ -32,6 +32,7 @@ namespace QSTDI
 					                   MessageType.Question, 
 					                   ButtonsType.YesNo,
 					                   Message);
+				(md.Image as Image).SetFromStock (Stock.Quit, IconSize.Dialog);
 				int result = md.Run ();
 				md.Destroy ();
 				if (result == (int)ResponseType.No)
