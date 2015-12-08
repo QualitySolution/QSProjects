@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
@@ -271,6 +272,11 @@ namespace QSOrmProject
 		}
 
 		public RepresentationSelectResult[] Selected { get; private set; }
+
+		public IEnumerable<TNode> GetNodes<TNode> ()
+		{
+			return Selected.Select (r => r.VMNode).Cast<TNode>();
+		}
 
 		public ReferenceRepresentationSelectedEventArgs (RepresentationSelectResult[] selected)
 		{
