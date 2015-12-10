@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Gamma.Utilities;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
+using Gamma.Binding;
 
 namespace Gamma.ColumnConfig
 {
@@ -15,6 +16,16 @@ namespace Gamma.ColumnConfig
 		{
 			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
 			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", dataProperty.Compile ().Invoke (n)));
+		}
+
+		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty, IValueConverter converter)
+			: base(column)
+		{
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
+			cellRenderer.EditingValueConverter = converter;
+			cellRenderer.LambdaSetters.Add ((c, n) => 
+				c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}",
+					c.EditingValueConverter.Convert (dataProperty.Compile ().Invoke (n), typeof(double), null, null)));
 		}
 
 		public NumberRendererMapping (ColumnMapping<TNode> column)

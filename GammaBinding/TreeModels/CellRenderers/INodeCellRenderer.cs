@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Gamma.Binding;
 
 namespace Gamma.GtkWidgets.Cells
 {
@@ -9,6 +10,7 @@ namespace Gamma.GtkWidgets.Cells
 		void RenderNode(object node);
 		string DataPropertyName { get;}
 		PropertyInfo DataPropertyInfo { get; }
+		IValueConverter EditingValueConverter { get;}
 	}
 
 }

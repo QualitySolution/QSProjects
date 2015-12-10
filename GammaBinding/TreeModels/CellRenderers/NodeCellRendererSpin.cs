@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gtk;
 using System.Reflection;
+using Gamma.Binding;
+using Gtk;
 
 namespace Gamma.GtkWidgets.Cells
 {
@@ -13,6 +14,8 @@ namespace Gamma.GtkWidgets.Cells
 			}}
 
 		public PropertyInfo DataPropertyInfo { get; set;}
+
+		public IValueConverter EditingValueConverter { get; set;}
 
 		public NodeCellRendererSpin ()
 		{

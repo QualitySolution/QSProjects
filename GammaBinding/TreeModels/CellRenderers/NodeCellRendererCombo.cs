@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Gtk;
+using Gamma.Binding;
 
 namespace Gamma.GtkWidgets.Cells
 {
@@ -13,6 +14,8 @@ namespace Gamma.GtkWidgets.Cells
 			}}
 
 		public PropertyInfo DataPropertyInfo { get; set;}
+
+		public IValueConverter EditingValueConverter { get; set;}
 
 		public Func<object, string> DisplayFunc { get; set;}
 

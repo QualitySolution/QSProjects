@@ -138,7 +138,10 @@ namespace Gamma.GtkWidgets
 					if(spin != null)
 					{
 						//WORKAROUND to fix GTK bug that CellRendererSpin start editing only with integer number
-						spin.Adjustment.Value = Convert.ToDouble (propValue);
+						if (cell.EditingValueConverter == null)
+							spin.Adjustment.Value = Convert.ToDouble (propValue);
+						else
+							spin.Adjustment.Value = (double)cell.EditingValueConverter.Convert (propValue, typeof(double), null, null);
 					}
 				}
 			}
@@ -159,7 +162,11 @@ namespace Gamma.GtkWidgets
 					object obj = YTreeModel.NodeFromIter (iter);
 
 					if (cell.DataPropertyInfo.CanWrite && !String.IsNullOrWhiteSpace(args.NewText)) {
-						object newval = System.Convert.ChangeType (args.NewText, cell.DataPropertyInfo.PropertyType);
+						object newval;
+						if(cell.EditingValueConverter == null)
+							newval = System.Convert.ChangeType (args.NewText, cell.DataPropertyInfo.PropertyType);
+						else
+							newval = cell.EditingValueConverter.ConvertBack (args.NewText, cell.DataPropertyInfo.PropertyType, null, null);
 						cell.DataPropertyInfo.SetValue (obj, newval, null);
 					}
 				}

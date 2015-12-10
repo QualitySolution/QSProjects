@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Gamma.Binding;
 using Gamma.Utilities;
 
 namespace Gamma.ColumnConfig
@@ -114,6 +115,14 @@ namespace Gamma.ColumnConfig
 		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
 		{
 			var render = new NumberRendererMapping<TNode> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+
+		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, IValueConverter converter, bool expand = true)
+		{
+			var render = new NumberRendererMapping<TNode> (this, dataProperty, converter);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
