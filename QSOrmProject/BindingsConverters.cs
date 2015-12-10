@@ -20,5 +20,23 @@ namespace QSOrmProject
 			return null;
 		}
 	}
+
+	public class MultiplierToPercentConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (targetType == typeof(double))
+				return (System.Convert.ToDouble (value) * 100);
+			return null;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if(targetType == typeof(decimal))
+				return (System.Convert.ToDecimal(value) * 0.01m);
+			return null;
+		}
+	}
+
 }
 
