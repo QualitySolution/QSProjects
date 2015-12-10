@@ -54,6 +54,11 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddTextRenderer ();
 		}
 
+		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddProgressRenderer (dataProperty, expand);
+		}
+
 		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
 		{
 			return myColumn.AddNumericRenderer (dataProperty, expand);

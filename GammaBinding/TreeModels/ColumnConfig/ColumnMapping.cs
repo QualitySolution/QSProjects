@@ -103,6 +103,14 @@ namespace Gamma.ColumnConfig
 			return render;
 		}
 
+		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
+		{
+			var render = new ProgressRendererMapping<TNode> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+
 		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
 		{
 			var render = new NumberRendererMapping<TNode> (this, dataProperty);

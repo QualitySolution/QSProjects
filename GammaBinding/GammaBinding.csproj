@@ -88,6 +88,8 @@
     <Compile Include="GtkWidgets\yCheckButton.cs" />
     <Compile Include="Core\BindingObjectSource.cs" />
     <Compile Include="Core\BindingSourceBase.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererProgress.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ProgressRendererMapping.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
