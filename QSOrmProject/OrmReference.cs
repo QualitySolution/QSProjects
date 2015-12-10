@@ -107,6 +107,8 @@ namespace QSOrmProject
 		public OrmReferenceMode Mode {
 			get { return mode; }
 			set {
+				if (value == OrmReferenceMode.MultiSelect)
+					throw new NotImplementedException ();
 				mode = value;
 				hboxSelect.Visible = (mode == OrmReferenceMode.Select);
 			}
