@@ -105,6 +105,19 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		public static string PersonFullName (string surname, string name, string patronymicName)
+		{
+			var parts = new List<string>();
+
+			if (!String.IsNullOrWhiteSpace(surname))
+				parts.Add(surname);
+			if (!String.IsNullOrWhiteSpace (name))
+				parts.Add(name);
+			if (!String.IsNullOrWhiteSpace (patronymicName))
+				parts.Add(patronymicName);
+			return String.Join(" ", parts);
+		}
+
 		public static string BytesToIECUnitsString (ulong bytes)
 		{
 			if (bytes < (ulong)PowTwo.Pow10)
