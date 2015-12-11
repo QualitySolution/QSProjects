@@ -2,7 +2,30 @@
 <PolicySet name="QSPolicy">
   <TextStylePolicy inheritsSet="Mono" inheritsScope="text/plain" scope="text/plain" />
   <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp">
-    <AfterDelegateDeclarationParameterComma>True</AfterDelegateDeclarationParameterComma>
+    <IndentSwitchBody>True</IndentSwitchBody>
+    <IndentBlocksInsideExpressions>True</IndentBlocksInsideExpressions>
+    <AnonymousMethodBraceStyle>NextLine</AnonymousMethodBraceStyle>
+    <PropertyBraceStyle>NextLine</PropertyBraceStyle>
+    <PropertyGetBraceStyle>NextLine</PropertyGetBraceStyle>
+    <PropertySetBraceStyle>NextLine</PropertySetBraceStyle>
+    <EventBraceStyle>NextLine</EventBraceStyle>
+    <EventAddBraceStyle>NextLine</EventAddBraceStyle>
+    <EventRemoveBraceStyle>NextLine</EventRemoveBraceStyle>
+    <StatementBraceStyle>NextLine</StatementBraceStyle>
+    <ElseNewLinePlacement>NewLine</ElseNewLinePlacement>
+    <CatchNewLinePlacement>NewLine</CatchNewLinePlacement>
+    <FinallyNewLinePlacement>NewLine</FinallyNewLinePlacement>
+    <WhileNewLinePlacement>DoNotCare</WhileNewLinePlacement>
+    <ArrayInitializerWrapping>DoNotChange</ArrayInitializerWrapping>
+    <ArrayInitializerBraceStyle>NextLine</ArrayInitializerBraceStyle>
+    <BeforeMethodDeclarationParentheses>False</BeforeMethodDeclarationParentheses>
+    <BeforeMethodCallParentheses>False</BeforeMethodCallParentheses>
+    <BeforeConstructorDeclarationParentheses>False</BeforeConstructorDeclarationParentheses>
+    <NewLineBeforeConstructorInitializerColon>NewLine</NewLineBeforeConstructorInitializerColon>
+    <NewLineAfterConstructorInitializerColon>SameLine</NewLineAfterConstructorInitializerColon>
+    <BeforeDelegateDeclarationParentheses>False</BeforeDelegateDeclarationParentheses>
+    <NewParentheses>False</NewParentheses>
+    <SpacesBeforeBrackets>False</SpacesBeforeBrackets>
   </CSharpFormattingPolicy>
   <NameConventionPolicy>
     <Rules>
@@ -184,5 +207,7 @@
     </Rules>
   </NameConventionPolicy>
   <VersionControlPolicy inheritsSet="Mono" />
-  <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+  <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp">
+    <TabsToSpaces>False</TabsToSpaces>
+  </TextStylePolicy>
 </PolicySet>
