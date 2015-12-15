@@ -4,7 +4,6 @@ using Gtk;
 using QSProjectsLib;
 using System.Text.RegularExpressions;
 using NLog;
-using System.Linq;
 using NLog.Targets;
 using System.Collections.Generic;
 

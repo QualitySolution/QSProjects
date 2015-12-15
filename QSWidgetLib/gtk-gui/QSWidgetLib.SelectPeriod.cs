@@ -5,11 +5,17 @@ namespace QSWidgetLib
 	public partial class SelectPeriod
 	{
 		private global::Gtk.VBox vboxMain;
+		
 		private global::Gtk.Label label1;
+		
 		private global::Gtk.Table RadiosTable;
+		
 		private global::Gtk.HBox hbox1;
+		
 		private global::QSWidgetLib.DatePicker StartDate;
+		
 		private global::Gtk.Label label2;
+		
 		private global::QSWidgetLib.DatePicker EndDate;
 
 		protected virtual void Build ()
@@ -25,7 +31,7 @@ namespace QSWidgetLib
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = "<b>Выбор периода</b>";
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Выбор периода</b>");
 			this.label1.UseMarkup = true;
 			this.vboxMain.Add (this.label1);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vboxMain [this.label1]));
@@ -58,7 +64,7 @@ namespace QSWidgetLib
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = "-";
+			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("-");
 			this.hbox1.Add (this.label2);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.label2]));
 			w4.Position = 1;

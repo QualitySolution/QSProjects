@@ -5,27 +5,49 @@ namespace QSProjectsLib
 	public partial class Reference
 	{
 		private global::Gtk.UIManager UIManager;
+		
 		private global::Gtk.Action addAction1;
+		
 		private global::Gtk.Action editAction1;
+		
 		private global::Gtk.Action removeAction1;
+		
 		private global::Gtk.VBox vbox2;
+		
 		private global::Gtk.Toolbar toolbar1;
+		
 		private global::Gtk.HBox hbox1;
+		
 		private global::Gtk.Label label1;
+		
 		private global::Gtk.Entry entryFilter;
+		
 		private global::Gtk.Button buttonClean;
+		
 		private global::Gtk.HBox hboxOrdinal;
+		
 		private global::Gtk.Label label2;
+		
 		private global::Gtk.Button buttonOrdinalUp;
+		
 		private global::Gtk.Button buttonOrdinalDown;
+		
 		private global::Gtk.EventBox eventboxOrdinalInfo;
+		
 		private global::Gtk.HBox hboxOrdinalInfo;
+		
 		private global::Gtk.Label label3;
+		
 		private global::Gtk.Button buttonSaveOrdinal;
+		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
+		
 		private global::Gtk.TreeView treeviewref;
+		
 		private global::Gtk.Button buttonClose;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

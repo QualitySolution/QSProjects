@@ -35,7 +35,7 @@ namespace QSUpdater.DB
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSUpdater.DB.DBUpdateProcess
 			this.Name = "QSUpdater.DB.DBUpdateProcess";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Обновления базы данных");
+			this.Title = global::Mono.Unix.Catalog.GetString ("Требуется обновление базы данных");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Internal child QSUpdater.DB.DBUpdateProcess.VBox
 			global::Gtk.VBox w1 = this.VBox;

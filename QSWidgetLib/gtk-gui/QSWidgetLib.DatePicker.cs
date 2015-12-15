@@ -5,7 +5,9 @@ namespace QSWidgetLib
 	public partial class DatePicker
 	{
 		private global::Gtk.HBox hbox1;
+		
 		private global::Gtk.Entry entryDate;
+		
 		private global::Gtk.Button buttonEditDate;
 
 		protected virtual void Build ()

@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace QSReport
 {
-	public class ReportsConfig
+	public static class ReportsConfig
 	{
-		public ReportsConfig ()
-		{
-		}
-	}
+		public static List<ReportInfo> Reports = new List<ReportInfo>();
+	} 
 }
 

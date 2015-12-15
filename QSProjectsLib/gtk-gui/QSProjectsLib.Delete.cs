@@ -5,12 +5,19 @@ namespace QSProjectsLib
 	public partial class Delete
 	{
 		private global::Gtk.VBox vbox2;
+		
 		private global::Gtk.HBox hbox6;
+		
 		private global::Gtk.Image image5602;
+		
 		private global::Gtk.Label label4;
+		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
+		
 		private global::Gtk.TreeView treeviewObjects;
+		
 		private global::Gtk.Button buttonNo;
+		
 		private global::Gtk.Button buttonYes;
 
 		protected virtual void Build ()

@@ -89,7 +89,7 @@ namespace QSWidgetLib
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 1F;
-			this.label1.LabelProp = "Город";
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Город");
 			this.table1.Add (this.label1);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
 			w5.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -98,7 +98,7 @@ namespace QSWidgetLib
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 1F;
-			this.label2.LabelProp = "Улица";
+			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Улица");
 			this.table1.Add (this.label2);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
 			w6.TopAttach = ((uint)(1));
@@ -109,7 +109,7 @@ namespace QSWidgetLib
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 1F;
-			this.label3.LabelProp = "Дом";
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Дом");
 			this.table1.Add (this.label3);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
 			w7.TopAttach = ((uint)(2));
@@ -120,7 +120,7 @@ namespace QSWidgetLib
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
-			this.label4.LabelProp = "Строение";
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Строение");
 			this.table1.Add (this.label4);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 			w8.TopAttach = ((uint)(2));

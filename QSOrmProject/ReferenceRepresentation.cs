@@ -63,6 +63,14 @@ namespace QSOrmProject
 			}
 		}
 
+		public bool ShowFilter{
+			get{ 
+				return checkShowFilter.Active;
+			}
+			set { checkShowFilter.Active = value;
+			}
+		}
+
 		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
 		{
 			UpdateSum ();

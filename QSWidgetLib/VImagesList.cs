@@ -29,7 +29,7 @@ namespace QSWidgetLib
 				ImageViewer view = new ImageViewer();
 				view.VerticalFit = false;
 				view.HorizontalFit = true;
-				view.pixbuf = pix;
+				view.Pixbuf = pix;
 				//view.ButtonPressEvent += OnImagesButtonPressEvent;
 				vboxImages.Add(view);
 			}

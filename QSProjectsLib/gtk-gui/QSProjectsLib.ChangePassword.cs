@@ -5,12 +5,19 @@ namespace QSProjectsLib
 	public partial class ChangePassword
 	{
 		private global::Gtk.Label label1;
+		
 		private global::Gtk.Table table1;
+		
 		private global::Gtk.Entry entryPassword;
+		
 		private global::Gtk.Entry entryPassword2;
+		
 		private global::Gtk.Label label2;
+		
 		private global::Gtk.Label label3;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

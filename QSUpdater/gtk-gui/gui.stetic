@@ -108,7 +108,7 @@
   </widget>
   <widget class="Gtk.Dialog" id="QSUpdater.DB.DBUpdateProcess" design-size="486 381">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">Обновления базы данных</property>
+    <property name="Title" translatable="yes">Требуется обновление базы данных</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
