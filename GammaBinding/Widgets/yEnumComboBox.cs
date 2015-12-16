@@ -77,6 +77,21 @@ namespace Gamma.Widgets
 			}
 		}
 
+		bool defaultFirst;
+
+		/// <summary>
+		/// If true combo will select first item by default, insted of empty combo state.
+		/// </summary>
+		[DefaultValue (false)]
+		public bool DefaultFirst {
+			get {
+				return defaultFirst;
+			}
+			set {
+				defaultFirst = value;
+			}
+		}
+
 		object selectedItem;
 
 		/// <summary>
@@ -202,7 +217,7 @@ namespace Gamma.Widgets
 				AppendEnumItem (info);
 			}
 
-			if (ShowSpecialStateAll || ShowSpecialStateNot)
+			if (ShowSpecialStateAll || ShowSpecialStateNot || DefaultFirst)
 				Active = 0;
 		}
 
