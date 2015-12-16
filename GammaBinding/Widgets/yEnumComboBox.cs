@@ -197,6 +197,7 @@ namespace Gamma.Widgets
 
 		void ResetLayout ()
 		{
+			selectedItem = null;
 			comboListStore.Clear ();
 
 			if (ItemsEnum == null)
