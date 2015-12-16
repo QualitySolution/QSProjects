@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Gamma.Utilities
 {
@@ -13,6 +14,14 @@ namespace Gamma.Utilities
 			else
 				return null;
 		}
+
+		public static T[] GetAttributes<T>(this Enum value) where T : Attribute {
+			var type = value.GetType();
+			var memberInfo = type.GetMember(value.ToString());
+			var attributes = memberInfo[0].GetCustomAttributes (typeof(T), false);
+			return attributes.Cast<T> ().ToArray ();
+		}
+
 	}
 }
 
