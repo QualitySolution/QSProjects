@@ -58,11 +58,9 @@ namespace QSOrmProject
 				//Запускаем диалог
 				editDialog.ShowAll();
 				int result = editDialog.Run();
-				if(result == (int)ResponseType.Ok)
-				{ 
-					string name = (string) tempObject.GetPropertyValue ("Name");
-					if(String.IsNullOrWhiteSpace (name))
-					{
+				if (result == (int)ResponseType.Ok) { 
+					string name = (string)tempObject.GetPropertyValue ("Name");
+					if (String.IsNullOrWhiteSpace (name)) {
 						var att = DomainHelper.GetSubjectNames (tempObject);
 						string subjectName = att != null ? att.Accusative : null;
 						string msg = String.Format ("Название {0} пустое и не будет сохранено.",
@@ -70,15 +68,14 @@ namespace QSOrmProject
 						             );
 						MessageDialogWorks.RunWarningDialog (msg);
 						logger.Warn (msg);
-						editDialog.Destroy();
+						editDialog.Destroy ();
 						return null;
 					}
 					var list = uow.Session.CreateCriteria (objectType)
 						.Add (Restrictions.Eq ("Name", name))
-						.Add (Restrictions.Not(Restrictions.IdEq (DomainHelper.GetId (tempObject))))
+						.Add (Restrictions.Not (Restrictions.IdEq (DomainHelper.GetId (tempObject))))
 						.List ();
-					if(list.Count > 0)
-					{
+					if (list.Count > 0) {
 						var att = DomainHelper.GetSubjectNames (tempObject);
 						string subjectName = att != null ? StringWorks.StringToTitleCase (att.Nominative) : null;
 						string msg = String.Format ("{0} с таким названием уже существует.",
@@ -86,13 +83,16 @@ namespace QSOrmProject
 						             );
 						MessageDialogWorks.RunWarningDialog (msg);
 						logger.Warn (msg);
-						editDialog.Destroy();
-						return list[0];
+						editDialog.Destroy ();
+						return list [0];
 					}
 					uow.TrySave (tempObject);
 					uow.Commit ();
-					OrmMain.NotifyObjectUpdated(tempObject);
-				}
+					OrmMain.NotifyObjectUpdated (tempObject);
+				} 
+				else
+					tempObject = null;
+				
 				editDialog.Destroy();
 				return tempObject;
 			}
