@@ -426,7 +426,7 @@ namespace QSOrmProject
 
 		public override void Destroy ()
 		{
-			logger.Debug ("OrmReference Destroy() called.");
+			logger.Debug ("OrmReference #{0} Destroy() called.", number);
 			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 			if (map != null) {
 				map.ObjectUpdated -= OnRefObjectUpdated;

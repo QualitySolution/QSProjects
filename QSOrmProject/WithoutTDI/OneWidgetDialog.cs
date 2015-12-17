@@ -47,6 +47,12 @@ namespace QSOrmProject
 		{
 			Title = tdiTab.TabName;
 		}
+
+		protected override void OnDestroyed ()
+		{
+			(tdiTab as Widget).Destroy ();
+			base.OnDestroyed ();
+		}
 	}
 }
 
