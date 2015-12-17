@@ -192,7 +192,8 @@ namespace QSOrmProject
 					SearchFields = map.RefSearchFields;
 				if (map.RefFilterClass != null)
 					FilterClass = map.RefFilterClass;
-			}
+			} else
+				throw new InvalidOperationException (String.Format ("Для использования диалога, класс {0} должен быть добавлен в мапинг OrmMain.ClassMappingList.", objectType));
 			object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0) {
 				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
