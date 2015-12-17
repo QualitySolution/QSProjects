@@ -2,7 +2,7 @@
 using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
 
-namespace QSBusinessCommon
+namespace QSBusinessCommon.Domain
 {
 	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",

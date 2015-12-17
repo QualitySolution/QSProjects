@@ -1,4 +1,5 @@
 ﻿using System;
+using QSBusinessCommon.Domain;
 using QSOrmProject;
 using QSValidation;
 
