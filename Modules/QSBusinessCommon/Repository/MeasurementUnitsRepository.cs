@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using QSBusinessCommon;
 using QSOrmProject;
+using QSBusinessCommon.Domain;
 
-namespace workwear.Repository
+namespace QSBusinessCommon.Repository
 {
 	public static class MeasurementUnitsRepository
 	{

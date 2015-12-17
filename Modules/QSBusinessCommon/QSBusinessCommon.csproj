@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSBusinessCommon</RootNamespace>
     <AssemblyName>QSBusinessCommon</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +57,7 @@
     <Compile Include="Dialogs\MeasurementUnitsDlg.cs" />
     <Compile Include="Domain\MeasurementUnits.cs" />
     <Compile Include="HibernateMapping\MeasurementUnitsMap.cs" />
+    <Compile Include="Repository\MeasurementUnitsRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -90,5 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="HibernateMapping\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
 </Project>
