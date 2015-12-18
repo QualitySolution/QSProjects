@@ -1,6 +1,7 @@
 ﻿using System;
-using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
+using QSOrmProject;
+using QSOrmProject.DomainMapping;
 
 namespace QSBusinessCommon.Domain
 {
@@ -46,6 +47,15 @@ namespace QSBusinessCommon.Domain
 		{
 			Name = String.Empty;
 		}
+
+		public static IOrmObjectMapping GetOrmMapping()
+		{
+			return OrmObjectMapping<MeasurementUnits>.Create ().Dialog<MeasurementUnitsDlg> ().DefaultTableView ()
+				.Column("ОКЕИ", i => i.OKEI)
+				.SearchColumn ("Наименование", i => i.Name)
+				.Column("Точность", i => i.Digits).End ();
+		}
+
 	}
 }
 
