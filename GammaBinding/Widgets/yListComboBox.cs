@@ -41,9 +41,9 @@ namespace Gamma.Widgets
 
 		public Func<object, string> RenderTextFunc;
 
-		public virtual void SetRenderTextFunc<TObject> (Func<TObject, string> renderTextFunc) where TObject : class
+		public virtual void SetRenderTextFunc<TObject> (Func<TObject, string> renderTextFunc)
 		{
-			RenderTextFunc = o => renderTextFunc (o as TObject);
+			RenderTextFunc = o => renderTextFunc ((TObject)o);
 		}
 
 		public BindingControler<yListComboBox> Binding { get; private set;}
