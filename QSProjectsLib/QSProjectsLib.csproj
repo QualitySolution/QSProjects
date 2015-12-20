@@ -64,18 +64,12 @@
     <Compile Include="gtk-gui\QSProjectsLib.UserProperty.cs" />
     <Compile Include="ChangePassword.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.ChangePassword.cs" />
-    <Compile Include="ComboWorks.cs" />
     <Compile Include="Reference.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.Reference.cs" />
-    <Compile Include="ListStoreWorks.cs" />
     <Compile Include="Delete.cs" />
     <Compile Include="TableInfo.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.Delete.cs" />
-    <Compile Include="DBWorks.cs" />
     <Compile Include="ViewReportExt.cs" />
-    <Compile Include="DateWorks.cs" />
-    <Compile Include="StringWorks.cs" />
-    <Compile Include="RusNumber.cs" />
     <Compile Include="QSMain.cs" />
     <Compile Include="AssemblyAttributes.cs" />
     <Compile Include="EditConnection.cs" />
@@ -83,11 +77,17 @@
     <Compile Include="Connection.cs" />
     <Compile Include="WaitOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.WaitOperationDlg.cs" />
-    <Compile Include="CurrencyWorks.cs" />
     <Compile Include="InformationHandbook.cs" />
-    <Compile Include="DebugWorks.cs" />
     <Compile Include="Language\SubjectName.cs" />
-    <Compile Include="MessageDialogWorks.cs" />
+    <Compile Include="Helpers\ComboWorks.cs" />
+    <Compile Include="Helpers\CurrencyWorks.cs" />
+    <Compile Include="Helpers\DateWorks.cs" />
+    <Compile Include="Helpers\DBWorks.cs" />
+    <Compile Include="Helpers\DebugWorks.cs" />
+    <Compile Include="Helpers\ListStoreWorks.cs" />
+    <Compile Include="Helpers\MessageDialogWorks.cs" />
+    <Compile Include="Helpers\StringWorks.cs" />
+    <Compile Include="Helpers\RusNumber.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -98,6 +98,7 @@
   <ItemGroup>
     <Folder Include="icons\" />
     <Folder Include="Language\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
