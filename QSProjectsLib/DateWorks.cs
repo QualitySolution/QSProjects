@@ -2,12 +2,8 @@
 
 namespace QSProjectsLib
 {
-	public class DateWorks
+	public static class DateWorks
 	{
-		/*public DateWorks()
-		{
-		}*/
-
 		public static string GetDateRangeText(DateTime dateS, DateTime dateE)
 		{
 			if(dateS == default(DateTime) || dateE == default(DateTime))
@@ -19,6 +15,12 @@ namespace QSProjectsLib
 			else
 				return String.Format("{0:dd}–{1:D}", dateS, dateE);
 
+		}
+
+		public static string GetMonthName(int monthNumber)
+		{
+			var tempDate = new DateTime (2015, monthNumber, 1);
+			return tempDate.ToString ("MMMM");
 		}
 	}
 }
