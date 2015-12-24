@@ -20,7 +20,19 @@ namespace QSProjectsLib
 
 		public static Window ErrorDlgParrent;
 		public static Thread GuiThread;
-		public static Label StatusBarLabel;
+
+		static bool statusBarRedrawHandled;
+		private static Label statusBarLabel;
+		public static Label StatusBarLabel{ get{ 
+				return statusBarLabel;
+			}
+			set{ 
+				if (statusBarLabel != null)
+					statusBarLabel.ExposeEvent -= OnStatusBarExposed;
+				statusBarLabel = value;
+				statusBarLabel.ExposeEvent += OnStatusBarExposed;
+			}}
+	
 
 		//Работа с базой
 		public static DataProviders DBMS;
@@ -102,6 +114,10 @@ namespace QSProjectsLib
 				Exception = ex;
 				UserMessage = userMessage;
 			}
+		}
+
+		static void OnStatusBarExposed(object sender, EventArgs args){
+			statusBarRedrawHandled = true;
 		}
 
 		/// <summary>
@@ -478,21 +494,26 @@ namespace QSProjectsLib
 		public static void StatusMessage (string message)
 		{
 			if (GuiThread == Thread.CurrentThread) {
-				RealStatusMessage (message);
+				RealStatusMessage (message,true);
 			} else {
 				Console.WriteLine ("Another Thread");
 				Application.Invoke (delegate {
-					RealStatusMessage (message);
+					RealStatusMessage (message,false);
 				});
 			}
 		}
 
-		static void RealStatusMessage (string message)
+		static void RealStatusMessage (string message, bool waitRedraw)
 		{
 			if (StatusBarLabel == null)
 				return;
-			while (GLib.MainContext.Pending ()) {
-				Gtk.Main.Iteration ();
+			
+			StatusBarLabel.LabelProp = message;
+			if (!waitRedraw)
+				return;		
+			statusBarRedrawHandled = false;
+			while (Application.EventsPending () && !statusBarRedrawHandled) {
+				Gtk.Main.Iteration();
 			}
 		}
 
