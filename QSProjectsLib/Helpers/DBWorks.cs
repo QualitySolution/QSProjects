@@ -30,6 +30,15 @@ namespace QSProjectsLib
 				return NullValue;
 		}
 
+		public static decimal GetDecimal(System.Data.IDataReader rdr, int column, decimal NullValue)
+		{
+			if (rdr[column] != DBNull.Value)
+				return rdr.GetDecimal(column);
+			else
+				return NullValue;
+		}
+
+
 		public static decimal GetDecimal(System.Data.IDataReader rdr, string Column, decimal NullValue)
 		{
 			if (rdr[Column] != DBNull.Value)
