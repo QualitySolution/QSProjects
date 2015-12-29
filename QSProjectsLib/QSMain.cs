@@ -17,7 +17,6 @@ namespace QSProjectsLib
 		public static IniConfigSource Configsource;
 		public static string ConfigFileName;
 
-
 		public static Window ErrorDlgParrent;
 		public static Thread GuiThread;
 
@@ -32,7 +31,6 @@ namespace QSProjectsLib
 				statusBarLabel = value;
 				statusBarLabel.ExposeEvent += OnStatusBarExposed;
 			}}
-	
 
 		//Работа с базой
 		public static DataProviders DBMS;
@@ -68,9 +66,8 @@ namespace QSProjectsLib
 		public enum DataProviders
 		{
 			MySQL,
-			Factory}
-
-		;
+			Factory
+		};
 
 		//Внутриннии
 		internal static bool WaitResultIsOk;
@@ -136,7 +133,8 @@ namespace QSProjectsLib
 			targetLog.ClassName = className;
 			targetLog.Parameters.Add (new NLog.Targets.MethodCallParameter ("${message}"));
 			config.AddTarget ("status", targetLog);
-			NLog.Config.LoggingRule rule = new NLog.Config.LoggingRule ("*", LogLevel.Info, targetLog);
+			NLog.Config.LoggingRule rule = new NLog.Config.LoggingRule ("*", targetLog);
+			rule.EnableLoggingForLevel (LogLevel.Info);
 			config.LoggingRules.Add (rule);
 
 			LogManager.Configuration = config;
