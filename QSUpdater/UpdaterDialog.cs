@@ -9,6 +9,7 @@ namespace QSUpdater
 		public UpdaterDialog (string text, UpdateResult result, bool updateRequired)
 		{
 			this.Build ();
+			UpdLabel.WidthChars = 67;
 			UpdLabel.Markup = text;
 			infoLabel.Visible = (result.InfoLink != String.Empty);
 			infoLabel.Markup = String.Format ("<b><a href=\" " + result.InfoLink + "\" title=\"Перейти на сайт компании\">Посмотреть полное описание обновления.</a></b>");

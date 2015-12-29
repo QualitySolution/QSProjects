@@ -22,7 +22,6 @@ namespace QSUpdater
 			this.Title = global::Mono.Unix.Catalog.GetString ("Обновление");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
 			this.BorderWidth = ((uint)(10));
-			this.Resizable = false;
 			this.AllowGrow = false;
 			// Internal child QSUpdater.UpdaterDialog.VBox
 			global::Gtk.VBox w1 = this.VBox;
@@ -31,8 +30,11 @@ namespace QSUpdater
 			this.UpdLabel = new global::Gtk.Label ();
 			this.UpdLabel.Name = "UpdLabel";
 			this.UpdLabel.Xalign = 0F;
+			this.UpdLabel.Yalign = 0F;
 			this.UpdLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Текст обновления");
 			this.UpdLabel.UseMarkup = true;
+			this.UpdLabel.Wrap = true;
+			this.UpdLabel.Selectable = true;
 			w1.Add (this.UpdLabel);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(w1 [this.UpdLabel]));
 			w2.Position = 0;
@@ -90,8 +92,8 @@ namespace QSUpdater
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 566;
-			this.DefaultHeight = 212;
+			this.DefaultWidth = 545;
+			this.DefaultHeight = 208;
 			this.infoLabel.Hide ();
 			this.Show ();
 		}

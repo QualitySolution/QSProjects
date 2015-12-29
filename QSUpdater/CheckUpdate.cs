@@ -61,7 +61,7 @@ namespace QSUpdater
 
 		static void ThreadWorks (UpdaterFlags flags)
 		{
-			string checkVersion = String.Empty, checkResult = String.Empty, serialNumber = String.Empty;
+			string checkVersion = String.Empty, checkResult = String.Empty;
 			bool showAnyway = FlagsHelper.IsSet (flags, UpdaterFlags.ShowAnyway);
 			bool updateRequired = FlagsHelper.IsSet (flags, UpdaterFlags.UpdateRequired);
 			bool isMainThread = !FlagsHelper.IsSet (flags, UpdaterFlags.StartInThread);
