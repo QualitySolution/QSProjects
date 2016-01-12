@@ -14,6 +14,12 @@ namespace Gamma.Utilities
 			return (fi.GetEnumTitle());
 		}
 
+		public static string GetEnumColor (this Enum aEnum)
+		{
+			var att = aEnum.GetAttribute<GtkColorAttribute> ();
+			return att != null ? att.ColorString : null;
+		}
+
 		public static string GetEnumTitle (this FieldInfo aFieldInfo)
 		{
 			var attrs = (DisplayAttribute[]) aFieldInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
