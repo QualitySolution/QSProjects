@@ -43,6 +43,15 @@ namespace QSBusinessCommon.Domain
 
 		#endregion
 
+		#region additions
+
+		public virtual string MakeAmountShortStr(int amount)
+		{
+			return String.Format ("{0} {1}", amount, Name);
+		}
+
+		#endregion
+
 		public MeasurementUnits ()
 		{
 			Name = String.Empty;
@@ -55,7 +64,6 @@ namespace QSBusinessCommon.Domain
 				.SearchColumn ("Наименование", i => i.Name)
 				.Column("Точность", i => i.Digits).End ();
 		}
-
 	}
 }
 
