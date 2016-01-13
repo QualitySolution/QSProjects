@@ -8,6 +8,8 @@ namespace QSOrmProject
 {
 	public class UnitOfWorkBase
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		protected ITransaction transaction;
 
 		protected ISession session;
@@ -34,6 +36,12 @@ namespace QSOrmProject
 
 		public void Commit()
 		{
+			if (transaction == null)
+			{
+				logger.Warn ("Попытка комита закрытой транзацкии.");
+				return;
+			}
+
 			try
 			{
 				transaction.Commit();
