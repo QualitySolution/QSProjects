@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 namespace QSOrmProject.Deletion
 {
-	public class DeleteInfo : IDeleteInfo
+	public class DeleteInfoHibernate<TEntity> : IDeleteInfo
 	{
-		public Type ObjectClass { get; set;}
+		public Type ObjectClass {
+			get {
+				return typeof(TEntity);
+			}
+		}
 
 		public string ObjectsName;
 		public string ObjectName;
@@ -28,7 +32,7 @@ namespace QSOrmProject.Deletion
 			}
 		}
 
-		public DeleteInfo()
+		public DeleteInfoHibernate()
 		{
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
@@ -39,7 +43,7 @@ namespace QSOrmProject.Deletion
 		/// в классе. И заполняет TableName из настроек NhiberNate.
 		/// </summary>
 		/// <returns>The from meta info.</returns>
-		public DeleteInfo FillFromMetaInfo()
+		public IDeleteInfo FillFromMetaInfo()
 		{
 			if (ObjectClass == null)
 				throw new NullReferenceException ("ObjectClass должен быть заполнен.");

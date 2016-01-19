@@ -1,8 +1,9 @@
 ﻿using System;
-using QSProjectsLib;
-using System.Data.Common;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 using Gtk;
+using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
 {
@@ -10,7 +11,7 @@ namespace QSOrmProject.Deletion
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		internal TreeStore ObjectsTreeStore;
-		DeleteOperation PreparedOperation;
+		SQLDeleteOperation PreparedOperation;
 		internal int CountReferenceItems = 0;
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
 
@@ -22,7 +23,7 @@ namespace QSOrmProject.Deletion
 		public bool RunDeletion (string table, int id)
 		{
 			logger.Debug ("Поиск зависимостей для объекта таблицы {0}...", table);
-			var info = DeleteConfig.ClassInfos.Find (i => i.TableName == table);
+			var info = DeleteConfig.ClassInfos.OfType<DeleteInfo> ().First (i => i.TableName == table);
 			if (info == null)
 				throw new InvalidOperationException (String.Format ("Удаление для объектов таблицы {0} не настроено в DeleteConfig", table));
 
@@ -39,36 +40,43 @@ namespace QSOrmProject.Deletion
 			return Run (info, Convert.ToUInt32 (id));
 		}
 
-		private bool Run (DeleteInfo info, uint id)
+		private bool Run (IDeleteInfo info, uint id)
 		{
 			try {
-				PreparedOperation = new DeleteOperation () {
-					ItemId = id,
-					TableName = info.TableName,
-					WhereStatment = "WHERE id = @id"
-				};
-
-				var cmd = QSMain.ConnectionDB.CreateCommand ();
-				cmd.CommandText = info.PreparedSqlSelect + 
-					String.Format ("WHERE {0}.id = @id", info.TableName);
-
-				logger.Debug ("Запрос основного объекта SQL={0}", cmd.CommandText);
-				AddParameterWithId (cmd, id);
-
-				using (DbDataReader rdr = cmd.ExecuteReader ()) {
-					rdr.Read ();
-					int IndexOfIdParam = rdr.GetOrdinal ("id");
-					object[] Fields = new object[rdr.FieldCount];
-					rdr.GetValues (Fields);
-
-					DeletedItems.Add (new DeletedItem {
-						ItemClass = info.ObjectClass,
+				if(info is DeleteInfo)
+				{
+					var sqlDeleteInfo = info as DeleteInfo;
+					PreparedOperation = new SQLDeleteOperation () {
 						ItemId = id,
-						Title = String.Format (info.DisplayString, Fields)
-					});
-				}
+						TableName = (info as DeleteInfo).TableName,
+						WhereStatment = "WHERE id = @id"
+					};
 
-				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), Convert.ToUInt32 (id));
+					var cmd = QSMain.ConnectionDB.CreateCommand ();
+					cmd.CommandText = sqlDeleteInfo.PreparedSqlSelect + 
+						String.Format ("WHERE {0}.id = @id", sqlDeleteInfo.TableName);
+
+					logger.Debug ("Запрос основного объекта SQL={0}", cmd.CommandText);
+					AddParameterWithId (cmd, id);
+
+					using (DbDataReader rdr = cmd.ExecuteReader ()) {
+						rdr.Read ();
+						int IndexOfIdParam = rdr.GetOrdinal ("id");
+						object[] Fields = new object[rdr.FieldCount];
+						rdr.GetValues (Fields);
+
+						DeletedItems.Add (new DeletedItem {
+							ItemClass = info.ObjectClass,
+							ItemId = id,
+							Title = String.Format (sqlDeleteInfo.DisplayString, Fields)
+						});
+					}
+
+					CountReferenceItems = FillChildOperation (sqlDeleteInfo, PreparedOperation, new TreeIter (), Convert.ToUInt32 (id));
+				}
+				else
+					throw new NotImplementedException ();
+				
 			} catch (Exception ex) {
 				QSMain.ErrorMessageWithLog ("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
 				return false;
@@ -108,7 +116,8 @@ namespace QSOrmProject.Deletion
 					DeleteIter = ObjectsTreeStore.AppendNode (parentIter);
 				foreach (var delItem in currentDeletion.DeleteItems) {
 					GroupCount = 0;
-					var childClassInfo = delItem.GetClassInfo ();
+					//FIXME реализовать обработку через интерфейс или другие классы.
+					var childClassInfo = delItem.GetClassInfo () as DeleteInfo;
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
 							currentDeletion.ObjectClass, currentDeletion.TableName, delItem.ObjectClass, delItem.TableName));
@@ -136,7 +145,7 @@ namespace QSOrmProject.Deletion
 					}
 
 					if (ReadedData.Count > 0) {
-						var delOper = new DeleteOperation () {
+						var delOper = new SQLDeleteOperation () {
 							ItemId = currentId,
 							TableName = childClassInfo.TableName,
 							WhereStatment = delItem.WhereStatment
@@ -175,7 +184,8 @@ namespace QSOrmProject.Deletion
 					ClearIter = ObjectsTreeStore.AppendNode (parentIter);
 				foreach (var cleanItem in currentDeletion.ClearItems) {
 					GroupCount = 0;
-					var childClassInfo = cleanItem.GetClassInfo ();
+					//FIXME реализовать обработку через интерфейс или другие классы.
+					var childClassInfo = cleanItem.GetClassInfo () as DeleteInfo;
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanItem.ObjectClass));
 
@@ -192,7 +202,7 @@ namespace QSOrmProject.Deletion
 						}
 						GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
 
-						var cleanOper = new CleanOperation () {
+						var cleanOper = new SQLCleanOperation () {
 							ItemId = currentId,
 							TableName = childClassInfo.TableName,
 							CleanFields = cleanItem.ClearFields,
@@ -235,7 +245,7 @@ namespace QSOrmProject.Deletion
 			public abstract void Execute (DbTransaction trans);
 		}
 
-		class DeleteOperation : Operation
+		class SQLDeleteOperation : Operation
 		{
 			public string TableName;
 			public string WhereStatment;
@@ -253,7 +263,7 @@ namespace QSOrmProject.Deletion
 			}
 		}
 
-		class CleanOperation : Operation
+		class SQLCleanOperation : Operation
 		{
 			public string TableName;
 			public string WhereStatment;

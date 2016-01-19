@@ -131,6 +131,8 @@
     <Compile Include="yWidgets\yEntryReferenceVM.cs" />
     <Compile Include="DomainMapping\TableView.cs" />
     <Compile Include="DomainMapping\ITableView.cs" />
+    <Compile Include="Deletion\IDeleteInfo.cs" />
+    <Compile Include="Deletion\DeleteInfoHibernate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

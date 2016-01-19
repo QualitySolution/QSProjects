@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSOrmProject.Deletion
 {
 	public static partial class DeleteConfig
 	{
-		private static List<DeleteInfo> classInfos;
+		private static List<IDeleteInfo> classInfos;
 
-		internal static List<DeleteInfo> ClassInfos {
+		internal static List<IDeleteInfo> ClassInfos {
 			get {
 				if (classInfos == null) {
-					classInfos = new List<DeleteInfo> ();
+					classInfos = new List<IDeleteInfo> ();
 					QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
 				}
 				return classInfos;
@@ -29,13 +30,16 @@ namespace QSOrmProject.Deletion
 
 		public static void AddDeleteInfo (DeleteInfo info)
 		{
-			if (ClassInfos.Exists (i => i.TableName == info.TableName && i.ObjectClass == info.ObjectClass))
+			if (ClassInfos.Exists (i => i.ObjectClass == info.ObjectClass))
+				throw new InvalidOperationException (String.Format ("Описание удаления для класса {0} уже существует.", info.ObjectClass));
+
+			if (ClassInfos.OfType<DeleteInfo>().Any (i => i.TableName == info.TableName && i.ObjectClass == info.ObjectClass))
 				throw new InvalidOperationException (String.Format ("Описание удаления для класса {0} и таблицы {1}, уже существует.", info.ObjectClass, info.TableName));
 
 			ClassInfos.Add (info);
 		}
 
-		public static DeleteInfo ExistingConfig<T> ()
+		public static IDeleteInfo ExistingConfig<T> ()
 		{
 			return ClassInfos.Find (i => i.ObjectClass == typeof(T));
 		}
@@ -69,6 +73,21 @@ namespace QSOrmProject.Deletion
 				});
 			}
 		}
+
+		#region FluentConfig
+
+		public static DeleteInfoHibernate<TEntity> AddDeleteInfo<TEntity> ()
+		{
+			var info = (DeleteInfoHibernate<TEntity>) ClassInfos.Find (i => i.ObjectClass == typeof(TEntity));
+			if (info != null)
+				return info;
+
+			info = new DeleteInfoHibernate<TEntity> ();
+			ClassInfos.Add (info);
+			return info;
+		}
+
+		#endregion
 	}
 
 	public class AfterDeletionEventArgs : EventArgs
