@@ -1,36 +1,31 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using NHibernate.Criterion;
 
 namespace QSOrmProject.Deletion
 {
-	public class DeleteInfoHibernate<TEntity> : IDeleteInfo
+	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate
+		where TEntity : IDomainObject
 	{
 		public Type ObjectClass {
 			get {
 				return typeof(TEntity);
 			}
 		}
-
-		public string ObjectsName;
-		public string ObjectName;
-		public string TableName;
-
-		/// <summary>
-		/// Запрос Select для отображения удаляемых записей, в запросе в строке FROM
-		/// можно не указывать напрямую имя таблицы, а использовать @tablename, что 
-		/// в случае использования ORM, позволяет переименовывать таблицу для класса
-		/// без последствий для удаления. 
-		/// </summary>
-		public string SqlSelect;
-		public string DisplayString;
-		public List<DeleteDependenceInfo> DeleteItems { get; set;}
-		public List<ClearDependenceInfo> ClearItems { get; set;}
-
-		public string PreparedSqlSelect{
-			get { //Заменяем название таблицы и добавляем пробел, если его нет.
-				return SqlSelect.Replace ("@tablename", String.Format("`{0}`", TableName)).TrimEnd (' ') + " ";
+			
+		public string ObjectsName {
+			get {
+				var att = ObjectClass.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+				if (att.Length > 0)
+					return (att [0] as OrmSubjectAttribute).AllNames.NominativePlural;
+				else
+					return null;
 			}
 		}
+
+		public List<DeleteDependenceInfo> DeleteItems { get; set;}
+		public List<ClearDependenceInfo> ClearItems { get; set;}
 
 		public DeleteInfoHibernate()
 		{
@@ -38,33 +33,96 @@ namespace QSOrmProject.Deletion
 			ClearItems = new List<ClearDependenceInfo>();
 		}
 
-		/// <summary>
-		/// Метод автоматически заполняет поля ObjectsName и ObjectName из атрибута OrmSubjectAttribute
-		/// в классе. И заполняет TableName из настроек NhiberNate.
-		/// </summary>
-		/// <returns>The from meta info.</returns>
-		public IDeleteInfo FillFromMetaInfo()
+		public DeleteInfoHibernate<TEntity> AddDeleteDependence (DeleteDependenceInfo info)
 		{
-			if (ObjectClass == null)
-				throw new NullReferenceException ("ObjectClass должен быть заполнен.");
-			var attArray = ObjectClass.GetCustomAttributes (typeof(OrmSubjectAttribute), false);
-			if(attArray.Length > 0)
-			{
-				if (String.IsNullOrEmpty (ObjectsName))
-					ObjectsName = (attArray [0] as OrmSubjectAttribute).JournalName;
-				if (String.IsNullOrEmpty (ObjectName))
-					ObjectName = (attArray [0] as OrmSubjectAttribute).ObjectName;
-			}
-
-			if (String.IsNullOrEmpty (TableName) && OrmMain.ormConfig != null) {
-				var maping = OrmMain.ormConfig.GetClassMapping (ObjectClass);
-				if (maping != null) {
-					TableName = maping.Table.Name;
-				}
-			}
-
+			DeleteItems.Add (info);
 			return this;
 		}
+
+		public DeleteInfoHibernate<TEntity> AddDeleteDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
+		{
+			DeleteItems.Add (DeleteDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			return this;
+		}
+
+		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromBag(Expression<Func<TEntity, object>> propertyRefExpr)
+		{
+			DeleteItems.Add (DeleteDependenceInfo.CreateFromBag<TEntity> (propertyRefExpr));
+			return this;
+		}
+
+		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
+		{
+			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			return this;
+		}
+
+		public IList<EntityDTO> GetEntitiesList(DeleteCore core, DeleteDependenceInfo depend, uint forId)
+		{
+			return GetEntitiesList (core, depend.PropertyName, forId);
+		}
+
+		public IList<EntityDTO> GetEntitiesList(DeleteCore core, ClearDependenceInfo depend, uint forId)
+		{
+			return GetEntitiesList (core, depend.PropertyName, forId);
+		}
+
+		private IList<EntityDTO> GetEntitiesList(DeleteCore core, string propertyName, uint forId)
+		{
+			var list = core.UoW.Session.CreateCriteria (ObjectClass)
+				.Add (Restrictions.Eq (propertyName + ".Id", (int)forId)).List ();
+
+			var resultList = new List<EntityDTO> ();
+
+			foreach(var item in list)
+			{
+				resultList.Add (new EntityDTO{
+					Id = (uint)(item as IDomainObject).Id,
+					Title = DomainHelper.GetObjectTilte (item),
+					Entity = item
+				});
+			}
+			return resultList;
+		}
+
+		public Operation CreateDeleteOperation(DeleteDependenceInfo depend, uint forId)
+		{
+			return new SQLDeleteOperation {
+				ItemId = forId,
+				//TableName = TableName,
+				WhereStatment = depend.WhereStatment
+			};
+		}
+
+		public Operation CreateDeleteOperation(uint selfId)
+		{
+			return new SQLDeleteOperation {
+				ItemId = selfId,
+				//TableName = TableName,
+				WhereStatment = "WHERE id = @id"
+			};
+		}
+
+		public Operation CreateClearOperation(ClearDependenceInfo depend, uint forId)
+		{
+			return new SQLCleanOperation () {
+				ItemId = forId,
+				//TableName = TableName,
+				CleanFields = depend.ClearFields,
+				WhereStatment = depend.WhereStatment
+			};
+		}
+
+		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
+		{
+			var item = core.UoW.GetById<TEntity> ((int)id);
+			return new EntityDTO{
+				Id = (uint)item.Id,
+				Title = DomainHelper.GetObjectTilte (item),
+				Entity = item
+			};
+		}
+
 	}
 }
 

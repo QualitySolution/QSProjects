@@ -12,7 +12,7 @@ namespace QSOrmProject.Deletion
 		public string TableName;
 
 		/// <summary>
-		/// Используется только для проверки зависимостей в NHibernate, не нужно для удаления
+		/// Необходимо для проверки и удаления через NHibernate
 		/// </summary>
 		public string PropertyName;
         public string CollectionName;
@@ -46,7 +46,7 @@ namespace QSOrmProject.Deletion
 			if(ObjectClass != null)
 				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
 			else
-				return DeleteConfig.ClassInfos.OfType<DeleteInfo> ().First (i => i.TableName == TableName);
+				return DeleteConfig.ClassInfos.OfType<DeleteInfo> ().FirstOrDefault (i => i.TableName == TableName);
 		}
 
         public DeleteDependenceInfo AddCheckProperty(string property)

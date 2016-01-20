@@ -55,7 +55,7 @@ namespace QSOrmProject.Deletion
 					
 				PreparedOperation = info.CreateDeleteOperation(id);
 
-				var self = info.GetSelfEntity(id);
+				var self = info.GetSelfEntity(this, id);
 
 				DeletedItems.Add (new DeletedItem {
 					ItemClass = info.ObjectClass,
@@ -110,7 +110,7 @@ namespace QSOrmProject.Deletion
 							delDepend.ObjectClass, 
 							delDepend.TableName));
 
-					var childList = childClassInfo.GetEntitiesList (delDepend, currentId);
+					var childList = childClassInfo.GetEntitiesList (this, delDepend, currentId);
 
 					if (childList.Count == 0)
 						continue;
@@ -135,7 +135,7 @@ namespace QSOrmProject.Deletion
 						DelCount++;
 					}
 
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", childClassInfo.ObjectsName, GroupCount));
+					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
 				}
 				if (DelCount > 0)
 					ObjectsTreeStore.SetValues (DeleteIter, String.Format ("Будет удалено ({0}/{1}) объектов:", DelCount, Totalcount));
@@ -155,7 +155,7 @@ namespace QSOrmProject.Deletion
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
 
-					var childList = childClassInfo.GetEntitiesList (cleanDepend, currentId);
+					var childList = childClassInfo.GetEntitiesList (this, cleanDepend, currentId);
 
 					if (childList.Count == 0)
 						continue;
@@ -173,7 +173,7 @@ namespace QSOrmProject.Deletion
 						Totalcount++;
 						ClearCount++;
 					}
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", childClassInfo.ObjectsName, GroupCount));
+					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
 				}
 				if (ClearCount > 0)
 					ObjectsTreeStore.SetValues (ClearIter, String.Format ("Будет очищено ссылок у {0} объектов:", ClearCount));
@@ -196,6 +196,7 @@ namespace QSOrmProject.Deletion
 	{
 		public uint Id;
 		public string Title;
+		public object Entity;
 	}
 }
 

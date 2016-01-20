@@ -76,7 +76,8 @@ namespace QSOrmProject.Deletion
 
 		#region FluentConfig
 
-		public static DeleteInfoHibernate<TEntity> AddDeleteInfo<TEntity> ()
+		public static DeleteInfoHibernate<TEntity> AddHibernateDeleteInfo<TEntity> ()
+			where TEntity : IDomainObject
 		{
 			var info = (DeleteInfoHibernate<TEntity>) ClassInfos.Find (i => i.ObjectClass == typeof(TEntity));
 			if (info != null)

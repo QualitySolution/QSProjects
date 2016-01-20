@@ -12,7 +12,7 @@ namespace QSOrmProject.Deletion
 		public string[] ClearFields;
 
 		/// <summary>
-		/// Используется только для проверки зависимостей в NHibernate, не нужно для удаления
+		/// Необходимо для проверки и удаления через NHibernate
 		/// </summary>
 		public string PropertyName;
 
