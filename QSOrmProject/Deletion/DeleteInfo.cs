@@ -12,7 +12,6 @@ namespace QSOrmProject.Deletion
 		public Type ObjectClass { get; set;}
 		public string ObjectsName { get; set;}
 
-		public string ObjectName;
 		public string TableName;
 
 		/// <summary>
@@ -52,8 +51,6 @@ namespace QSOrmProject.Deletion
 			{
 				if (String.IsNullOrEmpty (ObjectsName))
 					ObjectsName = (attArray [0] as OrmSubjectAttribute).JournalName;
-				if (String.IsNullOrEmpty (ObjectName))
-					ObjectName = (attArray [0] as OrmSubjectAttribute).ObjectName;
 			}
 
 			if (String.IsNullOrEmpty (TableName) && OrmMain.OrmConfig != null) {
