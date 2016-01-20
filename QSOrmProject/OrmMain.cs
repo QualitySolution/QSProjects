@@ -251,6 +251,11 @@ namespace QSOrmProject
 			}
 		}
 
+		public static bool DeleteObject<TEntity> (int id)
+		{
+			return DeleteObject (typeof(TEntity), id);
+		}
+
 		public static bool DeleteObject(object subject)
 		{
 			if (!(subject is IDomainObject))
