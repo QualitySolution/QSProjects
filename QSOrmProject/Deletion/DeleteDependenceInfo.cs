@@ -78,7 +78,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
-			string fieldName = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				propName
@@ -92,7 +92,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo CreateFromBag<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
-			var collectionMap = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
+			var collectionMap = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
 			Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
 			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(itemType,

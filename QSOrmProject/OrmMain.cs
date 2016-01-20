@@ -16,7 +16,7 @@ namespace QSOrmProject
 	public static class OrmMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		internal static Configuration ormConfig;
+		private static Configuration ormConfig;
 		internal static FluentConfiguration fluenConfig;
 		internal static ISessionFactory Sessions;
 		public static List<IOrmObjectMapping> ClassMappingList;
@@ -29,6 +29,17 @@ namespace QSOrmProject
 			ISession session = Sessions.OpenSession ();
 			//session.FlushMode = FlushMode.Never;
 			return session;
+		}
+
+		public static Configuration OrmConfig {
+			get {
+				if(ormConfig == null && fluenConfig != null)
+					ormConfig = fluenConfig.BuildConfiguration ();
+				return ormConfig;
+			}
+			set {
+				ormConfig = value;
+			}
 		}
 
 		/// <summary>

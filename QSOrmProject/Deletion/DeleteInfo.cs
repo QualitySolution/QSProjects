@@ -52,8 +52,8 @@ namespace QSOrmProject.Deletion
 					ObjectName = (attArray [0] as OrmSubjectAttribute).ObjectName;
 			}
 
-			if (String.IsNullOrEmpty (TableName) && OrmMain.ormConfig != null) {
-				var maping = OrmMain.ormConfig.GetClassMapping (ObjectClass);
+			if (String.IsNullOrEmpty (TableName) && OrmMain.OrmConfig != null) {
+				var maping = OrmMain.OrmConfig.GetClassMapping (ObjectClass);
 				if (maping != null) {
 					TableName = maping.Table.Name;
 				}

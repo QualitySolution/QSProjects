@@ -14,7 +14,7 @@ namespace QSOrmProject.Deletion
 		public static void DeletionCheck()
 		{
 			logger.Info("Проверка правил удаления по информации NHibernate.");
-			foreach(var mapping in OrmMain.ormConfig.ClassMappings)
+			foreach(var mapping in OrmMain.OrmConfig.ClassMappings)
 			{
 				var info = ClassInfos.Find(i => i.ObjectClass == mapping.MappedClass);
 

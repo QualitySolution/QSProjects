@@ -56,7 +56,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
-			string fieldName = OrmMain.ormConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				new string[] {fieldName}
