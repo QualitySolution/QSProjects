@@ -5,7 +5,7 @@ using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
 {
-	abstract class Operation
+	public abstract class Operation
 	{
 		public uint ItemId;
 		public List<Operation> ChildOperations = new List<Operation> ();

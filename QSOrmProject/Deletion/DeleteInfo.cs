@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
 {
 	public class DeleteInfo : IDeleteInfo
 	{
-		public Type ObjectClass { get; set;}
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		public string ObjectsName;
+		public Type ObjectClass { get; set;}
+		public string ObjectsName { get; set;}
+
 		public string ObjectName;
 		public string TableName;
 
@@ -60,6 +64,73 @@ namespace QSOrmProject.Deletion
 			}
 
 			return this;
+		}
+
+		public IList<EntityDTO> GetEntitiesList(DeleteDependenceInfo depend, uint forId)
+		{
+			return GetEntitiesList(depend.WhereStatment, forId);
+		}
+
+		public IList<EntityDTO> GetEntitiesList(ClearDependenceInfo depend, uint forId)
+		{
+			return GetEntitiesList(depend.WhereStatment, forId);
+		}
+
+		public EntityDTO GetSelfEntity(uint id)
+		{
+			return GetEntitiesList(String.Format("WHERE {0}.id = @id", TableName), id)[0];
+		}
+
+		private IList<EntityDTO> GetEntitiesList(string whereStatment, uint forId)
+		{
+			string sql = PreparedSqlSelect + whereStatment;
+			DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+			var resultList = new List<EntityDTO> ();
+			cmd.CommandText = sql;
+			logger.Debug ("Запрос объектов по SQL={0}", cmd.CommandText);
+			DeleteCore.AddParameterWithId (cmd, forId);
+
+			using (DbDataReader rdr = cmd.ExecuteReader ()) {
+				int IndexOfIdParam = rdr.GetOrdinal ("id");
+				while (rdr.Read ()) {
+					object[] fields = new object[rdr.FieldCount];
+					rdr.GetValues (fields);
+
+					resultList.Add (new EntityDTO{
+						Id = (uint)fields[IndexOfIdParam],
+						Title = String.Format (DisplayString, fields)
+					});
+				}
+			}
+			return resultList;
+		}
+
+		public Operation CreateDeleteOperation(DeleteDependenceInfo depend, uint forId)
+		{
+			return new SQLDeleteOperation {
+				ItemId = forId,
+				TableName = TableName,
+				WhereStatment = depend.WhereStatment
+			};
+		}
+
+		public Operation CreateDeleteOperation(uint selfId)
+		{
+			return new SQLDeleteOperation {
+				ItemId = selfId,
+				TableName = TableName,
+				WhereStatment = "WHERE id = @id"
+			};
+		}
+
+		public Operation CreateClearOperation(ClearDependenceInfo depend, uint forId)
+		{
+			return new SQLCleanOperation () {
+				ItemId = forId,
+				TableName = TableName,
+				CleanFields = depend.ClearFields,
+				WhereStatment = depend.WhereStatment
+			};
 		}
 	}
 }

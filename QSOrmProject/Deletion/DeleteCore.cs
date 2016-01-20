@@ -11,9 +11,18 @@ namespace QSOrmProject.Deletion
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		internal TreeStore ObjectsTreeStore;
-		SQLDeleteOperation PreparedOperation;
+		Operation PreparedOperation;
 		internal int CountReferenceItems = 0;
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
+		IUnitOfWork uow;
+
+		internal IUnitOfWork UoW{
+			get {
+				if (uow == null)
+					uow = UnitOfWorkFactory.CreateWithoutRoot ();
+				return uow;
+			}
+		}
 
 		public DeleteCore()
 		{
@@ -43,40 +52,19 @@ namespace QSOrmProject.Deletion
 		private bool Run (IDeleteInfo info, uint id)
 		{
 			try {
-				if(info is DeleteInfo)
-				{
-					var sqlDeleteInfo = info as DeleteInfo;
-					PreparedOperation = new SQLDeleteOperation () {
-						ItemId = id,
-						TableName = (info as DeleteInfo).TableName,
-						WhereStatment = "WHERE id = @id"
-					};
+					
+				PreparedOperation = info.CreateDeleteOperation(id);
 
-					var cmd = QSMain.ConnectionDB.CreateCommand ();
-					cmd.CommandText = sqlDeleteInfo.PreparedSqlSelect + 
-						String.Format ("WHERE {0}.id = @id", sqlDeleteInfo.TableName);
+				var self = info.GetSelfEntity(id);
 
-					logger.Debug ("Запрос основного объекта SQL={0}", cmd.CommandText);
-					AddParameterWithId (cmd, id);
+				DeletedItems.Add (new DeletedItem {
+					ItemClass = info.ObjectClass,
+					ItemId = id,
+					Title = self.Title
+				});
 
-					using (DbDataReader rdr = cmd.ExecuteReader ()) {
-						rdr.Read ();
-						int IndexOfIdParam = rdr.GetOrdinal ("id");
-						object[] Fields = new object[rdr.FieldCount];
-						rdr.GetValues (Fields);
+				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), Convert.ToUInt32 (id));
 
-						DeletedItems.Add (new DeletedItem {
-							ItemClass = info.ObjectClass,
-							ItemId = id,
-							Title = String.Format (sqlDeleteInfo.DisplayString, Fields)
-						});
-					}
-
-					CountReferenceItems = FillChildOperation (sqlDeleteInfo, PreparedOperation, new TreeIter (), Convert.ToUInt32 (id));
-				}
-				else
-					throw new NotImplementedException ();
-				
 			} catch (Exception ex) {
 				QSMain.ErrorMessageWithLog ("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
 				return false;
@@ -99,73 +87,52 @@ namespace QSOrmProject.Deletion
 			return false;
 		}
 
-		int FillChildOperation (DeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, uint currentId)
+		int FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, uint currentId)
 		{
 			TreeIter DeleteIter, ClearIter, GroupIter, ItemIter;
 			int Totalcount = 0;
 			int DelCount = 0;
 			int ClearCount = 0;
 			int GroupCount;
-			DbCommand cmd;
-			QSMain.CheckConnectionAlive ();
 
 			if (currentDeletion.DeleteItems.Count > 0) {
 				if (!ObjectsTreeStore.IterIsValid (parentIter))
 					DeleteIter = ObjectsTreeStore.AppendNode ();
 				else
 					DeleteIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var delItem in currentDeletion.DeleteItems) {
+				foreach (var delDepend in currentDeletion.DeleteItems) {
 					GroupCount = 0;
-					//FIXME реализовать обработку через интерфейс или другие классы.
-					var childClassInfo = delItem.GetClassInfo () as DeleteInfo;
+					var childClassInfo = delDepend.GetClassInfo();
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
-							currentDeletion.ObjectClass, currentDeletion.TableName, delItem.ObjectClass, delItem.TableName));
+							currentDeletion.ObjectClass,
+							currentDeletion is DeleteInfo ? (currentDeletion as DeleteInfo).TableName : String.Empty,
+							delDepend.ObjectClass, 
+							delDepend.TableName));
 
-					string sql = childClassInfo.PreparedSqlSelect + delItem.WhereStatment;
-					cmd = QSMain.ConnectionDB.CreateCommand ();
-					cmd.CommandText = sql;
-					logger.Debug ("Запрос удаляемых объектов в зависимой таблицы SQL={0}", cmd.CommandText);
-					AddParameterWithId (cmd, currentId);
+					var childList = childClassInfo.GetEntitiesList (delDepend, currentId);
 
-					List<object[]> ReadedData = new List<object[]> ();
-					int IndexOfIdParam;
+					if (childList.Count == 0)
+						continue;
 
-					using (DbDataReader rdr = cmd.ExecuteReader ()) {
-						if (!rdr.HasRows) {
-							continue;
+					GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
+
+					var delOper = childClassInfo.CreateDeleteOperation (delDepend, currentId);
+					parentOperation.ChildOperations.Add (delOper);
+
+					foreach (var row in childList) {
+						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
+						DeletedItems.Add (new DeletedItem {
+							ItemClass = childClassInfo.ObjectClass,
+							ItemId = row.Id,
+							Title = row.Title
+						});
+						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0) {
+							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row.Id);
 						}
-						GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
-						IndexOfIdParam = rdr.GetOrdinal ("id");
-						while (rdr.Read ()) {
-							object[] Fields = new object[rdr.FieldCount];
-							rdr.GetValues (Fields);
-							ReadedData.Add (Fields);
-						}
-					}
-
-					if (ReadedData.Count > 0) {
-						var delOper = new SQLDeleteOperation () {
-							ItemId = currentId,
-							TableName = childClassInfo.TableName,
-							WhereStatment = delItem.WhereStatment
-						};
-						parentOperation.ChildOperations.Add (delOper);
-
-						foreach (object[] row in ReadedData) {
-							ItemIter = ObjectsTreeStore.AppendValues (GroupIter, String.Format (childClassInfo.DisplayString, row));
-							DeletedItems.Add (new DeletedItem {
-								ItemClass = childClassInfo.ObjectClass,
-								ItemId = (uint)row [IndexOfIdParam],
-								Title = String.Format (childClassInfo.DisplayString, row)
-							});
-							if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0) {
-								Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, (uint)row [IndexOfIdParam]);
-							}
-							GroupCount++;
-							Totalcount++;
-							DelCount++;
-						}
+						GroupCount++;
+						Totalcount++;
+						DelCount++;
 					}
 
 					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", childClassInfo.ObjectsName, GroupCount));
@@ -182,44 +149,31 @@ namespace QSOrmProject.Deletion
 					ClearIter = ObjectsTreeStore.AppendNode ();
 				else
 					ClearIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var cleanItem in currentDeletion.ClearItems) {
+				foreach (var cleanDepend in currentDeletion.ClearItems) {
 					GroupCount = 0;
-					//FIXME реализовать обработку через интерфейс или другие классы.
-					var childClassInfo = cleanItem.GetClassInfo () as DeleteInfo;
+					var childClassInfo = cleanDepend.GetClassInfo();
 					if (childClassInfo == null)
-						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanItem.ObjectClass));
+						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
 
-					string sql = childClassInfo.PreparedSqlSelect + cleanItem.WhereStatment;
-					cmd = QSMain.ConnectionDB.CreateCommand ();
-					cmd.CommandText = sql;
-					AddParameterWithId (cmd, currentId);
-					logger.Debug ("Запрос очищаемых ссылок SQL={0}", cmd.CommandText);
+					var childList = childClassInfo.GetEntitiesList (cleanDepend, currentId);
 
-					using (DbDataReader rdr = cmd.ExecuteReader ()) {
-						if (!rdr.HasRows) {
-							rdr.Close ();
-							continue;
-						}
-						GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
+					if (childList.Count == 0)
+						continue;
 
-						var cleanOper = new SQLCleanOperation () {
-							ItemId = currentId,
-							TableName = childClassInfo.TableName,
-							CleanFields = cleanItem.ClearFields,
-							WhereStatment = cleanItem.WhereStatment
-						};
-						parentOperation.ChildOperations.Add (cleanOper);
+					GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
 
-						while (rdr.Read ()) {
-							object[] Fields = new object[rdr.FieldCount];
-							rdr.GetValues (Fields);
-							ItemIter = ObjectsTreeStore.AppendValues (GroupIter, String.Format (childClassInfo.DisplayString, Fields));
-							GroupCount++;
-							Totalcount++;
-							ClearCount++;
-						}
-						ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", childClassInfo.ObjectsName, GroupCount));
+					var cleanOper = childClassInfo.CreateClearOperation(cleanDepend, currentId);
+
+					parentOperation.ChildOperations.Add (cleanOper);
+
+					foreach(var item in childList)
+					{
+						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, item.Title);
+						GroupCount++;
+						Totalcount++;
+						ClearCount++;
 					}
+					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", childClassInfo.ObjectsName, GroupCount));
 				}
 				if (ClearCount > 0)
 					ObjectsTreeStore.SetValues (ClearIter, String.Format ("Будет очищено ссылок у {0} объектов:", ClearCount));
@@ -236,6 +190,12 @@ namespace QSOrmProject.Deletion
 			parameterId.Value = id;
 			cmd.Parameters.Add (parameterId);
 		}
+	}
+
+	public class EntityDTO
+	{
+		public uint Id;
+		public string Title;
 	}
 }
 
