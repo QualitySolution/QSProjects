@@ -60,7 +60,12 @@ namespace QSOrmProject.Deletion
                     var collectionMap = (prop.Value as Bag);
                     if (collectionMap.IsInverse)
                         continue;
-					Type collectionItemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
+					Type collectionItemType = null;
+					if(collectionMap.Element is OneToMany)
+						collectionItemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
+					else if (collectionMap.Element is ManyToOne)
+						collectionItemType = (collectionMap.Element as ManyToOne).Type.ReturnedClass;
+					
 					var collectionItemClassInfo = ClassInfos.Find(c => c.ObjectClass == collectionItemType);
                     if(collectionItemClassInfo == null)
                     {
