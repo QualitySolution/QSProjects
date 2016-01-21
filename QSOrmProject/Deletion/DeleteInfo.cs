@@ -63,14 +63,14 @@ namespace QSOrmProject.Deletion
 			return this;
 		}
 
-		public IList<EntityDTO> GetEntitiesList(DeleteCore core, DeleteDependenceInfo depend, uint forId)
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
-			return GetEntitiesList(depend.WhereStatment, forId);
+			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
 		}
 
-		public IList<EntityDTO> GetEntitiesList(DeleteCore core, ClearDependenceInfo depend, uint forId)
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
-			return GetEntitiesList(depend.WhereStatment, forId);
+			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
 		}
 
 		public EntityDTO GetSelfEntity(DeleteCore core, uint id)

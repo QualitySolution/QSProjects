@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 using NHibernate.Criterion;
 
 namespace QSOrmProject.Deletion
@@ -57,24 +59,37 @@ namespace QSOrmProject.Deletion
 			return this;
 		}
 
-		public IList<EntityDTO> GetEntitiesList(DeleteCore core, DeleteDependenceInfo depend, uint forId)
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
-			return GetEntitiesList (core, depend.PropertyName, forId);
+			if(depend.PropertyName != null)
+			{
+				var list = core.UoW.Session.CreateCriteria (ObjectClass)
+					.Add (Restrictions.Eq (depend.PropertyName + ".Id", (int)masterEntity.Id)).List ();
+				
+				return MakeResultList (list);
+			}
+			else if(depend.CollectionName != null)
+			{
+				return MakeResultList (
+					masterEntity.Entity.GetPropertyValue (depend.CollectionName) as IList);
+			}
+
+			throw new NotImplementedException ();
 		}
 
-		public IList<EntityDTO> GetEntitiesList(DeleteCore core, ClearDependenceInfo depend, uint forId)
-		{
-			return GetEntitiesList (core, depend.PropertyName, forId);
-		}
-
-		private IList<EntityDTO> GetEntitiesList(DeleteCore core, string propertyName, uint forId)
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
 			var list = core.UoW.Session.CreateCriteria (ObjectClass)
-				.Add (Restrictions.Eq (propertyName + ".Id", (int)forId)).List ();
+				.Add (Restrictions.Eq (depend.PropertyName + ".Id", (int)masterEntity.Id)).List ();
+			
+			return MakeResultList (list);
+		}
 
+		private IList<EntityDTO> MakeResultList(IList inputList)
+		{
 			var resultList = new List<EntityDTO> ();
 
-			foreach(var item in list)
+			foreach(var item in inputList)
 			{
 				resultList.Add (new EntityDTO{
 					Id = (uint)(item as IDomainObject).Id,

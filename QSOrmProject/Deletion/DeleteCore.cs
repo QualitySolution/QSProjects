@@ -63,7 +63,7 @@ namespace QSOrmProject.Deletion
 					Title = self.Title
 				});
 
-				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), Convert.ToUInt32 (id));
+				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
 
 			} catch (Exception ex) {
 				QSMain.ErrorMessageWithLog ("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
@@ -87,7 +87,7 @@ namespace QSOrmProject.Deletion
 			return false;
 		}
 
-		int FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, uint currentId)
+		int FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity)
 		{
 			TreeIter DeleteIter, ClearIter, GroupIter, ItemIter;
 			int Totalcount = 0;
@@ -110,14 +110,14 @@ namespace QSOrmProject.Deletion
 							delDepend.ObjectClass, 
 							delDepend.TableName));
 
-					var childList = childClassInfo.GetEntitiesList (this, delDepend, currentId);
+					var childList = childClassInfo.GetDependEntities (this, delDepend, masterEntity);
 
 					if (childList.Count == 0)
 						continue;
 
 					GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
 
-					var delOper = childClassInfo.CreateDeleteOperation (delDepend, currentId);
+					var delOper = childClassInfo.CreateDeleteOperation (delDepend, masterEntity.Id);
 					parentOperation.ChildOperations.Add (delOper);
 
 					foreach (var row in childList) {
@@ -128,7 +128,7 @@ namespace QSOrmProject.Deletion
 							Title = row.Title
 						});
 						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0) {
-							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row.Id);
+							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row);
 						}
 						GroupCount++;
 						Totalcount++;
@@ -155,14 +155,14 @@ namespace QSOrmProject.Deletion
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
 
-					var childList = childClassInfo.GetEntitiesList (this, cleanDepend, currentId);
+					var childList = childClassInfo.GetDependEntities (this, cleanDepend, masterEntity);
 
 					if (childList.Count == 0)
 						continue;
 
 					GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
 
-					var cleanOper = childClassInfo.CreateClearOperation(cleanDepend, currentId);
+					var cleanOper = childClassInfo.CreateClearOperation(cleanDepend, masterEntity.Id);
 
 					parentOperation.ChildOperations.Add (cleanOper);
 

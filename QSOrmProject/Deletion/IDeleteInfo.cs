@@ -11,8 +11,8 @@ namespace QSOrmProject.Deletion
 		List<DeleteDependenceInfo> DeleteItems { get;}
 		List<ClearDependenceInfo> ClearItems { get;}
 
-		IList<EntityDTO> GetEntitiesList (DeleteCore core, DeleteDependenceInfo depend, uint forId);
-		IList<EntityDTO> GetEntitiesList(DeleteCore core, ClearDependenceInfo depend, uint forId);
+		IList<EntityDTO> GetDependEntities (DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity);
+		IList<EntityDTO> GetDependEntities (DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity);
 		EntityDTO GetSelfEntity(DeleteCore core, uint id);
 		Operation CreateDeleteOperation (DeleteDependenceInfo depend, uint forId);
 		Operation CreateDeleteOperation (uint selfId);

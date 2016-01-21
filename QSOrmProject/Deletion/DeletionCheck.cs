@@ -60,12 +60,12 @@ namespace QSOrmProject.Deletion
                     var collectionMap = (prop.Value as Bag);
                     if (collectionMap.IsInverse)
                         continue;
-                    Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
-                    var classInfo = ClassInfos.Find(c => c.ObjectClass == itemType);
-                    if(classInfo == null)
+					Type collectionItemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
+					var collectionItemClassInfo = ClassInfos.Find(c => c.ObjectClass == collectionItemType);
+                    if(collectionItemClassInfo == null)
                     {
                         logger.Warn("#Класс {0} не имеет правил удаления, но используется в коллекции {1}.{2}.",
-                            itemType,
+                            collectionItemType,
                             mapping.MappedClass.Name,
                             prop.Name);
                         continue;
@@ -76,21 +76,32 @@ namespace QSOrmProject.Deletion
                         logger.Warn("#Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
                             mapping.MappedClass.Name,
                             prop.Name,
-                            itemType.Name
+                            collectionItemType.Name
                         );
                         continue;
                     }
 
-					if(!info.DeleteItems.Exists(r => r.ObjectClass == itemType && r.CollectionName == prop.Name)) 
-						//&& !info.ClearItems.Exists(r => r.itemType == mapping.MappedClass && r.PropertyName == prop.Name))
+					var deleteDepend = info.DeleteItems.Find (r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
+
+					if(deleteDepend == null)
                     {
                         logger.Warn("#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
                             mapping.MappedClass.Name,
                             prop.Name,
-                            itemType.Name
+                            collectionItemType.Name
                         );
                         continue;
                     }
+
+					if(collectionItemClassInfo is IDeleteInfoHibernate && !(info is IDeleteInfoHibernate))
+					{
+						logger.Warn("#Удаление через Hibernate элементов коллекции {0}.{1}, поддерживается только если удаление родительского класса {0} настроено тоже через Hibernate",
+							mapping.MappedClass.Name,
+							prop.Name
+						);
+						continue;
+					}
+
                 }
 
 			}
