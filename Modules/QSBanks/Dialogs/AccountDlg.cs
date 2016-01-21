@@ -6,6 +6,7 @@ using Gtk;
 using QSValidation;
 using NHibernate.Criterion;
 using System.ComponentModel;
+using Gamma.Utilities;
 
 namespace QSBanks
 {

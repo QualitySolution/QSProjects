@@ -2,7 +2,6 @@
 using Gtk;
 using System.ComponentModel;
 using System.Reflection;
-using NLog;
 using System.Collections.Generic;
 using Gamma.Utilities;
 

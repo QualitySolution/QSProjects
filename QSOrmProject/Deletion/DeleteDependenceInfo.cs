@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 using NHibernate.Mapping;
 
 namespace QSOrmProject.Deletion
@@ -59,7 +60,7 @@ namespace QSOrmProject.Deletion
         {
 			if (ObjectClass != typeof(TObject))
 				throw new InvalidOperationException(String.Format("Тип {0} должен соответствовать типу правила({1})", typeof(TObject).Name, ObjectClass.Name));
-            string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string propName = PropertyUtil.GetName (propertyRefExpr);
             PropertyName = propName;
             return this;
         }
@@ -77,7 +78,7 @@ namespace QSOrmProject.Deletion
 		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
-			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string propName = PropertyUtil.GetName (propertyRefExpr);
 			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
@@ -91,7 +92,7 @@ namespace QSOrmProject.Deletion
 		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo CreateFromBag<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
-			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string propName = PropertyUtil.GetName (propertyRefExpr);
 			var collectionMap = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
 			Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
 			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;

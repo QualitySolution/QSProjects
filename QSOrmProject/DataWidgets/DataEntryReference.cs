@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel;
 using System.Data.Bindings;
-using QSOrmProject;
 using System.Linq.Expressions;
 using System.Reflection;
+using Gamma.Utilities;
+using QSOrmProject;
 
 namespace Gtk.DataBindings
 {

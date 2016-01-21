@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 
 namespace QSOrmProject.Deletion
 {
@@ -55,7 +56,7 @@ namespace QSOrmProject.Deletion
 		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
-			string propName = PropertyUtil.GetPropertyNameCore (propertyRefExpr.Body);
+			string propName = PropertyUtil.GetName (propertyRefExpr);
 			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),

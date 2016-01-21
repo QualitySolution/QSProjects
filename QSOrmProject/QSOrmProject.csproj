@@ -73,7 +73,6 @@
     <Compile Include="DataWidgets\DataCompanyName.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="DataWidgets\DataTimeEntry.cs" />
-    <Compile Include="PropertyUtil.cs" />
     <Compile Include="Deletion\DeleteDlg.cs" />
     <Compile Include="Deletion\DeleteInfo.cs" />
     <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteDlg.cs" />
