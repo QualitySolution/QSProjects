@@ -125,7 +125,7 @@ namespace QSOrmProject.Deletion
 			return new SQLCleanOperation () {
 				ItemId = masterEntity.Id,
 				TableName = TableName,
-				CleanFields = depend.ClearFields,
+				CleanField = depend.ClearField,
 				WhereStatment = depend.WhereStatment
 			};
 		}

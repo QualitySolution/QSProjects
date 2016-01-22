@@ -10,7 +10,7 @@ namespace QSOrmProject.Deletion
 	{
 		public Type ObjectClass;
 		public string TableName;
-		public string[] ClearFields;
+		public string ClearField;
 
 		/// <summary>
 		/// Необходимо для проверки и удаления через NHibernate
@@ -22,18 +22,18 @@ namespace QSOrmProject.Deletion
 		/// </summary>
 		public string WhereStatment;
 
-		public ClearDependenceInfo(Type objectClass, string sqlwhere, params string[] clearField)
+		public ClearDependenceInfo(Type objectClass, string sqlwhere, string clearField)
 		{
 			ObjectClass = objectClass;
 			WhereStatment = sqlwhere;
-			ClearFields = clearField;
+			ClearField = clearField;
 		}
 
-		public ClearDependenceInfo(string tableName, string sqlwhere, params string[] clearField)
+		public ClearDependenceInfo(string tableName, string sqlwhere, string clearField)
 		{
 			TableName = tableName;
 			WhereStatment = sqlwhere;
-			ClearFields = clearField;
+			ClearField = clearField;
 		}
 
 		public IDeleteInfo GetClassInfo()
@@ -60,7 +60,7 @@ namespace QSOrmProject.Deletion
 			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
-				new string[] {fieldName}
+				fieldName
 			).AddCheckProperty(propName);
 		}
 	}

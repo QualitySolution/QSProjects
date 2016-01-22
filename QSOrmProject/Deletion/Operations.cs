@@ -40,15 +40,12 @@ namespace QSOrmProject.Deletion
 
 		public string TableName;
 		public string WhereStatment;
-		public string[] CleanFields;
+		public string CleanField;
 
 		public override void Execute (DeleteCore core)
 		{
 			var sql = new DBWorks.SQLHelper ("UPDATE {0} SET ", TableName);
-			sql.StartNewList ("", ", ");
-			foreach (string FieldName in CleanFields) {
-				sql.AddAsList ("{0} = NULL ", args: FieldName);
-			}
+			sql.Add ("{0} = NULL ", CleanField);
 			sql.Add (WhereStatment);
 
 			DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
