@@ -24,6 +24,15 @@ namespace QSOrmProject.Deletion
 			}
 		}
 
+		DbTransaction sqlTransaction;
+
+		public DbTransaction SqlTransaction {
+			get {if(sqlTransaction == null)
+					sqlTransaction = QSMain.ConnectionDB.BeginTransaction ();
+				return sqlTransaction;
+			}
+		}
+
 		public DeleteCore()
 		{
 			ObjectsTreeStore = new TreeStore (typeof(string), typeof(string));
@@ -52,10 +61,8 @@ namespace QSOrmProject.Deletion
 		private bool Run (IDeleteInfo info, uint id)
 		{
 			try {
-					
-				PreparedOperation = info.CreateDeleteOperation(id);
-
 				var self = info.GetSelfEntity(this, id);
+				PreparedOperation = info.CreateDeleteOperation(self);
 
 				DeletedItems.Add (new DeletedItem {
 					ItemClass = info.ObjectClass,
@@ -73,14 +80,18 @@ namespace QSOrmProject.Deletion
 			bool userAccept = DeleteDlg.RunDialog(this);
 
 			if (userAccept) {
-				var trans = QSMain.ConnectionDB.BeginTransaction ();
+				
 				try {
-					PreparedOperation.Execute (trans);
-					DeleteConfig.OnAfterDeletion (trans, DeletedItems);
-					trans.Commit ();
+					PreparedOperation.Execute (this);
+					DeleteConfig.OnAfterDeletion (sqlTransaction, DeletedItems);
+					if(sqlTransaction != null)
+						sqlTransaction.Commit ();
+					if(uow != null)
+						uow.Commit ();
 					return true;
 				} catch (Exception ex) {
-					trans.Rollback ();
+					if(SqlTransaction != null)
+						sqlTransaction.Rollback ();
 					QSMain.ErrorMessageWithLog ("Ошибка при удалении", logger, ex);
 				}
 			}
@@ -117,7 +128,7 @@ namespace QSOrmProject.Deletion
 
 					GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
 
-					var delOper = childClassInfo.CreateDeleteOperation (delDepend, masterEntity.Id);
+					var delOper = childClassInfo.CreateDeleteOperation (masterEntity, delDepend, childList);
 					parentOperation.ChildOperations.Add (delOper);
 
 					foreach (var row in childList) {
@@ -162,7 +173,7 @@ namespace QSOrmProject.Deletion
 
 					GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
 
-					var cleanOper = childClassInfo.CreateClearOperation(cleanDepend, masterEntity.Id);
+					var cleanOper = childClassInfo.CreateClearOperation(masterEntity, cleanDepend, childList);
 
 					parentOperation.ChildOperations.Add (cleanOper);
 

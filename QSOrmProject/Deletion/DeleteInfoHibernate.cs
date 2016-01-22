@@ -100,31 +100,31 @@ namespace QSOrmProject.Deletion
 			return resultList;
 		}
 
-		public Operation CreateDeleteOperation(DeleteDependenceInfo depend, uint forId)
+		public Operation CreateDeleteOperation(EntityDTO masterEntity, DeleteDependenceInfo depend, IList<EntityDTO> dependEntities)
 		{
-			return new SQLDeleteOperation {
-				ItemId = forId,
-				//TableName = TableName,
-				WhereStatment = depend.WhereStatment
+			return new HibernateDeleteOperation {
+				ItemId = masterEntity.Id,
+				DeletingItems = dependEntities
 			};
 		}
 
-		public Operation CreateDeleteOperation(uint selfId)
+		public Operation CreateDeleteOperation(EntityDTO entity)
 		{
-			return new SQLDeleteOperation {
-				ItemId = selfId,
-				//TableName = TableName,
-				WhereStatment = "WHERE id = @id"
+			var list = new List<EntityDTO> ();
+			list.Add (entity);
+
+			return new HibernateDeleteOperation {
+				DeletingItems = list
 			};
 		}
 
-		public Operation CreateClearOperation(ClearDependenceInfo depend, uint forId)
+		public Operation CreateClearOperation(EntityDTO masterEntity, ClearDependenceInfo depend, IList<EntityDTO> dependEntities)
 		{
-			return new SQLCleanOperation () {
-				ItemId = forId,
-				//TableName = TableName,
-				CleanFields = depend.ClearFields,
-				WhereStatment = depend.WhereStatment
+			return new HibernateCleanOperation {
+				ItemId = masterEntity.Id,
+				ClearingItems = dependEntities,
+				EntityType = depend.ObjectClass,
+				PropertyName = depend.PropertyName
 			};
 		}
 

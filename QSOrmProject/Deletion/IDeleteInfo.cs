@@ -14,9 +14,9 @@ namespace QSOrmProject.Deletion
 		IList<EntityDTO> GetDependEntities (DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity);
 		IList<EntityDTO> GetDependEntities (DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity);
 		EntityDTO GetSelfEntity(DeleteCore core, uint id);
-		Operation CreateDeleteOperation (DeleteDependenceInfo depend, uint forId);
-		Operation CreateDeleteOperation (uint selfId);
-		Operation CreateClearOperation(ClearDependenceInfo depend, uint forId);
+		Operation CreateDeleteOperation (EntityDTO masterEntity, DeleteDependenceInfo depend, IList<EntityDTO> dependEntities);
+		Operation CreateDeleteOperation (EntityDTO entity);
+		Operation CreateClearOperation(EntityDTO masterEntity, ClearDependenceInfo depend, IList<EntityDTO> dependEntities);
 	}
 
 	public interface IDeleteInfoHibernate : IDeleteInfo
