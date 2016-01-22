@@ -23,6 +23,12 @@ namespace QSOrmProject
 		/// </summary>
 		void TrySave(object entity);
 
+		/// <summary>
+		/// Пытаемся удалить сущность в виде объекта, неизвестного типа.
+		/// По возможности используйте дженерик метод Delete().
+		/// </summary>
+		void TryDelete(object entity);
+
 		T GetById<T>(int id) where T : IDomainObject;
 
 		object GetById(Type clazz, int id);

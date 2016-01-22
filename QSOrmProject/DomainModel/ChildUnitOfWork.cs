@@ -123,6 +123,11 @@ namespace QSOrmProject
 			throw new NotImplementedException ();
 		}
 
+		public void TryDelete(object entity)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public void Save ()
 		{
 			Save (Root);

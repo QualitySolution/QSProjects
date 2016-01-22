@@ -124,6 +124,14 @@ namespace QSOrmProject
 
 			Session.Delete (entity);
 		}
+
+		public void TryDelete(object entity)
+		{
+			if(transaction == null)
+				transaction = Session.BeginTransaction();
+
+			Session.Delete (entity);
+		}
 	}
 }
 
