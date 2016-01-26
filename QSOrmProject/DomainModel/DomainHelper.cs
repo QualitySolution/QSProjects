@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NHibernate;
 using QSProjectsLib;
 
@@ -61,6 +62,22 @@ namespace QSOrmProject
 				return (att [0] as OrmSubjectAttribute).AllNames;
 			} else
 				return null;
+		}
+
+		public static string GetPropertyTitle<TEntity> (System.Linq.Expressions.Expression<Func<TEntity, object>> propertyRefExpr)
+		{
+			var propInfo = Gamma.Utilities.PropertyUtil.GetPropertyInfo (propertyRefExpr);
+			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);
+
+			return att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : null;
+		}
+
+		public static string GetPropertyTitle (Type clazz, string propName)
+		{
+			var propInfo = clazz.GetProperty (propName);
+			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);
+
+			return att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : null;
 		}
 	}
 }
