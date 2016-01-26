@@ -1,14 +1,21 @@
 using System;
 using QSProjectsLib;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 
 namespace QSSupportLib
 {
 	public class AppVersion
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		public string Product;
+		public string ProductTitle { get; private set;}
 		public Version Version;
 		public string Edition;
+		public bool IsBeta { get; private set;}
+		public DateTime? BuildDate { get; private set;}
 		public List<string> AllowEdition;
 
 		[Obsolete("Используйте автоматический конструктор и атрибут AssemblyEdition для указания редакции")]
@@ -37,6 +44,19 @@ namespace QSSupportLib
 				Edition = ((AssemblyEditionAttribute)att [0]).Edition;
 				if (!AllowEdition.Contains (Edition))
 					AllowEdition.Add (Edition);
+			}
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
+			ProductTitle = ((AssemblyTitleAttribute)att [0]).Title;
+
+			logger.Info ("Продукт: {0} v. {1}", ProductTitle, Version);
+			logger.Info ("Редакция: {0}", Edition);
+
+			att = assembly.GetCustomAttributes (typeof(AssemblyBetaBuildAttribute), false);
+			if(att.Length > 0)
+			{
+				BuildDate = System.IO.File.GetLastWriteTime(assembly.Location);
+				logger.Debug ("Бета сборка от {0:g}", BuildDate);
 			}
 		}
 	}
