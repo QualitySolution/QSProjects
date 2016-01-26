@@ -188,7 +188,11 @@ namespace QSOrmProject.Deletion
 					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
 				}
 				if (ClearCount > 0)
-					ObjectsTreeStore.SetValues (ClearIter, String.Format ("Будет очищено ссылок у {0} объектов:", ClearCount));
+					ObjectsTreeStore.SetValues (ClearIter, RusNumber.FormatCase (ClearCount, 
+						"Будет очищено ссылок у {0} объекта:",
+						"Будет очищено ссылок у {0} объектов:",
+						"Будет очищено ссылок у {0} объектов:"
+					));
 				else
 					ObjectsTreeStore.Remove (ref ClearIter);
 			}
@@ -198,23 +202,23 @@ namespace QSOrmProject.Deletion
 					RemoveIter = ObjectsTreeStore.AppendNode ();
 				else
 					RemoveIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var delDepend in currentDeletion.RemoveFromItems) {
+				foreach (var removeDepend in currentDeletion.RemoveFromItems) {
 					GroupCount = 0;
-					var childClassInfo = delDepend.GetClassInfo();
+					var childClassInfo = removeDepend.GetClassInfo();
 					if (childClassInfo == null)
 						throw new InvalidOperationException (String.Format ("Зависимость удаления класса {0} ссылается на коллекцию {2} в классе {1} для которого нет описания.", 
 							currentDeletion.ObjectClass,
-							delDepend.ObjectClass, 
-							delDepend.CollectionName));
+							removeDepend.ObjectClass, 
+							removeDepend.CollectionName));
 
-					var childList = childClassInfo.GetDependEntities (this, delDepend, masterEntity);
+					var childList = childClassInfo.GetDependEntities (this, removeDepend, masterEntity);
 
 					if (childList.Count == 0)
 						continue;
 
 					GroupIter = ObjectsTreeStore.AppendNode (RemoveIter);
 
-					var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, delDepend, childList);
+					var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, removeDepend, childList);
 					parentOperation.ChildOperations.Add (removeOper);
 
 					foreach (var row in childList) {
@@ -224,10 +228,19 @@ namespace QSOrmProject.Deletion
 						RemoveCount++;
 					}
 
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
+					var classNames = DomainHelper.GetSubjectNames (childClassInfo.ObjectClass);
+
+					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{2} в {0}({1})", 
+						classNames.PrepositionalPlural ?? classNames.NominativePlural,
+						GroupCount,
+						DomainHelper.GetPropertyTitle (removeDepend.ObjectClass, removeDepend.CollectionName)
+					));
 				}
 				if (RemoveCount > 0)
-					ObjectsTreeStore.SetValues (RemoveIter, String.Format ("Будут очищены ссылки в коллекциях у {0} объектов:", RemoveCount));
+					ObjectsTreeStore.SetValues (RemoveIter, RusNumber.FormatCase (RemoveCount, 
+						"Будут очищены ссылки в коллекциях у {0} объекта:",
+						"Будут очищены ссылки в коллекциях у {0} объектов:",
+						"Будут очищены ссылки в коллекциях у {0} объектов:" ));
 				else
 					ObjectsTreeStore.Remove (ref RemoveIter);
 			}
