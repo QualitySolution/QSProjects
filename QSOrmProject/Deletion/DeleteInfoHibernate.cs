@@ -28,11 +28,13 @@ namespace QSOrmProject.Deletion
 
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
+		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
 
 		public DeleteInfoHibernate()
 		{
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
+			RemoveFromItems = new List<RemoveFromDependenceInfo>();
 		}
 
 		public DeleteInfoHibernate<TEntity> AddDeleteDependence (DeleteDependenceInfo info)
@@ -44,6 +46,12 @@ namespace QSOrmProject.Deletion
 		public DeleteInfoHibernate<TEntity> AddDeleteDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
 			DeleteItems.Add (DeleteDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			return this;
+		}
+
+		public DeleteInfoHibernate<TEntity> AddRemoveFromDependence<TFrom>(Expression<Func<TFrom, object>> collectionProperty)
+		{
+			RemoveFromItems.Add (RemoveFromDependenceInfo.CreateFromBag <TFrom> (collectionProperty));
 			return this;
 		}
 
@@ -75,6 +83,15 @@ namespace QSOrmProject.Deletion
 			}
 
 			throw new NotImplementedException ();
+		}
+
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
+		{
+			var list = core.UoW.Session.CreateCriteria (ObjectClass)
+				.CreateAlias (depend.CollectionName, "childs")
+				.Add (Restrictions.Eq (String.Format ( "childs.Id", depend.CollectionName), (int)masterEntity.Id)).List ();
+
+			return MakeResultList (list);
 		}
 
 		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
@@ -128,6 +145,16 @@ namespace QSOrmProject.Deletion
 			};
 		}
 
+		public Operation CreateRemoveFromOperation(EntityDTO masterEntity, RemoveFromDependenceInfo depend, IList<EntityDTO> dependEntities)
+		{
+			return new HibernateRemoveFromCollectionOperation {
+				RemoveInClassType = depend.ObjectClass,
+				RemoveInItems = dependEntities,
+				CollectionName = depend.CollectionName,
+				RemovingEntity = masterEntity
+			};
+		}
+
 		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
 		{
 			var item = core.UoW.GetById<TEntity> ((int)id);
@@ -137,7 +164,6 @@ namespace QSOrmProject.Deletion
 				Entity = item
 			};
 		}
-
 	}
 }
 

@@ -100,10 +100,11 @@ namespace QSOrmProject.Deletion
 
 		int FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity)
 		{
-			TreeIter DeleteIter, ClearIter, GroupIter, ItemIter;
+			TreeIter DeleteIter, ClearIter, RemoveIter, GroupIter, ItemIter;
 			int Totalcount = 0;
 			int DelCount = 0;
 			int ClearCount = 0;
+			int RemoveCount = 0;
 			int GroupCount;
 
 			if (currentDeletion.DeleteItems.Count > 0) {
@@ -191,6 +192,46 @@ namespace QSOrmProject.Deletion
 				else
 					ObjectsTreeStore.Remove (ref ClearIter);
 			}
+
+			if (currentDeletion.RemoveFromItems.Count > 0) {
+				if (!ObjectsTreeStore.IterIsValid (parentIter))
+					RemoveIter = ObjectsTreeStore.AppendNode ();
+				else
+					RemoveIter = ObjectsTreeStore.AppendNode (parentIter);
+				foreach (var delDepend in currentDeletion.RemoveFromItems) {
+					GroupCount = 0;
+					var childClassInfo = delDepend.GetClassInfo();
+					if (childClassInfo == null)
+						throw new InvalidOperationException (String.Format ("Зависимость удаления класса {0} ссылается на коллекцию {2} в классе {1} для которого нет описания.", 
+							currentDeletion.ObjectClass,
+							delDepend.ObjectClass, 
+							delDepend.CollectionName));
+
+					var childList = childClassInfo.GetDependEntities (this, delDepend, masterEntity);
+
+					if (childList.Count == 0)
+						continue;
+
+					GroupIter = ObjectsTreeStore.AppendNode (RemoveIter);
+
+					var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, delDepend, childList);
+					parentOperation.ChildOperations.Add (removeOper);
+
+					foreach (var row in childList) {
+						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
+						GroupCount++;
+						Totalcount++;
+						RemoveCount++;
+					}
+
+					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
+				}
+				if (RemoveCount > 0)
+					ObjectsTreeStore.SetValues (RemoveIter, String.Format ("Будут очищены ссылки в коллекциях у {0} объектов:", RemoveCount));
+				else
+					ObjectsTreeStore.Remove (ref RemoveIter);
+			}
+
 			return Totalcount;
 		}
 

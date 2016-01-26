@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
+using Gamma.Utilities;
 using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
@@ -65,6 +66,8 @@ namespace QSOrmProject.Deletion
 
 		public override void Execute (DeleteCore core)
 		{
+			ChildOperations.ForEach (o => o.Execute (core));
+
 			foreach(var item in DeletingItems)
 			{
 				logger.Debug ("Удаляем {0}...", item.Title);
@@ -92,5 +95,28 @@ namespace QSOrmProject.Deletion
 			}
 		}
 	}
+
+	class HibernateRemoveFromCollectionOperation : Operation
+	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
+		public Type RemoveInClassType { get; set;}
+		public EntityDTO RemovingEntity { get; set;}
+		public IList<EntityDTO> RemoveInItems { get; set;}
+		public string CollectionName { get; set;}
+
+		public override void Execute (DeleteCore core)
+		{
+			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
+			foreach(var item in RemoveInItems)
+			{
+				logger.Debug ("Удаляем {2} из коллекции {0} в {1}...", CollectionName, item.Title, RemovingEntity.Title);
+				var collection = (IList)collectionProp.GetValue (item.Entity, null);
+				collection.Remove (RemovingEntity.Entity);
+				core.UoW.TrySave (item.Entity);
+			}
+		}
+	}
+
 }
 

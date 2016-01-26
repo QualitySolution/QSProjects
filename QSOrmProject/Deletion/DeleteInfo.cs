@@ -24,6 +24,7 @@ namespace QSOrmProject.Deletion
 		public string DisplayString;
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
+		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
 
 		public string PreparedSqlSelect{
 			get { //Заменяем название таблицы и добавляем пробел, если его нет.
@@ -35,6 +36,7 @@ namespace QSOrmProject.Deletion
 		{
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
+			RemoveFromItems = new List<RemoveFromDependenceInfo>();
 		}
 
 		/// <summary>
@@ -71,6 +73,11 @@ namespace QSOrmProject.Deletion
 		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
 			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
+		}
+
+		public IList<EntityDTO> GetDependEntities(DeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
+		{
+			throw new NotImplementedException ();
 		}
 
 		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
@@ -128,6 +135,11 @@ namespace QSOrmProject.Deletion
 				CleanField = depend.ClearField,
 				WhereStatment = depend.WhereStatment
 			};
+		}
+
+		public Operation CreateRemoveFromOperation(EntityDTO masterEntity, RemoveFromDependenceInfo depend, IList<EntityDTO> dependEntities)
+		{
+			throw new NotSupportedException ();
 		}
 	}
 }
