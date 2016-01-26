@@ -55,6 +55,12 @@ namespace QSOrmProject.Deletion
 			return this;
 		}
 
+		public DeleteInfoHibernate<TEntity> AddRemoveFromDependence<TFrom>(Expression<Func<TFrom, object>> collectionProperty, Expression<Func<TFrom, Action<TEntity>>> removeFunction)
+		{
+			RemoveFromItems.Add (RemoveFromDependenceInfo.CreateFromBag <TFrom, TEntity> (collectionProperty, removeFunction));
+			return this;
+		}
+
 		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromBag(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
 			DeleteItems.Add (DeleteDependenceInfo.CreateFromBag<TEntity> (propertyRefExpr));
@@ -151,6 +157,7 @@ namespace QSOrmProject.Deletion
 				RemoveInClassType = depend.ObjectClass,
 				RemoveInItems = dependEntities,
 				CollectionName = depend.CollectionName,
+				RemoveMethodName = depend.RemoveMethodName,
 				RemovingEntity = masterEntity
 			};
 		}

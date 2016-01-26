@@ -103,15 +103,26 @@ namespace QSOrmProject.Deletion
 		public EntityDTO RemovingEntity { get; set;}
 		public IList<EntityDTO> RemoveInItems { get; set;}
 		public string CollectionName { get; set;}
+		public string RemoveMethodName { get; set;}
 
 		public override void Execute (DeleteCore core)
 		{
 			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
+			var removeMethod = String.IsNullOrEmpty (RemoveMethodName) ? null : RemoveInClassType.GetMethod (RemoveMethodName);
 			foreach(var item in RemoveInItems)
 			{
 				logger.Debug ("Удаляем {2} из коллекции {0} в {1}...", CollectionName, item.Title, RemovingEntity.Title);
-				var collection = (IList)collectionProp.GetValue (item.Entity, null);
-				collection.Remove (RemovingEntity.Entity);
+				if(removeMethod != null)
+				{
+					if (item.Entity is IBusinessObject)
+						(item.Entity as IBusinessObject).UoW = core.UoW;
+					removeMethod.Invoke (item.Entity, new object[] {RemovingEntity.Entity});
+				} 
+				else 
+				{
+					var collection = (IList)collectionProp.GetValue (item.Entity, null);
+					collection.Remove (RemovingEntity.Entity);
+				}
 				core.UoW.TrySave (item.Entity);
 			}
 		}
