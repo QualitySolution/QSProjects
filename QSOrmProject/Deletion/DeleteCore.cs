@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using Gtk;
 using QSProjectsLib;
+using System.Data;
 
 namespace QSOrmProject.Deletion
 {
@@ -14,6 +15,7 @@ namespace QSOrmProject.Deletion
 		Operation PreparedOperation;
 		internal int CountReferenceItems = 0;
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
+		internal bool IsHibernateMode;
 		IUnitOfWork uow;
 
 		internal IUnitOfWork UoW{
@@ -82,6 +84,7 @@ namespace QSOrmProject.Deletion
 			if (userAccept) {
 				
 				try {
+					IsHibernateMode = HasHibernateOperations(PreparedOperation);
 					PreparedOperation.Execute (this);
 					DeleteConfig.OnAfterDeletion (sqlTransaction, DeletedItems);
 					if(sqlTransaction != null)
@@ -248,13 +251,43 @@ namespace QSOrmProject.Deletion
 			return Totalcount;
 		}
 
-		internal static void AddParameterWithId (DbCommand cmd, uint id)
+		#region Internal Helpers
+
+		internal static void AddParameterWithId (IDbCommand cmd, uint id)
 		{
-			DbParameter parameterId = cmd.CreateParameter ();
+			var parameterId = cmd.CreateParameter ();
 			parameterId.ParameterName = "@id";
 			parameterId.Value = id;
 			cmd.Parameters.Add (parameterId);
 		}
+
+		internal static bool HasHibernateOperations (Operation op)
+		{
+			return op is IHibernateOperation || op.ChildOperations.Any(DeleteCore.HasHibernateOperations);
+		}
+
+		internal void ExecuteSql (String sql, uint id)
+		{
+			logger.Debug ("Выполение SQL={0}", sql);
+			if(IsHibernateMode)
+			{
+				var cmd = UoW.Session.Connection.CreateCommand();
+				UoW.Session.Transaction.Enlist(cmd);
+				cmd.CommandText = sql;
+				DeleteCore.AddParameterWithId (cmd, id);
+				cmd.ExecuteNonQuery();
+			}
+			else
+			{
+				DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+				cmd.Transaction = SqlTransaction;
+				cmd.CommandText = sql;
+				DeleteCore.AddParameterWithId (cmd, id);
+				cmd.ExecuteNonQuery ();
+			}
+		}
+
+		#endregion
 	}
 
 	public class EntityDTO

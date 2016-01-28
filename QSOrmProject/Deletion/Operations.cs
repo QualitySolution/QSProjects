@@ -14,6 +14,8 @@ namespace QSOrmProject.Deletion
 		public abstract void Execute (DeleteCore core);
 	}
 
+	interface IHibernateOperation {}
+
 	class SQLDeleteOperation : Operation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
@@ -25,12 +27,9 @@ namespace QSOrmProject.Deletion
 		{
 			ChildOperations.ForEach (o => o.Execute (core));
 
-			DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
-			cmd.Transaction = core.SqlTransaction;
-			cmd.CommandText = String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment);
-			DeleteCore.AddParameterWithId (cmd, ItemId);
-			logger.Debug ("Выполение удаления SQL={0}", cmd.CommandText);
-			cmd.ExecuteNonQuery ();
+			core.ExecuteSql(
+				String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment),
+				ItemId);
 		}
 	}
 
@@ -48,16 +47,11 @@ namespace QSOrmProject.Deletion
 			sql.Add ("{0} = NULL ", CleanField);
 			sql.Add (WhereStatment);
 
-			DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
-			cmd.Transaction = core.SqlTransaction;
-			cmd.CommandText = sql.Text;
-			DeleteCore.AddParameterWithId (cmd, ItemId);
-			logger.Debug ("Выполнение очистки ссылок SQL={0}", cmd.CommandText);
-			cmd.ExecuteNonQuery ();
+			core.ExecuteSql(sql.Text, ItemId);
 		}
 	}
 
-	class HibernateDeleteOperation : Operation
+	class HibernateDeleteOperation : Operation, IHibernateOperation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -75,7 +69,7 @@ namespace QSOrmProject.Deletion
 		}
 	}
 
-	class HibernateCleanOperation : Operation
+	class HibernateCleanOperation : Operation, IHibernateOperation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -95,7 +89,7 @@ namespace QSOrmProject.Deletion
 		}
 	}
 
-	class HibernateRemoveFromCollectionOperation : Operation
+	class HibernateRemoveFromCollectionOperation : Operation, IHibernateOperation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
