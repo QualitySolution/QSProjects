@@ -83,7 +83,7 @@ namespace QSOrmProject
 					FileChooserAction.Save,
 					"Отмена", ResponseType.Cancel,
 					"Сохранить", ResponseType.Accept);
-			fc.CurrentName = GetSaveFileName != null ? GetSaveFileName() : "фото"  + ".jpg";
+			fc.CurrentName = (GetSaveFileName != null ? GetSaveFileName() : "фото")  + ".jpg";
 			fc.Show (); 
 			if (fc.Run () == (int)ResponseType.Accept) {
 				fc.Hide ();
