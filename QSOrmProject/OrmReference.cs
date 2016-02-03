@@ -433,6 +433,23 @@ namespace QSOrmProject
 			}
 			base.Destroy ();
 		}
+
+		[GLib.ConnectBefore]
+		protected void OnDatatreeviewRefButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		{
+			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+
+			if(args.Event.Button == 3 && map.PopupMenuExist)
+			{
+				var selected = datatreeviewRef.GetSelectedObjects();
+				var menu = map.GetPopupMenu(selected);
+				if(menu != null)
+				{
+					menu.ShowAll();
+					menu.Popup();
+				}
+			}
+		}
 	}
 
 	public enum OrmReferenceMode

@@ -16,6 +16,9 @@ namespace QSOrmProject
 		string EditPermisionName { get;}
 		event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		void RaiseObjectUpdated(params object[] updatedSubjects);
+
+		bool PopupMenuExist { get;}
+		Gtk.Menu GetPopupMenu(object[] selected);
 	}
 }
 

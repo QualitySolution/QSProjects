@@ -228,6 +228,7 @@
                 <property name="InheritedDataSource">False</property>
                 <property name="InheritedBoundaryDataSource">False</property>
                 <signal name="RowActivated" handler="OnDatatreeviewRefRowActivated" />
+                <signal name="ButtonReleaseEvent" handler="OnDatatreeviewRefButtonReleaseEvent" />
               </widget>
             </child>
           </widget>

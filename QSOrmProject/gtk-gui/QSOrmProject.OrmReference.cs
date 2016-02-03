@@ -238,6 +238,7 @@ namespace QSOrmProject
 			this.entrySearch.Changed += new global::System.EventHandler (this.OnEntrySearchChanged);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler (this.OnButtonSearchClearClicked);
 			this.datatreeviewRef.RowActivated += new global::Gtk.RowActivatedHandler (this.OnDatatreeviewRefRowActivated);
+			this.datatreeviewRef.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDatatreeviewRefButtonReleaseEvent);
 		}
 	}
 }

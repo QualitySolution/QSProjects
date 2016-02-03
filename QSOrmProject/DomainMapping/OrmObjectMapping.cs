@@ -78,6 +78,10 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
+		public Func<TEntity[], Gtk.Menu> GetPopupMenuFunc { get; set;}
+
+		public bool PopupMenuExist { get{ return GetPopupMenuFunc != null; }}
+
 		private OrmObjectMapping()
 		{
 			
@@ -102,6 +106,14 @@ namespace QSOrmProject.DomainMapping
 		public OrmObjectMapping(System.Type dialogClass, System.Type filterClass, string columnMaping, string[] searchFields) : this(dialogClass, columnMaping, searchFields)
 		{
 			this.refFilterClass = filterClass;
+		}
+			
+		public Gtk.Menu GetPopupMenu(object[] selected)
+		{
+			if (GetPopupMenuFunc == null)
+				return null;
+
+			return GetPopupMenuFunc(selected.Cast<TEntity>().ToArray());
 		}
 			
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
@@ -148,6 +160,12 @@ namespace QSOrmProject.DomainMapping
 		public OrmObjectMapping<TEntity> EditPermision(string permisionName)
 		{
 			this.EditPermisionName = permisionName;
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> PopupMenu(Func<TEntity[], Gtk.Menu> getMenuFunc)
+		{
+			this.GetPopupMenuFunc = getMenuFunc;
 			return this;
 		}
 
