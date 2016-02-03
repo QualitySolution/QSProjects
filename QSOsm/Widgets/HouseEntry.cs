@@ -43,6 +43,19 @@ namespace QSOsm
 			}
 		}
 
+		public virtual decimal? Latitude {
+			get { decimal? latitude, longitude;
+				GetCoordinates(out longitude, out latitude);
+				return latitude; 
+			}
+		}
+
+		public virtual decimal? Longitude {
+			get { decimal? latitude, longitude;
+				GetCoordinates(out longitude, out latitude);
+				return longitude; }
+		}
+
 		OsmStreet street;
 
 		public OsmStreet Street {
@@ -60,7 +73,9 @@ namespace QSOsm
 			Binding = new BindingControler<HouseEntry> (this, new Expression<Func<HouseEntry, object>>[] {
 				(w => w.House),
 				(w => w.OsmCompletion),
-				(w => w.Text)
+				(w => w.Text),
+				(w => w.Latitude),
+				(w => w.Longitude)
 			});
 
 			this.Completion = new EntryCompletion ();
@@ -93,8 +108,7 @@ namespace QSOsm
 			House = args.Model.GetValue (args.Iter, 0).ToString ();
 			args.RetVal = true;
 		}
-
-
+			
 		void OnStreetSet ()
 		{
 			if (queryThread != null && queryThread.IsAlive) {
@@ -135,9 +149,17 @@ namespace QSOsm
 				Gtk.Application.Invoke (CompletionLoaded);
 		}
 
+		public void GetCoordinates(out decimal? longitude, out decimal? latitude)
+		{
+			var osmRow = completionListStore == null ? null : completionListStore.Cast<object[]>().FirstOrDefault(row => (string)row[0] == House);
+
+			longitude = osmRow == null ? null : (decimal?)osmRow[2];
+			latitude = osmRow == null ? null : (decimal?)osmRow[3];
+		}
+
 		protected override void OnChanged ()
 		{
-			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion);
+			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion, w => w.Latitude, w => w.Longitude);
 			base.OnChanged ();
 		}
 	}
