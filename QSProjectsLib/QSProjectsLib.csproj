@@ -88,6 +88,8 @@
     <Compile Include="Helpers\MessageDialogWorks.cs" />
     <Compile Include="Helpers\StringWorks.cs" />
     <Compile Include="Helpers\RusNumber.cs" />
+    <Compile Include="LongOperationDlg.cs" />
+    <Compile Include="gtk-gui\QSProjectsLib.LongOperationDlg.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
