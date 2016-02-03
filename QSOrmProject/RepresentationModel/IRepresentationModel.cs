@@ -28,6 +28,10 @@ namespace QSOrmProject.RepresentationModel
 		string SearchString { get; set;}
 
 		void UpdateNodes();
+
+		bool PopupMenuExist { get;}
+
+		Gtk.Menu GetPopupMenu(RepresentationSelectResult[] selected);
 	}
 
 	public interface IRepresentationModelWithParent

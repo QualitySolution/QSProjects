@@ -115,6 +115,12 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		public virtual bool PopupMenuExist { get{ return false;}}
+
+		public virtual Gtk.Menu GetPopupMenu(RepresentationSelectResult[] selected){
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		private PropertyInfo[] searchPropCache;

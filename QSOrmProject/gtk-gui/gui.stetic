@@ -466,6 +466,7 @@
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
                 <signal name="RowActivated" handler="OnOrmtableviewRowActivated" />
+                <signal name="ButtonReleaseEvent" handler="OnOrmtableviewButtonReleaseEvent" />
               </widget>
             </child>
           </widget>

@@ -233,13 +233,18 @@ namespace QSOrmProject
 		{
 			if (ObjectSelected != null) 
 			{
-				var selected = ormtableview.GetSelectedObjects ()
-					.Select (node => new RepresentationSelectResult (DomainHelper.GetId (node), node))
-					.ToArray ();
+				var selected = GetSelectResults();
 
 				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selected));
 			}
 			OnCloseTab ();
+		}
+
+		protected RepresentationSelectResult[] GetSelectResults()
+		{
+			return ormtableview.GetSelectedObjects ()
+				.Select (node => new RepresentationSelectResult (DomainHelper.GetId (node), node))
+				.ToArray ();
 		}
 
 		protected void OnCheckShowFilterToggled (object sender, EventArgs e)
@@ -262,6 +267,21 @@ namespace QSOrmProject
 				buttonSelect.Click ();
 			else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
 				buttonEdit.Click ();
+		}
+
+		[GLib.ConnectBefore]
+		protected void OnOrmtableviewButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		{
+			if(args.Event.Button == 3 && RepresentationModel.PopupMenuExist)
+			{
+				var selected = GetSelectResults();
+				var menu = RepresentationModel.GetPopupMenu(selected);
+				if(menu != null)
+				{
+					menu.ShowAll();
+					menu.Popup();
+				}
+			}
 		}
 	}
 
