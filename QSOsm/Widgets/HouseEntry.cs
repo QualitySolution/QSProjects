@@ -119,20 +119,20 @@ namespace QSOsm
 				logger.Info ("Запрос домов на {0}...", Street.Name);
 				IOsmService svc = OsmWorker.GetOsmService ();
 
-				List<string> houses;
+				List<OsmHouse> houses;
 				if (Street.Districts == null)
 					houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
 				else
 					houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
-				completionListStore = new ListStore (typeof(string));
+				completionListStore = new ListStore (typeof(string), typeof(long), typeof(decimal), typeof(decimal));
 				foreach (var h in houses) {
-					completionListStore.AppendValues (h);
+					completionListStore.AppendValues (h.HouseNumber, h.Id, h.X, h.Y);
 				}
 				this.Completion.Model = completionListStore;
 				logger.Debug ("Получено {0} домов...", houses.Count);
 			}
 			if (CompletionLoaded != null)
-				Gtk.Application.Invoke(CompletionLoaded);
+				Gtk.Application.Invoke (CompletionLoaded);
 		}
 
 		protected override void OnChanged ()

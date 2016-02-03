@@ -46,11 +46,11 @@ namespace QSOsm
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<string> GetHouseNumbersWithoutDistrict (long cityId, string street);
+		List<OsmHouse> GetHouseNumbersWithoutDistrict (long cityId, string street);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
-		List<string> GetHouseNumbers (long cityId, string street, string districts);
+		List<OsmHouse> GetHouseNumbers (long cityId, string street, string districts);
 
 
 	}
