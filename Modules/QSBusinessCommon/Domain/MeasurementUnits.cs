@@ -50,6 +50,13 @@ namespace QSBusinessCommon.Domain
 			return String.Format ("{0} {1}", amount, Name);
 		}
 
+		public virtual string MakeAmountShortStr(decimal amount)
+		{
+			return String.Format ("{0:" + String.Format ("F{0}", Digits) + "} {1}", 
+				amount,
+				Name);
+		}
+
 		#endregion
 
 		public MeasurementUnits ()
