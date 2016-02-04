@@ -49,6 +49,12 @@ namespace QSOrmProject.Deletion
 			return this;
 		}
 
+		public DeleteInfoHibernate<TEntity> AddDeleteCascadeDependence(Expression<Func<TEntity, object>> propertyRefExpr)
+		{
+			DeleteItems.Add (DeleteDependenceInfo.CreateFromParentPropery<TEntity> (propertyRefExpr));
+			return this;
+		}
+
 		public DeleteInfoHibernate<TEntity> AddRemoveFromDependence<TFrom>(Expression<Func<TFrom, object>> collectionProperty)
 		{
 			RemoveFromItems.Add (RemoveFromDependenceInfo.CreateFromBag <TFrom> (collectionProperty));
@@ -87,6 +93,12 @@ namespace QSOrmProject.Deletion
 				return MakeResultList (
 					masterEntity.Entity.GetPropertyValue (depend.CollectionName) as IList);
 			}
+			else if(depend.ParentPropertyName != null)
+			{
+				var value = (TEntity)masterEntity.Entity.GetPropertyValue(depend.ParentPropertyName);
+
+				return MakeResultList(value == null ? new List<TEntity>() : new List<TEntity> {	value});
+			}
 
 			throw new NotImplementedException ();
 		}
@@ -115,7 +127,7 @@ namespace QSOrmProject.Deletion
 			foreach(var item in inputList)
 			{
 				resultList.Add (new EntityDTO{
-					Id = (uint)(item as IDomainObject).Id,
+					Id = (uint)DomainHelper.GetId (item),
 					Title = DomainHelper.GetObjectTilte (item),
 					Entity = item
 				});

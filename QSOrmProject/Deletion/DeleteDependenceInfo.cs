@@ -17,6 +17,7 @@ namespace QSOrmProject.Deletion
 		/// </summary>
 		public string PropertyName;
         public string CollectionName;
+		public string ParentPropertyName;
 
 		/// <summary>
 		/// В выражении можно использовать параметр @id для получения id удаляемого объекта.
@@ -41,6 +42,8 @@ namespace QSOrmProject.Deletion
 			TableName = tableName;
 			WhereStatment = sqlwhere;
 		}
+
+		private DeleteDependenceInfo() {}
 
 		public IDeleteInfo GetClassInfo()
 		{
@@ -101,6 +104,25 @@ namespace QSOrmProject.Deletion
             ).AddCheckCollection(propName);
 		}
 
+		/// <summary>
+		/// Создает класс описания удаления на основе свойства в родителе. 
+		/// </summary>
+		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
+		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
+		public static DeleteDependenceInfo CreateFromParentPropery<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
+			string propName = PropertyUtil.GetName (propertyRefExpr);
+			var parentMap = OrmMain.OrmConfig.GetClassMapping(typeof(TObject));
+			var propertyMap = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as ManyToOne;
+			Type itemType = propertyMap.Type.ReturnedClass;
+			var itemMap = OrmMain.OrmConfig.GetClassMapping(itemType);
+			var parentTable = parentMap.Table.Name;
+			string fieldName = propertyMap.ColumnIterator.First ().Text;
+			return new DeleteDependenceInfo{
+				ParentPropertyName = propName,
+				ObjectClass = itemType,
+				WhereStatment = String.Format("WHERE {0}.id = (SELECT {1} FROM {2} WHERE id = @id)", itemMap.Table.Name, fieldName, parentTable)
+			};
+		}
 	}
 
 }
