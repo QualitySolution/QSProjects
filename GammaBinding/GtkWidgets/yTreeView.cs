@@ -24,6 +24,7 @@ namespace Gamma.GtkWidgets
 			set {if (columnsConfig == value)
 					return;
 				columnsConfig = value;
+				VerifyNodeTypes();
 				ReconfigureColumns ();
 			}
 		}
@@ -33,6 +34,12 @@ namespace Gamma.GtkWidgets
 		public virtual object ItemsDataSource {
 			get { return itemsDataSource; }
 			set {
+				var list = (value as IList);
+				if (list == null)
+					throw new NotSupportedException(String.Format(
+						"Type '{0}' is not supported. Data source must implement IList.",
+						value.GetType()
+					));
 				if (value is IObservableList)
 				{
 					if(Reorderable)
@@ -46,7 +53,9 @@ namespace Gamma.GtkWidgets
 				}
 				else
 					return;
-				itemsDataSource = value; }
+				itemsDataSource = value;
+				VerifyNodeTypes();
+			}
 		}
 
 		private IyTreeModel yTreeModel;
@@ -64,6 +73,25 @@ namespace Gamma.GtkWidgets
 				if(yTreeModel != null)
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
+			}
+		}
+
+		void VerifyNodeTypes()
+		{
+			if (itemsDataSource == null || columnsConfig == null)
+				return;
+			if (!itemsDataSource.GetType().IsGenericType)
+				return;
+
+			var dataSourceType = itemsDataSource.GetType().GetGenericArguments()[0];
+			var columnsConfigType = columnsConfig.GetType().GetGenericArguments()[0];
+			if (dataSourceType != columnsConfigType && !dataSourceType.IsSubclassOf(columnsConfigType))
+			{
+				throw new ArgumentException(String.Format(
+						"Data source element type '{0}' does not match columns configuration type '{1}'.",
+						dataSourceType,
+						columnsConfigType
+					));
 			}
 		}
 
