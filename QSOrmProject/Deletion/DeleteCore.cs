@@ -125,7 +125,15 @@ namespace QSOrmProject.Deletion
 							delDepend.ObjectClass, 
 							delDepend.TableName));
 
-					var childList = childClassInfo.GetDependEntities (this, delDepend, masterEntity);
+					var childList = childClassInfo.GetDependEntities(this, delDepend, masterEntity).ToList();
+
+					if (childList.Count == 0)
+						continue;
+
+					foreach(var chk in DeletedItems.Where(x => x.ItemClass == childClassInfo.ObjectClass))
+					{
+						childList.RemoveAll(e => e.Id == chk.ItemId);
+					}
 
 					if (childList.Count == 0)
 						continue;
@@ -133,7 +141,10 @@ namespace QSOrmProject.Deletion
 					GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
 
 					var delOper = childClassInfo.CreateDeleteOperation (masterEntity, delDepend, childList);
-					parentOperation.ChildOperations.Add (delOper);
+					if(delDepend.IsCascade)
+						parentOperation.ChildAfterOperations.Add (delOper);
+					else
+						parentOperation.ChildBeforeOperations.Add (delOper);
 
 					foreach (var row in childList) {
 						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
@@ -142,7 +153,7 @@ namespace QSOrmProject.Deletion
 							ItemId = row.Id,
 							Title = row.Title
 						});
-						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0) {
+						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0 || childClassInfo.RemoveFromItems.Count > 0) {
 							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row);
 						}
 						GroupCount++;
@@ -179,7 +190,7 @@ namespace QSOrmProject.Deletion
 
 					var cleanOper = childClassInfo.CreateClearOperation(masterEntity, cleanDepend, childList);
 
-					parentOperation.ChildOperations.Add (cleanOper);
+					parentOperation.ChildBeforeOperations.Add (cleanOper);
 
 					foreach(var item in childList)
 					{
@@ -222,7 +233,7 @@ namespace QSOrmProject.Deletion
 					GroupIter = ObjectsTreeStore.AppendNode (RemoveIter);
 
 					var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, removeDepend, childList);
-					parentOperation.ChildOperations.Add (removeOper);
+					parentOperation.ChildBeforeOperations.Add (removeOper);
 
 					foreach (var row in childList) {
 						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
@@ -263,7 +274,9 @@ namespace QSOrmProject.Deletion
 
 		internal static bool HasHibernateOperations (Operation op)
 		{
-			return op is IHibernateOperation || op.ChildOperations.Any(DeleteCore.HasHibernateOperations);
+			return op is IHibernateOperation 
+				|| op.ChildBeforeOperations.Any(DeleteCore.HasHibernateOperations)
+				|| op.ChildAfterOperations.Any(DeleteCore.HasHibernateOperations);
 		}
 
 		internal void ExecuteSql (String sql, uint id)

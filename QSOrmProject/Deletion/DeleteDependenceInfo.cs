@@ -17,6 +17,8 @@ namespace QSOrmProject.Deletion
 		/// </summary>
 		public string PropertyName;
         public string CollectionName;
+
+		public bool IsCascade;
 		public string ParentPropertyName;
 
 		/// <summary>
@@ -118,6 +120,7 @@ namespace QSOrmProject.Deletion
 			var parentTable = parentMap.Table.Name;
 			string fieldName = propertyMap.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo{
+				IsCascade = true,
 				ParentPropertyName = propName,
 				ObjectClass = itemType,
 				WhereStatment = String.Format("WHERE {0}.id = (SELECT {1} FROM {2} WHERE id = @id)", itemMap.Table.Name, fieldName, parentTable)

@@ -26,7 +26,7 @@ namespace QSOrmProject.Deletion
 					continue;
 				}
 
-				logger.Info("Проверка зависимостей удаления в {0}", mapping.MappedClass);
+				logger.Debug("Проверка зависимостей удаления в {0}", mapping.MappedClass);
 				foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation))
 				{
 					var propType = prop.Type.ReturnedClass;
@@ -106,9 +106,7 @@ namespace QSOrmProject.Deletion
 						);
 						continue;
 					}
-
                 }
-
 			}
 
             //Проверяем что все прописанные в зависимостях свойства имеют тип удаляемого объекта.

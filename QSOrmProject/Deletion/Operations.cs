@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
@@ -9,7 +8,8 @@ namespace QSOrmProject.Deletion
 	public abstract class Operation
 	{
 		public uint ItemId;
-		public List<Operation> ChildOperations = new List<Operation> ();
+		public List<Operation> ChildBeforeOperations = new List<Operation> ();
+		public List<Operation> ChildAfterOperations = new List<Operation> ();
 
 		public abstract void Execute (DeleteCore core);
 	}
@@ -18,25 +18,23 @@ namespace QSOrmProject.Deletion
 
 	class SQLDeleteOperation : Operation
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
 		public string TableName;
 		public string WhereStatment;
 
 		public override void Execute (DeleteCore core)
 		{
-			ChildOperations.ForEach (o => o.Execute (core));
+			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
 			core.ExecuteSql(
 				String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment),
 				ItemId);
+
+			ChildAfterOperations.ForEach (o => o.Execute (core));
 		}
 	}
 
 	class SQLCleanOperation : Operation
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
 		public string TableName;
 		public string WhereStatment;
 		public string CleanField;
@@ -59,13 +57,15 @@ namespace QSOrmProject.Deletion
 
 		public override void Execute (DeleteCore core)
 		{
-			ChildOperations.ForEach (o => o.Execute (core));
+			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
 			foreach(var item in DeletingItems)
 			{
 				logger.Debug ("Удаляем {0}...", item.Title);
 				core.UoW.TryDelete (item.Entity);
 			}
+
+			ChildAfterOperations.ForEach (o => o.Execute (core));
 		}
 	}
 
