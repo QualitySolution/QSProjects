@@ -8,6 +8,13 @@ namespace QSProjectsLib
 	{	
 		public event EventHandler Cancel;
 		volatile bool finished;
+		volatile bool isCancelled;
+
+		public bool IsCancelled{
+			get{
+				return isCancelled;
+			}
+		}
 
 		private LongOperationDlg(int steps)
 			: base(Gtk.WindowType.Toplevel)
@@ -62,7 +69,7 @@ namespace QSProjectsLib
 				});
 		}
 
-		public static void StartOperation(Action<IWorker> doWork, string name, int steps, bool modal=true){			
+		public static LongOperationResult StartOperation(Action<IWorker> doWork, string name, int steps, bool modal=true){			
 			var statusWindow = new LongOperationDlg(steps);
 			statusWindow.OperationName = name;
 			Thread thread = new Thread(()=>{
@@ -72,8 +79,8 @@ namespace QSProjectsLib
 			thread.Name = name;
 			statusWindow.buttonCancel.Clicked += (sender,args) =>
 			{
-					thread.Abort();
-					statusWindow.Destroy();
+					statusWindow.isCancelled=true;
+					statusWindow.Visible=false;
 			};
 			statusWindow.Modal = modal;
 
@@ -86,6 +93,9 @@ namespace QSProjectsLib
 			if (thread.IsAlive)
 				thread.Interrupt();
 			statusWindow.Destroy();
+			if (statusWindow.IsCancelled)
+				return LongOperationResult.Canceled;
+			return LongOperationResult.Finished;
 		}
 	}
 
@@ -93,5 +103,11 @@ namespace QSProjectsLib
 		void ReportProgress(int currentStep, string suboperationName);
 		int StepsCount{get;set;}
 		string OperationName{get;set;}
+		bool IsCancelled{ get;}
+	}
+
+	public enum LongOperationResult
+	{
+		Finished,Canceled
 	}
 }
