@@ -272,7 +272,10 @@ namespace QSOrmProject
 				return true;
 			totalSearchFinished++;
 			foreach (var prop in SearchPropCache) {
-				string Str = prop.GetValue (aObject, null).ToString ();
+				var value = prop.GetValue(aObject, null);
+				if (value == null)
+					continue;
+				string Str = value.ToString ();
 				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1) {
 					return true;
 				}
