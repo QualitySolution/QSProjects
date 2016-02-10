@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.GtkWidgets.Cells;
+using Gamma.Utilities;
 
 namespace Gamma.ColumnConfig
 {
@@ -9,12 +10,13 @@ namespace Gamma.ColumnConfig
 	{
 		List<Action<NodeCellRendererText<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererText<TNode>, TNode>>();
 		public string DataPropertyName { get; set;}
+		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
 
 		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> dataProperty)
 			: base(column)
 		{
-			//DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
-			LambdaSetters.Add ((c, n) => c.Text = dataProperty.Compile ().Invoke (n));
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (dataProperty);			
+			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = dataProperty.Compile ().Invoke (n));
 		}
 
 		public TextRendererMapping (ColumnMapping<TNode> column)
@@ -27,10 +29,7 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			var cell = new NodeCellRendererText<TNode> ();
-			//cell.DataPropertyName = DataPropertyName;
-			cell.LambdaSetters = LambdaSetters;
-			return cell;
+			return cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererText<TNode>, TNode> commonSet)
@@ -40,9 +39,15 @@ namespace Gamma.ColumnConfig
 			
 		#endregion
 
+		public TextRendererMapping<TNode> Editable(bool on=true)
+		{
+			cellRenderer.Editable = on;
+			return this;
+		}
+
 		public TextRendererMapping<TNode> AddSetter(Action<NodeCellRendererText<TNode>, TNode> setter)
 		{
-			LambdaSetters.Add (setter);
+			cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 	}

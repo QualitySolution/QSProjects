@@ -118,10 +118,14 @@ namespace Gamma.GtkWidgets
 				foreach(var render in col.ConfiguredRenderers)
 				{
 					var cell = render.GetRenderer () as CellRenderer;
-					if(cell is CellRendererSpin)
+					if (cell is CellRendererSpin)
 					{
 						(cell as CellRendererSpin).EditingStarted += OnNumbericNodeCellEditingStarted;
 						(cell as CellRendererSpin).Edited += NumericNodeCellEdited;
+					}
+					else if (cell is CellRendererText)
+					{
+						(cell as CellRendererText).Edited += TextNodeCellEdited;
 					}
 					if(cell is CellRendererCombo)
 					{
@@ -223,6 +227,27 @@ namespace Gamma.GtkWidgets
 								break;
 							}
 						}
+					}
+				}
+			}
+		}
+
+		private void TextNodeCellEdited(object o, Gtk.EditedArgs args)
+		{
+			Gtk.TreeIter iter;
+
+			INodeCellRenderer cell =  o as INodeCellRenderer;
+			CellRendererText cellText = o as CellRendererText;
+
+			if (cell != null) {
+				// Resolve path as it was passed in the arguments
+				Gtk.TreePath tp = new Gtk.TreePath (args.Path);
+				// Change value in the original object
+				if (YTreeModel.Adapter.GetIter (out iter, tp)) {
+					object obj = YTreeModel.NodeFromIter (iter);
+					if (cell.DataPropertyInfo.CanWrite)
+					{
+						cell.DataPropertyInfo.SetValue(obj, args.NewText, null);
 					}
 				}
 			}

@@ -8,7 +8,7 @@ namespace Gamma.GtkWidgets.Cells
 {
 	public class NodeCellRendererText<TNode> : CellRendererText, INodeCellRenderer
 	{
-		public List<Action<NodeCellRendererText<TNode>, TNode>> LambdaSetters;
+		public List<Action<NodeCellRendererText<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererText<TNode>, TNode>>();
 
 		public string DataPropertyName { get{ return DataPropertyInfo.Name;
 			}}
