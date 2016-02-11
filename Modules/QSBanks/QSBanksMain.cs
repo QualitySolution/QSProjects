@@ -12,9 +12,10 @@ namespace QSBanks
 		public static List<IOrmObjectMapping> GetModuleMaping ()
 		{
 			return new List<IOrmObjectMapping> {
-				new OrmObjectMapping<Bank> (typeof(BankDlg), typeof(BankFilter), "{QSBanks.Bank} Bik[БИК]; Name[Имя]; City[Город];", new string[] { "Bik", "Name", "City" }),
-				new OrmObjectMapping<Account> (typeof(AccountDlg)),
-				new OrmObjectMapping<BankRegion> (null)
+				OrmObjectMapping<Bank>.Create().Dialog<BankDlg>().JournalFilter<BankFilter>()
+					.DefaultTableView().SearchColumn("БИК", x=> x.Bik).SearchColumn("Имя", x => x.Name).SearchColumn("Город", x => x.City).End(),
+				OrmObjectMapping<Account>.Create().Dialog (typeof(AccountDlg)),
+				OrmObjectMapping<BankRegion>.Create()
 			};
 		}
 

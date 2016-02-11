@@ -14,8 +14,8 @@ namespace QSContacts
 		public static List<IOrmObjectMapping> GetModuleMaping ()
 		{
 			return new List<IOrmObjectMapping> {
-				new OrmObjectMapping<PhoneType> (null, "{QSContacts.PhoneType} Name[Название];"),
-				new OrmObjectMapping<EmailType> (null, "{QSContacts.EmailType} Name[Название];")
+				OrmObjectMapping<PhoneType>.Create().DefaultTableView().Column("Название", x => x.Name).End(),
+				OrmObjectMapping<EmailType>.Create().DefaultTableView().Column("Название", x => x.Name).End()
 			};
 		}
 	}
