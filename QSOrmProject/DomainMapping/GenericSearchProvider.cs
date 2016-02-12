@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSOrmProject.DomainMapping
 {
@@ -14,16 +15,29 @@ namespace QSOrmProject.DomainMapping
 			if (String.IsNullOrWhiteSpace(searchText))
 				return true;
 			
-			TEntity item = (TEntity)entity;
+			return Match((TEntity)entity, searchText);
+		}
+
+		public bool Match(TEntity entity, string searchText)
+		{
 			foreach(var field in searchBy)
 			{
-				var str = field(item);
+				var str = field(entity);
 				if (String.IsNullOrEmpty(str))
 					continue;
 				if (str.IndexOf (searchText, StringComparison.CurrentCultureIgnoreCase) > -1) 
 					return true;
 			}
 			return false;
+		}
+			
+		public System.Collections.IList FilterList(System.Collections.IList sourcelist, string searchText)
+		{
+			if (String.IsNullOrWhiteSpace(searchText))
+				return sourcelist;
+
+			var genericList = (IList<TEntity>)sourcelist;
+			return genericList.Where(e => Match(e, searchText)).ToList();
 		}
 
 		#endregion

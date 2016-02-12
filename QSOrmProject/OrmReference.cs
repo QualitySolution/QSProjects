@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Bindings.Collections;
+using System.Collections;
 using System.Linq;
-using System.Reflection;
 using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
@@ -21,11 +19,11 @@ namespace QSOrmProject
 		private IUnitOfWork uow;
 		private ICriteria objectsCriteria;
 		private System.Type objectType;
-		private ObservableFilterListView filterView;
 		private IReferenceFilter filterWidget;
-		private uint totalSearchFinished;
 		private DateTime searchStarted;
 		private bool inUpdating;
+		private IList fullList;
+		private IList viewList;
 
 		int number = -1;
 
@@ -200,7 +198,7 @@ namespace QSOrmProject
 		{
 			//Обновляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
 			foreach (var entity in e.UpdatedSubjects.OfType<IDomainObject> ()) {
-				var curEntity = filterView.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
+				var curEntity = fullList.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
 				if (curEntity != null)
 					Uow.Session.Refresh (curEntity);
 			}
@@ -227,14 +225,32 @@ namespace QSOrmProject
 						baseCriteria = baseCriteria.AddOrder (Order.Asc (ord.PropertyName));
 				}
 			}
-			filterView = new ObservableFilterListView (baseCriteria.List ());
-				
-			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
-			filterView.ListChanged += FilterViewChanged;
-			ytreeviewRef.ItemsDataSource = filterView;
+
+			fullList = baseCriteria.List();
+
+			if(SearchProvider != null)
+			{
+				SearchRefilter();
+			}
+			else
+			{
+				ytreeviewRef.ItemsDataSource = viewList = fullList;
+			}
 			UpdateSum ();
 			inUpdating = false;
 			logger.Info ("Ok.");
+		}
+
+		void SearchRefilter()
+		{
+			searchStarted = DateTime.Now;
+			viewList = SearchProvider.FilterList(fullList, entrySearch.Text);
+			var delayfilter = DateTime.Now.Subtract (searchStarted);
+			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
+				fullList.Count, delayfilter.TotalSeconds, delayfilter.TotalMilliseconds / fullList.Count);
+			ytreeviewRef.ItemsDataSource = viewList;
+			var loadDelay = DateTime.Now.Subtract (searchStarted) - delayfilter;
+			logger.Debug("Загрузка таблицы {0} милисекунд.", loadDelay.TotalMilliseconds);
 		}
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
@@ -250,12 +266,6 @@ namespace QSOrmProject
 			UpdateSum ();
 		}
 
-		bool HandleIsVisibleInFilter (object aObject)
-		{
-			totalSearchFinished++;
-			return SearchProvider.Match(aObject, entrySearch.Text);
-		}
-
 		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
 		{
 			entrySearch.Text = String.Empty;
@@ -263,12 +273,7 @@ namespace QSOrmProject
 
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
-			searchStarted = DateTime.Now;
-			totalSearchFinished = 0;
-			filterView.Refilter ();
-			var delay = DateTime.Now.Subtract (searchStarted);
-			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
-				totalSearchFinished, delay.TotalSeconds, delay.TotalMilliseconds / totalSearchFinished);
+			SearchRefilter();
 		}
 
 		protected void OnCloseTab ()
@@ -297,7 +302,7 @@ namespace QSOrmProject
 			if (item == null)
 				return;
 
-			var ownItem = filterView.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
+			var ownItem = fullList.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
 			ytreeviewRef.SelectObject (ownItem);
 		}
 
@@ -322,8 +327,8 @@ namespace QSOrmProject
 
 		protected void UpdateSum ()
 		{
-			labelSum.LabelProp = String.Format ("Количество: {0}", filterView.Count);
-			logger.Debug ("Количество обновлено {0}", filterView.Count);
+			labelSum.LabelProp = String.Format ("Количество: {0}", viewList.Count);
+			logger.Debug ("Количество обновлено {0}", viewList.Count);
 		}
 
 		protected void OnYtreeviewRefRowActivated (object o, RowActivatedArgs args)
@@ -453,4 +458,3 @@ namespace QSOrmProject
 		string TextColor { get; }
 	}
 }
-
