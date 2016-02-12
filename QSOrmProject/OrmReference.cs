@@ -302,7 +302,9 @@ namespace QSOrmProject
 			if (item == null)
 				return;
 
-			var ownItem = fullList.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
+			var ownItem = viewList.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
+			if (ownItem == null)
+				return;
 			ytreeviewRef.SelectObject (ownItem);
 		}
 
