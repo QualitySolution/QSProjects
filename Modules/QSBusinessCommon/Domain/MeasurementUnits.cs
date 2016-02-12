@@ -69,7 +69,7 @@ namespace QSBusinessCommon.Domain
 			return OrmObjectMapping<MeasurementUnits>.Create ().Dialog<MeasurementUnitsDlg> ().DefaultTableView ()
 				.Column("ОКЕИ", i => i.OKEI)
 				.SearchColumn ("Наименование", i => i.Name)
-				.Column("Точность", i => i.Digits).End ();
+				.Column("Точность", i => i.Digits.ToString()).End ();
 		}
 	}
 }
