@@ -84,6 +84,8 @@ namespace Gamma.GtkWidgets
 				return;
 
 			var dataSourceType = itemsDataSource.GetType().GetGenericArguments()[0];
+			if (dataSourceType is System.Object)
+				return;
 			var columnsConfigType = columnsConfig.GetType().GetGenericArguments()[0];
 			if (dataSourceType != columnsConfigType && !dataSourceType.IsSubclassOf(columnsConfigType))
 			{
