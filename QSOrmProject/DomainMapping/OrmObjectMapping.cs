@@ -28,35 +28,6 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		private string[] refSearchFields;
-
-		public string[] RefSearchFields {
-			get {
-				if (tableView == null)
-					return refSearchFields;
-				else
-					return TableView.SearchBy.ToArray ();
-			}
-		}
-
-		private string refColumnMappings;
-
-		public string RefColumnMappings {
-			get {
-				if(tableView == null)
-					return refColumnMappings;
-				else
-				{
-					string mapping = "{" + typeof(TEntity).FullName + "}";
-					foreach(var pair in tableView.ColumnsFields)
-					{
-						mapping += String.Format (" {0}[{1}];", pair.Value, pair.Key);
-					}
-					return mapping;
-				}
-			}
-		}
-
 		public string EditPermisionName { get; set;}
 
 		private TableView<TEntity> tableView;
@@ -87,27 +58,6 @@ namespace QSOrmProject.DomainMapping
 			
 		}
 
-		public OrmObjectMapping(System.Type dialogClass)
-		{
-			this.dialogClass = dialogClass;
-			refColumnMappings = String.Empty;
-		}
-
-		public OrmObjectMapping(System.Type dialogClass, string columnMaping) : this(dialogClass)
-		{
-			refColumnMappings = columnMaping;
-		}
-
-		public OrmObjectMapping(System.Type dialogClass, string columnMaping, string[] searchFields) : this(dialogClass, columnMaping)
-		{
-			this.refSearchFields = searchFields;
-		}
-
-		public OrmObjectMapping(System.Type dialogClass, System.Type filterClass, string columnMaping, string[] searchFields) : this(dialogClass, columnMaping, searchFields)
-		{
-			this.refFilterClass = filterClass;
-		}
-			
 		public Gtk.Menu GetPopupMenu(object[] selected)
 		{
 			if (GetPopupMenuFunc == null)
@@ -133,15 +83,15 @@ namespace QSOrmProject.DomainMapping
 			return new OrmObjectMapping<TEntity> ();
 		}
 
-		public OrmObjectMapping<TEntity> Dialog(Type dialogClass)
-		{
-			this.dialogClass = dialogClass;
-			return this;
-		}
-
 		public OrmObjectMapping<TEntity> Dialog<TDialog>()
 		{
 			this.dialogClass = typeof(TDialog);
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> Dialog(Type dialogClass)
+		{
+			this.dialogClass = dialogClass;
 			return this;
 		}
 

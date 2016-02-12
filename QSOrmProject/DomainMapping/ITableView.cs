@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Gamma.ColumnConfig;
 
 namespace QSOrmProject.DomainMapping
 {
 	public interface ITableView
 	{
 		List<OrderByItem> OrderBy { get;}
-		List<string> SearchBy { get;}
+
+		ISearchProvider SearchProvider { get;}
+
+		IColumnsConfig GetGammaColumnsConfig();
 	}
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Gamma.ColumnConfig;
 using Gamma.Utilities;
 
 namespace QSOrmProject.DomainMapping
@@ -9,13 +10,33 @@ namespace QSOrmProject.DomainMapping
 	{
 		OrmObjectMapping<TEntity> myObjectMapping;
 
-		public readonly Dictionary<string, string> ColumnsFields = new Dictionary<string, string>();
-		private readonly List<string> SearchFields = new List<string>();
+		private readonly Dictionary<string, Expression<Func<TEntity, string>>> ColumnsFields = new Dictionary<string, Expression<Func<TEntity, string>>>();
+		private readonly List<Expression<Func<TEntity, string>>> searchFields = new List<Expression<Func<TEntity, string>>>();
 		private readonly List<OrderByItem> OrderFields = new List<OrderByItem> ();
+
+		private FluentColumnsConfig<TEntity> customColumnsConfig;
 
 		public TableView (OrmObjectMapping<TEntity> objectMapping)
 		{
 			myObjectMapping = objectMapping;
+		}
+
+		GenericSearchProvider<TEntity> searchProvider;
+
+		public ISearchProvider SearchProvider
+		{
+			get
+			{
+				if (searchFields.Count == 0)
+					return null;
+
+				if (searchProvider != null)
+					return searchProvider;
+
+				searchProvider = new GenericSearchProvider<TEntity>();
+				searchFields.ForEach(exp => searchProvider.AddSearchByFunc(exp.Compile()));
+				return searchProvider;
+			}
 		}
 
 		#region ITableView implementation
@@ -25,32 +46,45 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		public List<string> SearchBy {
-			get { return SearchFields;
+		public IColumnsConfig GetGammaColumnsConfig()
+		{
+			if (customColumnsConfig != null)
+				return customColumnsConfig;
+
+			var config = FluentColumnsConfig <TEntity>.Create();
+			foreach(var pair in ColumnsFields)
+			{
+				config.AddColumn(pair.Key).AddTextRenderer(pair.Value);
 			}
+
+			if (typeof(ISpecialRowsRender).IsAssignableFrom(typeof(TEntity)))
+			{
+				config.RowCells().AddSetter<Gtk.CellRendererText>((c, n) => c.Foreground = (n as ISpecialRowsRender).TextColor);
+			}
+
+			return config.Finish();
 		}
 
 		#endregion
 
-		public TableView<TEntity> Column(string name, Expression<Func<TEntity, object>> propertyRefExpr)
+		#region Config
+
+		public TableView<TEntity> Column(string name, Expression<Func<TEntity, string>> columnFuncExpr)
 		{
-			var propName = PropertyUtil.GetName (propertyRefExpr);
-			ColumnsFields.Add (name, propName);
+			ColumnsFields.Add (name, columnFuncExpr);
 			return this;
 		}
 
-		public TableView<TEntity> SearchColumn(string name, Expression<Func<TEntity, object>> propertyRefExpr)
+		public TableView<TEntity> SearchColumn(string name, Expression<Func<TEntity, string>> columnFuncExpr)
 		{
-			var propName = PropertyUtil.GetName (propertyRefExpr);
-			ColumnsFields.Add (name, propName);
-			SearchFields.Add (propName);
+			ColumnsFields.Add (name, columnFuncExpr);
+			searchFields.Add (columnFuncExpr);
 			return this;
 		}
 
-		public TableView<TEntity> Search(Expression<Func<TEntity, object>> propertyRefExpr)
+		public TableView<TEntity> Search(Expression<Func<TEntity, string>> columnFuncExpr)
 		{
-			var propName = PropertyUtil.GetName (propertyRefExpr);
-			SearchFields.Add (propName);
+			searchFields.Add (columnFuncExpr);
 			return this;
 		}
 
@@ -68,10 +102,18 @@ namespace QSOrmProject.DomainMapping
 			return this;
 		}
 
+		public TableView<TEntity> CustomColumnsConfig(FluentColumnsConfig<TEntity> config)
+		{
+			customColumnsConfig = config;
+			return this;
+		}
+
 		public OrmObjectMapping<TEntity> End()
 		{
 			return myObjectMapping;
 		}
+
+		#endregion 
 	}
 
 	public enum OrderDirection

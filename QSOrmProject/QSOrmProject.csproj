@@ -134,6 +134,8 @@
     <Compile Include="Deletion\RemoveFromDependenceInfo.cs" />
     <Compile Include="Widgets\PhotoView.cs" />
     <Compile Include="gtk-gui\QSOrmProject.PhotoView.cs" />
+    <Compile Include="DomainMapping\ISearchProvider.cs" />
+    <Compile Include="DomainMapping\GenericSearchProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

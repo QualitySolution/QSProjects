@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
+using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace QSOrmProject
 {
@@ -32,7 +33,7 @@ namespace QSOrmProject
 
 		private ListStore completionListStore;
 
-		private string[] searchFields;
+		private ISearchProvider searchSearchProvider;
 
 		private ICriteria itemsCriteria;
 
@@ -130,33 +131,9 @@ namespace QSOrmProject
 				if (subjectType != null) {
 					IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
 					map.ObjectUpdated += OnExternalObjectUpdated;
-					searchFields = map.RefSearchFields;
+					if(map.TableView != null && map.TableView.SearchProvider != null)
+						searchSearchProvider = map.TableView.SearchProvider;
 				}
-			}
-		}
-
-		private List<PropertyInfo> searchPropCache;
-
-		protected List<PropertyInfo> SearchPropCache {
-			get {
-				if (searchPropCache != null)
-					return searchPropCache;
-
-				if (searchFields == null)
-					return null;
-
-				searchPropCache = new List<PropertyInfo> ();
-
-				foreach (string prop in searchFields) {
-					var propInfo = SubjectType.GetProperty (prop);
-					if (propInfo != null) {
-						searchPropCache.Add (propInfo);
-					} else
-						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", SubjectType, prop);
-				}
-
-				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
-				return searchPropCache;
 			}
 		}
 
@@ -274,18 +251,12 @@ namespace QSOrmProject
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			if (searchFields==null || searchFields.Length == 0) {
+			if (searchSearchProvider == null) {
 				var val = completion.Model.GetValue (iter, (int)completionCol.Tilte).ToString ();
 				return val.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1;
 			} else {
 				var val = completion.Model.GetValue (iter, (int)completionCol.Item);
-				foreach (var prop in SearchPropCache) {
-					string Str = prop.GetValue (val, null).ToString ();
-					if (Str.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1) {
-						return true;
-					}
-				}
-				return false;
+				return searchSearchProvider.Match(val, key);
 			}
 		}
 

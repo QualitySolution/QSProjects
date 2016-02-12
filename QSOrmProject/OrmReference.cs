@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Bindings.Collections;
+using System.Linq;
 using System.Reflection;
 using Gtk;
 using NHibernate;
-using NLog;
-using QSOrmProject.UpdateNotification;
-using QSTDI;
 using NHibernate.Criterion;
-using System.Linq;
+using NLog;
+using QSOrmProject.DomainMapping;
+using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
+using QSTDI;
 
 namespace QSOrmProject
 {
@@ -66,39 +67,34 @@ namespace QSOrmProject
 			}
 		}
 
-		private string[] searchFields = new string[]{ "Name" };
+		private ITableView tableView;
 
-		public string[] SearchFields {
-			get { return searchFields; }
-			set {
-				searchFields = value;
-				hboxSearch.Visible = searchFields != null && searchFields.Length > 0;
-				searchPropCache = null; //Скидываем кеш
+		public ITableView TableView
+		{
+			get
+			{
+				return tableView;
+			}
+			set
+			{
+				tableView = value;
+				ytreeviewRef.ColumnsConfig = tableView != null ? tableView.GetGammaColumnsConfig() : null;
+				SearchProvider = tableView != null ? tableView.SearchProvider : null;
 			}
 		}
 
-		private List<PropertyInfo> searchPropCache;
+		private ISearchProvider searchProvider;
 
-		protected List<PropertyInfo> SearchPropCache {
-			get {
-				if (searchPropCache != null)
-					return searchPropCache;
-
-				if (SearchFields == null)
-					return null;
-
-				searchPropCache = new List<PropertyInfo> ();
-
-				foreach (string prop in SearchFields) {
-					var propInfo = objectType.GetProperty (prop);
-					if (propInfo != null) {
-						searchPropCache.Add (propInfo);
-					} else
-						logger.Error ("У объекта {0} не найдено свойство для поиска {1}.", objectType, prop);
-				}
-
-				logger.Debug ("Сформирован кеш свойств для поиска в объекта.");
-				return searchPropCache;
+		public ISearchProvider SearchProvider
+		{
+			get
+			{
+				return searchProvider;
+			}
+			set
+			{
+				searchProvider = value;
+				hboxSearch.Visible = searchProvider != null;
 			}
 		}
 
@@ -172,12 +168,6 @@ namespace QSOrmProject
 			ConfigureDlg ();
 		}
 
-		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria, string columsMapping)
-			: this (objType, uow, listCriteria)
-		{
-			datatreeviewRef.ColumnMappings = columsMapping;
-		}
-
 		void ConfigureDlg ()
 		{
 			OrmMain.Count++;
@@ -187,9 +177,7 @@ namespace QSOrmProject
 			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 			if (map != null) {
 				map.ObjectUpdated += OnRefObjectUpdated;
-				datatreeviewRef.ColumnMappings = map.RefColumnMappings;
-				if (map.RefSearchFields != null)
-					SearchFields = map.RefSearchFields;
+				TableView = map.TableView;
 				if (map.RefFilterClass != null)
 					FilterClass = map.RefFilterClass;
 			} else
@@ -205,7 +193,7 @@ namespace QSOrmProject
 				}
 			}
 			UpdateObjectList ();
-			datatreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
+			ytreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 		}
 
 		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
@@ -243,11 +231,7 @@ namespace QSOrmProject
 				
 			filterView.IsVisibleInFilter += HandleIsVisibleInFilter;
 			filterView.ListChanged += FilterViewChanged;
-			datatreeviewRef.ItemsDataSource = filterView;
-			if (typeof(ISpecialRowsRender).IsAssignableFrom (objectType)) {
-				foreach (TreeViewColumn col in datatreeviewRef.Columns)
-					col.SetCellDataFunc (col.Cells [0], new TreeCellDataFunc (RenderCell));
-			}
+			ytreeviewRef.ItemsDataSource = filterView;
 			UpdateSum ();
 			inUpdating = false;
 			logger.Info ("Ok.");
@@ -255,7 +239,7 @@ namespace QSOrmProject
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
 		{
-			bool selected = datatreeviewRef.Selection.CountSelectedRows () > 0;
+			bool selected = ytreeviewRef.Selection.CountSelectedRows () > 0;
 			buttonSelect.Sensitive = selected;
 			buttonEdit.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanEdit) && selected;
 			buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
@@ -268,19 +252,8 @@ namespace QSOrmProject
 
 		bool HandleIsVisibleInFilter (object aObject)
 		{
-			if (entrySearch.Text == "" || SearchFields.Length == 0)
-				return true;
 			totalSearchFinished++;
-			foreach (var prop in SearchPropCache) {
-				var value = prop.GetValue(aObject, null);
-				if (value == null)
-					continue;
-				string Str = value.ToString ();
-				if (Str.IndexOf (entrySearch.Text, StringComparison.CurrentCultureIgnoreCase) > -1) {
-					return true;
-				}
-			}
-			return false;
+			return SearchProvider.Match(aObject, entrySearch.Text);
 		}
 
 		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
@@ -307,7 +280,7 @@ namespace QSOrmProject
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
-			datatreeviewRef.Selection.UnselectAll ();
+			ytreeviewRef.Selection.UnselectAll ();
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				SelectObject (OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
 			} else {
@@ -325,7 +298,7 @@ namespace QSOrmProject
 				return;
 
 			var ownItem = filterView.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
-			datatreeviewRef.SelectObject (ownItem);
+			ytreeviewRef.SelectObject (ownItem);
 		}
 
 		void NewItemDlg_EntitySaved (object sender, EntitySavedEventArgs e)
@@ -337,13 +310,11 @@ namespace QSOrmProject
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
+				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
 			} else {
-				object selected = null;
-				if (datatreeviewRef.GetSelectedObjects ().Length > 0)
-					selected = datatreeviewRef.GetSelectedObjects () [0];
 				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
 					return;
+				var selected = ytreeviewRef.GetSelectedObject();
 				if (selected != null)
 					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selected), this);
 			}
@@ -355,7 +326,7 @@ namespace QSOrmProject
 			logger.Debug ("Количество обновлено {0}", filterView.Count);
 		}
 
-		protected void OnDatatreeviewRefRowActivated (object o, Gtk.RowActivatedArgs args)
+		protected void OnYtreeviewRefRowActivated (object o, RowActivatedArgs args)
 		{
 			if (Mode == OrmReferenceMode.Select)
 				buttonSelect.Click ();
@@ -367,7 +338,7 @@ namespace QSOrmProject
 		{
 			if (ObjectSelected != null) {
 				ObjectSelected (this, new OrmReferenceObjectSectedEventArgs (
-					datatreeviewRef.GetSelectedObjects () [0]
+					ytreeviewRef.GetSelectedObject ()
 				));
 			}
 			OnCloseTab ();
@@ -414,16 +385,9 @@ namespace QSOrmProject
 			return false;
 		}
 
-		private void RenderCell (TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-		{
-			object o = ((datatreeviewRef.Model as TreeModelAdapter)
-				.Implementor as Gtk.DataBindings.MappingsImplementor).NodeFromIter (iter);
-			(cell as CellRendererText).Foreground = (o as ISpecialRowsRender).TextColor;
-		}
-
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			if (OrmMain.DeleteObject (datatreeviewRef.GetSelectedObjects () [0]))
+			if (OrmMain.DeleteObject (ytreeviewRef.GetSelectedObject()))
 				UpdateObjectList ();
 		}
 
@@ -438,13 +402,13 @@ namespace QSOrmProject
 		}
 
 		[GLib.ConnectBefore]
-		protected void OnDatatreeviewRefButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		protected void OnYtreeviewRefButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
 		{
 			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 
 			if(args.Event.Button == 3 && map.PopupMenuExist)
 			{
-				var selected = datatreeviewRef.GetSelectedObjects();
+				var selected = ytreeviewRef.GetSelectedObjects();
 				var menu = map.GetPopupMenu(selected);
 				if(menu != null)
 				{

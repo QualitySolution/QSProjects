@@ -9,8 +9,7 @@ namespace QSOrmProject
 		Type ObjectClass { get;}
 		Type DialogClass { get;}
 		Type RefFilterClass { get;}
-		string[] RefSearchFields { get;}
-		string RefColumnMappings { get;}
+
 		bool SimpleDialog { get;}
 		ITableView TableView { get;}
 		string EditPermisionName { get;}

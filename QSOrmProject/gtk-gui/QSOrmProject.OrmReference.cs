@@ -34,7 +34,7 @@ namespace QSOrmProject
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		
-		private global::Gtk.DataBindings.DataTreeView datatreeviewRef;
+		private global::Gamma.GtkWidgets.yTreeView ytreeviewRef;
 		
 		private global::Gtk.Label labelSum;
 
@@ -199,15 +199,10 @@ namespace QSOrmProject
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.datatreeviewRef = new global::Gtk.DataBindings.DataTreeView ();
-			this.datatreeviewRef.CanFocus = true;
-			this.datatreeviewRef.Name = "datatreeviewRef";
-			this.datatreeviewRef.CursorPointsEveryType = false;
-			this.datatreeviewRef.InheritedDataSource = false;
-			this.datatreeviewRef.InheritedBoundaryDataSource = false;
-			this.datatreeviewRef.InheritedDataSource = false;
-			this.datatreeviewRef.InheritedBoundaryDataSource = false;
-			this.GtkScrolledWindow.Add (this.datatreeviewRef);
+			this.ytreeviewRef = new global::Gamma.GtkWidgets.yTreeView ();
+			this.ytreeviewRef.CanFocus = true;
+			this.ytreeviewRef.Name = "ytreeviewRef";
+			this.GtkScrolledWindow.Add (this.ytreeviewRef);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));
 			w20.Position = 3;
@@ -237,8 +232,8 @@ namespace QSOrmProject
 			this.checkShowFilter.Toggled += new global::System.EventHandler (this.OnCheckShowFilterToggled);
 			this.entrySearch.Changed += new global::System.EventHandler (this.OnEntrySearchChanged);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler (this.OnButtonSearchClearClicked);
-			this.datatreeviewRef.RowActivated += new global::Gtk.RowActivatedHandler (this.OnDatatreeviewRefRowActivated);
-			this.datatreeviewRef.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDatatreeviewRefButtonReleaseEvent);
+			this.ytreeviewRef.RowActivated += new global::Gtk.RowActivatedHandler (this.OnYtreeviewRefRowActivated);
+			this.ytreeviewRef.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnYtreeviewRefButtonReleaseEvent);
 		}
 	}
 }

@@ -218,17 +218,12 @@
             <property name="MemberName" />
             <property name="ShadowType">In</property>
             <child>
-              <widget class="Gtk.DataBindings.DataTreeView" id="datatreeviewRef">
+              <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeviewRef">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
-                <property name="CursorPointsEveryType">False</property>
-                <property name="InheritedDataSource">False</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <property name="InheritedDataSource">False</property>
-                <property name="InheritedBoundaryDataSource">False</property>
-                <signal name="RowActivated" handler="OnDatatreeviewRefRowActivated" />
-                <signal name="ButtonReleaseEvent" handler="OnDatatreeviewRefButtonReleaseEvent" />
+                <signal name="RowActivated" handler="OnYtreeviewRefRowActivated" />
+                <signal name="ButtonReleaseEvent" handler="OnYtreeviewRefButtonReleaseEvent" />
               </widget>
             </child>
           </widget>
