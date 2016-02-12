@@ -36,8 +36,15 @@ namespace QSOrmProject.DomainMapping
 			if (String.IsNullOrWhiteSpace(searchText))
 				return sourcelist;
 
-			var genericList = (IList<TEntity>)sourcelist;
-			return genericList.Where(e => Match(e, searchText)).ToList();
+			var genericList = sourcelist as IList<TEntity>;
+			if(genericList != null)
+			{
+				return genericList.Where(e => Match(e, searchText)).ToList();
+			}
+			else
+			{
+				return sourcelist.Cast<TEntity>().Where(e => Match(e, searchText)).ToList();
+			}
 		}
 
 		#endregion
