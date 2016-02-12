@@ -306,6 +306,13 @@ namespace Gamma.GtkWidgets
 			else
 				return default(TNode);
 		}
+
+		public void SelectObject(object item)
+		{
+			TreeIter iter = YTreeModel.IterFromNode (item);
+			Selection.SelectIter (iter);
+		}
+
 	}
 }
 
