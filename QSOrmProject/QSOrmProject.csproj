@@ -138,7 +138,9 @@
     <Compile Include="DomainMapping\ISearchProvider.cs" />
     <Compile Include="DomainMapping\GenericSearchProvider.cs" />
     <Compile Include="Deletion\CheckOperationDlg.cs" />
-    <Compile Include="gtk-gui\QSOrmProject.CheckOperationDlg.cs" />
+    <Compile Include="Deletion\DeleteOperationDlg.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.Deletion.CheckOperationDlg.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteOperationDlg.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

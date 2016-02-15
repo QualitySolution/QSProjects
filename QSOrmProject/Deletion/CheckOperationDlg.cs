@@ -1,7 +1,7 @@
 ﻿using System;
 using QSProjectsLib;
 
-namespace QSOrmProject
+namespace QSOrmProject.Deletion
 {
 	public partial class CheckOperationDlg : Gtk.Window
 	{

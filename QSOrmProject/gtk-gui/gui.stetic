@@ -844,7 +844,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="QSOrmProject.CheckOperationDlg" design-size="468 78">
+  <widget class="Gtk.Window" id="QSOrmProject.Deletion.CheckOperationDlg" design-size="468 78">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Проверка зависимостей у удаляемого объекта</property>
     <property name="WindowPosition">CenterAlways</property>
@@ -901,6 +901,14 @@
           </packing>
         </child>
       </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="QSOrmProject.Deletion.DeleteOperationDlg" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">DeleteOperationDlg</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <placeholder />
     </child>
   </widget>
 </stetic-interface>
