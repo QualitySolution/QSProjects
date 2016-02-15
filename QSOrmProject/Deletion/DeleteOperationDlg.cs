@@ -1,4 +1,5 @@
 ﻿using System;
+using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
 {
@@ -8,6 +9,18 @@ namespace QSOrmProject.Deletion
 			: base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();
+		}
+
+		public void SetOperationsCount(int count)
+		{
+			progressbarOperation.Adjustment.Upper = count;
+		}
+
+		public void AddExcuteOperation(string text)
+		{
+			labelOperation.LabelProp = text;
+			progressbarOperation.Adjustment.Value++;
+			QSMain.WaitRedraw();
 		}
 	}
 }

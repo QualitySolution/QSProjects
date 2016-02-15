@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using QSProjectsLib;
+using System.Linq;
 
 namespace QSOrmProject.Deletion
 {
@@ -10,6 +11,13 @@ namespace QSOrmProject.Deletion
 		public uint ItemId;
 		public List<Operation> ChildBeforeOperations = new List<Operation> ();
 		public List<Operation> ChildAfterOperations = new List<Operation> ();
+
+		public virtual int GetOperationsCount()
+		{
+			return 1 + 
+				ChildAfterOperations.Sum(o => o.GetOperationsCount()) + 
+				ChildBeforeOperations.Sum(o => o.GetOperationsCount());
+		}
 
 		public abstract void Execute (DeleteCore core);
 	}
@@ -25,6 +33,7 @@ namespace QSOrmProject.Deletion
 		{
 			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
+			core.ExcuteDlg.AddExcuteOperation(String.Format("Удаляем из таблицы {0}", TableName));
 			core.ExecuteSql(
 				String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment),
 				ItemId);
@@ -45,6 +54,7 @@ namespace QSOrmProject.Deletion
 			sql.Add ("{0} = NULL ", CleanField);
 			sql.Add (WhereStatment);
 
+			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем ссылки в таблице {0}", TableName));
 			core.ExecuteSql(sql.Text, ItemId);
 		}
 	}
@@ -59,6 +69,7 @@ namespace QSOrmProject.Deletion
 		{
 			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
+			core.ExcuteDlg.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity).NominativePlural));
 			foreach(var item in DeletingItems)
 			{
 				logger.Debug ("Удаляем {0}...", item.Title);
@@ -79,6 +90,7 @@ namespace QSOrmProject.Deletion
 
 		public override void Execute (DeleteCore core)
 		{
+			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType).NominativePlural));
 			var propertyCache = EntityType.GetProperty (PropertyName);
 			foreach(var item in ClearingItems)
 			{
@@ -101,6 +113,7 @@ namespace QSOrmProject.Deletion
 
 		public override void Execute (DeleteCore core)
 		{
+			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType).NominativePlural));
 			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
 			var removeMethod = String.IsNullOrEmpty (RemoveMethodName) ? null : RemoveInClassType.GetMethod (RemoveMethodName);
 			foreach(var item in RemoveInItems)

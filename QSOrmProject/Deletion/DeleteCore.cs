@@ -17,6 +17,7 @@ namespace QSOrmProject.Deletion
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
 		internal bool IsHibernateMode;
 		internal CheckOperationDlg CheckDlg;
+		internal DeleteOperationDlg ExcuteDlg;
 		IUnitOfWork uow;
 
 		internal IUnitOfWork UoW{
@@ -83,6 +84,7 @@ namespace QSOrmProject.Deletion
 				if(isCanceled)
 					return false;
 			} catch (Exception ex) {
+				CheckDlg.Destroy();
 				QSMain.ErrorMessageWithLog ("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
 				return false;
 			}
@@ -90,11 +92,16 @@ namespace QSOrmProject.Deletion
 			bool userAccept = DeleteDlg.RunDialog(this);
 
 			if (userAccept) {
-				
+				ExcuteDlg = new DeleteOperationDlg();
+				ExcuteDlg.SetOperationsCount(PreparedOperation.GetOperationsCount() + 2);
+				ExcuteDlg.Show();
+
 				try {
 					IsHibernateMode = HasHibernateOperations(PreparedOperation);
 					PreparedOperation.Execute (this);
+					ExcuteDlg.AddExcuteOperation("Операции с журналом изменений");
 					DeleteConfig.OnAfterDeletion (sqlTransaction, DeletedItems);
+					ExcuteDlg.AddExcuteOperation("Завершение транзакции");
 					if(sqlTransaction != null)
 						sqlTransaction.Commit ();
 					if(uow != null)
@@ -105,6 +112,8 @@ namespace QSOrmProject.Deletion
 						sqlTransaction.Rollback ();
 					QSMain.ErrorMessageWithLog ("Ошибка при удалении", logger, ex);
 				}
+
+				ExcuteDlg.Destroy();
 			}
 			return false;
 		}
