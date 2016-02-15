@@ -16,6 +16,7 @@ namespace QSOrmProject.Deletion
 		internal int CountReferenceItems = 0;
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
 		internal bool IsHibernateMode;
+		internal CheckOperationDlg CheckDlg;
 		IUnitOfWork uow;
 
 		internal IUnitOfWork UoW{
@@ -72,8 +73,15 @@ namespace QSOrmProject.Deletion
 					Title = self.Title
 				});
 
-				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
+				CheckDlg = new CheckOperationDlg();
+				CheckDlg.Show();
 
+				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
+				bool isCanceled = CheckDlg.IsCanceled;
+				CheckDlg.Destroy();
+
+				if(isCanceled)
+					return false;
 			} catch (Exception ex) {
 				QSMain.ErrorMessageWithLog ("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
 				return false;
@@ -109,6 +117,10 @@ namespace QSOrmProject.Deletion
 			int ClearCount = 0;
 			int RemoveCount = 0;
 			int GroupCount;
+
+			CheckDlg.SetOperationName(String.Format("Проверка ссылок на: {0}", masterEntity.Title));
+			if (CheckDlg.IsCanceled)
+				return 0;
 
 			if (currentDeletion.DeleteItems.Count > 0) {
 				if (!ObjectsTreeStore.IterIsValid (parentIter))
@@ -156,10 +168,15 @@ namespace QSOrmProject.Deletion
 						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0 || childClassInfo.RemoveFromItems.Count > 0) {
 							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row);
 						}
+						if (CheckDlg.IsCanceled)
+							return 0;
+						
 						GroupCount++;
 						Totalcount++;
 						DelCount++;
 					}
+
+					CheckDlg.AddLinksCount(GroupCount);
 
 					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
 				}
@@ -199,6 +216,11 @@ namespace QSOrmProject.Deletion
 						Totalcount++;
 						ClearCount++;
 					}
+
+					CheckDlg.AddLinksCount(GroupCount);
+					if (CheckDlg.IsCanceled)
+						return 0;
+					
 					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
 				}
 				if (ClearCount > 0)
@@ -242,6 +264,10 @@ namespace QSOrmProject.Deletion
 						RemoveCount++;
 					}
 
+					CheckDlg.AddLinksCount(GroupCount);
+					if (CheckDlg.IsCanceled)
+						return 0;
+					
 					var classNames = DomainHelper.GetSubjectNames (childClassInfo.ObjectClass);
 
 					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{2} в {0}({1})", 

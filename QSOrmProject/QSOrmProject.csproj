@@ -47,6 +47,7 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.2.3\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -136,6 +137,8 @@
     <Compile Include="gtk-gui\QSOrmProject.PhotoView.cs" />
     <Compile Include="DomainMapping\ISearchProvider.cs" />
     <Compile Include="DomainMapping\GenericSearchProvider.cs" />
+    <Compile Include="Deletion\CheckOperationDlg.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.CheckOperationDlg.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
