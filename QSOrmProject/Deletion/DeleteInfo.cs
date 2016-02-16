@@ -102,6 +102,7 @@ namespace QSOrmProject.Deletion
 
 					resultList.Add (new EntityDTO{
 						Id = (uint)fields[IndexOfIdParam],
+						ClassType = ObjectClass,
 						Title = String.Format (DisplayString, fields)
 					});
 				}

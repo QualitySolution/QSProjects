@@ -337,10 +337,11 @@ namespace QSOrmProject.Deletion
 
 		#endregion
 	}
-
+	 
 	public class EntityDTO
 	{
 		public uint Id;
+		public Type ClassType;
 		public string Title;
 		public object Entity;
 	}

@@ -90,11 +90,13 @@ namespace QSOrmProject.Deletion
 			}
 			else if(depend.CollectionName != null)
 			{
+				CheckAndLoadEntity(core, masterEntity);
 				return MakeResultList (
 					masterEntity.Entity.GetPropertyValue (depend.CollectionName) as IList);
 			}
 			else if(depend.ParentPropertyName != null)
 			{
+				CheckAndLoadEntity(core, masterEntity);
 				var value = (TEntity)masterEntity.Entity.GetPropertyValue(depend.ParentPropertyName);
 
 				return MakeResultList(value == null ? new List<TEntity>() : new List<TEntity> {	value});
@@ -128,6 +130,7 @@ namespace QSOrmProject.Deletion
 			{
 				resultList.Add (new EntityDTO{
 					Id = (uint)DomainHelper.GetId (item),
+					ClassType = ObjectClass,
 					Title = DomainHelper.GetObjectTilte (item),
 					Entity = item
 				});
@@ -179,9 +182,22 @@ namespace QSOrmProject.Deletion
 			var item = core.UoW.GetById<TEntity> ((int)id);
 			return new EntityDTO{
 				Id = (uint)item.Id,
+				ClassType = ObjectClass,
 				Title = DomainHelper.GetObjectTilte (item),
 				Entity = item
 			};
+		}
+
+		private bool CheckAndLoadEntity(DeleteCore core, EntityDTO entity)
+		{
+			if (entity.Entity != null)
+				return true;
+
+			if (entity.ClassType == null)
+				throw new InvalidOperationException("EntityDTO без указания класса не может использоваться в связке с NHibernate");
+
+			entity.Entity = core.UoW.GetById(entity.ClassType, (int)entity.Id);
+			return entity.Entity != null;
 		}
 	}
 }
