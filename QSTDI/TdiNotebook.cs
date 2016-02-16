@@ -211,6 +211,12 @@ namespace QSTDI
 		private void CloseTab (ITdiTab tab)
 		{
 			TdiTabInfo info = _tabs.Find (i => i.MasterTab == tab);
+			if(info == null)
+			{
+				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
+				return;
+			}
+
 			if (info.SlaveTabs.Count > 0) {
 				throw new InvalidOperationException ("Вкладка не может быть закрыта, если у нее есть подчинёные вкладки.");
 			}
