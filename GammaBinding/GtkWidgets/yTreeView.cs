@@ -7,6 +7,7 @@ using Gamma.Binding.Core;
 using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
+using System.Collections.Generic;
 
 namespace Gamma.GtkWidgets
 {
@@ -74,6 +75,14 @@ namespace Gamma.GtkWidgets
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
 			}
+		}
+
+		public void SetItemsSource<TNode> (IList<TNode> list)
+		{
+			if (!(ColumnsConfig is FluentColumnsConfig<TNode>))
+				throw new InvalidCastException ("Type of TNode in IList<TNode> will be type TNode of FluentColumnsConfig<TNode>");
+
+			ItemsDataSource = list;
 		}
 
 		void VerifyNodeTypes()
