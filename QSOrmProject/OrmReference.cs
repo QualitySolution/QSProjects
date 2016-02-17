@@ -228,14 +228,8 @@ namespace QSOrmProject
 
 			fullList = baseCriteria.List();
 
-			if(SearchProvider != null)
-			{
-				SearchRefilter();
-			}
-			else
-			{
-				ytreeviewRef.ItemsDataSource = viewList = fullList;
-			}
+			UpdateTreeViewSource();
+
 			UpdateSum ();
 			inUpdating = false;
 			logger.Info ("Ok.");
@@ -251,6 +245,26 @@ namespace QSOrmProject
 			ytreeviewRef.ItemsDataSource = viewList;
 			var loadDelay = DateTime.Now.Subtract (searchStarted) - delayfilter;
 			logger.Debug("Загрузка таблицы {0} милисекунд.", loadDelay.TotalMilliseconds);
+		}
+
+		private void UpdateTreeViewSource()
+		{
+			if(SearchProvider != null && !String.IsNullOrWhiteSpace(entrySearch.Text))
+			{
+				SearchRefilter();
+			}
+			else
+			{
+				viewList = fullList;
+				if(TableView.RecursiveTreeConfig != null)
+				{
+					ytreeviewRef.YTreeModel = TableView.RecursiveTreeConfig.CreateModel(viewList);
+				}
+				else
+				{
+					ytreeviewRef.ItemsDataSource = viewList;
+				}
+			}
 		}
 
 		void OnTreeviewSelectionChanged (object sender, EventArgs e)
@@ -273,7 +287,7 @@ namespace QSOrmProject
 
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
-			SearchRefilter();
+			UpdateTreeViewSource();
 		}
 
 		protected void OnCloseTab ()

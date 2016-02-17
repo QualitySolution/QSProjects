@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Gamma.Binding;
 using Gamma.ColumnConfig;
 using Gamma.Utilities;
 
@@ -15,11 +16,14 @@ namespace QSOrmProject.DomainMapping
 		private readonly List<OrderByItem> OrderFields = new List<OrderByItem> ();
 
 		private FluentColumnsConfig<TEntity> customColumnsConfig;
+		private RecursiveTreeConfig<TEntity> treeConfig;
 
 		public TableView (OrmObjectMapping<TEntity> objectMapping)
 		{
 			myObjectMapping = objectMapping;
 		}
+
+		#region ITableView implementation
 
 		GenericSearchProvider<TEntity> searchProvider;
 
@@ -39,10 +43,16 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		#region ITableView implementation
-
 		public List<OrderByItem> OrderBy {
 			get { return OrderFields;
+			}
+		}
+
+		public IRecursiveTreeConfig RecursiveTreeConfig
+		{
+			get
+			{
+				return treeConfig;
 			}
 		}
 
@@ -105,6 +115,12 @@ namespace QSOrmProject.DomainMapping
 		public TableView<TEntity> CustomColumnsConfig(FluentColumnsConfig<TEntity> config)
 		{
 			customColumnsConfig = config;
+			return this;
+		}
+
+		public TableView<TEntity> TreeConfig(RecursiveTreeConfig<TEntity> config)
+		{
+			treeConfig = config;
 			return this;
 		}
 
