@@ -7,9 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Gamma.Binding</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
-    <ReleaseVersion>1.0</ReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -90,6 +87,9 @@
     <Compile Include="Core\BindingSourceBase.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererProgress.cs" />
     <Compile Include="TreeModels\ColumnConfig\ProgressRendererMapping.cs" />
+    <Compile Include="TreeModels\RecursiveTreeModel.cs" />
+    <Compile Include="TreeModels\RecursiveTreeConfig.cs" />
+    <Compile Include="TreeModels\IRecursiveTreeConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,22 +1,40 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Gamma.Binding;
+using Gamma.Utilities;
 using Gtk;
 
 namespace Gamma.Binding
 {
-	public class ObjectsTreeModel<TNode> : GLib.Object, TreeModelImplementor, IyTreeModel
+	public class RecursiveTreeModel<TNode> : GLib.Object, TreeModelImplementor, IyTreeModel
 	{
 		TreeModel adapter;
 		IList<TNode> sourceList;
 		IEnumerator cachedEnumerator;
 
+		PropertyInfo parentProperty;
+		PropertyInfo childsCollectionProperty;
+
 		public event EventHandler RenewAdapter;
 
-		public ObjectsTreeModel (IList<TNode> list)
+		public RecursiveTreeModel (IList<TNode> list, Expression<Func<TNode, TNode>> parentPropertyExpr, Expression<Func<TNode, IList<TNode>>> childsCollectionPropertyExpr)
 		{
+			parentProperty = PropertyUtil.GetPropertyInfo(parentPropertyExpr);
+			childsCollectionProperty = PropertyUtil.GetPropertyInfo(childsCollectionPropertyExpr);
+
+			adapter = new TreeModelAdapter (this);
+			sourceList = list;
+		}
+
+		public RecursiveTreeModel (IList<TNode> list, IRecursiveTreeConfig treeConfig)
+		{
+			parentProperty = treeConfig.ParentProperty;
+			childsCollectionProperty = treeConfig.ChildsCollectionProperty;
+
 			adapter = new TreeModelAdapter (this);
 			sourceList = list;
 		}
@@ -87,7 +105,12 @@ namespace Gamma.Binding
 			if (lastNode == node)
 				return GetCacheNext (ref iter);
 			else {
-				cachedEnumerator = sourceList.GetEnumerator ();
+				var parent = parentProperty.GetValue(node, null);
+				if (parent == null)
+					cachedEnumerator = sourceList.GetEnumerator();
+				else
+					cachedEnumerator = (childsCollectionProperty.GetValue(parent, null) as IList).GetEnumerator();
+
 				while (cachedEnumerator.MoveNext ()) {
 					if (node == cachedEnumerator.Current)
 						return GetCacheNext (ref iter);
@@ -99,12 +122,19 @@ namespace Gamma.Binding
 
 		public bool IterChildren (out TreeIter iter, TreeIter parent)
 		{
-			throw new NotImplementedException ();
+			iter = TreeIter.Zero;
+			var list = GetChildsList(parent);
+			if (list == null && list.Count == 0)
+				return false;
+
+			iter = IterFromNode(list[0]);
+			return true;
 		}
 
 		public bool IterHasChild (TreeIter iter)
 		{
-			throw new NotImplementedException ();
+			var list = GetChildsList(iter);
+			return list != null && list.Count > 0;
 		}
 
 		public int IterNChildren (TreeIter iter)
@@ -112,7 +142,10 @@ namespace Gamma.Binding
 			if (iter.Equals (TreeIter.Zero))
 				return SourceList.Count;
 			else
-				return 0;
+			{
+				var list = GetChildsList(iter);
+				return list != null ? list.Count : 0;
+			}
 		}
 
 		public bool IterNthChild (out TreeIter iter, TreeIter parent, int n)
@@ -121,19 +154,25 @@ namespace Gamma.Binding
 			if (sourceList == null || sourceList.Count == 0)
 				return false;
 
-			if (parent.UserData == IntPtr.Zero) {
-				if (sourceList.Count <= n)
-					return (false);
-				iter = IterFromNode (sourceList [n]);
-				return (true);
-			}
-			return false;
+			var list = parent.UserData == IntPtr.Zero ? (IList)sourceList : GetChildsList(parent);
+
+			if (list == null || list.Count <= n)
+				return false;
+
+			iter = IterFromNode (list [n]);
+			return true;
 		}
 
 		public bool IterParent (out TreeIter iter, TreeIter child)
 		{
 			iter = TreeIter.Zero;
-			return false;
+			var node = NodeFromIter(child);
+			var parent = parentProperty.GetValue(node, null);
+			if(parent == null)
+				return false;
+
+			iter = IterFromNode(parent);
+			return true;
 		}
 
 		public void RefNode (TreeIter iter)
@@ -148,7 +187,7 @@ namespace Gamma.Binding
 
 		public TreeModelFlags Flags {
 			get {
-				return TreeModelFlags.ListOnly;
+				return TreeModelFlags.ItersPersist;
 			}
 		}
 
@@ -167,7 +206,12 @@ namespace Gamma.Binding
 				return (null);
 			if (aPath.Indices [0] < 0 || aPath.Indices [0] >= sourceList.Count)
 				return null;
-			return (sourceList [aPath.Indices [0]]);
+			var item = sourceList[aPath.Indices[0]];
+
+			if(aPath.Depth == 1)
+				return item;
+			
+			return GetLevelNode(item, aPath, 1);
 		}
 
 		Hashtable node_hash = new Hashtable ();
@@ -198,11 +242,34 @@ namespace Gamma.Binding
 			if ((aNode == null) || (sourceList == null) || (sourceList.Count == 0))
 				return (tp);
 
-			int i = sourceList.IndexOf ((TNode)aNode);
-			if (i > -1)
-				tp.AppendIndex (i);
-			return (tp);
+			var curNode = (TNode)aNode;
+			var indicesList = new List<int>();
+
+			do
+			{
+				var parent = (TNode)parentProperty.GetValue(curNode, null);
+				if(parent == null)
+				{
+					int i = sourceList.IndexOf (curNode);
+					if (i == -1)
+						return tp;
+					indicesList.Add(i);
+					indicesList.Reverse();
+					indicesList.ForEach(tp.AppendIndex);
+					return tp;
+				}
+
+				var curList = (IList<TNode>)childsCollectionProperty.GetValue(parent, null);
+				int ix = curList.IndexOf(curNode);
+				if (ix == -1)
+					return tp;
+
+				indicesList.Add(ix);
+				curNode = parent;
+			} while (true);
 		}
+		
+	#region Privates
 
 		private bool GetCacheNext (ref TreeIter iter)
 		{
@@ -215,6 +282,26 @@ namespace Gamma.Binding
 			}
 		}
 
+		private IList GetChildsList(TreeIter iter)
+		{
+			var node = NodeFromIter(iter);
+			return childsCollectionProperty.GetValue(node, null) as IList;
+		}
+
+		private object GetLevelNode(object parentNode, TreePath aPath, int level)
+		{
+			var childs = childsCollectionProperty.GetValue(parentNode, null) as IList;
+
+			if (aPath.Indices [level] < 0 || aPath.Indices [level] >= childs.Count)
+				return null;
+
+			if (aPath.Depth > level + 1)
+				return GetLevelNode(childs[aPath.Indices[level]], aPath, level + 1);
+			else
+				return childs[aPath.Indices[level]];
+		}
+
+	#endregion
 
 	}
 }
