@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Data.Bindings;
 using System.Runtime.InteropServices;
 using Gamma.Binding;
 using Gtk;
@@ -40,7 +39,7 @@ namespace Gamma.Binding
 
 		public GLib.GType GetColumnType (int index_)
 		{
-			return GLib.GType.String;
+			return GLib.GType.Object;
 		}
 
 		public bool GetIter (out TreeIter iter, TreePath path)
@@ -69,7 +68,7 @@ namespace Gamma.Binding
 
 		public void GetValue (TreeIter iter, int column, ref GLib.Value value)
 		{
-			value.Val = NodeFromIter (iter);
+			value = new GLib.Value(NodeFromIter(iter));
 		}
 
 		public bool IterNext (ref TreeIter iter)
