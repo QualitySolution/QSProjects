@@ -134,13 +134,13 @@ namespace Gamma.GtkWidgets
 						(cell as CellRendererSpin).EditingStarted += OnNumbericNodeCellEditingStarted;
 						(cell as CellRendererSpin).Edited += NumericNodeCellEdited;
 					}
+					else if(cell is CellRendererCombo)
+					{
+						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
+					}
 					else if (cell is CellRendererText)
 					{
 						(cell as CellRendererText).Edited += TextNodeCellEdited;
-					}
-					if(cell is CellRendererCombo)
-					{
-						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
 					}
 					if(cell is CellRendererToggle)
 					{
