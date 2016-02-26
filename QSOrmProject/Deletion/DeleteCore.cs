@@ -112,8 +112,10 @@ namespace QSOrmProject.Deletion
 						sqlTransaction.Rollback ();
 					QSMain.ErrorMessageWithLog ("Ошибка при удалении", logger, ex);
 				}
-
-				ExcuteDlg.Destroy();
+				finally
+				{
+					ExcuteDlg.Destroy();
+				}
 			}
 			return false;
 		}
