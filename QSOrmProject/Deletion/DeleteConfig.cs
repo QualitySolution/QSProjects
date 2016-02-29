@@ -30,7 +30,7 @@ namespace QSOrmProject.Deletion
 
 		public static void AddDeleteInfo (DeleteInfo info)
 		{
-			if (ClassInfos.Exists (i => i.ObjectClass == info.ObjectClass))
+			if (info.ObjectClass != null && ClassInfos.Exists (i => i.ObjectClass == info.ObjectClass))
 				throw new InvalidOperationException (String.Format ("Описание удаления для класса {0} уже существует.", info.ObjectClass));
 
 			if (ClassInfos.OfType<DeleteInfo>().Any (i => i.TableName == info.TableName && i.ObjectClass == info.ObjectClass))
