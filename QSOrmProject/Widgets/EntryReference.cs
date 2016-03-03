@@ -71,6 +71,8 @@ namespace QSOrmProject
 
 		public event EventHandler Changed;
 
+		public event EventHandler ChangedByUser;
+
 		[Browsable (false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
 		[DefaultValue (true)]
 		public bool CanEditReference {
@@ -297,6 +299,7 @@ namespace QSOrmProject
 		void OnSelectDialogObjectSelected (object sender, OrmReferenceObjectSectedEventArgs e)
 		{
 			Subject = e.Subject;
+			OnChangedByUser();
 		}
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
@@ -317,6 +320,12 @@ namespace QSOrmProject
 		{
 			if (Changed != null)
 				Changed (this, EventArgs.Empty);
+		}
+
+		protected virtual void OnChangedByUser ()
+		{
+			if (ChangedByUser != null)
+				ChangedByUser (this, EventArgs.Empty);
 		}
 
 		private void fillAutocomplete ()
