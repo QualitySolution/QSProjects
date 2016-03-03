@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -266,6 +265,7 @@ namespace QSOrmProject
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
 			Subject = args.Model.GetValue (args.Iter, (int)completionCol.Item);
+			OnChangedByUser();
 			args.RetVal = true;
 		}
 
@@ -370,7 +370,10 @@ namespace QSOrmProject
 		protected void OnEntryObjectFocusOutEvent (object o, FocusOutEventArgs args)
 		{
 			if (string.IsNullOrWhiteSpace (entryObject.Text))
+			{
 				Subject = null;
+				OnChangedByUser();
+			}
 			else
 				UpdateWidgetNew ();
 		}
