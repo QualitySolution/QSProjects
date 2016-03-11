@@ -11,12 +11,12 @@ namespace QSOrmProject
 		{
 			var prop = value.GetType ().GetProperty ("Title");
 			if (prop != null) {
-				return prop.GetValue (value, null).ToString();
+				return prop.GetValue (value, null)?.ToString();
 			}
 
 			prop = value.GetType ().GetProperty ("Name");
 			if (prop != null) {
-				return prop.GetValue (value, null).ToString();
+				return prop.GetValue (value, null)?.ToString();
 			}
 
 			return value.ToString ();
