@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Utilities;
 using NHibernate.Criterion;
@@ -10,6 +11,8 @@ namespace QSOrmProject.Deletion
 	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate
 		where TEntity : IDomainObject
 	{
+		#region Свойства
+
 		public Type ObjectClass {
 			get {
 				return typeof(TEntity);
@@ -26,9 +29,29 @@ namespace QSOrmProject.Deletion
 			}
 		}
 
+		public bool IsRootForSubclasses { get; set;}
+
+		public bool IsSubclass
+		{
+			get
+			{
+				return OrmMain.OrmConfig.GetClassMapping(ObjectClass) is NHibernate.Mapping.Subclass;
+			}
+		}
+
+		public bool HasDependences
+		{
+			get
+			{
+				return DeleteItems.Count > 0 || ClearItems.Count > 0 || RemoveFromItems.Count > 0 || IsRootForSubclasses;
+			}
+		}
+
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
 		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
+
+		#endregion
 
 		public DeleteInfoHibernate()
 		{
@@ -36,6 +59,8 @@ namespace QSOrmProject.Deletion
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
 		}
+
+		#region Fluent Config
 
 		public DeleteInfoHibernate<TEntity> AddDeleteDependence (DeleteDependenceInfo info)
 		{
@@ -78,6 +103,16 @@ namespace QSOrmProject.Deletion
 			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
 			return this;
 		}
+
+		public DeleteInfoHibernate<TEntity> HasSubclasses ()
+		{
+			IsRootForSubclasses = true;
+			return this;
+		}
+
+		#endregion
+
+		#region Функции для внутреннего использования
 
 		public IList<EntityDTO> GetDependEntities(DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
@@ -179,6 +214,9 @@ namespace QSOrmProject.Deletion
 
 		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
 		{
+			if (IsRootForSubclasses)
+				throw new NotImplementedException("Прямое удаления через корневой класс для подклассов, пока не реализовано.");
+
 			var item = core.UoW.GetById<TEntity> ((int)id);
 			return new EntityDTO{
 				Id = (uint)item.Id,
@@ -199,6 +237,25 @@ namespace QSOrmProject.Deletion
 			entity.Entity = core.UoW.GetById(entity.ClassType, (int)entity.Id);
 			return entity.Entity != null;
 		}
+
+		public Type[] GetSubclasses()
+		{
+			if (IsRootForSubclasses == false)
+				return null;
+
+			return OrmMain.OrmConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
+		}
+
+		public IDeleteInfo GetRootDeleteInfo()
+		{
+			if (!IsSubclass)
+				return null;
+
+			var hmap = OrmMain.OrmConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
+			return DeleteConfig.GetDeleteInfo(hmap.RootClazz.MappedClass);
+		}
+
+		#endregion
 	}
 }
 

@@ -122,75 +122,45 @@ namespace QSOrmProject.Deletion
 
 		int FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity)
 		{
-			TreeIter DeleteIter, ClearIter, RemoveIter, GroupIter, ItemIter;
+			TreeIter DeleteIter, ClearIter, RemoveIter;
 			int Totalcount = 0;
 			int DelCount = 0;
 			int ClearCount = 0;
 			int RemoveCount = 0;
-			int GroupCount;
+			EntityDTO secondEntity = null;
+
+			var secondInfo = CalculateSecondInfo(currentDeletion, masterEntity);
+			if (!currentDeletion.HasDependences && !(secondInfo == null || secondInfo.HasDependences))
+				return 0;
 
 			CheckDlg.SetOperationName(String.Format("Проверка ссылок на: {0}", masterEntity.Title));
+			logger.Debug(String.Format("Проверка ссылок на: {0}", masterEntity.Title));
 			if (CheckDlg.IsCanceled)
 				return 0;
 
-			if (currentDeletion.DeleteItems.Count > 0) {
+			if(secondInfo != null)
+			{
+				secondEntity = new EntityDTO {
+					ClassType = secondInfo.ObjectClass,
+					Entity = masterEntity.Entity,
+					Id = masterEntity.Id,
+					Title = masterEntity.Title
+				};
+			}
+
+			if (currentDeletion.DeleteItems.Count > 0 || (secondInfo != null && secondInfo.DeleteItems.Count > 0)) {
 				if (!ObjectsTreeStore.IterIsValid (parentIter))
 					DeleteIter = ObjectsTreeStore.AppendNode ();
 				else
 					DeleteIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var delDepend in currentDeletion.DeleteItems) {
-					GroupCount = 0;
-					var childClassInfo = delDepend.GetClassInfo();
-					if (childClassInfo == null)
-						throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
-							currentDeletion.ObjectClass,
-							currentDeletion is DeleteInfo ? (currentDeletion as DeleteInfo).TableName : String.Empty,
-							delDepend.ObjectClass, 
-							delDepend.TableName));
 
-					var childList = childClassInfo.GetDependEntities(this, delDepend, masterEntity).ToList();
+				DelCount = FillDeleteItemsOperation(currentDeletion, parentOperation, DeleteIter, masterEntity, ref Totalcount);
 
-					if (childList.Count == 0)
-						continue;
-
-					foreach(var chk in DeletedItems.Where(x => x.ItemClass == childClassInfo.ObjectClass))
-					{
-						childList.RemoveAll(e => e.Id == chk.ItemId);
-					}
-
-					if (childList.Count == 0)
-						continue;
-
-					GroupIter = ObjectsTreeStore.AppendNode (DeleteIter);
-
-					var delOper = childClassInfo.CreateDeleteOperation (masterEntity, delDepend, childList);
-					if(delDepend.IsCascade)
-						parentOperation.ChildAfterOperations.Add (delOper);
-					else
-						parentOperation.ChildBeforeOperations.Add (delOper);
-
-					foreach (var row in childList) {
-						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
-						DeletedItems.Add (new DeletedItem {
-							ItemClass = childClassInfo.ObjectClass,
-							ItemId = row.Id,
-							Title = row.Title
-						});
-						if (childClassInfo.DeleteItems.Count > 0 || childClassInfo.ClearItems.Count > 0 || childClassInfo.RemoveFromItems.Count > 0) {
-							Totalcount += FillChildOperation (childClassInfo, delOper, ItemIter, row);
-						}
-						if (CheckDlg.IsCanceled)
-							return 0;
-						
-						GroupCount++;
-						Totalcount++;
-						DelCount++;
-					}
-
-					CheckDlg.AddLinksCount(GroupCount);
-
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
+				if(secondInfo != null)
+				{
+					DelCount += FillDeleteItemsOperation(secondInfo, parentOperation, DeleteIter, secondEntity, ref Totalcount);
 				}
+
 				if (DelCount > 0)
 					ObjectsTreeStore.SetValues (DeleteIter, String.Format ("Будет удалено ({0}/{1}) объектов:", DelCount, Totalcount));
 				else
@@ -198,42 +168,19 @@ namespace QSOrmProject.Deletion
 			}
 
 			//TODO Сделать возможность журналирования очистки полей у объектов.
-			if (currentDeletion.ClearItems.Count > 0) {
+			if (currentDeletion.ClearItems.Count > 0 || (secondInfo != null && secondInfo.ClearItems.Count > 0)) {
 				if (!ObjectsTreeStore.IterIsValid (parentIter))
 					ClearIter = ObjectsTreeStore.AppendNode ();
 				else
 					ClearIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var cleanDepend in currentDeletion.ClearItems) {
-					GroupCount = 0;
-					var childClassInfo = cleanDepend.GetClassInfo();
-					if (childClassInfo == null)
-						throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
 
-					var childList = childClassInfo.GetDependEntities (this, cleanDepend, masterEntity);
+				ClearCount = FillCleanItemsOperation(currentDeletion, parentOperation, ClearIter, masterEntity, ref Totalcount);
 
-					if (childList.Count == 0)
-						continue;
-
-					GroupIter = ObjectsTreeStore.AppendNode (ClearIter);
-
-					var cleanOper = childClassInfo.CreateClearOperation(masterEntity, cleanDepend, childList);
-
-					parentOperation.ChildBeforeOperations.Add (cleanOper);
-
-					foreach(var item in childList)
-					{
-						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, item.Title);
-						GroupCount++;
-						Totalcount++;
-						ClearCount++;
-					}
-
-					CheckDlg.AddLinksCount(GroupCount);
-					if (CheckDlg.IsCanceled)
-						return 0;
-					
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
+				if(secondInfo != null)
+				{
+					ClearCount += FillDeleteItemsOperation(secondInfo, parentOperation, ClearIter, secondEntity, ref Totalcount);
 				}
+				
 				if (ClearCount > 0)
 					ObjectsTreeStore.SetValues (ClearIter, RusNumber.FormatCase (ClearCount, 
 						"Будет очищено ссылок у {0} объекта:",
@@ -244,49 +191,19 @@ namespace QSOrmProject.Deletion
 					ObjectsTreeStore.Remove (ref ClearIter);
 			}
 
-			if (currentDeletion.RemoveFromItems.Count > 0) {
+			if (currentDeletion.RemoveFromItems.Count > 0 || (secondInfo != null && secondInfo.RemoveFromItems.Count > 0)) {
 				if (!ObjectsTreeStore.IterIsValid (parentIter))
 					RemoveIter = ObjectsTreeStore.AppendNode ();
 				else
 					RemoveIter = ObjectsTreeStore.AppendNode (parentIter);
-				foreach (var removeDepend in currentDeletion.RemoveFromItems) {
-					GroupCount = 0;
-					var childClassInfo = removeDepend.GetClassInfo();
-					if (childClassInfo == null)
-						throw new InvalidOperationException (String.Format ("Зависимость удаления класса {0} ссылается на коллекцию {2} в классе {1} для которого нет описания.", 
-							currentDeletion.ObjectClass,
-							removeDepend.ObjectClass, 
-							removeDepend.CollectionName));
 
-					var childList = childClassInfo.GetDependEntities (this, removeDepend, masterEntity);
+				RemoveCount = FillRemoveFromItemsOperation(currentDeletion, parentOperation, RemoveIter, masterEntity, ref Totalcount);
 
-					if (childList.Count == 0)
-						continue;
-
-					GroupIter = ObjectsTreeStore.AppendNode (RemoveIter);
-
-					var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, removeDepend, childList);
-					parentOperation.ChildBeforeOperations.Add (removeOper);
-
-					foreach (var row in childList) {
-						ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
-						GroupCount++;
-						Totalcount++;
-						RemoveCount++;
-					}
-
-					CheckDlg.AddLinksCount(GroupCount);
-					if (CheckDlg.IsCanceled)
-						return 0;
-					
-					var classNames = DomainHelper.GetSubjectNames (childClassInfo.ObjectClass);
-
-					ObjectsTreeStore.SetValues (GroupIter, String.Format ("{2} в {0}({1})", 
-						classNames.PrepositionalPlural ?? classNames.NominativePlural,
-						GroupCount,
-						DomainHelper.GetPropertyTitle (removeDepend.ObjectClass, removeDepend.CollectionName)
-					));
+				if(secondInfo != null)
+				{
+					RemoveCount += FillRemoveFromItemsOperation(secondInfo, parentOperation, RemoveIter, secondEntity, ref Totalcount);
 				}
+
 				if (RemoveCount > 0)
 					ObjectsTreeStore.SetValues (RemoveIter, RusNumber.FormatCase (RemoveCount, 
 						"Будут очищены ссылки в коллекциях у {0} объекта:",
@@ -297,6 +214,170 @@ namespace QSOrmProject.Deletion
 			}
 
 			return Totalcount;
+		}
+
+		private IDeleteInfo CalculateSecondInfo(IDeleteInfo info, EntityDTO entity)
+		{
+			var hinfo = info as IDeleteInfoHibernate;
+			if (hinfo == null)
+				return null;
+
+			if(hinfo.IsSubclass)
+			{
+				var root = hinfo.GetRootDeleteInfo();
+				if (root != null)
+					return root;
+			}
+
+			if(hinfo.IsRootForSubclasses)
+			{
+				var subclass = NHibernate.NHibernateUtil.GetClass(entity.Entity);
+
+				if (subclass != null)
+					return DeleteConfig.GetDeleteInfo(subclass);
+			}
+
+			return null;
+		}
+
+		private int FillDeleteItemsOperation(IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity, ref int totalCount)
+		{
+			int deleteCount = 0;
+			foreach (var delDepend in currentDeletion.DeleteItems) {
+				int GroupCount = 0;
+				var childClassInfo = delDepend.GetClassInfo();
+				if (childClassInfo == null)
+					throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
+						currentDeletion.ObjectClass,
+						currentDeletion is DeleteInfo ? (currentDeletion as DeleteInfo).TableName : String.Empty,
+						delDepend.ObjectClass, 
+						delDepend.TableName));
+
+				var childList = childClassInfo.GetDependEntities(this, delDepend, masterEntity).ToList();
+
+				if (childList.Count == 0)
+					continue;
+
+				foreach(var chk in DeletedItems.Where(x => x.ItemClass == childClassInfo.ObjectClass))
+				{
+					childList.RemoveAll(e => e.Id == chk.ItemId);
+				}
+
+				if (childList.Count == 0)
+					continue;
+
+				TreeIter GroupIter = ObjectsTreeStore.AppendNode (parentIter);
+
+				var delOper = childClassInfo.CreateDeleteOperation (masterEntity, delDepend, childList);
+				if(delDepend.IsCascade)
+					parentOperation.ChildAfterOperations.Add (delOper);
+				else
+					parentOperation.ChildBeforeOperations.Add (delOper);
+
+				foreach (var row in childList) {
+					TreeIter ItemIter = ObjectsTreeStore.AppendValues (GroupIter, row.Title);
+					DeletedItems.Add (new DeletedItem {
+						ItemClass = childClassInfo.ObjectClass,
+						ItemId = row.Id,
+						Title = row.Title
+					});
+
+					totalCount += FillChildOperation (childClassInfo, delOper, ItemIter, row);
+
+					if (CheckDlg.IsCanceled)
+						return 0;
+
+					GroupCount++;
+					totalCount++;
+					deleteCount++;
+				}
+
+				CheckDlg.AddLinksCount(GroupCount);
+
+				ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), GroupCount));
+			}
+			return deleteCount;
+		}
+
+		private int FillCleanItemsOperation(IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity, ref int totalCount)
+		{
+			int clearCount = 0;
+			foreach (var cleanDepend in currentDeletion.ClearItems) {
+				int groupCount = 0;
+				var childClassInfo = cleanDepend.GetClassInfo();
+				if (childClassInfo == null)
+					throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
+
+				var childList = childClassInfo.GetDependEntities (this, cleanDepend, masterEntity);
+
+				if (childList.Count == 0)
+					continue;
+
+				TreeIter GroupIter = ObjectsTreeStore.AppendNode (parentIter);
+
+				var cleanOper = childClassInfo.CreateClearOperation(masterEntity, cleanDepend, childList);
+
+				parentOperation.ChildBeforeOperations.Add (cleanOper);
+
+				foreach(var item in childList)
+				{
+					ObjectsTreeStore.AppendValues (GroupIter, item.Title);
+					groupCount++;
+					totalCount++;
+					clearCount++;
+				}
+
+				CheckDlg.AddLinksCount(groupCount);
+				if (CheckDlg.IsCanceled)
+					return 0;
+
+				ObjectsTreeStore.SetValues (GroupIter, String.Format ("{0}({1})", StringWorks.StringToTitleCase (childClassInfo.ObjectsName), groupCount));
+			}
+			return clearCount;
+		}
+
+		private int FillRemoveFromItemsOperation(IDeleteInfo currentDeletion, Operation parentOperation, TreeIter parentIter, EntityDTO masterEntity, ref int totalCount)
+		{
+			int removeCount = 0;
+			foreach (var removeDepend in currentDeletion.RemoveFromItems) {
+				int groupCount = 0;
+				var childClassInfo = removeDepend.GetClassInfo();
+				if (childClassInfo == null)
+					throw new InvalidOperationException (String.Format ("Зависимость удаления класса {0} ссылается на коллекцию {2} в классе {1} для которого нет описания.", 
+						currentDeletion.ObjectClass,
+						removeDepend.ObjectClass, 
+						removeDepend.CollectionName));
+
+				var childList = childClassInfo.GetDependEntities (this, removeDepend, masterEntity);
+
+				if (childList.Count == 0)
+					continue;
+
+				TreeIter GroupIter = ObjectsTreeStore.AppendNode (parentIter);
+
+				var removeOper = childClassInfo.CreateRemoveFromOperation (masterEntity, removeDepend, childList);
+				parentOperation.ChildBeforeOperations.Add (removeOper);
+
+				foreach (var row in childList) {
+					ObjectsTreeStore.AppendValues (GroupIter, row.Title);
+					groupCount++;
+					totalCount++;
+					removeCount++;
+				}
+
+				CheckDlg.AddLinksCount(groupCount);
+				if (CheckDlg.IsCanceled)
+					return 0;
+
+				var classNames = DomainHelper.GetSubjectNames (childClassInfo.ObjectClass);
+
+				ObjectsTreeStore.SetValues (GroupIter, String.Format ("{2} в {0}({1})", 
+					classNames.PrepositionalPlural ?? classNames.NominativePlural,
+					groupCount,
+					DomainHelper.GetPropertyTitle (removeDepend.ObjectClass, removeDepend.CollectionName)
+				));
+			}
+			return removeCount;
 		}
 
 		#region Internal Helpers

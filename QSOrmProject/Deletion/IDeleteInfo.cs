@@ -8,6 +8,8 @@ namespace QSOrmProject.Deletion
 		Type ObjectClass { get;}
 		string ObjectsName { get;}
 
+		bool HasDependences { get;}
+
 		List<DeleteDependenceInfo> DeleteItems { get;}
 		List<ClearDependenceInfo> ClearItems { get;}
 		List<RemoveFromDependenceInfo> RemoveFromItems { get;}
@@ -20,10 +22,5 @@ namespace QSOrmProject.Deletion
 		Operation CreateRemoveFromOperation (EntityDTO masterEntity, RemoveFromDependenceInfo depend, IList<EntityDTO> dependEntities);
 		Operation CreateDeleteOperation (EntityDTO entity);
 		Operation CreateClearOperation(EntityDTO masterEntity, ClearDependenceInfo depend, IList<EntityDTO> dependEntities);
-	}
-
-	public interface IDeleteInfoHibernate : IDeleteInfo
-	{
-		
 	}
 }

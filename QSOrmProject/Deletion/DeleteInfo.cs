@@ -26,6 +26,14 @@ namespace QSOrmProject.Deletion
 		public List<ClearDependenceInfo> ClearItems { get; set;}
 		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
 
+		public bool HasDependences
+		{
+			get
+			{
+				return DeleteItems.Count > 0 || ClearItems.Count > 0 || RemoveFromItems.Count > 0;
+			}
+		}
+
 		public string PreparedSqlSelect{
 			get { //Заменяем название таблицы и добавляем пробел, если его нет.
 				return SqlSelect.Replace ("@tablename", String.Format("`{0}`", TableName)).TrimEnd (' ') + " ";

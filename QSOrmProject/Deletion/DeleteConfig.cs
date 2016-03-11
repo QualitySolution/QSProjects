@@ -44,6 +44,11 @@ namespace QSOrmProject.Deletion
 			return ClassInfos.Find (i => i.ObjectClass == typeof(T));
 		}
 
+		public static IDeleteInfo GetDeleteInfo (Type clazz)
+		{
+			return ClassInfos.FirstOrDefault (i => i.ObjectClass == clazz);
+		}
+
 		public static void AddDeleteDependence<ToClass> (DeleteDependenceInfo deleteDependence)
 		{
 			var info = ClassInfos.Find (i => i.ObjectClass == typeof(ToClass));
