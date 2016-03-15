@@ -12,6 +12,10 @@ namespace QSTDI
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
+		public event EventHandler<TabAddedEventArgs> TabAdded;
+		public event EventHandler<TabSwitchedEventArgs> TabSwitched;
+		public event EventHandler<TabClosedEventArgs> TabClosed;
+
 		public ReadOnlyCollection<TdiTabInfo> Tabs;
 		public bool UseSliderTab = true;
 		private List<TdiTabInfo> _tabs;
@@ -85,6 +89,7 @@ namespace QSTDI
 			vbox.Show ();
 			this.ShowTabs = true;
 			_tabs.Add (new TdiTabInfo (tab, nameLable));
+			TabAdded(this, new TabAddedEventArgs(tab));
 			this.CurrentPage = inserted;
 		}
 
@@ -120,6 +125,33 @@ namespace QSTDI
 		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			AddTab (tab, this.PageNum (GetTabBoxForTab (afterTab)));
+		}
+
+		internal void OnSliderTabAdded(object sender, ITdiTab tab)
+		{
+			if (TabAdded != null)
+				TabAdded(sender, new TabAddedEventArgs(tab));
+		}
+
+		internal void OnSliderTabClosed(object sender, ITdiTab tab)
+		{
+			if (TabClosed != null)
+				TabClosed(sender, new TabClosedEventArgs(tab));
+		}
+
+		internal void OnSliderTabSwitched(object sender, ITdiTab tab)
+		{
+			if (TabSwitched != null)
+				TabSwitched(this, new TabSwitchedEventArgs(tab));
+		}
+
+		protected override void OnSwitchPage(NotebookPage page, uint page_num)
+		{
+			base.OnSwitchPage(page, page_num);
+			var currentTab = (this.CurrentPageWidget as TabVBox)?.Tab;
+			currentTab = (currentTab as TdiSliderTab)?.ActiveDialog ?? currentTab;
+			if (TabSwitched != null)
+				TabSwitched(this, new TabSwitchedEventArgs(currentTab));
 		}
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)
@@ -229,6 +261,7 @@ namespace QSTDI
 			if (IsCurrent)
 				this.PrevPage ();
 			this.Remove (tabBox);
+			TabClosed(this, new TabClosedEventArgs(tab));
 			logger.Debug ("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy ();
 			tabBox.Destroy ();
@@ -263,6 +296,42 @@ namespace QSTDI
 			MasterTab = master;
 			TabNameLabel = label;
 			SlaveTabs = new List<ITdiTab> ();
+		}
+	}
+
+	public class TabAddedEventArgs:EventArgs
+	{
+		private ITdiTab tab;
+		public ITdiTab Tab{
+			get{ return tab; }
+		}
+		public TabAddedEventArgs(ITdiTab tab)
+		{
+			this.tab = tab;
+		}
+	}
+
+	public class TabClosedEventArgs:EventArgs
+	{
+		private ITdiTab tab;
+		public ITdiTab Tab{
+			get{ return tab; }
+		}
+		public TabClosedEventArgs(ITdiTab tab)
+		{
+			this.tab = tab;
+		}
+	}
+
+	public class TabSwitchedEventArgs:EventArgs
+	{
+		private ITdiTab tab;
+		public ITdiTab Tab{
+			get{ return tab; }
+		}
+		public TabSwitchedEventArgs(ITdiTab tab)
+		{
+			this.tab = tab;
 		}
 	}
 }

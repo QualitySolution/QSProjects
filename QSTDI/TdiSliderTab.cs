@@ -61,39 +61,45 @@ namespace QSTDI
 			}
 			set {
 				if (activeDialog != value) {
+					//Remove
 					if (activeDialog != null) {
 						activeDialog.CloseTab -= OnDialogClose;
 						activeDialog.TabNameChanged -= ActiveDialog_TabNameChanged;
 						dialogVBox.Destroy ();
 						this.Remove (dialogVBox);
 						this.Remove (separator);
+						(TabParent as TdiNotebook).OnSliderTabClosed(this, activeDialog);
 					}
-					activeDialog = value;
+					//Add
 					if (value != null) {
-						activeDialog.CloseTab += OnDialogClose;
+						value.CloseTab += OnDialogClose;
 						separator = new VSeparator ();
 						separator.Show ();
 						dialogTilteLabel = new Label ();
 						dialogVBox = new VBox ();
-						//dialogVBox.PackStart (dialogTilteLabel, false, true, 3);
-						dialogVBox.PackStart ((Widget)activeDialog);
+						dialogVBox.PackStart ((Widget)value);
 						this.PackEnd (dialogVBox);
 						this.PackEnd (separator, false, true, 6);
-						//dialogTilteLabel.Show ();
 						dialogVBox.Show ();
-						(ActiveDialog as Widget).Show ();
-						activeDialog.TabParent = this;
-						activeDialog.TabNameChanged += ActiveDialog_TabNameChanged;
-						ActiveDialog_TabNameChanged (this, new TdiTabNameChangedEventArgs (ActiveDialog.TabName));
+						(value as Widget).Show ();
+						value.TabParent = this;
+						value.TabNameChanged += ActiveDialog_TabNameChanged;
+						(TabParent as TdiNotebook).OnSliderTabAdded(this, value);
+					}
+					//Switch
+					activeDialog = value;
+					if (activeDialog != null)
+					{
+						ActiveDialog_TabNameChanged(this, new TdiTabNameChangedEventArgs(activeDialog.TabName));
+						(TabParent as TdiNotebook).OnSliderTabSwitched(this, this);
 					}
 				}
-
 			}
 		}
 
 		void ActiveDialog_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
 		{
-			SetNewDialogTitle (ActiveDialog.TabName);
+			SetNewDialogTitle (e.NewName);
 			OnSladerTabChanged ();
 		}
 
