@@ -28,6 +28,7 @@ namespace QSWidgetLib
 					hboxMain. PackStart (panel);
 					hboxMain.ReorderChild (panel, 0);
 					panel.Visible = !IsHided;
+					panel.NoShowAll = true;
 				}
 			}
 		}
