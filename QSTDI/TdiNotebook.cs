@@ -89,7 +89,8 @@ namespace QSTDI
 			vbox.Show ();
 			this.ShowTabs = true;
 			_tabs.Add (new TdiTabInfo (tab, nameLable));
-			TabAdded(this, new TabAddedEventArgs(tab));
+			if(TabAdded!=null)
+				TabAdded(this, new TabAddedEventArgs(tab));
 			this.CurrentPage = inserted;
 		}
 
