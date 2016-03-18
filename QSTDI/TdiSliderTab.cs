@@ -91,7 +91,8 @@ namespace QSTDI
 					if (activeDialog != null)
 					{
 						ActiveDialog_TabNameChanged(this, new TdiTabNameChangedEventArgs(activeDialog.TabName));
-						(TabParent as TdiNotebook).OnSliderTabSwitched(this, this);
+						ITdiTab currentTab = ActiveDialog!=null ? ActiveDialog as ITdiTab : this as ITdiTab;
+						(TabParent as TdiNotebook).OnSliderTabSwitched(this, currentTab);
 					}
 				}
 			}
