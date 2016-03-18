@@ -154,7 +154,8 @@ namespace QSProjectsLib
 			if (comboboxConnections.Active == -1)
 				return;
 			Connection Selected = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText);
-			string connStr, host, port = "3306";
+			string connStr, host;
+			uint port = 3306;
 			string[] uriSplit = new string[2];
 			string login = entryUser.Text;
 
@@ -192,16 +193,23 @@ namespace QSProjectsLib
 			}
 			host = uriSplit [0];
 			if (uriSplit.Length > 1) {
-				port = uriSplit [1];
+				uint.TryParse(uriSplit [1], out port);
 			}
+				
+			var conStrBuilder = new MySqlConnectionStringBuilder();
+			conStrBuilder.Server = host;
+			conStrBuilder.Port = port;
+			conStrBuilder.Database = BaseName;
+			conStrBuilder.UserID = login;
+			conStrBuilder.Password = entryPassword.Text;
 
-			connStr = string.Format ("server={0};port={3};uid={1};pwd={4};database={2};", host, login, BaseName, port, entryPassword.Text);
+			connStr = conStrBuilder.GetConnectionString(true);
 			
 			QSMain.connectionDB = new MySqlConnection (connStr);
 			try {
 				Console.WriteLine ("Connecting to MySQL...");
 				
-				QSMain.connectionDB.Open ();
+				QSMain.connectionDB.Open();
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
 				try {
 					MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
