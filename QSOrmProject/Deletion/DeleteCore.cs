@@ -45,7 +45,7 @@ namespace QSOrmProject.Deletion
 		public bool RunDeletion (string table, int id)
 		{
 			logger.Debug ("Поиск зависимостей для объекта таблицы {0}...", table);
-			var info = DeleteConfig.ClassInfos.OfType<DeleteInfo> ().First (i => i.TableName == table);
+			var info = DeleteConfig.ClassInfos.OfType<DeleteInfo> ().FirstOrDefault (i => i.TableName == table);
 			if (info == null)
 				throw new InvalidOperationException (String.Format ("Удаление для объектов таблицы {0} не настроено в DeleteConfig", table));
 
