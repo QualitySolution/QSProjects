@@ -125,10 +125,11 @@ namespace QSProjectsLib
 						logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
 				} else {
 					string sql;
-					sql = String.Format ("DROP USER {0}, {0}@localhost", loginname);
+					sql = "DROP USER @login, @login @'localhost'";
 					try {
 						QSMain.CheckConnectionAlive ();
 						MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
+						cmd.Parameters.AddWithValue ("@login", loginname);
 						cmd.ExecuteNonQuery ();
 						logger.Info ("Пользователь удалён. Ok");
 
