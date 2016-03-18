@@ -18,6 +18,9 @@ namespace QSOrmProject.Deletion
 				return typeof(TEntity);
 			}
 		}
+
+		//Только для поиска соответствия из модулей работающих по таблицам. Например Users в QSProjectLib
+		public string TableName { get; private set;}
 			
 		public string ObjectsName {
 			get {
@@ -58,6 +61,11 @@ namespace QSOrmProject.Deletion
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
+
+			var hmap = OrmMain.OrmConfig.GetClassMapping(ObjectClass);
+			if (hmap == null)
+				throw new InvalidOperationException(String.Format("Класс {0} отсутствует в мапинге NHibernate.", ObjectClass));
+			TableName = hmap.Table.Name;
 		}
 
 		#region Fluent Config

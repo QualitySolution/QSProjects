@@ -12,7 +12,7 @@ namespace QSOrmProject.Deletion
 		public Type ObjectClass { get; set;}
 		public string ObjectsName { get; set;}
 
-		public string TableName;
+		public string TableName { get; set;}
 
 		/// <summary>
 		/// Запрос Select для отображения удаляемых записей, в запросе в строке FROM

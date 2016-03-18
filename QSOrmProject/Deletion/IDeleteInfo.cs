@@ -7,6 +7,7 @@ namespace QSOrmProject.Deletion
 	{
 		Type ObjectClass { get;}
 		string ObjectsName { get;}
+		string TableName { get; }
 
 		bool HasDependences { get;}
 
