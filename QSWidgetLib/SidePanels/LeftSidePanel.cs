@@ -41,6 +41,11 @@ namespace QSWidgetLib
 			}
 		}
 
+		[System.ComponentModel.Browsable(false)]
+		public bool ClosedByUser{ get; private set;}
+		[System.ComponentModel.Browsable(false)]
+		public bool OpenedByUser{ get; private set;}
+
 		public bool IsHided
 		{
 			get
@@ -69,7 +74,10 @@ namespace QSWidgetLib
 
 		protected void OnEventboxArrowButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
-			IsHided = !IsHided;
+			var newHiddenState = !IsHided;
+			IsHided = newHiddenState;
+			ClosedByUser = newHiddenState;
+			OpenedByUser = !newHiddenState;
 		}
 	}
 }
