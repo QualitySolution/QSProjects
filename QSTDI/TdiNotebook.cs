@@ -262,6 +262,9 @@ namespace QSTDI
 			if (IsCurrent)
 				this.PrevPage ();
 			this.Remove (tabBox);
+			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
+			if (maybeSliderActiveDialog != null)
+				TabClosed(this, new TabClosedEventArgs(maybeSliderActiveDialog));
 			TabClosed(this, new TabClosedEventArgs(tab));
 			logger.Debug ("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy ();
