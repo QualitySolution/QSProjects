@@ -158,7 +158,8 @@ namespace QSOrmProject
 
 		public override void Destroy ()
 		{
-			UoWGeneric.Dispose();
+			if(UoWGeneric != null)
+				UoWGeneric.Dispose();
 			base.Destroy ();
 		}
 
