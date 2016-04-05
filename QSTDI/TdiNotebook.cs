@@ -264,11 +264,19 @@ namespace QSTDI
 			this.Remove (tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if (maybeSliderActiveDialog != null)
-				TabClosed(this, new TabClosedEventArgs(maybeSliderActiveDialog));
-			TabClosed(this, new TabClosedEventArgs(tab));
+				OnTabClosed(maybeSliderActiveDialog);
+			OnTabClosed(tab);
 			logger.Debug ("Вкладка <{0}> удалена", tab.TabName);
 			(tab as Widget).Destroy ();
 			tabBox.Destroy ();
+		}
+
+		protected void OnTabClosed(ITdiTab tab)
+		{
+			if(TabClosed != null)
+			{
+				TabClosed(this, new TabClosedEventArgs(tab));
+			}
 		}
 
 		private TabVBox GetTabBoxForTab(ITdiTab tab)
