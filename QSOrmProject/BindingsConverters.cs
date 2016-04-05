@@ -38,6 +38,23 @@ namespace QSOrmProject
 		}
 	}
 
+	public class NumbersTypeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (targetType == typeof(int))
+				return (System.Convert.ToInt32 (value));
+			return null;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if(targetType == typeof(short))
+				return (System.Convert.ToInt16(value));
+			return null;
+		}
+	}
+
 	public class NullToZeroConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
