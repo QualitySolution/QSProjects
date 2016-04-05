@@ -30,7 +30,7 @@ namespace QSBusinessCommon
 		{
 			entryName.Binding.AddBinding (Entity, e => e.Name, w => w.Text).InitializeFromSource ();
 			dataentryOKEI.Binding.AddBinding (Entity, e => e.OKEI, w => w.Text).InitializeFromSource ();
-			spinDigits.Binding.AddBinding (Entity, e => e.Digits, w => w.ValueAsInt).InitializeFromSource ();
+			spinDigits.Binding.AddBinding (Entity, e => e.Digits, w => w.ValueAsInt, new NumbersTypeConverter()).InitializeFromSource ();
 		}
 
 		public override bool Save ()
