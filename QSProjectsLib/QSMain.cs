@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Threading;
 using Gtk;
 using MySql.Data.MySqlClient;
-using Nini.Config;
 using NLog;
 
 namespace QSProjectsLib
@@ -14,8 +13,6 @@ namespace QSProjectsLib
 	public static class QSMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		public static IniConfigSource Configsource;
-		public static string ConfigFileName;
 
 		public static Window ErrorDlgParrent;
 		public static Thread GuiThread;
@@ -31,7 +28,7 @@ namespace QSProjectsLib
 				statusBarLabel = value;
 				statusBarLabel.ExposeEvent += OnStatusBarExposed;
 			}}
-
+				
 		//Работа с базой
 		public static DataProviders DBMS;
 		public static DbProviderFactory ProviderDB;

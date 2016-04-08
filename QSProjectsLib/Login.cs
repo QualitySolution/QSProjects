@@ -6,6 +6,7 @@ using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
 using QSSaaS;
+using QSMachineConfig;
 
 namespace QSProjectsLib
 {
@@ -72,64 +73,57 @@ namespace QSProjectsLib
 		{
 			BaseName = DefaultBase = ProjectName;
 			DefaultConnection = "По умолчанию";
-			QSMain.ConfigFileName = ProjectName + ".ini";
+			MachineConfig.ConfigFileName = ProjectName + ".ini";
 		}
 
 		public void UpdateFromGConf ()
 		{
-			string configfile = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), QSMain.ConfigFileName);
 			IConfig Config;
 			Connections.Clear ();
-			try {
-				QSMain.Configsource = new IniConfigSource (configfile);
-				QSMain.Configsource.Reload ();  //Читаем все конфиги
-				System.Collections.IEnumerator en = QSMain.Configsource.Configs.GetEnumerator ();
-				while (en.MoveNext ()) {
-					Config = (IConfig)en.Current;
-					if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
-						String type = Config.Get ("Type", ((int)ConnectionType.MySQL).ToString ());
-						Connections.Add (new Connection ((ConnectionType)int.Parse (type),
-							Config.Get ("ConnectionName", DefaultConnection),
-							Config.Get ("DataBase", BaseName),
-							Config.Get ("Server", DefaultServer),
-							Config.Get ("UserLogin", String.Empty),
-							Config.Name,
-							Config.Get ("Account", String.Empty)));
-					} else if (Config.Name == "Default") {
-						SelectedConnection = Config.Get ("ConnectionName", String.Empty);
-					}
+
+			MachineConfig.ReloadConfigFile ();
+			System.Collections.IEnumerator en = MachineConfig.ConfigSource.Configs.GetEnumerator ();
+			while (en.MoveNext ()) {
+				Config = (IConfig)en.Current;
+				if (Regex.IsMatch (Config.Name, @"Login[0-9]*")) {
+					String type = Config.Get ("Type", ((int)ConnectionType.MySQL).ToString ());
+					Connections.Add (new Connection ((ConnectionType)int.Parse (type),
+						Config.Get ("ConnectionName", DefaultConnection),
+						Config.Get ("DataBase", BaseName),
+						Config.Get ("Server", DefaultServer),
+						Config.Get ("UserLogin", String.Empty),
+						Config.Name,
+						Config.Get ("Account", String.Empty)));
+				} else if (Config.Name == "Default") {
+					SelectedConnection = Config.Get ("ConnectionName", String.Empty);
 				}
-				if (Connections.Count == 0) {
-					Console.WriteLine ("Конфигурационный файл не содержит соединений. Создаем новое.");
-					CreateDefaultConnection (configfile);
-				}
-			} catch (Exception ex) {
-				Console.WriteLine (ex.Message);
-				Console.WriteLine ("Конфигурационный фаил не найден. Создаем новый.");
-				QSMain.Configsource = new IniConfigSource ();		
-				CreateDefaultConnection (configfile);
-			} finally {
-				if (QSMain.Configsource.Configs ["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
-					QSMain.Configsource.AddConfig ("Default");
-					QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
-					QSMain.Configsource.Save ();
-				}
-				entryPassword.GrabFocus ();
-				UpdateCombo ();
 			}
+			if (Connections.Count == 0) {
+				logger.Warn ("Конфигурационный файл не содержит соединений. Создаем новое.");
+				CreateDefaultConnection ();
+			}
+
+			if (MachineConfig.ConfigSource.Configs ["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
+				MachineConfig.ConfigSource.AddConfig ("Default");
+				MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+				MachineConfig.ConfigSource.Save ();
+			}
+
+			entryPassword.GrabFocus ();
+			UpdateCombo ();
 		}
 
-		protected void CreateDefaultConnection (string configfile)
+		protected void CreateDefaultConnection ()
 		{
-			IConfig config = QSMain.Configsource.AddConfig ("Login0");
+			IConfig config = MachineConfig.ConfigSource.AddConfig ("Login0");
 			config.Set ("UserLogin", DefaultLogin);
 			config.Set ("Server", DefaultServer);
 			config.Set ("ConnectionName", DefaultConnection);
-			if (QSMain.Configsource.Configs ["Default"] == null)
-				QSMain.Configsource.AddConfig ("Default");
-			QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", DefaultConnection);
+			if (MachineConfig.ConfigSource.Configs ["Default"] == null)
+				MachineConfig.ConfigSource.AddConfig ("Default");
+			MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", DefaultConnection);
 
-			QSMain.Configsource.Save (configfile);
+			MachineConfig.SaveConfigFile ();
 		
 			Connections.Add (new Connection (ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "", ""));
 
@@ -231,9 +225,9 @@ namespace QSProjectsLib
 
 				labelLoginInfo.Text = ConnectionError = String.Empty;
 				String ini = Connections.Find (m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
-				QSMain.Configsource.Configs [ini].Set ("UserLogin", entryUser.Text);
-				QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
-				QSMain.Configsource.Save ();
+				MachineConfig.ConfigSource.Configs [ini].Set ("UserLogin", entryUser.Text);
+				MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", comboboxConnections.ActiveText);
+				MachineConfig.ConfigSource.Save ();
 				QSMain.ConnectionString = connStr;
 				QSMain.User = new UserInfo (entryUser.Text.ToLower ());
 				this.Respond (ResponseType.Ok);
@@ -277,11 +271,11 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues (c.ConnectionName);
-			SelectedConnection = (String)QSMain.Configsource.Configs ["Default"].Get ("ConnectionName", String.Empty);
+			SelectedConnection = (String)MachineConfig.ConfigSource.Configs ["Default"].Get ("ConnectionName", String.Empty);
 			if (SelectedConnection != String.Empty) {
 				if (Connections.Find (m => m.ConnectionName == SelectedConnection) == null) {
-					QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", String.Empty);
-					QSMain.Configsource.Save ();
+					MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", String.Empty);
+					MachineConfig.ConfigSource.Save ();
 					SelectedConnection = String.Empty;
 				} else {
 					TreeIter tempIter;

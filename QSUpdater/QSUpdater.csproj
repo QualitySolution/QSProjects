@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSUpdater</RootNamespace>
     <AssemblyName>QSUpdater</AssemblyName>
+    <ReleaseVersion>2.2</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -42,6 +43,7 @@
     <Compile Include="DBUpdater\DBUpdateProcess.cs" />
     <Compile Include="gtk-gui\QSUpdater.DB.DBUpdateProcess.cs" />
     <Compile Include="MainUpdater.cs" />
+    <Compile Include="DBCreator\DBCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
@@ -77,6 +79,10 @@
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QSMachineConfig\QSMachineConfig.csproj">
+      <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
+      <Name>QSMachineConfig</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -85,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DBUpdater\" />
+    <Folder Include="DBCreator\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

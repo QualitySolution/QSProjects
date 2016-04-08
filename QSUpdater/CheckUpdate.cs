@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Threading;
-using QSSupportLib;
 using Gtk;
-using QSProjectsLib;
-using System.Net;
 using NLog;
-using System.Diagnostics;
-using System.IO;
+using QSMachineConfig;
+using QSProjectsLib;
+using QSSupportLib;
 
 namespace QSUpdater
 {
@@ -80,9 +81,9 @@ namespace QSUpdater
 				IUpdateService service = new WebChannelFactory<IUpdateService> (new WebHttpBinding { AllowCookies = true }, address)
 					.CreateChannel ();
 				updateResult = service.checkForUpdate (parameters);
-				if (QSMain.Configsource.Configs ["Updater"] != null) {
-					checkVersion = QSMain.Configsource.Configs ["Updater"].Get ("NewVersion", String.Empty);
-					checkResult = QSMain.Configsource.Configs ["Updater"].Get ("Check", String.Empty);
+				if (MachineConfig.ConfigSource.Configs ["Updater"] != null) {
+					checkVersion = MachineConfig.ConfigSource.Configs ["Updater"].Get ("NewVersion", String.Empty);
+					checkResult = MachineConfig.ConfigSource.Configs ["Updater"].Get ("Check", String.Empty);
 				}
 				if (showAnyway || (updateResult.HasUpdate &&
 				    (checkResult == "True" || checkResult == String.Empty || checkVersion != updateResult.NewVersion))) { 
@@ -206,11 +207,11 @@ namespace QSUpdater
 
 		static void ConfigFileUpdater (bool check)
 		{
-			if (QSMain.Configsource.Configs ["Updater"] == null)
-				QSMain.Configsource.AddConfig ("Updater");
-			QSMain.Configsource.Configs ["Updater"].Set ("Check", check);
-			QSMain.Configsource.Configs ["Updater"].Set ("NewVersion", updateResult.NewVersion);
-			QSMain.Configsource.Save ();
+			if (MachineConfig.ConfigSource.Configs ["Updater"] == null)
+				MachineConfig.ConfigSource.AddConfig ("Updater");
+			MachineConfig.ConfigSource.Configs ["Updater"].Set ("Check", check);
+			MachineConfig.ConfigSource.Configs ["Updater"].Set ("NewVersion", updateResult.NewVersion);
+			MachineConfig.ConfigSource.Save ();
 		}
 	}
 }

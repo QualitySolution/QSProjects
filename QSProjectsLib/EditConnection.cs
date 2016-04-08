@@ -1,8 +1,9 @@
 ﻿using System;
-using Gtk;
 using System.Collections.Generic;
-using Nini.Config;
 using System.Linq;
+using Gtk;
+using Nini.Config;
+using QSMachineConfig;
 
 namespace QSProjectsLib
 {
@@ -170,11 +171,11 @@ namespace QSProjectsLib
 		protected void Delete ()
 		{
 			foreach (string section in sectionsToDelete) {
-				var config = QSMain.Configsource.Configs [section];
+				var config = MachineConfig.ConfigSource.Configs [section];
 				if (config != null)
-					QSMain.Configsource.Configs.Remove (config);
+					MachineConfig.ConfigSource.Configs.Remove (config);
 			}
-			QSMain.Configsource.Save ();
+			MachineConfig.ConfigSource.Save ();
 		}
 
 		protected void Save ()
@@ -193,20 +194,20 @@ namespace QSProjectsLib
 					connection.IniName = "Login" + i;
 				}
 				var section = connection.IniName;
-				if (QSMain.Configsource.Configs [section] == null)
-					QSMain.Configsource.Configs.Add (section);
-				QSMain.Configsource.Configs [section].Set ("ConnectionName", connection.ConnectionName);
-				QSMain.Configsource.Configs [section].Set ("Server", connection.Server);
-				QSMain.Configsource.Configs [section].Set ("Type", ((int)connection.Type).ToString ());
-				QSMain.Configsource.Configs [section].Set ("Account", connection.AccountLogin);
-				QSMain.Configsource.Configs [section].Set ("DataBase", connection.BaseName);
+				if (MachineConfig.ConfigSource.Configs [section] == null)
+					MachineConfig.ConfigSource.Configs.Add (section);
+				MachineConfig.ConfigSource.Configs [section].Set ("ConnectionName", connection.ConnectionName);
+				MachineConfig.ConfigSource.Configs [section].Set ("Server", connection.Server);
+				MachineConfig.ConfigSource.Configs [section].Set ("Type", ((int)connection.Type).ToString ());
+				MachineConfig.ConfigSource.Configs [section].Set ("Account", connection.AccountLogin);
+				MachineConfig.ConfigSource.Configs [section].Set ("DataBase", connection.BaseName);
 			} while (treeConnections.Model.IterNext (ref iter));
 
-			if (QSMain.Configsource.Configs ["Default"] == null)
-				QSMain.Configsource.AddConfig ("Default");
-			QSMain.Configsource.Configs ["Default"].Set ("ConnectionName", lastEdited);
+			if (MachineConfig.ConfigSource.Configs ["Default"] == null)
+				MachineConfig.ConfigSource.AddConfig ("Default");
+			MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", lastEdited);
 			
-			QSMain.Configsource.Save ();	
+			MachineConfig.ConfigSource.Save ();	
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
@@ -240,10 +241,10 @@ namespace QSProjectsLib
 		protected void OnComboConnectionTypeChanged (object sender, EventArgs e)
 		{
 			if (comboConnectionType.Active == 1) {
-				entryServer.Visible = labelServer.Visible = false;
+				entryServer.Visible = labelServer.Visible = buttonCreateBase.Visible = false;
 				entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = true;
 			} else {
-				entryServer.Visible = labelServer.Visible = true;
+				entryServer.Visible = labelServer.Visible = buttonCreateBase.Visible = true;
 				entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
 			}
 		}

@@ -111,5 +111,9 @@
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
       <Name>QSSaaS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QSMachineConfig\QSMachineConfig.csproj">
+      <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
+      <Name>QSMachineConfig</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
