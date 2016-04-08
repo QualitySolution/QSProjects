@@ -43,7 +43,6 @@
     <Compile Include="DBUpdater\DBUpdateProcess.cs" />
     <Compile Include="gtk-gui\QSUpdater.DB.DBUpdateProcess.cs" />
     <Compile Include="MainUpdater.cs" />
-    <Compile Include="DBCreator\DBCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
@@ -91,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DBUpdater\" />
-    <Folder Include="DBCreator\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

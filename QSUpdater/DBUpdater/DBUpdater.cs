@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using QSSupportLib;
-using QSProjectsLib;
 using System.IO;
 using Gtk;
+using QSProjectsLib;
+using QSSupportLib;
 
 namespace QSUpdater.DB
 {
