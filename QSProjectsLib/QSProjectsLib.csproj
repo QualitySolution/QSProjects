@@ -90,6 +90,11 @@
     <Compile Include="Helpers\RusNumber.cs" />
     <Compile Include="LongOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.LongOperationDlg.cs" />
+    <Compile Include="DBCreator\DBCreator.cs" />
+    <Compile Include="DBCreator\GetPassword.cs" />
+    <Compile Include="gtk-gui\QSProjectsLib.GetPassword.cs" />
+    <Compile Include="DBCreator\CreatorProgress.cs" />
+    <Compile Include="gtk-gui\QSProjectsLib.CreatorProgress.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -101,6 +106,7 @@
     <Folder Include="icons\" />
     <Folder Include="Language\" />
     <Folder Include="Helpers\" />
+    <Folder Include="DBCreator\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

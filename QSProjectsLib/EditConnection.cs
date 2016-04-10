@@ -63,6 +63,8 @@ namespace QSProjectsLib
 				entryLogin.Text = conn.AccountLogin;
 			}
 
+			buttonCreateBase.Sensitive = DBCreator.Scripts.Count > 0;
+
 			treeConnections.Model.GetIterFirst (out currentIter);
 			treeConnections.Selection.SelectIter (currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
@@ -283,6 +285,11 @@ namespace QSProjectsLib
 			TreeIter iter;
 			treeConnections.Selection.GetSelected (out iter);
 			connectionsListStore.SetValue (iter, 0, entryName.Text);
+		}
+
+		protected void OnButtonCreateBaseClicked(object sender, EventArgs e)
+		{
+			DBCreator.RunCreation (entryServer.Text, entryBase.Text);
 		}
 	}
 }

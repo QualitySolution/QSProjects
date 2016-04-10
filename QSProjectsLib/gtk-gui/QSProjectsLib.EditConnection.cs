@@ -50,6 +50,8 @@ namespace QSProjectsLib
 		
 		private global::Gtk.Label labelInfo;
 		
+		private global::Gtk.Button buttonCreateBase;
+		
 		private global::Gtk.Button buttonCancel;
 		
 		private global::Gtk.Button buttonOk;
@@ -283,19 +285,31 @@ namespace QSProjectsLib
 			w24.Position = 4;
 			w24.Expand = false;
 			w24.Fill = false;
+			// Container child vbox3.Gtk.Box+BoxChild
+			this.buttonCreateBase = new global::Gtk.Button ();
+			this.buttonCreateBase.Sensitive = false;
+			this.buttonCreateBase.CanFocus = true;
+			this.buttonCreateBase.Name = "buttonCreateBase";
+			this.buttonCreateBase.UseUnderline = true;
+			this.buttonCreateBase.Label = global::Mono.Unix.Catalog.GetString ("Создать базу на сервере...");
+			this.vbox3.Add (this.buttonCreateBase);
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonCreateBase]));
+			w25.Position = 5;
+			w25.Expand = false;
+			w25.Fill = false;
 			this.hbox1.Add (this.vbox3);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox3]));
-			w25.Position = 1;
-			w25.Padding = ((uint)(20));
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox3]));
+			w26.Position = 1;
+			w26.Padding = ((uint)(20));
 			w1.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
-			w26.Position = 0;
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(w1 [this.hbox1]));
+			w27.Position = 0;
 			// Internal child QSProjectsLib.EditConnection.ActionArea
-			global::Gtk.HButtonBox w27 = this.ActionArea;
-			w27.Name = "dialog1_ActionArea";
-			w27.Spacing = 10;
-			w27.BorderWidth = ((uint)(5));
-			w27.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w28 = this.ActionArea;
+			w28.Name = "dialog1_ActionArea";
+			w28.Spacing = 10;
+			w28.BorderWidth = ((uint)(5));
+			w28.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -303,13 +317,13 @@ namespace QSProjectsLib
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("Отменить");
-			global::Gtk.Image w28 = new global::Gtk.Image ();
-			w28.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-cancel", global::Gtk.IconSize.Menu);
-			this.buttonCancel.Image = w28;
+			global::Gtk.Image w29 = new global::Gtk.Image ();
+			w29.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			this.buttonCancel.Image = w29;
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w29 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w27 [this.buttonCancel]));
-			w29.Expand = false;
-			w29.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w28 [this.buttonCancel]));
+			w30.Expand = false;
+			w30.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -317,18 +331,18 @@ namespace QSProjectsLib
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("ОК");
-			global::Gtk.Image w30 = new global::Gtk.Image ();
-			w30.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-apply", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w30;
-			w27.Add (this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w31 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w27 [this.buttonOk]));
-			w31.Position = 1;
-			w31.Expand = false;
-			w31.Fill = false;
+			global::Gtk.Image w31 = new global::Gtk.Image ();
+			w31.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-apply", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w31;
+			w28.Add (this.buttonOk);
+			global::Gtk.ButtonBox.ButtonBoxChild w32 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w28 [this.buttonOk]));
+			w32.Position = 1;
+			w32.Expand = false;
+			w32.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 557;
+			this.DefaultWidth = 561;
 			this.DefaultHeight = 407;
 			this.Show ();
 			this.treeConnections.RowActivated += new global::Gtk.RowActivatedHandler (this.OnTreeviewConnectionsRowActivated);
@@ -340,6 +354,7 @@ namespace QSProjectsLib
 			this.entryServer.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryServerFocusOutEvent);
 			this.entryName.Changed += new global::System.EventHandler (this.OnEntryNameChanged);
 			this.comboConnectionType.Changed += new global::System.EventHandler (this.OnComboConnectionTypeChanged);
+			this.buttonCreateBase.Clicked += new global::System.EventHandler (this.OnButtonCreateBaseClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
