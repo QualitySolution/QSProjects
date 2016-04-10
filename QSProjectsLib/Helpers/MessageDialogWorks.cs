@@ -5,6 +5,11 @@ namespace QSProjectsLib
 {
 	public static class MessageDialogWorks
 	{
+		public static bool RunQuestionDialog (string question, params object[] args)
+		{
+			return RunQuestionDialog (String.Format (question, args));
+		}
+
 		public static bool RunQuestionDialog (string question)
 		{
 			MessageDialog md = new MessageDialog (null,
