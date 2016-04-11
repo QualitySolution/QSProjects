@@ -50,7 +50,8 @@ namespace QSOrmProject
 
 		protected override void OnDestroyed ()
 		{
-			(tdiTab as Widget).Destroy ();
+			if(tdiTab != null)
+				(tdiTab as Widget).Destroy ();
 			base.OnDestroyed ();
 		}
 	}
