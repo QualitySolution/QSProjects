@@ -108,6 +108,8 @@ namespace QSUpdater
 			string message = String.Empty;
 			string tempPath = Path.Combine (Path.GetTempPath (), 
 				                  String.Format (@"QSInstaller-{0}.exe", Guid.NewGuid ().ToString ().Substring (0, 8)));
+			
+			bool loadingComplete = false;
 			ProgressBar updateProgress;
 			updateProgress = new ProgressBar ();
 			updateProgress.Text = "Новая версия скачивается, подождите...";
@@ -115,6 +117,7 @@ namespace QSUpdater
 			vbox.PackStart (updateProgress, true, true, 0);
 			WebClient webClient = new WebClient ();
 			webClient.DownloadFileCompleted += (sender, e) => Application.Invoke (delegate {
+				loadingComplete = true;
 				var isMapped = updateWindow.IsMapped;
 				updateWindow.Destroy ();
 				if (isMapped && e.Error == null && !e.Cancelled) {
@@ -123,7 +126,7 @@ namespace QSUpdater
 					File.StartInfo.FileName = tempPath;
 					try {
 						File.Start ();
-						Application.Quit ();
+						Environment.Exit(0);
 					} catch (Exception ex) {
 						ShowErrorDialog ("Не удалось запустить скачанный файл.");
 						logger.Error (ex, "Не удалось запустить скачанный установщик.");
@@ -131,6 +134,7 @@ namespace QSUpdater
 				} else if (e.Error != null)
 					ShowErrorDialog ("Не удалось скачать файл.");
 				logger.Error (e.Error, "Не удалось скачать файл обновления.");
+
 			});
 			webClient.DownloadProgressChanged += (sender, e) => Application.Invoke (delegate {
 				updateProgress.Fraction = e.ProgressPercentage / 100.0;
@@ -166,8 +170,7 @@ namespace QSUpdater
 				                         "Обновление не требуется.", 
 				                         StringWorks.VersionToShortString ( MainSupport.ProjectVerion.Version));
 			else if (!updateResult.HasUpdate && updateRequired) {
-				ShowErrorDialog ("Требуемое обновление не найдено.\n" +
-				"Пожалуйста, свяжитесь с нами по адресу info@qsolution.ru");
+				ShowErrorDialog ("Необходимое обновление программы не найдено.\n" + CheckBaseVersion.TextMessage);
 				Environment.Exit (1);
 			}
 
@@ -179,10 +182,17 @@ namespace QSUpdater
 				if (result == ResponseType.Ok) {
 					updateWindow.ShowAll ();
 					logger.Info ("Скачивание обновления началось.");
-					#if DEBUG
 					logger.Debug ("Скачиваем из {0} в {1}", updateResult.FileLink, tempPath);
-					#endif
+
 					webClient.DownloadFileAsync (new Uri (updateResult.FileLink), tempPath);
+					// Ждем окончания загрузки файла не возвращая управление, иначе в процессе скачивания продолжется работа, а это не надо во всех случаях
+					while (!loadingComplete)
+					{
+						if( Gtk.Application.EventsPending ())
+							Gtk.Application.RunIteration ();
+						else
+							Thread.Sleep(50);
+					}
 				} else if (updateRequired) {
 					Environment.Exit (0);
 				} else if (updateResult.HasUpdate)
