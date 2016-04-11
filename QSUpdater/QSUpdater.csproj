@@ -7,9 +7,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSUpdater</RootNamespace>
     <AssemblyName>QSUpdater</AssemblyName>
-    <ReleaseVersion>2.2</ReleaseVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
