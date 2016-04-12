@@ -22,6 +22,19 @@ namespace QSOrmProject
 
 		public bool FailInitialize { get; protected set;}
 
+		public bool CompareHashName(string hashName)
+		{
+			return GenerateHashName(RepresentationModel.GetType()) == hashName;
+		}
+
+		public static string GenerateHashName(Type presentation)
+		{
+			if (!typeof(IRepresentationModel).IsAssignableFrom(presentation))
+				throw new ArgumentException("Тип должен реализовывать интерфейс IRepresentationModel", "presentation");
+			
+			return String.Format("View_{0}", presentation.Name);
+		}
+
 		public event EventHandler<ReferenceRepresentationSelectedEventArgs> ObjectSelected;
 
 		public IRepresentationFilter FilterWidget {

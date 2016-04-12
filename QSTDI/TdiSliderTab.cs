@@ -34,6 +34,22 @@ namespace QSTDI
 
 		}
 
+		public ITdiTab FindTab(string hashName)
+		{
+			return TabParent.FindTab(hashName);
+		}
+
+		public void SwitchOnTab(ITdiTab tab)
+		{
+			TabParent.SwitchOnTab(tab);
+		}
+
+		public bool CompareHashName(string hashName)
+		{
+			return (Journal != null ? Journal.CompareHashName(hashName) : false)
+			|| (ActiveDialog != null ? ActiveDialog.CompareHashName(hashName) : false);
+		}
+
 		public ITdiJournal Journal {
 			get {
 				return journal;

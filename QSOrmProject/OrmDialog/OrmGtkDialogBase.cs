@@ -33,6 +33,17 @@ namespace QSOrmProject
 			}
 		}
 
+		public bool CompareHashName(string hashName)
+		{
+			if (Entity == null || UoWGeneric == null || UoWGeneric.IsNew)
+				return false;
+			return GenerateHashName(Entity.Id) == hashName;
+		}
+
+		public static string GenerateHashName(int id)
+		{
+			return String.Format("{0}_{1}", typeof(TEntity).Name, id);
+		}
 
 		//FIXME Временно для совместимости
 		[Obsolete("Используйте UnitOfWork, это свойство будет удалено.")]
@@ -184,6 +195,16 @@ namespace QSOrmProject
 		{
 			if (TabNameChanged != null)
 				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
+		}
+
+		protected void OpenTab(string hashName, Func<ITdiTab> newTabFunc)
+		{
+			ITdiTab tab = TabParent.FindTab(hashName);
+
+			if (tab == null)
+				TabParent.AddTab(newTabFunc(), this);
+			else
+				TabParent.SwitchOnTab(tab);
 		}
 
 		public OrmGtkDialogBase()

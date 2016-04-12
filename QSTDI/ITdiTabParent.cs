@@ -31,6 +31,10 @@ namespace QSTDI
 		/// <param name="masterTab">Если не null, то вкладка будет являтся подчиненной.</param>
 		/// <param name="CanSlided">Указываем можно ли добавлять в слайдер или обязательно открывать новую вкладку.</param>
 		TdiBeforeCreateResultFlag BeforeCreateNewTab(System.Type subjectType, ITdiTab masterTab, bool CanSlided = true);
+
+		ITdiTab FindTab(string hashName);
+
+		void SwitchOnTab(ITdiTab tab);
 	}
 
 	[Flags]

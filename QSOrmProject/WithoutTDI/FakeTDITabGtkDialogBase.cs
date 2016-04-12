@@ -37,6 +37,11 @@ namespace QSOrmProject
 			get { return this; }
 			set { throw new NotSupportedException (); }
 		}
+			
+		public bool CompareHashName(string hashName)
+		{
+			return false; //Не имеет значения для файковой вкладки, потому что хеш используется для поиска уже открытой вкладки, для диалога это нельзя использовать.
+		}
 
 		#endregion
 
@@ -88,6 +93,16 @@ namespace QSOrmProject
 		public bool CheckClosingSlaveTabs (ITdiTab tab)
 		{
 			return true;
+		}
+
+		public ITdiTab FindTab(string hashName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SwitchOnTab(ITdiTab tab)
+		{
+			throw new NotImplementedException();
 		}
 
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)

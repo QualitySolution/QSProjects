@@ -31,6 +31,16 @@ namespace QSOrmProject
 
 		public bool FailInitialize { get; protected set; }
 
+		public bool CompareHashName(string hashName)
+		{
+			return GenerateHashName(objectType) == hashName;
+		}
+
+		public static string GenerateHashName(Type clazz)
+		{
+			return String.Format("Journal_{0}", clazz.Name);
+		}
+
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
 		public IUnitOfWork Uow {

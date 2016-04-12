@@ -9,6 +9,8 @@ namespace QSTDI
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		bool FailInitialize { get;}
+
+		bool CompareHashName(string hashName);
 	}
 
 	public class TdiTabNameChangedEventArgs : EventArgs

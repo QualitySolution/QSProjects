@@ -128,6 +128,22 @@ namespace QSTDI
 			AddTab (tab, this.PageNum (GetTabBoxForTab (afterTab)));
 		}
 
+		public ITdiTab FindTab(string hashName)
+		{
+			if (String.IsNullOrWhiteSpace(hashName))
+				return null;
+			var tab = Tabs.FirstOrDefault(x => x.MasterTab.CompareHashName(hashName));
+			return tab == null ? null : tab.MasterTab;
+		}
+
+		public void SwitchOnTab(ITdiTab tab)
+		{
+			var widget = GetTabBoxForTab(tab);
+			if (widget == null)
+				return;
+			this.CurrentPage = this.PageNum(widget);
+		}
+
 		internal void OnSliderTabAdded(object sender, ITdiTab tab)
 		{
 			if (TabAdded != null)

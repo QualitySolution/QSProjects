@@ -32,6 +32,19 @@ namespace QSTDI
 
 		public bool FailInitialize { get; protected set;}
 
+		public virtual bool CompareHashName(string hashName)
+		{
+			return GenerateHashName(this.GetType()) == hashName;
+		}
+
+		public static string GenerateHashName(Type tabType)
+		{
+			if (!typeof(TdiTabBase).IsAssignableFrom(tabType))
+				throw new ArgumentException("Тип должен наследоваться от TdiTabBase", "tabType");
+
+			return String.Format("Dlg_{0}", tabType.Name);
+		}
+
 		#endregion
 
 		protected void OnCloseTab (bool askSave)
