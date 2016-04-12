@@ -35,6 +35,8 @@ namespace QSTDI
 		ITdiTab FindTab(string hashName);
 
 		void SwitchOnTab(ITdiTab tab);
+
+		void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null);
 	}
 
 	[Flags]

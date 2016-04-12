@@ -42,7 +42,7 @@ namespace QSOrmProject
 
 		public static string GenerateHashName(int id)
 		{
-			return String.Format("{0}_{1}", typeof(TEntity).Name, id);
+			return OrmMain.GenerateDialogHashName(typeof(TEntity), id);
 		}
 
 		//FIXME Временно для совместимости

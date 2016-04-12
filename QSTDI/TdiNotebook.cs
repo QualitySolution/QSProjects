@@ -144,6 +144,16 @@ namespace QSTDI
 			this.CurrentPage = this.PageNum(widget);
 		}
 
+		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		{
+			ITdiTab tab = FindTab(hashName);
+
+			if (tab == null)
+				AddTab(newTabFunc(), afterTab);
+			else
+				SwitchOnTab(tab);
+		}
+
 		internal void OnSliderTabAdded(object sender, ITdiTab tab)
 		{
 			if (TabAdded != null)

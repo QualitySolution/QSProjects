@@ -100,6 +100,11 @@ namespace QSOrmProject
 			throw new NotImplementedException();
 		}
 
+		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void SwitchOnTab(ITdiTab tab)
 		{
 			throw new NotImplementedException();

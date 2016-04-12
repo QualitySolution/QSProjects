@@ -225,6 +225,26 @@ namespace QSTDI
 				return TabParent.CheckClosingSlaveTabs (tab);
 		}
 
+		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		{
+			ITdiTab tab = FindTab(hashName);
+
+			if (tab != null)
+			{
+				SwitchOnTab(tab);
+				return;
+			}
+
+			if(afterTab == Journal && ActiveDialog != null)
+			{
+				OnDialogClose (ActiveDialog, new TdiTabCloseEventArgs (true));
+				if (ActiveDialog != null)
+					return;
+			}
+
+			AddTab(newTabFunc(), afterTab);
+		}
+
 		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
 		{
 
