@@ -234,7 +234,7 @@ namespace QSTDI
 					                   Message);
 				md.Run ();
 				md.Destroy ();
-				this.CurrentPage = this.PageNum (info.SlaveTabs [0] as Widget);
+				this.CurrentPage = this.PageNum (GetTabBoxForTab(info.SlaveTabs [0]));
 				return true;
 			}
 
