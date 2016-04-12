@@ -11,6 +11,25 @@ namespace QSReport
 		private ReportInfo reportInfo;
 		private IParametersWidget parametersWidget;
 
+		public override bool CompareHashName(string hashName)
+		{
+			return GenerateHashName(reportInfo) == hashName;
+		}
+
+		public static string GenerateHashName(ReportInfo reportInfo)
+		{
+			string parameters = "_";
+			foreach(var pair in reportInfo.Parameters)
+			{
+				parameters += String.Format("{0}={1}", pair.Key, pair.Value);
+			}
+
+			if (parameters == "_")
+				parameters = String.Empty;
+
+			return String.Format("Report_{0}{1}", reportInfo.Identifier, parameters);
+		}
+
 		public ReportViewDlg (ReportInfo info)
 		{
 			reportInfo = info;
