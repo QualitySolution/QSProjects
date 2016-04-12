@@ -144,7 +144,7 @@ namespace QSTDI
 			this.CurrentPage = this.PageNum(widget);
 		}
 
-		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
 		{
 			ITdiTab tab = FindTab(hashName);
 
@@ -152,6 +152,8 @@ namespace QSTDI
 				AddTab(newTabFunc(), afterTab);
 			else
 				SwitchOnTab(tab);
+			
+			return tab;
 		}
 
 		internal void OnSliderTabAdded(object sender, ITdiTab tab)
@@ -308,18 +310,6 @@ namespace QSTDI
 		private TabVBox GetTabBoxForTab(ITdiTab tab)
 		{
 			return this.Children.SingleOrDefault (w => (w as TabVBox).Tab == tab) as TabVBox;
-		}
-
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
-		{
-			return TdiBeforeCreateResultFlag.Ok;
-		}
-
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
-		{
-			if (subjectType == null) //Потому что при null, может вызваться эта функция.
-				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
-			return TdiBeforeCreateResultFlag.Ok;
 		}
 	}
 

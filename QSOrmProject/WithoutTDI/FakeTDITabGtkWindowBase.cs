@@ -85,7 +85,7 @@ namespace QSOrmProject
 			return true;
 		}
 
-		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
 		{
 			throw new NotImplementedException();
 		}
@@ -100,15 +100,6 @@ namespace QSOrmProject
 			throw new NotImplementedException();
 		}
 
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
-		{
-			return TdiBeforeCreateResultFlag.Ok;
-		}
-
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (Type subjectType, ITdiTab masterTab, bool CanSlided = true)
-		{
-			return TdiBeforeCreateResultFlag.Ok;
-		}
 		#endregion
 	}
 }

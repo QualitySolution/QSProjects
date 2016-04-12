@@ -313,11 +313,11 @@ namespace QSOrmProject
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				SelectObject (OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
 			} else {
-				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				var NewItemDlg = OrmMain.CreateObjectDialog (objectType);
-				NewItemDlg.EntitySaved += NewItemDlg_EntitySaved;
-				TabParent.AddTab (NewItemDlg, this);
+				var tab = TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
+					() => OrmMain.CreateObjectDialog (objectType), this
+				);
+				if(tab != null)
+					(tab as ITdiDialog).EntitySaved += NewItemDlg_EntitySaved;
 			}
 		}
 
@@ -343,11 +343,10 @@ namespace QSOrmProject
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
 			} else {
-				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
 				var selected = ytreeviewRef.GetSelectedObject();
-				if (selected != null)
-					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selected), this);
+				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, DomainHelper.GetId(selected)),
+					() => OrmMain.CreateObjectDialog (objectType, selected), this
+				);
 			}
 		}
 

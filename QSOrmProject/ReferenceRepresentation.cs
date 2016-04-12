@@ -207,14 +207,15 @@ namespace QSOrmProject
 			if (classDiscript.SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
 			} else if (RepresentationModel is IRepresentationModelWithParent) {
-				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				TabParent.AddTab (
-					OrmMain.CreateObjectDialog (objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent), this);
+				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
+					() => OrmMain.CreateObjectDialog (objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent),
+					this
+				);
 			} else {
-				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				TabParent.AddTab (OrmMain.CreateObjectDialog (objectType), this);
+				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
+					() => OrmMain.CreateObjectDialog (objectType),
+					this
+				);
 			}
 		}
 
@@ -229,10 +230,10 @@ namespace QSOrmProject
 				//OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, datatreeviewRef.GetSelectedObjects () [0]);
 			} else {
 				int selectedId = ormtableview.GetSelectedId ();
-				if (TabParent.BeforeCreateNewTab ((object)null, null).HasFlag (TdiBeforeCreateResultFlag.Canceled))
-					return;
-				if (selectedId > 0)
-					TabParent.AddTab (OrmMain.CreateObjectDialog (objectType, selectedId), this);
+				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, selectedId),
+					() => OrmMain.CreateObjectDialog (objectType, selectedId),
+					this
+				);
 			}
 		}
 

@@ -225,44 +225,26 @@ namespace QSTDI
 				return TabParent.CheckClosingSlaveTabs (tab);
 		}
 
-		public void OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
 		{
 			ITdiTab tab = FindTab(hashName);
 
 			if (tab != null)
 			{
 				SwitchOnTab(tab);
-				return;
+				return tab;
 			}
 
 			if(afterTab == Journal && ActiveDialog != null)
 			{
 				OnDialogClose (ActiveDialog, new TdiTabCloseEventArgs (true));
 				if (ActiveDialog != null)
-					return;
+					return null;
 			}
 
-			AddTab(newTabFunc(), afterTab);
-		}
-
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (object subject, ITdiTab masterTab, bool CanSlided = true)
-		{
-
-			TdiBeforeCreateResultFlag result = TabParent.BeforeCreateNewTab (subject, masterTab);
-			if (CanSlided && ActiveDialog != null && result == TdiBeforeCreateResultFlag.Ok) {
-				OnDialogClose (ActiveDialog, new TdiTabCloseEventArgs (true));
-				if (ActiveDialog != null)
-					result |= TdiBeforeCreateResultFlag.Canceled;
-			}
-
-			return result;
-		}
-
-		public TdiBeforeCreateResultFlag BeforeCreateNewTab (System.Type subjectType, ITdiTab masterTab, bool CanSlided = true)
-		{
-			if (subjectType == null) //Потому что при null, может вызваться эта функция.
-				BeforeCreateNewTab ((object)null, masterTab, CanSlided);
-			return TabParent.BeforeCreateNewTab (subjectType, masterTab);
+			tab = newTabFunc();
+			AddTab(tab, afterTab);
+			return tab;
 		}
 
 		public override void Destroy ()
