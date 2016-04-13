@@ -21,6 +21,7 @@ namespace QSOrmProject
 		List<object> sensitiveFalseItems = new List<object> ();
 
 		[Browsable(true)]
+		[Obsolete("Используйте вместо этого свойство ItemsEnum, использование этого свойства приводит к проблемам при рефакторинге.")]
 		public String ItemsEnumName {
 			get {
 				return ItemsEnum.AssemblyQualifiedName;
