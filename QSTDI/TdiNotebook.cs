@@ -149,7 +149,12 @@ namespace QSTDI
 			ITdiTab tab = FindTab(hashName);
 
 			if (tab == null)
-				AddTab(newTabFunc(), afterTab);
+			{
+				if(afterTab == null)
+					AddTab(newTabFunc());
+				else
+					AddTab(newTabFunc(), afterTab);
+			}
 			else
 				SwitchOnTab(tab);
 			
