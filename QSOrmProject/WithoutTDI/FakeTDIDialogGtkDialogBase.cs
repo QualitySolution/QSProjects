@@ -14,6 +14,11 @@ namespace QSOrmProject
 			throw new NotImplementedException ();
 		}
 
+		public void SaveAndClose()
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool HasChanges {
 			get {
 				throw new NotImplementedException ();

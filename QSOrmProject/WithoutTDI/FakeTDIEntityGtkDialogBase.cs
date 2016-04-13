@@ -137,6 +137,11 @@ namespace QSOrmProject
 
 		public abstract bool Save ();
 
+		public void SaveAndClose()
+		{
+			OnButtonSaveClicked(this, EventArgs.Empty);
+		}
+
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
 			if (!this.HasChanges || Save ())

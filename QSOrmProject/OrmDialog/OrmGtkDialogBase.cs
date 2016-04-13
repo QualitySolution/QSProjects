@@ -207,6 +207,11 @@ namespace QSOrmProject
 				TabParent.SwitchOnTab(tab);
 		}
 
+		public void SaveAndClose()
+		{
+			OnButtonSaveClicked(this, EventArgs.Empty);
+		}
+
 		public OrmGtkDialogBase()
 		{
 		}

@@ -6,6 +6,7 @@ namespace QSTDI
 	{
 		bool HasChanges { get;}
 		bool Save();
+		void SaveAndClose();
 		event EventHandler<EntitySavedEventArgs> EntitySaved;
 	}
 
