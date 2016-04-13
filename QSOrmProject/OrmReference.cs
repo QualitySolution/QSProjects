@@ -36,6 +36,11 @@ namespace QSOrmProject
 			return GenerateHashName(objectType) == hashName;
 		}
 
+		public static string GenerateHashName<TEntity>()
+		{
+			return GenerateHashName(typeof(TEntity));
+		}
+
 		public static string GenerateHashName(Type clazz)
 		{
 			return String.Format("Journal_{0}", clazz.Name);
