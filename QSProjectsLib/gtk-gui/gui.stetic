@@ -1990,7 +1990,7 @@
   </widget>
   <widget class="Gtk.Window" id="QSProjectsLib.LongOperationDlg" design-size="391 126">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">LongOperationStatusWindow</property>
+    <property name="Title" translatable="yes">Выполнение операции</property>
     <property name="WindowPosition">CenterOnParent</property>
     <child>
       <widget class="Gtk.VBox" id="vbox2">

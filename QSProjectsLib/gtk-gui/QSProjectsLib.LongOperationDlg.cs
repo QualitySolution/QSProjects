@@ -19,7 +19,7 @@ namespace QSProjectsLib
 			global::Stetic.Gui.Initialize (this);
 			// Widget QSProjectsLib.LongOperationDlg
 			this.Name = "QSProjectsLib.LongOperationDlg";
-			this.Title = global::Mono.Unix.Catalog.GetString ("LongOperationStatusWindow");
+			this.Title = global::Mono.Unix.Catalog.GetString ("Выполнение операции");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Container child QSProjectsLib.LongOperationDlg.Gtk.Container+ContainerChild
 			this.vbox2 = new global::Gtk.VBox ();
@@ -73,7 +73,7 @@ namespace QSProjectsLib
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 391;
-			this.DefaultHeight = 125;
+			this.DefaultHeight = 126;
 			this.Show ();
 			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelClicked);
 		}
