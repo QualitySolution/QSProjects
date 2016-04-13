@@ -27,6 +27,11 @@ namespace QSOrmProject
 			return GenerateHashName(RepresentationModel.GetType()) == hashName;
 		}
 
+		public static string GenerateHashName<TRepresentation>() where TRepresentation : IRepresentationModel
+		{
+			return GenerateHashName(typeof(TRepresentation));
+		}
+
 		public static string GenerateHashName(Type presentation)
 		{
 			if (!typeof(IRepresentationModel).IsAssignableFrom(presentation))
@@ -297,6 +302,17 @@ namespace QSOrmProject
 				}
 			}
 		}
+
+		#region FluentConfig
+
+		public ReferenceRepresentation CustomTabName(string title)
+		{
+			TabName = title;
+			return this;
+		}
+
+		#endregion
+
 	}
 
 	public class ReferenceRepresentationSelectedEventArgs : EventArgs
@@ -324,6 +340,7 @@ namespace QSOrmProject
 		{
 			Selected = selected;
 		}
+
 	}
 
 	public class RepresentationSelectResult

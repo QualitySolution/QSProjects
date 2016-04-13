@@ -13,7 +13,12 @@ namespace QSReport
 
 		public override bool CompareHashName(string hashName)
 		{
-			return GenerateHashName(reportInfo) == hashName;
+			if (reportInfo != null)
+				return GenerateHashName(reportInfo) == hashName;
+			else if (parametersWidget != null)
+				return GenerateHashName(parametersWidget) == hashName;
+			else
+				return false;
 		}
 
 		public static string GenerateHashName(ReportInfo reportInfo)
@@ -28,6 +33,11 @@ namespace QSReport
 				parameters = String.Empty;
 
 			return String.Format("Report_{0}{1}", reportInfo.Identifier, parameters);
+		}
+
+		public static string GenerateHashName(IParametersWidget parametersWidget)
+		{
+			return String.Format("Report_{0}", parametersWidget.GetType().Name);
 		}
 
 		public ReportViewDlg (ReportInfo info)

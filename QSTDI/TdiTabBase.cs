@@ -37,6 +37,11 @@ namespace QSTDI
 			return GenerateHashName(this.GetType()) == hashName;
 		}
 
+		public static string GenerateHashName<TTab>() where TTab : TdiTabBase
+		{
+			return GenerateHashName(typeof(TTab));
+		}
+
 		public static string GenerateHashName(Type tabType)
 		{
 			if (!typeof(TdiTabBase).IsAssignableFrom(tabType))
