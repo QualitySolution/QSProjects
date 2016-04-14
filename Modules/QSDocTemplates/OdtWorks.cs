@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
-using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using NLog;
 using QSProjectsLib;
-using System.Globalization;
 
-namespace LeaseAgreement
+namespace QSDocTemplates
 {
 
 	public class OdtWorks
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		public DocPattern DocInfo;
+		public IDocParser DocParser;
 		private ZipFile odtZip;
 		private MemoryStream OdtStream;
 		private const string contentFileName = "content.xml";
@@ -74,7 +74,7 @@ namespace LeaseAgreement
 				officeText.InsertAfter(fieldsDels, sequenceDecls);
 			}
 
-			foreach(PatternField field in DocInfo.Fields)
+			foreach(PatternField field in DocParser.FieldsList)
 			{
 
 				if (field.Type == PatternFieldType.FString) {
@@ -136,16 +136,16 @@ namespace LeaseAgreement
 
 			foreach (XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:user-field-decls/text:user-field-decl", nsMgr)) {
 				string fieldName = node.Attributes ["text:name"].Value;
-				PatternField field = DocInfo.Fields.Find (f => fieldName.StartsWith (f.Name));
+				PatternField field = DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
 				if (field == null) {
 					logger.Warn ("Поле {0} не найдено, поэтому пропущено.", fieldName);
 					continue;
 				}
 				if (field.Type == PatternFieldType.FDate) // && node.Attributes ["office:date-value"] != null)
-					node.Attributes ["office:string-value"].Value = field.value != DBNull.Value ? ((DateTime)field.value).ToLongDateString () : "";
+					node.Attributes ["office:string-value"].Value = field.Value != DBNull.Value ? ((DateTime)field.Value).ToLongDateString () : "";
 					//node.Attributes ["office:date-value"].Value = field.value != DBNull.Value ? XmlConvert.ToString ((DateTime)field.value, XmlDateTimeSerializationMode.Unspecified) : "";
 				else if (field.Type == PatternFieldType.FCurrency) {
-					decimal value = field.value != DBNull.Value ? (decimal)field.value : Decimal.Zero;
+					decimal value = field.Value != DBNull.Value ? (decimal)field.Value : Decimal.Zero;
 					if (fieldName.Replace (field.Name, "") == ".Число") {						
 						((XmlElement)node).SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
 						((XmlElement)node).SetAttribute ("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", XmlConvert.ToString (value));
@@ -157,7 +157,7 @@ namespace LeaseAgreement
 						node.Attributes ["office:string-value"].Value = val;
 					}
 				} else
-					node.Attributes ["office:string-value"].Value = field.value.ToString ();
+					node.Attributes ["office:string-value"].Value = field.Value.ToString ();
 			}	
 			UpdateXmlDocument (content, contentFileName);
 		}
