@@ -14,6 +14,7 @@ namespace QSSupportLib
 		public static List<NewsFeed> NewsFeeds;
 		public static bool NewsReadExist { get; private set;}
 
+		[Obsolete("В новых версиях программы, таблица создается через обновления.")]
 		public static void CheckNewsReads()
 		{
 			logger.Info ("Проверяем существование таблицы 'read_news'...");
@@ -61,11 +62,6 @@ namespace QSSupportLib
 
 			if (NewsFeeds == null)
 				NewsFeeds = new List<NewsFeed> ();
-
-			if (!NewsReadExist) {
-				logger.Warn ("Нет табилицы с прочитанными новостями, или не вызван метод CheckNewsReads.");
-				return;
-			}
 
 			string sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
 			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
