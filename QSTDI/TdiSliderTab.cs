@@ -204,7 +204,7 @@ namespace QSTDI
 				return;
 			}
 
-			if (afterTab == Journal || afterTab == ActiveDialog)
+			if (afterTab == null || afterTab == Journal || afterTab == ActiveDialog)
 				TabParent.AddTab (tab, this as ITdiTab);
 			else
 				TabParent.AddTab (tab, afterTab);
