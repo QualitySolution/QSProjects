@@ -65,6 +65,9 @@ namespace QSOrmProject.Deletion
 		private bool Run (IDeleteInfo info, uint id)
 		{
 			try {
+				CheckDlg = new CheckOperationDlg();
+				CheckDlg.Show();
+
 				var self = info.GetSelfEntity(this, id);
 				PreparedOperation = info.CreateDeleteOperation(self);
 
@@ -73,9 +76,6 @@ namespace QSOrmProject.Deletion
 					ItemId = id,
 					Title = self.Title
 				});
-
-				CheckDlg = new CheckOperationDlg();
-				CheckDlg.Show();
 
 				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
 				bool isCanceled = CheckDlg.IsCanceled;
