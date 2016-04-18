@@ -222,9 +222,6 @@ namespace QSOrmProject.Deletion
 
 		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
 		{
-			if (IsRootForSubclasses)
-				throw new NotImplementedException("Прямое удаления через корневой класс для подклассов, пока не реализовано.");
-
 			var item = core.UoW.GetById<TEntity> ((int)id);
 			return new EntityDTO{
 				Id = (uint)item.Id,
