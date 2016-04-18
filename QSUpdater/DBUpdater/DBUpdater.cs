@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Gtk;
 using QSProjectsLib;
 using QSSupportLib;
@@ -15,23 +16,37 @@ namespace QSUpdater.DB
 
 		internal static readonly List<UpdateHop> updates = new List<UpdateHop>();
 
+		/// <summary>
+		/// Метод добавит скрипт микрообновление.
+		/// </summary>
+		/// <param name="source">Изначальная версия</param>
+		/// <param name="destination">Версия до которой обновится база</param>
+		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
 		public static void AddMicroUpdate( Version source, Version destination, string scriptResource)
 		{
 			microUpdates.Add(new UpdateHop
 				{
 					Source = source,
 					Destanation = destination,
-					Resource = scriptResource
+					Resource = scriptResource,
+					Assembly = Assembly.GetCallingAssembly()
 				});
 		}
 
+		/// <summary>
+		/// Метод добавит скрипт добавит обновление.
+		/// </summary>
+		/// <param name="source">Изначальная версия</param>
+		/// <param name="destination">Версия до которой обновится база</param>
+		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
 		public static void AddUpdate( Version source, Version destination, string scriptResource)
 		{
 			updates.Add(new UpdateHop
 				{
 					Source = source,
 					Destanation = destination,
-					Resource = scriptResource
+					Resource = scriptResource,
+					Assembly = Assembly.GetCallingAssembly()
 				});
 		}
 
@@ -55,7 +70,7 @@ namespace QSUpdater.DB
 				try
 				{
 					string sql;
-					using(Stream stream = System.Reflection.Assembly.GetCallingAssembly().GetManifestResourceStream(update.Resource))
+					using(Stream stream = update.Assembly.GetManifestResourceStream(update.Resource))
 					{
 						if(stream == null)
 							throw new InvalidOperationException( String.Format("Ресурс {0} указанный в обновлениях не найден.", update.Resource));
@@ -140,6 +155,7 @@ namespace QSUpdater.DB
 		public Version Destanation;
 
 		public String Resource;
+		public Assembly Assembly;
 	}
 }
 

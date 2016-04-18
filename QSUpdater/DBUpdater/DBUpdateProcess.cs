@@ -144,7 +144,7 @@ namespace QSUpdater.DB
 			textviewLog.Buffer.Text = textviewLog.Buffer.Text + operationName + "\n";
 
 			string sql;
-			using(Stream stream = System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream(updateScript.Resource))
+			using(Stream stream = updateScript.Assembly.GetManifestResourceStream(updateScript.Resource))
 			{
 				if(stream == null)
 					throw new InvalidOperationException( String.Format("Ресурс {0} указанный в обновлениях не найден.", updateScript.Resource));
