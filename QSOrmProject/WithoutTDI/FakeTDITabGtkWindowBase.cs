@@ -87,7 +87,9 @@ namespace QSOrmProject
 
 		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
 		{
-			throw new NotImplementedException();
+			var tab = newTabFunc();
+			RunDlg (tab);
+			return tab;
 		}
 
 		public ITdiTab FindTab(string hashName)
