@@ -43,6 +43,8 @@ namespace QSOsm
 			}
 		}
 
+		public OsmHouse OsmHouse { get; private set;}
+
 		public virtual decimal? Latitude {
 			get { decimal? latitude, longitude;
 				GetCoordinates(out longitude, out latitude);
@@ -138,9 +140,17 @@ namespace QSOsm
 					houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
 				else
 					houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
-				completionListStore = new ListStore (typeof(string), typeof(long), typeof(decimal), typeof(decimal));
+
+				//Удаляем литеры А у домов где других литер нет.
+				foreach(var house in houses.Where(x => x.Letter == "А" || x.Letter == "а" || x.Letter == "A" || x.Letter == "a"))
+				{
+					if (!houses.Any(x => x.HouseNumber == house.HouseNumber && x.Letter != house.Letter))
+						house.Letter = String.Empty;
+				}
+
+				completionListStore = new ListStore (typeof(string), typeof(long), typeof(OsmHouse));
 				foreach (var h in houses) {
-					completionListStore.AppendValues (h.HouseNumber, h.Id, h.X, h.Y);
+					completionListStore.AppendValues (h.ComplexNumber, h.Id, h);
 				}
 				this.Completion.Model = completionListStore;
 				logger.Debug ("Получено {0} домов...", houses.Count);
@@ -151,14 +161,26 @@ namespace QSOsm
 
 		public void GetCoordinates(out decimal? longitude, out decimal? latitude)
 		{
+			longitude = null;
+			latitude = null;
 			var osmRow = completionListStore == null ? null : completionListStore.Cast<object[]>().FirstOrDefault(row => (string)row[0] == House);
+			if (osmRow == null)
+				return;
 
-			longitude = osmRow == null ? null : (decimal?)osmRow[2];
-			latitude = osmRow == null ? null : (decimal?)osmRow[3];
+			var osmhouse = (OsmHouse)osmRow[2];
+			longitude = osmhouse.X;
+			latitude = osmhouse.Y;
 		}
 
 		protected override void OnChanged ()
 		{
+			if(completionListStore != null)
+			{
+				var houserow = completionListStore.Cast<object[]>().FirstOrDefault(row => (string)row[0] == Text);
+				if(houserow != null)
+					OsmHouse = houserow[2] as OsmHouse;
+			}
+
 			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion, w => w.Latitude, w => w.Longitude);
 			base.OnChanged ();
 		}
