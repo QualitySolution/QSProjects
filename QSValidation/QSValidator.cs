@@ -7,7 +7,7 @@ namespace QSValidation
 {
 	public class QSValidator<T> where T : class
 	{
-		List<ValidationResult> Results;
+		public List<ValidationResult> Results;
 		public bool IsValid;
 
 		public IDictionary<object, object> ContextItems = null;
@@ -27,8 +27,12 @@ namespace QSValidation
 			Results = new List<ValidationResult>();
 			var vc = new ValidationContext(entity, null, ContextItems);
 
-			if(entity is IValidatableObject)
-				Results.AddRange ((entity as IValidatableObject).Validate (vc));
+			var platform = Environment.OSVersion.Platform;
+			if(platform != PlatformID.MacOSX && platform != PlatformID.Unix)
+			{ // На винде метод TryValidateObject не проверяет IValidatableObject, на mono проверяет, не вызываем что бы сообщения не дублировались.
+				if(entity is IValidatableObject)
+					Results.AddRange ((entity as IValidatableObject).Validate (vc));
+			}
 
 			if (Results.Count > 0) {
 				IsValid = false;
