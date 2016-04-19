@@ -32,7 +32,8 @@ namespace QSOsm.DTO
 
 		public string ComplexNumber{
 			get{
-				if (String.IsNullOrWhiteSpace(Letter) || HouseNumber.Contains("лит") || HouseNumber.Contains("Лит"))
+				if (String.IsNullOrWhiteSpace(Letter) || HouseNumber.Contains("лит") || HouseNumber.Contains("Лит")
+					|| HouseNumber.Contains(Letter))
 					return HouseNumber;
 
 				return String.Format("{0} лит. {1}", HouseNumber, Letter);
