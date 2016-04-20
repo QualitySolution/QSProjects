@@ -205,12 +205,23 @@ namespace Gamma.GtkWidgets
 					object obj = YTreeModel.NodeFromIter (iter);
 
 					if (cell.DataPropertyInfo.CanWrite && !String.IsNullOrWhiteSpace(args.NewText)) {
-						object newval;
-						if(cell.EditingValueConverter == null)
-							newval = System.Convert.ChangeType (args.NewText, cell.DataPropertyInfo.PropertyType);
+						object newval = null;
+						if (cell.EditingValueConverter == null)
+						{
+							try
+							{
+								newval = Convert.ChangeType(args.NewText, cell.DataPropertyInfo.PropertyType);
+							}
+							catch (FormatException ex)
+							{
+								Console.WriteLine("'{0}' is not number", args.NewText);
+							}
+						}
 						else
 							newval = cell.EditingValueConverter.ConvertBack (args.NewText, cell.DataPropertyInfo.PropertyType, null, null);
-						cell.DataPropertyInfo.SetValue (obj, newval, null);
+
+						if(newval != null)
+							cell.DataPropertyInfo.SetValue (obj, newval, null);
 					}
 				}
 			}
