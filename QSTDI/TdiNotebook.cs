@@ -154,6 +154,7 @@ namespace QSTDI
 					AddTab(newTabFunc());
 				else
 					AddTab(newTabFunc(), afterTab);
+				logger.Debug("Добавлена вкладка '{0}' {1}", tab.TabName, hashName);
 			}
 			else
 				SwitchOnTab(tab);
