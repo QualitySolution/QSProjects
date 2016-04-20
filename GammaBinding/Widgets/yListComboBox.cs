@@ -39,6 +39,21 @@ namespace Gamma.Widgets
 			}
 		}
 
+		bool defaultFirst;
+
+		/// <summary>
+		/// If true combo will select first item by default, insted of empty combo state.
+		/// </summary>
+		[DefaultValue (false)]
+		public bool DefaultFirst {
+			get {
+				return defaultFirst;
+			}
+			set {
+				defaultFirst = value;
+			}
+		}
+
 		public Func<object, string> RenderTextFunc;
 
 		public virtual void SetRenderTextFunc<TObject> (Func<TObject, string> renderTextFunc)
@@ -118,6 +133,9 @@ namespace Gamma.Widgets
 					WrapValueIfNeed (item)
 				);
 			}
+
+			if (DefaultFirst && comboListStore.IterNChildren() > 0)
+				Active = 0;
 		}
 
 		void OnEnumItemSelected ()

@@ -39,6 +39,7 @@
     <itemgroups>
       <itemgroup label="yListComboBox Properties">
         <property name="AddIfNotExist" />
+        <property name="DefaultFirst" />
       </itemgroup>
     </itemgroups>
     <signals>
