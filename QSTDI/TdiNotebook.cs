@@ -92,6 +92,7 @@ namespace QSTDI
 			if(TabAdded!=null)
 				TabAdded(this, new TabAddedEventArgs(tab));
 			this.CurrentPage = inserted;
+			logger.Debug("Добавлена вкладка '{0}'", tab.TabName);
 		}
 
 		void OnTabNameChanged (object sender, TdiTabNameChangedEventArgs e)
@@ -154,7 +155,6 @@ namespace QSTDI
 					AddTab(newTabFunc());
 				else
 					AddTab(newTabFunc(), afterTab);
-				logger.Debug("Добавлена вкладка '{0}' {1}", tab.TabName, hashName);
 			}
 			else
 				SwitchOnTab(tab);
