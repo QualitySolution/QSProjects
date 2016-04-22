@@ -156,6 +156,11 @@ namespace QSOrmProject
 
 		}
 
+		public ReferenceRepresentation (IRepresentationModel representation, string tilte) : this(representation)
+		{
+			TabName = tilte;
+		}
+
 		public ReferenceRepresentation (IRepresentationModel representation)
 		{
 			this.Build ();
