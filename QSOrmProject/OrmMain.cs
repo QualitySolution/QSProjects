@@ -156,7 +156,7 @@ namespace QSOrmProject
 				if (map != null)
 					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateUtil.GetClass (s) == subjectType).ToArray ());
 				else
-					logger.Warn ("В ClassMapingList тип объекта не найден. Поэтому событие обновления не вызвано.");
+					logger.Warn ("В ClassMapingList класс {0} объекта не найден. Поэтому событие обновления не вызвано.", subjectType);
 
 				// Отсылаем уведомления дочерним объектам если они есть.
 				foreach (DelayedNotifyLink link in delayedNotifies.FindAll (l => OrmMain.Equals (l.ParentObject, updatedSubjects[0]))) {
