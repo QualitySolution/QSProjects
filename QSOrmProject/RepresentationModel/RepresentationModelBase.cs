@@ -7,6 +7,9 @@ using Gamma.ColumnConfig;
 
 namespace QSOrmProject.RepresentationModel
 {
+	/// <summary>
+	/// Базовый класс презентационной модели, не используете его без необходимости. Используйте наследников.
+	/// </summary>
 	public abstract class RepresentationModelBase<TNode>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();

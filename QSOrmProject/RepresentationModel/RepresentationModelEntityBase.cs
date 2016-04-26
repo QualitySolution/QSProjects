@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace QSOrmProject.RepresentationModel
 {
+	/// <summary>
+	/// Базовый клас презентационной модели с подпиской на обновления только для типа TEntity
+	/// </summary>
 	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();

@@ -4,17 +4,11 @@ using System.Linq;
 namespace QSOrmProject.RepresentationModel
 {
 	/// <summary>
-	/// Базовый клас презентационной модели без конкретной сущности с подпиской на обновления любых сущностей указанных в конструкторе.
+	/// Базовый клас презентационной модели с подпиской на обновления для типа TEntity и любых дополнительных сущностей указанных в конструкторе.
 	/// </summary>
-	public abstract class RepresentationModelWithoutEntityBase<TNode> : RepresentationModelBase<TNode>, IRepresentationModel
+	public abstract class RepresentationModelEntitySubscribingBase<TEntity, TNode> : RepresentationModelEntityBase<TEntity, TNode>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
-		public Type ObjectType {
-			get {
-				return null;
-			}
-		}
 
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.
@@ -26,7 +20,7 @@ namespace QSOrmProject.RepresentationModel
 		/// <summary>
 		/// Создает новый базовый клас и подписывается на обновления указанных типов, при этом конструкторе необходима реализация NeedUpdateFunc (object updatedSubject);
 		/// </summary>
-		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
+		protected RepresentationModelEntitySubscribingBase (params Type[] subcribeOnTypes)
 		{
 			foreach (var type in subcribeOnTypes) {
 				var map = OrmMain.GetObjectDescription (type);
@@ -51,4 +45,3 @@ namespace QSOrmProject.RepresentationModel
 		}
 	}
 }
-

@@ -142,6 +142,7 @@
     <Compile Include="gtk-gui\QSOrmProject.Deletion.CheckOperationDlg.cs" />
     <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteOperationDlg.cs" />
     <Compile Include="Deletion\IDeleteInfoHibernate.cs" />
+    <Compile Include="RepresentationModel\RepresentationModelEntitySubscribingBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
