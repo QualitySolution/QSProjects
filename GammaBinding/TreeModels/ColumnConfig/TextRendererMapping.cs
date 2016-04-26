@@ -45,6 +45,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public TextRendererMapping<TNode> Sensitive(bool on=true)
+		{
+			cellRenderer.Sensitive = on;
+			return this;
+		}
+
 		public TextRendererMapping<TNode> AddSetter(Action<NodeCellRendererText<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);
