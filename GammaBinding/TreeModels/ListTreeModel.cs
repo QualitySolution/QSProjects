@@ -187,6 +187,11 @@ namespace Gamma.Binding
 
 		public object NodeFromIter (TreeIter iter)
 		{
+			if (iter.UserData == IntPtr.Zero)
+			{
+				Console.Write("Zero iter");
+				return null;
+			}
 			GCHandle gch = (GCHandle) iter.UserData;
 			return gch.Target;
 		}
