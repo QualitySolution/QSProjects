@@ -10,11 +10,15 @@ namespace Gamma.ColumnConfig
 	{
 		FluentColumnsConfig<TNode> myConfig;
 
+		#region Propeties
+
 		public string Title { get; set;}
 
 		public string DataPropertyName { get; set;}
 
 		public bool IsEditable { get; set;}
+
+		public float Alignment { get; set;}
 
 		private readonly List<IRendererMappingGeneric<TNode>> Renderers = new List<IRendererMappingGeneric<TNode>> ();
 
@@ -26,11 +30,15 @@ namespace Gamma.ColumnConfig
 			get { return Renderers;	}
 		}
 
+		#endregion
+
 		public ColumnMapping (FluentColumnsConfig<TNode> parentConfig, string title)
 		{
 			this.myConfig = parentConfig;
 			Title = title;
 		}
+
+		#region FluentConfig
 
 		/// <summary>
 		/// Set only if it simple column mapping, else using sets from Render.
@@ -72,6 +80,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ColumnMapping<TNode> HeaderAlignment (float x)
+		{
+			Alignment = x;
+			return this;
+		}
+
 		public ColumnMapping<TNode> AddColumn(string title)
 		{
 			return myConfig.AddColumn (title);
@@ -86,6 +100,8 @@ namespace Gamma.ColumnConfig
 		{
 			return myConfig.Finish ();
 		}
+
+		#endregion
 
 		#region Renderers
 

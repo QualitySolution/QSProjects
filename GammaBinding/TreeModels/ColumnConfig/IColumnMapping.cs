@@ -9,9 +9,10 @@ namespace Gamma.ColumnConfig
 
 		bool IsEditable { get;}
 
+		float Alignment { get;}
+
 		string DataPropertyName { get;}
 
 		IEnumerable<IRendererMapping> ConfiguredRenderers { get;}
 	}
 }
-
