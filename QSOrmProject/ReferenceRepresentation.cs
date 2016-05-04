@@ -316,6 +316,12 @@ namespace QSOrmProject
 			return this;
 		}
 
+		public ReferenceRepresentation Buttons(ReferenceButtonMode mode)
+		{
+			ButtonMode = mode;
+			return this;
+		}
+
 		#endregion
 
 	}
