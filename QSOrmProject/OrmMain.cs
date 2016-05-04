@@ -263,9 +263,9 @@ namespace QSOrmProject
 			}
 		}
 
-		public static bool DeleteObject(Type objectClass, int id)
+		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null)
 		{
-			var delete = new Deletion.DeleteCore();
+			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
 			try{
 				return delete.RunDeletion(objectClass, id);
 			}catch (Exception ex)
@@ -275,18 +275,18 @@ namespace QSOrmProject
 			}
 		}
 
-		public static bool DeleteObject<TEntity> (int id)
+		public static bool DeleteObject<TEntity> (int id, IUnitOfWork uow = null)
 		{
-			return DeleteObject (typeof(TEntity), id);
+			return DeleteObject (typeof(TEntity), id, uow);
 		}
 
-		public static bool DeleteObject(object subject)
+		public static bool DeleteObject(object subject, IUnitOfWork uow = null)
 		{
 			if (!(subject is IDomainObject))
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
 			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
-			var delete = new Deletion.DeleteCore();
+			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
 			try{
 				return delete.RunDeletion(objectClass, id);
 			}catch (Exception ex)

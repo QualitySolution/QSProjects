@@ -37,6 +37,11 @@ namespace QSOrmProject.Deletion
 			}
 		}
 
+		public DeleteCore(IUnitOfWork uow): this()
+		{
+			this.uow = uow;
+		}
+
 		public DeleteCore()
 		{
 			ObjectsTreeStore = new TreeStore (typeof(string), typeof(string));
