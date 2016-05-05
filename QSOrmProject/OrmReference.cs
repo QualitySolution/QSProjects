@@ -167,6 +167,9 @@ namespace QSOrmProject
 		{
 		}
 
+		public OrmReference (QueryOver query)
+			: this(UnitOfWorkFactory.CreateWithoutRoot (), query) {}
+
 		public OrmReference (IUnitOfWork uow, QueryOver query)
 			: this (query.DetachedCriteria.GetRootEntityTypeIfAvailable (), uow, query.DetachedCriteria.GetExecutableCriteria (uow.Session))
 		{
