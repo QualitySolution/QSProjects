@@ -27,19 +27,7 @@ namespace QSValidation
 			Results = new List<ValidationResult>();
 			var vc = new ValidationContext(entity, null, ContextItems);
 
-			var platform = Environment.OSVersion.Platform;
-			if(platform != PlatformID.MacOSX && platform != PlatformID.Unix)
-			{ // На винде метод TryValidateObject не проверяет IValidatableObject, на mono проверяет, не вызываем что бы сообщения не дублировались.
-				if(entity is IValidatableObject)
-					Results.AddRange ((entity as IValidatableObject).Validate (vc));
-			}
-
-			if (Results.Count > 0) {
-				IsValid = false;
-				Validator.TryValidateObject (entity, vc, Results, true);
-			}
-			else
-				IsValid = Validator.TryValidateObject(entity, vc, Results, true);
+			IsValid = Validator.TryValidateObject(entity, vc, Results, true);
 
 			return IsValid;
 		}
