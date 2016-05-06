@@ -18,6 +18,7 @@ namespace QSOrmProject
 
 		public void SetEnumItems<T> (IList<T> itemsToShow)
 		{
+			comboListStore.Clear();
 			enumType = typeof(T);
 			if (!enumType.IsEnum)
 				throw new NotSupportedException (string.Format ("EnumItems only supports enum types, specified was {0}", enumType));
