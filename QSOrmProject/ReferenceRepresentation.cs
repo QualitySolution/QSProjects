@@ -308,6 +308,11 @@ namespace QSOrmProject
 			}
 		}
 
+		protected void OnButtonRefreshClicked(object sender, EventArgs e)
+		{
+			RepresentationModel.UpdateNodes();
+		}
+
 		#region FluentConfig
 
 		public ReferenceRepresentation CustomTabName(string title)
