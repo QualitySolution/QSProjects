@@ -171,6 +171,16 @@ namespace QSProjectsLib
 			return ver.ToString (ver.Revision == 0 ? (ver.Build == 0 ? 2 : 3) : 4);
 		}
 
+		public static string EllipsizeEnd(string text, int length, bool wholeWord = false) {
+			if (text.Length <= length) return text;
+			length -= 3;
+			int pos = wholeWord ? text.IndexOf(" ", length) : length;
+			if (pos == -1)
+				pos = length;
+			if (pos >= 0)
+				return text.Substring(0, pos) + "...";
+			return text;
+		}
 	}
 }
 
