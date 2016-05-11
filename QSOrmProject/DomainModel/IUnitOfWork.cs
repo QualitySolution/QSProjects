@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace QSOrmProject
 {
@@ -30,6 +31,8 @@ namespace QSOrmProject
 		void TryDelete(object entity);
 
 		T GetById<T>(int id) where T : IDomainObject;
+
+		IList<T> GetById<T>(int[] ids) where T : class, IDomainObject;
 
 		object GetById(Type clazz, int id);
 

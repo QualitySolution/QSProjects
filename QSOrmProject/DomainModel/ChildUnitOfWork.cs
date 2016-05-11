@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using NHibernate;
+using NHibernate.Criterion;
 using NHibernate.Linq;
 
 namespace QSOrmProject
@@ -95,6 +95,12 @@ namespace QSOrmProject
 		public T GetById<T> (int id) where T : IDomainObject
 		{
 			return Session.Get<T> (id);
+		}
+
+		public IList<T> GetById<T>(int[] ids) where T : class, IDomainObject
+		{
+			return Session.QueryOver<T>()
+				.Where(x => x.Id.IsIn(ids)).List();
 		}
 
 		public object GetById (Type clazz, int id)
