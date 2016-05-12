@@ -54,6 +54,7 @@
     <Compile Include="Widgets\FullAddressEntry.cs" />
     <Compile Include="gtk-gui\QSOsm.FullAddressEntry.cs" />
     <Compile Include="OsmHouse.cs" />
+    <Compile Include="AddressHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
