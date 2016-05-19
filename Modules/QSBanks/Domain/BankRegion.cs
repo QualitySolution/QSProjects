@@ -4,7 +4,7 @@ using QSOrmProject;
 namespace QSBanks
 {
 	[OrmSubject ("Регионы банков")]
-	public class BankRegion: PropertyChangedBase
+	public class BankRegion: PropertyChangedBase, IDomainObject
 	{
 		public virtual int Id { get; set; }
 
