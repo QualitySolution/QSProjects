@@ -20,6 +20,7 @@ namespace QSOrmProject
 		public Func<object, string> ObjectDisplayFunc;
 
 		public event EventHandler Changed;
+		public event EventHandler ChangedByUser;
 
 		//TODO Реализовать удаление
 		//TODO Реализовать удобный выбор через подбор
@@ -159,6 +160,7 @@ namespace QSOrmProject
 		{
 			var dlg = OrmMain.FindMyDialog (this);
 			Subject = dlg.UoW.GetById (SubjectType, e.ObjectId);
+			OnChangedByUser();
 		}
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
@@ -184,12 +186,19 @@ namespace QSOrmProject
 				Changed (this, EventArgs.Empty);
 		}
 
+		protected virtual void OnChangedByUser ()
+		{
+			if (ChangedByUser != null)
+				ChangedByUser (this, EventArgs.Empty);
+		}
+
 		[GLib.ConnectBefore]
 		protected void OnEntryObjectKeyPressEvent (object o, KeyPressEventArgs args)
 		{
 			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
 			{
 				Subject = null;
+				OnChangedByUser();
 			}
 		}
 	}
