@@ -29,8 +29,8 @@ namespace QSTDI
 
 		public bool CloseAllTabs ()
 		{
-			if (_tabs.Exists (t => (t.MasterTab is ITdiDialog && (t.MasterTab as ITdiDialog).HasChanges) ||
-			    (t.MasterTab is TdiSliderTab && (t.MasterTab as TdiSliderTab).ActiveDialog != null && (t.MasterTab as TdiSliderTab).ActiveDialog.HasChanges))) {
+			if (_tabs.Exists (t => (t.TdiTab is ITdiDialog && (t.TdiTab as ITdiDialog).HasChanges) ||
+			    (t.TdiTab is TdiSliderTab && (t.TdiTab as TdiSliderTab).ActiveDialog != null && (t.TdiTab as TdiSliderTab).ActiveDialog.HasChanges))) {
 				string Message = "Вы действительно хотите закрыть все вкладки? Все несохраненные изменения будут утеряны.";
 				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
 					                   MessageType.Question, 
@@ -47,7 +47,7 @@ namespace QSTDI
 				while (_tabs [0].SlaveTabs.Count > 0)
 					CloseTab (_tabs [0].SlaveTabs [0]);
 
-				CloseTab (_tabs [0].MasterTab);
+				CloseTab (_tabs [0].TdiTab);
 			}
 
 			return true;
@@ -98,11 +98,11 @@ namespace QSTDI
 		void OnTabNameChanged (object sender, TdiTabNameChangedEventArgs e)
 		{
 			ITdiTab tab = sender as ITdiTab;
-			TdiTabInfo info = _tabs.Find (i => i.MasterTab == tab);
+			TdiTabInfo info = _tabs.Find (i => i.TdiTab == tab);
 			TdiTabInfo masterTabInfo = _tabs.Find (i => i.SlaveTabs.Contains (tab));
 			if (masterTabInfo != null) {
 				info.TabNameLabel.LabelProp = ">" + e.NewName;
-				info.TabNameLabel.TooltipText = String.Format ("Открыто из {0}", masterTabInfo.MasterTab.TabName);
+				info.TabNameLabel.TooltipText = String.Format ("Открыто из {0}", masterTabInfo.TdiTab.TabName);
 			}
 			else
 				info.TabNameLabel.LabelProp = e.NewName;
@@ -110,7 +110,7 @@ namespace QSTDI
 
 		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
 		{
-			TdiTabInfo info = _tabs.Find (t => t.MasterTab == masterTab);
+			TdiTabInfo info = _tabs.Find (t => t.TdiTab == masterTab);
 			if (info == null)
 				throw new NullReferenceException ("Мастер вкладка не найдена в списке активных вкладок.");
 
@@ -121,6 +121,8 @@ namespace QSTDI
 
 			info.SlaveTabs.Add (slaveTab);
 			this.AddTab (slaveTab, masterTab);
+			var addedTabInfo = _tabs.Find (t => t.TdiTab == slaveTab);
+			addedTabInfo.MasterTabInfo = info;
 			OnTabNameChanged (slaveTab, new TdiTabNameChangedEventArgs (slaveTab.TabName));
 		}
 
@@ -129,12 +131,24 @@ namespace QSTDI
 			AddTab (tab, this.PageNum (GetTabBoxForTab (afterTab)));
 		}
 
-		public ITdiTab FindTab(string hashName)
+		public ITdiTab FindTab(string hashName, string masterHashName = null)
 		{
 			if (String.IsNullOrWhiteSpace(hashName))
 				return null;
-			var tab = Tabs.FirstOrDefault(x => x.MasterTab.CompareHashName(hashName));
-			return tab == null ? null : tab.MasterTab;
+
+			TdiTabInfo tab = null;
+			if (String.IsNullOrWhiteSpace(masterHashName))
+			{
+				tab = Tabs.FirstOrDefault(x => x.MasterTabInfo == null && x.TdiTab.CompareHashName(hashName));
+				return tab?.TdiTab;
+			}
+			else
+			{
+				var master = Tabs.FirstOrDefault(x => x.TdiTab.CompareHashName(masterHashName));
+				if (master == null)
+					return null;
+				return master.SlaveTabs.FirstOrDefault(x => x.CompareHashName(hashName));
+			}
 		}
 
 		public void SwitchOnTab(ITdiTab tab)
@@ -157,7 +171,11 @@ namespace QSTDI
 					AddTab(newTabFunc(), afterTab);
 			}
 			else
+			{
+				logger.Debug("Вкладка c хешом {0} уже открыта, переключаемся...", hashName);
 				SwitchOnTab(tab);
+			}
+				
 			
 			return tab;
 		}
@@ -259,7 +277,7 @@ namespace QSTDI
 
 		public bool CheckClosingSlaveTabs (ITdiTab tab)
 		{
-			TdiTabInfo info = _tabs.Find (i => i.MasterTab == tab);
+			TdiTabInfo info = _tabs.Find (i => i.TdiTab == tab);
 			if (info.SlaveTabs.Count > 0) {
 				string Message = "Сначала надо закрыть подчиненую вкладку.";
 				MessageDialog md = new MessageDialog ((Window)this.Toplevel, DialogFlags.Modal,
@@ -277,7 +295,7 @@ namespace QSTDI
 
 		private void CloseTab (ITdiTab tab)
 		{
-			TdiTabInfo info = _tabs.Find (i => i.MasterTab == tab);
+			TdiTabInfo info = _tabs.Find (i => i.TdiTab == tab);
 			if(info == null)
 			{
 				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
@@ -291,7 +309,7 @@ namespace QSTDI
 			//Закрываем вкладку
 			TabVBox tabBox = GetTabBoxForTab (tab);
 			bool IsCurrent = this.CurrentPageWidget == tabBox;
-			_tabs.RemoveAll (t => t.MasterTab == tab);
+			_tabs.RemoveAll (t => t.TdiTab == tab);
 			_tabs.ForEach (t => t.SlaveTabs.RemoveAll (s => s == tab));
 			if (IsCurrent)
 				this.PrevPage ();
@@ -321,13 +339,15 @@ namespace QSTDI
 
 	public class TdiTabInfo
 	{
-		public ITdiTab MasterTab;
+		public TdiTabInfo MasterTabInfo;
+		public ITdiTab TdiTab;
 		public Label TabNameLabel;
 		public List<ITdiTab> SlaveTabs;
 
-		public TdiTabInfo (ITdiTab master, Label label)
+		public TdiTabInfo (ITdiTab tab, Label label, TdiTabInfo masterTabInfo = null)
 		{
-			MasterTab = master;
+			MasterTabInfo = masterTabInfo;
+			TdiTab = tab;
 			TabNameLabel = label;
 			SlaveTabs = new List<ITdiTab> ();
 		}

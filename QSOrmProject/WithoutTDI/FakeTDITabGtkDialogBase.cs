@@ -95,7 +95,7 @@ namespace QSOrmProject
 			return true;
 		}
 
-		public ITdiTab FindTab(string hashName)
+		public ITdiTab FindTab(string hashName, string masterHashName = null)
 		{
 			throw new NotImplementedException();
 		}

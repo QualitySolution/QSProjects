@@ -14,7 +14,7 @@ namespace QSTDI
 		/// <param name="tab">Вкладка для проверки.</param>
 		bool CheckClosingSlaveTabs(ITdiTab tab);
 
-		ITdiTab FindTab(string hashName);
+		ITdiTab FindTab(string hashName, string masterHashName = null);
 
 		void SwitchOnTab(ITdiTab tab);
 

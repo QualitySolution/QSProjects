@@ -34,9 +34,9 @@ namespace QSTDI
 
 		}
 
-		public ITdiTab FindTab(string hashName)
+		public ITdiTab FindTab(string hashName, string masterHashName = null)
 		{
-			return TabParent.FindTab(hashName);
+			return TabParent.FindTab(hashName, masterHashName);
 		}
 
 		public void SwitchOnTab(ITdiTab tab)
