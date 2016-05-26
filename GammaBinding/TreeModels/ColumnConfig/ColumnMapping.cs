@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
 using Gamma.Utilities;
+using Gdk;
 
 namespace Gamma.ColumnConfig
 {
@@ -163,6 +164,14 @@ namespace Gamma.ColumnConfig
 		public ComboRendererMapping<TNode> AddComboRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
 		{
 			var render = new ComboRendererMapping<TNode> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+
+		public PixbufRendererMapping<TNode> AddPixbufRenderer(Expression<Func<TNode, Pixbuf>> dataProperty, bool expand = true)
+		{
+			var render = new PixbufRendererMapping<TNode> (this, dataProperty);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;

@@ -90,6 +90,8 @@
     <Compile Include="TreeModels\RecursiveTreeModel.cs" />
     <Compile Include="TreeModels\RecursiveTreeConfig.cs" />
     <Compile Include="TreeModels\IRecursiveTreeConfig.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererPixbuf.cs" />
+    <Compile Include="TreeModels\ColumnConfig\PixbufRendererMapping.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -103,16 +105,6 @@
     <Folder Include="GtkHelpers\" />
     <Folder Include="icons\" />
     <Folder Include="Binding\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
-      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
-      <Name>GammaUtil</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -147,5 +139,15 @@
     <None Include="gtk-gui\objects.xml">
       <Link>Properties\objects.xml</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
