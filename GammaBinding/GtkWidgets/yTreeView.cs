@@ -30,6 +30,8 @@ namespace Gamma.GtkWidgets
 			}
 		}
 
+		public string SearchHighlightText { get; set;}
+
 		object itemsDataSource;
 
 		public virtual object ItemsDataSource {
@@ -285,7 +287,10 @@ namespace Gamma.GtkWidgets
 			{
 				try
 				{
-					nodeCell.RenderNode (node);
+					if(nodeCell is INodeCellRendererHighlighter)
+						(nodeCell as INodeCellRendererHighlighter).RenderNode (node, SearchHighlightText);
+					else
+						nodeCell.RenderNode (node);
 				}
 				catch(Exception ex)
 				{

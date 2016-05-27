@@ -8,7 +8,11 @@
     </itemgroups>
   </object>
   <object type="Gamma.GtkWidgets.yTreeView" palette-category="Gamma Gtk" allow-children="false" icon="treeview.png" base-type="Gtk.TreeView">
-    <itemgroups />
+    <itemgroups>
+      <itemgroup label="yTreeView Properties">
+        <property name="SearchHighlightText" />
+      </itemgroup>
+    </itemgroups>
     <signals />
   </object>
   <object type="Gamma.GtkWidgets.yLabel" palette-category="Gamma Gtk" allow-children="false" icon="label.png" base-type="Gtk.Label">

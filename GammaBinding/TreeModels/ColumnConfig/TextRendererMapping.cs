@@ -39,9 +39,17 @@ namespace Gamma.ColumnConfig
 			
 		#endregion
 
+		#region FluentConfig
+
 		public TextRendererMapping<TNode> Editable(bool on=true)
 		{
 			cellRenderer.Editable = on;
+			return this;
+		}
+
+		public TextRendererMapping<TNode> SearchHighlight(bool on=true)
+		{
+			cellRenderer.SearchHighlight = on;
 			return this;
 		}
 
@@ -56,6 +64,8 @@ namespace Gamma.ColumnConfig
 			cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
+
+		#endregion
 	}
 }
 

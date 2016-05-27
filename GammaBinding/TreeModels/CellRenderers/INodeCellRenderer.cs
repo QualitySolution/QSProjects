@@ -13,4 +13,8 @@ namespace Gamma.GtkWidgets.Cells
 		IValueConverter EditingValueConverter { get;}
 	}
 
+	public interface INodeCellRendererHighlighter : INodeCellRenderer
+	{
+		void RenderNode(object node, string searchHighlightText);
+	}
 }
