@@ -18,6 +18,7 @@ namespace QSWidgetLib
 
 		bool withTime;
 		[Browsable(true)]
+		[DefaultValue(false)]
 		public bool WithTime
 		{
 			get
