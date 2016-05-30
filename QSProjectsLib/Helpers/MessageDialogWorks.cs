@@ -37,6 +37,10 @@ namespace QSProjectsLib
 			md.Destroy ();
 		}
 
+		public static void RunErrorDialog (string formattedError, params object[] args){
+			RunErrorDialog(String.Format(formattedError, args));
+		}
+
 		public static void RunErrorDialog (string error)
 		{
 			MessageDialog md = new MessageDialog (null,
