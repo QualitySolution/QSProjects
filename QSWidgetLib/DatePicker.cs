@@ -16,6 +16,21 @@ namespace QSWidgetLib
 			this.Build ();
 		}
 
+		bool withTime;
+		[Browsable(true)]
+		public bool WithTime
+		{
+			get
+			{
+				return withTime;
+			}
+			set
+			{
+				withTime = value;
+				entryDate.MaxLength = entryDate.WidthChars = WithTime ? 16 : 10;
+			}
+		}
+
 		public string DateText {
 			get {
 				return entryDate.Text;
@@ -31,7 +46,7 @@ namespace QSWidgetLib
 					return;
 				date = value;
 
-				entryDate.Text = date.HasValue ? date.Value.ToShortDateString () : String.Empty;
+				EntrySetDateTime(date);
 				OnDateChanged ();
 			}
 		}
@@ -47,7 +62,7 @@ namespace QSWidgetLib
 				return date.GetValueOrDefault ();
 			}
 			set {
-				if (value.Year == 1 && value.DayOfYear == 1)
+				if (value == default(DateTime))
 					DateOrNull = null;
 				else
 				{
@@ -80,10 +95,24 @@ namespace QSWidgetLib
 		protected void OnButtonEditDateClicked (object sender, EventArgs e)
 		{
 			Gtk.Window parentWin = (Gtk.Window) this.Toplevel;
-			editDate = new Dialog("Укажите дату", parentWin, Gtk.DialogFlags.DestroyWithParent);
+			editDate = new Dialog(WithTime ? "Укажите дату и время" : "Укажите дату", 
+				parentWin, Gtk.DialogFlags.DestroyWithParent);
 			editDate.Modal = true;
 			editDate.AddButton ("Отмена", ResponseType.Cancel);
 			editDate.AddButton ("Ok", ResponseType.Ok);
+			TimeEntry timeEntry = null;
+			if(WithTime)
+			{
+				HBox timeBox = new HBox();
+				Label timeLabel = new Label("Время:");
+				timeLabel.Angle = 1;
+				timeBox.Add(timeLabel);
+				timeEntry = new TimeEntry();
+				timeEntry.DateTime = date ?? DateTime.Now.Date;
+				timeEntry.AutocompleteStep = 5;
+				timeBox.Add(timeEntry);
+				editDate.VBox.Add(timeBox);
+			}
 			Calendar SelectDate = new Calendar ();
 			SelectDate.DisplayOptions = CalendarDisplayOptions.ShowHeading  | 
 				CalendarDisplayOptions.ShowDayNames | 
@@ -96,7 +125,7 @@ namespace QSWidgetLib
 			int response = editDate.Run ();
 			if(response == (int)ResponseType.Ok)
 			{
-				DateOrNull = SelectDate.GetDate();
+				DateOrNull = WithTime ? SelectDate.GetDate() + timeEntry.Time : SelectDate.GetDate();
 			}
 			SelectDate.Destroy();
 			editDate.Destroy ();
@@ -127,8 +156,16 @@ namespace QSWidgetLib
 			}
 			else
 			{
-				entryDate.Text = date.HasValue ? date.Value.ToShortDateString () : String.Empty;
+				EntrySetDateTime(DateOrNull);
 			}
+		}
+
+		void EntrySetDateTime(DateTime? date)
+		{
+			if(date.HasValue)
+				entryDate.Text = WithTime ?  date.Value.ToString("g") : date.Value.ToShortDateString();
+			else
+				entryDate.Text = String.Empty;
 		}
 
 		protected void OnEntryDateChanged (object sender, EventArgs e)
