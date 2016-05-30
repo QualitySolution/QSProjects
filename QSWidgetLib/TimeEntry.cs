@@ -126,6 +126,12 @@ namespace QSWidgetLib
 			}
 			return result;
 		}
+
+		public TimeEntry()
+		{
+			//Что бы установить ограничения на максимальное количество символов, по умолчанию.
+			ShowSeconds = false; 
+		}
 	}
 }
 
