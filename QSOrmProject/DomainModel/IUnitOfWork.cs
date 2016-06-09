@@ -34,6 +34,8 @@ namespace QSOrmProject
 
 		IList<T> GetById<T>(int[] ids) where T : class, IDomainObject;
 
+		IList<T> GetById<T>(IEnumerable<int> ids) where T : class, IDomainObject;
+
 		object GetById(Type clazz, int id);
 
 		void Commit();

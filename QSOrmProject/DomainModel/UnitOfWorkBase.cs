@@ -86,6 +86,11 @@ namespace QSOrmProject
 			return Session.Get<T>(id);
 		}
 
+		public IList<T> GetById<T>(IEnumerable<int> ids) where T : class, IDomainObject
+		{
+			return GetById<T>(ids.ToArray());
+		}
+
 		public IList<T> GetById<T>(int[] ids) where T : class, IDomainObject
 		{
 			return Session.QueryOver<T>()
