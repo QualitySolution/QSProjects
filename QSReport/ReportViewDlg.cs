@@ -47,6 +47,7 @@ namespace QSReport
 			this.Build ();
 
 			TabName = reportInfo.Title;
+			reportviewer1.DefaultExportFileName = reportInfo.Title;
 
 			panelParameters.Visible = false;
 
@@ -60,6 +61,7 @@ namespace QSReport
 			parametersWidget = widget;
 
 			TabName = parametersWidget.Title;
+			reportviewer1.DefaultExportFileName = parametersWidget.Title;
 
 			panelParameters.Visible = true;
 
