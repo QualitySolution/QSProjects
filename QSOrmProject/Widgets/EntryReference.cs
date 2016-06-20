@@ -72,6 +72,8 @@ namespace QSOrmProject
 
 		public event EventHandler ChangedByUser;
 
+		public event EventHandler<EntryReferenceBeforeChangeEventArgs> BeforeChangeByUser;
+
 		[Browsable (false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
 		[DefaultValue (true)]
 		public bool CanEditReference {
@@ -271,6 +273,11 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
+			if(!OnBeforeChangeByUser())
+			{
+				return;
+			}
+
 			IOrmDialog dlg = OrmMain.FindMyDialog (this);
 			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
@@ -294,6 +301,19 @@ namespace QSOrmProject
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
 			MyTab.TabParent.AddSlaveTab (MyTab, SelectDialog);
+		}
+
+		private bool OnBeforeChangeByUser()
+		{
+			if(BeforeChangeByUser != null)
+			{
+				var args = new EntryReferenceBeforeChangeEventArgs();
+				args.CanChange = true;
+				BeforeChangeByUser(this, args);
+				if (!args.CanChange)
+					return false;
+			}
+			return true;
 		}
 
 		void OnSelectDialogObjectSelected (object sender, OrmReferenceObjectSectedEventArgs e)
