@@ -7,6 +7,8 @@ namespace QSOrmProject
 	[System.ComponentModel.ToolboxItem (true)]
 	public class RepresentationTreeView : yTreeView
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+
 		bool itemsSelfSet = true;
 
 		IRepresentationModel representationModel;
@@ -18,8 +20,10 @@ namespace QSOrmProject
 					return;
 				representationModel = value;
 				ColumnsConfig = RepresentationModel.ColumnsConfig;
+				var startUpdateTime = DateTime.Now;
 				RepresentationModel.UpdateNodes ();
 				base.ItemsDataSource = RepresentationModel.ItemsList;
+				logger.Debug("Данные представления загружены за {0} сек.", (DateTime.Now - startUpdateTime).TotalSeconds);
 				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 			}
 		}

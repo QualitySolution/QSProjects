@@ -229,6 +229,7 @@ namespace QSOrmProject
 				return;
 			logger.Debug ("Обновление в диалоге {0}", number);
 			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
+			var startUpdateTime = DateTime.Now;
 			inUpdating = true;
 			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
 
@@ -250,6 +251,7 @@ namespace QSOrmProject
 
 			UpdateSum ();
 			inUpdating = false;
+			logger.Debug("Справочник загружен за: {0} сек.", (DateTime.Now - startUpdateTime).TotalSeconds);
 			logger.Info ("Ok.");
 		}
 
