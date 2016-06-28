@@ -18,7 +18,7 @@ namespace Gamma.Binding.Core.Helpers
 
 		protected override Expression VisitMemberAccess (MemberExpression m)
 		{
-			if(m.Member.MemberType == MemberTypes.Property && m.Expression.NodeType == ExpressionType.Parameter)
+			if(m.Member.MemberType == MemberTypes.Property && m.Expression != null && m.Expression.NodeType == ExpressionType.Parameter)
 			{
 				var info = m.Member as PropertyInfo;
 				if(info != null)
