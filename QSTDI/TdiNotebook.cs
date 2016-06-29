@@ -79,6 +79,7 @@ namespace QSTDI
 			}
 			tab.CloseTab += HandleCloseTab;
 			tab.TabNameChanged += OnTabNameChanged;
+			_tabs.Add (new TdiTabInfo (tab, nameLable));
 			var vbox = new TabVBox (tab);
 			int inserted;
 			if (after >= 0)
@@ -88,7 +89,6 @@ namespace QSTDI
 			tab.TabParent = this;
 			vbox.Show ();
 			this.ShowTabs = true;
-			_tabs.Add (new TdiTabInfo (tab, nameLable));
 			if(TabAdded!=null)
 				TabAdded(this, new TabAddedEventArgs(tab));
 			this.CurrentPage = inserted;
