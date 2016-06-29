@@ -37,16 +37,16 @@ namespace QSTDI
 		}
 
 		private void OnSwitchIn(ITdiTab tabFrom) {
-			if (journal.HandleSwitchIn != null)
+			if (journal != null && journal.HandleSwitchIn != null)
 				journal.HandleSwitchIn(tabFrom);
-			if (activeDialog.HandleSwitchIn != null)
+			if (activeDialog != null && activeDialog.HandleSwitchIn != null)
 				activeDialog.HandleSwitchIn(tabFrom);
 		}
 
 		private void OnSwitchOut(ITdiTab tabTo) {
-			if (journal.HandleSwitchOut != null)
+			if (journal != null && journal.HandleSwitchOut != null)
 				journal.HandleSwitchOut(tabTo);
-			if (activeDialog.HandleSwitchOut != null)
+			if (activeDialog != null && activeDialog.HandleSwitchOut != null)
 				activeDialog.HandleSwitchOut(tabTo);
 		}
 
