@@ -5,6 +5,9 @@ namespace QSTDI
 {
 	public class TdiTabBase : Bin, ITdiTab
 	{
+		public HandleSwitchIn HandleSwitchIn { get; protected set; }
+		public HandleSwitchOut HandleSwitchOut { get; protected set; }
+
 		public TdiTabBase ()
 		{
 		}

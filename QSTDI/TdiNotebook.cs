@@ -200,11 +200,17 @@ namespace QSTDI
 
 		protected override void OnSwitchPage(NotebookPage page, uint page_num)
 		{
+			var previous = (TabVBox)CurrentPageWidget;
+			var previousTab = previous.Tab;
 			base.OnSwitchPage(page, page_num);
 			var currentTab = (this.CurrentPageWidget as TabVBox)?.Tab;
 			currentTab = (currentTab as TdiSliderTab)?.ActiveDialog ?? currentTab;
 			if (TabSwitched != null)
 				TabSwitched(this, new TabSwitchedEventArgs(currentTab));
+			if (previousTab.HandleSwitchOut != null)
+				previousTab.HandleSwitchOut(currentTab);
+			if (currentTab.HandleSwitchIn != null)
+				currentTab.HandleSwitchIn(previousTab);
 		}
 
 		void HandleCloseTab (object sender, TdiTabCloseEventArgs e)

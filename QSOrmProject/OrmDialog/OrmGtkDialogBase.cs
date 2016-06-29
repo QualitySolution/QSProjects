@@ -18,6 +18,9 @@ namespace QSOrmProject
 			}
 		}
 
+		public HandleSwitchIn HandleSwitchIn { get; private set; }
+		public HandleSwitchOut HandleSwitchOut { get; private set; }
+
 		private IUnitOfWorkGeneric<TEntity> uowGeneric;
 
 		public IUnitOfWorkGeneric<TEntity> UoWGeneric {

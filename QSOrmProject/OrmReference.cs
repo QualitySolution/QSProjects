@@ -28,6 +28,8 @@ namespace QSOrmProject
 		int number = -1;
 
 		public ITdiTabParent TabParent { set; get; }
+		public HandleSwitchIn HandleSwitchIn { get; private set; }
+		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
 		public bool FailInitialize { get; protected set; }
 

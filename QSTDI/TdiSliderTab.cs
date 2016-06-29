@@ -18,6 +18,8 @@ namespace QSTDI
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		public HandleSwitchIn HandleSwitchIn { get; private set; }
+		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
 		public string TabName {
 			get {
@@ -32,6 +34,20 @@ namespace QSTDI
 				throw new NotSupportedException ("Нельзя напрямую задавать имя вкладки.");
 			}
 
+		}
+
+		private void OnSwitchIn(ITdiTab tabFrom) {
+			if (journal.HandleSwitchIn != null)
+				journal.HandleSwitchIn(tabFrom);
+			if (activeDialog.HandleSwitchIn != null)
+				activeDialog.HandleSwitchIn(tabFrom);
+		}
+
+		private void OnSwitchOut(ITdiTab tabTo) {
+			if (journal.HandleSwitchOut != null)
+				journal.HandleSwitchOut(tabTo);
+			if (activeDialog.HandleSwitchOut != null)
+				activeDialog.HandleSwitchOut(tabTo);
 		}
 
 		public ITdiTab FindTab(string hashName, string masterHashName = null)
@@ -173,6 +189,8 @@ namespace QSTDI
 		public TdiSliderTab (ITdiJournal jour)
 		{
 			Journal = jour;
+			HandleSwitchIn = OnSwitchIn;
+			HandleSwitchOut = OnSwitchOut;
 		}
 
 		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)

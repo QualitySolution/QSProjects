@@ -2,8 +2,13 @@
 
 namespace QSTDI
 {
+	public delegate void HandleSwitchIn (ITdiTab tabFrom);
+	public delegate void HandleSwitchOut (ITdiTab tabTo);
+
 	public interface ITdiTab
 	{
+		HandleSwitchIn HandleSwitchIn { get; }
+		HandleSwitchOut HandleSwitchOut { get; }
 		string TabName { get;}
 		ITdiTabParent TabParent { set; get;}
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;

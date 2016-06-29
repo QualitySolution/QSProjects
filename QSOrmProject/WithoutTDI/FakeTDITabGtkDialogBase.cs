@@ -10,7 +10,8 @@ namespace QSOrmProject
 		}
 
 		#region ITdiTab implementation
-
+		public HandleSwitchIn HandleSwitchIn { get; private set; }
+		public HandleSwitchOut HandleSwitchOut { get; private set; }
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
