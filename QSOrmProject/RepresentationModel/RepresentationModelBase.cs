@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
 using System.Reflection;
+using System.Threading;
 using Gamma.ColumnConfig;
 
 namespace QSOrmProject.RepresentationModel
@@ -87,11 +88,6 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
-		public bool SearchFieldsExist{
-			get { return SearchFields.Any ();
-			}
-		}
-
 		void RepresentationFilter_Refiltered (object sender, EventArgs e)
 		{
 			UpdateNodes ();
@@ -101,6 +97,21 @@ namespace QSOrmProject.RepresentationModel
 
 		public Type NodeType {
 			get { return typeof(TNode); }
+		}
+
+		public virtual bool PopupMenuExist { get{ return false;}}
+
+		public virtual Gtk.Menu GetPopupMenu(RepresentationSelectResult[] selected){
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#region Косаемо поиска
+
+		public bool SearchFieldsExist{
+			get { return SearchFields.Any ();
+			}
 		}
 
 		string searchString;
@@ -117,14 +128,6 @@ namespace QSOrmProject.RepresentationModel
 				OnSearchRefilter ();
 			}
 		}
-
-		public virtual bool PopupMenuExist { get{ return false;}}
-
-		public virtual Gtk.Menu GetPopupMenu(RepresentationSelectResult[] selected){
-			throw new NotImplementedException();
-		}
-
-		#endregion
 
 		private PropertyInfo[] searchPropCache;
 
@@ -143,12 +146,44 @@ namespace QSOrmProject.RepresentationModel
 
 		protected void OnSearchRefilter()
 		{
+			if(searchThread != null && searchThread.IsAlive)
+			{
+				searchThread.Abort();
+				searchThread = null;
+			}
+				
 			if (String.IsNullOrWhiteSpace (SearchString))
+			{
 				filtredItemsList = null;
+				OnItemsListUpdated ();
+			}
 			else
-				filtredItemsList = itemsList.Where (SearchFilterFunc).ToList ();
-			
-			OnItemsListUpdated ();
+			{
+				if (itemsList.Count > 3000)
+				{
+					searchThread = new Thread(RefilterList);
+					searchThread.Start();
+				}
+				else
+					RefilterList();
+			}
+		}
+
+		Thread searchThread; 
+
+		void RefilterList()
+		{
+			logger.Info("Фильтрация таблицы...");
+			DateTime searchStarted = DateTime.Now;
+			var newList = itemsList.Where (SearchFilterFunc).ToList ();
+			filtredItemsList = newList;
+
+			var delay = DateTime.Now.Subtract (searchStarted);
+			logger.Debug ("Поиск нашел {0} элементов за {1} секунд.", newList.Count, delay.TotalSeconds);
+			logger.Info("Ок");
+			Gtk.Application.Invoke(delegate {
+				OnItemsListUpdated ();
+			});
 		}
 
 		private bool SearchFilterFunc(TNode item)
@@ -161,6 +196,8 @@ namespace QSOrmProject.RepresentationModel
 			}
 			return false;
 		}
+
+		#endregion
 	}
 }
 

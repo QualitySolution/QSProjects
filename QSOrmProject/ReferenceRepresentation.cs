@@ -15,7 +15,6 @@ namespace QSOrmProject
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private System.Type objectType;
 		private IRepresentationFilter filterWidget;
-		private DateTime searchStarted;
 		private IRepresentationModel representationModel;
 
 		public ITdiTabParent TabParent { set; get; }
@@ -200,10 +199,7 @@ namespace QSOrmProject
 
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
-			searchStarted = DateTime.Now;
 			RepresentationModel.SearchString = entrySearch.Text;
-			var delay = DateTime.Now.Subtract (searchStarted);
-			logger.Debug ("Поиск нашел {0} элементов за {1} секунд.", RepresentationModel.ItemsList.Count, delay.TotalSeconds);
 		}
 
 		protected void OnCloseTab ()
