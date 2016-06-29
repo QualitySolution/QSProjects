@@ -398,11 +398,18 @@ namespace QSOrmProject
 				UpdateWidgetNew ();
 		}
 
-		public override void Destroy ()
+		protected override void OnDestroyed()
 		{
-			logger.Debug ("EntryReference Destroy() called.");
-			SubjectType = null;
-			base.Destroy ();
+			logger.Debug ("EntryReference Destroyed() called.");
+			//Отписываемся от событий.
+			if (subjectType != null) {
+				IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
+				map.ObjectUpdated -= OnExternalObjectUpdated;
+			}
+			if (subject is INotifyPropertyChanged) {
+				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
+			}
+			base.OnDestroyed();
 		}
 	}
 }
