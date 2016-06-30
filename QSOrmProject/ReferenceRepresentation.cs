@@ -200,6 +200,7 @@ namespace QSOrmProject
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
 			RepresentationModel.SearchString = entrySearch.Text;
+			ormtableview.SearchHighlightText = entrySearch.Text;
 		}
 
 		protected void OnCloseTab ()
