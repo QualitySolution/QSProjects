@@ -58,6 +58,24 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public TextRendererMapping<TNode> WrapMode(Pango.WrapMode mode)
+		{
+			cellRenderer.WrapMode = mode;
+			return this;
+		}
+
+		public TextRendererMapping<TNode> WrapWidth(int width)
+		{
+			cellRenderer.WrapWidth = width;
+			return this;
+		}
+
+		public TextRendererMapping<TNode> WidthChars(int widthChars)
+		{
+			cellRenderer.WidthChars = widthChars;
+			return this;
+		}
+
 		public TextRendererMapping<TNode> SearchHighlight(bool on=true)
 		{
 			cellRenderer.SearchHighlight = on;
