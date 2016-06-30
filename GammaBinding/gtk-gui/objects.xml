@@ -36,6 +36,7 @@
     <signals>
       <itemgroup label="yEnumComboBox Signals">
         <signal name="EnumItemSelected" />
+        <signal name="ChangedByUser" />
       </itemgroup>
     </signals>
   </object>

@@ -47,6 +47,9 @@ namespace Gamma.Widgets
 
 		public event EventHandler<ItemSelectedEventArgs> EnumItemSelected;
 
+		bool IsNotUserChange;
+		public event EventHandler ChangedByUser;
+
 		[Browsable (true)]
 		public String ItemsEnumName {
 			get {
@@ -110,6 +113,7 @@ namespace Gamma.Widgets
 				if (!ListStoreHelper.SearchListStore (comboListStore, value, (int)comboDataColumns.Item, out iter))
 					return;
 
+				IsNotUserChange = true;
 				selectedItem = value;
 				SetActiveIter (iter);
 
@@ -119,6 +123,7 @@ namespace Gamma.Widgets
 					(w => w.SelectedItem),
 					(w => w.SelectedItemOrNull));
 				OnEnumItemSelected ();
+				IsNotUserChange = false;
 			}
 		}
 
@@ -249,6 +254,10 @@ namespace Gamma.Widgets
 				SelectedItem = SpecialComboState.None;
 			}
 			base.OnChanged ();
+			if(!IsNotUserChange && ChangedByUser != null)
+			{
+				ChangedByUser(this, EventArgs.Empty);
+			}
 		}
 	}
 
