@@ -32,6 +32,16 @@ namespace QSOrmProject
 		
 		private global::Gtk.Entry entrySearch;
 		
+		private global::Gamma.GtkWidgets.yLabel ylabelSearchAnd;
+		
+		private global::Gtk.Entry entrySearch2;
+		
+		private global::Gamma.GtkWidgets.yLabel ylabelSearchAnd2;
+		
+		private global::Gtk.Entry entrySearch3;
+		
+		private global::Gtk.Button buttonAddAnd;
+		
 		private global::Gtk.Button buttonSearchClear;
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
@@ -194,24 +204,74 @@ namespace QSOrmProject
 			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.entrySearch]));
 			w17.Position = 1;
 			// Container child hboxSearch.Gtk.Box+BoxChild
+			this.ylabelSearchAnd = new global::Gamma.GtkWidgets.yLabel ();
+			this.ylabelSearchAnd.Name = "ylabelSearchAnd";
+			this.ylabelSearchAnd.LabelProp = global::Mono.Unix.Catalog.GetString ("и");
+			this.hboxSearch.Add (this.ylabelSearchAnd);
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.ylabelSearchAnd]));
+			w18.Position = 2;
+			w18.Expand = false;
+			w18.Fill = false;
+			// Container child hboxSearch.Gtk.Box+BoxChild
+			this.entrySearch2 = new global::Gtk.Entry ();
+			this.entrySearch2.CanFocus = true;
+			this.entrySearch2.Name = "entrySearch2";
+			this.entrySearch2.IsEditable = true;
+			this.entrySearch2.InvisibleChar = '●';
+			this.hboxSearch.Add (this.entrySearch2);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.entrySearch2]));
+			w19.Position = 3;
+			// Container child hboxSearch.Gtk.Box+BoxChild
+			this.ylabelSearchAnd2 = new global::Gamma.GtkWidgets.yLabel ();
+			this.ylabelSearchAnd2.Name = "ylabelSearchAnd2";
+			this.ylabelSearchAnd2.LabelProp = global::Mono.Unix.Catalog.GetString ("и");
+			this.hboxSearch.Add (this.ylabelSearchAnd2);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.ylabelSearchAnd2]));
+			w20.Position = 4;
+			w20.Expand = false;
+			w20.Fill = false;
+			// Container child hboxSearch.Gtk.Box+BoxChild
+			this.entrySearch3 = new global::Gtk.Entry ();
+			this.entrySearch3.CanFocus = true;
+			this.entrySearch3.Name = "entrySearch3";
+			this.entrySearch3.IsEditable = true;
+			this.entrySearch3.InvisibleChar = '●';
+			this.hboxSearch.Add (this.entrySearch3);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.entrySearch3]));
+			w21.Position = 5;
+			// Container child hboxSearch.Gtk.Box+BoxChild
+			this.buttonAddAnd = new global::Gtk.Button ();
+			this.buttonAddAnd.CanFocus = true;
+			this.buttonAddAnd.Name = "buttonAddAnd";
+			this.buttonAddAnd.UseUnderline = true;
+			this.buttonAddAnd.Label = global::Mono.Unix.Catalog.GetString ("И");
+			global::Gtk.Image w22 = new global::Gtk.Image ();
+			w22.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
+			this.buttonAddAnd.Image = w22;
+			this.hboxSearch.Add (this.buttonAddAnd);
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.buttonAddAnd]));
+			w23.Position = 6;
+			w23.Expand = false;
+			w23.Fill = false;
+			// Container child hboxSearch.Gtk.Box+BoxChild
 			this.buttonSearchClear = new global::Gtk.Button ();
 			this.buttonSearchClear.TooltipMarkup = "Очистить";
 			this.buttonSearchClear.CanFocus = true;
 			this.buttonSearchClear.Name = "buttonSearchClear";
 			this.buttonSearchClear.UseUnderline = true;
-			global::Gtk.Image w18 = new global::Gtk.Image ();
-			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-clear", global::Gtk.IconSize.Menu);
-			this.buttonSearchClear.Image = w18;
+			global::Gtk.Image w24 = new global::Gtk.Image ();
+			w24.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-clear", global::Gtk.IconSize.Menu);
+			this.buttonSearchClear.Image = w24;
 			this.hboxSearch.Add (this.buttonSearchClear);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.buttonSearchClear]));
-			w19.Position = 2;
-			w19.Expand = false;
-			w19.Fill = false;
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hboxSearch [this.buttonSearchClear]));
+			w25.Position = 7;
+			w25.Expand = false;
+			w25.Fill = false;
 			this.vbox1.Add (this.hboxSearch);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hboxSearch]));
-			w20.Position = 2;
-			w20.Expand = false;
-			w20.Fill = false;
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hboxSearch]));
+			w26.Position = 2;
+			w26.Expand = false;
+			w26.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -222,8 +282,8 @@ namespace QSOrmProject
 			this.ormtableview.Name = "ormtableview";
 			this.GtkScrolledWindow.Add (this.ormtableview);
 			this.vbox1.Add (this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));
-			w22.Position = 3;
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));
+			w28.Position = 3;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.labelSum = new global::Gtk.Label ();
 			this.labelSum.Name = "labelSum";
@@ -232,16 +292,20 @@ namespace QSOrmProject
 			this.labelSum.LabelProp = global::Mono.Unix.Catalog.GetString ("label2");
 			this.labelSum.SingleLineMode = true;
 			this.vbox1.Add (this.labelSum);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.labelSum]));
-			w23.Position = 4;
-			w23.Expand = false;
-			w23.Fill = false;
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.labelSum]));
+			w29.Position = 4;
+			w29.Expand = false;
+			w29.Fill = false;
 			this.Add (this.vbox1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.checkShowFilter.Hide ();
 			this.hboxFilter.Hide ();
+			this.ylabelSearchAnd.Hide ();
+			this.entrySearch2.Hide ();
+			this.ylabelSearchAnd2.Hide ();
+			this.entrySearch3.Hide ();
 			this.Hide ();
 			this.buttonSelect.Clicked += new global::System.EventHandler (this.OnButtonSelectClicked);
 			this.buttonAdd.Clicked += new global::System.EventHandler (this.OnButtonAddClicked);
@@ -250,6 +314,9 @@ namespace QSOrmProject
 			this.buttonRefresh.Clicked += new global::System.EventHandler (this.OnButtonRefreshClicked);
 			this.checkShowFilter.Toggled += new global::System.EventHandler (this.OnCheckShowFilterToggled);
 			this.entrySearch.Changed += new global::System.EventHandler (this.OnEntrySearchChanged);
+			this.entrySearch2.Changed += new global::System.EventHandler (this.OnEntrySearch2Changed);
+			this.entrySearch3.Changed += new global::System.EventHandler (this.OnEntrySearch3Changed);
+			this.buttonAddAnd.Clicked += new global::System.EventHandler (this.OnButtonAddAndClicked);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler (this.OnButtonSearchClearClicked);
 			this.ormtableview.RowActivated += new global::Gtk.RowActivatedHandler (this.OnOrmtableviewRowActivated);
 			this.ormtableview.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnOrmtableviewButtonReleaseEvent);

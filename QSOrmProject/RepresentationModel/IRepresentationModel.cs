@@ -25,7 +25,9 @@ namespace QSOrmProject.RepresentationModel
 
 		bool SearchFieldsExist { get;}
 
+
 		string SearchString { get; set;}
+		string[] SearchStrings { get; set;}
 
 		void UpdateNodes();
 

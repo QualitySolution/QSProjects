@@ -16,6 +16,7 @@ namespace QSOrmProject
 		private System.Type objectType;
 		private IRepresentationFilter filterWidget;
 		private IRepresentationModel representationModel;
+		private int searchEntryShown = 1;
 
 		public ITdiTabParent TabParent { set; get; }
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
@@ -74,7 +75,7 @@ namespace QSOrmProject
 					RepresentationModel.ItemsListUpdated -= RepresentationModel_ItemsListUpdated;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
-				RepresentationModel.SearchString = String.Empty;
+				RepresentationModel.SearchStrings = null;
 				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				ormtableview.RepresentationModel = RepresentationModel;
 				if (RepresentationModel.RepresentationFilter != null)
@@ -195,12 +196,25 @@ namespace QSOrmProject
 
 		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
 		{
-			entrySearch.Text = String.Empty;
+			entrySearch.Text = entrySearch2.Text = entrySearch3.Text = String.Empty; 
 		}
 
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
 		{
-			RepresentationModel.SearchString = entrySearch.Text;
+			UpdateSearchString();
+		}
+
+		void UpdateSearchString()
+		{
+			var searchList = new List<string>();
+			if (!String.IsNullOrEmpty(entrySearch.Text))
+				searchList.Add(entrySearch.Text);
+			if (!String.IsNullOrEmpty(entrySearch2.Text))
+				searchList.Add(entrySearch2.Text);
+			if (!String.IsNullOrEmpty(entrySearch3.Text))
+				searchList.Add(entrySearch3.Text);
+			
+			RepresentationModel.SearchStrings = searchList.ToArray();
 			ormtableview.SearchHighlightText = entrySearch.Text;
 		}
 
@@ -326,9 +340,33 @@ namespace QSOrmProject
 			ButtonMode = mode;
 			return this;
 		}
-
+			
 		#endregion
 
+		protected void OnButtonAddAndClicked(object sender, EventArgs e)
+		{
+			if(searchEntryShown == 1)
+			{
+				ylabelSearchAnd.Visible = entrySearch2.Visible = true;
+				searchEntryShown++;
+			}
+			else if(searchEntryShown == 2)
+			{
+				ylabelSearchAnd2.Visible = entrySearch3.Visible = true;
+				searchEntryShown++;
+				buttonAddAnd.Sensitive = false;
+			}
+		}
+
+		protected void OnEntrySearch3Changed(object sender, EventArgs e)
+		{
+			UpdateSearchString();
+		}
+			
+		protected void OnEntrySearch2Changed(object sender, EventArgs e)
+		{
+			UpdateSearchString();
+		}
 	}
 
 	public class ReferenceRepresentationSelectedEventArgs : EventArgs

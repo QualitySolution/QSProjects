@@ -46,7 +46,7 @@ namespace QSOrmProject.RepresentationModel
 		{
 			itemsList = list;
 
-			if (String.IsNullOrWhiteSpace (SearchString))
+			if (SearchStrings == null || SearchStrings.Length == 0)
 				OnItemsListUpdated ();
 			else
 				OnSearchRefilter ();
@@ -114,18 +114,32 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
-		string searchString;
+		string[] searchStrings;
 
-		public string SearchString {
+		public string[] SearchStrings {
 			get{
-				return searchString;
+				return searchStrings;
 			}
 			set{
-				if (searchString == value)
+				if (searchStrings != null && searchStrings.SequenceEqual(value))
 					return;
 
-				searchString = value;
+				if (value != null && value.Any(x => String.IsNullOrEmpty(x)))
+					searchStrings = value.Where(x => !String.IsNullOrEmpty(x)).ToArray();
+				else
+					searchStrings = value;
+
 				OnSearchRefilter ();
+			}
+		}
+
+		public string SearchString{
+			get{
+				return SearchStrings != null && SearchStrings.Length > 0
+					? SearchStrings[0] : String.Empty;
+			}
+			set{
+				SearchStrings = new string[]{ value };
 			}
 		}
 
@@ -152,7 +166,7 @@ namespace QSOrmProject.RepresentationModel
 				searchThread = null;
 			}
 				
-			if (String.IsNullOrWhiteSpace (SearchString))
+			if (SearchStrings == null || SearchStrings.Length == 0)
 			{
 				filtredItemsList = null;
 				OnItemsListUpdated ();
@@ -188,13 +202,22 @@ namespace QSOrmProject.RepresentationModel
 
 		private bool SearchFilterFunc(TNode item)
 		{
-			foreach (var prop in SearchPropCache) {
-				string Str = (prop.GetValue (item, null) ?? String.Empty).ToString ();
-				if (Str.IndexOf (searchString, StringComparison.CurrentCultureIgnoreCase) > -1) {
-					return true;
+			foreach (var searchString in SearchStrings)
+			{
+				bool found = false;
+				foreach (var prop in SearchPropCache)
+				{
+					string Str = (prop.GetValue(item, null) ?? String.Empty).ToString();
+					if (Str.IndexOf(searchString, StringComparison.CurrentCultureIgnoreCase) > -1)
+					{
+						found = true;
+						break;
+					}
 				}
+				if (!found)
+					return false;
 			}
-			return false;
+			return true;
 		}
 
 		#endregion
