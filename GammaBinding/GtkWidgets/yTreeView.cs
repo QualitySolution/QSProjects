@@ -30,7 +30,20 @@ namespace Gamma.GtkWidgets
 			}
 		}
 
-		public string SearchHighlightText { get; set;}
+		public string[] SearchHighlightTexts { get; set;}
+
+		public string SearchHighlightText{
+			get{
+				return SearchHighlightTexts != null && SearchHighlightTexts.Length > 0
+					? SearchHighlightTexts[0] : String.Empty;
+			}
+			set{
+				if (String.IsNullOrEmpty(value))
+					SearchHighlightTexts = null;
+				else
+					SearchHighlightTexts = new string[]{ value };
+			}
+		}
 
 		object itemsDataSource;
 
@@ -288,7 +301,7 @@ namespace Gamma.GtkWidgets
 				try
 				{
 					if(nodeCell is INodeCellRendererHighlighter)
-						(nodeCell as INodeCellRendererHighlighter).RenderNode (node, SearchHighlightText);
+						(nodeCell as INodeCellRendererHighlighter).RenderNode (node, SearchHighlightTexts);
 					else
 						nodeCell.RenderNode (node);
 				}

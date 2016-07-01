@@ -33,14 +33,18 @@ namespace Gamma.GtkWidgets.Cells
 			}
 		}
 
-		public void RenderNode(object node, string searchHighlightText)
+		public void RenderNode(object node, string[] searchHighlightTexts)
 		{
 			RenderNode(node);
-			if (SearchHighlight && !String.IsNullOrEmpty(searchHighlightText))
+			if (SearchHighlight && !String.IsNullOrEmpty(Text) && searchHighlightTexts != null && searchHighlightTexts.Length > 0)
 			{
-				string pattern = String.Format("{0}", Regex.Escape(searchHighlightText.ToLower()));
-				if(!String.IsNullOrEmpty(Text))
-					Markup = Regex.Replace(Text, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+				string resultMarkup = Text;
+				foreach(var searchText in searchHighlightTexts)
+				{
+					string pattern = Regex.Escape(searchText.ToLower());
+					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+				}
+				Markup = resultMarkup;
 			}
 		}
 	}

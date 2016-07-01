@@ -15,6 +15,6 @@ namespace Gamma.GtkWidgets.Cells
 
 	public interface INodeCellRendererHighlighter : INodeCellRenderer
 	{
-		void RenderNode(object node, string searchHighlightText);
+		void RenderNode(object node, string[] searchHighlightText);
 	}
 }
