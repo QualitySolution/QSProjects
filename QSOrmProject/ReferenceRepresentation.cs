@@ -214,8 +214,7 @@ namespace QSOrmProject
 			if (!String.IsNullOrEmpty(entrySearch3.Text))
 				searchList.Add(entrySearch3.Text);
 			
-			RepresentationModel.SearchStrings = searchList.ToArray();
-			ormtableview.SearchHighlightText = entrySearch.Text;
+			RepresentationModel.SearchStrings = ormtableview.SearchHighlightTexts = searchList.ToArray();
 		}
 
 		protected void OnCloseTab ()
