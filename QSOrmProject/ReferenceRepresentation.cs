@@ -74,6 +74,7 @@ namespace QSOrmProject
 					RepresentationModel.ItemsListUpdated -= RepresentationModel_ItemsListUpdated;
 				representationModel = value;
 				objectType = RepresentationModel.ObjectType;
+				RepresentationModel.SearchString = String.Empty;
 				RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				ormtableview.RepresentationModel = RepresentationModel;
 				if (RepresentationModel.RepresentationFilter != null)
