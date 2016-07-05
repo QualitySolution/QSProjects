@@ -6,7 +6,6 @@ using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
 using QSOsm.DTO;
-using System.Text;
 
 namespace QSOsm
 {
@@ -43,6 +42,8 @@ namespace QSOsm
 			}
 		}
 
+		public bool ExistOnOSM { get; private set;}
+
 		string street;
 
 		public string Street {
@@ -69,8 +70,13 @@ namespace QSOsm
 
 		void UpdateText ()
 		{
-			this.Text = String.IsNullOrWhiteSpace (StreetDistrict) ? Street : String.Format ("{0} ({1})", Street, StreetDistrict);
+			this.Text = GenerateEntryText();
 			OnStreetSelected ();
+		}
+
+		string GenerateEntryText()
+		{
+			return String.IsNullOrWhiteSpace (StreetDistrict) ? Street : String.Format ("{0} ({1})", Street, StreetDistrict);
 		}
 
 		public StreetEntry ()
@@ -109,7 +115,20 @@ namespace QSOsm
 		{
 			Street = args.Model.GetValue (args.Iter, (int)columns.Street).ToString ();
 			StreetDistrict = args.Model.GetValue (args.Iter, (int)columns.District).ToString ();
+			ExistOnOSM = true;
 			args.RetVal = true;
+		}
+
+		protected override bool OnFocusOutEvent(Gdk.EventFocus evnt)
+		{
+			if(Text != GenerateEntryText())
+			{
+				var userText = Text;
+				ExistOnOSM = false;
+				StreetDistrict = String.Empty;
+				Street = userText;
+			}
+			return base.OnFocusOutEvent(evnt);
 		}
 
 		void OnCityIdSet ()
