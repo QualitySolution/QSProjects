@@ -144,6 +144,7 @@
     <Compile Include="Deletion\IDeleteInfoHibernate.cs" />
     <Compile Include="RepresentationModel\RepresentationModelEntitySubscribingBase.cs" />
     <Compile Include="EventArgs.cs" />
+    <Compile Include="RepresentationModel\RepresentationFilterBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
