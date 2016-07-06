@@ -189,7 +189,7 @@ namespace QSOrmProject.RepresentationModel
 		{
 			logger.Info("Фильтрация таблицы...");
 			DateTime searchStarted = DateTime.Now;
-			var newList = itemsList.Where (SearchFilterFunc).ToList ();
+			var newList = itemsList.AsParallel().Where (SearchFilterFunc).ToList ();
 			filtredItemsList = newList;
 
 			var delay = DateTime.Now.Subtract (searchStarted);
