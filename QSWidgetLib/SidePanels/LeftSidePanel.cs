@@ -5,6 +5,9 @@ namespace QSWidgetLib
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class LeftSidePanel : Gtk.Bin
 	{
+		public event EventHandler PanelOpened;
+		public event EventHandler PanelHided;
+
 		Gtk.Widget panel;
 
 		public Gtk.Widget Panel
@@ -64,6 +67,17 @@ namespace QSWidgetLib
 				}
 				if(Panel != null)
 					panel.Visible = !value;
+
+				if (value)
+				{
+					if (PanelHided != null)
+						PanelHided(this, EventArgs.Empty);
+				}
+				else
+				{
+					if (PanelOpened != null)
+						PanelOpened(this, EventArgs.Empty);
+				}
 			}
 		}
 
