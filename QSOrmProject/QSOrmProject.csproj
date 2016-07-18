@@ -145,6 +145,7 @@
     <Compile Include="RepresentationModel\RepresentationModelEntitySubscribingBase.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="RepresentationModel\RepresentationFilterBase.cs" />
+    <Compile Include="yWidgets\yValidatedEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -17,6 +17,7 @@ namespace QSOrmProject
 	[Description ("Adaptable Entry Widget")]
 	[GtkWidgetFactoryProvider ("string", "DefaultFactoryCreate")]
 	[GtkTypeWidgetFactoryProvider ("stringhandler", "DefaultFactoryCreate", typeof(string))]
+	[Obsolete("Переходите на гамму.")]
 	public class DataValidatedEntry : ValidatedEntry, IAdaptableControl, ICustomDataEvents, IPostableControl
 	{
 		/// <summary>
