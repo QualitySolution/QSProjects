@@ -118,6 +118,12 @@ namespace QSTDI
 						value.TabNameChanged += ActiveDialog_TabNameChanged;
 						(TabParent as TdiNotebook).OnSliderTabAdded(this, value);
 					}
+					//Show journal if dialog is closed
+					if(IsHideJournal && value == null)
+					{
+						IsHideJournal = false;
+					}
+
 					//Switch
 					activeDialog = value;
 					if (activeDialog != null)
@@ -125,6 +131,20 @@ namespace QSTDI
 					ITdiTab currentTab = ActiveDialog != null ? ActiveDialog as ITdiTab : this as ITdiTab;
 					(TabParent as TdiNotebook).OnSliderTabSwitched(this, currentTab);
 				}
+			}
+		}
+			
+		public bool IsHideJournal
+		{
+			get
+			{
+				return Journal == null || !((Widget)Journal).Visible;
+			}
+			set
+			{
+				if(Journal == null)
+					return;
+				((Widget)Journal).Visible = !value;
 			}
 		}
 
