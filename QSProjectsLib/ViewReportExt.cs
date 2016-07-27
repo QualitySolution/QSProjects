@@ -26,7 +26,7 @@ namespace QSProjectsLib
 			foreach (XmlNode node in xmlDoc.GetElementsByTagName("ConnectString"))
 			{
 				if(UserVar)
-					node.InnerText = QSMain.ConnectionString + "Allow User Variables=True";
+					node.InnerText = QSMain.ConnectionString + ";Allow User Variables=True";
 				else
 					node.InnerText = QSMain.ConnectionString;
 			}
