@@ -48,7 +48,20 @@ namespace QSOrmProject.Deletion
 							prop.Name,
 							relatedClassInfo.ObjectClass.Name
 						);
-						continue;
+					}
+
+					//Поверяем необходимость каскадного удаления объекта
+					var hinfo = relatedClassInfo as IDeleteInfoHibernate;
+					if(hinfo != null && hinfo.IsRequiredCascadeDeletion)
+					{
+						if(!info.DeleteItems.Any(x => x.ParentPropertyName == prop.Name && x.IsCascade))
+						{
+							logger.Warn("#Cвойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
+								info.ObjectClass.Name,
+								prop.Name,
+								relatedClassInfo.ObjectClass.Name
+							);
+						}
 					}
 				}
 

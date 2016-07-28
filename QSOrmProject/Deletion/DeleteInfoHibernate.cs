@@ -34,6 +34,8 @@ namespace QSOrmProject.Deletion
 
 		public bool IsRootForSubclasses { get; set;}
 
+		public bool IsRequiredCascadeDeletion { get; set;}
+
 		public bool IsSubclass
 		{
 			get
@@ -115,6 +117,12 @@ namespace QSOrmProject.Deletion
 		public DeleteInfoHibernate<TEntity> HasSubclasses ()
 		{
 			IsRootForSubclasses = true;
+			return this;
+		}
+
+		public DeleteInfoHibernate<TEntity> RequiredCascadeDeletion ()
+		{
+			IsRequiredCascadeDeletion = true;
 			return this;
 		}
 
