@@ -164,7 +164,9 @@ namespace QSOrmProject
 		void SelectDialog_ObjectSelected (object sender, ReferenceRepresentationSelectedEventArgs e)
 		{
 			var dlg = OrmMain.FindMyDialog (this);
-			Subject = dlg.UoW.GetById (SubjectType, e.ObjectId);
+			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
+
+			Subject = uow.GetById (SubjectType, e.ObjectId);
 			OnChangedByUser();
 		}
 
