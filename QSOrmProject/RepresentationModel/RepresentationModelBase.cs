@@ -121,7 +121,7 @@ namespace QSOrmProject.RepresentationModel
 				return searchStrings;
 			}
 			set{
-				if (searchStrings != null && searchStrings.SequenceEqual(value))
+				if (searchStrings != null && value != null && searchStrings.SequenceEqual(value))
 					return;
 
 				if (value != null && value.Any(x => String.IsNullOrEmpty(x)))
