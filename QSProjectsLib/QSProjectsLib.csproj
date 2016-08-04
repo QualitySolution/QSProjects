@@ -9,8 +9,6 @@
     <AssemblyName>QSProjectsLib</AssemblyName>
     <ReleaseVersion>0.9</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +93,7 @@
     <Compile Include="gtk-gui\QSProjectsLib.GetPassword.cs" />
     <Compile Include="DBCreator\CreatorProgress.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.CreatorProgress.cs" />
+    <Compile Include="Helpers\BooleanWorks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
