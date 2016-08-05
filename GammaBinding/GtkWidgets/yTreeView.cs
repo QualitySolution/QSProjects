@@ -8,6 +8,7 @@ using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gamma.GtkWidgets
 {
@@ -162,6 +163,13 @@ namespace Gamma.GtkWidgets
 					{
 						(cell as CellRendererToggle).Toggled += OnToggledCell;
 					}
+
+					var canNextCell = cell as INodeCellRendererCanGoNextCell;
+					if(canNextCell != null && (canNextCell.IsEnterToNextCell || col.IsEnterToNextCell))
+					{
+						canNextCell.EditingStarted += CanNextCell_EditingStarted;
+					}
+
 					tvc.PackStart (cell, render.IsExpand);
 					tvc.SetCellDataFunc (cell, NodeRenderColumnFunc);
 				}
@@ -169,6 +177,39 @@ namespace Gamma.GtkWidgets
 			}
 
 			return true;
+		}
+
+		private CellRenderer editingCell;
+
+		void CanNextCell_EditingStarted (object o, EditingStartedArgs args)
+		{
+			editingCell = o as CellRenderer;
+			var editingWidget = args.Editable as Widget;
+			editingWidget.AddEvents((int)Gdk.EventMask.KeyPressMask);
+			editingWidget.KeyPressEvent += EditableToNextCell_KeyPressEvent;
+		}
+
+		[GLib.ConnectBefore]
+		void EditableToNextCell_KeyPressEvent (object o, KeyPressEventArgs args)
+		{
+			if(args.Event.Key == Gdk.Key.Return)
+			{
+				TreeIter iter;
+				Selection.GetSelected(out iter);
+				if(Model.IterNext(ref iter))
+				{
+					var path = Model.GetPath(iter);
+					var column = FindColumn(editingCell);
+					Application.Invoke(delegate {
+						SetCursorOnCell(path, column, editingCell, true);
+					});
+				}
+			}
+		}
+
+		TreeViewColumn FindColumn(CellRenderer cell)
+		{
+			return Columns.FirstOrDefault(c => c.CellRenderers.Contains(cell));
 		}
 
 		void OnToggledCell (object o, ToggledArgs args)

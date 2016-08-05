@@ -6,7 +6,7 @@ using Gtk;
 
 namespace Gamma.GtkWidgets.Cells
 {
-	public class NodeCellRendererSpin<TNode> : CellRendererSpin, INodeCellRenderer
+	public class NodeCellRendererSpin<TNode> : CellRendererSpin, INodeCellRenderer, INodeCellRendererCanGoNextCell
 	{
 		public List<Action<NodeCellRendererSpin<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererSpin<TNode>, TNode>>();
 
@@ -29,6 +29,8 @@ namespace Gamma.GtkWidgets.Cells
 				LambdaSetters.ForEach (a => a.Invoke (this, typpedNode));
 			}
 		}
+			
+		public bool IsEnterToNextCell { get; set;}
 	}
 }
 

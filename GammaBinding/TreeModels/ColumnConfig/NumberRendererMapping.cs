@@ -87,6 +87,12 @@ namespace Gamma.ColumnConfig
 			cellRenderer.WidthChars = widthChars;
 			return this;
 		}
+
+		public NumberRendererMapping<TNode> EnterToNextCell()
+		{
+			cellRenderer.IsEnterToNextCell = true;
+			return this;
+		}
 	}
 }
 

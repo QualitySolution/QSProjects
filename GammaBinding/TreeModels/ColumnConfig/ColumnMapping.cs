@@ -19,6 +19,8 @@ namespace Gamma.ColumnConfig
 
 		public bool IsEditable { get; set;}
 
+		public bool IsEnterToNextCell { get; set;}
+
 		public float Alignment { get; set;}
 
 		private readonly List<IRendererMappingGeneric<TNode>> Renderers = new List<IRendererMappingGeneric<TNode>> ();
@@ -84,6 +86,12 @@ namespace Gamma.ColumnConfig
 		public ColumnMapping<TNode> HeaderAlignment (float x)
 		{
 			Alignment = x;
+			return this;
+		}
+
+		public ColumnMapping<TNode> EnterToNextCell ()
+		{
+			IsEnterToNextCell = true;
 			return this;
 		}
 
