@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Utilities;
+using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -36,6 +37,8 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
+		#region FluentConfig
+
 		public ToggleRendererMapping<TNode> AddSetter(Action<NodeCellRendererToggle<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);
@@ -48,6 +51,13 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ToggleRendererMapping<TNode> ToggledEvent (ToggledHandler handler)
+		{
+			cellRenderer.Toggled += handler;
+			return this;
+		}
+
+		#endregion
 	}
 }
 
