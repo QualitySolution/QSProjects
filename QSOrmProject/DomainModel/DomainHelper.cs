@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using NHibernate;
 using QSProjectsLib;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -78,6 +82,22 @@ namespace QSOrmProject
 			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);
 
 			return att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : null;
+		}
+
+		/// <summary>
+		/// Функция заполняет свойство DTO сущностью
+		/// </summary>
+		public static void FillPropertyByEntity<TDTO, TProperty>(IUnitOfWork uow, IList<TDTO> listDto, Func<TDTO, int> idSelector, Action<TDTO, TProperty> propertySetter)
+			where TProperty : class, IDomainObject
+		{
+			var entities = uow.GetById<TProperty>(
+				listDto.Select(idSelector).Distinct().ToArray());
+			foreach(var item in listDto)
+			{
+				var entity = entities.FirstOrDefault(x => x.Id == idSelector(item));
+				if (entity != null)
+					propertySetter(item, entity);
+			}
 		}
 	}
 }
