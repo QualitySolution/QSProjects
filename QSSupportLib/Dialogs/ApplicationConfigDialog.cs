@@ -2,6 +2,7 @@
 using Gtk;
 using System;
 using QSProjectsLib;
+using System.Linq;
 
 namespace QSSupportLib
 {
@@ -83,7 +84,7 @@ namespace QSSupportLib
 				MainSupport.BaseParameters.UpdateParameter (QSMain.ConnectionDB, pair.Key, pair.Value);
 			}
 			//Удаляем
-			foreach (var pair in MainSupport.BaseParameters.All) {
+			foreach (var pair in MainSupport.BaseParameters.All.ToList()) {
 				if (!parameters.ContainsKey (pair.Key))
 					MainSupport.BaseParameters.RemoveParameter (QSMain.ConnectionDB, pair.Key);
 			}
