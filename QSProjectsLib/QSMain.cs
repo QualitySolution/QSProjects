@@ -431,7 +431,7 @@ namespace QSProjectsLib
 				if (sup.SupportInfo != "")
 					comments += sup.SupportInfo;
 				else
-					comments += "\nТелефон тех. поддержки +7(812)575-79-44";
+					comments += "\nТелефон тех. поддержки +7(812)309-80-89";
 			}
 			dialog.Comments = comments;
 
