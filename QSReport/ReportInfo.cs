@@ -65,6 +65,8 @@ namespace QSReport
 
 		private string ValueToValidString (object value)
 		{
+			if (value == null)
+				return String.Empty;
 			if (value is DateTime)
 				return ((DateTime)value).ToString ("O");
 			return value.ToString ();
