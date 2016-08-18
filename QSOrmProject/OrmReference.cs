@@ -379,8 +379,10 @@ namespace QSOrmProject
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
 			if (ObjectSelected != null) {
+				var selected = ytreeviewRef.GetSelectedObject();
+				logger.Debug("Выбрано {0} id:({1})", objectType, DomainHelper.GetId(selected));
 				ObjectSelected (this, new OrmReferenceObjectSectedEventArgs (
-					ytreeviewRef.GetSelectedObject ()
+					selected
 				));
 			}
 			OnCloseTab ();

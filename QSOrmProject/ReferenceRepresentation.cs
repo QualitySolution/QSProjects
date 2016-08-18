@@ -271,7 +271,7 @@ namespace QSOrmProject
 			if (ObjectSelected != null) 
 			{
 				var selected = GetSelectResults();
-
+				logger.Debug("Выбрано {0} id:({1})", objectType, String.Join(",", selected.Select(x =>x.EntityId)));
 				ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selected));
 			}
 			OnCloseTab ();
