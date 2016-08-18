@@ -187,7 +187,7 @@ namespace QSOrmProject.RepresentationModel
 
 		void RefilterList()
 		{
-			logger.Info("Фильтрация таблицы...");
+			logger.Info("Фильтрация таблицы по {0}...", String.Join(", ", SearchStrings.Select(x => String.Format("<{0}>", x))));
 			DateTime searchStarted = DateTime.Now;
 			var newList = itemsList.AsParallel().Where (SearchFilterFunc).ToList ();
 			filtredItemsList = newList;
