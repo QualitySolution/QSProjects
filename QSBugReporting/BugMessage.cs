@@ -10,6 +10,9 @@ namespace QSBugReporting
 		[DataMember]
 		public string product { get; set;}
 
+		[DataMember(IsRequired = false)]
+		public string Edition { get; set;}
+
 		[DataMember]
 		public string version { get; set;}
 

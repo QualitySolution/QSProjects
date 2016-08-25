@@ -105,6 +105,7 @@ namespace QSSupportLib
 			var result = svc.SubmitBugReport ( 
 				new QSBugReporting.BugMessage {
 					product = MainSupport.ProjectVerion.Product,
+					Edition = MainSupport.ProjectVerion.Edition,
 					version = MainSupport.ProjectVerion.Version.ToString (),
 					stackTrace = String.Format ("{0}{1}", 
 						String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message),
