@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -29,6 +30,8 @@ namespace QSOrmProject
 		/// По возможности используйте дженерик метод Delete().
 		/// </summary>
 		void TryDelete(object entity);
+
+		IQueryable<T> GetAll<T> () where T : IDomainObject;
 
 		T GetById<T>(int id) where T : IDomainObject;
 
