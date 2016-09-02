@@ -118,6 +118,7 @@ namespace Gamma.Widgets
 		public override void SetRenderTextFunc<TObject> (Func<TObject, string> renderTextFunc)
 		{
 			RenderTextFunc = o => renderTextFunc ((TObject)o);
+			ResetLayout ();
 		}
 
 		private string RenderText(object item)
