@@ -115,6 +115,11 @@ namespace Gamma.Widgets
 				Active = 0;
 		}
 
+		public override void SetRenderTextFunc<TObject> (Func<TObject, string> renderTextFunc)
+		{
+			RenderTextFunc = o => renderTextFunc ((TObject)o);
+		}
+
 		private string RenderText(object item)
 		{
 			if (item is SpecialComboState)
