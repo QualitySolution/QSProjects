@@ -9,6 +9,7 @@ namespace QSOrmProject
 		Type ObjectClass { get;}
 		Type DialogClass { get;}
 		Type RefFilterClass { get;}
+		bool? DefaultUseSlider { get;}
 
 		bool SimpleDialog { get;}
 		ITableView TableView { get;}

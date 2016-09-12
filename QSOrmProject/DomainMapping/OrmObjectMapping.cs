@@ -28,6 +28,16 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
+		private bool? defaultUseSlider;
+
+		public bool? DefaultUseSlider
+		{
+			get
+			{
+				return defaultUseSlider;
+			}
+		}
+
 		public string EditPermisionName { get; set;}
 
 		private TableView<TEntity> tableView;
@@ -116,6 +126,12 @@ namespace QSOrmProject.DomainMapping
 		public OrmObjectMapping<TEntity> PopupMenu(Func<TEntity[], Gtk.Menu> getMenuFunc)
 		{
 			this.GetPopupMenuFunc = getMenuFunc;
+			return this;
+		}
+
+		public OrmObjectMapping<TEntity> UseSlider(bool? useSlider)
+		{
+			this.defaultUseSlider = useSlider;
 			return this;
 		}
 

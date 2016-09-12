@@ -17,7 +17,7 @@ namespace QSTDI
 		public event EventHandler<TabClosedEventArgs> TabClosed;
 
 		public ReadOnlyCollection<TdiTabInfo> Tabs;
-		public bool UseSliderTab = true;
+		public bool DefaultUseSlider = true;
 		private List<TdiTabInfo> _tabs;
 
 		public TdiNotebook ()
@@ -73,7 +73,8 @@ namespace QSTDI
 			closeButton.ModifierStyle.Ythickness = 0;
 			box.Add (closeButton);
 			box.ShowAll ();
-			if (UseSliderTab && tab is ITdiJournal) {
+			var journalTab = tab as ITdiJournal;
+			if (journalTab != null && ((journalTab.UseSlider == null && DefaultUseSlider) || journalTab.UseSlider.Value)) {
 				TdiSliderTab slider = new TdiSliderTab ((ITdiJournal)tab);
 				tab = slider;
 			}
@@ -108,13 +109,14 @@ namespace QSTDI
 				info.TabNameLabel.LabelProp = e.NewName;
 		}
 
-		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
+		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			TdiTabInfo info = _tabs.Find (t => t.TdiTab == masterTab);
 			if (info == null)
 				throw new NullReferenceException ("Мастер вкладка не найдена в списке активных вкладок.");
 
-			if (UseSliderTab && slaveTab is ITdiJournal) {
+			var journalTab = slaveTab as ITdiJournal;
+			if (journalTab != null && ((journalTab.UseSlider == null && DefaultUseSlider) || journalTab.UseSlider.Value)) {
 				TdiSliderTab slider = new TdiSliderTab ((ITdiJournal)slaveTab);
 				slaveTab = slider;
 			}

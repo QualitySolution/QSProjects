@@ -159,6 +159,18 @@ namespace QSOrmProject
 			}
 		}
 
+		public bool? UseSlider
+		{
+			get
+			{
+				IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+				if (map == null)
+					return null;
+
+				return map.DefaultUseSlider;
+			}
+		}
+
 		public OrmReference (System.Type objType)
 			: this (objType, UnitOfWorkFactory.CreateWithoutRoot ())
 		{

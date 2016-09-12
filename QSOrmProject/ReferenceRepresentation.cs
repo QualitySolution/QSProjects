@@ -24,6 +24,18 @@ namespace QSOrmProject
 
 		public bool FailInitialize { get; protected set;}
 
+		public bool? UseSlider
+		{
+			get
+			{
+				IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+				if (map == null)
+					return null;
+
+				return map.DefaultUseSlider;
+			}
+		}
+
 		public bool CompareHashName(string hashName)
 		{
 			return GenerateHashName(RepresentationModel.GetType()) == hashName;

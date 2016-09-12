@@ -65,7 +65,7 @@ namespace QSOrmProject
 		}
 
 		#region ITdiTabParent implementation
-		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
+		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			RunDlg (slaveTab);
 		}

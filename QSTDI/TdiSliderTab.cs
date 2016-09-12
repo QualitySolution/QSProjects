@@ -213,7 +213,7 @@ namespace QSTDI
 			HandleSwitchOut = OnSwitchOut;
 		}
 
-		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, bool CanSlided = true)
+		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			if (slaveTab.FailInitialize) {
 				logger.Warn ("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
