@@ -15,6 +15,7 @@ namespace QSBanks
 		string name;
 
 		[Required (ErrorMessage = "Название банка должно быть заполнено.")]
+		[Display (Name = "Название")]
 		public virtual string Name {
 			get { return name; }
 			set { SetField (ref name, value, () => Name); }
@@ -23,6 +24,7 @@ namespace QSBanks
 		string bik;
 
 		[StringLength (9, MinimumLength = 9, ErrorMessage = "Бик должен состоять из 8 цифр.")]
+		[Display (Name = "БИК")]
 		public virtual string Bik {
 			get { return bik; }
 			set { SetField (ref bik, value, () => Bik); }
@@ -31,6 +33,7 @@ namespace QSBanks
 		string corAccount;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер кореспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
+		[Display (Name = "К/С")]
 		public virtual string CorAccount {
 			get { return corAccount; }
 			set { SetField (ref corAccount, value, () => CorAccount); }
@@ -39,6 +42,7 @@ namespace QSBanks
 		string city;
 
 		[Required (ErrorMessage = "Город является обязательным полем.")]
+		[Display (Name = "Город")]
 		public virtual string City {
 			get { return city; }
 			set { SetField (ref city, value, () => City); }
@@ -47,6 +51,7 @@ namespace QSBanks
 		BankRegion region;
 
 		[Required (ErrorMessage = "Регион является обязательным полем.")]
+		[Display (Name = "Регион")]
 		public virtual BankRegion Region {
 			get { return region; }
 			set { SetField (ref region, value, () => Region); }
@@ -54,6 +59,7 @@ namespace QSBanks
 
 		bool deleted;
 
+		[Display (Name = "Удалён")]
 		public virtual bool Deleted {
 			get { return deleted; }
 			set { SetField (ref deleted, value, () => Deleted); }

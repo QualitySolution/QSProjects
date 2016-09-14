@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using QSOrmProject;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Bindings.Collections.Generic;
 using NHibernate;
+using QSOrmProject;
 
 namespace QSBanks
 {
@@ -36,6 +37,7 @@ namespace QSBanks
 
 		Account defaultAccount;
 
+		[Display (Name = "Основной счет")]
 		public virtual Account DefaultAccount {
 			get { return defaultAccount; }
 			set {

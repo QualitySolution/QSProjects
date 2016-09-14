@@ -26,6 +26,7 @@ namespace QSBanks
 		string number;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.")]
+		[Display (Name = "Номер")]
 		public virtual string Number {
 			get { return number; }
 			set { SetField (ref number, value, () => Number); }
@@ -33,6 +34,7 @@ namespace QSBanks
 
 		string code1c;
 
+		[Display (Name = "Код 1с")]
 		public virtual string Code1c {
 			get { return code1c; }
 			set { SetField (ref code1c, value, () => Code1c); }
@@ -40,6 +42,7 @@ namespace QSBanks
 
 		bool inactive;
 
+		[Display (Name = "Неактивный")]
 		public virtual bool Inactive {
 			get { return inactive; }
 			set { SetField (ref inactive, value, () => Inactive); }
@@ -48,6 +51,7 @@ namespace QSBanks
 		Bank inBank;
 
 		[Required (ErrorMessage = "Банк должен быть заполнен.")]
+		[Display (Name = "Банк")]
 		public virtual Bank InBank {
 			get { return inBank; }
 			set {SetField (ref inBank, value, () => InBank);
@@ -62,15 +66,6 @@ namespace QSBanks
 		public virtual bool IsDefault {
 			get { return isDefault; }
 			set { SetField (ref isDefault, value, () => IsDefault); }
-		}
-
-		public virtual string BankName {
-			get{
-				if (InBank == null)
-					return String.Empty;
-				else
-					return InBank.Name;
-			}
 		}
 
 		public Account ()
