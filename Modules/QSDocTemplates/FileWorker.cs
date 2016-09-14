@@ -11,11 +11,26 @@ namespace QSDocTemplates
 
 		private List<OpenedFile> openedFiles = new List<OpenedFile> ();
 
+		public event EventHandler<FileUpdatedEventArgs> FileUpdated;
+
 		public FileWorker()
 		{
 		}
 
-		public void OpenInOffice(IDocTemplate template, bool readOnly)
+		internal void OnFileUpdated(IDocTemplate template, string path)
+		{
+			if(FileUpdated != null)
+			{
+				var arg = new FileUpdatedEventArgs
+				{
+					Template = template,
+					TempFilePath = path
+				};
+				FileUpdated(this, arg);
+			}
+		}
+
+		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode)
 		{
 			logger.Info ("Сохраняем временный файл...");
 			OdtWorks odt;
@@ -30,7 +45,7 @@ namespace QSDocTemplates
 
 			if (opened == null)
 			{
-				opened = new OpenedFile(template);
+				opened = new OpenedFile(this, template, mode);
 				openedFiles.Add(opened);
 			}
 			else
@@ -70,6 +85,11 @@ namespace QSDocTemplates
 		#endregion
 	}
 
+	public enum FileEditMode{
+		Template,
+		Document
+	}
+
 	internal class OpenedFile
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
@@ -77,11 +97,16 @@ namespace QSDocTemplates
 		public IDocTemplate Template;
 		public FileSystemWatcher Watcher;
 		public string TempFilePath;
+		private FileWorker myFileWorker;
 		private string tempDir;
 		private string tempFile;
+		private FileEditMode editMode;
 
-		public OpenedFile(IDocTemplate template)
+		public OpenedFile(FileWorker worker, IDocTemplate template, FileEditMode mode)
 		{
+			myFileWorker = worker;
+			editMode = mode;
+			Template = template;
 			tempDir = Path.GetTempPath();
 			tempFile = template.Name + ".odt";
 			TempFilePath = Path.Combine (tempDir, tempFile);
@@ -121,12 +146,28 @@ namespace QSDocTemplates
 					}
 				}
 
-				Template.File = file;
+				switch(editMode)
+				{
+					case FileEditMode.Template: 
+						Template.TempalteFile = file;
+						break;
+					case FileEditMode.Document:
+						Template.ChangedDocFile = file;
+						break;
+				}
+
+				myFileWorker.OnFileUpdated(Template, TempFilePath);
 
 			} catch (Exception ex) {
 				logger.Warn (ex, "Ошибка при чтении файла!");
 			}
 		}
+	}
+
+	public class FileUpdatedEventArgs : EventArgs
+	{
+		public IDocTemplate Template;
+		public string TempFilePath;
 	}
 }
 
