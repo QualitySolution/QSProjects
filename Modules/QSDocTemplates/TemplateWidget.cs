@@ -2,7 +2,6 @@
 using QSProjectsLib;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
-using Gamma.Utilities;
 
 namespace QSDocTemplates
 {

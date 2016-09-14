@@ -38,6 +38,10 @@ namespace QSDocTemplates
 			odt.DocParser = template.DocParser;
 			odt.DocParser.UpdateFields();
 			odt.UpdateFields ();
+			if(odt.DocParser.FieldsHasValues)
+			{
+				odt.FillValues();
+			}
 			var file = odt.GetArray ();
 			odt.Close ();
 

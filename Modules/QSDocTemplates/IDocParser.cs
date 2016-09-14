@@ -7,6 +7,7 @@ namespace QSDocTemplates
 	{
 		List<PatternField> FieldsList { get;}
 		void UpdateFields();
+		bool FieldsHasValues { get;}
 	}
 }
 

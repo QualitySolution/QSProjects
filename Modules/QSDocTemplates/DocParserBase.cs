@@ -25,6 +25,8 @@ namespace QSDocTemplates
 			}
 		}
 
+		public bool FieldsHasValues { get; protected set;}
+
 		public DocParserBase ()
 		{
 			
@@ -48,6 +50,7 @@ namespace QSDocTemplates
 				}
 			}
 			fieldsList.Add(field);
+			FieldsHasValues = RootObject != null;
 		}
 
 		protected void AddField(Expression<Func<TDoc, object>> sourceProperty, PatternFieldType fieldType)

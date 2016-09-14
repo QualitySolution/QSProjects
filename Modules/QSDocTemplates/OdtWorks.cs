@@ -142,7 +142,7 @@ namespace QSDocTemplates
 					continue;
 				}
 				if (field.Type == PatternFieldType.FDate) // && node.Attributes ["office:date-value"] != null)
-					node.Attributes ["office:string-value"].Value = field.Value != DBNull.Value ? ((DateTime)field.Value).ToLongDateString () : "";
+					node.Attributes ["office:string-value"].Value = field.Value != null ? ((DateTime)field.Value).ToLongDateString () : String.Empty;
 					//node.Attributes ["office:date-value"].Value = field.value != DBNull.Value ? XmlConvert.ToString ((DateTime)field.value, XmlDateTimeSerializationMode.Unspecified) : "";
 				else if (field.Type == PatternFieldType.FCurrency) {
 					decimal value = field.Value != DBNull.Value ? (decimal)field.Value : Decimal.Zero;
