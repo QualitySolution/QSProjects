@@ -100,6 +100,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public TextRendererMapping<TNode> EditingStartedEvent (Gtk.EditingStartedHandler handler)
+		{
+			cellRenderer.EditingStarted += handler;
+			return this;
+		}
+
 		#endregion
 	}
 }
