@@ -121,11 +121,12 @@ namespace QSProjectsLib
 			}
 
 			logger.Info ("Создаем пользователя в базе");
-			sql = "INSERT INTO users (login, name, " + QSMain.AdminFieldName + ") " +
-			"VALUES (@login, @login, @admin)";
+			sql = "INSERT INTO users (login, name, " + QSMain.AdminFieldName + ", deactivated) " +
+				"VALUES (@login, @login, @admin, @deactivated)";
 			cmd = new MySqlCommand (sql, QSMain.connectionDB);
 			cmd.Parameters.AddWithValue ("@login", login);
 			cmd.Parameters.AddWithValue ("@admin", FirstUser);
+			cmd.Parameters.AddWithValue ("@deactivated", false);
 			cmd.ExecuteNonQuery ();
 		}
 
