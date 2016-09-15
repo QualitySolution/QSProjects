@@ -58,6 +58,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public TextRendererMapping<TNode> Background(string color)
+		{
+			cellRenderer.Background = color;
+			return this;
+		}
+
 		public TextRendererMapping<TNode> WrapMode(Pango.WrapMode mode)
 		{
 			cellRenderer.WrapMode = mode;

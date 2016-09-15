@@ -54,9 +54,17 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		#region Fluent
+
 		public NumberRendererMapping<TNode> Digits(uint digits)
 		{
 			cellRenderer.Digits = digits;
+			return this;
+		}
+
+		public NumberRendererMapping<TNode> Background(string color)
+		{
+			cellRenderer.Background = color;
 			return this;
 		}
 
@@ -93,6 +101,8 @@ namespace Gamma.ColumnConfig
 			cellRenderer.IsEnterToNextCell = true;
 			return this;
 		}
+
+		#endregion
 	}
 }
 
