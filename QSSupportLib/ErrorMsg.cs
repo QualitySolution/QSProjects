@@ -33,7 +33,7 @@ namespace QSSupportLib
 			labelUserMessage.Visible = userMessage != "";
 			OnExeptionTextUpdate ();
 			buttonSendReport.Sensitive = false;
-			entryEmail.Text = QSMain.User.Email;
+			entryEmail.Text = QSMain.User?.Email;
 
 			this.SetPosition (WindowPosition.CenterOnParent);
 
