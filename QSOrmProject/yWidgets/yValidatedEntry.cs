@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using QSWidgetLib;
 
-namespace Gamma.GtkWidgets
+namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[System.ComponentModel.Category ("Gamma Gtk")]
