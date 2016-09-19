@@ -157,7 +157,7 @@ namespace QSDocTemplates
 						node.Attributes ["office:string-value"].Value = val;
 					}
 				} else
-					node.Attributes ["office:string-value"].Value = field.Value.ToString ();
+					node.Attributes ["office:string-value"].Value = field.Value != null ? field.Value.ToString () : String.Empty;
 			}	
 			UpdateXmlDocument (content, contentFileName);
 		}
