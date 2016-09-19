@@ -2,6 +2,7 @@ using System;
 using System.Data.Common;
 using Gtk;
 using NLog;
+using System.Collections.Generic;
 
 namespace QSProjectsLib
 {
@@ -93,6 +94,16 @@ namespace QSProjectsLib
 		}
 
 
+		/// <summary>
+		/// Метод создает новый ListStore из коллекции.
+		/// </summary>
+		public static ListStore CreateFromEnumerable<TNode>(IEnumerable<TNode> list)
+		{
+			var store = new ListStore(typeof(TNode));
+			foreach (var item in list)
+				store.AppendValues(item);
+			return store;
+		}
 	}
 }
 
