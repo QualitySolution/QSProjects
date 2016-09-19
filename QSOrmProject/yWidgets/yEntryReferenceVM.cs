@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using QSOrmProject;
 
-namespace QSOrmProject
+namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[Category ("Gamma Widgets")]
