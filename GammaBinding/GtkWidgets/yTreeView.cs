@@ -143,6 +143,9 @@ namespace Gamma.GtkWidgets
 				TreeViewColumn tvc = new TreeViewColumn ();
 				tvc.Title = col.Title;
 				tvc.Alignment = col.Alignment;
+				if(col.ClickHandler != null)
+					tvc.Clicked += col.ClickHandler;
+				
 				foreach(var render in col.ConfiguredRenderers)
 				{
 					var cell = render.GetRenderer () as CellRenderer;

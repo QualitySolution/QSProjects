@@ -23,6 +23,8 @@ namespace Gamma.ColumnConfig
 
 		public float Alignment { get; set;}
 
+		public EventHandler ClickHandler { get; set;}
+
 		private readonly List<IRendererMappingGeneric<TNode>> Renderers = new List<IRendererMappingGeneric<TNode>> ();
 
 		public IEnumerable<IRendererMapping> ConfiguredRenderers {
@@ -92,6 +94,12 @@ namespace Gamma.ColumnConfig
 		public ColumnMapping<TNode> EnterToNextCell ()
 		{
 			IsEnterToNextCell = true;
+			return this;
+		}
+
+		public ColumnMapping<TNode> ClickedEvent(EventHandler clicked)
+		{
+			ClickHandler = clicked;
 			return this;
 		}
 
