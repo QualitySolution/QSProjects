@@ -146,6 +146,7 @@
     <Compile Include="EventArgs.cs" />
     <Compile Include="RepresentationModel\RepresentationFilterBase.cs" />
     <Compile Include="yWidgets\yValidatedEntry.cs" />
+    <Compile Include="Helpers\GtkMenuHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -195,6 +196,7 @@
     <Folder Include="yWidgets\" />
     <Folder Include="WithoutTDI\" />
     <Folder Include="DomainMapping\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
