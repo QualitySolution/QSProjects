@@ -33,6 +33,8 @@ namespace QSOrmProject
 		{
 			get
 			{
+				if (objectType == null)
+					return null;
 				IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 				if (map == null)
 					return null;
