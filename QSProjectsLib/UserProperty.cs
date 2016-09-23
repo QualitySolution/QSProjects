@@ -88,6 +88,7 @@ namespace QSProjectsLib
 		protected void OnButtonOkClicked (object sender, EventArgs e)
 		{
 			string sql;
+			ISaaSService svc = null;
 			
 			if (entryLogin.Text == "root") {
 				string Message = "Операции с пользователем root запрещены.";
@@ -99,9 +100,10 @@ namespace QSProjectsLib
 				md.Destroy ();
 				return;
 			}
+
 			if (Session.IsSaasConnection) {
 				int dlgRes;
-				ISaaSService svc = Session.GetSaaSService ();
+				svc = Session.GetSaaSService ();
 				if (NewUser) {
 					//Проверка существует ли логин
 					sql = "SELECT COUNT(*) FROM users WHERE login = @login";
@@ -167,16 +169,6 @@ namespace QSProjectsLib
 					sql = "UPDATE users SET name = @name, deactivated = @deactivated, email = @email, " + QSMain.AdminFieldName + " = @admin," +
 					"description = @description " + QSMain.GetPermissionFieldsForUpdate () + " WHERE id = @id";
 				}
-				//Предоставляем пользователю доступ к базе
-				if (!svc.changeBaseAccessFromProgram (Session.SessionId, entryLogin.Text, Session.SaasBaseName, !checkDeactivated.Active, checkAdmin.Active)) {
-					MessageDialog md = new MessageDialog (this, DialogFlags.DestroyWithParent,
-						                   MessageType.Warning, 
-						                   ButtonsType.Close,
-						                   "Ошибка предоставления доступа к базе данных.");
-					md.Run ();
-					md.Destroy ();
-					return;
-				}
 			} else {
 				if (NewUser) {
 					if (!CreateLogin ())
@@ -224,6 +216,20 @@ namespace QSProjectsLib
 				QSMain.ErrorMessage (this, ex);
 			}
 
+			//Предоставляем пользователю доступ к базе
+			if (Session.IsSaasConnection)
+			{
+				if (!svc.changeBaseAccessFromProgram(Session.SessionId, entryLogin.Text, Session.SaasBaseName, !checkDeactivated.Active, checkAdmin.Active))
+				{
+					MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent,
+						                  MessageType.Warning, 
+						                  ButtonsType.Close,
+						                  "Ошибка предоставления доступа к базе данных.");
+					md.Run();
+					md.Destroy();
+					return;
+				}
+			}
 		}
 
 		bool CreateLogin ()
