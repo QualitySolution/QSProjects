@@ -106,7 +106,7 @@ namespace QSOrmProject
 			});
 		}
 
-		protected void OnSpinbuttonChanged(object sender, EventArgs e)
+		protected void OnSpinbuttonValueChanged(object sender, EventArgs e)
 		{
 			Binding.FireChange (new Expression<Func<DisableSpinButton, object>>[] {
 				(w => w.Value),

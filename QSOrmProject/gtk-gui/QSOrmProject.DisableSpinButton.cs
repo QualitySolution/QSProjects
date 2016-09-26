@@ -48,7 +48,7 @@ namespace QSOrmProject
 			}
 			this.Hide ();
 			this.check.Toggled += new global::System.EventHandler (this.OnCheckToggled);
-			this.spinbutton.Changed += new global::System.EventHandler (this.OnSpinbuttonChanged);
+			this.spinbutton.ValueChanged += new global::System.EventHandler (this.OnSpinbuttonValueChanged);
 		}
 	}
 }
