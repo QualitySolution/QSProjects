@@ -147,6 +147,8 @@
     <Compile Include="RepresentationModel\RepresentationFilterBase.cs" />
     <Compile Include="yWidgets\yValidatedEntry.cs" />
     <Compile Include="Helpers\GtkMenuHelper.cs" />
+    <Compile Include="Widgets\DisableSpinButton.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
