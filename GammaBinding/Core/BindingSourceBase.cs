@@ -69,7 +69,9 @@ namespace Gamma.Binding.Core
 
 		void IBindingSourceInternal.RunDelayedUpdates()
 		{
-			delayedUpdateProperties.ForEach (PropertyUpdated);
+			//Used loop "for" because when PropertyUpdated excuted in delayedUpdateProperties may be adding propery.
+			for (int i = 0; i < delayedUpdateProperties.Count; i++)
+				PropertyUpdated(delayedUpdateProperties[i]);
 			delayedUpdateProperties.Clear ();
 		}
 
