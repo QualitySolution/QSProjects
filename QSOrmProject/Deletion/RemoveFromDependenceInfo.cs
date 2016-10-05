@@ -53,7 +53,7 @@ namespace QSOrmProject.Deletion
 				var createDelegatExpr = convertExpr.Operand as MethodCallExpression;
 				if(createDelegatExpr != null && createDelegatExpr.NodeType == ExpressionType.Call && createDelegatExpr.Type == typeof(Delegate))
 				{
-					var parameterExpr = createDelegatExpr.Arguments [2] as ConstantExpression;
+					var parameterExpr = createDelegatExpr.Object as ConstantExpression;
 					if (parameterExpr != null)
 						method = parameterExpr.Value as MethodInfo;
 				}
