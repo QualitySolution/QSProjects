@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using QSProjectsLib;
-using NLog;
+using System.Linq;
 using System.Linq.Expressions;
-using Gamma.Binding.Core.Helpers;
-using System.ComponentModel.DataAnnotations;
+using NLog;
 
 namespace QSDocTemplates
 {
 	public abstract class DocParserBase<TDoc> : IDocParser
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		public List<PatternField> Fields;
 
 		public TDoc RootObject { get; set;}
 
 		protected List<PatternField> fieldsList = new List<PatternField>();
+
+		protected List<IPatternTable<TDoc>> tablesList = new List<IPatternTable<TDoc>>();
 
 		public List<PatternField> FieldsList
 		{
 			get
 			{
 				return fieldsList;
+			}
+		}
+
+		public IEnumerable<IPatternTableField> TablesFields
+		{
+			get
+			{
+				return tablesList.SelectMany(x => x.Colunms);
 			}
 		}
 
@@ -46,7 +53,7 @@ namespace QSDocTemplates
 				}
 				catch(NullReferenceException ex)
 				{
-					logger.Warn(ex, "При получении значения поля {0}, произошло исключение NullReferenceException.");
+					logger.Warn(ex, "При получении значения поля {0}, произошло исключение NullReferenceException.", name);
 				}
 			}
 			fieldsList.Add(field);
@@ -55,20 +62,30 @@ namespace QSDocTemplates
 
 		protected void AddField(Expression<Func<TDoc, object>> sourceProperty, PatternFieldType fieldType)
 		{
-			var propertyChain = PropertyChainFromExp.Get(sourceProperty);
-			List<string> names = new List<string>();
-			foreach(var prop in propertyChain)
-			{
-				var attrs = (DisplayAttribute[]) prop.GetCustomAttributes (typeof(DisplayAttribute), false);
-				string namepart;
-				if ((attrs != null) && (attrs.Length > 0))
-					namepart = StringWorks.StringToPascalCase (attrs[0].GetName());
-				else
-					namepart = prop.Name;
-				names.Add(namepart);
-			}
-			var name = String.Join(".", names);
+			var name = PatternField.GetFieldName(sourceProperty);
 			AddField(sourceProperty, name, fieldType);
+		}
+
+		protected PatternTable<TDoc, TRow> AddTable<TRow>(string name, Expression<Func<TDoc, IList<TRow>>> collectionProperty)
+		{
+			var table = new PatternTable<TDoc, TRow>(name)
+			{
+				RootObject = RootObject,
+			};
+
+			if(RootObject != null)
+			{
+				try{
+					table.DataRows = collectionProperty.Compile().Invoke(RootObject);
+				}
+				catch(NullReferenceException ex)
+				{
+					logger.Warn(ex, "При получении строк таблицы {0}, произошло исключение NullReferenceException.", name);
+				}
+			}
+
+			tablesList.Add(table);
+			return table;
 		}
 
 		public void SortFields()

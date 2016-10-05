@@ -58,6 +58,7 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="TemplateWidget.cs" />
     <Compile Include="gtk-gui\QSDocTemplates.TemplateWidget.cs" />
+    <Compile Include="PatternTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
 using NLog;
@@ -57,6 +58,7 @@ namespace QSDocTemplates
 			nsMgr.AddNamespace("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
 			nsMgr.AddNamespace("text", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
 
+			//Добавляем пользовательские поля
 			List<string> existFilds = new List<string> ();
 			foreach(XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:user-field-decls/text:user-field-decl", nsMgr))
 			{
@@ -73,57 +75,103 @@ namespace QSDocTemplates
 
 				officeText.InsertAfter(fieldsDels, sequenceDecls);
 			}
-
+				
 			foreach(PatternField field in DocParser.FieldsList)
 			{
+				AddFieldDecl(field, VariableType.User, content, fieldsDels, existFilds);
+			}
 
-				if (field.Type == PatternFieldType.FString) {
+			existFilds = new List<string> ();
+			foreach(XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:variable-decls/text:variable-decl", nsMgr))
+			{
+				existFilds.Add (node.Attributes["text:name"].Value);
+			}
 
-					if (existFilds.Contains (field.Name))
-						continue;
+			fieldsDels = (XmlElement)content.SelectSingleNode ("/office:document-content/office:body/office:text/text:variable-decls", nsMgr);
 
-					XmlElement newFieldNode = content.CreateElement ("text", "user-field-decl", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
-					newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+			if(fieldsDels == null)
+			{
+				fieldsDels = content.CreateElement ("text", "variable-decls", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+				XmlElement officeText = (XmlElement)content.SelectSingleNode ("/office:document-content/office:body/office:text", nsMgr);
+				XmlElement userFieldDecls = (XmlElement)content.SelectSingleNode ("/office:document-content/office:body/office:text/text:user-field-decls", nsMgr);
+
+				officeText.InsertAfter(fieldsDels, userFieldDecls);
+			}
+
+			//Добавляем поля таблиц
+			foreach(PatternField field in DocParser.TablesFields)
+			{
+				AddFieldDecl(field, VariableType.Simple, content, fieldsDels, existFilds);
+			}
+
+			UpdateXmlDocument (content, contentFileName);
+		}
+
+		private void AddFieldDecl(PatternField field, VariableType type, XmlDocument content, XmlElement fieldsDels, List<string> existFilds)
+		{
+			var declNode = type == VariableType.User ? "user-field-decl" : "variable-decl";
+			if (field.Type == PatternFieldType.FString) {
+
+				if (existFilds.Contains (field.Name))
+					return;
+
+				XmlElement newFieldNode = content.CreateElement ("text", declNode, "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+				newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+				newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name);
+				if(type == VariableType.User)
 					newFieldNode.SetAttribute ("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "");
-					newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name);
-					fieldsDels.AppendChild (newFieldNode);
-				}
-				else if (field.Type == PatternFieldType.FDate) {
+				fieldsDels.AppendChild (newFieldNode);
+			}
+			else if (field.Type == PatternFieldType.FDate) {
 
-					if (existFilds.Contains (field.Name))
-						continue;
+				if (existFilds.Contains (field.Name))
+					return;
 
-					XmlElement newFieldNode = content.CreateElement ("text", "user-field-decl", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
-					newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+				XmlElement newFieldNode = content.CreateElement ("text", declNode, "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+				newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+				//newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "date");
+				//newFieldNode.SetAttribute ("date-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "");
+				newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name);
+				if(type == VariableType.User)
 					newFieldNode.SetAttribute ("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "");
-					//newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "date");
-					//newFieldNode.SetAttribute ("date-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "");
-					newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name);
-					fieldsDels.AppendChild (newFieldNode);
-				}
-				else if(field.Type == PatternFieldType.FCurrency)
+				
+				fieldsDels.AppendChild (newFieldNode);
+			}
+			else if(field.Type == PatternFieldType.FCurrency)
+			{
+				if (!existFilds.Contains (field.Name + ".Число")) 
 				{
-					if (!existFilds.Contains (field.Name + ".Число")) 
-					{
-						XmlElement newFieldNode = content.CreateElement ("text", "user-field-decl", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
-						newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
+					XmlElement newFieldNode = content.CreateElement ("text", declNode, "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+					newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
+					string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+					newFieldNode.SetAttribute ("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
+					newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name + ".Число");
+					if(type == VariableType.User)
 						newFieldNode.SetAttribute ("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "0");
-						string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
-						newFieldNode.SetAttribute ("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
-						newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name + ".Число");
-						fieldsDels.AppendChild (newFieldNode);
-					}
-					if (!existFilds.Contains (field.Name + ".Пропись")) 
-					{
-						XmlElement newFieldNode = content.CreateElement ("text", "user-field-decl", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
-						newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+					
+					fieldsDels.AppendChild (newFieldNode);
+				}
+				if (!existFilds.Contains (field.Name + ".Пропись")) 
+				{
+					XmlElement newFieldNode = content.CreateElement ("text", declNode, "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+					newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "string");
+					newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name + ".Пропись");
+					if(type == VariableType.User)
 						newFieldNode.SetAttribute ("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "");
-						newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name + ".Пропись");
-						fieldsDels.AppendChild (newFieldNode);
-					}
+					
+					fieldsDels.AppendChild (newFieldNode);
 				}
 			}
-			UpdateXmlDocument (content, contentFileName);
+			else if (field.Type == PatternFieldType.FAutoRowNumber) {
+
+				if (existFilds.Contains (field.Name))
+					return;
+
+				XmlElement newFieldNode = content.CreateElement ("text", declNode, "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+				newFieldNode.SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "float");
+				newFieldNode.SetAttribute ("name", "urn:oasis:names:tc:opendocument:xmlns:text:1.0", field.Name);
+				fieldsDels.AppendChild (newFieldNode);
+			}
 		}
 
 		public void FillValues()
@@ -133,33 +181,169 @@ namespace QSDocTemplates
 			XmlNamespaceManager nsMgr = new XmlNamespaceManager(content.NameTable);
 			nsMgr.AddNamespace("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
 			nsMgr.AddNamespace("text", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
+			nsMgr.AddNamespace("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
 
 			foreach (XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:user-field-decls/text:user-field-decl", nsMgr)) {
 				string fieldName = node.Attributes ["text:name"].Value;
-				PatternField field = DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
+				var field = DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
 				if (field == null) {
 					logger.Warn ("Поле {0} не найдено, поэтому пропущено.", fieldName);
 					continue;
 				}
-				if (field.Type == PatternFieldType.FDate) // && node.Attributes ["office:date-value"] != null)
-					node.Attributes ["office:string-value"].Value = field.Value != null ? ((DateTime)field.Value).ToLongDateString () : String.Empty;
-					//node.Attributes ["office:date-value"].Value = field.value != DBNull.Value ? XmlConvert.ToString ((DateTime)field.value, XmlDateTimeSerializationMode.Unspecified) : "";
-				else if (field.Type == PatternFieldType.FCurrency) {
-					decimal value = field.Value != DBNull.Value ? (decimal)field.Value : Decimal.Zero;
-					if (fieldName.Replace (field.Name, "") == ".Число") {						
-						((XmlElement)node).SetAttribute ("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
-						((XmlElement)node).SetAttribute ("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", XmlConvert.ToString (value));
-						string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
-						((XmlElement)node).SetAttribute ("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
+				SetFieldValue(node, field.Type, field.Value);
+			}
+
+			//Строка и поле
+			var tableFields = new List<odtFieldSet>();
+
+			foreach (XmlNode node in content.SelectNodes ("//table:table-row//text:variable-set", nsMgr))
+			{
+				string fieldName = node.Attributes["text:name"].Value;
+				//Ищем в таблицах
+				var field = DocParser.TablesFields.FirstOrDefault(f => fieldName.StartsWith(f.Name));
+				if (field != null)
+				{
+					var fieldSet = new odtFieldSet();
+					fieldSet.Field = field;
+					fieldSet.FieldNode = node;
+					fieldSet.RowNode = FineParent(node, "table:table-row");
+					fieldSet.TableNode = FineParent(node, "table:table");
+					tableFields.Add(fieldSet);
+				}
+			}
+
+			if(tableFields.Count > 0)
+			{
+				//Удаляем уже заполненые строки.
+				var toDelete = new List<odtFieldSet>();
+				foreach(var table in tableFields.GroupBy(x => x.TableNode))
+				{
+					XmlNode firstRow = null;
+					foreach(var byTable in table)
+					{
+						if (firstRow == null)
+							firstRow = byTable.RowNode;
+						else if(firstRow != byTable.RowNode)
+						{
+							toDelete.Add(byTable);
+						}
 					}
-					if (fieldName.Replace (field.Name, "") == ".Пропись") {						
-						string val = RusCurrency.Str ((int)value, true, "рубль", "рубля", "рублей", "", "", "");
-						node.Attributes ["office:string-value"].Value = val;
+				}
+				foreach(var delete in toDelete)
+				{
+					tableFields.Remove(delete);
+				}
+
+				foreach(var row in toDelete.GroupBy(x => x.RowNode))
+				{
+					row.First().TableNode.RemoveChild(row.Key);
+				}
+				//Заполняем поля добавляя строки
+				foreach(var table in tableFields.GroupBy(x => x.TableNode))
+				{
+					XmlNode curentRow = table.First().RowNode;
+					var rowCounts = table.First().Field.DataTable.DataRowsCount;
+
+					for(int i = 0; i < rowCounts; i++)
+					{
+						foreach(XmlNode fieldNode in curentRow.SelectNodes(".//text:variable-set", nsMgr))
+						{
+							string fieldName = fieldNode.Attributes["text:name"].Value;
+							var info = table.FirstOrDefault(x => fieldName.StartsWith(x.Field.Name));
+							if(info != null)
+							{
+								SetFieldVariableValue(fieldNode, info.Field.Type, info.Field.GetValue(i));
+							}
+						}
+						if(i + 1 < rowCounts)
+						{//Создаем новую строку
+							var newRow = curentRow.CloneNode(true);
+							var tableNode = table.First().TableNode;
+							tableNode.InsertAfter(newRow, curentRow);
+							curentRow = newRow;
+						}
 					}
-				} else
-					node.Attributes ["office:string-value"].Value = field.Value != null ? field.Value.ToString () : String.Empty;
-			}	
+				}
+
+			}
+
 			UpdateXmlDocument (content, contentFileName);
+		}
+
+		void SetFieldValue(XmlNode node, PatternFieldType type, object value)
+		{
+			var element = (XmlElement)node;
+			if (type == PatternFieldType.FDate) // && node.Attributes ["office:date-value"] != null)
+				node.Attributes["office:string-value"].Value = value != null ? ((DateTime)value).ToLongDateString() : String.Empty;
+			//node.Attributes ["office:date-value"].Value = field.value != DBNull.Value ? XmlConvert.ToString ((DateTime)field.value, XmlDateTimeSerializationMode.Unspecified) : "";
+			else if (type == PatternFieldType.FCurrency)
+			{
+				decimal valueDec = value != null ? (decimal)value : Decimal.Zero;
+				string fieldName = node.Attributes["text:name"].Value;
+				if (fieldName.EndsWith(".Число"))
+				{						
+					((XmlElement)node).SetAttribute("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
+					((XmlElement)node).SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", XmlConvert.ToString(valueDec));
+					string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+					((XmlElement)node).SetAttribute("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
+				}
+				if (fieldName.EndsWith(".Пропись"))
+				{						
+					string val = RusCurrency.Str((int)valueDec, true, "рубль", "рубля", "рублей", "", "", "");
+					node.Attributes["office:string-value"].Value = val;
+				}
+			}
+			else
+				element.SetAttribute("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString()); //value != null ? value.ToString () : String.Empty);
+		}
+
+		void SetFieldVariableValue(XmlNode node, PatternFieldType type, object value)
+		{
+			var element = (XmlElement)node;
+
+			if (type == PatternFieldType.FDate)
+				throw new NotImplementedException();
+				//node.Attributes["office:string-value"].Value = value != null ? ((DateTime)value).ToLongDateString() : String.Empty;
+			//node.Attributes ["office:date-value"].Value = field.value != DBNull.Value ? XmlConvert.ToString ((DateTime)field.value, XmlDateTimeSerializationMode.Unspecified) : "";
+			else if (type == PatternFieldType.FCurrency)
+			{
+				decimal valueDec = value != null ? (decimal)value : Decimal.Zero;
+				string fieldName = node.Attributes["text:name"].Value;
+				if (fieldName.EndsWith(".Число"))
+				{						
+					((XmlElement)node).SetAttribute("value-type", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", "currency");
+					((XmlElement)node).SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", XmlConvert.ToString(valueDec));
+					string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+					((XmlElement)node).SetAttribute("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
+				}
+				if (fieldName.EndsWith(".Пропись"))
+				{						
+					string val = RusCurrency.Str((int)valueDec, true, "рубль", "рубля", "рублей", "", "", "");
+					node.Attributes["office:string-value"].Value = val;
+				}
+			}
+			else if(type == PatternFieldType.FAutoRowNumber)
+			{
+				element.SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString()); //value != null ? value.ToString () : String.Empty);
+				element.InnerText = value?.ToString();
+			}
+			else
+			{
+				element.SetAttribute("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString()); //value != null ? value.ToString () : String.Empty);
+				element.InnerText = value?.ToString();
+			}
+				
+		}
+
+		private XmlNode FineParent(XmlNode node, string element)
+		{
+			if (node.ParentNode == null)
+				return null;
+
+			if (node.ParentNode.Name == element)
+				return node.ParentNode;
+			else
+				return FineParent(node.ParentNode, element);
 		}
 
 		public LinkedList<XmlElement> GetXmlObjects(string nodeName,string attribute,string value)
@@ -293,6 +477,18 @@ namespace QSDocTemplates
 		public void Close()
 		{
 			odtZip.Close ();
+		}
+
+		enum VariableType{
+			Simple,
+			User
+		}
+
+		class odtFieldSet{
+			public XmlNode RowNode;
+			public XmlNode TableNode;
+			public XmlNode FieldNode;
+			public IPatternTableField Field;
 		}
 	}
 
