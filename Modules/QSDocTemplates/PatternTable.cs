@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using Gamma.Binding.Core.Helpers;
+using QSProjectsLib;
 
 namespace QSDocTemplates
 {
@@ -60,6 +63,24 @@ namespace QSDocTemplates
 		{
 			var name = PatternField.GetFieldName(sourceProperty);
 			return AddColumn(sourceProperty, name, fieldType);
+		}
+
+		public static string GetCollectionName(Expression<Func<TDoc, IList<TRow>>> sourceProperty)
+		{
+			var propertyChain = PropertyChainFromExp.Get(sourceProperty);
+			List<string> names = new List<string>();
+			foreach(var prop in propertyChain)
+			{
+				var attrs = (DisplayAttribute[]) prop.GetCustomAttributes (typeof(DisplayAttribute), false);
+				string namepart;
+				if ((attrs != null) && (attrs.Length > 0))
+					namepart = StringWorks.StringToPascalCase (attrs[0].GetName());
+				else
+					namepart = prop.Name;
+				names.Add(namepart);
+			}
+			var name = String.Join(".", names);
+			return name;
 		}
 	}
 
