@@ -58,7 +58,37 @@ namespace QSDocTemplates
 			if (File.Exists (opened.TempFilePath))
 				File.SetAttributes (opened.TempFilePath, FileAttributes.Normal);
 
-			File.WriteAllBytes (opened.TempFilePath, file);
+			try
+			{
+				File.WriteAllBytes (opened.TempFilePath, file);
+			}
+			catch (UnauthorizedAccessException)
+			{
+				string tempName = opened.TempFilePath;
+				FileInfo fi = new FileInfo (opened.TempFilePath);
+				int tryesCount = 0;
+				bool error = true;
+
+				while (error)
+				{
+					tryesCount++;
+					tempName = string.Format("{0}{1}({2}){3}",
+						fi.Directory + Path.DirectorySeparatorChar.ToString(),
+						Path.GetFileNameWithoutExtension(fi.Name),
+						tryesCount,
+						fi.Extension);
+					try 
+					{
+						File.WriteAllBytes (tempName, file);
+						error = false;
+					}
+					catch (UnauthorizedAccessException)
+					{
+						error = true;
+					}
+				}
+				opened.TempFilePath = tempName;
+			}
 
 			if (readOnly)
 				File.SetAttributes(opened.TempFilePath, FileAttributes.ReadOnly);
