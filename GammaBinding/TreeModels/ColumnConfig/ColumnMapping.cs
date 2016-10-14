@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Gamma.Binding;
 using Gamma.Utilities;
 using Gdk;
+using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -13,17 +14,13 @@ namespace Gamma.ColumnConfig
 
 		#region Propeties
 
-		public string Title { get; set;}
+		public TreeViewColumn TreeViewColumn { get; private set;}
+
+		public string Title { get{ return TreeViewColumn.Title;	}}
 
 		public string DataPropertyName { get; set;}
 
-		public bool IsEditable { get; set;}
-
 		public bool IsEnterToNextCell { get; set;}
-
-		public float Alignment { get; set;}
-
-		public EventHandler ClickHandler { get; set;}
 
 		private readonly List<IRendererMappingGeneric<TNode>> Renderers = new List<IRendererMappingGeneric<TNode>> ();
 
@@ -39,8 +36,9 @@ namespace Gamma.ColumnConfig
 
 		public ColumnMapping (FluentColumnsConfig<TNode> parentConfig, string title)
 		{
+			TreeViewColumn = new TreeViewColumn();
 			this.myConfig = parentConfig;
-			Title = title;
+			TreeViewColumn.Title = title;
 		}
 
 		#region FluentConfig
@@ -79,15 +77,15 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public ColumnMapping<TNode> Editing ()
+		public ColumnMapping<TNode> HeaderAlignment (float x)
 		{
-			IsEditable = true;
+			TreeViewColumn.Alignment = x;
 			return this;
 		}
 
-		public ColumnMapping<TNode> HeaderAlignment (float x)
+		public ColumnMapping<TNode> Resizable (bool resizeble = true)
 		{
-			Alignment = x;
+			TreeViewColumn.Resizable = resizeble;
 			return this;
 		}
 
@@ -99,7 +97,7 @@ namespace Gamma.ColumnConfig
 
 		public ColumnMapping<TNode> ClickedEvent(EventHandler clicked)
 		{
-			ClickHandler = clicked;
+			TreeViewColumn.Clicked += clicked;
 			return this;
 		}
 

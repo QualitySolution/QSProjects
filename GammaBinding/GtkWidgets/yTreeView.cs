@@ -140,11 +140,7 @@ namespace Gamma.GtkWidgets
 
 			foreach (var col in ColumnsConfig.ConfiguredColumns)
 			{
-				TreeViewColumn tvc = new TreeViewColumn ();
-				tvc.Title = col.Title;
-				tvc.Alignment = col.Alignment;
-				if(col.ClickHandler != null)
-					tvc.Clicked += col.ClickHandler;
+				TreeViewColumn tvc = col.TreeViewColumn;
 				
 				foreach(var render in col.ConfiguredRenderers)
 				{
