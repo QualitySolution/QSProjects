@@ -101,12 +101,12 @@ namespace QSDocTemplates
 				string args = "-p \"" + opened.TempFilePath + "\"";
 
 				logger.Info("Печатаем файл...");
-				System.Diagnostics.Process.Start(officeName, args);
+				System.Diagnostics.Process.Start(officeName, args).WaitForExit();
 			}
 			else
 			{
 				logger.Info("Открываем файл во внешнем приложении...");
-				System.Diagnostics.Process.Start(opened.TempFilePath);
+				System.Diagnostics.Process.Start(opened.TempFilePath).WaitForExit();
 			}
 		}
 
