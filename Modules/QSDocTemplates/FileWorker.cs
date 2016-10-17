@@ -30,7 +30,7 @@ namespace QSDocTemplates
 			}
 		}
 
-		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode)
+		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, bool silentPrint = false)
 		{
 			logger.Info ("Сохраняем временный файл...");
 			OdtWorks odt;
@@ -95,9 +95,22 @@ namespace QSDocTemplates
 			else
 				opened.StartWatch();
 
-			logger.Info ("Открываем файл во внешнем приложении...");
-			System.Diagnostics.Process.Start (opened.TempFilePath);
+			if (silentPrint)
+			{
+				string officeName = "soffice";
+				string args = "-p \"" + opened.TempFilePath + "\"";
+
+				logger.Info("Печатаем файл...");
+				System.Diagnostics.Process.Start(officeName, args);
+			}
+			else
+			{
+				logger.Info("Открываем файл во внешнем приложении...");
+				System.Diagnostics.Process.Start(opened.TempFilePath);
+			}
 		}
+
+
 
 		#region IDisposable implementation
 		public void Dispose()
