@@ -128,8 +128,13 @@ namespace Gamma.Widgets
 				return;
 
 			foreach (var item in ItemsList) {
+				if (item == null)
+					continue;
+				var title = RenderTextFunc == null ? item.ToString() : RenderTextFunc(item);
+				if (title == null)
+					continue;
 				comboListStore.AppendValues (
-					RenderTextFunc == null ? item.ToString () : RenderTextFunc(item),
+					title,
 					WrapValueIfNeed (item)
 				);
 			}
