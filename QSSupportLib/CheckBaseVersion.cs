@@ -27,8 +27,8 @@ namespace QSSupportLib
 
 			if (MainSupport.BaseParameters.Product != MainSupport.ProjectVerion.Product) {
 				ResultFlags |= CheckBaseResult.IncorrectProduct;
-				TextMessage = "База данных от другого продукта продукта.";
-				logger.Fatal ("База данных от другого продукта продукта. (База: {0} Программа: {1})",
+				TextMessage = "База данных от другого продукта.";
+				logger.Fatal ("База данных от другого продукта. (База: {0} Программа: {1})",
 					MainSupport.BaseParameters.Product,
 					MainSupport.ProjectVerion.Product
 				);
