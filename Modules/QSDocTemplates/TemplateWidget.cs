@@ -117,7 +117,7 @@ namespace QSDocTemplates
 
 		protected void OnButtonPrintClicked(object sender, EventArgs e)
 		{
-			worker.OpenInOffice(Template, true, FileEditMode.Document);
+			worker.OpenInOffice(Template, true, FileEditMode.Document, true);
 		}
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)
@@ -128,6 +128,11 @@ namespace QSDocTemplates
 		protected void OnButtonRevertCommonClicked(object sender, EventArgs e)
 		{
 			ChangedDoc = null;
+		}
+
+		protected void OnButtonOpenClicked (object sender, EventArgs e)
+		{
+			worker.OpenInOffice(Template, true, FileEditMode.Document);
 		}
 	}
 }

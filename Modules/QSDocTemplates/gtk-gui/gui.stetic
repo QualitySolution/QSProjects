@@ -10,7 +10,7 @@
     <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QSDocTemplates.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSDocTemplates.TemplateWidget" design-size="291 146">
+  <widget class="Gtk.Bin" id="QSDocTemplates.TemplateWidget" design-size="299 167">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -123,14 +123,38 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.Button" id="buttonPrint">
+                  <widget class="Gtk.HBox" id="hbox1">
                     <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="Type">TextAndIcon</property>
-                    <property name="Icon">stock:gtk-print Menu</property>
-                    <property name="Label" translatable="yes">Распечатать</property>
-                    <property name="UseUnderline">True</property>
-                    <signal name="Clicked" handler="OnButtonPrintClicked" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Button" id="buttonOpen">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">Открыть</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnButtonOpenClicked" />
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="buttonPrint">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextAndIcon</property>
+                        <property name="Icon">stock:gtk-print Menu</property>
+                        <property name="Label" translatable="yes">Распечатать</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="OnButtonPrintClicked" />
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">False</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
                     <property name="Position">1</property>
@@ -186,7 +210,7 @@
           </widget>
         </child>
         <child>
-          <widget class="Gtk.Label" id="GtkLabel2">
+          <widget class="Gtk.Label" id="GtkLabel3">
             <property name="MemberName" />
             <property name="LabelProp" translatable="yes">&lt;b&gt;Шаблон документа&lt;/b&gt;</property>
             <property name="UseMarkup">True</property>
