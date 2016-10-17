@@ -9,6 +9,7 @@ namespace QSDocTemplates
 		IEnumerable<IPatternTableField> TablesFields { get;}
 		void UpdateFields();
 		bool FieldsHasValues { get;}
+		void SetDocObject(object doc);
 	}
 }
 

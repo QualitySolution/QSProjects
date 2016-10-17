@@ -7,6 +7,7 @@ using NLog;
 namespace QSDocTemplates
 {
 	public abstract class DocParserBase<TDoc> : IDocParser
+		where TDoc : class
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -97,6 +98,11 @@ namespace QSDocTemplates
 		public void SortFields()
 		{
 			fieldsList.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.CurrentCulture));
+		}
+
+		public void SetDocObject(object doc)
+		{
+			RootObject = doc as TDoc;
 		}
 	}
 }
