@@ -31,7 +31,10 @@ namespace QSOrmProject
 		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
 		{
 			if(itemsSelfSet)
+			{
+				SearchHighlightTexts = RepresentationModel.SearchStrings;
 				base.ItemsDataSource = RepresentationModel.ItemsList;
+			}
 		}
 
 		public override object ItemsDataSource {
