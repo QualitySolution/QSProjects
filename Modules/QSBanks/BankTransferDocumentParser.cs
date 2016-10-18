@@ -18,6 +18,7 @@ namespace QSBanks
 		public List<Dictionary<string, string>> Accounts;
 
 		private List<Dictionary<string, string>> documents;
+		private Logger logger = LogManager.GetCurrentClassLogger();
 
 		public BankTransferDocumentParser (string documentPath)
 		{
@@ -110,16 +111,11 @@ namespace QSBanks
 			foreach (var document in documents) {
 				if (document["СекцияДокумент"] == "Мемориальный ордер")
 				{
-					LogManager.GetCurrentClassLogger().Info("Обнаружен мемориальный ордер...");
+					logger.Info("Пропущена секция \"Мемориальный ордер\"...");
 					continue;
 				}
 				TransferDocument doc = new TransferDocument ();
-				try {
-					doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
-				} catch(NotSupportedException ex) {
-					LogManager.GetCurrentClassLogger().Info("Обнаружена ошибка в документе: {0}", ex.Message);
-					continue;
-				}
+				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
 				doc.Number = document ["Номер"];
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
 				doc.Total = Decimal.Parse (document ["Сумма"], culture.NumberFormat);
