@@ -107,13 +107,13 @@ namespace QSBanks
 
 			TransferDocuments = new List<TransferDocument> ();
 			foreach (var document in documents) {
-				TransferDocument doc = new TransferDocument ();
-				try {
-					doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
-				} catch(NotSupportedException ex) {
-					LogManager.GetCurrentClassLogger().Info("Обнаружена ошибка в документе: {0}", ex.Message);
+				if (document["СекцияДокумент"] == "Мемориальный ордер")
+				{
+					LogManager.GetCurrentClassLogger().Info("Обнаружен мемориальный ордер...");
 					continue;
 				}
+				TransferDocument doc = new TransferDocument ();
+				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
 				doc.Number = document ["Номер"];
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
 				doc.Total = Decimal.Parse (document ["Сумма"], culture.NumberFormat);
