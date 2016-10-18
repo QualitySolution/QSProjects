@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using QSProjectsLib;
+using NLog;
 
 namespace QSBanks
 {
@@ -113,7 +114,12 @@ namespace QSBanks
 					continue;
 				}
 				TransferDocument doc = new TransferDocument ();
-				doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
+				try {
+					doc.DocumentType = TransferDocument.GetDocTypeFromString (document ["СекцияДокумент"]);
+				} catch(NotSupportedException ex) {
+					LogManager.GetCurrentClassLogger().Info("Обнаружена ошибка в документе: {0}", ex.Message);
+					continue;
+				}
 				doc.Number = document ["Номер"];
 				doc.Date = DateTime.Parse (document ["Дата"], culture);
 				doc.Total = Decimal.Parse (document ["Сумма"], culture.NumberFormat);
