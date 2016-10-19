@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NHibernate;
@@ -118,10 +119,9 @@ namespace QSOrmProject
 		public OrmReferenceMode Mode {
 			get { return mode; }
 			set {
-				if (value == OrmReferenceMode.MultiSelect)
-					throw new NotImplementedException ();
 				mode = value;
-				hboxSelect.Visible = (mode == OrmReferenceMode.Select);
+				hboxSelect.Visible = (mode == OrmReferenceMode.Select || mode == OrmReferenceMode.MultiSelect);
+				ytreeviewRef.Selection.Mode = (mode == OrmReferenceMode.MultiSelect) ? SelectionMode.Multiple : SelectionMode.Single;
 			}
 		}
 
@@ -382,7 +382,7 @@ namespace QSOrmProject
 
 		protected void OnYtreeviewRefRowActivated (object o, RowActivatedArgs args)
 		{
-			if (Mode == OrmReferenceMode.Select)
+			if (Mode == OrmReferenceMode.Select || Mode == OrmReferenceMode.MultiSelect)
 				buttonSelect.Click ();
 			else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
 				buttonEdit.Click ();
@@ -390,13 +390,18 @@ namespace QSOrmProject
 
 		protected void OnButtonSelectClicked (object sender, EventArgs e)
 		{
-			if (ObjectSelected != null) {
-				var selected = ytreeviewRef.GetSelectedObject();
-				logger.Debug("Выбрано {0} id:({1})", objectType, DomainHelper.GetId(selected));
-				ObjectSelected (this, new OrmReferenceObjectSectedEventArgs (
-					selected
-				));
+			if (ObjectSelected != null)
+			{
+				var selected = ytreeviewRef.GetSelectedObjects();
+				logger.Debug("Выбрано {0} id:({1})", objectType, 
+					String.Join(", ", selected.Select(x => DomainHelper.GetId(x).ToString()))
+				);
+				ObjectSelected(this, new OrmReferenceObjectSectedEventArgs(
+						selected
+					));
 			}
+			else
+				logger.Warn("Никто не подписался на событие выбора в диалоге.");
 			OnCloseTab ();
 		}
 
@@ -501,11 +506,18 @@ namespace QSOrmProject
 
 	public class OrmReferenceObjectSectedEventArgs : EventArgs
 	{
-		public object Subject { get; private set; }
+		public object Subject { get{ return Subjects[0];} }
 
-		public OrmReferenceObjectSectedEventArgs (object subject)
+		public object[] Subjects { get; private set; }
+
+		public IEnumerable<TEntity> GetEntities<TEntity>()
 		{
-			Subject = subject;
+			return Subjects.Cast<TEntity>();
+		}
+
+		public OrmReferenceObjectSectedEventArgs (object[] subjects)
+		{
+			Subjects = subjects;
 		}
 	}
 
