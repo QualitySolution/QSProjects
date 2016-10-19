@@ -408,6 +408,11 @@ namespace QSOrmProject
 			return Selected.Select (r => r.VMNode).Cast<TNode>();
 		}
 
+		public IEnumerable<int> GetSelectedIds ()
+		{
+			return Selected.Select (r => r.EntityId);
+		}
+
 		public ReferenceRepresentationSelectedEventArgs (RepresentationSelectResult[] selected)
 		{
 			Selected = selected;
