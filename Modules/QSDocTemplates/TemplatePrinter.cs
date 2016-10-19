@@ -36,18 +36,13 @@ namespace QSDocTemplates
 				{
 					worker.ReportProgress(step, document.Name);
 					var template = document.GetTemplate();
-					if (HasTemplate(template))
+					if (template != null)
 						fileWorker.OpenInOffice(template, true, FileEditMode.Document, true);
 					if (worker.IsCancelled)
 						return;
 					step++;
 				}
 			}
-		}
-
-		private static bool HasTemplate (IDocTemplate template)
-		{
-			return template != null;
 		}
 	}		
 
