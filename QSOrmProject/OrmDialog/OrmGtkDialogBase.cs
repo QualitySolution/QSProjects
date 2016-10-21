@@ -58,8 +58,11 @@ namespace QSOrmProject
 			}
 		}
 
+		private bool manualChange = false;
+
 		public virtual bool HasChanges { 
-			get { return UoWGeneric.HasChanges; }
+			get { return manualChange || UoWGeneric.HasChanges; }
+			set { manualChange = value; }
 		}
 
 		public object EntityObject {
