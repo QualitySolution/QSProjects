@@ -64,6 +64,8 @@ namespace QSDocTemplates
 			});
 
 			worker.FileUpdated += Worker_FileUpdated;
+			UpdateState();
+			UpdateSize();
 		}
 
 		void Worker_FileUpdated (object sender, FileUpdatedEventArgs e)
@@ -79,12 +81,14 @@ namespace QSDocTemplates
 			if (Template == null)
 			{
 				labelStatus.Markup = "<span foreground=\"red\">Шаблон не определен!</span>";
-				buttonEdit.Sensitive = buttonPrint.Sensitive = buttonRevertCommon.Sensitive = false;
+				buttonEdit.Sensitive = buttonPrint.Sensitive =
+					buttonRevertCommon.Sensitive = buttonOpen.Sensitive = false;
 			}
 			else if (Template.DocParser == null)
 			{
 				labelStatus.Markup = "<span foreground=\"red\">Парсер не задан!</span>";
-				buttonEdit.Sensitive = buttonPrint.Sensitive = buttonRevertCommon.Sensitive = false;
+				buttonEdit.Sensitive = buttonPrint.Sensitive =
+					buttonRevertCommon.Sensitive = buttonOpen.Sensitive = false;
 			}
 			else if(ChangedDoc != null)
 			{
@@ -92,12 +96,13 @@ namespace QSDocTemplates
 					labelStatus.Markup = "<span foreground=\"blue\">Собственный документ</span> <span foreground=\"green\">(изменён)</span>";
 				else
 					labelStatus.Markup = "<span foreground=\"blue\">Собственный документ</span>";
-				buttonEdit.Sensitive = buttonPrint.Sensitive = buttonRevertCommon.Sensitive = true;
+				buttonEdit.Sensitive = buttonPrint.Sensitive =
+					buttonRevertCommon.Sensitive = buttonOpen.Sensitive = true;
 			}
 			else
 			{
 				labelStatus.Markup = "<span foreground=\"green\">Общий шаблон</span>";
-				buttonEdit.Sensitive = buttonPrint.Sensitive = true;
+				buttonEdit.Sensitive = buttonPrint.Sensitive = buttonOpen.Sensitive = true;
 				buttonRevertCommon.Sensitive = false;
 			}
 		}
