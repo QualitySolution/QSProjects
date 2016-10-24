@@ -400,7 +400,7 @@ namespace QSOrmProject
 
 		protected override void OnDestroyed()
 		{
-			logger.Debug ("EntryReference Destroyed() called.");
+			logger.Debug ($"EntryReference {subjectType} Destroyed() called.");
 			//Отписываемся от событий.
 			if (subjectType != null) {
 				IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);

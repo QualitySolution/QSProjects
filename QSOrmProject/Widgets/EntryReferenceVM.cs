@@ -208,6 +208,20 @@ namespace QSOrmProject
 				OnChangedByUser();
 			}
 		}
+
+		protected override void OnDestroyed()
+		{
+			logger.Debug ("EntryReferenceVM Destroyed() called.");
+			//Отписываемся от событий.
+			if (subjectType != null) {
+				IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
+				map.ObjectUpdated -= OnExternalObjectUpdated;
+			}
+			if (subject is INotifyPropertyChanged) {
+				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
+			}
+			base.OnDestroyed();
+		}
 	}
 }
 
