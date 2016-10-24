@@ -279,6 +279,7 @@ namespace QSOrmProject
 			ytreeviewRef.ItemsDataSource = viewList;
 			var loadDelay = DateTime.Now.Subtract (searchStarted) - delayfilter;
 			logger.Debug("Загрузка таблицы {0} милисекунд.", loadDelay.TotalMilliseconds);
+			UpdateSum();
 		}
 
 		private void UpdateTreeViewSource()
