@@ -220,6 +220,8 @@ namespace QSOrmProject
 			if (subject is INotifyPropertyChanged) {
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
+			if (RepresentationModel != null)
+				RepresentationModel.Destroy();
 			base.OnDestroyed();
 		}
 	}

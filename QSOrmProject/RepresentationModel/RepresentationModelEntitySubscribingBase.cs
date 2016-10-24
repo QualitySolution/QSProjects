@@ -10,6 +10,7 @@ namespace QSOrmProject.RepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
+		private Type[] subcribeOnTypes;
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.
 		/// </summary>
@@ -22,6 +23,7 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelEntitySubscribingBase (params Type[] subcribeOnTypes)
 		{
+			this.subcribeOnTypes = subcribeOnTypes;
 			foreach (var type in subcribeOnTypes) {
 				var map = OrmMain.GetObjectDescription (type);
 				if (map != null)
@@ -42,6 +44,18 @@ namespace QSOrmProject.RepresentationModel
 
 			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
 				UpdateNodes ();
+		}
+
+		public void Destroy()
+		{
+			logger.Debug("{0} called Destroy()", this.GetType());
+			base.Destroy();
+			foreach (var type in subcribeOnTypes)
+			{
+				var map = OrmMain.GetObjectDescription(type);
+				if (map != null)
+					map.ObjectUpdated -= OnExternalUpdateCommon;
+			}
 		}
 	}
 }

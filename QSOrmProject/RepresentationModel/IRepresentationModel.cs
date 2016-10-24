@@ -34,6 +34,8 @@ namespace QSOrmProject.RepresentationModel
 		bool PopupMenuExist { get;}
 
 		Gtk.Menu GetPopupMenu(RepresentationSelectResult[] selected);
+
+		void Destroy();
 	}
 
 	public interface IRepresentationModelWithParent

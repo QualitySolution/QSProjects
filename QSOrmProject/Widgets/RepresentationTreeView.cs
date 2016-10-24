@@ -64,6 +64,17 @@ namespace QSOrmProject
 		{
 			return GetSelectedObject ();
 		}
+
+		protected override void OnDestroyed()
+		{
+			logger.Debug("{0} called Destroy()", this.GetType());
+
+			if (RepresentationModel != null)
+			{
+				RepresentationModel.Destroy();
+			}
+			base.OnDestroyed();
+		}
 	}
 }
 

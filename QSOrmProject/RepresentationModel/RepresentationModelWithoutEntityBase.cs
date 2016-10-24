@@ -16,6 +16,8 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		private Type[] subcribeOnTypes;
+
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.
 		/// </summary>
@@ -48,6 +50,18 @@ namespace QSOrmProject.RepresentationModel
 
 			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
 				UpdateNodes ();
+		}
+
+		public void Destroy()
+		{
+			logger.Debug("{0} called Destroy()", this.GetType());
+
+			foreach (var type in subcribeOnTypes)
+			{
+				var map = OrmMain.GetObjectDescription(type);
+				if (map != null)
+					map.ObjectUpdated -= OnExternalUpdateCommon;
+			}
 		}
 	}
 }

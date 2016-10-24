@@ -45,6 +45,14 @@ namespace QSOrmProject.RepresentationModel
 			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
 				UpdateNodes ();
 		}
+
+		public void Destroy()
+		{
+			logger.Debug("{0} called Destroy()", this.GetType());
+			var description = OrmMain.GetObjectDescription<TEntity> ();
+			if (description != null)
+				description.ObjectUpdatedGeneric -= OnExternalUpdate;
+		}
 	}
 }
 
