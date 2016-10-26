@@ -30,6 +30,7 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
 		{
+			this.subcribeOnTypes = subcribeOnTypes;
 			foreach (var type in subcribeOnTypes) {
 				var map = OrmMain.GetObjectDescription (type);
 				if (map != null)
