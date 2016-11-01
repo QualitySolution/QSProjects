@@ -12,6 +12,7 @@ namespace QSOrmProject
 		public BindingControler<DisableSpinButton> Binding { get; private set;}
 
 		public event EventHandler ValueChanged;
+		public event EventHandler ActiveChanged;
 
 		public bool Active{
 			get{
@@ -107,6 +108,7 @@ namespace QSOrmProject
 				(w => w.ValueAsInt),
 			});
 			OnValueChanged();
+			OnActiveChanged();
 		}
 
 		protected void OnSpinbuttonValueChanged(object sender, EventArgs e)
@@ -124,6 +126,14 @@ namespace QSOrmProject
 			if (ValueChanged != null)
 			{
 				ValueChanged(this, EventArgs.Empty);
+			}
+		}
+
+		protected void OnActiveChanged()
+		{
+			if (ActiveChanged != null)
+			{
+				ActiveChanged(this, EventArgs.Empty);
 			}
 		}
 	}
