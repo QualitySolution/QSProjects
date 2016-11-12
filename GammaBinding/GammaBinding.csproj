@@ -95,6 +95,8 @@
     <Compile Include="TreeModels\ColumnConfig\PixbufRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\SearchHighlightAttribute.cs" />
     <Compile Include="Core\Helpers\FetchPropertyInfoFromExpression.cs" />
+    <Compile Include="TreeModels\LevelTreeModel.cs" />
+    <Compile Include="TreeModels\LevelConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
