@@ -20,7 +20,7 @@ namespace QSTDI
 
 		private string tabName = String.Empty;
 
-		public string TabName {
+		public virtual string TabName {
 			get { return tabName;
 			}
 			protected set {
