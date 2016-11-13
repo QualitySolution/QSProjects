@@ -47,6 +47,17 @@ namespace Gamma.Binding
 
 		#region IyTreeModel implementation
 
+		public void EmitModelChanged()
+		{
+			OnRenewAdapter();
+		}
+
+		void OnRenewAdapter()
+		{
+			if (RenewAdapter != null)
+				RenewAdapter (this, EventArgs.Empty);
+		}
+
 		public TreeModel Adapter {
 			get { return adapter;
 			}

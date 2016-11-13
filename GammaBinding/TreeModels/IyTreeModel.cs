@@ -12,6 +12,8 @@ namespace Gamma.Binding
 		TreeIter IterFromNode (object node);
 
 		event EventHandler RenewAdapter;
+
+		void EmitModelChanged();
 	}
 }
 

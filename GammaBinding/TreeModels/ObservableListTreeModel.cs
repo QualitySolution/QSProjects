@@ -31,6 +31,11 @@ namespace Gamma.Binding
 			OnRenewAdapter ();
 		}
 
+		public void EmitModelChanged()
+		{
+			OnRenewAdapter();
+		}
+
 		void OnRenewAdapter()
 		{
 			if (RenewAdapter != null)
