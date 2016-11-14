@@ -48,6 +48,11 @@ namespace QSContacts
 			Number = String.Empty;
 			Additional = String.Empty;
 		}
+
+		public override string ToString()
+		{
+			return Number;
+		}
 	}
 }
 
