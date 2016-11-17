@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using QSOrmProject;
 using QSBusinessCommon.Domain;
+using NHibernate.Criterion;
 
 namespace QSBusinessCommon.Repository
 {
@@ -14,13 +15,13 @@ namespace QSBusinessCommon.Repository
 
 		public static MeasurementUnits GetDefaultGoodsUnit(IUnitOfWork uow) {
 			return uow.Session.QueryOver<MeasurementUnits>()
-				.Where(n => n.Name.Contains("шт"))
+				.Where(n => n.Name.IsLike("шт%"))
 				.Take(1).SingleOrDefault();
 		}
 
 		public static MeasurementUnits GetDefaultGoodsService(IUnitOfWork uow) {
 			return uow.Session.QueryOver<MeasurementUnits>()
-				.Where(n => n.Name.Contains("усл"))
+				.Where(n => n.Name.IsLike("усл%"))
 				.Take(1).SingleOrDefault();
 		}
 	}
