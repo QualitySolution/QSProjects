@@ -32,8 +32,18 @@ namespace QSOrmProject
 				if (sensitive == value)
 					return;
 				sensitive = value;
-				buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
-				buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
+				UpdateSensitive();
+			}
+		}
+
+		bool isEditable = true;
+		[Browsable (false)]
+		public bool IsEditable
+		{
+			get{return isEditable;}
+			set	{
+				isEditable = value;
+				UpdateSensitive();
 			}
 		}
 
@@ -207,6 +217,12 @@ namespace QSOrmProject
 				Subject = null;
 				OnChangedByUser();
 			}
+		}
+
+		void UpdateSensitive()
+		{
+			buttonEdit.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
+			buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
 		}
 
 		protected override void OnDestroyed()
