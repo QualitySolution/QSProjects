@@ -126,7 +126,7 @@ namespace Gamma.Binding
 		{
 			iter = TreeIter.Zero;
 			var list = GetChildsList(parent);
-			if (list == null && list.Count == 0)
+			if (list == null || list.Count == 0)
 				return false;
 
 			iter = IterFromNode(list[0]);
