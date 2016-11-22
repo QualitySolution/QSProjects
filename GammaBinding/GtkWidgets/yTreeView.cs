@@ -51,6 +51,11 @@ namespace Gamma.GtkWidgets
 		public virtual object ItemsDataSource {
 			get { return itemsDataSource; }
 			set {
+				if(value == null)
+				{
+					Model = null;
+					return;
+				}
 				var list = (value as IList);
 				if (list == null)
 					throw new NotSupportedException(String.Format(
