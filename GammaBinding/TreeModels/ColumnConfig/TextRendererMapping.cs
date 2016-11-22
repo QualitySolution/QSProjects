@@ -11,7 +11,7 @@ namespace Gamma.ColumnConfig
 		public string DataPropertyName { get; set;}
 		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
 
-		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> dataProperty)
+		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> dataProperty, bool useMarkup = false)
 			: base(column)
 		{
 			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(dataProperty);
@@ -27,7 +27,10 @@ namespace Gamma.ColumnConfig
 					break;
 				}
 			}
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = dataProperty.Compile ().Invoke (n));
+			if(useMarkup)
+				cellRenderer.LambdaSetters.Add ((c, n) => c.Markup = dataProperty.Compile ().Invoke (n));
+			else
+				cellRenderer.LambdaSetters.Add ((c, n) => c.Text = dataProperty.Compile ().Invoke (n));
 		}
 
 		public TextRendererMapping (ColumnMapping<TNode> column)

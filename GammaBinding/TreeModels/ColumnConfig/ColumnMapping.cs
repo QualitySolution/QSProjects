@@ -120,9 +120,9 @@ namespace Gamma.ColumnConfig
 
 		#region Renderers
 
-		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true)
+		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true, bool useMarkup = false)
 		{
-			var render = new TextRendererMapping<TNode> (this, dataProperty);
+			var render = new TextRendererMapping<TNode> (this, dataProperty, useMarkup);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
