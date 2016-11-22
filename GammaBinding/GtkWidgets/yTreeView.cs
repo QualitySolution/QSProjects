@@ -138,7 +138,7 @@ namespace Gamma.GtkWidgets
 			Binding = new BindingControler<yTreeView> (this);
 		}
 
-		bool ReconfigureColumns ()
+		void ReconfigureColumns ()
 		{
 			while (Columns.Length > 0)
 				RemoveColumn(Columns[0]);
@@ -179,8 +179,6 @@ namespace Gamma.GtkWidgets
 				}
 				AppendColumn (tvc);
 			}
-
-			return true;
 		}
 
 		private CellRenderer editingCell;
