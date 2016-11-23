@@ -49,8 +49,9 @@ namespace QSOrmProject
 				IsNew = false;
 				OrmMain.NotifyObjectUpdated(entityToSave.ToArray ());
 			}
-			catch
+			catch(Exception ex)
 			{
+				logger.Error(ex, "Исключение в момент комита.");
 				if(transaction.IsActive)
 					transaction.Rollback();
 				throw;
