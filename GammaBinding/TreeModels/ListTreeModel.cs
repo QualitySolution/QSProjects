@@ -184,6 +184,9 @@ namespace Gamma.Binding
 
 		public TreeIter IterFromNode (object node)
 		{
+			if (node == null)
+				return TreeIter.Zero;
+			
 			GCHandle gch;
 			if (node_hash [node] != null) {
 				gch = (GCHandle) node_hash [node];
