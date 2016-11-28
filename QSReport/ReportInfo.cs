@@ -43,7 +43,7 @@ namespace QSReport
 			var parametersBuild = new DBWorks.SQLHelper ();
 			foreach (var param in Parameters) {
 				string value;
-				if (param.Value is IEnumerable)
+				if (!(param.Value is string) && param.Value is IEnumerable)
 					value = BuildMiltiValue (param.Value as IEnumerable);
 				else
 					value = ValueToValidString (param.Value);
