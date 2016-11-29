@@ -72,6 +72,16 @@ namespace QSReport
 			return value.ToString ();
 		}
 
+		public bool UseUserVariables { get; set; } = false;
+
+		public string ConnectionString {
+			get {
+				if (UseUserVariables)
+					return QSMain.ConnectionString + ";Allow User Variables=True";
+				return QSMain.ConnectionString;
+			}
+		}
+
 		public ReportInfo ()
 		{
 

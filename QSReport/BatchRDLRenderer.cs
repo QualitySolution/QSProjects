@@ -46,21 +46,21 @@ namespace QSReport
 		{
 			if (document.PrintType == PrinterType.RDL)
 			{
-				Report report = GetReportFromFile(document.GetReportInfo().GetReportUri().LocalPath);
+				Report report = GetReportFromFile(document.GetReportInfo());
 				report.RunGetData(document.GetReportInfo().Parameters);
 				reportPages.Add(report.BuildPages());
 			}
 		}
 
-		private Report GetReportFromFile(string path)
+		private Report GetReportFromFile(ReportInfo reportInfo)
 		{
 			RDLParser rdlp;
 			Report r;
-			string source = System.IO.File.ReadAllText(path);
+			string source = System.IO.File.ReadAllText(reportInfo.GetPath());
 
 			rdlp = new RDLParser(source);
-			rdlp.Folder = System.IO.Path.GetDirectoryName (path);
-			rdlp.OverwriteConnectionString = QSMain.ConnectionString;
+			rdlp.Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
+			rdlp.OverwriteConnectionString = reportInfo.ConnectionString;
 			rdlp.OverwriteInSubreport = true;
 
 			r = rdlp.Parse();
