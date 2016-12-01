@@ -105,12 +105,22 @@ namespace QSOsm
 			this.TextInserted += CityEntryTextInserted;
 
 			this.Completion = new EntryCompletion ();
+			this.Completion.MinimumKeyLength = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 
 			this.Completion.MatchFunc = Completion_MatchFunc;
 			var cell = new CellRendererText ();
 			this.Completion.PackStart (cell, true);
 			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
+		}
+
+		//Костыль, для отображения выпадающего списка
+		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
+		{
+			if (evnt.Key == Gdk.Key.Control_R)
+				this.InsertText("");
+
+			return base.OnKeyPressEvent(evnt);
 		}
 
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)

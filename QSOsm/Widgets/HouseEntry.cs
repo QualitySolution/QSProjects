@@ -96,7 +96,15 @@ namespace QSOsm
 			houseNumber = Regex.Replace (houseNumber, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 			(cell as CellRendererText).Markup = houseNumber;
 		}
-
+			
+		//Костыль, для отображения выпадающего списка
+		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
+		{
+			if (evnt.Key == Gdk.Key.Control_R)
+				this.InsertText("");
+			
+			return base.OnKeyPressEvent(evnt);
+		}
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
