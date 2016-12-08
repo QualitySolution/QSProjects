@@ -68,26 +68,33 @@ namespace QSReport
 			return r;
 		}
 
-		public void DrawPage(object o,DrawPageArgs args){
+		public void DrawPage(object o, DrawPageArgs args){
 			var g = args.Context.CairoContext;
-			var printContext = args.Context;
-			int pageNumber = args.PageNr;
-			int reportNumber = 0;
-			while (pageNumber >= reportPages[reportNumber].PageCount)
-			{
-				pageNumber -= reportPages[reportNumber].PageCount;
-				reportNumber++;
-			}
+			int pageNumber, reportNumber;
+			CalculateDocPage(args.PageNr, out reportNumber, out pageNumber);
 
-			g.Save();
-			if (documents[reportNumber].Orientation == DocumentOrientation.Landscape)
-			{
-				g.Translate(printContext.Width, 0);
-				g.Rotate(Math.PI / 2);
-			}
 			RenderCairo render = new RenderCairo(g);
-			render.RunPage(reportPages[reportNumber][pageNumber]);		
-			g.Restore();
+
+			render.RunPage(reportPages[reportNumber][pageNumber]);
+		}
+
+		public void RequestPageSetup (object o, RequestPageSetupArgs args)
+		{
+			int docnum, page;
+			CalculateDocPage(args.PageNr, out docnum, out page);
+			args.Setup.Orientation = documents[docnum].Orientation == DocumentOrientation.Landscape 
+				? PageOrientation.Landscape : PageOrientation.Portrait;
+		}
+
+		void CalculateDocPage(int printPage, out int docNum, out int pageNum)
+		{
+			pageNum = printPage;
+			docNum = 0;
+			while (pageNum >= reportPages[docNum].PageCount)
+			{
+				pageNum -= reportPages[docNum].PageCount;
+				docNum++;
+			}
 		}
 	}
 }
