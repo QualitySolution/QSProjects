@@ -9,6 +9,8 @@
     <AssemblyName>QSProjectsLib</AssemblyName>
     <ReleaseVersion>0.9</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,10 +46,10 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="Mono.Posix" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.2.3\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.7\lib\net40\MySql.Data.dll</HintPath>
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
