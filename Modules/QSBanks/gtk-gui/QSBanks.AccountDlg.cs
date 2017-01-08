@@ -18,7 +18,7 @@ namespace QSBanks
 		
 		private global::Gtk.DataBindings.DataEntry dataentryName;
 		
-		private global::QSOrmProject.DataValidatedEntry dataentryNumber;
+		private global::Gamma.Widgets.yValidatedEntry dataentryNumber;
 		
 		private global::Gtk.DataBindings.DataEntryReference dataentryrefBank;
 		
@@ -54,6 +54,7 @@ namespace QSBanks
 			this.Name = "QSBanks.AccountDlg";
 			// Container child QSBanks.AccountDlg.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox ();
+			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.hbox4 = new global::Gtk.HBox ();
@@ -128,15 +129,12 @@ namespace QSBanks
 			w7.RightAttach = ((uint)(2));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
-			this.dataentryNumber = new global::QSOrmProject.DataValidatedEntry ();
+			this.dataentryNumber = new global::Gamma.Widgets.yValidatedEntry ();
 			this.dataentryNumber.CanFocus = true;
 			this.dataentryNumber.Name = "dataentryNumber";
 			this.dataentryNumber.IsEditable = true;
 			this.dataentryNumber.MaxLength = 25;
 			this.dataentryNumber.InvisibleChar = '●';
-			this.dataentryNumber.InheritedDataSource = true;
-			this.dataentryNumber.Mappings = "Number";
-			this.dataentryNumber.InheritedBoundaryDataSource = false;
 			this.datatableMain.Add (this.dataentryNumber);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryNumber]));
 			w8.TopAttach = ((uint)(1));

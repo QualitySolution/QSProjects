@@ -1,12 +1,12 @@
 ﻿using System;
-using NLog;
-using System.Data.Bindings;
-using QSOrmProject;
-using Gtk;
-using QSValidation;
-using NHibernate.Criterion;
 using System.ComponentModel;
+using System.Data.Bindings;
 using Gamma.Utilities;
+using Gtk;
+using NHibernate.Criterion;
+using NLog;
+using QSOrmProject;
+using QSValidation;
 
 namespace QSBanks
 {
@@ -47,6 +47,7 @@ namespace QSBanks
 			datatableMain.DataSource = subjectAdaptor;
 			datatableBank.DataSource = adaptorBank;
 			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
+			dataentryNumber.Binding.AddBinding(Entity, e => e.Number, w => w.Text).InitializeFromSource();
 			dataentryrefBank.ItemsCriteria = Session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false));
 			(Entity as INotifyPropertyChanged).PropertyChanged += OnAccountPropertyChanged;

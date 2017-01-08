@@ -13,6 +13,7 @@
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
+    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="436 318">
     <property name="MemberName" />
@@ -585,15 +586,12 @@
               </packing>
             </child>
             <child>
-              <widget class="QSOrmProject.DataValidatedEntry" id="dataentryNumber">
+              <widget class="Gamma.Widgets.yValidatedEntry" id="dataentryNumber">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
                 <property name="MaxLength">25</property>
                 <property name="InvisibleChar">●</property>
-                <property name="InheritedDataSource">True</property>
-                <property name="Mappings">Number</property>
-                <property name="InheritedBoundaryDataSource">False</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
