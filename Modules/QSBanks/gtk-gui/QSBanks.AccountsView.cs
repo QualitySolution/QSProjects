@@ -10,7 +10,7 @@ namespace QSBanks
 		
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		
-		private global::Gtk.DataBindings.DataTreeView datatreeviewAccounts;
+		private global::Gamma.GtkWidgets.yTreeView datatreeviewAccounts;
 		
 		private global::Gtk.HBox hbox1;
 		
@@ -30,6 +30,7 @@ namespace QSBanks
 			this.Name = "QSBanks.AccountsView";
 			// Container child QSBanks.AccountsView.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox ();
+			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.labelTitle = new global::Gtk.Label ();
@@ -46,15 +47,9 @@ namespace QSBanks
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.datatreeviewAccounts = new global::Gtk.DataBindings.DataTreeView ();
+			this.datatreeviewAccounts = new global::Gamma.GtkWidgets.yTreeView ();
 			this.datatreeviewAccounts.CanFocus = true;
 			this.datatreeviewAccounts.Name = "datatreeviewAccounts";
-			this.datatreeviewAccounts.CursorPointsEveryType = false;
-			this.datatreeviewAccounts.InheritedDataSource = false;
-			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
-			this.datatreeviewAccounts.InheritedDataSource = false;
-			this.datatreeviewAccounts.InheritedBoundaryDataSource = false;
-			this.datatreeviewAccounts.ColumnMappings = "";
 			this.GtkScrolledWindow.Add (this.datatreeviewAccounts);
 			this.vbox1.Add (this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.GtkScrolledWindow]));

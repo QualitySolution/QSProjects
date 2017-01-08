@@ -14,25 +14,25 @@ namespace QSBanks
 		
 		private global::Gtk.Label labelInactive;
 		
-		private global::Gtk.DataBindings.DataTable datatableMain;
+		private global::Gtk.Table datatableMain;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryName;
+		private global::Gamma.GtkWidgets.yEntry dataentryName;
 		
 		private global::Gamma.Widgets.yValidatedEntry dataentryNumber;
 		
-		private global::Gtk.DataBindings.DataEntryReference dataentryrefBank;
+		private global::Gamma.Widgets.yEntryReference dataentryrefBank;
 		
-		private global::Gtk.DataBindings.DataFrame dataframe1;
+		private global::Gtk.Frame dataframe1;
 		
 		private global::Gtk.Alignment GtkAlignment2;
 		
-		private global::Gtk.DataBindings.DataTable datatableBank;
+		private global::Gtk.Table datatableBank;
 		
-		private global::Gtk.DataBindings.DataLabel datalabelBik;
+		private global::Gamma.GtkWidgets.yLabel datalabelBik;
 		
-		private global::Gtk.DataBindings.DataLabel datalabelCity;
+		private global::Gamma.GtkWidgets.yLabel datalabelCity;
 		
-		private global::Gtk.DataBindings.DataLabel datalabelRegion;
+		private global::Gamma.GtkWidgets.yLabel datalabelRegion;
 		
 		private global::Gtk.Label label4;
 		
@@ -103,26 +103,16 @@ namespace QSBanks
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.datatableMain = new global::Gtk.DataBindings.DataTable (((uint)(4)), ((uint)(2)), false);
+			this.datatableMain = new global::Gtk.Table (((uint)(4)), ((uint)(2)), false);
 			this.datatableMain.Name = "datatableMain";
 			this.datatableMain.RowSpacing = ((uint)(6));
 			this.datatableMain.ColumnSpacing = ((uint)(6));
-			this.datatableMain.InheritedDataSource = false;
-			this.datatableMain.InheritedBoundaryDataSource = false;
-			this.datatableMain.InheritedDataSource = false;
-			this.datatableMain.InheritedBoundaryDataSource = false;
 			// Container child datatableMain.Gtk.Table+TableChild
-			this.dataentryName = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryName = new global::Gamma.GtkWidgets.yEntry ();
 			this.dataentryName.CanFocus = true;
 			this.dataentryName.Name = "dataentryName";
 			this.dataentryName.IsEditable = true;
 			this.dataentryName.InvisibleChar = '●';
-			this.dataentryName.InheritedDataSource = true;
-			this.dataentryName.Mappings = "Name";
-			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.InheritedDataSource = true;
-			this.dataentryName.Mappings = "Name";
-			this.dataentryName.InheritedBoundaryDataSource = false;
 			this.datatableMain.Add (this.dataentryName);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryName]));
 			w7.LeftAttach = ((uint)(1));
@@ -144,16 +134,12 @@ namespace QSBanks
 			w8.XOptions = ((global::Gtk.AttachOptions)(4));
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
-			this.dataentryrefBank = new global::Gtk.DataBindings.DataEntryReference ();
+			this.dataentryrefBank = new global::Gamma.Widgets.yEntryReference ();
 			this.dataentryrefBank.Events = ((global::Gdk.EventMask)(256));
 			this.dataentryrefBank.Name = "dataentryrefBank";
 			this.dataentryrefBank.DisplayFields = new string[] {
 				"Name"
 			};
-			this.dataentryrefBank.InheritedDataSource = true;
-			this.dataentryrefBank.Mappings = "InBank";
-			this.dataentryrefBank.InheritedBoundaryDataSource = false;
-			this.dataentryrefBank.CursorPointsEveryType = false;
 			this.datatableMain.Add (this.dataentryrefBank);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.datatableMain [this.dataentryrefBank]));
 			w9.TopAttach = ((uint)(2));
@@ -163,37 +149,22 @@ namespace QSBanks
 			w9.XOptions = ((global::Gtk.AttachOptions)(4));
 			w9.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableMain.Gtk.Table+TableChild
-			this.dataframe1 = new global::Gtk.DataBindings.DataFrame ();
+			this.dataframe1 = new global::Gtk.Frame ();
 			this.dataframe1.Name = "dataframe1";
 			this.dataframe1.ShadowType = ((global::Gtk.ShadowType)(1));
-			this.dataframe1.InheritedDataSource = false;
-			this.dataframe1.InheritedBoundaryDataSource = false;
-			this.dataframe1.InheritedDataSource = false;
-			this.dataframe1.InheritedBoundaryDataSource = false;
 			// Container child dataframe1.Gtk.Container+ContainerChild
 			this.GtkAlignment2 = new global::Gtk.Alignment (0F, 0F, 1F, 1F);
 			this.GtkAlignment2.Name = "GtkAlignment2";
 			this.GtkAlignment2.LeftPadding = ((uint)(12));
 			// Container child GtkAlignment2.Gtk.Container+ContainerChild
-			this.datatableBank = new global::Gtk.DataBindings.DataTable (((uint)(3)), ((uint)(2)), false);
+			this.datatableBank = new global::Gtk.Table (((uint)(3)), ((uint)(2)), false);
 			this.datatableBank.Name = "datatableBank";
 			this.datatableBank.RowSpacing = ((uint)(6));
 			this.datatableBank.ColumnSpacing = ((uint)(6));
-			this.datatableBank.InheritedDataSource = false;
-			this.datatableBank.InheritedBoundaryDataSource = false;
-			this.datatableBank.InheritedDataSource = false;
-			this.datatableBank.InheritedBoundaryDataSource = false;
 			// Container child datatableBank.Gtk.Table+TableChild
-			this.datalabelBik = new global::Gtk.DataBindings.DataLabel ();
+			this.datalabelBik = new global::Gamma.GtkWidgets.yLabel ();
 			this.datalabelBik.Name = "datalabelBik";
 			this.datalabelBik.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel1");
-			this.datalabelBik.InheritedDataSource = true;
-			this.datalabelBik.Mappings = "Bik";
-			this.datalabelBik.InheritedBoundaryDataSource = false;
-			this.datalabelBik.Important = false;
-			this.datalabelBik.InheritedDataSource = true;
-			this.datalabelBik.Mappings = "Bik";
-			this.datalabelBik.InheritedBoundaryDataSource = false;
 			this.datatableBank.Add (this.datalabelBik);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.datatableBank [this.datalabelBik]));
 			w10.LeftAttach = ((uint)(1));
@@ -201,16 +172,9 @@ namespace QSBanks
 			w10.XOptions = ((global::Gtk.AttachOptions)(4));
 			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableBank.Gtk.Table+TableChild
-			this.datalabelCity = new global::Gtk.DataBindings.DataLabel ();
+			this.datalabelCity = new global::Gamma.GtkWidgets.yLabel ();
 			this.datalabelCity.Name = "datalabelCity";
 			this.datalabelCity.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel1");
-			this.datalabelCity.InheritedDataSource = true;
-			this.datalabelCity.Mappings = "City";
-			this.datalabelCity.InheritedBoundaryDataSource = false;
-			this.datalabelCity.Important = false;
-			this.datalabelCity.InheritedDataSource = true;
-			this.datalabelCity.Mappings = "City";
-			this.datalabelCity.InheritedBoundaryDataSource = false;
 			this.datatableBank.Add (this.datalabelCity);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.datatableBank [this.datalabelCity]));
 			w11.TopAttach = ((uint)(2));
@@ -220,16 +184,9 @@ namespace QSBanks
 			w11.XOptions = ((global::Gtk.AttachOptions)(4));
 			w11.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableBank.Gtk.Table+TableChild
-			this.datalabelRegion = new global::Gtk.DataBindings.DataLabel ();
+			this.datalabelRegion = new global::Gamma.GtkWidgets.yLabel ();
 			this.datalabelRegion.Name = "datalabelRegion";
 			this.datalabelRegion.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel2");
-			this.datalabelRegion.InheritedDataSource = true;
-			this.datalabelRegion.Mappings = "GetRegionString";
-			this.datalabelRegion.InheritedBoundaryDataSource = false;
-			this.datalabelRegion.Important = false;
-			this.datalabelRegion.InheritedDataSource = true;
-			this.datalabelRegion.Mappings = "GetRegionString";
-			this.datalabelRegion.InheritedBoundaryDataSource = false;
 			this.datatableBank.Add (this.datalabelRegion);
 			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.datatableBank [this.datalabelRegion]));
 			w12.TopAttach = ((uint)(1));
@@ -323,7 +280,6 @@ namespace QSBanks
 			this.Hide ();
 			this.buttonSave.Clicked += new global::System.EventHandler (this.OnButtonSaveClicked);
 			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelClicked);
-			this.dataentryrefBank.Changed += new global::System.EventHandler (this.OnDataentryrefBankChanged);
 		}
 	}
 }

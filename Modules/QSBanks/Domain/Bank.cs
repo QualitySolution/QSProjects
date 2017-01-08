@@ -52,6 +52,7 @@ namespace QSBanks
 
 		[Required (ErrorMessage = "Регион является обязательным полем.")]
 		[Display (Name = "Регион")]
+		[PropertyChangedAlso("RegionText")]
 		public virtual BankRegion Region {
 			get { return region; }
 			set { SetField (ref region, value, () => Region); }
@@ -101,7 +102,7 @@ namespace QSBanks
 
 		#region IValidatableObject implementation
 
-		public virtual String GetRegionString { get { return Region == null ? "" : 
+		public virtual String RegionText { get { return Region == null ? "" : 
 				String.Format ("{0} {1} {2}", Region.RegionNum, Region.Region, Region.City); } }
 
 		public System.Collections.Generic.IEnumerable<ValidationResult> Validate (ValidationContext validationContext)

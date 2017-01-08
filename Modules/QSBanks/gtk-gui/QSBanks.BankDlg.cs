@@ -14,17 +14,15 @@ namespace QSBanks
 		
 		private global::Gtk.Label labelDeleted;
 		
-		private global::Gtk.DataBindings.DataTable datatableInfo;
+		private global::Gtk.Table datatableInfo;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryBik;
+		private global::Gamma.GtkWidgets.yEntry dataentryBik;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryCity;
+		private global::Gamma.GtkWidgets.yEntry dataentryCity;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryCorAccount;
+		private global::Gamma.GtkWidgets.yEntry dataentryCorAccount;
 		
-		private global::Gtk.DataBindings.DataEntry dataentryName;
-		
-		private global::Gtk.DataBindings.DataLabel datalabel1;
+		private global::Gamma.GtkWidgets.yEntry dataentryName;
 		
 		private global::Gtk.Label label1;
 		
@@ -35,6 +33,8 @@ namespace QSBanks
 		private global::Gtk.Label label4;
 		
 		private global::Gtk.Label label5;
+		
+		private global::Gamma.GtkWidgets.yLabel labelRegion;
 
 		protected virtual void Build ()
 		{
@@ -92,27 +92,17 @@ namespace QSBanks
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.datatableInfo = new global::Gtk.DataBindings.DataTable (((uint)(5)), ((uint)(2)), false);
+			this.datatableInfo = new global::Gtk.Table (((uint)(5)), ((uint)(2)), false);
 			this.datatableInfo.Name = "datatableInfo";
 			this.datatableInfo.RowSpacing = ((uint)(6));
 			this.datatableInfo.ColumnSpacing = ((uint)(6));
-			this.datatableInfo.InheritedDataSource = false;
-			this.datatableInfo.InheritedBoundaryDataSource = false;
-			this.datatableInfo.InheritedDataSource = false;
-			this.datatableInfo.InheritedBoundaryDataSource = false;
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.dataentryBik = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryBik = new global::Gamma.GtkWidgets.yEntry ();
 			this.dataentryBik.CanFocus = true;
 			this.dataentryBik.Name = "dataentryBik";
 			this.dataentryBik.IsEditable = true;
 			this.dataentryBik.MaxLength = 9;
 			this.dataentryBik.InvisibleChar = '●';
-			this.dataentryBik.InheritedDataSource = true;
-			this.dataentryBik.Mappings = "Bik";
-			this.dataentryBik.InheritedBoundaryDataSource = false;
-			this.dataentryBik.InheritedDataSource = true;
-			this.dataentryBik.Mappings = "Bik";
-			this.dataentryBik.InheritedBoundaryDataSource = false;
 			this.datatableInfo.Add (this.dataentryBik);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryBik]));
 			w7.TopAttach = ((uint)(1));
@@ -122,18 +112,12 @@ namespace QSBanks
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.dataentryCity = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryCity = new global::Gamma.GtkWidgets.yEntry ();
 			this.dataentryCity.CanFocus = true;
 			this.dataentryCity.Name = "dataentryCity";
 			this.dataentryCity.IsEditable = true;
 			this.dataentryCity.MaxLength = 45;
 			this.dataentryCity.InvisibleChar = '●';
-			this.dataentryCity.InheritedDataSource = true;
-			this.dataentryCity.Mappings = "City";
-			this.dataentryCity.InheritedBoundaryDataSource = false;
-			this.dataentryCity.InheritedDataSource = true;
-			this.dataentryCity.Mappings = "City";
-			this.dataentryCity.InheritedBoundaryDataSource = false;
 			this.datatableInfo.Add (this.dataentryCity);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryCity]));
 			w8.TopAttach = ((uint)(4));
@@ -143,18 +127,12 @@ namespace QSBanks
 			w8.XOptions = ((global::Gtk.AttachOptions)(4));
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.dataentryCorAccount = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryCorAccount = new global::Gamma.GtkWidgets.yEntry ();
 			this.dataentryCorAccount.CanFocus = true;
 			this.dataentryCorAccount.Name = "dataentryCorAccount";
 			this.dataentryCorAccount.IsEditable = true;
 			this.dataentryCorAccount.MaxLength = 25;
 			this.dataentryCorAccount.InvisibleChar = '●';
-			this.dataentryCorAccount.InheritedDataSource = true;
-			this.dataentryCorAccount.Mappings = "CorAccount";
-			this.dataentryCorAccount.InheritedBoundaryDataSource = false;
-			this.dataentryCorAccount.InheritedDataSource = true;
-			this.dataentryCorAccount.Mappings = "CorAccount";
-			this.dataentryCorAccount.InheritedBoundaryDataSource = false;
 			this.datatableInfo.Add (this.dataentryCorAccount);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryCorAccount]));
 			w9.TopAttach = ((uint)(2));
@@ -164,94 +142,81 @@ namespace QSBanks
 			w9.XOptions = ((global::Gtk.AttachOptions)(4));
 			w9.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.dataentryName = new global::Gtk.DataBindings.DataEntry ();
+			this.dataentryName = new global::Gamma.GtkWidgets.yEntry ();
 			this.dataentryName.CanFocus = true;
 			this.dataentryName.Name = "dataentryName";
 			this.dataentryName.IsEditable = true;
 			this.dataentryName.MaxLength = 200;
 			this.dataentryName.InvisibleChar = '●';
-			this.dataentryName.InheritedDataSource = true;
-			this.dataentryName.Mappings = "Name";
-			this.dataentryName.InheritedBoundaryDataSource = false;
-			this.dataentryName.InheritedDataSource = true;
-			this.dataentryName.Mappings = "Name";
-			this.dataentryName.InheritedBoundaryDataSource = false;
 			this.datatableInfo.Add (this.dataentryName);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.dataentryName]));
 			w10.LeftAttach = ((uint)(1));
 			w10.RightAttach = ((uint)(2));
 			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
-			this.datalabel1 = new global::Gtk.DataBindings.DataLabel ();
-			this.datalabel1.Name = "datalabel1";
-			this.datalabel1.LabelProp = global::Mono.Unix.Catalog.GetString ("datalabel1");
-			this.datalabel1.Selectable = true;
-			this.datalabel1.InheritedDataSource = true;
-			this.datalabel1.Mappings = "GetRegionString";
-			this.datalabel1.InheritedBoundaryDataSource = false;
-			this.datalabel1.Important = false;
-			this.datalabel1.InheritedDataSource = true;
-			this.datalabel1.Mappings = "GetRegionString";
-			this.datalabel1.InheritedBoundaryDataSource = false;
-			this.datatableInfo.Add (this.datalabel1);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.datalabel1]));
-			w11.TopAttach = ((uint)(3));
-			w11.BottomAttach = ((uint)(4));
-			w11.LeftAttach = ((uint)(1));
-			w11.RightAttach = ((uint)(2));
-			w11.XOptions = ((global::Gtk.AttachOptions)(4));
-			w11.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child datatableInfo.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 1F;
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Название:");
 			this.datatableInfo.Add (this.label1);
-			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label1]));
-			w12.XOptions = ((global::Gtk.AttachOptions)(4));
-			w12.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label1]));
+			w11.XOptions = ((global::Gtk.AttachOptions)(4));
+			w11.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 1F;
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("БИК:");
 			this.datatableInfo.Add (this.label2);
-			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label2]));
-			w13.TopAttach = ((uint)(1));
-			w13.BottomAttach = ((uint)(2));
-			w13.XOptions = ((global::Gtk.AttachOptions)(4));
-			w13.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label2]));
+			w12.TopAttach = ((uint)(1));
+			w12.BottomAttach = ((uint)(2));
+			w12.XOptions = ((global::Gtk.AttachOptions)(4));
+			w12.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 1F;
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Кор. счет:");
 			this.datatableInfo.Add (this.label3);
-			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label3]));
-			w14.TopAttach = ((uint)(2));
-			w14.BottomAttach = ((uint)(3));
-			w14.XOptions = ((global::Gtk.AttachOptions)(4));
-			w14.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label3]));
+			w13.TopAttach = ((uint)(2));
+			w13.BottomAttach = ((uint)(3));
+			w13.XOptions = ((global::Gtk.AttachOptions)(4));
+			w13.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Регион:");
 			this.datatableInfo.Add (this.label4);
-			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label4]));
-			w15.TopAttach = ((uint)(3));
-			w15.BottomAttach = ((uint)(4));
-			w15.XOptions = ((global::Gtk.AttachOptions)(4));
-			w15.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label4]));
+			w14.TopAttach = ((uint)(3));
+			w14.BottomAttach = ((uint)(4));
+			w14.XOptions = ((global::Gtk.AttachOptions)(4));
+			w14.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatableInfo.Gtk.Table+TableChild
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
 			this.label5.Xalign = 1F;
 			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Город:");
 			this.datatableInfo.Add (this.label5);
-			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label5]));
-			w16.TopAttach = ((uint)(4));
-			w16.BottomAttach = ((uint)(5));
+			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.label5]));
+			w15.TopAttach = ((uint)(4));
+			w15.BottomAttach = ((uint)(5));
+			w15.XOptions = ((global::Gtk.AttachOptions)(4));
+			w15.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child datatableInfo.Gtk.Table+TableChild
+			this.labelRegion = new global::Gamma.GtkWidgets.yLabel ();
+			this.labelRegion.Name = "labelRegion";
+			this.labelRegion.LabelProp = global::Mono.Unix.Catalog.GetString ("отсутствует");
+			this.labelRegion.Selectable = true;
+			this.datatableInfo.Add (this.labelRegion);
+			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.datatableInfo [this.labelRegion]));
+			w16.TopAttach = ((uint)(3));
+			w16.BottomAttach = ((uint)(4));
+			w16.LeftAttach = ((uint)(1));
+			w16.RightAttach = ((uint)(2));
 			w16.XOptions = ((global::Gtk.AttachOptions)(4));
 			w16.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox1.Add (this.datatableInfo);

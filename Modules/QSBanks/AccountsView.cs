@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data.Bindings.Collections.Generic;
 using Gtk;
-using Gtk.DataBindings;
 using QSOrmProject;
 using QSTDI;
 
@@ -21,7 +19,7 @@ namespace QSBanks
 				parentReference = value;
 				if (parentReference != null) {
 					UoW = parentReference.ParentUoW;
-					datatreeviewAccounts.ColumnMappingConfig = FluentMappingConfig<Account>.Create ()
+					datatreeviewAccounts.ColumnsConfig = Gamma.ColumnConfig.FluentColumnsConfig<Account>.Create ()
 						.AddColumn ("Осн.").SetDataProperty (node => node.IsDefault)
 						.AddColumn ("Псевдоним").SetDataProperty (node => node.Name)
 						.AddColumn ("В банке").AddTextRenderer (a => a.InBank != null ? a.InBank.Name : "нет")

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data.Bindings;
 using Gamma.Utilities;
 using Gtk;
 using NHibernate.Criterion;
@@ -14,7 +13,6 @@ namespace QSBanks
 	public partial class AccountDlg : OrmGtkDialogBase<Account>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private Adaptor adaptorBank = new Adaptor ();
 
 		IParentReference<Account> parentReference;
 
@@ -44,14 +42,36 @@ namespace QSBanks
 		private void ConfigureDlg ()
 		{
 			dataentryrefBank.SubjectType = typeof(Bank);
-			datatableMain.DataSource = subjectAdaptor;
-			datatableBank.DataSource = adaptorBank;
 			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
 			dataentryNumber.Binding.AddBinding(Entity, e => e.Number, w => w.Text).InitializeFromSource();
-			dataentryrefBank.ItemsCriteria = Session.CreateCriteria<Bank> ()
+			dataentryrefBank.ItemsCriteria = UoW.Session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false));
-			(Entity as INotifyPropertyChanged).PropertyChanged += OnAccountPropertyChanged;
-			datalabelBik.Text = datalabelRegion.Text = datalabelCity.Text = String.Empty;
+			dataentryrefBank.Binding.AddBinding(Entity, e => e.InBank, w => w.Subject).InitializeFromSource();
+			Entity.PropertyChanged += OnAccountPropertyChanged;
+
+			dataentryName.Binding.AddBinding(Entity, e => e.Name, w => w.Text).InitializeFromSource();
+			Entity.PropertyChanged += Entity_PropertyChanged;
+			UpdateBankInfo();
+		}
+
+		void Entity_PropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName ==  Entity.GetPropertyName(x => x.InBank))
+			{
+				UpdateBankInfo();
+			}
+		}
+
+		void UpdateBankInfo()
+		{
+			if(Entity.InBank == null)
+				datalabelBik.Text = datalabelRegion.Text = datalabelCity.Text = String.Empty;
+			else
+			{
+				datalabelBik.Text = Entity.InBank.Bik;
+				datalabelRegion.Text = Entity.InBank.RegionText;
+				datalabelCity.Text = Entity.InBank.City;
+			}
 		}
 
 		void OnAccountPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -71,11 +91,6 @@ namespace QSBanks
 			UoWGeneric.Save ();
 			logger.Info ("Ok");
 			return true;
-		}
-
-		protected void OnDataentryrefBankChanged (object sender, EventArgs e)
-		{
-			adaptorBank.Target = Entity.InBank;
 		}
 	}
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using NHibernate;
-using System.Data.Bindings;
-using QSTDI;
 using QSOrmProject;
 using QSValidation;
 
@@ -27,7 +24,12 @@ namespace QSBanks
 			if (UoWGeneric.Root.Deleted) {
 				labelDeleted.Markup = "<span foreground=\"red\">Банк удалён.</span>";
 			}
-			datatableInfo.DataSource = subjectAdaptor;
+
+			dataentryName.Binding.AddBinding(Entity, e => e.Name, w => w.Text).InitializeFromSource();
+			dataentryBik.Binding.AddBinding(Entity, e => e.Bik, w => w.Text).InitializeFromSource();
+			dataentryCorAccount.Binding.AddBinding(Entity, e => e.CorAccount, w => w.Text).InitializeFromSource();
+			dataentryCity.Binding.AddBinding(Entity, e => e.City, w => w.Text).InitializeFromSource();
+			labelRegion.Binding.AddBinding(Entity, e => e.RegionText, w => w.Text).InitializeFromSource();
 		}
 
 		public override bool Save ()
