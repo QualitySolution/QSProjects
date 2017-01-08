@@ -70,7 +70,6 @@
     <Compile Include="Enums.cs" />
     <Compile Include="DataWidgets\DataCompanyName.cs" />
     <Compile Include="ObjectCloner.cs" />
-    <Compile Include="DataWidgets\DataTimeEntry.cs" />
     <Compile Include="Deletion\DeleteDlg.cs" />
     <Compile Include="Deletion\DeleteInfo.cs" />
     <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteDlg.cs" />
@@ -148,6 +147,7 @@
     <Compile Include="Helpers\GtkMenuHelper.cs" />
     <Compile Include="Widgets\DisableSpinButton.cs" />
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
+    <Compile Include="yWidgets\yTimeEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
