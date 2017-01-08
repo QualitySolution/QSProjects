@@ -52,6 +52,9 @@
     <Reference Include="DataAnnotationsExtensions">
       <HintPath>..\..\packages\DataAnnotationsExtensions.5.0.1.16\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
     </Reference>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="Repositories\BankRepository.cs" />
     <Compile Include="BankTransferDocumentParser.cs" />
     <Compile Include="TransferDocument.cs" />
+    <Compile Include="HMap\AccountMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -125,6 +129,7 @@
     <Folder Include="Dialogs\" />
     <Folder Include="Representations\" />
     <Folder Include="Repositories\" />
+    <Folder Include="HMap\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

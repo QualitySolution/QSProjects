@@ -12,16 +12,6 @@
 	 	<property name="City" column="city" />
 	 	<property name="Deleted" column="deleted" />
  	</class>
- 	<class name="Account" table="accounts">
-		<id name="Id" column="id">
-			<generator class="native"></generator>
-	 	</id>
-	 	<property name="Name" column="name" />
-	 	<property name="Number" column="number" />
-	 	<property name="Code1c" column="code_1c" />
-	 	<property name="Inactive" column="inactive" />
-	 	<many-to-one name="InBank" class="Bank" column="bank_id" />
- 	</class>
  	<class name="BankRegion" lazy="false" table="bank_regions">
 		<id name="Id" column="id">
 			<generator class="native"></generator>
