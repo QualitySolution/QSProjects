@@ -6,7 +6,7 @@ namespace QSContacts
 	{
 		private global::Gtk.VBox vbox1;
 		
-		private global::Gtk.DataBindings.DataTable datatablePhones;
+		private global::Gtk.Table datatablePhones;
 		
 		private global::Gtk.Button buttonAdd;
 
@@ -20,13 +20,9 @@ namespace QSContacts
 			this.vbox1 = new global::Gtk.VBox ();
 			this.vbox1.Name = "vbox1";
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.datatablePhones = new global::Gtk.DataBindings.DataTable (((uint)(1)), ((uint)(6)), false);
+			this.datatablePhones = new global::Gtk.Table (((uint)(1)), ((uint)(6)), false);
 			this.datatablePhones.Name = "datatablePhones";
 			this.datatablePhones.ColumnSpacing = ((uint)(6));
-			this.datatablePhones.InheritedDataSource = false;
-			this.datatablePhones.InheritedBoundaryDataSource = false;
-			this.datatablePhones.InheritedDataSource = false;
-			this.datatablePhones.InheritedBoundaryDataSource = false;
 			this.vbox1.Add (this.datatablePhones);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.datatablePhones]));
 			w1.Position = 0;

@@ -11,6 +11,8 @@ namespace QSContacts
 
 		public static int MinSavePhoneLength = 7;
 
+		public static string DefaultCityCode;
+
 		public static List<IOrmObjectMapping> GetModuleMaping ()
 		{
 			return new List<IOrmObjectMapping> {

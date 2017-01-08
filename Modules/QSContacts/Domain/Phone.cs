@@ -1,12 +1,11 @@
 ﻿using System;
 using QSOrmProject;
-using System.Data.Bindings;
 using System.Text.RegularExpressions;
 
 namespace QSContacts
 {
 	[OrmSubject("Телефоны")]
-	public class Phone : BaseNotifyPropertyChanged
+	public class Phone : PropertyChangedBase
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
@@ -19,8 +18,8 @@ namespace QSContacts
 			}
 			set
 			{
-				number = value;
-				DigitsNumber = Regex.Replace (Number, "[^0-9]", "");
+				if(SetField (ref number, value, () => Number))
+					DigitsNumber = Regex.Replace (Number, "[^0-9]", "");
 			}
 		}
 		public virtual string DigitsNumber { get; private set; }
@@ -35,17 +34,17 @@ namespace QSContacts
 			}
 			set
 			{
-				if (numberType == value)
-					return;
-				numberType = value;
-				OnPropertyChanged("NumberType");
+				SetField(ref numberType, value, () => NumberType);
 			}
 		}
 		#endregion
 
 		public Phone()
 		{
-			Number = String.Empty;
+			if (String.IsNullOrWhiteSpace(QSContactsMain.DefaultCityCode))
+				Number = String.Empty;
+			else
+				Number = String.Format("({0})", QSContactsMain.DefaultCityCode);
 			Additional = String.Empty;
 		}
 

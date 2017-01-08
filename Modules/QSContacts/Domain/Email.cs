@@ -1,20 +1,30 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using QSOrmProject;
-using System.Data.Bindings;
 
 namespace QSContacts
 {
 	[OrmSubject("E-mail")]
-	public class Email
+	public class Email : PropertyChangedBase, IDomainObject
 	{
 		public virtual int Id { get; set; }
-		public virtual string Address { get; set; }
-		public virtual EmailType EmailType { get; set; }
 
-		public Email ()
-		{
-			Address = String.Empty;
+		private string address;
+
+		[Display (Name = "Электронный адрес")]
+		public virtual string Address {
+		    get { return address; }
+		    set { SetField (ref address, value, () => Address); }
 		}
+
+		private EmailType emailType;
+
+		[Display (Name = "Тип адреса")]
+		public virtual EmailType EmailType {
+		    get { return emailType; }
+		    set { SetField (ref emailType, value, () => EmailType); }
+		}
+			
 	}
 }
 

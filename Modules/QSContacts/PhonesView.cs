@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Bindings;
-using System.Data.Bindings.Collections;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
+using Gamma.GtkWidgets;
+using Gamma.Widgets;
 using Gtk;
-using Gtk.DataBindings;
-using NHibernate;
 using NLog;
 using QSOrmProject;
-using QSSupportLib;
 using QSWidgetLib;
 
 namespace QSContacts
@@ -19,14 +17,14 @@ namespace QSContacts
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private GenericObservableList<Phone> PhonesList;
-		private Adaptor PhoneTypesAdaptor = new Adaptor ();
+		private IList<PhoneType> phoneTypes;
 		private IUnitOfWork uow;
 
 		public IUnitOfWork UoW {
 			get { return uow; }
 			set { 
 				uow = value;
-				PhoneTypesAdaptor.Target = PhoneTypeRepository.GetPhoneTypes (uow);
+				phoneTypes = PhoneTypeRepository.GetPhoneTypes (uow);
 			}
 		}
 
@@ -98,30 +96,30 @@ namespace QSContacts
 		private void AddPhoneRow (Phone newPhone)
 		{
 			datatablePhones.NRows = RowNum + 1;
-			Adaptor rowAdaptor = new Adaptor (newPhone);
 
-			DataComboBox phoneDataCombo = new DataComboBox (rowAdaptor, "NumberType");
+			var phoneDataCombo = new yListComboBox();
 			phoneDataCombo.WidthRequest = 100;
-			phoneDataCombo.ItemsDataSource = PhoneTypesAdaptor;
-			phoneDataCombo.ColumnMappings = "{QSContacts.PhoneType} Name[Имя]";
+			phoneDataCombo.SetRenderTextFunc((PhoneType x) => x.Name);
+			phoneDataCombo.ItemsList = phoneTypes;
+			phoneDataCombo.Binding.AddBinding(newPhone, e => e.NumberType, w => w.SelectedItem).InitializeFromSource();
 			datatablePhones.Attach (phoneDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textPhoneLabel = new Gtk.Label ("+7");
 			datatablePhones.Attach (textPhoneLabel, (uint)1, (uint)2, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry phoneDataEntry = new DataValidatedEntry (rowAdaptor, "Number");
+			var phoneDataEntry = new yValidatedEntry ();
 			phoneDataEntry.ValidationMode = ValidationType.phone;
-			if (MainSupport.BaseParameters.All.ContainsKey ("default_city_code") && newPhone.DigitsNumber == String.Empty)
-				phoneDataEntry.SetDefaultCityCode (MainSupport.BaseParameters.All ["default_city_code"]);
 			phoneDataEntry.WidthChars = 19;
+			phoneDataEntry.Binding.AddBinding(newPhone, e => e.Number, w => w.Text).InitializeFromSource();
 			datatablePhones.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label textAdditionalLabel = new Gtk.Label ("доб.");
 			datatablePhones.Attach (textAdditionalLabel, (uint)3, (uint)4, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataEntry additionalDataEntry = new DataEntry (rowAdaptor, "Additional");
+			var additionalDataEntry = new yEntry ();
 			additionalDataEntry.WidthRequest = 50;
 			additionalDataEntry.MaxLength = 10;
+			additionalDataEntry.Binding.AddBinding(newPhone, e => e.Additional, w => w.Text).InitializeFromSource();
 			datatablePhones.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
@@ -173,7 +171,7 @@ namespace QSContacts
 					uint Left = ((Table.TableChild)(this.datatablePhones [w])).LeftAttach;
 					uint Right = ((Table.TableChild)(this.datatablePhones [w])).RightAttach;
 					datatablePhones.Remove (w);
-					if (w.GetType () == typeof(DataComboBox))
+					if (w.GetType () == typeof(yListComboBox))
 						datatablePhones.Attach (w, Left, Right, Row - 1, Row, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 					else
 						datatablePhones.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);

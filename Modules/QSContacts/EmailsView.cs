@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Data.Bindings;
-using Gtk.DataBindings;
-using NLog;
-using NHibernate;
-using System.Data.Bindings.Collections.Generic;
-using System.Data.Bindings.Collections;
 using System.Collections.Generic;
+using System.Data.Bindings;
+using System.Data.Bindings.Collections.Generic;
+using System.Linq;
+using Gamma.Widgets;
 using Gtk;
+using NLog;
 using QSOrmProject;
 using QSWidgetLib;
 
@@ -16,20 +15,19 @@ namespace QSContacts
 	public partial class EmailsView : Gtk.Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private ISession session;
+		private IUnitOfWork uow;
 		private GenericObservableList<Email> EmailsList;
-		private Adaptor EmailTypesAdaptor = new Adaptor();
+		private IList<EmailType> emailTypes;
 
-		public ISession Session
+		public IUnitOfWork UoW
 		{
 			get {
-				return session;
+				return uow;
 			}
 			set {
-				session = value;
-				if (session != null) {
-					var criteria = session.CreateCriteria<EmailType>();
-					EmailTypesAdaptor.Target = new ObservableList (criteria.List ());
+				uow = value;
+				if (uow != null) {
+					emailTypes = UoW.GetAll<EmailType>().ToList();
 				}
 			}
 		}
@@ -107,16 +105,17 @@ namespace QSContacts
 		private void AddEmailRow(Email newEmail) 
 		{
 			datatableEmails.NRows = RowNum + 1;
-			Adaptor rowAdaptor = new Adaptor(newEmail);
 
-			DataComboBox emailDataCombo = new DataComboBox (rowAdaptor, "EmailType");
+			var emailDataCombo = new yListComboBox();
 			emailDataCombo.WidthRequest = 100;
-			emailDataCombo.ItemsDataSource = EmailTypesAdaptor;
-			emailDataCombo.ColumnMappings = "{QSContacts.EmailType} Name[Имя]";
+			emailDataCombo.SetRenderTextFunc ((EmailType x) => x.Name);
+			emailDataCombo.ItemsList = emailTypes;
+			emailDataCombo.Binding.AddBinding(newEmail, e => e.EmailType, w => w.SelectedItem).InitializeFromSource();
 			datatableEmails.Attach (emailDataCombo, (uint)0, (uint)1, RowNum, RowNum + 1, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry emailDataEntry = new DataValidatedEntry (rowAdaptor, "Address");
+			yValidatedEntry emailDataEntry = new yValidatedEntry();
 			emailDataEntry.ValidationMode = ValidationType.email;
+			emailDataEntry.Binding.AddBinding(newEmail, e => e.Address, w => w.Text).InitializeFromSource();
 			datatableEmails.Attach (emailDataEntry, (uint)1, (uint)2, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
@@ -171,7 +170,7 @@ namespace QSContacts
 					uint Left = ((Table.TableChild)(this.datatableEmails [w])).LeftAttach;
 					uint Right = ((Table.TableChild)(this.datatableEmails [w])).RightAttach;
 					datatableEmails.Remove (w);
-					if (w.GetType() == typeof(DataComboBox))
+					if (w.GetType() == typeof(yListComboBox))
 						datatableEmails.Attach (w, Left, Right, Row - 1, Row, AttachOptions.Fill | AttachOptions.Expand, (AttachOptions)0, (uint)0, (uint)0);
 					else
 						datatableEmails.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
@@ -186,12 +185,15 @@ namespace QSContacts
 			}
 		}
 
+		/// <summary>
+		/// Вызывает сохранение для каждой строки емейла. Лучше не использовать этот метод а использовать каскадное сохранение.
+		/// </summary>
 		public void SaveChanges()
 		{
 			foreach(Email email in EmailsList)
 			{
 				if(email.Address != "")
-					Session.SaveOrUpdate(email);
+					UoW.Save(email);
 			}
 		}
 	}

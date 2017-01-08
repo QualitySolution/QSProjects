@@ -9,9 +9,9 @@
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
-    <widget-library name="../../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QSContacts.dll" internal="true" />
+    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
   </import>
   <widget class="Gtk.Bin" id="QSContacts.PhonesView" design-size="440 68">
     <property name="MemberName" />
@@ -20,14 +20,10 @@
       <widget class="Gtk.VBox" id="vbox1">
         <property name="MemberName" />
         <child>
-          <widget class="Gtk.DataBindings.DataTable" id="datatablePhones">
+          <widget class="Gtk.Table" id="datatablePhones">
             <property name="MemberName" />
             <property name="NColumns">6</property>
             <property name="ColumnSpacing">6</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
             <child>
               <placeholder />
             </child>
@@ -81,15 +77,11 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <widget class="Gtk.DataBindings.DataTable" id="datatableEmails">
+          <widget class="Gtk.Table" id="datatableEmails">
             <property name="MemberName" />
             <property name="NColumns">3</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
             <child>
               <placeholder />
             </child>
@@ -117,7 +109,7 @@
           </widget>
           <packing>
             <property name="Position">1</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
@@ -133,15 +125,11 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <widget class="Gtk.DataBindings.DataTable" id="datatablePersons">
+          <widget class="Gtk.Table" id="datatablePersons">
             <property name="MemberName" />
             <property name="NColumns">7</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
-            <property name="InheritedDataSource">False</property>
-            <property name="InheritedBoundaryDataSource">False</property>
             <child>
               <placeholder />
             </child>
@@ -181,7 +169,7 @@
           </widget>
           <packing>
             <property name="Position">1</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
