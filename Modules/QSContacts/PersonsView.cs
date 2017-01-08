@@ -7,6 +7,7 @@ using System.Data.Bindings;
 using Gtk;
 using QSOrmProject;
 using System.Linq;
+using Gamma.GtkWidgets;
 
 namespace QSContacts
 {
@@ -100,28 +101,30 @@ namespace QSContacts
 		private void AddPersonRow(Person newPerson) 
 		{
 			datatablePersons.NRows = RowNum + 1;
-			Adaptor rowAdaptor = new Adaptor(newPerson);
 
 			Gtk.Label labelSurame = new Gtk.Label ("Фамилия:");
 			datatablePersons.Attach (labelSurame, (uint)0, (uint)1, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry nameDataEntry = new DataValidatedEntry (rowAdaptor, "Lastname");
+			var nameDataEntry = new yEntry ();
+			nameDataEntry.Binding.AddBinding(newPerson, e => e.Lastname, w => w.Text).InitializeFromSource();
 			nameDataEntry.WidthChars = 20;
 			datatablePersons.Attach (nameDataEntry, (uint)1, (uint)2, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label labelName = new Gtk.Label ("Имя:");
 			datatablePersons.Attach (labelName, (uint)2, (uint)3, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry surnameDataEntry = new DataValidatedEntry (rowAdaptor, "Name");
-			nameDataEntry.WidthChars = 20;
+			var surnameDataEntry = new yEntry ();
+			surnameDataEntry.Binding.AddBinding(newPerson, e => e.Name, w => w.Text).InitializeFromSource();
+			surnameDataEntry.WidthChars = 20;
 			datatablePersons.Attach (surnameDataEntry, (uint)3, (uint)4, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Label labelPatronymic = new Gtk.Label ("Отчество:");
 			datatablePersons.Attach (labelPatronymic, (uint)4, (uint)5, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
-			DataValidatedEntry PatronymicDataEntry = new DataValidatedEntry (rowAdaptor, "PatronymicName");
-			nameDataEntry.WidthChars = 20;
-			datatablePersons.Attach (PatronymicDataEntry, (uint)5, (uint)6, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
+			var patronymicDataEntry = new yEntry ();
+			patronymicDataEntry.Binding.AddBinding(newPerson, e => e.PatronymicName, w => w.Text).InitializeFromSource();
+			patronymicDataEntry.WidthChars = 20;
+			datatablePersons.Attach (patronymicDataEntry, (uint)5, (uint)6, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
 			Gtk.Image image = new Gtk.Image ();
