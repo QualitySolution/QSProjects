@@ -1,11 +1,19 @@
 ﻿using System;
+using FluentNHibernate.Mapping;
 
-namespace QSContacts
+namespace QSContacts.HMap
 {
-	public class EmailMap
+	public class EmailMap : ClassMap<Email>
 	{
-		public EmailMap()
+		public EmailMap ()
 		{
+			Table("emails");
+
+			Id(x => x.Id).Column("id").GeneratedBy.Native();
+
+			Map(x => x.Address).Column("address");
+
+			References(x => x.EmailType).Column("type_id");
 		}
 	}
 }
