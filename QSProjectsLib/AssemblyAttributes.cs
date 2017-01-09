@@ -3,23 +3,23 @@
 namespace QSProjectsLib
 {
 	[AttributeUsage(AttributeTargets.Assembly)]
-	public class AssemblyLogoIcon : Attribute 
+	public class AssemblyLogoIconAttribute : Attribute 
 	{
 		public string ResourceName;
-		public AssemblyLogoIcon() : this(string.Empty) {}
-		public AssemblyLogoIcon(string resourceName) { ResourceName = resourceName; }
+		public AssemblyLogoIconAttribute() : this(string.Empty) {}
+		public AssemblyLogoIconAttribute(string resourceName) { ResourceName = resourceName; }
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly)]
-	public class AssemblySupport : Attribute 
+	public class AssemblySupportAttribute : Attribute 
 	{
 		public string SupportInfo;
 		public bool ShowTechnologyUsed;
 		public string TechnologyUsed;
-		public AssemblySupport() : this(string.Empty, true, string.Empty) {}
-		public AssemblySupport(string supportInfo) : this(supportInfo, true, string.Empty) {}
-		public AssemblySupport(string supportInfo, bool showTechnologyUsed) : this(supportInfo, showTechnologyUsed, string.Empty) {}
-		public AssemblySupport(string supportInfo, bool showTechnologyUsed, string technologyUsed) 
+		public AssemblySupportAttribute() : this(string.Empty, true, string.Empty) {}
+		public AssemblySupportAttribute(string supportInfo) : this(supportInfo, true, string.Empty) {}
+		public AssemblySupportAttribute(string supportInfo, bool showTechnologyUsed) : this(supportInfo, showTechnologyUsed, string.Empty) {}
+		public AssemblySupportAttribute(string supportInfo, bool showTechnologyUsed, string technologyUsed) 
 		{ 
 			SupportInfo = supportInfo;
 			ShowTechnologyUsed = showTechnologyUsed;
@@ -28,10 +28,10 @@ namespace QSProjectsLib
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-	public class AssemblyAuthor : Attribute 
+	public class AssemblyAuthorAttribute : Attribute 
 	{
 		public string Name;
-		public AssemblyAuthor(string name) { Name = name; }
+		public AssemblyAuthorAttribute(string name) { Name = name; }
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly)]
@@ -44,10 +44,10 @@ namespace QSProjectsLib
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly)]
-	public class AssemblyAppWebsite : Attribute 
+	public class AssemblyAppWebsiteAttribute : Attribute 
 	{
 		public string Link;
-		public AssemblyAppWebsite(string link) { Link = link; }
+		public AssemblyAppWebsiteAttribute(string link) { Link = link; }
 	}
 
 	[AttributeUsage(AttributeTargets.Assembly)]

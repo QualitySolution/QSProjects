@@ -404,9 +404,9 @@ namespace QSProjectsLib
 			dialog.Version = StringWorks.VersionToShortString (assembly.GetName ().Version) 
 				+ (editionAtt != null && editionAtt.Edition != "gpl" ? String.Format ("({0})", editionAtt.Edition) : String.Empty);
 
-			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIcon), false);
+			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIconAttribute), false);
 			if (att.Length > 0) {
-				dialog.Logo = new Gdk.Pixbuf (assembly, ((AssemblyLogoIcon)att [0]).ResourceName); //Gdk.Pixbuf.LoadFromResource();
+				dialog.Logo = new Gdk.Pixbuf (assembly, ((AssemblyLogoIconAttribute)att [0]).ResourceName); //Gdk.Pixbuf.LoadFromResource();
 			}
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyDescriptionAttribute), false);
@@ -423,9 +423,9 @@ namespace QSProjectsLib
 			comments += ((AssemblyDescriptionAttribute)att [0]).Description;
 
 
-			att = assembly.GetCustomAttributes (typeof(AssemblySupport), false);
+			att = assembly.GetCustomAttributes (typeof(AssemblySupportAttribute), false);
 			if (att.Length > 0) {
-				AssemblySupport sup = (AssemblySupport)att [0];
+				AssemblySupportAttribute sup = (AssemblySupportAttribute)att [0];
 				if (sup.ShowTechnologyUsed)
 					comments += String.Format ("\nРазработана на MonoDevelop с использованием открытых технологий Mono, GTK#, Nlog{0}.", sup.TechnologyUsed != "" ? ", " + sup.TechnologyUsed : "");
 				if (sup.SupportInfo != "")
@@ -439,19 +439,19 @@ namespace QSProjectsLib
 
 			dialog.Copyright = ((AssemblyCopyrightAttribute)att [0]).Copyright;
 
-			att = assembly.GetCustomAttributes (typeof(AssemblyAuthor), false);
+			att = assembly.GetCustomAttributes (typeof(AssemblyAuthorAttribute), false);
 
 			List<string> authors = new List<string> ();
-			foreach (AssemblyAuthor author in att) {
+			foreach (AssemblyAuthorAttribute author in att) {
 				authors.Add (author.Name);
 			}
 			authors.Reverse ();
 			dialog.Authors = authors.ToArray ();
 
-			att = assembly.GetCustomAttributes (typeof(AssemblyAppWebsite), false);
+			att = assembly.GetCustomAttributes (typeof(AssemblyAppWebsiteAttribute), false);
 
 			if (att.Length > 0)
-				dialog.Website = ((AssemblyAppWebsite)att [0]).Link;
+				dialog.Website = ((AssemblyAppWebsiteAttribute)att [0]).Link;
 
 			dialog.Run ();
 			dialog.Destroy ();
