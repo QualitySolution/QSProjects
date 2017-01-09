@@ -26,6 +26,13 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug-OldBindings|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug-WithOldBinding</OutputPath>
+    <DefineConstants>DEBUG;OLD_BINDINGS;</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -57,18 +64,14 @@
     <Compile Include="gtk-gui\QSOrmProject.OrmReference.cs" />
     <Compile Include="Widgets\EntryReference.cs" />
     <Compile Include="gtk-gui\QSOrmProject.EntryReference.cs" />
-    <Compile Include="DataWidgets\DataEntryReference.cs" />
     <Compile Include="OrmSimpleDialog.cs" />
-    <Compile Include="DataWidgets\DataDatePicker.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />
     <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
     <Compile Include="gtk-gui\QSOrmProject.OneWidgetDialog.cs" />
-    <Compile Include="DataWidgets\DataSpecComboBox.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="DataWidgets\DataCompanyName.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="Deletion\DeleteDlg.cs" />
     <Compile Include="Deletion\DeleteInfo.cs" />
@@ -121,7 +124,6 @@
     <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
     <Compile Include="yWidgets\yImageViewer.cs" />
     <Compile Include="yWidgets\yLegalName.cs" />
-    <Compile Include="DataWidgets\DataEntryReferenceVM.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
     <Compile Include="yWidgets\yEntryReferenceVM.cs" />
@@ -180,14 +182,13 @@
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gtk.DataBindings\Gtk.DataBindings.csproj">
-      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
-      <Name>Gtk.DataBindings</Name>
+    <ProjectReference Include="..\..\Gtk.DataBindings\Gtk.DataBindings.csproj" Condition=" '$(Configuration)' == 'Debug-OldBindings' ">
+          <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
+          <Name>Gtk.DataBindings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
-    <Folder Include="DataWidgets\" />
     <Folder Include="Deletion\" />
     <Folder Include="DomainModel\" />
     <Folder Include="OrmDialog\" />
@@ -199,6 +200,20 @@
     <Folder Include="DomainMapping\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
+  <Choose>
+    <When Condition=" '$(Configuration)' == 'Debug-OldBindings' ">
+      <ItemGroup>
+        <Folder Include="DataWidgets\" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+      </ItemGroup>
+      <ItemGroup>
+        <Compile Include="DataWidgets\DataEntryReference.cs" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+        <Compile Include="DataWidgets\DataEntryReferenceVM.cs" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+        <Compile Include="DataWidgets\DataCompanyName.cs" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+        <Compile Include="DataWidgets\DataSpecComboBox.cs" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+        <Compile Include="DataWidgets\DataDatePicker.cs" Condition="$(DefineConstants.Contains('OLD_BINDINGS'))" />
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
