@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSBanks</RootNamespace>
     <AssemblyName>QSBanks</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,13 +76,14 @@
     <Compile Include="BankTransferDocumentParser.cs" />
     <Compile Include="TransferDocument.cs" />
     <Compile Include="HMap\AccountMap.cs" />
+    <Compile Include="HMap\BankMap.cs" />
+    <Compile Include="HMap\BankRegionMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Database.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QSTDI\QSTDI.csproj">
@@ -103,10 +102,6 @@
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\QSValidation\QSValidation.csproj">
-      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
-      <Name>QSValidation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSSupportLib\QSSupportLib.csproj">
       <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
       <Name>QSSupportLib</Name>
@@ -122,6 +117,10 @@
     <ProjectReference Include="..\..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
       <Name>GammaBinding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QSValidation\QSValidation.csproj">
+      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
+      <Name>QSValidation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
