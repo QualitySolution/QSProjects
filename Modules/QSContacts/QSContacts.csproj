@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSContacts</RootNamespace>
     <AssemblyName>QSContacts</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,13 +68,17 @@
     <Compile Include="ConfigureDeletion.cs" />
     <Compile Include="Repositories\PhoneTypeRepository.cs" />
     <Compile Include="HibernateMapping\EmailMap.cs" />
+    <Compile Include="HibernateMapping\PhoneMap.cs" />
+    <Compile Include="HibernateMapping\PhoneTypeMap.cs" />
+    <Compile Include="HibernateMapping\EmailTypeMap.cs" />
+    <Compile Include="HibernateMapping\PostMap.cs" />
+    <Compile Include="HibernateMapping\PersonMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Database.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QSTDI\QSTDI.csproj">

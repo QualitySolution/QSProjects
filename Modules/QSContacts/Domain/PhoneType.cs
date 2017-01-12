@@ -3,7 +3,9 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject("Типы телефонов")]
+	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+		NominativePlural = "типы телефонов",
+		Nominative = "тип телефона")]
 	public class PhoneType : IDomainObject
 	{
 		#region Свойства

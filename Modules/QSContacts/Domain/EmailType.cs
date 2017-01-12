@@ -3,7 +3,9 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject("Типы e-mail")]
+	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+		NominativePlural = "типы e-mail",
+		Nominative = "тип e-mail")]
 	public class EmailType : IDomainObject
 	{
 			#region Свойства

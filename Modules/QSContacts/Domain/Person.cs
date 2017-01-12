@@ -5,7 +5,9 @@ using QSProjectsLib;
 
 namespace QSContacts
 {
-	[OrmSubject("Человек")]
+	[OrmSubject (Gender = GrammaticalGender.Feminine,
+		NominativePlural = "персоны",
+		Nominative = "персона")]
 	public class Person : PropertyChangedBase
 	{
 		#region Свойства
@@ -36,7 +38,7 @@ namespace QSContacts
 		}
 		#endregion
 
-		public string NameWithInitials{
+		public virtual string NameWithInitials{
 			get { return StringWorks.PersonNameWithInitials (Lastname, Name, PatronymicName);
 			}
 		}

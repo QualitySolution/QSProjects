@@ -4,7 +4,9 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject("E-mail")]
+	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+		NominativePlural = "E-mail адреса",
+		Nominative = "E-mail адрес")]
 	public class Email : PropertyChangedBase, IDomainObject
 	{
 		public virtual int Id { get; set; }
