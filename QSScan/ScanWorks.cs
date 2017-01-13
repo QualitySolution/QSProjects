@@ -2,14 +2,17 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using System.Drawing;
 using Gdk;
 using Saraff.Twain;
 using NLog;
-using Gtk;
+using QSProjectsLib;
+using System.Reflection;
 
 namespace QSScan
 {
+	/// <summary>
+	/// ВНИМАНИЕ!!! Для работы с некоторыми сканерами под виндой, у главного класса приложения должен стоять атрибут [STAThread]
+	/// </summary>
 	public class ScanWorks
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -47,11 +50,15 @@ namespace QSScan
 			get{return _twain32.SourcesCount;}
 		}
 
-		public void SelectScanner(int i)
-		{
-			_twain32.SourceIndex = i;
-			logger.Debug ("Selected Scaner {0}", i);
-			logger.Debug ("IsSourceTwain2Compatible = {0}", _twain32.GetIsSourceTwain2Compatible (i));
+		public int CurrentScanner{
+			get{
+				return _twain32.SourceIndex;
+			}
+			set{
+				_twain32.SourceIndex = value;
+				logger.Debug ("Selected Scaner {0}", value);
+				logger.Debug ("IsSourceTwain2Compatible = {0}", _twain32.GetIsSourceTwain2Compatible (value));
+			}
 		}
 
 		public string[] GetScannerList()
@@ -80,6 +87,13 @@ namespace QSScan
 			logger.Debug ("IsTwain2Enable = {0}", _twain32.IsTwain2Enable);
 			_twain32.OpenDSM();
 			logger.Debug ("IsTwain2Supported = {0}", _twain32.IsTwain2Supported);
+
+			logger.Debug ("Exist Sources:");
+			for(var i=0; i<_twain32.SourcesCount; i++) {
+				logger.Debug("{0}: {1}{2}", i, _twain32.GetSourceProductName(i), _twain32.IsTwain2Supported&&_twain32.GetIsSourceTwain2Compatible(i)?" (TWAIN 2.x)" : string.Empty);
+			}
+
+			logger.Debug ("Current Source: {0}", _twain32.GetSourceProductName (_twain32.SourceIndex));
 		}
 
 		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
@@ -89,6 +103,7 @@ namespace QSScan
 		}
 
 		private void _twain_TwainStateChanged(object sender,Twain32.TwainStateEventArgs e) {
+			logger.Debug("Handle TwainState");
 			if((e.TwainState&Twain32.TwainStateFlag.DSEnabled)==0&&this._isEnable) {
 				this._isEnable=false;
 				// <<< scaning finished (or closed)
@@ -104,6 +119,7 @@ namespace QSScan
 
 		private void _twain32_EndXfer(object sender,Twain32.EndXferEventArgs e) 
 		{
+			logger.Debug("EndXfer fired");
 			if(e.Image!=null) 
 			{
 				Pixbuf CurImg = WinImageToPixbuf(e.Image);
@@ -233,28 +249,88 @@ namespace QSScan
 				throw new InvalidOperationException (text);
 			}
 			logger.Debug("DataSource is opened.");
+
+			#if DEBUG
+			logger.Debug ("XferMech.IsSupported=", _twain32.Capabilities.XferMech.IsSupported ());
+			logger.Debug ("XferMech Support:");
+			Twain32.Enumeration xferMech=_twain32.Capabilities.XferMech.Get();
+			for(int i=0; i<xferMech.Count; i++) {
+				logger.Debug ("[{0}] {1}", i, xferMech[i].ToString());
+			}
+
+			logger.Debug ("All Capabilities");
+
+			foreach (TwCap cap in Enum.GetValues(typeof(TwCap)))
+			{
+				if((_twain32.IsCapSupported(cap)&TwQC.GetCurrent)!=0)
+					logger.Debug ("{0}(Current) = {1}", cap, _twain32.GetCurrentCap (cap));
+				else if((_twain32.IsCapSupported(cap)&TwQC.Get)!=0)
+					logger.Debug ("{0} = {1}", cap, _twain32.GetCap (cap));
+				else
+					logger.Debug ("{0} = skiped", cap);
+			}
+			#endif
+
 			_twain32.Capabilities.XferMech.Set (TwSX.Memory);
 			//Feeder
-			if((this._twain32.IsCapSupported(TwCap.Duplex)&TwQC.Get)!=0) {
-				var _duplexCapValue=(ushort)this._twain32.GetCap(TwCap.Duplex);
-				if(_duplexCapValue>0) {
-					// 0 - TWDX_NONE
-					// 1 - TWDX_1PASSDUPLEX
-					// 2 - TWDX_2PASSDUPLEX
+			if(this._twain32.Capabilities.FeederEnabled.IsSupported(TwQC.Set)) {
+				this._twain32.Capabilities.FeederEnabled.Set(true);
+				logger.Debug ("TwCap.FeederEnabled = Enabled");
 
-					if((this._twain32.IsCapSupported(TwCap.FeederEnabled)&TwQC.Set)!=0) {
-						this._twain32.SetCap(TwCap.FeederEnabled,true);
+				if(this._twain32.Capabilities.AutoFeed.IsSupported(TwQC.Set)) {
+					this._twain32.Capabilities.AutoFeed.Set(true);
+					logger.Debug ("TwCap.AutoFeed = Enabled");
+				}
 
-						if((this._twain32.IsCapSupported(TwCap.XferCount)&TwQC.Set)!=0) {
-							this._twain32.SetCap(TwCap.XferCount,-1);
-
-							if((this._twain32.IsCapSupported(TwCap.DuplexEnabled)&TwQC.Set)!=0) {
-								this._twain32.SetCap(TwCap.DuplexEnabled,true);
-							}
-						}
-					}
+				if(this._twain32.Capabilities.XferCount.IsSupported(TwQC.Set)) {
+					this._twain32.Capabilities.XferCount.Set(-1);
+					logger.Debug ("TwCap.XferCount = Enabled");
 				}
 			}
+
+			#if DEBUG
+			//Отслеживаем все события
+			_twain32.AcquireCompleted += delegate {
+				logger.Debug ("AcquireCompleted fired");
+			};
+
+			_twain32.AcquireError+= (sender, e) => logger.Debug ("AcquireError fired");
+
+			_twain32.DeviceEvent += delegate {
+				logger.Debug ("DeviceEvent fired");
+			};
+
+			_twain32.EndXfer += delegate {
+				logger.Debug ("EndXfer fired");
+			};
+
+			_twain32.FileXferEvent += delegate {
+				logger.Debug ("FileXferEvent fired");
+			};
+
+			_twain32.MemXferEvent += delegate {
+				logger.Debug ("MemXferEvent fired");
+			};
+
+			_twain32.SetupFileXferEvent += delegate {
+				logger.Debug ("SetupFileXferEvent fired");
+			};
+
+			_twain32.SetupMemXferEvent += delegate {
+				logger.Debug ("SetupMemXferEvent fired");
+			};
+
+			_twain32.TwainStateChanged += (object sender, Twain32.TwainStateEventArgs e) =>  {
+				logger.Debug ("TwainStateChanged fired");
+				logger.Debug ("TwainState = {0}", e.TwainState);
+			};
+
+			_twain32.XferDone += delegate {
+				logger.Debug ("XferDone fired");
+			};
+
+			#endif
+
 			logger.Debug("Run Acquire");
 			_twain32.Acquire();
 			logger.Debug("After Acquire");
@@ -268,7 +344,7 @@ namespace QSScan
 			try {
 				stream = new MemoryStream((int)e.BufferSize);
 				var _writer=new BinaryWriter(this.stream);
-				switch(e.ImageInfo.SamplesPerPixel) {
+				switch(e.ImageInfo.BitsPerPixel) {
 				case 1:
 					if(e.ImageInfo.PixelType==TwPixelType.Palette) {
 						_writer.Write(Encoding.ASCII.GetBytes("P6\n"));

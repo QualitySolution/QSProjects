@@ -106,7 +106,7 @@ namespace QSAttachment
 			{
 				logger.Info ("Получение изображений со сканера {0}...", comboScanner.Active);
 				QSMain.WaitRedraw ();
-				scan.SelectScanner (comboScanner.Active);
+				scan.CurrentScanner = comboScanner.Active;
 				logger.Debug("run scanner");
 
 				scan.GetImages();
