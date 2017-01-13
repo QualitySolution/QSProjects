@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using Gdk;
 using Saraff.Twain;
 using NLog;
-using QSProjectsLib;
-using System.Reflection;
 
 namespace QSScan
 {
