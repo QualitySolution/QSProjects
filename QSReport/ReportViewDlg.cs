@@ -40,7 +40,7 @@ namespace QSReport
 			return String.Format("Report_{0}", parametersWidget.GetType().Name);
 		}
 
-		public ReportViewDlg (ReportInfo info, bool useVar = false)
+		public ReportViewDlg (ReportInfo info)
 		{
 			reportInfo = info;
 
@@ -51,10 +51,13 @@ namespace QSReport
 
 			panelParameters.Visible = false;
 
-			string connectionString = QSMain.ConnectionString;
-			if (useVar)
-				connectionString += ";Allow User Variables=True";
-			reportviewer1.LoadReport (reportInfo.GetReportUri (), reportInfo.GetParametersString (), connectionString, true);
+			LoadReport(reportInfo);
+		}
+
+		void LoadReport(ReportInfo info)
+		{
+			logger.Debug (String.Format ("Report Parameters[{0}]", info.GetParametersString ()));
+			reportviewer1.LoadReport (info.GetReportUri (), info.GetParametersString (), info.ConnectionString, true);
 		}
 
 		public ReportViewDlg (IParametersWidget widget)
@@ -75,12 +78,7 @@ namespace QSReport
 
 		void ParametersWidget_LoadReport (object sender, LoadReportEventArgs e)
 		{
-			logger.Debug (String.Format ("Report Parameters[{0}]", e.Info.GetParametersString ()));
-			reportviewer1.LoadReport (e.Info.GetReportUri (),
-				e.Info.GetParametersString (),
-				QSMain.ConnectionString,
-				true
-			);
+			LoadReport(e.Info);
 		}
 	}
 }
