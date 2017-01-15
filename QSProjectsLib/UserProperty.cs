@@ -407,6 +407,9 @@ namespace QSProjectsLib
 					cmd.ExecuteNonQuery ();
 				}
 				logger.Info ("Права установлены. Ok");
+			} catch (MySqlException ex) when (ex.Number == 1044) {
+				logger.Error (ex, "Ошибка установки прав!");
+				MessageDialogWorks.RunErrorDialog ("У вас не достаточно прав на сервере MySQL для установки полномочий другим пользователям. Возможно некоторые права не были установлены.");
 			} catch (Exception ex) {
 				logger.Error (ex, "Ошибка установки прав!");
 				QSMain.ErrorMessage (this, ex);
