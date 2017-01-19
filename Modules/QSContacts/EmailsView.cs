@@ -185,16 +185,11 @@ namespace QSContacts
 			}
 		}
 
-		/// <summary>
-		/// Вызывает сохранение для каждой строки емейла. Лучше не использовать этот метод а использовать каскадное сохранение.
-		/// </summary>
 		public void SaveChanges()
 		{
-			foreach(Email email in EmailsList)
-			{
-				if(email.Address != "")
-					UoW.Save(email);
-			}
+			Emails.Where (p => String.IsNullOrWhiteSpace(p.Address))
+				.ToList ().ForEach (p => Emails.Remove (p));
+			
 		}
 	}
 }
