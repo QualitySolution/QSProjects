@@ -104,7 +104,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="icons\" />
     <Folder Include="Language\" />
     <Folder Include="Helpers\" />
     <Folder Include="DBCreator\" />
