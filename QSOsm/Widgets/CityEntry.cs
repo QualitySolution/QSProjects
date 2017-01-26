@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Bindings;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
 using QSOsm.DTO;
-using System.Text.RegularExpressions;
+using Gamma.Utilities;
 
 namespace QSOsm
 {

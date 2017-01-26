@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Data.Bindings;
 
 namespace QSOsm.DTO
 {
@@ -55,19 +54,19 @@ namespace QSOsm.DTO
 	/// </summary>
 	public enum LocalityType
 	{
-		[ItemTitleAttribute ("Город")]
+		[Display (Name = "Город")]
 		city,
-		[ItemTitleAttribute ("Город")]
+		[Display (Name = "Город")]
 		town,
-		[ItemTitleAttribute ("Населенный пункт")]
+		[Display (Name = "Населенный пункт")]
 		village,
-		[ItemTitleAttribute ("Дачный поселок")]
+		[Display (Name = "Дачный поселок")]
 		allotments,
-		[ItemTitleAttribute ("Деревня")]
+		[Display (Name = "Деревня")]
 		hamlet,
-		[ItemTitleAttribute ("Ферма")]
+		[Display (Name = "Ферма")]
 		farm,
-		[ItemTitleAttribute ("Хутор")]
+		[Display (Name = "Хутор")]
 		isolated_dwelling
 	}
 
