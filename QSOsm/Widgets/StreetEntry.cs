@@ -36,6 +36,8 @@ namespace QSOsm
 				return cityId;
 			}
 			set {
+				if (cityId == value)
+					return;
 				cityId = value;
 				if (cityId != 0)
 					OnCityIdSet ();
@@ -143,6 +145,7 @@ namespace QSOsm
 
 		void OnCityIdSet ()
 		{
+			logger.Debug("Установлен City Id={0}", CityId);
 			if (queryThread != null && queryThread.IsAlive) {
 				try {
 					queryThread.Abort ();
