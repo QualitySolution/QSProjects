@@ -29,6 +29,11 @@ namespace Gamma.Binding.Core
 			DataSourceObject = source;
 		}
 
+		public override void ClearBindings()
+		{
+			DataSourceObject = null;
+		}
+
 		#region config
 
 		public BindingObjectSource<TTarget> AddBinding(string sourcePropertyName, Expression<Func<TTarget, object>> targetProperty)

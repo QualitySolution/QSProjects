@@ -14,6 +14,7 @@ namespace Gamma.Binding.Core
 		bool SetValueToSource(IBindingBridgeInternal bridge, object value);
 		void RunInitializeFromSource();
 		void RunDelayedUpdates();
+		void ClearBindings();
 	}
 }
 

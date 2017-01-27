@@ -217,6 +217,12 @@ namespace Gamma.Binding.Core
 			FinishTargetUpdateBatch ();
 		}
 
+		public void CleanSources()
+		{
+			Sources.ForEach(x => x.ClearBindings());
+
+			Sources.Clear();
+		}
 	}
 }
 

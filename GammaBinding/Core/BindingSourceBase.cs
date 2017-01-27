@@ -94,6 +94,8 @@ namespace Gamma.Binding.Core
 			}
 		}
 
+		public abstract void ClearBindings();
+
 		#region config
 
 		public BindingSource<TNewSource, TTarget> AddSource<TNewSource>(TNewSource source)
