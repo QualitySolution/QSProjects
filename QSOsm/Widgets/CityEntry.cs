@@ -127,7 +127,7 @@ namespace QSOsm
 		{
 			var cityName = (string)tree_model.GetValue (iter, (int)columns.City);
 			var district = (string)tree_model.GetValue (iter, (int)columns.District);
-			var localityType = (LocalityType)tree_model.GetValue (iter, (int)columns.Locality);
+			var localityType = (LocalityType)(tree_model.GetValue (iter, (int)columns.Locality) ?? default(LocalityType));
 			string pattern = String.Format ("\\b{0}", Regex.Escape (Text.ToLower ()));
 			cityName = Regex.Replace (cityName, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace (district) ? 
