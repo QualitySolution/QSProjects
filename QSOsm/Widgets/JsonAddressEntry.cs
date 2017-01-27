@@ -28,6 +28,10 @@ namespace QSOsm
 					entryCity.Binding.CleanSources();
 					entryStreet.Binding.CleanSources();
 					entryBuilding.Binding.CleanSources();
+					comboRoomType.Binding.CleanSources();
+					entryRoom.Binding.CleanSources();
+					spinFloor.Binding.CleanSources();
+					yentryAddition.Binding.CleanSources();
 					Address.PropertyChanged -= Address_PropertyChanged;
 				}
 				address = value;
@@ -51,6 +55,14 @@ namespace QSOsm
 						.AddSource (Address)
 						.AddBinding (entity => entity.Building, widget => widget.House)
 						.InitializeFromSource ();
+
+					comboRoomType.ItemsEnum = typeof(RoomType);
+					comboRoomType.Binding.AddBinding (Address, entity => entity.RoomType, widget => widget.SelectedItem)
+						.InitializeFromSource ();
+
+					entryRoom.Binding.AddBinding(Address, e => e.Room, w => w.Text).InitializeFromSource();
+					spinFloor.Binding.AddBinding(Address, e => e.Floor, w => w.ValueAsInt).InitializeFromSource();
+					yentryAddition.Binding.AddBinding(Address, e => e.АddressAddition, w => w.Text).InitializeFromSource();
 				}
 			}
 		}
