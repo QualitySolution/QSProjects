@@ -1,4 +1,5 @@
 ﻿using System;
+using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -88,6 +89,65 @@ namespace QSOsm
 				street = street.Replace("Красных", "Кр.");
 
 			return street;
+		}
+
+		public static string GetShortNameOfLocalityType (LocalityType type)
+		{
+			switch (type) {
+				case LocalityType.allotments:
+					return "д.п.";
+				case LocalityType.city:
+					return "г.";
+				case LocalityType.farm:
+					return "фер.";
+				case LocalityType.hamlet:
+					return "дер.";
+				case LocalityType.isolated_dwelling:
+					return "х.";
+				case LocalityType.town:
+					return "г.";
+				case LocalityType.village:
+					return "н.п.";
+				default:
+					throw new NotSupportedException ();
+			}
+		}
+
+		public static LocalityType GetLocalityTypeByName (string localityName)
+		{
+			localityName = localityName.Trim ();
+			switch (localityName) {
+				case "city":
+					return LocalityType.city;
+				case "town":
+					return LocalityType.town;
+				case "village":
+					return LocalityType.village;
+				case "allotments":
+					return LocalityType.allotments;
+				case "hamlet":
+					return LocalityType.hamlet;
+				case "farm":
+					return LocalityType.farm;
+				case "isolated_dwelling":
+					return LocalityType.isolated_dwelling;
+				default:
+					throw new NotSupportedException (String.Format ("Тип поселения \"{0}\" не поддерживается.", localityName));
+			}
+		}
+
+		public static string GetShortNameOfRoomType (RoomType type)
+		{
+			switch (type) {
+				case RoomType.Apartment:
+					return "кв.";
+				case RoomType.Office: 
+					return "оф.";
+				case RoomType.Room:
+					return "пом.";
+				default:
+					throw new NotSupportedException ();
+			}
 		}
 
 	}

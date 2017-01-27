@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace QSOsm.DTO
@@ -25,49 +24,6 @@ namespace QSOsm.DTO
 			LocalityType = localityType;
 		}
 
-		public static LocalityType GetLocalityTypeByName (string localityName)
-		{
-			localityName = localityName.Trim ();
-			switch (localityName) {
-			case "city":
-				return LocalityType.city;
-			case "town":
-				return LocalityType.town;
-			case "village":
-				return LocalityType.village;
-			case "allotments":
-				return LocalityType.allotments;
-			case "hamlet":
-				return LocalityType.hamlet;
-			case "farm":
-				return LocalityType.farm;
-			case "isolated_dwelling":
-				return LocalityType.isolated_dwelling;
-			default:
-				throw new NotSupportedException (String.Format ("Тип поселения \"{0}\" не поддерживается.", localityName));
-			}
-		}
-	}
-
-	/// <summary>
-	/// Тип населенного пункта. Маленькими буквами для совпадения с соответствующими типами в OSM.
-	/// </summary>
-	public enum LocalityType
-	{
-		[Display (Name = "Город")]
-		city,
-		[Display (Name = "Город")]
-		town,
-		[Display (Name = "Населенный пункт")]
-		village,
-		[Display (Name = "Дачный поселок")]
-		allotments,
-		[Display (Name = "Деревня")]
-		hamlet,
-		[Display (Name = "Ферма")]
-		farm,
-		[Display (Name = "Хутор")]
-		isolated_dwelling
 	}
 
 	public class OsmCityComparer : IComparer<OsmCity>
