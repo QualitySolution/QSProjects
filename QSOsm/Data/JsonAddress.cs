@@ -3,47 +3,111 @@ using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using Newtonsoft.Json;
 using QSOsm.DTO;
+using QSOrmProject;
 
 namespace QSOsm.Data
 {
-	public class JsonAddress
+	public class JsonAddress : PropertyChangedBase
 	{
 
 		[Display (Name = "Регион")]
 		public virtual string Region { get; set;}
 
+		string city;
+
 		[Display (Name = "Город")]
-		public virtual string City { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string City {
+			get { return city; }
+			set { SetField (ref city, value, () => City); }
+		}
+
+		LocalityType localityType;
 
 		[Display (Name = "Тип населенного пункта")]
-		public virtual LocalityType LocalityType { get; set;}
+		public virtual LocalityType LocalityType {
+			get { return localityType; }
+			set { SetField (ref localityType, value, () => LocalityType); }
+		}
+
+		string cityDistrict;
 
 		[Display (Name = "Район области")]
-		public virtual string CityInDistrict { get; set;}
+		public virtual string CityDistrict {
+			get { return cityDistrict; }
+			set { SetField (ref cityDistrict, value, () => CityDistrict); }
+		}
+
+		string street;
 
 		[Display (Name = "Улица")]
-		public virtual string Street { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string Street {
+			get { return street; }
+			set { SetField (ref street, value, () => Street); }
+		}
+
+		string streetDistrict;
 
 		[Display (Name = "Район города")]
-		public virtual string StreetInDistrict { get; set;}
+		public virtual string StreetDistrict {
+			get { return streetDistrict; }
+			set { SetField (ref streetDistrict, value, () => StreetDistrict); }
+		}
+			
+		string building;
 
 		[Display (Name = "Номер дома")]
-		public virtual string Building { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string Building {
+			get { return building; }
+			set { SetField (ref building, value, () => Building); }
+		}
+
+		string letter;
 
 		[Display (Name = "Литера")]
-		public virtual string Letter { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string Letter {
+			get { return letter; }
+			set { SetField (ref letter, value, () => Letter); }
+		}
+
+		int floor;
 
 		[Display (Name = "Этаж")]
-		public virtual int Floor { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual int Floor {
+			get { return floor; }
+			set { SetField (ref floor, value, () => Floor); }
+		}
 
-		[Display (Name = "Помещение")]
-		public virtual string Room { get; set;}
+		string room;
+
+		[Display (Name = "Офис/Квартира")]
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string Room {
+			get { return room; }
+			set { SetField (ref room, value, () => Room); }
+		}
+
+		RoomType roomType;
 
 		[Display (Name = "Тип помещения")]
-		public virtual RoomType RoomType { get; set;}
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual RoomType RoomType {
+			get { return roomType; }
+			set { SetField (ref roomType, value, () => RoomType); }
+		}
 
-		[Display (Name = "Дополнение")]
-		public virtual string АddressAddition { get; set;}
+		string addressAddition;
+
+		[Display (Name = "Дополнение к адресу")]
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string АddressAddition {
+			get { return addressAddition; }
+			set { SetField (ref addressAddition, value, () => АddressAddition); }
+		}
 
 		#region Расчетные
 

@@ -2,18 +2,64 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
+using QSOsm.Data;
 using QSOsm.DTO;
-using System.Collections.Generic;
+using Gamma.Utilities;
 
 namespace QSOsm
 {
-	//FIXME Начал перенос всего адреса в отдельный вижжет но понял что неудачное решение для точек доставки.
-
 	[System.ComponentModel.ToolboxItem (true)]
 	[System.ComponentModel.Category ("Gamma OSM Widgets")]
-	public partial class FullAddressEntry : Gtk.Bin
+	public partial class JsonAddressEntry : Gtk.Bin
 	{
-		public BindingControler<FullAddressEntry> Binding { get; private set; }
+		public BindingControler<JsonAddressEntry> Binding { get; private set; }
+
+		JsonAddress address;
+		public JsonAddress Address
+		{
+			get
+			{
+				return address;
+			}
+			set
+			{
+				if(address != null)
+				{
+					entryCity.Binding.CleanSources();
+					entryStreet.Binding.CleanSources();
+					entryBuilding.Binding.CleanSources();
+					Address.PropertyChanged -= Address_PropertyChanged;
+				}
+				address = value;
+				if(Address != null)
+				{
+					ExpanderLabel.LabelProp = Address.Title;
+					Address.PropertyChanged += Address_PropertyChanged;
+
+					entryCity.Binding
+						.AddSource (Address)
+						.AddBinding (entity => entity.CityDistrict, widget => widget.CityDistrict)
+						.AddBinding (entity => entity.City, widget => widget.City)
+						.AddBinding (entity => entity.LocalityType, widget => widget.Locality)
+						.InitializeFromSource ();
+					entryStreet.Binding
+						.AddSource (Address)
+						.AddBinding (entity => entity.StreetDistrict, widget => widget.StreetDistrict)
+						.AddBinding (entity => entity.Street, widget => widget.Street)
+						.InitializeFromSource ();
+					entryBuilding.Binding
+						.AddSource (Address)
+						.AddBinding (entity => entity.Building, widget => widget.House)
+						.InitializeFromSource ();
+				}
+			}
+		}
+
+		void Address_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName == Address.GetPropertyName(x => x.CompiledAddress))
+				ExpanderLabel.LabelProp = Address.Title;
+		}
 
 		[Display (Name = "Регион")]
 		public virtual string Region {
@@ -51,17 +97,18 @@ namespace QSOsm
 			set { entryBuilding.House = value; }
 		}
 
-		public FullAddressEntry ()
+		public JsonAddressEntry ()
 		{
 			this.Build ();
 
-			Binding = new BindingControler<FullAddressEntry> (this, new Expression<Func<FullAddressEntry, object>>[] {
+			Binding = new BindingControler<JsonAddressEntry> (this, new Expression<Func<JsonAddressEntry, object>>[] {
 				(w => w.Region),
 				(w => w.CityInDistrict),
 				(w => w.City),
 				(w => w.Street), 
 				(w => w.StreetInDistrict),
-				(w => w.Binding)
+				(w => w.Binding),
+				(w => w.Address)
 			});
 
 			entryCity.CitySelected += (sender, e) => {
@@ -72,6 +119,7 @@ namespace QSOsm
 				entryBuilding.Street = new OsmStreet (-1, entryStreet.CityId, entryStreet.Street, entryStreet.StreetDistrict);
 			};
 
+			expander1.Expanded = false;
 		}
 	}
 }
