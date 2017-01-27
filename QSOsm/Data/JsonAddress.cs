@@ -165,6 +165,21 @@ namespace QSOsm.Data
 		public JsonAddress()
 		{
 		}
+
+		public void CopyFrom(JsonAddress source)
+		{
+			Region = source.Region;
+			City = source.City;
+			LocalityType = source.LocalityType;
+			CityDistrict = source.CityDistrict;
+			Street = source.Street;
+			StreetDistrict = source.StreetDistrict;
+			Building = source.Building;
+			Floor = source.Floor;
+			Room = source.Room;
+			RoomType = source.RoomType;
+			АddressAddition = source.АddressAddition;
+		}
 	}
 }
 
