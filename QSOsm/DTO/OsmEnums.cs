@@ -9,29 +9,29 @@ namespace QSOsm.DTO
 	/// </summary>
 	public enum LocalityType
 	{
-		[Display (Name = "Город")]
+		[Display (Name = "Город", ShortName = "г.")]
 		city,
-		[Display (Name = "Город")]
+		[Display (Name = "Город", ShortName = "г.")]
 		town,
-		[Display (Name = "Населенный пункт")]
+		[Display (Name = "Населенный пункт", ShortName = "н.п.")]
 		village,
-		[Display (Name = "Дачный поселок")]
+		[Display (Name = "Дачный поселок", ShortName = "д.п.")]
 		allotments,
-		[Display (Name = "Деревня")]
+		[Display (Name = "Деревня", ShortName = "дер.")]
 		hamlet,
-		[Display (Name = "Ферма")]
+		[Display (Name = "Ферма", ShortName = "фер.")]
 		farm,
-		[Display (Name = "Хутор")]
+		[Display (Name = "Хутор", ShortName = "х.")]
 		isolated_dwelling
 	}
 
 	public enum RoomType
 	{
-		[Display (Name = "Квартира")]
+		[Display (Name = "Квартира", ShortName = "кв.")]
 		Apartment,
-		[Display (Name = "Офис")]
+		[Display (Name = "Офис", ShortName = "оф.")]
 		Office,
-		[Display (Name = "Помещение")]
+		[Display (Name = "Помещение", ShortName = "пом.")]
 		Room
 	}
 
