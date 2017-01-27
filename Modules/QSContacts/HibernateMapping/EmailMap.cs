@@ -11,7 +11,7 @@ namespace QSContacts.HMap
 
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
 
-			Map(x => x.Address).Column("address");
+			Map(x => x.Address).Column("address").Not.Nullable();
 
 			References(x => x.EmailType).Column("type_id");
 		}

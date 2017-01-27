@@ -59,7 +59,7 @@ namespace QSContacts
 		{
 			Widget foundWidget = null;
 			foreach (Widget wid in datatablePhones.AllChildren) {
-				if (wid is IAdaptableContainer && (wid as IAdaptableContainer).Adaptor.Adaptor.FinalTarget == aObject) {
+				if (wid is yValidatedEntry && (wid as yValidatedEntry).Tag == aObject) {
 					foundWidget = wid;
 					break;
 				}
@@ -109,6 +109,7 @@ namespace QSContacts
 
 			var phoneDataEntry = new yValidatedEntry ();
 			phoneDataEntry.ValidationMode = ValidationType.phone;
+			phoneDataEntry.Tag = newPhone;
 			phoneDataEntry.WidthChars = 19;
 			phoneDataEntry.Binding.AddBinding(newPhone, e => e.Number, w => w.Text).InitializeFromSource();
 			datatablePhones.Attach (phoneDataEntry, (uint)2, (uint)3, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
@@ -139,7 +140,7 @@ namespace QSContacts
 			Table.TableChild delButtonInfo = ((Table.TableChild)(this.datatablePhones [(Widget)sender]));
 			Widget foundWidget = null;
 			foreach (Widget wid in datatablePhones.AllChildren) {
-				if (wid is IAdaptableContainer && delButtonInfo.TopAttach == (datatablePhones [wid] as Table.TableChild).TopAttach) {
+				if (wid is yValidatedEntry && delButtonInfo.TopAttach == (datatablePhones [wid] as Table.TableChild).TopAttach) {
 					foundWidget = wid;
 					break;
 				}
@@ -149,7 +150,7 @@ namespace QSContacts
 				return;
 			}
 
-			PhonesList.Remove ((Phone)(foundWidget as IAdaptableContainer).Adaptor.Adaptor.FinalTarget);
+			PhonesList.Remove ((Phone)(foundWidget as yValidatedEntry).Tag);
 		}
 
 		private void RemoveRow (uint Row)

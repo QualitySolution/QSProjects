@@ -49,13 +49,9 @@ namespace QSContacts
 					EmailsList = new GenericObservableList<Email> (emails);
 					EmailsList.ElementAdded += OnEmailListElementAdded;
 					EmailsList.ElementRemoved += OnEmailListElementRemoved;
-					if (EmailsList.Count == 0)
-						EmailsList.Add(new Email());
-					else
-					{
-						foreach (Email email in EmailsList)
-							AddEmailRow(email);
-					}
+
+					foreach (Email email in EmailsList)
+						AddEmailRow(email);
 				}
 			}
 		}
@@ -65,7 +61,7 @@ namespace QSContacts
 			Widget foundWidget = null;
 			foreach(Widget wid in datatableEmails.AllChildren)
 			{
-				if(wid is IAdaptableContainer && (wid as IAdaptableContainer).Adaptor.Adaptor.FinalTarget == aObject)
+				if(wid is yValidatedEntry && (wid as yValidatedEntry).Tag == aObject)
 				{
 					foundWidget = wid;
 					break;
@@ -115,6 +111,7 @@ namespace QSContacts
 
 			yValidatedEntry emailDataEntry = new yValidatedEntry();
 			emailDataEntry.ValidationMode = ValidationType.email;
+			emailDataEntry.Tag = newEmail;
 			emailDataEntry.Binding.AddBinding(newEmail, e => e.Address, w => w.Text).InitializeFromSource();
 			datatableEmails.Attach (emailDataEntry, (uint)1, (uint)2, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
@@ -133,12 +130,12 @@ namespace QSContacts
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
 			Table.TableChild delButtonInfo = ((Table.TableChild)(this.datatableEmails [(Widget)sender]));
-			Widget foundWidget = null;
+			yValidatedEntry foundWidget = null;
 			foreach(Widget wid in datatableEmails.AllChildren)
 			{
-				if(wid is IAdaptableContainer && delButtonInfo.TopAttach == (datatableEmails[wid] as Table.TableChild).TopAttach)
+				if(wid is yValidatedEntry && delButtonInfo.TopAttach == (datatableEmails[wid] as Table.TableChild).TopAttach)
 				{
-					foundWidget = wid;
+					foundWidget = (yValidatedEntry)wid;
 					break;
 				}
 			}
@@ -147,8 +144,7 @@ namespace QSContacts
 				logger.Warn("Не найден виджет ассоциированный с удаленным телефоном.");
 				return;
 			}
-
-			EmailsList.Remove((Email)(foundWidget as IAdaptableContainer).Adaptor.Adaptor.FinalTarget);
+			EmailsList.Remove((Email)foundWidget.Tag);
 		}
 
 		private void RemoveRow(uint Row)
