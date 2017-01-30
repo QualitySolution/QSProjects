@@ -33,7 +33,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
-                <property name="WidthChars">10</property>
+                <property name="WidthChars">17</property>
                 <property name="InvisibleChar">●</property>
               </widget>
               <packing>

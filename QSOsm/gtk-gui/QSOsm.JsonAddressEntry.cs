@@ -63,7 +63,7 @@ namespace QSOsm
 			this.entryBuilding.CanFocus = true;
 			this.entryBuilding.Name = "entryBuilding";
 			this.entryBuilding.IsEditable = true;
-			this.entryBuilding.WidthChars = 10;
+			this.entryBuilding.WidthChars = 17;
 			this.entryBuilding.InvisibleChar = '●';
 			this.table1.Add (this.entryBuilding);
 			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryBuilding]));
