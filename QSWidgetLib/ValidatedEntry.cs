@@ -38,6 +38,11 @@ namespace QSWidgetLib
 			}
 		}
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		public object Tag;
+
 		public ValidatedEntry () 
 		{
 			ValidationMode = ValidationType.none;
