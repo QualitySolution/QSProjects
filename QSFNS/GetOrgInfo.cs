@@ -42,8 +42,6 @@ namespace QSFNS
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
 			return true;
-			//var val = completion.Model.GetValue (iter, (int)columns.City).ToString ().ToLower ();
-			//return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (this.Text.ToLower ())));
 		}
 
 		[GLib.ConnectBefore]
@@ -56,7 +54,6 @@ namespace QSFNS
 	
 		private void fillAutocomplete ()
 		{
-			
 			var response = FNSMain.CachedQueryParty(entryQuery.Text);
 
 			var completionListStore = new ListStore (typeof(PartyData));
@@ -75,7 +72,7 @@ namespace QSFNS
 			});
 		}
 
-		protected void OnEntryQueryTextInserted(object o, TextInsertedArgs args)
+		void RunQuery()
 		{
 			if (entryQuery.HasFocus && !queryIsRunning) {
 				Thread queryThread = new Thread (fillAutocomplete);
@@ -83,6 +80,16 @@ namespace QSFNS
 				queryIsRunning = true;
 				queryThread.Start ();
 			}
+		}
+
+		protected void OnEntryQueryTextInserted(object o, TextInsertedArgs args)
+		{
+			RunQuery();
+		}
+
+		protected void OnEntryQueryTextDeleted(object o, TextDeletedArgs args)
+		{
+			RunQuery();
 		}
 	}
 }

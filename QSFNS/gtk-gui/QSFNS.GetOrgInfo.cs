@@ -58,6 +58,7 @@ namespace QSFNS
 			}
 			this.Hide ();
 			this.entryQuery.TextInserted += new global::Gtk.TextInsertedHandler (this.OnEntryQueryTextInserted);
+			this.entryQuery.TextDeleted += new global::Gtk.TextDeletedHandler (this.OnEntryQueryTextDeleted);
 		}
 	}
 }
