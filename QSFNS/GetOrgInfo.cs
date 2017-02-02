@@ -33,8 +33,9 @@ namespace QSFNS
 		{
 			var party = (PartyData)tree_model.GetValue(iter, 0);
 			string pattern = String.Format ("\\b{0}", Regex.Escape (entryQuery.Text.ToLower ()));
-			var text = String.Format("{0}, {1}\n{2}", party.inn, party.name.full_with_opf, party.address.ToString());
+			var text = String.Format("{0}, {1}\n{2}", party.inn, party.name.full_with_opf, party.address.value);
 			var displaytext = Regex.Replace (text, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			displaytext = displaytext.Replace("&", "&amp;");
 			(cell as CellRendererText).Markup = displaytext;
 		}
 
@@ -66,10 +67,12 @@ namespace QSFNS
 				);
 			}
 			logger.Debug ("Получено {0} подсказок...", response.suggestions.Count);
-			entryQuery.Completion.Model = completionListStore;
-			queryIsRunning = false;
-			if (this.HasFocus)
-				entryQuery.Completion.Complete ();
+			Application.Invoke(delegate {
+				entryQuery.Completion.Model = completionListStore;
+				queryIsRunning = false;
+				if (this.HasFocus)
+					entryQuery.Completion.Complete ();
+			});
 		}
 
 		protected void OnEntryQueryTextInserted(object o, TextInsertedArgs args)
