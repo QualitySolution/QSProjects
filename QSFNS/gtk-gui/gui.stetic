@@ -48,6 +48,7 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes">Заполнить карточку</property>
             <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonFillFieldsClicked" />
           </widget>
           <packing>
             <property name="Position">2</property>

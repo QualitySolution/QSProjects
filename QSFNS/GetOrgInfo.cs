@@ -15,6 +15,9 @@ namespace QSFNS
 		bool noQuery = false;
 		bool needRequery = false;
 
+		public event EventHandler Selected;
+		public event EventHandler FillButtonCliked;
+
 		PartyData selectedParty;
 
 		public PartyData SelectedParty
@@ -31,6 +34,7 @@ namespace QSFNS
 					noQuery = true;
 					entryQuery.Text = String.Format("{0}, {1}", selectedParty.inn, selectedParty.name.short_with_opf);
 					noQuery = false;
+					OnSelected();
 				}
 				buttonFillFields.Sensitive = selectedParty != null;
 			}
@@ -128,6 +132,23 @@ namespace QSFNS
 		protected void OnEntryQueryTextDeleted(object o, TextDeletedArgs args)
 		{
 			RunQuery();
+		}
+
+		public virtual void OnSelected()
+		{
+			if(Selected != null)
+				Selected(this, EventArgs.Empty);
+		}
+
+		public virtual void OnFillButtonCliked()
+		{
+			if(FillButtonCliked != null)
+				FillButtonCliked(this, EventArgs.Empty);
+		}
+
+		protected void OnButtonFillFieldsClicked(object sender, EventArgs e)
+		{
+			OnFillButtonCliked();
 		}
 	}
 }
