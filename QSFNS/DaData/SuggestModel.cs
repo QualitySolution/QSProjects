@@ -173,7 +173,7 @@ namespace suggestionscsharp {
     }
 
     public class PartyData {
-        public AddressData address              { get; set; }
+		public SuggestAddressResponse.Suggestions address   { get; set; }
         public string branch_count              { get; set; }
         public PartyBranchType branch_type      { get; set; }
         public string inn                       { get; set; }
