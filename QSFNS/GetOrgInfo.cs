@@ -13,6 +13,7 @@ namespace QSFNS
 
 		private bool queryIsRunning = false;
 		bool noQuery = false;
+		bool needRequery = false;
 
 		PartyData selectedParty;
 
@@ -73,29 +74,45 @@ namespace QSFNS
 	
 		private void fillAutocomplete ()
 		{
-			var response = FNSMain.CachedQueryParty(entryQuery.Text);
+			do
+			{
+				needRequery = false;
+				var response = FNSMain.CachedQueryParty(entryQuery.Text);
 
-			var completionListStore = new ListStore (typeof(PartyData));
+				var completionListStore = new ListStore(typeof(PartyData));
 
-			foreach (var sugg in response.suggestions) {
-				completionListStore.AppendValues (
-					sugg.data
-				);
+				foreach (var sugg in response.suggestions)
+				{
+					completionListStore.AppendValues(
+						sugg.data
+					);
+				}
+
+				Application.Invoke(delegate
+					{
+						entryQuery.Completion.Model = completionListStore;
+						if (this.HasFocus)
+							entryQuery.Completion.Complete();
+					});
 			}
-
-			Application.Invoke(delegate {
-				entryQuery.Completion.Model = completionListStore;
-				queryIsRunning = false;
-				if (this.HasFocus)
-					entryQuery.Completion.Complete ();
-			});
+			while(needRequery);
+			queryIsRunning = false;
 		}
 
 		void RunQuery()
 		{
-			if (entryQuery.HasFocus && !queryIsRunning && !noQuery) {
-				SelectedParty = null;
+			if (noQuery)
+				return;
 
+			SelectedParty = null;
+
+			if(queryIsRunning)
+			{
+				needRequery = true;
+				return;
+			}
+
+			if (entryQuery.HasFocus) {
 				Thread queryThread = new Thread (fillAutocomplete);
 				queryThread.IsBackground = true;
 				queryIsRunning = true;
