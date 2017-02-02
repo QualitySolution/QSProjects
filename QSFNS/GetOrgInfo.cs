@@ -12,8 +12,28 @@ namespace QSFNS
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		private bool queryIsRunning = false;
+		bool noQuery = false;
 
-		PartyData SelectedParty;
+		PartyData selectedParty;
+
+		public PartyData SelectedParty
+		{
+			get
+			{
+				return selectedParty;
+			}
+			set
+			{
+				selectedParty = value;
+				if(selectedParty != null)
+				{
+					noQuery = true;
+					entryQuery.Text = String.Format("{0}, {1}", selectedParty.inn, selectedParty.name.short_with_opf);
+					noQuery = false;
+				}
+				buttonFillFields.Sensitive = selectedParty != null;
+			}
+		}
 
 		public GetOrgInfo()
 		{
@@ -48,7 +68,6 @@ namespace QSFNS
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
 			SelectedParty = (PartyData)args.Model.GetValue(args.Iter, 0);
-			entryQuery.Text = String.Format("{0}, {1}", SelectedParty.inn, SelectedParty.name.short_with_opf);
 			args.RetVal = true;
 		}
 	
@@ -74,7 +93,9 @@ namespace QSFNS
 
 		void RunQuery()
 		{
-			if (entryQuery.HasFocus && !queryIsRunning) {
+			if (entryQuery.HasFocus && !queryIsRunning && !noQuery) {
+				SelectedParty = null;
+
 				Thread queryThread = new Thread (fillAutocomplete);
 				queryThread.IsBackground = true;
 				queryIsRunning = true;
