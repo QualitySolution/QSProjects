@@ -99,6 +99,7 @@ namespace QSOrmProject.Deletion
                         continue;
                     }
 
+					//FIXME Дописать проверку ManyToMany
 					var deleteDepend = info.DeleteItems.Find (r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
 
 					if(deleteDepend == null)
