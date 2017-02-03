@@ -7,8 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOsm</RootNamespace>
     <AssemblyName>QSOsm</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,6 +90,10 @@
     <ProjectReference Include="..\QSOrmProject\QSOrmProject.csproj">
       <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
       <Name>QSOrmProject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSFNS\QSFNS.csproj">
+      <Project>{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}</Project>
+      <Name>QSFNS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

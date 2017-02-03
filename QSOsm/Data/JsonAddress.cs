@@ -2,8 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using Newtonsoft.Json;
-using QSOsm.DTO;
 using QSOrmProject;
+using QSOsm.DTO;
+using suggestionscsharp;
 
 namespace QSOsm.Data
 {
@@ -109,6 +110,16 @@ namespace QSOsm.Data
 			set { SetField (ref addressAddition, value, () => АddressAddition); }
 		}
 
+		string postalCode;
+
+		[Display (Name = "Индекс")]
+		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
+		public virtual string PostalCode {
+			get { return postalCode; }
+			set { SetField (ref postalCode, value, () => PostalCode); }
+		}
+
+
 		#region Расчетные
 
 		[Display (Name = "Полный адрес")]
@@ -180,6 +191,51 @@ namespace QSOsm.Data
 			RoomType = source.RoomType;
 			АddressAddition = source.АddressAddition;
 		}
+
+		public void CopyFrom(AddressData source)
+		{
+			PostalCode = source.postal_code;
+			Region = source.region;
+			City = source.city;
+			if (source.settlement != null)
+				City += " " + source.settlement_with_type;
+			LocalityType = LocalityType.city; //FIXME Тут скорей всего нужен более детальный подход. Без примеров не стал разбираться.
+//			CityDistrict = source.;
+			Street = source.street_with_type.Replace(source.street_type, source.street_type_full);
+			//StreetDistrict = source.StreetDistrict;
+			Building = source.house;
+			if (source.block != null)
+				Building += " " + source.block_type + source.block;
+			Room = source.flat;
+			RoomType = ParseDaDataRoomType(source.flat_type);
+		}
+
+		public static LocalityType ParseDaDataLocalityType(string str)
+		{
+			switch (str)
+			{
+				case "город":
+					return LocalityType.city;
+				default:
+					return LocalityType.city;
+			}
+		}
+
+		public static RoomType ParseDaDataRoomType(string  flatShort)
+		{
+			switch (flatShort)
+			{
+				case "кв":
+					return RoomType.Apartment;
+				case "оф":
+					return RoomType.Office;
+				case "пом":
+					return RoomType.Room;
+				default:
+					return RoomType.Office;
+			}
+		}
+
 	}
 }
 
