@@ -126,6 +126,8 @@ namespace QSOsm.Data
 		public virtual string CompiledAddress {
 			get {
 				string address = String.Empty;
+				if (!String.IsNullOrWhiteSpace (PostalCode))
+					address += String.Format ("{0}, ", PostalCode);
 				if (!String.IsNullOrWhiteSpace (City))
 					address += String.Format ("{0} {1}, ", LocalityType.GetEnumShortTitle(), City);
 				if (!String.IsNullOrWhiteSpace (Street))
@@ -160,7 +162,7 @@ namespace QSOsm.Data
 				if (default(int) != Floor)
 					address += String.Format ("эт.{0}, ", Floor);
 				if (!String.IsNullOrWhiteSpace (Room))
-					address += String.Format ("{0} {1}, ", RoomType.GetEnumShortTitle(), Room);
+					address += String.Format ("{0}{1}, ", RoomType.GetEnumShortTitle(), Room);
 
 				return address.TrimEnd (',', ' ');
 			}

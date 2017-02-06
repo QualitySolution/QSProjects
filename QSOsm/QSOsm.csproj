@@ -95,6 +95,10 @@
       <Project>{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}</Project>
       <Name>QSFNS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

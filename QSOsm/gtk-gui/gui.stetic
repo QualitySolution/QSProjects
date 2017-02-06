@@ -7,8 +7,10 @@
   <import>
     <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
-    <widget-library name="../bin/Debug/QSOsm.dll" internal="true" />
     <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
+    <widget-library name="../../QSFNS/bin/Debug/QSFNS.dll" />
+    <widget-library name="../bin/Debug/QSOsm.dll" internal="true" />
+    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
   </import>
   <widget class="Gtk.Bin" id="QSOsm.JsonAddressEntry" design-size="632 162">
     <property name="MemberName" />
@@ -163,7 +165,7 @@
               <widget class="Gtk.Label" id="label3">
                 <property name="MemberName" />
                 <property name="Xalign">1</property>
-                <property name="LabelProp" translatable="yes">Регион:</property>
+                <property name="LabelProp" translatable="yes">Индекс:</property>
               </widget>
               <packing>
                 <property name="LeftAttach">2</property>
@@ -338,9 +340,12 @@
               </packing>
             </child>
             <child>
-              <widget class="Gamma.GtkWidgets.yLabel" id="ylabelRegion">
+              <widget class="Gamma.Widgets.yValidatedEntry" id="yvalidatedentryPostalCode">
                 <property name="MemberName" />
-                <property name="LabelProp" translatable="yes">не определён</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="MaxLength">6</property>
+                <property name="InvisibleChar">●</property>
               </widget>
               <packing>
                 <property name="LeftAttach">3</property>

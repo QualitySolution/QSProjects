@@ -56,6 +56,9 @@ namespace QSOsm
 						.AddBinding (entity => entity.Building, widget => widget.House)
 						.InitializeFromSource ();
 
+					yvalidatedentryPostalCode.ValidationMode = QSWidgetLib.ValidationType.numeric;
+					yvalidatedentryPostalCode.Binding.AddBinding(Address, e => e.PostalCode, w => w.Text).InitializeFromSource();
+
 					comboRoomType.ItemsEnum = typeof(RoomType);
 					comboRoomType.Binding.AddBinding (Address, entity => entity.RoomType, widget => widget.SelectedItem)
 						.InitializeFromSource ();

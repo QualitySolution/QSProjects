@@ -38,7 +38,7 @@ namespace QSOsm
 		
 		private global::Gamma.GtkWidgets.yEntry yentryAddition;
 		
-		private global::Gamma.GtkWidgets.yLabel ylabelRegion;
+		private global::Gamma.Widgets.yValidatedEntry yvalidatedentryPostalCode;
 		
 		private global::Gtk.Label ExpanderLabel;
 
@@ -146,7 +146,7 @@ namespace QSOsm
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 1F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Регион:");
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Индекс:");
 			this.table1.Add (this.label3);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
 			w8.LeftAttach = ((uint)(2));
@@ -246,11 +246,14 @@ namespace QSOsm
 			w15.XOptions = ((global::Gtk.AttachOptions)(4));
 			w15.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.ylabelRegion = new global::Gamma.GtkWidgets.yLabel ();
-			this.ylabelRegion.Name = "ylabelRegion";
-			this.ylabelRegion.LabelProp = global::Mono.Unix.Catalog.GetString ("не определён");
-			this.table1.Add (this.ylabelRegion);
-			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.ylabelRegion]));
+			this.yvalidatedentryPostalCode = new global::Gamma.Widgets.yValidatedEntry ();
+			this.yvalidatedentryPostalCode.CanFocus = true;
+			this.yvalidatedentryPostalCode.Name = "yvalidatedentryPostalCode";
+			this.yvalidatedentryPostalCode.IsEditable = true;
+			this.yvalidatedentryPostalCode.MaxLength = 6;
+			this.yvalidatedentryPostalCode.InvisibleChar = '●';
+			this.table1.Add (this.yvalidatedentryPostalCode);
+			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.yvalidatedentryPostalCode]));
 			w16.LeftAttach = ((uint)(3));
 			w16.RightAttach = ((uint)(4));
 			w16.XOptions = ((global::Gtk.AttachOptions)(4));
