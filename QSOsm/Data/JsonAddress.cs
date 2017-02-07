@@ -181,6 +181,7 @@ namespace QSOsm.Data
 
 		public void CopyFrom(JsonAddress source)
 		{
+			PostalCode = source.PostalCode;
 			Region = source.Region;
 			City = source.City;
 			LocalityType = source.LocalityType;
