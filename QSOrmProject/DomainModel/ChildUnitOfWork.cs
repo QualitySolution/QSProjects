@@ -69,6 +69,9 @@ namespace QSOrmProject
 		public void Commit ()
 		{
 			if (IsNew) {
+				if(ParentReference.AddNewChild == null)
+					throw new InvalidOperationException(String.Format("Для {0} не настроена функция AddNewChild. Без нее, подчиненный Uow, не может работать.", ParentReference.GetType()));
+					
 				ParentReference.AddNewChild (ParentUoW.Root, Root);
 				IsNew = false;
 			}
