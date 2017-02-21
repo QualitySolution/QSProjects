@@ -9,7 +9,7 @@ using Gamma.ColumnConfig;
 namespace QSOrmProject.RepresentationModel
 {
 	/// <summary>
-	/// Базовый класс презентационной модели, не используете его без необходимости. Используйте наследников.
+	/// Базовый класс презентационной модели, не используйте его без необходимости. Используйте наследников.
 	/// </summary>
 	public abstract class RepresentationModelBase<TNode>
 	{
