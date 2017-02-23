@@ -63,6 +63,7 @@ namespace QSOsm
 					comboRoomType.Binding.AddBinding (Address, entity => entity.RoomType, widget => widget.SelectedItem)
 						.InitializeFromSource ();
 
+					yentryLiter.Binding.AddBinding(Address, e => e.Letter, w => w.Text).InitializeFromSource();
 					entryRoom.Binding.AddBinding(Address, e => e.Room, w => w.Text).InitializeFromSource();
 					spinFloor.Binding.AddBinding(Address, e => e.Floor, w => w.ValueAsInt).InitializeFromSource();
 					yentryAddition.Binding.AddBinding(Address, e => e.АddressAddition, w => w.Text).InitializeFromSource();

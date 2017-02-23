@@ -12,7 +12,7 @@
     <widget-library name="../bin/Debug/QSOsm.dll" internal="true" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
   </import>
-  <widget class="Gtk.Bin" id="QSOsm.JsonAddressEntry" design-size="632 162">
+  <widget class="Gtk.Bin" id="QSOsm.JsonAddressEntry" design-size="700 162">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -27,9 +27,6 @@
             <property name="NColumns">4</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
-            <child>
-              <placeholder />
-            </child>
             <child>
               <widget class="QSOsm.HouseEntry" id="entryBuilding">
                 <property name="MemberName" />
@@ -103,6 +100,21 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
+                  <widget class="Gamma.GtkWidgets.yEntry" id="yentryLiter">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">True</property>
+                    <property name="WidthChars">10</property>
+                    <property name="InvisibleChar">●</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="Gamma.Widgets.yEnumComboBox" id="comboRoomType">
                     <property name="MemberName" />
                     <property name="IsTextCombo">False</property>
@@ -113,7 +125,7 @@
                     <property name="DefaultFirst">False</property>
                   </widget>
                   <packing>
-                    <property name="Position">0</property>
+                    <property name="Position">1</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -125,7 +137,7 @@
                     <property name="LabelProp" translatable="yes">№:</property>
                   </widget>
                   <packing>
-                    <property name="Position">1</property>
+                    <property name="Position">2</property>
                     <property name="AutoSize">True</property>
                     <property name="Expand">False</property>
                     <property name="Fill">False</property>
@@ -140,7 +152,7 @@
                     <property name="InvisibleChar">●</property>
                   </widget>
                   <packing>
-                    <property name="Position">2</property>
+                    <property name="Position">3</property>
                     <property name="AutoSize">False</property>
                   </packing>
                 </child>
@@ -150,6 +162,26 @@
                 <property name="BottomAttach">3</property>
                 <property name="LeftAttach">1</property>
                 <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">Литера:</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
                 <property name="AutoSize">True</property>
                 <property name="XOptions">Fill</property>
                 <property name="YOptions">Fill</property>
