@@ -117,6 +117,18 @@ namespace QSUpdater.DB
             Environment.Exit(1);
         }
 
+		private static void ShowErrorAndExit(string text)
+		{
+			MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
+				MessageType.Error, 
+				ButtonsType.Close,
+				text);
+			md.Show ();
+			md.Run ();
+			md.Destroy ();
+			Environment.Exit(1);
+		}
+
 		public static void TryUpdate()
 		{
 			logger.Debug (System.Reflection.Assembly.GetCallingAssembly().FullName);
@@ -145,6 +157,8 @@ namespace QSUpdater.DB
 			else
 			{
 				logger.Error ("Версия базы не соответствует программе, но обновление не найдено");
+				ShowErrorAndExit(CheckBaseVersion.TextMessage + 
+					String.Format("\nОбновление базы для версии {0} не поддерживается.", StringWorks.VersionToShortString(currentDB)));
 			}
 		}
 	}
