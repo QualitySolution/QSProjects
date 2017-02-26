@@ -162,7 +162,7 @@ namespace QSDocTemplates
 					fieldsDels.AppendChild (newFieldNode);
 				}
 			}
-			else if (field.Type == PatternFieldType.FAutoRowNumber) {
+			else if (field.Type == PatternFieldType.FAutoRowNumber || field.Type == PatternFieldType.FNumber) {
 
 				if (existFilds.Contains (field.Name))
 					return;
@@ -293,6 +293,10 @@ namespace QSDocTemplates
 					node.Attributes["office:string-value"].Value = val;
 				}
 			}
+			else if(type == PatternFieldType.FNumber)
+			{
+				element.SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString());
+			}
 			else
 				element.SetAttribute("string-value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString()); //value != null ? value.ToString () : String.Empty);
 		}
@@ -322,7 +326,7 @@ namespace QSDocTemplates
 					node.Attributes["office:string-value"].Value = val;
 				}
 			}
-			else if(type == PatternFieldType.FAutoRowNumber)
+			else if(type == PatternFieldType.FAutoRowNumber || type == PatternFieldType.FNumber)
 			{
 				element.SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", value?.ToString()); //value != null ? value.ToString () : String.Empty);
 				element.InnerText = value?.ToString();

@@ -80,6 +80,7 @@ namespace QSDocTemplates
 		FString,
 		FDate,
 		FCurrency,
+		FNumber,
 		FAutoRowNumber
 	}
 }
