@@ -34,6 +34,11 @@ namespace QSOrmProject
 
 		public bool FailInitialize { get; protected set; }
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		public object Tag;
+
 		public bool CompareHashName(string hashName)
 		{
 			return GenerateHashName(objectType) == hashName;
