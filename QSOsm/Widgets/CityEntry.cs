@@ -44,6 +44,8 @@ namespace QSOsm
 			}
 			set {
 				city = value;
+				if (String.IsNullOrWhiteSpace(city))
+					osmId = default(long);
 				UpdateText ();
 			}
 		}
@@ -75,13 +77,12 @@ namespace QSOsm
 
 		void UpdateText ()
 		{
-			if (osmId == default(long) && String.IsNullOrWhiteSpace (City) && String.IsNullOrWhiteSpace (CityDistrict)) {
-				City = "Санкт-Петербург";
-				Locality = LocalityType.city;
-			}
-			this.Text = String.IsNullOrWhiteSpace (CityDistrict) ? 
-				String.Format ("{0} {1}", Locality.GetEnumTitle (), City) : 
-				String.Format ("{0} {1} ({2})", Locality.GetEnumTitle (), City, CityDistrict);
+			if (String.IsNullOrWhiteSpace(City))
+				Text = String.Empty;
+			else if (String.IsNullOrWhiteSpace(CityDistrict))
+				Text = String.Format("{0} {1}", Locality.GetEnumTitle(), City);
+			else
+				Text = String.Format ("{0} {1} ({2})", Locality.GetEnumTitle (), City, CityDistrict);
 			
 			if (osmId == default(long) && City != default(string)) {
 				logger.Debug ("Запрос id для города {0}({1})...", City, CityDistrict);
