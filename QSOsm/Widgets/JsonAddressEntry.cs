@@ -74,7 +74,7 @@ namespace QSOsm
 
 		void Address_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if(e.PropertyName == Address.GetPropertyName(x => x.CompiledAddress))
+			if(e.PropertyName == Address.GetPropertyName(x => x.Title))
 				ExpanderLabel.LabelProp = Address.Title;
 		}
 

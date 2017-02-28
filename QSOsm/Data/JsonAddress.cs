@@ -119,6 +119,14 @@ namespace QSOsm.Data
 			set { SetField (ref postalCode, value, () => PostalCode); }
 		}
 
+		private string singleText;
+
+		[Display (Name = "Единая строка адреса")]
+		[PropertyChangedAlso("Title")]
+		public virtual string SingleText {
+		    get { return singleText; }
+		    set { SetField (ref singleText, value, () => SingleText); }
+		}
 
 		#region Расчетные
 
@@ -170,7 +178,9 @@ namespace QSOsm.Data
 
 		[JsonIgnore]
 		public virtual string Title { 
-			get { return String.IsNullOrWhiteSpace(CompiledAddress) ? "АДРЕС ПУСТОЙ" : CompiledAddress; }
+			get { return String.IsNullOrWhiteSpace(CompiledAddress) ? 
+				(SingleText ?? "АДРЕС ПУСТОЙ")
+					: CompiledAddress; }
 		}
 
 		#endregion
@@ -216,10 +226,17 @@ namespace QSOsm.Data
 			RoomType = ParseDaDataRoomType(source.flat_type);
 		}
 
+		public void FillFromText(string address)
+		{
+			Clean();
+			SingleText = address;
+		}
+
 		public void Clean()
 		{
 			PostalCode = Region = City = CityDistrict = Street = StreetDistrict = 
 				Building = Letter = Room = АddressAddition = String.Empty;
+			SingleText = null;
 			RoomType = default(RoomType);
 			Floor = default(int);
 			LocalityType = default(LocalityType);
