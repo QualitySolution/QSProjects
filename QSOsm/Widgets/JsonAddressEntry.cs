@@ -5,6 +5,7 @@ using Gamma.Binding.Core;
 using QSOsm.Data;
 using QSOsm.DTO;
 using Gamma.Utilities;
+using QSOrmProject;
 
 namespace QSOsm
 {
@@ -41,33 +42,34 @@ namespace QSOsm
 					ExpanderLabel.LabelProp = Address.Title;
 					Address.PropertyChanged += Address_PropertyChanged;
 
+					var nullConverter = new NullToEmptyStringConverter();
 					entryCity.Binding
 						.AddSource (Address)
-						.AddBinding (entity => entity.CityDistrict, widget => widget.CityDistrict)
-						.AddBinding (entity => entity.City, widget => widget.City)
+						.AddBinding (entity => entity.CityDistrict, widget => widget.CityDistrict, nullConverter)
+						.AddBinding (entity => entity.City, widget => widget.City, nullConverter)
 						.AddBinding (entity => entity.LocalityType, widget => widget.Locality)
 						.InitializeFromSource ();
 					entryStreet.Binding
 						.AddSource (Address)
-						.AddBinding (entity => entity.StreetDistrict, widget => widget.StreetDistrict)
-						.AddBinding (entity => entity.Street, widget => widget.Street)
+						.AddBinding (entity => entity.StreetDistrict, widget => widget.StreetDistrict, nullConverter)
+						.AddBinding (entity => entity.Street, widget => widget.Street, nullConverter)
 						.InitializeFromSource ();
 					entryBuilding.Binding
 						.AddSource (Address)
-						.AddBinding (entity => entity.Building, widget => widget.House)
+						.AddBinding (entity => entity.Building, widget => widget.House, nullConverter)
 						.InitializeFromSource ();
 
 					yvalidatedentryPostalCode.ValidationMode = QSWidgetLib.ValidationType.numeric;
-					yvalidatedentryPostalCode.Binding.AddBinding(Address, e => e.PostalCode, w => w.Text).InitializeFromSource();
+					yvalidatedentryPostalCode.Binding.AddBinding(Address, e => e.PostalCode, w => w.Text, nullConverter).InitializeFromSource();
 
 					comboRoomType.ItemsEnum = typeof(RoomType);
 					comboRoomType.Binding.AddBinding (Address, entity => entity.RoomType, widget => widget.SelectedItem)
 						.InitializeFromSource ();
 
-					yentryLiter.Binding.AddBinding(Address, e => e.Letter, w => w.Text).InitializeFromSource();
-					entryRoom.Binding.AddBinding(Address, e => e.Room, w => w.Text).InitializeFromSource();
-					spinFloor.Binding.AddBinding(Address, e => e.Floor, w => w.ValueAsInt).InitializeFromSource();
-					yentryAddition.Binding.AddBinding(Address, e => e.АddressAddition, w => w.Text).InitializeFromSource();
+					yentryLiter.Binding.AddBinding(Address, e => e.Letter, w => w.Text, nullConverter).InitializeFromSource();
+					entryRoom.Binding.AddBinding(Address, e => e.Room, w => w.Text, nullConverter).InitializeFromSource();
+					spinFloor.Binding.AddBinding(Address, e => e.Floor, w => w.ValueAsInt, new NullToZeroConverter()).InitializeFromSource();
+					yentryAddition.Binding.AddBinding(Address, e => e.АddressAddition, w => w.Text, nullConverter).InitializeFromSource();
 				}
 			}
 		}

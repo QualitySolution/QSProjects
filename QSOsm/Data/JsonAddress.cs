@@ -74,11 +74,11 @@ namespace QSOsm.Data
 			set { SetField (ref letter, value, () => Letter); }
 		}
 
-		int floor;
+		int? floor;
 
 		[Display (Name = "Этаж")]
 		[PropertyChangedAlso("CompiledAddress", "ShortAddress", "Title")]
-		public virtual int Floor {
+		public virtual int? Floor {
 			get { return floor; }
 			set { SetField (ref floor, value, () => Floor); }
 		}
@@ -235,10 +235,9 @@ namespace QSOsm.Data
 		public void Clean()
 		{
 			PostalCode = Region = City = CityDistrict = Street = StreetDistrict = 
-				Building = Letter = Room = АddressAddition = String.Empty;
-			SingleText = null;
+				Building = Letter = Room = АddressAddition = SingleText = null;
 			RoomType = default(RoomType);
-			Floor = default(int);
+			Floor = null;
 			LocalityType = default(LocalityType);
 		}
 
