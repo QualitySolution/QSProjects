@@ -189,6 +189,7 @@ namespace QSOsm.Data
 			Street = source.Street;
 			StreetDistrict = source.StreetDistrict;
 			Building = source.Building;
+			Letter = source.Letter;
 			Floor = source.Floor;
 			Room = source.Room;
 			RoomType = source.RoomType;
