@@ -28,6 +28,7 @@ namespace QSOsm
 					entryCity.Binding.CleanSources();
 					entryStreet.Binding.CleanSources();
 					entryBuilding.Binding.CleanSources();
+					yentryLiter.Binding.CleanSources();
 					comboRoomType.Binding.CleanSources();
 					entryRoom.Binding.CleanSources();
 					spinFloor.Binding.CleanSources();
@@ -136,6 +137,11 @@ namespace QSOsm
 			};
 
 			expander1.Expanded = false;
+		}
+
+		protected void OnButtonCleanClicked(object sender, EventArgs e)
+		{
+			Address.Clean();
 		}
 	}
 }

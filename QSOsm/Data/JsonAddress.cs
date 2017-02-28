@@ -179,6 +179,8 @@ namespace QSOsm.Data
 		{
 		}
 
+		#region Функции
+
 		public void CopyFrom(JsonAddress source)
 		{
 			PostalCode = source.PostalCode;
@@ -214,6 +216,19 @@ namespace QSOsm.Data
 			RoomType = ParseDaDataRoomType(source.flat_type);
 		}
 
+		public void Clean()
+		{
+			PostalCode = Region = City = CityDistrict = Street = StreetDistrict = 
+				Building = Letter = Room = АddressAddition = String.Empty;
+			RoomType = default(RoomType);
+			Floor = default(int);
+			LocalityType = default(LocalityType);
+		}
+
+		#endregion
+
+		#region Статика
+
 		public static LocalityType ParseDaDataLocalityType(string str)
 		{
 			switch (str)
@@ -240,6 +255,7 @@ namespace QSOsm.Data
 			}
 		}
 
+		#endregion
 	}
 }
 
