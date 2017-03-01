@@ -44,7 +44,7 @@ namespace QSOrmProject.Deletion
 						&& !relatedClassInfo.ClearItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name))
 					{
 						logger.Warn("#Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
-							info.ObjectClass.Name,
+							info?.ObjectClass.Name,
 							prop.Name,
 							relatedClassInfo.ObjectClass.Name
 						);
