@@ -16,9 +16,14 @@ namespace QSOrmProject.Deletion
 			logger.Info("Проверка правил удаления по информации NHibernate.");
 			foreach(var mapping in OrmMain.OrmConfig.ClassMappings)
 			{
+				if(IgnoreMissingClass.Contains(mapping.MappedClass))
+				{
+					continue;
+				}
+
 				var info = ClassInfos.Find(i => i.ObjectClass == mapping.MappedClass);
 
-				if(info == null	&& !IgnoreMissingClass.Contains(mapping.MappedClass))
+				if(info == null)
 				{
 					logger.Warn("#Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.",
 						mapping.MappedClass
