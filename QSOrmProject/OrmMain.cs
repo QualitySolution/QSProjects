@@ -151,10 +151,10 @@ namespace QSOrmProject
 				lastCleaning = DateTime.Now;
 			}
 
-			foreach (Type subjectType in updatedSubjects.Select(s => NHibernateUtil.GetClass (s)).Distinct ()) {
+			foreach (Type subjectType in updatedSubjects.Select(s => NHibernateProxyHelper.GuessClass (s)).Distinct ()) {
 				IOrmObjectMapping map = ClassMappingList.Find (m => m.ObjectClass == subjectType);
 				if (map != null)
-					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateUtil.GetClass (s) == subjectType).ToArray ());
+					map.RaiseObjectUpdated (updatedSubjects.Where (s => NHibernateProxyHelper.GuessClass (s) == subjectType).ToArray ());
 				else
 					logger.Warn ("В ClassMapingList класс {0} объекта не найден. Поэтому событие обновления не вызвано.", subjectType);
 
