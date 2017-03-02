@@ -183,6 +183,11 @@ namespace QSOsm.Data
 					: CompiledAddress; }
 		}
 
+		[JsonIgnore]
+		public virtual string PrintAddress { 
+			get { return String.IsNullOrWhiteSpace(CompiledAddress) ? SingleText : CompiledAddress; }
+		}
+
 		#endregion
 
 		public JsonAddress()
