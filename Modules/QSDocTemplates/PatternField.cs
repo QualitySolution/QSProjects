@@ -9,6 +9,8 @@ namespace QSDocTemplates
 {
 	public class PatternField : IPatternField
 	{
+		private static readonly string[] RemovedSimbols = new string[]{"-", "/"};
+
 		public string Name { get; set;}
 		public PatternFieldType Type { get; set;}
 		public object Value;
@@ -36,6 +38,10 @@ namespace QSDocTemplates
 					namepart = StringWorks.StringToPascalCase (attrs[0].GetName());
 				else
 					namepart = prop.Name;
+				
+				foreach (var symb in RemovedSimbols)
+					namepart = namepart.Replace(symb, "");
+				
 				names.Add(namepart);
 			}
 			var name = String.Join(".", names);
