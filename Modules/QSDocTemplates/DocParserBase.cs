@@ -67,6 +67,12 @@ namespace QSDocTemplates
 			AddField(sourceProperty, name, fieldType);
 		}
 
+		protected void AddField(Expression<Func<TDoc, object>> sourceProperty, Expression<Func<TDoc, object>> nameFromProperty, PatternFieldType fieldType)
+		{
+			var name = PatternField.GetFieldName(nameFromProperty);
+			AddField(sourceProperty, name, fieldType);
+		}
+
 		protected PatternTable<TDoc, TRow> AddTable<TRow>(Expression<Func<TDoc, IList<TRow>>> collectionProperty)
 		{
 			var name = PatternTable<TDoc, TRow>.GetCollectionName(collectionProperty);
