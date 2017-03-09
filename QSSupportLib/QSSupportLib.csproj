@@ -41,11 +41,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Numerics" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

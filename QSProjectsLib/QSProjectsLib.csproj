@@ -9,6 +9,8 @@
     <AssemblyName>QSProjectsLib</AssemblyName>
     <ReleaseVersion>0.9</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,11 +45,11 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -113,13 +115,13 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
-      <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
-      <Name>QSSaaS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSMachineConfig\QSMachineConfig.csproj">
       <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
       <Name>QSMachineConfig</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
+      <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
+      <Name>QSSaaS</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

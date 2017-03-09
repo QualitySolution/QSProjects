@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSTDI</RootNamespace>
     <AssemblyName>QSTDI</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +35,7 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

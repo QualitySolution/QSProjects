@@ -37,22 +37,33 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
+    <Reference Include="WindowsBase" />
+    <Reference Include="Saraff.Twain.Aux">
+      <HintPath>..\lib\Saraff.Twain.Aux.dll</HintPath>
     </Reference>
     <Reference Include="Saraff.Twain">
-      <HintPath>..\packages\Saraff.Twain.1.0.23.558\lib\net40\Saraff.Twain.dll</HintPath>
+      <HintPath>..\lib\Saraff.Twain.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScanWorks.cs" />
     <Compile Include="ScanWorksEvents.cs" />
+    <Compile Include="ScanAuxWorks.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <None Include="..\lib\Saraff.Twain.Aux_MSIL.exe">
+      <Link>Saraff.Twain.Aux_MSIL.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\lib\Saraff.Twain.Aux_x86.exe">
+      <Link>Saraff.Twain.Aux_x86.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
-    <None Include="COPYING.LESSER.txt" />
-    <None Include="COPYING.txt" />
   </ItemGroup>
 </Project>

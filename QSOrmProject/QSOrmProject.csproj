@@ -50,10 +50,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.1\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.3\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -150,12 +150,11 @@
     <Compile Include="Widgets\DisableSpinButton.cs" />
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
+    <Compile Include="DebugHelper\DebugLoadListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\gui.stetic" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
@@ -183,8 +182,8 @@
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Gtk.DataBindings\Gtk.DataBindings.csproj" Condition=" '$(Configuration)' == 'Debug-OldBindings' ">
-          <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
-          <Name>Gtk.DataBindings</Name>
+      <Project>{8D85E430-325A-4532-A123-BF28F9644DB4}</Project>
+      <Name>Gtk.DataBindings</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +198,7 @@
     <Folder Include="WithoutTDI\" />
     <Folder Include="DomainMapping\" />
     <Folder Include="Helpers\" />
+    <Folder Include="DebugHelper\" />
   </ItemGroup>
   <Choose>
     <When Condition=" '$(Configuration)' == 'Debug-OldBindings' ">
