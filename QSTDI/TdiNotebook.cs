@@ -350,14 +350,13 @@ namespace QSTDI
 		public TdiTabInfo MasterTabInfo;
 		public ITdiTab TdiTab;
 		public Label TabNameLabel;
-		public List<ITdiTab> SlaveTabs;
+		public List<ITdiTab> SlaveTabs = new List<ITdiTab> ();
 
 		public TdiTabInfo (ITdiTab tab, Label label, TdiTabInfo masterTabInfo = null)
 		{
 			MasterTabInfo = masterTabInfo;
 			TdiTab = tab;
 			TabNameLabel = label;
-			SlaveTabs = new List<ITdiTab> ();
 		}
 	}
 
