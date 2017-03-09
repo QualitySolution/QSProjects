@@ -126,7 +126,6 @@
     <Compile Include="yWidgets\yLegalName.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
-    <Compile Include="yWidgets\yEntryReferenceVM.cs" />
     <Compile Include="DomainMapping\TableView.cs" />
     <Compile Include="DomainMapping\ITableView.cs" />
     <Compile Include="Deletion\IDeleteInfo.cs" />
@@ -151,6 +150,7 @@
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
+    <Compile Include="yWidgets\yEntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -216,6 +216,9 @@
   </Choose>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="gtk-gui\objects.xml">
+      <Link>objects.xml</Link>
+    </None>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
