@@ -144,7 +144,7 @@ namespace QSOsm.Data
 					address += String.Format ("д.{0}, ", Building);
 				if (!String.IsNullOrWhiteSpace (Letter))
 					address += String.Format ("лит.{0}, ", Letter);
-				if (default(int) != Floor)
+				if (Floor != null && default(int) != Floor)
 					address += String.Format ("эт.{0}, ", Floor);
 				if (!String.IsNullOrWhiteSpace (Room))
 					address += String.Format ("{0} {1}, ", RoomType.GetEnumShortTitle(), Room);
@@ -167,7 +167,7 @@ namespace QSOsm.Data
 					address += String.Format ("д.{0}, ", Building);
 				if (!String.IsNullOrWhiteSpace (Letter))
 					address += String.Format ("лит.{0}, ", Letter);
-				if (default(int) != Floor)
+				if (Floor != null && default(int) != Floor)
 					address += String.Format ("эт.{0}, ", Floor);
 				if (!String.IsNullOrWhiteSpace (Room))
 					address += String.Format ("{0}{1}, ", RoomType.GetEnumShortTitle(), Room);
