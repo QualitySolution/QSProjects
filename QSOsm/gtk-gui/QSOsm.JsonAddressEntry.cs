@@ -42,7 +42,7 @@ namespace QSOsm
 		
 		private global::Gtk.Label label8;
 		
-		private global::Gtk.Label label9;
+		private global::Gtk.Label labelFloor;
 		
 		private global::Gamma.GtkWidgets.ySpinButton spinFloor;
 		
@@ -266,12 +266,12 @@ namespace QSOsm
 			w18.XOptions = ((global::Gtk.AttachOptions)(4));
 			w18.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.label9 = new global::Gtk.Label ();
-			this.label9.Name = "label9";
-			this.label9.Xalign = 1F;
-			this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Этаж:");
-			this.table1.Add (this.label9);
-			global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));
+			this.labelFloor = new global::Gtk.Label ();
+			this.labelFloor.Name = "labelFloor";
+			this.labelFloor.Xalign = 1F;
+			this.labelFloor.LabelProp = global::Mono.Unix.Catalog.GetString ("Этаж:");
+			this.table1.Add (this.labelFloor);
+			global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelFloor]));
 			w19.TopAttach = ((uint)(2));
 			w19.BottomAttach = ((uint)(3));
 			w19.LeftAttach = ((uint)(2));
@@ -324,6 +324,8 @@ namespace QSOsm
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.spinFloor.Shown += new global::System.EventHandler (this.OnSpinFloorShown);
+			this.labelFloor.Shown += new global::System.EventHandler (this.OnLabelFloorShown);
 			this.buttonClean.Clicked += new global::System.EventHandler (this.OnButtonCleanClicked);
 		}
 	}

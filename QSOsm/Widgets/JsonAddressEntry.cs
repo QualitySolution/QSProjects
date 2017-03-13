@@ -116,6 +116,14 @@ namespace QSOsm
 			set { entryBuilding.House = value; }
 		}
 
+		bool hideFloor;
+
+		public virtual bool HideFloor {
+			get { return hideFloor; }
+			set { hideFloor = value;
+				spinFloor.Visible = labelFloor.Visible = !value; }
+		}
+
 		public JsonAddressEntry ()
 		{
 			this.Build ();
@@ -144,6 +152,18 @@ namespace QSOsm
 		protected void OnButtonCleanClicked(object sender, EventArgs e)
 		{
 			Address.Clean();
+		}
+
+		protected void OnSpinFloorShown(object sender, EventArgs e)
+		{
+			if (HideFloor)
+				spinFloor.Visible = false;
+		}
+
+		protected void OnLabelFloorShown(object sender, EventArgs e)
+		{
+			if (HideFloor)
+				labelFloor.Visible = false;
 		}
 	}
 }

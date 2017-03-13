@@ -347,10 +347,11 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Label" id="label9">
+              <widget class="Gtk.Label" id="labelFloor">
                 <property name="MemberName" />
                 <property name="Xalign">1</property>
                 <property name="LabelProp" translatable="yes">Этаж:</property>
+                <signal name="Shown" handler="OnLabelFloorShown" />
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -383,6 +384,7 @@
                 <property name="Value">4</property>
                 <property name="ValueAsDecimal">0</property>
                 <property name="ValueAsInt">0</property>
+                <signal name="Shown" handler="OnSpinFloorShown" />
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
