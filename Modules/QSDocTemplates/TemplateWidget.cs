@@ -36,6 +36,7 @@ namespace QSDocTemplates
 					UpdateTemplatesCombo();
 				UpdateState();
 				UpdateSize();
+				Binding.FireChange(x => x.Template);
 			}
 		}
 
