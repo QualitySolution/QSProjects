@@ -319,11 +319,13 @@ namespace QSDocTemplates
 					((XmlElement)node).SetAttribute("value", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", XmlConvert.ToString(valueDec));
 					string curr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
 					((XmlElement)node).SetAttribute("currency", "urn:oasis:names:tc:opendocument:xmlns:office:1.0", curr);
+					element.InnerText = valueDec.ToString("C");
 				}
 				if (fieldName.EndsWith(".Пропись"))
 				{						
 					string val = RusCurrency.Str((int)valueDec, true, "рубль", "рубля", "рублей", "", "", "");
 					node.Attributes["office:string-value"].Value = val;
+					element.InnerText = val;
 				}
 			}
 			else if(type == PatternFieldType.FAutoRowNumber || type == PatternFieldType.FNumber)
