@@ -65,7 +65,7 @@ namespace QSDocTemplates
 			return AddColumn(sourceProperty, name, fieldType);
 		}
 
-		public PatternTable<TDoc, TRow> AddColumn(Expression<Func<TRow, object>> sourceProperty, Expression<Func<TDoc, object>> nameFromProperty, PatternFieldType fieldType)
+		public PatternTable<TDoc, TRow> AddColumn(Expression<Func<TRow, object>> sourceProperty, Expression<Func<TRow, object>> nameFromProperty, PatternFieldType fieldType)
 		{
 			var name = PatternField.GetFieldName(nameFromProperty);
 			return AddColumn(sourceProperty, name, fieldType);
