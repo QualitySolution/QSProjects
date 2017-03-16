@@ -5,12 +5,12 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
-    <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
-    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../bin/Debug/QSDocTemplates.dll" internal="true" />
+    <widget-library name="../../../QSOrmProject/bin/Release/QSOrmProject.dll" />
+    <widget-library name="../../../QSProjectsLib/bin/Release/QSProjectsLib.dll" />
+    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Release/GammaBinding.dll" />
+    <widget-library name="../bin/Release/QSDocTemplates.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSDocTemplates.TemplateWidget" design-size="299 167">
+  <widget class="Gtk.Bin" id="QSDocTemplates.TemplateWidget" design-size="299 175">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -31,10 +31,33 @@
                 <child>
                   <widget class="Gtk.Table" id="table1">
                     <property name="MemberName" />
-                    <property name="NRows">2</property>
+                    <property name="NRows">3</property>
                     <property name="NColumns">2</property>
                     <property name="RowSpacing">6</property>
                     <property name="ColumnSpacing">6</property>
+                    <child>
+                      <widget class="Gamma.Widgets.yListComboBox" id="comboTemplates">
+                        <property name="MemberName" />
+                        <property name="Visible">False</property>
+                        <property name="IsTextCombo">False</property>
+                        <property name="Items" translatable="yes" />
+                        <property name="AddIfNotExist">True</property>
+                        <property name="DefaultFirst">False</property>
+                        <signal name="Changed" handler="OnComboTemplatesChanged" />
+                      </widget>
+                      <packing>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
                     <child>
                       <widget class="Gtk.Label" id="label2">
                         <property name="MemberName" />
@@ -42,6 +65,8 @@
                         <property name="LabelProp" translatable="yes">Статус:</property>
                       </widget>
                       <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
                         <property name="AutoSize">True</property>
                         <property name="XOptions">Fill</property>
                         <property name="YOptions">Fill</property>
@@ -60,8 +85,8 @@
                         <property name="LabelProp" translatable="yes">Размер файла:</property>
                       </widget>
                       <packing>
-                        <property name="TopAttach">1</property>
-                        <property name="BottomAttach">2</property>
+                        <property name="TopAttach">2</property>
+                        <property name="BottomAttach">3</property>
                         <property name="AutoSize">True</property>
                         <property name="XOptions">Fill</property>
                         <property name="YOptions">Fill</property>
@@ -80,6 +105,8 @@
                         <property name="UseMarkup">True</property>
                       </widget>
                       <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
                         <property name="AutoSize">True</property>
@@ -99,8 +126,8 @@
                         <property name="LabelProp" translatable="yes">ylabel1</property>
                       </widget>
                       <packing>
-                        <property name="TopAttach">1</property>
-                        <property name="BottomAttach">2</property>
+                        <property name="TopAttach">2</property>
+                        <property name="BottomAttach">3</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
                         <property name="AutoSize">True</property>
@@ -210,7 +237,7 @@
           </widget>
         </child>
         <child>
-          <widget class="Gtk.Label" id="GtkLabel3">
+          <widget class="Gtk.Label" id="GtkLabel4">
             <property name="MemberName" />
             <property name="LabelProp" translatable="yes">&lt;b&gt;Шаблон документа&lt;/b&gt;</property>
             <property name="UseMarkup">True</property>

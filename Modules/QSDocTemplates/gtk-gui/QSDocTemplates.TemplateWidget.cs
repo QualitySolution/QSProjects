@@ -12,6 +12,8 @@ namespace QSDocTemplates
 		
 		private global::Gtk.Table table1;
 		
+		private global::Gamma.Widgets.yListComboBox comboTemplates;
+		
 		private global::Gtk.Label label2;
 		
 		private global::Gtk.Label label3;
@@ -32,7 +34,7 @@ namespace QSDocTemplates
 		
 		private global::Gtk.Button buttonRevertCommon;
 		
-		private global::Gtk.Label GtkLabel3;
+		private global::Gtk.Label GtkLabel4;
 
 		protected virtual void Build ()
 		{
@@ -54,58 +56,72 @@ namespace QSDocTemplates
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table (((uint)(2)), ((uint)(2)), false);
+			this.table1 = new global::Gtk.Table (((uint)(3)), ((uint)(2)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
+			// Container child table1.Gtk.Table+TableChild
+			this.comboTemplates = new global::Gamma.Widgets.yListComboBox ();
+			this.comboTemplates.Name = "comboTemplates";
+			this.comboTemplates.AddIfNotExist = true;
+			this.comboTemplates.DefaultFirst = false;
+			this.table1.Add (this.comboTemplates);
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboTemplates]));
+			w1.RightAttach = ((uint)(2));
+			w1.XOptions = ((global::Gtk.AttachOptions)(4));
+			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 1F;
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Статус:");
 			this.table1.Add (this.label2);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
-			w1.XOptions = ((global::Gtk.AttachOptions)(4));
-			w1.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
+			w2.TopAttach = ((uint)(1));
+			w2.BottomAttach = ((uint)(2));
+			w2.XOptions = ((global::Gtk.AttachOptions)(4));
+			w2.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 1F;
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Размер файла:");
 			this.table1.Add (this.label3);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
-			w2.TopAttach = ((uint)(1));
-			w2.BottomAttach = ((uint)(2));
-			w2.XOptions = ((global::Gtk.AttachOptions)(4));
-			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
+			w3.TopAttach = ((uint)(2));
+			w3.BottomAttach = ((uint)(3));
+			w3.XOptions = ((global::Gtk.AttachOptions)(4));
+			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelStatus = new global::Gtk.Label ();
 			this.labelStatus.Name = "labelStatus";
 			this.labelStatus.LabelProp = global::Mono.Unix.Catalog.GetString ("label4");
 			this.labelStatus.UseMarkup = true;
 			this.table1.Add (this.labelStatus);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelStatus]));
-			w3.LeftAttach = ((uint)(1));
-			w3.RightAttach = ((uint)(2));
-			w3.XOptions = ((global::Gtk.AttachOptions)(4));
-			w3.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.ylabelSize = new global::Gamma.GtkWidgets.yLabel ();
-			this.ylabelSize.Name = "ylabelSize";
-			this.ylabelSize.LabelProp = global::Mono.Unix.Catalog.GetString ("ylabel1");
-			this.table1.Add (this.ylabelSize);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.ylabelSize]));
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelStatus]));
 			w4.TopAttach = ((uint)(1));
 			w4.BottomAttach = ((uint)(2));
 			w4.LeftAttach = ((uint)(1));
 			w4.RightAttach = ((uint)(2));
 			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.ylabelSize = new global::Gamma.GtkWidgets.yLabel ();
+			this.ylabelSize.Name = "ylabelSize";
+			this.ylabelSize.LabelProp = global::Mono.Unix.Catalog.GetString ("ylabel1");
+			this.table1.Add (this.ylabelSize);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.ylabelSize]));
+			w5.TopAttach = ((uint)(2));
+			w5.BottomAttach = ((uint)(3));
+			w5.LeftAttach = ((uint)(1));
+			w5.RightAttach = ((uint)(2));
+			w5.XOptions = ((global::Gtk.AttachOptions)(4));
+			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox1.Add (this.table1);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.table1]));
-			w5.Position = 0;
-			w5.Expand = false;
-			w5.Fill = false;
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.table1]));
+			w6.Position = 0;
+			w6.Expand = false;
+			w6.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
@@ -117,25 +133,25 @@ namespace QSDocTemplates
 			this.buttonOpen.UseUnderline = true;
 			this.buttonOpen.Label = global::Mono.Unix.Catalog.GetString ("Открыть");
 			this.hbox1.Add (this.buttonOpen);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonOpen]));
-			w6.Position = 0;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonOpen]));
+			w7.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonPrint = new global::Gtk.Button ();
 			this.buttonPrint.CanFocus = true;
 			this.buttonPrint.Name = "buttonPrint";
 			this.buttonPrint.UseUnderline = true;
 			this.buttonPrint.Label = global::Mono.Unix.Catalog.GetString ("Распечатать");
-			global::Gtk.Image w7 = new global::Gtk.Image ();
-			w7.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-print", global::Gtk.IconSize.Menu);
-			this.buttonPrint.Image = w7;
+			global::Gtk.Image w8 = new global::Gtk.Image ();
+			w8.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-print", global::Gtk.IconSize.Menu);
+			this.buttonPrint.Image = w8;
 			this.hbox1.Add (this.buttonPrint);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonPrint]));
-			w8.Position = 1;
-			this.vbox1.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox1]));
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonPrint]));
 			w9.Position = 1;
-			w9.Expand = false;
-			w9.Fill = false;
+			this.vbox1.Add (this.hbox1);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox1]));
+			w10.Position = 1;
+			w10.Expand = false;
+			w10.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.hbox2 = new global::Gtk.HBox ();
 			this.hbox2.Name = "hbox2";
@@ -146,41 +162,43 @@ namespace QSDocTemplates
 			this.buttonEdit.Name = "buttonEdit";
 			this.buttonEdit.UseUnderline = true;
 			this.buttonEdit.Label = global::Mono.Unix.Catalog.GetString ("Редактировать");
-			global::Gtk.Image w10 = new global::Gtk.Image ();
-			w10.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.buttonEdit.Image = w10;
+			global::Gtk.Image w11 = new global::Gtk.Image ();
+			w11.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.buttonEdit.Image = w11;
 			this.hbox2.Add (this.buttonEdit);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonEdit]));
-			w11.Position = 0;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonEdit]));
+			w12.Position = 0;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.buttonRevertCommon = new global::Gtk.Button ();
 			this.buttonRevertCommon.CanFocus = true;
 			this.buttonRevertCommon.Name = "buttonRevertCommon";
 			this.buttonRevertCommon.UseUnderline = true;
 			this.buttonRevertCommon.Label = global::Mono.Unix.Catalog.GetString ("Вернуть общий");
-			global::Gtk.Image w12 = new global::Gtk.Image ();
-			w12.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-revert-to-saved", global::Gtk.IconSize.Menu);
-			this.buttonRevertCommon.Image = w12;
+			global::Gtk.Image w13 = new global::Gtk.Image ();
+			w13.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-revert-to-saved", global::Gtk.IconSize.Menu);
+			this.buttonRevertCommon.Image = w13;
 			this.hbox2.Add (this.buttonRevertCommon);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonRevertCommon]));
-			w13.Position = 1;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonRevertCommon]));
+			w14.Position = 1;
 			this.vbox1.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox2]));
-			w14.Position = 2;
-			w14.Expand = false;
-			w14.Fill = false;
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox2]));
+			w15.Position = 2;
+			w15.Expand = false;
+			w15.Fill = false;
 			this.GtkAlignment.Add (this.vbox1);
 			this.frame1.Add (this.GtkAlignment);
-			this.GtkLabel3 = new global::Gtk.Label ();
-			this.GtkLabel3.Name = "GtkLabel3";
-			this.GtkLabel3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Шаблон документа</b>");
-			this.GtkLabel3.UseMarkup = true;
-			this.frame1.LabelWidget = this.GtkLabel3;
+			this.GtkLabel4 = new global::Gtk.Label ();
+			this.GtkLabel4.Name = "GtkLabel4";
+			this.GtkLabel4.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Шаблон документа</b>");
+			this.GtkLabel4.UseMarkup = true;
+			this.frame1.LabelWidget = this.GtkLabel4;
 			this.Add (this.frame1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
+			this.comboTemplates.Hide ();
 			this.Hide ();
+			this.comboTemplates.Changed += new global::System.EventHandler (this.OnComboTemplatesChanged);
 			this.buttonOpen.Clicked += new global::System.EventHandler (this.OnButtonOpenClicked);
 			this.buttonPrint.Clicked += new global::System.EventHandler (this.OnButtonPrintClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler (this.OnButtonEditClicked);

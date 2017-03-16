@@ -2,6 +2,7 @@
 using QSProjectsLib;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using System.Collections.Generic;
 
 namespace QSDocTemplates
 {
@@ -28,9 +29,25 @@ namespace QSDocTemplates
 
 				template = value;
 				if(template != null)
+				{
 					template.PropertyChanged += Template_PropertyChanged;
+				}
+				if (comboTemplates.SelectedItem != template)
+					UpdateTemplatesCombo();
 				UpdateState();
 				UpdateSize();
+			}
+		}
+
+		IList<IDocTemplate> availableTemplates;
+
+		public IList<IDocTemplate> AvailableTemplates{
+			get{
+				return availableTemplates;
+			}
+			set{
+				availableTemplates = value;
+				UpdateTemplatesCombo();
 			}
 		}
 
@@ -63,6 +80,8 @@ namespace QSDocTemplates
 				(w => w.ChangedDoc),
 			});
 
+			comboTemplates.SetRenderTextFunc<IDocTemplate>(x => x.Name);
+
 			worker.FileUpdated += Worker_FileUpdated;
 			UpdateState();
 			UpdateSize();
@@ -74,6 +93,15 @@ namespace QSDocTemplates
 			FileChanged = true;
 			UpdateState();
 			UpdateSize();
+		}
+
+		void UpdateTemplatesCombo()
+		{
+			var list = AvailableTemplates != null ? new List<IDocTemplate>(AvailableTemplates) : new List<IDocTemplate>();
+			comboTemplates.ItemsList = list;
+			comboTemplates.Visible = Template != null || list.Count > 0;
+			if(Template != null)
+				comboTemplates.SelectedItem = Template;
 		}
 
 		void UpdateState()
@@ -138,6 +166,13 @@ namespace QSDocTemplates
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
 			worker.OpenInOffice(Template, true, FileEditMode.Document);
+		}
+
+		protected void OnComboTemplatesChanged(object sender, EventArgs e)
+		{
+			if (Template != comboTemplates.SelectedItem)
+				Template = (IDocTemplate)comboTemplates.SelectedItem;
+			int i;
 		}
 	}
 }
