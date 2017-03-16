@@ -9,7 +9,7 @@ namespace QSDocTemplates
 {
 	public class PatternField : IPatternField
 	{
-		private static readonly string[] RemovedSimbols = new string[]{"-", "/"};
+		private static readonly string[] RemovedSimbols = new string[]{"-", "/", "(", ")"};
 
 		public string Name { get; set;}
 		public PatternFieldType Type { get; set;}
