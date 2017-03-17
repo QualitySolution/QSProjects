@@ -14,5 +14,8 @@ namespace QSOsm.Spuntik
 		[DeserializeAs(Name = "status")]
 		public int Status { get; set; }
 
+		[DeserializeAs(Name = "route_geometry")]
+		public string RouteGeometry { get; set; }
+
 	}
 }
