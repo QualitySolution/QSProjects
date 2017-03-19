@@ -211,6 +211,7 @@ namespace QSOsm.Data
 			Room = source.Room;
 			RoomType = source.RoomType;
 			АddressAddition = source.АddressAddition;
+			SingleText = source.SingleText;
 		}
 
 		public void CopyFrom(AddressData source)
