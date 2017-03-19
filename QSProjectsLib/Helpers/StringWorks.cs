@@ -105,6 +105,16 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		public static string PersonNameWithInitials (string fioInOneString)
+		{
+			var parts = fioInOneString.Split(new [] {' '}, StringSplitOptions.RemoveEmptyEntries);
+			return PersonNameWithInitials(
+				parts.Length > 0 ? parts[0] : null,
+				parts.Length > 1 ? parts[1] : null,
+				parts.Length > 2 ? parts[2] : null
+			);
+		}
+
 		public static string PersonFullName (string surname, string name, string patronymicName)
 		{
 			var parts = new List<string>();
