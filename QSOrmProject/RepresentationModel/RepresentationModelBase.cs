@@ -173,7 +173,7 @@ namespace QSOrmProject.RepresentationModel
 			}
 			else
 			{
-				if (itemsList.Count > 3000)
+				if (itemsList.Count > 100)
 				{
 					searchThread = new Thread(RefilterList);
 					searchThread.Start();
