@@ -216,9 +216,6 @@
   </Choose>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="gtk-gui\objects.xml">
-      <Link>objects.xml</Link>
-    </None>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
