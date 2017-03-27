@@ -92,7 +92,7 @@ namespace Gamma.Binding
 		public bool GetIter (out TreeIter iter, TreePath path)
 		{
 			if (path == null)
-				throw new ArgumentNullException ("path");
+				throw new ArgumentNullException (nameof (path));
 
 			iter = TreeIter.Zero;
 
@@ -108,7 +108,7 @@ namespace Gamma.Binding
 		{
 			object node = NodeFromIter (iter);
 			if (node == null) 
-				throw new ArgumentException ("iter");
+				throw new ArgumentException (nameof(iter));
 
 			return (PathFromNode (node));
 		}
