@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.Bindings;
-using System.Text;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 

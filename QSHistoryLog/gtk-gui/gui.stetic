@@ -7,9 +7,9 @@
   <import>
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
-    <widget-library name="../bin/Debug/QSHistoryLog.dll" internal="true" />
-    <widget-library name="../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
+    <widget-library name="../bin/Debug/QSHistoryLog.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSHistoryLog.HistoryView" design-size="723 560">
     <property name="MemberName" />
@@ -54,13 +54,12 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataSpecComboBox" id="comboProperty">
+              <widget class="Gamma.Widgets.ySpecComboBox" id="comboProperty">
                 <property name="MemberName" />
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
-                <property name="ColumnMappings">DisplayName</property>
-                <property name="InheritedDataSource">False</property>
-                <property name="InheritedBoundaryDataSource">False</property>
+                <property name="AddIfNotExist">False</property>
+                <property name="DefaultFirst">False</property>
                 <property name="ShowSpecialStateAll">True</property>
                 <property name="ShowSpecialStateNot">False</property>
                 <signal name="ItemSelected" handler="OnComboPropertyItemSelected" />
@@ -105,13 +104,12 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.DataBindings.DataSpecComboBox" id="datacomboObject">
+              <widget class="Gamma.Widgets.ySpecComboBox" id="datacomboObject">
                 <property name="MemberName" />
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
-                <property name="ColumnMappings">DisplayName</property>
-                <property name="InheritedDataSource">False</property>
-                <property name="InheritedBoundaryDataSource">False</property>
+                <property name="AddIfNotExist">False</property>
+                <property name="DefaultFirst">False</property>
                 <property name="ShowSpecialStateAll">True</property>
                 <property name="ShowSpecialStateNot">False</property>
                 <signal name="ItemSelected" handler="OnDatacomboObjectItemSelected" />
@@ -119,7 +117,7 @@
               <packing>
                 <property name="LeftAttach">1</property>
                 <property name="RightAttach">2</property>
-                <property name="AutoSize">True</property>
+                <property name="AutoSize">False</property>
                 <property name="XOptions">Fill</property>
                 <property name="YOptions">Fill</property>
                 <property name="XExpand">False</property>
@@ -333,16 +331,10 @@
                 <property name="MemberName" />
                 <property name="ShadowType">In</property>
                 <child>
-                  <widget class="Gtk.DataBindings.DataTreeView" id="datatreeChangesets">
+                  <widget class="Gamma.GtkWidgets.yTreeView" id="datatreeChangesets">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="ShowScrollbars">True</property>
-                    <property name="CursorPointsEveryType">False</property>
-                    <property name="InheritedDataSource">False</property>
-                    <property name="InheritedBoundaryDataSource">False</property>
-                    <property name="InheritedDataSource">False</property>
-                    <property name="InheritedBoundaryDataSource">False</property>
-                    <property name="ColumnMappings">{QSHistoryLog.HistoryChangeSet} ChangeTimeText[Время]; UserName[Пользователь]; OperationText[Действие]; ObjectTitle[Тип объекта]; ItemTitle[Объект];</property>
                   </widget>
                 </child>
               </widget>
@@ -373,20 +365,10 @@
                     <property name="MemberName" />
                     <property name="ShadowType">In</property>
                     <child>
-                      <widget class="Gtk.DataBindings.DataTreeView" id="datatreeChanges">
+                      <widget class="Gamma.GtkWidgets.yTreeView" id="datatreeChanges">
                         <property name="MemberName" />
                         <property name="CanFocus">True</property>
                         <property name="ShowScrollbars">True</property>
-                        <property name="CursorPointsEveryType">False</property>
-                        <property name="InheritedDataSource">False</property>
-                        <property name="Mappings" />
-                        <property name="InheritedBoundaryDataSource">False</property>
-                        <property name="BoundaryMappings" />
-                        <property name="InheritedDataSource">False</property>
-                        <property name="Mappings" />
-                        <property name="InheritedBoundaryDataSource">False</property>
-                        <property name="BoundaryMappings" />
-                        <property name="ColumnMappings">{QSHistoryLog.FieldChange} FieldName[Поле]; TypeText[Операция]; NewPangoText[Новое значение]; OldPangoText[Старое значение]</property>
                       </widget>
                     </child>
                   </widget>

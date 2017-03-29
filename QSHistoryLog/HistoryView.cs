@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using Gamma.Widgets;
+using MySql.Data.MySqlClient;
+using QSOrmProject;
 using QSProjectsLib;
 using QSWidgetLib;
-using MySql.Data.MySqlClient;
-using System.Collections.Generic;
-using QSOrmProject;
 
 namespace QSHistoryLog
 {
@@ -18,11 +19,29 @@ namespace QSHistoryLog
 		public HistoryView ()
 		{
 			this.Build ();
-			datacomboObject.ItemsDataSource = HistoryMain.ObjectsDesc;
+			datacomboObject.SetRenderTextFunc<HistoryObjectDesc> (x => x.DisplayName);
+			datacomboObject.ItemsList = HistoryMain.ObjectsDesc;
+			comboProperty.SetRenderTextFunc<HistoryFieldDesc> (x => x.DisplayName);
 			comboAction.ItemsEnum = typeof(ChangeSetType);
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll);
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
+
+			datatreeChangesets.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<HistoryChangeSet> ()
+				.AddColumn ("Время").AddTextRenderer (x => x.ChangeTimeText)
+				.AddColumn ("Пользователь").AddTextRenderer (x => x.UserName)
+				.AddColumn ("Действие").AddTextRenderer (x => x.OperationText)
+				.AddColumn ("Тип объекта").AddTextRenderer (x => x.ObjectTitle)
+				.AddColumn ("Объект").AddTextRenderer (x => x.ItemTitle)
+				.Finish();
 			datatreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
+
+			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange> ()
+				.AddColumn ("Поле").AddTextRenderer (x => x.FieldName)
+				.AddColumn ("Операция").AddTextRenderer (x => x.TypeText)
+				.AddColumn ("Новое значение").AddTextRenderer (x => x.NewPangoText, useMarkup: true)
+				.AddColumn ("Старое значение").AddTextRenderer (x => x.OldPangoText, useMarkup: true)
+				.Finish ();
+
 			canUpdate = true;
 			UpdateJournal ();
 		}
@@ -30,7 +49,7 @@ namespace QSHistoryLog
 		void OnChangeSetSelectionChanged (object sender, EventArgs e)
 		{
 			logger.Debug("ChangeSet is Changed");
-			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetCurrentObject ();
+			HistoryChangeSet selected = (HistoryChangeSet)datatreeChangesets.GetSelectedObject ();
 			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
 		}
 
@@ -134,19 +153,19 @@ namespace QSHistoryLog
 			bool lastStateUpdate = canUpdate;
 			canUpdate = false;
 			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
-				comboProperty.ItemsDataSource = (datacomboObject.SelectedItem as HistoryObjectDesc).NamedProperties;
+				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).NamedProperties;
 			} else
-				comboProperty.ItemsDataSource = null;
+				comboProperty.ItemsList = null;
 			canUpdate = lastStateUpdate;
 		}
 
-		protected void OnDatacomboObjectItemSelected (object sender, EnumItemClickedEventArgs e)
+		protected void OnDatacomboObjectItemSelected (object sender, ItemSelectedEventArgs e)
 		{
 			PropertyComboFill ();
 			UpdateJournal ();
 		}
 
-		protected void OnComboPropertyItemSelected (object sender, EnumItemClickedEventArgs e)
+		protected void OnComboPropertyItemSelected (object sender, ItemSelectedEventArgs e)
 		{
 			UpdateJournal ();
 		}
