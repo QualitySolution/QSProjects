@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSHistoryLog</RootNamespace>
     <AssemblyName>QSHistoryLog</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,9 +37,6 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gtk-databind-lib">
-      <HintPath>..\..\Gtk.DataBindings\bin\Debug\gtk-databind-lib.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="DiffPlex">
       <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
