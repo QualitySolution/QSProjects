@@ -51,6 +51,10 @@ namespace QSOrmProject
 		{
 			if(targetType == typeof(short))
 				return (System.Convert.ToInt16(value));
+			if (targetType == typeof(ushort))
+				return (System.Convert.ToUInt16(value));
+			if (targetType == typeof(byte))
+				return (System.Convert.ToByte(value));
 			return null;
 		}
 	}
