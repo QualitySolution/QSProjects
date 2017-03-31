@@ -397,6 +397,15 @@ namespace Gamma.GtkWidgets
 			Selection.SelectIter (iter);
 		}
 
+		public void SelectObject (object[] items)
+		{
+			foreach (var item in items)
+			{
+				TreeIter iter = YTreeModel.IterFromNode (item);
+				Selection.SelectIter (iter);
+			}
+		}
+
 	}
 }
 
