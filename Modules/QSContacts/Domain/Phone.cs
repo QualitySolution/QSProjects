@@ -61,7 +61,7 @@ namespace QSContacts
 
 		public override string ToString()
 		{
-			return Number;
+			return "+7 " + Number;
 		}
 	}
 }
