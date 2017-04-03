@@ -1,4 +1,4 @@
-<objects attr-sync="on">
+<objects attr-sync="off">
   <object type="Gamma.GtkWidgets.ySpinButton" palette-category="Gamma Gtk" init-properties="Lower Upper StepIncrement" allow-children="false" icon="spinbutton.png" base-type="Gtk.SpinButton">
     <itemgroups>
       <itemgroup label="ySpinButton Properties">
