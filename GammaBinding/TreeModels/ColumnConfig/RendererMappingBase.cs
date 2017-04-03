@@ -85,6 +85,11 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddToggleRenderer (dataProperty, expand);
 		}
 
+		public PixbufRendererMapping<TNode> AddPixbufRenderer (Expression<Func<TNode, Gdk.Pixbuf>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddPixbufRenderer (dataProperty, expand);
+		}
+
 		#endregion
 	}
 }
