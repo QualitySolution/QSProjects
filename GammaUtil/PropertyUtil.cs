@@ -20,7 +20,7 @@ namespace Gamma.Utilities
 		internal static string GetPropertyNameCore (Expression propertyRefExpr)
 		{
 			if (propertyRefExpr == null)
-				throw new ArgumentNullException ("propertyRefExpr", "propertyRefExpr is null.");
+				throw new ArgumentNullException (nameof (propertyRefExpr), "propertyRefExpr is null.");
 
 			MemberExpression memberExpr = propertyRefExpr as MemberExpression;
 			if (memberExpr == null) {
@@ -33,7 +33,7 @@ namespace Gamma.Utilities
 				return memberExpr.Member.Name;
 
 			throw new ArgumentException ("No property reference expression was found.",
-				"propertyRefExpr");
+				nameof (propertyRefExpr));
 		}
 
 		public static MemberInfo GetMemberInfo<TObject> (Expression<Func<TObject, object>> propertyRefExpr)
@@ -59,12 +59,12 @@ namespace Gamma.Utilities
 		public static MemberInfo GetMemberInfo (Expression propertyRefExpr)
 		{
 			if (propertyRefExpr == null)
-				throw new ArgumentNullException ("propertyRefExpr", "propertyRefExpr is null.");
+				throw new ArgumentNullException (nameof (propertyRefExpr), "propertyRefExpr is null.");
 
 			LambdaExpression lamda = propertyRefExpr as LambdaExpression;
 
 			if (lamda == null)
-				throw new ArgumentException ("propertyRefExpr will be lamda function.", "propertyRefExpr");
+				throw new ArgumentException ("propertyRefExpr will be lamda function.", nameof (propertyRefExpr));
 
 			MemberExpression memberExpr = lamda.Body as MemberExpression;
 
@@ -88,6 +88,12 @@ namespace Gamma.Utilities
 		public static object GetPropertyValue(this object subject, string propertyName)
 		{
 			return subject.GetType ().GetProperty (propertyName).GetValue (subject, null);
+		}
+
+		public static PropertyInfo GetPropertyInfo<TObject> (this TObject type,
+			Expression<Func<TObject, object>> propertyRefExpr)
+		{
+			return GetMemberInfo (propertyRefExpr) as PropertyInfo;
 		}
 	}
 }
