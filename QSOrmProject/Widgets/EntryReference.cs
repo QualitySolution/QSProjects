@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Gtk;
 using NHibernate;
@@ -365,8 +364,13 @@ namespace QSOrmProject
 			if (ItemsQuery != null) {
 				ItemsCriteria = ItemsQuery.DetachedCriteria.GetExecutableCriteria (localUoW.Session);
 			} else {
+				if(SubjectType == null)
+				{
+					logger.Warn ("SubjectType = null, не возможно выполнить заполнение автокомплита.");
+					return;
+				}
 				if (ItemsCriteria == null)
-					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
+					ItemsCriteria = localUoW.Session.CreateCriteria (SubjectType);
 			}
 
 			foreach (var item in ItemsCriteria.List ()) {
