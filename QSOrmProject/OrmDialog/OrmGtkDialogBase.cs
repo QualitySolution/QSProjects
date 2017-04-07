@@ -29,7 +29,6 @@ namespace QSOrmProject
 			}
 			protected set {
 				uowGeneric = value;
-				subjectAdaptor.Target = UoWGeneric.Root;
 				OnTabNameChanged ();
 				CheckButtonSubscription ();
 			}
@@ -164,9 +163,6 @@ namespace QSOrmProject
 				EntitySaved (this, new EntitySavedEventArgs (Entity, tabClosed));
 		}
 
-		[Obsolete ("Не используйте, свойство будет удалено после отключения Gtk.Bindings")]
-		protected Adaptor subjectAdaptor = new Adaptor ();
-
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
 			if (!this.HasChanges || Save ()) {
@@ -183,7 +179,6 @@ namespace QSOrmProject
 		public override void Destroy ()
 		{
 			UoWGeneric.Dispose ();
-			subjectAdaptor.Disconnect ();
 			base.Destroy ();
 		}
 
