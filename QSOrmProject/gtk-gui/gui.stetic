@@ -5,7 +5,6 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../Gtk.DataBindings/bin/Debug/gtk-databind-lib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
@@ -1092,6 +1091,11 @@
             <property name="MemberName" />
             <property name="Sensitive">False</property>
             <property name="CanFocus">True</property>
+            <property name="Upper">100</property>
+            <property name="PageIncrement">10</property>
+            <property name="StepIncrement">1</property>
+            <property name="ClimbRate">1</property>
+            <property name="Numeric">True</property>
             <signal name="ValueChanged" handler="OnSpinbuttonValueChanged" />
           </widget>
           <packing>
