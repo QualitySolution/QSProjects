@@ -5,6 +5,7 @@ using QSProjectsLib;
 using QSTDI;
 using System.ComponentModel;
 using System.Linq;
+using QSProjectsLib.Helpers;
 
 namespace QSOrmProject
 {
@@ -12,8 +13,7 @@ namespace QSOrmProject
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {
-			get
-			{
+			get {
 				return UoWGeneric;
 			}
 		}
@@ -24,43 +24,40 @@ namespace QSOrmProject
 		private IUnitOfWorkGeneric<TEntity> uowGeneric;
 
 		public IUnitOfWorkGeneric<TEntity> UoWGeneric {
-			get
-			{
+			get {
 				return uowGeneric;
 			}
-			protected set
-			{
+			protected set {
 				uowGeneric = value;
 				subjectAdaptor.Target = UoWGeneric.Root;
-				OnTabNameChanged();
+				OnTabNameChanged ();
+				CheckButtonSubscription ();
 			}
 		}
 
-		public bool CompareHashName(string hashName)
+		public bool CompareHashName (string hashName)
 		{
 			if (Entity == null || UoWGeneric == null || UoWGeneric.IsNew)
 				return false;
-			return GenerateHashName(Entity.Id) == hashName;
+			return GenerateHashName (Entity.Id) == hashName;
 		}
 
-		public static string GenerateHashName(int id)
+		public static string GenerateHashName (int id)
 		{
-			return OrmMain.GenerateDialogHashName(typeof(TEntity), id);
+			return OrmMain.GenerateDialogHashName (typeof (TEntity), id);
 		}
 
 		//FIXME Временно для совместимости
-		[Obsolete("Используйте UnitOfWork, это свойство будет удалено.")]
-		public NHibernate.ISession Session
-		{
-			get
-			{
+		[Obsolete ("Используйте UnitOfWork, это свойство будет удалено.")]
+		public NHibernate.ISession Session {
+			get {
 				return UoW.Session;
 			}
 		}
 
 		private bool manualChange = false;
 
-		public virtual bool HasChanges { 
+		public virtual bool HasChanges {
 			get { return manualChange || UoWGeneric.HasChanges; }
 			set { manualChange = value; }
 		}
@@ -72,46 +69,40 @@ namespace QSOrmProject
 		public TEntity Entity {
 			get { return UoWGeneric.Root; }
 		}
-			
+
 		private string tabName = String.Empty;
 
 		public string TabName {
 			get {
-				if(!String.IsNullOrWhiteSpace(tabName))
+				if (!String.IsNullOrWhiteSpace (tabName))
 					return tabName;
-				if (UoW != null && UoW.RootObject != null)
-				{
-					var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+				if (UoW != null && UoW.RootObject != null) {
+					var att = typeof (TEntity).GetCustomAttributes (typeof (OrmSubjectAttribute), true);
 					OrmSubjectAttribute subAtt = (att.FirstOrDefault () as OrmSubjectAttribute);
 
-					if(UoW.IsNew)
-					{
-						if (subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
-						{
-							switch(subAtt.AllNames.Gender){
-								case GrammaticalGender.Masculine: 
-									return "Новый " + subAtt.ObjectName;
-								case GrammaticalGender.Feminine :
-									return "Новая " + subAtt.ObjectName;
-								case GrammaticalGender.Neuter :
-									return "Новое " + subAtt.ObjectName;
-								default:
-									return "Новый(ая) " + subAtt.ObjectName;
+					if (UoW.IsNew) {
+						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.ObjectName)) {
+							switch (subAtt.AllNames.Gender) {
+							case GrammaticalGender.Masculine:
+								return "Новый " + subAtt.ObjectName;
+							case GrammaticalGender.Feminine:
+								return "Новая " + subAtt.ObjectName;
+							case GrammaticalGender.Neuter:
+								return "Новое " + subAtt.ObjectName;
+							default:
+								return "Новый(ая) " + subAtt.ObjectName;
 							}
 						}
-					}
-					else
-					{
+					} else {
 						var notifySubject = UoW.RootObject as INotifyPropertyChanged;
 
 						var prop = UoW.RootObject.GetType ().GetProperty ("Title");
 						if (prop != null) {
-							if(notifySubject != null)
-							{
+							if (notifySubject != null) {
 								notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
 								notifySubject.PropertyChanged += Subject_TitlePropertyChanged;
 							}
-							return prop.GetValue (UoW.RootObject, null).ToString();
+							return prop.GetValue (UoW.RootObject, null).ToString ();
 						}
 
 						prop = UoW.RootObject.GetType ().GetProperty ("Name");
@@ -120,10 +111,10 @@ namespace QSOrmProject
 								notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
 								notifySubject.PropertyChanged += Subject_NamePropertyChanged;
 							}
-							return prop.GetValue (UoW.RootObject, null).ToString();
+							return prop.GetValue (UoW.RootObject, null).ToString ();
 						}
 
-						if(subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
+						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.ObjectName))
 							return StringWorks.StringToTitleCase (subAtt.ObjectName);
 					}
 					return UoW.RootObject.ToString ();
@@ -134,7 +125,7 @@ namespace QSOrmProject
 				if (tabName == value)
 					return;
 				tabName = value;
-				OnTabNameChanged();
+				OnTabNameChanged ();
 			}
 
 		}
@@ -159,7 +150,7 @@ namespace QSOrmProject
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
-		public bool FailInitialize { get; protected set;}
+		public bool FailInitialize { get; protected set; }
 
 		protected void OnCloseTab (bool askSave)
 		{
@@ -173,13 +164,12 @@ namespace QSOrmProject
 				EntitySaved (this, new EntitySavedEventArgs (Entity, tabClosed));
 		}
 
-		[Obsolete("Не используйте, свойство будет удалено после отключения Gtk.Bindings")]
+		[Obsolete ("Не используйте, свойство будет удалено после отключения Gtk.Bindings")]
 		protected Adaptor subjectAdaptor = new Adaptor ();
 
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
-			if (!this.HasChanges || Save ())
-			{
+			if (!this.HasChanges || Save ()) {
 				OnEntitySaved (true);
 				OnCloseTab (false);
 			}
@@ -192,34 +182,46 @@ namespace QSOrmProject
 
 		public override void Destroy ()
 		{
-			UoWGeneric.Dispose();
+			UoWGeneric.Dispose ();
 			subjectAdaptor.Disconnect ();
 			base.Destroy ();
 		}
 
-		protected void OnTabNameChanged()
+		protected void OnTabNameChanged ()
 		{
 			if (TabNameChanged != null)
 				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
 		}
 
-		protected void OpenTab(string hashName, Func<ITdiTab> newTabFunc)
+		protected void OpenTab (string hashName, Func<ITdiTab> newTabFunc)
 		{
-			ITdiTab tab = TabParent.FindTab(hashName);
+			ITdiTab tab = TabParent.FindTab (hashName);
 
 			if (tab == null)
-				TabParent.AddTab(newTabFunc(), this);
+				TabParent.AddTab (newTabFunc (), this);
 			else
-				TabParent.SwitchOnTab(tab);
+				TabParent.SwitchOnTab (tab);
 		}
 
-		public void SaveAndClose()
+		public void SaveAndClose ()
 		{
-			OnButtonSaveClicked(this, EventArgs.Empty);
+			OnButtonSaveClicked (this, EventArgs.Empty);
 		}
 
-		public OrmGtkDialogBase()
+		//FIXME Возможно временный метод, в нем не было необходиости пока в MonoDevelop не появился баг, с удалением подписок с кнопок Save и Cancel
+		private void CheckButtonSubscription()
 		{
+			var saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonSave");
+			if(saveButton != null)
+			{
+				saveButton.Clicked -= OnButtonSaveClicked;
+				saveButton.Clicked += OnButtonSaveClicked;
+			}
+			var cancelButton = GtkHelper.EnumerateAllChildren (this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonCancel");
+			if (cancelButton != null) {
+				cancelButton.Clicked -= OnButtonCancelClicked;
+				cancelButton.Clicked += OnButtonCancelClicked;
+			}
 		}
 	}
 }
