@@ -164,6 +164,7 @@ Global
 		{1C3B49FC-372C-46F7-995F-EEB44474E2DE}.Release|x64.Build.0 = Release|Any CPU
 		{1C3B49FC-372C-46F7-995F-EEB44474E2DE}.Release|x86.ActiveCfg = Release|Any CPU
 		{1C3B49FC-372C-46F7-995F-EEB44474E2DE}.Release|x86.Build.0 = Release|Any CPU
+		{1C3B49FC-372C-46F7-995F-EEB44474E2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}.BundleLinux|Any CPU.ActiveCfg = Debug|Any CPU
 		{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}.BundleLinux|Any CPU.Build.0 = Debug|Any CPU
 		{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}.BundleLinux|x64.ActiveCfg = Debug|Any CPU
@@ -729,12 +730,16 @@ Global
 		$0.NameConventionPolicy = $1
 		$1.Rules = $2
 		$2.NamingRule = $3
-		$3.Name = Namespaces
-		$3.AffectedEntity = Namespace
+		$3.Name = Type Parameters
+		$3.AffectedEntity = TypeParameter
 		$3.VisibilityMask = VisibilityMask
 		$3.NamingStyle = PascalCase
 		$3.IncludeInstanceMembers = True
 		$3.IncludeStaticEntities = True
+		$3.RequiredPrefixes = $24
+		$24.String = T
+		$3.RequiredSuffixes = $25
+		$25.String = Exception
 		$2.NamingRule = $4
 		$4.Name = Types
 		$4.AffectedEntity = Class, Struct, Enum, Delegate
@@ -850,5 +855,11 @@ Global
 		$22.NamingStyle = PascalCase
 		$22.IncludeInstanceMembers = True
 		$22.IncludeStaticEntities = True
+		$0.DotNetNamingPolicy = $26
+		$26.DirectoryNamespaceAssociation = None
+		$26.ResourceNamePolicy = FileFormatDefault
+		$0.StandardHeader = $27
+		$27.Text = 
+		$27.IncludeInNewFiles = True
 	EndGlobalSection
 EndGlobal
