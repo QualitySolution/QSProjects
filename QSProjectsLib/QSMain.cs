@@ -77,6 +77,12 @@ namespace QSProjectsLib
 				case DataProviders.Factory:
 					return _ConnectionDB;
 				case DataProviders.MySQL:
+					if (connectionDB == null && !String.IsNullOrWhiteSpace(QSMain.ConnectionString))
+					{
+						connectionDB = new MySqlConnection (QSMain.ConnectionString);
+						connectionDB.Open ();
+					}
+					return connectionDB;
 				default:
 					return connectionDB;
 				}
