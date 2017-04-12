@@ -7,6 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSOsm</RootNamespace>
     <AssemblyName>QSOsm</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +73,8 @@
     <Compile Include="DTO\OsmEnums.cs" />
     <Compile Include="Spuntik\SputnikRouteResponse.cs" />
     <Compile Include="Spuntik\RouteSummary.cs" />
+    <Compile Include="Spuntik\SputnikMain.cs" />
+    <Compile Include="Spuntik\PointOnEarth.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
