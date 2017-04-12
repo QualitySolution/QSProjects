@@ -17,5 +17,15 @@ namespace QSOsm.Spuntik
 		[DeserializeAs(Name = "route_geometry")]
 		public string RouteGeometry { get; set; }
 
+		public string StatusMessageRus{
+			get{
+				switch (Status) {
+					case 207:
+					return "Не удалось найти маршрут между точками";
+				default:
+					return StatusMessage;
+				}
+			}
+		}
 	}
 }

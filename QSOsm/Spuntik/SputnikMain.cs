@@ -27,7 +27,10 @@ namespace QSOsm.Spuntik
 
 			var response = client.Execute<SputnikRouteResponse> (request);
 			if (response.Data.Status != 0)
+			{
 				logger.Error ("Ошибка при получении маршрута со спутника {0}: {1}", response.Data.Status, response.Data.StatusMessage);
+				logger.Debug ("Полный ответ: {0}", response.Content);
+			}
 			return response.Data;
 		}
 	}
