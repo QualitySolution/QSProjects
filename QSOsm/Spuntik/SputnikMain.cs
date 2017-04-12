@@ -31,6 +31,10 @@ namespace QSOsm.Spuntik
 				logger.Error ("Ошибка при получении маршрута со спутника {0}: {1}", response.Data.Status, response.Data.StatusMessage);
 				logger.Debug ("Полный ответ: {0}", response.Content);
 			}
+			else
+			{
+				logger.Debug ("Полный ответ: {0}", response.Content);
+			}
 			return response.Data;
 		}
 	}
