@@ -70,9 +70,9 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
 		}
 
-		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
+		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true, Enum [] excludeItems = null)
 		{
-			return myColumn.AddEnumRenderer (dataProperty, expand);
+			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
 		}
 
 		public ComboRendererMapping<TNode> AddComboRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)

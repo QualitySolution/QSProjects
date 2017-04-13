@@ -167,9 +167,9 @@ namespace Gamma.ColumnConfig
 			return render;
 		}
 
-		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
+		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true, Enum [] excludeItems = null)
 		{
-			var render = new EnumRendererMapping<TNode> (this, dataProperty);
+			var render = new EnumRendererMapping<TNode> (this, dataProperty, excludeItems);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
