@@ -185,4 +185,8 @@
   <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp">
     <TabsToSpaces>False</TabsToSpaces>
   </TextStylePolicy>
+  <DotNetNamingPolicy>
+    <DirectoryNamespaceAssociation>PrefixedHierarchical</DirectoryNamespaceAssociation>
+    <ResourceNamePolicy>MSBuild</ResourceNamePolicy>
+  </DotNetNamingPolicy>
 </PolicySet>
