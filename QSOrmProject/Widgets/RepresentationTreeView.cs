@@ -1,6 +1,7 @@
 ﻿using System;
 using QSOrmProject.RepresentationModel;
 using Gamma.GtkWidgets;
+using System.Linq;
 
 namespace QSOrmProject
 {
@@ -58,6 +59,11 @@ namespace QSOrmProject
 		{
 			var node = GetSelectedObjects ()[0];
 			return DomainHelper.GetId (node);
+		}
+
+		public int[] GetSelectedIds ()
+		{
+			return GetSelectedObjects ().Select(x => DomainHelper.GetId(x)).ToArray();
 		}
 
 		public object GetSelectedNode()
