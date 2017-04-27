@@ -8,7 +8,14 @@ namespace QSOsm
 {
 	public static class OsmWorker
 	{
-		public static string ServiceAddress = "http://saas.qsolution.ru:2048/OsmService";
+		public static string ServiceHost = "saas.qsolution.ru";
+		public static int ServicePort = 2048;
+
+		public static string ServiceAddress{
+			get{
+				return $"http://{ServiceHost}:{ServicePort}/OsmService";
+			}
+		}
 
 		static Logger logger = LogManager.GetCurrentClassLogger ();
 
