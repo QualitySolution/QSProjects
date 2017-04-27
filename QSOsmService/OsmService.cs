@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Nini.Config;
 using NLog;
 using Npgsql;
 using QSOsm;
@@ -10,11 +11,32 @@ namespace WCFServer
 {
 	public class OsmService : IOsmService
 	{
+		private static string pgserver;
+		private static string pguser;
+		private static string pgpass;
+		private static string pgdb;
+
 		Logger logger = LogManager.GetCurrentClassLogger ();
 
 		static NpgsqlConnection GetPostgisConnection ()
 		{
-			return new NpgsqlConnection (Server.postgresConnectionString);
+			return new NpgsqlConnection (PostgresConnectionString);
+		}
+
+		public static string PostgresConnectionString {
+			get {
+				return String.Format ("Host={0};Username={1};Password={2};Database={3}",
+					pgserver, pguser, pgpass, pgdb);
+			}
+		}
+
+		public static void ConfigureService(IniConfigSource configFile)
+		{
+			IConfig config = configFile.Configs ["OsmService"];
+			pgserver = config.GetString ("pgserver");
+			pguser = config.GetString ("pguser");
+			pgpass = config.GetString ("pgpassword");
+			pgdb = config.GetString ("pgdatabase");
 		}
 
 		public List<OsmCity> GetCities ()
@@ -38,7 +60,7 @@ namespace WCFServer
 								string name = reader.IsDBNull (1) ? String.Empty : reader.GetString (1);
 								string locality = reader.IsDBNull (2) ? String.Empty : reader.GetString (2);
 								string district = reader.IsDBNull (3) ? String.Empty : reader.GetString (3);
-								cities.Add (new OsmCity (id, name, district, OsmCity.GetLocalityTypeByName (locality)));
+								cities.Add (new OsmCity (id, name, district, AddressHelper.GetLocalityTypeByName (locality)));
 							}
 						}
 					}
