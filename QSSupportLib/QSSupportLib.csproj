@@ -45,7 +45,7 @@
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\qsserver\packages\NLog.4.4.7\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\..\QSProjects\packages\NLog.4.4.7\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
