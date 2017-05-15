@@ -22,8 +22,10 @@ namespace DiffPlex.DiffBuilder
 
         public SideBySideDiffModel BuildDiffModel(string oldText, string newText)
         {
-            if (oldText == null) throw new ArgumentNullException("oldText");
-            if (newText == null) throw new ArgumentNullException("newText");
+			if (oldText == null)
+				oldText = String.Empty;
+            if (newText == null) 
+				newText = String.Empty;
 
             return BuildLineDiff(oldText, newText);
         }
