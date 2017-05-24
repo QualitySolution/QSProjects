@@ -41,7 +41,7 @@ namespace QSProjectsLib
 			RunErrorDialog(String.Format(formattedError, args));
 		}
 
-		public static void RunErrorDialog (string error)
+		public static void RunErrorDialog (string error, string secondaryText = null)
 		{
 			MessageDialog md = new MessageDialog (null,
 				DialogFlags.Modal,
@@ -49,6 +49,8 @@ namespace QSProjectsLib
 				ButtonsType.Ok,
 				error);
 			md.SetPosition (WindowPosition.Center);
+			if (!String.IsNullOrEmpty (secondaryText))
+				md.SecondaryText = secondaryText;
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
