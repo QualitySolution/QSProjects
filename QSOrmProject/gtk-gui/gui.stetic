@@ -267,7 +267,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSOrmProject.ReferenceRepresentation" design-size="835 300">
+  <widget class="Gtk.Bin" id="QSOrmProject.ReferenceRepresentation" design-size="542 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -451,6 +451,7 @@
             <child>
               <widget class="Gtk.Entry" id="entrySearch">
                 <property name="MemberName" />
+                <property name="WidthRequest">50</property>
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
                 <property name="InvisibleChar">●</property>
@@ -477,6 +478,7 @@
             <child>
               <widget class="Gtk.Entry" id="entrySearch2">
                 <property name="MemberName" />
+                <property name="WidthRequest">50</property>
                 <property name="Visible">False</property>
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
@@ -504,6 +506,7 @@
             <child>
               <widget class="Gtk.Entry" id="entrySearch3">
                 <property name="MemberName" />
+                <property name="WidthRequest">50</property>
                 <property name="Visible">False</property>
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
@@ -531,6 +534,7 @@
             <child>
               <widget class="Gtk.Entry" id="entrySearch4">
                 <property name="MemberName" />
+                <property name="WidthRequest">50</property>
                 <property name="Visible">False</property>
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>

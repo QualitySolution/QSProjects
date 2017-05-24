@@ -200,6 +200,7 @@ namespace QSOrmProject
 			w16.Fill = false;
 			// Container child hboxSearch.Gtk.Box+BoxChild
 			this.entrySearch = new global::Gtk.Entry();
+			this.entrySearch.WidthRequest = 50;
 			this.entrySearch.CanFocus = true;
 			this.entrySearch.Name = "entrySearch";
 			this.entrySearch.IsEditable = true;
@@ -218,6 +219,7 @@ namespace QSOrmProject
 			w18.Fill = false;
 			// Container child hboxSearch.Gtk.Box+BoxChild
 			this.entrySearch2 = new global::Gtk.Entry();
+			this.entrySearch2.WidthRequest = 50;
 			this.entrySearch2.CanFocus = true;
 			this.entrySearch2.Name = "entrySearch2";
 			this.entrySearch2.IsEditable = true;
@@ -236,6 +238,7 @@ namespace QSOrmProject
 			w20.Fill = false;
 			// Container child hboxSearch.Gtk.Box+BoxChild
 			this.entrySearch3 = new global::Gtk.Entry();
+			this.entrySearch3.WidthRequest = 50;
 			this.entrySearch3.CanFocus = true;
 			this.entrySearch3.Name = "entrySearch3";
 			this.entrySearch3.IsEditable = true;
@@ -254,6 +257,7 @@ namespace QSOrmProject
 			w22.Fill = false;
 			// Container child hboxSearch.Gtk.Box+BoxChild
 			this.entrySearch4 = new global::Gtk.Entry();
+			this.entrySearch4.WidthRequest = 50;
 			this.entrySearch4.CanFocus = true;
 			this.entrySearch4.Name = "entrySearch4";
 			this.entrySearch4.IsEditable = true;
@@ -299,7 +303,9 @@ namespace QSOrmProject
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.ormtableview = null;
+			this.ormtableview = new global::QSOrmProject.RepresentationTreeView();
+			this.ormtableview.CanFocus = true;
+			this.ormtableview.Name = "ormtableview";
 			this.GtkScrolledWindow.Add(this.ormtableview);
 			this.vbox1.Add(this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
@@ -342,6 +348,8 @@ namespace QSOrmProject
 			this.entrySearch4.Changed += new global::System.EventHandler(this.OnEntrySearchChanged);
 			this.buttonAddAnd.Clicked += new global::System.EventHandler(this.OnButtonAddAndClicked);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler(this.OnButtonSearchClearClicked);
+			this.ormtableview.RowActivated += new global::Gtk.RowActivatedHandler(this.OnOrmtableviewRowActivated);
+			this.ormtableview.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler(this.OnOrmtableviewButtonReleaseEvent);
 		}
 	}
 }
