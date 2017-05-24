@@ -106,7 +106,6 @@
     <Compile Include="yWidgets\ySpecComboBox.cs" />
     <Compile Include="Widgets\RepresentationTreeView.cs" />
     <Compile Include="yWidgets\yDatePicker.cs" />
-    <Compile Include="yWidgets\yEntryReference.cs" />
     <Compile Include="WithoutTDI\OneWidgetDialog.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkDialogBase.cs" />
     <Compile Include="WithoutTDI\FakeTDIDialogGtkDialogBase.cs" />
@@ -145,7 +144,6 @@
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
-    <Compile Include="yWidgets\yEntryReferenceVM.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
