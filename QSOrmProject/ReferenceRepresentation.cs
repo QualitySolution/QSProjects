@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
-using QSOrmProject;
 using QSOrmProject.RepresentationModel;
 using QSTDI;
 
@@ -215,7 +214,7 @@ namespace QSOrmProject
 
 		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
 		{
-			entrySearch.Text = entrySearch2.Text = entrySearch3.Text = String.Empty; 
+			entrySearch.Text = entrySearch2.Text = entrySearch3.Text = entrySearch4.Text = String.Empty;
 		}
 
 		protected void OnEntrySearchChanged (object sender, EventArgs e)
@@ -232,7 +231,9 @@ namespace QSOrmProject
 				searchList.Add(entrySearch2.Text);
 			if (!String.IsNullOrEmpty(entrySearch3.Text))
 				searchList.Add(entrySearch3.Text);
-			
+			if (!String.IsNullOrEmpty (entrySearch4.Text))
+				searchList.Add (entrySearch4.Text);
+
 			RepresentationModel.SearchStrings = ormtableview.SearchHighlightTexts = searchList.ToArray();
 		}
 
@@ -372,18 +373,12 @@ namespace QSOrmProject
 			{
 				ylabelSearchAnd2.Visible = entrySearch3.Visible = true;
 				searchEntryShown++;
+			} 
+			else if (searchEntryShown == 3) {
+				ylabelSearchAnd3.Visible = entrySearch4.Visible = true;
+				searchEntryShown++;
 				buttonAddAnd.Sensitive = false;
 			}
-		}
-
-		protected void OnEntrySearch3Changed(object sender, EventArgs e)
-		{
-			UpdateSearchString();
-		}
-			
-		protected void OnEntrySearch2Changed(object sender, EventArgs e)
-		{
-			UpdateSearchString();
 		}
 	}
 
