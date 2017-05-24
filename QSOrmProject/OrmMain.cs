@@ -10,6 +10,8 @@ using NLog;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 using QSTDI;
+using NHibernate.Event;
+using NHibernate.Event.Default;
 
 namespace QSOrmProject
 {
@@ -27,7 +29,7 @@ namespace QSOrmProject
 		public static ISession OpenSession ()
 		{
 			ISession session = Sessions.OpenSession ();
-			//session.FlushMode = FlushMode.Never;
+			session.FlushMode = FlushMode.Commit;
 			return session;
 		}
 
@@ -72,6 +74,8 @@ namespace QSOrmProject
 
 			ormConfig.Configure ();
 			ormConfig.SetProperty ("connection.connection_string", connectionString);
+			//ormConfig.AppendListeners(NHibernate.Event.ListenerType.Load, new object[] {});
+			//ormConfig.EventListeners.LoadEventListeners = new ILoadEventListener[] { new DebugLoadListener(), new DefaultLoadEventListener() };
 
 			fluenConfig = Fluently.Configure (ormConfig);
 
