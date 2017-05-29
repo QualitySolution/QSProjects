@@ -51,6 +51,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ToggleRendererMapping<TNode> Radio(bool on = true)
+		{
+			cellRenderer.Radio = on;
+			return this;
+		}
+
 		public ToggleRendererMapping<TNode> ToggledEvent (ToggledHandler handler)
 		{
 			cellRenderer.Toggled += handler;
