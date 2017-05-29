@@ -148,12 +148,13 @@ namespace Gamma.Binding
 
 		public bool IterChildren (out TreeIter iter, TreeIter parent)
 		{
-			throw new NotImplementedException ();
+			iter = TreeIter.Zero;
+			return false;
 		}
 
 		public bool IterHasChild (TreeIter iter)
 		{
-			throw new NotImplementedException ();
+			return false;
 		}
 
 		public int IterNChildren (TreeIter iter)
