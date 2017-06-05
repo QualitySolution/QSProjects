@@ -144,6 +144,7 @@
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
+    <Compile Include="Deletion\ReplaceEntity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
