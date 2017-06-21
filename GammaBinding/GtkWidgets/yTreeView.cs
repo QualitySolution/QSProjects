@@ -101,7 +101,8 @@ namespace Gamma.GtkWidgets
 		public void SetItemsSource<TNode> (IList<TNode> list)
 		{
 			if (!(ColumnsConfig is FluentColumnsConfig<TNode>))
-				throw new InvalidCastException ("Type of TNode in IList<TNode> will be type TNode of FluentColumnsConfig<TNode>");
+				throw new InvalidCastException ("Type of TNode in IList<TNode> will be type TNode of FluentColumnsConfig<TNode>"
+				                                + $" {typeof(TNode)} != {ColumnsConfig.GetType().GetGenericArguments().First()}");
 
 			ItemsDataSource = list;
 		}
