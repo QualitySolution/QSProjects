@@ -37,8 +37,14 @@ namespace Gamma.ColumnConfig
 		{
 			AddSetter (commonSet);
 		}
-			
+
 		#endregion
+
+		public ProgressRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
 
 		public ProgressRendererMapping<TNode> AddSetter(Action<NodeCellRendererProgress<TNode>, TNode> setter)
 		{

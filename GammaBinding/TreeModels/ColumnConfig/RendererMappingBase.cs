@@ -11,6 +11,8 @@ namespace Gamma.ColumnConfig
 
 		public bool IsExpand { get; set;}
 
+		public object tag { get; set; }
+
 		protected RendererMappingBase (ColumnMapping<TNode> parentColumn)
 		{
 			myColumn = parentColumn;

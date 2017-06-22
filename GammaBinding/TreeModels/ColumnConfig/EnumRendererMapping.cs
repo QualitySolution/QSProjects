@@ -47,6 +47,12 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
+		public EnumRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
+
 		public EnumRendererMapping<TNode> AddSetter(Action<NodeCellRendererCombo<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);

@@ -43,6 +43,12 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
+		public ComboRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
+
 		public ComboRendererMapping<TNode> AddSetter(Action<NodeCellRendererCombo<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);

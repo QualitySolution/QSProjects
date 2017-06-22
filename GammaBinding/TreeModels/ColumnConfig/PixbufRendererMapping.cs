@@ -35,8 +35,14 @@ namespace Gamma.ColumnConfig
 		{
 			AddSetter (commonSet);
 		}
-			
+
 		#endregion
+
+		public PixbufRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
 
 		public PixbufRendererMapping<TNode> Sensitive(bool on=true)
 		{

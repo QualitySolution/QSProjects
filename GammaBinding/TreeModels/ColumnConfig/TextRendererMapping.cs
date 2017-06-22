@@ -50,10 +50,16 @@ namespace Gamma.ColumnConfig
 		{
 			AddSetter (commonSet);
 		}
-			
+
 		#endregion
 
 		#region FluentConfig
+
+		public TextRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
 
 		public TextRendererMapping<TNode> Editable(bool on=true)
 		{

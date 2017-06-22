@@ -6,6 +6,7 @@ namespace Gamma.ColumnConfig
 	public interface IRendererMapping
 	{
 		INodeCellRenderer GetRenderer();
+		object tag { get; }
 		bool IsExpand { get;}
 	}
 

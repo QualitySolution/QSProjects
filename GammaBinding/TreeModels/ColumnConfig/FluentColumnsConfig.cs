@@ -41,6 +41,16 @@ namespace Gamma.ColumnConfig
 		{
 			return this;
 		}
+
+		public IEnumerable<IRendererMapping> GetRendererMappingByTag(object tag)
+		{
+			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => x.tag == tag);
+		}
+
+		public IEnumerable<TRendererMapping> GetRendererMappingByTagGeneric<TRendererMapping>(object tag)
+		{
+			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => x.tag == tag).OfType<TRendererMapping>();
+		}
 	}
 }
 

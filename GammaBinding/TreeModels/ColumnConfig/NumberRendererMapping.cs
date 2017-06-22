@@ -48,6 +48,12 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
+		public NumberRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
+
 		public NumberRendererMapping<TNode> AddSetter(Action<NodeCellRendererSpin<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);

@@ -39,6 +39,12 @@ namespace Gamma.ColumnConfig
 
 		#region FluentConfig
 
+		public ToggleRendererMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
+
 		public ToggleRendererMapping<TNode> AddSetter(Action<NodeCellRendererToggle<TNode>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);
