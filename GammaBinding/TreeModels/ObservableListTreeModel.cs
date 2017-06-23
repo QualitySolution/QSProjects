@@ -118,32 +118,38 @@ namespace Gamma.Binding
 			value = new GLib.Value(NodeFromIter(iter));
 		}
 
-		public bool IterNext (ref TreeIter iter)
+		public bool IterNext(ref TreeIter iter)
 		{
 			if((sourceList == null) || (sourceList.Count == 0))
 				return (false);
 
-			object node = NodeFromIter (iter);
-			if (node == null)
+			object node = NodeFromIter(iter);
+			if(node == null)
 				return (false);
 			object lastNode;
 			//Check for "Collection was modified" Exception
-			try { 
+			try {
 				lastNode = cachedEnumerator != null ? cachedEnumerator.Current : null;
-			} catch (InvalidOperationException ex) {
+			} catch(InvalidOperationException ex) {
 				lastNode = null;
 			}
-			if (lastNode == node)
-				return GetCacheNext (ref iter);
-			else {
-				cachedEnumerator = sourceList.GetEnumerator ();
-				while (cachedEnumerator.MoveNext ()) {
-					if (node == cachedEnumerator.Current)
-						return GetCacheNext (ref iter);
+			if(lastNode == node){
+				try {
+					return GetCacheNext(ref iter);
 				}
-				cachedEnumerator = null;
-				return false;
+				catch(InvalidOperationException ex)
+				{
+					Console.WriteLine("Collection was changed");
+				}
 			}
+
+			cachedEnumerator = sourceList.GetEnumerator ();
+			while (cachedEnumerator.MoveNext ()) {
+				if (node == cachedEnumerator.Current)
+					return GetCacheNext (ref iter);
+			}
+			cachedEnumerator = null;
+			return false;
 		}
 
 		public bool IterChildren (out TreeIter iter, TreeIter parent)
