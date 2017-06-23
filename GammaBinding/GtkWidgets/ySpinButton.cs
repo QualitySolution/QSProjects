@@ -17,6 +17,7 @@ namespace Gamma.GtkWidgets
 				(w => w.Value),
 				(w => w.ValueAsInt),
 				(w => w.ValueAsDecimal),
+				(w => w.ValueAsShort),
 			});
 		}
 
@@ -26,6 +27,7 @@ namespace Gamma.GtkWidgets
 				(w => w.Value),
 				(w => w.ValueAsInt),
 				(w => w.ValueAsDecimal),
+				(w => w.ValueAsShort),
 			});
 		}
 
@@ -34,7 +36,8 @@ namespace Gamma.GtkWidgets
 			Binding.FireChange (
 				(w => w.Value),
 				(w => w.ValueAsInt),
-				(w => w.ValueAsDecimal)
+				(w => w.ValueAsDecimal),
+				(w => w.ValueAsShort)
 			);
 			base.OnValueChanged ();
 		}
@@ -48,6 +51,12 @@ namespace Gamma.GtkWidgets
 			get { return Convert.ToInt32 (Value); }
 			set { Value = Convert.ToDouble (value); }
 		}
+
+		public short ValueAsShort {
+			get { return Convert.ToInt16(Value); }
+			set { Value = Convert.ToDouble(value); }
+		}
+
 	}
 }
 
