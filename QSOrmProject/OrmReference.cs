@@ -403,7 +403,8 @@ namespace QSOrmProject
 					String.Join(", ", selected.Select(x => DomainHelper.GetId(x).ToString()))
 				);
 				ObjectSelected(this, new OrmReferenceObjectSectedEventArgs(
-						selected
+						selected,
+						Tag
 					));
 			}
 			else
@@ -516,14 +517,17 @@ namespace QSOrmProject
 
 		public object[] Subjects { get; private set; }
 
+		public object Tag { get; private set; }
+
 		public IEnumerable<TEntity> GetEntities<TEntity>()
 		{
 			return Subjects.Cast<TEntity>();
 		}
 
-		public OrmReferenceObjectSectedEventArgs (object[] subjects)
+		public OrmReferenceObjectSectedEventArgs (object[] subjects, object tag)
 		{
 			Subjects = subjects;
+			Tag = tag;
 		}
 	}
 
