@@ -53,7 +53,14 @@ namespace Gamma.GtkWidgets
 		}
 
 		public short ValueAsShort {
-			get { return Convert.ToInt16(Value); }
+			get {
+				if(Value > Int16.MaxValue)
+					return Int16.MaxValue;
+				if(Value < Int16.MinValue)
+					return Int16.MinValue;
+
+				return Convert.ToInt16(Value);
+			}
 			set { Value = Convert.ToDouble(value); }
 		}
 
