@@ -34,7 +34,7 @@ namespace QSBusinessCommon.Domain
 
 		string okei;
 			
-		[StringLength (3)]
+		[StringLength (5)]
 		[Display (Name = "Код ОКЕИ")]
 		public virtual string OKEI {
 			get { return okei; }
