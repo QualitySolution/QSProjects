@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
+using Gamma.Utilities;
 using Gtk;
 using NLog;
-using System.Collections;
 using QSOrmProject;
 using QSProjectsLib;
-using Gamma.Widgets;
-using Gamma.Utilities;
 
 namespace Gamma.Widgets
 {

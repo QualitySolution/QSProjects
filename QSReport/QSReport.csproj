@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Mono.Cairo" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.7\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.11\lib\net40\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

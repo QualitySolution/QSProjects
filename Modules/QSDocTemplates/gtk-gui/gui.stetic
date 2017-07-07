@@ -5,10 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../QSOrmProject/bin/Release/QSOrmProject.dll" />
-    <widget-library name="../../../QSProjectsLib/bin/Release/QSProjectsLib.dll" />
-    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Release/GammaBinding.dll" />
-    <widget-library name="../bin/Release/QSDocTemplates.dll" internal="true" />
+    <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
+    <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
+    <widget-library name="../bin/Debug/QSDocTemplates.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSDocTemplates.TemplateWidget" design-size="299 175">
     <property name="MemberName" />

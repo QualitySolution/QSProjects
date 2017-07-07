@@ -5,7 +5,6 @@ using NLog;
 using Npgsql;
 using QSOsm;
 using QSOsm.DTO;
-using QSProjectsLib;
 
 namespace WCFServer
 {

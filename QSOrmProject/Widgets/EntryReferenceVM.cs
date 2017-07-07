@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using NLog;
+using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
-using QSOrmProject.RepresentationModel;
 
 namespace QSOrmProject
 {
