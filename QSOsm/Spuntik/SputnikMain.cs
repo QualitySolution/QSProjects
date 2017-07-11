@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using RestSharp;
 
 namespace QSOsm.Spuntik
@@ -34,6 +35,7 @@ namespace QSOsm.Spuntik
 			if (response.Data.Status != 0)
 			{
 				logger.Error ("Ошибка при получении маршрута со спутника {0}: {1}", response.Data.Status, response.Data.StatusMessage);
+				logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
 				logger.Debug ("Полный ответ: {0}", response.Content);
 			}
 			else
