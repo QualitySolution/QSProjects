@@ -9,7 +9,7 @@ namespace QSOsm.Spuntik
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		public static SputnikRouteResponse GetRoute(List<PointOnEarth> routePOIs)
+		public static SputnikRouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = true, bool geometry = true)
 		{
 			if (routePOIs.Count < 2)
 				throw new ArgumentException ("Список точке для прокладки маршрута, должен содержать хотя бы 2 точки.", nameof (routePOIs));
@@ -23,7 +23,12 @@ namespace QSOsm.Spuntik
 			{
 				request.AddQueryParameter ("loc", String.Format (CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude));
 			}
-			request.AddQueryParameter ("alt", "false");
+
+			if(!alt)
+				request.AddQueryParameter ("alt", "false");// По умолчанию включено
+
+			if(!geometry)
+				request.AddQueryParameter("geometry", "false"); // По умолчанию включено
 
 			var response = client.Execute<SputnikRouteResponse> (request);
 			if (response.Data.Status != 0)
