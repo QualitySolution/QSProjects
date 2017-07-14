@@ -115,6 +115,11 @@ namespace QSOrmProject
 			}
 		}
 
+        public TEntity GetSubject<TEntity>()
+        {
+            return (TEntity)Subject;
+        }
+
 		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (DisplayFields == null || DisplayFields.Contains (e.PropertyName)) {
