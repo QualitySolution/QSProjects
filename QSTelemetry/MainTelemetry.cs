@@ -30,13 +30,18 @@ namespace QSTelemetry
         public static string Edition;
         public static string Version;
         public static bool IsDemo;
+
+		public static bool DoNotTrack = false;
         #endregion
 
         static Timer IntervalSendTimer;
 
         public static void StartUpdateByTimer(int seconds)
         {
-            var milliseconds = seconds * 1000;
+			if (DoNotTrack)
+				return;
+
+			var milliseconds = seconds * 1000;
             if(IntervalSendTimer != null)
             {
                 IntervalSendTimer.Change(milliseconds, milliseconds);
@@ -49,7 +54,10 @@ namespace QSTelemetry
 
         public static void AddCount(string counter, uint val = 1)
         {
-            if (Counters.ContainsKey(counter))
+			if (DoNotTrack)
+				return;
+			
+			if (Counters.ContainsKey(counter))
                 Counters[counter] += val;
             else
                 Counters[counter] = val;
@@ -57,7 +65,10 @@ namespace QSTelemetry
 
         public static void SendTelemetry()
         {
-            var statistic = new TelemetryStatistic();
+			if (DoNotTrack)
+				return;
+			
+			var statistic = new TelemetryStatistic();
             statistic.UpdateStatisticId = SendedStatisticId;
             statistic.IsDemo = IsDemo;
             statistic.Product = Product;
@@ -77,7 +88,7 @@ namespace QSTelemetry
 
         static void HandleTimerCallback(object state)
         {
-
+			SendTelemetry();
         }
     }
 }
