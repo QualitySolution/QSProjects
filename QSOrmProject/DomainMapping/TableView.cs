@@ -64,7 +64,10 @@ namespace QSOrmProject.DomainMapping
 			var config = FluentColumnsConfig <TEntity>.Create();
 			foreach(var pair in ColumnsFields)
 			{
-				config.AddColumn(pair.Key).AddTextRenderer(pair.Value);
+				if(searchFields.Contains(pair.Value))
+					config.AddColumn(pair.Key).AddTextRenderer(pair.Value).SearchHighlight();
+				else
+					config.AddColumn(pair.Key).AddTextRenderer(pair.Value);
 			}
 
 			if (typeof(ISpecialRowsRender).IsAssignableFrom(typeof(TEntity)))

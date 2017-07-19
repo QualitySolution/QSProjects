@@ -277,6 +277,7 @@ namespace QSOrmProject
 		void SearchRefilter()
 		{
 			searchStarted = DateTime.Now;
+			ytreeviewRef.SearchHighlightText = entrySearch.Text;
 			viewList = SearchProvider.FilterList(fullList, entrySearch.Text);
 			var delayfilter = DateTime.Now.Subtract (searchStarted);
 			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
