@@ -137,6 +137,8 @@ namespace QSOrmProject
 				subjectType = value;
 				if (subjectType != null) {
 					IOrmObjectMapping map = OrmMain.GetObjectDescription (subjectType);
+					if(map == null)
+						throw new Exception(String.Format("Не создан маппинг в CreateProjectParam для SubjectType = {0}", SubjectType));
 					map.ObjectUpdated += OnExternalObjectUpdated;
 					if(map.TableView != null && map.TableView.SearchProvider != null)
 						searchSearchProvider = map.TableView.SearchProvider;
