@@ -10,7 +10,7 @@ namespace QSOsm.Spuntik
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		public static SputnikRouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = true, bool geometry = true)
+		public static SputnikRouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = false, bool geometry = true)
 		{
 			if (routePOIs.Count < 2)
 				throw new ArgumentException ("Список точке для прокладки маршрута, должен содержать хотя бы 2 точки.", nameof (routePOIs));
