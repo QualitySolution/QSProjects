@@ -10,9 +10,11 @@ namespace QSTDI
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private ITdiJournal journal;
 		private ITdiDialog activeDialog;
-		private VSeparator separator;
+		private VBox boxSeparator;
+		private VSeparator separatorUpper, separatorLower;
 		private VBox dialogVBox;
 		private Label dialogTilteLabel;
+		private Button buttonHide;
 
 		public ITdiTabParent TabParent { set; get; }
 
@@ -99,19 +101,32 @@ namespace QSTDI
 						activeDialog.TabNameChanged -= ActiveDialog_TabNameChanged;
 						dialogVBox.Destroy ();
 						this.Remove (dialogVBox);
-						this.Remove (separator);
+						this.Remove (boxSeparator);
 						(TabParent as TdiNotebook).OnSliderTabClosed(this, activeDialog);
 					}
 					//Add
 					if (value != null) {
 						value.CloseTab += OnDialogClose;
-						separator = new VSeparator ();
-						separator.Show ();
+						separatorUpper = new VSeparator ();
+						separatorUpper.Show ();
+						separatorLower = new VSeparator();
+						separatorLower.Show();
 						dialogTilteLabel = new Label ();
+
+						buttonHide = new Button();
+						buttonHide.Label = IsHideJournal ? ">" : "<";
+						buttonHide.Clicked += OnButtonHideClicked;
+						boxSeparator = new VBox();
+						boxSeparator.PackStart(separatorUpper, true, true, 0);
+						boxSeparator.PackStart(buttonHide, false, false, 0);
+						boxSeparator.PackEnd(separatorLower, true, true, 0);
+						buttonHide.Show();
+
 						dialogVBox = new VBox ();
-						dialogVBox.PackStart ((Widget)value);
+						dialogVBox.PackStart ((Widget)value); 
 						this.PackEnd (dialogVBox);
-						this.PackEnd (separator, false, true, 6);
+						this.PackEnd (boxSeparator, false, true, 6);
+						boxSeparator.Show();
 						dialogVBox.Show ();
 						(value as Widget).Show ();
 						value.TabParent = this;
@@ -145,6 +160,7 @@ namespace QSTDI
 				if(Journal == null)
 					return;
 				((Widget)Journal).Visible = !value;
+				buttonHide.Label = IsHideJournal ? ">" : "<";
 			}
 		}
 
@@ -228,6 +244,13 @@ namespace QSTDI
 				TabParent.AddSlaveTab (masterTab, slaveTab);
 		}
 
+		/// <summary>
+		/// Добавить вкладку, указав, скрыт ли по умолчанию журнал.
+		/// </summary>
+		/// <param name="tab">Основная вкладка.</param>
+		/// <param name="afterTab">Дочерняя вкладка.</param>
+		/// <param name="CanSlided">Если true, то открываются в одной вкладке.</param>
+		/// <param name="isHidden">Если true, то журнал по умолчанию скрыт.</param>
 		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			if (tab.FailInitialize) {
@@ -247,6 +270,8 @@ namespace QSTDI
 			else
 				TabParent.AddTab (tab, afterTab);
 		}
+
+
 
 		public bool FailInitialize {
 			get {
@@ -292,6 +317,12 @@ namespace QSTDI
 			(Journal as Widget).Destroy ();
 			base.Destroy ();
 		}
+
+		private void OnButtonHideClicked (object sender, EventArgs e)
+		{
+			IsHideJournal = !IsHideJournal;
+		}
+
 
 		#region ITdiTabWithPath implementation
 
