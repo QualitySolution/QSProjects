@@ -259,6 +259,10 @@ namespace QSOrmProject
                 var dlg = OrmMain.CreateObjectDialog(objectType);
                 dlg.EntitySaved += dlg_EntitySaved;
                 TabParent.AddTab(dlg, this, true);
+				if (TabParent is TdiSliderTab)
+				{
+					((TdiSliderTab)TabParent).IsHideJournal = true;
+				}
             }
         }
 
