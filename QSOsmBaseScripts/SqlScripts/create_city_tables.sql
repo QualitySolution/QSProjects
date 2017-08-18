@@ -26,7 +26,7 @@ CREATE TABLE osm_city_ways
 (
 	id SERIAL NOT NULL,
 	city_id bigint NOT NULL,
-	way geometry(Geometry,900913) NOT NULL,
+	way geometry(Geometry,3857) NOT NULL,
 	CONSTRAINT osm_city_ways_pkey PRIMARY KEY (id),
 	CONSTRAINT osm_city_fk FOREIGN KEY (city_id)
       REFERENCES osm_cities (id) MATCH SIMPLE
@@ -47,7 +47,7 @@ CREATE TABLE osm_city_districts
 (
 	id bigint NOT NULL,
 	name text NOT NULL,
-	way geometry(Geometry,900913) NOT NULL,
+	way geometry(Geometry,3857) NOT NULL,
 	CONSTRAINT osm_city_districts_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -65,7 +65,7 @@ CREATE TABLE osm_suburb_districts
 (
 	id bigint NOT NULL,
 	name text NOT NULL,
-	way geometry(Geometry,900913) NOT NULL,
+	way geometry(Geometry,3857) NOT NULL,
 	CONSTRAINT osm_suburb_districts_pkey PRIMARY KEY (id)
 )
 WITH (
