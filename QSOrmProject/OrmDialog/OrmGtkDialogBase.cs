@@ -198,6 +198,16 @@ namespace QSOrmProject
 				TabParent.SwitchOnTab (tab);
 		}
 
+		protected void OpenSlaveTab(ITdiTab slaveTab)
+		{
+			TabParent.AddSlaveTab(this, slaveTab);
+		}
+
+		protected void OpenTab(ITdiTab tab)
+		{
+			TabParent.AddTab(tab, this);
+		}
+
 		public void SaveAndClose ()
 		{
 			OnButtonSaveClicked (this, EventArgs.Empty);
