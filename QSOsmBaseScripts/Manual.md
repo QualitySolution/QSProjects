@@ -1,6 +1,23 @@
 ﻿Для работы скриптов необходимо установить следующее:
 zypper in osm2pgsql perl-DBD-Pg
 
+## Установка постгреса
+Нужно установить дополниельный пакет:
+    zypper in postgresql96-contrib
+
+## Первоначальная установка постреса
+1. После установки инициализируем папку с данным, можно просто запустить службу постгреса
+2. Для работы osm2pgsql у пользователя с помощью которого продключаемся к базе, не должно быть пароля(окуратнее если к серверу есть доступ с наружи)
+    # "local" is for Unix domain socket connections only
+    local   all             all                                     *trust*
+    # IPv4 local connections:
+    host    all             all             127.0.0.1/32            *trust*
+3. Создаем саму базу
+    createdb -U postgres osmgis
+    psql -U postgres -d osmgis -c 'CREATE EXTENSION postgis; CREATE EXTENSION hstore;'-
+
+4. Можно переходить к последовательности в обновлении базы. Начиная с шага 2.
+
 ## Последовательность действий для обновления базы ##
 
 1. Перед обновлением базы можно сделать бекап скриптом BackupCurrentBase.sh
