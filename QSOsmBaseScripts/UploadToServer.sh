@@ -8,10 +8,10 @@ read case;
 
 case $case in
     1)
-rsync -vizaP ./bin/Release/ admin@saas.qsolution.ru:/home/admin/OsmBaseScripts
+rsync -vizaP ./bin/Release/ admin@vod.qsolution.ru:/home/admin/OsmBaseScripts
 ;;
     2)
-rsync -vizaP ./bin/Debug/ admin@saas.qsolution.ru:/home/admin/OsmBaseScripts
+rsync -vizaP ./bin/Debug/ admin@vod.qsolution.ru:/home/admin/OsmBaseScripts
 ;;
 esac
 
