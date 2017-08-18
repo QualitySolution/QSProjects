@@ -2,7 +2,7 @@
 
 use DBI;
 use Encode;
-my $dbh = DBI->connect('dbi:Pg:dbname=osmgis;host=localhost','postgres','postgres',{AutoCommit=>1,RaiseError=>1,PrintError=>1});
+my $dbh = DBI->connect('dbi:Pg:dbname=osmgis;host=localhost','postgres', undef,{AutoCommit=>1,RaiseError=>1,PrintError=>1});
 my $total = 0;
 
 ################################## Setting cities for buildings #############################################

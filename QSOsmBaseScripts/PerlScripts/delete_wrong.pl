@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use DBI;
-my $dbh = DBI->connect('dbi:Pg:dbname=osmgis;host=localhost','postgres','postgres',{AutoCommit=>1,RaiseError=>1,PrintError=>1});
+my $dbh = DBI->connect('dbi:Pg:dbname=osmgis;host=localhost','postgres', undef,{AutoCommit=>1,RaiseError=>1,PrintError=>1});
 my $total = 0;
 
 #my $sth_clear_wrong = qq(
