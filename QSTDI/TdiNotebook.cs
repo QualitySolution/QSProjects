@@ -100,6 +100,8 @@ namespace QSTDI
 		{
 			ITdiTab tab = sender as ITdiTab;
 			TdiTabInfo info = _tabs.Find (i => i.TdiTab == tab);
+			if (info == null)
+				throw new ApplicationException();
 			TdiTabInfo masterTabInfo = _tabs.Find (i => i.SlaveTabs.Contains (tab));
 			if (masterTabInfo != null) {
 				info.TabNameLabel.LabelProp = ">" + e.NewName;
