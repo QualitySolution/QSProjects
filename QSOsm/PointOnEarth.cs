@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QSOsm.Spuntik
+namespace QSOsm
 {
 	public struct PointOnEarth
 	{
