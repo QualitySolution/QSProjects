@@ -74,13 +74,17 @@
     <Compile Include="Spuntik\SputnikRouteResponse.cs" />
     <Compile Include="Spuntik\RouteSummary.cs" />
     <Compile Include="Spuntik\SputnikMain.cs" />
-    <Compile Include="Spuntik\PointOnEarth.cs" />
+    <Compile Include="Osrm\OsrmMain.cs" />
+    <Compile Include="Osrm\RouteResponse.cs" />
+    <Compile Include="PointOnEarth.cs" />
+    <Compile Include="Osrm\Route.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
     <Folder Include="DTO\" />
     <Folder Include="Data\" />
     <Folder Include="Spuntik\" />
+    <Folder Include="Osrm\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">

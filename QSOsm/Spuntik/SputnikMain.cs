@@ -15,6 +15,8 @@ namespace QSOsm.Spuntik
 			if (routePOIs.Count < 2)
 				throw new ArgumentException ("Список точке для прокладки маршрута, должен содержать хотя бы 2 точки.", nameof (routePOIs));
 
+			DateTime startTime = DateTime.Now;
+
 			var client = new RestClient ();
 			client.BaseUrl = new Uri ("http://routes.maps.sputnik.ru");
 
@@ -40,7 +42,7 @@ namespace QSOsm.Spuntik
 			}
 			else
 			{
-				logger.Debug ("Полный ответ: {0}", response.Content);
+				logger.Debug ("Полный ответ за {1} сек.: {0}", response.Content, (DateTime.Now - startTime).TotalSeconds);
 			}
 			return response.Data;
 		}
