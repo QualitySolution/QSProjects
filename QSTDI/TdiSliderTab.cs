@@ -250,7 +250,6 @@ namespace QSTDI
 		/// <param name="tab">Основная вкладка.</param>
 		/// <param name="afterTab">Дочерняя вкладка.</param>
 		/// <param name="CanSlided">Если true, то открываются в одной вкладке.</param>
-		/// <param name="isHidden">Если true, то журнал по умолчанию скрыт.</param>
 		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			if (tab.FailInitialize) {

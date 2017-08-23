@@ -18,4 +18,10 @@ namespace QSWidgetLib
 		public ButtonId() : base () {}
 	}
 
+	public class RadioButtonId<I> : RadioButton
+	{
+		public I ID;
+
+		public RadioButtonId(string label) : base(label) {}
+	}
 }
