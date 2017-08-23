@@ -116,8 +116,11 @@ namespace QSOrmProject
 			return Session.Get (clazz, id);
 		}
 
-		public void Save<TEntity> (TEntity entity) where TEntity : IDomainObject
+		public void Save<TEntity> (TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
 		{
+			if(!orUpdate)
+				throw new NotImplementedException("orUpdate = false не реализовано для ChildUnitOfWork");
+
 			if (RootObject.Equals (entity)) {
 				if (externalRootVersion == null)
 					externalRootVersion = Root;
@@ -132,7 +135,7 @@ namespace QSOrmProject
 			}
 		}
 
-		public void TrySave(object entity)
+		public void TrySave(object entity, bool orUpdate = true)
 		{
 			throw new NotImplementedException ();
 		}

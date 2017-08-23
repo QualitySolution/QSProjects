@@ -47,9 +47,9 @@ namespace QSOrmProject
 			Root = GetById<TRootEntity>(id);
 		}
 
-		public override void Save<TEntity>(TEntity entity)
+		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
 		{
-			base.Save (entity);
+			base.Save (entity, orUpdate);
 
 			if (RootObject.Equals(entity))
 			{

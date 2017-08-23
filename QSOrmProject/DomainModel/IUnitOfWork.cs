@@ -16,14 +16,19 @@ namespace QSOrmProject
 
 		bool HasChanges{ get;}
 
-		void Save<TEntity>(TEntity entity) where TEntity : IDomainObject;
+		/// <param name="orUpdate">
+		/// По умолчанию установлен в true это значит то будет вызываться метод SaveOrUpdate вместо Save.
+		/// Этот параметр нуже тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
+		/// делает SELECT что бы проверить нет ли уже объекта для обновления. Что при большом количестве объектов приводит к задержкам сохранения.
+		/// </param>
+		void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject;
 		void Save();
 
 		/// <summary>
 		/// Пытаемся сохранить сущность в виде объекта, без указания типа сущности.
 		/// По возможности используйте дженерик метод Save().
 		/// </summary>
-		void TrySave(object entity);
+		void TrySave(object entity, bool orUpdate = true);
 
 		/// <summary>
 		/// Пытаемся удалить сущность в виде объекта, неизвестного типа.

@@ -103,23 +103,29 @@ namespace QSOrmProject
 			return Session.Get(clazz, id);
 		}
 
-		public virtual void Save<TEntity>(TEntity entity) where TEntity : IDomainObject
+		public virtual void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
 		{
 			if(transaction == null)
 				transaction = Session.BeginTransaction();
 
-			Session.SaveOrUpdate(entity);
+			if(orUpdate)
+				Session.SaveOrUpdate(entity);
+			else
+				Session.Save(entity);
 
 			if (!entityToSave.Contains (entity))
 				entityToSave.Add (entity);
 		}
 
-		public virtual void TrySave(object entity)
+		public virtual void TrySave(object entity, bool orUpdate = true)
 		{
 			if(transaction == null)
 				transaction = Session.BeginTransaction();
 
-			Session.SaveOrUpdate(entity);
+			if(orUpdate)
+				Session.SaveOrUpdate(entity);
+			else
+				Session.Save(entity);
 
 			if (!entityToSave.Contains (entity))
 				entityToSave.Add (entity);
