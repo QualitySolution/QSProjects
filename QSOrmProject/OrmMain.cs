@@ -95,7 +95,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <param name="assemblies">Assemblies.</param>
-		public static void ConfigureOrm (FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies)
+		public static void ConfigureOrm (FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies, Action<Configuration> exposeConfiguration = null)
 		{
 			fluenConfig = Fluently.Configure ().Database(database);
 
@@ -105,6 +105,8 @@ namespace QSOrmProject
 					m.FluentMappings.AddFromAssembly (ass);
 				}
 			});
+			if(exposeConfiguration != null)
+				fluenConfig.ExposeConfiguration(exposeConfiguration);
 
 			Sessions = fluenConfig.BuildSessionFactory ();
 		}
