@@ -327,7 +327,7 @@ namespace Gamma.GtkWidgets
 				// Change value in the original object
 				if (YTreeModel.Adapter.GetIter (out iter, tp)) {
 					object obj = YTreeModel.NodeFromIter (iter);
-					if (cell.DataPropertyInfo.CanWrite)
+					if (cell.DataPropertyInfo != null && cell.DataPropertyInfo.CanWrite)
 					{
 						cell.DataPropertyInfo.SetValue(obj, args.NewText, null);
 					}
