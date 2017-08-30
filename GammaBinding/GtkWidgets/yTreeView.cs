@@ -338,6 +338,8 @@ namespace Gamma.GtkWidgets
 		private void NodeRenderColumnFunc (Gtk.TreeViewColumn aColumn, Gtk.CellRenderer aCell, 
 			Gtk.TreeModel aModel, Gtk.TreeIter aIter)
 		{
+			if(aIter.Equals(TreeIter.Zero))
+				return;
 			object node = YTreeModel.NodeFromIter (aIter);
 			var nodeCell = aCell as INodeCellRenderer;
 			if (nodeCell != null)
