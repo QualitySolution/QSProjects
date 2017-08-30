@@ -11,12 +11,12 @@ namespace Gamma.ColumnConfig
 		public string DataPropertyName { get; set;}
 		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
 
-		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> dataProperty, bool useMarkup = false)
+		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> getDataExp, bool useMarkup = false)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(dataProperty);
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(getDataExp);
 
-			var properties = FetchPropertyInfoFromExpression.Fetch(dataProperty);
+			var properties = FetchPropertyInfoFromExpression.Fetch(getDataExp);
 
 			foreach(var prop in properties)
 			{
@@ -27,10 +27,12 @@ namespace Gamma.ColumnConfig
 					break;
 				}
 			}
+
+			var getter = getDataExp.Compile();
 			if(useMarkup)
-				cellRenderer.LambdaSetters.Add ((c, n) => c.Markup = dataProperty.Compile ().Invoke (n));
+				cellRenderer.LambdaSetters.Add ((c, n) => c.Markup = getter(n));
 			else
-				cellRenderer.LambdaSetters.Add ((c, n) => c.Text = dataProperty.Compile ().Invoke (n));
+				cellRenderer.LambdaSetters.Add ((c, n) => c.Text = getter(n));
 		}
 
 		public TextRendererMapping (ColumnMapping<TNode> column)

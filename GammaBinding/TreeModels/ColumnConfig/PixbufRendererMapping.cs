@@ -11,11 +11,12 @@ namespace Gamma.ColumnConfig
 		public string DataPropertyName { get; set;}
 		private NodeCellRendererPixbuf<TNode> cellRenderer = new NodeCellRendererPixbuf<TNode> ();
 
-		public PixbufRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, Pixbuf>> dataProperty)
+		public PixbufRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, Pixbuf>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (dataProperty);			
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Pixbuf = dataProperty.Compile ().Invoke (n));
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
+			var getter = getDataExp.Compile();
+			cellRenderer.LambdaSetters.Add ((c, n) => c.Pixbuf = getter (n));
 		}
 
 		public PixbufRendererMapping (ColumnMapping<TNode> column)

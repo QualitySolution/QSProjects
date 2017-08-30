@@ -11,21 +11,23 @@ namespace Gamma.ColumnConfig
 	{
 		private NodeCellRendererSpin<TNode> cellRenderer = new NodeCellRendererSpin<TNode>();
 
-		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty)
+		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", dataProperty.Compile ().Invoke (n)));
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
+			var getter = getDataExp.Compile();
+			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", getter (n)));
 		}
 
-		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty, IValueConverter converter)
+		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> getDataExp, IValueConverter converter)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
 			cellRenderer.EditingValueConverter = converter;
+			var getter = getDataExp.Compile();
 			cellRenderer.LambdaSetters.Add ((c, n) => 
 				c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}",
-					c.EditingValueConverter.Convert (dataProperty.Compile ().Invoke (n), typeof(double), null, null)));
+			                            c.EditingValueConverter.Convert (getter (n), typeof(double), null, null)));
 		}
 
 		public NumberRendererMapping (ColumnMapping<TNode> column)

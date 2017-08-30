@@ -10,11 +10,12 @@ namespace Gamma.ColumnConfig
 		List<Action<NodeCellRendererProgress<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererProgress<TNode>, TNode>>();
 		public string DataPropertyName { get; set;}
 
-		public ProgressRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, int>> valueProperty)
+		public ProgressRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, int>> getdataExp)
 			: base(column)
 		{
 			//DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
-			LambdaSetters.Add ((c, n) => c.Value = valueProperty.Compile ().Invoke (n));
+			var getter = getdataExp.Compile();
+			LambdaSetters.Add ((c, n) => c.Value = getter (n));
 		}
 
 		public ProgressRendererMapping (ColumnMapping<TNode> column)

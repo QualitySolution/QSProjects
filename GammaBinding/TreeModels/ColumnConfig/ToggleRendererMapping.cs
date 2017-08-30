@@ -10,11 +10,12 @@ namespace Gamma.ColumnConfig
 	{
 		private NodeCellRendererToggle<TNode> cellRenderer = new NodeCellRendererToggle<TNode>();
 
-		public ToggleRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, bool>> dataProperty)
+		public ToggleRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, bool>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (dataProperty);
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Active = dataProperty.Compile ().Invoke (n));
+			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
+			var getter = getDataExp.Compile();
+			cellRenderer.LambdaSetters.Add ((c, n) => c.Active = getter(n));
 		}
 
 		public ToggleRendererMapping (ColumnMapping<TNode> column)
