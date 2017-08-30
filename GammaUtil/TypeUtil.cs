@@ -54,6 +54,12 @@ namespace Gamma.Utilities
 			return ((IsInt(aType) == true) || (IsFloat(aType) == true));
 		}
 
+		public static bool EqualBoxedValues(object obj1, object obj2)
+		{
+			return ((obj1 != null) && obj1.GetType().IsValueType)
+				 ? obj1.Equals(obj2)
+				 : (obj1 == obj2);
+		}
 	}
 }
 

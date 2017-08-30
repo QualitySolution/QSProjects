@@ -13,5 +13,7 @@ namespace Gamma.ColumnConfig
 		bool IsEnterToNextCell { get; }
 
 		IEnumerable<IRendererMapping> ConfiguredRenderers { get;}
+
+		object tag { get; }
 	}
 }

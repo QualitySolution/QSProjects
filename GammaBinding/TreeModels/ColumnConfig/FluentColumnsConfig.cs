@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.Utilities;
+using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -45,6 +47,11 @@ namespace Gamma.ColumnConfig
 		public IEnumerable<IRendererMapping> GetRendererMappingByTag(object tag)
 		{
 			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => x.tag == tag);
+		}
+
+		public IEnumerable<TreeViewColumn> GetColumnsByTag(object tag)
+		{
+			return Columns.Where(x => TypeUtil.EqualBoxedValues(tag, x.tag)).Select(x => x.TreeViewColumn);
 		}
 
 		public IEnumerable<TRendererMapping> GetRendererMappingByTagGeneric<TRendererMapping>(object tag)

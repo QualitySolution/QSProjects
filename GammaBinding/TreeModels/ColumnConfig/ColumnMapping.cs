@@ -22,6 +22,8 @@ namespace Gamma.ColumnConfig
 
 		public bool IsEnterToNextCell { get; set;}
 
+		public object tag { get; set; }
+
 		private readonly List<IRendererMappingGeneric<TNode>> Renderers = new List<IRendererMappingGeneric<TNode>> ();
 
 		public IEnumerable<IRendererMapping> ConfiguredRenderers {
@@ -86,6 +88,12 @@ namespace Gamma.ColumnConfig
 		public ColumnMapping<TNode> Resizable (bool resizeble = true)
 		{
 			TreeViewColumn.Resizable = resizeble;
+			return this;
+		}
+
+		public ColumnMapping<TNode> Tag(object tag)
+		{
+			this.tag = tag;
 			return this;
 		}
 
