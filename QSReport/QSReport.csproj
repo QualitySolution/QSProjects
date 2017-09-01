@@ -50,6 +50,7 @@
     <Compile Include="IParametersWidget.cs" />
     <Compile Include="BatchRDLRenderer.cs" />
     <Compile Include="DocumentPrinter.cs" />
+    <Compile Include="ReportPrinter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
