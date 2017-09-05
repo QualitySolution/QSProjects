@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Threading;
@@ -10,11 +10,16 @@ namespace QSTelemetry
         static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public static String ServiceAddress = "http://saas.qsolution.ru:2048/Telemetry";
 		public static bool SendingError = false;
+		public static TimeSpan? SendTimeout;
 
         public static ITelemetryService GetTelemetryService()
 		{
 			try {
-				var factory = new ChannelFactory<ITelemetryService>(new BasicHttpBinding(), ServiceAddress);
+				var binding = new BasicHttpBinding();
+				if (SendTimeout.HasValue)
+					binding.SendTimeout = SendTimeout.Value;
+				
+				var factory = new ChannelFactory<ITelemetryService>(binding, ServiceAddress);
 				return factory.CreateChannel();
 			}
 			catch (Exception ex) {
