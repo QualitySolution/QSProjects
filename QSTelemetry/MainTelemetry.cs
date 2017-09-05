@@ -9,6 +9,7 @@ namespace QSTelemetry
     {
         static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public static String ServiceAddress = "http://saas.qsolution.ru:2048/Telemetry";
+		public static bool SendingError = false;
 
         public static ITelemetryService GetTelemetryService()
 		{
@@ -78,12 +79,19 @@ namespace QSTelemetry
             statistic.OS = Environment.OSVersion.VersionString;
             statistic.NetFramework = Environment.Version.ToString();
 
-            var srv = GetTelemetryService();
-            if (srv == null)
-                return;
-            var result = srv.SubmitStatistics(statistic);
-            if (result > 0)
-                SendedStatisticId = result;
+			try
+			{
+				var srv = GetTelemetryService();
+				if (srv == null)
+					return;
+				var result = srv.SubmitStatistics(statistic);
+				if (result > 0)
+					SendedStatisticId = result;
+			}catch(Exception ex)
+			{
+				SendingError = true;
+				logger.Warn(ex, "Ошибка при отправки телеметрии");
+			}
         }
 
         static void HandleTimerCallback(object state)
