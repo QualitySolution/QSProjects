@@ -12,7 +12,7 @@ namespace QSReport
 
 		public string Title { get; set; }
 
-		public Dictionary<string, object> Parameters;
+		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
 		public string GetPath ()
 		{
