@@ -22,6 +22,16 @@ namespace QSTDI
 			mytab = null;
 			base.OnParentSet (previous_parent);
 		}
+
+		protected void OpenSlaveTab(ITdiTab slaveTab)
+		{
+			MyTab.TabParent.AddSlaveTab(MyTab, slaveTab);
+		}
+
+		protected void OpenNewTab(ITdiTab tab)
+		{
+			MyTab.TabParent.AddTab(tab, MyTab);
+		}
 	}
 }
 
