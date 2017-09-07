@@ -44,6 +44,8 @@
     <Compile Include="DBUpdater\DBUpdateProcess.cs" />
     <Compile Include="gtk-gui\QSUpdater.DB.DBUpdateProcess.cs" />
     <Compile Include="MainUpdater.cs" />
+    <Compile Include="DTO\UsingStatisticsResult.cs" />
+    <Compile Include="DTO\UsingStatisticsUniqueIP.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
@@ -91,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DBUpdater\" />
+    <Folder Include="DTO\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
