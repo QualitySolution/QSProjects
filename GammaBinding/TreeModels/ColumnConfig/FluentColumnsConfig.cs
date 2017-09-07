@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
 
@@ -8,10 +9,11 @@ namespace Gamma.ColumnConfig
 {
 	public class FluentColumnsConfig<TNode> : IColumnsConfig
 	{
-
 		List<ColumnMapping<TNode>> Columns = new List<ColumnMapping<TNode>>();
 
 		RowMapping<TNode> row;
+
+		yTreeView myTreeView;
 
 		public IEnumerable<IColumnMapping> ConfiguredColumns {
 			get { return Columns.OfType<IColumnMapping> ();	}
@@ -19,6 +21,11 @@ namespace Gamma.ColumnConfig
 
 		public FluentColumnsConfig ()
 		{
+		}
+
+		internal FluentColumnsConfig(yTreeView treeview)
+		{
+			myTreeView = treeview;
 		}
 
 		public static FluentColumnsConfig<TNode> Create()
@@ -41,6 +48,8 @@ namespace Gamma.ColumnConfig
 
 		public IColumnsConfig Finish()
 		{
+			if(myTreeView != null)
+				myTreeView.ColumnsConfig = this;
 			return this;
 		}
 

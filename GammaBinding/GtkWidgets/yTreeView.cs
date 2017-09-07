@@ -31,6 +31,11 @@ namespace Gamma.GtkWidgets
 			}
 		}
 
+		public FluentColumnsConfig<TNode> CreateFluentColumnsConfig<TNode>()
+		{
+			return new FluentColumnsConfig<TNode>(this);
+		}
+
 		public string[] SearchHighlightTexts { get; set;}
 
 		public string SearchHighlightText{
