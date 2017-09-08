@@ -96,11 +96,11 @@ namespace Gamma.Binding
 			object lastNode;
 			//Check for "Collection was modified" Exception
 			try { 
-				lastNode = cachedEnumerator != null ? cachedEnumerator.Current : null;
+				lastNode = cachedEnumerator?.Current;
 			} catch (InvalidOperationException ex) {
 				lastNode = null;
 			}
-			if (lastNode == node)
+			if (lastNode != null && lastNode == node)
 				return GetCacheNext (ref iter);
 			else {
 				var levelInfo = GetLevelConfig(node);
