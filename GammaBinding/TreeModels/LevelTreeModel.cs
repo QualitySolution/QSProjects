@@ -97,29 +97,31 @@ namespace Gamma.Binding
 			//Check for "Collection was modified" Exception
 			try { 
 				lastNode = cachedEnumerator?.Current;
-			} catch (InvalidOperationException ex) {
+			} catch (InvalidOperationException) {
 				lastNode = null;
 			}
-			if (lastNode != null && lastNode == node)
-				return GetCacheNext (ref iter);
-			else {
-				var levelInfo = GetLevelConfig(node);
-
-				if (levelInfo.IsFirstLevel)
-					cachedEnumerator = sourceList.GetEnumerator();
-				else
-				{
-					//var parent = levelInfo.GetParent(node);
-					cachedEnumerator = levelInfo.MyList(node).GetEnumerator();
+			if (lastNode == node)
+			{
+				try {
+					return GetCacheNext(ref iter);
+				} catch(InvalidOperationException) { //for "Collection was modified" Exception
+					cachedEnumerator = null;
 				}
-
-				while (cachedEnumerator.MoveNext ()) {
-					if (node == cachedEnumerator.Current)
-						return GetCacheNext (ref iter);
-				}
-				cachedEnumerator = null;
-				return false;
 			}
+
+			var levelInfo = GetLevelConfig(node);
+
+			if (levelInfo.IsFirstLevel)
+				cachedEnumerator = sourceList.GetEnumerator();
+			else
+				cachedEnumerator = levelInfo.MyList(node).GetEnumerator();
+
+			while (cachedEnumerator.MoveNext ()) {
+				if (node == cachedEnumerator.Current)
+					return GetCacheNext (ref iter);
+			}
+			cachedEnumerator = null;
+			return false;
 		}
 
 		public bool IterChildren (out TreeIter iter, TreeIter parent)
