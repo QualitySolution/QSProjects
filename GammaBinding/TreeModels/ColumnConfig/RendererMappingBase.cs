@@ -72,12 +72,12 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
 		}
 
-		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true, Enum [] excludeItems = null)
+		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
 			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
 		}
 
-		public ComboRendererMapping<TNode> AddComboRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
+		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
 		{
 			return myColumn.AddComboRenderer (dataProperty, expand);
 		}

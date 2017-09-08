@@ -8,14 +8,14 @@ using Gtk;
 
 namespace Gamma.ColumnConfig
 {
-	public class EnumRendererMapping<TNode> : RendererMappingBase<NodeCellRendererCombo<TNode>, TNode>
+	public class EnumRendererMapping<TNode, TItem> : RendererMappingBase<NodeCellRendererCombo<TNode, TItem>, TNode> where TItem : struct, IConvertible
 	{
-		private NodeCellRendererCombo<TNode> cellRenderer = new NodeCellRendererCombo<TNode>();
+		private NodeCellRendererCombo<TNode, TItem> cellRenderer = new NodeCellRendererCombo<TNode, TItem>();
 
-		public EnumRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> dataProperty, Enum[] excludeItems)
+		public EnumRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, TItem>> dataProperty, Enum[] excludeItems)
 			: base(column)
 		{
-			var prop = PropertyUtil.GetPropertyInfo<TNode> (dataProperty);
+			var prop = PropertyUtil.GetPropertyInfo(dataProperty);
 
 			if(prop == null || !prop.PropertyType.IsEnum)
 				throw new InvalidProgramException ();
@@ -24,7 +24,7 @@ namespace Gamma.ColumnConfig
 
 			FillRendererByEnum (prop.PropertyType, excludeItems);
 
-			cellRenderer.DisplayFunc = e => ((Enum)e).GetEnumTitle ();
+			cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle ();
 		}
 
 		public EnumRendererMapping (ColumnMapping<TNode> column)
@@ -40,32 +40,32 @@ namespace Gamma.ColumnConfig
 			return cellRenderer;
 		}
 
-		protected override void SetSetterSilent (Action<NodeCellRendererCombo<TNode>, TNode> commonSet)
+		protected override void SetSetterSilent (Action<NodeCellRendererCombo<TNode, TItem>, TNode> commonSet)
 		{
 			AddSetter (commonSet);
 		}
 
 		#endregion
 
-		public EnumRendererMapping<TNode> Tag(object tag)
+		public EnumRendererMapping<TNode, TItem> Tag(object tag)
 		{
 			this.tag = tag;
 			return this;
 		}
 
-		public EnumRendererMapping<TNode> AddSetter(Action<NodeCellRendererCombo<TNode>, TNode> setter)
+		public EnumRendererMapping<TNode, TItem> AddSetter(Action<NodeCellRendererCombo<TNode, TItem>, TNode> setter)
 		{
 			cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 			
-		public EnumRendererMapping<TNode> Editing (bool on = true)
+		public EnumRendererMapping<TNode, TItem> Editing (bool on = true)
 		{
 			cellRenderer.Editable = on;
 			return this;
 		}
 
-		public EnumRendererMapping<TNode> HasEntry (bool on = true)
+		public EnumRendererMapping<TNode, TItem> HasEntry (bool on = true)
 		{
 			cellRenderer.HasEntry = on;
 			return this;

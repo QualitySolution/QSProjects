@@ -6,9 +6,9 @@ using Gamma.Binding;
 
 namespace Gamma.GtkWidgets.Cells
 {
-	public class NodeCellRendererCombo<TNode> : CellRendererCombo, INodeCellRenderer
+	public class NodeCellRendererCombo<TNode, TItem> : CellRendererCombo, INodeCellRenderer
 	{
-		public List<Action<NodeCellRendererCombo<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererCombo<TNode>, TNode>>();
+		public List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>> LambdaSetters = new List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>>();
 
 		public string DataPropertyName { get{ return DataPropertyInfo.Name;
 			}}
@@ -17,7 +17,7 @@ namespace Gamma.GtkWidgets.Cells
 
 		public IValueConverter EditingValueConverter { get; set;}
 
-		public Func<object, string> DisplayFunc { get; set;}
+		public Func<TItem, string> DisplayFunc { get; set;}
 
 		public NodeCellRendererCombo ()
 		{
@@ -28,7 +28,7 @@ namespace Gamma.GtkWidgets.Cells
 		{
 			if(node is TNode)
 			{
-				var propValue = DataPropertyInfo.GetValue (node, null);
+				var propValue = (TItem)DataPropertyInfo.GetValue (node, null);
 				if (propValue != null)
 					Text = DisplayFunc == null ? propValue.ToString () : DisplayFunc (propValue);
 				else

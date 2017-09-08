@@ -175,17 +175,17 @@ namespace Gamma.ColumnConfig
 			return render;
 		}
 
-		public EnumRendererMapping<TNode> AddEnumRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true, Enum [] excludeItems = null)
+		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
-			var render = new EnumRendererMapping<TNode> (this, dataProperty, excludeItems);
+			var render = new EnumRendererMapping<TNode, TItem> (this, dataProperty, excludeItems);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
 		}
 
-		public ComboRendererMapping<TNode> AddComboRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
+		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
 		{
-			var render = new ComboRendererMapping<TNode> (this, dataProperty);
+			var render = new ComboRendererMapping<TNode, TItem> (this, dataProperty);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
