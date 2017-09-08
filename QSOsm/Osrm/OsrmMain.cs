@@ -38,7 +38,11 @@ namespace QSOsm.Osrm
 				request.AddQueryParameter("overview", "false");
 
 			var response = client.Execute<RouteResponse> (request);
-			if (response.Data.Code != "Ok")
+			if(response.Data == null)
+			{
+				logger.Error("Ошибка в обработке запроса к osrm status={0} message={1}", response.ResponseStatus, response.ErrorMessage);
+			}
+			else if (response.Data.Code != "Ok")
 			{
 				logger.Error ("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
 				logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
