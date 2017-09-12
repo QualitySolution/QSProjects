@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/QSWidgetLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QSWidgetLib.DatePicker" design-size="138 34">
+  <widget class="Gtk.Bin" id="QSWidgetLib.DatePicker" design-size="142 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -101,6 +101,7 @@
               <widget class="QSWidgetLib.DatePicker" id="StartDate">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
+                <property name="WithTime">False</property>
                 <property name="Date">0</property>
                 <property name="IsEditable">True</property>
                 <property name="AutoSeparation">True</property>
@@ -127,6 +128,7 @@
               <widget class="QSWidgetLib.DatePicker" id="EndDate">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
+                <property name="WithTime">False</property>
                 <property name="Date">0</property>
                 <property name="IsEditable">True</property>
                 <property name="AutoSeparation">True</property>
@@ -406,7 +408,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSWidgetLib.LegalName" design-size="342 31">
+  <widget class="Gtk.Bin" id="QSWidgetLib.LegalName" design-size="342 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -642,6 +644,79 @@
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="QSWidgetLib.SidePanels.HideHorizontalSeparator" design-size="567 18">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.EventBox" id="eventAllWidget">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+        <property name="VisibleWindow">False</property>
+        <signal name="ButtonPressEvent" handler="OnEventAllWidgetButtonPressEvent" />
+        <child>
+          <widget class="Gtk.HBox" id="hbox3">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.HSeparator" id="hseparator1">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Arrow" id="arrowLeft">
+                <property name="MemberName" />
+                <property name="ArrowType">Down</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="labelTitle">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Title</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Arrow" id="arrowRight">
+                <property name="MemberName" />
+                <property name="ArrowType">Down</property>
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HSeparator" id="hseparator2">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">4</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+          </widget>
         </child>
       </widget>
     </child>

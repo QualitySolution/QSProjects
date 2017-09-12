@@ -70,6 +70,8 @@
     <Compile Include="gtk-gui\QSWidgetLib.RightSidePanel.cs" />
     <Compile Include="SearchEntity.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.SearchEntity.cs" />
+    <Compile Include="SidePanels\HideHorizontalSeparator.cs" />
+    <Compile Include="gtk-gui\QSWidgetLib.SidePanels.HideHorizontalSeparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
