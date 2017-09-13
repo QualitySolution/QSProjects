@@ -71,6 +71,11 @@ namespace QSTDI
 		{
 			TabParent.AddTab (tab, this);
 		}
+
+		protected void OpenSlaveTab(ITdiTab slaveTab)
+		{
+			TabParent.AddSlaveTab(this, slaveTab);
+		}
 	}
 }
 
