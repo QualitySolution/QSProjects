@@ -75,15 +75,23 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList)
+		/// <summary>
+		/// Fill combobox by items.
+		/// </summary>
+		/// <param name="itemsList">Items list.</param>
+		/// <param name="emptyValueTitle">Title for empty value, if set combobox dispaly first item with default value of type(for class is null), and can user set empty value</param>
+		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList, string emptyValueTitle = null)
 		{
-			FillRendererByList (itemsList);
+			FillRendererByList (itemsList, emptyValueTitle);
 			return this;
 		}
 
-		private void FillRendererByList(IList<TItem> itemsList)
+		private void FillRendererByList(IList<TItem> itemsList, string emptyValueTitle)
 		{
 			ListStore comboListStore = new ListStore (typeof(TItem), typeof(string));
+
+			if(emptyValueTitle != null)
+				comboListStore.AppendValues(default(TItem), emptyValueTitle);
 
 			foreach (var item in itemsList) {
 				if(cellRenderer.DisplayFunc == null)
