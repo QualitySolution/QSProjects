@@ -55,7 +55,7 @@ namespace Gamma.ColumnConfig
 
 		public IEnumerable<IRendererMapping> GetRendererMappingByTag(object tag)
 		{
-			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => x.tag == tag);
+			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => TypeUtil.EqualBoxedValues(tag, x.tag));
 		}
 
 		public IEnumerable<TreeViewColumn> GetColumnsByTag(object tag)
@@ -65,7 +65,7 @@ namespace Gamma.ColumnConfig
 
 		public IEnumerable<TRendererMapping> GetRendererMappingByTagGeneric<TRendererMapping>(object tag)
 		{
-			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => x.tag == tag).OfType<TRendererMapping>();
+			return Columns.SelectMany(x => x.ConfiguredRenderersGeneric).Where(x => TypeUtil.EqualBoxedValues(tag, x.tag)).OfType<TRendererMapping>();
 		}
 	}
 }
