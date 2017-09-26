@@ -34,6 +34,9 @@ namespace QSOrmProject
 		{
 			if(targetType == typeof(decimal))
 				return (System.Convert.ToDecimal(value) * 0.01m);
+			if(targetType == typeof(float))
+				return (System.Convert.ToSingle(value) * 0.01f);
+
 			return null;
 		}
 	}
