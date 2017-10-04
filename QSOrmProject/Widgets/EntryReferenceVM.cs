@@ -81,6 +81,14 @@ namespace QSOrmProject
 			}
 		}
 
+		public int SubjectId
+		{
+			get
+			{
+				return DomainHelper.GetId(Subject);
+			}
+		}
+
 		public TEntity GetSubject<TEntity> ()
 		{
 			return (TEntity)Subject;
