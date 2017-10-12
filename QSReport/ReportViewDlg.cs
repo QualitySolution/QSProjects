@@ -1,5 +1,4 @@
 ﻿using System;
-using QSProjectsLib;
 using Gtk;
 
 namespace QSReport
@@ -57,7 +56,10 @@ namespace QSReport
 		void LoadReport(ReportInfo info)
 		{
 			logger.Debug (String.Format ("Report Parameters[{0}]", info.GetParametersString ()));
-			reportviewer1.LoadReport (info.GetReportUri (), info.GetParametersString (), info.ConnectionString, true);
+			if(info.Source != null)
+				reportviewer1.LoadReport(info.Source, info.GetParametersString(), info.ConnectionString, true);
+			else
+				reportviewer1.LoadReport (info.GetReportUri (), info.GetParametersString (), info.ConnectionString, true);
 		}
 
 		public ReportViewDlg (IParametersWidget widget)

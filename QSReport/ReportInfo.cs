@@ -29,6 +29,11 @@ namespace QSReport
 			return System.IO.Path.Combine (parts.ToArray ());
 		}
 
+		/// <summary>
+		/// Строковое представление отчета в виде XML. Для передачи отчета через память без записи на диск.
+		/// </summary>
+		public string Source { get; set; }
+
 		public Uri GetReportUri ()
 		{
 			return new Uri (GetPath ());
