@@ -7,5 +7,7 @@ namespace QSOrmProject
 	{
 		public int DefaultHeight;
 		public int DefaultWidth;
+
+		public bool HideButtons = false;
 	}
 }

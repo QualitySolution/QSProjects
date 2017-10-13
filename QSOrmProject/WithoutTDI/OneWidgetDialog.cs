@@ -15,8 +15,15 @@ namespace QSOrmProject
 
 			var att = widget.GetType ().GetCustomAttributes (typeof(WidgetWindowAttribute), false);
 			if (att.Length > 0)
-				this.SetDefaultSize ((att [0] as WidgetWindowAttribute).DefaultWidth,
-				                     (att [0] as WidgetWindowAttribute).DefaultHeight);
+			{
+				var wwa = att[0] as WidgetWindowAttribute;
+				if(wwa.DefaultHeight > 0 && wwa.DefaultWidth > 0)	
+					this.SetDefaultSize (wwa.DefaultWidth, wwa.DefaultHeight);
+
+				if (wwa.HideButtons)
+					this.ActionArea.Visible = false;
+					
+			}
 
 			widget.Show ();
 			VBox.Add (widget);
