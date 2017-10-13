@@ -145,6 +145,7 @@
     <Compile Include="yWidgets\yTimeEntry.cs" />
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
     <Compile Include="Deletion\ReplaceEntity.cs" />
+    <Compile Include="Domain\User.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -189,6 +190,7 @@
     <Folder Include="DomainMapping\" />
     <Folder Include="Helpers\" />
     <Folder Include="DebugHelper\" />
+    <Folder Include="Domain\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
