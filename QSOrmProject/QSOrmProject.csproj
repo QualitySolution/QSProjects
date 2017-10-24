@@ -62,7 +62,6 @@
     <Compile Include="OrmSimpleDialog.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
     <Compile Include="IReferenceFilter.cs" />
-    <Compile Include="Widgets\EnumComboBox.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="BindingsConverters.cs" />
     <Compile Include="gtk-gui\QSOrmProject.OneWidgetDialog.cs" />

@@ -29,13 +29,15 @@
               <placeholder />
             </child>
             <child>
-              <widget class="QSOrmProject.EnumComboBox" id="comboAction">
+              <widget class="Gamma.Widgets.yEnumComboBox" id="comboAction">
                 <property name="MemberName" />
                 <property name="IsTextCombo">False</property>
                 <property name="Items" translatable="yes" />
                 <property name="ShowSpecialStateAll">True</property>
                 <property name="ShowSpecialStateNot">False</property>
-                <signal name="EnumItemSelected" handler="OnComboActionEnumItemSelected" />
+                <property name="UseShortTitle">False</property>
+                <property name="DefaultFirst">False</property>
+                <signal name="Changed" handler="OnComboActionChanged" />
               </widget>
               <packing>
                 <property name="TopAttach">3</property>

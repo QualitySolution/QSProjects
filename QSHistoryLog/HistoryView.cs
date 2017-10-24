@@ -133,11 +133,6 @@ namespace QSHistoryLog
 			UpdateJournal ();
 		}
 
-		protected void OnComboActionEnumItemSelected (object sender, QSOrmProject.EnumItemClickedEventArgs e)
-		{
-			UpdateJournal ();
-		}
-
 		protected void OnButtonSearchClicked (object sender, EventArgs e)
 		{
 			UpdateJournal ();
@@ -173,6 +168,11 @@ namespace QSHistoryLog
 		protected void OnEntrySearchActivated (object sender, EventArgs e)
 		{
 			buttonSearch.Click ();
+		}
+
+		protected void OnComboActionChanged(object sender, EventArgs e)
+		{
+			UpdateJournal();
 		}
 	}
 }
