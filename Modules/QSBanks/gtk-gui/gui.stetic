@@ -8,10 +8,11 @@
     <widget-library name="../../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
-    <widget-library name="../../../QSValidation/bin/Debug/QSValidation.dll" />
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
+    <widget-library name="../../../QSValidation/bin/Debug/QSValidation.dll" />
+    <widget-library name="../../../QSExtraGammaWidgets/bin/Debug/QSExtraGammaWidgets.dll" />
     <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="436 318">
@@ -155,7 +156,6 @@
                 <property name="Icon">stock:gtk-save Menu</property>
                 <property name="Label" translatable="yes">Сохранить</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonSaveClicked" />
               </widget>
               <packing>
                 <property name="Position">0</property>
@@ -172,7 +172,6 @@
                 <property name="Icon">stock:gtk-revert-to-saved Menu</property>
                 <property name="Label" translatable="yes">Отменить</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonCancelClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -453,7 +452,6 @@
                 <property name="Icon">stock:gtk-save Menu</property>
                 <property name="Label" translatable="yes">Сохранить</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonSaveClicked" />
               </widget>
               <packing>
                 <property name="Position">0</property>
@@ -470,7 +468,6 @@
                 <property name="Icon">stock:gtk-revert-to-saved Menu</property>
                 <property name="Label" translatable="yes">Отменить</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonCancelClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -561,7 +558,6 @@
               <widget class="Gamma.Widgets.yEntryReference" id="dataentryrefBank">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
-                <property name="DisplayFields">Name</property>
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
