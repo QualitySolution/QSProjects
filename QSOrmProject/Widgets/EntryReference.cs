@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using Gamma.Binding.Core.Helpers;
 using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
@@ -60,10 +62,11 @@ namespace QSOrmProject
 		}
 
 		/// <summary>
-		/// Используется для cложной обработки строки отображения сущьности. На вход передается объект сущьности. на выходе должна получится строка.
+		/// Используется для cложной обработки строки отображения сущьности. На вход передается объект сущьности на выходе должна получится строка.
 		/// Если ObjectDisplayFunc == null, сущьность отображается через функцию DomainHelper.GetObjectTilte, то есть по свойствам Title или Name.
+		/// Для установки используете метод SetObjectDisplayFunc
 		/// </summary>
-		public Func<object, string> ObjectDisplayFunc;
+		public Func<object, string> ObjectDisplayFunc { get; private set; }
 
 		private System.Type subjectType;
 
@@ -128,7 +131,7 @@ namespace QSOrmProject
 
 		void OnSubjectPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if (DisplayFields == null || DisplayFields.Contains (e.PropertyName)) {
+			if (displayFields == null || displayFields.Contains (e.PropertyName)) {
 				UpdateWidget ();
 			}
 		}
@@ -152,11 +155,12 @@ namespace QSOrmProject
 			}
 		}
 
-		public void SetObjectDisplayFunc<TObject> (Func<TObject, string> displayFunc) where TObject : class
+		public void SetObjectDisplayFunc<TObject> (Expression<Func<TObject, string>> expDisplayFunc) where TObject : class
 		{
 			if (typeof(TObject) != SubjectType)
 				throw new InvalidCastException (String.Format ("SubjectType = {0}, а DisplayFunc задается для {1}", SubjectType, typeof(TObject)));
-			ObjectDisplayFunc = o => displayFunc (o as TObject);
+			displayFields = FetchPropertyFromExpression.Fetch(expDisplayFunc);
+			ObjectDisplayFunc = o => expDisplayFunc.Compile() (o as TObject);
 		}
 
 		private void OnExternalObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
@@ -175,35 +179,6 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
-			if (displayFields == null || ObjectDisplayFunc != null) {
-				UpdateWidgetNew ();
-				return;
-			}
-
-			buttonOpen.Sensitive = CanEditReference && subject != null;
-			if (subject == null || displayFields == null) {
-				entryObject.Text = String.Empty;
-				return;
-			}
-
-			object[] values = new object[displayFields.Length];
-			for (int i = 0; i < displayFields.Length; i++) {
-				if (String.IsNullOrWhiteSpace (displayFields [i])) {
-					logger.Warn ("Пустая строка в списке полей DisplayFields. Пропускаем...");
-					continue;
-				}
-				var prop = subjectType.GetProperty (displayFields [i]);
-				if (prop == null)
-					throw new InvalidOperationException (String.Format ("Поле {0} у класса {1} не найдено.", displayFields [i], SubjectType));
-				values [i] = prop.GetValue (Subject, null);
-			}
-			entryChangedByUser = false;
-			entryObject.Text = String.Format (DisplayFormatString, values);
-			entryChangedByUser = true;
-		}
-
-		private void UpdateWidgetNew ()
-		{
 			buttonOpen.Sensitive = CanEditReference && subject != null;
 
 			entryChangedByUser = false;
@@ -211,7 +186,6 @@ namespace QSOrmProject
 			entryChangedByUser = true;
 		}
 
-		//Используется только новое отображение объекта
 		private string GetObjectTitle (object item)
 		{
 			if (item == null) {
@@ -226,23 +200,6 @@ namespace QSOrmProject
 		}
 
 		private string[] displayFields;
-
-		[Obsolete ("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
-		public string[] DisplayFields {
-			get { return displayFields; }
-			set { displayFields = value; }
-		}
-
-		private string displayFormatString;
-
-		[Obsolete ("Используйте новый механизм отображения через ObjectDisplayFunc или отображение по умочанию.(Будет удалено после 27.07.2016)")]
-		public string DisplayFormatString {
-			get {
-				return (displayFormatString == null || displayFormatString == String.Empty) 
-					? "{0}" : displayFormatString;
-			}
-			set { displayFormatString = value; }
-		}
 
 		public EntryReference ()
 		{
@@ -412,7 +369,7 @@ namespace QSOrmProject
 				OnChangedByUser();
 			}
 			else
-				UpdateWidgetNew ();
+				UpdateWidget ();
 		}
 
 		protected override void OnDestroyed()
