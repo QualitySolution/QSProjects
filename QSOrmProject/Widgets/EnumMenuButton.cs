@@ -20,22 +20,6 @@ namespace QSOrmProject
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemClicked;
 		List<object> sensitiveFalseItems = new List<object> ();
 
-		[Browsable(true)]
-		[Obsolete("Используйте вместо этого свойство ItemsEnum, использование этого свойства приводит к проблемам при рефакторинге.")]
-		public String ItemsEnumName {
-			get {
-				return ItemsEnum.AssemblyQualifiedName;
-			}
-			set {
-				if (String.IsNullOrEmpty (value))
-					return;
-
-				ItemsEnum = System.Type.GetType(value);
-				if (ItemsEnum == null)
-					logger.Warn ("Тип {0}, не найден. Свойству ItemsEnumName должна назначатся строка в формате '<namespace>.<enumtype>, <Assembly>'", value);
-			}
-		}
-
 		System.Type itemsEnum;
 		public System.Type ItemsEnum {
 			get {
