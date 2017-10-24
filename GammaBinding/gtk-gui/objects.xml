@@ -26,7 +26,6 @@
   <object type="Gamma.Widgets.yEnumComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
     <itemgroups>
       <itemgroup label="yEnumComboBox Properties">
-        <property name="ItemsEnumName" />
         <property name="ShowSpecialStateAll" />
         <property name="ShowSpecialStateNot" />
         <property name="UseShortTitle" />

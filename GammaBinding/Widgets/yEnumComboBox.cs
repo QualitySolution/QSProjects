@@ -50,21 +50,6 @@ namespace Gamma.Widgets
 		bool IsNotUserChange;
 		public event EventHandler ChangedByUser;
 
-		[Browsable (true)]
-		public String ItemsEnumName {
-			get {
-				return ItemsEnum.AssemblyQualifiedName;
-			}
-			set {
-				if (String.IsNullOrEmpty (value))
-					return;
-
-				ItemsEnum = Type.GetType (value);
-				if (ItemsEnum == null)
-					Console.WriteLine (String.Format ("{0} is not exist. Property ItemsEnumName must have format '<namespace>.<enumtype>, <Assembly>'", value));
-			}
-		}
-
 		Type itemsEnum;
 
 		public Type ItemsEnum {
