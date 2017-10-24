@@ -15,9 +15,6 @@ namespace QSOsm.Osrm
 		[DeserializeAs(Name = "code")]
 		public string Code { get; set; }
 
-		[DeserializeAs(Name = "route_geometry")]
-		public string RouteGeometry { get; set; }
-
 		public string StatusMessageRus{
 			get{
 				switch (Code) {
