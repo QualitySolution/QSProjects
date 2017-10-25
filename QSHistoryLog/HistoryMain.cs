@@ -213,23 +213,23 @@ namespace QSHistoryLog
 
 	public enum ChangeSetType
 	{
-		[ItemTitle ("Создание")]
+		[Display(Name = "Создание")]
 		Create,
-		[ItemTitle ("Изменение")]
+		[Display(Name = "Изменение")]
 		Change,
-		[ItemTitle ("Удаление")]
+		[Display(Name = "Удаление")]
 		Delete
 	}
 
 	public enum FieldChangeType
 	{
-		[ItemTitle ("Добавлено")]
+		[Display(Name = "Добавлено")]
 		Added,
-		[ItemTitle ("Изменено")]
+		[Display(Name = "Изменено")]
 		Changed,
-		[ItemTitle ("Удалено")]
+		[Display(Name = "Удалено")]
 		Removed,
-		[ItemTitle ("Без изменений")]
+		[Display(Name = "Без изменений")]
 		Unchanged
 	}
 
