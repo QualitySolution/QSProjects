@@ -11,7 +11,7 @@
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
   </import>
-  <widget class="Gtk.Bin" id="QSReport.ReportViewDlg" design-size="633 218">
+  <widget class="Gtk.Bin" id="QSReport.ReportViewDlg" design-size="633 217">
     <action-group name="Default" />
     <property name="MemberName" />
     <property name="Visible">False</property>
@@ -40,6 +40,7 @@
             <property name="Events">ButtonPressMask</property>
             <property name="ShowErrors">False</property>
             <property name="ShowParameters">False</property>
+            <signal name="ReportPrinted" handler="OnReportviewer1ReportPrinted" />
           </widget>
           <packing>
             <property name="Position">1</property>

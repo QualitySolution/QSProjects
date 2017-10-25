@@ -10,6 +10,8 @@ namespace QSReport
 		private ReportInfo reportInfo;
 		private IParametersWidget parametersWidget;
 
+		public event EventHandler ReportPrinted;
+
 		public override bool CompareHashName(string hashName)
 		{
 			if (reportInfo != null)
@@ -81,6 +83,11 @@ namespace QSReport
 		void ParametersWidget_LoadReport (object sender, LoadReportEventArgs e)
 		{
 			LoadReport(e.Info);
+		}
+
+		protected void OnReportviewer1ReportPrinted(object sender, EventArgs e)
+		{
+			ReportPrinted?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }
