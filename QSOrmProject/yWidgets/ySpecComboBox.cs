@@ -49,6 +49,20 @@ namespace Gamma.Widgets
 			}
 		}
 
+		public bool IsSelectedAll{
+			get{
+				return SpecialComboState.All.Equals(base.SelectedItem);
+			}
+		}
+
+		public bool IsSelectedNot
+		{
+			get
+			{
+				return SpecialComboState.Not.Equals(base.SelectedItem);
+			}
+		}
+
 		/// <summary>
 		/// При установки этого значения в true SelectedItem будет возвращать только значения из списка.
 		/// Служебные значения enum-а SpecialComboState будут преобразовываться в null.
