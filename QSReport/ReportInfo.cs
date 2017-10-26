@@ -18,6 +18,10 @@ namespace QSReport
 		{
 			if (!String.IsNullOrWhiteSpace (Path))
 				return Path;
+
+			if(String.IsNullOrEmpty(Identifier))
+				return null;
+
 			var splited = Identifier.Split ('.').ToList ();
 			var ReportName = splited.Last ();
 			splited.RemoveAt (splited.Count - 1);

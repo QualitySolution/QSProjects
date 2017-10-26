@@ -21,10 +21,12 @@ namespace QSReport
 		public void PrepareReport()
 		{
 			RDLParser rdlp;
-			string source = System.IO.File.ReadAllText(ReportInfo.GetPath());
+			var reportPath = ReportInfo.GetPath();
+			string source = ReportInfo.Source ?? System.IO.File.ReadAllText(reportPath);
 
 			rdlp = new RDLParser(source);
-			rdlp.Folder = System.IO.Path.GetDirectoryName(ReportInfo.GetPath());
+			if(reportPath != null)
+				rdlp.Folder = System.IO.Path.GetDirectoryName(reportPath);
 			rdlp.OverwriteConnectionString = ReportInfo.ConnectionString;
 			rdlp.OverwriteInSubreport = true;
 
