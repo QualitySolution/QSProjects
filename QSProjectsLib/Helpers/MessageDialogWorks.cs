@@ -24,6 +24,21 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		public static bool RunQuestionWithTitleDialog(string title, string question)
+		{
+			MessageDialog md = new MessageDialog(null,
+								   DialogFlags.Modal,
+								   MessageType.Question,
+								   ButtonsType.YesNo,
+								   question);
+			md.SetPosition(WindowPosition.Center);
+			md.Title = title;
+			md.ShowAll();
+			bool result = md.Run() == (int)ResponseType.Yes;
+			md.Destroy();
+			return result;
+		}
+
 		public static void RunWarningDialog (string warning)
 		{
 			MessageDialog md = new MessageDialog (null,
