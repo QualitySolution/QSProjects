@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSScan</RootNamespace>
     <AssemblyName>QSScan</AssemblyName>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
