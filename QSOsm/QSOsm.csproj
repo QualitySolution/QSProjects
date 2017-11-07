@@ -78,6 +78,7 @@
     <Compile Include="Osrm\RouteResponse.cs" />
     <Compile Include="PointOnEarth.cs" />
     <Compile Include="Osrm\Route.cs" />
+    <Compile Include="Osrm\OsrmEnums.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
@@ -124,10 +125,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild">
-            <inheritsSet />
-            <inheritsScope />
-          </DotNetNamingPolicy>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
         </Policies>
       </Properties>
     </MonoDevelop>

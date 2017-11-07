@@ -15,7 +15,7 @@ namespace QSOsm.Osrm
 
 		#endregion
 
-		public static RouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = false, bool geometry = false)
+		public static RouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = false, GeometryOverview geometry = GeometryOverview.False)
 		{
 			if (routePOIs.Count < 2)
 				throw new ArgumentException ("Список точке для прокладки маршрута, должен содержать хотя бы 2 точки.", nameof (routePOIs));
@@ -34,8 +34,8 @@ namespace QSOsm.Osrm
 			if(alt) // По умолчанию выключено
 				request.AddQueryParameter ("alternatives", "true");
 
-			if(!geometry) // По умолчанию включено simplified
-				request.AddQueryParameter("overview", "false");
+			if(geometry != GeometryOverview.Simplified) // По умолчанию включено simplified
+				request.AddQueryParameter("overview", geometry.ToString().ToLower());
 
 			var response = client.Execute<RouteResponse> (request);
 			if(response.Data == null)
