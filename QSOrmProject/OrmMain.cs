@@ -119,6 +119,12 @@ namespace QSOrmProject
 			return map;
 		}
 
+		public static IOrmObjectMapping AddObjectDescription(IOrmObjectMapping map)
+		{
+			ClassMappingList.Add(map);
+			return map;
+		}
+
 		public static Type GetDialogType(System.Type objectClass)
 		{
 			if (ClassMappingList == null)
