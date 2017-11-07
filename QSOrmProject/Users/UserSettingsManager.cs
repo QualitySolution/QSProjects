@@ -33,8 +33,13 @@ namespace QSOrmProject.Users
 				ReloadSettings();
 
 				var map = OrmMain.GetObjectDescription<TUserSettings>();
-				map.ObjectUpdatedGeneric -= Map_ObjectUpdatedGeneric;
-				map.ObjectUpdatedGeneric += Map_ObjectUpdatedGeneric;
+				if (map != null)
+				{
+					map.ObjectUpdatedGeneric -= Map_ObjectUpdatedGeneric;
+					map.ObjectUpdatedGeneric += Map_ObjectUpdatedGeneric;
+				}
+				else
+					logger.Warn($"Класс {typeof(TUserSettings)} не добавлен в {nameof(OrmMain.AddObjectDescription)}, поэтому подписка на измененя настроек не возможна.");
 
 				return settings;
 			}
