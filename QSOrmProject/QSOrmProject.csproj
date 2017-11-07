@@ -145,6 +145,7 @@
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
     <Compile Include="Deletion\ReplaceEntity.cs" />
     <Compile Include="Domain\User.cs" />
+    <Compile Include="Users\UserSettingsManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -190,6 +191,7 @@
     <Folder Include="Helpers\" />
     <Folder Include="DebugHelper\" />
     <Folder Include="Domain\" />
+    <Folder Include="Users\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -198,10 +200,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild">
-            <inheritsSet />
-            <inheritsScope />
-          </DotNetNamingPolicy>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
         </Policies>
       </Properties>
     </MonoDevelop>
