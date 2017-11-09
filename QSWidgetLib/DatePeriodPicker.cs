@@ -22,6 +22,7 @@ namespace QSWidgetLib
 				if(value != startDate)
 				{
 					startDate = value;
+					OnStartDateChanged();
 					OnPeriodChanged ();
 				}
 			}
@@ -32,6 +33,7 @@ namespace QSWidgetLib
 			set { 
 				if (value != startDate) {
 					startDate = value != default(DateTime) ? (DateTime?)value : null;
+					OnStartDateChanged();
 					OnPeriodChanged ();
 				}
 			}
@@ -47,6 +49,7 @@ namespace QSWidgetLib
 				if(value != endDate)
 				{
 					endDate = value;
+					OnEndDateChanged();
 					OnPeriodChanged ();
 				}
 			}
@@ -57,6 +60,7 @@ namespace QSWidgetLib
 			set { 
 				if (value != endDate) {
 					endDate = value != default(DateTime) ? (DateTime?)value : null;
+					OnEndDateChanged();
 					OnPeriodChanged ();
 				}
 			}
@@ -69,12 +73,23 @@ namespace QSWidgetLib
 		#region Events
 
 		public event EventHandler PeriodChanged;
+		public event EventHandler StartDateChanged;
+		public event EventHandler EndDateChanged;
 
-		private void OnPeriodChanged ()
+		protected virtual void OnPeriodChanged ()
 		{
 			UpdateEntryText ();
-			if (PeriodChanged != null)
-				PeriodChanged (this, EventArgs.Empty);
+			PeriodChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnStartDateChanged ()
+		{
+			StartDateChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnEndDateChanged ()
+		{
+			EndDateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -139,6 +154,8 @@ namespace QSWidgetLib
 			if (response == (int)ResponseType.Ok) {
 				startDate = StartDateCalendar.GetDate ();
 				endDate = EndDateCalendar.GetDate ();
+				OnStartDateChanged();
+				OnEndDateChanged();
 				OnPeriodChanged ();
 			}
 

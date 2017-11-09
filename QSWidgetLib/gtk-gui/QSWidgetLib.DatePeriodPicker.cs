@@ -5,54 +5,52 @@ namespace QSWidgetLib
 	public partial class DatePeriodPicker
 	{
 		private global::Gtk.HBox hbox1;
-		
+
 		private global::Gtk.Entry entryDate;
-		
+
 		private global::Gtk.Button buttonPickDatePeriod;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget QSWidgetLib.DatePeriodPicker
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "QSWidgetLib.DatePeriodPicker";
 			// Container child QSWidgetLib.DatePeriodPicker.Gtk.Container+ContainerChild
-			this.hbox1 = new global::Gtk.HBox ();
+			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.entryDate = new global::Gtk.Entry ();
+			this.entryDate = new global::Gtk.Entry();
 			this.entryDate.CanFocus = true;
 			this.entryDate.Name = "entryDate";
 			this.entryDate.IsEditable = false;
 			this.entryDate.InvisibleChar = '●';
-			this.hbox1.Add (this.entryDate);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.entryDate]));
+			this.hbox1.Add(this.entryDate);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.entryDate]));
 			w1.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.buttonPickDatePeriod = new global::Gtk.Button ();
+			this.buttonPickDatePeriod = new global::Gtk.Button();
 			this.buttonPickDatePeriod.CanFocus = true;
 			this.buttonPickDatePeriod.Name = "buttonPickDatePeriod";
 			this.buttonPickDatePeriod.UseUnderline = true;
-			global::Gtk.Image w2 = new global::Gtk.Image ();
-			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("period.png");
+			global::Gtk.Image w2 = new global::Gtk.Image();
+			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("period.png");
 			this.buttonPickDatePeriod.Image = w2;
-			this.hbox1.Add (this.buttonPickDatePeriod);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonPickDatePeriod]));
+			this.hbox1.Add(this.buttonPickDatePeriod);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonPickDatePeriod]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
-			this.Add (this.hbox1);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.Add(this.hbox1);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
-			this.Hide ();
-			this.entryDate.Activated += new global::System.EventHandler (this.OnEntryDateActivated);
-			this.entryDate.Changed += new global::System.EventHandler (this.OnEntryDateChanged);
-			this.entryDate.TextInserted += new global::Gtk.TextInsertedHandler (this.OnEntryDateTextInserted);
-			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.OnEntryDateFocusOutEvent);
-			this.entryDate.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnEntryDateKeyPressEvent);
-			this.buttonPickDatePeriod.Clicked += new global::System.EventHandler (this.OnButtonPickDatePeriodClicked);
+			this.Hide();
+			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryDateFocusOutEvent);
+			this.entryDate.KeyPressEvent += new global::Gtk.KeyPressEventHandler(this.OnEntryDateKeyPressEvent);
+			this.buttonPickDatePeriod.Clicked += new global::System.EventHandler(this.OnButtonPickDatePeriodClicked);
 		}
 	}
 }
