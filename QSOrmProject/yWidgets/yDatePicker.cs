@@ -22,7 +22,7 @@ namespace Gamma.Widgets
 			});
 		}
 
-		public override void OnDateChanged ()
+		protected override void OnDateChanged ()
 		{
 			Binding.FireChange (new Expression<Func<yDatePicker, object>>[] {
 				(w => w.Date),
