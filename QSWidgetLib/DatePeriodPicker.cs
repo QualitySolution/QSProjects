@@ -73,6 +73,7 @@ namespace QSWidgetLib
 		#region Events
 
 		public event EventHandler PeriodChanged;
+		public event EventHandler PeriodChangedByUser;
 		public event EventHandler StartDateChanged;
 		public event EventHandler EndDateChanged;
 
@@ -80,6 +81,11 @@ namespace QSWidgetLib
 		{
 			UpdateEntryText ();
 			PeriodChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnPeriodChangedByUser()
+		{
+			PeriodChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
 		protected virtual void OnStartDateChanged ()
@@ -157,6 +163,7 @@ namespace QSWidgetLib
 				OnStartDateChanged();
 				OnEndDateChanged();
 				OnPeriodChanged ();
+				OnPeriodChangedByUser();
 			}
 
 			#region Destroy
@@ -244,6 +251,7 @@ namespace QSWidgetLib
 			{
 				endDate = null; // Что бы событие вызывалось 1 раз.
 				StartDateOrNull = null;
+				OnPeriodChangedByUser();
 			}
 		}
 	}
