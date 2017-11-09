@@ -178,21 +178,6 @@ namespace QSWidgetLib
 				periodSummary.Markup = String.Format ("<span foreground=\"red\">{0}</span>", text);
 		}
 
-		protected void OnEntryDateActivated (object sender, EventArgs e)
-		{
-			//throw new NotImplementedException ();
-		}
-
-		protected void OnEntryDateChanged (object sender, EventArgs e)
-		{
-			//throw new NotImplementedException ();
-		}
-
-		protected void OnEntryDateTextInserted (object o, TextInsertedArgs args)
-		{
-			//throw new NotImplementedException ();
-		}
-
 		protected void OnEntryDateFocusOutEvent (object o, FocusOutEventArgs args)
 		{
 			if (entryDate.Text == "") {
@@ -202,7 +187,6 @@ namespace QSWidgetLib
 			}
 
 			DateTime start, end;
-
 			var dateRegex = new Regex (@"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}");
 			var matches = dateRegex.Matches (entryDate.Text); 
 			if (matches.Count == 2 &&
@@ -225,15 +209,11 @@ namespace QSWidgetLib
 				return false;
 			}
 
-			//DateTime start, end;
-
 			var dateRegex = new Regex (@"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}");
 			var matches = dateRegex.Matches (entryDate.Text); 
 			if (matches.Count == 2 &&
 			    DateTime.TryParse (matches [0].Value, out start) && DateTime.TryParse (matches [1].Value, out end)) {
 
-				//	startDate = start;
-				//	EndDate = end;
 			} else {
 				UpdateEntryText ();
 			}
