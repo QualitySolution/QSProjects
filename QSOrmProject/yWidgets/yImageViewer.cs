@@ -1,7 +1,6 @@
-﻿using System;
-using QSWidgetLib;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Gamma.Binding.Core;
+using QSWidgetLib;
 
 namespace Gamma.Widgets
 {

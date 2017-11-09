@@ -1,8 +1,8 @@
 ﻿using System;
-using QSWidgetLib;
 using System.ComponentModel;
-using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using QSWidgetLib;
 
 namespace Gamma.Widgets
 {

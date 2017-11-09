@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Binding.Core;
 
 namespace QSOrmProject
 {
@@ -42,7 +42,7 @@ namespace QSOrmProject
 			}
 			set{
 				Active = value != null;
-				if(value != null)
+				if(value.HasValue)
 					spinbutton.Value = value.Value;
 			}
 		}

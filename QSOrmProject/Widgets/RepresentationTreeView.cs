@@ -1,7 +1,7 @@
 ﻿using System;
-using QSOrmProject.RepresentationModel;
-using Gamma.GtkWidgets;
 using System.Linq;
+using Gamma.GtkWidgets;
+using QSOrmProject.RepresentationModel;
 
 namespace QSOrmProject
 {
