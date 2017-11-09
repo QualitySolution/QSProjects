@@ -52,10 +52,9 @@ namespace QSWidgetLib
 			}
 		}
 
-		public virtual void OnDateChanged()
+		protected virtual void OnDateChanged()
 		{
-			if(DateChanged != null)
-				DateChanged(this, EventArgs.Empty);
+			DateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		public DateTime Date {
