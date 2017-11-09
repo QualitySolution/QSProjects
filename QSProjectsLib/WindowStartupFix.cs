@@ -75,7 +75,7 @@ namespace QSProjectsLib
 			return true;
 		}
 
-		static bool DisplayWindowsOkCancelMessage(string message, string caption)
+		public static bool DisplayWindowsOkCancelMessage(string message, string caption)
 		{
 			var name = typeof(int).Assembly.FullName.Replace("mscorlib", "System.Windows.Forms");
 			var asm = Assembly.Load(name);
