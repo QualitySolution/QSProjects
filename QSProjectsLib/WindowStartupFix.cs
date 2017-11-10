@@ -89,6 +89,20 @@ namespace QSProjectsLib
 			return md.InvokeMember("Show", flags, null, null, new object[] { message, caption, okCancel }).Equals(ok);
 		}
 
+		public static bool DisplayWindowsOkMessage(string message, string caption)
+		{
+			var name = typeof(int).Assembly.FullName.Replace("mscorlib", "System.Windows.Forms");
+			var asm = Assembly.Load(name);
+			var md = asm.GetType("System.Windows.Forms.MessageBox");
+			var mbb = asm.GetType("System.Windows.Forms.MessageBoxButtons");
+			var buttonOk = Enum.ToObject(mbb, 0);
+			var dr = asm.GetType("System.Windows.Forms.DialogResult");
+			var ok = Enum.ToObject(dr, 1);
+
+			const BindingFlags flags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
+			return md.InvokeMember("Show", flags, null, null, new object[] { message, caption, buttonOk }).Equals(ok);
+		}
+
 		[System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
 		[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
 		static extern bool SetDllDirectory(string lpPathName);
