@@ -52,14 +52,18 @@ namespace QSUpdater.DB
 
 		public static void CheckMicroUpdates()
 		{
-			Version currentDB, beforeUpdates;
+			Version currentDB = new Version();
 			if(MainSupport.BaseParameters.All.ContainsKey("micro_updates"))
-				currentDB = beforeUpdates = Version.Parse(MainSupport.BaseParameters.All["micro_updates"]);
-			else 
-				currentDB = beforeUpdates = Version.Parse(MainSupport.BaseParameters.Version);
+				currentDB = Version.Parse(MainSupport.BaseParameters.All["micro_updates"]);
+
+			var dbMainVersion = Version.Parse(MainSupport.BaseParameters.Version);
+
+			if (currentDB < dbMainVersion)
+				currentDB = dbMainVersion;
 
 			logger.Info("Проверяем микро обновления базы(текущая версия:{0})", StringWorks.VersionToShortString(currentDB));
-		
+			var beforeUpdates = currentDB;
+
 			while(microUpdates.Exists(u => u.Source == currentDB))
 			{
                 if (!QSMain.User.Admin)
