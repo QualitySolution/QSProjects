@@ -181,6 +181,9 @@ namespace QSProjectsLib
 
 		public static bool SetActiveItem(ComboBox combo, int id)
 		{
+			if (combo.Model == null)
+				return false;
+			
 			TreeIter iter;
 			bool result = ListStoreWorks.SearchListStore((ListStore)combo.Model, id, out iter);
 			if (result)
@@ -190,6 +193,9 @@ namespace QSProjectsLib
 
 		public static bool SetActiveItem(ComboBox combo, string name)
 		{
+			if (combo.Model == null)
+				return false;
+			
 			TreeIter iter;
 			bool result = ListStoreWorks.SearchListStore((ListStore)combo.Model, name, out iter);
 			if (result)
