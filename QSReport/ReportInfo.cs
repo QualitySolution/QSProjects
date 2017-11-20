@@ -14,6 +14,12 @@ namespace QSReport
 
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
+		/// <summary>
+		/// Если заначение true тип DateTime будет передаваться в отчет вместе со временем.
+		/// Если значение false то время будет обрезаться, в строковом представлении при передачи в отчет.
+		/// </summary>
+		public bool ParameterDatesWithTime { get; set; } = true;
+
 		public string GetPath ()
 		{
 			if (!String.IsNullOrWhiteSpace (Path))
@@ -77,7 +83,12 @@ namespace QSReport
 			if (value == null)
 				return String.Empty;
 			if (value is DateTime)
-				return ((DateTime)value).ToString ("O");
+			{
+				if(ParameterDatesWithTime)
+					return ((DateTime)value).ToString ("O");
+				else
+					return ((DateTime)value).ToString("O").Substring(0,10);
+			}
 			return value.ToString ();
 		}
 
