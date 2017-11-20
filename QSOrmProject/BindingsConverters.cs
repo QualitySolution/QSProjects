@@ -21,6 +21,26 @@ namespace QSOrmProject
 		}
 	}
 
+	public class IntToStringConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return value?.ToString();
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if(value == null || value == "")
+				return null;
+
+			int number = 0;
+			if(targetType == typeof(int?) && Int32.TryParse(value.ToString(), out number))
+				return number;
+			
+			return null;
+		}
+	}
+
 	public class MultiplierToPercentConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
