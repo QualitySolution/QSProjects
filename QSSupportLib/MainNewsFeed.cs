@@ -12,49 +12,6 @@ namespace QSSupportLib
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public static List<NewsFeed> NewsFeeds;
-		public static bool NewsReadExist { get; private set;}
-
-		[Obsolete("В новых версиях программы, таблица создается через обновления.")]
-		public static void CheckNewsReads()
-		{
-			logger.Info ("Проверяем существование таблицы 'read_news'...");
-			NewsReadExist = false;
-			string sql = "SHOW TABLES LIKE 'read_news'";
-			DbCommand cmd = QSMain.ConnectionDB.CreateCommand();
-			cmd.CommandText = sql;
-			try
-			{
-				if(cmd.ExecuteScalar () == null)
-				{// Таблица не создана создаем.
-					logger.Info ("Таблицы с новостями нет в БД, создаем...");
-					cmd.CommandText = "CREATE TABLE `read_news` ( " +
-						"`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
-						"`user_id` INT UNSIGNED NULL," +
-						"`feed_id` VARCHAR(64) NOT NULL," +
-						"`items` TEXT NULL DEFAULT NULL," +
-						"PRIMARY KEY (`id`)," +
-						"INDEX `fk_read_news_user_id_idx` (`user_id` ASC)," +
-						"CONSTRAINT `fk_read_news_user_id`" +
-						"  FOREIGN KEY (`user_id`)" +
-						"  REFERENCES `users` (`id`)" +
-						"  ON DELETE CASCADE" +
-						"  ON UPDATE CASCADE)";
-					cmd.ExecuteNonQuery ();
-				}
-				NewsReadExist = true;
-			}
-			catch(MySql.Data.MySqlClient.MySqlException ex)
-			{
-				if(ex.Number == 1142)
-					logger.Warn (ex, "Таблица не создана, зайдите под администратором!");
-				else
-					logger.Warn (ex, "Ошибка в момент создания таблицы с новостями");
-			}
-			catch (Exception ex)
-			{
-				logger.Warn (ex, "Ошибка в момент создания таблицы с новостями");
-			}
-		}
 
 		public static void LoadReadFeed()
 		{
@@ -101,9 +58,6 @@ namespace QSSupportLib
 
 		public static void SaveFirstRead()
 		{
-			if (!NewsReadExist)
-				return;
-
 			NewsFeeds.FindAll (f => f.FirstRead).ForEach(delegate(NewsFeed feed) {
 				QSMain.CheckConnectionAlive();
 				logger.Info ("Сохраняем новый feed({0})...", feed.Title);
@@ -134,9 +88,6 @@ namespace QSSupportLib
 
 		public static void UpdateFeedReads(NewsFeed feed)
 		{
-			if (!NewsReadExist)
-				return;
-
 			if (feed.FirstRead)
 				throw new InvalidOperationException ("Нельзя обновить новый фид с FirstRead = true");
 			QSMain.CheckConnectionAlive();
