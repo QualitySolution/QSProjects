@@ -11,6 +11,7 @@ namespace QSWidgetLib
 
 		Label periodSummary;
 		Calendar StartDateCalendar, EndDateCalendar;
+		bool skipPeriodChangedEvent;
 
 		private DateTime? startDate;
 
@@ -79,6 +80,8 @@ namespace QSWidgetLib
 
 		protected virtual void OnPeriodChanged ()
 		{
+			if (skipPeriodChangedEvent)
+				return;
 			UpdateEntryText ();
 			PeriodChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -225,6 +228,24 @@ namespace QSWidgetLib
 
 		#endregion
 
+		#region public Methods
+
+		/// <summary>
+		/// Используется для одновременной установки начала и конца периода, с вызовом всего одного события PeriodChanged
+		/// </summary>
+		/// <param name="start">Начало периода</param>
+		/// <param name="end">Конец периода</param>
+		public void SetPeriod(DateTime? start, DateTime? end)
+		{
+			skipPeriodChangedEvent = true;
+			StartDateOrNull = start;
+			EndDateOrNull = end;
+			skipPeriodChangedEvent = false;
+			OnPeriodChanged();
+		}
+
+  		#endregion
+
 		bool ParseDates (ref DateTime start, ref DateTime end)
 		{
 			if (entryDate.Text == "") {
@@ -249,8 +270,7 @@ namespace QSWidgetLib
 		{
 			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
 			{
-				endDate = null; // Что бы событие вызывалось 1 раз.
-				StartDateOrNull = null;
+				SetPeriod(null, null);
 				OnPeriodChangedByUser();
 			}
 		}
