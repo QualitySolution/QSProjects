@@ -4,13 +4,14 @@ using Gamma.Widgets;
 using MySql.Data.MySqlClient;
 using QSOrmProject;
 using QSProjectsLib;
+using QSTDI;
 using QSWidgetLib;
 
 namespace QSHistoryLog
 {
 	[System.ComponentModel.DisplayName("Просмотр журнала изменений")]
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-	public partial class HistoryView : Gtk.Bin
+	public partial class HistoryView : TdiTabBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		List<HistoryChangeSet> ChangeSets;
