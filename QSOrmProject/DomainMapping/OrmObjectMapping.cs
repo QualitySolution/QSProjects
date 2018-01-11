@@ -93,42 +93,63 @@ namespace QSOrmProject.DomainMapping
 			return new OrmObjectMapping<TEntity> ();
 		}
 
+		/// <summary>
+		/// Указываем диалог по умолчанию, для открытия сущьности
+		/// </summary>
 		public OrmObjectMapping<TEntity> Dialog<TDialog>()
 		{
 			this.dialogClass = typeof(TDialog);
 			return this;
 		}
 
+		/// <summary>
+		/// Указываем диалог по умолчанию, для открытия сущьности
+		/// </summary>
 		public OrmObjectMapping<TEntity> Dialog(Type dialogClass)
 		{
 			this.dialogClass = dialogClass;
 			return this;
 		}
 
+		/// <summary>
+		/// Указываем указываем журнал по умолчанию, для выбора сущьностей.
+		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter<TFilter>()
 		{
 			this.refFilterClass = typeof(TFilter);
 			return this;
 		}
 
+		/// <summary>
+		/// Указываем указываем журнал по умолчанию, для выбора сущьностей.
+		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
 		{
 			this.refFilterClass = filterClass;
 			return this;
 		}
 
+		/// <summary>
+		/// Устанавливаем необходимые права для редактирования сущьности.
+		/// </summary>
 		public OrmObjectMapping<TEntity> EditPermision(string permisionName)
 		{
 			this.EditPermisionName = permisionName;
 			return this;
 		}
 
+		/// <summary>
+		/// Добавляем в контекстное меню, которое будет отображаться в журнале сущьностей.
+		/// </summary>
 		public OrmObjectMapping<TEntity> PopupMenu(Func<TEntity[], Gtk.Menu> getMenuFunc)
 		{
 			this.GetPopupMenuFunc = getMenuFunc;
 			return this;
 		}
 
+		/// <summary>
+		/// Устанавливаем будет ли использоваться слайдер для журналов сущьности.
+		/// </summary>
 		public OrmObjectMapping<TEntity> UseSlider(bool? useSlider)
 		{
 			this.defaultUseSlider = useSlider;
