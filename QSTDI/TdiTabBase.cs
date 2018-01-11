@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Gtk;
 
 namespace QSTDI
@@ -20,8 +21,20 @@ namespace QSTDI
 
 		private string tabName = String.Empty;
 
+		/// <summary>
+		/// Имя вкладки может быть автоматически получено из атрибута DisplayNameAttribute у класса диалога.
+		/// </summary>
 		public virtual string TabName {
-			get { return tabName;
+			get { 
+				if(String.IsNullOrWhiteSpace(tabName))
+				{
+					var atts = (DisplayNameAttribute[])this.GetType().GetCustomAttributes(typeof(DisplayNameAttribute), true);
+					if(atts.Length > 0)
+					{
+						return atts[0].DisplayName;
+					}
+				}
+				return tabName;
 			}
 			protected set {
 				if (tabName == value)
