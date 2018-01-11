@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSOrmProject
+namespace QSOrmProject.DomainModel
 {
 	public class UnitOfWorkWithoutRoot : UnitOfWorkBase, IUnitOfWork
 	{

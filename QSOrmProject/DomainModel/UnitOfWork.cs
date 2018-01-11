@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSOrmProject
+namespace QSOrmProject.DomainModel
 {
 	public class UnitOfWork<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity> 
 		where TRootEntity : IDomainObject, new()

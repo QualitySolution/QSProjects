@@ -5,7 +5,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 
-namespace QSOrmProject
+namespace QSOrmProject.DomainModel
 {
 	public class ChildUnitOfWork<TParentEntity, TChildEntity> : IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> 
 		where TChildEntity : class, IDomainObject, new()

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
+using QSOrmProject.DomainModel;
 
 namespace QSOrmProject
 {
