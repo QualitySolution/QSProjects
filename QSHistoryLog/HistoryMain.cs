@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Bindings;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QSOrmProject;
 using QSOrmProject.Deletion;
 using QSProjectsLib;
 
@@ -50,6 +50,17 @@ namespace QSHistoryLog
 			var desc = new HistoryObjectDesc (type);
 			ObjectsDesc.Add (desc);
 			return desc;
+		}
+
+		/// <summary>
+		/// Читаем классы для отслеживания из OrmMain
+		/// </summary>
+		public static void ConfigureFromOrmMain()
+		{
+			foreach(var clazz in OrmMain.ClassMappingList.Where(x => x.IsTrace))
+			{
+				AddClass(clazz.ObjectClass);
+			}
 		}
 
 		/// <summary>
