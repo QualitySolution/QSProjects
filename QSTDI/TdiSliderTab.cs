@@ -120,17 +120,19 @@ namespace QSTDI
 						boxSeparator.PackStart(separatorUpper, true, true, 0);
 						boxSeparator.PackStart(buttonHide, false, false, 0);
 						boxSeparator.PackEnd(separatorLower, true, true, 0);
-						buttonHide.Show();
 
 						dialogVBox = new VBox ();
 						dialogVBox.PackStart ((Widget)value); 
 						this.PackEnd (dialogVBox);
 						this.PackEnd (boxSeparator, false, true, 6);
-						boxSeparator.Show();
-						dialogVBox.Show ();
-						(value as Widget).Show ();
 						value.TabParent = this;
 						value.TabNameChanged += ActiveDialog_TabNameChanged;
+
+						buttonHide.Show();
+						boxSeparator.Show();
+						dialogVBox.Show();
+						(value as Widget).Show();
+
 						(TabParent as TdiNotebook).OnSliderTabAdded(this, value);
 					}
 					//Show journal if dialog is closed
