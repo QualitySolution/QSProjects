@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gtk;
-using Nini.Config;
 using QSMachineConfig;
 
 namespace QSProjectsLib
@@ -68,6 +66,9 @@ namespace QSProjectsLib
 			treeConnections.Model.GetIterFirst (out currentIter);
 			treeConnections.Selection.SelectIter (currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
+
+			buttonHelp.Visible = !String.IsNullOrEmpty(Login.CreateDBHelpUrl);
+			buttonHelp.TooltipText = Login.CreateDBHelpTooltip;
 		}
 
 		void HandleChanged (object sender, EventArgs e)
@@ -290,6 +291,11 @@ namespace QSProjectsLib
 		protected void OnButtonCreateBaseClicked(object sender, EventArgs e)
 		{
 			DBCreator.RunCreation (entryServer.Text, entryBase.Text);
+		}
+
+		protected void OnButtonHelpClicked(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start(Login.CreateDBHelpUrl);
 		}
 	}
 }

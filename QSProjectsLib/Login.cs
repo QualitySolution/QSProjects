@@ -12,6 +12,12 @@ namespace QSProjectsLib
 {
 	public partial class Login : Dialog
 	{
+		#region LoginSettings
+		public static string ApplicationDemoServer;
+		public static string CreateDBHelpTooltip;
+		public static string CreateDBHelpUrl;
+  		#endregion
+
 		public List<Connection> Connections;
 		String connectionError;
 		public string SelectedConnection;
@@ -20,7 +26,6 @@ namespace QSProjectsLib
 		public string DefaultServer;
 		public static string DefaultBase;
 		public string DefaultConnection;
-		public static string ApplicationDemoServer;
 		public string DemoMessage;
 		private string server;
 
