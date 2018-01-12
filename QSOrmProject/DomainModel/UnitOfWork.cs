@@ -27,7 +27,7 @@ namespace QSOrmProject.DomainModel
 		{
 			get
 			{
-				return IsNew || Session.IsDirty();
+				return IsNew || (Tracker != null ? Tracker.Compare(Root) : Session.IsDirty()) ;
 			}
 		}
 

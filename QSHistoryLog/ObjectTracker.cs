@@ -87,8 +87,10 @@ namespace QSHistoryLog
 		}
 
 		/// <summary>
-		/// Возвращает true если объекты различаются.
+		/// Сравнивает первое состояние объекта с последним. Детальный результат сравнения можно
+		/// получить из поля compare.
 		/// </summary>
+		/// <returns>Возвращает true если объекты различаются.</returns>
 		public bool Compare()
 		{
 			if (firstObject == null)
@@ -102,6 +104,18 @@ namespace QSHistoryLog
 			logger.Debug (compare.DifferencesString);
 
 			return !compare.AreEqual;
+		}
+
+		/// <summary>
+		/// Сравнивает первое состояние объекта с последним. Детальный результат сравнения можно
+		/// получить из поля compare.
+		/// </summary>
+		/// <returns>Возвращает true если объекты различаются.</returns>
+		/// <param name="lastSubject">Одновременно передаем последнее состояние объекта.</param>
+		public bool Compare(TEntity lastSubject)
+		{
+			TakeLast(lastSubject);
+			return Compare();
 		}
 
 		public void SaveChangeSet(MySqlTransaction trans)
