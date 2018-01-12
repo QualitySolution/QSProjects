@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle ("OsmBaseScripts")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
+[assembly: AssemblyCompany ("Quality Solution")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Anri")]
+[assembly: AssemblyCopyright ("Quality Solution 2018")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
