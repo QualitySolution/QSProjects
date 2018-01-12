@@ -1,9 +1,9 @@
-﻿using System;
+﻿using QSOrmProject.DomainModel.Tracking;
 
 namespace QSOrmProject.DomainModel
 {
 	public class UnitOfWork<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity> 
-		where TRootEntity : IDomainObject, new()
+		where TRootEntity : class, IDomainObject, new()
 	{
 		public object RootObject {
 			get { return Root;}
@@ -21,6 +21,8 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
+		public IObjectTracker<TRootEntity> Tracker { get; private set; }
+
 		public bool HasChanges
 		{
 			get
@@ -33,18 +35,21 @@ namespace QSOrmProject.DomainModel
 		{
 			IsNew = true;
 			Root = new TRootEntity();
+			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
 		}
 
 		public UnitOfWork(TRootEntity root)
 		{
 			IsNew = true;
 			Root = root;
+			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
 		}
 
 		public UnitOfWork(int id)
 		{
 			IsNew = false;
 			Root = GetById<TRootEntity>(id);
+			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
 		}
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)

@@ -9,7 +9,6 @@
     <AssemblyName>QSOrmProject</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -148,6 +147,9 @@
     <Compile Include="Domain\User.cs" />
     <Compile Include="Users\UserSettingsManager.cs" />
     <Compile Include="yWidgets\yDatePeriodPicker.cs" />
+    <Compile Include="DomainModel\Tracking\IObjectTracker.cs" />
+    <Compile Include="DomainModel\Tracking\TrackerMain.cs" />
+    <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -194,6 +196,7 @@
     <Folder Include="DebugHelper\" />
     <Folder Include="Domain\" />
     <Folder Include="Users\" />
+    <Folder Include="DomainModel\Tracking\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

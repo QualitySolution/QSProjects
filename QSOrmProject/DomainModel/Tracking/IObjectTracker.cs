@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace QSOrmProject.DomainModel
+namespace QSOrmProject.DomainModel.Tracking
 {
-	public interface IObjectTracker
+	public interface IObjectTracker<TEntity>
 	{
 	}
 }

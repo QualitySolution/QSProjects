@@ -19,7 +19,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id) where TEntity : IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id) where TEntity : class, IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>(id);
 			return uow;
@@ -30,7 +30,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>() where TEntity : IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>() where TEntity : class, IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>();
 			return uow;
@@ -41,7 +41,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity) where TEntity : IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity) where TEntity : class, IDomainObject, new()
 		{
 			var uow = new UnitOfWork<TEntity>(entity);
 			return uow;

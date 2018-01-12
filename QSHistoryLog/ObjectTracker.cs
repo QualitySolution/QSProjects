@@ -1,13 +1,16 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
-using QSProjectsLib;
-using KellermanSoftware.CompareNetObjects;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using KellermanSoftware.CompareNetObjects;
+using MySql.Data.MySqlClient;
+using QSOrmProject;
+using QSOrmProject.DomainModel.Tracking;
+using QSProjectsLib;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<T> where T : class, new()
+	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>
+		where TEntity : class, IDomainObject, new()
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -33,15 +36,18 @@ namespace QSHistoryLog
 
 		public ObjectTracker ()
 		{
-			TakeEmpty (Activator.CreateInstance<T> () );
+			TakeEmpty (Activator.CreateInstance<TEntity> () );
 		}
 
-		public ObjectTracker (T subject)
+		public ObjectTracker (TEntity subject, bool isNew = true)
 		{
-			TakeEmpty (subject);
+			if(isNew)
+				TakeEmpty(subject);
+			else
+				TakeFirst(subject);
 		}
 
-		public void TakeFirst(T subject)
+		public void TakeFirst(TEntity subject)
 		{
 			lastObject = null;
 			compare = null;
@@ -49,7 +55,7 @@ namespace QSHistoryLog
 			firstObject = ObjectCloner.Clone (subject);
 		}
 
-		public void TakeEmpty(T subject)
+		public void TakeEmpty(TEntity subject)
 		{
 			lastObject = null;
 			compare = null;
@@ -57,25 +63,25 @@ namespace QSHistoryLog
 			firstObject = ObjectCloner.Clone (subject);
 		}
 
-		public void TakeLast(T subject)
+		public void TakeLast(TEntity subject)
 		{
 			compare = null;
 			lastObject = ObjectCloner.Clone (subject);
 			ReadObjectDiscription (subject);
 		}
 
-		private void ReadObjectDiscription(T subject)
+		private void ReadObjectDiscription(TEntity subject)
 		{
 			objectName = subject.GetType ().Name;
-			var prop = typeof(T).GetProperty ("Id");
+			var prop = typeof(TEntity).GetProperty ("Id");
 			if (prop != null)
 				ObjectId = (int)prop.GetValue (subject, null);
 
-			prop = typeof(T).GetProperty ("Title");
+			prop = typeof(TEntity).GetProperty ("Title");
 			if (prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
 
-			prop = typeof(T).GetProperty ("Name");
+			prop = typeof(TEntity).GetProperty ("Name");
 			if (String.IsNullOrEmpty (objectTitle) && prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
 		}

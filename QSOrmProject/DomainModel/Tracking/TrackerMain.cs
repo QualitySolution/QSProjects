@@ -1,10 +1,8 @@
 ﻿using System;
 namespace QSOrmProject.DomainModel.Tracking
 {
-	public class TrackerMain
+	public static class TrackerMain
 	{
-		public TrackerMain()
-		{
-		}
+		public static ITrackerFactory Factory;
 	}
 }

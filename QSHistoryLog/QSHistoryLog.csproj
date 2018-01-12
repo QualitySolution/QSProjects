@@ -82,6 +82,7 @@
     <Compile Include="Comparers\DomainObjectComparer.cs" />
     <Compile Include="HistoryAttributes.cs" />
     <Compile Include="ObjectCloner.cs" />
+    <Compile Include="TrackerFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

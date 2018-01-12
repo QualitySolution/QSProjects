@@ -8,6 +8,7 @@ using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
 using QSOrmProject;
 using QSOrmProject.Deletion;
+using QSOrmProject.DomainModel.Tracking;
 using QSProjectsLib;
 
 namespace QSHistoryLog
@@ -17,6 +18,11 @@ namespace QSHistoryLog
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
 		const string FieldNameSeparator = ".";
+
+		static HistoryMain()
+		{
+			TrackerMain.Factory = new TrackerFactory();
+		}
 
 		static CompareLogic qsCompareLogic;
 
