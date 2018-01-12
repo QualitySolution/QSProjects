@@ -7,7 +7,7 @@ using NHibernate.Linq;
 
 namespace QSOrmProject.DomainModel
 {
-	public class UnitOfWorkBase
+	public abstract class UnitOfWorkBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
