@@ -12,14 +12,7 @@ namespace QSProjectsLib
 
 		private bool loadedInConstructor = false;
 
-
-		[Obsolete ("Поле устарело и будет удалено 18.08.16. Используйте вместо него поле Id. ")]
-		public int id { get { return Id; } }
-
 		public int Id;
-
-		[Obsolete ("Поле устарело и будет удалено 18.08.16. Используйте вместо него поле Admin. ")]
-		public bool admin { get { return Admin; } }
 
 		public bool Admin;
 
