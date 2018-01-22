@@ -66,6 +66,9 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +86,8 @@
     <Compile Include="HistoryAttributes.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="TrackerFactory.cs" />
+    <Compile Include="HibernateMapping\HistoryChangeSetMap.cs" />
+    <Compile Include="HibernateMapping\FieldChangeMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -127,5 +132,6 @@
   <ItemGroup>
     <Folder Include="Domain\" />
     <Folder Include="Comparers\" />
+    <Folder Include="HibernateMapping\" />
   </ItemGroup>
 </Project>

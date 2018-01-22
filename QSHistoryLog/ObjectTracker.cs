@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QSHistoryLog.Domain;
 using QSOrmProject;
 using QSOrmProject.DomainModel.Tracking;
 using QSProjectsLib;
@@ -185,6 +186,55 @@ namespace QSHistoryLog
 				cmd.ExecuteNonQuery ();
 			}
 			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
+		}
+
+		public void SaveChangeSet(IUnitOfWork uow)
+		{
+			if(!HasChanges) {
+				logger.Warn("Нет изменнений. Нечего записывать.");
+				return;
+			}
+			if(ObjectId <= 0)
+				throw new InvalidOperationException("Перед записью changeset-а для нового объекта после записи его в БД необходимо вручную прописать его Id в поле ObjectId.");
+
+			logger.Debug("Записываем ChangeSet в БД.");
+			var changeSet = new HistoryChangeSet(operation, typeof(TEntity), ObjectId, objectTitle);
+			//FIXME Для совместимости с методом работы с чистым MySQL. Убрать если откажемся.
+			changeSet.Changes = new List<FieldChange>();
+
+			logger.Debug("Записываем изменения полей в ChangeSet-е.");
+
+			foreach(var onechange in compare.Differences) {
+				if(!FixDisplay(onechange))
+					continue;
+				string modifedPropName = Regex.Replace(onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format("{0}[{1}]", m.Groups[1].Value, m.Groups[2].Value));
+				if(onechange.ParentObject2 != null && onechange.ParentObject2.Target != null) {
+					var id = HistoryMain.GetObjectId(onechange.ParentObject2.Target);
+					if(id.HasValue)
+						modifedPropName = Regex.Replace(modifedPropName, String.Format(@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte(onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
+				}
+				var changeField = new FieldChange() ;
+				changeField.Path = objectName + modifedPropName;
+
+				if(onechange.Object1 == null || onechange.Object1.Target == null)
+					changeField.Type = FieldChangeType.Added;
+				else if(onechange.Object2 == null || onechange.Object2.Target == null)
+					changeField.Type = FieldChangeType.Removed;
+				else
+					changeField.Type = FieldChangeType.Changed;
+
+				changeField.OldValue = onechange.Object1Value;
+				changeField.NewValue = onechange.Object2Value;
+				if(onechange.ChildPropertyName == "Id") {
+					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object1.Target);
+					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object2.Target);
+				}
+
+				changeSet.AddFieldChange(changeField);
+			}
+			uow.Save(changeSet);
+
+			logger.Debug("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
 		}
 			
 		/// <returns><c>false</c> если нужно не сохранять элемент.</returns>

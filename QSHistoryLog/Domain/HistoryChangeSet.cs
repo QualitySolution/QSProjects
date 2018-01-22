@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using MySql.Data.MySqlClient;
+using QSOrmProject;
+using QSOrmProject.Domain;
 using QSProjectsLib;
 
-namespace QSHistoryLog
+namespace QSHistoryLog.Domain
 {
-	public class HistoryChangeSet
+	public class HistoryChangeSet : IDomainObject
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -49,12 +52,12 @@ namespace QSHistoryLog
 			}
 		}
 
-		public string ChangeTimeText
+		public virtual string ChangeTimeText
 		{
 			get { return ChangeTime.ToString ("G");}
 		}
 
-		public string OperationText
+		public virtual string OperationText
 		{
 			get { return Operation.GetEnumTitle ();}
 		}
@@ -62,6 +65,16 @@ namespace QSHistoryLog
 
 		public HistoryChangeSet ()
 		{
+		}
+
+		public HistoryChangeSet(ChangeSetType operation, Type itemType, int itemId, string title)
+		{
+			Operation = operation;
+			ChangeTime = DateTime.Now;
+			UserId = QSMain.User.Id;
+			ObjectName = itemType.Name;
+			ItemId = itemId;
+			ItemTitle = title;
 		}
 
 		void LoadChanges()
@@ -91,6 +104,29 @@ namespace QSHistoryLog
 				}
 			}
 			logger.Debug(RusNumber.FormatCase (Changes.Count, "Загружен набор из {0} изменения.", "Загружен набор из {0} изменений.", "Загружен набор из {0} изменений."));
+		}
+
+		public virtual void AddFieldChange(FieldChange change)
+		{
+			change.ChangeSet = this;
+			Changes.Add(change);
+		}
+	}
+
+	public enum ChangeSetType
+	{
+		[Display(Name = "Создание")]
+		Create,
+		[Display(Name = "Изменение")]
+		Change,
+		[Display(Name = "Удаление")]
+		Delete
+	}
+
+	public class ChangeSetTypeStringType : NHibernate.Type.EnumStringType
+	{
+		public ChangeSetTypeStringType() : base(typeof(ChangeSetType))
+		{
 		}
 	}
 }

@@ -66,6 +66,21 @@ namespace QSOrmProject.DomainModel
 		{
 			Save(Root);
 		}
-	}
+
+        public override void Commit()
+        {
+			if(Tracker != null)
+			{
+				Tracker.Compare(Root);
+				Tracker.SaveChangeSet(this);
+			}
+
+			base.Commit();
+
+			if(Tracker != null) {
+				Tracker.TakeFirst(Root);
+			}
+        }
+    }
 }
 

@@ -35,7 +35,7 @@ namespace QSOrmProject.DomainModel
 		{
 		}
 
-		public void Commit()
+		public virtual void Commit()
 		{
 			if (transaction == null)
 			{

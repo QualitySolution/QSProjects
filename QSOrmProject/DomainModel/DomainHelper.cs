@@ -38,6 +38,11 @@ namespace QSOrmProject
 			return (int)prop.GetValue (value, null);
 		}
 
+		public static int? GetIdOrNull(object value)
+		{
+			return value != null ? (int?)GetId(value) : null;
+		}
+
 		public static bool EqualDomainObjects (object obj1, object obj2)
 		{
 			if (obj1 == null || obj2 == null)

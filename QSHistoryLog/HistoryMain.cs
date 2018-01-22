@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QSHistoryLog.Domain;
 using QSOrmProject;
 using QSOrmProject.Deletion;
 using QSOrmProject.DomainModel.Tracking;
@@ -226,28 +227,6 @@ namespace QSHistoryLog
 			}
 			logger.Debug ("Зафиксировано в журнал удаление {0} объектов.", count);
 		}
-	}
-
-	public enum ChangeSetType
-	{
-		[Display(Name = "Создание")]
-		Create,
-		[Display(Name = "Изменение")]
-		Change,
-		[Display(Name = "Удаление")]
-		Delete
-	}
-
-	public enum FieldChangeType
-	{
-		[Display(Name = "Добавлено")]
-		Added,
-		[Display(Name = "Изменено")]
-		Changed,
-		[Display(Name = "Удалено")]
-		Removed,
-		[Display(Name = "Без изменений")]
-		Unchanged
 	}
 
 	public interface IFileTrace
