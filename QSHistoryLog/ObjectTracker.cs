@@ -314,6 +314,12 @@ namespace QSHistoryLog
 			if(diff.Object2TypeName == "Boolean")
 				diff.Object2Value = (bool)diff.Object2.Target ? "Да" : "Нет";
 
+			//Обрабатывам null значения
+			if(diff.Object1TypeName == "null")
+				diff.Object1Value = String.Empty;
+			if(diff.Object2TypeName == "null")
+				diff.Object2Value = String.Empty;
+
 			return true;
 		}
 	}
