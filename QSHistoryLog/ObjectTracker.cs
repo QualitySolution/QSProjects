@@ -242,13 +242,14 @@ namespace QSHistoryLog
 		private bool FixDisplay(Difference diff)
 		{
 			//DateTime
-			if (diff.Object1 != null && diff.Object1.Target is DateTime) {
-				if ((DateTime)diff.Object1.Target == default(DateTime)) {
+			if(diff.Object1TypeName == "DateTime") {
+				if((DateTime)diff.Object1.Target == default(DateTime)) {
 					diff.Object1.Target = null;
 					diff.Object1Value = String.Empty;
-				} else if (((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
-					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString ();
-
+				} else if(((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
+					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString();
+			}
+			if(diff.Object2TypeName == "DateTime"){
 				if ((DateTime)diff.Object2.Target == default(DateTime)) {
 					diff.Object2.Target = null;
 					diff.Object2Value = String.Empty;
