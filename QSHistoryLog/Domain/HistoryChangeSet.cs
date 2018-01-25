@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using MySql.Data.MySqlClient;
 using QSOrmProject;
-using QSOrmProject.Domain;
 using QSProjectsLib;
 
 namespace QSHistoryLog.Domain
