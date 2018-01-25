@@ -59,7 +59,7 @@ namespace QSHistoryLog
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table(((uint)(5)), ((uint)(3)), false);
+			this.table1 = new global::Gtk.Table(((uint)(4)), ((uint)(4)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
@@ -145,10 +145,10 @@ namespace QSHistoryLog
 			w7.Fill = false;
 			this.table1.Add(this.hbox4);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1[this.hbox4]));
-			w8.TopAttach = ((uint)(4));
-			w8.BottomAttach = ((uint)(5));
-			w8.LeftAttach = ((uint)(1));
-			w8.RightAttach = ((uint)(2));
+			w8.TopAttach = ((uint)(3));
+			w8.BottomAttach = ((uint)(4));
+			w8.LeftAttach = ((uint)(3));
+			w8.RightAttach = ((uint)(4));
 			w8.XOptions = ((global::Gtk.AttachOptions)(4));
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
@@ -180,8 +180,10 @@ namespace QSHistoryLog
 			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString("Поиск по изменениям:");
 			this.table1.Add(this.label5);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1[this.label5]));
-			w11.TopAttach = ((uint)(4));
-			w11.BottomAttach = ((uint)(5));
+			w11.TopAttach = ((uint)(3));
+			w11.BottomAttach = ((uint)(4));
+			w11.LeftAttach = ((uint)(2));
+			w11.RightAttach = ((uint)(3));
 			w11.XOptions = ((global::Gtk.AttachOptions)(4));
 			w11.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
@@ -224,10 +226,9 @@ namespace QSHistoryLog
 			this.selectperiod.ShowCurYear = false;
 			this.table1.Add(this.selectperiod);
 			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table1[this.selectperiod]));
-			w14.TopAttach = ((uint)(1));
-			w14.BottomAttach = ((uint)(5));
+			w14.BottomAttach = ((uint)(3));
 			w14.LeftAttach = ((uint)(2));
-			w14.RightAttach = ((uint)(3));
+			w14.RightAttach = ((uint)(4));
 			w14.XOptions = ((global::Gtk.AttachOptions)(4));
 			w14.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox2.Add(this.table1);
@@ -239,7 +240,7 @@ namespace QSHistoryLog
 			this.vpaned1 = new global::Gtk.VPaned();
 			this.vpaned1.CanFocus = true;
 			this.vpaned1.Name = "vpaned1";
-			this.vpaned1.Position = 203;
+			this.vpaned1.Position = 224;
 			// Container child vpaned1.Gtk.Paned+PanedChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -287,16 +288,17 @@ namespace QSHistoryLog
 			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.vpaned1]));
 			w22.Position = 1;
 			this.Add(this.vbox2);
-			if((this.Child != null)) {
+			if ((this.Child != null))
+			{
 				this.Child.ShowAll();
 			}
 			this.Hide();
 			this.selectperiod.DatesChanged += new global::System.EventHandler(this.OnSelectperiodDatesChanged);
 			this.entrySearch.Activated += new global::System.EventHandler(this.OnEntrySearchActivated);
 			this.buttonSearch.Clicked += new global::System.EventHandler(this.OnButtonSearchClicked);
-			this.datacomboObject.ItemSelected += new global::System.EventHandler< Gamma.Widgets.ItemSelectedEventArgs > (this.OnDatacomboObjectItemSelected);
+			this.datacomboObject.ItemSelected += new global::System.EventHandler<Gamma.Widgets.ItemSelectedEventArgs>(this.OnDatacomboObjectItemSelected);
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);
-			this.comboProperty.ItemSelected += new global::System.EventHandler< Gamma.Widgets.ItemSelectedEventArgs > (this.OnComboPropertyItemSelected);
+			this.comboProperty.ItemSelected += new global::System.EventHandler<Gamma.Widgets.ItemSelectedEventArgs>(this.OnComboPropertyItemSelected);
 			this.comboAction.Changed += new global::System.EventHandler(this.OnComboActionChanged);
 		}
 	}
