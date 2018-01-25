@@ -199,7 +199,7 @@ namespace QSHistoryLog
 
 			logger.Debug("Записываем ChangeSet в БД.");
 			var changeSet = new HistoryChangeSet(operation, typeof(TEntity), ObjectId, objectTitle);
-			//FIXME Для совместимости с методом работы с чистым MySQL. Убрать если откажемся.
+			//FIXME Для совместимости с методом работы с чистым MySQL. И чтобы при неинициализированном списке не создавался не нужный запрос к серверу MySQL. Убрать если откажемся. 
 			changeSet.Changes = new List<FieldChange>();
 
 			logger.Debug("Записываем изменения полей в ChangeSet-е.");
@@ -290,6 +290,14 @@ namespace QSHistoryLog
 						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2.Target as IFileTrace).Size) : String.Empty;
 				}
 			}
+
+			//Не реагируем на изменения Id корневого объекта. При работе через UoW для новых объектов сохраняет изменения 0->n
+			if(diff.PropertyName == ".Id")
+				return false;
+
+			//Не реагируем на изменения Title корневого объекта. Потому что это свойство везде автогенерируемое.
+			if(diff.PropertyName == ".Title")
+				return false;
 
 			return true;
 		}

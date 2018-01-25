@@ -68,6 +68,8 @@ namespace QSHistoryLog
 			{
 				AddClass(clazz.ObjectClass);
 			}
+
+			SubscribeToDeletion();
 		}
 
 		/// <summary>
