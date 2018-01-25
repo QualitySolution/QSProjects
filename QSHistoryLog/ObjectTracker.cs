@@ -300,6 +300,16 @@ namespace QSHistoryLog
 			if(diff.PropertyName == ".Title")
 				return false;
 
+			//Обрабатываем Enum
+			if(diff.Object1?.Target is Enum)
+			{
+				diff.Object1Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object1.Target as Enum);
+			}
+			if(diff.Object2?.Target is Enum) {
+				diff.Object2Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object2.Target as Enum);
+			}
+
+
 			return true;
 		}
 	}
