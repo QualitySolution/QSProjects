@@ -301,14 +301,18 @@ namespace QSHistoryLog
 				return false;
 
 			//Обрабатываем Enum
-			if(diff.Object1?.Target is Enum)
-			{
+			if(diff.Object1?.Target is Enum){
 				diff.Object1Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object1.Target as Enum);
 			}
 			if(diff.Object2?.Target is Enum) {
 				diff.Object2Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object2.Target as Enum);
 			}
 
+			//Обрабатываем bool
+			if(diff.Object1TypeName == "Boolean")
+				diff.Object1Value = (bool)diff.Object1.Target ? "Да" : "Нет";
+			if(diff.Object2TypeName == "Boolean")
+				diff.Object2Value = (bool)diff.Object2.Target ? "Да" : "Нет";
 
 			return true;
 		}
