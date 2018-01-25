@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data.Bindings;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
+using Gamma.Utilities;
 using QSHistoryLog.Domain;
 
 namespace QSHistoryLog
