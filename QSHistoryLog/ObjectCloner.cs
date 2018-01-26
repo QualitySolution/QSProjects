@@ -16,7 +16,7 @@ namespace QSHistoryLog
 		/// <typeparam name="T">Type of the object.</typeparam>
 		public static void FieldsCopy<T> (T sourceObject, ref T destinationObject) where T : class
 		{
-			Type type = typeof(T);
+			Type type = destinationObject.GetType();
 			List<FieldInfo> fields = new List<FieldInfo> ();
 
 			while (type != null) {
