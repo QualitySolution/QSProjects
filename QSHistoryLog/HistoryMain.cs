@@ -45,7 +45,7 @@ namespace QSHistoryLog
 			logic.Config.CompareStaticProperties = false;
 			logic.Config.IgnoreCollectionOrder = true;
 			logic.Config.MaxDifferences = 10000;
-			logic.Config.MaxStructDepth = 10;
+			logic.Config.MaxStructDepth = 5;
 			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
 			logic.Config.AttributesToIgnore.Add (typeof(IgnoreHistoryTraceAttribute));
 

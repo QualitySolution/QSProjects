@@ -162,15 +162,15 @@ namespace QSHistoryLog
 				if (!FixDisplay (onechange))
 					continue;
 				string modifedPropName = Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				if (onechange.ParentObject2 != null && onechange.ParentObject2.Target != null) {
-					var id = HistoryMain.GetObjectId (onechange.ParentObject2.Target);
+				if (onechange.ParentObject2 != null && onechange.ParentObject2 != null) {
+					var id = HistoryMain.GetObjectId (onechange.ParentObject2);
 					if(id.HasValue)
-						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
+						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2));//FIXME Тут неочевидно появляются квадратные скобки
 				}
 				cmd.Parameters ["path"].Value = objectName + modifedPropName;
-				if(onechange.Object1 == null || onechange.Object1.Target == null)
+				if(onechange.Object1 == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Added;
-				else if(onechange.Object2 == null || onechange.Object2.Target == null)
+				else if(onechange.Object2 == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Removed;
 				else
 					cmd.Parameters ["type"].Value = FieldChangeType.Changed;
@@ -178,8 +178,8 @@ namespace QSHistoryLog
 				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
 				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
 				if (onechange.ChildPropertyName == "Id") {
-					cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1.Target);
-					cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2.Target);
+					cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1);
+					cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2);
 				} else
 					cmd.Parameters ["old_id"].Value = cmd.Parameters ["new_id"].Value = DBNull.Value;
 
@@ -208,17 +208,17 @@ namespace QSHistoryLog
 				if(!FixDisplay(onechange))
 					continue;
 				string modifedPropName = Regex.Replace(onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format("{0}[{1}]", m.Groups[1].Value, m.Groups[2].Value));
-				if(onechange.ParentObject2 != null && onechange.ParentObject2.Target != null) {
-					var id = HistoryMain.GetObjectId(onechange.ParentObject2.Target);
+				if(onechange.ParentObject2 != null) {
+					var id = HistoryMain.GetObjectId(onechange.ParentObject2);
 					if(id.HasValue)
-						modifedPropName = Regex.Replace(modifedPropName, String.Format(@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte(onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
+						modifedPropName = Regex.Replace(modifedPropName, String.Format(@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte(onechange.ParentObject2));//FIXME Тут неочевидно появляются квадратные скобки
 				}
 				var changeField = new FieldChange() ;
 				changeField.Path = objectName + modifedPropName;
 
-				if(onechange.Object1 == null || onechange.Object1.Target == null)
+				if(onechange.Object1 == null)
 					changeField.Type = FieldChangeType.Added;
-				else if(onechange.Object2 == null || onechange.Object2.Target == null)
+				else if(onechange.Object2 == null)
 					changeField.Type = FieldChangeType.Removed;
 				else
 					changeField.Type = FieldChangeType.Changed;
@@ -226,8 +226,8 @@ namespace QSHistoryLog
 				changeField.OldValue = onechange.Object1Value;
 				changeField.NewValue = onechange.Object2Value;
 				if(onechange.ChildPropertyName == "Id") {
-					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object1.Target);
-					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object2.Target);
+					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object1);
+					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object2);
 				}
 
 				changeSet.AddFieldChange(changeField);
@@ -243,52 +243,52 @@ namespace QSHistoryLog
 		{
 			//DateTime
 			if(diff.Object1TypeName == "DateTime") {
-				if((DateTime)diff.Object1.Target == default(DateTime)) {
-					diff.Object1.Target = null;
+				if((DateTime)diff.Object1 == default(DateTime)) {
+					diff.Object1 = null;
 					diff.Object1Value = String.Empty;
-				} else if(((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
-					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString();
+				} else if(((DateTime)diff.Object1).TimeOfDay.Ticks == 0)
+					diff.Object1Value = ((DateTime)diff.Object1).ToShortDateString();
 			}
 			if(diff.Object2TypeName == "DateTime"){
-				if ((DateTime)diff.Object2.Target == default(DateTime)) {
-					diff.Object2.Target = null;
+				if ((DateTime)diff.Object2 == default(DateTime)) {
+					diff.Object2 = null;
 					diff.Object2Value = String.Empty;
-				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
-					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
+				} else if (((DateTime)diff.Object2).TimeOfDay.Ticks == 0)
+					diff.Object2Value = ((DateTime)diff.Object2).ToShortDateString ();
 			}
 
 			//Добавление и удаление объектов в коллекциях
-			if(diff.ParentObject2 != null && diff.ParentObject2.Target != null 
-			   && diff.ParentObject2.Target.GetType ().IsGenericType 
-			   && diff.ParentObject2.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			if(diff.ParentObject2 != null 
+			   && diff.ParentObject2.GetType ().IsGenericType 
+			   && diff.ParentObject2.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
 			   && diff.Object1 == null)
 			{
 				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[+]");
 				diff.Object1Value = String.Empty;
-				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2.Target);
+				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2);
 			}
-			if(diff.ParentObject1 != null && diff.ParentObject1.Target != null 
-			   && diff.ParentObject1.Target.GetType ().IsGenericType 
-			   && diff.ParentObject1.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			if(diff.ParentObject1 != null
+			   && diff.ParentObject1.GetType ().IsGenericType 
+			   && diff.ParentObject1.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
 			   && diff.Object2 == null)
 			{
 				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[-]");
 				diff.Object2Value = String.Empty;
-				diff.Object1Value = HistoryMain.GetObjectTilte (diff.Object1.Target);
+				diff.Object1Value = HistoryMain.GetObjectTilte (diff.Object1);
 			}
 
 			//IFileTrace
-			if(diff.ParentObject1 != null && diff.ParentObject1.Target is IFileTrace)
+			if(diff.ParentObject1 is IFileTrace)
 			{
 				if (Regex.IsMatch (diff.PropertyName, @".*Size$"))
 					return false;
 				if(Regex.IsMatch (diff.PropertyName, @".*IsChanged$"))
 				{   
 					diff.PropertyName = diff.PropertyName.Replace ("IsChanged", "Size");
-					diff.Object1Value = diff.ParentObject1 != null && diff.ParentObject1.Target != null 
-						? StringWorks.BytesToIECUnitsString ((diff.ParentObject1.Target as IFileTrace).Size) : String.Empty;
-					diff.Object2Value = diff.ParentObject2 != null && diff.ParentObject2.Target != null 
-						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2.Target as IFileTrace).Size) : String.Empty;
+					diff.Object1Value = diff.ParentObject1 != null
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject1 as IFileTrace).Size) : String.Empty;
+					diff.Object2Value = diff.ParentObject2 != null 
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2 as IFileTrace).Size) : String.Empty;
 				}
 			}
 
@@ -301,18 +301,18 @@ namespace QSHistoryLog
 				return false;
 
 			//Обрабатываем Enum
-			if(diff.Object1?.Target is Enum){
-				diff.Object1Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object1.Target as Enum);
+			if(diff.Object1 is Enum){
+				diff.Object1Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object1 as Enum);
 			}
-			if(diff.Object2?.Target is Enum) {
-				diff.Object2Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object2.Target as Enum);
+			if(diff.Object2 is Enum) {
+				diff.Object2Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object2 as Enum);
 			}
 
 			//Обрабатываем bool
 			if(diff.Object1TypeName == "Boolean")
-				diff.Object1Value = (bool)diff.Object1.Target ? "Да" : "Нет";
+				diff.Object1Value = (bool)diff.Object1 ? "Да" : "Нет";
 			if(diff.Object2TypeName == "Boolean")
-				diff.Object2Value = (bool)diff.Object2.Target ? "Да" : "Нет";
+				diff.Object2Value = (bool)diff.Object2 ? "Да" : "Нет";
 
 			//Обрабатывам null значения
 			if(diff.Object1TypeName == "null")
