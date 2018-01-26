@@ -33,7 +33,7 @@ namespace QSOrmProject
 
 			var prop = value.GetType ().GetProperty ("Id");
 			if (prop == null)
-				throw new ArgumentException ("Для работы метода тип {0}, должен иметь свойство Id.");
+				throw new ArgumentException ($"Для работы метода, тип {value.GetType()} должен иметь свойство Id.");
 
 			return (int)prop.GetValue (value, null);
 		}
