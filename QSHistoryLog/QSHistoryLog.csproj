@@ -39,9 +39,6 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="KellermanSoftware.Compare-Net-Objects">
-      <HintPath>..\lib\KellermanSoftware.Compare-Net-Objects.dll</HintPath>
-    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
@@ -122,6 +119,10 @@
     <ProjectReference Include="..\QSTDI\QSTDI.csproj">
       <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
       <Name>QSTDI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Compare-Net-Objects\Compare-NET-Objects\Compare-NET-Objects.csproj">
+      <Project>{94F1F5F2-6BC4-464B-AC51-FBDB4FA3F3AD}</Project>
+      <Name>Compare-NET-Objects</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

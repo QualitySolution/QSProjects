@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
@@ -258,23 +259,17 @@ namespace QSHistoryLog
 			}
 
 			//Добавление и удаление объектов в коллекциях
-			if(diff.ParentObject2 != null 
-			   && diff.ParentObject2.GetType ().IsGenericType 
-			   && diff.ParentObject2.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
-			   && diff.Object1 == null)
-			{
-				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[+]");
-				diff.Object1Value = String.Empty;
-				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2);
-			}
-			if(diff.ParentObject1 != null
-			   && diff.ParentObject1.GetType ().IsGenericType 
-			   && diff.ParentObject1.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
-			   && diff.Object2 == null)
-			{
-				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[-]");
-				diff.Object2Value = String.Empty;
-				diff.Object1Value = HistoryMain.GetObjectTilte (diff.Object1);
+			if(diff.ChildPropertyName == "Item") {
+			   if(diff.Object1 == null){
+					diff.PropertyName = Regex.Replace(diff.PropertyName, @"\[Id:.*\]$", "[+]");
+					diff.Object1Value = String.Empty;
+					diff.Object2Value = HistoryMain.GetObjectTilte(diff.Object2);
+				}
+				if(diff.Object2 == null) {
+					diff.PropertyName = Regex.Replace(diff.PropertyName, @"\[Id:.*\]$", "[-]");
+					diff.Object2Value = String.Empty;
+					diff.Object1Value = HistoryMain.GetObjectTilte(diff.Object1);
+				}
 			}
 
 			//IFileTrace
