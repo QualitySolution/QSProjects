@@ -71,7 +71,8 @@ namespace QSHistoryLog
 				AddClass(clazz.ObjectClass);
 			}
 
-			SubscribeToDeletion();
+			//FIXME Отключил временно пока не релализована поддежка журналирования удаления через ORM.
+			//SubscribeToDeletion();
 		}
 
 		/// <summary>
