@@ -30,7 +30,7 @@ namespace QSOrmProject
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if(value == null || value == "")
+			if(String.IsNullOrWhiteSpace(value as String))
 				return null;
 
 			int number = 0;
