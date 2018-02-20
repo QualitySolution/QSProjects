@@ -49,7 +49,7 @@ namespace Gamma.Utilities
 		}
 
 		/// <summary>
-		/// Return Description prpprety from DisplayAttribute.
+		/// Return Description property from DisplayAttribute.
 		/// </summary>
 		/// <returns>The field description.</returns>
 		/// <param name="aFieldInfo">A field info.</param>
@@ -59,6 +59,17 @@ namespace Gamma.Utilities
 			if ((attrs != null) && (attrs.Length > 0))
 				return (attrs[0].GetDescription ());
 			return null;
+		}
+
+		/// <summary>
+		/// Gets the typed attributes.
+		/// </summary>
+		/// <returns>The attributes array.</returns>
+		/// <typeparam name="TAttribute">The type of Attribute.</typeparam>
+		public static TAttribute[] GetAttributes<TAttribute>(this Type clazz, bool inherit) 
+			where TAttribute : Attribute
+		{
+			return (TAttribute[])clazz.GetCustomAttributes(typeof(TAttribute), inherit);
 		}
 	}
 }
