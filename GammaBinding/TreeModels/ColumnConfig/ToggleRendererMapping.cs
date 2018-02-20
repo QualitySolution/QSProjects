@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Utilities;
 using Gtk;
@@ -67,6 +68,12 @@ namespace Gamma.ColumnConfig
 		public ToggleRendererMapping<TNode> ToggledEvent (ToggledHandler handler)
 		{
 			cellRenderer.Toggled += handler;
+			return this;
+		}
+
+		public ToggleRendererMapping<TNode> ChangeSetProperty(PropertyInfo property)
+		{
+			cellRenderer.DataPropertyInfo = property;
 			return this;
 		}
 
