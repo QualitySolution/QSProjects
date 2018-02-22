@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QSOrmProject;
-using System.Collections.Generic;
 
 namespace QSBanks
 {
@@ -65,15 +64,20 @@ namespace QSBanks
 
 		public virtual bool IsDefault {
 			get { return isDefault; }
-			set { SetField (ref isDefault, value, () => IsDefault); }
+			set { SetField (ref isDefault, value, () => IsDefault);
+				if(IsDefault && Owner != null)
+					Owner.DefaultAccount = this;
+			}
 		}
+
+		/// <summary>
+		/// Ссылка на владельца счета. Необходима для возможности установки счета по умолчанию.
+		/// </summary>
+		public virtual IAccountOwner Owner { get; set; }
 
 		public Account ()
 		{
-			Name = String.Empty;
-			Number = String.Empty;
 		}
-
 		#region IValidatableObject implementation
 
 		public virtual IEnumerable<ValidationResult> Validate (ValidationContext validationContext)

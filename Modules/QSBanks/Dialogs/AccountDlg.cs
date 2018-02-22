@@ -9,7 +9,6 @@ using QSValidation;
 
 namespace QSBanks
 {
-	[System.ComponentModel.ToolboxItem (true)]
 	public partial class AccountDlg : OrmGtkDialogBase<Account>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();

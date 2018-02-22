@@ -20,7 +20,7 @@ namespace QSBanks
 				if (parentReference != null) {
 					UoW = parentReference.ParentUoW;
 					datatreeviewAccounts.ColumnsConfig = Gamma.ColumnConfig.FluentColumnsConfig<Account>.Create ()
-						.AddColumn ("Осн.").SetDataProperty (node => node.IsDefault)
+						.AddColumn ("Основной").AddToggleRenderer(node => node.IsDefault).Editing().Radio()
 						.AddColumn ("Псевдоним").SetDataProperty (node => node.Name)
 						.AddColumn ("В банке").AddTextRenderer (a => a.InBank != null ? a.InBank.Name : "нет")
 						.AddColumn ("Номер").AddTextRenderer (a => a.Number)
@@ -55,7 +55,6 @@ namespace QSBanks
 		{
 			bool selected = datatreeviewAccounts.Selection.CountSelectedRows () > 0;
 			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
-			buttonDefault.Sensitive = selected && !(datatreeviewAccounts.GetSelectedObjects () [0] as Account).IsDefault;
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
@@ -81,11 +80,6 @@ namespace QSBanks
 		protected void OnDatatreeviewAccountsRowActivated (object o, Gtk.RowActivatedArgs args)
 		{
 			buttonEdit.Click ();
-		}
-
-		protected void OnButtonDefaultClicked (object sender, EventArgs e)
-		{
-			accountOwner.DefaultAccount = (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
