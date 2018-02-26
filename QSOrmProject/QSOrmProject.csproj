@@ -50,6 +50,9 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.4.11\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -150,6 +153,10 @@
     <Compile Include="DomainModel\Tracking\IObjectTracker.cs" />
     <Compile Include="DomainModel\Tracking\TrackerMain.cs" />
     <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
+    <Compile Include="Permissions\PermissionMatrixView.cs" />
+    <Compile Include="gtk-gui\QSOrmProject.Permissions.PermissionMatrixView.cs" />
+    <Compile Include="Permissions\PermissionMatrix.cs" />
+    <Compile Include="Permissions\IPermissionMatrix.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -197,6 +204,7 @@
     <Folder Include="Domain\" />
     <Folder Include="Users\" />
     <Folder Include="DomainModel\Tracking\" />
+    <Folder Include="Permissions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -205,10 +213,7 @@
     <MonoDevelop>
       <Properties>
         <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild">
-            <inheritsSet />
-            <inheritsScope />
-          </DotNetNamingPolicy>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
         </Policies>
       </Properties>
     </MonoDevelop>

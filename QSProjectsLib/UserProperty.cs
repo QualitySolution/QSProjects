@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
+using QSProjectsLib.Permissions;
 using QSSaaS;
 
 namespace QSProjectsLib
 {
 	public partial class UserProperty : Gtk.Dialog
 	{
+		#region Глобальные настройки
+
+		public static Func<List<IPermissionsView>> PermissionViewsCreator;
+
+  		#endregion
+
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private const string passFill = "n0tChanG3d";
 		public bool NewUser;
 		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
+		List<IPermissionsView> permissionViews;
 
 		public UserProperty ()
 		{
@@ -28,6 +36,17 @@ namespace QSProjectsLib
 					vboxPermissions.PackStart (CheckBox, false, false, 0);
 				}
 				vboxPermissions.ShowAll ();
+			}
+
+			if(PermissionViewsCreator != null)
+			{
+				permissionViews = PermissionViewsCreator();
+
+				foreach(var view in permissionViews) {
+					var tabLabel = new Label(view.ViewName);
+					notebook1.AppendPage((Widget)view, tabLabel);
+					(view as Widget).Show();
+				}
 			}
 		}
 
