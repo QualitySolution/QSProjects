@@ -18,6 +18,16 @@ namespace QSOrmProject.Permissions
 			}
 		}
 
+		string IPermissionsView.DBFieldName => permissionMatrix.DBField;
+
+		public string DBFieldValue {
+			get { return permissionMatrix.GetJson(); }
+			set {
+				permissionMatrix.ParseJson(value);
+				ReloadValues();
+			}
+		}
+
 		IPermissionMatrix permissionMatrix;
 
 		CheckButton[,] checkButtons;
