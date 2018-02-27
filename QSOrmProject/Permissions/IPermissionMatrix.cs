@@ -3,9 +3,6 @@ namespace QSOrmProject.Permissions
 {
 	public interface IPermissionMatrix
 	{
-		string Title { get; }
-		string DBField { get; }
-
 		string GetJson();
 		void ParseJson(string json);
 

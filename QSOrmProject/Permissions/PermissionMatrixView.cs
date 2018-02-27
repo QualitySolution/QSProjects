@@ -12,13 +12,9 @@ namespace QSOrmProject.Permissions
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public string ViewName {
-			get {
-				return permissionMatrix?.Title;
-			}
-		}
+		public string ViewName { get; private set; }
 
-		string IPermissionsView.DBFieldName => permissionMatrix.DBField;
+		public string DBFieldName { get; private set; }
 
 		public string DBFieldValue {
 			get { return permissionMatrix.GetJson(); }
@@ -37,10 +33,12 @@ namespace QSOrmProject.Permissions
 		//Вложенные боксы, нужны только для того чтобы галочка была посередине ячейки. При этом можно было вычислить размеры каждой ячейки, по виджету, который занимает все доступное пространство.
 		HBox[,] cells;
 
-		public PermissionMatrixView(IPermissionMatrix permissionMatrix)
+		public PermissionMatrixView(IPermissionMatrix permissionMatrix, string title, string dbfield)
 		{
 			this.Build();
 			this.permissionMatrix = permissionMatrix;
+			ViewName = title;
+			DBFieldName = dbfield;
 
 			tableAccsessMatrix.NColumns = 2 + (uint)permissionMatrix.ColumnNames.Length;
 			tableAccsessMatrix.NRows = 2 + (uint)permissionMatrix.PermissionNames.Length;

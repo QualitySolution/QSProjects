@@ -14,14 +14,10 @@ namespace QSOrmProject.Permissions
 		public int PermissionCount { get; private set; }
 		public int ColumnCount { get; private set; }
 
-		public PermissionMatrix(string title, string dbfield)
+		public PermissionMatrix()
 		{
-			Title = title;
-			DBField = dbfield;
+			
 		}
-
-		public string Title { get; private set; }
-		public string DBField { get; private set; }
 
 		string[] permissionNames;
 
