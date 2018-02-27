@@ -16,7 +16,7 @@ namespace QSOrmProject.Permissions
 
 		public PermissionMatrix()
 		{
-			
+
 		}
 
 		string[] permissionNames;
@@ -88,8 +88,7 @@ namespace QSOrmProject.Permissions
 		{
 			var dict = new Dictionary<TPermissionEnum, List<int>>();
 
-			for(uint row = 0; row < PermissionCount; row++)
-			{
+			for(uint row = 0; row < PermissionCount; row++) {
 				var ids = new List<int>();
 				for(uint col = 0; col < ColumnCount; col++)
 					if(allowed[row, col])
@@ -119,15 +118,15 @@ namespace QSOrmProject.Permissions
 			return Array.FindIndex(Entities, x => x.Id == entity.Id);
 		}
 
-  		#endregion
+		#endregion
 
 		#region Индексаторы
 
 		public bool this[int permissionIx, int columnIx] {
-			get{
+			get {
 				return allowed[permissionIx, columnIx];
 			}
-			set{
+			set {
 				allowed[permissionIx, columnIx] = value;
 			}
 		}
@@ -147,6 +146,20 @@ namespace QSOrmProject.Permissions
 			}
 			set {
 				allowed[IndexOf(permission), IndexOf(entity)] = value;
+			}
+		}
+
+		#endregion
+
+		#region Списки
+
+		public IEnumerable<TPerEntity> Allowed(TPermissionEnum permission)
+		{
+			var row = IndexOf(permission);
+			for(uint col = 0; col < ColumnCount; col++)
+			{
+				if(allowed[row, col])
+					yield return Entities[col];
 			}
 		}
 
