@@ -87,16 +87,31 @@ namespace QSOrmProject
 			}
 		}
 
-		[Browsable (false)]
+		[Browsable(false)]
 		public new bool Sensitive {
 			get { return sensitive; }
 			set {
-				if (sensitive == value)
+				if(sensitive == value)
 					return;
 				sensitive = value;
-				buttonEdit.Sensitive = entryObject.Sensitive = sensitive;
-				buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
+				UpdateSensitive();
 			}
+		}
+
+		bool isEditable = true;
+		[Browsable(false)]
+		public bool IsEditable {
+			get { return isEditable; }
+			set {
+				isEditable = value;
+				UpdateSensitive();
+			}
+		}
+
+		void UpdateSensitive()
+		{
+			buttonEdit.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
+			buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
 		}
 
 		private object subject;
