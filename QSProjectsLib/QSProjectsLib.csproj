@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSProjectsLib</RootNamespace>
     <AssemblyName>QSProjectsLib</AssemblyName>
-    <ReleaseVersion>0.9</ReleaseVersion>
+    <ReleaseVersion>1</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -100,6 +100,7 @@
     <Compile Include="Helpers\PerformanceHelper.cs" />
     <Compile Include="Helpers\GtkHelper.cs" />
     <Compile Include="WindowStartupFix.cs" />
+    <Compile Include="Permissions\IPermissionsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -111,6 +112,7 @@
     <Folder Include="Language\" />
     <Folder Include="Helpers\" />
     <Folder Include="DBCreator\" />
+    <Folder Include="Permissions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

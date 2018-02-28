@@ -56,7 +56,7 @@ namespace QSProjectsLib
 			RunErrorDialog(String.Format(formattedError, args));
 		}
 
-		public static void RunErrorDialog (string error, string secondaryText = null)
+		public static void RunErrorDialog (string error)
 		{
 			MessageDialog md = new MessageDialog (null,
 				DialogFlags.Modal,
@@ -64,11 +64,24 @@ namespace QSProjectsLib
 				ButtonsType.Ok,
 				error);
 			md.SetPosition (WindowPosition.Center);
-			if (!String.IsNullOrEmpty (secondaryText))
-				md.SecondaryText = secondaryText;
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
+		}
+
+		public static void RunErrorWithSecondaryTextDialog(string error, string secondaryText)
+		{
+			MessageDialog md = new MessageDialog(null,
+				DialogFlags.Modal,
+				MessageType.Error,
+				ButtonsType.Ok,
+				error);
+			md.SetPosition(WindowPosition.Center);
+			if(!String.IsNullOrEmpty(secondaryText))
+				md.SecondaryText = secondaryText;
+			md.ShowAll();
+			md.Run();
+			md.Destroy();
 		}
 
 		public static void RunInfoDialog (string message)
