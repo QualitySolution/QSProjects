@@ -163,6 +163,51 @@ namespace QSOrmProject.Permissions
 			}
 		}
 
+		/// <summary>
+		/// Получаем все позволенные пользователю разрешения, в виде пар значений.
+		/// </summary>
+		/// <returns>KeyValuePair где ключ это права, а значение это объект.</returns>
+		public IEnumerable<KeyValuePair<TPermissionEnum, TPerEntity>> Allowed()
+		{
+			for(uint row = 0; row < PermissionCount; row++) {
+				for(uint col = 0; col < ColumnCount; col++) {
+					if(allowed[row, col])
+						yield return new KeyValuePair<TPermissionEnum, TPerEntity>(Permissions[row], Entities[col]);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Получаем все объекты для которых есть хотябы одно из разрешений.
+		/// </summary>
+		public IEnumerable<TPerEntity> AnyPermissions()
+		{
+			for(uint col = 0; col < ColumnCount; col++) {
+				for(uint row = 0; row < PermissionCount; row++) {
+					if(allowed[row, col])
+					{
+						yield return Entities[col];
+						break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Получаем все разрешения которые указаны хотя бы для одного объекта.
+		/// </summary>
+		public IEnumerable<TPermissionEnum> AnyEntities()
+		{
+			for(uint row = 0; row < PermissionCount; row++) {
+				for(uint col = 0; col < ColumnCount; col++) {
+					if(allowed[row, col]) {
+						yield return Permissions[row];
+						break;
+					}
+				}
+			}
+		}
+
   		#endregion
 	}
 }
