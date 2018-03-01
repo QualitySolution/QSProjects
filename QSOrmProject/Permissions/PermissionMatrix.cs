@@ -66,13 +66,16 @@ namespace QSOrmProject.Permissions
 
 		public void ParseJson(string json)
 		{
-			var dict = JsonConvert.DeserializeObject<Dictionary<TPermissionEnum, List<int>>>(json);
 			//Clear
 			for(uint row = 0; row < PermissionCount; row++)
 				for(uint col = 0; col < ColumnCount; col++)
 					allowed[row, col] = false;
 
+			if(String.IsNullOrWhiteSpace(json))
+				return;
+			
 			//Set
+			var dict = JsonConvert.DeserializeObject<Dictionary<TPermissionEnum, List<int>>>(json);
 			foreach(var pair in dict) {
 				foreach(var id in pair.Value) {
 					var ix = IndexOfColumnById(id);
