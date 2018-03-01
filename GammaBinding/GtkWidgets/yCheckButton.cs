@@ -18,6 +18,16 @@ namespace Gamma.GtkWidgets
 			});
 		}
 
+		public yCheckButton(object tag) : this()
+		{
+			Tag = tag;
+		}
+
+		/// <summary>
+		/// For store user data, like WinForms Tag.
+		/// </summary>
+		public object Tag;
+
 		protected override void OnToggled ()
 		{
 			Binding.FireChange (w => w.Active);
