@@ -4,6 +4,7 @@ using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
+using QSOrmProject.DomainModel.Tracking;
 
 namespace QSOrmProject.DomainModel
 {
@@ -25,7 +26,7 @@ namespace QSOrmProject.DomainModel
 		public ISession Session {
 			get {
 				if (session == null)
-					Session = OrmMain.OpenSession ();
+					Session = OrmMain.OpenSession(new UowSessionInterceptor((IUnitOfWork)this));
 				return session;
 			}
 			protected set { session = value; }

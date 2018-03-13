@@ -16,8 +16,6 @@ namespace QSOrmProject.DomainModel
 			}
 			private set {
 				root = value;
-				if (Root is IBusinessObject)
-					(Root as IBusinessObject).UoW = this;
 			}
 		}
 

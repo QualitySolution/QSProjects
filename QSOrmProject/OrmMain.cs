@@ -24,9 +24,9 @@ namespace QSOrmProject
 		private static DateTime lastCleaning;
 		public static int Count = 0;
 
-		public static ISession OpenSession()
+		public static ISession OpenSession(IInterceptor interceptor = null)
 		{
-			ISession session = Sessions.OpenSession();
+			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.OpenSession(interceptor);
 			session.FlushMode = FlushMode.Commit;
 			return session;
 		}
