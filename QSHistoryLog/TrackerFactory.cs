@@ -12,16 +12,16 @@ namespace QSHistoryLog
 		{
 		}
 
-		public IObjectTracker<TEntity> Create<TEntity>(TEntity root, bool isNew)
+		public IObjectTracker<TEntity> Create<TEntity>(TEntity root, TrackerCreateOption option)
 			where TEntity : class, IDomainObject, new()
 		{
 			if(HistoryMain.ObjectsDesc.Any(x => x.ObjectType == typeof(TEntity)))
-				return new ObjectTracker<TEntity>(root, isNew);
+				return new ObjectTracker<TEntity>(root, option);
 			else
 				return null;
 		}
 
-		public IObjectTracker CreateTracker(object root, bool isNew)
+		public IObjectTracker CreateTracker(object root, TrackerCreateOption option)
 		{
 			var rootType = root.GetType();
 			//Здесь проверям наличие IProxy, интерфейс INHibernateProxy оставлен навсякий случай, так как в объекте с перехватом загрузки его нет.
@@ -32,8 +32,12 @@ namespace QSHistoryLog
 				return null;
 
 			var trackerType = typeof(ObjectTracker<>).MakeGenericType(rootType);
-			return (IObjectTracker)Activator.CreateInstance(trackerType, root, isNew);
+			return (IObjectTracker)Activator.CreateInstance(trackerType, root, option);
 		}
 
+		public bool NeedTrace(Type type)
+		{
+			return HistoryMain.ObjectsDesc.Any(x => x.ObjectType == type);
+		}
 	}
 }

@@ -47,12 +47,21 @@ namespace QSHistoryLog
 			TakeEmpty (Activator.CreateInstance<TEntity> () );
 		}
 
-		public ObjectTracker (TEntity subject, bool isNew = true)
+		public ObjectTracker (TEntity subject, TrackerCreateOption option)
 		{
-			if(isNew)
-				TakeEmpty(subject);
-			else
-				TakeFirst(subject);
+			OriginEntity = subject;
+			switch(option) {
+				case TrackerCreateOption.IsNewAndShotThis:
+				    TakeEmpty(subject);
+					break;
+				case TrackerCreateOption.IsLoadedAndShotThis:
+					TakeFirst(subject);
+					break;
+				case TrackerCreateOption.IsNewAndShotEmpty:
+					firstObject = Activator.CreateInstance<TEntity>();
+					operation = ChangeSetType.Create;
+					break;
+			}
 		}
 
 		public void TakeFirst(TEntity subject)
@@ -61,7 +70,6 @@ namespace QSHistoryLog
 			compare = null;
 			operation = ChangeSetType.Change;
 			firstObject = ObjectCloner.Clone (subject);
-			OriginEntity = subject;
 		}
 
 		public void TakeEmpty(TEntity subject)
@@ -70,7 +78,6 @@ namespace QSHistoryLog
 			compare = null;
 			operation = ChangeSetType.Create;
 			firstObject = ObjectCloner.Clone (subject);
-			OriginEntity = subject;
 		}
 
 		public void TakeLast(TEntity subject)

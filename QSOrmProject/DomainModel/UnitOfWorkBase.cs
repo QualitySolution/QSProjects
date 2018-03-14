@@ -120,6 +120,12 @@ namespace QS.DomainModel
 
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
+
+			if(TrackerMain.Factory.NeedTrace(typeof(TEntity)) && Trackers.OfType<IObjectTracker<TEntity>>().All(t => !t.OriginEntity.Equals(entity)))
+			{
+				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
+				Trackers.Add(tracker);
+			}
 		}
 
 		public virtual void TrySave(object entity, bool orUpdate = true)
@@ -134,6 +140,11 @@ namespace QS.DomainModel
 
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
+
+			if(TrackerMain.Factory.NeedTrace(entity.GetType()) && Trackers.All(t => t.OriginObject != entity)) {
+				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
+				Trackers.Add(tracker);
+			}
 		}
 
 		public void Delete<T>(int id) where T : IDomainObject
@@ -168,7 +179,7 @@ namespace QS.DomainModel
 				return;
 			}
 
-			var tracker = TrackerMain.Factory?.CreateTracker(loadEvent.Entity, false);
+			var tracker = TrackerMain.Factory?.CreateTracker(loadEvent.Entity, TrackerCreateOption.IsLoadedAndShotThis);
 			if(tracker != null)
 				Trackers.Add(tracker);
 		}
