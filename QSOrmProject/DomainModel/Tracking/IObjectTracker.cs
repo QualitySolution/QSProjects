@@ -3,7 +3,7 @@ using QSOrmProject;
 
 namespace QS.DomainModel.Tracking
 {
-	public interface IObjectTracker<TEntity>
+	public interface IObjectTracker<TEntity> : IObjectTracker
 	{
 		void TakeFirst(TEntity subject);
 		TEntity OriginEntity {get;}
