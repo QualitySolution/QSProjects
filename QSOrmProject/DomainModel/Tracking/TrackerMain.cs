@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QSOrmProject.DomainModel.Tracking
+namespace QS.DomainModel.Tracking
 {
 	public static class TrackerMain
 	{

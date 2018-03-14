@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using NHibernate.Proxy;
+using QS.DomainModel.Tracking;
 using QSOrmProject;
-using QSOrmProject.DomainModel.Tracking;
 
 namespace QSHistoryLog
 {
@@ -19,5 +20,20 @@ namespace QSHistoryLog
 			else
 				return null;
 		}
+
+		public IObjectTracker CreateTracker(object root, bool isNew)
+		{
+			var rootType = root.GetType();
+			//Здесь проверям наличие IProxy, интерфейс INHibernateProxy оставлен навсякий случай, так как в объекте с перехватом загрузки его нет.
+			if(rootType.GetInterface(typeof(NHibernate.Proxy.DynamicProxy.IProxy).FullName) != null || rootType.GetInterface(typeof(INHibernateProxy).FullName) != null)
+				rootType = rootType.BaseType;
+
+			if(HistoryMain.ObjectsDesc.All(x => x.ObjectType != rootType))
+				return null;
+
+			var trackerType = typeof(ObjectTracker<>).MakeGenericType(rootType);
+			return (IObjectTracker)Activator.CreateInstance(trackerType, root, isNew);
+		}
+
 	}
 }

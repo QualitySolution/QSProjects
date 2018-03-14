@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QS.DomainModel.Tracking;
 using QSHistoryLog.Domain;
 using QSOrmProject;
-using QSOrmProject.DomainModel.Tracking;
 using QSProjectsLib;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>
+	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>, IObjectTracker
 		where TEntity : class, IDomainObject, new()
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		object firstObject, lastObject;
+		public TEntity OriginEntity { get; private set; }
 		ComparisonResult compare;
 
 		private string objectName;
@@ -33,6 +33,12 @@ namespace QSHistoryLog
 					return !compare.AreEqual;
 				else
 					return false;
+			}
+		}
+
+		public object OriginObject{
+			get{
+				return OriginEntity;
 			}
 		}
 
@@ -55,6 +61,7 @@ namespace QSHistoryLog
 			compare = null;
 			operation = ChangeSetType.Change;
 			firstObject = ObjectCloner.Clone (subject);
+			OriginEntity = subject;
 		}
 
 		public void TakeEmpty(TEntity subject)
@@ -63,6 +70,7 @@ namespace QSHistoryLog
 			compare = null;
 			operation = ChangeSetType.Create;
 			firstObject = ObjectCloner.Clone (subject);
+			OriginEntity = subject;
 		}
 
 		public void TakeLast(TEntity subject)
@@ -117,6 +125,17 @@ namespace QSHistoryLog
 		public bool Compare(TEntity lastSubject)
 		{
 			TakeLast(lastSubject);
+			return Compare();
+		}
+
+		/// <summary>
+		/// Сравнивает первое состояние объекта с объектом находищимся по ссылке OriginEntity. Детальный результат сравнения можно
+		/// получить из поля compare.
+		/// </summary>
+		/// <returns>Возвращает true если объекты различаются.</returns>
+		public bool CompareWithOrigin()
+		{
+			TakeLast(OriginEntity);
 			return Compare();
 		}
 
@@ -316,6 +335,11 @@ namespace QSHistoryLog
 				diff.Object2Value = String.Empty;
 
 			return true;
+		}
+
+		public void ResetToOrigin()
+		{
+			TakeFirst(OriginEntity);
 		}
 	}
 }

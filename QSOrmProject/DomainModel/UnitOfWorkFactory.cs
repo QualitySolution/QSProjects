@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.DomainModel;
 using QSOrmProject.DomainModel;
 
 namespace QSOrmProject

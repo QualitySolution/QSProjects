@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Data.Bindings;
-using Gtk;
-using QSProjectsLib;
-using QSTDI;
 using System.ComponentModel;
 using System.Linq;
+using Gtk;
+using QSProjectsLib;
 using QSProjectsLib.Helpers;
+using QSTDI;
 
 namespace QSOrmProject
 {

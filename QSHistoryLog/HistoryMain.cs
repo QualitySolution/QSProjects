@@ -6,10 +6,10 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QS.DomainModel.Tracking;
 using QSHistoryLog.Domain;
 using QSOrmProject;
 using QSOrmProject.Deletion;
-using QSOrmProject.DomainModel.Tracking;
 using QSProjectsLib;
 
 namespace QSHistoryLog
