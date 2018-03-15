@@ -159,6 +159,7 @@
     <Compile Include="Permissions\IPermissionMatrix.cs" />
     <Compile Include="DomainModel\IUnitOfWorkEventHandler.cs" />
     <Compile Include="DomainModel\NhEventListener.cs" />
+    <Compile Include="DomainModel\Tracking\IDeleteTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

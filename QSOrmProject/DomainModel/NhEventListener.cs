@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHibernate.Event;
 using QSProjectsLib;
 
 namespace QS.DomainModel
 {
-	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener
+	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener
 	{
 #region Статическое
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -62,6 +63,15 @@ namespace QS.DomainModel
 
 			if(notFound)
 				logger.Warn("Пришло событие PreLoadEvent но соответствующий сессии UnitOfWork не найден.");
+		}
+
+		public void OnPostDelete(PostDeleteEvent @event)
+		{
+			var uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
+			if(uow != null)
+				uow.OnPostDelete(@event);
+			else
+				logger.Warn("Пришло событие PostDeleteEvent но соответствующий сессии UnitOfWork не найден.");
 		}
 	}
 }

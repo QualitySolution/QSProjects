@@ -20,6 +20,8 @@ namespace QS.DomainModel
 
 		public readonly List<IObjectTracker> Trackers = new List<IObjectTracker>();
 
+		protected IDeleteTracker deleteTracker;
+
 		protected List<object> entityToSave = new List<object>();
 
 		public bool IsNew { get; protected set; }
@@ -35,6 +37,7 @@ namespace QS.DomainModel
 				if(session == null) {
 					session = OrmMain.OpenSession();
 					NhEventListener.RegisterUow(this);
+					deleteTracker = TrackerMain.Factory?.CreateDeleteTracker();
 				}
 
 				return session;
@@ -55,6 +58,9 @@ namespace QS.DomainModel
 				}
 
 				transaction.Commit();
+				//Записываем удаление в новой транзакции, потому как события об удалении приходят уже после комита.
+				deleteTracker?.SaveChangeSet();
+
 				IsNew = false;
 				Trackers.ForEach(t => t.ResetToOrigin());
 				OrmMain.NotifyObjectUpdated(entityToSave.ToArray());
@@ -121,7 +127,7 @@ namespace QS.DomainModel
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
 
-			if(TrackerMain.Factory.NeedTrace(typeof(TEntity)) && Trackers.OfType<IObjectTracker<TEntity>>().All(t => !t.OriginEntity.Equals(entity)))
+			if(TrackerMain.NeedTrace(typeof(TEntity)) && Trackers.OfType<IObjectTracker<TEntity>>().All(t => !t.OriginEntity.Equals(entity)))
 			{
 				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
 				Trackers.Add(tracker);
@@ -141,7 +147,7 @@ namespace QS.DomainModel
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
 
-			if(TrackerMain.Factory.NeedTrace(entity.GetType()) && Trackers.All(t => t.OriginObject != entity)) {
+			if(TrackerMain.NeedTrace(entity.GetType()) && Trackers.All(t => t.OriginObject != entity)) {
 				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
 				Trackers.Add(tracker);
 			}
@@ -189,6 +195,16 @@ namespace QS.DomainModel
 			if(loadEvent.Entity is IBusinessObject) {
 				(loadEvent.Entity as IBusinessObject).UoW = (IUnitOfWork)this;
 			}
+		}
+
+		void IUnitOfWorkEventHandler.OnPostDelete(PostDeleteEvent deleteEvent)
+		{
+			var item = deleteEvent.Entity as IDomainObject;
+
+			if(deleteTracker == null || item == null || !TrackerMain.NeedTrace(item))
+				return;
+
+			deleteTracker.MarkDeleted(item);
 		}
 
 		#endregion

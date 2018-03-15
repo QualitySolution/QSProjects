@@ -21,6 +21,11 @@ namespace QSHistoryLog
 				return null;
 		}
 
+		public IDeleteTracker CreateDeleteTracker()
+		{
+			return new DeleteTracker();
+		}
+
 		public IObjectTracker CreateTracker(object root, TrackerCreateOption option)
 		{
 			var rootType = root.GetType();
