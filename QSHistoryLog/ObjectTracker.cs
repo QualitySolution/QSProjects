@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
+using QS.DomainModel.Tracking;
 using QSHistoryLog.Domain;
 using QSOrmProject;
-using QSOrmProject.DomainModel.Tracking;
 using QSProjectsLib;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>
+	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>, IObjectTracker
 		where TEntity : class, IDomainObject, new()
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		object firstObject, lastObject;
+		public TEntity OriginEntity { get; private set; }
 		ComparisonResult compare;
 
 		private string objectName;
@@ -36,17 +36,32 @@ namespace QSHistoryLog
 			}
 		}
 
+		public object OriginObject{
+			get{
+				return OriginEntity;
+			}
+		}
+
 		public ObjectTracker ()
 		{
 			TakeEmpty (Activator.CreateInstance<TEntity> () );
 		}
 
-		public ObjectTracker (TEntity subject, bool isNew = true)
+		public ObjectTracker (TEntity subject, TrackerCreateOption option)
 		{
-			if(isNew)
-				TakeEmpty(subject);
-			else
-				TakeFirst(subject);
+			OriginEntity = subject;
+			switch(option) {
+				case TrackerCreateOption.IsNewAndShotThis:
+				    TakeEmpty(subject);
+					break;
+				case TrackerCreateOption.IsLoadedAndShotThis:
+					TakeFirst(subject);
+					break;
+				case TrackerCreateOption.IsNewAndShotEmpty:
+					firstObject = Activator.CreateInstance<TEntity>();
+					operation = ChangeSetType.Create;
+					break;
+			}
 		}
 
 		public void TakeFirst(TEntity subject)
@@ -117,6 +132,17 @@ namespace QSHistoryLog
 		public bool Compare(TEntity lastSubject)
 		{
 			TakeLast(lastSubject);
+			return Compare();
+		}
+
+		/// <summary>
+		/// Сравнивает первое состояние объекта с объектом находищимся по ссылке OriginEntity. Детальный результат сравнения можно
+		/// получить из поля compare.
+		/// </summary>
+		/// <returns>Возвращает true если объекты различаются.</returns>
+		public bool CompareWithOrigin()
+		{
+			TakeLast(OriginEntity);
 			return Compare();
 		}
 
@@ -316,6 +342,11 @@ namespace QSHistoryLog
 				diff.Object2Value = String.Empty;
 
 			return true;
+		}
+
+		public void ResetToOrigin()
+		{
+			TakeFirst(OriginEntity);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
+using QS.DomainModel;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 using QSTDI;
@@ -24,9 +25,9 @@ namespace QSOrmProject
 		private static DateTime lastCleaning;
 		public static int Count = 0;
 
-		public static ISession OpenSession()
+		public static ISession OpenSession(IInterceptor interceptor = null)
 		{
-			ISession session = Sessions.OpenSession();
+			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.OpenSession(interceptor);
 			session.FlushMode = FlushMode.Commit;
 			return session;
 		}
@@ -49,6 +50,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <param name="assemblies">Assemblies.</param>
+		[Obsolete("Не поддеживает настройку перехвата событий необходимых для работы HistoryLog и IBusinessObject")]
 		public static void ConfigureOrm(string connectionString, string[] assemblies)
 		{
 			ormConfig = new Configuration();
@@ -68,6 +70,7 @@ namespace QSOrmProject
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <param name="assemblies">Assemblies.</param>
+		[Obsolete("Не поддеживает настройку перехвата событий необходимых для работы HistoryLog и IBusinessObject")]
 		public static void ConfigureOrm(string connectionString, System.Reflection.Assembly[] assemblies)
 		{
 			ormConfig = new Configuration();
@@ -92,7 +95,6 @@ namespace QSOrmProject
 		/// <summary>
 		/// Настройка Nhibernate только с Fluent конфигураций.
 		/// </summary>
-		/// <param name="connectionString">Connection string.</param>
 		/// <param name="assemblies">Assemblies.</param>
 		public static void ConfigureOrm(FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies, Action<Configuration> exposeConfiguration = null)
 		{
@@ -103,6 +105,14 @@ namespace QSOrmProject
 					m.FluentMappings.AddFromAssembly(ass);
 				}
 			});
+
+			var trackerListener = new NhEventListener();
+			fluenConfig.ExposeConfiguration(cfg => {
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, new[] { trackerListener });
+			});
+
 			if (exposeConfiguration != null)
 				fluenConfig.ExposeConfiguration(exposeConfiguration);
 

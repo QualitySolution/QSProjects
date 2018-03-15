@@ -1,4 +1,6 @@
-﻿using QSOrmProject.DomainModel.Tracking;
+﻿using System.Linq;
+using QS.DomainModel;
+using QS.DomainModel.Tracking;
 
 namespace QSOrmProject.DomainModel
 {
@@ -16,8 +18,6 @@ namespace QSOrmProject.DomainModel
 			}
 			private set {
 				root = value;
-				if (Root is IBusinessObject)
-					(Root as IBusinessObject).UoW = this;
 			}
 		}
 
@@ -35,21 +35,25 @@ namespace QSOrmProject.DomainModel
 		{
 			IsNew = true;
 			Root = new TRootEntity();
-			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
+			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
+			if(Tracker != null)
+				Trackers.Add(Tracker);
 		}
 
 		public UnitOfWork(TRootEntity root)
 		{
 			IsNew = true;
 			Root = root;
-			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
+			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
+			if(Tracker != null)
+				Trackers.Add(Tracker);
 		}
 
 		public UnitOfWork(int id)
 		{
 			IsNew = false;
 			Root = GetById<TRootEntity>(id);
-			Tracker = TrackerMain.Factory?.Create(Root, IsNew);
+			Tracker = Trackers.OfType<IObjectTracker<TRootEntity>>().FirstOrDefault(t => t.OriginEntity == Root);
 		}
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
@@ -66,21 +70,6 @@ namespace QSOrmProject.DomainModel
 		{
 			Save(Root);
 		}
-
-        public override void Commit()
-        {
-			if(Tracker != null)
-			{
-				Tracker.Compare(Root);
-				Tracker.SaveChangeSet(this);
-			}
-
-			base.Commit();
-
-			if(Tracker != null) {
-				Tracker.TakeFirst(Root);
-			}
-        }
     }
 }
 

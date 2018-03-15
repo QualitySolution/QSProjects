@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{00D32969-612C-417E-9565-BEC6A7719F80}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSOrmProject</RootNamespace>
+    <RootNamespace>QS</RootNamespace>
     <AssemblyName>QSOrmProject</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -157,6 +157,9 @@
     <Compile Include="gtk-gui\QSOrmProject.Permissions.PermissionMatrixView.cs" />
     <Compile Include="Permissions\PermissionMatrix.cs" />
     <Compile Include="Permissions\IPermissionMatrix.cs" />
+    <Compile Include="DomainModel\IUnitOfWorkEventHandler.cs" />
+    <Compile Include="DomainModel\NhEventListener.cs" />
+    <Compile Include="DomainModel\Tracking\IDeleteTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
