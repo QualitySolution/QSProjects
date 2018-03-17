@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using QSOrmProject.UpdateNotification;
+using QSProjectsLib;
 
 namespace QSOrmProject.DomainMapping
 {
 	public class OrmObjectMapping<TEntity> : IOrmObjectMapping
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		public Type ObjectClass {
 			get {
 				return typeof(TEntity);
@@ -50,9 +53,6 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
-		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric;
-
 		public bool SimpleDialog
 		{
 			get
@@ -77,16 +77,59 @@ namespace QSOrmProject.DomainMapping
 
 			return GetPopupMenuFunc(selected.Cast<TEntity>().ToArray());
 		}
-			
+
+		#region Механизм уведомлений об изменениях объекта
+
+		object eventSetLock = new Object();
+
+		event EventHandler<OrmObjectUpdatedEventArgs> objectUpdated;
+
+		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated {
+			add {
+				lock(eventSetLock) {
+					objectUpdated += value;
+					logger.Debug("Подписка ObjectUpdated на обновления {0} оформлена. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
+				}
+			}
+
+			remove {
+				lock(eventSetLock) {
+					objectUpdated -= value;
+					logger.Debug("Кто-то отписался от события ObjectUpdated для объекта {0}. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
+				}
+			}
+		}
+
+		event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> objectUpdatedGeneric;
+
+		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric {
+			add {
+				lock(eventSetLock) {
+					objectUpdatedGeneric += value;
+					logger.Debug("Подписка ObjectUpdatedGeneric на обновления {0} оформлена. {1}", ObjectClass, SubscribersCountText(objectUpdatedGeneric?.GetInvocationList().Length ?? 0));
+				}
+			}
+
+			remove {
+				lock(eventSetLock) {
+					objectUpdatedGeneric -= value;
+					logger.Debug("Кто-то отписался от события ObjectUpdatedGeneric для объекта {0}. {1}", ObjectClass, SubscribersCountText(objectUpdatedGeneric?.GetInvocationList().Length ?? 0));
+				}
+			}
+		}
+
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
-			if (ObjectUpdatedGeneric != null)
-				ObjectUpdatedGeneric(this, 
-					new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects.Cast<TEntity> ().ToArray ()));
-
-			if (ObjectUpdated != null)
-				ObjectUpdated(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
+			objectUpdatedGeneric?.Invoke(this, new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects.Cast<TEntity>().ToArray()));
+			objectUpdated?.Invoke(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
 		}
+
+		private string SubscribersCountText(int count)
+		{
+			return RusNumber.FormatCase(count, "Всего {0} подписчик.", "Всего {0} подписчика.", "Всего {0} подписчиков.");
+		}
+
+#endregion
 
 		#region FluentConfig
 
