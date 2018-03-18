@@ -16,6 +16,7 @@ namespace QSDocTemplates
 		protected List<PatternField> fieldsList = new List<PatternField>();
 
 		protected List<IPatternTable<TDoc>> tablesList = new List<IPatternTable<TDoc>>();
+		protected List<IPatternTable> customTablesList = new List<IPatternTable>();
 
 		public List<PatternField> FieldsList
 		{
@@ -29,7 +30,10 @@ namespace QSDocTemplates
 		{
 			get
 			{
-				return tablesList.SelectMany(x => x.Colunms);
+				List<IPatternTableField> result = new List<IPatternTableField>();
+				result.AddRange(tablesList.SelectMany(x => x.Colunms));
+				result.AddRange(customTablesList.SelectMany(x => x.Colunms));
+				return result.AsEnumerable();
 			}
 		}
 
@@ -77,6 +81,20 @@ namespace QSDocTemplates
 		{
 			var name = PatternTable<TDoc, TRow>.GetCollectionName(collectionProperty);
 			return AddTable(name, collectionProperty);
+		}
+
+		protected PatternTable<TRow> AddCustomTable<TRow>(string name, IList<TRow> collectionProperty)
+		{
+			var table = new PatternTable<TRow>(name);
+
+			try {
+				table.DataRows = collectionProperty;
+			} catch(NullReferenceException ex) {
+				logger.Warn(ex, "При получении строк таблицы {0}, произошло исключение NullReferenceException.", name);
+			}
+
+			customTablesList.Add(table);
+			return table;
 		}
 
 		protected PatternTable<TDoc, TRow> AddTable<TRow>(string name, Expression<Func<TDoc, IList<TRow>>> collectionProperty)

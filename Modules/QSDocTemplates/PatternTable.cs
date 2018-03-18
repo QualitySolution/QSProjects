@@ -90,7 +90,67 @@ namespace QSDocTemplates
 		}
 	}
 
+	public class PatternTable<TRow> : IPatternTable, IPatternDataTable<TRow>, IPatternDataTableInfo
+	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+		public string Name;
+
+		public IList<TRow> DataRows { get; set; }
+
+		public List<PatternTableFieldGeneric<TRow>> ColunmsGeneric { get; set; }
+
+		public List<IPatternTableField> Colunms {
+			get {
+				return ColunmsGeneric.OfType<IPatternTableField>().ToList();
+			}
+		}
+
+		#region IPatternDataTableInfo implementation
+
+		public int DataRowsCount {
+			get {
+				if(DataRows == null)
+					return 0;
+				return DataRows.Count;
+			}
+		}
+
+		#endregion
+
+		public PatternTable(string tableName)
+		{
+			Name = tableName;
+			ColunmsGeneric = new List<PatternTableFieldGeneric<TRow>>();
+			ColunmsGeneric.Add(new PatternTableFieldGeneric<TRow>(this, null, String.Format("{0}.{1}", Name, "НомерСтроки"), PatternFieldType.FAutoRowNumber));
+		}
+
+		public PatternTable<TRow> AddColumn(Expression<Func<TRow, object>> sourceProperty, string fieldName, PatternFieldType fieldType)
+		{
+			var field = new PatternTableFieldGeneric<TRow>(
+				this,
+				sourceProperty.Compile(),
+				String.Format("{0}.{1}", Name, fieldName),
+				fieldType
+			);
+			ColunmsGeneric.Add(field);
+			return this;
+		}
+
+		public PatternTable<TRow> AddColumn(Expression<Func<TRow, object>> sourceProperty, PatternFieldType fieldType)
+		{
+			var name = PatternField.GetFieldName(sourceProperty);
+			AddColumn(sourceProperty, name, fieldType);
+			return this;
+		}
+	}
+
 	public interface IPatternTable<TDoc>
+	{
+		List<IPatternTableField> Colunms { get; }
+	}
+
+	public interface IPatternTable
 	{
 		List<IPatternTableField> Colunms { get; }
 	}
