@@ -15,6 +15,8 @@ namespace QSDocTemplates
 
 		public bool FileChanged { get; private set;}
 
+		public event EventHandler BeforeOpen;
+
 		IDocTemplate template;
 		public IDocTemplate Template
 		{
@@ -151,11 +153,13 @@ namespace QSDocTemplates
 
 		protected void OnButtonPrintClicked(object sender, EventArgs e)
 		{
+			BeforeOpen?.Invoke(this, EventArgs.Empty);
 			worker.OpenInOffice(Template, true, FileEditMode.Document, true);
 		}
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)
 		{
+			BeforeOpen?.Invoke(this, EventArgs.Empty);
 			worker.OpenInOffice(Template, false, FileEditMode.Document);
 		}
 
@@ -166,6 +170,7 @@ namespace QSDocTemplates
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
+			BeforeOpen?.Invoke(this, EventArgs.Empty);
 			worker.OpenInOffice(Template, true, FileEditMode.Document);
 		}
 
