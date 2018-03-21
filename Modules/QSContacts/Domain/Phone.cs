@@ -48,6 +48,15 @@ namespace QSContacts
 				SetField(ref numberType, value, () => NumberType);
 			}
 		}
+
+		 private string name;
+
+		[Display(Name = "Имя")]
+		public virtual string Name {
+			get { return name; }
+			set { SetField(ref name, value, () => Name); }
+		}
+
 		#endregion
 
 		public Phone()

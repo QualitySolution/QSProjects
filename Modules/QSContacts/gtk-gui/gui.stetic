@@ -22,8 +22,14 @@
         <child>
           <widget class="Gtk.Table" id="datatablePhones">
             <property name="MemberName" />
-            <property name="NColumns">6</property>
+            <property name="NColumns">8</property>
             <property name="ColumnSpacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
             <child>
               <placeholder />
             </child>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Bindings;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gamma.GtkWidgets;
@@ -121,14 +120,23 @@ namespace QSContacts
 			additionalDataEntry.WidthRequest = 50;
 			additionalDataEntry.MaxLength = 10;
 			additionalDataEntry.Binding.AddBinding(newPhone, e => e.Additional, w => w.Text).InitializeFromSource();
-			datatablePhones.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (additionalDataEntry, (uint)4, (uint)5, RowNum, RowNum + 1, AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
+
+			Gtk.Label labelName = new Gtk.Label("имя:");
+			datatablePhones.Attach(labelName, (uint)5, (uint)6, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+
+			var entryName = new yEntry();
+			//entryName.WidthRequest = 50;
+			entryName.MaxLength = 150;
+			entryName.Binding.AddBinding(newPhone, e => e.Name, w => w.Text).InitializeFromSource();
+			datatablePhones.Attach(entryName, (uint)6, (uint)7, RowNum, RowNum + 1, AttachOptions.Expand | AttachOptions.Fill, (AttachOptions)0, (uint)0, (uint)0);
 
 			Gtk.Button deleteButton = new Gtk.Button ();
 			Gtk.Image image = new Gtk.Image ();
 			image.Pixbuf = Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			deleteButton.Image = image;
 			deleteButton.Clicked += OnButtonDeleteClicked;
-			datatablePhones.Attach (deleteButton, (uint)5, (uint)6, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
+			datatablePhones.Attach (deleteButton, (uint)7, (uint)8, RowNum, RowNum + 1, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 
 			datatablePhones.ShowAll ();
 
