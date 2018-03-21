@@ -19,7 +19,12 @@ namespace QSBanks
 
 		public virtual string Name {
 			get { return name; }
-			set { SetField (ref name, value, () => Name); }
+			set {
+				if(string.IsNullOrEmpty(value)) {
+					name = "Основной";
+				}
+				SetField (ref name, value, () => Name); 
+			}
 		}
 
 		string number;
@@ -31,6 +36,11 @@ namespace QSBanks
 			set { SetField (ref number, value, () => Number); }
 		}
 
+		public virtual string Title{
+			get{
+				return "Счет: " + Name;
+			}
+		}
 		string code1c;
 
 		[Display (Name = "Код 1с")]

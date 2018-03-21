@@ -40,6 +40,7 @@ namespace QSBanks
 
 		private void ConfigureDlg ()
 		{
+			Entity.Name = "Основной";
 			dataentryrefBank.SubjectType = typeof(Bank);
 			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
 			dataentryNumber.Binding.AddBinding(Entity, e => e.Number, w => w.Text).InitializeFromSource();
