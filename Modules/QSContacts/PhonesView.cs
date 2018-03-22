@@ -15,7 +15,7 @@ namespace QSContacts
 	public partial class PhonesView : Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		private GenericObservableList<Phone> PhonesList;
+		private GenericObservableList<Phone> phonesList;
 		private IList<PhoneType> phoneTypes;
 		private IUnitOfWork uow;
 
@@ -36,21 +36,35 @@ namespace QSContacts
 			set {
 				if (phones == value)
 					return;
-				if (PhonesList != null)
-					CleanList ();
 				phones = value;
+
+				PhonesList = phones != null ?  new GenericObservableList<Phone> (phones) : null;
+			}
+		}
+
+		public GenericObservableList<Phone> PhonesList {
+			get {
+				return phonesList;
+			}
+
+			set {
+				if(PhonesList != null)
+					CleanList();
+
+				phonesList = value;
+
 				buttonAdd.Sensitive = phones != null;
-				if (value != null) {
-					PhonesList = new GenericObservableList<Phone> (phones);
+				if(value != null) {
 					PhonesList.ElementAdded += OnPhoneListElementAdded;
 					PhonesList.ElementRemoved += OnPhoneListElementRemoved;
-					if (PhonesList.Count == 0)
-						PhonesList.Add (new Phone ());
+					if(PhonesList.Count == 0)
+						PhonesList.Add(new Phone());
 					else {
-						foreach (Phone phone in PhonesList)
-							AddPhoneRow (phone);
+						foreach(Phone phone in PhonesList)
+							AddPhoneRow(phone);
 					}
 				}
+
 			}
 		}
 

@@ -59,6 +59,19 @@ namespace QSContacts
 
 		#endregion
 
+		#region Рассчетные
+
+		public virtual string LongText{
+			get{
+				return NumberType?.Name
+								 + (String.IsNullOrWhiteSpace(Number) ? "" : " +7 " + Number)
+								 + (String.IsNullOrWhiteSpace(Additional) ? "" : " доп." + Additional)
+					              + (String.IsNullOrWhiteSpace(Name) ? "" : String.Format(" [{0}]", Name));
+			}
+		}
+
+		#endregion
+
 		public Phone()
 		{
 			if (String.IsNullOrWhiteSpace(QSContactsMain.DefaultCityCode))
