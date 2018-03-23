@@ -53,7 +53,7 @@ namespace QSContacts
 
 				phonesList = value;
 
-				buttonAdd.Sensitive = phones != null;
+				buttonAdd.Sensitive = phonesList != null;
 				if(value != null) {
 					PhonesList.ElementAdded += OnPhoneListElementAdded;
 					PhonesList.ElementRemoved += OnPhoneListElementRemoved;
