@@ -546,6 +546,26 @@ namespace QSProjectsLib
 				QSMain.ErrorMessage ((Exception)a.ExceptionObject);
 			};
 		}
+
+		public static void SetupFromArgs(string[] args)
+		{
+			if(args.Length == 0)
+				return;
+			for(int i = 0; i < args.Length; i++)
+			{
+				if(args[i] == "-d" || args[i].ToLower() == "--default")
+				{
+					if(i + 1 >= args.Length)
+					{
+						logger.Error("После аргумента {0} должно быть указано название соедиения. А его нет.", args[i]);
+						return;
+					}
+
+					i++;
+					Login.OverwriteDefaultConnection = args[i];
+				}
+			}
+		}
 	}
 }
 

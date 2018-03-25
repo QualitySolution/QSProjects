@@ -16,6 +16,7 @@ namespace QSProjectsLib
 		public static string ApplicationDemoServer;
 		public static string CreateDBHelpTooltip;
 		public static string CreateDBHelpUrl;
+		public static string OverwriteDefaultConnection;
   		#endregion
 
 		public List<Connection> Connections;
@@ -117,6 +118,11 @@ namespace QSProjectsLib
 				MachineConfig.ConfigSource.AddConfig("Default");
 				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", String.Empty);
 				MachineConfig.ConfigSource.Save();
+			}
+
+			if(!String.IsNullOrWhiteSpace(OverwriteDefaultConnection))
+			{
+				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", OverwriteDefaultConnection);
 			}
 
 			entryPassword.GrabFocus();
