@@ -35,6 +35,8 @@ namespace QSOrmProject.DomainModel
 		{
 			IsNew = true;
 			Root = new TRootEntity();
+			if(Root is IBusinessObject)
+				((IBusinessObject)Root).UoW = this;
 			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
 			if(Tracker != null)
 				Trackers.Add(Tracker);
@@ -44,6 +46,8 @@ namespace QSOrmProject.DomainModel
 		{
 			IsNew = true;
 			Root = root;
+			if(Root is IBusinessObject)
+				((IBusinessObject)Root).UoW = this;
 			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
 			if(Tracker != null)
 				Trackers.Add(Tracker);
