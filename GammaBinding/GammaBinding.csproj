@@ -102,6 +102,7 @@
     <Compile Include="TreeModels\LevelTreeModel.cs" />
     <Compile Include="TreeModels\LevelConfig.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="GtkWidgets\yFileChooserButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -144,6 +145,7 @@
     <EmbeddedResource Include="icons\checkbutton.png">
       <LogicalName>checkbutton.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="icons\fileselection.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">

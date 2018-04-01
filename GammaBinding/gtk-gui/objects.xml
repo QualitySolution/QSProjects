@@ -56,6 +56,10 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="fileselection.png" base-type="Gtk.FileChooserButton">
+    <itemgroups />
+    <signals />
+  </object>
   <object type="Gamma.GtkWidgets.yComboBox" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
     <itemgroups>
       <itemgroup label="yComboBox Properties">
