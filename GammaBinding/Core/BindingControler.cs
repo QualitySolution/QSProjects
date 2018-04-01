@@ -217,11 +217,12 @@ namespace Gamma.Binding.Core
 			FinishTargetUpdateBatch ();
 		}
 
-		public void CleanSources()
+		public BindingControler<TWidget> CleanSources()
 		{
 			Sources.ForEach(x => x.ClearBindings());
 
 			Sources.Clear();
+			return this;
 		}
 	}
 }
