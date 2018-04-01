@@ -5,8 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Gamma.Binding</RootNamespace>
+    <RootNamespace>Gamma</RootNamespace>
     <AssemblyName>GammaBinding</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -97,6 +101,7 @@
     <Compile Include="Core\Helpers\FetchPropertyInfoFromExpression.cs" />
     <Compile Include="TreeModels\LevelTreeModel.cs" />
     <Compile Include="TreeModels\LevelConfig.cs" />
+    <Compile Include="NotifyPropertyChangedBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
