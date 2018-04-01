@@ -11,6 +11,12 @@ namespace Gamma.GtkWidgets
 	{
 		public BindingControler<yFileChooserButton> Binding { get; private set;}
 
+		public new string Filename
+		{
+			get => base.Filename;
+			set => base.SetFilename(value);
+		}
+
 		public yFileChooserButton() : base((Widget)null) {
 			Binding = new BindingControler<yFileChooserButton>(this, new Expression<Func<yFileChooserButton, object>>[] {
 				w => w.Filename,
@@ -18,10 +24,10 @@ namespace Gamma.GtkWidgets
 			});
 		}
 
-        protected override void OnFileSet()
+        protected override void OnSelectionChanged()
         {
 			Binding.FireChange(w => w.Filename, w => w.Filenames);
-			base.OnFileSet();
+			base.OnSelectionChanged();
         }
     }
 }
