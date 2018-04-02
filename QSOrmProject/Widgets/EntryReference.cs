@@ -308,16 +308,25 @@ namespace QSOrmProject
 
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
-			if (SubjectType == null)
-				throw new NullReferenceException ("SubjectType не задан.");
+			OpenSelectDialog();
+		}
 
-			if (OrmMain.GetObjectDescription (SubjectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
+
+		/// <summary>
+		/// Открывает диалог выбора объекта
+		/// </summary>
+		public void OpenSelectDialog()
+		{
+			if(SubjectType == null)
+				throw new NullReferenceException("SubjectType не задан.");
+
+			if(OrmMain.GetObjectDescription(SubjectType).SimpleDialog) {
+				OrmSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
 				return;
 			}
 
-			ITdiTab dlg = OrmMain.CreateObjectDialog (Subject);
-			MyTab.TabParent.AddTab (dlg, MyTab);
+			ITdiTab dlg = OrmMain.CreateObjectDialog(Subject);
+			MyTab.TabParent.AddTab(dlg, MyTab);
 		}
 
 		protected virtual void OnChanged ()
