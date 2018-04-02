@@ -110,8 +110,8 @@ namespace QSOrmProject
 
 		void UpdateSensitive()
 		{
-			buttonEdit.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
+			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
 		}
 
 		private object subject;
@@ -194,7 +194,7 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
-			buttonOpen.Sensitive = CanEditReference && subject != null;
+			buttonViewEntity.Sensitive = CanEditReference && subject != null;
 
 			entryChangedByUser = false;
 			entryObject.Text = GetObjectTitle (Subject);
@@ -255,36 +255,43 @@ namespace QSOrmProject
 			args.RetVal = true;
 		}
 
-		protected void OnButtonEditClicked (object sender, EventArgs e)
+		protected void OnButtonSelectEntityClicked (object sender, EventArgs e)
 		{
-			if(!OnBeforeChangeByUser())
-			{
+			OpenSelectDialog();
+		}
+
+		/// <summary>
+		/// Открывает диалог выбора объекта
+		/// </summary>
+		public void OpenSelectDialog()
+		{
+			if(!OnBeforeChangeByUser()) {
 				return;
 			}
 
-			IOrmDialog dlg = OrmMain.FindMyDialog (this);
+			IOrmDialog dlg = OrmMain.FindMyDialog(this);
 			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
 
-			if (dlg != null)
+			if(dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
+				localUoW = UnitOfWorkFactory.CreateWithoutRoot();
 
-			if (ItemsQuery != null) {
-				SelectDialog = new OrmReference (localUoW, ItemsQuery);
+			if(ItemsQuery != null) {
+				SelectDialog = new OrmReference(localUoW, ItemsQuery);
 			} else {
-				if (ItemsCriteria == null)
-					ItemsCriteria = localUoW.Session.CreateCriteria (subjectType);
+				if(ItemsCriteria == null)
+					ItemsCriteria = localUoW.Session.CreateCriteria(subjectType);
 
-				SelectDialog = new OrmReference (subjectType, localUoW, ItemsCriteria);
+				SelectDialog = new OrmReference(subjectType, localUoW, ItemsCriteria);
 			}
 
 			SelectDialog.Mode = OrmReferenceMode.Select;
-			if (!CanEditReference)
+			if(!CanEditReference)
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
-			MyTab.TabParent.AddSlaveTab (MyTab, SelectDialog);
+			MyTab.TabParent.AddSlaveTab(MyTab, SelectDialog);
 		}
 
 		private bool OnBeforeChangeByUser()
@@ -306,16 +313,7 @@ namespace QSOrmProject
 			OnChangedByUser();
 		}
 
-		protected void OnButtonOpenClicked (object sender, EventArgs e)
-		{
-			OpenSelectDialog();
-		}
-
-
-		/// <summary>
-		/// Открывает диалог выбора объекта
-		/// </summary>
-		public void OpenSelectDialog()
+		protected void OnButtonViewEntityClicked (object sender, EventArgs e)
 		{
 			if(SubjectType == null)
 				throw new NullReferenceException("SubjectType не задан.");

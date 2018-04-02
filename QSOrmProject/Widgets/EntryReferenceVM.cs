@@ -130,7 +130,7 @@ namespace QSOrmProject
 
 		private void UpdateWidget ()
 		{
-			buttonOpen.Sensitive = CanEditReference && subject != null;
+			buttonViewEntity.Sensitive = CanEditReference && subject != null;
 			if (subject == null) {
 				entryObject.Text = String.Empty;
 				return;
@@ -150,33 +150,37 @@ namespace QSOrmProject
 			this.Build ();
 		}
 
-		protected void OnButtonEditClicked (object sender, EventArgs e)
+		public void OnButtonSelectEntityClicked (object sender, EventArgs e)
 		{
+			OpenSelectDialog();
+		}
+
+		/// <summary>
+		/// Открывает диалог выбора объекта
+		/// </summary>
+		public void OpenSelectDialog()
+		{ 
 			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
-			if(modelWithParent != null)
-			{
-				if(MyOrmDialog != null && MyOrmDialog.UoW.IsNew 
-					&& MyOrmDialog.EntityObject == modelWithParent.GetParent)
-				{
-					if(CommonDialogs.SaveBeforeSelectFromChildReference (modelWithParent.GetParent.GetType (), SubjectType))
-					{
-						if (!MyTdiDialog.Save ())
+			if(modelWithParent != null) {
+				if(MyOrmDialog != null && MyOrmDialog.UoW.IsNew
+					&& MyOrmDialog.EntityObject == modelWithParent.GetParent) {
+					if(CommonDialogs.SaveBeforeSelectFromChildReference(modelWithParent.GetParent.GetType(), SubjectType)) {
+						if(!MyTdiDialog.Save())
 							return;
-					}
-					else
+					} else
 						return;
 				}
 			}
 
 			ReferenceRepresentation SelectDialog;
 
-			SelectDialog = new ReferenceRepresentation (RepresentationModel);
+			SelectDialog = new ReferenceRepresentation(RepresentationModel);
 
 			SelectDialog.Mode = OrmReferenceMode.Select;
-			if (!CanEditReference)
+			if(!CanEditReference)
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
 			SelectDialog.ObjectSelected += SelectDialog_ObjectSelected;
-			MyTab.TabParent.AddSlaveTab (MyTab, SelectDialog);
+			MyTab.TabParent.AddSlaveTab(MyTab, SelectDialog);
 		}
 
 		void SelectDialog_ObjectSelected (object sender, ReferenceRepresentationSelectedEventArgs e)
@@ -188,7 +192,7 @@ namespace QSOrmProject
 			OnChangedByUser();
 		}
 
-		protected void OnButtonOpenClicked (object sender, EventArgs e)
+		protected void OnButtonViewEntityClicked (object sender, EventArgs e)
 		{
 			if (OrmMain.GetObjectDescription (SubjectType).SimpleDialog) {
 				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
@@ -229,8 +233,8 @@ namespace QSOrmProject
 
 		void UpdateSensitive()
 		{
-			buttonEdit.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonOpen.Sensitive = sensitive && CanEditReference && subject != null;
+			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
 		}
 
 		protected override void OnDestroyed()
