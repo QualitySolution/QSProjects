@@ -18,13 +18,13 @@ namespace QSBanks
 		string name;
 
 		public virtual string Name {
-			get { return name; }
-			set {
-				if(string.IsNullOrEmpty(value)) {
-					name = "Основной";
+			get {
+				if(string.IsNullOrEmpty(name)) {
+					return "Основной";
 				}
-				SetField (ref name, value, () => Name); 
+				return name; 
 			}
+			set { SetField (ref name, value, () => Name); }
 		}
 
 		string number;
