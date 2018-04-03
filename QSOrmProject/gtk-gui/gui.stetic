@@ -708,7 +708,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Button" id="buttonEdit">
+          <widget class="Gtk.Button" id="buttonSelectEntity">
             <property name="MemberName" />
             <property name="Tooltip" translatable="yes">Выбрать из справочника</property>
             <property name="CanFocus">True</property>
@@ -716,7 +716,7 @@
             <property name="Icon">stock:gtk-index Menu</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="OnButtonEditClicked" />
+            <signal name="Clicked" handler="OnButtonSelectEntityClicked" />
           </widget>
           <packing>
             <property name="Position">1</property>
@@ -726,7 +726,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Button" id="buttonOpen">
+          <widget class="Gtk.Button" id="buttonViewEntity">
             <property name="MemberName" />
             <property name="Sensitive">False</property>
             <property name="Tooltip" translatable="yes">Открыть</property>
@@ -735,7 +735,7 @@
             <property name="Icon">stock:gtk-edit Menu</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="OnButtonOpenClicked" />
+            <signal name="Clicked" handler="OnButtonViewEntityClicked" />
           </widget>
           <packing>
             <property name="Position">2</property>

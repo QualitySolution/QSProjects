@@ -150,9 +150,10 @@ namespace QSOrmProject
 			this.Build ();
 		}
 
-		public void OnButtonSelectEntityClicked (object sender, EventArgs e)
+		protected void OnButtonSelectEntityClicked(object sender, EventArgs e)
 		{
 			OpenSelectDialog();
+
 		}
 
 		/// <summary>
