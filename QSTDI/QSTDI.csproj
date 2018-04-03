@@ -53,6 +53,7 @@
     <Compile Include="TabVBox.cs" />
     <Compile Include="ITdiTabWithPath.cs" />
     <Compile Include="TDIMain.cs" />
+    <Compile Include="ITdiTabAddedNotifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

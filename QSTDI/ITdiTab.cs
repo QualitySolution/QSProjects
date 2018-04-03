@@ -37,6 +37,5 @@ namespace QSTDI
 			AskSave = askSave;
 		}
 	}
-
 }
 
