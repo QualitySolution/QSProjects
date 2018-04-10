@@ -67,6 +67,8 @@ namespace QSOrmProject
 			}
 			this.Hide();
 			this.entryObject.KeyPressEvent += new global::Gtk.KeyPressEventHandler(this.OnEntryObjectKeyPressEvent);
+			this.entryObject.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryObjectFocusOutEvent);
+			this.entryObject.Changed += new global::System.EventHandler(this.OnEntryObjectChanged);
 			this.buttonSelectEntity.Clicked += new global::System.EventHandler(this.OnButtonSelectEntityClicked);
 			this.buttonViewEntity.Clicked += new global::System.EventHandler(this.OnButtonViewEntityClicked);
 		}

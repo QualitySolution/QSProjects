@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
 using QSOrmProject.RepresentationModel;
@@ -9,15 +10,23 @@ using QSTDI;
 
 namespace QSOrmProject
 {
-	[System.ComponentModel.ToolboxItem (true)]
+	[ToolboxItem (true)]
 	public partial class EntryReferenceVM : WidgetOnDialogBase
 	{
+		enum completionCol
+		{
+			Tilte,
+			Item
+		}
+
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
 		private System.Type subjectType;
 		private bool sensitive = true;
 		public bool CanEditReference = true;
 		public Func<object, string> ObjectDisplayFunc;
+		private ListStore completionListStore;
+		private bool entryChangedByUser = true;
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
@@ -57,6 +66,17 @@ namespace QSOrmProject
 				return;
 				representationModel = value;
 				SubjectType = RepresentationModel.ObjectType;
+				//Включение быстрого выбора
+				if(RepresentationModel.CanEntryFastSelect)
+				{
+					entryObject.Completion = new EntryCompletion();
+					entryObject.Completion.MatchSelected += Completion_MatchSelected;
+					entryObject.Completion.MatchFunc = Completion_MatchFunc;
+					var cell = new CellRendererText();
+					entryObject.Completion.PackStart(cell, true);
+					entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
+				}
+				entryObject.IsEditable = RepresentationModel.CanEntryFastSelect;
 			}
 		}
 
@@ -132,17 +152,24 @@ namespace QSOrmProject
 		{
 			buttonViewEntity.Sensitive = CanEditReference && subject != null;
 			if (subject == null) {
-				entryObject.Text = String.Empty;
+				InternalSetEntryText(String.Empty);
 				return;
 			}
 
 			if(ObjectDisplayFunc != null)
 			{
-				entryObject.Text = ObjectDisplayFunc (Subject);
+				InternalSetEntryText(ObjectDisplayFunc (Subject));
 				return;
 			}
 
-			entryObject.Text = DomainHelper.GetObjectTilte (Subject);
+			InternalSetEntryText(DomainHelper.GetObjectTilte (Subject));
+		}
+
+		private void InternalSetEntryText(string text)
+		{
+			entryChangedByUser = false;
+			entryObject.Text = text;
+			entryChangedByUser = true;
 		}
 
 		public EntryReferenceVM ()
@@ -153,7 +180,6 @@ namespace QSOrmProject
 		protected void OnButtonSelectEntityClicked(object sender, EventArgs e)
 		{
 			OpenSelectDialog();
-
 		}
 
 		/// <summary>
@@ -186,10 +212,7 @@ namespace QSOrmProject
 
 		void SelectDialog_ObjectSelected (object sender, ReferenceRepresentationSelectedEventArgs e)
 		{
-			var dlg = OrmMain.FindMyDialog (this);
-			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
-
-			Subject = uow.GetById (SubjectType, e.ObjectId);
+			SelectSubjectByNode(e.VMNode);
 			OnChangedByUser();
 		}
 
@@ -225,6 +248,9 @@ namespace QSOrmProject
 		[GLib.ConnectBefore]
 		protected void OnEntryObjectKeyPressEvent (object o, KeyPressEventArgs args)
 		{
+			if(RepresentationModel.CanEntryFastSelect)
+				return;
+
 			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
 			{
 				Subject = null;
@@ -237,6 +263,81 @@ namespace QSOrmProject
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
 			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
 		}
+
+		protected void SelectSubjectByNode(object node){
+			var dlg = OrmMain.FindMyDialog(this);
+			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
+
+			Subject = uow.GetById(SubjectType, DomainHelper.GetId(node));
+		}
+
+		#region AutoCompletion
+
+		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		{
+			var title = (string)tree_model.GetValue (iter, (int)completionCol.Tilte);
+			string pattern = String.Format ("{0}", Regex.Escape (entryObject.Text));
+			(cell as CellRendererText).Markup = 
+				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+		}
+
+		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
+		{
+			var val = completion.Model.GetValue (iter, (int)completionCol.Item);
+			return RepresentationModel.SearchFilterNodeFunc(val, key);
+		}
+
+		[GLib.ConnectBefore]
+		void Completion_MatchSelected (object o, MatchSelectedArgs args)
+		{
+			var node = args.Model.GetValue (args.Iter, (int)completionCol.Item);
+			SelectSubjectByNode(node);
+			OnChangedByUser();
+			args.RetVal = true;
+		}
+
+		private void fillAutocomplete ()
+		{
+			if(!RepresentationModel.CanEntryFastSelect)
+				return;
+			
+			logger.Info ("Запрос данных для автодополнения...");
+			completionListStore = new ListStore (typeof(string), typeof(object));
+
+			if(RepresentationModel.ItemsList == null)
+				RepresentationModel.UpdateNodes();
+
+			foreach (var item in RepresentationModel.ItemsList) {
+				completionListStore.AppendValues (
+					(item as INodeWithEntryFastSelect).EntityTitle,
+					item
+				);
+			}
+			entryObject.Completion.Model = completionListStore;
+			logger.Debug ("Получено {0} строк автодополения...", completionListStore.IterNChildren ());
+		}
+
+		protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
+		{
+			if(!RepresentationModel.CanEntryFastSelect)
+				return;
+
+			if(string.IsNullOrWhiteSpace(entryObject.Text)) {
+				Subject = null;
+				OnChangedByUser();
+			}
+		}
+
+		protected void OnEntryObjectChanged(object sender, EventArgs e)
+		{
+			if(!RepresentationModel.CanEntryFastSelect)
+				return;
+			
+			if(entryChangedByUser && completionListStore == null)
+				fillAutocomplete();
+		}
+
+		#endregion
 
 		protected override void OnDestroyed()
 		{

@@ -25,6 +25,9 @@ namespace QSOrmProject.RepresentationModel
 
 		bool SearchFieldsExist { get;}
 
+		bool CanEntryFastSelect { get; }
+
+		bool SearchFilterNodeFunc(object item, string key);
 
 		string SearchString { get; set;}
 		string[] SearchStrings { get; set;}
@@ -41,6 +44,11 @@ namespace QSOrmProject.RepresentationModel
 	public interface IRepresentationModelWithParent
 	{
 		object GetParent { get;}
+	}
+
+	public interface INodeWithEntryFastSelect
+	{
+		string EntityTitle { get; }
 	}
 }
 

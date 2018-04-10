@@ -114,6 +114,12 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		public bool CanEntryFastSelect {
+			get {
+				return typeof(TNode).GetInterface(nameof(INodeWithEntryFastSelect)) != null && SearchFieldsExist;
+			}
+		}
+
 		string[] searchStrings;
 
 		public string[] SearchStrings {
@@ -199,6 +205,17 @@ namespace QSOrmProject.RepresentationModel
 			Gtk.Application.Invoke(delegate {
 				OnItemsListUpdated ();
 			});
+		}
+
+		public bool SearchFilterNodeFunc(object item, string key)
+		{
+			foreach(var prop in SearchPropCache) {
+				string Str = (prop.GetValue(item, null) ?? String.Empty).ToString();
+				if(Str.IndexOf(key, StringComparison.CurrentCultureIgnoreCase) > -1) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		private bool SearchFilterFunc(TNode item)
