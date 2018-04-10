@@ -330,7 +330,7 @@ namespace QSOrmProject
 
 		protected void OnEntryObjectChanged(object sender, EventArgs e)
 		{
-			if(!RepresentationModel.CanEntryFastSelect)
+			if(RepresentationModel == null || !RepresentationModel.CanEntryFastSelect)
 				return;
 			
 			if(entryChangedByUser && completionListStore == null)
