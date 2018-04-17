@@ -57,6 +57,7 @@
     <signals />
   </object>
   <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="fileselection.png" base-type="Gtk.FileChooserButton">
+  <object type="Gamma.GtkWidgets.yColorButton" palette-category="Gamma Gtk" allow-children="false" icon="colorbutton.png" base-type="Gtk.ColorButton">
     <itemgroups />
     <signals />
   </object>

@@ -103,6 +103,7 @@
     <Compile Include="TreeModels\LevelConfig.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="GtkWidgets\yFileChooserButton.cs" />
+    <Compile Include="GtkWidgets\yColorButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -151,6 +152,7 @@
     <None Include="gtk-gui\objects.xml">
       <Link>Properties\objects.xml</Link>
     </None>
+    <None Include="icons\colorbutton.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
