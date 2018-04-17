@@ -72,6 +72,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ColumnMapping<TNode> SetTag(object tag)
+		{
+			this.tag = tag;
+			return this;
+		}
+
 		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, bool>> propertyRefExpr)
 		{
 			//DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
