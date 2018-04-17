@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -18,6 +19,15 @@ namespace Gamma.ColumnConfig
 				.SelectMany (c => c.ConfiguredRenderersGeneric))
 			{
 				cell.SetCommonSetter<TCellRenderer> (setter);
+			}
+			return this;
+		}
+
+		public RowMapping<TNode> XAlign(float align)
+		{
+			foreach(var cell in myConfig.ConfiguredColumns
+			        .SelectMany(c => c.ConfiguredRenderers)) {
+				(cell.GetRenderer() as CellRenderer).Xalign = align;
 			}
 			return this;
 		}

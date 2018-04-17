@@ -77,6 +77,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ToggleRendererMapping<TNode> XAlign(float alignment)
+		{
+			cellRenderer.Xalign = alignment;
+			return this;
+		}
+
 		#endregion
 	}
 }

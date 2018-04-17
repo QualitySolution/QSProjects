@@ -75,6 +75,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ComboRendererMapping<TNode, TItem> XAlign(float alignment)
+		{
+			cellRenderer.Xalign = alignment;
+			return this;
+		}
+
 		/// <summary>
 		/// Fill combobox by items.
 		/// </summary>

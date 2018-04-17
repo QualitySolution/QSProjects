@@ -110,6 +110,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public NumberRendererMapping<TNode> XAlign(float alignment)
+		{
+			cellRenderer.Xalign = alignment;
+			return this;
+		}
+
 		#endregion
 	}
 }

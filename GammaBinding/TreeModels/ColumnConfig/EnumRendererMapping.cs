@@ -71,6 +71,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public EnumRendererMapping<TNode, TItem> XAlign(float alignment)
+		{
+			cellRenderer.Xalign = alignment;
+			return this;
+		}
+
 		private void FillRendererByEnum(Type enumType, Enum [] excludeItems)
 		{
 			ListStore comboListStore = new ListStore (enumType, typeof(string));

@@ -93,6 +93,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public TextRendererMapping<TNode> XAlign(float alignment)
+		{
+			cellRenderer.Xalign = alignment;
+			return this;
+		}
+
 		public TextRendererMapping<TNode> SearchHighlight(bool on=true)
 		{
 			cellRenderer.SearchHighlight = on;
