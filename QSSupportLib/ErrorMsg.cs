@@ -55,7 +55,7 @@ namespace QSSupportLib
 		void InputsChanged (object sender, EventArgs e)
 		{
 			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
-			buttonSendReport.Sensitive = 
+			buttonSendReport.Sensitive = !MainSupport.SendErrorRequestEmail ||
 				(!String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) && regex.IsMatch (entryEmail.Text));
 			if (sender is Gtk.Entry) {
 				if (!regex.IsMatch (entryEmail.Text))

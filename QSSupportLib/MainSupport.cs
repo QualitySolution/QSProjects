@@ -10,6 +10,8 @@ namespace QSSupportLib
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		public static BaseParam BaseParameters;
 
+		public static bool SendErrorRequestEmail = true;
+
 		private static ErrorMsg currentCrashDlg;
 
 		private static AppVersion projectVerion;
