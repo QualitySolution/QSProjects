@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using FluentNHibernate.Cfg;
 using Gtk;
 using NHibernate;
@@ -24,6 +25,7 @@ namespace QSOrmProject
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
 		private static DateTime lastCleaning;
 		public static int Count = 0;
+		public static Assembly[] DomainAssemlies;
 
 		public static ISession OpenSession(IInterceptor interceptor = null)
 		{
@@ -98,6 +100,8 @@ namespace QSOrmProject
 		/// <param name="assemblies">Assemblies.</param>
 		public static void ConfigureOrm(FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies, Action<Configuration> exposeConfiguration = null)
 		{
+			DomainAssemlies = assemblies;
+
 			fluenConfig = Fluently.Configure().Database(database);
 
 			fluenConfig.Mappings(m => {

@@ -56,12 +56,18 @@ namespace QSProjectsLib
 			RunErrorDialog(String.Format(formattedError, args));
 		}
 
-		public static void RunErrorDialog (string error)
+		public static void RunErrorDialog(string error)
+		{
+			RunErrorDialog(true, error);
+		}
+
+		public static void RunErrorDialog (bool useMarkup, string error)
 		{
 			MessageDialog md = new MessageDialog (null,
 				DialogFlags.Modal,
 				MessageType.Error,
 				ButtonsType.Ok,
+			    useMarkup,
 				error);
 			md.SetPosition (WindowPosition.Center);
 			md.ShowAll ();

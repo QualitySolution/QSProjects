@@ -12,6 +12,8 @@ namespace QSSupportLib
 
 		public static bool SendErrorRequestEmail = true;
 
+		public static Action<Exception> HandleStaleObjectStateException;
+
 		private static ErrorMsg currentCrashDlg;
 
 		private static AppVersion projectVerion;
@@ -71,6 +73,11 @@ namespace QSSupportLib
 
 		static void HandleRunErrorMessageDlg (object sender, QSMain.RunErrorMessageDlgEventArgs e)
 		{
+			if(HandleStaleObjectStateException != null && e.Exception.InnerException.GetType().Name == "StaleObjectStateException"){
+				HandleStaleObjectStateException(e.Exception.InnerException);
+				return;
+			}
+
 			if(currentCrashDlg != null)
 			{
 				logger.Debug ("Добавляем исключение в уже созданное окно.");
