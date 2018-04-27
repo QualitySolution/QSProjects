@@ -17,6 +17,8 @@ namespace QSDocTemplates
 
 		public event EventHandler BeforeOpen;
 
+		public bool CanOpenDocument { get; set; } = true;
+
 		IDocTemplate template;
 		public IDocTemplate Template
 		{
@@ -88,6 +90,8 @@ namespace QSDocTemplates
 			worker.FileUpdated += Worker_FileUpdated;
 			UpdateState();
 			UpdateSize();
+
+			CanOpenDocument = true;
 		}
 
 		void Worker_FileUpdated (object sender, FileUpdatedEventArgs e)
@@ -154,13 +158,19 @@ namespace QSDocTemplates
 		protected void OnButtonPrintClicked(object sender, EventArgs e)
 		{
 			BeforeOpen?.Invoke(this, EventArgs.Empty);
-			worker.OpenInOffice(Template, true, FileEditMode.Document, true);
+			if(CanOpenDocument) {
+				worker.OpenInOffice(Template, true, FileEditMode.Document, true);
+			}
+			CanOpenDocument = true;
 		}
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)
 		{
 			BeforeOpen?.Invoke(this, EventArgs.Empty);
-			worker.OpenInOffice(Template, false, FileEditMode.Document);
+			if(CanOpenDocument) {
+				worker.OpenInOffice(Template, false, FileEditMode.Document);
+			}
+			CanOpenDocument = true;
 		}
 
 		protected void OnButtonRevertCommonClicked(object sender, EventArgs e)
@@ -171,15 +181,16 @@ namespace QSDocTemplates
 		protected void OnButtonOpenClicked (object sender, EventArgs e)
 		{
 			BeforeOpen?.Invoke(this, EventArgs.Empty);
-			worker.OpenInOffice(Template, true, FileEditMode.Document);
+			if(CanOpenDocument) {
+				worker.OpenInOffice(Template, true, FileEditMode.Document);
+			}
+			CanOpenDocument = true;
 		}
 
 		protected void OnComboTemplatesChanged(object sender, EventArgs e)
 		{
 			if (Template != comboTemplates.SelectedItem)
 				Template = (IDocTemplate)comboTemplates.SelectedItem;
-			int i;
 		}
 	}
 }
-
