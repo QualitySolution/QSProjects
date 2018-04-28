@@ -7,9 +7,10 @@
   <import>
     <widget-library name="../../../My-FyiReporting/RdlGtkViewer/RdlGtkViewer/bin/Debug/RdlGtkViewer.exe" />
     <widget-library name="../../QSTDI/bin/Debug/QSTDI.dll" />
-    <widget-library name="../bin/Debug/QSReport.dll" internal="true" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
+    <widget-library name="../bin/Debug/QSReport.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSReport.ReportViewDlg" design-size="633 217">
     <action-group name="Default" />
