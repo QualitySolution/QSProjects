@@ -17,7 +17,7 @@ namespace QSDocTemplates
 
 		public event EventHandler BeforeOpen;
 
-		public bool CanOpenDocument { get; set; } = true;
+		public bool CanOpenDocument = true;
 
 		IDocTemplate template;
 		public IDocTemplate Template
