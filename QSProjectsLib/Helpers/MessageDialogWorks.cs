@@ -90,6 +90,11 @@ namespace QSProjectsLib
 			md.Destroy();
 		}
 
+		public static void RunInfoDialog(string formattedMessage, params object[] args)
+		{
+			RunErrorDialog(String.Format(formattedMessage, args));
+		}
+
 		public static void RunInfoDialog (string message)
 		{
 			MessageDialog md = new MessageDialog (null,
