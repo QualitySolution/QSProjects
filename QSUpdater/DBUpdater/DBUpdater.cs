@@ -99,14 +99,16 @@ namespace QSUpdater.DB
 				}
 			}
 
-			if(currentDB != beforeUpdates)
+			if (currentDB != beforeUpdates)
+			{
 				MainSupport.BaseParameters.UpdateParameter(
-					QSMain.ConnectionDB, 
+					QSMain.ConnectionDB,
 					"micro_updates",
 					StringWorks.VersionToShortString(currentDB)
 				);
 
-			MessageDialogWorks.RunInfoDialog("Выполнено микро обновление базы {0} -> {1}.", StringWorks.VersionToShortString(beforeUpdates), StringWorks.VersionToShortString(currentDB));
+				MessageDialogWorks.RunInfoDialog("Выполнено микро обновление базы {0} -> {1}.", StringWorks.VersionToShortString(beforeUpdates), StringWorks.VersionToShortString(currentDB));
+			}
 		}
 
 		private static void NotAdminErrorAndExit(bool isMicro, Version from, Version to)
