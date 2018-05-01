@@ -66,9 +66,11 @@ namespace QSUpdater.DB
 
 			while(microUpdates.Exists(u => u.Source == currentDB))
 			{
-                if (!QSMain.User.Admin)
-					NotAdminErrorAndExit(true);
                 var update = microUpdates.Find(u => u.Source == currentDB);
+
+				if (!QSMain.User.Admin)
+					NotAdminErrorAndExit(true, update.Source, update.Destanation);
+
 				logger.Info("Обновляемся до {0}", StringWorks.VersionToShortString(update.Destanation));
 				var trans = QSMain.ConnectionDB.BeginTransaction();
 				try
@@ -105,15 +107,17 @@ namespace QSUpdater.DB
 				);
 		}
 
-        private static void NotAdminErrorAndExit(bool isMicro)
+		private static void NotAdminErrorAndExit(bool isMicro, Version from, Version to)
         {
             MessageDialog md = new MessageDialog (null, DialogFlags.DestroyWithParent,
                 MessageType.Error, 
                 ButtonsType.Close,
-				String.Format (
-					"Для работы текущей версии программы необходимо провести{0} обновление базы, " +
+				String.Format(
+					"Для работы текущей версии программы необходимо провести{0} обновление базы ({1} -> {2}), " +
 					"но у вас нет для этого прав. Зайдите в программу под администратором.",
-					isMicro ? " микро" : ""
+					isMicro ? " микро" : "",
+				  	StringWorks.VersionToShortString(from),
+				  	StringWorks.VersionToShortString(to)
 				));
             md.Show ();
             md.Run ();
@@ -145,7 +149,7 @@ namespace QSUpdater.DB
 			if(update != null)
 			{
 				if (!QSMain.User.Admin)
-					NotAdminErrorAndExit(false);
+					NotAdminErrorAndExit(false, update.Source, update.Destanation);
 
 				var dlg = new DBUpdateProcess (update);
 				dlg.Show ();
