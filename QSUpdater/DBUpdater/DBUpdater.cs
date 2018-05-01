@@ -105,6 +105,8 @@ namespace QSUpdater.DB
 					"micro_updates",
 					StringWorks.VersionToShortString(currentDB)
 				);
+
+			MessageDialogWorks.RunInfoDialog("Выполнено микро обновление базы {0} -> {1}.", StringWorks.VersionToShortString(beforeUpdates), StringWorks.VersionToShortString(currentDB));
 		}
 
 		private static void NotAdminErrorAndExit(bool isMicro, Version from, Version to)
