@@ -9,6 +9,7 @@
     <AssemblyName>QSReport</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +53,7 @@
     <Compile Include="DocumentPrinter.cs" />
     <Compile Include="ReportPrinter.cs" />
     <Compile Include="MultipleDocumentPrinter.cs" />
+    <Compile Include="ReportIdentifierAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
