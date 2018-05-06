@@ -18,6 +18,7 @@ namespace QSOrmProject.Deletion
 		internal bool IsHibernateMode;
 		internal CheckOperationDlg CheckDlg;
 		internal DeleteOperationDlg ExcuteDlg;
+		internal System.Action BeforeDeletion;
 		IUnitOfWork uow;
 
 		internal IUnitOfWork UoW{
@@ -100,6 +101,7 @@ namespace QSOrmProject.Deletion
 				ExcuteDlg = new DeleteOperationDlg();
 				ExcuteDlg.SetOperationsCount(PreparedOperation.GetOperationsCount() + 2);
 				ExcuteDlg.Show();
+				BeforeDeletion?.Invoke();
 
 				try {
 					IsHibernateMode = HasHibernateOperations(PreparedOperation);

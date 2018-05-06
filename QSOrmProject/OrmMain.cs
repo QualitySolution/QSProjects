@@ -305,9 +305,10 @@ namespace QSOrmProject
 			}
 		}
 
-		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null)
+		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);
 			} catch (Exception ex) {
@@ -321,13 +322,21 @@ namespace QSOrmProject
 			return DeleteObject(typeof(TEntity), id, uow);
 		}
 
-		public static bool DeleteObject(object subject, IUnitOfWork uow = null)
+		/// <summary>
+		/// Удаляем объект вместе с зависимостями с отображением пользователю диалога показывающего что еще будет удалено.
+		/// </summary>
+		/// <returns><c>true</c>, if object was deleted, <c>false</c> otherwise.</returns>
+		/// <param name="subject">Удяляемый объект</param>
+		/// <param name="uow">UnitOfWork в котором нужно выполнить удаление. Если не передать будет созданн новый UnitOfWork.</param>
+		/// <param name="beforeDeletion">Метод который нужно выполнить перед удалением, если пользователь подтвердит удаление.</param>
+		public static bool DeleteObject(object subject, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			if (!(subject is IDomainObject))
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
 			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
 			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);
 			} catch (Exception ex) {
