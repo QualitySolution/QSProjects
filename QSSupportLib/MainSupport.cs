@@ -73,7 +73,9 @@ namespace QSSupportLib
 
 		static void HandleRunErrorMessageDlg (object sender, QSMain.RunErrorMessageDlgEventArgs e)
 		{
-			if(HandleStaleObjectStateException != null && e.Exception.InnerException.GetType().Name == "StaleObjectStateException"){
+			if(HandleStaleObjectStateException != null 
+			   && e.Exception.InnerException != null 
+			   && e.Exception.InnerException.GetType().Name == "StaleObjectStateException"){
 				HandleStaleObjectStateException(e.Exception.InnerException);
 				return;
 			}
