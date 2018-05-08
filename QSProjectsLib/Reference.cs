@@ -33,7 +33,7 @@ namespace QSProjectsLib
 		Entry inputNameEntry, inputDiscriptionEntry;
 		Label LableName, LableDescription;
 		
-		public Reference ( bool WithDiscription = false)
+		public Reference ( bool WithDiscription = false, string orderBy = null)
 		{
 			this.Build ();
 			this.Destroyed += OnDestroyed;
@@ -51,6 +51,11 @@ namespace QSProjectsLib
 			else
 			{
 				SqlSelect = "SELECT id, name FROM @tablename ";
+			}
+
+			if(!String.IsNullOrWhiteSpace(orderBy))
+			{
+				SqlSelect += string.Format ("ORDER BY {0} ", orderBy);
 			}
 
 			eventboxOrdinalInfo.ModifyBg(StateType.Normal, new Gdk.Color(237, 200, 119));
