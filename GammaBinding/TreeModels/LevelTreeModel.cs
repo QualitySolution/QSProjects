@@ -127,6 +127,9 @@ namespace Gamma.Binding
 		public bool IterChildren (out TreeIter iter, TreeIter parent)
 		{
 			iter = TreeIter.Zero;
+			if(parent.UserData == IntPtr.Zero) {
+				return false;
+			}
 			var list = GetChildsList(parent);
 			if (list == null || list.Count == 0)
 				return false;
