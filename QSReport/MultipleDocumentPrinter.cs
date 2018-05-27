@@ -1,6 +1,7 @@
 ﻿using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
+using QSDocTemplates;
 using QSOrmProject;
 
 namespace QSReport
@@ -15,9 +16,18 @@ namespace QSReport
 
 		public void PrintSelectedDocuments()
 		{
+			PageOrientation orientation = PageOrientation.Portrait;
 			showDialog = true;
-			foreach(var document in PrintableDocuments.Where(x => x.Selected)) {
-				PrintDoc(document, PageOrientation.Portrait, document.Copies);
+			foreach(var document in PrintableDocuments.Where(d => d.Selected && d.Document.PrintType == PrinterType.RDL)) {
+				PrintDoc(document, orientation, document.Copies);
+			}
+
+			var ODTList = PrintableDocuments.Where(d => d.Selected)
+											.Select(d => d.Document)
+											.OfType<ITemplatePrntDoc>()
+											.ToList();
+			if(ODTList.Any()) {
+				TemplatePrinter.PrintAll(ODTList);
 			}
 		}
 
@@ -29,35 +39,47 @@ namespace QSReport
 
 		private void PrintDoc(SelectablePrintDocument doc, PageOrientation orientation, int copies)
 		{
-			var reportInfo = doc.Document.GetReportInfo();
-
-			var action = showDialog ? PrintOperationAction.PrintDialog : PrintOperationAction.Print;
-			showDialog = false;
-
-			Printer = new PrintOperation();
-			Printer.Unit = Unit.Points;
-			Printer.UseFullPage = true;
-
-			if(PrintSettings == null) {
-				Printer.PrintSettings = new PrintSettings();
-			} else {
-				Printer.PrintSettings = PrintSettings;
+			if(doc == null) {
+				return;
 			}
 
-			Printer.PrintSettings.Orientation = orientation;
+			switch(doc.Document.PrintType) {
+				case PrinterType.RDL:
+					var reportInfo = doc.Document.GetReportInfo();
 
-			var rprint = new ReportPrinter(reportInfo);
-			rprint.PrepareReport();
+					var action = showDialog ? PrintOperationAction.PrintDialog : PrintOperationAction.Print;
+					showDialog = false;
 
-			Printer.NPages = rprint.PageCount;
-			Printer.PrintSettings.NCopies = copies;
-			if(copies > 1)
-				Printer.PrintSettings.Collate = true;
+					Printer = new PrintOperation();
+					Printer.Unit = Unit.Points;
+					Printer.UseFullPage = true;
 
-			Printer.DrawPage += rprint.DrawPage;
-			Printer.Run(action, null);
+					if(PrintSettings == null) {
+						Printer.PrintSettings = new PrintSettings();
+					} else {
+						Printer.PrintSettings = PrintSettings;
+					}
 
-			PrintSettings = Printer.PrintSettings;
+					Printer.PrintSettings.Orientation = orientation;
+
+					var rprint = new ReportPrinter(reportInfo);
+					rprint.PrepareReport();
+
+					Printer.NPages = rprint.PageCount;
+					Printer.PrintSettings.NCopies = copies;
+					if(copies > 1)
+						Printer.PrintSettings.Collate = true;
+
+					Printer.DrawPage += rprint.DrawPage;
+					Printer.Run(action, null);
+
+					PrintSettings = Printer.PrintSettings;
+					break;
+				case PrinterType.ODT:
+				case PrinterType.None:
+				default:
+					break;
+			}
 		}
 	}
 
