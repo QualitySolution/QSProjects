@@ -39,6 +39,8 @@ namespace QSProjectsLib
 			logger.Info ("Получаем таблицу пользователей...");
 			
 			string sql = "SELECT * FROM users ";
+			if(!chkShowInactive.Active)
+				sql += " WHERE deactivated = 0";
 			MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
 			
 			MySqlDataReader rdr = cmd.ExecuteReader ();
@@ -149,6 +151,11 @@ namespace QSProjectsLib
 			}
 
 			UpdateUsers ();
+		}
+
+		protected void OnChkShowInactiveToggled(object sender, EventArgs e)
+		{
+			UpdateUsers();
 		}
 	}
 }
