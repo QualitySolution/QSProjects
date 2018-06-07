@@ -251,10 +251,12 @@ namespace QSOrmProject
             if (classDiscript.SimpleDialog) {
                 OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
             } else if (RepresentationModel is IRepresentationModelWithParent) {
+				var dlg = OrmMain.CreateObjectDialog(objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent);
                 TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
-                    () => OrmMain.CreateObjectDialog (objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent),
+                    () => dlg,
                     this
                 );
+				dlg.EntitySaved += dlg_EntitySaved;
             } else {
                 var dlg = OrmMain.CreateObjectDialog(objectType);
                 dlg.EntitySaved += dlg_EntitySaved;
