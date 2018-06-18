@@ -227,7 +227,7 @@ namespace QSProjectsLib
 						if (rdr ["Value"].ToString () != "utf8") {
 							TextMes += String.Format ("* character_set_server = {0} - для нормальной работы программы кодировка сервера " +
 							"должна быть utf8, иначе возможны проблемы с языковыми символами, этот параметр изменяется " +
-							"в настройках сервера MySQL\MariaDB.\n", rdr ["Value"].ToString ());
+							"в настройках сервера MySQL\\MariaDB.\n", rdr ["Value"].ToString ());
 						}
 						break;
 					case "character_set_database":
