@@ -82,17 +82,31 @@ namespace Gamma.ColumnConfig
 		}
 
 		/// <summary>
+		/// Hides values from combobox by condition from function.
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="func">Func</param>
+		public ComboRendererMapping<TNode, TItem> HideCondition(Func<TNode, TItem, bool> func)
+		{
+			cellRenderer.HideItemFunc = func;
+			return this;
+		}
+
+		/// <summary>
 		/// Fill combobox by items.
 		/// </summary>
 		/// <param name="itemsList">Items list.</param>
 		/// <param name="emptyValueTitle">Title for empty value, if set combobox dispaly first item with default value of type(for class is null), and can user set empty value</param>
 		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList, string emptyValueTitle = null)
 		{
-			FillRendererByList (itemsList, emptyValueTitle);
+			FillRendererByList (default(TNode), itemsList, emptyValueTitle);
+
+			cellRenderer.FillComboListFunc = node => FillRendererByList(node, itemsList, emptyValueTitle);
+
 			return this;
 		}
 
-		private void FillRendererByList(IList<TItem> itemsList, string emptyValueTitle)
+		private void FillRendererByList(TNode node, IList<TItem> itemsList, string emptyValueTitle)
 		{
 			ListStore comboListStore = new ListStore (typeof(TItem), typeof(string));
 
@@ -100,6 +114,10 @@ namespace Gamma.ColumnConfig
 				comboListStore.AppendValues(default(TItem), emptyValueTitle);
 
 			foreach (var item in itemsList) {
+
+				if(cellRenderer.HideItemFunc != null && cellRenderer.HideItemFunc(node, item))
+					continue;
+
 				if(cellRenderer.DisplayFunc == null)
 					comboListStore.AppendValues (item, item.ToString ());
 				else

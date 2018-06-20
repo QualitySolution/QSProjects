@@ -9,9 +9,9 @@ namespace Gamma.GtkWidgets.Cells
 	public interface INodeCellRenderer
 	{
 		void RenderNode(object node);
-		string DataPropertyName { get;}
+		string DataPropertyName { get; }
 		PropertyInfo DataPropertyInfo { get; }
-		IValueConverter EditingValueConverter { get;}
+		IValueConverter EditingValueConverter { get; }
 	}
 
 	public interface INodeCellRendererHighlighter : INodeCellRenderer
@@ -23,5 +23,11 @@ namespace Gamma.GtkWidgets.Cells
 	{
 		bool IsEnterToNextCell { get; }
 		event EditingStartedHandler EditingStarted;
+	}
+
+	public interface INodeCellRendererCombo : INodeCellRenderer
+	{
+		bool IsDynamicallyFillList { get; }
+		yTreeView MyTreeView { get; set; }
 	}
 }

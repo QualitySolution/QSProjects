@@ -164,6 +164,7 @@ namespace Gamma.GtkWidgets
 					else if(cell is CellRendererCombo)
 					{
 						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
+						(cell as INodeCellRendererCombo).MyTreeView = this;
 					}
 					else if (cell is CellRendererText)
 					{
