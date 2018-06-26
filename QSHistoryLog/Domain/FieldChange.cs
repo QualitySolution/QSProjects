@@ -176,7 +176,7 @@ namespace QSHistoryLog
 		Added,
 		[Display(Name = "Изменено")]
 		Changed,
-		[Display(Name = "Удалено")]
+		[Display(Name = "Очищено")]
 		Removed,
 		[Display(Name = "Без изменений")]
 		Unchanged
