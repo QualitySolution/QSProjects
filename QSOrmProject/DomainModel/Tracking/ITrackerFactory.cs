@@ -14,7 +14,7 @@ namespace QS.DomainModel.Tracking
 		IObjectTracker<TEntity> Create<TEntity>(TEntity root, TrackerCreateOption option) where TEntity : class, IDomainObject, new();
 		IObjectTracker CreateTracker(object root, TrackerCreateOption option);
 
-		IDeleteTracker CreateDeleteTracker();
+		IHibernateTracker CreateHibernateTracker();
 
 		bool NeedTrace(Type type);
 	}

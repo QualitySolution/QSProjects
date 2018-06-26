@@ -10,7 +10,9 @@ namespace QS.DomainModel
         ISession Session { get; }
         UnitOfWorkTitle ActionTitle { get; }
 
-        void OnPostLoad(PostLoadEvent loadEvent);
+		IHibernateTracker HibernateTracker { get; }
+
+		void OnPostLoad(PostLoadEvent loadEvent);
 		void OnPreLoad(PreLoadEvent loadEvent);
 		void OnPostDelete(PostDeleteEvent deleteEvent);
 	}

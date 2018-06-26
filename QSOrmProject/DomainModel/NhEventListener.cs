@@ -7,7 +7,7 @@ using QSProjectsLib;
 
 namespace QS.DomainModel
 {
-	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener
+	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener
 	{
 #region Статическое
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -71,9 +71,24 @@ namespace QS.DomainModel
 			IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
 
 			if(uow != null)
+			{
+				uow.HibernateTracker?.OnPostDelete(@event);
 				uow.OnPostDelete(@event);
+			}
 			else
 				logger.Warn("Пришло событие PostDeleteEvent но соответствующий сессии UnitOfWork не найден.");
+		}
+
+		public void OnPostUpdate(PostUpdateEvent @event)
+		{
+			IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
+
+			if(uow != null)
+			{
+				uow.HibernateTracker?.OnPostUpdate(@event);
+			}
+			else
+				logger.Warn("Пришло событие OnPostUpdate но соответствующий сессии UnitOfWork не найден.");
 		}
 
         private IUnitOfWorkEventHandler GetUnitOfWork(NHibernate.ISession session)

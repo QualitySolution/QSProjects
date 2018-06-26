@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using QS.DomainModel;
-using QS.DomainModel.Tracking;
+﻿using QS.DomainModel;
 
 namespace QSOrmProject.DomainModel
 {
@@ -21,13 +19,11 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
-		public IObjectTracker<TRootEntity> Tracker { get; private set; }
-
 		public bool HasChanges
 		{
 			get
 			{
-				return IsNew || (Tracker != null ? Tracker.Compare(Root) : Session.IsDirty()) ;
+				return IsNew || Session.IsDirty();
 			}
 		}
 
@@ -38,9 +34,6 @@ namespace QSOrmProject.DomainModel
 			Root = new TRootEntity();
 			if(Root is IBusinessObject)
 				((IBusinessObject)Root).UoW = this;
-			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
-			if(Tracker != null)
-				Trackers.Add(Tracker);
 		}
 
 		internal UnitOfWork(TRootEntity root, UnitOfWorkTitle title)
@@ -50,9 +43,6 @@ namespace QSOrmProject.DomainModel
             ActionTitle = title;
 			if(Root is IBusinessObject)
 				((IBusinessObject)Root).UoW = this;
-			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
-			if(Tracker != null)
-				Trackers.Add(Tracker);
 		}
 
 		internal UnitOfWork(int id, UnitOfWorkTitle title)
@@ -60,7 +50,6 @@ namespace QSOrmProject.DomainModel
 			IsNew = false;
             ActionTitle = title;
 			Root = GetById<TRootEntity>(id);
-			Tracker = Trackers.OfType<IObjectTracker<TRootEntity>>().FirstOrDefault(t => t.OriginEntity == Root);
 		}
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)

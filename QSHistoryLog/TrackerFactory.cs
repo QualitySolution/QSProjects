@@ -18,9 +18,9 @@ namespace QSHistoryLog
 				return null;
 		}
 
-		public IDeleteTracker CreateDeleteTracker()
+		public IHibernateTracker CreateHibernateTracker()
 		{
-			return new DeleteTracker();
+			return new HibernateTracker();
 		}
 
 		public IObjectTracker CreateTracker(object root, TrackerCreateOption option)

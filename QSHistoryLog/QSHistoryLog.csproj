@@ -84,7 +84,7 @@
     <Compile Include="HibernateMapping\HistoryChangeSetMap.cs" />
     <Compile Include="HibernateMapping\FieldChangeMap.cs" />
     <Compile Include="HistoryChangesRepository.cs" />
-    <Compile Include="DeleteTracker.cs" />
+    <Compile Include="HibernateTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

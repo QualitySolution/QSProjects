@@ -19,9 +19,7 @@ namespace QS.DomainModel
 
 		protected ISession session;
 
-		public readonly List<IObjectTracker> Trackers = new List<IObjectTracker>();
-
-		protected IDeleteTracker deleteTracker;
+		public IHibernateTracker HibernateTracker { get; private set; }
 
 		protected List<object> entityToSave = new List<object>();
 
@@ -40,7 +38,7 @@ namespace QS.DomainModel
 				if(session == null) {
 					session = OrmMain.OpenSession();
 					NhEventListener.RegisterUow(this);
-					deleteTracker = TrackerMain.Factory?.CreateDeleteTracker();
+					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}
 
 				return session;
@@ -55,17 +53,12 @@ namespace QS.DomainModel
 			}
 
 			try {
-				foreach(var tracker in Trackers) {
-					if(tracker.CompareWithOrigin())
-						tracker.SaveChangeSet((IUnitOfWork)this);
-				}
 
 				transaction.Commit();
-				//Записываем удаление в новой транзакции, потому как события об удалении приходят уже после комита.
-				deleteTracker?.SaveChangeSet();
+				//Записываем журналируемые изменения в новой транзакции, потому как события приходят уже после комита.
+				HibernateTracker?.SaveChangeSet();
 
 				IsNew = false;
-				Trackers.ForEach(t => t.ResetToOrigin());
 				OrmMain.NotifyObjectUpdated(entityToSave.ToArray());
 			} catch(Exception ex) {
 				logger.Error(ex, "Исключение в момент комита.");
@@ -139,12 +132,6 @@ namespace QS.DomainModel
 
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
-
-			if(TrackerMain.NeedTrace(typeof(TEntity)) && Trackers.OfType<IObjectTracker<TEntity>>().All(t => !t.OriginEntity.Equals(entity)))
-			{
-				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
-				Trackers.Add(tracker);
-			}
 		}
 
 		public virtual void TrySave(object entity, bool orUpdate = true)
@@ -159,11 +146,6 @@ namespace QS.DomainModel
 
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
-
-			if(TrackerMain.NeedTrace(entity.GetType()) && Trackers.All(t => t.OriginObject != entity)) {
-				var tracker = TrackerMain.Factory.CreateTracker(entity, TrackerCreateOption.IsNewAndShotEmpty);
-				Trackers.Add(tracker);
-			}
 		}
 
 		public void Delete<T>(int id) where T : IDomainObject
@@ -191,16 +173,7 @@ namespace QS.DomainModel
 
 		void IUnitOfWorkEventHandler.OnPostLoad(PostLoadEvent loadEvent)
 		{
-			logger.Debug("PostLoadEvent for {0} id:{1}", loadEvent.Entity, loadEvent.Id);
-			if(Trackers.Any(x => x.OriginObject == loadEvent.Entity))
-			{
-				logger.Warn("Трекер уже существует пропускаем...");
-				return;
-			}
 
-			var tracker = TrackerMain.Factory?.CreateTracker(loadEvent.Entity, TrackerCreateOption.IsLoadedAndShotThis);
-			if(tracker != null)
-				Trackers.Add(tracker);
 		}
 
 		void IUnitOfWorkEventHandler.OnPreLoad(PreLoadEvent loadEvent)
@@ -212,12 +185,7 @@ namespace QS.DomainModel
 
 		void IUnitOfWorkEventHandler.OnPostDelete(PostDeleteEvent deleteEvent)
 		{
-			var item = deleteEvent.Entity as IDomainObject;
 
-			if(deleteTracker == null || item == null || !TrackerMain.NeedTrace(item))
-				return;
-
-			deleteTracker.MarkDeleted(item);
 		}
 
 		#endregion
