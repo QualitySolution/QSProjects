@@ -48,11 +48,13 @@
     <Compile Include="Project.Domain\UserBase.cs" />
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
     <Compile Include="DomainModel\Attributes.cs" />
+    <Compile Include="Project.Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
     <Folder Include="Project.HibernateMapping\" />
     <Folder Include="DomainModel\" />
+    <Folder Include="Project.Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSOrmProject\QSOrmProject.csproj">

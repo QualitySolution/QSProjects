@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1C3B49FC-372C-46F7-995F-EEB44474E2DE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSHistoryLog</RootNamespace>
+    <RootNamespace>QS.HistoryLog</RootNamespace>
     <AssemblyName>QSHistoryLog</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,9 +72,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HistoryMain.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="HistoryView.cs" />
-    <Compile Include="gtk-gui\QSHistoryLog.HistoryView.cs" />
-    <Compile Include="Domain\HistoryChangeSet.cs" />
+    <Compile Include="Domain\ChangeSet.cs" />
     <Compile Include="Domain\FieldChange.cs" />
     <Compile Include="PangoRender.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
@@ -81,10 +80,14 @@
     <Compile Include="HistoryAttributes.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="TrackerFactory.cs" />
-    <Compile Include="HibernateMapping\HistoryChangeSetMap.cs" />
+    <Compile Include="HibernateMapping\ChangedEntityMap.cs" />
     <Compile Include="HibernateMapping\FieldChangeMap.cs" />
-    <Compile Include="HistoryChangesRepository.cs" />
     <Compile Include="HibernateTracker.cs" />
+    <Compile Include="Domain\ChangedEntity.cs" />
+    <Compile Include="Dialogs\HistoryView.cs" />
+    <Compile Include="gtk-gui\QS.HistoryLog.Dialogs.HistoryView.cs" />
+    <Compile Include="HibernateMapping\ChangeSetMap.cs" />
+    <Compile Include="Repositories\HistoryChangesRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -126,6 +129,10 @@
       <Project>{94F1F5F2-6BC4-464B-AC51-FBDB4FA3F3AD}</Project>
       <Name>Compare-NET-Objects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
+      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
+      <Name>QS.Project</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -136,5 +143,7 @@
     <Folder Include="Domain\" />
     <Folder Include="Comparers\" />
     <Folder Include="HibernateMapping\" />
+    <Folder Include="Dialogs\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 </Project>

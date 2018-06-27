@@ -7,6 +7,8 @@ namespace QSOrmProject
 {
 	public interface IUnitOfWork : IDisposable 
 	{
+		string ActionName { get; }
+
 		NHibernate.ISession Session{ get;}
 
 		object RootObject{ get;}
@@ -55,4 +57,3 @@ namespace QSOrmProject
 		void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject;
 	}
 }
-

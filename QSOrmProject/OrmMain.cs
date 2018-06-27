@@ -365,6 +365,9 @@ namespace QSOrmProject
 		}
 
 		#endregion
+
+		//FIXME Временный проброс ID пользователя, до тех пор пока вход пользователя не переведем с QSProjectsLib на QS.Project
+		public static int CurrentUserId => QSMain.User.Id;
 	}
 
 	internal class DelayedNotifyLink

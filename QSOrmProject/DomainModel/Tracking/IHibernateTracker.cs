@@ -10,6 +10,10 @@ namespace QS.DomainModel.Tracking
 		void OnPostDelete(PostDeleteEvent deleteEvent);
 		void Reset();
 
-		void SaveChangeSet();
+		/// <summary>
+		/// Сохраняем журнал изменений через отдельный UnitOfWork.
+		/// </summary>
+		/// <param name="userUoW">Необходим только для получения названия пользовательских действий.</param>
+		void SaveChangeSet(IUnitOfWork userUoW);
 	}
 }

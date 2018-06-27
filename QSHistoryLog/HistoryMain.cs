@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using MySql.Data.MySqlClient;
+using KellermanSoftware.CompareNetObjects;
 using QS.DomainModel.Tracking;
-using QSHistoryLog.Domain;
+using QSHistoryLog;
 using QSOrmProject;
-using QSOrmProject.Deletion;
-using QSProjectsLib;
 
-namespace QSHistoryLog
+namespace QS.HistoryLog
 {
 	public static class HistoryMain
 	{
@@ -140,53 +138,6 @@ namespace QSHistoryLog
 		{
 			var prop = value.GetType ().GetProperty ("Id");
 			return prop != null ? (int?)prop.GetValue (value, null) : null;
-		}
-
-		public static void SubscribeToDeletion()
-		{
-			DeleteConfig.AfterDeletion += OnOrmAfterDeletion;
-		}
-
-		static void OnOrmAfterDeletion (object sender, AfterDeletionEventArgs e)
-		{
-			logger.Debug ("Записываем ChangeSet-ы удаления в БД.");
-			string sql = "INSERT INTO history_changeset (datetime, user_id, operation, object_name, object_id, object_title) " +
-				"VALUES ( UTC_TIMESTAMP(), @user_id, @operation, @object_name, @object_id, @object_title)";
-			var trans = (MySqlTransaction)e.CurTransaction;
-
-			MySqlCommand cmd = new MySqlCommand(sql, trans.Connection, trans);
-			cmd.Prepare ();
-
-			cmd.Parameters.Add("user_id", MySqlDbType.UInt32);
-			cmd.Parameters.AddWithValue("operation", ChangeSetType.Delete.ToString ("G"));
-			cmd.Parameters.Add("object_name", MySqlDbType.String);
-			cmd.Parameters.Add("object_id", MySqlDbType.UInt32);
-			cmd.Parameters.Add("object_title", MySqlDbType.String);
-
-			uint count = 0;
-
-			foreach(var item in e.DeletedItems)
-			{
-				if(!ObjectsDesc.Exists (d => d.ObjectType == item.ItemClass))
-				{
-					logger.Debug ("Запись в историю информации об удалении объекта, попущена так как не найдено описание класса {0}.", item.ItemClass);
-					continue;
-				}
-
-				//Обход проблемы удаления пользователем самого себя
-				if (item.ItemClass.Name == "User" && item.ItemId == QSMain.User.Id)
-					cmd.Parameters ["user_id"].Value = null;
-				else
-					cmd.Parameters ["user_id"].Value = QSMain.User.Id;
-
-				cmd.Parameters ["object_name"].Value = item.ItemClass.Name;
-				cmd.Parameters ["object_id"].Value = item.ItemId;
-				cmd.Parameters ["object_title"].Value = item.Title;
-
-				cmd.ExecuteNonQuery();
-				count++;
-			}
-			logger.Debug ("Зафиксировано в журнал удаление {0} объектов.", count);
 		}
 	}
 

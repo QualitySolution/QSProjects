@@ -23,6 +23,8 @@ namespace QS.DomainModel
 
 		protected List<object> entityToSave = new List<object>();
 
+		public string ActionName { get; protected set; }
+
 		public bool IsNew { get; protected set; }
 
 		public UnitOfWorkTitle ActionTitle { get; protected set; }
@@ -56,7 +58,7 @@ namespace QS.DomainModel
 
 				transaction.Commit();
 				//Записываем журналируемые изменения в новой транзакции, потому как события приходят уже после комита.
-				HibernateTracker?.SaveChangeSet();
+				HibernateTracker?.SaveChangeSet((IUnitOfWork)this);
 
 				IsNew = false;
 				OrmMain.NotifyObjectUpdated(entityToSave.ToArray());

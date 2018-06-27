@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NHibernate.Event;
 using NHibernate.Proxy;
 using QS.DomainModel.Tracking;
-using QSHistoryLog.Domain;
+using QS.HistoryLog.Domain;
+using QS.Project.Repositories;
 using QSOrmProject;
 using QSProjectsLib;
 
-namespace QSHistoryLog
+namespace QS.HistoryLog
 {
 	public class HibernateTracker : IHibernateTracker
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		readonly List<HistoryChangeSet> changes = new List<HistoryChangeSet>();
+		readonly List<ChangedEntity> changes = new List<ChangedEntity>();
 
 		public HibernateTracker()
 		{
@@ -28,12 +30,11 @@ namespace QSHistoryLog
 			if(!TrackerMain.Factory?.NeedTrace(type) ?? false)
 				return;
 
-			if(changes.Exists(di => di.Operation == ChangeSetType.Delete && di.ObjectName == type.Name && di.ItemId == entity.Id))
+			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
 				return;
 
-			var title = DomainHelper.GetObjectTilte(entity);
-			var hcs = new HistoryChangeSet(ChangeSetType.Delete, type, entity.Id, title);
-			changes.Add(hcs);
+			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity);
+			changes.Add(hce);
 		}
 
 		public void OnPostUpdate(PostUpdateEvent updateEvent)
@@ -45,11 +46,10 @@ namespace QSHistoryLog
 
 			if(fields.Count > 0)
 			{
-				var type = NHibernateProxyHelper.GuessClass(updateEvent.Entity);
-				var hcs = new HistoryChangeSet(ChangeSetType.Change, type, (int)updateEvent.Id, DomainHelper.GetObjectTilte(updateEvent.Entity));
-				fields.ForEach(f => f.ChangeSet = hcs);
-				hcs.Changes = fields;
-				changes.Add(hcs);
+				var hce = new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity);
+				fields.ForEach(f => f.Entity = hce);
+				hce.Changes = fields;
+				changes.Add(hce);
 			}
 		}
 
@@ -59,18 +59,28 @@ namespace QSHistoryLog
 		}
 
 		/// <summary>
-		/// Сохраняем в своей сессии.
+		/// Сохраняем журнал изменений через новый UnitOfWork.
 		/// </summary>
-		public void SaveChangeSet()
+		public void SaveChangeSet(IUnitOfWork userUoW)
 		{
 			if(changes.Count == 0)
 				return;
 
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot())
 			{
-				changes.ForEach(hcs => uow.Save(hcs));
-				logger.Debug(RusNumber.FormatCase(changes.Count, "Зарегистрировано изменение {0} объекта.", "Зарегистрировано изменение {0} объектов.", "Зарегистрировано изменение {0} объектов."));
+				var user = UserRepository.GetCurrentUser(uow);
+
+				var conStr = userUoW.Session.Connection.ConnectionString;
+				var reg = new Regex("user id=(.+?)(;|$)");
+				var match = reg.Match(conStr);
+				string dbLogin = match.Success ? match.Groups[0].Value : null;
+
+				var changeset = new ChangeSet(userUoW.ActionName, user, dbLogin);
+				changeset.AddChange(changes.ToArray());
+				uow.Save(changeset);
 				uow.Commit();
+				logger.Debug(RusNumber.FormatCase(changes.Count, "Зарегистрировано изменение {0} объекта.", "Зарегистрировано изменение {0} объектов.", "Зарегистрировано изменение {0} объектов."));
+
 				Reset();
 			}
 		}

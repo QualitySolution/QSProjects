@@ -1,7 +1,8 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
+using QS.HistoryLog.Domain;
 
-namespace QSHistoryLog.HibernateMapping
+namespace QS.HistoryLog.HibernateMapping
 {
 	public class FieldChangeMap : ClassMap<FieldChange>
 	{
@@ -12,13 +13,13 @@ namespace QSHistoryLog.HibernateMapping
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
 
 			Map(x => x.Type).Column("type").CustomType<FieldChangeTypeStringType>();
-			Map(x => x.Path).Column("path");
+			Map(x => x.Path).Column("field_name");
 			Map(x => x.OldValue).Column("old_value");
 			Map(x => x.OldId).Column("old_id");
 			Map(x => x.NewValue).Column("new_value");
 			Map(x => x.NewId).Column("new_id");
 
-			References(x => x.ChangeSet).Column("changeset_id");
+			References(x => x.Entity).Column("chaged_entity_id");
 		}
 	}
 }

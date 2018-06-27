@@ -4,10 +4,9 @@ using DiffPlex;
 using DiffPlex.DiffBuilder;
 using Gamma.Utilities;
 using NHibernate.Event;
-using QSHistoryLog.Domain;
 using QSOrmProject;
 
-namespace QSHistoryLog
+namespace QS.HistoryLog.Domain
 {
 	public class FieldChange
 	{
@@ -17,7 +16,7 @@ namespace QSHistoryLog
 
 		public virtual int Id { get; set; }
 
-		public virtual HistoryChangeSet ChangeSet { get; set; }
+		public virtual ChangedEntity Entity { get; set; }
 
 		public virtual string Path { get; set; }
 		public virtual FieldChangeType Type { get; set; }
