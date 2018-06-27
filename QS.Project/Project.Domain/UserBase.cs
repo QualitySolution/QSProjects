@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using QS.DomainModel;
+using QSOrmProject;
 
-namespace QSOrmProject.Domain
+namespace QS.Project.Domain
 {
-	[OrmSubject(Gender = QSProjectsLib.GrammaticalGender.Masculine,
+	[Appellative(Gender = GrammaticalGender.Masculine,
 	NominativePlural = "пользователи",
 	Nominative = "пользователь")]
-	[Obsolete("Данный класс перенесен в библиотеку QS.Project и назван UserBase, после того как все проекты переведут сборку на новый класс, этот будет удален.")]
-	public class User : PropertyChangedBase, IDomainObject
+	public class UserBase : PropertyChangedBase, IDomainObject
 	{
 		#region Свойства
 
@@ -33,7 +34,7 @@ namespace QSOrmProject.Domain
 
 		#endregion
 
-		public User()
+		public UserBase()
 		{
 		}
 	}
