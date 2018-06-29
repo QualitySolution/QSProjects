@@ -42,8 +42,14 @@
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.4.11\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.6\lib\net40-client\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

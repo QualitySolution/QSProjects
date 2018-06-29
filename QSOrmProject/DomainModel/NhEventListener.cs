@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NHibernate.Event;
 using QS.DomainModel.Tracking;
 using QSProjectsLib;
@@ -89,6 +91,21 @@ namespace QS.DomainModel
 			}
 			else
 				logger.Warn("Пришло событие OnPostUpdate но соответствующий сессии UnitOfWork не найден.");
+		}
+
+		public Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task OnPostDeleteAsync(PostDeleteEvent @event, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task OnPreLoadAsync(PreLoadEvent @event, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
 		}
 
         private IUnitOfWorkEventHandler GetUnitOfWork(NHibernate.ISession session)
