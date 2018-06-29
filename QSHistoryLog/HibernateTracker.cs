@@ -39,6 +39,11 @@ namespace QS.HistoryLog
 
 		public void OnPostUpdate(PostUpdateEvent updateEvent)
 		{
+			var entity = updateEvent.Entity as IDomainObject;
+			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
+			if(entity == null || !TrackerMain.NeedTrace(entity))
+				return;
+
 			var fields = Enumerable.Range(0, updateEvent.State.Length)
 								   .Select(i => FieldChange.CheckChange(i, updateEvent))
 								   .Where(x => x != null)
