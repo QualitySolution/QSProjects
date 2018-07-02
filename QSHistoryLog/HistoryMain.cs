@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using KellermanSoftware.CompareNetObjects;
 using QS.DomainModel.Tracking;
 using QSHistoryLog;
 using QSOrmProject;
