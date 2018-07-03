@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace QSOrmProject
 {
@@ -37,6 +38,9 @@ namespace QSOrmProject
 		void TryDelete(object entity);
 
 		IQueryable<T> GetAll<T> () where T : IDomainObject;
+
+		NHibernate.IQueryOver<T, T> Query<T>() where T : class;
+		NHibernate.IQueryOver<T, T> Query<T>(Expression<Func<T>> alias) where T : class;
 
 		T GetById<T>(int id) where T : IDomainObject;
 

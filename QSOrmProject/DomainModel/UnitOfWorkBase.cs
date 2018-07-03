@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Event;
@@ -91,6 +92,16 @@ namespace QS.DomainModel
 		public IQueryable<T> GetAll<T>() where T : IDomainObject
 		{
 			return Session.Query<T>();
+		}
+
+		public IQueryOver<T, T> Query<T>() where T : class
+		{
+			return Session.QueryOver<T>();
+		}
+
+		public IQueryOver<T, T> Query<T>(Expression<Func<T>> alias) where T : class
+		{
+			return Session.QueryOver<T>(alias);
 		}
 
 		public T GetById<T>(int id) where T : IDomainObject
