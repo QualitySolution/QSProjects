@@ -161,6 +161,7 @@
     <Compile Include="DomainModel\NhEventListener.cs" />
     <Compile Include="DomainModel\Tracking\IDeleteTracker.cs" />
     <Compile Include="yWidgets\yLegalNameAlternative.cs" />
+    <Compile Include="DomainModel\Basis\DomainTreeNodeBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -209,6 +210,7 @@
     <Folder Include="Users\" />
     <Folder Include="DomainModel\Tracking\" />
     <Folder Include="Permissions\" />
+    <Folder Include="DomainModel\Basis\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
