@@ -1,4 +1,5 @@
-﻿using System.Data.Bindings.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
 using QSDocTemplates;
@@ -16,11 +17,14 @@ namespace QSReport
 
 		public void PrintSelectedDocuments()
 		{
-			PageOrientation orientation = PageOrientation.Portrait;
 			showDialog = true;
+			List<IPrintableDocument> toPrinter = new List<IPrintableDocument>();
 			foreach(var document in PrintableDocuments.Where(d => d.Selected && d.Document.PrintType == PrinterType.RDL)) {
-				PrintDoc(document, orientation, document.Copies);
+				for(int i = 0; i < document.Copies; i++){
+					toPrinter.Add(document.Document);
+				}
 			}
+			DocumentPrinter.PrintAll(toPrinter);
 
 			var ODTList = PrintableDocuments.Where(d => d.Selected)
 											.Select(d => d.Document)
@@ -92,6 +96,15 @@ namespace QSReport
 		}
 
 		public IPrintableDocument Document { get; set; }
+
+		public PageOrientation GetPageOrientation(){
+			switch(Document.Orientation){
+				case DocumentOrientation.Landscape:
+					return PageOrientation.Landscape;
+				default:
+					return PageOrientation.Portrait;
+			}
+		}
 
 		private int copies;
 		public int Copies {
