@@ -160,6 +160,7 @@
     <Compile Include="DomainModel\IUnitOfWorkEventHandler.cs" />
     <Compile Include="DomainModel\NhEventListener.cs" />
     <Compile Include="DomainModel\Tracking\IDeleteTracker.cs" />
+    <Compile Include="yWidgets\yLegalNameAlternative.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

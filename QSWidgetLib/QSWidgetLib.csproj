@@ -72,6 +72,8 @@
     <Compile Include="gtk-gui\QSWidgetLib.SearchEntity.cs" />
     <Compile Include="SidePanels\HideHorizontalSeparator.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.SidePanels.HideHorizontalSeparator.cs" />
+    <Compile Include="LegalNameAlternative.cs" />
+    <Compile Include="gtk-gui\QSWidgetLib.LegalNameAlternative.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
