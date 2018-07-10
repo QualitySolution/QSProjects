@@ -748,6 +748,7 @@
             <property name="MemberName" />
             <property name="IsTextCombo">True</property>
             <property name="Items" translatable="yes" />
+            <signal name="Changed" handler="OnComboOwnershipChanged" />
           </widget>
           <packing>
             <property name="AutoSize">True</property>
@@ -767,6 +768,7 @@
             <property name="CanFocus">True</property>
             <property name="IsEditable">True</property>
             <property name="InvisibleChar">●</property>
+            <signal name="Changed" handler="OnEntryNameChanged" />
           </widget>
           <packing>
             <property name="TopAttach">1</property>

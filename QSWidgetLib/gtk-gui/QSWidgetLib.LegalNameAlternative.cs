@@ -46,6 +46,8 @@ namespace QSWidgetLib
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.entryName.Changed += new global::System.EventHandler(this.OnEntryNameChanged);
+			this.comboOwnership.Changed += new global::System.EventHandler(this.OnComboOwnershipChanged);
 		}
 	}
 }
