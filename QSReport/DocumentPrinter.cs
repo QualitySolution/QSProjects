@@ -11,14 +11,16 @@ namespace QSReport
 		public static void Print(IPrintableDocument document)
 		{
 			PrintAll(new IPrintableDocument[]{ document });
-		}		
+		}
 
+		public static PrintSettings PrintSettings { get; set; }
 
 		public static void PrintAll(IEnumerable<IPrintableDocument> documents)
 		{
+			PrintSettings = null;
 			if(Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix)
 			{
-				PrintAll_Win_Workaround(documents);
+				PrintSettings = PrintAll_Win_Workaround(documents);
 				return;
 			}
 				
@@ -35,8 +37,10 @@ namespace QSReport
 				"Подготовка к печати...",
 				documentsRDL.Count()
 			);
-			if (result == LongOperationResult.Canceled)
+			if(result == LongOperationResult.Canceled) {
+				PrintSettings = new PrintSettings();
 				return;
+			}
 			
 			printOp.NPages = renderer.PageCount;
 			if (documentsRDL.Any(x => x.Orientation == DocumentOrientation.Landscape))
@@ -46,6 +50,7 @@ namespace QSReport
 
 			printOp.DrawPage += renderer.DrawPage;
 			printOp.Run(PrintOperationAction.PrintDialog, null);
+			PrintSettings = printOp.PrintSettings;
 		}
 
 		/// <summary>
@@ -55,9 +60,9 @@ namespace QSReport
 		/// На некоторых принтерах например в водовозе, табличка рисуется за вертикалью листа а текст нет.
 		/// используется только на винде, в линуксе такой проблемы нет.
 		/// </summary>
-		private static void PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
+		private static PrintSettings PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
 		{
-			PrintOperation printOp;
+			PrintOperation printOp = null;
 			var documentsRDL_Portrait = documents.Where(doc => doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Portrait).ToList();
 			var documentsRDL_Landscape = documents.Where(doc=>doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Landscape).ToList();
 
@@ -78,7 +83,7 @@ namespace QSReport
 					            documentsRDL_Portrait.Count()
 				            );
 				if (result == LongOperationResult.Canceled)
-					return;
+					return new PrintSettings();
 
 				printOp.NPages = renderer.PageCount;
 
@@ -103,13 +108,14 @@ namespace QSReport
 					documentsRDL_Landscape.Count()
 				);
 				if (result == LongOperationResult.Canceled)
-					return;
+					return null;
 
 				printOp.NPages = renderer.PageCount;
 
 				printOp.DrawPage += renderer.DrawPage;
 				printOp.Run(PrintOperationAction.PrintDialog, null);
 			}
+			return printOp.PrintSettings;
 		}			
 
 		public static QSTDI.TdiTabBase GetPreviewTab(IPrintableDocument document)

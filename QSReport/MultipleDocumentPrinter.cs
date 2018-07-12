@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using QSDocTemplates;
 using QSOrmProject;
+using System;
 
 namespace QSReport
 {
@@ -18,21 +19,29 @@ namespace QSReport
 		public void PrintSelectedDocuments()
 		{
 			showDialog = true;
-			List<IPrintableDocument> toPrinter = new List<IPrintableDocument>();
-			foreach(var document in PrintableDocuments.Where(d => d.Selected && d.Document.PrintType == PrinterType.RDL)) {
-				for(int i = 0; i < document.Copies; i++){
-					toPrinter.Add(document.Document);
+			List<IPrintableDocument> rdlToPrinter = new List<IPrintableDocument>();
+			List<ITemplatePrntDoc> odtToPrinter = new List<ITemplatePrntDoc>();
+
+			foreach(var document in PrintableDocuments.Where(d => d.Selected)) {
+				switch(document.Document.PrintType) {
+					case PrinterType.ODT:
+						if(document.Document is ITemplatePrntDoc) {
+							var doc = (document.Document as ITemplatePrntDoc);
+							doc.CopiesToPrint = document.Copies;
+							odtToPrinter.Add(doc);
+						}
+						break;
+					case PrinterType.RDL:
+						for(int i = 0; i < document.Copies; i++)
+							rdlToPrinter.Add(document.Document);
+						break;
+					default:
+						throw new NotImplementedException("Печать документа не поддерживается");
 				}
 			}
-			DocumentPrinter.PrintAll(toPrinter);
-
-			var ODTList = PrintableDocuments.Where(d => d.Selected)
-											.Select(d => d.Document)
-											.OfType<ITemplatePrntDoc>()
-											.ToList();
-			if(ODTList.Any()) {
-				TemplatePrinter.PrintAll(ODTList);
-			}
+			DocumentPrinter.PrintAll(rdlToPrinter);
+			TemplatePrinter.PrintSettings = DocumentPrinter.PrintSettings;
+			TemplatePrinter.PrintAll(odtToPrinter);
 		}
 
 		public void PrintDocument(SelectablePrintDocument doc)
