@@ -7,12 +7,13 @@ using QSProjectsLib;
 namespace QSDocTemplates
 {
 	public static class TemplatePrinter
-	{		
-		
+	{
+		public static PrintSettings PrintSettings { get; set; }
+
 		public static void Print(ITemplatePrntDoc document)
 		{
 			PrintAll(new ITemplatePrntDoc[]{ document });
-		}		
+		}
 
 		public static void PrintAll(IList<ITemplatePrntDoc> documents)
 		{
@@ -36,20 +37,21 @@ namespace QSDocTemplates
 				{
 					worker.ReportProgress(step, document.Name);
 					var template = document.GetTemplate();
+					int copies = document.CopiesToPrint;
 					if (template != null)
-						fileWorker.OpenInOffice(template, true, FileEditMode.Document, true);
+						fileWorker.OpenInOffice(template, true, FileEditMode.Document, copies, PrintSettings);
 					if (worker.IsCancelled)
 						return;
 					step++;
 				}
 			}
 		}
-	}		
+	}
 
 	public interface ITemplatePrntDoc
 	{
 		IDocTemplate GetTemplate();
-		string Name { get;}
+		string Name { get; }
+		int CopiesToPrint { get; set; }
 	}
-
 }

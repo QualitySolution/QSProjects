@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Gtk;
 
 namespace QSDocTemplates
 {
@@ -31,6 +32,22 @@ namespace QSDocTemplates
 		}
 
 		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, bool silentPrint = false)
+		{
+			int docsToPrint = 0;
+			if(silentPrint)
+				docsToPrint = 1;
+			OpenInOffice(template, readOnly, mode, docsToPrint);
+		}
+
+		/// <summary>
+		/// Создание, либо печать документа из шаблона.
+		/// </summary>
+		/// <param name="template">Шаблон.</param>
+		/// <param name="readOnly">Если <c>true</c> то документу будут установлены права только для чтения.</param>
+		/// <param name="mode">???</param>
+		/// <param name="docsToPrint">Количество копий для печати. Если 0, то будет открыт и не напечатан.</param>
+		/// <param name="PrintSettings">Настройки печати</param>
+		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, int docsToPrint, PrintSettings PrintSettings = null)
 		{
 			logger.Info ("Сохраняем временный файл...");
 			OdtWorks odt;
@@ -95,22 +112,34 @@ namespace QSDocTemplates
 			else
 				opened.StartWatch();
 
-			if (silentPrint)
+
+			if(docsToPrint > 0 && PrintSettings != null && PrintSettings.Printer == null) {
+				//значит что нажата кнопка "отмена" в диалоге выбора принтера
+				return;
+			}
+
+			if (docsToPrint > 0 && PrintSettings != null && PrintSettings.Printer != null)
 			{
+				string officeName = "soffice";
+				string args = "--pt \"" + PrintSettings.Printer + "\" \"" + opened.TempFilePath + "\"";
+				for(int i = 1; i < docsToPrint; i++){
+					args += " \"" + opened.TempFilePath + "\"";
+				}
+
+				logger.Info("Печатаем файл...");
+				System.Diagnostics.Process.Start(officeName, args).WaitForExit();
+			} else if(docsToPrint > 0 && PrintSettings == null) {
+				//оставлена старая реализация метода (1 докум на принтере по умолч)
 				string officeName = "soffice";
 				string args = "-p \"" + opened.TempFilePath + "\"";
 
 				logger.Info("Печатаем файл...");
 				System.Diagnostics.Process.Start(officeName, args).WaitForExit();
-			}
-			else
-			{
+			} else {
 				logger.Info("Открываем файл во внешнем приложении...");
 				System.Diagnostics.Process.Start(opened.TempFilePath).WaitForExit();
 			}
 		}
-
-
 
 		#region IDisposable implementation
 		public void Dispose()
