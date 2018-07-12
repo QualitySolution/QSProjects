@@ -54,6 +54,7 @@
     <Compile Include="ITdiTabWithPath.cs" />
     <Compile Include="TDIMain.cs" />
     <Compile Include="ITdiTabAddedNotifier.cs" />
+    <Compile Include="ITDICloseControlTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

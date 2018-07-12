@@ -219,6 +219,11 @@ namespace QSTDI
 		{
 			if(CheckClosingSlaveTabs((ITdiTab)sender))
 				return;
+			
+			ITDICloseControlTab cct = sender as ITDICloseControlTab;
+			if(cct != null && !cct.CanClose()) {
+				return;
+			}
 
 			if(!e.AskSave || SaveIfNeed((ITdiTab)sender))
 				CloseTab((ITdiTab)sender);
@@ -240,6 +245,11 @@ namespace QSTDI
 
 			if(CheckClosingSlaveTabs(tab.Tab))
 				return;
+
+			ITDICloseControlTab cct = tab.Tab as ITDICloseControlTab;
+			if(cct != null && !cct.CanClose()) {
+				return;
+			}
 
 			if(SaveIfNeed(tab.Tab))
 				CloseTab(tab.Tab);
