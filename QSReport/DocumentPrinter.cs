@@ -63,6 +63,8 @@ namespace QSReport
 		private static PrintSettings PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
 		{
 			PrintOperation printOp = null;
+			PrintSettings printSettings = null;
+
 			var documentsRDL_Portrait = documents.Where(doc => doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Portrait).ToList();
 			var documentsRDL_Landscape = documents.Where(doc=>doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Landscape).ToList();
 
@@ -89,6 +91,7 @@ namespace QSReport
 
 				printOp.DrawPage += renderer.DrawPage;
 				printOp.Run(PrintOperationAction.PrintDialog, null);
+				printSettings = printOp.PrintSettings;
 			}
 
 			if(documentsRDL_Landscape.Count > 0)
@@ -98,6 +101,16 @@ namespace QSReport
 				printOp.UseFullPage = true;
 				printOp.ShowProgress = true;
 				printOp.DefaultPageSetup = new PageSetup();
+
+				//если printSettings == null, то значит, до этого не печатались RDL формата 
+				//PageOrientation.Portrait и, соответственно, не показывался PrintDialog и 
+				//нужно показать его сейчас.
+				PrintOperationAction printOperationAction = PrintOperationAction.PrintDialog;
+				if(printSettings != null) {
+					printOp.PrintSettings = printSettings;
+					printOp.PrintSettings.Orientation = PageOrientation.Landscape;
+					printOperationAction = PrintOperationAction.Print;
+				}
 				printOp.DefaultPageSetup.Orientation = PageOrientation.Landscape;
 
 				BatchRDLRenderer renderer = new BatchRDLRenderer(documentsRDL_Landscape);
@@ -108,15 +121,14 @@ namespace QSReport
 					documentsRDL_Landscape.Count()
 				);
 				if (result == LongOperationResult.Canceled)
-					return null;
+					return new PrintSettings();
 
 				printOp.NPages = renderer.PageCount;
-
 				printOp.DrawPage += renderer.DrawPage;
-				printOp.Run(PrintOperationAction.PrintDialog, null);
+				printOp.Run(printOperationAction, null);
 			}
 			return printOp.PrintSettings;
-		}			
+		}
 
 		public static QSTDI.TdiTabBase GetPreviewTab(IPrintableDocument document)
 		{
