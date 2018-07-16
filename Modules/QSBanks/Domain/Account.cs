@@ -74,9 +74,8 @@ namespace QSBanks
 
 		public virtual bool IsDefault {
 			get { return isDefault; }
-			set { SetField (ref isDefault, value, () => IsDefault);
-				if(IsDefault && Owner != null)
-					Owner.DefaultAccount = this;
+			set {
+				SetField(ref isDefault, value, () => IsDefault);
 			}
 		}
 

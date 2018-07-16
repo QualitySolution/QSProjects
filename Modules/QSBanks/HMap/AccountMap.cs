@@ -18,6 +18,7 @@ namespace QSBanks.HMap
 			Map(x => x.Number).Column("number");
 			Map(x => x.Code1c).Column("code_1c");
 			Map(x => x.Inactive).Column("inactive");
+			Map(x => x.IsDefault).Column("is_default");
 
 			References(x => x.InBank).Column("bank_id");
 		}

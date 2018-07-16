@@ -15,11 +15,7 @@ namespace QSBanks
 		public virtual IList<Account> Accounts {
 			get { return accounts; }
 			set {
-				if(SetField(ref accounts, value, () => Accounts)) {
-					FillOwnerForAccounts();
-					UpdateDefault();
-					observableAccounts = null;
-				}
+				SetField(ref accounts, value, () => Accounts);
 			}
 		}
 
@@ -29,21 +25,22 @@ namespace QSBanks
 			get {
 				if(observableAccounts == null) {
 					observableAccounts = new GenericObservableList<Account>(Accounts);
-					UpdateDefault();
 				}
 				return observableAccounts;
 			}
 		}
 
-		Account defaultAccount;
-
 		[Display(Name = "Основной счет")]
 		public virtual Account DefaultAccount {
-			get { return defaultAccount; }
-			set {
-				if(SetField(ref defaultAccount, value, () => DefaultAccount)) {
-					UpdateDefault();
+			get{
+				return ObservableAccounts.FirstOrDefault(x => x.IsDefault);
+			}
+			set{
+				Account oldDefAccount = ObservableAccounts.FirstOrDefault(x => x.IsDefault);
+				if(oldDefAccount != null && value != null && oldDefAccount.Id != value.Id) {
+					oldDefAccount.IsDefault = false;
 				}
+				value.IsDefault = true;
 			}
 		}
 
@@ -57,23 +54,11 @@ namespace QSBanks
 			ObservableAccounts.Add(account);
 			account.Owner = this;
 			if(DefaultAccount == null)
-				DefaultAccount = account;
+				account.IsDefault = true;
 		}
 
 		#region Внутренние методы
 
-		private void UpdateDefault()
-		{
-			if(Accounts == null || !NHibernateUtil.IsInitialized(Accounts))
-				return;
-			foreach(Account acc in Accounts) {
-				acc.IsDefault = (DomainHelper.EqualDomainObjects(acc, DefaultAccount));
-			}
-			if(DefaultAccount == null && Accounts.Count > 0)
-				DefaultAccount = Accounts.Where(x => !x.Inactive).FirstOrDefault();
-			if(DefaultAccount == null && Accounts.Count > 0)
-				DefaultAccount = Accounts.First();
-		}
 
 		private void FillOwnerForAccounts()
 		{
