@@ -201,6 +201,10 @@ namespace QSWidgetLib
 		{
 			this.ChildFocus (DirectionType.TabForward);
 		}
+
+		public void ModifyBase(StateType state, Gdk.Color color){
+			entryDate.ModifyBase(state, color);
+		}
 	}
 }
 
