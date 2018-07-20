@@ -172,7 +172,7 @@ namespace QSOrmProject
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			OnCloseTab (false);
+			OnCloseTab (true);
 		}
 
 		public override void Destroy ()
