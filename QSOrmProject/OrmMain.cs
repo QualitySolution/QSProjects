@@ -294,6 +294,24 @@ namespace QSOrmProject
 		#endregion
 		#region Удаление сущностей
 
+		public class DeletionObject
+		{
+			public Type Type { get; set; }
+			public uint Id { get; set; }
+		}
+
+		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
+		{
+			var result = new List<DeletionObject>();
+			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			var delList = delete.GetDeletionList(objectClass, id);
+
+			foreach(var item in delList) {
+				result.Add(new DeletionObject() { Id = item.ItemId, Type = item.ItemClass });
+			}
+			return result;
+		}
+
 		public static bool DeleteObject(string table, int id)
 		{
 			var delete = new Deletion.DeleteCore();

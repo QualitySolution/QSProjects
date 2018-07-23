@@ -68,6 +68,32 @@ namespace QSOrmProject.Deletion
 			return Run (info, Convert.ToUInt32 (id));
 		}
 
+		public List<DeletedItem> GetDeletionList(Type objectClass, int id)
+		{
+			logger.Debug("Поиск зависимостей для класса {0}...", objectClass);
+			var info = DeleteConfig.ClassInfos.Find(i => i.ObjectClass == objectClass);
+			if(info == null)
+				throw new InvalidOperationException(String.Format("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
+
+			uint entityId = Convert.ToUInt32(id);
+			try {
+				CheckDlg = new CheckOperationDlg();
+				CheckDlg.Visible = false;
+				var self = info.GetSelfEntity(this, entityId);
+				PreparedOperation = info.CreateDeleteOperation(self);
+				DeletedItems.Add(new DeletedItem {
+					ItemClass = info.ObjectClass,
+					ItemId = entityId,
+					Title = self.Title
+				});
+				CountReferenceItems = FillChildOperation(info, PreparedOperation, new TreeIter(), self);
+			} catch(Exception ex) {
+				QSMain.ErrorMessageWithLog("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
+			}
+
+			return DeletedItems;
+		}
+
 		private bool Run (IDeleteInfo info, uint id)
 		{
 			try {
