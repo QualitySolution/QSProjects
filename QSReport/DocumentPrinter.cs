@@ -68,7 +68,13 @@ namespace QSReport
 			var documentsRDL_Portrait = documents.Where(doc => doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Portrait).ToList();
 			var documentsRDL_Landscape = documents.Where(doc=>doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Landscape).ToList();
 
-			if (documentsRDL_Portrait.Count > 0)
+			if(!documents.Any()) {
+				printOp = new PrintOperation();
+				printOp.Run(PrintOperationAction.PrintDialog, null);
+				return printOp.PrintSettings;
+			}
+			
+			if (documentsRDL_Portrait.Any())
 			{
 				printOp = new PrintOperation();
 				printOp.Unit = Unit.Points;
@@ -94,7 +100,7 @@ namespace QSReport
 				printSettings = printOp.PrintSettings;
 			}
 
-			if(documentsRDL_Landscape.Count > 0)
+			if(documentsRDL_Landscape.Any())
 			{
 				printOp = new PrintOperation();
 				printOp.Unit = Unit.Points;
