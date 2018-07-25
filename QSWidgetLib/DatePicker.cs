@@ -9,6 +9,7 @@ namespace QSWidgetLib
 	{
 		protected DateTime? date = null;
 		public event EventHandler DateChanged;
+		public event EventHandler DateChangedByUser;
 		protected Dialog editDate;
 
 		public DatePicker ()
@@ -55,6 +56,11 @@ namespace QSWidgetLib
 		protected virtual void OnDateChanged()
 		{
 			DateChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		protected virtual void OnDateChangedByUser()
+		{
+			DateChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
 		public DateTime Date {
@@ -126,6 +132,7 @@ namespace QSWidgetLib
 			if(response == (int)ResponseType.Ok)
 			{
 				DateOrNull = WithTime ? SelectDate.GetDate() + timeEntry.Time : SelectDate.GetDate();
+				OnDateChangedByUser();
 			}
 			SelectDate.Destroy();
 			editDate.Destroy ();
@@ -146,6 +153,7 @@ namespace QSWidgetLib
 			if(entryDate.Text == "")
 			{
 				DateOrNull = null;
+				OnDateChangedByUser();
 				return;
 			}
 
@@ -153,6 +161,7 @@ namespace QSWidgetLib
 			if(DateTime.TryParse(entryDate.Text, out outDate))
 			{
 				DateOrNull = outDate;
+				OnDateChangedByUser();
 			}
 			else
 			{
