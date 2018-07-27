@@ -15,9 +15,6 @@ namespace QSHistoryLog
 		public IObjectTracker<TEntity> Create<TEntity>(TEntity root, TrackerCreateOption option)
 			where TEntity : class, IDomainObject, new()
 		{
-			if(HistoryMain.ObjectsDesc.Any(x => x.ObjectType == typeof(TEntity)))
-				return new ObjectTracker<TEntity>(root, option);
-			else
 				return null;
 		}
 
@@ -36,8 +33,9 @@ namespace QSHistoryLog
 			if(HistoryMain.ObjectsDesc.All(x => x.ObjectType != rootType))
 				return null;
 
-			var trackerType = typeof(ObjectTracker<>).MakeGenericType(rootType);
-			return (IObjectTracker)Activator.CreateInstance(trackerType, root, option);
+			//var trackerType = typeof(ObjectTracker<>).MakeGenericType(rootType);
+			//return (IObjectTracker)Activator.CreateInstance(trackerType, root, option);
+			return null;
 		}
 
 		public bool NeedTrace(Type type)

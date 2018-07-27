@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjectTracker.cs" />
     <Compile Include="HistoryMain.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="HistoryView.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="PangoRender.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
     <Compile Include="HistoryObjectDesc.cs" />
-    <Compile Include="Comparers\DomainObjectComparer.cs" />
     <Compile Include="HistoryAttributes.cs" />
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="TrackerFactory.cs" />
@@ -92,6 +90,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="app.config" />
+    <None Include="ObjectTracker.cs" />
+    <None Include="Comparers\DomainObjectComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
 using QS.DomainModel.Tracking;
 using QSHistoryLog.Domain;
@@ -23,35 +22,6 @@ namespace QSHistoryLog
 		static HistoryMain()
 		{
 			TrackerMain.Factory = new TrackerFactory();
-		}
-
-		static CompareLogic qsCompareLogic;
-
-		public static CompareLogic QSCompareLogic {
-			get {
-				if (qsCompareLogic == null) {
-					qsCompareLogic = createQSCompareLogic ();
-				}
-				return qsCompareLogic;
-			}
-		}
-
-		static CompareLogic createQSCompareLogic ()
-		{
-			var logic = new CompareLogic ();
-			//Должно стоять в true иначе не работает сравнение на винде Dictionary, так как в KeyValuePair поля со значением canWrite = false
-			logic.Config.CompareReadOnly = true; 
-			logic.Config.CompareStaticFields = false;
-			logic.Config.CompareStaticProperties = false;
-			logic.Config.IgnoreCollectionOrder = true;
-			logic.Config.MaxDifferences = 10000;
-			logic.Config.MaxStructDepth = 5;
-			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
-			logic.Config.AttributesToIgnore.Add (typeof(IgnoreHistoryTraceAttribute));
-			logic.Config.IgnoreObjectTypes = true;
-			//logic.Config.ClassTypesToIgnore.Add(typeof(System.Data.Bindings.Collections.Generic.GenericObservableList<>));
-
-			return logic;
 		}
 
 		public static HistoryObjectDesc AddClass (Type type)
@@ -73,20 +43,6 @@ namespace QSHistoryLog
 
 			//FIXME Отключил временно пока не релализована поддежка журналирования удаления через ORM.
 			//SubscribeToDeletion();
-		}
-
-		/// <summary>
-		/// Adds the type for the identifier comparation in collectoions.
-		/// </summary>
-		/// <param name="type">Type.</param>
-		public static void AddIdComparationType(Type type)
-		{
-			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, new string[] { "Id" });
-		}
-
-		public static void AddIdComparationType(Type type, string[] fields)
-		{
-			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, fields);
 		}
 
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
