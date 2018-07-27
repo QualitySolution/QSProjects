@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Event;
 using QSProjectsLib;
@@ -15,14 +14,20 @@ namespace QS.DomainModel
 
 		internal static void RegisterUow(IUnitOfWorkEventHandler uow)
 		{
-			RegisteredUoWs.Add(uow);
-			logger.Debug("Зарегистрирован новый UnitOfWork. {0}", ActiveUowCountText());
+			lock(RegisteredUoWs)
+			{
+				RegisteredUoWs.Add(uow);
+				logger.Debug("Зарегистрирован новый UnitOfWork. {0}", ActiveUowCountText());
+			}
 		}
 
 		internal static void UnregisterUow(IUnitOfWorkEventHandler uow)
 		{
-			RegisteredUoWs.Remove(uow);
-			logger.Debug("UnitOfWork завершил работу. {0}", ActiveUowCountText());
+			lock(RegisteredUoWs)
+			{
+				RegisteredUoWs.Remove(uow);
+				logger.Debug("UnitOfWork завершил работу. {0}", ActiveUowCountText());
+			}
 		}
 
 		private static string ActiveUowCountText()
@@ -37,37 +42,40 @@ namespace QS.DomainModel
 
 		public void OnPostLoad(PostLoadEvent @event)
 		{
-			bool notFound = true;
-			foreach(var uow in RegisteredUoWs)
+			IUnitOfWorkEventHandler uow;
+			lock (RegisteredUoWs)
 			{
-				if(uow.Session == @event.Session)
-				{
-					uow.OnPostLoad(@event);
-					notFound = false;
-				}
+				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
 			}
 
-			if(notFound)
+			if (uow != null)
+				uow.OnPostLoad(@event);
+			else
 				logger.Warn("Пришло событие PostLoadEvent но соответствующий сессии UnitOfWork не найден.");
 		}
 
 		public void OnPreLoad(PreLoadEvent @event)
 		{
-			bool notFound = true;
-			foreach(var uow in RegisteredUoWs) {
-				if(uow.Session == @event.Session) {
-					uow.OnPreLoad(@event);
-					notFound = false;
-				}
+			IUnitOfWorkEventHandler uow;
+			lock (RegisteredUoWs)
+			{
+				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
 			}
 
-			if(notFound)
+			if (uow != null)
+				uow.OnPreLoad(@event);
+			else
 				logger.Warn("Пришло событие PreLoadEvent но соответствующий сессии UnitOfWork не найден.");
 		}
 
 		public void OnPostDelete(PostDeleteEvent @event)
 		{
-			var uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
+			IUnitOfWorkEventHandler uow;
+			lock(RegisteredUoWs)
+			{
+				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
+			}
+
 			if(uow != null)
 				uow.OnPostDelete(@event);
 			else
