@@ -42,6 +42,8 @@ namespace QSProjectsLib
 
 		private global::Gtk.Alignment GtkAlignment2;
 
+		private global::Gtk.ScrolledWindow GtkScrolledWindow1;
+
 		private global::Gtk.VBox vboxPermissions;
 
 		private global::Gtk.CheckButton checkAdmin;
@@ -250,6 +252,14 @@ namespace QSProjectsLib
 			this.GtkAlignment2.Name = "GtkAlignment2";
 			this.GtkAlignment2.LeftPadding = ((uint)(12));
 			// Container child GtkAlignment2.Gtk.Container+ContainerChild
+			this.GtkScrolledWindow1 = new global::Gtk.ScrolledWindow();
+			this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
+			this.GtkScrolledWindow1.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
+			this.GtkScrolledWindow1.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child GtkScrolledWindow1.Gtk.Container+ContainerChild
+			global::Gtk.Viewport w16 = new global::Gtk.Viewport();
+			w16.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child GtkViewport.Gtk.Container+ContainerChild
 			this.vboxPermissions = new global::Gtk.VBox();
 			this.vboxPermissions.Name = "vboxPermissions";
 			this.vboxPermissions.Spacing = 6;
@@ -261,11 +271,13 @@ namespace QSProjectsLib
 			this.checkAdmin.DrawIndicator = true;
 			this.checkAdmin.UseUnderline = true;
 			this.vboxPermissions.Add(this.checkAdmin);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vboxPermissions[this.checkAdmin]));
-			w16.Position = 0;
-			w16.Expand = false;
-			w16.Fill = false;
-			this.GtkAlignment2.Add(this.vboxPermissions);
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vboxPermissions[this.checkAdmin]));
+			w17.Position = 0;
+			w17.Expand = false;
+			w17.Fill = false;
+			w16.Add(this.vboxPermissions);
+			this.GtkScrolledWindow1.Add(w16);
+			this.GtkAlignment2.Add(this.GtkScrolledWindow1);
 			this.frame1.Add(this.GtkAlignment2);
 			this.GtkLabel4 = new global::Gtk.Label();
 			this.GtkLabel4.Name = "GtkLabel4";
@@ -273,23 +285,20 @@ namespace QSProjectsLib
 			this.GtkLabel4.UseMarkup = true;
 			this.frame1.LabelWidget = this.GtkLabel4;
 			this.hbox2.Add(this.frame1);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.frame1]));
-			w19.Position = 1;
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.frame1]));
+			w22.Position = 1;
 			this.vbox5.Add(this.hbox2);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox2]));
-			w20.Position = 0;
-			w20.Expand = false;
-			w20.Fill = false;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox2]));
+			w23.Position = 0;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.label5 = new global::Gtk.Label();
 			this.label5.Name = "label5";
 			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Комментарии</b>");
 			this.label5.UseMarkup = true;
 			this.vbox5.Add(this.label5);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.label5]));
-			w21.Position = 1;
-			w21.Expand = false;
-			w21.Fill = false;
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.label5]));
+			w24.Position = 1;
+			w24.Expand = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -301,8 +310,9 @@ namespace QSProjectsLib
 			this.textviewComments.WrapMode = ((global::Gtk.WrapMode)(2));
 			this.GtkScrolledWindow.Add(this.textviewComments);
 			this.vbox5.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.GtkScrolledWindow]));
-			w23.Position = 2;
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.GtkScrolledWindow]));
+			w26.Position = 2;
+			w26.Expand = false;
 			this.notebook1.Add(this.vbox5);
 			// Notebook tab
 			this.label7 = new global::Gtk.Label();
@@ -311,14 +321,14 @@ namespace QSProjectsLib
 			this.notebook1.SetTabLabel(this.vbox5, this.label7);
 			this.label7.ShowAll();
 			w1.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
-			w25.Position = 0;
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
+			w28.Position = 0;
 			// Internal child QSProjectsLib.UserProperty.ActionArea
-			global::Gtk.HButtonBox w26 = this.ActionArea;
-			w26.Name = "dialog1_ActionArea";
-			w26.Spacing = 10;
-			w26.BorderWidth = ((uint)(5));
-			w26.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w29 = this.ActionArea;
+			w29.Name = "dialog1_ActionArea";
+			w29.Spacing = 10;
+			w29.BorderWidth = ((uint)(5));
+			w29.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button();
 			this.buttonCancel.CanDefault = true;
@@ -326,13 +336,13 @@ namespace QSProjectsLib
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("О_тменить");
-			global::Gtk.Image w27 = new global::Gtk.Image();
-			w27.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-cancel", global::Gtk.IconSize.Menu);
-			this.buttonCancel.Image = w27;
+			global::Gtk.Image w30 = new global::Gtk.Image();
+			w30.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			this.buttonCancel.Image = w30;
 			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w28 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w26[this.buttonCancel]));
-			w28.Expand = false;
-			w28.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w31 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.buttonCancel]));
+			w31.Expand = false;
+			w31.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button();
 			this.buttonOk.CanDefault = true;
@@ -340,14 +350,14 @@ namespace QSProjectsLib
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString("_OK");
-			global::Gtk.Image w29 = new global::Gtk.Image();
-			w29.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w29;
+			global::Gtk.Image w32 = new global::Gtk.Image();
+			w32.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w32;
 			this.AddActionWidget(this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w26[this.buttonOk]));
-			w30.Position = 1;
-			w30.Expand = false;
-			w30.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w33 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.buttonOk]));
+			w33.Position = 1;
+			w33.Expand = false;
+			w33.Fill = false;
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
