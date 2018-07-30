@@ -32,7 +32,21 @@ namespace QSProjectsLib
 		Dialog editNode;
 		Entry inputNameEntry, inputDiscriptionEntry;
 		Label LableName, LableDescription;
-		
+
+		#region Свойства
+
+		/// <summary>
+		/// Устанавливаем максимальную длинну имени объекта для простого диалога редактирования.
+		/// </summary>
+		public int? NameMaxLength { get; set; }
+
+		/// <summary>
+		/// Устанавливаем максимальную длинну описания объекта для простого диалога редактирования.
+		/// </summary>
+		public int? DiscriptionMaxLength { get; set; }
+
+  		#endregion
+
 		public Reference ( bool WithDiscription = false, string orderBy = null)
 		{
 			this.Build ();
@@ -503,11 +517,15 @@ namespace QSProjectsLib
 			LableDescription.Justify = Justification.Right;
 			editNodeTable.Attach(LableName,0,1,0,1);
 			inputNameEntry = new Entry();
+			if (NameMaxLength.HasValue)
+				inputNameEntry.MaxLength = NameMaxLength.Value;
 			inputNameEntry.WidthRequest = 300;
 			editNodeTable.Attach(inputNameEntry,1,2,0,1);
 			inputDiscriptionEntry = new Entry();
 			editNodeTable.Attach(LableDescription,0,1,1,2);
 			editNodeTable.Attach(inputDiscriptionEntry,1,2,1,2);
+			if (DiscriptionMaxLength.HasValue)
+				inputDiscriptionEntry.MaxLength = DiscriptionMaxLength.Value;
 			if(!DescriptionField)
 			{
 				inputDiscriptionEntry.Sensitive = false;
