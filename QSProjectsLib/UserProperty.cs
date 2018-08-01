@@ -224,8 +224,11 @@ namespace QSProjectsLib
 						Pair.Value.Active);
 				}
 
-				foreach(var view in permissionViews) {
-					cmd.Parameters.AddWithValue(view.DBFieldName, view.DBFieldValue);
+				if(permissionViews != null)
+				{
+					foreach(var view in permissionViews) {
+						cmd.Parameters.AddWithValue(view.DBFieldName, view.DBFieldValue);
+					}
 				}
 
 				if(textviewComments.Buffer.Text == "")
