@@ -179,7 +179,7 @@ namespace QSHistoryLog
 				} else if (((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
 					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString ();
 
-				if ((DateTime)diff.Object2.Target == default(DateTime)) {
+				if (diff.Object2.Target == null || (DateTime)diff.Object2.Target == default(DateTime)) {
 					diff.Object2.Target = null;
 					diff.Object2Value = String.Empty;
 				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
