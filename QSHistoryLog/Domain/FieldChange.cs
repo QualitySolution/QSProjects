@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Data.Bindings;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
-using Gamma.Utilities;
-using QSHistoryLog.Domain;
 
 namespace QSHistoryLog
 {
@@ -10,14 +9,10 @@ namespace QSHistoryLog
 	{
 		public virtual int Id { get; set; }
 
-		public virtual HistoryChangeSet ChangeSet { get; set; }
-
 		public virtual string Path { get; set; }
 		public virtual FieldChangeType Type { get; set; }
 		public virtual string OldValue { get; set; }
 		public virtual string NewValue { get; set; }
-		public virtual int? OldId { get; set; }
-		public virtual int? NewId { get; set; }
 
 		string oldPangoText;
 		public virtual string OldPangoText {
@@ -25,7 +20,7 @@ namespace QSHistoryLog
 					MakeDiffPangoMarkup ();
 				return oldPangoText;
 			}
-			protected set {
+			private set {
 				oldPangoText = value;
 			}
 		}
@@ -37,19 +32,19 @@ namespace QSHistoryLog
 					MakeDiffPangoMarkup ();
 				return newPangoText;
 			}
-			protected set {
+			private set {
 				newPangoText = value;
 			}
 		}
 
 		private bool isPangoMade = false;
 
-		public virtual string FieldName
+		public string FieldName
 		{
 			get { return HistoryMain.ResolveFieldNameFromPath (Path);}
 		}
 
-		public virtual string TypeText
+		public string TypeText
 		{
 			get { 
 					return Type.GetEnumTitle ();
@@ -70,25 +65,6 @@ namespace QSHistoryLog
 			isPangoMade = true;
 		}
 
-	}
-
-	public enum FieldChangeType
-	{
-		[Display(Name = "Добавлено")]
-		Added,
-		[Display(Name = "Изменено")]
-		Changed,
-		[Display(Name = "Удалено")]
-		Removed,
-		[Display(Name = "Без изменений")]
-		Unchanged
-	}
-
-	public class FieldChangeTypeStringType : NHibernate.Type.EnumStringType
-	{
-		public FieldChangeTypeStringType() : base(typeof(FieldChangeType))
-		{
-		}
 	}
 }
 

@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
-using QS.DomainModel.Tracking;
-using QSHistoryLog.Domain;
-using QSOrmProject;
 using QSProjectsLib;
+using KellermanSoftware.CompareNetObjects;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace QSHistoryLog
 {
-	public class ObjectTracker<TEntity> : IObjectTracker<TEntity>, IObjectTracker
-		where TEntity : class, IDomainObject, new()
+	public class ObjectTracker<T> where T : class, new()
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		object firstObject, lastObject;
-		public TEntity OriginEntity { get; private set; }
 		ComparisonResult compare;
 
 		private string objectName;
@@ -36,35 +31,17 @@ namespace QSHistoryLog
 			}
 		}
 
-		public object OriginObject{
-			get{
-				return OriginEntity;
-			}
-		}
-
 		public ObjectTracker ()
 		{
-			TakeEmpty (Activator.CreateInstance<TEntity> () );
+			TakeEmpty (Activator.CreateInstance<T> () );
 		}
 
-		public ObjectTracker (TEntity subject, TrackerCreateOption option)
+		public ObjectTracker (T subject)
 		{
-			OriginEntity = subject;
-			switch(option) {
-				case TrackerCreateOption.IsNewAndShotThis:
-				    TakeEmpty(subject);
-					break;
-				case TrackerCreateOption.IsLoadedAndShotThis:
-					TakeFirst(subject);
-					break;
-				case TrackerCreateOption.IsNewAndShotEmpty:
-					firstObject = Activator.CreateInstance<TEntity>();
-					operation = ChangeSetType.Create;
-					break;
-			}
+			TakeEmpty (subject);
 		}
 
-		public void TakeFirst(TEntity subject)
+		public void TakeFirst(T subject)
 		{
 			lastObject = null;
 			compare = null;
@@ -72,7 +49,7 @@ namespace QSHistoryLog
 			firstObject = ObjectCloner.Clone (subject);
 		}
 
-		public void TakeEmpty(TEntity subject)
+		public void TakeEmpty(T subject)
 		{
 			lastObject = null;
 			compare = null;
@@ -80,34 +57,32 @@ namespace QSHistoryLog
 			firstObject = ObjectCloner.Clone (subject);
 		}
 
-		public void TakeLast(TEntity subject)
+		public void TakeLast(T subject)
 		{
 			compare = null;
 			lastObject = ObjectCloner.Clone (subject);
 			ReadObjectDiscription (subject);
 		}
 
-		private void ReadObjectDiscription(TEntity subject)
+		private void ReadObjectDiscription(T subject)
 		{
 			objectName = subject.GetType ().Name;
-			var prop = typeof(TEntity).GetProperty ("Id");
+			var prop = typeof(T).GetProperty ("Id");
 			if (prop != null)
 				ObjectId = (int)prop.GetValue (subject, null);
 
-			prop = typeof(TEntity).GetProperty ("Title");
+			prop = typeof(T).GetProperty ("Title");
 			if (prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
 
-			prop = typeof(TEntity).GetProperty ("Name");
+			prop = typeof(T).GetProperty ("Name");
 			if (String.IsNullOrEmpty (objectTitle) && prop != null)
 				objectTitle = (string)prop.GetValue (subject, null);
 		}
 
 		/// <summary>
-		/// Сравнивает первое состояние объекта с последним. Детальный результат сравнения можно
-		/// получить из поля compare.
+		/// Возвращает true если объекты различаются.
 		/// </summary>
-		/// <returns>Возвращает true если объекты различаются.</returns>
 		public bool Compare()
 		{
 			if (firstObject == null)
@@ -121,29 +96,6 @@ namespace QSHistoryLog
 			logger.Debug (compare.DifferencesString);
 
 			return !compare.AreEqual;
-		}
-
-		/// <summary>
-		/// Сравнивает первое состояние объекта с последним. Детальный результат сравнения можно
-		/// получить из поля compare.
-		/// </summary>
-		/// <returns>Возвращает true если объекты различаются.</returns>
-		/// <param name="lastSubject">Одновременно передаем последнее состояние объекта.</param>
-		public bool Compare(TEntity lastSubject)
-		{
-			TakeLast(lastSubject);
-			return Compare();
-		}
-
-		/// <summary>
-		/// Сравнивает первое состояние объекта с объектом находищимся по ссылке OriginEntity. Детальный результат сравнения можно
-		/// получить из поля compare.
-		/// </summary>
-		/// <returns>Возвращает true если объекты различаются.</returns>
-		public bool CompareWithOrigin()
-		{
-			TakeLast(OriginEntity);
-			return Compare();
 		}
 
 		public void SaveChangeSet(MySqlTransaction trans)
@@ -189,15 +141,15 @@ namespace QSHistoryLog
 				if (!FixDisplay (onechange))
 					continue;
 				string modifedPropName = Regex.Replace (onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format ("{0}[{1}]", m.Groups [1].Value, m.Groups [2].Value));
-				if (onechange.ParentObject2 != null && onechange.ParentObject2 != null) {
-					var id = HistoryMain.GetObjectId (onechange.ParentObject2);
+				if (onechange.ParentObject2 != null && onechange.ParentObject2.Target != null) {
+					var id = HistoryMain.GetObjectId (onechange.ParentObject2.Target);
 					if(id.HasValue)
-						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2));//FIXME Тут неочевидно появляются квадратные скобки
+						modifedPropName = Regex.Replace (modifedPropName, String.Format (@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte (onechange.ParentObject2.Target));//FIXME Тут неочевидно появляются квадратные скобки
 				}
 				cmd.Parameters ["path"].Value = objectName + modifedPropName;
-				if(onechange.Object1 == null)
+				if(onechange.Object1 == null || onechange.Object1.Target == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Added;
-				else if(onechange.Object2 == null)
+				else if(onechange.Object2 == null || onechange.Object2.Target == null)
 					cmd.Parameters ["type"].Value = FieldChangeType.Removed;
 				else
 					cmd.Parameters ["type"].Value = FieldChangeType.Changed;
@@ -205,8 +157,8 @@ namespace QSHistoryLog
 				cmd.Parameters ["old_value"].Value = onechange.Object1Value;
 				cmd.Parameters ["new_value"].Value = onechange.Object2Value;
 				if (onechange.ChildPropertyName == "Id") {
-					cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1);
-					cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2);
+					cmd.Parameters ["old_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object1.Target);
+					cmd.Parameters ["new_id"].Value = DBWorks.IdPropertyOrNull (onechange.Object2.Target);
 				} else
 					cmd.Parameters ["old_id"].Value = cmd.Parameters ["new_id"].Value = DBNull.Value;
 
@@ -214,139 +166,62 @@ namespace QSHistoryLog
 			}
 			logger.Debug ("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
 		}
-
-		public void SaveChangeSet(IUnitOfWork uow)
-		{
-			if(!HasChanges) {
-				logger.Warn("Нет изменнений. Нечего записывать.");
-				return;
-			}
-			if(ObjectId <= 0)
-				throw new InvalidOperationException("Перед записью changeset-а для нового объекта после записи его в БД необходимо вручную прописать его Id в поле ObjectId.");
-
-			logger.Debug("Записываем ChangeSet в БД.");
-			var changeSet = new HistoryChangeSet(operation, typeof(TEntity), ObjectId, objectTitle);
-			//FIXME Для совместимости с методом работы с чистым MySQL. И чтобы при неинициализированном списке не создавался не нужный запрос к серверу MySQL. Убрать если откажемся. 
-			changeSet.Changes = new List<FieldChange>();
-
-			logger.Debug("Записываем изменения полей в ChangeSet-е.");
-
-			foreach(var onechange in compare.Differences) {
-				if(!FixDisplay(onechange))
-					continue;
-				string modifedPropName = Regex.Replace(onechange.PropertyName, @"(^.*)\[Key:(.*)\]\.Value$", m => String.Format("{0}[{1}]", m.Groups[1].Value, m.Groups[2].Value));
-				if(onechange.ParentObject2 != null) {
-					var id = HistoryMain.GetObjectId(onechange.ParentObject2);
-					if(id.HasValue)
-						modifedPropName = Regex.Replace(modifedPropName, String.Format(@"\[Id:{0}\]", id.Value), HistoryMain.GetObjectTilte(onechange.ParentObject2));//FIXME Тут неочевидно появляются квадратные скобки
-				}
-				var changeField = new FieldChange() ;
-				changeField.Path = objectName + modifedPropName;
-
-				if(onechange.Object1 == null)
-					changeField.Type = FieldChangeType.Added;
-				else if(onechange.Object2 == null)
-					changeField.Type = FieldChangeType.Removed;
-				else
-					changeField.Type = FieldChangeType.Changed;
-
-				changeField.OldValue = onechange.Object1Value;
-				changeField.NewValue = onechange.Object2Value;
-				if(onechange.ChildPropertyName == "Id") {
-					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object1);
-					changeField.OldId = DomainHelper.GetIdOrNull(onechange.Object2);
-				}
-
-				changeSet.AddFieldChange(changeField);
-			}
-			uow.Save(changeSet);
-
-			logger.Debug("Зафиксированы изменения в {0} полях.", compare.Differences.Count);
-		}
 			
 		/// <returns><c>false</c> если нужно не сохранять элемент.</returns>
 		/// <param name="diff">Diff.</param>
 		private bool FixDisplay(Difference diff)
 		{
 			//DateTime
-			if(diff.Object1TypeName == "DateTime") {
-				if((DateTime)diff.Object1 == default(DateTime)) {
-					diff.Object1 = null;
+			if (diff.Object1 != null && diff.Object1.Target is DateTime) {
+				if ((DateTime)diff.Object1.Target == default(DateTime)) {
+					diff.Object1.Target = null;
 					diff.Object1Value = String.Empty;
-				} else if(((DateTime)diff.Object1).TimeOfDay.Ticks == 0)
-					diff.Object1Value = ((DateTime)diff.Object1).ToShortDateString();
-			}
-			if(diff.Object2TypeName == "DateTime"){
-				if ((DateTime)diff.Object2 == default(DateTime)) {
-					diff.Object2 = null;
+				} else if (((DateTime)diff.Object1.Target).TimeOfDay.Ticks == 0)
+					diff.Object1Value = ((DateTime)diff.Object1.Target).ToShortDateString ();
+
+				if ((DateTime)diff.Object2.Target == default(DateTime)) {
+					diff.Object2.Target = null;
 					diff.Object2Value = String.Empty;
-				} else if (((DateTime)diff.Object2).TimeOfDay.Ticks == 0)
-					diff.Object2Value = ((DateTime)diff.Object2).ToShortDateString ();
+				} else if (((DateTime)diff.Object2.Target).TimeOfDay.Ticks == 0)
+					diff.Object2Value = ((DateTime)diff.Object2.Target).ToShortDateString ();
 			}
 
 			//Добавление и удаление объектов в коллекциях
-			if(diff.ChildPropertyName == "Item") {
-			   if(diff.Object1 == null){
-					diff.PropertyName = Regex.Replace(diff.PropertyName, @"\[Id:.*\]$", "[+]");
-					diff.Object1Value = String.Empty;
-					diff.Object2Value = HistoryMain.GetObjectTilte(diff.Object2);
-				}
-				if(diff.Object2 == null) {
-					diff.PropertyName = Regex.Replace(diff.PropertyName, @"\[Id:.*\]$", "[-]");
-					diff.Object2Value = String.Empty;
-					diff.Object1Value = HistoryMain.GetObjectTilte(diff.Object1);
-				}
+			if(diff.ParentObject2 != null && diff.ParentObject2.Target != null 
+			   && diff.ParentObject2.Target.GetType ().IsGenericType 
+			   && diff.ParentObject2.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			   && diff.Object1 == null)
+			{
+				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[+]");
+				diff.Object1Value = String.Empty;
+				diff.Object2Value = HistoryMain.GetObjectTilte (diff.Object2.Target);
+			}
+			if(diff.ParentObject1 != null && diff.ParentObject1.Target != null 
+			   && diff.ParentObject1.Target.GetType ().IsGenericType 
+			   && diff.ParentObject1.Target.GetType ().GetGenericTypeDefinition () == typeof(List<>) 
+			   && diff.Object2 == null)
+			{
+				diff.PropertyName = Regex.Replace (diff.PropertyName, @"\[Id:.*\]$", "[-]");
+				diff.Object2Value = String.Empty;
+				diff.Object1Value = HistoryMain.GetObjectTilte (diff.Object1.Target);
 			}
 
 			//IFileTrace
-			if(diff.ParentObject1 is IFileTrace)
+			if(diff.ParentObject1 != null && diff.ParentObject1.Target is IFileTrace)
 			{
 				if (Regex.IsMatch (diff.PropertyName, @".*Size$"))
 					return false;
 				if(Regex.IsMatch (diff.PropertyName, @".*IsChanged$"))
 				{   
 					diff.PropertyName = diff.PropertyName.Replace ("IsChanged", "Size");
-					diff.Object1Value = diff.ParentObject1 != null
-						? StringWorks.BytesToIECUnitsString ((diff.ParentObject1 as IFileTrace).Size) : String.Empty;
-					diff.Object2Value = diff.ParentObject2 != null 
-						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2 as IFileTrace).Size) : String.Empty;
+					diff.Object1Value = diff.ParentObject1 != null && diff.ParentObject1.Target != null 
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject1.Target as IFileTrace).Size) : String.Empty;
+					diff.Object2Value = diff.ParentObject2 != null && diff.ParentObject2.Target != null 
+						? StringWorks.BytesToIECUnitsString ((diff.ParentObject2.Target as IFileTrace).Size) : String.Empty;
 				}
 			}
 
-			//Не реагируем на изменения Id корневого объекта. При работе через UoW для новых объектов сохраняет изменения 0->n
-			if(diff.PropertyName == ".Id")
-				return false;
-
-			//Не реагируем на изменения Title корневого объекта. Потому что это свойство везде автогенерируемое.
-			if(diff.PropertyName == ".Title")
-				return false;
-
-			//Обрабатываем Enum
-			if(diff.Object1 is Enum){
-				diff.Object1Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object1 as Enum);
-			}
-			if(diff.Object2 is Enum) {
-				diff.Object2Value = Gamma.Utilities.AttributeUtil.GetEnumTitle(diff.Object2 as Enum);
-			}
-
-			//Обрабатываем bool
-			if(diff.Object1TypeName == "Boolean")
-				diff.Object1Value = (bool)diff.Object1 ? "Да" : "Нет";
-			if(diff.Object2TypeName == "Boolean")
-				diff.Object2Value = (bool)diff.Object2 ? "Да" : "Нет";
-
-			//Обрабатывам null значения
-			if(diff.Object1TypeName == "null")
-				diff.Object1Value = String.Empty;
-			if(diff.Object2TypeName == "null")
-				diff.Object2Value = String.Empty;
-
 			return true;
-		}
-
-		public void ResetToOrigin()
-		{
-			TakeFirst(OriginEntity);
 		}
 	}
 }

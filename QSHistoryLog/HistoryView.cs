@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Gamma.Widgets;
 using MySql.Data.MySqlClient;
-using QSHistoryLog.Domain;
 using QSOrmProject;
 using QSProjectsLib;
 using QSTDI;

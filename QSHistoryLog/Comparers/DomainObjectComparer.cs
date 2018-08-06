@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Reflection;
-using KellermanSoftware.CompareNetObjects;
 using KellermanSoftware.CompareNetObjects.TypeComparers;
+using KellermanSoftware.CompareNetObjects;
 using QSOrmProject;
+using System.Reflection;
+using System.Collections;
 
 namespace QSHistoryLog
 {
@@ -58,14 +58,14 @@ namespace QSHistoryLog
 
 			Difference difference = new Difference
 			{
-				ParentObject1 =  parms.ParentObject1,
-				ParentObject2 =  parms.ParentObject2,
+				ParentObject1 =  new WeakReference(parms.ParentObject1),
+				ParentObject2 =  new WeakReference(parms.ParentObject2),
 				PropertyName = parms.BreadCrumb,
 				Object1Value = parms.Object1 == null ? String.Empty : HistoryMain.GetObjectTilte (parms.Object1),
 				Object2Value = parms.Object2 == null ? String.Empty : HistoryMain.GetObjectTilte (parms.Object2),
 				ChildPropertyName = "Id",
-				Object1 = parms.Object1,
-				Object2 = parms.Object2
+				Object1 = new WeakReference(parms.Object1),
+				Object2 = new WeakReference(parms.Object2)
 			};
 
 			AddDifference(parms.Result, difference);

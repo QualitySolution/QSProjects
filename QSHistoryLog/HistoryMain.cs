@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using KellermanSoftware.CompareNetObjects;
 using MySql.Data.MySqlClient;
-using QS.DomainModel.Tracking;
-using QSHistoryLog.Domain;
 using QSOrmProject;
 using QSOrmProject.Deletion;
 using QSProjectsLib;
@@ -19,9 +18,31 @@ namespace QSHistoryLog
 		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
 		const string FieldNameSeparator = ".";
 
-		static HistoryMain()
+		static CompareLogic qsCompareLogic;
+
+		public static CompareLogic QSCompareLogic {
+			get {
+				if (qsCompareLogic == null) {
+					qsCompareLogic = createQSCompareLogic ();
+				}
+				return qsCompareLogic;
+			}
+		}
+
+		static CompareLogic createQSCompareLogic ()
 		{
-			TrackerMain.Factory = new TrackerFactory();
+			var logic = new CompareLogic ();
+			//Должно стоять в true иначе не работает сравнение на винде Dictionary, так как в KeyValuePair поля со значением canWrite = false
+			logic.Config.CompareReadOnly = true; 
+			logic.Config.CompareStaticFields = false;
+			logic.Config.CompareStaticProperties = false;
+			logic.Config.IgnoreCollectionOrder = true;
+			logic.Config.MaxDifferences = 10000;
+			logic.Config.MaxStructDepth = 10;
+			logic.Config.CustomComparers.Add (new DomainObjectComparer(RootComparerFactory.GetRootComparer()));
+			logic.Config.AttributesToIgnore.Add (typeof(IgnoreHistoryTraceAttribute));
+
+			return logic;
 		}
 
 		public static HistoryObjectDesc AddClass (Type type)
@@ -40,9 +61,20 @@ namespace QSHistoryLog
 			{
 				AddClass(clazz.ObjectClass);
 			}
+		}
 
-			//FIXME Отключил временно пока не релализована поддежка журналирования удаления через ORM.
-			//SubscribeToDeletion();
+		/// <summary>
+		/// Adds the type for the identifier comparation in collectoions.
+		/// </summary>
+		/// <param name="type">Type.</param>
+		public static void AddIdComparationType(Type type)
+		{
+			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, new string[] { "Id" });
+		}
+
+		public static void AddIdComparationType(Type type, string[] fields)
+		{
+			QSCompareLogic.Config.CollectionMatchingSpec.Add (type, fields);
 		}
 
 		public static string ResolveFieldNameFromPath (string path, bool cutClass = true)
@@ -188,6 +220,28 @@ namespace QSHistoryLog
 			}
 			logger.Debug ("Зафиксировано в журнал удаление {0} объектов.", count);
 		}
+	}
+
+	public enum ChangeSetType
+	{
+		[Display(Name = "Создание")]
+		Create,
+		[Display(Name = "Изменение")]
+		Change,
+		[Display(Name = "Удаление")]
+		Delete
+	}
+
+	public enum FieldChangeType
+	{
+		[Display(Name = "Добавлено")]
+		Added,
+		[Display(Name = "Изменено")]
+		Changed,
+		[Display(Name = "Удалено")]
+		Removed,
+		[Display(Name = "Без изменений")]
+		Unchanged
 	}
 
 	public interface IFileTrace

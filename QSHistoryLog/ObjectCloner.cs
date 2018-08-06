@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using QSOrmProject;
+using System.Collections;
+using System.Linq;
 using NHibernate;
 
 namespace QSHistoryLog
@@ -16,7 +18,7 @@ namespace QSHistoryLog
 		/// <typeparam name="T">Type of the object.</typeparam>
 		public static void FieldsCopy<T> (T sourceObject, ref T destinationObject) where T : class
 		{
-			Type type = destinationObject.GetType();
+			Type type = sourceObject.GetType ();
 			List<FieldInfo> fields = new List<FieldInfo> ();
 
 			while (type != null) {
