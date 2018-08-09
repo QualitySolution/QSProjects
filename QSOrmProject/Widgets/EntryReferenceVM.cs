@@ -185,7 +185,7 @@ namespace QSOrmProject
 		/// <summary>
 		/// Открывает диалог выбора объекта
 		/// </summary>
-		public void OpenSelectDialog()
+		public void OpenSelectDialog(string newTabTitle = null)
 		{ 
 			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
 			if(modelWithParent != null) {
@@ -202,7 +202,8 @@ namespace QSOrmProject
 			ReferenceRepresentation SelectDialog;
 
 			SelectDialog = new ReferenceRepresentation(RepresentationModel);
-
+			if(newTabTitle != null)
+				SelectDialog.TabName = newTabTitle;
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			if(!CanEditReference)
 				SelectDialog.ButtonMode &= ~(ReferenceButtonMode.CanAdd | ReferenceButtonMode.CanDelete);
