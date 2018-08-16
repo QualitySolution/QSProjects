@@ -33,13 +33,6 @@ namespace QSWidgetLib
 			}
 		}
 
-		public bool TextSensitive { 
-			get => entryDate.Sensitive; 
-			set {
-				entryDate.Sensitive = value;
-			} 
-		}
-
 		public string DateText {
 			get {
 				return entryDate.Text;
