@@ -43,11 +43,17 @@ namespace QSSupportLib
 		public void UpdateParameter (DbConnection con, string name, string value)
 		{
 			string sql;
-			logger.Debug ("Изменяем параметр базы {0}={1}", name, value);
 			if (All.ContainsKey (name))
+			{
+				if(All[name] == value)
+					return;
+
 				sql = "UPDATE base_parameters SET str_value = @str_value WHERE name = @name";
+			}
 			else
 				sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value)";
+
+			logger.Debug ("Изменяем параметр базы {0}={1}", name, value);
 			try {
 				DbCommand cmd = con.CreateCommand ();
 				cmd.CommandText = sql;
