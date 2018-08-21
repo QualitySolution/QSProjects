@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using QS.Print;
 using QSProjectsLib;
 
 namespace QSDocTemplates
@@ -10,12 +11,28 @@ namespace QSDocTemplates
 	{
 		public static PrintSettings PrintSettings { get; set; }
 
-		public static void Print(ITemplatePrntDoc document)
+		public static void Print(IPrintableOdtDocument document)
 		{
-			PrintAll(new ITemplatePrntDoc[]{ document });
+			PrintAll(new List<IPrintableOdtDocument> { document });
 		}
 
-		public static void PrintAll(IList<ITemplatePrntDoc> documents)
+		class OdtPrinter : IOdtDocPrinter
+		{
+			public void Print(IPrintableDocument[] documents, PrintSettings printSettings = null)
+			{
+				PrintAll(documents.Where(x => x.PrintType == PrinterType.ODT).Cast<IPrintableOdtDocument>().ToList());
+			}
+		}
+
+		/// <summary>
+		/// Метод необходимо вызвать при старте проекта для возможности массовой печати документов.
+		/// </summary>
+		public static void InitPrinter()
+		{
+			DocumentPrinters.OdtDocPrinter = new OdtPrinter();
+		}
+
+		public static void PrintAll(IList<IPrintableOdtDocument> documents)
 		{
 			var result = LongOperationDlg.StartOperation(
 				delegate(IWorker worker) {
@@ -28,7 +45,7 @@ namespace QSDocTemplates
 				return;
 		}	
 
-		public static void PrintDocuments(IWorker worker, IList<ITemplatePrntDoc> docs)
+		public static void PrintDocuments(IWorker worker, IList<IPrintableOdtDocument> docs)
 		{
 			using (FileWorker fileWorker = new FileWorker())
 			{
@@ -48,10 +65,8 @@ namespace QSDocTemplates
 		}
 	}
 
-	public interface ITemplatePrntDoc
+	public interface IPrintableOdtDocument : IPrintableDocument
 	{
 		IDocTemplate GetTemplate();
-		string Name { get; }
-		int CopiesToPrint { get; set; }
 	}
 }

@@ -2,9 +2,9 @@
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
-using QSDocTemplates;
 using QSOrmProject;
 using System;
+using QS.Print;
 
 namespace QSReport
 {
@@ -20,16 +20,13 @@ namespace QSReport
 		{
 			showDialog = true;
 			List<IPrintableDocument> rdlToPrinter = new List<IPrintableDocument>();
-			List<ITemplatePrntDoc> odtToPrinter = new List<ITemplatePrntDoc>();
+			List<IPrintableDocument> odtToPrinter = new List<IPrintableDocument>();
 
 			foreach(var document in PrintableDocuments.Where(d => d.Selected)) {
+				document.Document.CopiesToPrint = document.Copies;
 				switch(document.Document.PrintType) {
 					case PrinterType.ODT:
-						if(document.Document is ITemplatePrntDoc) {
-							var doc = (document.Document as ITemplatePrntDoc);
-							doc.CopiesToPrint = document.Copies;
-							odtToPrinter.Add(doc);
-						}
+						odtToPrinter.Add(document.Document);
 						break;
 					case PrinterType.RDL:
 						for(int i = 0; i < document.Copies; i++)
@@ -40,8 +37,7 @@ namespace QSReport
 				}
 			}
 			DocumentPrinter.PrintAll(rdlToPrinter);
-			TemplatePrinter.PrintSettings = DocumentPrinter.PrintSettings;
-			TemplatePrinter.PrintAll(odtToPrinter);
+			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), DocumentPrinter.PrintSettings);
 		}
 
 		public void PrintDocument(SelectablePrintDocument doc)
@@ -58,7 +54,7 @@ namespace QSReport
 
 			switch(doc.Document.PrintType) {
 				case PrinterType.RDL:
-					var reportInfo = doc.Document.GetReportInfo();
+					var reportInfo = (doc.Document as IPrintableRDLDocument).GetReportInfo();
 
 					var action = showDialog ? PrintOperationAction.PrintDialog : PrintOperationAction.Print;
 					showDialog = false;

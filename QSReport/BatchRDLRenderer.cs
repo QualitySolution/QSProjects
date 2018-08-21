@@ -1,11 +1,11 @@
-﻿using System;
-using fyiReporting.RDL;
-using QSProjectsLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Gtk;
+using fyiReporting.RDL;
 using fyiReporting.RdlGtkViewer;
+using Gtk;
 using NLog;
+using QS.Print;
+using QSProjectsLib;
 
 namespace QSReport
 {
@@ -46,8 +46,10 @@ namespace QSReport
 		{
 			if (document.PrintType == PrinterType.RDL)
 			{
-				Report report = GetReportFromFile(document.GetReportInfo());
-				report.RunGetData(document.GetReportInfo().Parameters);
+				var rdlDoc = document as IPrintableRDLDocument;
+
+				Report report = GetReportFromFile(rdlDoc.GetReportInfo());
+				report.RunGetData(rdlDoc.GetReportInfo().Parameters);
 				reportPages.Add(report.BuildPages());
 			}
 		}

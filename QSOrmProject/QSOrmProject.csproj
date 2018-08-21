@@ -162,6 +162,9 @@
     <Compile Include="DomainModel\Tracking\IDeleteTracker.cs" />
     <Compile Include="yWidgets\yLegalNameAlternative.cs" />
     <Compile Include="DomainModel\Basis\DomainTreeNodeBase.cs" />
+    <Compile Include="Print\IPrintableDocument.cs" />
+    <Compile Include="Print\DocumentPrinters.cs" />
+    <Compile Include="Print\IOdtDocPrinter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -211,6 +214,7 @@
     <Folder Include="DomainModel\Tracking\" />
     <Folder Include="Permissions\" />
     <Folder Include="DomainModel\Basis\" />
+    <Folder Include="Print\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

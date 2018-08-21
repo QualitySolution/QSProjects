@@ -5,11 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9C0363D4-EE69-45B8-BA45-BDA24CE35A06}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSReport</RootNamespace>
+    <RootNamespace>QS</RootNamespace>
     <AssemblyName>QSReport</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +53,7 @@
     <Compile Include="ReportPrinter.cs" />
     <Compile Include="MultipleDocumentPrinter.cs" />
     <Compile Include="ReportIdentifierAttribute.cs" />
+    <Compile Include="IPrintableRDLDocument.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -89,10 +89,6 @@
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Modules\QSDocTemplates\QSDocTemplates.csproj">
-      <Project>{55CD5E7C-3164-4A5D-9DA8-F29F5E9D170C}</Project>
-      <Name>QSDocTemplates</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using QS.Print;
 using QSProjectsLib;
 
 namespace QSReport
@@ -136,28 +137,11 @@ namespace QSReport
 			return printOp.PrintSettings;
 		}
 
-		public static QSTDI.TdiTabBase GetPreviewTab(IPrintableDocument document)
+		public static QSTDI.TdiTabBase GetPreviewTab(IPrintableRDLDocument document)
 		{
-			return new QSReport.ReportViewDlg (document.GetReportInfoForPreview());				
+			return new QSReport.ReportViewDlg (document.GetReportInfo());				
 		}
 	}		
-
-	public interface IPrintableDocument
-	{
-		PrinterType PrintType{ get; }
-		DocumentOrientation Orientation{ get; }
-		string Name { get;}
-		QSReport.ReportInfo GetReportInfo ();
-		QSReport.ReportInfo GetReportInfoForPreview();
-	}
-
-	public enum PrinterType{
-		None, RDL, ODT
-	}
-
-	public enum DocumentOrientation{
-		Portrait,Landscape
-	}
 
 
 }
