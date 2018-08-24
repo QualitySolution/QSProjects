@@ -20,6 +20,7 @@ namespace QSDocTemplates
 		{
 			public void Print(IPrintableDocument[] documents, PrintSettings printSettings = null)
 			{
+				PrintSettings = printSettings;
 				PrintAll(documents.Where(x => x.PrintType == PrinterType.ODT).Cast<IPrintableOdtDocument>().ToList());
 			}
 		}

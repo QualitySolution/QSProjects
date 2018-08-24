@@ -26,6 +26,7 @@ namespace QSReport
 				document.Document.CopiesToPrint = document.Copies;
 				switch(document.Document.PrintType) {
 					case PrinterType.ODT:
+						document.Document.CopiesToPrint = document.Copies;
 						odtToPrinter.Add(document.Document);
 						break;
 					case PrinterType.RDL:
