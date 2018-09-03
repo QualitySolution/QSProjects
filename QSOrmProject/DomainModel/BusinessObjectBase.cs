@@ -2,7 +2,7 @@
 
 namespace QSOrmProject
 {
-	public class BusinessObjectBase<TEntity> : PropertyChangedBase, IBusinessObject 
+	public abstract class BusinessObjectBase<TEntity> : PropertyChangedBase, IBusinessObject 
 		where TEntity : IDomainObject, new()
 	{
 		public virtual IUnitOfWorkGeneric<TEntity> UoWGeneric { set; get;}
