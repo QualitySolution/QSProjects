@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gtk;
+using QS.Helpers;
 
 namespace QSOrmProject
 {
@@ -57,18 +58,8 @@ namespace QSOrmProject
 				Chooser.Hide ();
 				logger.Info ("Загрузка фотографии...");
 
-				FileStream fs = new FileStream (Chooser.Filename, FileMode.Open, FileAccess.Read);
-				if (Chooser.Filename.ToLower ().EndsWith (".jpg")) {
-					using (MemoryStream ms = new MemoryStream ()) {
-						fs.CopyTo (ms);
-						ImageFile = ms.ToArray ();
-					}
-				} else {
-					logger.Info ("Конвертация в jpg ...");
-					Gdk.Pixbuf image = new Gdk.Pixbuf (fs);
-					ImageFile = image.SaveToBuffer ("jpeg");
-				}
-				fs.Close ();
+				ImageFile = ImageHelper.LoadImageToJpgBytes(Chooser.Filename);
+
 				buttonSavePhoto.Sensitive = true;
 				logger.Info ("Ok");
 			}

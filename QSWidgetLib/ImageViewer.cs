@@ -10,6 +10,8 @@ namespace QSWidgetLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		public object Tag { get; set; }
+
 		public ImageViewer () : base ()
 		{
 			_pixbuf = null;

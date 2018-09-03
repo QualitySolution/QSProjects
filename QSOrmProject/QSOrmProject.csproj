@@ -165,6 +165,7 @@
     <Compile Include="Print\IPrintableDocument.cs" />
     <Compile Include="Print\DocumentPrinters.cs" />
     <Compile Include="Print\IOdtDocPrinter.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
