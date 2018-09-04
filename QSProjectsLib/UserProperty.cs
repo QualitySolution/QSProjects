@@ -93,8 +93,11 @@ namespace QSProjectsLib
 					Pair.Value.Active = rdr.GetBoolean(QSMain.ProjectPermission[Pair.Key].DataBaseName);
 				}
 
-				foreach(var view in permissionViews) {
-					view.DBFieldValue = DBWorks.GetString(rdr, view.DBFieldName);
+				if(permissionViews != null)
+				{
+					foreach(var view in permissionViews) {
+						view.DBFieldValue = DBWorks.GetString(rdr, view.DBFieldName);
+					}
 				}
 
 				textviewComments.Buffer.Text = rdr["description"].ToString();
