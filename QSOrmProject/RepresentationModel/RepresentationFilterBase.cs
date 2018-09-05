@@ -1,9 +1,13 @@
 ﻿using System;
+using NHibernate.Util;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationFilterBase : Gtk.Bin, IRepresentationFilter
+	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter
+		where TFilter : class
 	{
+		bool canUpdateNodes = true;
+
 		IUnitOfWork uow;
 
 		public IUnitOfWork UoW {
@@ -20,7 +24,7 @@ namespace QSOrmProject.RepresentationModel
 
 		protected void OnRefiltered ()
 		{
-			if (Refiltered != null)
+			if (canUpdateNodes && Refiltered != null)
 				Refiltered (this, new EventArgs ());
 		}
 
@@ -33,10 +37,18 @@ namespace QSOrmProject.RepresentationModel
 			UoW = uow;
 		}
 
-		protected virtual void OnUoWSet()
+		public void SetAtOnce(params Action<TFilter>[] setters)
 		{
-			
+			canUpdateNodes = false;
+			TFilter filter = this as TFilter;
+			if(filter == null)
+				throw new InvalidProgramException($"Класс {typeof(TFilter)} должен быть наследником RepresentationFilterBase<TFilter>");
+			setters.ForEach(x => x.Invoke(filter));
+			canUpdateNodes = true;
+			OnRefiltered();
 		}
+
+		protected virtual void OnUoWSet() { }
 	}
 }
 
