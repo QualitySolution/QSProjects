@@ -6,7 +6,7 @@ namespace QSOrmProject.RepresentationModel
 	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter
 		where TFilter : class
 	{
-		bool canUpdateNodes = true;
+		bool canNotify = true;
 
 		IUnitOfWork uow;
 
@@ -16,16 +16,16 @@ namespace QSOrmProject.RepresentationModel
 			}
 			set {
 				uow = value;
-				OnUoWSet();
+				ConfigureFilter();
 			}
 		}
 
 		public event EventHandler Refiltered;
 
-		protected void OnRefiltered ()
+		protected void OnRefiltered()
 		{
-			if (canUpdateNodes && Refiltered != null)
-				Refiltered (this, new EventArgs ());
+			if(canNotify && Refiltered != null)
+				Refiltered(this, new EventArgs());
 		}
 
 		public RepresentationFilterBase()
@@ -37,18 +37,23 @@ namespace QSOrmProject.RepresentationModel
 			UoW = uow;
 		}
 
-		public void SetAtOnce(params Action<TFilter>[] setters)
+		/// <summary>
+		/// Устанавливать ограничения через этот метод, т.к. не будет вызываться 
+		/// обновления журналов при каждом выставлении ограничения.
+		/// </summary>
+		/// <param name="setters">Лямбды ограничений</param>
+		public void RestrictAtOnce(params Action<TFilter>[] setters)
 		{
-			canUpdateNodes = false;
+			canNotify = false;
 			TFilter filter = this as TFilter;
 			if(filter == null)
 				throw new InvalidProgramException($"Класс {typeof(TFilter)} должен быть наследником RepresentationFilterBase<TFilter>");
-			setters.ForEach(x => x.Invoke(filter));
-			canUpdateNodes = true;
+			setters.ForEach(x => x(filter));
+			canNotify = true;
 			OnRefiltered();
 		}
 
-		protected virtual void OnUoWSet() { }
+		protected abstract void ConfigureFilter();
 	}
 }
 
