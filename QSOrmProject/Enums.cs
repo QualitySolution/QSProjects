@@ -1,14 +1,10 @@
 using System.Data.Bindings;
 
-namespace QSOrmProject
+namespace QS.Gtk.Widgets
 {
-
-	public enum SpecialComboState {
-		[ItemTitle("Ничего")]
-		None,
-		[ItemTitle("Все")]
-		All,
-		[ItemTitle("Нет")]
-		Not
+	internal enum СompletionColumn
+	{
+		Tilte,
+		Item
 	}
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
+using QS.Gtk.Widgets;
 using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
@@ -13,12 +14,6 @@ namespace QSOrmProject
 	[ToolboxItem (true)]
 	public partial class EntryReferenceVM : WidgetOnDialogBase
 	{
-		enum completionCol
-		{
-			Tilte,
-			Item
-		}
-
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
 		private System.Type subjectType;
@@ -276,7 +271,7 @@ namespace QSOrmProject
 
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var title = (string)tree_model.GetValue (iter, (int)completionCol.Tilte);
+			var title = (string)tree_model.GetValue (iter, (int)СompletionColumn.Tilte);
 			string pattern = String.Format ("{0}", Regex.Escape (entryObject.Text));
 			(cell as CellRendererText).Markup = 
 				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
@@ -284,14 +279,14 @@ namespace QSOrmProject
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			var val = completion.Model.GetValue (iter, (int)completionCol.Item);
+			var val = completion.Model.GetValue (iter, (int)СompletionColumn.Item);
 			return RepresentationModel.SearchFilterNodeFunc(val, key);
 		}
 
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			var node = args.Model.GetValue (args.Iter, (int)completionCol.Item);
+			var node = args.Model.GetValue (args.Iter, (int)СompletionColumn.Item);
 			SelectSubjectByNode(node);
 			OnChangedByUser();
 			args.RetVal = true;
