@@ -41,6 +41,8 @@ namespace QSReport
 			return String.Format("Report_{0}", parametersWidget.GetType().Name);
 		}
 
+		public static new string GenerateHashName<T>() where T : IParametersWidget => String.Format("Report_{0}", typeof(T).Name);
+
 		public ReportViewDlg (ReportInfo info)
 		{
 			reportInfo = info;
