@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.DomainModel.Tracking;
 using QSOrmProject;
 
 namespace QS.DomainModel
@@ -17,9 +18,10 @@ namespace QS.DomainModel
 			}
 		}
 
-		public UnitOfWorkWithoutRoot()
+		internal UnitOfWorkWithoutRoot(UnitOfWorkTitle title)
 		{
 			IsNew = false;
+            ActionTitle = title;
 		}
 
 		public void Save()

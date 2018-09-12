@@ -27,6 +27,8 @@ namespace QS.DomainModel
 
 		public bool IsNew { get; protected set; }
 
+		public UnitOfWorkTitle ActionTitle { get; protected set; }
+
 		public bool IsAlive {
 			get {
 				return Session.IsOpen;

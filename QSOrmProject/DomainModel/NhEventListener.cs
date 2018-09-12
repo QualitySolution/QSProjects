@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Event;
+using QS.DomainModel.Tracking;
 using QSProjectsLib;
 
 namespace QS.DomainModel
@@ -10,22 +12,24 @@ namespace QS.DomainModel
 #region Статическое
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		internal static readonly List<IUnitOfWorkEventHandler> RegisteredUoWs = new List<IUnitOfWorkEventHandler>() ;
+		internal static readonly Dictionary<int, UowLink> RegisteredUoWs = new Dictionary<int, UowLink>() ;
 
 		internal static void RegisterUow(IUnitOfWorkEventHandler uow)
 		{
-			lock(RegisteredUoWs)
+            RemoveLost();
+            lock (RegisteredUoWs)
 			{
-				RegisteredUoWs.Add(uow);
+				RegisteredUoWs.Add(uow.Session.GetHashCode(), new UowLink(uow));
 				logger.Debug("Зарегистрирован новый UnitOfWork. {0}", ActiveUowCountText());
 			}
 		}
 
 		internal static void UnregisterUow(IUnitOfWorkEventHandler uow)
 		{
-			lock(RegisteredUoWs)
+            RemoveLost();
+            lock (RegisteredUoWs)
 			{
-				RegisteredUoWs.Remove(uow);
+                RegisteredUoWs.Remove(uow.Session.GetHashCode());
 				logger.Debug("UnitOfWork завершил работу. {0}", ActiveUowCountText());
 			}
 		}
@@ -42,11 +46,7 @@ namespace QS.DomainModel
 
 		public void OnPostLoad(PostLoadEvent @event)
 		{
-			IUnitOfWorkEventHandler uow;
-			lock (RegisteredUoWs)
-			{
-				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
-			}
+            IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
 
 			if (uow != null)
 				uow.OnPostLoad(@event);
@@ -56,11 +56,7 @@ namespace QS.DomainModel
 
 		public void OnPreLoad(PreLoadEvent @event)
 		{
-			IUnitOfWorkEventHandler uow;
-			lock (RegisteredUoWs)
-			{
-				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
-			}
+			IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
 
 			if (uow != null)
 				uow.OnPreLoad(@event);
@@ -70,16 +66,65 @@ namespace QS.DomainModel
 
 		public void OnPostDelete(PostDeleteEvent @event)
 		{
-			IUnitOfWorkEventHandler uow;
-			lock(RegisteredUoWs)
-			{
-				uow = RegisteredUoWs.FirstOrDefault(u => u.Session == @event.Session);
-			}
+			IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
 
 			if(uow != null)
 				uow.OnPostDelete(@event);
 			else
 				logger.Warn("Пришло событие PostDeleteEvent но соответствующий сессии UnitOfWork не найден.");
 		}
-	}
+
+        private IUnitOfWorkEventHandler GetUnitOfWork(NHibernate.ISession session)
+        {
+            lock (RegisteredUoWs)
+            {
+                int hashCode = session.GetHashCode();
+                if(RegisteredUoWs.ContainsKey(hashCode))
+                {
+                    return RegisteredUoWs[hashCode].UnitOfWork;
+                }
+            }
+            return null;
+        }
+
+        static DateTime nextCheck;
+
+		private static void RemoveLost()
+        {
+            lock (RegisteredUoWs)
+            {
+                if (DateTime.Now < nextCheck)
+                    return;
+
+                foreach (var pair in RegisteredUoWs.ToList())
+                {
+                    if (pair.Value.UnitOfWork == null)
+                    {
+                        logger.Warn($"UnitOfWork созданный в {pair.Value.Title.CallerMemberName}({pair.Value.Title.CallerFilePath}:{pair.Value.Title.CallerLineNumber}) не был закрыт корректно и удален сборщиком мусора так как на него потеряны все ссылки.");
+                        RegisteredUoWs.Remove(pair.Key);
+                    }
+                }
+
+                nextCheck = DateTime.Now.AddSeconds(5);
+            }
+        }
+    }
+
+	internal class UowLink
+    {
+        WeakReference uow;
+        
+        public UnitOfWorkTitle Title { get; private set; }
+
+        public int SessionHashCode { get; private set; }
+
+        public UowLink(IUnitOfWorkEventHandler uow)
+        {
+            SessionHashCode = uow.Session.GetHashCode();
+            this.uow = new WeakReference(uow);
+            this.Title = uow.ActionTitle;
+        }
+
+        public IUnitOfWorkEventHandler UnitOfWork => uow.Target as IUnitOfWorkEventHandler;
+    }
 }

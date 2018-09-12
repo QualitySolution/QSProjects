@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using QS.DomainModel;
+using QS.DomainModel.Tracking;
 using QSOrmProject.DomainModel;
 
 namespace QSOrmProject
 {
 	public static class UnitOfWorkFactory
 	{
-		/// <summary>
-		/// Создаем Unit of Work без корренной сущьности.
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		public static IUnitOfWork CreateWithoutRoot()
+        /// <summary>
+        /// Создаем Unit of Work без корренной сущьности.
+        /// </summary>
+        /// <returns>UnitOfWork.</returns>
+        public static IUnitOfWork CreateWithoutRoot(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return new UnitOfWorkWithoutRoot();
+            var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+            return new UnitOfWorkWithoutRoot(title);
 		}
 
 		/// <summary>
@@ -20,9 +23,10 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id) where TEntity : class, IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
-			var uow = new UnitOfWork<TEntity>(id);
+            var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+            var uow = new UnitOfWork<TEntity>(id, title);
 			return uow;
 		}
 
@@ -31,9 +35,10 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>() where TEntity : class, IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
-			var uow = new UnitOfWork<TEntity>();
+            var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+            var uow = new UnitOfWork<TEntity>(title);
 			return uow;
 		}
 
@@ -42,9 +47,10 @@ namespace QSOrmProject
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity) where TEntity : class, IDomainObject, new()
+		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
-			var uow = new UnitOfWork<TEntity>(entity);
+            var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+            var uow = new UnitOfWork<TEntity>(entity, title);
 			return uow;
 		}
 

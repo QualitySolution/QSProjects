@@ -31,9 +31,10 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
-		public UnitOfWork()
+		internal UnitOfWork(UnitOfWorkTitle title)
 		{
 			IsNew = true;
+            ActionTitle = title;
 			Root = new TRootEntity();
 			if(Root is IBusinessObject)
 				((IBusinessObject)Root).UoW = this;
@@ -42,10 +43,11 @@ namespace QSOrmProject.DomainModel
 				Trackers.Add(Tracker);
 		}
 
-		public UnitOfWork(TRootEntity root)
+		internal UnitOfWork(TRootEntity root, UnitOfWorkTitle title)
 		{
 			IsNew = true;
 			Root = root;
+            ActionTitle = title;
 			if(Root is IBusinessObject)
 				((IBusinessObject)Root).UoW = this;
 			Tracker = TrackerMain.Factory?.Create(Root, TrackerCreateOption.IsNewAndShotThis);
@@ -53,9 +55,10 @@ namespace QSOrmProject.DomainModel
 				Trackers.Add(Tracker);
 		}
 
-		public UnitOfWork(int id)
+		internal UnitOfWork(int id, UnitOfWorkTitle title)
 		{
 			IsNew = false;
+            ActionTitle = title;
 			Root = GetById<TRootEntity>(id);
 			Tracker = Trackers.OfType<IObjectTracker<TRootEntity>>().FirstOrDefault(t => t.OriginEntity == Root);
 		}
