@@ -136,8 +136,11 @@ namespace QSDocTemplates
 				logger.Info("Печатаем файл...");
 				System.Diagnostics.Process.Start(officeName, args).WaitForExit();
 			} else {
+				string officeName = "soffice";
+				string args = "-o \"" + opened.TempFilePath + "\"";
+
 				logger.Info("Открываем файл во внешнем приложении...");
-				System.Diagnostics.Process.Start(opened.TempFilePath).WaitForExit();
+				System.Diagnostics.Process.Start(officeName, args).WaitForExit();
 			}
 		}
 

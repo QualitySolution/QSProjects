@@ -19,13 +19,7 @@ namespace QSDocTemplates
 
 		public bool CanOpenDocument = true;
 
-		private bool canRevertCommon = true;
-
-		public bool CanRevertCommon { 
-			get => canRevertCommon; 
-			set => canRevertCommon = value; 
-		}
-
+		public bool CanRevertCommon { get; set; }
 
 		IDocTemplate template;
 		public IDocTemplate Template {
