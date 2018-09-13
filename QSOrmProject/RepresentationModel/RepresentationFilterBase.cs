@@ -16,7 +16,7 @@ namespace QSOrmProject.RepresentationModel
 			}
 			set {
 				uow = value;
-				ConfigureFilter();
+				ConfigureWithUow();
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace QSOrmProject.RepresentationModel
 		/// обновления журналов при каждом выставлении ограничения.
 		/// </summary>
 		/// <param name="setters">Лямбды ограничений</param>
-		public void RestrictAtOnce(params Action<TFilter>[] setters)
+		public void SetAndRefilterAtOnce(params Action<TFilter>[] setters)
 		{
 			canNotify = false;
 			TFilter filter = this as TFilter;
@@ -53,7 +53,7 @@ namespace QSOrmProject.RepresentationModel
 			OnRefiltered();
 		}
 
-		protected abstract void ConfigureFilter();
-	}
+		protected virtual void ConfigureWithUow() { }
+    }
 }
 
