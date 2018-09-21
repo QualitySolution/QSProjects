@@ -74,6 +74,12 @@ namespace QSEmailSending
 
 			string dataStr = Convert.ToBase64String(data);
 
+			new List<string> {
+					"\\", "\"", "/", ":", "*",
+					"?", "<", ">", "|", "+",
+					"%", "!", "@", ","
+			}.ForEach(m => fileName = fileName.Replace(m, ""));
+
 			AttachmentsBinary.Add(fileName, dataStr);
 		}
 
