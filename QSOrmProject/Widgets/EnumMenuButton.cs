@@ -18,7 +18,8 @@ namespace QSOrmProject
 
 		Dictionary<ImageMenuItem, object> MenuItems;
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemClicked;
-		List<object> sensitiveFalseItems = new List<object> ();
+		List<object> sensitiveFalseItems = new List<object>();
+		List<object> invisibleItems = new List<object>();
 
 		System.Type itemsEnum;
 		public System.Type ItemsEnum {
@@ -75,6 +76,8 @@ namespace QSOrmProject
 				item.Activated += OnMenuItemActivated;
 				if (sensitiveFalseItems.Contains (info.GetValue (null)))
 					item.Sensitive = false;
+				if(invisibleItems.Contains(info.GetValue(null)))
+					item.Visible = false;
 				MenuItems.Add (item, info.GetValue (null));
 				Menu.Add (item);
 			}
@@ -100,6 +103,19 @@ namespace QSOrmProject
 			else
 				if (sensitiveFalseItems.Contains (enumItem))
 					sensitiveFalseItems.Remove (enumItem);
+		}
+
+		public void SetVisibility(object enumItem, bool visible)
+		{
+			var menuitem = MenuItems.First(pair => enumItem.Equals(pair.Value)).Key;
+			menuitem.Visible = visible;
+			if(visible) {
+				if(!invisibleItems.Contains(enumItem))
+					invisibleItems.Add(enumItem);
+				else
+					if(invisibleItems.Contains(enumItem))
+						invisibleItems.Remove(enumItem);
+			}
 		}
 	}
 
