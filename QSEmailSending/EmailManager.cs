@@ -16,21 +16,15 @@ namespace QSEmailSending
 {
 	public static class EmailManager
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
-
-		private static int MaxSendAttemptsCount = 5;
-		private static int MaxEventSaveAttemptsCount = 5;
-
-
-		private static CancellationTokenSource cancellationToken = new CancellationTokenSource();
-
-		private static string userId = null;
-		private static string userSecretKey = null;
-
-		public static BlockingCollection<Email> emailsQueue = new BlockingCollection<Email>();
-		public static BlockingCollection<MailjetEvent> unsavedEventsQueue = new BlockingCollection<MailjetEvent>();
-
-		public static bool IsInitialized => !(string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(userSecretKey));
+		static Logger logger = LogManager.GetCurrentClassLogger();
+		static int MaxSendAttemptsCount = 5;
+		static int MaxEventSaveAttemptsCount = 5;
+		static string userId = null;
+		static string userSecretKey = null;
+		static CancellationTokenSource cancellationToken = new CancellationTokenSource();
+		static BlockingCollection<Email> emailsQueue = new BlockingCollection<Email>();
+		static BlockingCollection<MailjetEvent> unsavedEventsQueue = new BlockingCollection<MailjetEvent>();
+		static bool IsInitialized => !(string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(userSecretKey));
 
 		static EmailManager()
 		{
@@ -69,17 +63,38 @@ namespace QSEmailSending
 			SetLoginSetting(MainSupport.BaseParameters.All[mailjetUserName], MainSupport.BaseParameters.All[mailjetSecretName]);
 		}
 
+		public static void AddEvent(MailjetEvent mailjetEvent)
+		{
+			Task.Run(() => {
+				Thread.CurrentThread.Name = "AddEventWork";
+				ProcessEvent(mailjetEvent);
+			});
+		}
+
+		public static Tuple<bool, string> AddEmail(Email email)
+		{
+			Thread.CurrentThread.Name = "AddNewEmail";
+			logger.Info("Thread {0} Id {1}: Получено новое письмо на отправку", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
+			try {
+				AddEmailToSend(email);
+			}
+			catch(Exception ex) {
+				return new Tuple<bool, string>(false, ex.Message);
+			}
+			return new Tuple<bool, string>(true, "Письмо добавлено в очередь на отправку");
+		}
+
+
 		/// <summary>
 		/// Устанавливает статус ошибки отправки, для всех писем в ожидании отправки.
 		/// </summary>
-		public static void SetErrorStatusWaitingToSendEmails()
+		static void SetErrorStatusWaitingToSendEmails()
 		{
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()){
+			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				logger.Info("Загрузка из базы почты ожидающей отправки");
 				var waitingEmails = uow.Session.QueryOver<StoredEmail>()
 									   .Where(x => x.State == StoredEmailStates.WaitingToSend)
 									   .List<StoredEmail>();
-				logger.Info("Добавление загруженной почты в очередь. Количество: {0}", waitingEmails.Count);
 				foreach(var email in waitingEmails) {
 					email.State = StoredEmailStates.SendingError;
 					email.AddDescription("Отправка прервана остановкой сервера.");
@@ -89,17 +104,14 @@ namespace QSEmailSending
 			}
 		}
 
-		public static void AddEmailToSend(Email email)
+		static void AddEmailToSend(Email email)
 		{
-			logger.Info("Получено новое письмо на отправку");
-
-			logger.Info("Запись в базу информации о письме");
 			if(!EmailRepository.CanSendByTimeout(email.Recipient.EmailAddress, email.Order)) {
-				logger.Info("Попытка отправить почту до истечения минимального времени до повторной отправки");
+				logger.Info("{0} Попытка отправить почту до истечения минимального времени до повторной отправки", GetThreadInfo());
 				throw new Exception("Отправка на один и тот же адрес возможна раз в 10 минут");
 			}
 
-			logger.Info("Запись в базу информации о письме");
+			logger.Info("{0} Запись в базу информации о письме", GetThreadInfo());
 			using(var uow = UnitOfWorkFactory.CreateWithNewRoot<StoredEmail>()) {
 				//Заполнение нового письма данными
 				uow.Root.Order = uow.GetById<Order>(email.Order);
@@ -116,38 +128,40 @@ namespace QSEmailSending
 				uow.Root.RecipientAddress = email.Recipient.EmailAddress;
 				try {
 					uow.Save();
-					logger.Info("Информация о письме успешно сохранена");
 				}
 				catch(Exception ex) {
-					logger.Info(string.Format("Ошибка при сохранении. Ошибка: {0}", ex.Message));
+					logger.Info(string.Format("{1} Ошибка при сохранении. Ошибка: {0}", ex.Message, GetThreadInfo()));
 					throw ex;
 				}
 				email.StoredEmailId = uow.Root.Id;
-				logger.Info("Добавление почты в очередь на отправку");
-				Task.Run(() => emailsQueue.Add(email));
+				emailsQueue.Add(email);
+				logger.Info("{0} Письмо добавлено в очередь на отправку. Писем в очереди: {1}", GetThreadInfo(), emailsQueue.Count);
+				logger.Error("{0} Закончил работу.", GetThreadInfo());
+
 			}
 		}
 
-		public static async Task ProcessEmailMailjet()
+		static async Task ProcessEmailMailjet()
 		{
+			Thread.CurrentThread.Name = "EmailSendWorker";
 			while(true) {
 				Email email = null;
 
 				email = emailsQueue.Take();
+				logger.Info("{0} Отправка письма из очереди", GetThreadInfo());
 
 				Thread.Sleep(1000);
 
 				if(email == null) {
-					return;
+					continue;
 				}
 
 				if(email.StoredEmailId == 0) {
-					logger.Error("Не сохраненное письмо в очереди на отправку");
+					logger.Error("{0} Письмо не было сохранено перед добавлением в очередь. Добавлено повторно в очередь", GetThreadInfo());
 					AddEmailToSend(email);
-					return;
+					continue;
 				}
 
-				logger.Info("Отправка письма из очереди");
 				using(var uow = UnitOfWorkFactory.CreateForRoot<StoredEmail>(email.StoredEmailId)) {
 
 					MailjetClient client = new MailjetClient(userId, userSecretKey) {
@@ -155,22 +169,21 @@ namespace QSEmailSending
 					};
 
 					//формируем письмо в формате mailjet для отправки
-					logger.Info("Формирование запроса на сервер Mailjet");
 					var request = CreateMailjetRequest(email);
 					MailjetResponse response = null;
 					try {
-						logger.Info("Отправка запроса на сервер Mailjet");
+						logger.Info("{0} Отправка запроса на сервер Mailjet", GetThreadInfo());
 						response = await client.PostAsync(request);
 					}
 					catch(Exception ex) {
-						logger.Info(string.Format("Не удалось отправить письмо: {0}\n", ex.Message));
+						logger.Info("{1} Не удалось отправить письмо: \n{0}", ex.Message, GetThreadInfo());
 						SaveErrorInfo(uow, ex.Message);
-						return;
+						continue;
 					}
 
 					MailjetMessage[] messages = response.GetData().ToObject<MailjetMessage[]>();
 
-					logger.Info("Получен ответ: Code {0}", response.StatusCode);
+					logger.Info("{1} Получен ответ: Code {0}", response.StatusCode, GetThreadInfo());
 					if(response.IsSuccessStatusCode) {
 						uow.Root.State = StoredEmailStates.SendingComplete;
 						foreach(var message in messages) {
@@ -218,11 +231,90 @@ namespace QSEmailSending
 						}
 
 						logger.Info(response.GetData());
-						logger.Info(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+						logger.Info("{1} ErrorMessage: {0}\n", response.GetErrorMessage(), GetThreadInfo());
 					}
 				}
-
 			}
+		}
+
+		static void ProcessEvent(MailjetEvent mailjetEvent)
+		{
+			if(mailjetEvent.AttemptCount > 0) {
+				logger.Error("{1} Повторная обработка события с сервера Mailjet. Попытка {2}/{3} \n{0}", mailjetEvent, GetThreadInfo(), mailjetEvent.AttemptCount, MaxSendAttemptsCount);
+			} else {
+				logger.Error("{1} Обработка события с сервера Mailjet \n{0}", mailjetEvent, GetThreadInfo());
+			}
+
+			//Запись информации о письме в базу
+			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				var emailAction = EmailRepository.GetStoredEmailByMessageId(uow, mailjetEvent.MessageID.ToString());
+				if(emailAction == null) {
+					int mailId;
+					if(int.TryParse(mailjetEvent.CustomID, out mailId)) {
+						emailAction = uow.GetById<StoredEmail>(mailId);
+					}
+				}
+				if(emailAction != null) {
+					var eventDate = UnixTimeStampToDateTime(mailjetEvent.Time);
+					if(eventDate > emailAction.StateChangeDate) {
+						emailAction.StateChangeDate = eventDate;
+						switch(mailjetEvent.Event) {
+						case "sent":
+							emailAction.State = StoredEmailStates.Delivered;
+							break;
+						case "open":
+							emailAction.State = StoredEmailStates.Opened;
+							break;
+						case "spam":
+							emailAction.State = StoredEmailStates.MarkedAsSpam;
+							break;
+						case "bounce":
+						case "blocked":
+							emailAction.State = StoredEmailStates.Undelivered;
+							emailAction.AddDescription(mailjetEvent.GetErrorInfo());
+							break;
+						}
+						try {
+							uow.Save(emailAction);
+							uow.Commit();
+						}
+						catch(Exception ex) {
+							mailjetEvent.AttemptCount++;
+							if(mailjetEvent.AttemptCount <= MaxEventSaveAttemptsCount) {
+								unsavedEventsQueue.Add(mailjetEvent);
+							}
+							logger.Error("{1} Произошла ошибка при сохранении: {0}", ex.Message, GetThreadInfo());
+						}
+					}
+				} else {
+					logger.Error("{0} Событие проигнорировано. Не найдено письмо в БД связанное с событием с сервера Mailjet.", GetThreadInfo());
+				}
+			}
+		}
+
+		static void ResaveEventWork()
+		{
+			Thread.CurrentThread.Name = "ResaveEventWorkStarter";
+			while(true) {
+				MailjetEvent unsavedEvent = unsavedEventsQueue.Take();
+				logger.Error("{1} Взято не сохраненное событие из очереди для попытки пересохранения. Оставшееся кол-во событий в очереди: {0}", unsavedEventsQueue.Count, GetThreadInfo());
+				Task.Run(() => TryResaveEvent(unsavedEvent));
+			}
+		}
+
+		static void TryResaveEvent(MailjetEvent unsavedEvent)
+		{
+			Thread.CurrentThread.Name = "ResaveEventWork";
+			//Попытка пересохранения каждые 20 сек.
+			Thread.Sleep(20000);
+			ProcessEvent(unsavedEvent);
+		}
+
+		#region Service methods
+
+		private static string GetThreadInfo()
+		{
+			return string.Format("Thread {0} Id {1}:", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
 		}
 
 		private static void SaveErrorInfo(IUnitOfWorkGeneric<StoredEmail> uow, string errorInfo)
@@ -296,74 +388,6 @@ namespace QSEmailSending
 			return request;
 		}
 
-		public static void ProcessEvent(MailjetEvent mailjetEvent)
-		{
-			logger.Error("Событие с сервера Mailjet {0}\n", mailjetEvent);
-
-			//Запись информации о письме в базу
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()){
-				var emailAction = EmailRepository.GetStoredEmailByMessageId(uow, mailjetEvent.MessageID.ToString());
-				if(emailAction == null) {
-					int mailId;
-					if(int.TryParse(mailjetEvent.CustomID, out mailId)) {
-						emailAction = uow.GetById<StoredEmail>(mailId);
-					}
-				}
-				if(emailAction != null) {
-					var eventDate = UnixTimeStampToDateTime(mailjetEvent.Time);
-					if(eventDate > emailAction.StateChangeDate) {
-						emailAction.StateChangeDate = eventDate;
-						switch(mailjetEvent.Event) {
-						case "sent":
-							emailAction.State = StoredEmailStates.Delivered;
-							break;
-						case "open":
-							emailAction.State = StoredEmailStates.Opened;
-							break;
-						case "spam":
-							emailAction.State = StoredEmailStates.MarkedAsSpam;
-							break;
-						case "bounce":
-						case "blocked":
-							emailAction.State = StoredEmailStates.Undelivered;
-							emailAction.AddDescription(mailjetEvent.GetErrorInfo());
-							break;
-						}
-						try {
-							uow.Save(emailAction);
-							uow.Commit();
-							logger.Info("Письмо сохранено");
-						}
-						catch(Exception ex) {
-							mailjetEvent.AttemptCount++;
-							if(mailjetEvent.AttemptCount < MaxEventSaveAttemptsCount) {
-								unsavedEventsQueue.Add(mailjetEvent);
-							}
-							logger.Error("Произошла ошибка при сохранении: {0}", ex.Message);
-						}
-					}
-				}else {
-					logger.Error("Не найдено письмо в БД связанное с событием с сервера Mailjet.");
-				}
-			}
-		}
-
-		private static void ResaveEventWork()
-		{
-			while(true) {
-				MailjetEvent unsavedEvent = unsavedEventsQueue.Take();
-				Task.Run(() => TryResaveEvent(unsavedEvent));
-			}
-		}
-
-		private static void TryResaveEvent(MailjetEvent unsavedEvent)
-		{
-			//Попытка пересохранения каждые 20 сек.
-			Thread.Sleep(20000);
-			ProcessEvent(unsavedEvent);
-		}
-
-
 		private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
 		{
 			DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -386,5 +410,6 @@ namespace QSEmailSending
 			userSecretKey = key;
 		}
 
+		#endregion
 	}
 }
