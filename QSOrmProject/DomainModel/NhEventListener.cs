@@ -19,8 +19,10 @@ namespace QS.DomainModel
             RemoveLost();
             lock (RegisteredUoWs)
 			{
-				RegisteredUoWs.Add(uow.Session.GetHashCode(), new UowLink(uow));
-				logger.Debug("Зарегистрирован новый UnitOfWork. {0}", ActiveUowCountText());
+				var uowLink = new UowLink(uow);
+				RegisteredUoWs.Add(uow.Session.GetHashCode(), uowLink);
+
+				logger.Debug($"Зарегистрирован новый UnitOfWork. {ActiveUowCountText()}. Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})");
 			}
 		}
 
