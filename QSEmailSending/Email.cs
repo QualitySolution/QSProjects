@@ -46,6 +46,12 @@ namespace QSEmailSending
 		[DataMember]
 		public int Order { get; set; }
 
+		[DataMember]
+		public bool ManualSending { get; set; }
+
+		[DataMember]
+		public int AuthorId { get; set; }
+
 		public int StoredEmailId { get; set; }
 
 		public int SendAttemptsCount { get; set; }

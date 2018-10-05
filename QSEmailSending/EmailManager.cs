@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using NLog;
 using QSOrmProject;
 using QSSupportLib;
+using Vodovoz.Domain.Employees;
 using Vodovoz.Domain.Orders;
 using Vodovoz.Domain.StoredEmails;
 using Vodovoz.Repositories;
@@ -126,6 +127,8 @@ namespace QSEmailSending
 				uow.Root.SenderAddress = email.Sender.EmailAddress;
 				uow.Root.RecipientName = email.Recipient.Title;
 				uow.Root.RecipientAddress = email.Recipient.EmailAddress;
+				uow.Root.ManualSending = email.ManualSending;
+				uow.Root.Author = email.AuthorId != 0 ? uow.GetById<Employee>(email.AuthorId) : null;
 				try {
 					uow.Save();
 				}
