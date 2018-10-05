@@ -75,7 +75,7 @@ namespace QSEmailSending
 		public static Tuple<bool, string> AddEmail(Email email)
 		{
 			Thread.CurrentThread.Name = "AddNewEmail";
-			logger.Info("Thread {0} Id {1}: Получено новое письмо на отправку", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
+			logger.Debug("Thread {0} Id {1}: Получено новое письмо на отправку", Thread.CurrentThread.Name, Thread.CurrentThread.ManagedThreadId);
 			try {
 				AddEmailToSend(email);
 			}
@@ -92,7 +92,7 @@ namespace QSEmailSending
 		static void SetErrorStatusWaitingToSendEmails()
 		{
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-				logger.Info("Загрузка из базы почты ожидающей отправки");
+				logger.Debug("Загрузка из базы почты ожидающей отправки");
 				var waitingEmails = uow.Session.QueryOver<StoredEmail>()
 									   .Where(x => x.State == StoredEmailStates.WaitingToSend)
 									   .List<StoredEmail>();
@@ -108,11 +108,11 @@ namespace QSEmailSending
 		static void AddEmailToSend(Email email)
 		{
 			if(!EmailRepository.CanSendByTimeout(email.Recipient.EmailAddress, email.Order)) {
-				logger.Info("{0} Попытка отправить почту до истечения минимального времени до повторной отправки", GetThreadInfo());
+				logger.Error("{0} Попытка отправить почту до истечения минимального времени до повторной отправки", GetThreadInfo());
 				throw new Exception("Отправка на один и тот же адрес возможна раз в 10 минут");
 			}
 
-			logger.Info("{0} Запись в базу информации о письме", GetThreadInfo());
+			logger.Debug("{0} Запись в базу информации о письме", GetThreadInfo());
 			using(var uow = UnitOfWorkFactory.CreateWithNewRoot<StoredEmail>()) {
 				//Заполнение нового письма данными
 				uow.Root.Order = uow.GetById<Order>(email.Order);
@@ -133,13 +133,13 @@ namespace QSEmailSending
 					uow.Save();
 				}
 				catch(Exception ex) {
-					logger.Info(string.Format("{1} Ошибка при сохранении. Ошибка: {0}", ex.Message, GetThreadInfo()));
+					logger.Debug(string.Format("{1} Ошибка при сохранении. Ошибка: {0}", ex.Message, GetThreadInfo()));
 					throw ex;
 				}
 				email.StoredEmailId = uow.Root.Id;
 				emailsQueue.Add(email);
-				logger.Info("{0} Письмо добавлено в очередь на отправку. Писем в очереди: {1}", GetThreadInfo(), emailsQueue.Count);
-				logger.Error("{0} Закончил работу.", GetThreadInfo());
+				logger.Debug("{0} Письмо добавлено в очередь на отправку. Писем в очереди: {1}", GetThreadInfo(), emailsQueue.Count);
+				logger.Debug("{0} Закончил работу.", GetThreadInfo());
 
 			}
 		}
@@ -151,7 +151,7 @@ namespace QSEmailSending
 				Email email = null;
 
 				email = emailsQueue.Take();
-				logger.Info("{0} Отправка письма из очереди", GetThreadInfo());
+				logger.Debug("{0} Отправка письма из очереди", GetThreadInfo());
 
 				Thread.Sleep(1000);
 
@@ -160,7 +160,7 @@ namespace QSEmailSending
 				}
 
 				if(email.StoredEmailId == 0) {
-					logger.Error("{0} Письмо не было сохранено перед добавлением в очередь. Добавлено повторно в очередь", GetThreadInfo());
+					logger.Debug("{0} Письмо не было сохранено перед добавлением в очередь. Добавлено повторно в очередь", GetThreadInfo());
 					AddEmailToSend(email);
 					continue;
 				}
@@ -175,18 +175,18 @@ namespace QSEmailSending
 					var request = CreateMailjetRequest(email);
 					MailjetResponse response = null;
 					try {
-						logger.Info("{0} Отправка запроса на сервер Mailjet", GetThreadInfo());
+						logger.Debug("{0} Отправка запроса на сервер Mailjet", GetThreadInfo());
 						response = await client.PostAsync(request);
 					}
 					catch(Exception ex) {
-						logger.Info("{1} Не удалось отправить письмо: \n{0}", ex.Message, GetThreadInfo());
+						logger.Error("{1} Не удалось отправить письмо: \n{0}", ex.Message, GetThreadInfo());
 						SaveErrorInfo(uow, ex.Message);
 						continue;
 					}
 
 					MailjetMessage[] messages = response.GetData().ToObject<MailjetMessage[]>();
 
-					logger.Info("{1} Получен ответ: Code {0}", response.StatusCode, GetThreadInfo());
+					logger.Debug("{1} Получен ответ: Code {0}", response.StatusCode, GetThreadInfo());
 					if(response.IsSuccessStatusCode) {
 						uow.Root.State = StoredEmailStates.SendingComplete;
 						foreach(var message in messages) {
@@ -199,7 +199,7 @@ namespace QSEmailSending
 							}
 						}
 						uow.Save();
-						logger.Info(response.GetData());
+						logger.Debug(response.GetData());
 					} else {
 						switch(response.StatusCode) {
 
@@ -233,8 +233,8 @@ namespace QSEmailSending
 							break;
 						}
 
-						logger.Info(response.GetData());
-						logger.Info("{1} ErrorMessage: {0}\n", response.GetErrorMessage(), GetThreadInfo());
+						logger.Debug(response.GetData());
+						logger.Debug("{1} ErrorMessage: {0}\n", response.GetErrorMessage(), GetThreadInfo());
 					}
 				}
 			}
@@ -243,9 +243,9 @@ namespace QSEmailSending
 		static void ProcessEvent(MailjetEvent mailjetEvent)
 		{
 			if(mailjetEvent.AttemptCount > 0) {
-				logger.Error("{1} Повторная обработка события с сервера Mailjet. Попытка {2}/{3} \n{0}", mailjetEvent, GetThreadInfo(), mailjetEvent.AttemptCount, MaxSendAttemptsCount);
+				logger.Debug("{1} Повторная обработка события с сервера Mailjet. Попытка {2}/{3} \n{0}", mailjetEvent, GetThreadInfo(), mailjetEvent.AttemptCount, MaxSendAttemptsCount);
 			} else {
-				logger.Error("{1} Обработка события с сервера Mailjet \n{0}", mailjetEvent, GetThreadInfo());
+				logger.Debug("{1} Обработка события с сервера Mailjet \n{0}", mailjetEvent, GetThreadInfo());
 			}
 
 			//Запись информации о письме в базу
@@ -300,7 +300,7 @@ namespace QSEmailSending
 			Thread.CurrentThread.Name = "ResaveEventWorkStarter";
 			while(true) {
 				MailjetEvent unsavedEvent = unsavedEventsQueue.Take();
-				logger.Error("{1} Взято не сохраненное событие из очереди для попытки пересохранения. Оставшееся кол-во событий в очереди: {0}", unsavedEventsQueue.Count, GetThreadInfo());
+				logger.Debug("{1} Взято не сохраненное событие из очереди для попытки пересохранения. Оставшееся кол-во событий в очереди: {0}", unsavedEventsQueue.Count, GetThreadInfo());
 				Task.Run(() => TryResaveEvent(unsavedEvent));
 			}
 		}
