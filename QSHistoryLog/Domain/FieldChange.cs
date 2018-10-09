@@ -87,13 +87,17 @@ namespace QS.HistoryLog.Domain
 					Type = FieldChangeType.Removed;
 				else if(NewId.HasValue)
 					Type = FieldChangeType.Added;
+				else
+					Type = FieldChangeType.Unchanged;
 			} else {
-				if(OldValue != null && NewValue != null)
+				if(!String.IsNullOrWhiteSpace(OldValue) && !String.IsNullOrWhiteSpace(NewValue))
 					Type = FieldChangeType.Changed;
-				else if(NewValue != null)
+				else if(String.IsNullOrWhiteSpace(OldValue))
 					Type = FieldChangeType.Added;
-				else if(OldValue != null)
+				else if(String.IsNullOrWhiteSpace(NewValue))
 					Type = FieldChangeType.Removed;
+				else
+					Type = FieldChangeType.Unchanged;
 			}
 		}
 
