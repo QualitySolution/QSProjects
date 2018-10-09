@@ -44,6 +44,10 @@ namespace QS.HistoryLog
 			if(entity == null || !TrackerMain.NeedTrace(entity))
 				return;
 
+			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
+			if(changes.Any(hce => hce.EntityId == entity.Id && NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName))
+				return;
+
 			var fields = Enumerable.Range(0, updateEvent.State.Length)
 								   .Select(i => FieldChange.CheckChange(i, updateEvent))
 								   .Where(x => x != null)
