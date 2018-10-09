@@ -1,4 +1,5 @@
 ﻿using QS.DomainModel;
+using QS.DomainModel.Tracking;
 
 namespace QSOrmProject.DomainModel
 {
