@@ -52,7 +52,7 @@ namespace QS.HistoryLog.Domain
 		private bool isPangoMade = false;
 
 		public virtual string FieldName {
-			get { return HistoryMain.ResolveFieldNameFromPath(Path); }
+			get { return HistoryMain.ResolveFieldTilte(Entity.EntityClassName, Path); }
 		}
 
 		public virtual string TypeText {
