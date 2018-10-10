@@ -116,6 +116,7 @@ namespace QSOrmProject
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostUpdate, new[] { trackerListener });
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PostInsert, new[] { trackerListener });
 			});
 
 			if (exposeConfiguration != null)

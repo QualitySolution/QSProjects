@@ -6,6 +6,7 @@ namespace QS.DomainModel.Tracking
 {
 	public interface IHibernateTracker
 	{
+		void OnPostInsert(PostInsertEvent insertEvent);
 		void OnPostUpdate(PostUpdateEvent updateEvent);
 		void OnPostDelete(PostDeleteEvent deleteEvent);
 		void Reset();

@@ -9,7 +9,7 @@ using QSProjectsLib;
 
 namespace QS.DomainModel
 {
-	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener
+	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener, IPostInsertEventListener
 	{
 #region Статическое
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -93,6 +93,21 @@ namespace QS.DomainModel
 				logger.Warn("Пришло событие OnPostUpdate но соответствующий сессии UnitOfWork не найден.");
 		}
 
+		public void OnPostInsert(PostInsertEvent @event)
+		{
+			IUnitOfWorkEventHandler uow = GetUnitOfWork(@event.Session);
+
+			if(uow != null) {
+				uow.HibernateTracker?.OnPostInsert(@event);
+			} else
+				logger.Warn("Пришло событие OnPostUpdate но соответствующий сессии UnitOfWork не найден.");
+		}
+
+		public Task OnPostInsertAsync(PostInsertEvent @event, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
+		}
+
 		public Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
 		{
 			throw new NotImplementedException();
@@ -142,7 +157,7 @@ namespace QS.DomainModel
                 nextCheck = DateTime.Now.AddSeconds(5);
             }
         }
-    }
+	}
 
 	internal class UowLink
     {

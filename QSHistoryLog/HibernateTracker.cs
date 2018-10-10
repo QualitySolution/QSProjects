@@ -33,8 +33,29 @@ namespace QS.HistoryLog
 			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
 				return;
 
-			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity);
+			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new List<FieldChange>());
 			changes.Add(hce);
+		}
+
+		public void OnPostInsert(PostInsertEvent insertEvent)
+		{
+			var entity = insertEvent.Entity as IDomainObject;
+			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
+			if(entity == null || !TrackerMain.NeedTrace(entity))
+				return;
+
+			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
+			if(changes.Any(hce => hce.EntityId == entity.Id && NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName))
+				return;
+
+			var fields = Enumerable.Range(0, insertEvent.State.Length)
+								   .Select(i => FieldChange.CheckChange(i, insertEvent))
+								   .Where(x => x != null)
+								   .ToList();
+
+			if(fields.Count > 0) {
+				changes.Add(new ChangedEntity(EntityChangeOperation.Create, insertEvent.Entity, fields));
+			}
 		}
 
 		public void OnPostUpdate(PostUpdateEvent updateEvent)
@@ -55,10 +76,7 @@ namespace QS.HistoryLog
 
 			if(fields.Count > 0)
 			{
-				var hce = new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity);
-				fields.ForEach(f => f.Entity = hce);
-				hce.Changes = fields;
-				changes.Add(hce);
+				changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
 			}
 		}
 

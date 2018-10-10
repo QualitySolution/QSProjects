@@ -107,12 +107,19 @@ namespace QS.HistoryLog.Domain
 
 		public static FieldChange CheckChange(int i, PostUpdateEvent ue)
 		{
-			object valueOld = ue.OldState[i];
-			object valueNew = ue.State[i];
+			return CreateChange(ue.State[i], ue.OldState[i], ue.Persister.PropertyTypes[i], ue.Persister.PropertyNames[i]);
+		}
+
+		public static FieldChange CheckChange(int i, PostInsertEvent ie)
+		{
+			return CreateChange(ie.State[i], null, ie.Persister.PropertyTypes[i], ie.Persister.PropertyNames[i]);
+		}
+
+		private static FieldChange CreateChange(object valueNew, object valueOld, NHibernate.Type.IType propType, string propName)
+		{
 			if(valueOld == null && valueNew == null)
 				return null;
 
-			var propType = ue.Persister.PropertyTypes[i];
 			FieldChange change = null;
 
 			// Проверяем все типы
@@ -125,9 +132,8 @@ namespace QS.HistoryLog.Domain
 					return null;
 			}
 
-			if(change != null)
-			{
-				change.Path = ue.Persister.PropertyNames[i];
+			if(change != null) {
+				change.Path = propName;
 				change.UpdateType();
 				return change;
 			}
@@ -142,6 +148,9 @@ namespace QS.HistoryLog.Domain
 
 		static bool StringCompare(ref FieldChange change, string valueOld, string valueNew)
 		{
+			if(String.IsNullOrWhiteSpace(valueNew) && String.IsNullOrWhiteSpace(valueOld))
+				return false;
+
 			if(String.Equals(valueOld, valueNew))
 				return false;
 

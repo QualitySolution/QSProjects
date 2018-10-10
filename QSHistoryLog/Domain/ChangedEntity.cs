@@ -47,7 +47,7 @@ namespace QS.HistoryLog.Domain
 		{
 		}
 
-		public ChangedEntity(EntityChangeOperation operation, object entity)
+		public ChangedEntity(EntityChangeOperation operation, object entity, List<FieldChange> changes)
 		{
 			Operation = operation;
 			var type = NHibernateProxyHelper.GuessClass(entity);
@@ -56,6 +56,9 @@ namespace QS.HistoryLog.Domain
 			EntityTitle = DomainHelper.GetObjectTilte(entity);
 			EntityId = DomainHelper.GetId(entity);
 			ChangeTime = DateTime.Now;
+
+			changes.ForEach(f => f.Entity = this);
+			Changes = changes;
 		}
 
 		public virtual void AddFieldChange(FieldChange change)
