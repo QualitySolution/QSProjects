@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace QS.DomainModel.Entity
 {
@@ -29,7 +30,10 @@ namespace QS.DomainModel.Entity
 			}
 		}
 
-		protected bool SetField<T> (ref T field, T value, string propertyName)
+		/// <summary>
+		/// Устанавливаем поле с вызовом события обновления, при вызове внутри метода set указывать имя свойства не обязательно.
+		/// </summary>
+		protected bool SetField<T> (ref T field, T value, [CallerMemberName]string propertyName = "")
 		{
 			if (NHibernate.NHibernateUtil.IsInitialized (value)) {
 				if (EqualityComparer<T>.Default.Equals (field, value))
