@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gamma.Widgets;
 using NHibernate.Linq;
 using QS.DomainModel.UoW;
@@ -30,7 +31,7 @@ namespace QS.HistoryLog.Dialogs
 			UoW = UnitOfWorkFactory.CreateWithoutRoot();
 
 			datacomboObject.SetRenderTextFunc<HistoryObjectDesc> (x => x.DisplayName);
-			datacomboObject.ItemsList = HistoryMain.ObjectsDesc;
+			datacomboObject.ItemsList = HistoryMain.TraceClasses.ToList();
 			comboProperty.SetRenderTextFunc<HistoryFieldDesc> (x => x.DisplayName);
 			comboAction.ItemsEnum = typeof(EntityChangeOperation);
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll);

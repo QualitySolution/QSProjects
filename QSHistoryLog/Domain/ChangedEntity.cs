@@ -24,8 +24,10 @@ namespace QS.HistoryLog.Domain
 
 		public virtual string ObjectTitle {
 			get {
-					var Descript = HistoryMain.ObjectsDesc.Find (d => d.ObjectName == EntityClassName);
-					return Descript != null ? Descript.DisplayName : EntityClassName;
+				var clazz = HistoryMain.FineEntityClass(EntityClassName);
+				if(clazz == null)
+					return EntityClassName;
+				return DomainHelper.GetSubjectNames(clazz)?.Nominative ?? EntityClassName;
 			}
 		}
 

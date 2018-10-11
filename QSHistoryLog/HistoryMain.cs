@@ -11,48 +11,33 @@ namespace QS.HistoryLog
 	public static class HistoryMain
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		public static List<HistoryObjectDesc> ObjectsDesc = new List<HistoryObjectDesc> ();
-		const string FieldNameSeparator = ".";
 
-		static HistoryMain()
+		public static void Enable()
 		{
 			TrackerMain.Factory = new TrackerFactory();
 		}
 
-		public static HistoryObjectDesc AddClass (Type type)
-		{
-			var desc = new HistoryObjectDesc (type);
-			ObjectsDesc.Add (desc);
-			return desc;
-		}
-
-		/// <summary>
-		/// Читаем классы для отслеживания из OrmMain
-		/// </summary>
-		public static void ConfigureFromOrmMain()
-		{
-			foreach(var clazz in OrmMain.ClassMappingList.Where(x => x.IsTrace))
-			{
-				AddClass(clazz.ObjectClass);
+		public static IEnumerable<HistoryObjectDesc> TraceClasses {
+			get {
+				return OrmMain.OrmConfig.ClassMappings
+					.Where(x => x.MappedClass.GetCustomAttributes(typeof(HistoryTraceAttribute), true).Length > 0)
+					.Select(x => new HistoryObjectDesc(x.MappedClass));
 			}
 		}
 
-		private static Type FineClass (string className)
+		internal static Type FineEntityClass (string className)
 		{
-			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
-				foreach (Type t in a.GetTypes()) {
-					if (t.Name == className)
-						return t;
-				}
-			}
-			return null;
+			return OrmMain.OrmConfig.ClassMappings
+					.Where(x => x.MappedClass.Name == className)
+					.Select(x => x.MappedClass)
+					.FirstOrDefault();
 		}
 
 		public static string ResolveFieldTilte(string clazz, string fieldName)
 		{
-			var desc = ObjectsDesc.FirstOrDefault(x => x.ObjectName == clazz);
-			if(desc != null) {
-				return DomainHelper.GetPropertyTitle(desc.ObjectType, fieldName) ?? fieldName;
+			var type = FineEntityClass(clazz);
+			if(type != null) {
+				return DomainHelper.GetPropertyTitle(type, fieldName) ?? fieldName;
 			}
 			return fieldName;
 		}
