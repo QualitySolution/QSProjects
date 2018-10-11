@@ -1,53 +1,53 @@
 ﻿using System;
-
-namespace QSProjectsLib
+namespace QS.DomainModel.Entity
 {
-	public class SubjectName
+	[AttributeUsage(AttributeTargets.Class)]
+	public class AppellativeAttribute : Attribute
 	{
 		/// <summary>
 		/// Именительный падеж (Кто? Что?)
 		/// </summary>
-		public string Nominative;
+		public string Nominative { get; set; }
 
 		/// <summary>
 		/// Именительный падеж (Кто? Что?) можественное число.
 		/// </summary>
-		public string NominativePlural;
+		public string NominativePlural { get; set; }
 
 		/// <summary>
 		/// Род
 		/// </summary>
-		public GrammaticalGender Gender;
+		public GrammaticalGender Gender { get; set; }
 
 		/// <summary>
 		/// Родительный падеж (Кого? Чего?)
 		/// </summary>
-		public string Genitive;
+		public string Genitive { get; set; }
 
 		/// <summary>
 		/// Родительный падеж (Кого? Чего?) можественное число.
 		/// </summary>
-		public string GenitivePlural;
+		public string GenitivePlural { get; set; }
 
 		/// <summary>
 		/// Винительный падеж (Кого? Что?)
 		/// </summary>
-		public string Accusative;
+		public string Accusative { get; set; }
 
 		/// <summary>
 		/// Винительный падеж (Кого? Что?) можественное число.
 		/// </summary>
-		public string AccusativePlural;
+		public string AccusativePlural { get; set; }
 
 		/// <summary>
 		/// Предложный падеж (О ком? О чём?)
 		/// </summary>
-		public string Prepositional;
+		public string Prepositional { get; set; }
 
 		/// <summary>
 		/// Предложный падеж (О ком? О чём?) можественное число.
 		/// </summary>
-		public string PrepositionalPlural;
+		public string PrepositionalPlural { get; set; }
 
 	}
 
@@ -70,5 +70,5 @@ namespace QSProjectsLib
 		/// </summary>
 		Neuter
 	}
-}
 
+}

@@ -5,15 +5,20 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Event;
-using NHibernate.Linq;
+using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
-using QSOrmProject;
 
-namespace QS.DomainModel
+namespace QS.DomainModel.UoW
 {
 	public abstract class UnitOfWorkBase : IUnitOfWorkEventHandler
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
+		public static Func<IInterceptor, ISession> OpenSession;
+
+		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
+		public static Action<object[]> NotifyObjectUpdated;
 
 		protected ITransaction transaction;
 
@@ -38,7 +43,7 @@ namespace QS.DomainModel
 		public ISession Session {
 			get {
 				if(session == null) {
-					session = OrmMain.OpenSession();
+					session = OpenSession(null);
 					NhEventListener.RegisterUow(this);
 					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}
@@ -61,7 +66,7 @@ namespace QS.DomainModel
 				HibernateTracker?.SaveChangeSet((IUnitOfWork)this);
 
 				IsNew = false;
-				OrmMain.NotifyObjectUpdated(entityToSave.ToArray());
+				NotifyObjectUpdated(entityToSave.ToArray());
 			} catch(Exception ex) {
 				logger.Error(ex, "Исключение в момент комита.");
 				if(transaction.IsActive)

@@ -101,7 +101,6 @@
     <Compile Include="WaitOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.WaitOperationDlg.cs" />
     <Compile Include="InformationHandbook.cs" />
-    <Compile Include="Language\SubjectName.cs" />
     <Compile Include="Helpers\ComboWorks.cs" />
     <Compile Include="Helpers\CurrencyWorks.cs" />
     <Compile Include="Helpers\DateWorks.cs" />
@@ -132,7 +131,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Language\" />
     <Folder Include="Helpers\" />
     <Folder Include="DBCreator\" />
     <Folder Include="Permissions\" />

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using QS.DomainModel.Entity;
 using QS.Project.Domain;
-using QSOrmProject;
 
 namespace QS.HistoryLog.Domain
 {

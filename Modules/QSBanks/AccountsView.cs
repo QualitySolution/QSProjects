@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.DomainModel.UoW;
 using QSOrmProject;
 using QSTDI;
 

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.DomainModel
 {

@@ -1,8 +1,6 @@
 ﻿using System;
-using QS.DomainModel.Tracking;
-using QSOrmProject;
 
-namespace QS.DomainModel
+namespace QS.DomainModel.UoW
 {
 	public class UnitOfWorkWithoutRoot : UnitOfWorkBase, IUnitOfWork
 	{

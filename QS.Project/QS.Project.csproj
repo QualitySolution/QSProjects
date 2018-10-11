@@ -54,28 +54,57 @@
     <Reference Include="Remotion.Linq.EagerFetching">
       <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Vodovoz\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project.Domain\UserBase.cs" />
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
-    <Compile Include="DomainModel\Attributes.cs" />
     <Compile Include="Project.Repositories\UserRepository.cs" />
+    <Compile Include="DomainModel\Entity\IDomainObject.cs" />
+    <Compile Include="DomainModel\Entity\PropertyChangedBase.cs" />
+    <Compile Include="DomainModel\Entity\AppellativeAttribute.cs" />
+    <Compile Include="DomainModel\Entity\PropertyChangedAlsoAttribute.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWork.cs" />
+    <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWorkGeneric.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWork.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkBase.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWorkEventHandler.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkTitle.cs" />
+    <Compile Include="DomainModel\Tracking\IHibernateTracker.cs" />
+    <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
+    <Compile Include="DomainModel\Tracking\TrackerMain.cs" />
+    <Compile Include="DomainModel\Entity\IBusinessObject.cs" />
+    <Compile Include="DomainModel\Tracking\NhEventListener.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkWithoutRoot.cs" />
+    <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
     <Folder Include="Project.HibernateMapping\" />
     <Folder Include="DomainModel\" />
     <Folder Include="Project.Repositories\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\QSOrmProject\QSOrmProject.csproj">
-      <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
-      <Name>QSOrmProject</Name>
-    </ProjectReference>
+    <Folder Include="DomainModel\Entity\" />
+    <Folder Include="DomainModel\UoW\" />
+    <Folder Include="DomainModel\Tracking\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

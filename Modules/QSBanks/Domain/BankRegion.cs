@@ -1,4 +1,4 @@
-﻿using System.Data.Bindings;
+﻿using QS.DomainModel.Entity;
 using QSOrmProject;
 
 namespace QSBanks

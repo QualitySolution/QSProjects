@@ -1,9 +1,9 @@
 ﻿using System;
-namespace QS.DomainModel.Tracking
+namespace QS.DomainModel.UoW
 {
 	public class UnitOfWorkTitle
 	{
-        //НЕЛЬЗЯ имент ссылку на UoW так как этот клас сохраняется глобально и будет держать UoW от удаления гарбич коллектором.
+        //НЕЛЬЗЯ иметь ссылку на UoW так как этот класс сохраняется глобально и будет держать UoW от удаления гарбич коллектором.
         public string CallerMemberName { get; private set; }
         public string CallerFilePath { get; private set; }
 		public int CallerLineNumber { get; private set; }

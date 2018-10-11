@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Gamma.Widgets;
 using NHibernate.Linq;
+using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Project.Domain;
 using QSHistoryLog;

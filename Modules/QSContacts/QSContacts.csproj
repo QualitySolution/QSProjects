@@ -59,18 +59,6 @@
     <Reference Include="FluentNHibernate">
       <HintPath>..\..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq">
-      <HintPath>..\..\packages\Remotion.Linq.2.1.2\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Linq.EagerFetching">
-      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.1.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Linq">
-      <HintPath>..\..\packages\Remotion.Linq.2.1.2\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Linq.EagerFetching">
-      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.1.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -140,6 +128,10 @@
     <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
+      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
+      <Name>QS.Project</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

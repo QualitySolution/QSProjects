@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using NHibernate.Proxy;
+using QS.DomainModel.Entity;
 using QSOrmProject;
 
 namespace QS.HistoryLog.Domain

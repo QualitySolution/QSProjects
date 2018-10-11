@@ -8,7 +8,9 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
-using QS.DomainModel;
+using QS.DomainModel.Entity;
+using QS.DomainModel.Tracking;
+using QS.DomainModel.UoW;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 using QSTDI;
@@ -367,8 +369,13 @@ namespace QSOrmProject
 
 		#endregion
 
-		//FIXME Временный проброс ID пользователя, до тех пор пока вход пользователя не переведем с QSProjectsLib на QS.Project
-		public static int CurrentUserId => QSMain.User.Id;
+		static OrmMain()
+		{
+			//FIXME Временные пробросы на этап перехода на QS.Poject
+			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
+			QS.DomainModel.UoW.UnitOfWorkBase.OpenSession = OpenSession;
+			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
+		}
 	}
 
 	internal class DelayedNotifyLink

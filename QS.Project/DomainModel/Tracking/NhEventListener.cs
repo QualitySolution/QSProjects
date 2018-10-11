@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate.Event;
-using QS.DomainModel.Tracking;
-using QSProjectsLib;
+using QS.DomainModel.UoW;
+using QS.Utilities;
 
-namespace QS.DomainModel
+namespace QS.DomainModel.Tracking
 {
 	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener, IPostInsertEventListener
 	{
@@ -40,7 +40,7 @@ namespace QS.DomainModel
 
 		private static string ActiveUowCountText()
 		{
-			return RusNumber.FormatCase(RegisteredUoWs.Count, "Сейчас {0} активный UnitOfWork.", "Сейчас {0} активных UnitOfWork.", "Сейчас {0} активных UnitOfWork.");
+			return NumberToTextRus.FormatCase(RegisteredUoWs.Count, "Сейчас {0} активный UnitOfWork.", "Сейчас {0} активных UnitOfWork.", "Сейчас {0} активных UnitOfWork.");
 		}
 #endregion
 

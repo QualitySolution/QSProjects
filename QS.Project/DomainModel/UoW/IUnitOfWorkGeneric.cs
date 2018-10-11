@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Collections.Generic;
+﻿using QS.DomainModel.Entity;
 
-namespace QSOrmProject
+namespace QS.DomainModel.UoW
 {
 	public interface IUnitOfWorkGeneric<TRootEntity> : IUnitOfWork
 		where TRootEntity : IDomainObject, new()

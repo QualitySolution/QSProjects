@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace QSOrmProject
+namespace QS.DomainModel.Entity
 {
 	public abstract class PropertyChangedBase : INotifyPropertyChanged
 	{

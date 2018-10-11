@@ -1,7 +1,8 @@
 ﻿using QS.DomainModel;
+using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 
-namespace QSOrmProject.DomainModel
+namespace QS.DomainModel.UoW
 {
 	public class UnitOfWork<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity> 
 		where TRootEntity : class, IDomainObject, new()

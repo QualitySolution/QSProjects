@@ -162,6 +162,10 @@
       <Project>{3DCDD84A-20D0-4939-BE25-58B19F3961F2}</Project>
       <Name>QSExtraGammaWidgets</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
+      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
+      <Name>QS.Project</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />

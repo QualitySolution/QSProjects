@@ -1,5 +1,4 @@
 ﻿using System;
-using QSOrmProject;
 
 namespace QS.DomainModel.Tracking
 {

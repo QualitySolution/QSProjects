@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Linq;
 using Gtk;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QSProjectsLib;
 using QSProjectsLib.Helpers;
 using QSTDI;

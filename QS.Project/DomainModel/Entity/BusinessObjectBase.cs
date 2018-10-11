@@ -1,6 +1,7 @@
 ﻿using System;
+using QS.DomainModel.UoW;
 
-namespace QSOrmProject
+namespace QS.DomainModel.Entity
 {
 	public abstract class BusinessObjectBase<TEntity> : PropertyChangedBase, IBusinessObject 
 		where TEntity : IDomainObject, new()

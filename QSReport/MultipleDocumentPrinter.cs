@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
-using QSOrmProject;
-using System;
+using QS.DomainModel.Entity;
 using QS.Print;
 
 namespace QSReport

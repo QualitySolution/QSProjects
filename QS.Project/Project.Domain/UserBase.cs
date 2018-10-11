@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel;
-using QSOrmProject;
+using QS.DomainModel.Entity;
 
 namespace QS.Project.Domain
 {

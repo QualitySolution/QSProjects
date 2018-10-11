@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using QS.DomainModel.Entity;
 
-namespace QSOrmProject
+namespace QS.DomainModel.UoW
 {
 	public interface IUnitOfWork : IDisposable 
 	{

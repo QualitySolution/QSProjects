@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 
 namespace QSProjectsLib
 {
+	[Obsolete("Используйте вместо этого класс QS.Utilities.NumberToTextRus.")]
 	public static class RusNumber
     {
         private static string[] hunds =

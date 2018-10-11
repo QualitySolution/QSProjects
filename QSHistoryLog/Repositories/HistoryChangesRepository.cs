@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
-using QSOrmProject;
 
 namespace QS.HistoryLog.Repositories
 {

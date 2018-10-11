@@ -1,6 +1,7 @@
 ﻿using System;
+using QS.DomainModel.UoW;
 
-namespace QSOrmProject
+namespace QS.DomainModel.Entity
 {
 	public interface IBusinessObject
 	{

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Bindings;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gamma.Widgets;
 using Gtk;
 using NLog;
-using QSOrmProject;
+using QS.DomainModel.UoW;
 using QSWidgetLib;
 
 namespace QSContacts

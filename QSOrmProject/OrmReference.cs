@@ -6,6 +6,8 @@ using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;

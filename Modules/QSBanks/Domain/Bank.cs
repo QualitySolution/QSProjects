@@ -1,7 +1,8 @@
 ﻿using System;
-using QSOrmProject;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using QS.DomainModel.Entity;
+using QSOrmProject;
 
 namespace QSBanks
 {

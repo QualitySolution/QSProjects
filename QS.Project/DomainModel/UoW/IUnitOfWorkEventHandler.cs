@@ -2,6 +2,7 @@
 using NHibernate;
 using NHibernate.Event;
 using QS.DomainModel.Tracking;
+using QS.DomainModel.UoW;
 
 namespace QS.DomainModel
 {

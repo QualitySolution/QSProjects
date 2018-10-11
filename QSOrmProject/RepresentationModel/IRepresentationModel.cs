@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using Gamma.ColumnConfig;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSOrmProject
+namespace QS.DomainModel.Entity
 {
 	public interface IDomainObject
 	{

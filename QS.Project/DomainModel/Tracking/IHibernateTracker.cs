@@ -1,6 +1,5 @@
-﻿using System;
-using NHibernate.Event;
-using QSOrmProject;
+﻿using NHibernate.Event;
+using QS.DomainModel.UoW;
 
 namespace QS.DomainModel.Tracking
 {

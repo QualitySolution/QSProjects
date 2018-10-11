@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using QSOrmProject;
 
-namespace QS.DomainModel.Basis
+namespace QS.DomainModel.Entity
 {
 	public abstract class DomainTreeNodeBase<TEntity> : PropertyChangedBase, IDomainObject 
 		where TEntity : DomainTreeNodeBase<TEntity>

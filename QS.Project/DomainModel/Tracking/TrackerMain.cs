@@ -1,6 +1,6 @@
 ﻿using System;
 using NHibernate.Proxy;
-using QSOrmProject;
+using QS.DomainModel.Entity;
 
 namespace QS.DomainModel.Tracking
 {
