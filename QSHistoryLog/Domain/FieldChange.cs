@@ -107,17 +107,24 @@ namespace QS.HistoryLog.Domain
 
 		public static FieldChange CheckChange(int i, PostUpdateEvent ue)
 		{
-			return CreateChange(ue.State[i], ue.OldState[i], ue.Persister.PropertyTypes[i], ue.Persister.PropertyNames[i]);
+			return CreateChange(ue.State[i], ue.OldState[i], ue.Persister, i);
 		}
 
 		public static FieldChange CheckChange(int i, PostInsertEvent ie)
 		{
-			return CreateChange(ie.State[i], null, ie.Persister.PropertyTypes[i], ie.Persister.PropertyNames[i]);
+			return CreateChange(ie.State[i], null, ie.Persister, i);
 		}
 
-		private static FieldChange CreateChange(object valueNew, object valueOld, NHibernate.Type.IType propType, string propName)
+		private static FieldChange CreateChange(object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i)
 		{
 			if(valueOld == null && valueNew == null)
+				return null;
+
+			NHibernate.Type.IType propType = persister.PropertyTypes[i];
+			string propName = persister.PropertyNames[i];
+
+			var propInfo = persister.MappedClass.GetProperty(propName);
+			if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
 				return null;
 
 			FieldChange change = null;
