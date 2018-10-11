@@ -90,7 +90,12 @@ namespace QS.HistoryLog.Dialogs
 				query.Where(ce => ce.Operation == (EntityChangeOperation)comboAction.SelectedItem);
 			}
 
-			if(!String.IsNullOrWhiteSpace(entrySearch.Text) || comboProperty.SelectedItem is HistoryFieldDesc)
+			if(!String.IsNullOrWhiteSpace(entrySearchEntity.Text)) {
+				var pattern = $"%{entrySearchEntity.Text}%";
+				query.Where(ce => ce.EntityTitle.IsLike(pattern));
+			}
+
+				if(!String.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc)
 			{
 				FieldChange fieldChangeAlias = null;
 				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
@@ -100,8 +105,8 @@ namespace QS.HistoryLog.Dialogs
 					query.Where(() => fieldChangeAlias.Path == selectedProperty.FieldName);
 
 
-				if(!String.IsNullOrWhiteSpace(entrySearch.Text)) {
-					var pattern = $"%{entrySearch.Text}%";
+				if(!String.IsNullOrWhiteSpace(entrySearchValue.Text)) {
+					var pattern = $"%{entrySearchValue.Text}%";
 					query.Where(() => fieldChangeAlias.OldValue.IsLike(pattern)
 					            || fieldChangeAlias.NewValue.IsLike(pattern));
 				}
