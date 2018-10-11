@@ -41,8 +41,6 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		public bool IsTrace { get; private set; }
-
 		public string EditPermisionName { get; set;}
 
 		private TableView<TEntity> tableView;
@@ -198,15 +196,6 @@ namespace QSOrmProject.DomainMapping
 		public OrmObjectMapping<TEntity> UseSlider(bool? useSlider)
 		{
 			this.defaultUseSlider = useSlider;
-			return this;
-		}
-
-		/// <summary>
-		/// Говорим о том что сущьность будет отслеживаемая, то есть будут логироваться изменения полей.
-		/// </summary>
-		public OrmObjectMapping<TEntity> Trace(bool enable = true)
-		{
-			this.IsTrace = enable;
 			return this;
 		}
 

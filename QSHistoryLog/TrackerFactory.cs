@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using NHibernate.Proxy;
 using QS.DomainModel.Tracking;
-using QSOrmProject;
 
 namespace QS.HistoryLog
 {
@@ -19,7 +16,7 @@ namespace QS.HistoryLog
 
 		public bool NeedTrace(Type type)
 		{
-			return HistoryMain.ObjectsDesc.Any(x => x.ObjectType == type);
+			return type.GetCustomAttributes(typeof(HistoryTraceAttribute), true).Length > 0;
 		}
 	}
 }

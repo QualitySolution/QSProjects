@@ -10,7 +10,6 @@ namespace QSOrmProject
 		Type DialogClass { get;}
 		Type RefFilterClass { get;}
 		bool? DefaultUseSlider { get;}
-		bool IsTrace { get; }
 
 		bool SimpleDialog { get;}
 		ITableView TableView { get;}
