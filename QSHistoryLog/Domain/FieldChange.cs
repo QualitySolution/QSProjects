@@ -168,12 +168,12 @@ namespace QS.HistoryLog.Domain
 			change = new FieldChange();
 			if(valueOld != null)
 			{
-				change.OldValue = DomainHelper.GetObjectTilte(valueOld);
+				change.OldValue = HistoryMain.GetObjectTilte(valueOld);
 				change.OldId = DomainHelper.GetId(valueOld);
 			}
 			if(valueNew != null)
 			{
-				change.NewValue = DomainHelper.GetObjectTilte(valueNew);
+				change.NewValue = HistoryMain.GetObjectTilte(valueNew);
 				change.NewId = DomainHelper.GetId(valueNew);
 			}
 			return true;

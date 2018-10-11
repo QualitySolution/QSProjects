@@ -35,9 +35,6 @@ namespace QS.HistoryLog
 			{
 				AddClass(clazz.ObjectClass);
 			}
-
-			//FIXME Отключил временно пока не релализована поддежка журналирования удаления через ORM.
-			//SubscribeToDeletion();
 		}
 
 		private static Type FineClass (string className)
@@ -62,13 +59,7 @@ namespace QS.HistoryLog
 
 		internal static string GetObjectTilte(object value)
 		{
-			return String.Format ("[{0}]", QSOrmProject.DomainHelper.GetObjectTilte(value));
-		}
-
-		internal static int? GetObjectId(object value)
-		{
-			var prop = value.GetType ().GetProperty ("Id");
-			return prop != null ? (int?)prop.GetValue (value, null) : null;
+			return value == null ? null : String.Format ("[{0}]", DomainHelper.GetObjectTilte(value));
 		}
 	}
 
