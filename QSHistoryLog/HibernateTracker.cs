@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NHibernate.Event;
@@ -9,8 +8,8 @@ using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Project.Repositories;
+using QS.Utilities;
 using QSOrmProject;
-using QSProjectsLib;
 
 namespace QS.HistoryLog
 {
@@ -108,7 +107,7 @@ namespace QS.HistoryLog
 				changeset.AddChange(changes.ToArray());
 				uow.Save(changeset);
 				uow.Commit();
-				logger.Debug(RusNumber.FormatCase(changes.Count, "Зарегистрировано изменение {0} объекта.", "Зарегистрировано изменение {0} объектов.", "Зарегистрировано изменение {0} объектов."));
+				logger.Debug(NumberToTextRus.FormatCase(changes.Count, "Зарегистрировано изменение {0} объекта.", "Зарегистрировано изменение {0} объектов.", "Зарегистрировано изменение {0} объектов."));
 
 				Reset();
 			}

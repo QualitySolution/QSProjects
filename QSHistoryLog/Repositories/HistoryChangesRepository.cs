@@ -36,7 +36,7 @@ namespace QS.HistoryLog.Repositories
 			                 .JoinAlias(fc => fc.Entity, () => changedEntityAlias)
 			                 .Where(() => changedEntityAlias.EntityClassName == typeof(T).Name)
 			                 .Where(() => changedEntityAlias.IsIn(entitiesIds))
-			                 .Where(fc => fc.FieldName == prop)
+			                 .Where(fc => fc.FieldTitle == prop)
 							 .List();
 			return changes;
 		}

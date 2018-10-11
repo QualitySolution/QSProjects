@@ -5,7 +5,6 @@ using System.Linq;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QSProjectsLib;
 
 namespace QSOrmProject
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using QS.HistoryLog;
 using QSOrmProject;
 using QSProjectsLib;
 
@@ -12,20 +13,25 @@ namespace QSHistoryLog
 		public Type ObjectType { get; set;}
 		public string DisplayName { get; set;}
 
-		public IEnumerable<HistoryFieldDesc> NamedProperties{
+		public IEnumerable<HistoryFieldDesc> TracedProperties{
 			get {
-				foreach(var prop in ObjectType.GetProperties ())
+				var persistent = OrmMain.OrmConfig.GetClassMapping(ObjectType);
+
+				foreach(var propertyMap in persistent.PropertyIterator)
 				{
-					var att = prop.GetCustomAttributes (typeof(DisplayAttribute), false);
+					var propInfo = persistent.MappedClass.GetProperty(propertyMap.Name);
+					if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
+						continue;
+
+					var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
 					if(att.Length > 0)
 					{
 						yield return new HistoryFieldDesc {
-							FieldName = prop.Name,
+							FieldName = propertyMap.Name,
 							DisplayName = (att [0] as DisplayAttribute).GetName ()
 						};
 					}
 				}
-				yield break;
 			}
 		}
 

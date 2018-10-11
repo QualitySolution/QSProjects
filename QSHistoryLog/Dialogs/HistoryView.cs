@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gamma.Widgets;
-using NHibernate.Linq;
+using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
-using QS.Project.Domain;
+using QS.Utilities;
 using QSHistoryLog;
 using QSOrmProject;
 using QSProjectsLib;
@@ -48,7 +48,7 @@ namespace QS.HistoryLog.Dialogs
 			datatreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 
 			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange> ()
-				.AddColumn ("Поле").AddTextRenderer (x => x.FieldName)
+				.AddColumn ("Поле").AddTextRenderer (x => x.FieldTitle)
 				.AddColumn ("Операция").AddTextRenderer (x => x.TypeText)
 				.AddColumn ("Новое значение").AddTextRenderer (x => x.NewPangoText, useMarkup: true)
 				.AddColumn ("Старое значение").AddTextRenderer (x => x.OldPangoText, useMarkup: true)
@@ -76,11 +76,11 @@ namespace QS.HistoryLog.Dialogs
 			if(!selectperiod.IsAllTime) 
 				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd.AddDays(1));
 
-			if(datacomboObject.SelectedItem is HistoryObjectDesc) 
-				query.Where(ce => ce.EntityClassName == (datacomboObject.SelectedItem as HistoryObjectDesc).ObjectName);
+			var selectedClassType = (datacomboObject.SelectedItem as HistoryObjectDesc);
+			if(selectedClassType != null)
+				query.Where(ce => ce.EntityClassName == selectedClassType.ObjectName);
 
 			if(ComboWorks.GetActiveId(comboUsers) > 0) {
-				UserBase userAlias = null;
 				ChangeSet changeSetAlias = null;
 				query.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
 				     .Where(() => changeSetAlias.User.Id == ComboWorks.GetActiveId(comboUsers));
@@ -95,17 +95,21 @@ namespace QS.HistoryLog.Dialogs
 				FieldChange fieldChangeAlias = null;
 				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
 
-				if(comboProperty.SelectedItem is HistoryFieldDesc)
-					query.Where(() => fieldChangeAlias.FieldName == (comboProperty.SelectedItem as HistoryFieldDesc).FieldName);
+				var selectedProperty = comboProperty.SelectedItem as HistoryFieldDesc;
+				if(selectedProperty != null)
+					query.Where(() => fieldChangeAlias.Path == selectedProperty.FieldName);
 
-				if(!String.IsNullOrWhiteSpace(entrySearch.Text))
-					query.Where(() => fieldChangeAlias.OldValue.Like(entrySearch.Text)
-								|| fieldChangeAlias.NewValue.Like(entrySearch.Text));
+
+				if(!String.IsNullOrWhiteSpace(entrySearch.Text)) {
+					var pattern = $"%{entrySearch.Text}%";
+					query.Where(() => fieldChangeAlias.OldValue.IsLike(pattern)
+					            || fieldChangeAlias.NewValue.IsLike(pattern));
+				}
 			}
 
 			changedEntities = query.List();
 			datatreeChangesets.ItemsDataSource = changedEntities;
-			logger.Info(RusNumber.FormatCase (changedEntities.Count, "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов.", "Загружено изменение {0} объектов."));
+			logger.Info(NumberToTextRus.FormatCase (changedEntities.Count, "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов.", "Загружено изменение {0} объектов."));
 		}
 
 		protected void OnComboUsersChanged (object sender, EventArgs e)
@@ -128,7 +132,7 @@ namespace QS.HistoryLog.Dialogs
 			bool lastStateUpdate = canUpdate;
 			canUpdate = false;
 			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
-				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).NamedProperties;
+				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).TracedProperties;
 			} else
 				comboProperty.ItemsList = null;
 			canUpdate = lastStateUpdate;

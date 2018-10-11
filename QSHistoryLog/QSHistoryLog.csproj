@@ -132,7 +132,6 @@
     <Compile Include="SideBySideFullDiffBuilder.cs" />
     <Compile Include="HistoryObjectDesc.cs" />
     <Compile Include="HistoryAttributes.cs" />
-    <Compile Include="ObjectCloner.cs" />
     <Compile Include="TrackerFactory.cs" />
     <Compile Include="HibernateMapping\ChangedEntityMap.cs" />
     <Compile Include="HibernateMapping\FieldChangeMap.cs" />
@@ -149,6 +148,7 @@
     <None Include="app.config" />
     <None Include="ObjectTracker.cs" />
     <None Include="Comparers\DomainObjectComparer.cs" />
+    <None Include="ObjectCloner.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
@@ -182,6 +182,10 @@
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
