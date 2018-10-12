@@ -5,7 +5,7 @@ namespace QS.Utilities.Text
 {
 	public static class TitleHelper
 	{
-		public static string StringToPascalCase(string input)
+		public static string StringToPascalCase(this string input)
 		{
 			if(input == null)
 				return "";
@@ -16,7 +16,7 @@ namespace QS.Utilities.Text
 			return result;
 		}
 
-		public static string StringToTitleCase(string input)
+		public static string StringToTitleCase(this string input)
 		{
 			if(String.IsNullOrWhiteSpace(input))
 				return "";
