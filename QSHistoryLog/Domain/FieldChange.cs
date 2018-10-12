@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using Gamma.Utilities;
@@ -129,7 +130,8 @@ namespace QS.HistoryLog.Domain
 
 			FieldChange change = null;
 
-			// Проверяем все типы
+			#region Обработка в зависимости от типа данных
+
 			if(propType is NHibernate.Type.StringType && !StringCompare(ref change, (string)valueOld, (string)valueNew))
 				return null;
 
@@ -139,13 +141,42 @@ namespace QS.HistoryLog.Domain
 					return null;
 			}
 
+			if((propType is NHibernate.Type.DateTimeType || propType is NHibernate.Type.TimestampType) && !DateTimeCompare(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.DecimalType && !DecimalCompare(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.BooleanType && !BooleanCompare(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.Int16Type && !IntCompare<Int16>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.Int32Type && !IntCompare<Int32>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.Int64Type && !IntCompare<Int64>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.UInt16Type && !IntCompare<UInt16>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.UInt32Type && !IntCompare<UInt32>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			if(propType is NHibernate.Type.UInt64Type && !IntCompare<UInt64>(ref change, propInfo, valueOld, valueNew))
+				return null;
+
+			#endregion
+
 			if(change != null) {
 				change.Path = propName;
 				change.UpdateType();
 				return change;
 			}
 
-			logger.Warn("Трекер не умеет сравнивать изменения в полях типа {0}", propType);
+			logger.Warn("Трекер не умеет сравнивать изменения в полях типа {0}. Поле {1} пропущено.", propType, propName);
 			return null;
 		}
 
@@ -186,7 +217,73 @@ namespace QS.HistoryLog.Domain
 			return true;
 		}
 
-#endregion
+		static bool DateTimeCompare(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew)
+		{
+			var dateOld = valueOld as DateTime?;
+			var dateNew = valueNew as DateTime?;
+
+			if(dateOld != null && dateNew != null && DateTime.Equals(dateOld.Value, dateNew.Value))
+				return false;
+
+			var dateOnly = info.GetCustomAttributes(typeof(HistoryDateOnlyAttribute), true).Length > 0;
+
+			change = new FieldChange();
+			if(dateOld != null)
+				change.OldValue = dateOnly ? dateOld.Value.ToShortDateString() : dateOld.Value.ToString();
+			if(dateNew != null)
+				change.NewValue = dateOnly ? dateNew.Value.ToShortDateString() : dateNew.Value.ToString();
+			return true;
+		}
+
+		static bool DecimalCompare(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew)
+		{
+			var numberOld = valueOld as Decimal?;
+			var numberNew = valueNew as Decimal?;
+
+			if(numberOld != null && numberNew != null && Decimal.Equals(numberOld.Value, numberNew.Value))
+				return false;
+
+			change = new FieldChange();
+			if(numberOld != null)
+				change.OldValue = numberOld.Value.ToString("G20");
+			if(numberNew != null)
+				change.NewValue = numberNew.Value.ToString("G20");
+			return true;
+		}
+
+		static bool IntCompare<TNumber>(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew) where TNumber : struct
+		{
+			var numberOld = valueOld as TNumber?;
+			var numberNew = valueNew as TNumber?;
+
+			if(numberOld != null && numberNew != null && Equals(numberOld.Value, numberNew.Value))
+				return false;
+
+			change = new FieldChange();
+			if(numberOld != null)
+				change.OldValue = String.Format("{0:D}", numberOld);
+			if(numberNew != null)
+				change.NewValue = String.Format("{0:D}", numberNew);
+			return true;
+		}
+
+		static bool BooleanCompare(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew)
+		{
+			var boolOld = valueOld as bool?;
+			var boolNew = valueNew as bool?;
+
+			if(boolOld != null && boolNew != null && bool.Equals(boolOld.Value, boolNew.Value))
+				return false;
+
+			change = new FieldChange();
+			if(boolOld != null)
+				change.OldValue = boolOld.Value.ToString();
+			if(boolNew != null)
+				change.NewValue = boolNew.Value.ToString();
+			return true;
+		}
+
+		#endregion
 	}
 
 	public enum FieldChangeType
