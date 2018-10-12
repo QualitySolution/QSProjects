@@ -177,6 +177,7 @@
     <Compile Include="DomainModel\Tracking\UnitOfWorkTitle.cs" />
     <Compile Include="Helpers\ListRefreshHelper.cs" />
     <Compile Include="DomainModel\Tracking\IHibernateTracker.cs" />
+    <Compile Include="Helpers\NHibernateHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

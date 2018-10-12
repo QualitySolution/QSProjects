@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using Gamma.Utilities;
 using NHibernate.Event;
+using QS.Helpers;
 using QSOrmProject;
 
 namespace QS.HistoryLog.Domain
@@ -50,6 +52,9 @@ namespace QS.HistoryLog.Domain
 			}
 		}
 
+		public virtual string OldValueText => ValueDisplay(OldValue);
+		public virtual string NewValueText => ValueDisplay(NewValue);
+
 		private bool isPangoMade = false;
 
 		public virtual string FieldTitle {
@@ -73,7 +78,7 @@ namespace QS.HistoryLog.Domain
 		{
 			var d = new Differ();
 			var differ = new SideBySideFullDiffBuilder(d);
-			var diffRes = differ.BuildDiffModel(OldValue, NewValue);
+			var diffRes = differ.BuildDiffModel(OldValueText, NewValueText);
 			OldPangoText = PangoRender.RenderDiffLines(diffRes.OldText);
 			NewPangoText = PangoRender.RenderDiffLines(diffRes.NewText);
 			isPangoMade = true;
@@ -295,6 +300,46 @@ namespace QS.HistoryLog.Domain
 			change.OldValue = valueOld?.ToString();
 			change.NewValue = valueNew?.ToString();
 			return true;
+		}
+
+		#endregion
+
+		#region Методы отображения разных типов
+
+		string ValueDisplay(string value)
+		{
+			var claz = NHibernateHelper.FindMappingByShortClassName(Entity.EntityClassName);
+			var property = claz?.GetProperty(Path);
+			if(property != null) {
+				if(property.Type is NHibernate.Type.BooleanType)
+					return BooleanDisplay(value);
+				if(property.Type is NHibernate.Type.EnumStringType)
+					return EnumDisplay(value, property);
+			}
+
+			return value;
+
+		}
+
+		static string EnumDisplay(string value, NHibernate.Mapping.Property property)
+		{
+			if(String.IsNullOrWhiteSpace(value))
+				return null;
+
+			var enumType = property.Type.ReturnedClass;
+			var enumValues = enumType.GetFields();
+
+			return enumValues.FirstOrDefault(f => f.Name == value)?.GetEnumTitle();
+		}
+
+		static string BooleanDisplay(string value)
+		{
+			if(value == "True")
+				return "Да";
+			else if(value == "False")
+				return "Нет";
+			else
+				return null;
 		}
 
 		#endregion
