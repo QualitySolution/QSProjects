@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using QS.DomainModel.Entity;
 using QSOrmProject;
 using QSOrmProject.DomainMapping;
 
 namespace QSBusinessCommon.Domain
 {
-	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Feminine,
+	[OrmSubject (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",
 		Nominative = "единица измерения")]
 	public class MeasurementUnits : PropertyChangedBase, IDomainObject

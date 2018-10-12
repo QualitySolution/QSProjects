@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Gamma.Utilities;
 using Gtk;
 using NLog;
+using QS.DomainModel.Entity;
 using QSOrmProject;
 using QSProjectsLib;
 

@@ -6,6 +6,7 @@ using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Newtonsoft.Json.Linq;
 using NLog;
+using QS.DomainModel.UoW;
 using QSOrmProject;
 using QSSupportLib;
 using Vodovoz.Domain.Employees;

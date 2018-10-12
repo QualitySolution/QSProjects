@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>QS</RootNamespace>
+    <AssemblyName>QS.Project</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <HintPath>..\..\..\..\..\usr\lib\mono\4.0-api\System.ComponentModel.DataAnnotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Vodovoz\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Project.Domain\UserBase.cs" />
+    <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
+    <Compile Include="Project.Repositories\UserRepository.cs" />
+    <Compile Include="DomainModel\Entity\IDomainObject.cs" />
+    <Compile Include="DomainModel\Entity\PropertyChangedBase.cs" />
+    <Compile Include="DomainModel\Entity\AppellativeAttribute.cs" />
+    <Compile Include="DomainModel\Entity\PropertyChangedAlsoAttribute.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWork.cs" />
+    <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWorkGeneric.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWork.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkBase.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWorkEventHandler.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkTitle.cs" />
+    <Compile Include="DomainModel\Tracking\IHibernateTracker.cs" />
+    <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
+    <Compile Include="DomainModel\Tracking\TrackerMain.cs" />
+    <Compile Include="DomainModel\Entity\IBusinessObject.cs" />
+    <Compile Include="DomainModel\Tracking\NhEventListener.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkWithoutRoot.cs" />
+    <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Project.Domain\" />
+    <Folder Include="Project.HibernateMapping\" />
+    <Folder Include="DomainModel\" />
+    <Folder Include="Project.Repositories\" />
+    <Folder Include="DomainModel\Entity\" />
+    <Folder Include="DomainModel\UoW\" />
+    <Folder Include="DomainModel\Tracking\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

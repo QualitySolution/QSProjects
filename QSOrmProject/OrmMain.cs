@@ -8,7 +8,9 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
-using QS.DomainModel;
+using QS.DomainModel.Entity;
+using QS.DomainModel.Tracking;
+using QS.DomainModel.UoW;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 using QSTDI;
@@ -115,6 +117,8 @@ namespace QSOrmProject
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, new[] { trackerListener });
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PostUpdate, new[] { trackerListener });
+				cfg.AppendListeners(NHibernate.Event.ListenerType.PostInsert, new[] { trackerListener });
 			});
 
 			if (exposeConfiguration != null)
@@ -364,6 +368,14 @@ namespace QSOrmProject
 		}
 
 		#endregion
+
+		static OrmMain()
+		{
+			//FIXME Временные пробросы на этап перехода на QS.Poject
+			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
+			QS.DomainModel.UoW.UnitOfWorkBase.OpenSession = OpenSession;
+			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
+		}
 	}
 
 	internal class DelayedNotifyLink

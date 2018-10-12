@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
+using QS.DomainModel.UoW;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
 using QSTDI;

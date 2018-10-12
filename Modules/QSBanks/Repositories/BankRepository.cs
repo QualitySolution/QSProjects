@@ -1,6 +1,6 @@
-﻿using QSOrmProject;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using QS.DomainModel.UoW;
 
 namespace QSBanks.Repository
 {

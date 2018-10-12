@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using QS.DomainModel.Entity;
 using QSOrmProject;
 
 namespace QSBanks
 {
-	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+	[OrmSubject (Gender = GrammaticalGender.Masculine,
 		Nominative = "расчётный счет",
 		NominativePlural = "расчётные счета"
 	)]

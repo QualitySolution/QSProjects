@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gamma.Utilities;
 using Newtonsoft.Json;
+using QS.DomainModel.Entity;
 
 namespace QSOrmProject.Permissions
 {

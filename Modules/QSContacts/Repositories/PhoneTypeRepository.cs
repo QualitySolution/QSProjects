@@ -1,5 +1,5 @@
-﻿using QSOrmProject;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using QS.DomainModel.UoW;
 
 namespace QSContacts
 {

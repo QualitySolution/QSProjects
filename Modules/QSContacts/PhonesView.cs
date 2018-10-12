@@ -6,7 +6,7 @@ using Gamma.GtkWidgets;
 using Gamma.Widgets;
 using Gtk;
 using NLog;
-using QSOrmProject;
+using QS.DomainModel.UoW;
 using QSWidgetLib;
 
 namespace QSContacts

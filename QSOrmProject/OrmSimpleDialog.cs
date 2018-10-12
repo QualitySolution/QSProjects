@@ -5,6 +5,8 @@ using Gtk;
 using NLog;
 using QSProjectsLib;
 using NHibernate.Criterion;
+using QS.DomainModel.UoW;
+using QS.DomainModel.Entity;
 
 namespace QSOrmProject
 {

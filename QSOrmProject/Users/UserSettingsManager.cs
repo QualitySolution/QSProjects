@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.Users
 {

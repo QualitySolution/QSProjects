@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHibernate;
-using QSProjectsLib;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject
 {

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using QSOrmProject;
-using QSBusinessCommon.Domain;
+﻿using System.Collections.Generic;
 using NHibernate.Criterion;
+using QS.DomainModel.UoW;
+using QSBusinessCommon.Domain;
 
 namespace QSBusinessCommon.Repository
 {

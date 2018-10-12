@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
 using Newtonsoft.Json;
-using QSOrmProject;
+using QS.DomainModel.Entity;
 using QSOsm.DTO;
 using suggestionscsharp;
 

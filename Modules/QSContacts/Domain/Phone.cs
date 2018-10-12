@@ -2,10 +2,11 @@
 using QSOrmProject;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
+using QS.DomainModel.Entity;
 
 namespace QSContacts
 {
-	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+	[OrmSubject (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "телефоны",
 		Nominative = "телефон")]
 	public class Phone : PropertyChangedBase

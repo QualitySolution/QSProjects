@@ -1,37 +1,21 @@
 ﻿using System;
 
 
-namespace QSHistoryLog
+namespace QS.HistoryLog
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct |
-	                AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Event,
-	                AllowMultiple = false, Inherited = true)]
+	/// <summary>
+	/// При установки этого атрибута на свойство изменение этого свойства не будет фиксироваться в истории изменений объекта
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public class IgnoreHistoryTraceAttribute : Attribute 
 	{
 	}
 
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct |
-	                    AttributeTargets.Field,
-	                    AllowMultiple = false, Inherited = true)]
-	public class IgnoreHistoryCloneAttribute : Attribute 
-	{
-	}
-
 	/// <summary>
-	/// Установка этого атрибута на поле, говорит трекеру следить за изменениями внутри объекта, а не только изменению значения самого поля.
-	/// ВНИМАНИЕ! В текущей реализации устанавливается только на поле(обычно приватное), не на свойство.
+	/// При установке на класс говорит о том что изменения в этом объекте необходимо записывать в историю изменений.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-	public class HistoryTraceGoDeepAttribute : Attribute 
-	{
-	}
-
-	/// <summary>
-	/// Установка этот атрибут на поле с коллекцией, говорит трекеру следить за изменениями внутри элементов этой коллекции, а не только изменению значения самой коллекции.
-	/// ВНИМАНИЕ! В текущей реализации устанавливается только на поле(обычно приватное), не на свойство.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-	public class HistoryDeepCloneItemsAttribute : Attribute 
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	public class HistoryTraceAttribute : Attribute
 	{
 	}
 

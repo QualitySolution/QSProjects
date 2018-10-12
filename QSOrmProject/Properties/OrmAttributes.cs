@@ -1,5 +1,6 @@
 ﻿using System;
 using QSProjectsLib;
+using QS.DomainModel.Entity;
 
 namespace QSOrmProject
 {
@@ -61,7 +62,7 @@ namespace QSOrmProject
 		/// <summary>
 		/// Род
 		/// </summary>
-		public GrammaticalGender Gender {
+		public QS.DomainModel.Entity.GrammaticalGender Gender {
 			get {
 				return AllNames.Gender;
 			}
@@ -167,15 +168,53 @@ namespace QSOrmProject
 		}
 	}
 
-	[AttributeUsage (AttributeTargets.Property)]
-	public class PropertyChangedAlsoAttribute : Attribute
+	//FIXME Оставлен временно до перехода на QS.Project
+	public class SubjectName
 	{
-		public string[] PropertiesNames;
+		/// <summary>
+		/// Именительный падеж (Кто? Что?)
+		/// </summary>
+		public string Nominative;
 
-		public PropertyChangedAlsoAttribute (params string[] propertiesNames)
-		{
-			PropertiesNames = propertiesNames;
-		}
+		/// <summary>
+		/// Именительный падеж (Кто? Что?) можественное число.
+		/// </summary>
+		public string NominativePlural;
+
+		/// <summary>
+		/// Род
+		/// </summary>
+		public GrammaticalGender Gender;
+
+		/// <summary>
+		/// Родительный падеж (Кого? Чего?)
+		/// </summary>
+		public string Genitive;
+
+		/// <summary>
+		/// Родительный падеж (Кого? Чего?) можественное число.
+		/// </summary>
+		public string GenitivePlural;
+
+		/// <summary>
+		/// Винительный падеж (Кого? Что?)
+		/// </summary>
+		public string Accusative;
+
+		/// <summary>
+		/// Винительный падеж (Кого? Что?) можественное число.
+		/// </summary>
+		public string AccusativePlural;
+
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?)
+		/// </summary>
+		public string Prepositional;
+
+		/// <summary>
+		/// Предложный падеж (О ком? О чём?) можественное число.
+		/// </summary>
+		public string PrepositionalPlural;
+
 	}
-
 }

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.DomainModel
 {
@@ -40,6 +41,8 @@ namespace QSOrmProject.DomainModel
 				return IsNew || !ObjectCloner.CompareFields (Root, externalRootVersion); 
 			}
 		}
+
+		public string ActionName { get; protected set; }
 
 		// TODO Ксожалению не работает при открытии второй сессии возвращается первая закрытая.
 		// Проблема описана здесь http://osdir.com/ml/nhibernate-development/2010-02/msg00131.html

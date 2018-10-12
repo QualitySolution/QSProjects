@@ -2,7 +2,7 @@
 using System.Text;
 using DiffPlex.DiffBuilder.Model;
 
-namespace QSHistoryLog
+namespace QS.HistoryLog
 {
 	public static class PangoRender
 	{

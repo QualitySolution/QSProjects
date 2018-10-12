@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using QS.DomainModel;
+using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
+using QS.DomainModel.UoW;
 using QSOrmProject.DomainModel;
 
 namespace QSOrmProject

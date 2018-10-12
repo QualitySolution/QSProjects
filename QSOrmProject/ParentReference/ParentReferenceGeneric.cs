@@ -3,6 +3,8 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
 using QSOrmProject.DomainModel;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject
 {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using QSProjectsLib;
 using System.Linq;
+using QS.DomainModel.Entity;
+using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
 {

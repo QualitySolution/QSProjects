@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Bindings.Collections.Generic;
-using NHibernate;
-using QSOrmProject;
 using System.Linq;
+using QS.DomainModel.Entity;
 
 namespace QSBanks
 {

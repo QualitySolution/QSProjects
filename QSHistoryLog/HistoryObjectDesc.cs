@@ -1,47 +1,48 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using QS.HistoryLog;
+using QS.Utilities.Text;
 using QSOrmProject;
-using QSProjectsLib;
 
 namespace QSHistoryLog
 {
-	public delegate string GetDicKeyTitle(string key);
-
 	public class HistoryObjectDesc
 	{
 		public string ObjectName { get; set;}
 		public Type ObjectType { get; set;}
 		public string DisplayName { get; set;}
 
-		public Dictionary<string, GetDicKeyTitle> PropertiesKeyTitleFunc;
-
-		public IEnumerable<HistoryFieldDesc> NamedProperties{
+		public IEnumerable<HistoryFieldDesc> TracedProperties{
 			get {
-				foreach(var prop in ObjectType.GetProperties ())
+				var persistent = OrmMain.OrmConfig.GetClassMapping(ObjectType);
+
+				foreach(var propertyMap in persistent.PropertyIterator)
 				{
-					var att = prop.GetCustomAttributes (typeof(DisplayAttribute), false);
+					var propInfo = persistent.MappedClass.GetProperty(propertyMap.Name);
+					if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
+						continue;
+
+					var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
 					if(att.Length > 0)
 					{
 						yield return new HistoryFieldDesc {
-							FieldName = prop.Name,
+							FieldName = propertyMap.Name,
 							DisplayName = (att [0] as DisplayAttribute).GetName ()
 						};
 					}
 				}
-				yield break;
 			}
 		}
 
 		public HistoryObjectDesc(Type type)
 		{
-			PropertiesKeyTitleFunc = new Dictionary<string, GetDicKeyTitle> ();
 			ObjectType = type;
 			ObjectName = type.Name;
 
 			var att = type.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
-				DisplayName = StringWorks.StringToTitleCase((att [0] as OrmSubjectAttribute).ObjectName);
+				DisplayName = (att[0] as OrmSubjectAttribute).ObjectName.StringToTitleCase();
 			else
 				DisplayName = ObjectName;
 		}

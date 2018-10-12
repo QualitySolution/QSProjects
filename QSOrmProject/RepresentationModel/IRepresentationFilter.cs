@@ -1,5 +1,5 @@
 ﻿using System;
-using NHibernate;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
 {

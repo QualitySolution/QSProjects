@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Gamma.ColumnConfig;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
 {

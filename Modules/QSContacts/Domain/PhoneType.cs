@@ -1,9 +1,10 @@
 ﻿using System;
+using QS.DomainModel.Entity;
 using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject (Gender = QSProjectsLib.GrammaticalGender.Masculine,
+	[OrmSubject (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "типы телефонов",
 		Nominative = "тип телефона")]
 	public class PhoneType : IDomainObject

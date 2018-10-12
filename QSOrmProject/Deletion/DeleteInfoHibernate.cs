@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Utilities;
 using NHibernate.Criterion;
+using QS.DomainModel.Entity;
 
 namespace QSOrmProject.Deletion
 {

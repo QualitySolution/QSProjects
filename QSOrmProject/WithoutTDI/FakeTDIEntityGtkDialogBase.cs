@@ -1,8 +1,10 @@
 ﻿using System;
-using QSTDI;
-using System.Linq;
-using QSProjectsLib;
 using System.ComponentModel;
+using System.Linq;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
+using QSProjectsLib;
+using QSTDI;
 
 namespace QSOrmProject
 {
