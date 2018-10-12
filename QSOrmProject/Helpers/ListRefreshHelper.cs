@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using NHibernate;
-using QSOrmProject;
+using QS.DomainModel.Entity;
 
 namespace QS.Helpers
 {
