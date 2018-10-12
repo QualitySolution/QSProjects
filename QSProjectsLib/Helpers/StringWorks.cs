@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
 
 namespace QSProjectsLib
 {
@@ -93,6 +92,7 @@ namespace QSProjectsLib
 			}
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
 		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
 		{
 			string result = String.Empty;
@@ -105,6 +105,7 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
 		public static string PersonNameWithInitials (string fioInOneString)
 		{
 			var parts = fioInOneString.Split(new [] {' '}, StringSplitOptions.RemoveEmptyEntries);
@@ -115,6 +116,7 @@ namespace QSProjectsLib
 			);
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
 		public static string PersonFullName (string surname, string name, string patronymicName)
 		{
 			var parts = new List<string>();
@@ -146,6 +148,7 @@ namespace QSProjectsLib
 				return String.Format ("{0:N1} ЭиБ", (double)bytes / (ulong)PowTwo.Pow60);
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.TitleHelper.")]
 		public static string StringToPascalCase (string input)
 		{
 			if (input == null)
@@ -157,6 +160,7 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.TitleHelper.")]
 		public static string StringToTitleCase (string input)
 		{
 			if (String.IsNullOrWhiteSpace (input))
