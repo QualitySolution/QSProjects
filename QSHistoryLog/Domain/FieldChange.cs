@@ -168,6 +168,9 @@ namespace QS.HistoryLog.Domain
 			if(propType is NHibernate.Type.UInt64Type && !IntCompare<UInt64>(ref change, propInfo, valueOld, valueNew))
 				return null;
 
+			if(propType is NHibernate.Type.EnumStringType && !EnumCompare(ref change, propInfo, valueOld, valueNew))
+				return null;
+
 			#endregion
 
 			if(change != null) {
@@ -280,6 +283,17 @@ namespace QS.HistoryLog.Domain
 				change.OldValue = boolOld.Value.ToString();
 			if(boolNew != null)
 				change.NewValue = boolNew.Value.ToString();
+			return true;
+		}
+
+		static bool EnumCompare(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew)
+		{
+			if(valueOld != null && valueNew != null && Enum.Equals(valueOld, valueNew))
+				return false;
+
+			change = new FieldChange();
+			change.OldValue = valueOld?.ToString();
+			change.NewValue = valueNew?.ToString();
 			return true;
 		}
 
