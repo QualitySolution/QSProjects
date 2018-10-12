@@ -146,7 +146,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="app.config" />
-    <None Include="ObjectTracker.cs" />
     <None Include="Comparers\DomainObjectComparer.cs" />
     <None Include="ObjectCloner.cs" />
   </ItemGroup>

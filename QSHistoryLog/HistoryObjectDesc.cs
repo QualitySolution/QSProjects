@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.HistoryLog;
+using QS.Utilities.Text;
 using QSOrmProject;
-using QSProjectsLib;
 
 namespace QSHistoryLog
 {
@@ -42,7 +42,7 @@ namespace QSHistoryLog
 
 			var att = type.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
 			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
-				DisplayName = StringWorks.StringToTitleCase((att [0] as OrmSubjectAttribute).ObjectName);
+				DisplayName = (att[0] as OrmSubjectAttribute).ObjectName.StringToTitleCase();
 			else
 				DisplayName = ObjectName;
 		}
