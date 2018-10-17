@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using QS.Print;
+using QS.Report;
 using QSProjectsLib;
 
 namespace QSReport

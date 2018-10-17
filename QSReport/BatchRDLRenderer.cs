@@ -5,6 +5,7 @@ using fyiReporting.RdlGtkViewer;
 using Gtk;
 using NLog;
 using QS.Print;
+using QS.Report;
 using QSProjectsLib;
 
 namespace QSReport

@@ -5,6 +5,7 @@ using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
 using QS.Print;
+using QS.Report;
 
 namespace QSReport
 {

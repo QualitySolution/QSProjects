@@ -2,6 +2,7 @@
 using fyiReporting.RDL;
 using fyiReporting.RdlGtkViewer;
 using Gtk;
+using QS.Report;
 
 namespace QSReport
 {

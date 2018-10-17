@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.Report;
 
 namespace QSReport
 {
