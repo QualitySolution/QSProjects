@@ -58,6 +58,7 @@ namespace QS.HistoryLog.Domain
 
 			EntityClassName = type.Name;
 			EntityTitle = DomainHelper.GetObjectTilte(entity);
+			//Обрезаем так как в базе данных поле равно 200.
 			if(EntityTitle != null && EntityTitle.Length > 200)
 				EntityTitle = EntityTitle.Substring(0, 197) + "...";
 			EntityId = DomainHelper.GetId(entity);
