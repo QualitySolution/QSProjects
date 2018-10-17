@@ -87,6 +87,8 @@
     <Compile Include="DomainModel\Tracking\NhEventListener.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
+    <Compile Include="Project.DB\Connection.cs" />
+    <Compile Include="Print\IPrintableDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -96,6 +98,8 @@
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="DomainModel\UoW\" />
     <Folder Include="DomainModel\Tracking\" />
+    <Folder Include="Project.DB\" />
+    <Folder Include="Print\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

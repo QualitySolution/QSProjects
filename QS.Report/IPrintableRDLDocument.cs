@@ -1,7 +1,7 @@
 ﻿using System;
 using QS.Print;
 
-namespace QSReport
+namespace QS.Report
 {
 	public interface IPrintableRDLDocument : IPrintableDocument
 	{

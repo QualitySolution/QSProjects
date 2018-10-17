@@ -373,6 +373,7 @@ namespace QSOrmProject
 		{
 			//FIXME Временные пробросы на этап перехода на QS.Poject
 			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
+			QS.Project.DB.Connection.GetConnectionString = () => QSMain.ConnectionString;
 			QS.DomainModel.UoW.UnitOfWorkBase.OpenSession = OpenSession;
 			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
 		}

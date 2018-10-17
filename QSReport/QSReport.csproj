@@ -55,14 +55,12 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="ReportViewDlg.cs" />
     <Compile Include="gtk-gui\QSReport.ReportViewDlg.cs" />
-    <Compile Include="ReportInfo.cs" />
     <Compile Include="IParametersWidget.cs" />
     <Compile Include="BatchRDLRenderer.cs" />
     <Compile Include="DocumentPrinter.cs" />
     <Compile Include="ReportPrinter.cs" />
     <Compile Include="MultipleDocumentPrinter.cs" />
     <Compile Include="ReportIdentifierAttribute.cs" />
-    <Compile Include="IPrintableRDLDocument.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using QSProjectsLib;
 
-namespace QSReport
+namespace QS.Report
 {
 	public class ReportInfo
 	{
@@ -55,27 +54,27 @@ namespace QSReport
 		{
 			if (Parameters == null)
 				return String.Empty;
-			var parametersBuild = new DBWorks.SQLHelper ();
-			foreach (var param in Parameters) {
-				string value;
-				if (!(param.Value is string) && param.Value is IEnumerable)
-					value = BuildMiltiValue (param.Value as IEnumerable);
-				else
-					value = ValueToValidString (param.Value);
+			var parametersList = Parameters
+			.Select(param => MakeParameterString(param.Key, param.Value));
 
-				parametersBuild.AddAsList (String.Format ("{0}={1}", param.Key, value), "&");
-			}
-			return parametersBuild.Text;
+			return String.Join("&", parametersList);
+		}
+
+		private string MakeParameterString(string key, object value)
+		{
+			string valueStr;
+			if(!(value is string) && value is IEnumerable)
+				valueStr = BuildMiltiValue(value as IEnumerable);
+			else
+				valueStr = ValueToValidString(value);
+
+			return String.Format("{0}={1}", key, valueStr);
 		}
 
 		private string BuildMiltiValue (IEnumerable values)
 		{
-			var valuesBuild = new DBWorks.SQLHelper ();
-
-			foreach (var value in values) {
-				valuesBuild.AddAsList (ValueToValidString (value), ",");
-			}
-			return valuesBuild.Text;
+			var valuesList = values.Cast<object>().Select(ValueToValidString);
+			return String.Join(",", valuesList);
 		}
 
 		private string ValueToValidString (object value)
@@ -97,8 +96,8 @@ namespace QSReport
 		public string ConnectionString {
 			get {
 				if (UseUserVariables)
-					return QSMain.ConnectionString + ";Allow User Variables=True";
-				return QSMain.ConnectionString;
+					return Project.DB.Connection.ConnectionString + ";Allow User Variables=True";
+				return Project.DB.Connection.ConnectionString;
 			}
 		}
 

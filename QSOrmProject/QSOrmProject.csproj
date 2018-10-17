@@ -167,7 +167,6 @@
     <Compile Include="Permissions\PermissionMatrix.cs" />
     <Compile Include="Permissions\IPermissionMatrix.cs" />
     <Compile Include="yWidgets\yLegalNameAlternative.cs" />
-    <Compile Include="Print\IPrintableDocument.cs" />
     <Compile Include="Print\DocumentPrinters.cs" />
     <Compile Include="Print\IOdtDocPrinter.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
