@@ -58,6 +58,8 @@ namespace QS.HistoryLog.Domain
 
 			EntityClassName = type.Name;
 			EntityTitle = DomainHelper.GetObjectTilte(entity);
+			if(EntityTitle != null && EntityTitle.Length > 200)
+				EntityTitle = EntityTitle.Substring(0, 197) + "...";
 			EntityId = DomainHelper.GetId(entity);
 			ChangeTime = DateTime.Now;
 
