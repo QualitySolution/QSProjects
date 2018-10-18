@@ -213,8 +213,7 @@ namespace QSProjectsLib
 		/// Проверка локали сервера.
 		/// </summary>
 		/// <param name="parent">Если Parent = null, сообщение будет выводиться в nlog. В противном случае в диалоговое окно.</param>
-		/// <param name="showDlgAnyway">Выводить сообщение в диалог в любом случае.</param>
-		public static void CheckServer (Window parent, bool showDlgAnyway = false)
+		public static void CheckServer (Window parent)
 		{
 			string sql = "SHOW VARIABLES LIKE \"character_set_%\";";
 			MySqlCommand cmd = new MySqlCommand (sql, connectionDB);
@@ -241,16 +240,13 @@ namespace QSProjectsLib
 				}
 			}
 			if (TextMes != "") {
-				if (parent != null || showDlgAnyway) {
-					MessageDialog VersionError = new MessageDialog (parent, DialogFlags.DestroyWithParent,
-						                             MessageType.Warning, 
-						                             ButtonsType.Close, 
-						                             TextMes);
-					VersionError.Run ();
-					VersionError.Destroy ();
-				} else {
-					logger.Warn (TextMes);
-				}
+				logger.Warn(TextMes);
+				MessageDialog VersionError = new MessageDialog (parent, DialogFlags.DestroyWithParent,
+					                             MessageType.Warning, 
+					                             ButtonsType.Close, 
+					                             TextMes);
+				VersionError.Run ();
+				VersionError.Destroy ();
 			}
 		}
 
