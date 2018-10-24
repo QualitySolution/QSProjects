@@ -9,8 +9,9 @@
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="546 314">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="1553 784">
     <property name="MemberName" />
+    <property name="WidthRequest">1000</property>
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
     <property name="TypeHint">Dialog</property>
@@ -230,6 +231,7 @@
                   <widget class="Gtk.Expander" id="expander1">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
+                    <property name="Expanded">True</property>
                     <child>
                       <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                         <property name="MemberName" />
@@ -242,6 +244,7 @@
                             <property name="ShowScrollbars">True</property>
                             <property name="Editable">False</property>
                             <property name="Text" translatable="yes" />
+                            <property name="WrapMode">Word</property>
                           </widget>
                         </child>
                       </widget>
