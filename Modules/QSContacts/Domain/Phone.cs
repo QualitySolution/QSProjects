@@ -9,7 +9,7 @@ namespace QSContacts
 	[OrmSubject (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "телефоны",
 		Nominative = "телефон")]
-	public class Phone : PropertyChangedBase
+	public class Phone : PropertyChangedBase, IDomainObject
 	{
 		#region Свойства
 		public virtual int Id { get; set; }
