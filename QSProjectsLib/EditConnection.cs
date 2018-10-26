@@ -244,10 +244,10 @@ namespace QSProjectsLib
 		protected void OnComboConnectionTypeChanged (object sender, EventArgs e)
 		{
 			if (comboConnectionType.Active == 1) {
-				entryServer.Visible = labelServer.Visible = buttonCreateBase.Visible = false;
+				entryServer.Visible = labelServer.Visible = hboxCreateBase.Visible = false;
 				entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = true;
 			} else {
-				entryServer.Visible = labelServer.Visible = buttonCreateBase.Visible = true;
+				entryServer.Visible = labelServer.Visible = hboxCreateBase.Visible = true;
 				entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
 			}
 		}

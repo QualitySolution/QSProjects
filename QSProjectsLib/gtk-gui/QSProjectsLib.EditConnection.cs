@@ -50,7 +50,7 @@ namespace QSProjectsLib
 
 		private global::Gtk.Label labelInfo;
 
-		private global::Gtk.HBox hbox2;
+		private global::Gtk.HBox hboxCreateBase;
 
 		private global::Gtk.Button buttonCreateBase;
 
@@ -290,20 +290,20 @@ namespace QSProjectsLib
 			w24.Expand = false;
 			w24.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.hbox2 = new global::Gtk.HBox();
-			this.hbox2.Name = "hbox2";
-			this.hbox2.Spacing = 6;
-			// Container child hbox2.Gtk.Box+BoxChild
+			this.hboxCreateBase = new global::Gtk.HBox();
+			this.hboxCreateBase.Name = "hboxCreateBase";
+			this.hboxCreateBase.Spacing = 6;
+			// Container child hboxCreateBase.Gtk.Box+BoxChild
 			this.buttonCreateBase = new global::Gtk.Button();
 			this.buttonCreateBase.Sensitive = false;
 			this.buttonCreateBase.CanFocus = true;
 			this.buttonCreateBase.Name = "buttonCreateBase";
 			this.buttonCreateBase.UseUnderline = true;
 			this.buttonCreateBase.Label = global::Mono.Unix.Catalog.GetString("Создать базу на сервере...");
-			this.hbox2.Add(this.buttonCreateBase);
-			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonCreateBase]));
+			this.hboxCreateBase.Add(this.buttonCreateBase);
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hboxCreateBase[this.buttonCreateBase]));
 			w25.Position = 0;
-			// Container child hbox2.Gtk.Box+BoxChild
+			// Container child hboxCreateBase.Gtk.Box+BoxChild
 			this.buttonHelp = new global::Gtk.Button();
 			this.buttonHelp.CanFocus = true;
 			this.buttonHelp.Name = "buttonHelp";
@@ -312,13 +312,13 @@ namespace QSProjectsLib
 			global::Gtk.Image w26 = new global::Gtk.Image();
 			w26.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "stock_help", global::Gtk.IconSize.Button);
 			this.buttonHelp.Image = w26;
-			this.hbox2.Add(this.buttonHelp);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonHelp]));
+			this.hboxCreateBase.Add(this.buttonHelp);
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hboxCreateBase[this.buttonHelp]));
 			w27.Position = 1;
 			w27.Expand = false;
 			w27.Fill = false;
-			this.vbox3.Add(this.hbox2);
-			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox2]));
+			this.vbox3.Add(this.hboxCreateBase);
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hboxCreateBase]));
 			w28.Position = 5;
 			w28.Expand = false;
 			w28.Fill = false;
@@ -368,7 +368,7 @@ namespace QSProjectsLib
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 561;
+			this.DefaultWidth = 562;
 			this.DefaultHeight = 407;
 			this.Show();
 			this.treeConnections.RowActivated += new global::Gtk.RowActivatedHandler(this.OnTreeviewConnectionsRowActivated);
