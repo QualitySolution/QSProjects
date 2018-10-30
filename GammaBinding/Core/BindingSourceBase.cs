@@ -27,6 +27,8 @@ namespace Gamma.Binding.Core
 			}
 		}
 
+		public IEnumerable<IBindingBridge> BindedBridges => Bridges.Cast<IBindingBridge>().AsEnumerable();
+
 		IBindingControlerInternal IBindingSourceInternal.Controler {
 			get {
 				return myControler;

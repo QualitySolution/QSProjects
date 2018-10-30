@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Gamma.Binding.Core
 {
-	internal interface IBindingBridgeInternal
+	internal interface IBindingBridgeInternal 
 	{
 		BridgeMode Mode { get;}
 
@@ -16,6 +16,16 @@ namespace Gamma.Binding.Core
 		object GetValueFromSource(object sourceObject);
 
 		bool SetValueToSource(object sourceObject, object value);
+	}
+
+	public interface IBindingBridge
+	{
+
+	}
+
+	public interface IPropertyBindingBridge : IBindingBridge
+	{
+		string SourcePropertyName { get; }
 	}
 
 	public enum BridgeMode

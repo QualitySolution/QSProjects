@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Gamma.Binding.Core
 {
-	internal class BindingBridge : IBindingBridgeInternal
+	internal class BindingBridge : IBindingBridgeInternal, IPropertyBindingBridge
 	{
 		public PropertyInfo SourcePropertyInfo { get; private set;}
 		public PropertyInfo[] TargetPropertyChain { get; private set;}

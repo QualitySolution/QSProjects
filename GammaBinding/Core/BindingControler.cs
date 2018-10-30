@@ -42,6 +42,8 @@ namespace Gamma.Binding.Core
 			widget = targetWidget;
 		}
 
+		public IEnumerable<IBindingSource> BindedSources => Sources.Cast<IBindingSource>().AsEnumerable();
+
 		#region internal
 
 		internal bool IsSourceBatchUpdate { get; set;}

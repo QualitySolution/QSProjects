@@ -7,7 +7,7 @@ using Gamma.Utilities;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingSource<TSource, TTarget> : BindingSourceBase<TTarget>, IBindingSourceInternal
+	public class BindingSource<TSource, TTarget> : BindingSourceBase<TTarget>, IBindingSourceInternal, IBindingSource
 		where TSource : class, INotifyPropertyChanged
 	{
 		TSource dataSource;
