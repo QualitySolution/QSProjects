@@ -3,12 +3,13 @@ using System.ComponentModel;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Dialogs;
 using QSProjectsLib;
 using QSTDI;
 
 namespace QSOrmProject
 {
-	public abstract class FakeTDIEntityGtkDialogBase<TEntity> : FakeTDITabGtkDialogBase, ITdiDialog, IOrmDialog
+	public abstract class FakeTDIEntityGtkDialogBase<TEntity> : FakeTDITabGtkDialogBase, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {

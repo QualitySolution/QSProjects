@@ -10,6 +10,8 @@ using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.UoW;
 using QS.Gtk.Widgets;
+using QS.Project.Dialogs;
+using QS.Project.Dialogs.Gtk;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
@@ -178,7 +180,7 @@ namespace QSOrmProject
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
-				IOrmDialog dlg = OrmMain.FindMyDialog (this);
+				IEntityDialog dlg = DialogHelper.FindParentDialog (this);
 				//FIXME Возможно не нужно подписываться пока закомментируем
 				//if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
 				//	dlg.Session.Refresh (Subject);
@@ -265,7 +267,7 @@ namespace QSOrmProject
 				return;
 			}
 
-			IOrmDialog dlg = OrmMain.FindMyDialog(this);
+			IEntityDialog dlg = DialogHelper.FindParentDialog(this);
 			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
 
@@ -342,7 +344,7 @@ namespace QSOrmProject
 
 			IUnitOfWork localUoW;
 
-			var dlg = OrmMain.FindMyDialog (this);
+			var dlg = DialogHelper.FindParentDialog (this);
 
 			if (dlg != null)
 				localUoW = dlg.UoW;

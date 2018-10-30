@@ -1,4 +1,6 @@
 ﻿using System;
+using QS.Project.Dialogs;
+using QS.Project.Dialogs.Gtk;
 using QSTDI;
 
 namespace QSOrmProject
@@ -8,12 +10,12 @@ namespace QSOrmProject
 	/// </summary>
 	public class WidgetOnDialogBase : WidgetOnTdiTabBase
 	{
-		IOrmDialog myOrmDialog;
+		IEntityDialog myOrmDialog;
 
-		protected IOrmDialog MyOrmDialog{
+		protected IEntityDialog MyOrmDialog{
 			get{
 				if(myOrmDialog == null)
-					myOrmDialog = OrmMain.FindMyDialog (this);
+					myOrmDialog = DialogHelper.FindParentDialog (this);
 				if (myOrmDialog == null) {
 					throw new InvalidOperationException ("Родительский диалог не найден.");
 				} else

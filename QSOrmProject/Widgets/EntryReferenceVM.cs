@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
 using QS.Gtk.Widgets;
+using QS.Project.Dialogs;
+using QS.Project.Dialogs.Gtk;
 using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
 using QSTDI;
@@ -133,7 +135,7 @@ namespace QSOrmProject
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
-				IOrmDialog dlg = OrmMain.FindMyDialog (this);
+				IEntityDialog dlg = DialogHelper.FindParentDialog (this);
 
 				if (dlg != null && !dlg.UoW.Session.Contains (foundUpdatedObject))
 					dlg.UoW.Session.Refresh (Subject);
@@ -261,7 +263,7 @@ namespace QSOrmProject
 		}
 
 		protected void SelectSubjectByNode(object node){
-			var dlg = OrmMain.FindMyDialog(this);
+			var dlg = DialogHelper.FindParentDialog(this);
 			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
 
 			Subject = uow.GetById(SubjectType, DomainHelper.GetId(node));

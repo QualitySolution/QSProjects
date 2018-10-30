@@ -1,17 +1,12 @@
 ﻿using QS.DomainModel.UoW;
 
-namespace QSOrmProject
+namespace QS.Project.Dialogs
 {
-	public interface IOrmDialog
+	public interface IEntityDialog
 	{
 		IUnitOfWork UoW { get; }
 
 		object EntityObject { get; }
-	}
-
-	public interface IOrmSlaveDialog
-	{
-		object Subject { get; set; }
 	}
 
 	public interface IEditableDialog

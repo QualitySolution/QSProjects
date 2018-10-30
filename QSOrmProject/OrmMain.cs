@@ -224,18 +224,6 @@ namespace QSOrmProject
 		#endregion
 		#region Диалоги сущностей
 
-		public static IOrmDialog FindMyDialog(Widget child)
-		{
-			if (child.Parent == null)
-				return null;
-			else if (child.Parent is IOrmDialog)
-				return child.Parent as IOrmDialog;
-			else if (child.Parent.IsTopLevel)
-				return null;
-			else
-				return FindMyDialog(child.Parent);
-		}
-
 		public static String GetDBTableName(System.Type objectClass)
 		{
 			return ormConfig.GetClassMapping(objectClass).RootTable.Name;

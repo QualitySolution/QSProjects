@@ -99,7 +99,6 @@
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
     <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
-    <Compile Include="OrmDialog\IOrmDialog.cs" />
     <Compile Include="OrmDialog\OrmGtkDialogBase.cs" />
     <Compile Include="DomainModel\DomainHelper.cs" />
     <Compile Include="CommonDialogs.cs" />
@@ -205,6 +204,10 @@
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
+      <Name>QS.Project.Gtk</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

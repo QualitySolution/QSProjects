@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.DomainModel.UoW;
+using QS.Project.Dialogs;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
 using QSTDI;
@@ -11,7 +12,7 @@ using QSTDI;
 namespace QSOrmProject
 {
     [WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-    public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, IOrmDialog
+    public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, IEntityDialog
     {
         private static Logger logger = LogManager.GetCurrentClassLogger ();
         private System.Type objectType;
