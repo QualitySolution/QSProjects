@@ -1,12 +1,7 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using QS.DomainModel;
+﻿using System.Runtime.CompilerServices;
 using QS.DomainModel.Entity;
-using QS.DomainModel.Tracking;
-using QS.DomainModel.UoW;
-using QSOrmProject.DomainModel;
 
-namespace QSOrmProject
+namespace QS.DomainModel.UoW
 {
 	public static class UnitOfWorkFactory
 	{

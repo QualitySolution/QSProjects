@@ -98,7 +98,6 @@
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
-    <Compile Include="DomainModel\UnitOfWorkFactory.cs" />
     <Compile Include="OrmDialog\OrmGtkDialogBase.cs" />
     <Compile Include="DomainModel\DomainHelper.cs" />
     <Compile Include="CommonDialogs.cs" />

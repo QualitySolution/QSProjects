@@ -4,6 +4,7 @@ using System.Linq;
 using Gamma.Utilities;
 using Newtonsoft.Json;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.Permissions
 {

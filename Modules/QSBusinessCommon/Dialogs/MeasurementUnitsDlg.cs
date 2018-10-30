@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.DomainModel.UoW;
 using QSBusinessCommon.Domain;
 using QSOrmProject;
 using QSValidation;

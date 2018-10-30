@@ -88,6 +88,7 @@
     <Compile Include="Project.DB\Connection.cs" />
     <Compile Include="Print\IPrintableDocument.cs" />
     <Compile Include="Project.Dialogs\IEntityDialog.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
