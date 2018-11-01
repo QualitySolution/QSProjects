@@ -48,6 +48,9 @@ namespace QSReport
 			if (document.PrintType == PrinterType.RDL)
 			{
 				var rdlDoc = document as IPrintableRDLDocument;
+				rdlDoc.Parameters = new Dictionary<object, object> {
+					{ "IsBatchPrint", true }
+				};
 				Report report = GetReportFromFileOrMemory(rdlDoc.GetReportInfo());
 				report.RunGetData(rdlDoc.GetReportInfo().Parameters);
 				reportPages.Add(report.BuildPages());
@@ -64,10 +67,11 @@ namespace QSReport
 			else
 				source = reportInfo.Source;
 
-			rdlp = new RDLParser(source);
-			//rdlp.Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
-			rdlp.OverwriteConnectionString = reportInfo.ConnectionString;
-			rdlp.OverwriteInSubreport = true;
+			rdlp = new RDLParser(source) {
+				//Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
+				OverwriteConnectionString = reportInfo.ConnectionString,
+				OverwriteInSubreport = true
+			};
 
 			r = rdlp.Parse();
 

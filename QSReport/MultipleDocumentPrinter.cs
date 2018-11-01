@@ -72,11 +72,7 @@ namespace QSReport
 					Printer.Unit = Unit.Points;
 					Printer.UseFullPage = true;
 
-					if(PrintSettings == null) {
-						Printer.PrintSettings = new PrintSettings();
-					} else {
-						Printer.PrintSettings = PrintSettings;
-					}
+					Printer.PrintSettings = PrintSettings ?? new PrintSettings();
 
 					Printer.PrintSettings.Orientation = orientation;
 
