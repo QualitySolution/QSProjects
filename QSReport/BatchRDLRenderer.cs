@@ -11,7 +11,7 @@ using QSProjectsLib;
 namespace QSReport
 {
 	public class BatchRDLRenderer
-	{		
+	{
 		IList<Pages> reportPages;
 		IList<IPrintableDocument> documents;
 		private Logger log = LogManager.GetCurrentClassLogger ();
@@ -25,7 +25,7 @@ namespace QSReport
 		}
 
 		public BatchRDLRenderer(IEnumerable<IPrintableDocument> documents)
-		{							
+		{
 			this.documents = documents.ToList();
 			reportPages = new List<Pages>();
 		}
@@ -48,21 +48,24 @@ namespace QSReport
 			if (document.PrintType == PrinterType.RDL)
 			{
 				var rdlDoc = document as IPrintableRDLDocument;
-
-				Report report = GetReportFromFile(rdlDoc.GetReportInfo());
+				Report report = GetReportFromFileOrMemory(rdlDoc.GetReportInfo());
 				report.RunGetData(rdlDoc.GetReportInfo().Parameters);
 				reportPages.Add(report.BuildPages());
 			}
 		}
 
-		private Report GetReportFromFile(ReportInfo reportInfo)
+		private Report GetReportFromFileOrMemory(ReportInfo reportInfo)
 		{
 			RDLParser rdlp;
 			Report r;
-			string source = System.IO.File.ReadAllText(reportInfo.GetPath());
+			string source;
+			if(reportInfo.Source == null)
+				source = System.IO.File.ReadAllText(reportInfo.GetPath());
+			else
+				source = reportInfo.Source;
 
 			rdlp = new RDLParser(source);
-			rdlp.Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
+			//rdlp.Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
 			rdlp.OverwriteConnectionString = reportInfo.ConnectionString;
 			rdlp.OverwriteInSubreport = true;
 

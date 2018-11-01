@@ -16,14 +16,19 @@ namespace QSReport
 		bool showDialog = true;
 
 		public GenericObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new GenericObservableList<SelectablePrintDocument>();
+		public List<IPrintableDocument> PrintedRDLs { get; set; }
+		public event EventHandler DocumentsPrinted;
 
 		public void PrintSelectedDocuments()
 		{
+			var prnbleDocs = PrintableDocuments.Where(d => d.Selected);
+			if(!prnbleDocs.Any())
+				return;
+
 			showDialog = true;
 			List<IPrintableDocument> rdlToPrinter = new List<IPrintableDocument>();
 			List<IPrintableDocument> odtToPrinter = new List<IPrintableDocument>();
-
-			foreach(var document in PrintableDocuments.Where(d => d.Selected)) {
+			foreach(var document in prnbleDocs) {
 				document.Document.CopiesToPrint = document.Copies;
 				switch(document.Document.PrintType) {
 					case PrinterType.ODT:
@@ -38,8 +43,10 @@ namespace QSReport
 						throw new NotImplementedException("Печать документа не поддерживается");
 				}
 			}
-			DocumentPrinter.PrintAll(rdlToPrinter);
-			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), DocumentPrinter.PrintSettings);
+			var printer = new DocumentPrinter();
+			printer.DocumentsPrinted += (sender, e) => DocumentsPrinted?.Invoke(sender, e);
+			printer.PrintAll(rdlToPrinter);
+			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), printer.PrintSettings);
 		}
 
 		public void PrintDocument(SelectablePrintDocument doc)

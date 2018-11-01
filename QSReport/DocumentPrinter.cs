@@ -9,15 +9,16 @@ using QSProjectsLib;
 namespace QSReport
 {
 	public class DocumentPrinter
-	{		
-		public static void Print(IPrintableDocument document)
+	{
+		public event EventHandler DocumentsPrinted;
+		public void Print(IPrintableDocument document)
 		{
 			PrintAll(new IPrintableDocument[]{ document });
 		}
 
-		public static PrintSettings PrintSettings { get; set; }
+		public PrintSettings PrintSettings { get; set; }
 
-		public static void PrintAll(IEnumerable<IPrintableDocument> documents)
+		public void PrintAll(IEnumerable<IPrintableDocument> documents)
 		{
 			PrintSettings = null;
 			if(Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix)
@@ -51,6 +52,10 @@ namespace QSReport
 			}
 
 			printOp.DrawPage += renderer.DrawPage;
+			printOp.EndPrint += (o, args) => {
+				args.Args = documentsRDL.ToArray();
+				DocumentsPrinted?.Invoke(o, args);
+			};
 			printOp.Run(PrintOperationAction.PrintDialog, null);
 			PrintSettings = printOp.PrintSettings;
 		}
@@ -62,7 +67,7 @@ namespace QSReport
 		/// На некоторых принтерах например в водовозе, табличка рисуется за вертикалью листа а текст нет.
 		/// используется только на винде, в линуксе такой проблемы нет.
 		/// </summary>
-		private static PrintSettings PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
+		private PrintSettings PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
 		{
 			PrintOperation printOp = null;
 			PrintSettings printSettings = null;
@@ -98,6 +103,10 @@ namespace QSReport
 				printOp.NPages = renderer.PageCount;
 
 				printOp.DrawPage += renderer.DrawPage;
+				printOp.EndPrint += (o, args) => {
+					args.Args = documentsRDL_Portrait.Concat(documentsRDL_Landscape).ToArray();
+					DocumentsPrinted?.Invoke(o, args);
+				};
 				printOp.Run(PrintOperationAction.PrintDialog, null);
 				printSettings = printOp.PrintSettings;
 			}
@@ -133,6 +142,10 @@ namespace QSReport
 
 				printOp.NPages = renderer.PageCount;
 				printOp.DrawPage += renderer.DrawPage;
+				printOp.EndPrint += (o, args) => {
+					args.Args = documentsRDL_Portrait.Concat(documentsRDL_Landscape).ToArray();
+					DocumentsPrinted?.Invoke(o, args);
+				};
 				printOp.Run(printOperationAction, null);
 			}
 			return printOp.PrintSettings;
