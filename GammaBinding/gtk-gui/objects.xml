@@ -76,4 +76,8 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.Widgets.EnumCheckList" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.VBox">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

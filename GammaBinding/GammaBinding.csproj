@@ -104,6 +104,8 @@
     <Compile Include="GtkWidgets\yFileChooserButton.cs" />
     <Compile Include="GtkWidgets\yColorButton.cs" />
     <Compile Include="Binding.Core\IBindingSource.cs" />
+    <Compile Include="Widgets\EnumCheckList.cs" />
+    <Compile Include="Widgets\Additions\EnumsListConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
