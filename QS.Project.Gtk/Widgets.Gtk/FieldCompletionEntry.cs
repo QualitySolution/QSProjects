@@ -23,6 +23,8 @@ namespace QS.Widgets.Gtk
 
 		private ListStore completionListStore;
 
+		public object Tag;
+
 		public FieldCompletionEntry()
 		{
 
