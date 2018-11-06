@@ -180,11 +180,13 @@ namespace QSContacts
 			}
 		}
 
-		public void SaveChanges()
+		/// <summary>
+		/// Необходимо выполнить перед сохранением или в геттере HasChanges
+		/// </summary>
+		public void RemoveEmpty()
 		{
 			Emails.Where (p => String.IsNullOrWhiteSpace(p.Address))
 				.ToList ().ForEach (p => Emails.Remove (p));
-			
 		}
 	}
 }

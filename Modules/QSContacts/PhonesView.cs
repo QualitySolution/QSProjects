@@ -208,7 +208,10 @@ namespace QSContacts
 			}
 		}
 
-		public void SaveChanges ()
+		/// <summary>
+		/// Необходимо выполнить перед сохранением или в геттере HasChanges
+		/// </summary>
+		public void RemoveEmpty ()
 		{
 			PhonesList.Where (p => p.Number.Length < QSContactsMain.MinSavePhoneLength)
 				.ToList ().ForEach (p => PhonesList.Remove (p));
