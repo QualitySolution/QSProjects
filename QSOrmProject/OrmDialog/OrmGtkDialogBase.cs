@@ -48,14 +48,6 @@ namespace QSOrmProject
 			return OrmMain.GenerateDialogHashName (typeof (TEntity), id);
 		}
 
-		//FIXME Временно для совместимости
-		[Obsolete ("Используйте UnitOfWork, это свойство будет удалено.")]
-		public NHibernate.ISession Session {
-			get {
-				return UoW.Session;
-			}
-		}
-
 		private bool manualChange = false;
 
 		public virtual bool HasChanges {
