@@ -33,13 +33,12 @@ namespace QS.HistoryLog.Repositories
 			var prop = Gamma.Utilities.PropertyUtil.GetName(field);
 
 			var changes = uow.Session.QueryOver<FieldChange>()
-			                 .JoinAlias(fc => fc.Entity, () => changedEntityAlias)
+			                 .Left.JoinAlias(fc => fc.Entity, () => changedEntityAlias)
 			                 .Where(() => changedEntityAlias.EntityClassName == typeof(T).Name)
-			                 .Where(() => changedEntityAlias.IsIn(entitiesIds))
-			                 .Where(fc => fc.FieldTitle == prop)
+			                 .Where(() => changedEntityAlias.EntityId.IsIn(entitiesIds))
+							 .Where(fc => fc.Path == prop)
 							 .List();
 			return changes;
 		}
-
 	}
 }
