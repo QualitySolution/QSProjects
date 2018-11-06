@@ -167,7 +167,7 @@ namespace QSOrmProject
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			OnCloseTab (true);
+			OnCloseTab (false);//отключен вопрос, т.к. Session.IsDirty() сохраняет вновь созданные объекты в базу
 		}
 
 		public override void Destroy ()
