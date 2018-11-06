@@ -1,6 +1,6 @@
 ﻿using QS.DomainModel.UoW;
 
-namespace QS.Project.Dialogs
+namespace QS.Dialog
 {
 	/// <summary>
 	/// Диалог редактирования сущьности

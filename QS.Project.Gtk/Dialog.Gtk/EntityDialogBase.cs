@@ -4,14 +4,11 @@ using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Project.Dialogs;
-using QSProjectsLib;
-using QSProjectsLib.Helpers;
-using QSTDI;
+using QS.Tdi;
 
-namespace QSOrmProject
+namespace QS.Dialog.Gtk
 {
-	public abstract class OrmGtkDialogBase<TEntity> : Bin, ITdiDialog, IEntityDialog
+	public abstract class EntityDialogBase<TEntity> : Bin, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {

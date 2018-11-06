@@ -9,7 +9,7 @@ using QSValidation;
 
 namespace QSBanks
 {
-	public partial class AccountDlg : OrmGtkDialogBase<Account>
+	public partial class AccountDlg : EntityDialogBase<Account>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 

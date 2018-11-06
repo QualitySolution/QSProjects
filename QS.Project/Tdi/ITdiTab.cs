@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSTDI
+namespace QS.Tdi
 {
 	public delegate void HandleSwitchIn (ITdiTab tabFrom);
 	public delegate void HandleSwitchOut (ITdiTab tabTo);

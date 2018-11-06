@@ -87,8 +87,15 @@
     <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
     <Compile Include="Project.DB\Connection.cs" />
     <Compile Include="Print\IPrintableDocument.cs" />
-    <Compile Include="Project.Dialogs\IEntityDialog.cs" />
+    <Compile Include="Dialog\IEntityDialog.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkFactory.cs" />
+    <Compile Include="Tdi\ITdiDialog.cs" />
+    <Compile Include="Tdi\ITdiTab.cs" />
+    <Compile Include="Tdi\ITdiTabParent.cs" />
+    <Compile Include="Tdi\ITdiTabWithPath.cs" />
+    <Compile Include="Tdi\ITdiJournal.cs" />
+    <Compile Include="Tdi\ITdiTabAddedNotifier.cs" />
+    <Compile Include="Tdi\ITDICloseControlTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -100,7 +107,8 @@
     <Folder Include="DomainModel\Tracking\" />
     <Folder Include="Project.DB\" />
     <Folder Include="Print\" />
-    <Folder Include="Project.Dialogs\" />
+    <Folder Include="Dialog\" />
+    <Folder Include="Tdi\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

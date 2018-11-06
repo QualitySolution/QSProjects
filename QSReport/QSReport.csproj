@@ -73,10 +73,6 @@
       <Project>{921488F1-F4FC-4438-920E-86E57442B253}</Project>
       <Name>RdlGtkViewer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
-      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
-      <Name>QSTDI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>

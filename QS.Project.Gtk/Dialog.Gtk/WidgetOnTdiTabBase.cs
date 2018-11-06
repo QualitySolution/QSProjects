@@ -1,15 +1,17 @@
 ﻿using System;
+using Gtk;
+using QS.Tdi;
 
-namespace QSTDI
+namespace QS.Dialog.Gtk
 {
-	public abstract class WidgetOnTdiTabBase : Gtk.Bin
+	public abstract class WidgetOnTdiTabBase : Bin
 	{
 		ITdiTab mytab;
 
 		protected ITdiTab MyTab{
 			get{
 				if(mytab == null)
-					mytab = TdiHelper.FindMyTab (this);
+					mytab = DialogHelper.FindParentTab (this);
 				if (mytab == null) {
 					throw new InvalidOperationException ("Родительская вкладка не найдена.");
 				} else
@@ -17,7 +19,7 @@ namespace QSTDI
 			}
 		}
 
-		protected override void OnParentSet (Gtk.Widget previous_parent)
+		protected override void OnParentSet (Widget previous_parent)
 		{
 			mytab = null;
 			base.OnParentSet (previous_parent);

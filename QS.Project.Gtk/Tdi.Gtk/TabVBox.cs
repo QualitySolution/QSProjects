@@ -1,9 +1,9 @@
 ﻿using System;
 using Gtk;
 
-namespace QSTDI
+namespace QS.Tdi.Gtk
 {
-	public class TabVBox : Gtk.VBox
+	public class TabVBox : VBox
 	{
 		ITdiTab tab;
 		Label titleLabel;

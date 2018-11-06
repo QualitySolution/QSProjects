@@ -3,9 +3,9 @@ using Gtk;
 using NLog;
 using System.Collections.Generic;
 
-namespace QSTDI
+namespace QS.Tdi.Gtk
 {
-	public class TdiSliderTab : Gtk.HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
+	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private ITdiJournal journal;

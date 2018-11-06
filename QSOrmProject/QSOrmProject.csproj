@@ -98,7 +98,6 @@
     <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
-    <Compile Include="OrmDialog\OrmGtkDialogBase.cs" />
     <Compile Include="DomainModel\DomainHelper.cs" />
     <Compile Include="CommonDialogs.cs" />
     <Compile Include="Properties\DialogWorksAttributes.cs" />
@@ -183,10 +182,6 @@
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QSTDI\QSTDI.csproj">
-      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
-      <Name>QSTDI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>

@@ -101,10 +101,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\QSTDI\QSTDI.csproj">
-      <Project>{4B35C969-8C74-440F-8189-57047C9215FD}</Project>
-      <Name>QSTDI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSOrmProject\QSOrmProject.csproj">
       <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
       <Name>QSOrmProject</Name>

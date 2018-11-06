@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using Gtk;
+using QS.Tdi;
 
-namespace QSTDI
+namespace QS.Dialog.Gtk
 {
 	public class TdiTabBase : Bin, ITdiTab
 	{

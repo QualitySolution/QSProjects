@@ -5,10 +5,10 @@ using System.Linq;
 using Gtk;
 using NLog;
 
-namespace QSTDI
+namespace QS.Tdi.Gtk
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public class TdiNotebook : Gtk.Notebook, ITdiTabParent
+	public class TdiNotebook : Notebook, ITdiTabParent
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -64,7 +64,7 @@ namespace QSTDI
 			HBox box = new HBox();
 			Label nameLable = new Label(tab.TabName);
 			box.Add(nameLable);
-			Gtk.Image closeImage = new Gtk.Image(Stock.Close, IconSize.Menu);
+			Image closeImage = new Image(Stock.Close, IconSize.Menu);
 			Button closeButton = new Button(closeImage);
 			closeButton.Relief = ReliefStyle.None;
 			closeButton.Clicked += OnCloseButtonClicked;

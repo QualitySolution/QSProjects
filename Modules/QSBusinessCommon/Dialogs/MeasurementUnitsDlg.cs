@@ -6,7 +6,7 @@ using QSValidation;
 
 namespace QSBusinessCommon
 {
-	public partial class MeasurementUnitsDlg : OrmGtkDialogBase<MeasurementUnits>
+	public partial class MeasurementUnitsDlg : EntityDialogBase<MeasurementUnits>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 

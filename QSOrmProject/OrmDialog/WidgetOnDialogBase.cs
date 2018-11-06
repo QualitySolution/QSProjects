@@ -1,6 +1,6 @@
 ﻿using System;
-using QS.Project.Dialogs;
-using QS.Project.Dialogs.Gtk;
+using QS.Dialog;
+using QS.Dialog.Gtk;
 using QSTDI;
 
 namespace QSOrmProject

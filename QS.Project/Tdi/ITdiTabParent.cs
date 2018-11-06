@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSTDI
+namespace QS.Tdi
 {
 	public interface ITdiTabParent
 	{

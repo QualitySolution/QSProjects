@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Project.Dialogs;
+using QS.Dialog;
 using QSProjectsLib;
 using QSTDI;
 

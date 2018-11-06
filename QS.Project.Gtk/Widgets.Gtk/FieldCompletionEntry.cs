@@ -7,7 +7,7 @@ using Gamma.GtkWidgets;
 using Gtk;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
-using QS.Project.Dialogs.Gtk;
+using QS.Dialog.Gtk;
 
 namespace QS.Widgets.Gtk
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.DomainModel.UoW;
-using QS.Project.Dialogs;
+using QS.Dialog;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
 using QSTDI;

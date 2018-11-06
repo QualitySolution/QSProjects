@@ -5,7 +5,7 @@ using QSValidation;
 
 namespace QSBanks
 {
-	public partial class BankDlg : OrmGtkDialogBase<Bank>
+	public partial class BankDlg : EntityDialogBase<Bank>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 

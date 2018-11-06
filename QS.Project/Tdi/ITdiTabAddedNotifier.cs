@@ -1,5 +1,6 @@
 ﻿using System;
-namespace QSTDI
+
+namespace QS.Tdi
 {
 	/// <summary>
 	/// Tdi tab added notifier.

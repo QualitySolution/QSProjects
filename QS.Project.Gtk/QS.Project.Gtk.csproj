@@ -66,11 +66,19 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Widgets.Gtk\FieldCompletionEntry.cs" />
-    <Compile Include="Project.Dialogs.Gtk\DialogHelper.cs" />
+    <Compile Include="Dialog.Gtk\DialogHelper.cs" />
+    <Compile Include="Dialog.Gtk\EntityDialogBase.cs" />
+    <Compile Include="Tdi.Gtk\TdiSliderTab.cs" />
+    <Compile Include="Tdi.Gtk\TdiNotebook.cs" />
+    <Compile Include="Tdi.Gtk\TabVBox.cs" />
+    <Compile Include="Tdi.Gtk\TDIMain.cs" />
+    <Compile Include="Dialog.Gtk\TdiTabBase.cs" />
+    <Compile Include="Dialog.Gtk\WidgetOnTdiTabBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />
-    <Folder Include="Project.Dialogs.Gtk\" />
+    <Folder Include="Dialog.Gtk\" />
+    <Folder Include="Tdi.Gtk\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

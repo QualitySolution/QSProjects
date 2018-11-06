@@ -1,7 +1,7 @@
 ﻿using System;
 using Gtk;
 
-namespace QSTDI
+namespace QS.Tdi.Gtk
 {
 	public static class TDIMain
 	{

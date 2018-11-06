@@ -1,7 +1,8 @@
 ﻿using System;
 using Gtk;
+using QS.Tdi;
 
-namespace QS.Project.Dialogs.Gtk
+namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
@@ -27,6 +28,16 @@ namespace QS.Project.Dialogs.Gtk
 				return null;
 			else
 				return FindParentUowDialog(child.Parent);
+		}
+
+		public static ITdiTab FindParentTab(Widget child)
+		{
+			if(child.Parent is ITdiTab)
+				return child.Parent as ITdiTab;
+			else if(child.Parent.IsTopLevel)
+				return null;
+			else
+				return FindParentTab(child.Parent);
 		}
 	}
 }
