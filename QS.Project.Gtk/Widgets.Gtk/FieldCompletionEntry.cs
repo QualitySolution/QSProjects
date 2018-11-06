@@ -74,7 +74,7 @@ namespace QS.Widgets.Gtk
 
 			IUnitOfWork localUoW;
 
-			var dlg = DialogHelper.FindParentDialog(this);
+			var dlg = DialogHelper.FindParentUowDialog(this);
 
 			if(dlg != null)
 				localUoW = dlg.UoW;

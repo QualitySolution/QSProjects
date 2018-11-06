@@ -2,11 +2,20 @@
 
 namespace QS.Project.Dialogs
 {
-	public interface IEntityDialog
+	/// <summary>
+	/// Диалог редактирования сущьности
+	/// </summary>
+	public interface IEntityDialog : ISingleUoWDialog
+	{
+		object EntityObject { get; }
+	}
+
+	/// <summary>
+	/// Диалог с 
+	/// </summary>
+	public interface ISingleUoWDialog
 	{
 		IUnitOfWork UoW { get; }
-
-		object EntityObject { get; }
 	}
 
 	public interface IEditableDialog

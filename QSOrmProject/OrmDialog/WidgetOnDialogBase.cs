@@ -10,16 +10,29 @@ namespace QSOrmProject
 	/// </summary>
 	public class WidgetOnDialogBase : WidgetOnTdiTabBase
 	{
-		IEntityDialog myOrmDialog;
+		ISingleUoWDialog myOrmDialog;
 
-		protected IEntityDialog MyOrmDialog{
+		protected ISingleUoWDialog MyOrmDialog{
 			get{
 				if(myOrmDialog == null)
-					myOrmDialog = DialogHelper.FindParentDialog (this);
+					myOrmDialog = DialogHelper.FindParentUowDialog(this);
 				if (myOrmDialog == null) {
 					throw new InvalidOperationException ("Родительский диалог не найден.");
 				} else
 					return myOrmDialog;
+			}
+		}
+
+		IEntityDialog myEntityDialog;
+
+		protected IEntityDialog MyEntityDialog {
+			get {
+				if(myEntityDialog == null)
+					myEntityDialog = DialogHelper.FindParentEntityDialog(this);
+				if(myEntityDialog == null) {
+					throw new InvalidOperationException("Родительский диалог не найден.");
+				} else
+					return myEntityDialog;
 			}
 		}
 

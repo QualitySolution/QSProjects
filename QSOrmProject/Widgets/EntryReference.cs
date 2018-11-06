@@ -180,7 +180,7 @@ namespace QSOrmProject
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
-				IEntityDialog dlg = DialogHelper.FindParentDialog (this);
+				//var dlg = DialogHelper.FindParentUowDialog(this);
 				//FIXME Возможно не нужно подписываться пока закомментируем
 				//if (dlg != null && !dlg.Session.Contains (foundUpdatedObject))
 				//	dlg.Session.Refresh (Subject);
@@ -267,7 +267,7 @@ namespace QSOrmProject
 				return;
 			}
 
-			IEntityDialog dlg = DialogHelper.FindParentDialog(this);
+			var dlg = DialogHelper.FindParentUowDialog(this);
 			IUnitOfWork localUoW;
 			OrmReference SelectDialog;
 
@@ -344,7 +344,7 @@ namespace QSOrmProject
 
 			IUnitOfWork localUoW;
 
-			var dlg = DialogHelper.FindParentDialog (this);
+			var dlg = DialogHelper.FindParentUowDialog(this);
 
 			if (dlg != null)
 				localUoW = dlg.UoW;

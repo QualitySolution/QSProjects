@@ -135,7 +135,7 @@ namespace QSOrmProject
 		{
 			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault (s => DomainHelper.EqualDomainObjects (s, Subject));
 			if (foundUpdatedObject != null) {
-				IEntityDialog dlg = DialogHelper.FindParentDialog (this);
+				var dlg = DialogHelper.FindParentUowDialog(this);
 
 				if (dlg != null && !dlg.UoW.Session.Contains (foundUpdatedObject))
 					dlg.UoW.Session.Refresh (Subject);
@@ -186,8 +186,8 @@ namespace QSOrmProject
 		{ 
 			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
 			if(modelWithParent != null) {
-				if(MyOrmDialog != null && MyOrmDialog.UoW.IsNew
-					&& MyOrmDialog.EntityObject == modelWithParent.GetParent) {
+				if(MyEntityDialog != null && MyEntityDialog.UoW.IsNew
+					&& MyEntityDialog.EntityObject == modelWithParent.GetParent) {
 					if(CommonDialogs.SaveBeforeSelectFromChildReference(modelWithParent.GetParent.GetType(), SubjectType)) {
 						if(!MyTdiDialog.Save())
 							return;
@@ -263,7 +263,7 @@ namespace QSOrmProject
 		}
 
 		protected void SelectSubjectByNode(object node){
-			var dlg = DialogHelper.FindParentDialog(this);
+			var dlg = DialogHelper.FindParentUowDialog(this);
 			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
 
 			Subject = uow.GetById(SubjectType, DomainHelper.GetId(node));

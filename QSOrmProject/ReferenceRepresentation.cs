@@ -12,8 +12,8 @@ using QSTDI;
 namespace QSOrmProject
 {
     [WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-    public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, IEntityDialog
-    {
+    public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, ISingleUoWDialog
+	{
         private static Logger logger = LogManager.GetCurrentClassLogger ();
         private System.Type objectType;
         private IRepresentationFilter filterWidget;
@@ -123,12 +123,6 @@ namespace QSOrmProject
         public IUnitOfWork UoW {
             get {
                 return RepresentationModel.UoW;
-            }
-        }
-
-        public object EntityObject {
-            get {
-                return null;
             }
         }
 
