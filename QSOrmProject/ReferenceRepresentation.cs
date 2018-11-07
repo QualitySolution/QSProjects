@@ -10,6 +10,7 @@ using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
 using QS.Tdi;
 using QS.Tdi.Gtk;
+using QS.Utilities.Text;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
 
@@ -198,7 +199,7 @@ namespace QSOrmProject
             {
                 object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
                 if (att.Length > 0) {
-					this.TabName = (att[0] as AppellativeAttribute).NominativePlural;
+					this.TabName = (att[0] as AppellativeAttribute).NominativePlural.StringToTitleCase();
                 }
 
 				var defaultMode = objectType.GetAttribute<DefaultReferenceButtonModeAttribute>(true);

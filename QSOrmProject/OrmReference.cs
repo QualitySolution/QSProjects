@@ -11,6 +11,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
 using QS.Tdi;
+using QS.Utilities.Text;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
@@ -223,7 +224,7 @@ namespace QSOrmProject
 				throw new InvalidOperationException (String.Format ("Для использования диалога, класс {0} должен быть добавлен в мапинг OrmMain.ClassMappingList.", objectType));
 			object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				this.TabName = (att [0] as AppellativeAttribute).NominativePlural;
+				this.TabName = (att [0] as AppellativeAttribute).NominativePlural.StringToTitleCase();
 			}
 			var defaultMode = objectType.GetAttribute<DefaultReferenceButtonModeAttribute>(true);
 			if(defaultMode != null)
