@@ -31,6 +31,10 @@ namespace QS.HistoryLog.Domain
 			User = user;
 			UserLogin = login ?? user?.Login;
 			ActionName = actionName;
+
+			//При сохранении в базу обрезаем длинну действия до размера колонки.
+			if(ActionName != null && ActionName.Length > 100)
+				ActionName = ActionName.Substring(0, 97) + "...";
 		}
 
 		public virtual void AddChange(params ChangedEntity[] changes)

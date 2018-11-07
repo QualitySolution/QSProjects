@@ -28,8 +28,6 @@ namespace QS.DomainModel.UoW
 
 		protected List<object> entityToSave = new List<object>();
 
-		public string ActionName { get; protected set; }
-
 		public bool IsNew { get; protected set; }
 
 		public UnitOfWorkTitle ActionTitle { get; protected set; }

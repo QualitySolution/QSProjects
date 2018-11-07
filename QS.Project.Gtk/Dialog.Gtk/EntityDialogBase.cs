@@ -177,8 +177,10 @@ namespace QS.Dialog.Gtk
 
 		protected void OnTabNameChanged ()
 		{
-			if (TabNameChanged != null)
-				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
+			if(UoW?.ActionTitle != null)
+				uowGeneric.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
+
+			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
 		}
 
 		protected void OpenTab (string hashName, Func<ITdiTab> newTabFunc)

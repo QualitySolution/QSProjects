@@ -42,8 +42,6 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
-		public string ActionName { get; protected set; }
-
 		// TODO Ксожалению не работает при открытии второй сессии возвращается первая закрытая.
 		// Проблема описана здесь http://osdir.com/ml/nhibernate-development/2010-02/msg00131.html
 		// session = ParentUoW.Session.GetSession (EntityMode.Poco);
@@ -55,7 +53,9 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
-		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference)
+		public UnitOfWorkTitle ActionTitle => throw new NotImplementedException();
+
+		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference)
 		{
 			IsNew = true;
 			ParentReference = parentReference;

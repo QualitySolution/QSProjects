@@ -8,7 +8,7 @@ namespace QS.DomainModel.UoW
 {
 	public interface IUnitOfWork : IDisposable 
 	{
-		string ActionName { get; }
+		UnitOfWorkTitle ActionTitle { get; }
 
 		NHibernate.ISession Session{ get;}
 
