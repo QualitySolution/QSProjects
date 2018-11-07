@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Gamma.Utilities
 {
@@ -70,6 +71,17 @@ namespace Gamma.Utilities
 			where TAttribute : Attribute
 		{
 			return (TAttribute[])clazz.GetCustomAttributes(typeof(TAttribute), inherit);
+		}
+
+		/// <summary>
+		/// Gets first typed attribute.
+		/// </summary>
+		/// <returns>The attribute</returns>
+		/// <typeparam name="TAttribute">The type of Attribute.</typeparam>
+		public static TAttribute GetAttribute<TAttribute>(this Type clazz, bool inherit)
+			where TAttribute : Attribute
+		{
+			return clazz.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().FirstOrDefault();
 		}
 	}
 }
