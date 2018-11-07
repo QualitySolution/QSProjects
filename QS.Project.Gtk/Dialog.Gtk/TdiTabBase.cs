@@ -77,6 +77,10 @@ namespace QS.Dialog.Gtk
 
 		protected void OnTabNameChanged()
 		{
+			var uowDlg = this as ISingleUoWDialog;
+			if(uowDlg?.UoW?.ActionTitle != null)
+				uowDlg.UoW.ActionTitle.UserActionTitle = $"Вкладка '{TabName}'";
+
 			if (TabNameChanged != null)
 				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
 		}

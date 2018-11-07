@@ -7,6 +7,7 @@ using QSProjectsLib;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.DomainModel.Entity;
+using QS.Utilities.Text;
 
 namespace QSOrmProject
 {
@@ -23,7 +24,7 @@ namespace QSOrmProject
 		/// <param name="editObject">Объект для редактирования. Если null создаем новый объект.</param>
 		public static object RunSimpleDialog(Window parent, System.Type objectType, object editObject)
 		{
-			using (IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot ())
+			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot($"Простое редактирование '{DomainHelper.GetObjectTilte(editObject)}'"))
 			{
 				//Создаем объект редактирования
 				object tempObject;
@@ -79,7 +80,7 @@ namespace QSOrmProject
 						.List ();
 					if (list.Count > 0) {
 						var att = DomainHelper.GetSubjectNames (tempObject);
-						string subjectName = att != null ? StringWorks.StringToTitleCase (att.Nominative) : null;
+						string subjectName = att != null ? att.Nominative.StringToTitleCase() : null;
 						string msg = String.Format ("{0} с таким названием уже существует.",
 							             string.IsNullOrEmpty (subjectName) ? "Элемент справочника" : subjectName
 						             );
