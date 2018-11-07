@@ -52,12 +52,12 @@ namespace QSProjectsLib
 			md.Destroy ();
 		}
 
-		public static bool RunWarningDialog(string title, string warning)
+		public static bool RunWarningDialog(string title, string warning, ButtonsType buttons = ButtonsType.YesNo)
 		{
 			MessageDialog md = new MessageDialog(null,
 								   DialogFlags.Modal,
 								   MessageType.Warning,
-			                       ButtonsType.YesNo,
+								   buttons,
 								   warning);
 			md.SetPosition(WindowPosition.Center);
 			md.Title = title;
@@ -107,7 +107,7 @@ namespace QSProjectsLib
 
 		public static void RunInfoDialog(string formattedMessage, params object[] args)
 		{
-			RunErrorDialog(String.Format(formattedMessage, args));
+			RunInfoDialog(String.Format(formattedMessage, args));
 		}
 
 		public static void RunInfoDialog (string message)
