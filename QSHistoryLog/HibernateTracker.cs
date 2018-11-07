@@ -101,7 +101,7 @@ namespace QS.HistoryLog
 				var conStr = userUoW.Session.Connection.ConnectionString;
 				var reg = new Regex("user id=(.+?)(;|$)");
 				var match = reg.Match(conStr);
-				string dbLogin = match.Success ? match.Groups[0].Value : null;
+				string dbLogin = match.Success ? match.Groups[1].Value : null;
 				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle ?? userUoW.ActionTitle?.CallerMemberName, user, dbLogin);
 				changeset.AddChange(changes.ToArray());
 				uow.Save(changeset);
