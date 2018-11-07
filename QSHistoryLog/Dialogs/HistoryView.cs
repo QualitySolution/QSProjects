@@ -9,14 +9,14 @@ using QS.Utilities;
 using QSHistoryLog;
 using QSOrmProject;
 using QSProjectsLib;
-using QSTDI;
 using QSWidgetLib;
+using QS.Dialog.Gtk;
 
 namespace QS.HistoryLog.Dialogs
 {
 	[System.ComponentModel.DisplayName("Просмотр журнала изменений")]
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-	public partial class HistoryView : TdiTabBase
+	public partial class HistoryView : QS.Dialog.Gtk.TdiTabBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		IList<ChangedEntity> changedEntities;

@@ -5,10 +5,12 @@ using Gtk;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Tdi;
+using QS.Utilities.Gtk;
+using QS.Utilities.Text;
 
 namespace QS.Dialog.Gtk
 {
-	public abstract class EntityDialogBase<TEntity> : Bin, ITdiDialog, IEntityDialog
+	public abstract class QS.Dialog.Gtk.EntityDialogBase<TEntity> : Bin, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {
@@ -42,7 +44,7 @@ namespace QS.Dialog.Gtk
 
 		public static string GenerateHashName (int id)
 		{
-			return OrmMain.GenerateDialogHashName (typeof (TEntity), id);
+			return DialogHelper.GenerateDialogHashName (typeof (TEntity), id);
 		}
 
 		private bool manualChange = false;
@@ -67,20 +69,20 @@ namespace QS.Dialog.Gtk
 				if (!String.IsNullOrWhiteSpace (tabName))
 					return tabName;
 				if (UoW != null && UoW.RootObject != null) {
-					var att = typeof (TEntity).GetCustomAttributes (typeof (OrmSubjectAttribute), true);
-					OrmSubjectAttribute subAtt = (att.FirstOrDefault () as OrmSubjectAttribute);
+					var att = typeof (TEntity).GetCustomAttributes (typeof (AppellativeAttribute), true);
+					AppellativeAttribute subAtt = (att.FirstOrDefault () as AppellativeAttribute);
 
 					if (UoW.IsNew) {
-						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.ObjectName)) {
-							switch (subAtt.AllNames.Gender) {
+						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.Nominative)) {
+							switch (subAtt.Gender) {
 							case GrammaticalGender.Masculine:
-								return "Новый " + subAtt.ObjectName;
+								return "Новый " + subAtt.Nominative;
 							case GrammaticalGender.Feminine:
-								return "Новая " + subAtt.ObjectName;
+								return "Новая " + subAtt.Nominative;
 							case GrammaticalGender.Neuter:
-								return "Новое " + subAtt.ObjectName;
+								return "Новое " + subAtt.Nominative;
 							default:
-								return "Новый(ая) " + subAtt.ObjectName;
+								return "Новый(ая) " + subAtt.Nominative;
 							}
 						}
 					} else {
@@ -104,8 +106,8 @@ namespace QS.Dialog.Gtk
 							return prop.GetValue (UoW.RootObject, null).ToString ();
 						}
 
-						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.ObjectName))
-							return StringWorks.StringToTitleCase (subAtt.ObjectName);
+						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.Nominative))
+							return subAtt.Nominative.StringToTitleCase();
 					}
 					return UoW.RootObject.ToString ();
 				}

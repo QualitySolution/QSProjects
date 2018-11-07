@@ -6,7 +6,7 @@ using QSOrmProject.DomainMapping;
 
 namespace QSBusinessCommon.Domain
 {
-	[OrmSubject (Gender = GrammaticalGender.Feminine,
+	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",
 		Nominative = "единица измерения")]
 	public class MeasurementUnits : PropertyChangedBase, IDomainObject

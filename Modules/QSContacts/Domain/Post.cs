@@ -5,7 +5,7 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject (Gender = GrammaticalGender.Feminine,
+	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "должности",
 		Nominative = "должность")]
 	public class Post : PropertyChangedBase, IDomainObject

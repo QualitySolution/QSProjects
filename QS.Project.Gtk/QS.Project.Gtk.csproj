@@ -74,11 +74,14 @@
     <Compile Include="Tdi.Gtk\TDIMain.cs" />
     <Compile Include="Dialog.Gtk\TdiTabBase.cs" />
     <Compile Include="Dialog.Gtk\WidgetOnTdiTabBase.cs" />
+    <Compile Include="Utilities.Gtk\GtkHelper.cs" />
+    <Compile Include="Dialog.Gtk\WidgetOnDialogBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />
     <Folder Include="Dialog.Gtk\" />
     <Folder Include="Tdi.Gtk\" />
+    <Folder Include="Utilities.Gtk\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
@@ -88,6 +91,10 @@
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

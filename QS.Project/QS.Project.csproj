@@ -96,6 +96,8 @@
     <Compile Include="Tdi\ITdiJournal.cs" />
     <Compile Include="Tdi\ITdiTabAddedNotifier.cs" />
     <Compile Include="Tdi\ITDICloseControlTab.cs" />
+    <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
+    <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -109,6 +111,7 @@
     <Folder Include="Print\" />
     <Folder Include="Dialog\" />
     <Folder Include="Tdi\" />
+    <Folder Include="Project.Dialogs\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

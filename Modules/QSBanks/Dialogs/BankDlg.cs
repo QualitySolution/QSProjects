@@ -1,11 +1,11 @@
 ﻿using System;
+using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
-using QSOrmProject;
 using QSValidation;
 
 namespace QSBanks
 {
-	public partial class BankDlg : EntityDialogBase<Bank>
+	public partial class BankDlg : QS.Dialog.Gtk.EntityDialogBase<Bank>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 

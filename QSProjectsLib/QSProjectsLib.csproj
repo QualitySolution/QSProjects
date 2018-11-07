@@ -110,7 +110,6 @@
     <Compile Include="Helpers\BooleanWorks.cs" />
     <Compile Include="ClipboardWorkaround.cs" />
     <Compile Include="Helpers\PerformanceHelper.cs" />
-    <Compile Include="Helpers\GtkHelper.cs" />
     <Compile Include="WindowStartupFix.cs" />
     <Compile Include="Permissions\IPermissionsView.cs" />
   </ItemGroup>

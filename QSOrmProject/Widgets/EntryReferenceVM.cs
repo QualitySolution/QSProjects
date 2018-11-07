@@ -9,12 +9,13 @@ using QS.Dialog;
 using QS.Dialog.Gtk;
 using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
-using QSTDI;
+using QS.Tdi;
+using QS.Project.Dialogs;
 
 namespace QSOrmProject
 {
 	[ToolboxItem (true)]
-	public partial class EntryReferenceVM : WidgetOnDialogBase
+	public partial class EntryReferenceVM : QS.Dialog.Gtk.WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
@@ -221,7 +222,7 @@ namespace QSOrmProject
 				return;
 			}
 
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
+			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null) {
 				logger.Warn ("Родительская вкладка не найдена.");
 				return;

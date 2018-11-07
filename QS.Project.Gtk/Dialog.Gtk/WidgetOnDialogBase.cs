@@ -1,9 +1,8 @@
 ﻿using System;
-using QS.Dialog;
-using QS.Dialog.Gtk;
-using QSTDI;
+using Gtk;
+using QS.Tdi;
 
-namespace QSOrmProject
+namespace QS.Dialog.Gtk
 {
 	/// <summary>
 	/// Используется для удобного доступа к родительскому диалогу и вкладке.
@@ -45,7 +44,7 @@ namespace QSOrmProject
 			}
 		}
 
-		protected override void OnParentSet (Gtk.Widget previous_parent)
+		protected override void OnParentSet (Widget previous_parent)
 		{
 			myOrmDialog = null;
 			base.OnParentSet (previous_parent);

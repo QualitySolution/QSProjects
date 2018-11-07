@@ -2,11 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
-using QSOrmProject;
+using QS.Project.Dialogs;
 
 namespace QSBanks
 {
-	[OrmSubject (JournalName = "Банки", DefaultJournalMode = ReferenceButtonMode.CanEdit | ReferenceButtonMode.TreatEditAsOpen)]
+	[Appellative (NominativePlural = "банки")]
+	[DefaultReferenceButtonMode(ReferenceButtonMode.CanEdit | ReferenceButtonMode.TreatEditAsOpen)]
 	public class Bank: PropertyChangedBase, IValidatableObject, IDomainObject
 	{
 		#region Свойства

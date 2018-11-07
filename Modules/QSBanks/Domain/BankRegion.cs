@@ -1,9 +1,8 @@
 ﻿using QS.DomainModel.Entity;
-using QSOrmProject;
 
 namespace QSBanks
 {
-	[OrmSubject ("Регионы банков")]
+	[Appellative (NominativePlural = "регионы банков")]
 	public class BankRegion: PropertyChangedBase, IDomainObject
 	{
 		public virtual int Id { get; set; }

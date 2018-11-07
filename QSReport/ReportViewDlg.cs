@@ -4,7 +4,7 @@ using QS.Report;
 
 namespace QSReport
 {
-	public partial class ReportViewDlg : QSTDI.TdiTabBase
+	public partial class ReportViewDlg : QS.Dialog.Gtk.TdiTabBase
 	{
 		protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 

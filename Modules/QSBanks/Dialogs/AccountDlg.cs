@@ -4,12 +4,13 @@ using Gamma.Utilities;
 using Gtk;
 using NHibernate.Criterion;
 using NLog;
+using QS.Dialog.Gtk;
 using QSOrmProject;
 using QSValidation;
 
 namespace QSBanks
 {
-	public partial class AccountDlg : EntityDialogBase<Account>
+	public partial class AccountDlg : QS.Dialog.Gtk.EntityDialogBase<Account>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 

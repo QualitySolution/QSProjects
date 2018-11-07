@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Gtk;
-using QSTDI;
+using QS.Tdi;
 
 namespace QSOrmProject
 {

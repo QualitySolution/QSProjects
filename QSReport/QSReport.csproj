@@ -101,6 +101,10 @@
       <Project>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</Project>
       <Name>QS.Report</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
+      <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

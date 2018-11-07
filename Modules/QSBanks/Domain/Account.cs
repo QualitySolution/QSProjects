@@ -6,7 +6,7 @@ using QSOrmProject;
 
 namespace QSBanks
 {
-	[OrmSubject (Gender = GrammaticalGender.Masculine,
+	[Appellative (Gender = GrammaticalGender.Masculine,
 		Nominative = "расчётный счет",
 		NominativePlural = "расчётные счета"
 	)]

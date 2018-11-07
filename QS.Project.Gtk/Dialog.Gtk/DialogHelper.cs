@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.DomainModel.Entity;
 using QS.Tdi;
 
 namespace QS.Dialog.Gtk
@@ -38,6 +39,19 @@ namespace QS.Dialog.Gtk
 				return null;
 			else
 				return FindParentTab(child.Parent);
+		}
+
+		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject
+		{
+			return GenerateDialogHashName(typeof(TEntity), id);
+		}
+
+		public static string GenerateDialogHashName(Type clazz, int id)
+		{
+			if(!typeof(IDomainObject).IsAssignableFrom(clazz))
+				throw new ArgumentException("Тип должен реализовывать интерфейс IDomainObject", "clazz");
+
+			return String.Format("{0}_{1}", clazz.Name, id);
 		}
 	}
 }

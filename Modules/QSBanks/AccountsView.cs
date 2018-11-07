@@ -2,7 +2,8 @@
 using Gtk;
 using QS.DomainModel.UoW;
 using QSOrmProject;
-using QSTDI;
+using QS.Tdi;
+using QS.Dialog.Gtk;
 
 namespace QSBanks
 {
@@ -60,7 +61,7 @@ namespace QSBanks
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
+			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
 				
@@ -70,7 +71,7 @@ namespace QSBanks
 
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
+			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
 
@@ -85,7 +86,7 @@ namespace QSBanks
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
 		{
-			ITdiTab mytab = TdiHelper.FindMyTab (this);
+			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
 			

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Dialog;
-using QSProjectsLib;
-using QSTDI;
+using QS.Tdi;
+using QS.Utilities.Text;
 
 namespace QSOrmProject
 {
@@ -63,22 +63,22 @@ namespace QSOrmProject
 					return TabName;
 				if (UoW != null && UoW.RootObject != null)
 				{
-					var att = typeof(TEntity).GetCustomAttributes (typeof(OrmSubjectAttribute), true);
-					OrmSubjectAttribute subAtt = (att.FirstOrDefault () as OrmSubjectAttribute);
+					var att = typeof(TEntity).GetCustomAttributes (typeof(AppellativeAttribute), true);
+					AppellativeAttribute subAtt = (att.FirstOrDefault () as AppellativeAttribute);
 
 					if(UoW.IsNew)
 					{
-						if (subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
+						if (subAtt != null && !String.IsNullOrWhiteSpace(subAtt.Nominative))
 						{
-							switch(subAtt.AllNames.Gender){
+							switch(subAtt.Gender){
 							case GrammaticalGender.Masculine: 
-								return "Новый " + subAtt.ObjectName;
+								return "Новый " + subAtt.Nominative;
 							case GrammaticalGender.Feminine :
-								return "Новая " + subAtt.ObjectName;
+								return "Новая " + subAtt.Nominative;
 							case GrammaticalGender.Neuter :
-								return "Новое " + subAtt.ObjectName;
+								return "Новое " + subAtt.Nominative;
 							default:
-								return "Новый(ая) " + subAtt.ObjectName;
+								return "Новый(ая) " + subAtt.Nominative;
 							}
 						}
 					}
@@ -105,8 +105,8 @@ namespace QSOrmProject
 							return prop.GetValue (UoW.RootObject, null).ToString();
 						}
 
-						if(subAtt != null && !String.IsNullOrWhiteSpace(subAtt.ObjectName))
-							return StringWorks.StringToTitleCase (subAtt.ObjectName);
+						if(subAtt != null && !String.IsNullOrWhiteSpace(subAtt.Nominative))
+							return subAtt.Nominative.StringToTitleCase();
 					}
 					return UoW.RootObject.ToString ();
 				}

@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.DomainModel.Entity;
 using QSProjectsLib;
 
 namespace QSOrmProject
@@ -9,27 +10,27 @@ namespace QSOrmProject
 		public static bool SaveBeforeCreateSlaveEntity(Type savingEntity, Type creatingEntity)
 		{
 			string  savingName = "НЕ УКАЗАНО", creatingName = "НЕ УКАЗАНО";
-			object[] att = creatingEntity.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			object[] att = creatingEntity.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				if(!String.IsNullOrWhiteSpace ((att [0] as OrmSubjectAttribute).AllNames.Genitive))
+				if(!String.IsNullOrWhiteSpace ((att [0] as AppellativeAttribute).Genitive))
 				{
-					creatingName = (att [0] as OrmSubjectAttribute).AllNames.Genitive;
+					creatingName = (att [0] as AppellativeAttribute).Genitive;
 				}
 				else
 				{
-					creatingName = (att [0] as OrmSubjectAttribute).ObjectName;
+					creatingName = (att [0] as AppellativeAttribute).Nominative;
 				}
 			}
 
-			att = savingEntity.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			att = savingEntity.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				if(!String.IsNullOrWhiteSpace ((att [0] as OrmSubjectAttribute).AllNames.Accusative))
+				if(!String.IsNullOrWhiteSpace ((att [0] as AppellativeAttribute).Accusative))
 				{
-					savingName = (att [0] as OrmSubjectAttribute).AllNames.Accusative;
+					savingName = (att [0] as AppellativeAttribute).Accusative;
 				}
 				else
 				{
-					savingName = (att [0] as OrmSubjectAttribute).ObjectName;
+					savingName = (att [0] as AppellativeAttribute).Nominative;
 				}
 			}
 
@@ -69,15 +70,15 @@ namespace QSOrmProject
 		{
 			string  savingName = "НЕ УКАЗАНО";
 
-			var att = savingEntity.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			var att = savingEntity.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				if(!String.IsNullOrWhiteSpace ((att [0] as OrmSubjectAttribute).AllNames.Prepositional))
+				if(!String.IsNullOrWhiteSpace ((att [0] as AppellativeAttribute).Prepositional))
 				{
-					savingName = (att [0] as OrmSubjectAttribute).AllNames.Prepositional;
+					savingName = (att [0] as AppellativeAttribute).Prepositional;
 				}
 				else
 				{
-					savingName = (att [0] as OrmSubjectAttribute).ObjectName;
+					savingName = (att [0] as AppellativeAttribute).Nominative;
 				}
 			}
 

@@ -2,16 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.Utilities;
 using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Dialogs;
+using QS.Tdi;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
-using QSTDI;
 
 namespace QSOrmProject
 {
@@ -219,11 +221,14 @@ namespace QSOrmProject
 					FilterClass = map.RefFilterClass;
 			} else
 				throw new InvalidOperationException (String.Format ("Для использования диалога, класс {0} должен быть добавлен в мапинг OrmMain.ClassMappingList.", objectType));
-			object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
-				ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+				this.TabName = (att [0] as AppellativeAttribute).NominativePlural;
 			}
+			var defaultMode = objectType.GetAttribute<DefaultReferenceButtonModeAttribute>(true);
+			if(defaultMode != null)
+				ButtonMode = defaultMode.ReferenceButtonMode;
+
 			if (!String.IsNullOrWhiteSpace (map.EditPermisionName)) {
 				if (!QSMain.User.Permissions [map.EditPermisionName]) {
 					ButtonMode &= ~ReferenceButtonMode.CanAll;
@@ -501,18 +506,6 @@ namespace QSOrmProject
 		Select,
 		MultiSelect
 	}
-
-	[Flags]
-	public enum ReferenceButtonMode
-	{
-		None = 0,
-		CanAdd = 1,
-		CanEdit = 2,
-		CanDelete = 4,
-		CanAll = 7,
-		TreatEditAsOpen = 8
-	}
-
 
 	public class OrmReferenceObjectSectedEventArgs : EventArgs
 	{

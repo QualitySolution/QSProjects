@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using QS.DomainModel.Entity;
 using QSProjectsLib;
 
 namespace QSOrmProject.Deletion
@@ -48,7 +49,7 @@ namespace QSOrmProject.Deletion
 		}
 
 		/// <summary>
-		/// Метод автоматически заполняет поля ObjectsName и ObjectName из атрибута OrmSubjectAttribute
+		/// Метод автоматически заполняет поля ObjectsName и ObjectName из атрибута AppellativeAttribute
 		/// в классе. И заполняет TableName из настроек NhiberNate.
 		/// </summary>
 		/// <returns>The from meta info.</returns>
@@ -56,11 +57,11 @@ namespace QSOrmProject.Deletion
 		{
 			if (ObjectClass == null)
 				throw new NullReferenceException ("ObjectClass должен быть заполнен.");
-			var attArray = ObjectClass.GetCustomAttributes (typeof(OrmSubjectAttribute), false);
+			var attArray = ObjectClass.GetCustomAttributes (typeof(AppellativeAttribute), false);
 			if(attArray.Length > 0)
 			{
 				if (String.IsNullOrEmpty (ObjectsName))
-					ObjectsName = (attArray [0] as OrmSubjectAttribute).JournalName;
+					ObjectsName = (attArray [0] as AppellativeAttribute).NominativePlural;
 			}
 
 			if (String.IsNullOrEmpty (TableName) && OrmMain.OrmConfig != null) {

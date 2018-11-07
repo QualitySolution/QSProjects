@@ -4,7 +4,7 @@ using QSOrmProject;
 
 namespace QSContacts
 {
-	[OrmSubject (Gender = GrammaticalGender.Masculine,
+	[Appellative (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "типы телефонов",
 		Nominative = "тип телефона")]
 	public class PhoneType : IDomainObject

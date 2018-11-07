@@ -1,5 +1,5 @@
 ﻿using System;
-using QSTDI;
+using QS.Tdi;
 
 namespace QSOrmProject
 {

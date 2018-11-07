@@ -6,7 +6,7 @@ using QS.DomainModel.Entity;
 
 namespace QSContacts
 {
-	[OrmSubject (Gender = GrammaticalGender.Masculine,
+	[Appellative (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "телефоны",
 		Nominative = "телефон")]
 	public class Phone : PropertyChangedBase, IDomainObject

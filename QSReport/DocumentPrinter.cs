@@ -151,7 +151,7 @@ namespace QSReport
 			return printOp.PrintSettings;
 		}
 
-		public static QSTDI.TdiTabBase GetPreviewTab(IPrintableRDLDocument document)
+		public static QS.Dialog.Gtk.TdiTabBase GetPreviewTab(IPrintableRDLDocument document)
 		{
 			return new QSReport.ReportViewDlg (document.GetReportInfo());				
 		}

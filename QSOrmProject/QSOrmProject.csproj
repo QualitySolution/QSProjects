@@ -101,7 +101,6 @@
     <Compile Include="DomainModel\DomainHelper.cs" />
     <Compile Include="CommonDialogs.cs" />
     <Compile Include="Properties\DialogWorksAttributes.cs" />
-    <Compile Include="Properties\OrmAttributes.cs" />
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
     <Compile Include="UpdateNotification\OrmObjectUpdatedGenericEventArgs.cs" />
     <Compile Include="gtk-gui\QSOrmProject.ReferenceRepresentation.cs" />
@@ -112,7 +111,6 @@
     <Compile Include="DomainModel\ChildUnitOfWork.cs" />
     <Compile Include="ParentReference\ParentReferenceConfig.cs" />
     <Compile Include="ParentReference\ParentReferenceGeneric.cs" />
-    <Compile Include="OrmDialog\WidgetOnDialogBase.cs" />
     <Compile Include="Widgets\EnumListComboBox.cs" />
     <Compile Include="yWidgets\ySpecComboBox.cs" />
     <Compile Include="Widgets\RepresentationTreeView.cs" />
@@ -169,6 +167,7 @@
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\ListRefreshHelper.cs" />
     <Compile Include="Helpers\NHibernateHelper.cs" />
+    <Compile Include="Properties\OrmAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -202,6 +201,10 @@
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -54,7 +54,7 @@ namespace QS.Dialog.Gtk
 			return GenerateHashName(this.GetType()) == hashName;
 		}
 
-		public static string GenerateHashName<TTab>() where TTab : TdiTabBase
+		public static string GenerateHashName<TTab>() where TTab : QS.Dialog.Gtk.TdiTabBase
 		{
 			return GenerateHashName(typeof(TTab));
 		}

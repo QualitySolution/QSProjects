@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +25,9 @@ namespace QSOrmProject.Deletion
 			
 		public string ObjectsName {
 			get {
-				var att = ObjectClass.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+				var att = ObjectClass.GetCustomAttributes (typeof(AppellativeAttribute), true);
 				if (att.Length > 0)
-					return (att [0] as OrmSubjectAttribute).AllNames.NominativePlural;
+					return (att [0] as AppellativeAttribute).NominativePlural;
 				else
 					return null;
 			}

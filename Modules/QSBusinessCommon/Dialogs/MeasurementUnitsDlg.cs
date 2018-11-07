@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
 using QSBusinessCommon.Domain;
 using QSOrmProject;
@@ -6,7 +7,7 @@ using QSValidation;
 
 namespace QSBusinessCommon
 {
-	public partial class MeasurementUnitsDlg : EntityDialogBase<MeasurementUnits>
+	public partial class MeasurementUnitsDlg : QS.Dialog.Gtk.EntityDialogBase<MeasurementUnits>
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 

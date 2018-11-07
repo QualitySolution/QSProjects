@@ -8,18 +8,18 @@ using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
+using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
 using QS.Gtk.Widgets;
-using QS.Dialog;
-using QS.Dialog.Gtk;
+using QS.Project.Dialogs;
+using QS.Tdi;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
-using QSTDI;
 
 namespace QSOrmProject
 {
 	[System.ComponentModel.ToolboxItem (true)]
-	public partial class EntryReference : WidgetOnDialogBase
+	public partial class EntryReference : QS.Dialog.Gtk.WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 

@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using QS.DomainModel.Entity;
 using QS.HistoryLog;
 using QS.Utilities.Text;
 using QSOrmProject;
@@ -40,9 +41,9 @@ namespace QSHistoryLog
 			ObjectType = type;
 			ObjectName = type.Name;
 
-			var att = type.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
-			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as OrmSubjectAttribute).ObjectName))
-				DisplayName = (att[0] as OrmSubjectAttribute).ObjectName.StringToTitleCase();
+			var att = type.GetCustomAttributes (typeof(AppellativeAttribute), true);
+			if (att.Length > 0 && !String.IsNullOrWhiteSpace((att [0] as AppellativeAttribute).Nominative))
+				DisplayName = (att[0] as AppellativeAttribute).Nominative.StringToTitleCase();
 			else
 				DisplayName = ObjectName;
 		}

@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.Utilities;
 using Gtk;
 using NLog;
-using QS.DomainModel.UoW;
 using QS.Dialog;
+using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
+using QS.Project.Dialogs;
+using QS.Tdi;
+using QS.Tdi.Gtk;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
-using QSTDI;
 
 namespace QSOrmProject
 {
-    [WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
+	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
     public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, ISingleUoWDialog
 	{
         private static Logger logger = LogManager.GetCurrentClassLogger ();
@@ -192,12 +196,15 @@ namespace QSOrmProject
             buttonAdd.Visible = buttonEdit.Visible = buttonDelete.Visible = objectType != null;
             if(objectType != null)
             {
-                object[] att = objectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+                object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
                 if (att.Length > 0) {
-                    this.TabName = (att [0] as OrmSubjectAttribute).JournalName;
-                    ButtonMode = (att [0] as OrmSubjectAttribute).DefaultJournalMode;
+					this.TabName = (att[0] as AppellativeAttribute).NominativePlural;
                 }
-            }
+
+				var defaultMode = objectType.GetAttribute<DefaultReferenceButtonModeAttribute>(true);
+				if(defaultMode != null)
+					ButtonMode = defaultMode.ReferenceButtonMode;
+			}
             ormtableview.Selection.Changed += OnTreeviewSelectionChanged;
         }
 

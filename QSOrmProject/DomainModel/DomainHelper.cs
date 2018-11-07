@@ -58,16 +58,16 @@ namespace QSOrmProject
 			return obj1.Equals (obj2);
 		}
 
-		public static SubjectName GetSubjectNames(object subject)
+		public static AppellativeAttribute GetSubjectNames(object subject)
 		{
 			return GetSubjectNames (subject.GetType ());
 		}
 
-		public static SubjectName GetSubjectNames(Type subjectType)
+		public static AppellativeAttribute GetSubjectNames(Type subjectType)
 		{
-			object[] att = subjectType.GetCustomAttributes (typeof(OrmSubjectAttribute), true);
+			object[] att = subjectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {
-				return (att [0] as OrmSubjectAttribute).AllNames;
+				return (att [0] as AppellativeAttribute);
 			} else
 				return null;
 		}

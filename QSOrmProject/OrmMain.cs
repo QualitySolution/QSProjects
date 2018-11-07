@@ -11,9 +11,9 @@ using NLog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
+using QS.Tdi;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
-using QSTDI;
 
 namespace QSOrmProject
 {
@@ -229,11 +229,13 @@ namespace QSOrmProject
 			return ormConfig.GetClassMapping(objectClass).RootTable.Name;
 		}
 
+		[Obsolete("Используйте аналогичную функцию из DialogHelper. Из OrmMain этот функционал будет удален.")]
 		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject
 		{
 			return GenerateDialogHashName(typeof(TEntity), id);
 		}
 
+		[Obsolete("Используйте аналогичную функцию из DialogHelper. Из OrmMain этот функционал будет удален.")]
 		public static string GenerateDialogHashName(Type clazz, int id)
 		{
 			if (!typeof(IDomainObject).IsAssignableFrom(clazz))
