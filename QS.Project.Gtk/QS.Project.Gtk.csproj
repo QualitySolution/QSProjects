@@ -76,6 +76,8 @@
     <Compile Include="Dialog.Gtk\WidgetOnTdiTabBase.cs" />
     <Compile Include="Utilities.Gtk\GtkHelper.cs" />
     <Compile Include="Dialog.Gtk\WidgetOnDialogBase.cs" />
+    <Compile Include="Dialog.Gtk\SingleUowDialogBase.cs" />
+    <Compile Include="Dialog.Gtk\SingleUowTabBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />
