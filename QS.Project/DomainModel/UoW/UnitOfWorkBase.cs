@@ -42,6 +42,8 @@ namespace QS.DomainModel.UoW
 			get {
 				if(session == null) {
 					session = OpenSession(null);
+					if(transaction == null)
+						transaction = Session.BeginTransaction();
 					NhEventListener.RegisterUow(this);
 					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}
