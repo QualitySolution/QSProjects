@@ -206,6 +206,11 @@ namespace QS.HistoryLog.Dialogs
 			UoW.Dispose();
 			base.Destroy();
 		}
+
+		protected void OnEntrySearchEntityActivated(object sender, EventArgs e)
+		{
+			UpdateJournal();
+		}
 	}
 }
 

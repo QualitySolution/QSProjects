@@ -320,6 +320,7 @@ namespace QS.HistoryLog.Dialogs
 			this.Hide();
 			this.selectperiod.DatesChanged += new global::System.EventHandler(this.OnSelectperiodDatesChanged);
 			this.entrySearchValue.Activated += new global::System.EventHandler(this.OnEntrySearchActivated);
+			this.entrySearchEntity.Activated += new global::System.EventHandler(this.OnEntrySearchEntityActivated);
 			this.datacomboObject.ItemSelected += new global::System.EventHandler<Gamma.Widgets.ItemSelectedEventArgs>(this.OnDatacomboObjectItemSelected);
 			this.comboUsers.Changed += new global::System.EventHandler(this.OnComboUsersChanged);
 			this.comboProperty.ItemSelected += new global::System.EventHandler<Gamma.Widgets.ItemSelectedEventArgs>(this.OnComboPropertyItemSelected);
