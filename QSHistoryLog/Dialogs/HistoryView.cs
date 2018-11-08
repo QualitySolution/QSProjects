@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gamma.Widgets;
+using Gtk;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
@@ -18,8 +19,11 @@ namespace QS.HistoryLog.Dialogs
 	public partial class HistoryView : QS.Dialog.Gtk.TdiTabBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		IList<ChangedEntity> changedEntities;
+		List<ChangedEntity> changedEntities;
 		bool canUpdate = false;
+		private int pageSize = 250;
+		private int takenRows = 0;
+		private bool takenAll = false;
 
 		IUnitOfWork UoW;
 
@@ -45,6 +49,7 @@ namespace QS.HistoryLog.Dialogs
 				.AddColumn ("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
 				.Finish();
 			datatreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
+			GtkScrolledWindowChangesets.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
 			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange> ()
 				.AddColumn ("Поле").AddTextRenderer (x => x.FieldTitle)
@@ -57,20 +62,40 @@ namespace QS.HistoryLog.Dialogs
 			UpdateJournal ();
 		}
 
+		void Vadjustment_ValueChanged(object sender, EventArgs e)
+		{
+			if(takenAll || datatreeChangesets.Vadjustment.Value + datatreeChangesets.Vadjustment.PageSize < datatreeChangesets.Vadjustment.Upper)
+				return;
+
+			var lastPos = datatreeChangesets.Vadjustment.Value;
+			UpdateJournal(true);
+			datatreeChangesets.Vadjustment.Value = lastPos;
+		}
+
 		void OnChangeSetSelectionChanged (object sender, EventArgs e)
 		{
-
 			var selected = (ChangedEntity)datatreeChangesets.GetSelectedObject ();
 			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
 		}
 
-		void UpdateJournal()
+		void UpdateJournal(bool nextPage = false)
 		{
+			DateTime startTime = DateTime.Now;
+			if(!nextPage) {
+				takenRows = 0;
+				takenAll = false;
+			}
+
 			if (!canUpdate)
 				return;
 
-			logger.Info("Получаем журнал изменений...");
-			var query = UoW.Session.QueryOver<ChangedEntity>();
+			logger.Info("Получаем журнал изменений{0}...", takenRows > 0 ? $"({takenRows}+)" : "");
+			ChangeSet changeSetAlias = null;
+
+			var query = UoW.Session.QueryOver<ChangedEntity>()
+				.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
+				.Fetch(x => x.ChangeSet).Eager
+				.Fetch(x => x.ChangeSet.User).Eager;
 
 			if(!selectperiod.IsAllTime) 
 				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd.AddDays(1));
@@ -80,9 +105,7 @@ namespace QS.HistoryLog.Dialogs
 				query.Where(ce => ce.EntityClassName == selectedClassType.ObjectName);
 
 			if(ComboWorks.GetActiveId(comboUsers) > 0) {
-				ChangeSet changeSetAlias = null;
-				query.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
-				     .Where(() => changeSetAlias.User.Id == ComboWorks.GetActiveId(comboUsers));
+				query.Where(() => changeSetAlias.User.Id == ComboWorks.GetActiveId(comboUsers));
 			}
 
 			if(comboAction.SelectedItem is EntityChangeOperation) {
@@ -94,7 +117,7 @@ namespace QS.HistoryLog.Dialogs
 				query.Where(ce => ce.EntityTitle.IsLike(pattern));
 			}
 
-				if(!String.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc)
+			if(!String.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc)
 			{
 				FieldChange fieldChangeAlias = null;
 				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
@@ -111,9 +134,24 @@ namespace QS.HistoryLog.Dialogs
 				}
 			}
 
-			changedEntities = query.List();
-			datatreeChangesets.ItemsDataSource = changedEntities;
-			logger.Info(NumberToTextRus.FormatCase (changedEntities.Count, "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов.", "Загружено изменение {0} объектов."));
+			var taked = query.Skip(takenRows).Take(pageSize).List();
+
+			if(takenRows > 0) {
+				changedEntities.AddRange(taked);
+				datatreeChangesets.YTreeModel.EmitModelChanged();
+			}
+			else {
+				changedEntities = taked.ToList();
+				datatreeChangesets.ItemsDataSource = changedEntities;
+			}
+
+			if(taked.Count < pageSize)
+				takenAll = true;
+
+			takenRows = changedEntities.Count;
+
+			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
+			logger.Info(NumberToTextRus.FormatCase (changedEntities.Count, "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", "Загружено изменение {0}{1} объектов.", takenAll ? "" : "+"));
 		}
 
 		protected void OnComboUsersChanged (object sender, EventArgs e)

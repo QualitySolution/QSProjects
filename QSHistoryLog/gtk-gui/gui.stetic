@@ -387,7 +387,7 @@
             <property name="CanFocus">True</property>
             <property name="Position">203</property>
             <child>
-              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindowChangesets">
                 <property name="MemberName" />
                 <property name="ShadowType">In</property>
                 <child>

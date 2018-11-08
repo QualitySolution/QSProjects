@@ -38,7 +38,7 @@ namespace QS.HistoryLog.Dialogs
 
 		private global::Gtk.VPaned vpaned1;
 
-		private global::Gtk.ScrolledWindow GtkScrolledWindow;
+		private global::Gtk.ScrolledWindow GtkScrolledWindowChangesets;
 
 		private global::Gamma.GtkWidgets.yTreeView datatreeChangesets;
 
@@ -267,16 +267,16 @@ namespace QS.HistoryLog.Dialogs
 			this.vpaned1.Name = "vpaned1";
 			this.vpaned1.Position = 203;
 			// Container child vpaned1.Gtk.Paned+PanedChild
-			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
-			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
-			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
-			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
+			this.GtkScrolledWindowChangesets = new global::Gtk.ScrolledWindow();
+			this.GtkScrolledWindowChangesets.Name = "GtkScrolledWindowChangesets";
+			this.GtkScrolledWindowChangesets.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child GtkScrolledWindowChangesets.Gtk.Container+ContainerChild
 			this.datatreeChangesets = new global::Gamma.GtkWidgets.yTreeView();
 			this.datatreeChangesets.CanFocus = true;
 			this.datatreeChangesets.Name = "datatreeChangesets";
-			this.GtkScrolledWindow.Add(this.datatreeChangesets);
-			this.vpaned1.Add(this.GtkScrolledWindow);
-			global::Gtk.Paned.PanedChild w18 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.GtkScrolledWindow]));
+			this.GtkScrolledWindowChangesets.Add(this.datatreeChangesets);
+			this.vpaned1.Add(this.GtkScrolledWindowChangesets);
+			global::Gtk.Paned.PanedChild w18 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.GtkScrolledWindowChangesets]));
 			w18.Resize = false;
 			w18.Shrink = false;
 			// Container child vpaned1.Gtk.Paned+PanedChild
