@@ -2,6 +2,7 @@
 // Copyright (c) 2002 RSDN Group
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace QS.Utilities
@@ -69,9 +70,11 @@ namespace QS.Utilities
             }
         }
 
-		public static string FormatCase(int val, string one, string two, string five)
+		public static string FormatCase(int val, string one, string two, string five, params object[] addFormatValues)
 		{
-			return String.Format (Case (val, one, two, five), val);
+			var list = new List<object> {val};
+			list.AddRange(addFormatValues);
+			return String.Format (Case (val, one, two, five), list.ToArray());
 		}
     }
 }
