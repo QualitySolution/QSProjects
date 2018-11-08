@@ -10,7 +10,6 @@ using QSHistoryLog;
 using QSOrmProject;
 using QSProjectsLib;
 using QSWidgetLib;
-using QS.Dialog.Gtk;
 
 namespace QS.HistoryLog.Dialogs
 {

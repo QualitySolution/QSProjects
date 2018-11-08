@@ -75,7 +75,7 @@ namespace QS.HistoryLog.Dialogs
 			this.buttonSearch.Image = w1;
 			this.table1.Add(this.buttonSearch);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.buttonSearch]));
-			w2.TopAttach = ((uint)(4));
+			w2.TopAttach = ((uint)(3));
 			w2.BottomAttach = ((uint)(5));
 			w2.LeftAttach = ((uint)(4));
 			w2.RightAttach = ((uint)(5));
