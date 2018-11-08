@@ -53,20 +53,22 @@ namespace QSOrmProject.DomainModel
 			}
 		}
 
-		public UnitOfWorkTitle ActionTitle => throw new NotImplementedException();
+		public UnitOfWorkTitle ActionTitle { get; protected set; }
 
 		public bool CanCheckIfDirty { get; set; }
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference)
+		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, UnitOfWorkTitle title)
 		{
 			IsNew = true;
+			ActionTitle = title;
 			ParentReference = parentReference;
 			Root = new TChildEntity ();
 		}
 
-		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root)
+		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root, UnitOfWorkTitle title)
 		{
 			IsNew = false;
+			ActionTitle = title;
 			ParentReference = parentReference;
 			externalRootVersion = root;
 			Root = ObjectCloner.Clone (externalRootVersion);

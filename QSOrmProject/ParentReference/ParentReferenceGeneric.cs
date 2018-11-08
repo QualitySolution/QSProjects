@@ -5,6 +5,7 @@ using System.Data.Bindings.Collections.Generic;
 using QSOrmProject.DomainModel;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using System.Runtime.CompilerServices;
 
 namespace QSOrmProject
 {
@@ -52,24 +53,26 @@ namespace QSOrmProject
 			ListPropertyExpr = propertyRefExpr;
 		}
 
-		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem ()
+		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem (string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return CreateChildUoWForNewItem ();
+			return CreateChildUoWForNewItem (userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
 
-		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForNewItem()
+		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForNewItem(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this);
+			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this, title);
 		}
 
-		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity)
+		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return CreateChildUoWForItem (childEntity);
+			return CreateChildUoWForItem (childEntity, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
 
-		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForItem(TChildEntity childEntity)
+		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForItem(TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this, childEntity);
+			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this, childEntity, title);
 		}
 
 		public GenericObservableList<TChildEntity> GetObservableList ()
@@ -82,8 +85,8 @@ namespace QSOrmProject
 	public interface IParentReference<TChildEntity> : IParentReferenceCommon 
 		where TChildEntity : IDomainObject, new()
 	{
-		IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem ();
-		IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity);
+		IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem (string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
+		IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
 		GenericObservableList<TChildEntity> GetObservableList ();
 	}
 
