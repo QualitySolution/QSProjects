@@ -214,6 +214,7 @@ namespace QSOrmProject
 			number = OrmMain.Count;
 			logger.Debug ("Открытие {0}", number);
 			Mode = OrmReferenceMode.Normal;
+			ButtonMode = ReferenceButtonMode.CanAll;
 			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
 			if (map != null) {
 				map.ObjectUpdated += OnRefObjectUpdated;

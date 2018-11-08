@@ -194,7 +194,8 @@ namespace QSOrmProject
         void ConfigureDlg ()
         {
             Mode = OrmReferenceMode.Normal;
-            buttonAdd.Visible = buttonEdit.Visible = buttonDelete.Visible = objectType != null;
+			ButtonMode = ReferenceButtonMode.CanAll;
+			buttonAdd.Visible = buttonEdit.Visible = buttonDelete.Visible = objectType != null;
             if(objectType != null)
             {
                 object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
