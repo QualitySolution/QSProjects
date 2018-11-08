@@ -186,9 +186,8 @@ namespace QSOrmProject
 		public void OpenSelectDialog(string newTabTitle = null)
 		{ 
 			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
-			if(modelWithParent != null) {
-				if(MyEntityDialog != null && MyEntityDialog.UoW.IsNew
-					&& MyEntityDialog.EntityObject == modelWithParent.GetParent) {
+			if(modelWithParent != null && MyEntityDialogExist) {
+				if(MyEntityDialog.UoW.IsNew && MyEntityDialog.EntityObject == modelWithParent.GetParent) {
 					if(CommonDialogs.SaveBeforeSelectFromChildReference(modelWithParent.GetParent.GetType(), SubjectType)) {
 						if(!MyTdiDialog.Save())
 							return;

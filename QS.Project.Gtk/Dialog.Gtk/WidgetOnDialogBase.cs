@@ -35,6 +35,14 @@ namespace QS.Dialog.Gtk
 			}
 		}
 
+		protected bool MyEntityDialogExist {
+			get {
+				if(myEntityDialog == null)
+					myEntityDialog = DialogHelper.FindParentEntityDialog(this);
+				return myEntityDialog != null;
+			}
+		}
+
 		public ITdiDialog MyTdiDialog{
 			get {
 				var dlg = MyTab as ITdiDialog;
