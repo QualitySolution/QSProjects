@@ -68,7 +68,7 @@ namespace QSReport
 				source = reportInfo.Source;
 
 			rdlp = new RDLParser(source) {
-				//Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath());
+				Folder = System.IO.Path.GetDirectoryName (reportInfo.GetPath()),
 				OverwriteConnectionString = reportInfo.ConnectionString,
 				OverwriteInSubreport = true
 			};
