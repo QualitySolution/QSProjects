@@ -7,27 +7,12 @@ namespace QS.DomainModel.UoW
 	public class UnitOfWork<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity> 
 		where TRootEntity : class, IDomainObject, new()
 	{
-		public object RootObject {
-			get { return Root;}
-		}
+		public object RootObject => Root;
+		public TRootEntity Root { get; private set; }
 
-		TRootEntity root;
-		public TRootEntity Root {
-			get {
-				return root;
-			}
-			private set {
-				root = value;
-			}
-		}
+		public bool CanCheckIfDirty { get; set; } = true;
 
-		public bool HasChanges
-		{
-			get
-			{
-				return IsNew || Session.IsDirty();
-			}
-		}
+		public bool HasChanges => IsNew || CanCheckIfDirty && Session.IsDirty();
 
 		internal UnitOfWork(UnitOfWorkTitle title)
 		{
