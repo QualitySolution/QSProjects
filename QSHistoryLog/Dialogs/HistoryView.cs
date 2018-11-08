@@ -134,7 +134,10 @@ namespace QS.HistoryLog.Dialogs
 				}
 			}
 
-			var taked = query.Skip(takenRows).Take(pageSize).List();
+			var taked = query.OrderBy(x => x.ChangeTime).Desc
+							 .Skip(takenRows)
+							 .Take(pageSize)
+							 .List();
 
 			if(takenRows > 0) {
 				changedEntities.AddRange(taked);
