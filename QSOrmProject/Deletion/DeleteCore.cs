@@ -25,7 +25,7 @@ namespace QSOrmProject.Deletion
 		internal IUnitOfWork UoW{
 			get {
 				if (uow == null)
-					uow = UnitOfWorkFactory.CreateWithoutRoot ();
+					uow = UnitOfWorkFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
 				return uow;
 			}
 		}
