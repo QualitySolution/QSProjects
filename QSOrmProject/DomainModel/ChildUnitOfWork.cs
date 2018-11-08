@@ -55,6 +55,8 @@ namespace QSOrmProject.DomainModel
 
 		public UnitOfWorkTitle ActionTitle => throw new NotImplementedException();
 
+		public bool CanCheckIfDirty { get; set; }
+
 		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference)
 		{
 			IsNew = true;

@@ -16,6 +16,8 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
+		public bool CanCheckIfDirty { get; set; }
+
 		internal UnitOfWorkWithoutRoot(UnitOfWorkTitle title)
 		{
 			IsNew = false;
