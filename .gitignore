@@ -6,6 +6,8 @@
 #Mono Project Files
 bin/
 obj/
+.vs/
+*.csproj.user
 
 packages/*
 
