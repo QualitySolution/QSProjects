@@ -12,5 +12,11 @@ namespace Gamma.Utilities
 				throw new InvalidOperationException(String.Format("Can't parse color value \"{0}\".", text));
 			return color;
 		}
+
+		public static string GetEnumColor(this Enum aEnum)
+		{
+			var att = aEnum.GetAttribute<GtkColorAttribute>();
+			return att != null ? att.ColorString : null;
+		}
 	}
 }
