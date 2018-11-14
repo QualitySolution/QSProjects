@@ -15,7 +15,7 @@ namespace QS.Project.DB
 
 		public static ISession OpenSession(IInterceptor interceptor = null)
 		{
-			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.OpenSession(interceptor);
+			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.WithOptions().Interceptor(interceptor).OpenSession();
 			session.FlushMode = FlushMode.Commit;
 			return session;
 		}
