@@ -2,8 +2,9 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Utilities;
+using QS.Project.DB;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 
 	public class ClearDependenceInfo
@@ -36,7 +37,7 @@ namespace QSOrmProject.Deletion
 			ClearField = clearField;
 		}
 
-		public IDeleteInfo GetClassInfo()
+		internal IDeleteInfo GetClassInfo()
 		{
 			if(ObjectClass != null)
 				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
@@ -57,7 +58,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetName (propertyRefExpr);
-			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			string fieldName = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				fieldName

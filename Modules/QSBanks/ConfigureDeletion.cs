@@ -1,5 +1,4 @@
-﻿using System;
-using QSOrmProject.Deletion;
+﻿using QS.Deletion;
 
 namespace QSBanks
 {

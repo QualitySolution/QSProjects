@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 
-	public interface IDeleteInfoHibernate : IDeleteInfo
+	internal interface IDeleteInfoHibernate : IDeleteInfo
 	{
 		bool IsRootForSubclasses { get; }
 		bool IsRequiredCascadeDeletion { get; }

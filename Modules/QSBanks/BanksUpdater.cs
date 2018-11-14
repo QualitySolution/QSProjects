@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
+using QS.Project.DB;
 using QSOrmProject;
 using QSProjectsLib;
 using QSSupportLib;
@@ -83,7 +84,7 @@ namespace QSBanks
 				return;
 			}
 			//Получаем имеющиеся банки.
-			ISession session = OrmMain.OpenSession ();
+			ISession session = OrmConfig.OpenSession ();
 			List<Bank> oldBanksList = (List<Bank>)session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false)).List<Bank> ();
 			List<Account> accountsList = (List<Account>)session.CreateCriteria<Account> ()
@@ -226,7 +227,7 @@ namespace QSBanks
 
 		static List<BankRegion> fillRegions (List<BankRegion> newRegions)
 		{
-			ISession session = OrmMain.OpenSession ();
+			ISession session = OrmConfig.OpenSession ();
 			List<BankRegion> oldRegionsList = (List<BankRegion>)session.CreateCriteria<BankRegion> ().List<BankRegion> ();
 			List<Bank> banksList = (List<Bank>)session.CreateCriteria<Bank> ().List<Bank> ();
 

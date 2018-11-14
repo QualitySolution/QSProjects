@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public static partial class DeleteConfig
 	{
@@ -13,21 +13,16 @@ namespace QSOrmProject.Deletion
 			get {
 				if (classInfos == null) {
 					classInfos = new List<IDeleteInfo> ();
-					QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
 				}
 				return classInfos;
 			}
 		}
 
+		public static IEnumerable<IDeleteRule> ClassDeleteRules => ClassInfos;
+
 		public static event EventHandler<AfterDeletionEventArgs> AfterDeletion;
 
-		/// <summary>
-		/// Необходимо для интеграции с библиотекой QSProjectsLib
-		/// </summary>
-		static void RunDeletionFromProjectLib (object sender, QSProjectsLib.QSMain.RunOrmDeletionEventArgs e)
-		{
-			e.Result = OrmMain.DeleteObject (e.TableName, e.ObjectId);
-		}
+
 
 		public static void AddDeleteInfo (DeleteInfo info)
 		{
@@ -40,17 +35,17 @@ namespace QSOrmProject.Deletion
 			ClassInfos.Add (info);
 		}
 
-		public static IDeleteInfo ExistingConfig<T> ()
+		public static DeleteInfoHibernate<TEntity> ExistingDeleteRule<TEntity> () where TEntity : IDomainObject
 		{
-			return ClassInfos.Find (i => i.ObjectClass == typeof(T));
+			return ClassInfos.OfType<DeleteInfoHibernate<TEntity>>().First();
 		}
 
-		public static IDeleteInfo GetDeleteInfo (Type clazz)
+		internal static IDeleteInfo GetDeleteInfo (Type clazz)
 		{
 			return ClassInfos.FirstOrDefault (i => i.ObjectClass == clazz);
 		}
 
-		public static IDeleteInfo GetDeleteInfo<T>()
+		internal static IDeleteInfo GetDeleteInfo<T>()
 		{
 			return ClassInfos.FirstOrDefault(i => i.ObjectClass == typeof(T));
 		}

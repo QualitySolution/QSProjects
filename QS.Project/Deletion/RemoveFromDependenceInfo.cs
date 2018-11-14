@@ -1,9 +1,9 @@
 using System;
 using System.Linq.Expressions;
-using Gamma.Utilities;
 using System.Reflection;
+using Gamma.Utilities;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 
 	public class RemoveFromDependenceInfo
@@ -24,7 +24,7 @@ namespace QSOrmProject.Deletion
 			CollectionName = collectionName;
 		}
 
-		public IDeleteInfo GetClassInfo()
+		internal IDeleteInfo GetClassInfo()
 		{
 			return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
 		}

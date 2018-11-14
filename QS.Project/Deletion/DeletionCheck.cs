@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Collections.Generic;
 using NHibernate.Mapping;
+using QS.Project.DB;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public static partial class DeleteConfig
 	{
@@ -14,7 +15,7 @@ namespace QSOrmProject.Deletion
 		public static void DeletionCheck()
 		{
 			logger.Info("Проверка правил удаления по информации NHibernate.");
-			foreach(var mapping in OrmMain.OrmConfig.ClassMappings)
+			foreach(var mapping in OrmConfig.NhConfig.ClassMappings)
 			{
 				if(IgnoreMissingClass.Contains(mapping.MappedClass))
 				{

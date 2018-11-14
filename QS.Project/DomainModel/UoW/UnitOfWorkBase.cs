@@ -7,15 +7,13 @@ using NHibernate.Criterion;
 using NHibernate.Event;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
+using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
 	public abstract class UnitOfWorkBase : IUnitOfWorkEventHandler
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
-		public static Func<IInterceptor, ISession> OpenSession;
 
 		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
 		public static Action<object[]> NotifyObjectUpdated;
@@ -41,7 +39,7 @@ namespace QS.DomainModel.UoW
 		public ISession Session {
 			get {
 				if(session == null) {
-					session = OpenSession(null);
+					session = OrmConfig.OpenSession(null);
 					NhEventListener.RegisterUow(this);
 					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}

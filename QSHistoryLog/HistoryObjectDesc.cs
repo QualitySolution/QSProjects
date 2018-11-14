@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 using QS.HistoryLog;
+using QS.Project.DB;
 using QS.Utilities.Text;
-using QSOrmProject;
 
 namespace QSHistoryLog
 {
@@ -16,7 +16,7 @@ namespace QSHistoryLog
 
 		public IEnumerable<HistoryFieldDesc> TracedProperties{
 			get {
-				var persistent = OrmMain.OrmConfig.GetClassMapping(ObjectType);
+				var persistent = OrmConfig.NhConfig.GetClassMapping(ObjectType);
 
 				foreach(var propertyMap in persistent.PropertyIterator)
 				{

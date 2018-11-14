@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
-using QS.Gtk.Widgets;
-using QS.Dialog;
 using QS.Dialog.Gtk;
+using QS.DomainModel.Entity;
+using QS.Gtk.Widgets;
+using QS.Project.Dialogs;
+using QS.Tdi;
 using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
-using QS.Tdi;
-using QS.Project.Dialogs;
 
 namespace QSOrmProject
 {

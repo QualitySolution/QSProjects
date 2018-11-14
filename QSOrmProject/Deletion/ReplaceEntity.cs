@@ -5,7 +5,7 @@ using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public static class ReplaceEntity
 	{

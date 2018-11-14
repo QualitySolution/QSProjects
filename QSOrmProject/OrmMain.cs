@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using FluentNHibernate.Cfg;
-using Gtk;
-using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Proxy;
 using NLog;
 using QS.DomainModel.Entity;
-using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 using QS.Tdi;
 using QSOrmProject.DomainMapping;
@@ -20,114 +14,11 @@ namespace QSOrmProject
 	public static class OrmMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private static Configuration ormConfig;
-		internal static FluentConfiguration fluenConfig;
-		internal static ISessionFactory Sessions;
 		public static List<IOrmObjectMapping> ClassMappingList = new List<IOrmObjectMapping>();
 		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
 		private static DateTime lastCleaning;
 		public static int Count = 0;
-		public static Assembly[] DomainAssemlies;
 
-		public static ISession OpenSession(IInterceptor interceptor = null)
-		{
-			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.OpenSession(interceptor);
-			session.FlushMode = FlushMode.Commit;
-			return session;
-		}
-
-		#region Конфигруация ORM
-
-		public static Configuration OrmConfig {
-			get {
-				if (ormConfig == null && fluenConfig != null)
-					ormConfig = fluenConfig.BuildConfiguration();
-				return ormConfig;
-			}
-			set {
-				ormConfig = value;
-			}
-		}
-
-		/// <summary>
-		/// Настройка Nhibernate только с загрузкой мапинга из XML.
-		/// </summary>
-		/// <param name="connectionString">Connection string.</param>
-		/// <param name="assemblies">Assemblies.</param>
-		[Obsolete("Не поддеживает настройку перехвата событий необходимых для работы HistoryLog и IBusinessObject")]
-		public static void ConfigureOrm(string connectionString, string[] assemblies)
-		{
-			ormConfig = new Configuration();
-
-			ormConfig.Configure();
-			ormConfig.SetProperty("connection.connection_string", connectionString);
-
-			foreach (string ass in assemblies) {
-				ormConfig.AddAssembly(ass);
-			}
-
-			Sessions = ormConfig.BuildSessionFactory();
-		}
-
-		/// <summary>
-		/// Настройка Nhibernate c одновременной загрузкой мапинга из XML и Fluent конфигураций.
-		/// </summary>
-		/// <param name="connectionString">Connection string.</param>
-		/// <param name="assemblies">Assemblies.</param>
-		[Obsolete("Не поддеживает настройку перехвата событий необходимых для работы HistoryLog и IBusinessObject")]
-		public static void ConfigureOrm(string connectionString, System.Reflection.Assembly[] assemblies)
-		{
-			ormConfig = new Configuration();
-
-			ormConfig.Configure();
-			ormConfig.SetProperty("connection.connection_string", connectionString);
-			//ormConfig.AppendListeners(NHibernate.Event.ListenerType.Load, new object[] {});
-			//ormConfig.EventListeners.LoadEventListeners = new ILoadEventListener[] { new DebugLoadListener(), new DefaultLoadEventListener() };
-
-			fluenConfig = Fluently.Configure(ormConfig);
-
-			fluenConfig.Mappings(m => {
-				foreach (var ass in assemblies) {
-					m.HbmMappings.AddFromAssembly(ass);
-					m.FluentMappings.AddFromAssembly(ass);
-				}
-			});
-
-			Sessions = fluenConfig.BuildSessionFactory();
-		}
-
-		/// <summary>
-		/// Настройка Nhibernate только с Fluent конфигураций.
-		/// </summary>
-		/// <param name="assemblies">Assemblies.</param>
-		public static void ConfigureOrm(FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies, Action<Configuration> exposeConfiguration = null)
-		{
-			DomainAssemlies = assemblies;
-
-			fluenConfig = Fluently.Configure().Database(database);
-
-			fluenConfig.Mappings(m => {
-				foreach (var ass in assemblies) {
-					m.FluentMappings.AddFromAssembly(ass);
-				}
-			});
-
-			var trackerListener = new NhEventListener();
-			fluenConfig.ExposeConfiguration(cfg => {
-				cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
-				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
-				cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, new[] { trackerListener });
-				cfg.AppendListeners(NHibernate.Event.ListenerType.PostUpdate, new[] { trackerListener });
-				cfg.AppendListeners(NHibernate.Event.ListenerType.PostInsert, new[] { trackerListener });
-			});
-
-			if (exposeConfiguration != null)
-				fluenConfig.ExposeConfiguration(exposeConfiguration);
-
-			Sessions = fluenConfig.BuildSessionFactory();
-		}
-
-		#endregion
 		#region Классы сущностей
 
 		public static OrmObjectMapping<TEntity> AddObjectDescription<TEntity>()
@@ -224,11 +115,6 @@ namespace QSOrmProject
 		#endregion
 		#region Диалоги сущностей
 
-		public static String GetDBTableName(System.Type objectClass)
-		{
-			return ormConfig.GetClassMapping(objectClass).RootTable.Name;
-		}
-
 		[Obsolete("Используйте аналогичную функцию из DialogHelper. Из OrmMain этот функционал будет удален.")]
 		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject
 		{
@@ -297,7 +183,7 @@ namespace QSOrmProject
 		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
 		{
 			var result = new List<DeletionObject>();
-			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
 			var delList = delete.GetDeletionList(objectClass, id);
 
 			foreach(var item in delList) {
@@ -308,7 +194,7 @@ namespace QSOrmProject
 
 		public static bool DeleteObject(string table, int id)
 		{
-			var delete = new Deletion.DeleteCore();
+			var delete = new QS.Deletion.DeleteCore();
 			try {
 				return delete.RunDeletion(table, id);
 			} catch (Exception ex) {
@@ -319,7 +205,7 @@ namespace QSOrmProject
 
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
-			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
 			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);
@@ -347,7 +233,7 @@ namespace QSOrmProject
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
 			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
-			var delete = uow == null ? new Deletion.DeleteCore() : new Deletion.DeleteCore(uow);
+			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
 			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);
@@ -359,13 +245,26 @@ namespace QSOrmProject
 
 		#endregion
 
+		#region Переходный период на QS.Project
+
+		/// <summary>
+		/// Необходимо для интеграции с библиотекой QSProjectsLib
+		/// </summary>
+		static void RunDeletionFromProjectLib(object sender, QSProjectsLib.QSMain.RunOrmDeletionEventArgs e)
+		{
+			e.Result = DeleteObject(e.TableName, e.ObjectId);
+		}
+
+		#endregion
+
 		static OrmMain()
 		{
 			//FIXME Временные пробросы на этап перехода на QS.Poject
 			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
 			QS.Project.DB.Connection.GetConnectionString = () => QSMain.ConnectionString;
-			QS.DomainModel.UoW.UnitOfWorkBase.OpenSession = OpenSession;
+			QS.Project.DB.Connection.GetConnectionDB = () => QSMain.ConnectionDB;
 			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
+			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
 		}
 	}
 

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
+using QS.Project.DB;
 using QSHistoryLog;
-using QSOrmProject;
 
 namespace QS.HistoryLog
 {
@@ -18,7 +19,7 @@ namespace QS.HistoryLog
 
 		public static IEnumerable<HistoryObjectDesc> TraceClasses {
 			get {
-				return OrmMain.OrmConfig.ClassMappings
+				return OrmConfig.NhConfig.ClassMappings
 					.Where(x => x.MappedClass.GetCustomAttributes(typeof(HistoryTraceAttribute), true).Length > 0)
 					.Select(x => new HistoryObjectDesc(x.MappedClass));
 			}
@@ -26,7 +27,7 @@ namespace QS.HistoryLog
 
 		internal static Type FineEntityClass (string className)
 		{
-			return OrmMain.OrmConfig.ClassMappings
+			return OrmConfig.NhConfig.ClassMappings
 					.Where(x => x.MappedClass.Name == className)
 					.Select(x => x.MappedClass)
 					.FirstOrDefault();

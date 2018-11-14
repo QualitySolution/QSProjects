@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Gamma.GtkWidgets;
+using QS.DomainModel.Entity;
 using QSOrmProject.RepresentationModel;
 
 namespace QSOrmProject

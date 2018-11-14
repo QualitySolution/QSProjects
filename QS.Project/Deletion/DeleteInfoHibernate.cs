@@ -6,8 +6,9 @@ using System.Linq.Expressions;
 using Gamma.Utilities;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
+using QS.Project.DB;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate
 		where TEntity : IDomainObject
@@ -41,7 +42,7 @@ namespace QSOrmProject.Deletion
 		{
 			get
 			{
-				return OrmMain.OrmConfig.GetClassMapping(ObjectClass) is NHibernate.Mapping.Subclass;
+				return OrmConfig.NhConfig.GetClassMapping(ObjectClass) is NHibernate.Mapping.Subclass;
 			}
 		}
 
@@ -65,7 +66,7 @@ namespace QSOrmProject.Deletion
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
 
-			var hmap = OrmMain.OrmConfig.GetClassMapping(ObjectClass);
+			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass);
 			if (hmap == null)
 				throw new InvalidOperationException(String.Format("Класс {0} отсутствует в мапинге NHibernate.", ObjectClass));
 			TableName = hmap.Table.Name;
@@ -131,7 +132,7 @@ namespace QSOrmProject.Deletion
 
 		#region Функции для внутреннего использования
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
 			if(depend.PropertyName != null)
 			{
@@ -157,7 +158,7 @@ namespace QSOrmProject.Deletion
 			throw new NotImplementedException ();
 		}
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
 		{
 			var list = core.UoW.Session.CreateCriteria (ObjectClass)
 				.CreateAlias (depend.CollectionName, "childs")
@@ -166,7 +167,7 @@ namespace QSOrmProject.Deletion
 			return MakeResultList (list);
 		}
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
 			var list = core.UoW.Session.CreateCriteria (ObjectClass)
 				.Add (Restrictions.Eq (depend.PropertyName + ".Id", (int)masterEntity.Id)).List ();
@@ -229,7 +230,7 @@ namespace QSOrmProject.Deletion
 			};
 		}
 
-		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
+		EntityDTO IDeleteInfo.GetSelfEntity(IDeleteCore core, uint id)
 		{
 			var item = core.UoW.GetById<TEntity> ((int)id);
 			return new EntityDTO{
@@ -240,7 +241,7 @@ namespace QSOrmProject.Deletion
 			};
 		}
 
-		private bool CheckAndLoadEntity(DeleteCore core, EntityDTO entity)
+		private bool CheckAndLoadEntity(IDeleteCore core, EntityDTO entity)
 		{
 			if (entity.Entity != null)
 				return true;
@@ -257,15 +258,15 @@ namespace QSOrmProject.Deletion
 			if (IsRootForSubclasses == false)
 				return null;
 
-			return OrmMain.OrmConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
+			return OrmConfig.NhConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
 		}
 
-		public IDeleteInfo GetRootDeleteInfo()
+		IDeleteInfo IDeleteInfoHibernate.GetRootDeleteInfo()
 		{
 			if (!IsSubclass)
 				return null;
 
-			var hmap = OrmMain.OrmConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
+			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
 			return DeleteConfig.GetDeleteInfo(hmap.RootClazz.MappedClass);
 		}
 

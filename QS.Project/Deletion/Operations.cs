@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
-using QSProjectsLib;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public abstract class Operation
 	{
@@ -20,7 +19,7 @@ namespace QSOrmProject.Deletion
 				ChildBeforeOperations.Sum(o => o.GetOperationsCount());
 		}
 
-		public abstract void Execute (DeleteCore core);
+		internal abstract void Execute (IDeleteCore core);
 	}
 
 	interface IHibernateOperation {}
@@ -30,11 +29,11 @@ namespace QSOrmProject.Deletion
 		public string TableName;
 		public string WhereStatment;
 
-		public override void Execute (DeleteCore core)
+		internal override void Execute (IDeleteCore core)
 		{
 			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
-			core.ExcuteDlg.AddExcuteOperation(String.Format("Удаляем из таблицы {0}", TableName));
+			core.AddExcuteOperation(String.Format("Удаляем из таблицы {0}", TableName));
 			core.ExecuteSql(
 				String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment),
 				ItemId);
@@ -49,14 +48,11 @@ namespace QSOrmProject.Deletion
 		public string WhereStatment;
 		public string CleanField;
 
-		public override void Execute (DeleteCore core)
+		internal override void Execute (IDeleteCore core)
 		{
-			var sql = new DBWorks.SQLHelper ("UPDATE {0} SET ", TableName);
-			sql.Add ("{0} = NULL ", CleanField);
-			sql.Add (WhereStatment);
-
-			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем ссылки в таблице {0}", TableName));
-			core.ExecuteSql(sql.Text, ItemId);
+			var sql = $"UPDATE {TableName} SET {CleanField} = NULL " + WhereStatment;
+			core.AddExcuteOperation(String.Format("Очищаем ссылки в таблице {0}", TableName));
+			core.ExecuteSql(sql, ItemId);
 		}
 	}
 
@@ -66,11 +62,11 @@ namespace QSOrmProject.Deletion
 
 		public IList<EntityDTO> DeletingItems { get; set;}
 
-		public override void Execute (DeleteCore core)
+		internal override void Execute (IDeleteCore core)
 		{
 			ChildBeforeOperations.ForEach (o => o.Execute (core));
 
-			core.ExcuteDlg.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity).NominativePlural));
+			core.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity).NominativePlural));
 			foreach(var item in DeletingItems)
 			{
 				logger.Debug ("Удаляем {0}...", item.Title);
@@ -89,9 +85,9 @@ namespace QSOrmProject.Deletion
 		public IList<EntityDTO> ClearingItems { get; set;}
 		public string PropertyName { get; set;}
 
-		public override void Execute (DeleteCore core)
+		internal override void Execute (IDeleteCore core)
 		{
-			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType).NominativePlural));
+			core.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType).NominativePlural));
 			var propertyCache = EntityType.GetProperty (PropertyName);
 			foreach(var item in ClearingItems)
 			{
@@ -112,9 +108,9 @@ namespace QSOrmProject.Deletion
 		public string CollectionName { get; set;}
 		public string RemoveMethodName { get; set;}
 
-		public override void Execute (DeleteCore core)
+		internal override void Execute (IDeleteCore core)
 		{
-			core.ExcuteDlg.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType).NominativePlural));
+			core.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType).NominativePlural));
 			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
 			var removeMethod = String.IsNullOrEmpty (RemoveMethodName) ? null : RemoveInClassType.GetMethod (RemoveMethodName);
 			foreach(var item in RemoveInItems)

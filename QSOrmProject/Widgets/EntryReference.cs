@@ -9,6 +9,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NLog;
 using QS.Dialog.Gtk;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Gtk.Widgets;
 using QS.Project.Dialogs;

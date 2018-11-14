@@ -6,8 +6,8 @@ using DiffPlex;
 using DiffPlex.DiffBuilder;
 using Gamma.Utilities;
 using NHibernate.Event;
-using QS.Helpers;
-using QSOrmProject;
+using QS.DomainModel.Entity;
+using QS.Project.DB;
 
 namespace QS.HistoryLog.Domain
 {
@@ -308,7 +308,7 @@ namespace QS.HistoryLog.Domain
 
 		string ValueDisplay(string value)
 		{
-			var claz = NHibernateHelper.FindMappingByShortClassName(Entity.EntityClassName);
+			var claz = OrmConfig.FindMappingByShortClassName(Entity.EntityClassName);
 			var property = claz?.GetProperty(Path);
 			if(property != null) {
 				if(property.Type is NHibernate.Type.BooleanType)

@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Utilities;
 using NHibernate.Mapping;
+using QS.Project.DB;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 
 	public class DeleteDependenceInfo
@@ -47,7 +48,7 @@ namespace QSOrmProject.Deletion
 
 		private DeleteDependenceInfo() {}
 
-		public IDeleteInfo GetClassInfo()
+		internal IDeleteInfo GetClassInfo()
 		{
 			if(ObjectClass != null)
 				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
@@ -84,7 +85,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetName (propertyRefExpr);
-			string fieldName = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			string fieldName = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				propName
@@ -98,7 +99,7 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo CreateFromBag<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetName (propertyRefExpr);
-			var collectionMap = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
+			var collectionMap = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
 			Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
 			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo(itemType,
@@ -113,10 +114,10 @@ namespace QSOrmProject.Deletion
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
 		public static DeleteDependenceInfo CreateFromParentPropery<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
 			string propName = PropertyUtil.GetName (propertyRefExpr);
-			var parentMap = OrmMain.OrmConfig.GetClassMapping(typeof(TObject));
-			var propertyMap = OrmMain.OrmConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as ManyToOne;
+			var parentMap = OrmConfig.NhConfig.GetClassMapping(typeof(TObject));
+			var propertyMap = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as ManyToOne;
 			Type itemType = propertyMap.Type.ReturnedClass;
-			var itemMap = OrmMain.OrmConfig.GetClassMapping(itemType);
+			var itemMap = OrmConfig.NhConfig.GetClassMapping(itemType);
 			var parentTable = parentMap.Table.Name;
 			string fieldName = propertyMap.ColumnIterator.First ().Text;
 			return new DeleteDependenceInfo{

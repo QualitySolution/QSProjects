@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using QS.DomainModel.Entity;
-using QSProjectsLib;
+using QS.Project.DB;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
 	public class DeleteInfo : IDeleteInfo
 	{
@@ -64,8 +64,8 @@ namespace QSOrmProject.Deletion
 					ObjectsName = (attArray [0] as AppellativeAttribute).NominativePlural;
 			}
 
-			if (String.IsNullOrEmpty (TableName) && OrmMain.OrmConfig != null) {
-				var maping = OrmMain.OrmConfig.GetClassMapping (ObjectClass);
+			if (String.IsNullOrEmpty (TableName)) {
+				var maping = OrmConfig.NhConfig.GetClassMapping (ObjectClass);
 				if (maping != null) {
 					TableName = maping.Table.Name;
 				}
@@ -74,22 +74,22 @@ namespace QSOrmProject.Deletion
 			return this;
 		}
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
 			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
 		}
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
 			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
 		}
 
-		public IList<EntityDTO> GetDependEntities(DeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
+		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
 		{
 			throw new NotImplementedException ();
 		}
 
-		public EntityDTO GetSelfEntity(DeleteCore core, uint id)
+		EntityDTO IDeleteInfo.GetSelfEntity(IDeleteCore core, uint id)
 		{
 			return GetEntitiesList(String.Format("WHERE {0}.id = @id", TableName), id)[0];
 		}
@@ -97,11 +97,11 @@ namespace QSOrmProject.Deletion
 		private IList<EntityDTO> GetEntitiesList(string whereStatment, uint forId)
 		{
 			string sql = PreparedSqlSelect + whereStatment;
-			DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+			DbCommand cmd = Connection.ConnectionDB.CreateCommand ();
 			var resultList = new List<EntityDTO> ();
 			cmd.CommandText = sql;
 			logger.Debug ("Запрос объектов по SQL={0}", cmd.CommandText);
-			DeleteCore.AddParameterWithId (cmd, forId);
+			InternalHelper.AddParameterWithId (cmd, forId);
 
 			using (DbDataReader rdr = cmd.ExecuteReader ()) {
 				int IndexOfIdParam = rdr.GetOrdinal ("id");

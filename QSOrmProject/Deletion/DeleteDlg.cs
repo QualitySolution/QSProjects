@@ -1,6 +1,7 @@
 using System;
 using Gtk;
 using NLog;
+using QS.Deletion;
 
 namespace QSOrmProject.Deletion
 {
@@ -21,9 +22,10 @@ namespace QSOrmProject.Deletion
 		internal static bool RunDialog (DeleteCore core)
 		{
 			bool answer;
-			if (core.CountReferenceItems > 0) {
+			int countReferenceItems = ((IDeleteCore)core).CountReferenceItems;
+			if (countReferenceItems > 0) {
 				var fullDlg = new DeleteDlg(core.ObjectsTreeStore);
-				if (core.CountReferenceItems < 10)
+				if (countReferenceItems < 10)
 					fullDlg.treeviewObjects.ExpandAll ();
 				fullDlg.Title = String.Format ("Удалить {0}?", core.DeletedItems [0].Title);
 				answer = (ResponseType)fullDlg.Run () == ResponseType.Yes;

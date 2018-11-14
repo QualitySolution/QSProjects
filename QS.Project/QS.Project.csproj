@@ -98,6 +98,21 @@
     <Compile Include="Tdi\ITDICloseControlTab.cs" />
     <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
     <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
+    <Compile Include="Deletion\DeleteConfig.cs" />
+    <Compile Include="Deletion\DeletionCheck.cs" />
+    <Compile Include="Deletion\IDeleteInfo.cs" />
+    <Compile Include="Deletion\Operations.cs" />
+    <Compile Include="Deletion\DeleteDependenceInfo.cs" />
+    <Compile Include="Deletion\DeleteInfo.cs" />
+    <Compile Include="Deletion\DeleteInfoHibernate.cs" />
+    <Compile Include="Deletion\IDeleteInfoHibernate.cs" />
+    <Compile Include="Deletion\ClearDependenceInfo.cs" />
+    <Compile Include="Project.DB\OrmConfig.cs" />
+    <Compile Include="Deletion\EntityDTO.cs" />
+    <Compile Include="Deletion\IDeleteCore.cs" />
+    <Compile Include="DomainModel\Entity\DomainHelper.cs" />
+    <Compile Include="Deletion\RemoveFromDependenceInfo.cs" />
+    <Compile Include="Deletion\InternalHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -112,6 +127,7 @@
     <Folder Include="Dialog\" />
     <Folder Include="Tdi\" />
     <Folder Include="Project.Dialogs\" />
+    <Folder Include="Deletion\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -120,6 +136,10 @@
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>GammaUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,5 @@
-﻿using System;
-using QSOrmProject.Deletion;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using QS.Deletion;
 
 namespace QSContacts
 {

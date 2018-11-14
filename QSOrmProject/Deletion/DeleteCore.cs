@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using Gtk;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QSOrmProject.Deletion;
 using QSProjectsLib;
 
-namespace QSOrmProject.Deletion
+namespace QS.Deletion
 {
-	public class DeleteCore
+	public class DeleteCore : IDeleteCore
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		internal TreeStore ObjectsTreeStore;
 		Operation PreparedOperation;
-		internal int CountReferenceItems = 0;
+		private int countReferenceItems = 0;
 		internal List<DeletedItem> DeletedItems = new List<DeletedItem> ();
 		internal bool IsHibernateMode;
 		internal CheckOperationDlg CheckDlg;
@@ -22,7 +23,7 @@ namespace QSOrmProject.Deletion
 		internal System.Action BeforeDeletion;
 		IUnitOfWork uow;
 
-		internal IUnitOfWork UoW{
+		IUnitOfWork IDeleteCore.UoW {
 			get {
 				if (uow == null)
 					uow = UnitOfWorkFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
@@ -38,6 +39,8 @@ namespace QSOrmProject.Deletion
 				return sqlTransaction;
 			}
 		}
+
+		int IDeleteCore.CountReferenceItems => countReferenceItems; 
 
 		public DeleteCore(IUnitOfWork uow): this()
 		{
@@ -87,7 +90,7 @@ namespace QSOrmProject.Deletion
 					ItemId = entityId,
 					Title = self.Title
 				});
-				CountReferenceItems = FillChildOperation(info, PreparedOperation, new TreeIter(), self);
+				countReferenceItems = FillChildOperation(info, PreparedOperation, new TreeIter(), self);
 			} catch(Exception ex) {
 				QSMain.ErrorMessageWithLog("Ошибка в разборе зависимостей удаляемого объекта.", logger, ex);
 			}
@@ -110,7 +113,7 @@ namespace QSOrmProject.Deletion
 					Title = self.Title
 				});
 
-				CountReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
+				countReferenceItems = FillChildOperation (info, PreparedOperation, new TreeIter (), self);
 				bool isCanceled = CheckDlg.IsCanceled;
 				CheckDlg.Destroy();
 
@@ -414,15 +417,16 @@ namespace QSOrmProject.Deletion
 			return removeCount;
 		}
 
-		#region Internal Helpers
+		#region UI
 
-		internal static void AddParameterWithId (IDbCommand cmd, uint id)
+		void IDeleteCore.AddExcuteOperation(string text)
 		{
-			var parameterId = cmd.CreateParameter ();
-			parameterId.ParameterName = "@id";
-			parameterId.Value = id;
-			cmd.Parameters.Add (parameterId);
+			ExcuteDlg.AddExcuteOperation(text);
 		}
+
+		#endregion
+
+		#region Internal Helpers
 
 		internal static bool HasHibernateOperations (Operation op)
 		{
@@ -431,15 +435,15 @@ namespace QSOrmProject.Deletion
 				|| op.ChildAfterOperations.Any(DeleteCore.HasHibernateOperations);
 		}
 
-		internal void ExecuteSql (String sql, uint id)
+		void IDeleteCore.ExecuteSql (String sql, uint id)
 		{
 			logger.Debug ("Выполение SQL={0}", sql);
 			if(IsHibernateMode)
 			{
-				var cmd = UoW.Session.Connection.CreateCommand();
-				UoW.Session.Transaction.Enlist(cmd);
+				var cmd = uow.Session.Connection.CreateCommand();
+				uow.Session.Transaction.Enlist(cmd);
 				cmd.CommandText = sql;
-				DeleteCore.AddParameterWithId (cmd, id);
+				InternalHelper.AddParameterWithId (cmd, id);
 				cmd.ExecuteNonQuery();
 			}
 			else
@@ -447,20 +451,12 @@ namespace QSOrmProject.Deletion
 				DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
 				cmd.Transaction = SqlTransaction;
 				cmd.CommandText = sql;
-				DeleteCore.AddParameterWithId (cmd, id);
+				InternalHelper.AddParameterWithId (cmd, id);
 				cmd.ExecuteNonQuery ();
 			}
 		}
 
 		#endregion
-	}
-	 
-	public class EntityDTO
-	{
-		public uint Id;
-		public Type ClassType;
-		public string Title;
-		public object Entity;
 	}
 }
 

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHibernate;
-using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
-namespace QSOrmProject
+namespace QS.DomainModel.Entity
 {
 	public static class DomainHelper
 	{
