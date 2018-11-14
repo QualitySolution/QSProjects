@@ -35,9 +35,11 @@
     <Compile Include="NumberToTextRus.cs" />
     <Compile Include="Text\PersonHelper.cs" />
     <Compile Include="Text\TitleHelper.cs" />
+    <Compile Include="Debug\Print.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
+    <Folder Include="Debug\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
