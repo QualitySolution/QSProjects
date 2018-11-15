@@ -5,15 +5,10 @@ namespace QS.Deletion
 {
 	internal interface IDeleteInfo : IDeleteRule
 	{
-		Type ObjectClass { get;}
 		string ObjectsName { get;}
 		string TableName { get; }
 
 		bool HasDependences { get;}
-
-		List<DeleteDependenceInfo> DeleteItems { get;}
-		List<ClearDependenceInfo> ClearItems { get;}
-		List<RemoveFromDependenceInfo> RemoveFromItems { get;}
 
 		IList<EntityDTO> GetDependEntities (IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity);
 		IList<EntityDTO> GetDependEntities (IDeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity);
@@ -27,6 +22,10 @@ namespace QS.Deletion
 
 	public interface IDeleteRule
 	{
+		Type ObjectClass { get; }
 
+		List<DeleteDependenceInfo> DeleteItems { get; }
+		List<ClearDependenceInfo> ClearItems { get; }
+		List<RemoveFromDependenceInfo> RemoveFromItems { get; }
 	}
 }
