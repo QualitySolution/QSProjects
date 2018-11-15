@@ -113,6 +113,7 @@
     <Compile Include="DomainModel\Entity\DomainHelper.cs" />
     <Compile Include="Deletion\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\InternalHelper.cs" />
+    <Compile Include="Deletion\IHibernateDeleteRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

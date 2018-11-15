@@ -12,6 +12,7 @@ namespace QS.Deletion
 
 		public static List<Type> IgnoreMissingClass = new List<Type> ();
 
+		[Obsolete("Используйте тесты из проекта QS.Testing")]
 		public static void DeletionCheck()
 		{
 			logger.Info("Проверка правил удаления по информации NHibernate.");

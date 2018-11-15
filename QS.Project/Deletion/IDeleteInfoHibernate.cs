@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace QS.Deletion
 {
-
 	internal interface IDeleteInfoHibernate : IDeleteInfo
 	{
 		bool IsRootForSubclasses { get; }

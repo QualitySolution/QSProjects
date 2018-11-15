@@ -10,7 +10,7 @@ using QS.Project.DB;
 
 namespace QS.Deletion
 {
-	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate
+	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate, IHibernateDeleteRule
 		where TEntity : IDomainObject
 	{
 		#region Свойства

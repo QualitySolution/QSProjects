@@ -40,6 +40,11 @@ namespace QS.Deletion
 			return ClassInfos.OfType<DeleteInfoHibernate<TEntity>>().First();
 		}
 
+		public static IDeleteRule GetDeleteRule(Type clazz)
+		{
+			return ClassInfos.FirstOrDefault(i => i.ObjectClass == clazz);
+		}
+
 		internal static IDeleteInfo GetDeleteInfo (Type clazz)
 		{
 			return ClassInfos.FirstOrDefault (i => i.ObjectClass == clazz);
