@@ -11,7 +11,7 @@ using QS.Project.DB;
 
 namespace QS.HistoryLog.Domain
 {
-	public class FieldChange
+	public class FieldChange : IDomainObject
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
