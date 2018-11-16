@@ -92,19 +92,39 @@ namespace QS.Deletion
 			);
 		}
 
+		[Obsolete("Используйте CreateFromCollection а лучше вызывайте метод AddDeleteDependenceFromCollection у DeleteInfoHibernate")]
+		public static DeleteDependenceInfo CreateFromBag<TObject>(Expression<Func<TObject, object>> propertyRefExpr)
+		{
+			string propName = PropertyUtil.GetName(propertyRefExpr);
+			return CreateFromCollection<TObject>(propName);
+		}
+
 		/// <summary>
-		/// Создает класс описания удаления на основе свойства bag в родителе. 
+		/// Создает класс описания удаления на основе свойства колекции в родителе. 
 		/// </summary>
-		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
+		/// <param name="propName">Имя </param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
-		public static DeleteDependenceInfo CreateFromBag<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
-			string propName = PropertyUtil.GetName (propertyRefExpr);
-			var collectionMap = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).Value as Bag;
-			Type itemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
-			string fieldName = collectionMap.Key.ColumnIterator.First ().Text;
+		public static DeleteDependenceInfo CreateFromCollection<TObject>(string propName)
+		{
+			var collectionMap = OrmConfig.NhConfig.GetClassMapping(typeof(TObject)).GetProperty(propName).Value;
+			var bagMap = collectionMap as Bag;
+			var listMap = collectionMap as List;
+
+			Type itemType;
+			string fieldName;
+
+			if(bagMap != null) {
+				itemType = (bagMap.Element as OneToMany).AssociatedClass.MappedClass;
+				fieldName = bagMap.Key.ColumnIterator.First().Text;
+			} else if(listMap != null) {
+				itemType = (listMap.Element as OneToMany).AssociatedClass.MappedClass;
+				fieldName = listMap.Key.ColumnIterator.First().Text;
+			} else
+				throw new NotImplementedException($"Тип коллекции {collectionMap} не реализован.");
+
 			return new DeleteDependenceInfo(itemType,
-				String.Format ("WHERE {0} = @id", fieldName)
-            ).AddCheckCollection(propName);
+				String.Format("WHERE {0} = @id", fieldName)
+			).AddCheckCollection(propName);
 		}
 
 		/// <summary>
