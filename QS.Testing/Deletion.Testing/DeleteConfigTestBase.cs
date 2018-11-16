@@ -18,7 +18,8 @@ namespace QS.Deletion.Testing
 				foreach(var info in DeleteConfig.ClassDeleteRules) {
 					foreach(var item in info.DeleteItems) {
 						yield return new TestCaseData(info, item)
-						.SetArgDisplayNames(new [] { item.ObjectClass.Name, info.ObjectClass.Name});
+							.SetDescription("Проверка типов зависимостей удаления")
+							.SetArgDisplayNames(new [] { info.ObjectClass.Name, item.ObjectClass.Name });
 					}
 				}
 			}
@@ -44,7 +45,9 @@ namespace QS.Deletion.Testing
 				Console.WriteLine("AllClearItems");
 				foreach(var info in DeleteConfig.ClassDeleteRules) {
 					foreach(var item in info.ClearItems) {
-						yield return new TestCaseData(info, item);
+						yield return new TestCaseData(info, item)
+						.SetDescription("Проверка типов зависимостей очистки")
+						.SetArgDisplayNames(new[] { info.ObjectClass.Name, item.ObjectClass.Name });
 					}
 				}
 			}
@@ -72,7 +75,8 @@ namespace QS.Deletion.Testing
 			get {
 				Console.WriteLine("NhibernateMappedClasses");
 				foreach(var mapping in OrmConfig.NhConfig.ClassMappings) {
-					yield return new TestCaseData(mapping);
+					yield return new TestCaseData(mapping)
+						.SetArgDisplayNames(new[] { mapping.MappedClass.Name });
 				}
 			}
 		}
@@ -96,14 +100,15 @@ namespace QS.Deletion.Testing
 
 		#endregion
 
-		#region Проверка обычных ссылко в Nhibernate на наличие правил удаления
+		#region Проверка обычных ссылок в Nhibernate на наличие правил удаления
 
 		public static IEnumerable NhibernateMappedEntityRelation {
 			get {
 				Console.WriteLine("NhibernateMappedEntityRelation");
 				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))){
 					foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation)) {
-						yield return new TestCaseData(mapping, prop);
+						yield return new TestCaseData(mapping, prop)
+							.SetArgDisplayNames(new[] { mapping.MappedClass.Name, prop.Name });
 					}
 				}
 			}
@@ -131,7 +136,8 @@ namespace QS.Deletion.Testing
 						var related = DeleteConfig.ClassDeleteRules.FirstOrDefault(c => c.ObjectClass == prop.Type.ReturnedClass);
 						if(related == null)
 							continue;
-						yield return new TestCaseData(mapping, prop, related);
+						yield return new TestCaseData(mapping, prop, related)
+							.SetArgDisplayNames(new[] { mapping.MappedClass.Name, prop.Name, related.ObjectClass.Name});
 					}
 				}
 			}
@@ -158,7 +164,8 @@ namespace QS.Deletion.Testing
 						var related = DeleteConfig.ClassDeleteRules.OfType<IHibernateDeleteRule>().FirstOrDefault(c => c.ObjectClass == prop.Type.ReturnedClass);
 						if(related == null || !related.IsRequiredCascadeDeletion )
 							continue;
-						yield return new TestCaseData(mapping, prop, related);
+						yield return new TestCaseData(mapping, prop, related)
+							.SetArgDisplayNames(new[] { mapping.MappedClass.Name, prop.Name, related.ObjectClass.Name });
 					}
 				}
 			}
@@ -175,6 +182,70 @@ namespace QS.Deletion.Testing
 					info.ObjectClass.Name,
 					prop.Name,
 					related.ObjectClass.Name);
+		}
+
+		#endregion
+
+		#region Проверка коллекций Nhibernate на наличие правил удаления
+
+		public static IEnumerable NhibernateMappedCollection {
+			get {
+				Console.WriteLine("NhibernateMappedCollection");
+				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))) {
+					foreach(var prop in mapping.PropertyIterator.Where(p => p.Type.IsCollectionType)) {
+						if(!(prop.Value is Bag))
+							continue;
+						var collectionMap = (prop.Value as Bag);
+						if(collectionMap.IsInverse)
+							continue;
+						yield return new TestCaseData(mapping, prop)
+							.SetArgDisplayNames(new[] { mapping.MappedClass.Name, prop.Name});
+					}
+				}
+			}
+		}
+
+		//FIXME Лучше в будущем разделить тест на разные. Сейчас было лень переписывать код.
+		public virtual void NHMappedCollectionsAllInOneTest(PersistentClass mapping, Property prop)
+		{
+			var collectionMap = (prop.Value as Bag);
+			Type collectionItemType = null;
+			if(collectionMap.Element is OneToMany)
+				collectionItemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
+			else if(collectionMap.Element is ManyToOne)
+				collectionItemType = (collectionMap.Element as ManyToOne).Type.ReturnedClass;
+
+			var collectionItemClassInfo = DeleteConfig.GetDeleteRule(collectionItemType);
+
+			Assert.That(collectionItemClassInfo, Is.Not.Null,
+				"#Класс {0} не имеет правил удаления, но используется в коллекции {1}.{2}.",
+				collectionItemType,
+				mapping.MappedClass.Name,
+				prop.Name);
+
+			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
+			Assert.That(info, Is.Not.Null,
+					"#Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
+					mapping.MappedClass.Name,
+					prop.Name,
+					collectionItemType.Name);
+
+			//FIXME Дописать проверку ManyToMany
+			var deleteDepend = info.DeleteItems.Find(r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
+			Assert.That(deleteDepend, Is.Not.Null,
+					"#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
+					mapping.MappedClass.Name,
+					prop.Name,
+					collectionItemType.Name
+				);
+
+			if(collectionItemClassInfo is IHibernateDeleteRule) {
+				Assert.That(info, Is.InstanceOf<IHibernateDeleteRule>(),
+						"#Удаление через Hibernate элементов коллекции {0}.{1}, поддерживается только если удаление родительского класса {0} настроено тоже через Hibernate",
+						mapping.MappedClass.Name,
+						prop.Name
+					);
+			}
 		}
 
 		#endregion
