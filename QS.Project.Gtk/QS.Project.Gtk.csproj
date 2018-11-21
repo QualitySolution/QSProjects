@@ -10,6 +10,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +79,7 @@
     <Compile Include="Dialog.Gtk\WidgetOnDialogBase.cs" />
     <Compile Include="Dialog.Gtk\SingleUowDialogBase.cs" />
     <Compile Include="Dialog.Gtk\SingleUowTabBase.cs" />
+    <Compile Include="Dialog.Gtk\MessageDialogHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />

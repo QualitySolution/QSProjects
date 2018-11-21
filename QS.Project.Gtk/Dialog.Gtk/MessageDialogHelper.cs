@@ -1,10 +1,9 @@
 ﻿using System;
 using Gtk;
 
-namespace QSProjectsLib
+namespace QS.Dialog.Gtk
 {
-	[Obsolete("Используйте аналогичный класс из новых библиотек MessageDialogHelper. Все изменения будут вносится туда. Здесь код оставлен для обратной совместимости.")]
-	public static class MessageDialogWorks
+	public static class MessageDialogHelper
 	{
 		public static bool RunQuestionDialog (string question, params object[] args)
 		{
