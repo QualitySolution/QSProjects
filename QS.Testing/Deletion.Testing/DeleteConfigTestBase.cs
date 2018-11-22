@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Gamma.Utilities;
 using NHibernate.Mapping;
 using NUnit.Framework;
 using QS.Project.DB;
@@ -10,6 +12,50 @@ namespace QS.Deletion.Testing
 {
 	public abstract class DeleteConfigTestBase
 	{
+		#region Настройка поведения тестов
+
+		/// <summary>
+		/// Игнорируем в тестах отсутствие правил удаления для перечисленных класов.
+		/// </summary>
+		public static List<Type> IgnoreMissingClass = new List<Type>();
+
+		/// <summary>
+		/// Игнорируем в тестах отсутствие зависимостей для перечисленных свойств каласов
+		/// </summary>
+		/// <remarks>Внимание, игнорирование реализовано не для всех тестов!</remarks>
+		public static Dictionary<Type, List<IgnoredProperty>> IgnoreProperties = new Dictionary<Type, List<IgnoredProperty>>();
+
+		/// <summary>
+		/// Добавляем свойство класса игнорируемое в тестах отсутствие зависимостей
+		/// </summary>
+		/// <remarks>Внимание, игнорирование реализовано не для всех тестов!</remarks>
+		public static void AddIgnoredProperty(Type type, string name, string reason)
+		{
+			var prop = new IgnoredProperty {
+				PropertyName = name,
+				ReasonForIgnoring = reason
+			 };
+
+			if(!IgnoreProperties.ContainsKey(type))
+				IgnoreProperties.Add(type, new List<IgnoredProperty>());
+
+			IgnoreProperties[type].Add(prop);
+		}
+
+		public static void AddIgnoredProperty<T>(Expression<Func<T, object>> propertyRefExpr, string reason)
+		{
+			var name = PropertyUtil.GetName<T>(propertyRefExpr);
+			AddIgnoredProperty(typeof(T), name, reason);
+		}
+
+		public struct IgnoredProperty
+		{
+			public string PropertyName;
+			public string ReasonForIgnoring;
+		}
+
+		#endregion
+
 		#region Проверка зависимостей в настроенных кассах удаления
 
 		public static IEnumerable AllDeleteItems {
@@ -80,8 +126,6 @@ namespace QS.Deletion.Testing
 				}
 			}
 		}
-
-		public static List<Type> IgnoreMissingClass = new List<Type>();
 
 		/// <summary>
 		/// Тест наличия правил удаления для классов добавленных в Nhibernate.
@@ -176,6 +220,9 @@ namespace QS.Deletion.Testing
 		/// </summary>
 		public virtual void CascadeDependenceRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
 		{
+			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
+				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
+
 			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
 			Assert.That(info.DeleteItems.Any(x => x.ParentPropertyName == prop.Name && x.IsCascade),
 					"Cвойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
