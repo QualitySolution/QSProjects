@@ -29,7 +29,7 @@ namespace QS.Deletion.Testing
 		{
 			if(!String.IsNullOrEmpty(dependence.PropertyName)) {
 				Assert.That(info.ObjectClass, Is.EqualTo(dependence.ObjectClass.GetProperty(dependence.PropertyName).PropertyType),
-					"#Свойство {0}.{1} определенное в зависимости удаления для класса {2}, имеет другой тип.",
+					"Свойство {0}.{1} определенное в зависимости удаления для класса {2}, имеет другой тип.",
 					dependence.ObjectClass.Name,
 					dependence.PropertyName,
 					info.ObjectClass
@@ -57,7 +57,7 @@ namespace QS.Deletion.Testing
 		{
 			if(!String.IsNullOrEmpty(dependence.PropertyName)) {
 				Assert.That(info.ObjectClass, Is.EqualTo(dependence.ObjectClass.GetProperty(dependence.PropertyName).PropertyType),
-					"##Свойство {0}.{1} определенное в зависимости очистки для класса {2}, имеет другой тип.",
+					"Свойство {0}.{1} определенное в зависимости очистки для класса {2}, имеет другой тип.",
 					dependence.ObjectClass.Name,
 					dependence.PropertyName,
 					info.ObjectClass
@@ -95,7 +95,7 @@ namespace QS.Deletion.Testing
 
 			var exist = DeleteConfig.ClassDeleteRules.Any(i => i.ObjectClass == mapping.MappedClass);
 
-			Assert.That(exist, "#Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.", mapping.MappedClass);
+			Assert.That(exist, "Класс {0} настроен в мапинге NHibernate, но для него отсутствуют правила удаления.", mapping.MappedClass);
 		}
 
 		#endregion
@@ -122,7 +122,7 @@ namespace QS.Deletion.Testing
 		{
 			var propType = prop.Type.ReturnedClass;
 			var exist = DeleteConfig.ClassDeleteRules.Any(c => c.ObjectClass == propType);
-			Assert.That(exist, "#Класс {0} не имеет правил удаления, но свойство {1}.{2} прописано в мапинге.", 
+			Assert.That(exist, "Класс {0} не имеет правил удаления, но свойство {1}.{2} прописано в мапинге.", 
 					prop.Type.ReturnedClass.Name,
 					mapping.MappedClass,
 					prop.Name);
@@ -150,7 +150,7 @@ namespace QS.Deletion.Testing
 		{
 			Assert.That(related.DeleteItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name)
 						|| related.ClearItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name),
-				"#Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
+				"Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
 					mapping.MappedClass,
 					prop.Name,
 					related.ObjectClass.Name);
@@ -178,7 +178,7 @@ namespace QS.Deletion.Testing
 		{
 			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
 			Assert.That(info.DeleteItems.Any(x => x.ParentPropertyName == prop.Name && x.IsCascade),
-					"#Cвойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
+					"Cвойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
 					info.ObjectClass.Name,
 					prop.Name,
 					related.ObjectClass.Name);
@@ -218,14 +218,14 @@ namespace QS.Deletion.Testing
 			var collectionItemClassInfo = DeleteConfig.GetDeleteRule(collectionItemType);
 
 			Assert.That(collectionItemClassInfo, Is.Not.Null,
-				"#Класс {0} не имеет правил удаления, но используется в коллекции {1}.{2}.",
+				"Класс {0} не имеет правил удаления, но используется в коллекции {1}.{2}.",
 				collectionItemType,
 				mapping.MappedClass.Name,
 				prop.Name);
 
 			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
 			Assert.That(info, Is.Not.Null,
-					"#Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
+					"Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
 					mapping.MappedClass.Name,
 					prop.Name,
 					collectionItemType.Name);
@@ -234,7 +234,7 @@ namespace QS.Deletion.Testing
 			{
 				var deleteDepend = info.DeleteItems.Find(r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
 				Assert.That(deleteDepend, Is.Not.Null,
-				            "#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
+				            "Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
 				            mapping.MappedClass.Name,
 				            prop.Name,
 				            collectionItemType.Name
@@ -244,7 +244,7 @@ namespace QS.Deletion.Testing
 			{
 				var removeDepend = collectionItemClassInfo.RemoveFromItems.Find(r => r.ObjectClass == info.ObjectClass && r.CollectionName == prop.Name);
 				Assert.That(removeDepend, Is.Not.Null,
-							"#Для коллекции {0}.{1} не определены зависимости удаления элементов при удалении класса {2}",
+							"Для коллекции {0}.{1} не определены зависимости удаления элементов при удалении класса {2}",
 							mapping.MappedClass.Name,
 							prop.Name,
 							collectionItemType.Name
@@ -253,7 +253,7 @@ namespace QS.Deletion.Testing
 
 			if (collectionItemClassInfo is IHibernateDeleteRule) {
 				Assert.That(info, Is.InstanceOf<IHibernateDeleteRule>(),
-						"#Удаление через Hibernate элементов коллекции {0}.{1}, поддерживается только если удаление родительского класса {0} настроено тоже через Hibernate",
+						"Удаление через Hibernate элементов коллекции {0}.{1}, поддерживается только если удаление родительского класса {0} настроено тоже через Hibernate",
 						mapping.MappedClass.Name,
 						prop.Name
 					);
