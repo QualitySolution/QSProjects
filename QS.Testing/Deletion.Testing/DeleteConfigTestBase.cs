@@ -210,9 +210,9 @@ namespace QS.Deletion.Testing
 		{
 			var collectionMap = (prop.Value as Bag);
 			Type collectionItemType = null;
-			if(collectionMap.Element is OneToMany)
+			if (collectionMap.Element is OneToMany)
 				collectionItemType = (collectionMap.Element as OneToMany).AssociatedClass.MappedClass;
-			else if(collectionMap.Element is ManyToOne)
+			else if (collectionMap.Element is ManyToOne)
 				collectionItemType = (collectionMap.Element as ManyToOne).Type.ReturnedClass;
 
 			var collectionItemClassInfo = DeleteConfig.GetDeleteRule(collectionItemType);
@@ -230,16 +230,28 @@ namespace QS.Deletion.Testing
 					prop.Name,
 					collectionItemType.Name);
 
-			//FIXME Дописать проверку ManyToMany
-			var deleteDepend = info.DeleteItems.Find(r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
-			Assert.That(deleteDepend, Is.Not.Null,
-					"#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
-					mapping.MappedClass.Name,
-					prop.Name,
-					collectionItemType.Name
-				);
+			if(collectionMap.IsOneToMany)
+			{
+				var deleteDepend = info.DeleteItems.Find(r => r.ObjectClass == collectionItemType && r.CollectionName == prop.Name);
+				Assert.That(deleteDepend, Is.Not.Null,
+				            "#Для коллекции {0}.{1} не определены зависимости удаления класса {2}",
+				            mapping.MappedClass.Name,
+				            prop.Name,
+				            collectionItemType.Name
+				           );
+			}
+			else
+			{
+				var removeDepend = collectionItemClassInfo.RemoveFromItems.Find(r => r.ObjectClass == info.ObjectClass && r.CollectionName == prop.Name);
+				Assert.That(removeDepend, Is.Not.Null,
+							"#Для коллекции {0}.{1} не определены зависимости удаления элементов при удалении класса {2}",
+							mapping.MappedClass.Name,
+							prop.Name,
+							collectionItemType.Name
+						   );
+			}
 
-			if(collectionItemClassInfo is IHibernateDeleteRule) {
+			if (collectionItemClassInfo is IHibernateDeleteRule) {
 				Assert.That(info, Is.InstanceOf<IHibernateDeleteRule>(),
 						"#Удаление через Hibernate элементов коллекции {0}.{1}, поддерживается только если удаление родительского класса {0} настроено тоже через Hibernate",
 						mapping.MappedClass.Name,
