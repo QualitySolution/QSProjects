@@ -164,6 +164,9 @@ namespace QS.Deletion.Testing
 		/// </summary>
 		public virtual void DeleteRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop)
 		{
+			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
+				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
+
 			var propType = prop.Type.ReturnedClass;
 			var exist = DeleteConfig.ClassDeleteRules.Any(c => c.ObjectClass == propType);
 			Assert.That(exist, "Класс {0} не имеет правил удаления, но свойство {1}.{2} прописано в мапинге.", 
@@ -192,6 +195,9 @@ namespace QS.Deletion.Testing
 		/// </summary>
 		public virtual void DependenceRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
 		{
+			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
+				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
+
 			Assert.That(related.DeleteItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name)
 						|| related.ClearItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name),
 				"Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
