@@ -14,10 +14,28 @@ namespace QS.Deletion.Testing
 	{
 		#region Настройка поведения тестов
 
+		#region Игнорирование классов
+
 		/// <summary>
-		/// Игнорируем в тестах отсутствие правил удаления для перечисленных класов.
+		/// Игнорируем в тестах отсутствие правил удаления для класов.
 		/// </summary>
-		public static List<Type> IgnoreMissingClass = new List<Type>();
+		internal static Dictionary<Type, string> IgnoreMissingClass = new Dictionary<Type, string>();
+
+		/// <summary>
+		/// Добавляем класса в игнорируемые в тестах отсутствие правил.
+		/// </summary>
+		public static void AddIgnoredClass(Type type, string reason)
+		{
+			IgnoreMissingClass[type] = reason;
+		}
+
+		public static void AddIgnoredClass<T>(string reason)
+		{
+			AddIgnoredClass(typeof(T), reason);
+		}
+
+		#endregion
+		#region Игнорирование свойств
 
 		/// <summary>
 		/// Игнорируем в тестах отсутствие зависимостей для перечисленных свойств каласов
@@ -34,7 +52,7 @@ namespace QS.Deletion.Testing
 			var prop = new IgnoredProperty {
 				PropertyName = name,
 				ReasonForIgnoring = reason
-			 };
+			};
 
 			if(!IgnoreProperties.ContainsKey(type))
 				IgnoreProperties.Add(type, new List<IgnoredProperty>());
@@ -53,6 +71,7 @@ namespace QS.Deletion.Testing
 			public string PropertyName;
 			public string ReasonForIgnoring;
 		}
+		#endregion
 
 		#endregion
 
@@ -133,8 +152,8 @@ namespace QS.Deletion.Testing
 		/// </summary>
 		public virtual void DeleteRuleExisitForNHMappedClasssTest(NHibernate.Mapping.PersistentClass mapping)
 		{
-			if(IgnoreMissingClass.Contains(mapping.MappedClass)) {
-				Assert.Ignore($"Класс {mapping.MappedClass} добавлен в исключения");
+			if(IgnoreMissingClass.ContainsKey(mapping.MappedClass)) {
+				Assert.Ignore(IgnoreMissingClass[mapping.MappedClass]);
 			}
 
 			var exist = DeleteConfig.ClassDeleteRules.Any(i => i.ObjectClass == mapping.MappedClass);
@@ -149,7 +168,7 @@ namespace QS.Deletion.Testing
 		public static IEnumerable NhibernateMappedEntityRelation {
 			get {
 				Console.WriteLine("NhibernateMappedEntityRelation");
-				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))){
+				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.ContainsKey(m.MappedClass))){
 					foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation)) {
 						yield return new TestCaseData(mapping, prop)
 							.SetArgDisplayNames(new[] { mapping.MappedClass.Name, prop.Name });
@@ -178,7 +197,7 @@ namespace QS.Deletion.Testing
 		public static IEnumerable NhibernateMappedEntityRelationWithExistRule {
 			get {
 				Console.WriteLine("NhibernateMappedEntityRelationWithExistRule");
-				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))) {
+				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.ContainsKey(m.MappedClass))) {
 					foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation)) {
 						var related = DeleteConfig.ClassDeleteRules.FirstOrDefault(c => c.ObjectClass == prop.Type.ReturnedClass);
 						if(related == null)
@@ -209,7 +228,7 @@ namespace QS.Deletion.Testing
 		public static IEnumerable NhibernateMappedEntityRelationWithExistRuleCascadeRelated {
 			get {
 				Console.WriteLine("NhibernateMappedEntityRelationWithExistRuleCascadeRelated");
-				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))) {
+				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.ContainsKey(m.MappedClass))) {
 					foreach(var prop in mapping.PropertyIterator.Where(p => p.IsEntityRelation)) {
 						var related = DeleteConfig.ClassDeleteRules.OfType<IHibernateDeleteRule>().FirstOrDefault(c => c.ObjectClass == prop.Type.ReturnedClass);
 						if(related == null || !related.IsRequiredCascadeDeletion )
@@ -244,7 +263,7 @@ namespace QS.Deletion.Testing
 		public static IEnumerable NhibernateMappedCollection {
 			get {
 				Console.WriteLine("NhibernateMappedCollection");
-				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.Contains(m.MappedClass))) {
+				foreach(var mapping in OrmConfig.NhConfig.ClassMappings.Where(m => !IgnoreMissingClass.ContainsKey(m.MappedClass))) {
 					foreach(var prop in mapping.PropertyIterator.Where(p => p.Type.IsCollectionType)) {
 						if(!(prop.Value is Bag))
 							continue;

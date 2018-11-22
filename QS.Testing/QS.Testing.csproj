@@ -11,6 +11,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Testing</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>GammaUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
