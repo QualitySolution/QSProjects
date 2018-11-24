@@ -227,7 +227,7 @@ namespace QSProjectsLib
 			this.checkDeactivated = new global::Gtk.CheckButton();
 			this.checkDeactivated.CanFocus = true;
 			this.checkDeactivated.Name = "checkDeactivated";
-			this.checkDeactivated.Label = global::Mono.Unix.Catalog.GetString("Деактивирован");
+			this.checkDeactivated.Label = global::Mono.Unix.Catalog.GetString("Пользователь отключён");
 			this.checkDeactivated.DrawIndicator = true;
 			this.checkDeactivated.UseUnderline = true;
 			this.vbox4.Add(this.checkDeactivated);

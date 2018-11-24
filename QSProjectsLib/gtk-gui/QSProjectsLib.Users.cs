@@ -47,13 +47,13 @@ namespace QSProjectsLib
 			this.chkShowInactive = new global::Gtk.CheckButton();
 			this.chkShowInactive.CanFocus = true;
 			this.chkShowInactive.Name = "chkShowInactive";
-			this.chkShowInactive.Label = global::Mono.Unix.Catalog.GetString("Показывать деактивированных");
+			this.chkShowInactive.Label = global::Mono.Unix.Catalog.GetString("Показывать отключённых пользователей");
 			this.chkShowInactive.DrawIndicator = true;
 			this.chkShowInactive.UseUnderline = true;
 			this.hbox2.Add(this.chkShowInactive);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.chkShowInactive]));
 			w2.PackType = ((global::Gtk.PackType)(1));
-			w2.Position = 2;
+			w2.Position = 0;
 			this.vbox2.Add(this.hbox2);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox2]));
 			w3.Position = 0;
