@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ServiceModel.Web;
 using System.ServiceModel;
-using NLog;
+using System.ServiceModel.Web;
 using System.Threading;
+using NLog;
 
 namespace QSSaaS
 {
