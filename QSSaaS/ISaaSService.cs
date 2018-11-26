@@ -82,6 +82,23 @@ namespace QSSaaS
 		/// <param name="sessionId">Идентификатор сессии.</param>
 		bool createUserInBase (string sessionId);
 
+		/// <summary>
+		/// Получаем количество баз к которым имеет доступ пользователь.
+		/// </summary>
+		/// <returns>The access base count.</returns>
+		/// <param name="sessionId">Используется для проверки прав.</param>
+		/// <param name="user">имя пользователя</param>
+		/// <param name="account">Имя акаунта</param>
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		int UserAccessBaseCount(string sessionId, string account, string user);
+
+		/// <summary>
+		/// Удаляем пользователя облака.
+		/// </summary>
+		[OperationContract]
+		[WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+		bool DeleteCloudUser(string sessionId, string account, string user);
 	}
 }
 

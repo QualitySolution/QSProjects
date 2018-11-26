@@ -120,12 +120,24 @@ namespace QSProjectsLib
 			}
 
 			if (result) {
-				logger.Info ("Удаляем пользователя MySQL...");
 				if (QSSaaS.Session.IsSaasConnection) {
-					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService ();
-					if (!svc.changeBaseAccessFromProgram (QSSaaS.Session.SessionId, loginname, QSSaaS.Session.SaasBaseName, false))
-						logger.Error ("Ошибка удаления доступа к базе на сервере SaaS.");
+					logger.Info("Удаляем пользователя в облаке...");
+					QSSaaS.ISaaSService svc = QSSaaS.Session.GetSaaSService();
+
+					if(!svc.changeBaseAccessFromProgram(QSSaaS.Session.SessionId, loginname, QSSaaS.Session.SaasBaseName, false))
+						logger.Error("Ошибка удаления доступа к базе на сервере SaaS.");
+
+					if(svc.UserAccessBaseCount(QSSaaS.Session.SessionId, QSSaaS.Session.Account, loginname) == 0) {
+						if(MessageDialogWorks.RunQuestionDialog($"У пользователя '{loginname}' на сервисе QS:Облако больше не осталось баз данных, к которым он имеет доступ. Удалить пользователя с QS:Облако тоже?")) {
+							if(!svc.DeleteCloudUser(QSSaaS.Session.SessionId, QSSaaS.Session.Account, loginname)) {
+								var text = "Удаления пользователя с QS:Облако не произошло.";
+								logger.Error(text);
+								MessageDialogWorks.RunErrorDialog(text);
+							}
+						}
+					}
 				} else {
+					logger.Info("Удаляем пользователя MySQL...");
 					string sql;
 					sql = "DROP USER @login, @login @'localhost'";
 					try {
