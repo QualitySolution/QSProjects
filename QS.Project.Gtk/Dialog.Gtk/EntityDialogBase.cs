@@ -10,7 +10,7 @@ using QS.Utilities.Text;
 
 namespace QS.Dialog.Gtk
 {
-	public abstract class EntityDialogBase<TEntity> : Bin, ITdiDialog, IEntityDialog
+	public abstract class EntityDialogBase<TEntity> : Bin, IEntityDialog<TEntity>, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {

@@ -80,6 +80,7 @@
     <Compile Include="Dialog.Gtk\SingleUowDialogBase.cs" />
     <Compile Include="Dialog.Gtk\SingleUowTabBase.cs" />
     <Compile Include="Dialog.Gtk\MessageDialogHelper.cs" />
+    <Compile Include="Dialog.Gtk\WidgetOnEntityDialogBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />

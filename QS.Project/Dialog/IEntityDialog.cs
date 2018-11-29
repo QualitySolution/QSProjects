@@ -1,4 +1,5 @@
-﻿using QS.DomainModel.UoW;
+﻿using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 
 namespace QS.Dialog
 {
@@ -8,6 +9,14 @@ namespace QS.Dialog
 	public interface IEntityDialog : ISingleUoWDialog
 	{
 		object EntityObject { get; }
+	}
+
+	public interface IEntityDialog<TEntity> : IEntityDialog
+		where TEntity : IDomainObject, new()
+	{
+		IUnitOfWorkGeneric<TEntity> UoWGeneric { get; }
+
+		TEntity Entity { get; }
 	}
 
 	/// <summary>

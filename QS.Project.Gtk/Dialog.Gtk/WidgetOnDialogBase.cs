@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.DomainModel.UoW;
 using QS.Tdi;
 
 namespace QS.Dialog.Gtk
@@ -21,6 +22,8 @@ namespace QS.Dialog.Gtk
 					return myOrmDialog;
 			}
 		}
+
+		public IUnitOfWork UoW => MyOrmDialog.UoW;
 
 		IEntityDialog myEntityDialog;
 
