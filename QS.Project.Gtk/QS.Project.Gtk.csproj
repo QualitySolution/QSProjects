@@ -81,12 +81,14 @@
     <Compile Include="Dialog.Gtk\SingleUowTabBase.cs" />
     <Compile Include="Dialog.Gtk\MessageDialogHelper.cs" />
     <Compile Include="Dialog.Gtk\WidgetOnEntityDialogBase.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.Gtk\" />
     <Folder Include="Dialog.Gtk\" />
     <Folder Include="Tdi.Gtk\" />
     <Folder Include="Utilities.Gtk\" />
+    <Folder Include="Project.Dialogs.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
@@ -100,6 +102,10 @@
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>GammaUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

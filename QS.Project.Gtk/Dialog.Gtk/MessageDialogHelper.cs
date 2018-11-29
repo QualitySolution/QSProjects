@@ -1,7 +1,7 @@
 ﻿using System;
 using Gtk;
 
-namespace QS.Dialog.Gtk
+namespace QS.Dialog.GtkUI
 {
 	public static class MessageDialogHelper
 	{

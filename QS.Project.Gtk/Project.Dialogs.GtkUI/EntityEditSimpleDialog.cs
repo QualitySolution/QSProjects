@@ -2,16 +2,16 @@
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
-using NLog;
-using QSProjectsLib;
 using NHibernate.Criterion;
-using QS.DomainModel.UoW;
+using NLog;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QS.Utilities.Text;
 
-namespace QSOrmProject
+namespace QS.Project.Dialogs.GtkUI
 {
-	public static class OrmSimpleDialog
+	public static class EntityEditSimpleDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -75,7 +75,7 @@ namespace QSOrmProject
 				}
 
 				//Создаем диалог
-				Dialog editDialog = new Dialog(dialogTitle ?? "Редактирование", parent, Gtk.DialogFlags.Modal);
+				Gtk.Dialog editDialog = new Gtk.Dialog(dialogTitle ?? "Редактирование", parent, Gtk.DialogFlags.Modal);
 				editDialog.AddButton("Отмена", ResponseType.Cancel);
 				editDialog.AddButton("Сохранить", ResponseType.Ok);
 				Gtk.Table editDialogTable = new Table(1, 2, false);
@@ -99,7 +99,7 @@ namespace QSOrmProject
 						string msg = String.Format ("Название {0} пустое и не будет сохранено.",
 							             string.IsNullOrEmpty (subjectName) ? "элемента справочника" : subjectName
 						             );
-						MessageDialogWorks.RunWarningDialog (msg);
+						MessageDialogHelper.RunWarningDialog (msg);
 						logger.Warn (msg);
 						editDialog.Destroy ();
 						return null;
@@ -114,14 +114,13 @@ namespace QSOrmProject
 						string msg = String.Format ("{0} с таким названием уже существует.",
 							             string.IsNullOrEmpty (subjectName) ? "Элемент справочника" : subjectName
 						             );
-						MessageDialogWorks.RunWarningDialog (msg);
+						MessageDialogHelper.RunWarningDialog (msg);
 						logger.Warn (msg);
 						editDialog.Destroy ();
 						return list [0];
 					}
 					uow.TrySave (tempObject);
 					uow.Commit ();
-					OrmMain.NotifyObjectUpdated (tempObject);
 				} 
 				else
 					tempObject = null;

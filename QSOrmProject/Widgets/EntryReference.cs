@@ -13,6 +13,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Gtk.Widgets;
 using QS.Project.Dialogs;
+using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
@@ -318,7 +319,7 @@ namespace QSOrmProject
 				throw new NullReferenceException("SubjectType не задан.");
 
 			if(OrmMain.GetObjectDescription(SubjectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
+				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
 				return;
 			}
 

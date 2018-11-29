@@ -8,6 +8,7 @@ using QS.Dialog.Gtk;
 using QS.DomainModel.Entity;
 using QS.Gtk.Widgets;
 using QS.Project.Dialogs;
+using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
 using QSOrmProject.RepresentationModel;
 using QSOrmProject.UpdateNotification;
@@ -217,7 +218,7 @@ namespace QSOrmProject
 		protected void OnButtonViewEntityClicked (object sender, EventArgs e)
 		{
 			if (OrmMain.GetObjectDescription (SubjectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
+				EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, SubjectType, Subject);
 				return;
 			}
 

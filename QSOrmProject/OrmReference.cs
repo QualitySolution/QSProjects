@@ -10,6 +10,7 @@ using NLog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
+using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
 using QS.Utilities.Text;
 using QSOrmProject.DomainMapping;
@@ -351,7 +352,7 @@ namespace QSOrmProject
 		{
 			ytreeviewRef.Selection.UnselectAll ();
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				SelectObject (OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
+				SelectObject (EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
 			} else {
 				var tab = TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
 					() => OrmMain.CreateObjectDialog (objectType), this
@@ -381,7 +382,7 @@ namespace QSOrmProject
 		protected void OnButtonEditClicked (object sender, EventArgs e)
 		{
 			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
+				EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
 			} else {
 				var selected = ytreeviewRef.GetSelectedObject();
 				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, DomainHelper.GetId(selected)),

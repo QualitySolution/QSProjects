@@ -8,6 +8,7 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
+using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Utilities.Text;
@@ -254,7 +255,7 @@ namespace QSOrmProject
             ormtableview.Selection.UnselectAll ();
             var classDiscript = OrmMain.GetObjectDescription (objectType);
             if (classDiscript.SimpleDialog) {
-                OrmSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
+                EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null);
             } else if (RepresentationModel is IRepresentationModelWithParent) {
 				var dlg = OrmMain.CreateObjectDialog(objectType, (RepresentationModel as IRepresentationModelWithParent).GetParent);
                 TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
