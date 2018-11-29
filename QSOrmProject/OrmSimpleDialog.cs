@@ -25,13 +25,23 @@ namespace QSOrmProject
 		public static object RunSimpleDialog(Window parent, System.Type objectType, object editObject)
 		{
 			string actionTitle = null;
+			string dialogTitle = null;
 			if(editObject == null) {
 				var names = DomainHelper.GetSubjectNames(objectType);
 				if(names != null || names.Gender == GrammaticalGender.Unknown) {
 					switch(names.Gender) {
-						case GrammaticalGender.Feminine: actionTitle = $"Простое редактирование новой {names.Genitive}"; break;
-						case GrammaticalGender.Masculine: actionTitle = $"Простое редактирование нового {names.Genitive}"; break;
-						case GrammaticalGender.Neuter: actionTitle = $"Простое редактирование нового {names.Genitive}"; break;
+						case GrammaticalGender.Feminine:
+							actionTitle = $"Простое редактирование новой {names.Genitive}";
+							dialogTitle = $"Новая {names.Nominative}";
+							break;
+						case GrammaticalGender.Masculine:
+							actionTitle = $"Простое редактирование нового {names.Genitive}";
+							dialogTitle = $"Новый {names.Nominative}";
+							break;
+						case GrammaticalGender.Neuter:
+							actionTitle = $"Простое редактирование нового {names.Genitive}";
+							dialogTitle = $"Новое {names.Nominative}";
+							break;
 					}
 				}
 				else
@@ -39,6 +49,10 @@ namespace QSOrmProject
 			}
 			else {
 				actionTitle = $"Простое редактирование '{DomainHelper.GetObjectTilte(editObject)}'";
+				var names = DomainHelper.GetSubjectNames(objectType);
+				if(names != null && names.Genitive != null) {
+					dialogTitle = $"Редактирование {names.Genitive}";
+				}
 			}
 			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
 			{
@@ -61,7 +75,7 @@ namespace QSOrmProject
 				}
 
 				//Создаем диалог
-				Dialog editDialog = new Dialog("Редактирование", parent, Gtk.DialogFlags.Modal);
+				Dialog editDialog = new Dialog(dialogTitle ?? "Редактирование", parent, Gtk.DialogFlags.Modal);
 				editDialog.AddButton("Отмена", ResponseType.Cancel);
 				editDialog.AddButton("Сохранить", ResponseType.Ok);
 				Gtk.Table editDialogTable = new Table(1, 2, false);
