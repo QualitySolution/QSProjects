@@ -24,7 +24,23 @@ namespace QSOrmProject
 		/// <param name="editObject">Объект для редактирования. Если null создаем новый объект.</param>
 		public static object RunSimpleDialog(Window parent, System.Type objectType, object editObject)
 		{
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot($"Простое редактирование '{DomainHelper.GetObjectTilte(editObject)}'"))
+			string actionTitle = null;
+			if(editObject == null) {
+				var names = DomainHelper.GetSubjectNames(objectType);
+				if(names != null || names.Gender == GrammaticalGender.Unknown) {
+					switch(names.Gender) {
+						case GrammaticalGender.Feminine: actionTitle = $"Простое редактирование новой {names.Genitive}"; break;
+						case GrammaticalGender.Masculine: actionTitle = $"Простое редактирование нового {names.Genitive}"; break;
+						case GrammaticalGender.Neuter: actionTitle = $"Простое редактирование нового {names.Genitive}"; break;
+					}
+				}
+				else
+					actionTitle = "Диалог простого редактирования";
+			}
+			else {
+				actionTitle = $"Простое редактирование '{DomainHelper.GetObjectTilte(editObject)}'";
+			}
+			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
 			{
 				//Создаем объект редактирования
 				object tempObject;
