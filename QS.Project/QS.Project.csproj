@@ -10,6 +10,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -114,6 +115,7 @@
     <Compile Include="Deletion\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\InternalHelper.cs" />
     <Compile Include="Deletion\IHibernateDeleteRule.cs" />
+    <Compile Include="Tdi\TabHashHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

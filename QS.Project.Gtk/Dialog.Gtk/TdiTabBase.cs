@@ -94,6 +94,26 @@ namespace QS.Dialog.Gtk
 		{
 			TabParent.AddSlaveTab(this, slaveTab);
 		}
+
+		protected ITdiTab OpenTab<TTab>() where TTab : ITdiTab
+		{
+			return TabParent.OpenTab<TTab>(this);
+		}
+
+		protected ITdiTab OpenTab<TTab, TArg1>(TArg1 arg1) where TTab : ITdiTab
+		{
+			return TabParent.OpenTab<TTab, TArg1>(arg1, this);
+		}
+
+		protected ITdiTab OpenTab<TTab, TArg1, TArg2>(TArg1 arg1, TArg2 arg2) where TTab : ITdiTab
+		{
+			return TabParent.OpenTab<TTab, TArg1, TArg2>(arg1, arg2, this);
+		}
+
+		protected ITdiTab OpenTab<TTab, TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3) where TTab : ITdiTab
+		{
+			return TabParent.OpenTab<TTab, TArg1, TArg2, TArg3>(arg1, arg2, arg3, this);
+		}
 	}
 }
 

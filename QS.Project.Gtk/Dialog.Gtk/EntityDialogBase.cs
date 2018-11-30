@@ -47,6 +47,16 @@ namespace QS.Dialog.Gtk
 			return DialogHelper.GenerateDialogHashName (typeof (TEntity), id);
 		}
 
+		public static string GenerateHashName(TEntity entity)
+		{
+			return DialogHelper.GenerateDialogHashName(typeof(TEntity), entity.Id);
+		}
+
+		public static string GenerateHashName()
+		{
+			return DialogHelper.GenerateDialogHashName(typeof(TEntity), 0);
+		}
+
 		private bool manualChange = false;
 
 		public virtual bool HasChanges {

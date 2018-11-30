@@ -31,6 +31,14 @@ namespace QS.Tdi
 		void SwitchOnTab(ITdiTab tab);
 
 		ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null);
+
+		/// <summary>
+		/// Открываем вкладку с автоматическим вызовом конструктора в кладки с переданными функции аргументами.
+		/// </summary>
+		ITdiTab OpenTab<TTab>(ITdiTab afterTab = null) where TTab : ITdiTab;
+		ITdiTab OpenTab<TTab, TArg1>(TArg1 arg1, ITdiTab afterTab = null) where TTab : ITdiTab;
+		ITdiTab OpenTab<TTab, TArg1, TArg2>(TArg1 arg1, TArg2 arg2, ITdiTab afterTab = null) where TTab : ITdiTab;
+		ITdiTab OpenTab<TTab, TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3, ITdiTab afterTab = null) where TTab : ITdiTab;
 	}
 }
 
