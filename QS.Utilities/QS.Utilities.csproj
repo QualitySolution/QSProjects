@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QS.Utilities</RootNamespace>
     <AssemblyName>QS.Utilities</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,10 +37,12 @@
     <Compile Include="Text\PersonHelper.cs" />
     <Compile Include="Text\TitleHelper.cs" />
     <Compile Include="Debug\Print.cs" />
+    <Compile Include="Numeric\NumbersHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
     <Folder Include="Debug\" />
+    <Folder Include="Numeric\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
