@@ -28,7 +28,7 @@ namespace QS.Project.Dialogs.GtkUI
 			string dialogTitle = null;
 			if(editObject == null) {
 				var names = DomainHelper.GetSubjectNames(objectType);
-				if(names != null || names.Gender == GrammaticalGender.Unknown) {
+				if(names != null && names.Gender != GrammaticalGender.Unknown) {
 					switch(names.Gender) {
 						case GrammaticalGender.Feminine:
 							actionTitle = $"Простое редактирование новой {names.Genitive}";
