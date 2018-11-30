@@ -16,7 +16,7 @@ namespace QS.DomainModel.Entity
 
 		public virtual event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged (string propertyName)
+		protected void OnPropertyChanged ([CallerMemberName]string propertyName = "")
 		{
 			PropertyChangedEventHandler handler = PropertyChanged;
 			if (handler != null) {
