@@ -46,6 +46,10 @@ namespace QSBanks
 			dataentryNumber.Binding.AddBinding(Entity, e => e.Number, w => w.Text).InitializeFromSource();
 			dataentryrefBank.ItemsCriteria = UoW.Session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false));
+			ycomboboxCorAccount.Binding.AddBinding(Entity, e => e.BankCorAccount, w => w.SelectedItem).InitializeFromSource();
+			ycomboboxCorAccount.RenderTextFunc = (x) => x is CorAccount ? (x as CorAccount).CorAccountNumber : "";
+			ycomboboxCorAccount.ItemsList = Entity.InBank?.ObservableCorAccounts;
+			ycomboboxCorAccount.SelectedItem = Entity.BankCorAccount;
 			dataentryrefBank.Binding.AddBinding(Entity, e => e.InBank, w => w.Subject).InitializeFromSource();
 			Entity.PropertyChanged += OnAccountPropertyChanged;
 
@@ -71,6 +75,9 @@ namespace QSBanks
 				datalabelBik.Text = Entity.InBank.Bik;
 				datalabelRegion.Text = Entity.InBank.RegionText;
 				datalabelCity.Text = Entity.InBank.City;
+				ycomboboxCorAccount.ItemsList = Entity.InBank.ObservableCorAccounts;
+				Entity.BankCorAccount = Entity.InBank.DefaultCorAccount;
+				ycomboboxCorAccount.SelectedItem = Entity.BankCorAccount;
 			}
 		}
 

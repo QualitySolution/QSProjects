@@ -21,6 +21,7 @@ namespace QSBanks.HMap
 			Map(x => x.IsDefault).Column("is_default");
 
 			References(x => x.InBank).Column("bank_id");
+			References(x => x.BankCorAccount).Column("bank_cor_account_id");
 		}
 	}
 }

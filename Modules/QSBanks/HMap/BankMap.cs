@@ -15,11 +15,12 @@ namespace QSBanks.HMap
 
 			Map(x => x.Name).Column("name");
 			Map(x => x.Bik).Column("bik");
-			Map(x => x.CorAccount).Column("cor_account");
 			Map(x => x.City).Column("city");
 			Map(x => x.Deleted).Column("deleted");
 
 			References(x => x.Region).Column("region_id");
+			References(x => x.DefaultCorAccount).Column("default_cor_account_id").Cascade.All();
+			HasMany(x => x.CorAccounts).Cascade.AllDeleteOrphan().Inverse().KeyColumn("bank_id");
 		}
 	}
 }

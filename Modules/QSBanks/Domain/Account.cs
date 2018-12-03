@@ -69,6 +69,13 @@ namespace QSBanks
 			}
 		}
 
+		CorAccount bankCorAccount;
+		[Display(Name = "Кор. счет выбранного банка")]
+		public virtual CorAccount BankCorAccount {
+			get { return bankCorAccount; }
+			set { SetField(ref bankCorAccount, value, () => BankCorAccount); }
+		}
+
 		#endregion
 
 		bool isDefault;
@@ -98,8 +105,11 @@ namespace QSBanks
 
 		public virtual IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
 		{
-			if (!new Regex (@"^[0-9]*$").IsMatch (Number))
-				yield return new ValidationResult ("Номер счета может содержать только цифры.", new[]{ "Number" });
+			if(!new Regex (@"^[0-9]*$").IsMatch (Number))
+				yield return new ValidationResult("Номер счета может содержать только цифры.", new[]{ "Number" });
+			if(BankCorAccount == null || !BankCorAccount.InBank.Equals(InBank)) {
+				yield return new ValidationResult("Должен быть выбран кор. счет выбранного банка.");
+			}
 		}
 
 		#endregion

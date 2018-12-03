@@ -46,6 +46,10 @@ namespace QSBanks
 
 		private global::Gtk.Label label3;
 
+		private global::Gtk.Label label7;
+
+		private global::Gamma.Widgets.ySpecComboBox ycomboboxCorAccount;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -103,7 +107,7 @@ namespace QSBanks
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.datatableMain = new global::Gtk.Table(((uint)(4)), ((uint)(2)), false);
+			this.datatableMain = new global::Gtk.Table(((uint)(5)), ((uint)(2)), false);
 			this.datatableMain.Name = "datatableMain";
 			this.datatableMain.RowSpacing = ((uint)(6));
 			this.datatableMain.ColumnSpacing = ((uint)(6));
@@ -227,8 +231,8 @@ namespace QSBanks
 			this.dataframe1.Add(this.GtkAlignment2);
 			this.datatableMain.Add(this.dataframe1);
 			global::Gtk.Table.TableChild w18 = ((global::Gtk.Table.TableChild)(this.datatableMain[this.dataframe1]));
-			w18.TopAttach = ((uint)(3));
-			w18.BottomAttach = ((uint)(4));
+			w18.TopAttach = ((uint)(4));
+			w18.BottomAttach = ((uint)(5));
 			w18.LeftAttach = ((uint)(1));
 			w18.RightAttach = ((uint)(2));
 			w18.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -264,11 +268,37 @@ namespace QSBanks
 			w21.BottomAttach = ((uint)(3));
 			w21.XOptions = ((global::Gtk.AttachOptions)(4));
 			w21.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child datatableMain.Gtk.Table+TableChild
+			this.label7 = new global::Gtk.Label();
+			this.label7.Name = "label7";
+			this.label7.Xalign = 1F;
+			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString("Кор. счет банка");
+			this.datatableMain.Add(this.label7);
+			global::Gtk.Table.TableChild w22 = ((global::Gtk.Table.TableChild)(this.datatableMain[this.label7]));
+			w22.TopAttach = ((uint)(3));
+			w22.BottomAttach = ((uint)(4));
+			w22.XOptions = ((global::Gtk.AttachOptions)(4));
+			w22.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child datatableMain.Gtk.Table+TableChild
+			this.ycomboboxCorAccount = new global::Gamma.Widgets.ySpecComboBox();
+			this.ycomboboxCorAccount.Name = "ycomboboxCorAccount";
+			this.ycomboboxCorAccount.AddIfNotExist = false;
+			this.ycomboboxCorAccount.DefaultFirst = false;
+			this.ycomboboxCorAccount.ShowSpecialStateAll = false;
+			this.ycomboboxCorAccount.ShowSpecialStateNot = false;
+			this.datatableMain.Add(this.ycomboboxCorAccount);
+			global::Gtk.Table.TableChild w23 = ((global::Gtk.Table.TableChild)(this.datatableMain[this.ycomboboxCorAccount]));
+			w23.TopAttach = ((uint)(3));
+			w23.BottomAttach = ((uint)(4));
+			w23.LeftAttach = ((uint)(1));
+			w23.RightAttach = ((uint)(2));
+			w23.XOptions = ((global::Gtk.AttachOptions)(4));
+			w23.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox1.Add(this.datatableMain);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.datatableMain]));
-			w22.Position = 2;
-			w22.Expand = false;
-			w22.Fill = false;
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.datatableMain]));
+			w24.Position = 2;
+			w24.Expand = false;
+			w24.Fill = false;
 			this.Add(this.vbox1);
 			if ((this.Child != null))
 			{

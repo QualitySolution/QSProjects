@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Bindings.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QS.Project.Dialogs;
@@ -25,20 +28,40 @@ namespace QSBanks
 
 		string bik;
 
-		[StringLength (9, MinimumLength = 9, ErrorMessage = "Бик должен состоять из 8 цифр.")]
+		[StringLength (9, MinimumLength = 9, ErrorMessage = "Бик должен состоять из 9 цифр.")]
 		[Display (Name = "БИК")]
 		public virtual string Bik {
 			get { return bik; }
 			set { SetField (ref bik, value, () => Bik); }
 		}
 
-		string corAccount;
+		IList<CorAccount> corAccounts = new List<CorAccount>();
+
+		public virtual IList<CorAccount> CorAccounts {
+			get { return corAccounts; }
+			set {
+				SetField(ref corAccounts, value, () => CorAccounts);
+			}
+		}
+
+		GenericObservableList<CorAccount> observableCorAccounts;
+		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
+		public virtual GenericObservableList<CorAccount> ObservableCorAccounts {
+			get {
+				if(observableCorAccounts == null) {
+					observableCorAccounts = new GenericObservableList<CorAccount>(CorAccounts);
+				}
+				return observableCorAccounts;
+			}
+		}
+
+		CorAccount defaultCorAccount;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер кореспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
 		[Display (Name = "К/С")]
-		public virtual string CorAccount {
-			get { return corAccount; }
-			set { SetField (ref corAccount, value, () => CorAccount); }
+		public virtual CorAccount DefaultCorAccount {
+			get { return defaultCorAccount; }
+			set { SetField (ref defaultCorAccount, value, () => DefaultCorAccount); }
 		}
 
 		string city;
@@ -74,7 +97,7 @@ namespace QSBanks
 		{
 			Name = String.Empty;
 			Bik = String.Empty;
-			CorAccount = String.Empty;
+			DefaultCorAccount = null;
 			City = String.Empty;
 		}
 
@@ -82,9 +105,10 @@ namespace QSBanks
 		{
 			return (first.Bik == second.Bik &&
 			first.City == second.City &&
-			first.CorAccount == second.CorAccount &&
+			(first.DefaultCorAccount != null && first.DefaultCorAccount.CorAccountNumber == second.DefaultCorAccount.CorAccountNumber) &&
+			first.CorAccounts.All(x => second.CorAccounts.Any(y => y.CorAccountNumber == x.CorAccountNumber)) &&
 			first.Name == second.Name &&
-			((first.Region == null && second.Region == null) || ( first.Region != null && first.Region.Equals (second.Region))) &&
+			BankRegion.EqualsWithoutId(first.Region, second.Region) &&
 			first.Deleted == second.Deleted);
 		}
 
@@ -107,12 +131,12 @@ namespace QSBanks
 		public virtual String RegionText { get { return Region == null ? "" : 
 				String.Format ("{0} {1} {2}", Region.RegionNum, Region.Region, Region.City); } }
 
-		public System.Collections.Generic.IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
+		public IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
 		{
 			if (!new Regex (@"^[0-9]*$").IsMatch (Bik))
 				yield return new ValidationResult ("Бик должен содержать только цифры.", new[]{ "Bik" });
-			if (!new Regex (@"^[0-9]*$").IsMatch (CorAccount))
-				yield return new ValidationResult ("Корреспондентский счет должен содержать только цифры.", new[]{ "CorAccount" });
+			if (DefaultCorAccount == null)
+				yield return new ValidationResult ("Необходимо выбрать кор. счет по умолчанию", new[]{ nameof(DefaultCorAccount) });
 		}
 
 		#endregion

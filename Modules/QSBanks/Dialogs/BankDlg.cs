@@ -1,4 +1,5 @@
 ﻿using System;
+using Gamma.GtkWidgets;
 using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
 using QSValidation;
@@ -21,16 +22,24 @@ namespace QSBanks
 		private void ConfigureDlg ()
 		{
 			buttonSave.Sensitive = dataentryBik.IsEditable = dataentryCity.IsEditable = 
-				dataentryCorAccount.IsEditable = dataentryName.IsEditable = false;
+				dataentryName.IsEditable = false;
 			if (UoWGeneric.Root.Deleted) {
 				labelDeleted.Markup = "<span foreground=\"red\">Банк удалён.</span>";
 			}
 
 			dataentryName.Binding.AddBinding(Entity, e => e.Name, w => w.Text).InitializeFromSource();
 			dataentryBik.Binding.AddBinding(Entity, e => e.Bik, w => w.Text).InitializeFromSource();
-			dataentryCorAccount.Binding.AddBinding(Entity, e => e.CorAccount, w => w.Text).InitializeFromSource();
+			comboboxDefaultCorAccount.Binding.AddBinding(Entity, e => e.DefaultCorAccount, w => w.SelectedItem).InitializeFromSource();
+			comboboxDefaultCorAccount.RenderTextFunc = (x) => x is CorAccount ? (x as CorAccount).CorAccountNumber : "-";
+			comboboxDefaultCorAccount.ItemsList = Entity.ObservableCorAccounts;
+			comboboxDefaultCorAccount.SelectedItem = Entity.DefaultCorAccount;
 			dataentryCity.Binding.AddBinding(Entity, e => e.City, w => w.Text).InitializeFromSource();
 			labelRegion.Binding.AddBinding(Entity, e => e.RegionText, w => w.Text).InitializeFromSource();
+
+			treeViewCorAccounts.ColumnsConfig = ColumnsConfigFactory.Create<CorAccount>()
+				.AddColumn("Счет").AddTextRenderer(x => x.CorAccountNumber)
+				.Finish();
+			treeViewCorAccounts.ItemsDataSource = Entity.ObservableCorAccounts;
 		}
 
 		public override bool Save ()
