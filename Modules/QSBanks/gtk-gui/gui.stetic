@@ -884,7 +884,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="QSBanks.BanksUpdateWindow" design-size="635 305">
+  <widget class="Gtk.Window" id="QSBanks.BanksUpdateWindow" design-size="550 305">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Обновление справочника банков</property>
     <property name="WindowPosition">Center</property>
@@ -921,6 +921,7 @@
                 <property name="Xalign">0</property>
                 <property name="LabelProp" translatable="yes">Необходимо загрузить файл .zip на необходимую дату с сайта 
 "http://cbr.ru/PSystem/system_p/".</property>
+                <property name="Wrap">True</property>
                 <property name="Selectable">True</property>
               </widget>
               <packing>

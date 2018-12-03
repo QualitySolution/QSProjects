@@ -57,8 +57,9 @@ namespace QSBanks
 			this.label2 = new global::Gtk.Label();
 			this.label2.Name = "label2";
 			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("Необходимо загрузить файл .zip на необходимую дату с сайта \"http://cbr.ru/PSystem" +
-					"/system_p/\".");
+			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("Необходимо загрузить файл .zip на необходимую дату с сайта \n\"http://cbr.ru/PSyste" +
+					"m/system_p/\".");
+			this.label2.Wrap = true;
 			this.label2.Selectable = true;
 			this.vboxManualLoad.Add(this.label2);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vboxManualLoad[this.label2]));
@@ -123,7 +124,7 @@ namespace QSBanks
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 635;
+			this.DefaultWidth = 550;
 			this.DefaultHeight = 305;
 			this.Show();
 			this.checkbutton.Toggled += new global::System.EventHandler(this.OnCheckbuttonToggled);
