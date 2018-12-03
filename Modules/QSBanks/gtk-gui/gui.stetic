@@ -919,7 +919,8 @@
               <widget class="Gtk.Label" id="label2">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes">Необходимо загрузить файл .zip на необходимую дату с сайта "http://cbr.ru/PSystem/system_p/".</property>
+                <property name="LabelProp" translatable="yes">Необходимо загрузить файл .zip на необходимую дату с сайта 
+"http://cbr.ru/PSystem/system_p/".</property>
                 <property name="Selectable">True</property>
               </widget>
               <packing>
