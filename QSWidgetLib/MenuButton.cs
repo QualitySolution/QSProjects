@@ -58,6 +58,15 @@ namespace QSWidgetLib
 			}
 		}
 
+		public virtual float LabelXAlign {
+			get { return titleLabel == null ? 0f : titleLabel.Xalign; }
+			set {
+				if(titleLabel != null) {
+					titleLabel.Xalign = value;
+				}
+			}
+		}
+
 		public MenuButton ()
 		{
 			hbox = new HBox ();
