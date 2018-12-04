@@ -87,20 +87,58 @@ namespace QSWidgetLib
 			popup_menu.Popup (null, null, Position, 0, Gtk.Global.CurrentEventTime);
 		}
 
+		public virtual ButtonMenuAllocation MenuAllocation { get; set; } = ButtonMenuAllocation.Auto;
+		public virtual ButtonMenuAlignment MenuAlignment { get; set; } = ButtonMenuAlignment.Auto;
+
 		void Position (Menu menu, out int x, out int y, out bool push_in)
 		{
 			int gdkX, gdkY;
 			GdkWindow.GetOrigin (out gdkX, out gdkY);
+			switch(MenuAllocation) {
+				case ButtonMenuAllocation.Top:
+					y = Allocation.Top + gdkY - menu.Requisition.Height;
+					break;
+				case ButtonMenuAllocation.Bottom:
+					y = Allocation.Bottom + gdkY;
+					break;
+				case ButtonMenuAllocation.Auto:
+				default:
+					y = Allocation.Bottom + gdkY;
+					if(GdkWindow.Screen.Height < y + menu.Requisition.Height)
+						y = Allocation.Top + gdkY - menu.Requisition.Height;
+					break;
+			}
 
-			x = this.Allocation.X + gdkX;
-			y = this.Allocation.Bottom + gdkY;
-			if (GdkWindow.Screen.Height < y + menu.Requisition.Height)
-				y = this.Allocation.Top + gdkY - menu.Requisition.Height;
+			switch(MenuAlignment) {
+				case ButtonMenuAlignment.Left:
+					x = Allocation.X + gdkX;
+					break;
+				case ButtonMenuAlignment.Right:
+					x = Allocation.X + gdkX + Allocation.Width - menu.Requisition.Width;
+					break;
+				case ButtonMenuAlignment.Auto:
+				default:
+					x = Allocation.X + gdkX;
+					if(Allocation.Width > menu.Requisition.Width)
+						menu.WidthRequest = Allocation.Width;
+					break;
+			}
 			push_in = true;
-
-			if (Allocation.Width > menu.Requisition.Width)
-				menu.WidthRequest = Allocation.Width;
 		}
+	}
+
+	public enum ButtonMenuAllocation
+	{
+		Auto,
+		Top,
+		Bottom
+	}
+
+	public enum ButtonMenuAlignment
+	{
+		Auto,
+		Left,
+		Right
 	}
 }
 
