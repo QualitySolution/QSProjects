@@ -1,10 +1,11 @@
 ﻿using System;
-using QSProjectsLib;
 using System.IO;
-using MySql.Data.MySqlClient;
 using System.Text.RegularExpressions;
-using QSSupportLib;
 using Gtk;
+using MySql.Data.MySqlClient;
+using QS.Dialog.GtkUI;
+using QSProjectsLib;
+using QSSupportLib;
 
 namespace QSUpdater.DB
 {
@@ -66,6 +67,11 @@ namespace QSUpdater.DB
 				logger.Info("Обновление до версии {0}, завершено.", StringWorks.VersionToShortString(updateHop.Destanation));
 				Success = true;
 				Respond(Gtk.ResponseType.Ok);
+			}
+			catch(MySqlException ex) when(ex.Number == 1142) {
+				logger.Error(ex, "Нет прав на доступ к таблицам базы данных, в момент выполнения обновления.");
+				buttonOk.Sensitive = false;
+				MessageDialogHelper.RunErrorDialog("У вас нет прав на выполение команд обновления базы на уровне MySQL\\MariaDB сервера. Получите права на изменение структуры таблиц базы данных или выполните обновление от пользователя root.");
 			}
 			catch(Exception ex)
 			{
