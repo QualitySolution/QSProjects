@@ -1979,7 +1979,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.HBox" id="hbox2">
+                  <widget class="Gtk.HBox" id="hboxCreateBase">
                     <property name="MemberName" />
                     <property name="Spacing">6</property>
                     <child>
@@ -2002,7 +2002,7 @@
                         <property name="MemberName" />
                         <property name="CanFocus">True</property>
                         <property name="Type">TextAndIcon</property>
-                        <property name="Icon">stock:stock_help Button</property>
+                        <property name="Icon">resource:QSProjectsLib.icons.help.png</property>
                         <property name="Label" translatable="yes" />
                         <property name="UseUnderline">True</property>
                         <property name="Relief">None</property>

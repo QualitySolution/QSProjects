@@ -310,7 +310,7 @@ namespace QSProjectsLib
 			this.buttonHelp.UseUnderline = true;
 			this.buttonHelp.Relief = ((global::Gtk.ReliefStyle)(2));
 			global::Gtk.Image w26 = new global::Gtk.Image();
-			w26.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "stock_help", global::Gtk.IconSize.Button);
+			w26.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QSProjectsLib.icons.help.png");
 			this.buttonHelp.Image = w26;
 			this.hboxCreateBase.Add(this.buttonHelp);
 			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hboxCreateBase[this.buttonHelp]));
@@ -368,7 +368,7 @@ namespace QSProjectsLib
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 562;
+			this.DefaultWidth = 561;
 			this.DefaultHeight = 407;
 			this.Show();
 			this.treeConnections.RowActivated += new global::Gtk.RowActivatedHandler(this.OnTreeviewConnectionsRowActivated);

@@ -118,11 +118,13 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="icons\help.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />
     <Folder Include="DBCreator\" />
     <Folder Include="Permissions\" />
+    <Folder Include="icons\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
