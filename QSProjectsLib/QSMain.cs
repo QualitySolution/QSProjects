@@ -74,17 +74,18 @@ namespace QSProjectsLib
 		public static DbConnection ConnectionDB {
 			get {
 				switch (DBMS) {
-				case DataProviders.Factory:
-					return _ConnectionDB;
-				case DataProviders.MySQL:
-					if (connectionDB == null && !String.IsNullOrWhiteSpace(QSMain.ConnectionString))
-					{
-						connectionDB = new MySqlConnection (QSMain.ConnectionString);
-						connectionDB.Open ();
-					}
-					return connectionDB;
-				default:
-					return connectionDB;
+					case DataProviders.Factory:
+						return _ConnectionDB;
+					case DataProviders.MySQL:
+						if((connectionDB == null || (connectionDB != null && connectionDB.State == System.Data.ConnectionState.Closed)) 
+							&& !String.IsNullOrWhiteSpace(QSMain.ConnectionString))
+						{
+							connectionDB = new MySqlConnection (QSMain.ConnectionString);
+							connectionDB.Open ();
+						}
+						return connectionDB;
+					default:
+						return connectionDB;
 				}
 			}
 			set {
