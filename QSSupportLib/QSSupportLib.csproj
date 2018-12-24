@@ -109,6 +109,10 @@
       <Project>{F8E01CD3-8BDD-403B-8264-0ED24AC3FA21}</Project>
       <Name>QSBugReporting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
+      <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
