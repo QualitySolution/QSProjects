@@ -287,8 +287,8 @@ namespace QSSupportLib
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 1553;
-			this.DefaultHeight = 784;
+			this.DefaultWidth = 1081;
+			this.DefaultHeight = 733;
 			this.Show();
 			this.buttonSendReport.Clicked += new global::System.EventHandler(this.OnButtonSendReportClicked);
 			this.buttonCopy.Clicked += new global::System.EventHandler(this.OnButtonCopyClicked);

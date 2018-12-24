@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Gtk;
-using QSProjectsLib;
 using System.Text.RegularExpressions;
+using Gtk;
 using NLog;
 using NLog.Targets;
-using System.Collections.Generic;
+using QS.Dialog.GtkUI;
+using QSProjectsLib;
 
 namespace QSSupportLib
 {
@@ -85,7 +86,7 @@ namespace QSSupportLib
 			var svc = QSBugReporting.ReportWorker.GetReportService ();
 			if(svc == null)
 			{
-				MessageDialogWorks.RunErrorDialog ("Не удалось установить соединение с сервером Quality Solution.");
+				MessageDialogHelper.RunErrorDialog ("Не удалось установить соединение с сервером Quality Solution.");
 				return;
 			}
 			string logFileName = GetLogFile ();
@@ -119,7 +120,7 @@ namespace QSSupportLib
 			if (result) {
 				this.Respond (ResponseType.Ok);
 			} else
-				MessageDialogWorks.RunWarningDialog ("Отправка сообщения не удалась.\n" +
+				MessageDialogHelper.RunWarningDialog ("Отправка сообщения не удалась.\n" +
 				"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
 		}
 			

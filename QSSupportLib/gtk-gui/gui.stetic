@@ -8,8 +8,9 @@
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QSSupportLib.dll" internal="true" />
+    <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
   </import>
-  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="1553 784">
+  <widget class="Gtk.Dialog" id="QSSupportLib.ErrorMsg" design-size="1081 733">
     <property name="MemberName" />
     <property name="WidthRequest">1000</property>
     <property name="Title" translatable="yes">Ошибка</property>
