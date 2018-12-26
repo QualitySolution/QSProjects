@@ -62,7 +62,7 @@ namespace QS.DomainModel.UoW
 				HibernateTracker?.SaveChangeSet((IUnitOfWork)this);
 
 				IsNew = false;
-				NotifyObjectUpdated(entityToSave.ToArray());
+				NotifyObjectUpdated?.Invoke(entityToSave.ToArray());
 			} catch(Exception ex) {
 				logger.Error(ex, "Исключение в момент комита.");
 				if(transaction.IsActive)
