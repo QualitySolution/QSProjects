@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Xml.Serialization;
 using Gtk;
 using ICSharpCode.SharpZipLib.Zip;
+using QS.DomainModel.UoW;
 using QS.Utilities;
+using QSBanks.CBRSource;
+using QSBanks.Repositories;
 using QSOrmProject;
 using QSProjectsLib;
 using QSSupportLib;
-using System.Xml.Serialization;
-using QSBanks.CBRSource;
-using System.Linq;
-using QS.DomainModel.UoW;
-using QSBanks.Repositories;
 
 namespace QSBanks
 {
@@ -91,7 +91,7 @@ namespace QSBanks
 		public void UpdateBanks()
 		{
 			accountsDeactivated = banksRemoved = banksDeactivated = banksAdded = banksFixed = 0;
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot($"[BU]Обновление банков")) {
 				LoadBanks(uow);
 
 				bool successfullyUpdate = UpdateBanksFromCBR(uow);

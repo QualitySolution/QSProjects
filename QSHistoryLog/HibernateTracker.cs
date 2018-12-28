@@ -9,7 +9,6 @@ using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Project.Repositories;
 using QS.Utilities;
-using QSOrmProject;
 
 namespace QS.HistoryLog
 {
