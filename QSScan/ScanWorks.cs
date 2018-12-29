@@ -14,18 +14,20 @@ namespace QSScan
 	public class ScanWorks
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		private bool WorkWithTwain;
 		private Twain32 _twain32;
 		private MemoryStream stream;
-		private Twain32.ColorPalette palette;
+		private int TotalImages = -1;
+		private int CurrentImage = 0;
+		private bool _isEnable = false;
 
 		public event EventHandler<ImageTransferEventArgs> ImageTransfer;
 		public event EventHandler<ScanWorksPulseEventArgs> Pulse;
-		int TotalImages = -1;
-		int CurrentImage = 0;
 
 		public List<Pixbuf> Images;
-		private bool _isEnable=false;
+
+		public ScanerSetup ScanerSetup { get; set; }
 
 		public ScanWorks ()
 		{
@@ -78,8 +80,11 @@ namespace QSScan
 			_twain32.TwainStateChanged += _twain_TwainStateChanged;
 			_twain32.AcquireError += OnTwainAcquireError;
 
-			_twain32.SetupMemXferEvent += OnSetupMemXferEvent;
-			_twain32.MemXferEvent += OnMemXferEvent;
+			if (ScanerSetup == ScanerSetup.Custom) {
+				_twain32.SetupMemXferEvent += OnSetupMemXferEvent;
+				_twain32.MemXferEvent += OnMemXferEvent;
+			}
+
 			_twain32.AcquireCompleted += _twain32_AcquireCompleted;
 
 			logger.Debug ("IsTwain2Enable = {0}", _twain32.IsTwain2Enable);
@@ -96,7 +101,7 @@ namespace QSScan
 
 		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
 		{
-			logger.Error (e.Exception, "Ошибка в процессе сканирования");
+			logger.Error ($"Ошибка в процессе сканирования: {e.Exception.Message}");
 			this.Close ();
 		}
 
@@ -111,29 +116,7 @@ namespace QSScan
 				_twain32.CloseDataSource ();
 			}
 			this._isEnable=(e.TwainState&Twain32.TwainStateFlag.DSEnabled)!=0;
-			while (Gtk.Application.EventsPending ())
-				Gtk.Application.RunIteration ();
-		}
-
-		private void _twain32_EndXfer(object sender,Twain32.EndXferEventArgs e) 
-		{
-			logger.Debug("EndXfer fired");
-			if(e.Image!=null) 
-			{
-				Pixbuf CurImg = WinImageToPixbuf(e.Image);
-				e.Image.Dispose();
-				if(ImageTransfer == null)
-				{// Записываем во внутренний массив
-					Images.Add(CurImg);
-				}
-				else
-				{// Передаем через событие
-					ImageTransferEventArgs arg = new ImageTransferEventArgs();
-					arg.AllImages = TotalImages;
-					arg.Image = CurImg;
-					ImageTransfer(this, arg);
-				}
-			}
+			logger.Debug ($"Handle TwainState end");
 		}
 
 		private void _twain32_AcquireCompleted(object sender,EventArgs e) 
@@ -179,46 +162,6 @@ namespace QSScan
 			{
 				RunTwain();
 			}
-
-		}
-
-		void OnMemXferEvent (object sender, Twain32.MemXferEventArgs e)
-		{
-			try 
-			{
-				logger.Debug("On MemXfer Event {0}", this.stream.Position);
-				//FIXME Некорректно работает с черно белыми изображениями на нашем сканере(нужно проверить)
-				int _bytesPerPixel=e.ImageInfo.BitsPerPixel>>3;
-				for(int i=0,_rowOffset=0; i<e.ImageMemXfer.Rows; i++,_rowOffset+=(int)e.ImageMemXfer.BytesPerRow) {
-					for(int ii=0,_colOffset=0; ii<e.ImageMemXfer.Columns; ii++,_colOffset+=_bytesPerPixel) {
-						switch(e.ImageInfo.BitsPerPixel) {
-						case 1:
-							for(int _mask=1; (_mask&0xff)!=0&&ii<e.ImageMemXfer.Columns; _mask<<=1,ii++) {
-								this.stream.WriteByte((e.ImageMemXfer.ImageData[_rowOffset+_colOffset]&_mask)!=0?byte.MaxValue:byte.MinValue);
-							}
-							_colOffset++;
-							ii--;
-							break;
-						case 8:
-						case 24:
-							if(e.ImageInfo.PixelType==TwPixelType.Palette) {
-								System.Drawing.Color _color=this.palette.Colors[e.ImageMemXfer.ImageData[_rowOffset+_colOffset]];
-								this.stream.Write(new byte[] { _color.R,_color.G,_color.B },0,3);
-							} else {
-								this.stream.Write(e.ImageMemXfer.ImageData,_rowOffset+_colOffset,_bytesPerPixel);
-							}
-							break;
-						}
-					}
-				}
-				OnPulse(e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
-			} 
-			catch(Exception ex) 
-			{
-				logger.Error (ex, "Ошибка при получении изображения.");
-				throw ex;
-			}
-
 		}
 
 		private void OnPulse(int imageSize, int imagePosition)
@@ -269,20 +212,22 @@ namespace QSScan
 			}
 			#endif
 
-			_twain32.Capabilities.XferMech.Set (TwSX.Memory);
-			//Feeder
-			if(this._twain32.Capabilities.FeederEnabled.IsSupported(TwQC.Set)) {
-				this._twain32.Capabilities.FeederEnabled.Set(true);
-				logger.Debug ("TwCap.FeederEnabled = Enabled");
+			if (ScanerSetup == ScanerSetup.Custom) {
+				_twain32.Capabilities.XferMech.Set (TwSX.Memory);
+				//Feeder
+				if (this._twain32.Capabilities.FeederEnabled.IsSupported (TwQC.Set)) {
+					this._twain32.Capabilities.FeederEnabled.Set (true);
+					logger.Debug ("TwCap.FeederEnabled = Enabled");
 
-				if(this._twain32.Capabilities.AutoFeed.IsSupported(TwQC.Set)) {
-					this._twain32.Capabilities.AutoFeed.Set(true);
-					logger.Debug ("TwCap.AutoFeed = Enabled");
-				}
+					if (this._twain32.Capabilities.AutoFeed.IsSupported (TwQC.Set)) {
+						this._twain32.Capabilities.AutoFeed.Set (true);
+						logger.Debug ("TwCap.AutoFeed = Enabled");
+					}
 
-				if(this._twain32.Capabilities.XferCount.IsSupported(TwQC.Set)) {
-					this._twain32.Capabilities.XferCount.Set(-1);
-					logger.Debug ("TwCap.XferCount = Enabled");
+					if (this._twain32.Capabilities.XferCount.IsSupported (TwQC.Set)) {
+						this._twain32.Capabilities.XferCount.Set (-1);
+						logger.Debug ("TwCap.XferCount = Enabled");
+					}
 				}
 			}
 
@@ -334,40 +279,6 @@ namespace QSScan
 			logger.Debug("After Acquire");
 		}
 
-		void OnSetupMemXferEvent (object sender, Twain32.SetupMemXferEventArgs e)
-		{
-			if (stream != null)
-				FinishImageTransfer ();
-			logger.Debug("SetupMemXfer size={0}B", e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8);
-			try {
-				stream = new MemoryStream((int)e.BufferSize);
-				var _writer=new BinaryWriter(this.stream);
-				switch(e.ImageInfo.BitsPerPixel) {
-				case 1:
-					if(e.ImageInfo.PixelType==TwPixelType.Palette) {
-						_writer.Write(Encoding.ASCII.GetBytes("P6\n"));
-						this.palette=this._twain32.Palette.Get();
-					} else {
-						_writer.Write(Encoding.ASCII.GetBytes("P5\n"));
-					}
-					break;
-				case 3:
-					_writer.Write(Encoding.ASCII.GetBytes("P6\n"));
-					break;
-				default:
-					_writer.Write(Encoding.ASCII.GetBytes("PX\n"));
-					break;
-				}
-				_writer.Write(Encoding.ASCII.GetBytes(string.Format("# (C) SARAFF SOFTWARE 2013.\n{0} {1}\n{2}\n",e.ImageInfo.ImageWidth,e.ImageInfo.ImageLength,byte.MaxValue)));
-				OnPulse(e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
-			} catch(Exception ex) 
-			{
-				logger.Error (ex, "Ошибка при настройке буфера приема.");
-				throw ex;
-			}
-
-		}
-
 		private void FinishImageTransfer()
 		{
 			if(stream != null) 
@@ -389,7 +300,6 @@ namespace QSScan
 					ImageTransfer(this, arg);
 				}
 			}
-
 		}
 
 		public void Close()
@@ -397,6 +307,88 @@ namespace QSScan
 			logger.Debug("Close Scanworks");
 			_twain32.Dispose();
 		}
+
+		#region CustomSetup
+
+		private Twain32.ColorPalette palette;
+
+		void OnMemXferEvent (object sender, Twain32.MemXferEventArgs e)
+		{
+			try {
+				logger.Debug ("On MemXfer Event {0}", this.stream.Position);
+				//FIXME Некорректно работает с черно белыми изображениями на нашем сканере(нужно проверить)
+				int _bytesPerPixel = e.ImageInfo.BitsPerPixel >> 3;
+				for (int i = 0, _rowOffset = 0; i < e.ImageMemXfer.Rows; i++, _rowOffset += (int)e.ImageMemXfer.BytesPerRow) {
+					for (int ii = 0, _colOffset = 0; ii < e.ImageMemXfer.Columns; ii++, _colOffset += _bytesPerPixel) {
+						switch (e.ImageInfo.BitsPerPixel) {
+						case 1:
+							for (int _mask = 1; (_mask & 0xff) != 0 && ii < e.ImageMemXfer.Columns; _mask <<= 1, ii++) {
+								this.stream.WriteByte ((e.ImageMemXfer.ImageData [_rowOffset + _colOffset] & _mask) != 0 ? byte.MaxValue : byte.MinValue);
+							}
+							_colOffset++;
+							ii--;
+							break;
+						case 8:
+						case 24:
+							if (e.ImageInfo.PixelType == TwPixelType.Palette) {
+								System.Drawing.Color _color = this.palette.Colors [e.ImageMemXfer.ImageData [_rowOffset + _colOffset]];
+								this.stream.Write (new byte [] { _color.R, _color.G, _color.B }, 0, 3);
+							} else {
+								this.stream.Write (e.ImageMemXfer.ImageData, _rowOffset + _colOffset, _bytesPerPixel);
+							}
+							break;
+						}
+					}
+				}
+				OnPulse (e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
+			} catch (Exception ex) {
+				logger.Error (ex, "Ошибка при получении изображения.");
+				throw ex;
+			}
+
+		}
+
+		void OnSetupMemXferEvent (object sender, Twain32.SetupMemXferEventArgs e)
+		{
+			if (stream != null)
+				FinishImageTransfer ();
+			logger.Debug ("SetupMemXfer size={0}B", e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8);
+			try {
+				stream = new MemoryStream ((int)e.BufferSize);
+				var _writer = new BinaryWriter (this.stream);
+				switch (e.ImageInfo.BitsPerPixel) {
+				case 1:
+					if (e.ImageInfo.PixelType == TwPixelType.Palette) {
+						_writer.Write (Encoding.ASCII.GetBytes ("P6\n"));
+						this.palette = this._twain32.Palette.Get ();
+					} else {
+						_writer.Write (Encoding.ASCII.GetBytes ("P5\n"));
+					}
+					break;
+				case 3:
+					_writer.Write (Encoding.ASCII.GetBytes ("P6\n"));
+					break;
+				default:
+					_writer.Write (Encoding.ASCII.GetBytes ("PX\n"));
+					break;
+				}
+				_writer.Write (Encoding.ASCII.GetBytes (string.Format ("# (C) SARAFF SOFTWARE 2013.\n{0} {1}\n{2}\n", e.ImageInfo.ImageWidth, e.ImageInfo.ImageLength, byte.MaxValue)));
+				OnPulse (e.ImageInfo.BitsPerPixel * e.ImageInfo.ImageLength * e.ImageInfo.ImageWidth / 8, (int)stream.Position);
+			} catch (Exception ex) {
+				logger.Error (ex, "Ошибка при настройке буфера приема.");
+				throw ex;
+			}
+
+		}
+
+		#endregion
+
+	}
+
+	public enum ScanerSetup
+	{
+		Native,
+		Custom
 	}
 }
 
