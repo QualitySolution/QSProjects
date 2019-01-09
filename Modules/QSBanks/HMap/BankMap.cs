@@ -19,7 +19,7 @@ namespace QSBanks.HMap
 			Map(x => x.Deleted).Column("deleted");
 
 			References(x => x.Region).Column("region_id");
-			References(x => x.DefaultCorAccount).Column("default_cor_account_id").Cascade.All();
+			References(x => x.DefaultCorAccount).Column("default_cor_account_id");
 			HasMany(x => x.CorAccounts).Cascade.AllDeleteOrphan().Inverse().KeyColumn("bank_id");
 		}
 	}
