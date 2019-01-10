@@ -147,7 +147,10 @@ namespace QSOrmProject
 			}
 			Type[] paramTypes = new Type[parameters.Length];
 			for (int i = 0; i < parameters.Length; i++) {
-				paramTypes[i] = parameters[i].GetType();
+				if(parameters[i] is INHibernateProxy)
+					paramTypes[i] = NHibernateProxyHelper.GuessClass(parameters[i]);
+				else
+					paramTypes[i] = parameters[i].GetType();
 			}
 
 			System.Reflection.ConstructorInfo ci = dlgType.GetConstructor(paramTypes);

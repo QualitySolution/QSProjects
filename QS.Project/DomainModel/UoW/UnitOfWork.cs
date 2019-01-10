@@ -1,6 +1,4 @@
-﻿using QS.DomainModel;
-using QS.DomainModel.Entity;
-using QS.DomainModel.Tracking;
+﻿using QS.DomainModel.Entity;
 
 namespace QS.DomainModel.UoW
 {
