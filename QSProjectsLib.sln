@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSSaaS", "QSSaaS\QSSaaS.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSUpdater", "QSUpdater\QSUpdater.csproj", "{6D755374-6EAF-44B6-8C6C-6FE5E5AB3432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Gtk", "QSHistoryLog\QS.HistoryLog.Gtk.csproj", "{1C3B49FC-372C-46F7-995F-EEB44474E2DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Gtk", "QS.HistoryLog.Gtk\QS.HistoryLog.Gtk.csproj", "{1C3B49FC-372C-46F7-995F-EEB44474E2DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSReport", "QSReport\QSReport.csproj", "{9C0363D4-EE69-45B8-BA45-BDA24CE35A06}"
 EndProject

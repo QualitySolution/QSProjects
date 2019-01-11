@@ -6,7 +6,7 @@
     <ProjectGuid>{1C3B49FC-372C-46F7-995F-EEB44474E2DE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>QS.HistoryLog</RootNamespace>
-    <AssemblyName>QSHistoryLog</AssemblyName>
+    <AssemblyName>QS.HistoryLog.Gtk</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
