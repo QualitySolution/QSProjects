@@ -4,7 +4,6 @@ using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
-using QSHistoryLog;
 
 namespace QS.HistoryLog
 {

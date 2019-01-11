@@ -9,8 +9,8 @@
     <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../bin/Debug/QSHistoryLog.dll" internal="true" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../bin/Debug/QS.HistoryLog.Gtk.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QS.HistoryLog.Dialogs.HistoryView" design-size="723 560">
     <property name="MemberName" />

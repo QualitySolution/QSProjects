@@ -2,8 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using DiffPlex;
-using DiffPlex.DiffBuilder;
 using Gamma.Utilities;
 using NHibernate.Event;
 using QS.DomainModel.Entity;
@@ -13,7 +11,12 @@ namespace QS.HistoryLog.Domain
 {
 	public class FieldChange : IDomainObject
 	{
+		#region Конфигурация
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+		public virtual IDiffFormatter DiffFormatter { get; set; } 
+
+		#endregion
 
 		#region Свойства
 
@@ -28,34 +31,37 @@ namespace QS.HistoryLog.Domain
 		public virtual int? OldId { get; set; }
 		public virtual int? NewId { get; set; }
 
-		string oldPangoText;
-		public virtual string OldPangoText {
+		#endregion
+
+		#region Расчетные
+
+		string oldFormatedDiffText;
+		public virtual string OldFormatedDiffText {
 			get {
-				if(!isPangoMade)
-					MakeDiffPangoMarkup();
-				return oldPangoText;
+				if(!isDiffMade)
+					MakeDiff();
+				return oldFormatedDiffText;
 			}
 			protected set {
-				oldPangoText = value;
+				oldFormatedDiffText = value;
 			}
 		}
 
-		string newPangoText;
-		public virtual string NewPangoText {
+		string newFormatedDiffText;
+		public virtual string NewFormatedDiffText {
 			get {
-				if(!isPangoMade)
-					MakeDiffPangoMarkup();
-				return newPangoText;
+				if(!isDiffMade)
+					MakeDiff();
+				return newFormatedDiffText;
 			}
 			protected set {
-				newPangoText = value;
+				newFormatedDiffText = value;
 			}
 		}
 
 		public virtual string OldValueText => ValueDisplay(OldValue);
 		public virtual string NewValueText => ValueDisplay(NewValue);
 
-		private bool isPangoMade = false;
 
 		public virtual string FieldTitle {
 			get { return HistoryMain.ResolveFieldTilte(Entity.EntityClassName, Path); }
@@ -74,14 +80,14 @@ namespace QS.HistoryLog.Domain
 
 		#region Внутренние методы
 
-		private void MakeDiffPangoMarkup()
+		private bool isDiffMade = false;
+		private void MakeDiff()
 		{
-			var d = new Differ();
-			var differ = new SideBySideFullDiffBuilder(d);
-			var diffRes = differ.BuildDiffModel(OldValueText, NewValueText);
-			OldPangoText = PangoRender.RenderDiffLines(diffRes.OldText);
-			NewPangoText = PangoRender.RenderDiffLines(diffRes.NewText);
-			isPangoMade = true;
+			if(DiffFormatter == null)
+				return;
+
+			DiffFormatter.SideBySideDiff(OldValueText, NewValueText, out oldFormatedDiffText, out newFormatedDiffText);
+			isDiffMade = true;
 		}
 
 		private void UpdateType()

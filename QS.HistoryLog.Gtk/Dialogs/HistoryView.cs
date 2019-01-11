@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gamma.Widgets;
-using Gtk;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Utilities;
-using QSHistoryLog;
 using QSOrmProject;
 using QSProjectsLib;
 using QSWidgetLib;
@@ -24,6 +22,7 @@ namespace QS.HistoryLog.Dialogs
 		private int pageSize = 250;
 		private int takenRows = 0;
 		private bool takenAll = false;
+		private IDiffFormatter diffFormatter = new PangoDiffFormater();
 
 		IUnitOfWork UoW;
 
@@ -54,8 +53,8 @@ namespace QS.HistoryLog.Dialogs
 			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange> ()
 				.AddColumn ("Поле").AddTextRenderer (x => x.FieldTitle)
 				.AddColumn ("Операция").AddTextRenderer (x => x.TypeText)
-				.AddColumn ("Новое значение").AddTextRenderer (x => x.NewPangoText, useMarkup: true)
-				.AddColumn ("Старое значение").AddTextRenderer (x => x.OldPangoText, useMarkup: true)
+				.AddColumn ("Новое значение").AddTextRenderer (x => x.NewFormatedDiffText, useMarkup: true)
+				.AddColumn ("Старое значение").AddTextRenderer (x => x.OldFormatedDiffText, useMarkup: true)
 				.Finish ();
 
 			canUpdate = true;
@@ -75,7 +74,12 @@ namespace QS.HistoryLog.Dialogs
 		void OnChangeSetSelectionChanged (object sender, EventArgs e)
 		{
 			var selected = (ChangedEntity)datatreeChangesets.GetSelectedObject ();
-			datatreeChanges.ItemsDataSource = selected == null ? null : selected.Changes;
+			if(selected != null) {
+				selected.Changes.ToList().ForEach(x => x.DiffFormatter = diffFormatter);
+				datatreeChanges.ItemsDataSource = selected.Changes;
+			}
+			else
+				datatreeChanges.ItemsDataSource = null;
 		}
 
 		void UpdateJournal(bool nextPage = false)

@@ -5,7 +5,6 @@ using Gamma.Utilities;
 using NHibernate.Proxy;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
-using QSOrmProject;
 
 namespace QS.HistoryLog.Domain
 {
