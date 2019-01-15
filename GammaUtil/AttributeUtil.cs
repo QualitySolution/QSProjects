@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
 namespace Gamma.Utilities
 {
@@ -76,6 +76,19 @@ namespace Gamma.Utilities
 			where TAttribute : Attribute
 		{
 			return clazz.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().FirstOrDefault();
+		}
+
+		/// <summary>
+		/// Returns required attribute of enum value.
+		/// </summary>
+		/// <returns>Attribute of enum value.</returns>
+		/// <param name="subject">Enum value</param>
+		/// <typeparam name="TAttribute">Type of required attribute</typeparam>
+		public static TAttribute GetAttributeOfEnumValue<TAttribute>(this Enum subject, bool inherit)
+		where TAttribute : Attribute
+		{
+			var fi = subject.GetType().GetField(subject.ToString());
+			return fi.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().FirstOrDefault();
 		}
 	}
 }
