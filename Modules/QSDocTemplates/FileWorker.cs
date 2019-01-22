@@ -31,12 +31,12 @@ namespace QSDocTemplates
 			}
 		}
 
-		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, bool silentPrint = false)
+		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, bool silentPrint = false,bool IsSavedFile = false)
 		{
 			int docsToPrint = 0;
 			if(silentPrint)
 				docsToPrint = 1;
-			OpenInOffice(template, readOnly, mode, docsToPrint);
+			OpenInOffice(template, readOnly, mode, docsToPrint,IsSavedFile:IsSavedFile);
 		}
 
 		/// <summary>
@@ -47,18 +47,17 @@ namespace QSDocTemplates
 		/// <param name="mode">???</param>
 		/// <param name="docsToPrint">Количество копий для печати. Если 0, то будет открыт и не напечатан.</param>
 		/// <param name="PrintSettings">Настройки печати</param>
-		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, int docsToPrint, PrintSettings PrintSettings = null)
+		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, int docsToPrint, PrintSettings PrintSettings = null, bool IsSavedFile = false)
 		{
 			logger.Info ("Сохраняем временный файл...");
 			OdtWorks odt;
 			odt = new OdtWorks (template.File);
 			odt.DocParser = template.DocParser;
 			odt.DocParser.UpdateFields();
-			odt.UpdateFields ();
-			if(odt.DocParser.FieldsHasValues)
-			{
-				odt.FillValues();
-			}
+			odt.UpdateFields();
+			if(odt.DocParser.FieldsHasValues && IsSavedFile==false) {
+					odt.FillValues();
+				}
 			var file = odt.GetArray ();
 			odt.Close ();
 
