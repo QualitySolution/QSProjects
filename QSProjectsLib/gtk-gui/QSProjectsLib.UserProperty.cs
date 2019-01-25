@@ -58,6 +58,10 @@ namespace QSProjectsLib
 
 		private global::Gtk.Label label7;
 
+		private global::QS.Widgets.Gtk.UserPermissionWidget userpermissionwidget1;
+
+		private global::Gtk.Label label8;
+
 		private global::Gtk.Button buttonCancel;
 
 		private global::Gtk.Button buttonOk;
@@ -76,7 +80,7 @@ namespace QSProjectsLib
 			this.notebook1 = new global::Gtk.Notebook();
 			this.notebook1.CanFocus = true;
 			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = 0;
+			this.notebook1.CurrentPage = 1;
 			// Container child notebook1.Gtk.Notebook+NotebookChild
 			this.vbox5 = new global::Gtk.VBox();
 			this.vbox5.Name = "vbox5";
@@ -320,15 +324,28 @@ namespace QSProjectsLib
 			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString("Информация");
 			this.notebook1.SetTabLabel(this.vbox5, this.label7);
 			this.label7.ShowAll();
+			// Container child notebook1.Gtk.Notebook+NotebookChild
+			this.userpermissionwidget1 = new global::QS.Widgets.Gtk.UserPermissionWidget();
+			this.userpermissionwidget1.Events = ((global::Gdk.EventMask)(256));
+			this.userpermissionwidget1.Name = "userpermissionwidget1";
+			this.notebook1.Add(this.userpermissionwidget1);
+			global::Gtk.Notebook.NotebookChild w28 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.userpermissionwidget1]));
+			w28.Position = 1;
+			// Notebook tab
+			this.label8 = new global::Gtk.Label();
+			this.label8.Name = "label8";
+			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString("Права");
+			this.notebook1.SetTabLabel(this.userpermissionwidget1, this.label8);
+			this.label8.ShowAll();
 			w1.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
-			w28.Position = 0;
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(w1[this.notebook1]));
+			w29.Position = 0;
 			// Internal child QSProjectsLib.UserProperty.ActionArea
-			global::Gtk.HButtonBox w29 = this.ActionArea;
-			w29.Name = "dialog1_ActionArea";
-			w29.Spacing = 10;
-			w29.BorderWidth = ((uint)(5));
-			w29.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w30 = this.ActionArea;
+			w30.Name = "dialog1_ActionArea";
+			w30.Spacing = 10;
+			w30.BorderWidth = ((uint)(5));
+			w30.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button();
 			this.buttonCancel.CanDefault = true;
@@ -336,13 +353,13 @@ namespace QSProjectsLib
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("О_тменить");
-			global::Gtk.Image w30 = new global::Gtk.Image();
-			w30.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-cancel", global::Gtk.IconSize.Menu);
-			this.buttonCancel.Image = w30;
+			global::Gtk.Image w31 = new global::Gtk.Image();
+			w31.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			this.buttonCancel.Image = w31;
 			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w31 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.buttonCancel]));
-			w31.Expand = false;
-			w31.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w32 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w30[this.buttonCancel]));
+			w32.Expand = false;
+			w32.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button();
 			this.buttonOk.CanDefault = true;
@@ -350,14 +367,14 @@ namespace QSProjectsLib
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString("_OK");
-			global::Gtk.Image w32 = new global::Gtk.Image();
-			w32.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w32;
+			global::Gtk.Image w33 = new global::Gtk.Image();
+			w33.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w33;
 			this.AddActionWidget(this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w33 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w29[this.buttonOk]));
-			w33.Position = 1;
-			w33.Expand = false;
-			w33.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w34 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w30[this.buttonOk]));
+			w34.Position = 1;
+			w34.Expand = false;
+			w34.Fill = false;
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();

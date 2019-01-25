@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 using QS.DomainModel.Entity;
+using QS.Static;
 
 namespace QS.Project.Domain
 {
@@ -47,6 +50,20 @@ namespace QS.Project.Domain
 		public virtual bool CanDelete {
 			get => canDelete;
 			set => SetField(ref canDelete, value, () => CanDelete);
+		}
+
+		public virtual string EntityDisplayName {
+			get {
+				var type = PermissionsMain.PermissionsEntityTypes.FirstOrDefault(x => x.Name == EntityName);
+				if(type == null) {
+					return EntityName;
+				}
+				var attr = type.GetCustomAttribute<AppellativeAttribute>();
+				if(attr == null) {
+					return EntityName;
+				}
+				return attr.Nominative;
+			}
 		}
 	}
 }

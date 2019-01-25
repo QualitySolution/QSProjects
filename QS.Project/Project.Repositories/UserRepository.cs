@@ -16,5 +16,10 @@ namespace QS.Project.Repositories
 
 			return uow.GetById<UserBase>(GetCurrentUserId());
 		}
+
+		public static UserBase GetUserById(IUnitOfWork uow, int id)
+		{
+			return uow.GetById<UserBase>(id);
+		}
 	}
 }

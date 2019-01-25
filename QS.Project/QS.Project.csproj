@@ -123,6 +123,7 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\IEntityPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermission.cs" />
     <Compile Include="Static\PermissionSettings.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntitiesWithPermissionFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

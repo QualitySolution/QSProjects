@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
+using QS.Widgets.Gtk;
 using QSProjectsLib.Permissions;
 using QSSaaS;
 
@@ -14,7 +15,6 @@ namespace QSProjectsLib
 		#region Глобальные настройки
 
 		public static Func<List<IPermissionsView>> PermissionViewsCreator;
-
 		#endregion
 
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -48,6 +48,8 @@ namespace QSProjectsLib
 					(view as Widget).Show();
 				}
 			}
+
+			userpermissionwidget1.ConfigureDlg();
 		}
 
 		public void UserFill(int UserId)
@@ -240,6 +242,7 @@ namespace QSProjectsLib
 					cmd.Parameters.AddWithValue("@description", textviewComments.Buffer.Text);
 
 				cmd.ExecuteNonQuery();
+				userpermissionwidget1.Save();
 				if(QSMain.User.Login == entryLogin.Text)
 					QSMain.User.LoadUserInfo();
 				logger.Info("Ok");
