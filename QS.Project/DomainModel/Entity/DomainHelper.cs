@@ -83,11 +83,12 @@ namespace QS.DomainModel.Entity
 		{
 			var result = new List<Type>();
 			foreach(var assembly in assemblies) {
-				var foundTypes = assembly.GetTypes();
+				IEnumerable<Type> foundTypes = assembly.GetTypes();
 				if(filterFunc != null) {
-					foundTypes.Where(filterFunc);
+					foundTypes = foundTypes.Where(filterFunc);
 				}
-				result.AddRange(foundTypes.Where(x => x.GetCustomAttribute<TAttribute>() != null));
+				foundTypes = foundTypes.Where(x => x.GetCustomAttribute<TAttribute>() != null);
+				result.AddRange(foundTypes);
 			}
 			return result;
 		}
