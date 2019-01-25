@@ -16,16 +16,16 @@ using QS.Utilities.Text;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
+using QS;
 
 namespace QSOrmProject
 {
-	[WidgetWindow (DefaultWidth = 852, DefaultHeight = 600)]
-	public partial class OrmReference : Gtk.Bin, ITdiJournal
+	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
+	public partial class OrmReference : ReferenceBase, ITdiJournal
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger ();
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private IUnitOfWork uow;
 		private ICriteria objectsCriteria;
-		private System.Type objectType;
 		private IReferenceFilter filterWidget;
 		private DateTime searchStarted;
 		private bool inUpdating;
@@ -38,7 +38,7 @@ namespace QSOrmProject
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
-		public bool FailInitialize { get; protected set; }
+		public override bool FailInitialize => base.FailInitialize;
 
 		/// <summary>
 		/// Для хранения пользовательской информации как в WinForms
@@ -62,10 +62,10 @@ namespace QSOrmProject
 
 		public event EventHandler<OrmReferenceObjectSectedEventArgs> ObjectSelected;
 
-		public IUnitOfWork Uow {
+		public override IUnitOfWork UoW {
 			get {
 				if (uow == null)
-					uow = UnitOfWorkFactory.CreateWithoutRoot ();
+					uow = UnitOfWorkFactory.CreateWithoutRoot();
 				return uow;
 			}
 			set { uow = value; }
@@ -79,18 +79,18 @@ namespace QSOrmProject
 				if (filterClass == value)
 					return;
 				if (filterWidget != null) {
-					hboxFilter.Remove (filterWidget as Widget);
-					(filterWidget as Widget).Destroy ();
+					hboxFilter.Remove(filterWidget as Widget);
+					(filterWidget as Widget).Destroy();
 					checkShowFilter.Visible = true;
 					filterWidget = null;
 				}
-				if (value != null && value.GetInterface ("IReferenceFilter") == null) {
-					throw new NotSupportedException ("FilterClass должен реализовывать интерфейс IReferenceFilter.");
+				if(value != null && value.GetInterface("IReferenceFilter") == null) {
+					throw new NotSupportedException("FilterClass должен реализовывать интерфейс IReferenceFilter.");
 				}
 				filterClass = value;
 				checkShowFilter.Visible = filterClass != null;
-				if (CheckDefaultLoadFilterAtt () || checkShowFilter.Active)
-					CreateFilterWidget ();
+				if (CheckDefaultLoadFilterAtt() || checkShowFilter.Active)
+					CreateFilterWidget();
 			}
 		}
 
@@ -142,15 +142,15 @@ namespace QSOrmProject
 			get { return buttonMode; }
 			set {
 				buttonMode = value;
-				buttonAdd.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanAdd);
-				OnTreeviewSelectionChanged (this, EventArgs.Empty);
-				Image image = new Image ();
-				image.Pixbuf = Stetic.IconLoader.LoadIcon (
-					this, 
-					buttonMode.HasFlag (ReferenceButtonMode.TreatEditAsOpen) ? "gtk-open" : "gtk-edit", 
+				buttonAdd.Sensitive = buttonMode.HasFlag(ReferenceButtonMode.CanAdd);
+				OnTreeviewSelectionChanged(this, EventArgs.Empty);
+				Image image = new Image();
+				image.Pixbuf = Stetic.IconLoader.LoadIcon(
+					this,
+					buttonMode.HasFlag(ReferenceButtonMode.TreatEditAsOpen) ? "gtk-open" : "gtk-edit",
 					IconSize.Menu);
 				buttonEdit.Image = image;
-				buttonEdit.Label = buttonMode.HasFlag (ReferenceButtonMode.TreatEditAsOpen) ? "Открыть" : "Изменить";
+				buttonEdit.Label = buttonMode.HasFlag(ReferenceButtonMode.TreatEditAsOpen) ? "Открыть" : "Изменить";
 			}
 		}
 
@@ -166,7 +166,7 @@ namespace QSOrmProject
 					return;
 				_tabName = value;
 				if (TabNameChanged != null)
-					TabNameChanged (this, new TdiTabNameChangedEventArgs (value));
+					TabNameChanged(this, new TdiTabNameChangedEventArgs(value));
 			}
 		}
 
@@ -174,7 +174,7 @@ namespace QSOrmProject
 		{
 			get
 			{
-				IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+				IOrmObjectMapping map = OrmMain.GetObjectDescription(objectType);
 				if (map == null)
 					return null;
 
@@ -182,95 +182,99 @@ namespace QSOrmProject
 			}
 		}
 
-		public OrmReference (System.Type objType)
-			: this (objType, UnitOfWorkFactory.CreateWithoutRoot ())
+		private bool CanCreate => entityPermissions.IsEmpty || entityPermissions.Create || ButtonMode.HasFlag(ReferenceButtonMode.CanAdd);
+		private bool CanEdit => entityPermissions.IsEmpty || entityPermissions.Update || ButtonMode.HasFlag(ReferenceButtonMode.CanEdit);
+		private bool CanDelete => entityPermissions.IsEmpty || entityPermissions.Delete || ButtonMode.HasFlag(ReferenceButtonMode.CanDelete);
+
+		public OrmReference(System.Type objType)
+			: this(objType, UnitOfWorkFactory.CreateWithoutRoot())
 		{
 		}
 
-		public OrmReference (System.Type objType, IUnitOfWork uow)
-			: this (objType, uow, uow.Session.CreateCriteria (objType))
+		public OrmReference(System.Type objType, IUnitOfWork uow)
+			: this(objType, uow, uow.Session.CreateCriteria(objType))
 		{
 		}
 
-		public OrmReference (QueryOver query)
-			: this(UnitOfWorkFactory.CreateWithoutRoot (), query) {}
+		public OrmReference(QueryOver query)
+			: this(UnitOfWorkFactory.CreateWithoutRoot(), query) { }
 
-		public OrmReference (IUnitOfWork uow, QueryOver query)
-			: this (query.DetachedCriteria.GetRootEntityTypeIfAvailable (), uow, query.DetachedCriteria.GetExecutableCriteria (uow.Session))
+		public OrmReference(IUnitOfWork uow, QueryOver query)
+			: this(query.DetachedCriteria.GetRootEntityTypeIfAvailable(), uow, query.DetachedCriteria.GetExecutableCriteria(uow.Session))
 		{
 		}
 
-		public OrmReference (System.Type objType, IUnitOfWork uow, ICriteria listCriteria)
+		public OrmReference(System.Type objType, IUnitOfWork uow, ICriteria listCriteria)
 		{
-			this.Build ();
+			this.Build();
 			objectType = objType;
 			objectsCriteria = listCriteria;
-			Uow = uow;
-			ConfigureDlg ();
+			UoW = uow;
+			ConfigureDlg();
 		}
 
-		void ConfigureDlg ()
+		void ConfigureDlg()
 		{
 			OrmMain.Count++;
 			number = OrmMain.Count;
-			logger.Debug ("Открытие {0}", number);
+			logger.Debug("Открытие {0}", number);
 			Mode = OrmReferenceMode.Normal;
 			ButtonMode = ReferenceButtonMode.CanAll;
-			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+			IOrmObjectMapping map = OrmMain.GetObjectDescription(objectType);
 			if (map != null) {
 				map.ObjectUpdated += OnRefObjectUpdated;
 				TableView = map.TableView;
-				if (map.RefFilterClass != null)
+				if(map.RefFilterClass != null)
 					FilterClass = map.RefFilterClass;
 			} else
-				throw new InvalidOperationException (String.Format ("Для использования диалога, класс {0} должен быть добавлен в мапинг OrmMain.ClassMappingList.", objectType));
-			object[] att = objectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
-			if (att.Length > 0) {
-				this.TabName = (att [0] as AppellativeAttribute).NominativePlural.StringToTitleCase();
+				throw new InvalidOperationException(String.Format("Для использования диалога, класс {0} должен быть добавлен в мапинг OrmMain.ClassMappingList.", objectType));
+			object[] att = objectType.GetCustomAttributes(typeof(AppellativeAttribute), true);
+			if(att.Length > 0) {
+				this.TabName = (att[0] as AppellativeAttribute).NominativePlural.StringToTitleCase();
 			}
 			var defaultMode = objectType.GetAttribute<DefaultReferenceButtonModeAttribute>(true);
 			if(defaultMode != null)
 				ButtonMode = defaultMode.ReferenceButtonMode;
 
-			if (!String.IsNullOrWhiteSpace (map.EditPermisionName)) {
-				if (!QSMain.User.Permissions [map.EditPermisionName]) {
+			if (!String.IsNullOrWhiteSpace(map.EditPermisionName)) {
+				if (!QSMain.User.Permissions[map.EditPermisionName]) {
 					ButtonMode &= ~ReferenceButtonMode.CanAll;
 				}
 			}
-			UpdateObjectList ();
+			UpdateObjectList();
 			ytreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 		}
 
-		void OnRefObjectUpdated (object sender, OrmObjectUpdatedEventArgs e)
+		void OnRefObjectUpdated(object sender, OrmObjectUpdatedEventArgs e)
 		{
 			//Обновляем загруженные сущности так как в методе UpdateObjectList обновится только список(добавятся новые), но уже загруженные возьмутся из кеша.
-			foreach (var entity in e.UpdatedSubjects.OfType<IDomainObject> ()) {
-				var curEntity = fullList.OfType<IDomainObject> ().FirstOrDefault (o => o.Id == entity.Id);
+			foreach (var entity in e.UpdatedSubjects.OfType<IDomainObject>()) {
+				var curEntity = fullList.OfType<IDomainObject>().FirstOrDefault(o => o.Id == entity.Id);
 				if (curEntity != null)
-					Uow.Session.Refresh (curEntity);
+					UoW.Session.Refresh(curEntity);
 			}
-			UpdateObjectList ();
+			UpdateObjectList();
 		}
 
-		private void UpdateObjectList ()
+		private void UpdateObjectList()
 		{
 			if (inUpdating)
 				return;
-			logger.Debug ("Обновление в диалоге {0}", number);
-			logger.Info ("Получаем таблицу справочника<{0}>...", objectType.Name);
+			logger.Debug("Обновление в диалоге {0}", number);
+			logger.Info("Получаем таблицу справочника<{0}>...", objectType.Name);
 			var startUpdateTime = DateTime.Now;
 			inUpdating = true;
 			ICriteria baseCriteria = filterWidget == null ? objectsCriteria : filterWidget.FiltredCriteria;
 
-			var map = OrmMain.GetObjectDescription (objectType);
+			var map = OrmMain.GetObjectDescription(objectType);
 			if (map.SimpleDialog)
-				baseCriteria = baseCriteria.AddOrder (Order.Asc ("Name"));
+				baseCriteria = baseCriteria.AddOrder(Order.Asc("Name"));
 			else if (map.TableView != null && map.TableView.OrderBy.Count > 0) {
 				foreach (var ord in map.TableView.OrderBy) {
 					if (ord.Direction == QSOrmProject.DomainMapping.OrderDirection.Desc)
-						baseCriteria = baseCriteria.AddOrder (Order.Desc (ord.PropertyName));
+						baseCriteria = baseCriteria.AddOrder(Order.Desc(ord.PropertyName));
 					else
-						baseCriteria = baseCriteria.AddOrder (Order.Asc (ord.PropertyName));
+						baseCriteria = baseCriteria.AddOrder(Order.Asc(ord.PropertyName));
 				}
 			}
 
@@ -278,10 +282,10 @@ namespace QSOrmProject
 
 			UpdateTreeViewSource();
 
-			UpdateSum ();
+			UpdateSum();
 			inUpdating = false;
 			logger.Debug("Справочник загружен за: {0} сек.", (DateTime.Now - startUpdateTime).TotalSeconds);
-			logger.Info ("Ok.");
+			logger.Info("Ok.");
 		}
 
 		void SearchRefilter()
@@ -289,11 +293,11 @@ namespace QSOrmProject
 			searchStarted = DateTime.Now;
 			ytreeviewRef.SearchHighlightText = entrySearch.Text;
 			viewList = SearchProvider.FilterList(fullList, entrySearch.Text);
-			var delayfilter = DateTime.Now.Subtract (searchStarted);
-			logger.Debug ("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.", 
+			var delayfilter = DateTime.Now.Subtract(searchStarted);
+			logger.Debug("В поиске обработано {0} элементов за {1} секунд, в среднем по {2} милисекунды на элемент.",
 				fullList.Count, delayfilter.TotalSeconds, delayfilter.TotalMilliseconds / fullList.Count);
 			ytreeviewRef.ItemsDataSource = viewList;
-			var loadDelay = DateTime.Now.Subtract (searchStarted) - delayfilter;
+			var loadDelay = DateTime.Now.Subtract(searchStarted) - delayfilter;
 			logger.Debug("Загрузка таблицы {0} милисекунд.", loadDelay.TotalMilliseconds);
 			UpdateSum();
 		}
@@ -318,99 +322,99 @@ namespace QSOrmProject
 			}
 		}
 
-		void OnTreeviewSelectionChanged (object sender, EventArgs e)
+		void OnTreeviewSelectionChanged(object sender, EventArgs e)
 		{
-			bool selected = ytreeviewRef.Selection.CountSelectedRows () > 0;
+			bool selected = ytreeviewRef.Selection.CountSelectedRows() > 0;
 			buttonSelect.Sensitive = selected;
-			buttonEdit.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanEdit) && selected;
-			buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
+			buttonEdit.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) && selected;
+			buttonDelete.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) && selected;
 		}
 
-		void FilterViewChanged (object aList)
+		void FilterViewChanged(object aList)
 		{
-			UpdateSum ();
+			UpdateSum();
 		}
 
-		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
+		protected void OnButtonSearchClearClicked(object sender, EventArgs e)
 		{
 			entrySearch.Text = String.Empty;
 		}
 
-		protected void OnEntrySearchChanged (object sender, EventArgs e)
+		protected void OnEntrySearchChanged(object sender, EventArgs e)
 		{
 			UpdateTreeViewSource();
 		}
 
-		protected void OnCloseTab ()
+		protected void OnCloseTab()
 		{
-			logger.Debug ("Закрытие диалога {0}", number);
+			logger.Debug("Закрытие диалога {0}", number);
 			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (false));
+				CloseTab(this, new TdiTabCloseEventArgs(false));
 		}
 
-		protected void OnButtonAddClicked (object sender, EventArgs e)
+		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
-			ytreeviewRef.Selection.UnselectAll ();
-			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				SelectObject (EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, null));
+			ytreeviewRef.Selection.UnselectAll();
+			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
+				SelectObject(EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, null));
 			} else {
 				var tab = TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
-					() => OrmMain.CreateObjectDialog (objectType), this
+					() => OrmMain.CreateObjectDialog(objectType), this
 				);
 				if(tab != null)
 					(tab as ITdiDialog).EntitySaved += NewItemDlg_EntitySaved;
 			}
 		}
 
-		private void SelectObject (object item)
+		private void SelectObject(object item)
 		{
 			if (item == null)
 				return;
 
-			var ownItem = viewList.OfType<IDomainObject> ().FirstOrDefault (i => i.Id == DomainHelper.GetId (item));
+			var ownItem = viewList.OfType<IDomainObject>().FirstOrDefault(i => i.Id == DomainHelper.GetId(item));
 			if (ownItem == null)
 				return;
-			ytreeviewRef.SelectObject (ownItem);
+			ytreeviewRef.SelectObject(ownItem);
 		}
 
-		void NewItemDlg_EntitySaved (object sender, EntitySavedEventArgs e)
+		void NewItemDlg_EntitySaved(object sender, EntitySavedEventArgs e)
 		{
 			if (e.TabClosed)
-				SelectObject (e.Entity);
+				SelectObject(e.Entity);
 		}
 
-		protected void OnButtonEditClicked (object sender, EventArgs e)
+		protected void OnButtonEditClicked(object sender, EventArgs e)
 		{
-			if (OrmMain.GetObjectDescription (objectType).SimpleDialog) {
-				EntityEditSimpleDialog.RunSimpleDialog (this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
+			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
+				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
 			} else {
 				var selected = ytreeviewRef.GetSelectedObject();
 				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, DomainHelper.GetId(selected)),
-					() => OrmMain.CreateObjectDialog (objectType, selected), this
+					() => OrmMain.CreateObjectDialog(objectType, selected), this
 				);
 			}
 		}
 
-		protected void UpdateSum ()
+		protected void UpdateSum()
 		{
-			labelSum.LabelProp = String.Format ("Количество: {0}", viewList.Count);
-			logger.Debug ("Количество обновлено {0}", viewList.Count);
+			labelSum.LabelProp = String.Format("Количество: {0}", viewList.Count);
+			logger.Debug("Количество обновлено {0}", viewList.Count);
 		}
 
-		protected void OnYtreeviewRefRowActivated (object o, RowActivatedArgs args)
+		protected void OnYtreeviewRefRowActivated(object o, RowActivatedArgs args)
 		{
 			if (Mode == OrmReferenceMode.Select || Mode == OrmReferenceMode.MultiSelect)
-				buttonSelect.Click ();
-			else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
-				buttonEdit.Click ();
+				buttonSelect.Click();
+			else if (ButtonMode.HasFlag(ReferenceButtonMode.CanEdit))
+				buttonEdit.Click();
 		}
 
-		protected void OnButtonSelectClicked (object sender, EventArgs e)
+		protected void OnButtonSelectClicked(object sender, EventArgs e)
 		{
 			if (ObjectSelected != null)
 			{
 				var selected = ytreeviewRef.GetSelectedObjects();
-				logger.Debug("Выбрано {0} id:({1})", objectType, 
+				logger.Debug("Выбрано {0} id:({1})", objectType,
 					String.Join(", ", selected.Select(x => DomainHelper.GetId(x).ToString()))
 				);
 				ObjectSelected(this, new OrmReferenceObjectSectedEventArgs(
@@ -420,70 +424,70 @@ namespace QSOrmProject
 			}
 			else
 				logger.Warn("Никто не подписался на событие выбора в диалоге.");
-			OnCloseTab ();
+			OnCloseTab();
 		}
 
-		private void CreateFilterWidget ()
+		private void CreateFilterWidget()
 		{
-			Type[] paramTypes = new Type[]{ typeof(IUnitOfWork) };	
+			Type[] paramTypes = new Type[] { typeof(IUnitOfWork) };
 
-			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor (paramTypes);
+			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor(paramTypes);
 			if (ci == null) {
-				InvalidOperationException ex = new InvalidOperationException (
-					                               String.Format ("Конструктор в класе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes)));
-				logger.Error (ex);
+				InvalidOperationException ex = new InvalidOperationException(
+												   String.Format("Конструктор в класе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString(paramTypes)));
+				logger.Error(ex);
 				throw ex;
 			}
-			logger.Debug ("Вызываем конструктор фильтра {0} c параметрами {1}.", filterClass.ToString (), NHibernate.Util.CollectionPrinter.ToString (paramTypes));
-			filterWidget = (IReferenceFilter)ci.Invoke (new object[] { Uow });
+			logger.Debug("Вызываем конструктор фильтра {0} c параметрами {1}.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString(paramTypes));
+			filterWidget = (IReferenceFilter)ci.Invoke(new object[] { UoW });
 			filterWidget.BaseCriteria = objectsCriteria;
 			filterWidget.Refiltered += OnFilterWidgetRefiltered;
-			hboxFilter.Add (filterWidget as Widget);
-			(filterWidget as Widget).ShowAll ();
+			hboxFilter.Add(filterWidget as Widget);
+			(filterWidget as Widget).ShowAll();
 		}
 
-		protected void OnCheckShowFilterToggled (object sender, EventArgs e)
+		protected void OnCheckShowFilterToggled(object sender, EventArgs e)
 		{
 			hboxFilter.Visible = checkShowFilter.Active;
 			if (checkShowFilter.Active && filterWidget == null)
-				CreateFilterWidget ();
+				CreateFilterWidget();
 		}
 
-		void OnFilterWidgetRefiltered (object sender, EventArgs e)
+		void OnFilterWidgetRefiltered(object sender, EventArgs e)
 		{
-			UpdateObjectList ();
+			UpdateObjectList();
 		}
 
-		private bool CheckDefaultLoadFilterAtt ()
+		private bool CheckDefaultLoadFilterAtt()
 		{
 			if (FilterClass == null)
 				return false;
-			foreach (var att in FilterClass.GetCustomAttributes (typeof(OrmDefaultIsFilteredAttribute), true)) {
+			foreach (var att in FilterClass.GetCustomAttributes(typeof(OrmDefaultIsFilteredAttribute), true)) {
 				return (att as OrmDefaultIsFilteredAttribute).DefaultIsFiltered;
 			}
 			return false;
 		}
 
-		protected void OnButtonDeleteClicked (object sender, EventArgs e)
+		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
-			if (OrmMain.DeleteObject (ytreeviewRef.GetSelectedObject()))
-				UpdateObjectList ();
+			if (OrmMain.DeleteObject(ytreeviewRef.GetSelectedObject()))
+				UpdateObjectList();
 		}
 
-		public override void Destroy ()
+		public override void Destroy()
 		{
-			logger.Debug ("OrmReference #{0} Destroy() called.", number);
-			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+			logger.Debug("OrmReference #{0} Destroy() called.", number);
+			IOrmObjectMapping map = OrmMain.GetObjectDescription(objectType);
 			if (map != null) {
 				map.ObjectUpdated -= OnRefObjectUpdated;
 			}
-			base.Destroy ();
+			base.Destroy();
 		}
 
 		[GLib.ConnectBefore]
-		protected void OnYtreeviewRefButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+		protected void OnYtreeviewRefButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
-			IOrmObjectMapping map = OrmMain.GetObjectDescription (objectType);
+			IOrmObjectMapping map = OrmMain.GetObjectDescription(objectType);
 
 			if(args.Event.Button == 3 && map.PopupMenuExist)
 			{
@@ -512,7 +516,7 @@ namespace QSOrmProject
 
 	public class OrmReferenceObjectSectedEventArgs : EventArgs
 	{
-		public object Subject { get{ return Subjects[0];} }
+		public object Subject { get { return Subjects[0]; } }
 
 		public object[] Subjects { get; private set; }
 
@@ -523,7 +527,7 @@ namespace QSOrmProject
 			return Subjects.Cast<TEntity>();
 		}
 
-		public OrmReferenceObjectSectedEventArgs (object[] subjects, object tag)
+		public OrmReferenceObjectSectedEventArgs(object[] subjects, object tag)
 		{
 			Subjects = subjects;
 			Tag = tag;

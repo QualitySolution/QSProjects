@@ -14,23 +14,23 @@ using QS.Tdi.Gtk;
 using QS.Utilities.Text;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
+using QS;
 
 namespace QSOrmProject
 {
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-    public partial class ReferenceRepresentation : Gtk.Bin, ITdiJournal, ISingleUoWDialog
+    public partial class ReferenceRepresentation : ReferenceBase, ITdiJournal, ISingleUoWDialog
 	{
         private static Logger logger = LogManager.GetCurrentClassLogger ();
-        private System.Type objectType;
         private IRepresentationFilter filterWidget;
         private IRepresentationModel representationModel;
         private int searchEntryShown = 1;
 
-        public ITdiTabParent TabParent { set; get; }
+		public ITdiTabParent TabParent { set; get; }
         public HandleSwitchIn HandleSwitchIn { get; private set; }
         public HandleSwitchOut HandleSwitchOut { get; private set; }
 
-        public bool FailInitialize { get; protected set;}
+		public override bool FailInitialize => base.FailInitialize;
 
         /// <summary>
         /// Для хранения пользовательской информации как в WinForms
@@ -126,7 +126,7 @@ namespace QSOrmProject
 
         #region IOrmDialog implementation
 
-        public IUnitOfWork UoW {
+        public override IUnitOfWork UoW {
             get {
                 return RepresentationModel.UoW;
             }
@@ -151,7 +151,7 @@ namespace QSOrmProject
             get { return buttonMode; }
             set {
                 buttonMode = value;
-                buttonAdd.Sensitive = buttonMode.HasFlag (ReferenceButtonMode.CanAdd);
+                buttonAdd.Sensitive = CanCreate;
                 OnTreeviewSelectionChanged (this, EventArgs.Empty);
                 Image image = new Image ();
                 image.Pixbuf = Stetic.IconLoader.LoadIcon (
@@ -163,7 +163,11 @@ namespace QSOrmProject
             }
         }
 
-        public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
+		private bool CanCreate => entityPermissions.IsEmpty || entityPermissions.Create || ButtonMode.HasFlag(ReferenceButtonMode.CanAdd);
+		private bool CanEdit => entityPermissions.IsEmpty || entityPermissions.Update || ButtonMode.HasFlag(ReferenceButtonMode.CanEdit);
+		private bool CanDelete => entityPermissions.IsEmpty || entityPermissions.Delete || ButtonMode.HasFlag(ReferenceButtonMode.CanDelete);
+
+		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
         public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
         private string _tabName = "Справочник";
@@ -189,12 +193,13 @@ namespace QSOrmProject
         {
             this.Build ();
             RepresentationModel = representation;
-            ConfigureDlg ();
+			InitializePermissionValidator();
+			ConfigureDlg ();
         }
 
-        void ConfigureDlg ()
+		void ConfigureDlg ()
         {
-            Mode = OrmReferenceMode.Normal;
+			Mode = OrmReferenceMode.Normal;
 			ButtonMode = ReferenceButtonMode.CanAll;
 			buttonAdd.Visible = buttonEdit.Visible = buttonDelete.Visible = objectType != null;
             if(objectType != null)
@@ -215,11 +220,11 @@ namespace QSOrmProject
         {
             bool selected = ormtableview.Selection.CountSelectedRows () > 0;
             buttonSelect.Sensitive = selected;
-            buttonEdit.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanEdit) && selected;
-            buttonDelete.Sensitive = ButtonMode.HasFlag (ReferenceButtonMode.CanDelete) && selected;
+            buttonEdit.Sensitive = CanEdit && selected;
+            buttonDelete.Sensitive = CanDelete && selected;
         }
 
-        protected void OnButtonSearchClearClicked (object sender, EventArgs e)
+		protected void OnButtonSearchClearClicked (object sender, EventArgs e)
         {
             entrySearch.Text = entrySearch2.Text = entrySearch3.Text = entrySearch4.Text = String.Empty;
         }
@@ -352,7 +357,7 @@ namespace QSOrmProject
         {
             if (Mode == OrmReferenceMode.Select || Mode == OrmReferenceMode.MultiSelect)
                 buttonSelect.Click ();
-            else if (ButtonMode.HasFlag (ReferenceButtonMode.CanEdit))
+            else if (CanEdit)
                 buttonEdit.Click ();
         }
 
