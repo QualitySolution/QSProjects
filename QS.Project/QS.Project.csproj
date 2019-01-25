@@ -115,6 +115,14 @@
     <Compile Include="Deletion\InternalHelper.cs" />
     <Compile Include="Deletion\IHibernateDeleteRule.cs" />
     <Compile Include="Tdi\TabHashHelper.cs" />
+    <Compile Include="Project.Domain\EntityUserPermission.cs" />
+    <Compile Include="Project.HibernateMapping\EntityUserPermissionMap.cs" />
+    <Compile Include="Project.Repositories\EntityUserPermissionRepository.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermissionValidator.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermissionAttribute.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\IEntityPermissionValidator.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermission.cs" />
+    <Compile Include="Static\PermissionSettings.cs" />
     <Compile Include="Project.Dialogs\JournalSelectMode.cs" />
     <Compile Include="RepresentationModel\IJournalFilter.cs" />
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
@@ -137,6 +145,8 @@
     <Folder Include="Tdi\" />
     <Folder Include="Project.Dialogs\" />
     <Folder Include="Deletion\" />
+    <Folder Include="DomainModel\Entity\EntityPermissions\" />
+    <Folder Include="Static\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
   </ItemGroup>

@@ -37,7 +37,6 @@ namespace QSProjectsLib
 		public static Dictionary<string, UserPermission> ProjectPermission;
 		public static Dictionary<string, TableInfo> ProjectTables;
 		public static UserInfo User;
-
 		private static string adminFieldName = "admin";
 
 		public static string AdminFieldName {
