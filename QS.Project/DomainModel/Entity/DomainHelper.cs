@@ -87,8 +87,7 @@ namespace QS.DomainModel.Entity
 				if(filterFunc != null) {
 					foundTypes.Where(filterFunc);
 				}
-				foundTypes.Where(x => x.GetCustomAttribute<TAttribute>() != null);
-				result.AddRange(foundTypes);
+				result.AddRange(foundTypes.Where(x => x.GetCustomAttribute<TAttribute>() != null));
 			}
 			return result;
 		}
