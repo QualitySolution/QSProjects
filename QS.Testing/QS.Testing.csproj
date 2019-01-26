@@ -57,28 +57,18 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Deletion.Testing\DeleteConfigTestBase.cs" />
-    <Compile Include="Banks\BanksUpdaterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deletion.Testing\" />
-    <Folder Include="Banks\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
-      <Name>QS.Utilities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
-      <Project>{D21C0F94-5B1B-49E1-A5B0-50C3F99287E2}</Project>
-      <Name>QSBanks</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

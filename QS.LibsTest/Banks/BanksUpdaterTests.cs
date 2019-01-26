@@ -1,10 +1,9 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using QSBanks;
 using QSBanks.CBRSource;
-using System;
-using System.Collections.Generic;
 
-namespace QS.Banks
+namespace QS.Test.Banks
 {
 	[TestFixture()]
 	public class BanksUpdaterTests
