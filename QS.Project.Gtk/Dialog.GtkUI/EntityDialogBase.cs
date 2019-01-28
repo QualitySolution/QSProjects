@@ -173,15 +173,15 @@ namespace QS.Dialog.Gtk
 
 		protected void InitializePermissionValidator()
 		{
-			if(PermissionsMain.EntityPermissionValidator == null) {
+			if(PermissionsSettings.EntityPermissionValidator == null) {
 				return;
 			}
 			Type entityType = typeof(TEntity);
 			var user = UserRepository.GetCurrentUser(UnitOfWorkFactory.CreateWithoutRoot());
-			entityPermissions = PermissionsMain.EntityPermissionValidator.Validate(entityType, user.Id);
+			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(entityType, user.Id);
 
 			if(!entityPermissions.Read) {
-				var message = PermissionsMain.GetEntityReadValidateResult(entityType);
+				var message = PermissionsSettings.GetEntityReadValidateResult(entityType);
 				MessageDialogHelper.RunErrorDialog(message);
 				FailInitialize = true;
 			}

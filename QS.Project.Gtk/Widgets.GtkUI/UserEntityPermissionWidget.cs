@@ -91,7 +91,7 @@ namespace QS.Widgets.Gtk
 
 			var havingEntities = PermissionsList.ToDictionary(x => x.EntityName);
 
-			originalEntityList = GenerateEntitiesList(PermissionsMain.PermissionsEntityTypes)
+			originalEntityList = GenerateEntitiesList(PermissionsSettings.PermissionsEntityTypes)
 				.Where(x => !havingEntities.ContainsKey(x.ClassName)).ToList();
 			EntityList = new GenericObservableList<EntityNode>(originalEntityList.ToList());
 		}

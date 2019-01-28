@@ -21,14 +21,14 @@ namespace QS
 
 		protected void InitializePermissionValidator()
 		{
-			if(PermissionsMain.EntityPermissionValidator == null) {
+			if(PermissionsSettings.EntityPermissionValidator == null) {
 				return;
 			}
 			var user = UserRepository.GetCurrentUser(UoW);
-			entityPermissions = PermissionsMain.EntityPermissionValidator.Validate(objectType, user.Id);
+			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(objectType, user.Id);
 
 			if(!entityPermissions.Read) {
-				var message = PermissionsMain.GetEntityReadValidateResult(objectType);
+				var message = PermissionsSettings.GetEntityReadValidateResult(objectType);
 				MessageDialogHelper.RunErrorDialog(message);
 				FailInitialize = true;
 			}

@@ -5,11 +5,11 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
 namespace QS.Static
 {
-	public static class PermissionsMain
+	public static class PermissionsSettings
 	{
 		public static IEntityPermissionValidator EntityPermissionValidator { get; set; }
 
-		static PermissionsMain()
+		static PermissionsSettings()
 		{
 			EntityPermissionValidator = null;
 		}

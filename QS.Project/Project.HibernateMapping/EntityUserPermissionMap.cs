@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 
-namespace QS.Project.Repositories
+namespace QS.Project.HibernateMapping
 {
 	public class EntityUserPermissionMap :  ClassMap<EntityUserPermission>
 	{

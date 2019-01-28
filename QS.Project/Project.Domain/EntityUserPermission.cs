@@ -54,7 +54,7 @@ namespace QS.Project.Domain
 
 		public virtual string EntityDisplayName {
 			get {
-				var type = PermissionsMain.PermissionsEntityTypes.FirstOrDefault(x => x.Name == EntityName);
+				var type = PermissionsSettings.PermissionsEntityTypes.FirstOrDefault(x => x.Name == EntityName);
 				if(type == null) {
 					return EntityName;
 				}
