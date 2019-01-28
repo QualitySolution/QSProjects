@@ -33,10 +33,10 @@ namespace QS.HistoryLog.Dialogs
 			UoW = UnitOfWorkFactory.CreateWithoutRoot();
 
 			datacomboObject.SetRenderTextFunc<HistoryObjectDesc> (x => x.DisplayName);
-			datacomboObject.ItemsList = HistoryMain.TraceClasses.ToList();
+			datacomboObject.ItemsList = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList();
 			comboProperty.SetRenderTextFunc<HistoryFieldDesc> (x => x.DisplayName);
 			comboAction.ItemsEnum = typeof(EntityChangeOperation);
-			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll);
+			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll, true, "name");
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
 
 			datatreeChangesets.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<ChangedEntity> ()
@@ -181,7 +181,7 @@ namespace QS.HistoryLog.Dialogs
 			bool lastStateUpdate = canUpdate;
 			canUpdate = false;
 			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
-				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).TracedProperties;
+				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).TracedProperties?.OrderBy(x => x.DisplayName);
 			} else
 				comboProperty.ItemsList = null;
 			canUpdate = lastStateUpdate;
