@@ -17,11 +17,11 @@ namespace QS.Project.Domain
 			set => SetField(ref user, value, () => User);
 		}
 
-		private string entityName;
-		[Display(Name = "Имя сущности")]
-		public virtual string EntityName {
-			get => entityName;
-			set => SetField(ref entityName, value, () => EntityName);
+		private TypeOfEntity typeOfEntity;
+		[Display(Name = "Тип сущности")]
+		public virtual TypeOfEntity TypeOfEntity {
+			get => typeOfEntity;
+			set => SetField(ref typeOfEntity, value, () => TypeOfEntity);
 		}
 
 		private bool canCreate;
@@ -50,20 +50,6 @@ namespace QS.Project.Domain
 		public virtual bool CanDelete {
 			get => canDelete;
 			set => SetField(ref canDelete, value, () => CanDelete);
-		}
-
-		public virtual string EntityDisplayName {
-			get {
-				var type = PermissionsSettings.PermissionsEntityTypes.FirstOrDefault(x => x.Name == EntityName);
-				if(type == null) {
-					return EntityName;
-				}
-				var attr = type.GetCustomAttribute<AppellativeAttribute>();
-				if(attr == null) {
-					return EntityName;
-				}
-				return attr.Nominative;
-			}
 		}
 	}
 }

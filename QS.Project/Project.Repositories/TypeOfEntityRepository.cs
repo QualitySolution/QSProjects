@@ -44,5 +44,10 @@ namespace QS.Project.Repositories
 				return uow.Session.QueryOver<TypeOfEntity>().List().Select(t => t.Type).ToList();
 			}
 		}
+
+		public static IList<TypeOfEntity> GetAllSavedTypeOfEntity(IUnitOfWork uow)
+		{
+			return uow.GetAll<TypeOfEntity>().ToList();
+		}
 	}
 }
