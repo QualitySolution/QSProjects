@@ -49,64 +49,55 @@ namespace QSDocTemplates
 		/// <param name="PrintSettings">Настройки печати</param>
 		public void OpenInOffice(IDocTemplate template, bool readOnly, FileEditMode mode, int docsToPrint, PrintSettings PrintSettings = null, bool IsSavedFile = false)
 		{
-			logger.Info ("Сохраняем временный файл...");
+			logger.Info("Сохраняем временный файл...");
 			OdtWorks odt;
-			odt = new OdtWorks (template.File);
+			odt = new OdtWorks(template.File);
 			odt.DocParser = template.DocParser;
 			odt.DocParser.UpdateFields();
 			odt.UpdateFields();
-			if(odt.DocParser.FieldsHasValues && IsSavedFile==false) {
-					odt.FillValues();
-				}
-			var file = odt.GetArray ();
-			odt.Close ();
+			if(odt.DocParser.FieldsHasValues && IsSavedFile == false) {
+				odt.FillValues();
+			}
+			var file = odt.GetArray();
+			odt.Close();
 
 			var opened = openedFiles.FirstOrDefault(x => x.Template == template);
 
-			if (opened == null)
-			{
+			if(opened == null) {
 				opened = new OpenedFile(this, template, mode);
 				openedFiles.Add(opened);
-			}
-			else
+			} else
 				opened.StopWatch();
 
-			if (File.Exists (opened.TempFilePath))
-				File.SetAttributes (opened.TempFilePath, FileAttributes.Normal);
+			if(File.Exists(opened.TempFilePath))
+				File.SetAttributes(opened.TempFilePath, FileAttributes.Normal);
 
-			try
-			{
-				File.WriteAllBytes (opened.TempFilePath, file);
-			}
-			catch (UnauthorizedAccessException)
-			{
+			try {
+				File.WriteAllBytes(opened.TempFilePath, file);
+			} catch(UnauthorizedAccessException) {
 				string tempName = opened.TempFilePath;
-				FileInfo fi = new FileInfo (opened.TempFilePath);
+				FileInfo fi = new FileInfo(opened.TempFilePath);
 				int tryesCount = 0;
 				bool error = true;
 
-				while (error)
-				{
+				while(error) {
 					tryesCount++;
 					tempName = string.Format("{0}{1}({2}){3}",
 						fi.Directory + Path.DirectorySeparatorChar.ToString(),
 						Path.GetFileNameWithoutExtension(fi.Name),
 						tryesCount,
 						fi.Extension);
-					try 
-					{
-						File.WriteAllBytes (tempName, file);
+					try {
+						File.WriteAllBytes(tempName, file);
 						error = false;
-					}
-					catch (UnauthorizedAccessException)
-					{
+					} catch(UnauthorizedAccessException) {
 						error = true;
 					}
 				}
 				opened.TempFilePath = tempName;
 			}
 
-			if (readOnly)
+			if(readOnly)
 				File.SetAttributes(opened.TempFilePath, FileAttributes.ReadOnly);
 			else
 				opened.StartWatch();
@@ -117,11 +108,10 @@ namespace QSDocTemplates
 				return;
 			}
 
-			if (docsToPrint > 0 && PrintSettings != null && PrintSettings.Printer != null)
-			{
+			if(docsToPrint > 0 && PrintSettings != null && PrintSettings.Printer != null) {
 				string officeName = "soffice";
 				string args = "--pt \"" + PrintSettings.Printer + "\" \"" + opened.TempFilePath + "\"";
-				for(int i = 1; i < docsToPrint; i++){
+				for(int i = 1; i < docsToPrint; i++) {
 					args += " \"" + opened.TempFilePath + "\"";
 				}
 
