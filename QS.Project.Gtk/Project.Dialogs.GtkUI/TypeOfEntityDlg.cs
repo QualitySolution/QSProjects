@@ -4,6 +4,7 @@ using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Utilities.Text;
 using QSValidation;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -43,7 +44,7 @@ namespace QS.Project.Dialogs.GtkUI
 		void YSpecCmbEntityType_ItemSelected(object sender, Gamma.Widgets.ItemSelectedEventArgs e)
 		{
 			if(e.SelectedItem is Type) {
-				Entity.CustomName = TypeOfEntityRepository.GetRealName(e.SelectedItem as Type);
+				Entity.CustomName = TypeOfEntityRepository.GetRealName(e.SelectedItem as Type).StringToTitleCase();
 				Entity.Type = (e.SelectedItem as Type).Name;
 			}
 		}

@@ -24,7 +24,7 @@ namespace QS.Project.Repositories
 
 		public static Type GetEntityType(string strType)
 		{
-			var items = Assembly.GetAssembly(typeof(TypeOfEntity)).GetTypes();
+			var items = PermissionsSettings.PermissionsEntityTypes;
 			return items.FirstOrDefault(t => t.Name == strType);
 		}
 
