@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Gamma.GtkWidgets;
 using Gtk;
-using QS.DomainModel.Entity;
-using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
-using QS.Static;
 
 namespace QS.Widgets.Gtk
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class UserEntityPermissionWidget : Bin
+	public partial class UserEntityPermissionWidget : Bin, ISavablePermissionTab
 	{
 		public IUnitOfWork UoW { get; set; }
 
@@ -100,19 +96,6 @@ namespace QS.Widgets.Gtk
 			}
 			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(originalTypeOfEntityList);
 		}
-		/*
-		private List<TypeOfEntity> GenerateEntitiesList(IEnumerable<Type> types)
-		{
-			var result = new List<TypeOfEntity>();
-			foreach(var item in types) {
-				var attr = item.GetCustomAttribute<AppellativeAttribute>();
-				result.Add(new EntityNode() {
-					ClassName = item.Name,
-					Name = attr.Nominative
-				});
-			}
-			return result;
-		}*/
 
 		public void AddPermission(TypeOfEntity entityNode)
 		{

@@ -8,12 +8,6 @@ namespace QS.Widgets.Gtk
 
 		private global::Gtk.Notebook notebook1;
 
-		private global::QS.Widgets.Gtk.UserEntityPermissionWidget userEntityPermissionsView;
-
-		private global::Gtk.Label label1;
-
-		private global::Gtk.Label label3;
-
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -28,30 +22,10 @@ namespace QS.Widgets.Gtk
 			this.notebook1 = new global::Gtk.Notebook();
 			this.notebook1.CanFocus = true;
 			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = 0;
-			// Container child notebook1.Gtk.Notebook+NotebookChild
-			this.userEntityPermissionsView = new global::QS.Widgets.Gtk.UserEntityPermissionWidget();
-			this.userEntityPermissionsView.Events = ((global::Gdk.EventMask)(256));
-			this.userEntityPermissionsView.Name = "userEntityPermissionsView";
-			this.notebook1.Add(this.userEntityPermissionsView);
-			// Notebook tab
-			this.label1 = new global::Gtk.Label();
-			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("Для документов");
-			this.notebook1.SetTabLabel(this.userEntityPermissionsView, this.label1);
-			this.label1.ShowAll();
-			// Notebook tab
-			global::Gtk.Label w2 = new global::Gtk.Label();
-			w2.Visible = true;
-			this.notebook1.Add(w2);
-			this.label3 = new global::Gtk.Label();
-			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString("Прочие");
-			this.notebook1.SetTabLabel(w2, this.label3);
-			this.label3.ShowAll();
+			this.notebook1.CurrentPage = -1;
 			this.vbox1.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
-			w3.Position = 0;
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+			w1.Position = 0;
 			this.Add(this.vbox1);
 			if ((this.Child != null))
 			{

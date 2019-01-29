@@ -98,6 +98,7 @@
     <Compile Include="gtk-gui\QS.Widgets.Gtk.UserEntityPermissionWidget.cs" />
     <Compile Include="Project.Dialogs.GtkUI\TypeOfEntityDlg.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.TypeOfEntityDlg.cs" />
+    <Compile Include="Widgets.Gtk\ISavablePermissionTab.cs" />
     <Compile Include="Project.Dialogs.GtkUI\RepresentationJournalDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="RepresentationModel.GtkUI\IRepresentationModel.cs" />
