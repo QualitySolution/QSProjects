@@ -1,10 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
 using QS.Project.Domain;
-using NHibernate.Mapping.ByCode;
-using NHibernate.Persister.Entity;
-using System;
-using System.Collections;
-using System.Linq.Expressions;
 
 namespace QS.Project.HibernateMapping
 {

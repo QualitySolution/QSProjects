@@ -6,7 +6,7 @@ namespace QS.Widgets.Gtk
 	{
 		private global::Gtk.VBox vbox1;
 
-		private global::Gtk.Notebook notebook1;
+		private global::Gtk.Notebook notebook;
 
 		protected virtual void Build()
 		{
@@ -19,12 +19,12 @@ namespace QS.Widgets.Gtk
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.notebook1 = new global::Gtk.Notebook();
-			this.notebook1.CanFocus = true;
-			this.notebook1.Name = "notebook1";
-			this.notebook1.CurrentPage = -1;
-			this.vbox1.Add(this.notebook1);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+			this.notebook = new global::Gtk.Notebook();
+			this.notebook.CanFocus = true;
+			this.notebook.Name = "notebook";
+			this.notebook.CurrentPage = -1;
+			this.vbox1.Add(this.notebook);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.notebook]));
 			w1.Position = 0;
 			this.Add(this.vbox1);
 			if ((this.Child != null))

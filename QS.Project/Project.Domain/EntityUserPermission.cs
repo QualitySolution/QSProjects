@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 using QS.DomainModel.Entity;
-using QS.Static;
 
 namespace QS.Project.Domain
 {

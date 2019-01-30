@@ -4,9 +4,9 @@ using QS.Project.Domain;
 
 namespace QS.Project.Repositories
 {
-	public static class EntityUserPermissionRepository
+	public static class UserPermissionRepository
 	{
-		public static EntityUserPermission GetUserPermission(IUnitOfWork uow, string entityName, int userId)
+		public static EntityUserPermission GetUserEntityPermission(IUnitOfWork uow, string entityName, int userId)
 		{
 			TypeOfEntity typeOfEntityAlias = null;
 			EntityUserPermission entityUserPermissionAlias = null;
@@ -19,9 +19,16 @@ namespace QS.Project.Repositories
 				.SingleOrDefault();
 		}
 
-		public static IList<EntityUserPermission> GetUserAllPermissions(IUnitOfWork uow, int userId)
+		public static IList<EntityUserPermission> GetUserAllEntityPermissions(IUnitOfWork uow, int userId)
 		{
 			return uow.Session.QueryOver<EntityUserPermission>()
+				.Where(x => x.User.Id == userId)
+				.List();
+		}
+
+		public static IList<PresetUserPermission> GetUserAllPresetPermissions(IUnitOfWork uow, int userId)
+		{
+			return uow.Session.QueryOver<PresetUserPermission>()
 				.Where(x => x.User.Id == userId)
 				.List();
 		}

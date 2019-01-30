@@ -16,7 +16,7 @@ namespace QS.DomainModel.Entity.EntityPermissions
 				return new EntityPermission(false, false, false, false);
 			}
 
-			var userPermission = EntityUserPermissionRepository.GetUserPermission(UnitOfWorkFactory.CreateWithoutRoot(), entityType.Name, userId);
+			var userPermission = UserPermissionRepository.GetUserEntityPermission(UnitOfWorkFactory.CreateWithoutRoot(), entityType.Name, userId);
 			if(userPermission == null) {
 				return EntityPermission.Empty;
 			} else {

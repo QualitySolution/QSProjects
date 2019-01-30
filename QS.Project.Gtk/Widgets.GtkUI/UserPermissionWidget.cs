@@ -22,15 +22,25 @@ namespace QS.Widgets.Gtk
 		{
 			var userEntityPermissionWidget = new UserEntityPermissionWidget();
 			userEntityPermissionWidget.ConfigureDlg(UoW, UserRepository.GetCurrentUserId());
-			AddTab(userEntityPermissionWidget, "Документы");
+			AddSavablePermissionTab(userEntityPermissionWidget, "На документы");
 			userEntityPermissionWidget.ShowAll();
+
+			var userPresetPermissionWidget = new UserPresetPermissionWidget();
+			userPresetPermissionWidget.ConfigureDlg(UoW, UserRepository.GetCurrentUserId());
+			AddSavablePermissionTab(userPresetPermissionWidget, "Предустановленные");
+			userPresetPermissionWidget.ShowAll();
 		}
 
-		public void AddTab<TPermissionTab>(TPermissionTab permissionTab, string tabName)
+		public void AddSavablePermissionTab<TPermissionTab>(TPermissionTab permissionTab, string tabName)
 			where TPermissionTab : Widget, ISavablePermissionTab
 		{
 			savableTabs.Add(permissionTab);
 			notebook.AppendPage(permissionTab, new Label(tabName));
+		}
+
+		public void AddOtherPermissionTab(Widget tabWidget, string tabName)
+		{
+			notebook.AppendPage(tabWidget, new Label(tabName));
 		}
 
 		public void Save()

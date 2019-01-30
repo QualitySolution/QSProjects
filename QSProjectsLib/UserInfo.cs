@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using NLog;
+using QS.Project.Repositories;
 using QSSaaS;
+using QS.DomainModel.UoW;
+using QS.Permissions;
+using System.Linq;
 
 namespace QSProjectsLib
 {
@@ -88,13 +92,6 @@ namespace QSProjectsLib
 					Name = rdr ["name"].ToString ();
 					Id = rdr.GetInt32 ("id");
 					Admin = rdr.GetBoolean (QSMain.AdminFieldName);
-
-					Permissions = new Dictionary<string, bool> ();
-					foreach (KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission) {
-						string FieldName = Right.Value.DataBaseName;
-						Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
-					}
-
 				}
 				Email = tryGetUserEmail ();
 			} catch (Exception ex) {
@@ -159,16 +156,20 @@ namespace QSProjectsLib
 			Id = rdr.GetInt32 ("id");
 			Admin = rdr.GetBoolean (QSMain.AdminFieldName);
 
-
-			Permissions = new Dictionary<string, bool> ();
-			foreach (KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission) {
-				string FieldName = Right.Value.DataBaseName;
-				Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
-			}
-
 			rdr.Close ();
 			Email = tryGetUserEmail ();
 			loadedInConstructor = true;
+		}
+
+		public void LoadUserPermissions()
+		{
+			Permissions = new Dictionary<string, bool>();
+			var userPresetPermission = UserPermissionRepository.GetUserAllPresetPermissions(UnitOfWorkFactory.CreateWithoutRoot(), Id)
+				.Where(x => !x.IsLostPermission)
+				.ToDictionary(x => x.PermissionName);
+			foreach(var item in PermissionsSettings.PresetPermissions.Keys) {
+				Permissions.Add(item, userPresetPermission.ContainsKey(item));
+			}
 		}
 
 		string tryGetUserEmail ()
@@ -199,20 +200,6 @@ namespace QSProjectsLib
 			win.Show ();
 			win.Run ();
 			win.Destroy ();
-		}
-	}
-
-	public class UserPermission
-	{
-		public string DataBaseName;
-		public string DisplayName;
-		public string Description;
-
-		public UserPermission (string DataBaseName, string DisplayName, string Description)
-		{
-			this.DataBaseName = DataBaseName;
-			this.DisplayName = DisplayName;
-			this.Description = Description;
 		}
 	}
 }

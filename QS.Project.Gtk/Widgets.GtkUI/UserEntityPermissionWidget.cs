@@ -50,16 +50,36 @@ namespace QS.Widgets.Gtk
 			Sensitive = true;
 		}
 
-		private void OnButtonAddClicked(object sender, EventArgs e)
+		private void AddPermission()
 		{
 			var selected = ytreeviewEntitiesList.GetSelectedObject() as TypeOfEntity;
 			model.AddPermission(selected);
 		}
 
-		private void OnButtonDeleteClicked(object sender, EventArgs e)
+		private void OnButtonAddClicked(object sender, EventArgs e)
+		{
+			AddPermission();
+		}
+
+		protected void OnYtreeviewEntitiesListRowActivated(object o, RowActivatedArgs args)
+		{
+			AddPermission();
+		}
+
+		private void DeletePermission()
 		{
 			var selected = ytreeviewPermissions.GetSelectedObject() as EntityUserPermission;
 			model.DeletePermission(selected);
+		}
+
+		private void OnButtonDeleteClicked(object sender, EventArgs e)
+		{
+			DeletePermission();
+		}
+
+		protected void OnYtreeviewPermissionsRowActivated(object o, RowActivatedArgs args)
+		{
+			DeletePermission();
 		}
 
 		public void Save()
@@ -84,7 +104,7 @@ namespace QS.Widgets.Gtk
 			this.user = user;
 			this.uow = uow;
 
-			originalPermissionList = EntityUserPermissionRepository.GetUserAllPermissions(uow, user.Id);
+			originalPermissionList = UserPermissionRepository.GetUserAllEntityPermissions(uow, user.Id);
 			ObservablePermissionsList = new GenericObservableList<EntityUserPermission>(originalPermissionList.ToList());
 
 			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow);
