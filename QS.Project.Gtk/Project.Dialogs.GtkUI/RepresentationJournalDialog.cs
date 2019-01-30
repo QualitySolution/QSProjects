@@ -52,6 +52,11 @@ namespace QS.Project.Dialogs.GtkUI
             return String.Format("View_{0}", presentation.Name);
         }
 
+		public static string GenerateHashName(IRepresentationModel model)
+		{
+			return GenerateHashName(model.GetType());
+		}
+
 		#endregion
 
 		#region Actions
