@@ -1,10 +1,11 @@
 ﻿using System;
 using NHibernate.Util;
 using QS.DomainModel.UoW;
+using QS.RepresentationModel;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter
+	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter, IJournalFilter
 		where TFilter : class
 	{
 		bool canNotify = true;

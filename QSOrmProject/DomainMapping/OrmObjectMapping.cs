@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using QS.DomainModel.Config;
+using QS.Tdi;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
 
 namespace QSOrmProject.DomainMapping
 {
-	public class OrmObjectMapping<TEntity> : IOrmObjectMapping
+	public class OrmObjectMapping<TEntity> : IOrmObjectMapping, IEntityConfig
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -63,6 +65,8 @@ namespace QSOrmProject.DomainMapping
 
 		public bool PopupMenuExist { get{ return GetPopupMenuFunc != null; }}
 
+		public Type EntityClass => typeof(TEntity);
+
 		private OrmObjectMapping()
 		{
 			
@@ -74,6 +78,11 @@ namespace QSOrmProject.DomainMapping
 				return null;
 
 			return GetPopupMenuFunc(selected.Cast<TEntity>().ToArray());
+		}
+
+		public ITdiDialog CreateDialog(params object[] parameters)
+		{
+			return OrmMain.CreateObjectDialog(EntityClass, parameters);
 		}
 
 		#region Механизм уведомлений об изменениях объекта

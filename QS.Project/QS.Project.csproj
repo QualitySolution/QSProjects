@@ -115,6 +115,11 @@
     <Compile Include="Deletion\InternalHelper.cs" />
     <Compile Include="Deletion\IHibernateDeleteRule.cs" />
     <Compile Include="Tdi\TabHashHelper.cs" />
+    <Compile Include="Project.Dialogs\JournalSelectMode.cs" />
+    <Compile Include="RepresentationModel\IJournalFilter.cs" />
+    <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
+    <Compile Include="DomainModel\Config\IEntityConfig.cs" />
+    <Compile Include="Deletion\DeleteHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -130,6 +135,8 @@
     <Folder Include="Tdi\" />
     <Folder Include="Project.Dialogs\" />
     <Folder Include="Deletion\" />
+    <Folder Include="RepresentationModel\" />
+    <Folder Include="DomainModel\Config\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -145,4 +152,13 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

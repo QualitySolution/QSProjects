@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Linq;
+using QS.RepresentationModel;
 
 namespace QSOrmProject.RepresentationModel
 {
 	/// <summary>
 	/// Базовый клас презентационной модели с подпиской на обновления только для типа TEntity
 	/// </summary>
-	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel
+	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		public Type ObjectType {
 			get { return typeof(TEntity); }
 		}
+
+		public Type EntityType => ObjectType;
+
+		public IJournalFilter JournalFilter => RepresentationFilter as IJournalFilter;
 
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.

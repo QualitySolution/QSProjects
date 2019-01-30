@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Widgets.Gtk\FieldCompletionEntry.cs" />
+    <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
     <Compile Include="Dialog.GtkUI\DialogHelper.cs" />
     <Compile Include="Dialog.GtkUI\EntityDialogBase.cs" />
     <Compile Include="Tdi.Gtk\TdiSliderTab.cs" />
@@ -81,13 +81,27 @@
     <Compile Include="Dialog.GtkUI\MessageDialogHelper.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnEntityDialogBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\RepresentationJournalDialog.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="RepresentationModel.GtkUI\IRepresentationModel.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.RepresentationJournalDialog.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalAction.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalActionButton.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationAddButton.cs" />
+    <Compile Include="Widgets.GtkUI\RepresentationTreeView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalDialog.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationEditButton.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationButtonBase.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationDeleteButton.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Widgets.Gtk\" />
+    <Folder Include="Widgets.GtkUI\" />
     <Folder Include="Dialog.GtkUI\" />
     <Folder Include="Tdi.Gtk\" />
     <Folder Include="Utilities.Gtk\" />
     <Folder Include="Project.Dialogs.GtkUI\" />
+    <Folder Include="RepresentationModel.GtkUI\" />
+    <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
@@ -109,6 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

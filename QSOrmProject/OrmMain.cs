@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Proxy;
 using NLog;
+using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Tdi;
@@ -266,6 +267,9 @@ namespace QSOrmProject
 			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
 			QS.Project.DB.Connection.GetConnectionString = () => QSMain.ConnectionString;
 			QS.Project.DB.Connection.GetConnectionDB = () => QSMain.ConnectionDB;
+			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
+			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
+
 			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
 			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
 		}
