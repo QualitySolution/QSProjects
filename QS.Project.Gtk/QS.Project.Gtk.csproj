@@ -94,6 +94,7 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationEditButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationButtonBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationDeleteButton.cs" />
+    <Compile Include="Dialog.GtkUI\GtkMessageDialogsInteractive.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

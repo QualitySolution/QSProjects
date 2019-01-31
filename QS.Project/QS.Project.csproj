@@ -120,6 +120,8 @@
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
     <Compile Include="DomainModel\Config\IEntityConfig.cs" />
     <Compile Include="Deletion\DeleteHelper.cs" />
+    <Compile Include="Dialog\IInteractiveMessage.cs" />
+    <Compile Include="Dialog\IInteractiveQuestion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
