@@ -33,10 +33,20 @@ namespace QS.Tdi
 
 			var info = methods.FirstOrDefault(x => x.Name == GenerateTabHashMethodName
 				&& x.IsGenericMethod == false
-				&& x.ReturnType == typeof(string));
+				&& x.ReturnType == typeof(string)
+				&& CompareMethodParameters(x.GetParameters(), types)
+				);
 			if(info == null && type.BaseType != null)
 				return FindGetHashMethod(type.BaseType, types);
 			return info;
+		}
+
+		private static bool CompareMethodParameters(ParameterInfo[] parameters, Type[] types)
+		{
+			if (parameters.Length != types.Length)
+				return false;
+
+			return Enumerable.SequenceEqual(parameters.Select(x => x.ParameterType), types);
 		}
 	}
 }
