@@ -6,7 +6,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 {
 	public abstract class RepresentationButtonBase : IJournalActionButton
 	{
-		protected readonly Button button = new Button("gtk-add");
+		protected readonly Button button;
 		protected readonly IRepresentationModel RepresentationModel;
 		protected readonly IJournalDialog dialog;
 
@@ -24,6 +24,11 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 			this.dialog = dialog;
 			button.Label = Title = title;
 			button.Clicked += Button_Clicked;
+		}
+
+		protected void SetIcon(Gdk.Pixbuf pixbuf)
+		{
+			button.Image = new Image(pixbuf);
 		}
 
 		void Button_Clicked(object sender, EventArgs e)
