@@ -10,6 +10,11 @@ namespace QS.Dialog.Gtk
 		public HandleSwitchIn HandleSwitchIn { get; protected set; }
 		public HandleSwitchOut HandleSwitchOut { get; protected set; }
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		public object Tag;
+
 		public TdiTabBase ()
 		{
 		}

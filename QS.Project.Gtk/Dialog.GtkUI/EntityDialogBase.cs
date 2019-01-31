@@ -22,6 +22,11 @@ namespace QS.Dialog.Gtk
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		public object Tag;
+
 		private IUnitOfWorkGeneric<TEntity> uowGeneric;
 
 		public IUnitOfWorkGeneric<TEntity> UoWGeneric {
