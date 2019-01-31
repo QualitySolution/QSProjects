@@ -7,6 +7,7 @@ using NLog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QS.Project.Dialogs.GtkUI.JournalActions;
 using QS.RepresentationModel.GtkUI;
 using QS.Tdi;
@@ -140,14 +141,16 @@ namespace QS.Project.Dialogs.GtkUI
 
 		protected IEntityConfig EntityConfig => DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType);
 
+		public override IUnitOfWork UoW { get => RepresentationModel.UoW; }
+
 		public yTreeView TreeView => tableview;
 
-		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
-        {
-            UpdateSum ();
-        }
-        
 		#endregion
+
+		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
+		{
+			UpdateSum ();
+		}
 
 		public RepresentationJournalDialog(IRepresentationModel representation, string tilte) : this(representation)
         {
