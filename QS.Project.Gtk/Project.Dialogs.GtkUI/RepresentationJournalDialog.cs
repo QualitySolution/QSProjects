@@ -20,11 +20,6 @@ namespace QS.Project.Dialogs.GtkUI
         private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private IRepresentationModel representationModel;
 
-        /// <summary>
-        /// Для хранения пользовательской информации как в WinForms
-        /// </summary>
-        public object Tag;
-
         public bool? UseSlider
         {
             get
