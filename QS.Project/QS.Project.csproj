@@ -123,6 +123,7 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\IEntityPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermission.cs" />
     <Compile Include="Static\PermissionSettings.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntitiesWithPermissionFinder.cs" />
     <Compile Include="Project.Dialogs\JournalSelectMode.cs" />
     <Compile Include="RepresentationModel\IJournalFilter.cs" />
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />

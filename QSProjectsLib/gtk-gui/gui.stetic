@@ -6,6 +6,7 @@
   </configuration>
   <import>
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
+    <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
   </import>
   <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="355 342">
     <property name="MemberName" />
@@ -524,7 +525,7 @@
           <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">1</property>
             <child>
               <widget class="Gtk.VBox" id="vbox5">
                 <property name="MemberName" />
@@ -907,6 +908,24 @@
               <widget class="Gtk.Label" id="label7">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">Информация</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="QS.Widgets.Gtk.UserPermissionWidget" id="userpermissionwidget1">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label8">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Права</property>
               </widget>
               <packing>
                 <property name="type">tab</property>
