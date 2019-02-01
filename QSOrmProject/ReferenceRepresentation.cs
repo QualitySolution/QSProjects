@@ -163,9 +163,9 @@ namespace QSOrmProject
             }
         }
 
-		private bool CanCreate => entityPermissions.IsEmpty || entityPermissions.Create || ButtonMode.HasFlag(ReferenceButtonMode.CanAdd);
-		private bool CanEdit => entityPermissions.IsEmpty || entityPermissions.Update || ButtonMode.HasFlag(ReferenceButtonMode.CanEdit);
-		private bool CanDelete => entityPermissions.IsEmpty || entityPermissions.Delete || ButtonMode.HasFlag(ReferenceButtonMode.CanDelete);
+		private bool CanCreate =>  entityPermissions.Create || ButtonMode.HasFlag(ReferenceButtonMode.CanAdd);
+		private bool CanEdit => entityPermissions.Update || ButtonMode.HasFlag(ReferenceButtonMode.CanEdit);
+		private bool CanDelete => entityPermissions.Delete || ButtonMode.HasFlag(ReferenceButtonMode.CanDelete);
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
         public event EventHandler<TdiTabCloseEventArgs> CloseTab;

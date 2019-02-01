@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Project.Repositories;
+using QS.Project.Domain;
 
 namespace QS.DomainModel.Entity.EntityPermissions
 {

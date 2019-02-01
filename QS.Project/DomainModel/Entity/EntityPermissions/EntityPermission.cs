@@ -3,6 +3,7 @@
 	public struct EntityPermission
 	{
 		private bool initialized;
+
 		public bool IsEmpty => !initialized;
 
 		public bool Create { get; }
