@@ -295,22 +295,48 @@ namespace QS.Project.Dialogs.GtkUI
 
 		protected void OnButtonAddAndClicked(object sender, EventArgs e)
         {
-            if(searchEntryShown == 1)
-            {
-                ylabelSearchAnd.Visible = entrySearch2.Visible = true;
-                searchEntryShown++;
-            }
-            else if(searchEntryShown == 2)
-            {
-                ylabelSearchAnd2.Visible = entrySearch3.Visible = true;
-                searchEntryShown++;
-            } 
-            else if (searchEntryShown == 3) {
-                ylabelSearchAnd3.Visible = entrySearch4.Visible = true;
-                searchEntryShown++;
-                buttonAddAnd.Sensitive = false;
-            }
+			SearchVisible(searchEntryShown + 1);
         }
+
+		public void SetSearchTexts(params string[] strings)
+		{
+			int i = 0;
+			foreach(var str in strings) {
+				if(!String.IsNullOrWhiteSpace(str)) {
+					i++;
+					SetSearchText(i, str.Trim());
+				}
+			}
+			SearchVisible(i);
+		}
+
+		private void SetSearchText(int n, string text)
+		{
+			switch(n) {
+				case 1: 
+					entrySearch.Text = text;
+					break;
+				case 2:
+					entrySearch2.Text = text;
+					break;
+				case 3:
+					entrySearch3.Text = text;
+					break;
+				case 4:
+					entrySearch4.Text = text;
+					break;
+			}
+		}
+
+		protected void SearchVisible(int count)
+		{
+			entrySearch.Visible = count > 0;
+			ylabelSearchAnd.Visible = entrySearch2.Visible = count > 1;
+			ylabelSearchAnd2.Visible = entrySearch3.Visible = count > 2;
+			ylabelSearchAnd3.Visible = entrySearch4.Visible = count > 3;
+			buttonAddAnd.Sensitive = count < 4;
+			searchEntryShown = count;
+		}
 
 		#endregion
 	}
