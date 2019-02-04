@@ -12,9 +12,10 @@ using System.Linq;
 namespace QS.Widgets.Gtk
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class UserPresetPermissionWidget : Bin, ISavablePermissionTab
+	public partial class UserPresetPermissionWidget : Bin, IUserPermissionTab
 	{
 		public IUnitOfWork UoW { get; set; }
+		public string Title => "Предустановленные";
 
 		UserBase user;
 
@@ -26,10 +27,10 @@ namespace QS.Widgets.Gtk
 
 		PresetUserPermissionModel model;
 
-		public void ConfigureDlg(IUnitOfWork uow, int userId)
+		public void ConfigureDlg(IUnitOfWork uow, UserBase user)
 		{
 			UoW = uow;
-			user = UserRepository.GetUserById(UoW, userId);
+			this.user = user;
 			model = new PresetUserPermissionModel(UoW, user);
 
 			ytreeviewAvailablePermissions.ColumnsConfig = ColumnsConfigFactory.Create<PresetUserPermissionSource>()
@@ -44,11 +45,6 @@ namespace QS.Widgets.Gtk
 			ytreeviewSelectedPermissions.ItemsDataSource = model.ObservablePermissionsList;
 
 			Sensitive = true;
-		}
-
-		public void Save()
-		{
-			model.Save();
 		}
 
 		private void AddPermission()
@@ -82,12 +78,18 @@ namespace QS.Widgets.Gtk
 		{
 			DeletePermission();
 		}
+
+		public void Save()
+		{
+			model.Save();
+		}
 	}
 
 	internal sealed class PresetUserPermissionModel
 	{
 		private IUnitOfWork uow;
 		private UserBase user;
+		private IList<PresetUserPermission> deletePermissionList = new List<PresetUserPermission>();
 		private IList<PresetUserPermission> originalPermissionList;
 		private IList<PresetUserPermissionSource> originalPermissionsSourceList;
 
@@ -121,14 +123,20 @@ namespace QS.Widgets.Gtk
 
 			ObservablePermissionsSourceList.Remove(permissionSource);
 
+			PresetUserPermission savedPermission;
 			var foundOriginalPermission = originalPermissionList.FirstOrDefault(x => x.PermissionSource == permissionSource);
 			if(foundOriginalPermission == null) {
-				ObservablePermissionsList.Add(new PresetUserPermission() {
+				savedPermission = new PresetUserPermission() {
 					User = user,
 					PermissionName = permissionSource.Name
-				});
+				};
+				ObservablePermissionsList.Add(savedPermission);
 			} else {
-				ObservablePermissionsList.Add(foundOriginalPermission);
+				if(deletePermissionList.Contains(foundOriginalPermission)) {
+					deletePermissionList.Remove(foundOriginalPermission);
+				}
+				savedPermission = foundOriginalPermission;
+				ObservablePermissionsList.Add(savedPermission);
 			}
 		}
 
@@ -139,20 +147,21 @@ namespace QS.Widgets.Gtk
 			}
 			ObservablePermissionsSourceList.Add(deletedPermission.PermissionSource);
 			ObservablePermissionsList.Remove(deletedPermission);
+			if(deletedPermission.Id != 0) {
+				deletePermissionList.Add(deletedPermission);
+			}
 		}
 
 		public void Save()
 		{
 			foreach(PresetUserPermission item in ObservablePermissionsList) {
-				if(originalPermissionList.Contains(item)) {
-					originalPermissionList.Remove(item);
-				}
 				uow.Save(item);
 			}
 
-			foreach(PresetUserPermission item in originalPermissionList) {
+			foreach(var item in deletePermissionList) {
 				uow.Delete(item);
 			}
 		}
+
 	}
 }

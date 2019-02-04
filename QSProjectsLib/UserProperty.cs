@@ -15,6 +15,8 @@ namespace QSProjectsLib
 		#region Глобальные настройки
 
 		public static Func<List<IPermissionsView>> PermissionViewsCreator;
+
+		public static Func<List<IUserPermissionTab>> UserPermissionViewsCreator;
 		#endregion
 
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -23,34 +25,45 @@ namespace QSProjectsLib
 		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
 		List<IPermissionsView> permissionViews;
+		List<IUserPermissionTab> userPermissionViews;
 
 		public UserProperty()
 		{
 			this.Build();
 			RightCheckButtons = new Dictionary<string, CheckButton>();
-
-			userpermissionwidget.ConfigureDlg();
-
 			if(PermissionViewsCreator != null) {
 				permissionViews = PermissionViewsCreator();
-
-				foreach(var view in permissionViews) {
-					userpermissionwidget.AddOtherPermissionTab((Widget)view, view.ViewName);
-					(view as Widget).Show();
-				}
 			}
 		}
 
-		public void UserFill(int UserId)
+		public void InitializePermissionViews(int userId)
+		{
+			userpermissionwidget.InitilizeTabs();
+			userPermissionViews = UserPermissionViewsCreator();
+			foreach(var tab in userPermissionViews) {
+				userpermissionwidget.AddTab(tab);
+			}
+
+			if(permissionViews != null) {
+				foreach(var view in permissionViews) {
+					userpermissionwidget.AddTab((Widget)view, view.ViewName);
+					(view as Widget).Show();
+				}
+			}
+
+			userpermissionwidget.ConfigureDlg(userId);
+		}
+
+		public void UserFill(int userId)
 		{
 			NewUser = false;
-			logger.Info("Запрос пользователя №{0}...", UserId);
+			logger.Info("Запрос пользователя №{0}...", userId);
 			string sql = "SELECT * FROM users WHERE users.id = @id";
 			try {
 				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 
-				cmd.Parameters.AddWithValue("@id", UserId);
+				cmd.Parameters.AddWithValue("@id", userId);
 
 				MySqlDataReader rdr = cmd.ExecuteReader();
 
@@ -91,6 +104,7 @@ namespace QSProjectsLib
 				rdr.Close();
 
 				this.Title = entryName.Text;
+				InitializePermissionViews(userId);
 				logger.Info("Ok");
 			} catch(Exception ex) {
 				logger.Error(ex, "Ошибка получения информации о пользователе!");

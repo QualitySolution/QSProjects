@@ -10,43 +10,64 @@ namespace QS.Widgets.Gtk
 	public partial class UserPermissionWidget : Bin
 	{
 		IUnitOfWork UoW;
-		List<ISavablePermissionTab> savableTabs = new List<ISavablePermissionTab>();
+
+		private List<IUserPermissionTab> userPermissionTabs = new List<IUserPermissionTab>();
 
 		public UserPermissionWidget()
 		{
 			this.Build();
 			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			Sensitive = false;
 		}
 
-		public void ConfigureDlg()
+		public void InitilizeTabs()
 		{
 			var userEntityPermissionWidget = new UserEntityPermissionWidget();
-			userEntityPermissionWidget.ConfigureDlg(UoW, UserRepository.GetCurrentUserId());
-			AddSavablePermissionTab(userEntityPermissionWidget, "На документы");
-			userEntityPermissionWidget.ShowAll();
+			AddTab(userEntityPermissionWidget);
+			userPermissionTabs.Add(userEntityPermissionWidget);
 
 			var userPresetPermissionWidget = new UserPresetPermissionWidget();
-			userPresetPermissionWidget.ConfigureDlg(UoW, UserRepository.GetCurrentUserId());
-			AddSavablePermissionTab(userPresetPermissionWidget, "Предустановленные");
-			userPresetPermissionWidget.ShowAll();
+			AddTab(userPresetPermissionWidget);
+			userPermissionTabs.Add(userPresetPermissionWidget);
 		}
 
-		public void AddSavablePermissionTab<TPermissionTab>(TPermissionTab permissionTab, string tabName)
-			where TPermissionTab : Widget, ISavablePermissionTab
+		public void ConfigureDlg(int userId)
 		{
-			savableTabs.Add(permissionTab);
-			notebook.AppendPage(permissionTab, new Label(tabName));
+			if(userId == 0) {
+				Sensitive = false;
+				return;
+			}
+
+			var user = UserRepository.GetUserById(UoW, userId);
+
+			foreach(var tab in userPermissionTabs) {
+				tab.ConfigureDlg(UoW, user);
+			}
+
+			Sensitive = true;
 		}
 
-		public void AddOtherPermissionTab(Widget tabWidget, string tabName)
+		public void AddTab(IUserPermissionTab tab)
 		{
-			notebook.AppendPage(tabWidget, new Label(tabName));
+			var widgetTab = tab as Widget;
+			if(widgetTab == null) {
+				return;
+			}
+			notebook.AppendPage(widgetTab, new Label(tab.Title));
+			userPermissionTabs.Add(tab);
+			widgetTab.ShowAll();
+		}
+
+		public void AddTab(Widget tab, string tabName)
+		{
+			notebook.AppendPage(tab, new Label(tabName));
+			tab.ShowAll();
 		}
 
 		public void Save()
 		{
-			foreach(var tab in savableTabs) {
-				tab.Save();
+			foreach(var item in userPermissionTabs) {
+				item.Save();
 			}
 			UoW.Commit();
 		}

@@ -11,9 +11,10 @@ using QS.Project.Repositories;
 namespace QS.Widgets.Gtk
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class UserEntityPermissionWidget : Bin, ISavablePermissionTab
+	public partial class UserEntityPermissionWidget : Bin, IUserPermissionTab
 	{
 		public IUnitOfWork UoW { get; set; }
+		public string Title => "На документы";
 
 		UserBase user;
 
@@ -25,10 +26,10 @@ namespace QS.Widgets.Gtk
 
 		EntityUserPermissionModel model;
 
-		public void ConfigureDlg(IUnitOfWork uow, int userId)
+		public void ConfigureDlg(IUnitOfWork uow, UserBase user)
 		{
 			UoW = uow;
-			user = UserRepository.GetUserById(UoW, userId);
+			this.user = user;
 			model = new EntityUserPermissionModel(UoW, user);
 
 			ytreeviewPermissions.ColumnsConfig = ColumnsConfigFactory.Create<EntityUserPermission>()
@@ -94,6 +95,7 @@ namespace QS.Widgets.Gtk
 		private IUnitOfWork uow;
 		private UserBase user;
 		private IList<EntityUserPermission> originalPermissionList;
+		private IList<EntityUserPermission> deletePermissionList = new List<EntityUserPermission>();
 		private IList<TypeOfEntity> originalTypeOfEntityList;
 
 		public GenericObservableList<EntityUserPermission> ObservablePermissionsList { get; private set; }
@@ -125,14 +127,20 @@ namespace QS.Widgets.Gtk
 
 			ObservableTypeOfEntitiesList.Remove(entityNode);
 
+			EntityUserPermission savedPermission;
 			var foundOriginalPermission = originalPermissionList.FirstOrDefault(x => x.TypeOfEntity == entityNode);
 			if(foundOriginalPermission == null) {
-				ObservablePermissionsList.Add(new EntityUserPermission() {
+				savedPermission = new EntityUserPermission() {
 					User = user,
 					TypeOfEntity = entityNode
-				});
-			}else {
-				ObservablePermissionsList.Add(foundOriginalPermission);
+				};
+				ObservablePermissionsList.Add(savedPermission);
+			} else {
+				if(deletePermissionList.Contains(foundOriginalPermission)) {
+					deletePermissionList.Remove(foundOriginalPermission);
+				}
+				savedPermission = foundOriginalPermission;
+				ObservablePermissionsList.Add(savedPermission);
 			}
 		}
 
@@ -143,18 +151,18 @@ namespace QS.Widgets.Gtk
 			}
 			ObservableTypeOfEntitiesList.Add(deletedPermission.TypeOfEntity);
 			ObservablePermissionsList.Remove(deletedPermission);
+			if(deletedPermission.Id != 0) {
+				deletePermissionList.Add(deletedPermission);
+			}
 		}
 
 		public void Save()
 		{
 			foreach(EntityUserPermission item in ObservablePermissionsList) {
-				if(originalPermissionList.Contains(item)) {
-					originalPermissionList.Remove(item);
-				}
 				uow.Save(item);
 			}
 
-			foreach(EntityUserPermission item in originalPermissionList) {
+			foreach(var item in deletePermissionList) {
 				uow.Delete(item);
 			}
 		}
