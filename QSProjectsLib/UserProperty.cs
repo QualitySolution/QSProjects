@@ -14,6 +14,9 @@ namespace QSProjectsLib
 	{
 		#region Глобальные настройки
 
+		public static int? RequestWidth { get; set; } = null;
+		public static int? RequestHeight { get; set; } = null;
+
 		public static Func<List<IPermissionsView>> PermissionViewsCreator;
 
 		public static Func<List<IUserPermissionTab>> UserPermissionViewsCreator;
@@ -30,6 +33,13 @@ namespace QSProjectsLib
 		public UserProperty()
 		{
 			this.Build();
+			if(RequestWidth.HasValue) {
+				WidthRequest = RequestWidth.Value;
+			}
+			if(RequestHeight.HasValue) {
+				HeightRequest = RequestHeight.Value;
+			}
+
 			RightCheckButtons = new Dictionary<string, CheckButton>();
 			if(PermissionViewsCreator != null) {
 				permissionViews = PermissionViewsCreator();
