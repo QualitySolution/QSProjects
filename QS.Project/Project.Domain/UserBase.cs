@@ -33,6 +33,22 @@ namespace QS.Project.Domain
 			set { SetField(ref login, value, () => Login); }
 		}
 
+		bool deactivated;
+
+		[Display(Name = "Отключен")]
+		public virtual bool Deactivated {
+			get { return deactivated; }
+			set { SetField(ref deactivated, value, () => Deactivated); }
+		}
+
+		bool isAdmin;
+
+		[Display(Name = "Администратор")]
+		public virtual bool IsAdmin {
+			get { return isAdmin; }
+			set { SetField(ref isAdmin, value, () => IsAdmin); }
+		}
+
 		#endregion
 
 		public UserBase()
