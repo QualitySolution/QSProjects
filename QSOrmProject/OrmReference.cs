@@ -142,7 +142,7 @@ namespace QSOrmProject
 			get { return buttonMode; }
 			set {
 				buttonMode = value;
-				buttonAdd.Sensitive = buttonMode.HasFlag(ReferenceButtonMode.CanAdd);
+				buttonAdd.Sensitive = CanCreate;
 				OnTreeviewSelectionChanged(this, EventArgs.Empty);
 				Image image = new Image();
 				image.Pixbuf = Stetic.IconLoader.LoadIcon(
@@ -210,6 +210,7 @@ namespace QSOrmProject
 			objectType = objType;
 			objectsCriteria = listCriteria;
 			UoW = uow;
+			InitializePermissionValidator();
 			ConfigureDlg();
 		}
 
@@ -326,8 +327,8 @@ namespace QSOrmProject
 		{
 			bool selected = ytreeviewRef.Selection.CountSelectedRows() > 0;
 			buttonSelect.Sensitive = selected;
-			buttonEdit.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) && selected;
-			buttonDelete.Sensitive = ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) && selected;
+			buttonEdit.Sensitive = CanEdit && selected;
+			buttonDelete.Sensitive = CanDelete && selected;
 		}
 
 		void FilterViewChanged(object aList)
@@ -354,6 +355,10 @@ namespace QSOrmProject
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
+			if(!CanCreate) {
+				MessageDialogWorks.RunWarningDialog("У вас нет прав для создания этого документа.");
+				return;
+			}
 			ytreeviewRef.Selection.UnselectAll();
 			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
 				SelectObject(EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, null));
@@ -385,6 +390,10 @@ namespace QSOrmProject
 
 		protected void OnButtonEditClicked(object sender, EventArgs e)
 		{
+			if(!CanEdit) {
+				MessageDialogWorks.RunWarningDialog("У вас нет прав для редактирования этого документа.");
+				return;
+			}
 			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
 				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
 			} else {
@@ -470,6 +479,10 @@ namespace QSOrmProject
 
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
+			if(!CanDelete) {
+				MessageDialogWorks.RunWarningDialog("У вас нет прав для удаления этого документа.");
+				return;
+			}
 			if (OrmMain.DeleteObject(ytreeviewRef.GetSelectedObject()))
 				UpdateObjectList();
 		}

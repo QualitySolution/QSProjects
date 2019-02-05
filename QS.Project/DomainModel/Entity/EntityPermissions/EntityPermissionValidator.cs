@@ -10,21 +10,29 @@ namespace QS.DomainModel.Entity.EntityPermissions
 {
 	public class EntityPermissionValidator : IEntityPermissionValidator
 	{
+
+		/// <summary>
+		/// Объявлет что для администраторов не будет проходить проверка прав
+		/// если true администратору разрешен полный доступ к документу,
+		/// если false администратор приравнивается к обычному пользователю, и проверяется в обычном режиме
+		/// </summary>
 		public virtual bool NoRestrictPermissionsForAdmin { get; set; } = true;
 
 		public virtual EntityPermission Validate(Type entityType, int userId)
 		{
-			var permissionAttr = entityType.GetCustomAttribute<EntityPermissionAttribute>();
-			if(permissionAttr == null) {
-				return new EntityPermission(false, false, false, false);
-			}
 			UserBase user;
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				user = UserRepository.GetUserById(uow, userId);
 			}
 
+			//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора
 			if(user != null && user.IsAdmin && NoRestrictPermissionsForAdmin) {
 				return new EntityPermission(true, true, true, true);
+			}
+
+			var permissionAttr = entityType.GetCustomAttribute<EntityPermissionAttribute>();
+			if(permissionAttr == null) {
+				return new EntityPermission(false, false, false, false);
 			}
 
 			var userPermission = UserPermissionRepository.GetUserEntityPermission(UnitOfWorkFactory.CreateWithoutRoot(), entityType.Name, userId);

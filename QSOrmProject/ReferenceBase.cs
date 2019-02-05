@@ -22,6 +22,7 @@ namespace QS
 		protected void InitializePermissionValidator()
 		{
 			if(PermissionsSettings.EntityPermissionValidator == null) {
+				entityPermissions = new EntityPermission(true, true, true, true);
 				return;
 			}
 			var user = UserRepository.GetCurrentUser(UoW);
