@@ -85,6 +85,9 @@ namespace QS.Widgets.Gtk
 
 		public void Save()
 		{
+			if(model == null) {
+				return;
+			}
 			model.Save();
 		}
 
