@@ -211,7 +211,7 @@ namespace QS.Project.Dialogs.GtkUI
 		public virtual void OnObjectSelected(params object[] nodes)
 		{
 			if(ObjectSelected != null) {
-				logger.Debug("Выбрано {0} id:({1})", RepresentationModel.EntityType, String.Join(",", nodes.Select(DomainHelper.GetIdOrNull)));
+				logger.Debug("Выбрано {0} id:({1})", RepresentationModel.NodeType, String.Join(",", nodes.Select(DomainHelper.GetIdOrNull)));
 				ObjectSelected(this, new JournalObjectSelectedEventArgs(nodes));
 			}
 			OnCloseTab(false);
