@@ -182,9 +182,10 @@ namespace QSOrmProject
 			}
 		}
 
-		private bool CanCreate => entityPermissions.Create || ButtonMode.HasFlag(ReferenceButtonMode.CanAdd);
-		private bool CanEdit => entityPermissions.Update || ButtonMode.HasFlag(ReferenceButtonMode.CanEdit);
-		private bool CanDelete => entityPermissions.Delete || ButtonMode.HasFlag(ReferenceButtonMode.CanDelete);
+		//Проверка флага происходит первой для того чтобы программно можно было в обязательном порядке включить кнопку игнорируя проверку прав
+		private bool CanCreate => ButtonMode.HasFlag(ReferenceButtonMode.CanAdd) || entityPermissions.Create;
+		private bool CanEdit => ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) || entityPermissions.Update;
+		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || entityPermissions.Delete;
 
 		public OrmReference(System.Type objType)
 			: this(objType, UnitOfWorkFactory.CreateWithoutRoot())
