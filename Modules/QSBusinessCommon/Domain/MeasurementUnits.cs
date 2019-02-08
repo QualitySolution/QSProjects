@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.DomainModel.Entity.EntityPermissions;
 using QSOrmProject;
 using QSOrmProject.DomainMapping;
 
@@ -9,6 +10,7 @@ namespace QSBusinessCommon.Domain
 	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",
 		Nominative = "единица измерения")]
+	[EntityPermission]
 	public class MeasurementUnits : PropertyChangedBase, IDomainObject
 	{
 		#region Свойства
