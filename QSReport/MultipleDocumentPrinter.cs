@@ -5,14 +5,13 @@ using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
 using QS.Print;
-using QS.Report;
 
 namespace QSReport
 {
 	public class MultipleDocumentPrinter
 	{
 		PrintSettings PrintSettings;
-		Gtk.PrintOperation Printer;
+		PrintOperation Printer;
 		bool showDialog = true;
 
 		public GenericObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new GenericObservableList<SelectablePrintDocument>();
@@ -25,7 +24,6 @@ namespace QSReport
 			if(!prnbleDocs.Any())
 				return;
 
-			showDialog = true;
 			List<IPrintableDocument> rdlToPrinter = new List<IPrintableDocument>();
 			List<IPrintableDocument> odtToPrinter = new List<IPrintableDocument>();
 			foreach(var document in prnbleDocs) {
@@ -51,49 +49,9 @@ namespace QSReport
 
 		public void PrintDocument(SelectablePrintDocument doc)
 		{
-			showDialog = true;
-			PrintDoc(doc, PageOrientation.Portrait, doc.Copies);
-		}
-
-		private void PrintDoc(SelectablePrintDocument doc, PageOrientation orientation, int copies)
-		{
-			if(doc == null) {
-				return;
-			}
-
-			switch(doc.Document.PrintType) {
-				case PrinterType.RDL:
-					var reportInfo = (doc.Document as IPrintableRDLDocument).GetReportInfo();
-
-					var action = showDialog ? PrintOperationAction.PrintDialog : PrintOperationAction.Print;
-					showDialog = false;
-
-					Printer = new PrintOperation();
-					Printer.Unit = Unit.Points;
-					Printer.UseFullPage = true;
-
-					Printer.PrintSettings = PrintSettings ?? new PrintSettings();
-
-					Printer.PrintSettings.Orientation = orientation;
-
-					var rprint = new ReportPrinter(reportInfo);
-					rprint.PrepareReport();
-
-					Printer.NPages = rprint.PageCount;
-					Printer.PrintSettings.NCopies = copies;
-					if(copies > 1)
-						Printer.PrintSettings.Collate = true;
-
-					Printer.DrawPage += rprint.DrawPage;
-					Printer.Run(action, null);
-
-					PrintSettings = Printer.PrintSettings;
-					break;
-				case PrinterType.ODT:
-				case PrinterType.None:
-				default:
-					break;
-			}
+			PrintableDocuments?.Clear();
+			PrintableDocuments.Add(doc);
+			PrintSelectedDocuments();
 		}
 	}
 
@@ -101,42 +59,22 @@ namespace QSReport
 	{
 		private bool selected;
 		public virtual bool Selected {
-			get { return selected; }
-			set { SetField(ref selected, value, () => Selected); }
+			get => selected;
+			set => SetField(ref selected, value, () => Selected);
 		}
 
 		public IPrintableDocument Document { get; set; }
 
-		public PageOrientation GetPageOrientation(){
-			switch(Document.Orientation){
-				case DocumentOrientation.Landscape:
-					return PageOrientation.Landscape;
-				default:
-					return PageOrientation.Portrait;
-			}
-		}
+		public PageOrientation GetPageOrientation() => Document.Orientation == DocumentOrientation.Portrait ? PageOrientation.Portrait : PageOrientation.Landscape;
 
 		private int copies;
 		public int Copies {
 			get => copies;
-			set {
-				var result = value;
-				if(result < 1) {
-					result = 1;
-				}
-				SetField(ref copies, result, () => Copies);
-			}
+			set => SetField(ref copies, value < 1 ? 1 : value, () => Copies);
 		}
 
-		public SelectablePrintDocument(IPrintableDocument document)
-		{
-			Document = document;
-		}
+		public SelectablePrintDocument(IPrintableDocument document) => Document = document;
 
-		public SelectablePrintDocument(IPrintableDocument document, int copies)
-		{
-			Document = document;
-			Copies = copies;
-		}
+		public SelectablePrintDocument(IPrintableDocument document, int copies) : this(document) => Copies = copies;
 	}
 }
