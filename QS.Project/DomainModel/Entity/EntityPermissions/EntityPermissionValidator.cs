@@ -27,12 +27,12 @@ namespace QS.DomainModel.Entity.EntityPermissions
 
 			//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора
 			if(user != null && user.IsAdmin && NoRestrictPermissionsForAdmin) {
-				return new EntityPermission(true, true, true, true);
+				return EntityPermission.AllAllowed;
 			}
 
 			var permissionAttr = entityType.GetCustomAttribute<EntityPermissionAttribute>();
 			if(permissionAttr == null) {
-				return new EntityPermission(false, false, false, false);
+				return EntityPermission.AllDenied;
 			}
 
 			var userPermission = UserPermissionRepository.GetUserEntityPermission(UnitOfWorkFactory.CreateWithoutRoot(), entityType.Name, userId);

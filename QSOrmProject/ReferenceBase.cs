@@ -22,7 +22,7 @@ namespace QS
 		protected void InitializePermissionValidator()
 		{
 			if(PermissionsSettings.EntityPermissionValidator == null) {
-				entityPermissions = new EntityPermission(true, true, true, true);
+				entityPermissions = EntityPermission.AllAllowed;
 				return;
 			}
 			var user = UserRepository.GetCurrentUser(UoW);
