@@ -19,6 +19,17 @@ namespace QSContacts
 		private IList<PhoneType> phoneTypes;
 		private IUnitOfWork uow;
 
+		private bool isReadOnly;
+		public bool IsReadOnly {
+			get { return isReadOnly; }
+			set {
+				if(isReadOnly == value)
+					return;
+				isReadOnly = value;
+				SetEditable();
+			}
+		}
+
 		public IUnitOfWork UoW {
 			get { return uow; }
 			set { 
@@ -64,7 +75,7 @@ namespace QSContacts
 							AddPhoneRow(phone);
 					}
 				}
-
+				SetEditable();
 			}
 		}
 
@@ -199,6 +210,18 @@ namespace QSContacts
 					else
 						datatablePhones.Attach (w, Left, Right, Row - 1, Row, (AttachOptions)0, (AttachOptions)0, (uint)0, (uint)0);
 				}
+		}
+
+		private void SetEditable()
+		{
+			foreach(Widget w in datatablePhones.Children) {
+				if(w is Entry)
+					(w as Entry).IsEditable = !IsReadOnly;
+				else if(w is Button)
+					(w as Button).Visible = !IsReadOnly;
+			}
+			if(PhonesList !=null)
+				buttonAdd.Visible = !isReadOnly;
 		}
 
 		private void CleanList ()
