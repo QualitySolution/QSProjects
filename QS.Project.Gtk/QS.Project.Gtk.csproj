@@ -31,8 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-2.0</Package>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -42,8 +46,12 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
-    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -63,6 +71,7 @@
       <HintPath>..\packages\NHibernate.5.2.2\lib\net461\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,8 +91,17 @@
     <Compile Include="Dialog.GtkUI\MessageDialogHelper.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnEntityDialogBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\RepresentationJournalDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="Widgets.GtkUI\UserPermissionWidget.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserPermissionWidget.cs" />
+    <Compile Include="Widgets.GtkUI\UserEntityPermissionWidget.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserEntityPermissionWidget.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\TypeOfEntityDlg.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.TypeOfEntityDlg.cs" />
+    <Compile Include="Widgets.GtkUI\IUserPermissionTab.cs" />
+    <Compile Include="Widgets.GtkUI\UserPresetPermissionWidget.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserPresetPermissionWidget.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\RepresentationJournalDialog.cs" />
     <Compile Include="RepresentationModel.GtkUI\IRepresentationModel.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.RepresentationJournalDialog.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalAction.cs" />
@@ -121,6 +139,14 @@
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSValidation\QSValidation.csproj">
+      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
+      <Name>QSValidation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

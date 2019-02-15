@@ -16,7 +16,5 @@ namespace QS.Dialog.Gtk
 				return MyEntityDialog as EntityDialogBase<TEntity>;
 			}
 		}
-
-
 	}
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
+using QS.Widgets.Gtk;
 using QSProjectsLib.Permissions;
 using QSSaaS;
 
@@ -13,8 +14,12 @@ namespace QSProjectsLib
 	{
 		#region Глобальные настройки
 
+		public static int? RequestWidth { get; set; } = null;
+		public static int? RequestHeight { get; set; } = null;
+
 		public static Func<List<IPermissionsView>> PermissionViewsCreator;
 
+		public static Func<List<IUserPermissionTab>> UserPermissionViewsCreator;
 		#endregion
 
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -23,43 +28,52 @@ namespace QSProjectsLib
 		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
 		List<IPermissionsView> permissionViews;
+		List<IUserPermissionTab> userPermissionViews;
 
 		public UserProperty()
 		{
 			this.Build();
-			RightCheckButtons = new Dictionary<string, CheckButton>();
-			if(QSMain.ProjectPermission != null) {
-				foreach(KeyValuePair<string, UserPermission> Pair in QSMain.ProjectPermission) {
-					CheckButton CheckBox = new CheckButton();
-					CheckBox.Label = Pair.Value.DisplayName;
-					CheckBox.TooltipText = Pair.Value.Description;
-					RightCheckButtons.Add(Pair.Key, CheckBox);
-					vboxPermissions.PackStart(CheckBox, false, false, 0);
-				}
-				vboxPermissions.ShowAll();
+			if(RequestWidth.HasValue) {
+				WidthRequest = RequestWidth.Value;
+			}
+			if(RequestHeight.HasValue) {
+				HeightRequest = RequestHeight.Value;
 			}
 
+			RightCheckButtons = new Dictionary<string, CheckButton>();
 			if(PermissionViewsCreator != null) {
 				permissionViews = PermissionViewsCreator();
-
-				foreach(var view in permissionViews) {
-					var tabLabel = new Label(view.ViewName);
-					notebook1.AppendPage((Widget)view, tabLabel);
-					(view as Widget).Show();
-				}
 			}
 		}
 
-		public void UserFill(int UserId)
+		public void InitializePermissionViews(int userId)
+		{
+			userpermissionwidget.InitilizeTabs();
+			userPermissionViews = UserPermissionViewsCreator();
+			foreach(var tab in userPermissionViews) {
+				userpermissionwidget.AddTab(tab);
+			}
+
+			if(permissionViews != null) {
+				foreach(var view in permissionViews) {
+					userpermissionwidget.AddTab((Widget)view, view.ViewName);
+					(view as Widget).Show();
+				}
+			}
+
+			userpermissionwidget.ConfigureDlg(userId);
+		}
+
+		public void UserFill(int userId)
 		{
 			NewUser = false;
-			logger.Info("Запрос пользователя №{0}...", UserId);
+			logger.Info("Запрос пользователя №{0}...", userId);
 			string sql = "SELECT * FROM users WHERE users.id = @id";
 			try {
 				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 
-				cmd.Parameters.AddWithValue("@id", UserId);
+				cmd.Parameters.AddWithValue("@id", userId);
 
 				MySqlDataReader rdr = cmd.ExecuteReader();
 
@@ -89,10 +103,6 @@ namespace QSProjectsLib
 					checkDeactivated.Sensitive = checkAdmin.Sensitive = false;
 				}
 
-				foreach(KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
-					Pair.Value.Active = rdr.GetBoolean(QSMain.ProjectPermission[Pair.Key].DataBaseName);
-				}
-
 				if(permissionViews != null)
 				{
 					foreach(var view in permissionViews) {
@@ -104,6 +114,7 @@ namespace QSProjectsLib
 				rdr.Close();
 
 				this.Title = entryName.Text;
+				InitializePermissionViews(userId);
 				logger.Info("Ok");
 			} catch(Exception ex) {
 				logger.Error(ex, "Ошибка получения информации о пользователе!");
@@ -171,8 +182,8 @@ namespace QSProjectsLib
 						}
 					}
 					//Создаем запись в Users.
-					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect() + GetExtraFieldsForSelect() + ") " +
-						  "VALUES (@name, @login, @deactivated, @email, @admin, @description" + QSMain.GetPermissionFieldsForInsert() + GetExtraFieldsForInsert() + ")";
+					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" +  GetExtraFieldsForSelect() + ") " +
+						  "VALUES (@name, @login, @deactivated, @email, @admin, @description" + GetExtraFieldsForInsert() + ")";
 				} else {
 					if(entryPassword.Text != passFill) {
 						MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent,
@@ -193,21 +204,21 @@ namespace QSProjectsLib
 							return;
 					}
 					sql = "UPDATE users SET name = @name, deactivated = @deactivated, email = @email, " + QSMain.AdminFieldName + " = @admin," +
-					      "description = @description " + QSMain.GetPermissionFieldsForUpdate() + GetExtraFieldsForUpdate() + " WHERE id = @id";
+					      "description = @description " + GetExtraFieldsForUpdate() + " WHERE id = @id";
 				}
 			} else {
 				if(NewUser) {
 					if(!CreateLogin())
 						return;
-					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" + QSMain.GetPermissionFieldsForSelect()+ GetExtraFieldsForSelect() + ") " +
-					      "VALUES (@name, @login, @deactivated, @email, @admin, @description" + QSMain.GetPermissionFieldsForInsert() + GetExtraFieldsForInsert() + ")";
+					sql = "INSERT INTO users (name, login, deactivated, email, " + QSMain.AdminFieldName + ", description" + GetExtraFieldsForSelect() + ") " +
+					      "VALUES (@name, @login, @deactivated, @email, @admin, @description" + GetExtraFieldsForInsert() + ")";
 				} else {
 					if(OriginLogin != entryLogin.Text && !RenameLogin())
 						return;
 					if(entryPassword.Text != passFill)
 						ChangePassword();
 					sql = "UPDATE users SET name = @name, deactivated = @deactivated, email = @email, login = @login, " + QSMain.AdminFieldName + " = @admin," +
-					      "description = @description " + QSMain.GetPermissionFieldsForUpdate() + GetExtraFieldsForUpdate() + " WHERE id = @id";
+					      "description = @description " + GetExtraFieldsForUpdate() + " WHERE id = @id";
 				}
 				UpdatePrivileges();
 				logger.Info("Запись пользователя...");
@@ -222,11 +233,6 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue("@admin", checkAdmin.Active);
 				cmd.Parameters.AddWithValue("@deactivated", checkDeactivated.Active);
 				cmd.Parameters.AddWithValue("@email", entryEmail.Text);
-				foreach(KeyValuePair<string, CheckButton> Pair in RightCheckButtons) {
-					cmd.Parameters.AddWithValue("@" + QSMain.ProjectPermission[Pair.Key].DataBaseName,
-						Pair.Value.Active);
-				}
-
 				if(permissionViews != null)
 				{
 					foreach(var view in permissionViews) {
@@ -240,6 +246,7 @@ namespace QSProjectsLib
 					cmd.Parameters.AddWithValue("@description", textviewComments.Buffer.Text);
 
 				cmd.ExecuteNonQuery();
+				userpermissionwidget.Save();
 				if(QSMain.User.Login == entryLogin.Text)
 					QSMain.User.LoadUserInfo();
 				logger.Info("Ok");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using NHibernate;
 using QS.DomainModel.UoW;
 
@@ -69,6 +70,27 @@ namespace QS.DomainModel.Entity
 				return (att [0] as AppellativeAttribute);
 			} else
 				return null;
+		}
+
+		public static IEnumerable<Type> GetHavingAttributeEntityTypes<TAttribute>(params Assembly[] assemblies)
+			where TAttribute : Attribute
+		{
+			return GetHavingAttributeEntityTypes<TAttribute>(null, assemblies);
+		}
+
+		public static IEnumerable<Type> GetHavingAttributeEntityTypes<TAttribute>(Func<Type, bool> filterFunc, params Assembly[] assemblies)
+			where TAttribute : Attribute
+		{
+			var result = new List<Type>();
+			foreach(var assembly in assemblies) {
+				IEnumerable<Type> foundTypes = assembly.GetTypes();
+				if(filterFunc != null) {
+					foundTypes = foundTypes.Where(filterFunc);
+				}
+				foundTypes = foundTypes.Where(x => x.GetCustomAttribute<TAttribute>() != null);
+				result.AddRange(foundTypes);
+			}
+			return result;
 		}
 
 		public static string GetPropertyTitle<TEntity> (System.Linq.Expressions.Expression<Func<TEntity, object>> propertyRefExpr)

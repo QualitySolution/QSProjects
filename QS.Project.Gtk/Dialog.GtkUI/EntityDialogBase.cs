@@ -1,9 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using Gtk;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
+using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.UoW;
+using QS.Project.Repositories;
+using QS.Permissions;
 using QS.Tdi;
 using QS.Utilities.Gtk;
 using QS.Utilities.Text;
@@ -157,7 +162,31 @@ namespace QS.Dialog.Gtk
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
+		protected EntityPermission entityPermissions { get; set; }
+
 		public bool FailInitialize { get; protected set; }
+
+		public EntityDialogBase()
+		{
+			InitializePermissionValidator();
+		}
+
+		protected void InitializePermissionValidator()
+		{
+			if(PermissionsSettings.EntityPermissionValidator == null) {
+				return;
+			}
+			Type entityType = typeof(TEntity);
+			var user = UserRepository.GetCurrentUser(UnitOfWorkFactory.CreateWithoutRoot());
+			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(entityType, user.Id);
+
+			if(!entityPermissions.Read) {
+				var message = PermissionsSettings.GetEntityReadValidateResult(entityType);
+				MessageDialogHelper.RunErrorDialog(message);
+				FailInitialize = true;
+			}
+		}
+
 
 		protected void OnCloseTab (bool askSave)
 		{

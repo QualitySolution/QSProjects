@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QSOrmProject;
+using QS.DomainModel.Entity.EntityPermissions;
 
 namespace QSBanks
 {
@@ -10,6 +11,7 @@ namespace QSBanks
 		Nominative = "расчётный счет",
 		NominativePlural = "расчётные счета"
 	)]
+	[EntityPermission]
 	public class Account : PropertyChangedBase, IValidatableObject, IDomainObject
 	{
 		#region Свойства
