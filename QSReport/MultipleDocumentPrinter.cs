@@ -10,13 +10,9 @@ namespace QSReport
 {
 	public class MultipleDocumentPrinter
 	{
-		PrintSettings PrintSettings;
-		PrintOperation Printer;
-		bool showDialog = true;
-
 		public GenericObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new GenericObservableList<SelectablePrintDocument>();
-		public List<IPrintableDocument> PrintedRDLs { get; set; }
 		public event EventHandler DocumentsPrinted;
+		public PrintSettings PrinterSettings { get; set; }
 
 		public void PrintSelectedDocuments()
 		{
@@ -41,10 +37,11 @@ namespace QSReport
 						throw new NotImplementedException("Печать документа не поддерживается");
 				}
 			}
-			var printer = new DocumentPrinter();
+			var printer = new DocumentPrinter(PrinterSettings);
 			printer.DocumentsPrinted += (sender, e) => DocumentsPrinted?.Invoke(sender, e);
 			printer.PrintAll(rdlToPrinter);
 			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), printer.PrintSettings);
+			PrinterSettings = printer.PrintSettings;
 		}
 
 		public void PrintDocument(SelectablePrintDocument doc)
@@ -73,8 +70,10 @@ namespace QSReport
 			set => SetField(ref copies, value < 1 ? 1 : value, () => Copies);
 		}
 
-		public SelectablePrintDocument(IPrintableDocument document) => Document = document;
-
-		public SelectablePrintDocument(IPrintableDocument document, int copies) : this(document) => Copies = copies;
+		public SelectablePrintDocument(IPrintableDocument document)
+		{
+			Document = document;
+			Copies = document.CopiesToPrint;
+		}
 	}
 }

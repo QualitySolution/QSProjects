@@ -10,29 +10,37 @@ namespace QSReport
 {
 	public class DocumentPrinter
 	{
+		public DocumentPrinter(PrintSettings printSettings = null) => PrintSettings = printSettings;
+
 		public event EventHandler DocumentsPrinted;
 		public void Print(IPrintableDocument document)
 		{
-			PrintAll(new IPrintableDocument[]{ document });
+			PrintAll(new IPrintableDocument[] { document });
 		}
 
 		public PrintSettings PrintSettings { get; set; }
 
 		public void PrintAll(IEnumerable<IPrintableDocument> documents)
 		{
-			PrintSettings = null;
-			if(Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix)
-			{
+			if(Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix) {
 				PrintSettings = PrintAll_Win_Workaround(documents);
 				return;
 			}
-				
+
 			PrintOperation printOp;
-			printOp = new PrintOperation();
-			printOp.Unit = Unit.Points;
-			printOp.UseFullPage = true;
-			printOp.ShowProgress = true;
-			var documentsRDL = documents.Where(doc=>doc.PrintType==PrinterType.RDL).ToList();
+			printOp = new PrintOperation {
+				Unit = Unit.Points,
+				UseFullPage = true,
+				ShowProgress = true
+			};
+			var documentsRDL = documents.Where(doc => doc.PrintType == PrinterType.RDL).ToList();
+
+			PrintOperationAction printOperationAction = PrintOperationAction.PrintDialog;
+			if(PrintSettings != null) {
+				printOp.PrintSettings = PrintSettings;
+				printOperationAction = PrintOperationAction.Print;
+			}
+
 			BatchRDLRenderer renderer = new BatchRDLRenderer(documentsRDL);
 
 			var result = LongOperationDlg.StartOperation(
@@ -44,19 +52,17 @@ namespace QSReport
 				PrintSettings = new PrintSettings();
 				return;
 			}
-			
+
 			printOp.NPages = renderer.PageCount;
-			if (documentsRDL.Any(x => x.Orientation == DocumentOrientation.Landscape))
-			{
+			if(documentsRDL.Any(x => x.Orientation == DocumentOrientation.Landscape))
 				printOp.RequestPageSetup += renderer.RequestPageSetup;
-			}
 
 			printOp.DrawPage += renderer.DrawPage;
 			printOp.EndPrint += (o, args) => {
 				args.Args = documentsRDL.ToArray();
 				DocumentsPrinted?.Invoke(o, args);
 			};
-			printOp.Run(PrintOperationAction.PrintDialog, null);
+			printOp.Run(printOperationAction, null);
 			PrintSettings = printOp.PrintSettings;
 		}
 
@@ -70,34 +76,41 @@ namespace QSReport
 		private PrintSettings PrintAll_Win_Workaround(IEnumerable<IPrintableDocument> documents)
 		{
 			PrintOperation printOp = null;
-			PrintSettings printSettings = null;
 
-			var documentsRDL_Portrait = documents.Where(doc => doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Portrait).ToList();
-			var documentsRDL_Landscape = documents.Where(doc=>doc.PrintType==PrinterType.RDL && doc.Orientation == DocumentOrientation.Landscape).ToList();
+			var documentsRDL_Portrait = documents.Where(doc => doc.PrintType == PrinterType.RDL && doc.Orientation == DocumentOrientation.Portrait).ToList();
+			var documentsRDL_Landscape = documents.Where(doc => doc.PrintType == PrinterType.RDL && doc.Orientation == DocumentOrientation.Landscape).ToList();
 
 			if(!documents.Any()) {
 				printOp = new PrintOperation();
 				printOp.Run(PrintOperationAction.PrintDialog, null);
 				return printOp.PrintSettings;
 			}
-			
-			if (documentsRDL_Portrait.Any())
-			{
-				printOp = new PrintOperation();
-				printOp.Unit = Unit.Points;
-				printOp.UseFullPage = true;
-				printOp.ShowProgress = true;
-				printOp.DefaultPageSetup = new PageSetup();
+
+			if(documentsRDL_Portrait.Any()) {
+				printOp = new PrintOperation {
+					Unit = Unit.Points,
+					UseFullPage = true,
+					ShowProgress = true,
+					DefaultPageSetup = new PageSetup()
+				};
+
+				PrintOperationAction printOperationAction = PrintOperationAction.PrintDialog;
+				if(PrintSettings != null) {
+					printOp.PrintSettings = PrintSettings;
+					printOp.PrintSettings.Orientation = PageOrientation.Portrait;
+					printOperationAction = PrintOperationAction.Print;
+				}
+
 				printOp.DefaultPageSetup.Orientation = PageOrientation.Portrait;
 
 				BatchRDLRenderer renderer = new BatchRDLRenderer(documentsRDL_Portrait);
 
 				var result = LongOperationDlg.StartOperation(
-					            renderer.PrepareDocuments,
-					            "Подготовка к печати портретных страниц...",
-					            documentsRDL_Portrait.Count()
-				            );
-				if (result == LongOperationResult.Canceled)
+								renderer.PrepareDocuments,
+								"Подготовка к печати портретных страниц...",
+								documentsRDL_Portrait.Count()
+							);
+				if(result == LongOperationResult.Canceled)
 					return new PrintSettings();
 
 				printOp.NPages = renderer.PageCount;
@@ -107,24 +120,24 @@ namespace QSReport
 					args.Args = documentsRDL_Portrait.Concat(documentsRDL_Landscape).ToArray();
 					DocumentsPrinted?.Invoke(o, args);
 				};
-				printOp.Run(PrintOperationAction.PrintDialog, null);
-				printSettings = printOp.PrintSettings;
+				printOp.Run(printOperationAction, null);
+				PrintSettings = printOp.PrintSettings;
 			}
 
-			if(documentsRDL_Landscape.Any())
-			{
-				printOp = new PrintOperation();
-				printOp.Unit = Unit.Points;
-				printOp.UseFullPage = true;
-				printOp.ShowProgress = true;
-				printOp.DefaultPageSetup = new PageSetup();
+			if(documentsRDL_Landscape.Any()) {
+				printOp = new PrintOperation {
+					Unit = Unit.Points,
+					UseFullPage = true,
+					ShowProgress = true,
+					DefaultPageSetup = new PageSetup()
+				};
 
 				//если printSettings == null, то значит, до этого не печатались RDL формата 
 				//PageOrientation.Portrait и, соответственно, не показывался PrintDialog и 
 				//нужно показать его сейчас.
 				PrintOperationAction printOperationAction = PrintOperationAction.PrintDialog;
-				if(printSettings != null) {
-					printOp.PrintSettings = printSettings;
+				if(PrintSettings != null) {
+					printOp.PrintSettings = PrintSettings;
 					printOp.PrintSettings.Orientation = PageOrientation.Landscape;
 					printOperationAction = PrintOperationAction.Print;
 				}
@@ -137,7 +150,7 @@ namespace QSReport
 					"Подготовка к печати альбомных страниц...",
 					documentsRDL_Landscape.Count()
 				);
-				if (result == LongOperationResult.Canceled)
+				if(result == LongOperationResult.Canceled)
 					return new PrintSettings();
 
 				printOp.NPages = renderer.PageCount;
@@ -153,9 +166,7 @@ namespace QSReport
 
 		public static QS.Dialog.Gtk.TdiTabBase GetPreviewTab(IPrintableRDLDocument document)
 		{
-			return new QSReport.ReportViewDlg (document.GetReportInfo());				
+			return new ReportViewDlg(document.GetReportInfo());
 		}
-	}		
-
-
+	}
 }
