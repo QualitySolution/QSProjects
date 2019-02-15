@@ -46,7 +46,7 @@ namespace QSSupportLib
 				
 			if (MainSupport.ProjectVerion.Version.Major != baseVersion.Major || MainSupport.ProjectVerion.Version.Minor != baseVersion.Minor) {
 				TextMessage = "Версия продукта не совпадает с версией базы данных.\n";
-				TextMessage += String.Format ("Версия продукта: {0}", StringWorks.VersionToShortString (MainSupport.ProjectVerion.Version)); 
+				TextMessage += String.Format ("Версия продукта: {0}.{1}", MainSupport.ProjectVerion.Version.Major, MainSupport.ProjectVerion.Version.Minor); 
 				TextMessage += "\nВерсия базы данных: " + MainSupport.BaseParameters.Version;
 
 				if(MainSupport.ProjectVerion.Version > baseVersion)
