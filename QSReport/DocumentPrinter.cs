@@ -13,6 +13,8 @@ namespace QSReport
 		public DocumentPrinter(PrintSettings printSettings = null) => PrintSettings = printSettings;
 
 		public event EventHandler DocumentsPrinted;
+		public event EventHandler PrintingCanceled;
+
 		public void Print(IPrintableDocument document)
 		{
 			PrintAll(new IPrintableDocument[] { document });
@@ -50,6 +52,7 @@ namespace QSReport
 			);
 			if(result == LongOperationResult.Canceled) {
 				PrintSettings = new PrintSettings();
+				PrintingCanceled?.Invoke(this, new EventArgs());
 				return;
 			}
 
@@ -110,8 +113,10 @@ namespace QSReport
 								"Подготовка к печати портретных страниц...",
 								documentsRDL_Portrait.Count()
 							);
-				if(result == LongOperationResult.Canceled)
+				if(result == LongOperationResult.Canceled) {
+					PrintingCanceled?.Invoke(this, new EventArgs());
 					return new PrintSettings();
+				}
 
 				printOp.NPages = renderer.PageCount;
 
@@ -150,8 +155,10 @@ namespace QSReport
 					"Подготовка к печати альбомных страниц...",
 					documentsRDL_Landscape.Count()
 				);
-				if(result == LongOperationResult.Canceled)
+				if(result == LongOperationResult.Canceled) {
+					PrintingCanceled?.Invoke(this, new EventArgs());
 					return new PrintSettings();
+				}
 
 				printOp.NPages = renderer.PageCount;
 				printOp.DrawPage += renderer.DrawPage;

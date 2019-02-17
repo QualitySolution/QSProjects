@@ -12,6 +12,7 @@ namespace QSReport
 	{
 		public GenericObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new GenericObservableList<SelectablePrintDocument>();
 		public event EventHandler DocumentsPrinted;
+		public event EventHandler PrintingCanceled;
 		public PrintSettings PrinterSettings { get; set; }
 
 		public void PrintSelectedDocuments()
@@ -39,6 +40,7 @@ namespace QSReport
 			}
 			var printer = new DocumentPrinter(PrinterSettings);
 			printer.DocumentsPrinted += (sender, e) => DocumentsPrinted?.Invoke(sender, e);
+			printer.PrintingCanceled += (sender, e) => PrintingCanceled?.Invoke(sender, e);
 			printer.PrintAll(rdlToPrinter);
 			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), printer.PrintSettings);
 			PrinterSettings = printer.PrintSettings;
