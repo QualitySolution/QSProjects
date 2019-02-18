@@ -10,7 +10,10 @@ using QS.Project.Dialogs;
 
 namespace QSBanks
 {
-	[Appellative (NominativePlural = "банки")]
+	[Appellative (
+		Gender = GrammaticalGender.Masculine,
+		Nominative = "банк",
+		NominativePlural = "банки")]
 	[DefaultReferenceButtonMode(ReferenceButtonMode.CanEdit | ReferenceButtonMode.TreatEditAsOpen)]
 	[EntityPermission]
 	public class Bank: PropertyChangedBase, IValidatableObject, IDomainObject
