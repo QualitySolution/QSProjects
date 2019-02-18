@@ -5,6 +5,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Permissions;
 using QS.Project.Domain;
+using System.Reflection;
 
 namespace QS.Project.Repositories
 {
@@ -12,12 +13,14 @@ namespace QS.Project.Repositories
 	{
 		public static string GetRealName(Type type)
 		{
-			var result = type?.GetCustomAttributes(typeof(AppellativeAttribute), false)
-				.Cast<AppellativeAttribute>()
-				.FirstOrDefault()
-				.Nominative;
-
-			return result;
+			if(type == null) {
+				throw new ArgumentNullException(nameof(type));
+			}
+			var result = type.GetCustomAttribute<AppellativeAttribute>(false);
+			if(result == null || string.IsNullOrWhiteSpace(result.Nominative)) {
+				return type.Name;
+			}
+			return result.Nominative;
 		}
 
 		public static Type GetEntityType(string strType)
