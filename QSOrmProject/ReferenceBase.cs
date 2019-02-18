@@ -21,7 +21,7 @@ namespace QS
 
 		protected void InitializePermissionValidator()
 		{
-			if(PermissionsSettings.EntityPermissionValidator == null) {
+			if(PermissionsSettings.EntityPermissionValidator == null || objectType == null) {
 				entityPermissions = EntityPermission.AllAllowed;
 				return;
 			}
