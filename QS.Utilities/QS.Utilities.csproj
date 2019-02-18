@@ -38,6 +38,7 @@
     <Compile Include="Text\TitleHelper.cs" />
     <Compile Include="Debug\Print.cs" />
     <Compile Include="Numeric\NumbersHelper.cs" />
+    <Compile Include="Text\VersionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
