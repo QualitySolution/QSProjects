@@ -11,9 +11,9 @@ namespace QSReport
 	public class DocumentPrinter
 	{
 		public DocumentPrinter(PrintSettings printSettings = null) => PrintSettings = printSettings;
-
 		public event EventHandler DocumentsPrinted;
 		public event EventHandler PrintingCanceled;
+		PrintStatus? status = null;
 
 		public void Print(IPrintableDocument document)
 		{
@@ -52,6 +52,7 @@ namespace QSReport
 			);
 			if(result == LongOperationResult.Canceled) {
 				PrintSettings = new PrintSettings();
+				status = PrintStatus.FinishedAborted;
 				PrintingCanceled?.Invoke(this, new EventArgs());
 				return;
 			}
@@ -66,6 +67,10 @@ namespace QSReport
 				DocumentsPrinted?.Invoke(o, args);
 			};
 			printOp.Run(printOperationAction, null);
+			status = printOp.Status;
+			//если отмена из диалога печати
+			if(status.HasValue && status.Value == PrintStatus.FinishedAborted)
+				PrintingCanceled?.Invoke(this, new EventArgs());
 			PrintSettings = printOp.PrintSettings;
 		}
 
@@ -115,6 +120,7 @@ namespace QSReport
 							);
 				if(result == LongOperationResult.Canceled) {
 					PrintingCanceled?.Invoke(this, new EventArgs());
+					status = PrintStatus.FinishedAborted;
 					return new PrintSettings();
 				}
 
@@ -127,6 +133,10 @@ namespace QSReport
 				};
 				printOp.Run(printOperationAction, null);
 				PrintSettings = printOp.PrintSettings;
+				status = printOp.Status;
+				//если отмена из диалога печати
+				if(status.HasValue && status.Value == PrintStatus.FinishedAborted)
+					PrintingCanceled?.Invoke(this, new EventArgs());
 			}
 
 			if(documentsRDL_Landscape.Any()) {
@@ -157,6 +167,7 @@ namespace QSReport
 				);
 				if(result == LongOperationResult.Canceled) {
 					PrintingCanceled?.Invoke(this, new EventArgs());
+					status = PrintStatus.FinishedAborted;
 					return new PrintSettings();
 				}
 
@@ -167,6 +178,10 @@ namespace QSReport
 					DocumentsPrinted?.Invoke(o, args);
 				};
 				printOp.Run(printOperationAction, null);
+				status = printOp.Status;
+				//если отмена из диалога печати
+				if(status.HasValue && status.Value == PrintStatus.FinishedAborted)
+					PrintingCanceled?.Invoke(this, new EventArgs());
 			}
 			return printOp.PrintSettings;
 		}
