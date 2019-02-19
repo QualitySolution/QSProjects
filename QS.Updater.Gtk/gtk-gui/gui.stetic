@@ -7,10 +7,11 @@
   <import>
     <widget-library name="../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
-    <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../../QS.Updater/bin/Debug/QS.Updater.dll" />
+    <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSUpdater.UpdaterDialog" design-size="548 389">
+  <widget class="Gtk.Dialog" id="QS.Updater.NewVersionDialog" design-size="548 389">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Обновление</property>
     <property name="WindowPosition">Center</property>
@@ -122,7 +123,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSUpdater.DB.DBUpdateProcess" design-size="486 381">
+  <widget class="Gtk.Dialog" id="QS.Updater.DB.DBUpdateProcess" design-size="487 382">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Требуется обновление базы данных</property>
     <property name="WindowPosition">CenterOnParent</property>

@@ -1,14 +1,14 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
-using QSUpdater.DTO;
+using QS.Updater.DTO;
+using QSUpdater;
 
-namespace QSUpdater
+namespace QS.Updater
 {
     [ServiceContract]
     public interface IUpdateService
     {
-        [OperationContract]// (IsInitiating = true, IsTerminating = true)] 
-                           //FIXME на Windows при наличии этих атрибутов стали получать Эксепшен. Отключил до дальнейших разбирательств.
+        [OperationContract]
         UpdateResult checkForUpdate(string parameters);
 
         [OperationContract, WebGet(ResponseFormat = WebMessageFormat.Json)]
