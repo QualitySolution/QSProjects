@@ -38,6 +38,7 @@
     <Compile Include="Text\TitleHelper.cs" />
     <Compile Include="Debug\Print.cs" />
     <Compile Include="Numeric\NumbersHelper.cs" />
+    <Compile Include="Text\VersionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
@@ -45,4 +46,13 @@
     <Folder Include="Numeric\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy ResourceNamePolicy="FileFormatDefault" DirectoryNamespaceAssociation="PrefixedHierarchical" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{6D755374-6EAF-44B6-8C6C-6FE5E5AB3432}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSUpdater</RootNamespace>
+    <RootNamespace>QS.Updater</RootNamespace>
     <AssemblyName>QSUpdater</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
@@ -35,24 +35,19 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="IUpdateService.cs" />
-    <Compile Include="Result.cs" />
-    <Compile Include="UpdaterDialog.cs" />
+    <Compile Include="NewVersionDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\QSUpdater.UpdaterDialog.cs" />
-    <Compile Include="CheckUpdate.cs" />
-    <Compile Include="DBUpdater\DBUpdater.cs" />
-    <Compile Include="DBUpdater\DBUpdateProcess.cs" />
-    <Compile Include="gtk-gui\QSUpdater.DB.DBUpdateProcess.cs" />
     <Compile Include="MainUpdater.cs" />
-    <Compile Include="DTO\UsingStatisticsResult.cs" />
-    <Compile Include="DTO\UsingStatisticsUniqueIP.cs" />
+    <Compile Include="UpdaterGtkUI.cs" />
+    <Compile Include="DBUpdater\DBUpdateProcess.cs" />
+    <Compile Include="gtk-gui\QS.Updater.NewVersionDialog.cs" />
+    <Compile Include="SkipVersionStateIniConfig.cs" />
+    <Compile Include="DBUpdater\DBUpdater.cs" />
+    <Compile Include="gtk-gui\QS.Updater.DB.DBUpdateProcess.cs" />
+    <Compile Include="DBUpdater\SQLDBUpdater.cs" />
+    <Compile Include="ApplicationVersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Net" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -64,17 +59,6 @@
     <Reference Include="System.Data" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.8.0.13\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
@@ -102,6 +86,18 @@
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
+      <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
+      <Name>QS.Updater</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
+      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
+      <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -109,10 +105,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DBUpdater\" />
-    <Folder Include="DTO\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
+    <None Include="DBUpdater\README.md" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ using QS.Dialog.GtkUI;
 using QSProjectsLib;
 using QSSupportLib;
 
-namespace QSUpdater.DB
+namespace QS.Updater.DB
 {
 	public partial class DBUpdateProcess : Gtk.Dialog
 	{

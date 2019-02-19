@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace QSUpdater.DTO
+namespace QS.Updater.DTO
 {
     [DataContract]
     public class UsingStatisticsResult

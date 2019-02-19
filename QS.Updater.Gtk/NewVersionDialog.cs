@@ -1,12 +1,14 @@
 ﻿using System;
 using Gdk;
 using Gtk;
+using QS.Updater.DTO;
+using QSUpdater;
 
-namespace QSUpdater
+namespace QS.Updater
 {
-	public partial class UpdaterDialog : Gtk.Dialog
+	public partial class NewVersionDialog : Gtk.Dialog
 	{
-		public UpdaterDialog (string text, UpdateResult result, bool updateRequired)
+		public NewVersionDialog (string text, UpdateResult result, UpdaterFlags flags)
 		{
 			this.Build ();
 			UpdLabel.WidthChars = 67;
@@ -17,12 +19,12 @@ namespace QSUpdater
 			infoLabel.ButtonPressEvent += delegate {
 				System.Diagnostics.Process.Start (result.InfoLink);
 			};
-			if (updateRequired)
+			if (flags.HasFlag(UpdaterFlags.UpdateRequired))
 				this.DeleteEvent += delegate {
 					Environment.Exit (0);
 				};
-			buttonSkip.Visible = !updateRequired;
-			if (updateRequired || !result.HasUpdate)
+			buttonSkip.Visible = !flags.HasFlag(UpdaterFlags.UpdateRequired);
+			if (flags.HasFlag(UpdaterFlags.UpdateRequired) || !result.HasUpdate)
 				buttonCancel.Label = "Закрыть";
 			if (!result.HasUpdate)
 				buttonSkip.Visible = buttonOk.Visible = false;

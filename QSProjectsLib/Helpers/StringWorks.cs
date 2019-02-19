@@ -174,11 +174,13 @@ namespace QSProjectsLib
 			return result;
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.VersionHelper.")]
 		public static string VersionToShortString (Version version)
 		{
 			return version.ToString (version.Revision <= 0 ? (version.Build <= 0 ? 2 : 3) : 4);
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.VersionHelper.")]
 		public static string VersionToShortString (string version)
 		{
 			var ver = Version.Parse (version);

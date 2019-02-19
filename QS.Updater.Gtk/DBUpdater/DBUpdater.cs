@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gtk;
+using QS.Utilities.Text;
 using QSProjectsLib;
 using QSSupportLib;
 
-namespace QSUpdater.DB
+namespace QS.Updater.DB
 {
 	public static class DBUpdater
 	{
@@ -61,7 +62,7 @@ namespace QSUpdater.DB
 			if (currentDB < dbMainVersion)
 				currentDB = dbMainVersion;
 
-			logger.Info("Проверяем микро обновления базы(текущая версия:{0})", StringWorks.VersionToShortString(currentDB));
+			logger.Info("Проверяем микро обновления базы(текущая версия:{0})", VersionHelper.VersionToShortString(currentDB));
 			var beforeUpdates = currentDB;
 
 			while(microUpdates.Exists(u => u.Source == currentDB))

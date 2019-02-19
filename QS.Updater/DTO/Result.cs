@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace QSUpdater
+namespace QSUpdater //FIXME Исправить на QS.Updater.DTO при переделке интерфейса
 {
 	[DataContract]
 	public class UpdateResult
