@@ -1,5 +1,4 @@
-﻿
-namespace QS.Print
+﻿namespace QS.Print
 {
 	public interface IPrintableDocument
 	{
@@ -11,7 +10,7 @@ namespace QS.Print
 
 	public enum PrinterType
 	{
-		None, RDL, ODT
+		None, RDL, ODT, Image
 	}
 
 	public enum DocumentOrientation

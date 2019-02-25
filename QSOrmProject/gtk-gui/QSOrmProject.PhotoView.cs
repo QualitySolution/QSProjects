@@ -5,83 +5,102 @@ namespace QSOrmProject
 	public partial class PhotoView
 	{
 		private global::Gtk.VBox vbox1;
-		
+
 		private global::Gtk.Frame frame1;
-		
+
 		private global::QSWidgetLib.ImageViewer imageviewerPhoto;
-		
+
 		private global::Gtk.HButtonBox hbuttonbox1;
-		
+
 		private global::Gtk.Button buttonLoadPhoto;
-		
+
 		private global::Gtk.Button buttonSavePhoto;
 
-		protected virtual void Build ()
+		private global::Gtk.Button btnPrint;
+
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget QSOrmProject.PhotoView
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "QSOrmProject.PhotoView";
 			// Container child QSOrmProject.PhotoView.Gtk.Container+ContainerChild
-			this.vbox1 = new global::Gtk.VBox ();
+			this.vbox1 = new global::Gtk.VBox();
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.frame1 = new global::Gtk.Frame ();
+			this.frame1 = new global::Gtk.Frame();
 			this.frame1.Name = "frame1";
 			this.frame1.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child frame1.Gtk.Container+ContainerChild
-			this.imageviewerPhoto = new global::QSWidgetLib.ImageViewer ();
+			this.imageviewerPhoto = new global::QSWidgetLib.ImageViewer();
 			this.imageviewerPhoto.Name = "imageviewerPhoto";
 			this.imageviewerPhoto.VerticalFit = true;
 			this.imageviewerPhoto.HorizontalFit = true;
-			this.frame1.Add (this.imageviewerPhoto);
-			this.vbox1.Add (this.frame1);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.frame1]));
+			this.frame1.Add(this.imageviewerPhoto);
+			this.vbox1.Add(this.frame1);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.frame1]));
 			w2.Position = 0;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.hbuttonbox1 = new global::Gtk.HButtonBox ();
+			this.hbuttonbox1 = new global::Gtk.HButtonBox();
 			// Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonLoadPhoto = new global::Gtk.Button ();
+			this.buttonLoadPhoto = new global::Gtk.Button();
 			this.buttonLoadPhoto.CanFocus = true;
 			this.buttonLoadPhoto.Name = "buttonLoadPhoto";
 			this.buttonLoadPhoto.UseUnderline = true;
-			this.buttonLoadPhoto.Label = global::Mono.Unix.Catalog.GetString ("Загрузить");
-			global::Gtk.Image w3 = new global::Gtk.Image ();
-			w3.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-open", global::Gtk.IconSize.Button);
+			this.buttonLoadPhoto.Label = global::Mono.Unix.Catalog.GetString("Загрузить");
+			global::Gtk.Image w3 = new global::Gtk.Image();
+			w3.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-open", global::Gtk.IconSize.Button);
 			this.buttonLoadPhoto.Image = w3;
-			this.hbuttonbox1.Add (this.buttonLoadPhoto);
-			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1 [this.buttonLoadPhoto]));
+			this.hbuttonbox1.Add(this.buttonLoadPhoto);
+			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1[this.buttonLoadPhoto]));
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonSavePhoto = new global::Gtk.Button ();
+			this.buttonSavePhoto = new global::Gtk.Button();
 			this.buttonSavePhoto.Sensitive = false;
 			this.buttonSavePhoto.CanFocus = true;
 			this.buttonSavePhoto.Name = "buttonSavePhoto";
 			this.buttonSavePhoto.UseUnderline = true;
-			this.buttonSavePhoto.Label = global::Mono.Unix.Catalog.GetString ("Сохранить");
-			global::Gtk.Image w5 = new global::Gtk.Image ();
-			w5.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-harddisk", global::Gtk.IconSize.Button);
+			this.buttonSavePhoto.Label = global::Mono.Unix.Catalog.GetString("Сохранить");
+			global::Gtk.Image w5 = new global::Gtk.Image();
+			w5.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-harddisk", global::Gtk.IconSize.Button);
 			this.buttonSavePhoto.Image = w5;
-			this.hbuttonbox1.Add (this.buttonSavePhoto);
-			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1 [this.buttonSavePhoto]));
+			this.hbuttonbox1.Add(this.buttonSavePhoto);
+			global::Gtk.ButtonBox.ButtonBoxChild w6 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1[this.buttonSavePhoto]));
 			w6.Position = 1;
 			w6.Expand = false;
 			w6.Fill = false;
-			this.vbox1.Add (this.hbuttonbox1);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbuttonbox1]));
-			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
-			this.Add (this.vbox1);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			// Container child hbuttonbox1.Gtk.ButtonBox+ButtonBoxChild
+			this.btnPrint = new global::Gtk.Button();
+			this.btnPrint.Sensitive = false;
+			this.btnPrint.CanFocus = true;
+			this.btnPrint.Name = "btnPrint";
+			this.btnPrint.UseUnderline = true;
+			this.btnPrint.Label = global::Mono.Unix.Catalog.GetString("Печать...");
+			global::Gtk.Image w7 = new global::Gtk.Image();
+			w7.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-print", global::Gtk.IconSize.Menu);
+			this.btnPrint.Image = w7;
+			this.hbuttonbox1.Add(this.btnPrint);
+			global::Gtk.ButtonBox.ButtonBoxChild w8 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.hbuttonbox1[this.btnPrint]));
+			w8.Position = 2;
+			w8.Expand = false;
+			w8.Fill = false;
+			this.vbox1.Add(this.hbuttonbox1);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbuttonbox1]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
+			this.Add(this.vbox1);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
-			this.Hide ();
-			this.imageviewerPhoto.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnImageviewerPhotoButtonPressEvent);
-			this.buttonLoadPhoto.Clicked += new global::System.EventHandler (this.OnButtonLoadPhotoClicked);
-			this.buttonSavePhoto.Clicked += new global::System.EventHandler (this.OnButtonSavePhotoClicked);
+			this.Hide();
+			this.imageviewerPhoto.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler(this.OnImageviewerPhotoButtonPressEvent);
+			this.buttonLoadPhoto.Clicked += new global::System.EventHandler(this.OnButtonLoadPhotoClicked);
+			this.buttonSavePhoto.Clicked += new global::System.EventHandler(this.OnButtonSavePhotoClicked);
+			this.btnPrint.Clicked += new global::System.EventHandler(this.OnBtnPrintClicked);
 		}
 	}
 }

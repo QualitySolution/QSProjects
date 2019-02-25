@@ -2,7 +2,7 @@
 
 namespace QS.Print
 {
-	public interface IOdtDocPrinter
+	public interface IImagePrinter
 	{
 		void Print(IPrintableDocument[] documents, PrintSettings printSettings = null);
 	}

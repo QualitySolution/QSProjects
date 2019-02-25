@@ -1,8 +1,8 @@
-﻿using System;
-namespace QS.Print
+﻿namespace QS.Print
 {
-	public class DocumentPrinters
+	public static class DocumentPrinters
 	{
 		public static IOdtDocPrinter OdtDocPrinter;
+		public static IImagePrinter ImagePrinter;
 	}
 }

@@ -84,6 +84,7 @@
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.5.2.3\lib\net461\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -166,6 +167,8 @@
     <Compile Include="Helpers\ListRefreshHelper.cs" />
     <Compile Include="Properties\OrmAttributes.cs" />
     <Compile Include="ReferenceBase.cs" />
+    <Compile Include="Print\IImagePrinter.cs" />
+    <Compile Include="Print\ImagePrinter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
