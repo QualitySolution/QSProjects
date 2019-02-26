@@ -56,7 +56,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\packages\MySql.Data.8.0.13\lib\net452\MySql.Data.dll</HintPath>
+      <HintPath>..\..\packages\MySql.Data.8.0.15\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
