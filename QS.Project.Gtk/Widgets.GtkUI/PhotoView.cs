@@ -3,11 +3,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
+using Gdk;
 using Gtk;
 using QS.Helpers;
+using QS.Print;
 using Window = Gtk.Window;
 
-namespace QSOrmProject
+namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem(true)]
 	[Category("Gamma Widgets")]
@@ -22,7 +24,7 @@ namespace QSOrmProject
 			get => canPrint;
 			set {
 				canPrint = value;
-				btnPrint.Sensitive = value && ImageFile != null;
+				btnPrint.Sensitive = value && ImageFile != null && DocumentPrinters.ImagePrinter != null;
 			}
 		}
 
@@ -123,42 +125,30 @@ namespace QSOrmProject
 
 		protected void OnBtnPrintClicked(object sender, EventArgs e)
 		{
-			if(CanPrint) {
-				var printOperation = new PrintOperation {
-					Unit = Unit.Points,
-					UseFullPage = true,
-					DefaultPageSetup = new PageSetup()
-				};
-				printOperation.DefaultPageSetup.Orientation = PageOrientation.Portrait;
-
-				printOperation.BeginPrint += (s, ea) => printOperation.NPages = 1;
-				printOperation.DrawPage += HandlePrintDrawPage;
-
-				printOperation.Run(PrintOperationAction.PrintDialog, null);
-			}
-		}
-
-		void HandlePrintDrawPage(object o, DrawPageArgs a)
-		{
-			using(PrintContext context = a.Context) {
-				using(var pixBuf = imageviewerPhoto.Pixbuf) {
-					Cairo.Context cr = context.CairoContext;
-
-					double scale = 1;
-					if(pixBuf.Height * context.Width / pixBuf.Width <= context.Height)
-						scale = context.Width / pixBuf.Width;
-					if(pixBuf.Width * context.Height / pixBuf.Height <= context.Width)
-						scale = context.Height / pixBuf.Height;
-
-					cr.Scale(scale, scale);
-
-					cr.MoveTo(0, 0);
-					Gdk.CairoHelper.SetSourcePixbuf(cr, pixBuf, 0, 0);
-					cr.Paint();
-
-					((IDisposable)cr).Dispose();
+			if(CanPrint && imageviewerPhoto.ImageFile != null && DocumentPrinters.ImagePrinter != null) {
+				using(var pixBuf = new Pixbuf(imageviewerPhoto.ImageFile)) {
+					var img = new PrintableImage {
+						CopiesToPrint = 1,
+						PixBuf = pixBuf
+					};
+					DocumentPrinters.ImagePrinter?.Print(new[] { img });
 				}
 			}
 		}
+	}
+
+	class PrintableImage : IPrintableImage
+	{
+		public PrinterType PrintType => PrinterType.Image;
+
+		public DocumentOrientation Orientation => PixBuf?.Height < PixBuf?.Width ? DocumentOrientation.Landscape : DocumentOrientation.Portrait;
+
+		public int CopiesToPrint { get; set; }
+
+		public string Name { get; set; }
+
+		public Pixbuf PixBuf { get; set; }
+
+		public Pixbuf GetPixbuf() => PixBuf;
 	}
 }

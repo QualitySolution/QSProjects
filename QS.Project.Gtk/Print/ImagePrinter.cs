@@ -18,7 +18,7 @@ namespace QS.Print
 		static IPrintableImage currentImage;
 
 		/// <summary>
-		/// Метод необходимо вызвать при старте проекта для возможности массовой печати документов.
+		/// Метод необходимо вызвать при старте проекта для возможности массовой печати изображений.
 		/// </summary>
 		public static void InitPrinter()
 		{
@@ -72,13 +72,18 @@ namespace QS.Print
 		{
 			currentImage = image;
 
-			if(PrintSettings != null) {
-				printOperation.PrintSettings = PrintSettings;
+			if(PrintSettings != null)
 				printOperationAction = PrintOperationAction.Print;
-			} else {
+			else
 				PrintSettings = new PrintSettings();
-			}
+
+			printOperation.PrintSettings = PrintSettings;
 			PrintSettings.NCopies = currentImage.CopiesToPrint;
+
+			if(currentImage.Orientation == DocumentOrientation.Landscape)
+				printOperation.RequestPageSetup += PrintOperation_RequestPageSetup;
+
+			PrintSettings.Orientation = currentImage.Orientation == DocumentOrientation.Portrait ? PageOrientation.Portrait : PageOrientation.Landscape;
 
 			printOperation.Run(printOperationAction, null);
 			status = printOperation.Status;
@@ -90,6 +95,11 @@ namespace QS.Print
 
 			PrintSettings = printOperation.PrintSettings;
 			return true;
+		}
+
+		static void PrintOperation_RequestPageSetup(object o, RequestPageSetupArgs args)
+		{
+			args.Setup.Orientation = currentImage.Orientation == DocumentOrientation.Portrait ? PageOrientation.Portrait : PageOrientation.Landscape;
 		}
 
 		static public void PrintAll(IEnumerable<IPrintableImage> images)
