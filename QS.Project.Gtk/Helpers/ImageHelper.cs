@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using Gdk;
 
 namespace QS.Helpers
 {
 	public static class ImageHelper
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
 		/// <summary>
 		/// Функция загружает изображение из файла любого формата поддерживаемого PixBuf
 		/// и возвращает массив байт файла в формете JPG.
@@ -25,8 +23,7 @@ namespace QS.Helpers
 						imageFile = ms.ToArray();
 					}
 				} else {
-					logger.Info("Конвертация в jpg ...");
-					Gdk.Pixbuf image = new Gdk.Pixbuf(fs);
+					Pixbuf image = new Pixbuf(fs);
 					imageFile = image.SaveToBuffer("jpeg");
 				}
 			}

@@ -72,6 +72,7 @@
     </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,6 +114,13 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationButtonBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationDeleteButton.cs" />
     <Compile Include="Dialog.GtkUI\GtkMessageDialogsInteractive.cs" />
+    <Compile Include="Print\IImagePrinter.cs" />
+    <Compile Include="Print\DocumentPrinters.cs" />
+    <Compile Include="Print\IOdtDocPrinter.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.PhotoView.cs" />
+    <Compile Include="Print\ImagePrinter.cs" />
+    <Compile Include="Widgets.GtkUI\PhotoView.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -122,6 +130,8 @@
     <Folder Include="Project.Dialogs.GtkUI\" />
     <Folder Include="RepresentationModel.GtkUI\" />
     <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
+    <Folder Include="Print\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
@@ -147,6 +157,10 @@
     <ProjectReference Include="..\QSValidation\QSValidation.csproj">
       <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
       <Name>QSValidation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

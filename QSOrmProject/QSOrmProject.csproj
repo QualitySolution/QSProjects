@@ -84,6 +84,7 @@
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.5.2.3\lib\net461\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cairo" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -134,8 +135,6 @@
     <Compile Include="Widgets\EntryReferenceVM.cs" />
     <Compile Include="DomainMapping\TableView.cs" />
     <Compile Include="DomainMapping\ITableView.cs" />
-    <Compile Include="Widgets\PhotoView.cs" />
-    <Compile Include="gtk-gui\QSOrmProject.PhotoView.cs" />
     <Compile Include="DomainMapping\ISearchProvider.cs" />
     <Compile Include="DomainMapping\GenericSearchProvider.cs" />
     <Compile Include="Deletion\CheckOperationDlg.cs" />
@@ -160,9 +159,6 @@
     <Compile Include="Permissions\PermissionMatrix.cs" />
     <Compile Include="Permissions\IPermissionMatrix.cs" />
     <Compile Include="yWidgets\yLegalNameAlternative.cs" />
-    <Compile Include="Print\DocumentPrinters.cs" />
-    <Compile Include="Print\IOdtDocPrinter.cs" />
-    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\ListRefreshHelper.cs" />
     <Compile Include="Properties\OrmAttributes.cs" />
     <Compile Include="ReferenceBase.cs" />

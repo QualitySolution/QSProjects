@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Gtk;
+﻿using Gtk;
 
 namespace QS.Print
 {
-	public interface IOdtDocPrinter
+	public interface IImagePrinter
 	{
 		void Print(IPrintableDocument[] documents, PrintSettings printSettings = null);
 	}

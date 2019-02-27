@@ -23,6 +23,7 @@ namespace QSReport
 
 			List<IPrintableDocument> rdlToPrinter = new List<IPrintableDocument>();
 			List<IPrintableDocument> odtToPrinter = new List<IPrintableDocument>();
+			List<IPrintableDocument> imgToPrinter = new List<IPrintableDocument>();
 			foreach(var document in prnbleDocs) {
 				document.Document.CopiesToPrint = document.Copies;
 				switch(document.Document.PrintType) {
@@ -34,6 +35,10 @@ namespace QSReport
 						for(int i = 0; i < document.Copies; i++)
 							rdlToPrinter.Add(document.Document);
 						break;
+					case PrinterType.Image:
+						for(int i = 0; i < document.Copies; i++)
+							imgToPrinter.Add(document.Document);
+						break;
 					default:
 						throw new NotImplementedException("Печать документа не поддерживается");
 				}
@@ -42,6 +47,7 @@ namespace QSReport
 			printer.DocumentsPrinted += (sender, e) => DocumentsPrinted?.Invoke(sender, e);
 			printer.PrintingCanceled += (sender, e) => PrintingCanceled?.Invoke(sender, e);
 			printer.PrintAll(rdlToPrinter);
+			DocumentPrinters.ImagePrinter?.Print(imgToPrinter.ToArray(), printer.PrintSettings);
 			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), printer.PrintSettings);
 			PrinterSettings = printer.PrintSettings;
 		}
