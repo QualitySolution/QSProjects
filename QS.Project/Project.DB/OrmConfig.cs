@@ -70,5 +70,11 @@ namespace QS.Project.DB
 			return NhConfig.ClassMappings
 				.FirstOrDefault(c => c.MappedClass.Name == clazz);
 		}
+
+		public static NHibernate.Mapping.PersistentClass FindMappingByFullClassName(string clazz)
+		{
+			return NhConfig.ClassMappings
+				.FirstOrDefault(c => c.MappedClass.FullName == clazz);
+		}
 	}
 }
