@@ -51,6 +51,18 @@ namespace QS.DomainModel.UoW
 			return uow;
 		}
 
+		/// <summary>
+		/// Создаем дочерний Unit of Work не использующий коммит при сохранении Root 
+		/// </summary>
+		/// <returns>UnitOfWork.</returns>
+		/// <typeparam name="TChildRootEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
+		public static IUnitOfWorkGeneric<TChildRootEntity> CreateForChildRoot<TChildRootEntity>(TChildRootEntity childRoot, IUnitOfWork parentUoW, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
+			where TChildRootEntity : class, IDomainObject, new()
+		{
+			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+			var uow = new UnitOfWorkChild<TChildRootEntity>(childRoot, parentUoW, title);
+			return uow;
+		}
 	}
 }
 

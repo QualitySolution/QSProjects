@@ -136,6 +136,7 @@
     <Compile Include="Deletion\DeleteHelper.cs" />
     <Compile Include="Dialog\IInteractiveMessage.cs" />
     <Compile Include="Dialog\IInteractiveQuestion.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkChild.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

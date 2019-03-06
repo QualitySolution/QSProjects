@@ -36,7 +36,7 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		public ISession Session {
+		internal virtual ISession InternalSession {
 			get {
 				if(session == null) {
 					session = OrmConfig.OpenSession(null);
@@ -47,6 +47,8 @@ namespace QS.DomainModel.UoW
 				return session;
 			}
 		}
+
+		public ISession Session => InternalSession;
 
 		public virtual void Commit()
 		{
@@ -75,7 +77,7 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		public void Dispose()
+		protected virtual void DisposeUoW()
 		{
 			if(transaction != null) {
 				if(!transaction.WasCommitted && !transaction.WasRolledBack)
@@ -85,6 +87,12 @@ namespace QS.DomainModel.UoW
 			}
 			Session.Dispose();
 			NhEventListener.UnregisterUow(this);
+		}
+
+
+		public void Dispose()
+		{
+			DisposeUoW();
 		}
 
 		public IQueryable<T> GetAll<T>() where T : IDomainObject
