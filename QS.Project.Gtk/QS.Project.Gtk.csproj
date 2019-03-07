@@ -73,6 +73,9 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="Mono.Cairo" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Vodovoz\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +124,20 @@
     <Compile Include="Print\ImagePrinter.cs" />
     <Compile Include="Widgets.GtkUI\PhotoView.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\IPermissionsView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\UserDialog.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UserDialog.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\RunOperationView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.ServiceDlg.RunOperationView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\UserNotificationViewAgent.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleQuestionUserView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleUserNotificationView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\UsersDialog.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UsersDialog.cs" />
+    <Compile Include="Permissions\IPermissionMatrix.cs" />
+    <Compile Include="Permissions\PermissionMatrix.cs" />
+    <Compile Include="Permissions\PermissionMatrixView.cs" />
+    <Compile Include="gtk-gui\QS.Permissions.PermissionMatrixView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -132,6 +149,8 @@
     <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
     <Folder Include="Print\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
+    <Folder Include="Permissions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

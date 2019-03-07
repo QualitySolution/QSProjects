@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
+using System.Collections.ObjectModel;
 
 namespace QS.Project.Repositories
 {
@@ -31,6 +32,20 @@ namespace QS.Project.Repositories
 			return uow.Session.QueryOver<PresetUserPermission>()
 				.Where(x => x.User.Id == userId)
 				.List();
+		}
+
+		private static IReadOnlyDictionary<string, bool> currentUserPresetPermissions;
+		public static IReadOnlyDictionary<string, bool> CurrentUserPresetPermissions { 
+			get {
+				if(currentUserPresetPermissions == null) {
+					using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+						var currentUser = UserRepository.GetCurrentUser(uow);
+						currentUser.LoadUserPermissions();
+						currentUserPresetPermissions = currentUser.Permissions;
+					}
+				}
+				return currentUserPresetPermissions;
+			}
 		}
 	}
 }

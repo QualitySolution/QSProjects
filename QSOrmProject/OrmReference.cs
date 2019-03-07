@@ -239,7 +239,7 @@ namespace QSOrmProject
 				ButtonMode = defaultMode.ReferenceButtonMode;
 
 			if (!String.IsNullOrWhiteSpace(map.EditPermisionName)) {
-				if (!QSMain.User.Permissions[map.EditPermisionName]) {
+				if (QSMain.User.Permissions != null && !QSMain.User.Permissions[map.EditPermisionName]) {
 					ButtonMode &= ~ReferenceButtonMode.CanAll;
 				}
 			}

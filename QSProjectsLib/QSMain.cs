@@ -34,8 +34,10 @@ namespace QSProjectsLib
 		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;
 		public static string ConnectionString;
+		public static Dictionary<string, UserPermission> ProjectPermission;
 		public static Dictionary<string, TableInfo> ProjectTables;
 		public static UserInfo User;
+
 		private static string adminFieldName = "admin";
 
 		public static string AdminFieldName {
@@ -306,6 +308,40 @@ namespace QSProjectsLib
 				TryConnect ();
 			}
 			logger.Info ("Ок.");
+		}
+
+
+		public static string GetPermissionFieldsForSelect ()
+		{
+			if (ProjectPermission == null)
+				return "";
+			string FieldsString = "";
+			foreach (KeyValuePair<string, UserPermission> Right in ProjectPermission) {
+				FieldsString += ", " + Right.Value.DataBaseName;
+			}
+			return FieldsString;
+		}
+
+		public static string GetPermissionFieldsForInsert ()
+		{
+			if (ProjectPermission == null)
+				return "";
+			string FieldsString = "";
+			foreach (KeyValuePair<string, UserPermission> Right in ProjectPermission) {
+				FieldsString += ", @" + Right.Value.DataBaseName;
+			}
+			return FieldsString;
+		}
+
+		public static string GetPermissionFieldsForUpdate ()
+		{
+			if (ProjectPermission == null)
+				return "";
+			string FieldsString = "";
+			foreach (KeyValuePair<string, UserPermission> Right in ProjectPermission) {
+				FieldsString += ", " + Right.Value.DataBaseName + " = @" + Right.Value.DataBaseName;
+			}
+			return FieldsString;
 		}
 
 		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = null)

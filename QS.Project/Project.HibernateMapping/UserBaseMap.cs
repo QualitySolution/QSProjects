@@ -15,6 +15,7 @@ namespace QS.Project.HibernateMapping
 			Map(x => x.Login).Column("login");
 			Map(x => x.Deactivated).Column("deactivated");
 			Map(x => x.IsAdmin).Column("admin");
+			Map(x => x.Email).Column("email");
 		}
 	}
 }

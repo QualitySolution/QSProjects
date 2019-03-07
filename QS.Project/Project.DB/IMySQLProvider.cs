@@ -1,0 +1,11 @@
+﻿using System;
+using MySql.Data.MySqlClient;
+namespace QS.Project.DB
+{
+	public interface IMySQLProvider
+	{
+		MySqlConnection DbConnection { get; }
+		void CheckConnectionAlive();
+		void TryConnect();
+	}
+}
