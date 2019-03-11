@@ -249,6 +249,7 @@ namespace QS.HistoryLog.Dialogs
 			this.selectperiod.ShowCurMonth = false;
 			this.selectperiod.ShowCurQuarter = false;
 			this.selectperiod.ShowCurYear = false;
+			this.selectperiod.WithTime = true;
 			this.table1.Add(this.selectperiod);
 			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1[this.selectperiod]));
 			w15.BottomAttach = ((uint)(3));

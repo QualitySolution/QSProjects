@@ -14,7 +14,7 @@ namespace QS.HistoryLog.Domain
 		#region Конфигурация
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public virtual IDiffFormatter DiffFormatter { get; set; } 
+		public virtual IDiffFormatter DiffFormatter { get; set; }
 
 		#endregion
 
@@ -218,13 +218,11 @@ namespace QS.HistoryLog.Domain
 				return false;
 
 			change = new FieldChange();
-			if(valueOld != null)
-			{
+			if(valueOld != null) {
 				change.OldValue = HistoryMain.GetObjectTilte(valueOld);
 				change.OldId = DomainHelper.GetId(valueOld);
 			}
-			if(valueNew != null)
-			{
+			if(valueNew != null) {
 				change.NewValue = HistoryMain.GetObjectTilte(valueNew);
 				change.NewId = DomainHelper.GetId(valueNew);
 			}
@@ -315,16 +313,14 @@ namespace QS.HistoryLog.Domain
 		string ValueDisplay(string value)
 		{
 			var claz = OrmConfig.FindMappingByShortClassName(Entity.EntityClassName);
-			var property = claz?.GetProperty(Path);
+			var property = GetPropertyOrNull(claz, Path);
 			if(property != null) {
 				if(property.Type is NHibernate.Type.BooleanType)
 					return BooleanDisplay(value);
 				if(property.Type is NHibernate.Type.EnumStringType)
 					return EnumDisplay(value, property);
 			}
-
 			return value;
-
 		}
 
 		static string EnumDisplay(string value, NHibernate.Mapping.Property property)
@@ -346,6 +342,15 @@ namespace QS.HistoryLog.Domain
 				return "Нет";
 			else
 				return null;
+		}
+
+		NHibernate.Mapping.Property GetPropertyOrNull(NHibernate.Mapping.PersistentClass classMapping, string propertyName)
+		{
+			try {
+				return classMapping?.GetProperty(propertyName);
+			} catch(NHibernate.MappingException) {
+				return null;
+			}
 		}
 
 		#endregion
@@ -370,4 +375,3 @@ namespace QS.HistoryLog.Domain
 		}
 	}
 }
-

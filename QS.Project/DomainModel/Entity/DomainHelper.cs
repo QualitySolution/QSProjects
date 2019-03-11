@@ -104,9 +104,11 @@ namespace QS.DomainModel.Entity
 		public static string GetPropertyTitle (Type clazz, string propName)
 		{
 			var propInfo = clazz.GetProperty (propName);
+			if(propInfo == null)
+				return propName;
 			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);
 
-			return att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : null;
+			return att.Any() ? (att [0] as DisplayAttribute).GetName () : null;
 		}
 
 		/// <summary>

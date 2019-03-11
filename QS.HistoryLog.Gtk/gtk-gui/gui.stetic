@@ -357,6 +357,7 @@
                 <property name="ShowCurMonth">False</property>
                 <property name="ShowCurQuarter">False</property>
                 <property name="ShowCurYear">False</property>
+                <property name="WithTime">True</property>
                 <signal name="DatesChanged" handler="OnSelectperiodDatesChanged" />
               </widget>
               <packing>
