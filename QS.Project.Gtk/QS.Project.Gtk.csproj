@@ -138,6 +138,11 @@
     <Compile Include="Permissions\PermissionMatrix.cs" />
     <Compile Include="Permissions\PermissionMatrixView.cs" />
     <Compile Include="gtk-gui\QS.Permissions.PermissionMatrixView.cs" />
+    <Compile Include="RepresentationModel.GtkUI\RepresentationModelBase.cs" />
+    <Compile Include="RepresentationModel.GtkUI\IRepresentationFilter.cs" />
+    <Compile Include="RepresentationModel.GtkUI\RepresentationAttributies.cs" />
+    <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModel.cs" />
+    <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModelConstructor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
