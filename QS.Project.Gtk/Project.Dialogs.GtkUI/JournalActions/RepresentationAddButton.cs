@@ -14,7 +14,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 		{
 		}
 
-		public override void CheckSensetive(object[] selected)
+		public override void CheckSensitive(object[] selected)
 		{
 			button.Sensitive = EntityClass != null;
 		}

@@ -36,7 +36,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 			Execute();
 		}
 
-		public abstract void CheckSensetive(object[] selected);
+		public abstract void CheckSensitive(object[] selected);
 
 		public abstract void Execute();
 	}

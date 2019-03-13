@@ -7,7 +7,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 
 		bool Sensetive { get; }
 
-		void CheckSensetive(object[] selected);
+		void CheckSensitive(object[] selected);
 
 		void Execute();
 	}

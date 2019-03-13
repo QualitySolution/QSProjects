@@ -143,6 +143,10 @@
     <Compile Include="RepresentationModel.GtkUI\RepresentationAttributies.cs" />
     <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModel.cs" />
     <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModelConstructor.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledAddButton.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledEditButton.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledDeleteButton.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

@@ -198,7 +198,7 @@ namespace QS.Project.Dialogs.GtkUI
         {
             var selected = tableview.GetSelectedObjects();
             buttonSelect.Sensitive = selected.Any();
-			ActionButtons.ForEach(x => x.CheckSensetive(selected));
+			ActionButtons.ForEach(x => x.CheckSensitive(selected));
         }
 
 		public object[] SelectedNodes => tableview.GetSelectedObjects();

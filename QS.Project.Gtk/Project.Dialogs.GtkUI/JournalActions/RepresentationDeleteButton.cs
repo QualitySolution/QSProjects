@@ -16,7 +16,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 		{
 		}
 
-		public override void CheckSensetive(object[] selected)
+		public override void CheckSensitive(object[] selected)
 		{
 			button.Sensitive = selected.Length == 1;
 		}
