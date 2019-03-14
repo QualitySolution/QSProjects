@@ -14,6 +14,11 @@ namespace QSProjectsLib
 		{
 			return String.Format (CurrencyShortFomat, value);
 		}
+
+		public static string ToShortCurrencyString(this Decimal value)
+		{
+			return String.Format(CurrencyShortFomat, value);
+		}
 	}
 
 	[ToolboxItem (true)]
