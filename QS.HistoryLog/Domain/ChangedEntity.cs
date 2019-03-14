@@ -33,22 +33,14 @@ namespace QS.HistoryLog.Domain
 
 		public virtual IList<FieldChange> Changes { get; set; }
 
-		public virtual string ChangeTimeText
-		{
-			get { return ChangeTime.ToString ("G");}
-		}
+		public virtual string ChangeTimeText => ChangeTime.ToString("G");
 
-		public virtual string OperationText
-		{
-			get { return Operation.GetEnumTitle ();}
-		}
+		public virtual string OperationText => Operation.GetEnumTitle();
 
 
 		#endregion
 
-		public ChangedEntity()
-		{
-		}
+		public ChangedEntity() { }
 
 		public ChangedEntity(EntityChangeOperation operation, object entity, List<FieldChange> changes)
 		{
@@ -86,9 +78,6 @@ namespace QS.HistoryLog.Domain
 
 	public class EntityChangeOperationStringType : NHibernate.Type.EnumStringType
 	{
-		public EntityChangeOperationStringType() : base(typeof(EntityChangeOperation))
-		{
-		}
+		public EntityChangeOperationStringType() : base(typeof(EntityChangeOperation)) { }
 	}
-
 }

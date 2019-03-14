@@ -26,39 +26,40 @@ namespace QS.HistoryLog.Dialogs
 
 		IUnitOfWork UoW;
 
-		public HistoryView ()
-		{ 
-			this.Build ();
+		public HistoryView()
+		{
+			this.Build();
 
 			UoW = UnitOfWorkFactory.CreateWithoutRoot();
 
-			datacomboObject.SetRenderTextFunc<HistoryObjectDesc> (x => x.DisplayName);
+			datacomboObject.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
 			datacomboObject.ItemsList = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList();
-			comboProperty.SetRenderTextFunc<HistoryFieldDesc> (x => x.DisplayName);
+			comboProperty.SetRenderTextFunc<HistoryFieldDesc>(x => x.DisplayName);
 			comboAction.ItemsEnum = typeof(EntityChangeOperation);
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll, true, "name");
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
 
-			datatreeChangesets.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<ChangedEntity> ()
-				.AddColumn ("Время").AddTextRenderer (x => x.ChangeTimeText)
-				.AddColumn ("Пользователь").AddTextRenderer (x => x.ChangeSet.UserName)
-				.AddColumn ("Действие").AddTextRenderer (x => x.OperationText)
-				.AddColumn ("Тип объекта").AddTextRenderer (x => x.ObjectTitle)
-				.AddColumn ("Объект").AddTextRenderer (x => x.EntityTitle)
-				.AddColumn ("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
+			datatreeChangesets.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<ChangedEntity>()
+				.AddColumn("Время").AddTextRenderer(x => x.ChangeTimeText)
+				.AddColumn("Пользователь").AddTextRenderer(x => x.ChangeSet.UserName)
+				.AddColumn("Действие").AddTextRenderer(x => x.OperationText)
+				.AddColumn("Тип объекта").AddTextRenderer(x => x.ObjectTitle)
+				.AddColumn("Код объекта").AddTextRenderer(x => x.EntityId.ToString())
+				.AddColumn("Имя объекта").AddTextRenderer(x => x.EntityTitle)
+				.AddColumn("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
 				.Finish();
 			datatreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 			GtkScrolledWindowChangesets.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
-			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange> ()
-				.AddColumn ("Поле").AddTextRenderer (x => x.FieldTitle)
-				.AddColumn ("Операция").AddTextRenderer (x => x.TypeText)
-				.AddColumn ("Новое значение").AddTextRenderer (x => x.NewFormatedDiffText, useMarkup: true)
-				.AddColumn ("Старое значение").AddTextRenderer (x => x.OldFormatedDiffText, useMarkup: true)
-				.Finish ();
+			datatreeChanges.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<FieldChange>()
+				.AddColumn("Поле").AddTextRenderer(x => x.FieldTitle)
+				.AddColumn("Операция").AddTextRenderer(x => x.TypeText)
+				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
+				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
+				.Finish();
 
 			canUpdate = true;
-			UpdateJournal ();
+			UpdateJournal();
 		}
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
@@ -71,14 +72,13 @@ namespace QS.HistoryLog.Dialogs
 			datatreeChangesets.Vadjustment.Value = lastPos;
 		}
 
-		void OnChangeSetSelectionChanged (object sender, EventArgs e)
+		void OnChangeSetSelectionChanged(object sender, EventArgs e)
 		{
-			var selected = (ChangedEntity)datatreeChangesets.GetSelectedObject ();
+			var selected = (ChangedEntity)datatreeChangesets.GetSelectedObject();
 			if(selected != null) {
 				selected.Changes.ToList().ForEach(x => x.DiffFormatter = diffFormatter);
 				datatreeChanges.ItemsDataSource = selected.Changes;
-			}
-			else
+			} else
 				datatreeChanges.ItemsDataSource = null;
 		}
 
@@ -90,7 +90,7 @@ namespace QS.HistoryLog.Dialogs
 				takenAll = false;
 			}
 
-			if (!canUpdate)
+			if(!canUpdate)
 				return;
 
 			logger.Info("Получаем журнал изменений{0}...", takenRows > 0 ? $"({takenRows}+)" : "");
@@ -101,40 +101,40 @@ namespace QS.HistoryLog.Dialogs
 				.Fetch(x => x.ChangeSet).Eager
 				.Fetch(x => x.ChangeSet.User).Eager;
 
-			if(!selectperiod.IsAllTime) 
+			if(!selectperiod.IsAllTime)
 				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd.AddDays(1));
 
-			var selectedClassType = (datacomboObject.SelectedItem as HistoryObjectDesc);
-			if(selectedClassType != null)
+			if(datacomboObject.SelectedItem is HistoryObjectDesc selectedClassType)
 				query.Where(ce => ce.EntityClassName == selectedClassType.ObjectName);
 
-			if(ComboWorks.GetActiveId(comboUsers) > 0) {
+			if(ComboWorks.GetActiveId(comboUsers) > 0)
 				query.Where(() => changeSetAlias.User.Id == ComboWorks.GetActiveId(comboUsers));
-			}
 
-			if(comboAction.SelectedItem is EntityChangeOperation) {
+			if(comboAction.SelectedItem is EntityChangeOperation)
 				query.Where(ce => ce.Operation == (EntityChangeOperation)comboAction.SelectedItem);
-			}
 
-			if(!String.IsNullOrWhiteSpace(entrySearchEntity.Text)) {
+			if(!string.IsNullOrWhiteSpace(entrySearchEntity.Text)) {
 				var pattern = $"%{entrySearchEntity.Text}%";
 				query.Where(ce => ce.EntityTitle.IsLike(pattern));
 			}
 
-			if(!String.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc)
-			{
+			if(!string.IsNullOrWhiteSpace(entSearchId.Text)) {
+				if(int.TryParse(entSearchId.Text, out int id))
+					query.Where(ce => ce.EntityId == id);
+			}
+
+			if(!string.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc) {
 				FieldChange fieldChangeAlias = null;
 				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
 
-				var selectedProperty = comboProperty.SelectedItem as HistoryFieldDesc;
-				if(selectedProperty != null)
+				if(comboProperty.SelectedItem is HistoryFieldDesc selectedProperty)
 					query.Where(() => fieldChangeAlias.Path == selectedProperty.FieldName);
 
-
-				if(!String.IsNullOrWhiteSpace(entrySearchValue.Text)) {
+				if(!string.IsNullOrWhiteSpace(entrySearchValue.Text)) {
 					var pattern = $"%{entrySearchValue.Text}%";
-					query.Where(() => fieldChangeAlias.OldValue.IsLike(pattern)
-					            || fieldChangeAlias.NewValue.IsLike(pattern));
+					query.Where(
+						() => fieldChangeAlias.OldValue.IsLike(pattern) || fieldChangeAlias.NewValue.IsLike(pattern)
+					);
 				}
 			}
 
@@ -146,8 +146,7 @@ namespace QS.HistoryLog.Dialogs
 			if(takenRows > 0) {
 				changedEntities.AddRange(taked);
 				datatreeChangesets.YTreeModel.EmitModelChanged();
-			}
-			else {
+			} else {
 				changedEntities = taked.ToList();
 				datatreeChangesets.ItemsDataSource = changedEntities;
 			}
@@ -158,49 +157,49 @@ namespace QS.HistoryLog.Dialogs
 			takenRows = changedEntities.Count;
 
 			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
-			logger.Info(NumberToTextRus.FormatCase (changedEntities.Count, "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", "Загружено изменение {0}{1} объектов.", takenAll ? "" : "+"));
+			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", "Загружено изменение {0}{1} объектов.", takenAll ? "" : "+"));
 		}
 
-		protected void OnComboUsersChanged (object sender, EventArgs e)
+		protected void OnComboUsersChanged(object sender, EventArgs e)
 		{
-			UpdateJournal ();
+			UpdateJournal();
 		}
 
-		protected void OnButtonSearchClicked (object sender, EventArgs e)
+		protected void OnButtonSearchClicked(object sender, EventArgs e)
 		{
-			UpdateJournal ();
+			UpdateJournal();
 		}
 
-		protected void OnSelectperiodDatesChanged (object sender, EventArgs e)
+		protected void OnSelectperiodDatesChanged(object sender, EventArgs e)
 		{
-			UpdateJournal ();
+			UpdateJournal();
 		}
 
 		void PropertyComboFill()
 		{
 			bool lastStateUpdate = canUpdate;
 			canUpdate = false;
-			if (datacomboObject.SelectedItem is HistoryObjectDesc) {
+			if(datacomboObject.SelectedItem is HistoryObjectDesc) {
 				comboProperty.ItemsList = (datacomboObject.SelectedItem as HistoryObjectDesc).TracedProperties?.OrderBy(x => x.DisplayName);
 			} else
 				comboProperty.ItemsList = null;
 			canUpdate = lastStateUpdate;
 		}
 
-		protected void OnDatacomboObjectItemSelected (object sender, ItemSelectedEventArgs e)
+		protected void OnDatacomboObjectItemSelected(object sender, ItemSelectedEventArgs e)
 		{
-			PropertyComboFill ();
-			UpdateJournal ();
+			PropertyComboFill();
+			UpdateJournal();
 		}
 
-		protected void OnComboPropertyItemSelected (object sender, ItemSelectedEventArgs e)
+		protected void OnComboPropertyItemSelected(object sender, ItemSelectedEventArgs e)
 		{
-			UpdateJournal ();
+			UpdateJournal();
 		}
 
-		protected void OnEntrySearchActivated (object sender, EventArgs e)
+		protected void OnEntrySearchValueActivated(object sender, EventArgs e)
 		{
-			buttonSearch.Click ();
+			buttonSearch.Click();
 		}
 
 		protected void OnComboActionChanged(object sender, EventArgs e)
@@ -218,6 +217,11 @@ namespace QS.HistoryLog.Dialogs
 		{
 			UpdateJournal();
 		}
+
+		protected void OnBtnFilterClicked(object sender, EventArgs e)
+		{
+			tblSettings.Visible = !tblSettings.Visible;
+			btnFilter.Label = tblSettings.Visible ? "Скрыть фильтр" : "Показать фильтр";
+		}
 	}
 }
-
