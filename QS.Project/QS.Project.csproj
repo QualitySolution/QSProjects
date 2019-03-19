@@ -158,6 +158,7 @@
     <Compile Include="Project.Dialogs\ISimpleQuestionUserView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
     <Compile Include="Tools\StaticTools.cs" />
+    <Compile Include="Helper\DateHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -178,6 +179,7 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
     <Folder Include="Tools\" />
+    <Folder Include="Helper\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
