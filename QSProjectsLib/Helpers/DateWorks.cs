@@ -4,6 +4,7 @@ namespace QSProjectsLib
 {
 	public static class DateWorks
 	{
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.DateHelper.")]
 		public static string GetDateRangeText(DateTime dateS, DateTime dateE)
 		{
 			if(dateS == default(DateTime) || dateE == default(DateTime))
@@ -17,6 +18,7 @@ namespace QSProjectsLib
 
 		}
 
+		[Obsolete("Используйте аналогичный функционал из QS.Utilities.DateHelper.")]
 		public static string GetMonthName(int monthNumber)
 		{
 			var tempDate = new DateTime (2015, monthNumber, 1);

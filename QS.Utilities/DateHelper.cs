@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QS.Helper
+namespace QS.Utilities
 {
 	public static class DateHelper
 	{
@@ -22,9 +22,8 @@ namespace QS.Helper
 			return tempDate.ToString("MMMM");
 		}
 
-		public static void GetWeekPeriod(out DateTime startDate, out DateTime endDate, int weekIndex = 0)
+		public static void GetWeekPeriod(out DateTime startDate, out DateTime endDate, DateTime date)
 		{
-			DateTime date = DateTime.Now.Date.AddDays(weekIndex * 7);
 			switch(date.DayOfWeek) {
 				case DayOfWeek.Monday:
 					startDate = date;
@@ -61,11 +60,14 @@ namespace QS.Helper
 			}
 		}
 
-		public static void GetWeekPeriod(out DateTime? startDate, out DateTime? endDate , int weekIndex = 0)
+		public static void GetWeekPeriod(out DateTime startDate, out DateTime endDate, int weekIndex = 0)
 		{
-			DateTime startTempDate;
-			DateTime endTempDate;
-			GetWeekPeriod(out startTempDate, out endTempDate , weekIndex);
+			GetWeekPeriod(out startDate, out endDate, DateTime.Now.Date.AddDays(weekIndex * 7));
+		}
+
+		public static void GetWeekPeriod(out DateTime? startDate, out DateTime? endDate, int weekIndex = 0)
+		{
+			GetWeekPeriod(out DateTime startTempDate, out DateTime endTempDate, weekIndex);
 			startDate = startTempDate;
 			endDate = endTempDate;
 		}
