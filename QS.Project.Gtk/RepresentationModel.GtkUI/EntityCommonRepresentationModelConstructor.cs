@@ -13,6 +13,8 @@ namespace QS.RepresentationModel.GtkUI
 	public class EntityCommonRepresentationModelConstructor<TEntity>
 		where TEntity : class, IDomainObject, new()
 	{
+		private readonly IUnitOfWork uow;
+
 		private readonly Dictionary<string, Expression<Func<TEntity, string>>> columnsFields = new Dictionary<string, Expression<Func<TEntity, string>>>();
 		private readonly List<Expression<Func<TEntity, string>>> searchFields = new List<Expression<Func<TEntity, string>>>();
 		private readonly List<OrderByField<TEntity>> ordersFields = new List<OrderByField<TEntity>>();
@@ -21,6 +23,11 @@ namespace QS.RepresentationModel.GtkUI
 		private IJournalFilter journalFilter;
 
 		private IColumnsConfig ColumnsConfig;
+
+		public EntityCommonRepresentationModelConstructor(IUnitOfWork uow = null)
+		{
+			this.uow = uow;
+		}
 
 		public EntityCommonRepresentationModelConstructor<TEntity> AddColumn(string name, Expression<Func<TEntity, string>> columnFuncExpr)
 		{
@@ -74,11 +81,12 @@ namespace QS.RepresentationModel.GtkUI
 
 		public IRepresentationModel Finish()
 		{
-			var resultVM = new EntityCommonRepresentationModel<TEntity>(GetGammaColumnsConfig());
-			resultVM.QueryFilter = queryFilter;
-			resultVM.JournalFilter = journalFilter;
-			resultVM.FixedRestriction = fixedRestriction;
-			resultVM.Orders = ordersFields;
+			var resultVM = new EntityCommonRepresentationModel<TEntity>(uow, GetGammaColumnsConfig()) {
+				QueryFilter = queryFilter,
+				JournalFilter = journalFilter,
+				FixedRestriction = fixedRestriction,
+				Orders = ordersFields
+			};
 			return resultVM;
 		}
 	}

@@ -40,13 +40,24 @@ namespace QS.RepresentationModel.GtkUI
 
 		public IQueryFilter QueryFilter { get; set; }
 
-		public EntityCommonRepresentationModel(IColumnsConfig columnsConfig)
+		public EntityCommonRepresentationModel(IUnitOfWork uow, IColumnsConfig columnsConfig)
 		{
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			UoW = uow;
 			this.columnsConfig = columnsConfig;
 		}
 
 		public override void UpdateNodes()
+		{
+			if(UoW != null) {
+				SetItemsSource(GetItems(UoW));
+			} else {
+				using(var localUoW = UnitOfWorkFactory.CreateWithoutRoot()) {
+					SetItemsSource(GetItems(localUoW));
+				}
+			}
+		}
+
+		private IList<TEntity> GetItems(IUnitOfWork uow)
 		{
 			var query = UoW.Session.QueryOver<TEntity>();
 
@@ -66,13 +77,11 @@ namespace QS.RepresentationModel.GtkUI
 				}
 			}
 
-			var itemslist = query.List();
-			SetItemsSource(itemslist);
+			return query.List();
 		}
 
 		public void Destroy()
 		{
-			UoW.Dispose();
 		}
 	}
 }
