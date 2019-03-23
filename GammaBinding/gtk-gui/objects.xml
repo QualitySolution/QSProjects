@@ -80,4 +80,8 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yButton" palette-category="Gamma Gtk" allow-children="false" icon="button.png" base-type="Gtk.Button">
+    <itemgroups />
+    <signals />
+  </object>
 </objects>

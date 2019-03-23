@@ -106,6 +106,7 @@
     <Compile Include="Binding.Core\IBindingSource.cs" />
     <Compile Include="Widgets\EnumCheckList.cs" />
     <Compile Include="Widgets\Additions\EnumsListConverter.cs" />
+    <Compile Include="GtkWidgets\yButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -155,6 +156,7 @@
       <Link>Properties\objects.xml</Link>
     </None>
     <None Include="icons\colorbutton.png" />
+    <None Include="icons\button.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
