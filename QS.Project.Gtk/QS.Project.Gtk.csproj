@@ -150,6 +150,7 @@
     <Compile Include="RepresentationModel.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.RepresentationModel.GtkUI.RepresentationEntry.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
+    <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

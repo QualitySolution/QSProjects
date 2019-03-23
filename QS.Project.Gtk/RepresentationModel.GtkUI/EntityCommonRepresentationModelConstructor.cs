@@ -5,6 +5,8 @@ using Gamma.ColumnConfig;
 using QS.DomainModel.Entity;
 using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
+using QS.Tools;
+using NHibernate.Criterion;
 
 namespace QS.RepresentationModel.GtkUI
 {
@@ -13,8 +15,10 @@ namespace QS.RepresentationModel.GtkUI
 	{
 		private readonly Dictionary<string, Expression<Func<TEntity, string>>> columnsFields = new Dictionary<string, Expression<Func<TEntity, string>>>();
 		private readonly List<Expression<Func<TEntity, string>>> searchFields = new List<Expression<Func<TEntity, string>>>();
-		private readonly List<Expression<Func<TEntity, bool>>> filtersFields = new List<Expression<Func<TEntity, bool>>>();
 		private readonly List<OrderByField<TEntity>> ordersFields = new List<OrderByField<TEntity>>();
+		private ICriterion fixedRestriction;
+		private IQueryFilter queryFilter;
+		private IJournalFilter journalFilter;
 
 		private IColumnsConfig ColumnsConfig;
 
@@ -31,9 +35,16 @@ namespace QS.RepresentationModel.GtkUI
 			return this;
 		}
 
-		public EntityCommonRepresentationModelConstructor<TEntity> AddFilter(Expression<Func<TEntity, bool>> filterFuncExpr)
+		public EntityCommonRepresentationModelConstructor<TEntity> SetFixedRestriction(ICriterion criterion)
 		{
-			filtersFields.Add(filterFuncExpr);
+			fixedRestriction = criterion;
+			return this;
+		}
+
+		public EntityCommonRepresentationModelConstructor<TEntity> SetQueryFilter(IQueryFilterView filterView)
+		{
+			queryFilter = filterView.GetQueryFilter();
+			journalFilter = filterView;
 			return this;
 		}
 
@@ -64,8 +75,10 @@ namespace QS.RepresentationModel.GtkUI
 		public IRepresentationModel Finish()
 		{
 			var resultVM = new EntityCommonRepresentationModel<TEntity>(GetGammaColumnsConfig());
-			resultVM.filters = filtersFields;
-			resultVM.orders = ordersFields;
+			resultVM.QueryFilter = queryFilter;
+			resultVM.JournalFilter = journalFilter;
+			resultVM.FixedRestriction = fixedRestriction;
+			resultVM.Orders = ordersFields;
 			return resultVM;
 		}
 	}
