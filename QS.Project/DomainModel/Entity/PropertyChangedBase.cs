@@ -47,12 +47,7 @@ namespace QS.DomainModel.Entity
 		//No string implementation
 		protected void OnPropertyChanged<T> (Expression<Func<T>> selectorExpression)
 		{
-			if (selectorExpression == null)
-				throw new ArgumentNullException ("selectorExpression");
-			MemberExpression body = selectorExpression.Body as MemberExpression;
-			if (body == null)
-				throw new ArgumentException ("The body must be a member expression");
-			OnPropertyChanged (body.Member.Name);
+			OnPropertyChanged(GetPropertyName(selectorExpression));
 		}
 
 		protected bool SetField<T> (ref T field, T value, Expression<Func<T>> selectorExpression)
@@ -64,6 +59,16 @@ namespace QS.DomainModel.Entity
 			field = value;
 			OnPropertyChanged (selectorExpression);
 			return true;
+		}
+
+		protected string GetPropertyName<T>(Expression<Func<T>> selectorExpression)
+		{
+			if(selectorExpression == null)
+				throw new ArgumentNullException("selectorExpression");
+			MemberExpression body = selectorExpression.Body as MemberExpression;
+			if(body == null)
+				throw new ArgumentException("The body must be a member expression");
+			return body.Member.Name;
 		}
 	}
 
