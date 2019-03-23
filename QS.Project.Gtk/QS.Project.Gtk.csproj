@@ -147,6 +147,9 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledEditButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledDeleteButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
+    <Compile Include="RepresentationModel.GtkUI\RepresentationEntry.cs" />
+    <Compile Include="gtk-gui\QS.RepresentationModel.GtkUI.RepresentationEntry.cs" />
+    <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

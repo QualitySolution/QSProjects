@@ -158,6 +158,7 @@
     <Compile Include="Project.Dialogs\ISimpleQuestionUserView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
     <Compile Include="Tools\StaticTools.cs" />
+    <Compile Include="DomainModel\Config\OrmObjectUpdatedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

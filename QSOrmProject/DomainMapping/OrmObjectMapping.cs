@@ -125,10 +125,29 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
+		event EventHandler<EntityUpdatedEventArgs> entityUpdated;
+
+		public event EventHandler<EntityUpdatedEventArgs> EntityUpdated {
+			add {
+				lock(eventSetLock) {
+					entityUpdated += value;
+					logger.Debug("Подписка EntityUpdated на обновления {0} оформлена. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
+				}
+			}
+
+			remove {
+				lock(eventSetLock) {
+					entityUpdated -= value;
+					logger.Debug("Кто-то отписался от события EntityUpdated для объекта {0}. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
+				}
+			}
+		}
+
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
 			objectUpdatedGeneric?.Invoke(this, new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects.Cast<TEntity>().ToArray()));
 			objectUpdated?.Invoke(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
+			entityUpdated?.Invoke(this, new EntityUpdatedEventArgs(updatedSubjects));
 		}
 
 		private string SubscribersCountText(int count)

@@ -38,7 +38,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 
 		void dlg_EntitySaved(object sender, EntitySavedEventArgs e)
 		{
-			if(e.Entity != null && dialog.Mode == JournalSelectMode.Sinlge) {
+			if(e.Entity != null && dialog.Mode == JournalSelectMode.Single) {
 				if(!MessageDialogHelper.RunQuestionDialog("Выбрать созданный объект и вернуться к предыдущему диалогу?")) {
 					return;
 				}

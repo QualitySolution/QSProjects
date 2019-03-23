@@ -189,7 +189,7 @@ namespace QS.Project.Dialogs.GtkUI
 			get { return mode; }
 			set {
 				mode = value;
-				hboxSelect.Visible = (mode == JournalSelectMode.Sinlge || mode == JournalSelectMode.Multiple);
+				hboxSelect.Visible = (mode == JournalSelectMode.Single || mode == JournalSelectMode.Multiple);
 				tableview.Selection.Mode = (mode == JournalSelectMode.Multiple) ? SelectionMode.Multiple : SelectionMode.Single;
 			}
 		}
@@ -227,7 +227,7 @@ namespace QS.Project.Dialogs.GtkUI
 
         protected void OnOrmtableviewRowActivated (object o, RowActivatedArgs args)
         {
-            if (Mode == JournalSelectMode.Sinlge || Mode == JournalSelectMode.Multiple)
+            if (Mode == JournalSelectMode.Single || Mode == JournalSelectMode.Multiple)
                 buttonSelect.Click ();
             else if (DoubleClickAction != null && DoubleClickAction.Sensetive)
                 DoubleClickAction.Execute ();

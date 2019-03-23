@@ -54,6 +54,20 @@ namespace QSValidation
 			dlg.Destroy ();
 			return true;
 		}
+
+		public bool RunDlgIfNotValid()
+		{
+			if(IsValid)
+				return false;
+
+			var dlg = new ResultsListDlg(Results);
+			dlg.Parent = null;
+			dlg.Modal = true;
+			dlg.Show();
+			dlg.Run();
+			dlg.Destroy();
+			return true;
+		}
 	}
 }
 

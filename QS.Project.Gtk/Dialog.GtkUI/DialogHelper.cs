@@ -53,5 +53,24 @@ namespace QS.Dialog.Gtk
 
 			return String.Format("{0}_{1}", clazz.Name, id);
 		}
+
+		public static bool SaveBeforeSelectFromChildReference(Type savingEntity, Type childEntity)
+		{
+			var childNames = DomainHelper.GetSubjectNames(childEntity);
+			var parrentNames = DomainHelper.GetSubjectNames(savingEntity);
+
+			string message = String.Format("Необходимо сохранить основной объект «{0}», прежде чем выбирать «{1}» из подчинённого справочника. Сохранить?",
+				parrentNames.Accusative,
+				childNames.AccusativePlural
+			);
+
+			var md = new MessageDialog(null, DialogFlags.Modal,
+				MessageType.Question,
+				ButtonsType.YesNo,
+				message);
+			bool result = (ResponseType)md.Run() == ResponseType.Yes;
+			md.Destroy();
+			return result;
+		}
 	}
 }

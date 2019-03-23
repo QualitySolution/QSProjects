@@ -11,5 +11,7 @@ namespace QS.DomainModel.Config
 		bool SimpleDialog { get; }
 
 		ITdiDialog CreateDialog(params object[] parameters);
+
+		event EventHandler<EntityUpdatedEventArgs> EntityUpdated;
 	}
 }

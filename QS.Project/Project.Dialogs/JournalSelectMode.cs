@@ -4,7 +4,7 @@ namespace QS.Project.Dialogs
 	public enum JournalSelectMode
 	{
 		None,
-		Sinlge,
+		Single,
 		Multiple
 	}
 }
