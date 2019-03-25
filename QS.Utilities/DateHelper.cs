@@ -26,36 +26,36 @@ namespace QS.Utilities
 		{
 			switch(date.DayOfWeek) {
 				case DayOfWeek.Monday:
-					startDate = date;
-					endDate = date.AddDays(7);
+					startDate = date.Date;
+					endDate = date.AddDays(6).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Tuesday:
-					startDate = date.AddDays(-1);
-					endDate = date.AddDays(6);
+					startDate = date.AddDays(-1).Date;
+					endDate = date.AddDays(5).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Wednesday:
-					startDate = date.AddDays(-2);
-					endDate = date.AddDays(5);
+					startDate = date.AddDays(-2).Date;
+					endDate = date.AddDays(4).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Thursday:
-					startDate = date.AddDays(-3);
-					endDate = date.AddDays(4);
+					startDate = date.AddDays(-3).Date;
+					endDate = date.AddDays(3).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Friday:
-					startDate = date.AddDays(-4);
-					endDate = date.AddDays(3);
+					startDate = date.AddDays(-4).Date;
+					endDate = date.AddDays(2).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Saturday:
-					startDate = date.AddDays(-5);
-					endDate = date.AddDays(2);
+					startDate = date.AddDays(-5).Date;
+					endDate = date.AddDays(1).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				case DayOfWeek.Sunday:
-					startDate = date.AddDays(-6);
-					endDate = date.AddDays(1);
+					startDate = date.AddDays(-6).Date;
+					endDate = date.AddDays(0).AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 					break;
 				default:
-					startDate = DateTime.Now;
-					endDate = DateTime.Now;
+					startDate = DateTime.MinValue;
+					endDate = DateTime.MinValue;
 					break;
 			}
 		}
