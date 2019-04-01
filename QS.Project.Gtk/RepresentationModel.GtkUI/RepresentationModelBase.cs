@@ -79,7 +79,7 @@ namespace QS.RepresentationModel.GtkUI
 		/// <value>The create representation filter.</value>
 		public Func<IRepresentationFilter> CreateRepresentationFilter { get; set;}
 
-		public IEnumerable<string> SearchFields {
+		public virtual IEnumerable<string> SearchFields {
 			get {
 				foreach (var prop in typeof(TNode).GetProperties ()) {
 					var att = prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).FirstOrDefault ();
@@ -146,7 +146,7 @@ namespace QS.RepresentationModel.GtkUI
 
 		private PropertyInfo[] searchPropCache;
 
-		protected PropertyInfo[] SearchPropCache {
+		protected virtual PropertyInfo[] SearchPropCache {
 			get {
 				if (searchPropCache != null)
 					return searchPropCache;

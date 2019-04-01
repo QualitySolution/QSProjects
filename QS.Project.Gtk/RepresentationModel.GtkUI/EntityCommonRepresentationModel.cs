@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.ColumnConfig;
+using Gamma.Utilities;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Tools;
+using System.Linq;
+using System.Reflection;
 
 namespace QS.RepresentationModel.GtkUI
 {
@@ -78,6 +81,20 @@ namespace QS.RepresentationModel.GtkUI
 			}
 
 			return query.List();
+		}
+
+		internal List<Expression<Func<TEntity, object>>> EntitySearchFields { get; set; }
+
+		public override IEnumerable<string> SearchFields {
+			get {
+				return EntitySearchFields.Select(x => PropertyUtil.GetName(x)).Where(x => !string.IsNullOrWhiteSpace(x));
+			}
+		}
+
+		protected override PropertyInfo[] SearchPropCache {
+			get {
+				return EntitySearchFields.Select(PropertyUtil.GetPropertyInfo).ToArray();
+			}
 		}
 
 		public void Destroy()

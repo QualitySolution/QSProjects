@@ -16,7 +16,7 @@ namespace QS.RepresentationModel.GtkUI
 		private readonly IUnitOfWork uow;
 
 		private readonly Dictionary<string, Expression<Func<TEntity, string>>> columnsFields = new Dictionary<string, Expression<Func<TEntity, string>>>();
-		private readonly List<Expression<Func<TEntity, string>>> searchFields = new List<Expression<Func<TEntity, string>>>();
+		private readonly List<Expression<Func<TEntity, object>>> searchFields = new List<Expression<Func<TEntity, object>>>();
 		private readonly List<OrderByField<TEntity>> ordersFields = new List<OrderByField<TEntity>>();
 		private ICriterion fixedRestriction;
 		private IQueryFilter queryFilter;
@@ -35,9 +35,8 @@ namespace QS.RepresentationModel.GtkUI
 			return this;
 		}
 
-		public EntityCommonRepresentationModelConstructor<TEntity> AddSearchColumn(string name, Expression<Func<TEntity, string>> columnFuncExpr)
+		public EntityCommonRepresentationModelConstructor<TEntity> AddSearch(Expression<Func<TEntity, object>> columnFuncExpr)
 		{
-			columnsFields.Add(name, columnFuncExpr);
 			searchFields.Add(columnFuncExpr);
 			return this;
 		}
@@ -71,10 +70,7 @@ namespace QS.RepresentationModel.GtkUI
 		{
 			var config = FluentColumnsConfig<TEntity>.Create();
 			foreach(var pair in columnsFields) {
-				if(searchFields.Contains(pair.Value))
-					config.AddColumn(pair.Key).AddTextRenderer(pair.Value).SearchHighlight();
-				else
-					config.AddColumn(pair.Key).AddTextRenderer(pair.Value);
+				config.AddColumn(pair.Key).AddTextRenderer(pair.Value);
 			}
 			return config.Finish();
 		}
@@ -85,6 +81,7 @@ namespace QS.RepresentationModel.GtkUI
 				QueryFilter = queryFilter,
 				JournalFilter = journalFilter,
 				FixedRestriction = fixedRestriction,
+				EntitySearchFields = searchFields,
 				Orders = ordersFields
 			};
 			return resultVM;
