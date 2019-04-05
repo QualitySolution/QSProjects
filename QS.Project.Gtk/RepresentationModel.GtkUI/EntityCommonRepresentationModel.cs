@@ -62,7 +62,7 @@ namespace QS.RepresentationModel.GtkUI
 
 		private IList<TEntity> GetItems(IUnitOfWork uow)
 		{
-			var query = UoW.Session.QueryOver<TEntity>();
+			var query = uow.Session.QueryOver<TEntity>();
 
 			if(FixedRestriction != null) {
 				query.Where(FixedRestriction);
