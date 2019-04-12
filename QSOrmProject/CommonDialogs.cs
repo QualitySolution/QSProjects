@@ -7,6 +7,11 @@ namespace QSOrmProject
 {
 	public static class CommonDialogs
 	{
+		/// <summary>
+		/// Выводим диалог "Перед созданием {0}, необходимо сохранить {1}. Сохранить?"
+		/// </summary>
+		/// <param name="savingEntity">Для класса должен быть указан Родительский падеж(Genitive).</param>
+		/// <param name="creatingEntity">Для класса должн быть указан Винительный падеж(Accusative).</param>
 		public static bool SaveBeforeCreateSlaveEntity(Type savingEntity, Type creatingEntity)
 		{
 			string  savingName = "НЕ УКАЗАНО", creatingName = "НЕ УКАЗАНО";
