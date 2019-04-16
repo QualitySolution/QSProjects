@@ -333,5 +333,39 @@ namespace QS.Deletion.Testing
 		}
 
 		#endregion
+
+		#region Проверка классов на наличие свойств Name или Title, для отображения объектов в диалогах удаления.
+
+		public static IEnumerable AllDeleteRules {
+			get {
+				Console.WriteLine("AllDeleteRules");
+				foreach(var info in DeleteConfig.ClassDeleteRules) {
+					yield return new TestCaseData(info)
+							.SetDescription("Проверка правил удаления на наличие Name или Tilte")
+							.SetArgDisplayNames(new[] { info.ObjectClass.Name });
+				}
+			}
+		}
+
+		public virtual void DeleteRules_ExistTitle_Test(IDeleteRule info)
+		{
+			var prop = info.ObjectClass.GetProperty("Title");
+			if(prop != null) {
+				Assert.Pass("Найдено свойство Title");
+			}
+
+			prop = info.ObjectClass.GetProperty("Name");
+			if(prop != null) {
+				Assert.Pass("Найдено свойство Name");
+			}
+
+			if(info.ObjectClass.GetMethod("ToString", new Type[] { }).DeclaringType == info.ObjectClass) {
+				Assert.Pass("В классе переопределено свойство ToString");
+			}
+
+			Assert.Fail($"В классе {info.ObjectClass}, нет свойств Title или Name. Что не позволяет при удалении красиво вывести пользователю информациию об удаляемом объекте.");
+		}
+
+		#endregion
 	}
 }
