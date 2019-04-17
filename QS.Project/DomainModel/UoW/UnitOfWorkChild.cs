@@ -11,7 +11,7 @@ namespace QS.DomainModel.UoW
 
 		internal UnitOfWorkChild(TRootEntity childRoot, IUnitOfWork parentUoW, UnitOfWorkTitle actionTitle)
 		{
-			IsNew = false;
+			IsNew = childRoot.Id == 0;
 			ActionTitle = actionTitle;
 			this.parentUoW = parentUoW;
 			transaction = parentUoW.Session.Transaction;

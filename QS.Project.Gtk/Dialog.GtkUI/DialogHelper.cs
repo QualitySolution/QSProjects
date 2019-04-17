@@ -51,7 +51,7 @@ namespace QS.Dialog.Gtk
 			if(!typeof(IDomainObject).IsAssignableFrom(clazz))
 				throw new ArgumentException("Тип должен реализовывать интерфейс IDomainObject", "clazz");
 
-			return String.Format("{0}_{1}", clazz.Name, id);
+			return string.Format("{0}_{1}", clazz.Name, id);
 		}
 
 		public static bool SaveBeforeSelectFromChildReference(Type savingEntity, Type childEntity)
