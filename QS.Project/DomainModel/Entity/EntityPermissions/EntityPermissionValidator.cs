@@ -23,28 +23,28 @@ namespace QS.DomainModel.Entity.EntityPermissions
 			UserBase user;
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				user = UserRepository.GetUserById(uow, userId);
-			}
 
-			//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора
-			if(user != null && user.IsAdmin && NoRestrictPermissionsForAdmin) {
-				return EntityPermission.AllAllowed;
-			}
+				//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора
+				if(user != null && user.IsAdmin && NoRestrictPermissionsForAdmin) {
+					return EntityPermission.AllAllowed;
+				}
 
-			var permissionAttr = entityType.GetCustomAttribute<EntityPermissionAttribute>();
-			if(permissionAttr == null) {
-				return EntityPermission.AllDenied;
-			}
+				var permissionAttr = entityType.GetCustomAttribute<EntityPermissionAttribute>();
+				if(permissionAttr == null) {
+					return EntityPermission.AllDenied;
+				}
 
-			var userPermission = UserPermissionRepository.GetUserEntityPermission(UnitOfWorkFactory.CreateWithoutRoot(), entityType.Name, userId);
-			if(userPermission == null) {
-				return EntityPermission.Empty;
-			} else {
-				return new EntityPermission(
-					userPermission.CanCreate,
-					userPermission.CanRead,
-					userPermission.CanUpdate,
-					userPermission.CanDelete
-				);
+				var userPermission = UserPermissionRepository.GetUserEntityPermission(uow, entityType.Name, userId);
+				if(userPermission == null) {
+					return EntityPermission.Empty;
+				} else {
+					return new EntityPermission(
+						userPermission.CanCreate,
+						userPermission.CanRead,
+						userPermission.CanUpdate,
+						userPermission.CanDelete
+					);
+				}
 			}
 		}
 
