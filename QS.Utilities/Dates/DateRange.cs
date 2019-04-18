@@ -42,6 +42,8 @@ namespace QS.Utilities.Dates
 			}
 		}
 
+		public int Days => (End - Begin).Days + 1;
+
 		public int GetTotalExcludedDays{
 			get {
 				var intervals = GetIntervals.ToArray();
@@ -64,6 +66,18 @@ namespace QS.Utilities.Dates
 				return range.End;
 			else
 				return FindExcludeEnd(next);
+		}
+
+		public DateTime FillIntervals(int days)
+		{
+			foreach(var interval in GetIntervals)
+			{
+				if (interval.Days >= days)
+					return interval.Begin.AddDays(days);
+
+				days = days - interval.Days;
+			}
+			throw new ArgumentOutOfRangeException(nameof(days), "Количество дней для заполнения привысило общее количество дней в интревалах.");
 		}
 	}
 }

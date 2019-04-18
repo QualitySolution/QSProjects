@@ -81,5 +81,19 @@ namespace QS.Test.Utilities
 
 			Assert.That(mainRange.GetTotalExcludedDays, Is.EqualTo(10));
 		}
+
+		[Test(Description = "Заполнение интервалов днями.")]
+		public void FillIntervals_Test()
+		{
+			var mainRange = new DateRange(new DateTime(2019, 1, 1), new DateTime(2019, 5, 5));
+			var exclude = new DateRange(new DateTime(2019, 1, 5), new DateTime(2019, 1, 6));//Два дня
+			var exclude2 = new DateRange(new DateTime(2019, 1, 10), new DateTime(2019, 1, 12));//Три дня
+
+			mainRange.ExcludedRanges.Add(exclude);
+			mainRange.ExcludedRanges.Add(exclude2);
+
+			// + 5 дней
+			Assert.That(mainRange.FillIntervals(20), Is.EqualTo(new DateTime(2019, 1, 26)));
+		}
 	}
 }
