@@ -42,7 +42,7 @@ namespace QS.Test.Utilities
 		}
 
 		[Test(Description = "Проверяем расчет количества дней в исключенных пересекаемых диапазонов")]
-		public void GetIntervals_ExcludeIntersectedDaysTest()
+		public void GetTotalExcludedDays_ExcludeIntersectedDaysTest()
 		{
 			var mainRange = new DateRange(new DateTime(2019, 1, 1), new DateTime(2019, 5, 5));
 			var exclude = new DateRange(new DateTime(2019, 2, 5), new DateTime(2019, 2, 9));
@@ -55,7 +55,7 @@ namespace QS.Test.Utilities
 		}
 
 		[Test(Description = "Проверяем расчет количества дней в исключенных пересекаемых диапазонов")]
-		public void GetIntervals_MultiExcludeIntersectedDaysTest()
+		public void GetTotalExcludedDays_MultiExcludeIntersectedDaysTest()
 		{
 			var mainRange = new DateRange(new DateTime(2019, 1, 1), new DateTime(2019, 5, 5));
 			var exclude = new DateRange(new DateTime(2019, 2, 5), new DateTime(2019, 2, 9));
@@ -70,7 +70,7 @@ namespace QS.Test.Utilities
 		}
 
 		[Test(Description = "Проверяем расчет количества дней в ситуации когда дипазоны косаются боками, между ними нет дней.")]
-		public void GetIntervals_ExcludeSideTouchDaysTest()
+		public void GetTotalExcludedDays_ExcludeSideTouchDaysTest()
 		{
 			var mainRange = new DateRange(new DateTime(2019, 1, 1), new DateTime(2019, 5, 5));
 			var exclude = new DateRange(new DateTime(2019, 2, 5), new DateTime(2019, 2, 9));
