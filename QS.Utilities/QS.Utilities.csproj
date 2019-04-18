@@ -39,11 +39,13 @@
     <Compile Include="Numeric\NumbersHelper.cs" />
     <Compile Include="Text\VersionHelper.cs" />
     <Compile Include="DateHelper.cs" />
+    <Compile Include="Dates\DateRange.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
     <Folder Include="Debug\" />
     <Folder Include="Numeric\" />
+    <Folder Include="Dates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
