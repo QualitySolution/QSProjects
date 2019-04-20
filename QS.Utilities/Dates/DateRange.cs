@@ -23,9 +23,9 @@ namespace QS.Utilities.Dates
 			get {
 				var start = Begin;
 				while(start <= End) {
-					var currentExclude = ExcludedRanges.Where(r => r.Begin <= start && r.End >= start).OrderBy(r => r.End).LastOrDefault();
-					if(currentExclude != null)
-						start = FindExcludeEnd(currentExclude).AddDays(1);
+					var endCurrentExclude = FindEndOfExclusion(start);
+					if(endCurrentExclude != null)
+						start = endCurrentExclude.Value.AddDays(1);
 					if (start > End)
 						yield break;
 
@@ -66,6 +66,15 @@ namespace QS.Utilities.Dates
 				return range.End;
 			else
 				return FindExcludeEnd(next);
+		}
+
+		public DateTime? FindEndOfExclusion(DateTime pointInExcludeRange)
+		{
+			var inExclude = ExcludedRanges.Where(r => r.Begin <= pointInExcludeRange && r.End >= pointInExcludeRange).OrderBy(r => r.End).LastOrDefault();
+			if(inExclude != null)
+				return FindExcludeEnd(inExclude);
+			else
+				return null;
 		}
 
 		public DateTime FillIntervals(int days)
