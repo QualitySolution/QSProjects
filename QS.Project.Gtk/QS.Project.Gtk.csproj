@@ -151,6 +151,8 @@
     <Compile Include="gtk-gui\QS.RepresentationModel.GtkUI.RepresentationEntry.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
     <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
+    <Compile Include="Tdi.Gtk\ITDIWidgetResolver.cs" />
+    <Compile Include="Tdi.Gtk\TDIWidgetResolverBasic.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

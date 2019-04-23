@@ -5,6 +5,13 @@ namespace QS.Tdi.Gtk
 {
 	public static class TDIMain
 	{
+		static TDIMain()
+		{
+			TDIWidgetResolver = new TDIWidgetBasicResolver();
+		}
+
+		public static ITDIWidgetResolver TDIWidgetResolver { get; set; }
+
 		public static TdiNotebook MainNotebook;
 
 		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)

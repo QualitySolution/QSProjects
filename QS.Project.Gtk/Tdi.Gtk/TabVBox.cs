@@ -5,6 +5,7 @@ namespace QS.Tdi.Gtk
 {
 	public class TabVBox : VBox
 	{
+		public Widget TabWidget { get; }
 		ITdiTab tab;
 		Label titleLabel;
 
@@ -30,9 +31,11 @@ namespace QS.Tdi.Gtk
 			}
 
 			this.PackStart (titleLabel, false, true, 2);
-			this.Add ((Widget)tab);
+
+			TabWidget = TDIMain.TDIWidgetResolver.Resolve(tabWidget);
+			this.Add (TabWidget);
 			titleLabel.Show ();
-			(tab as Widget).Show ();
+			TabWidget.Show ();
 		}
 
 		void OnPathUpdated (object sender, EventArgs e)

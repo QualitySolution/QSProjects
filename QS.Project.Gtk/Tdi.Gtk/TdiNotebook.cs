@@ -355,7 +355,7 @@ namespace QS.Tdi.Gtk
 				OnTabClosed(maybeSliderActiveDialog);
 			OnTabClosed(tab);
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
-			(tab as Widget).Destroy();
+			tabBox.TabWidget.Destroy();
 			tabBox.Destroy();
 		}
 

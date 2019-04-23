@@ -8,6 +8,8 @@ namespace QS.Tdi.Gtk
 	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+		private Widget journalWidget;
+		private Widget activeGlgWidget;
 		private ITdiJournal journal;
 		private ITdiDialog activeDialog;
 		private VBox boxSeparator;
@@ -79,13 +81,17 @@ namespace QS.Tdi.Gtk
 					if(journal != null) {
 						journal.TabNameChanged -= OnJournalTabNameChanged;
 						journal.CloseTab -= OnJournalClose;
-						this.Remove((Widget)journal);
+						if(journalWidget != null) {
+							this.Remove(journalWidget);
+							journalWidget.Destroy();
+						}
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
 					journal.CloseTab += OnJournalClose;
-					this.PackStart((Widget)Journal);
-					(Journal as Widget).Show();
+					journalWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+					this.PackStart(journalWidget);
+					journalWidget.Show();
 					journal.TabParent = this;
 				}
 			}
@@ -124,7 +130,8 @@ namespace QS.Tdi.Gtk
 						boxSeparator.PackEnd(separatorLower, true, true, 0);
 
 						dialogVBox = new VBox();
-						dialogVBox.PackStart((Widget)value);
+						activeGlgWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+						dialogVBox.PackStart(activeGlgWidget);
 						this.PackEnd(dialogVBox);
 						this.PackEnd(boxSeparator, false, true, 6);
 						value.TabParent = this;
@@ -133,7 +140,7 @@ namespace QS.Tdi.Gtk
 						buttonHide.Show();
 						boxSeparator.Show();
 						dialogVBox.Show();
-						(value as Widget).Show();
+						activeGlgWidget.Show();
 
 						(TabParent as TdiNotebook).OnSliderTabAdded(this, value);
 					}
@@ -156,12 +163,12 @@ namespace QS.Tdi.Gtk
 		}
 		public bool IsHideJournal {
 			get {
-				return Journal == null || !((Widget)Journal).Visible;
+				return Journal == null || !(journalWidget).Visible;
 			}
 			set {
 				if(Journal == null)
 					return;
-				((Widget)Journal).Visible = !value;
+				journalWidget.Visible = !value;
 				buttonHide.Label = IsHideJournal ? ">" : "<";
 			}
 		}
@@ -220,7 +227,7 @@ namespace QS.Tdi.Gtk
 				}
 			}
 			ActiveDialog = null;
-			(dlg as Widget).Destroy();
+			activeGlgWidget.Destroy();
 			OnSladerTabChanged();
 		}
 
@@ -331,9 +338,9 @@ namespace QS.Tdi.Gtk
 
 		public override void Destroy()
 		{
-			if(ActiveDialog != null)
-				(ActiveDialog as Widget).Destroy();
-			(Journal as Widget).Destroy();
+			if(activeGlgWidget != null)
+				activeGlgWidget.Destroy();
+			journalWidget.Destroy();
 			base.Destroy();
 		}
 
