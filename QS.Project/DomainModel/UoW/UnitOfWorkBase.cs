@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Event;
+using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
@@ -17,6 +18,8 @@ namespace QS.DomainModel.UoW
 
 		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
 		public static Action<object[]> NotifyObjectUpdated;
+
+		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
 		protected ITransaction transaction;
 
@@ -139,6 +142,8 @@ namespace QS.DomainModel.UoW
 			else
 				Session.Save(entity);
 
+			RaiseSessionScopeEntitySaved(new object[] { entity });
+
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
 		}
@@ -151,6 +156,8 @@ namespace QS.DomainModel.UoW
 				Session.SaveOrUpdate(entity);
 			else
 				Session.Save(entity);
+
+			RaiseSessionScopeEntitySaved(new object[] { entity });
 
 			if(!entityToSave.Contains(entity))
 				entityToSave.Add(entity);
@@ -182,6 +189,11 @@ namespace QS.DomainModel.UoW
 			} else if(!transaction.IsActive) {
 				transaction.Begin();
 			}
+		}
+
+		public void RaiseSessionScopeEntitySaved(object[] entity)
+		{
+			SessionScopeEntitySaved?.Invoke(this, new EntityUpdatedEventArgs(entity));
 		}
 
 		#region Обработка событий через IUnitOfWorkEventHandler

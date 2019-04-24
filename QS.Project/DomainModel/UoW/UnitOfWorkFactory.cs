@@ -61,6 +61,7 @@ namespace QS.DomainModel.UoW
 		{
 			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 			var uow = new UnitOfWorkChild<TChildRootEntity>(childRoot, parentUoW, title);
+			uow.SessionScopeEntitySaved += (sender, e) => { parentUoW.RaiseSessionScopeEntitySaved(e.UpdatedSubjects); };
 			return uow;
 		}
 
@@ -74,6 +75,7 @@ namespace QS.DomainModel.UoW
 		{
 			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 			var uow = new UnitOfWorkChild<TChildRootEntity>(new TChildRootEntity(), parentUoW, title);
+			uow.SessionScopeEntitySaved += (sender, e) => { parentUoW.RaiseSessionScopeEntitySaved(e.UpdatedSubjects); };
 			return uow;
 		}
 	}

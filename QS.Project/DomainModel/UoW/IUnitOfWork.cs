@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 
 namespace QS.DomainModel.UoW
@@ -63,5 +64,14 @@ namespace QS.DomainModel.UoW
 		void Commit();
 
 		void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject;
+
+		/// <summary>
+		/// Уведомляет о сохранении сущности в пределах текущей сессии.
+		/// Объект сохранен (новый, или уже существующий) но еще не закоммичен.
+		/// За пределами текущей сессии об изменениях этой сущности ничего не известно.
+		/// </summary>
+		event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
+
+		void RaiseSessionScopeEntitySaved(object[] entities);
 	}
 }

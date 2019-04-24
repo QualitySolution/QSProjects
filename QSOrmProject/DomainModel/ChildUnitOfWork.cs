@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
+using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
@@ -16,6 +17,8 @@ namespace QSOrmProject.DomainModel
 		private List<object> ObjectToSave = new List<object> ();
 		private List<object> ObjectToDelete = new List<object> ();
 		private TChildEntity externalRootVersion;
+
+		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
 		public object RootObject {
 			get { return Root; }
@@ -176,6 +179,11 @@ namespace QSOrmProject.DomainModel
 		public void Delete<TEntity> (TEntity entity) where TEntity : IDomainObject
 		{
 			ObjectToDelete.Add (entity);
+		}
+
+		public void RaiseSessionScopeEntitySaved(object[] entity)
+		{
+			SessionScopeEntitySaved?.Invoke(this, new EntityUpdatedEventArgs(entity));
 		}
 	}
 }
