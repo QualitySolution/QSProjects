@@ -52,13 +52,12 @@ namespace QS.DomainModel.UoW
 
 		public virtual void Commit()
 		{
-			if(transaction == null) {
+			if(transaction == null || !transaction.IsActive) {
 				logger.Warn("Попытка комита закрытой транзацкии.");
 				return;
 			}
 
 			try {
-
 				transaction.Commit();
 				//Записываем журналируемые изменения в новой транзакции, потому как события приходят уже после комита.
 				HibernateTracker?.SaveChangeSet((IUnitOfWork)this);
@@ -133,8 +132,7 @@ namespace QS.DomainModel.UoW
 
 		public virtual void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
 		{
-			if(transaction == null)
-				transaction = Session.BeginTransaction();
+			OpenTransaction();
 
 			if(orUpdate)
 				Session.SaveOrUpdate(entity);
@@ -147,8 +145,7 @@ namespace QS.DomainModel.UoW
 
 		public virtual void TrySave(object entity, bool orUpdate = true)
 		{
-			if(transaction == null)
-				transaction = Session.BeginTransaction();
+			OpenTransaction();
 
 			if(orUpdate)
 				Session.SaveOrUpdate(entity);
@@ -166,18 +163,25 @@ namespace QS.DomainModel.UoW
 
 		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
 		{
-			if(transaction == null)
-				transaction = Session.BeginTransaction();
+			OpenTransaction();
 
 			Session.Delete(entity);
 		}
 
 		public void TryDelete(object entity)
 		{
-			if(transaction == null)
-				transaction = Session.BeginTransaction();
+			OpenTransaction();
 
 			Session.Delete(entity);
+		}
+
+		private void OpenTransaction()
+		{
+			if(transaction == null) {
+				transaction = Session.BeginTransaction();
+			} else if(!transaction.IsActive) {
+				transaction.Begin();
+			}
 		}
 
 		#region Обработка событий через IUnitOfWorkEventHandler
