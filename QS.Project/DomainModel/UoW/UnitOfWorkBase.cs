@@ -12,7 +12,7 @@ using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
-	public abstract class UnitOfWorkBase : IUnitOfWorkEventHandler
+	public abstract class UnitOfWorkBase : IUnitOfWorkTracked
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -43,7 +43,7 @@ namespace QS.DomainModel.UoW
 			get {
 				if(session == null) {
 					session = OrmConfig.OpenSession(null);
-					NhEventListener.RegisterUow(this);
+					UowWatcher.RegisterUow(this);
 					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}
 
@@ -88,7 +88,7 @@ namespace QS.DomainModel.UoW
 				transaction = null;
 			}
 			Session.Dispose();
-			NhEventListener.UnregisterUow(this);
+			UowWatcher.UnregisterUow(this);
 		}
 
 
@@ -198,19 +198,19 @@ namespace QS.DomainModel.UoW
 
 		#region Обработка событий через IUnitOfWorkEventHandler
 
-		void IUnitOfWorkEventHandler.OnPostLoad(PostLoadEvent loadEvent)
+		void IUnitOfWorkTracked.OnPostLoad(PostLoadEvent loadEvent)
 		{
 
 		}
 
-		void IUnitOfWorkEventHandler.OnPreLoad(PreLoadEvent loadEvent)
+		void IUnitOfWorkTracked.OnPreLoad(PreLoadEvent loadEvent)
 		{
 			if(loadEvent.Entity is IBusinessObject) {
 				(loadEvent.Entity as IBusinessObject).UoW = (IUnitOfWork)this;
 			}
 		}
 
-		void IUnitOfWorkEventHandler.OnPostDelete(PostDeleteEvent deleteEvent)
+		void IUnitOfWorkTracked.OnPostDelete(PostDeleteEvent deleteEvent)
 		{
 
 		}

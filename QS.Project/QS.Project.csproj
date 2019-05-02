@@ -91,7 +91,6 @@
     <Compile Include="DomainModel\UoW\IUnitOfWorkGeneric.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWork.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkBase.cs" />
-    <Compile Include="DomainModel\UoW\IUnitOfWorkEventHandler.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkTitle.cs" />
     <Compile Include="DomainModel\Tracking\IHibernateTracker.cs" />
     <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
@@ -163,6 +162,9 @@
     <Compile Include="Tools\StaticTools.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="DomainModel\Config\OrmObjectUpdatedEventArgs.cs" />
+    <Compile Include="DomainModel\Tracking\UowWatcher.cs" />
+    <Compile Include="DomainModel\Tracking\UowLink.cs" />
+    <Compile Include="DomainModel\Tracking\IUnitOfWorkTracked.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

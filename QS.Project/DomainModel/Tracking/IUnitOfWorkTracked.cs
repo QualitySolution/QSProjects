@@ -1,12 +1,10 @@
-﻿using System;
-using NHibernate;
+﻿using NHibernate;
 using NHibernate.Event;
-using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 
-namespace QS.DomainModel
+namespace QS.DomainModel.Tracking
 {
-    internal interface IUnitOfWorkEventHandler
+	public interface IUnitOfWorkTracked
     {
         ISession Session { get; }
         UnitOfWorkTitle ActionTitle { get; }
