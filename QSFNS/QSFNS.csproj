@@ -47,7 +47,7 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.6.2\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
