@@ -12,7 +12,6 @@ namespace QS.DomainModel.Tracking
 		IHibernateTracker HibernateTracker { get; }
 
 		void OnPostLoad(PostLoadEvent loadEvent);
-		void OnPreLoad(PreLoadEvent loadEvent);
 		void OnPostDelete(PostDeleteEvent deleteEvent);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate.Event;
@@ -7,11 +8,47 @@ namespace QS.DomainModel.Tracking
 {
 	public class NhEventListener: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener, IPostInsertEventListener
 	{
-#region Статическое
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		#region PreLoad
 
-#endregion
+		private static readonly HashSet<IUowPreLoadEventListener> PreLoadListeners = new HashSet<IUowPreLoadEventListener>();
+
+		public static bool RegisterPreLoadListener(IUowPreLoadEventListener listener)
+		{
+			lock(PreLoadListeners)
+			{
+				return PreLoadListeners.Add(listener);
+			}
+		}
+
+		public static bool UnregisterPreLoadListener(IUowPreLoadEventListener listener)
+		{
+			lock (PreLoadListeners)
+			{
+				return PreLoadListeners.Remove(listener);
+			}
+		}
+
+		public void OnPreLoad(PreLoadEvent @event)
+		{
+			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
+			if (uow == null)
+			{
+				logger.Warn("Пришло событие PreLoadEvent но соответствующий сессии UnitOfWork не найден.");
+				return;
+			}
+
+			lock (PreLoadListeners)
+			{
+				foreach (var listner in PreLoadListeners)
+				{
+					listner.OnPreLoad(uow, @event);
+				}
+			}
+		}
+
+		#endregion
 
 		public NhEventListener()
 		{
@@ -27,15 +64,6 @@ namespace QS.DomainModel.Tracking
 				logger.Warn("Пришло событие PostLoadEvent но соответствующий сессии UnitOfWork не найден.");
 		}
 
-		public void OnPreLoad(PreLoadEvent @event)
-		{
-			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
-
-			if (uow != null)
-				uow.OnPreLoad(@event);
-			else
-				logger.Warn("Пришло событие PreLoadEvent но соответствующий сессии UnitOfWork не найден.");
-		}
 
 		public void OnPostDelete(PostDeleteEvent @event)
 		{

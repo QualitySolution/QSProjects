@@ -16,6 +16,11 @@ namespace QS.DomainModel.UoW
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		static UnitOfWorkBase()
+		{
+			BusinessObjectPreparer.Init();
+		}
+
 		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
 		public static Action<object[]> NotifyObjectUpdated;
 
@@ -90,7 +95,6 @@ namespace QS.DomainModel.UoW
 			Session.Dispose();
 			UowWatcher.UnregisterUow(this);
 		}
-
 
 		public void Dispose()
 		{
@@ -201,13 +205,6 @@ namespace QS.DomainModel.UoW
 		void IUnitOfWorkTracked.OnPostLoad(PostLoadEvent loadEvent)
 		{
 
-		}
-
-		void IUnitOfWorkTracked.OnPreLoad(PreLoadEvent loadEvent)
-		{
-			if(loadEvent.Entity is IBusinessObject) {
-				(loadEvent.Entity as IBusinessObject).UoW = (IUnitOfWork)this;
-			}
 		}
 
 		void IUnitOfWorkTracked.OnPostDelete(PostDeleteEvent deleteEvent)

@@ -165,6 +165,8 @@
     <Compile Include="DomainModel\Tracking\UowWatcher.cs" />
     <Compile Include="DomainModel\Tracking\UowLink.cs" />
     <Compile Include="DomainModel\Tracking\IUnitOfWorkTracked.cs" />
+    <Compile Include="DomainModel\Entity\BusinessObjectPreparer.cs" />
+    <Compile Include="DomainModel\Tracking\IUowEventListeners.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
