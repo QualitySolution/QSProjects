@@ -45,7 +45,7 @@ namespace QS.Project.DB
 				}
 			});
 
-			var trackerListener = new NhEventListener();
+			var trackerListener = new GlobalUowEventsTracker();
 			fluenConfig.ExposeConfiguration(cfg => {
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });

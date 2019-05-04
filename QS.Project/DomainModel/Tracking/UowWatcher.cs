@@ -12,6 +12,8 @@ namespace QS.DomainModel.Tracking
 
 		internal static readonly Dictionary<int, UowLink> RegisteredUoWs = new Dictionary<int, UowLink>();
 
+		public static event EventHandler<UowRegistereEventArgs> UowRegistered;
+
 		internal static void RegisterUow(IUnitOfWorkTracked uow)
 		{
 			RemoveLost();
@@ -19,8 +21,8 @@ namespace QS.DomainModel.Tracking
 			{
 				var uowLink = new UowLink(uow);
 				RegisteredUoWs.Add(uow.Session.GetHashCode(), uowLink);
-
 				logger.Debug($"Зарегистрирован новый UnitOfWork. {ActiveUowCountText()}. Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})");
+				UowRegistered?.Invoke(null, new UowRegistereEventArgs(uow));
 			}
 		}
 
@@ -77,6 +79,17 @@ namespace QS.DomainModel.Tracking
 
 				nextCheck = DateTime.Now.AddSeconds(5);
 			}
+		}
+	}
+
+	[System.Serializable]
+	public sealed class UowRegistereEventArgs : EventArgs
+	{
+		public IUnitOfWorkTracked UoW { get; private set; }
+
+		public UowRegistereEventArgs(IUnitOfWorkTracked uow)
+		{
+			UoW = uow;
 		}
 	}
 }

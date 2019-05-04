@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Event;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
@@ -30,7 +29,7 @@ namespace QS.DomainModel.UoW
 
 		protected ISession session;
 
-		public IHibernateTracker HibernateTracker { get; private set; }
+		public SingleUowEventsTracker EventsTracker { get; } = new SingleUowEventsTracker();
 
 		protected List<object> entityToSave = new List<object>();
 
@@ -49,7 +48,6 @@ namespace QS.DomainModel.UoW
 				if(session == null) {
 					session = OrmConfig.OpenSession(null);
 					UowWatcher.RegisterUow(this);
-					HibernateTracker = TrackerMain.Factory?.CreateHibernateTracker();
 				}
 
 				return session;
@@ -67,10 +65,10 @@ namespace QS.DomainModel.UoW
 
 			try {
 				transaction.Commit();
-				//Записываем журналируемые изменения в новой транзакции, потому как события приходят уже после комита.
-				HibernateTracker?.SaveChangeSet((IUnitOfWork)this);
 
 				IsNew = false;
+				GlobalUowEventsTracker.OnPostCommit(this);
+
 				NotifyObjectUpdated?.Invoke(entityToSave.ToArray());
 			} catch(Exception ex) {
 				logger.Error(ex, "Исключение в момент комита.");
@@ -199,20 +197,6 @@ namespace QS.DomainModel.UoW
 		{
 			SessionScopeEntitySaved?.Invoke(this, new EntityUpdatedEventArgs(entity));
 		}
-
-		#region Обработка событий через IUnitOfWorkEventHandler
-
-		void IUnitOfWorkTracked.OnPostLoad(PostLoadEvent loadEvent)
-		{
-
-		}
-
-		void IUnitOfWorkTracked.OnPostDelete(PostDeleteEvent deleteEvent)
-		{
-
-		}
-
-		#endregion
 	}
 }
 

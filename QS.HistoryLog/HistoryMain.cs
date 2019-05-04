@@ -13,7 +13,7 @@ namespace QS.HistoryLog
 
 		public static void Enable()
 		{
-			TrackerMain.Factory = new TrackerFactory();
+			SingleUowEventsTracker.RegisterSingleUowListnerFactory(new TrackerFactory());
 		}
 
 		public static IEnumerable<HistoryObjectDesc> TraceClasses {

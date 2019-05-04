@@ -92,11 +92,9 @@
     <Compile Include="DomainModel\UoW\UnitOfWork.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkBase.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkTitle.cs" />
-    <Compile Include="DomainModel\Tracking\IHibernateTracker.cs" />
-    <Compile Include="DomainModel\Tracking\ITrackerFactory.cs" />
-    <Compile Include="DomainModel\Tracking\TrackerMain.cs" />
+    <Compile Include="DomainModel\Tracking\ISingleUowEventsListnerFactory.cs" />
     <Compile Include="DomainModel\Entity\IBusinessObject.cs" />
-    <Compile Include="DomainModel\Tracking\NhEventListener.cs" />
+    <Compile Include="DomainModel\Tracking\GlobalUowEventsTracker.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkWithoutRoot.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
     <Compile Include="Project.DB\Connection.cs" />
@@ -167,6 +165,7 @@
     <Compile Include="DomainModel\Tracking\IUnitOfWorkTracked.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectPreparer.cs" />
     <Compile Include="DomainModel\Tracking\IUowEventListeners.cs" />
+    <Compile Include="DomainModel\Tracking\SingleUowEventsTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NHibernate.Event;
@@ -12,7 +13,7 @@ using QS.Utilities;
 
 namespace QS.HistoryLog
 {
-	public class HibernateTracker : IHibernateTracker
+	public class HibernateTracker : ISingleUowEventListener, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostDeleteEventListener, IUowPostCommitEventListener
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -22,12 +23,12 @@ namespace QS.HistoryLog
 		{
 		}
 
-		public void OnPostDelete(PostDeleteEvent deleteEvent)
+		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
 		{
 			var entity = deleteEvent.Entity as IDomainObject;
 
 			var type = NHibernateProxyHelper.GuessClass(entity);
-			if(!TrackerMain.Factory?.NeedTrace(type) ?? false)
+			if(!NeedTrace(type))
 				return;
 
 			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
@@ -37,11 +38,11 @@ namespace QS.HistoryLog
 			changes.Add(hce);
 		}
 
-		public void OnPostInsert(PostInsertEvent insertEvent)
+		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
 			var entity = insertEvent.Entity as IDomainObject;
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
-			if(entity == null || !TrackerMain.NeedTrace(entity))
+			if(entity == null || !NeedTrace(entity))
 				return;
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
@@ -58,11 +59,11 @@ namespace QS.HistoryLog
 			}
 		}
 
-		public void OnPostUpdate(PostUpdateEvent updateEvent)
+		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent)
 		{
 			var entity = updateEvent.Entity as IDomainObject;
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
-			if(entity == null || !TrackerMain.NeedTrace(entity))
+			if(entity == null || !NeedTrace(entity))
 				return;
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
@@ -83,6 +84,11 @@ namespace QS.HistoryLog
 		public void Reset()
 		{
 			changes.Clear();
+		}
+
+		public void OnPostCommit(IUnitOfWorkTracked uow)
+		{
+			SaveChangeSet((IUnitOfWork)uow);
 		}
 
 		/// <summary>
@@ -110,5 +116,23 @@ namespace QS.HistoryLog
 				Reset();
 			}
 		}
+
+		#region Проверка нужно ли записывать изменения
+
+		public static bool NeedTrace(IDomainObject entity)
+		{
+			var type = NHibernateProxyHelper.GuessClass(entity);
+			return NeedTrace(type);
+		}
+
+		public static bool NeedTrace(Type entityClass)
+		{
+			if (entityClass.GetInterface(typeof(NHibernate.Proxy.DynamicProxy.IProxy).FullName) != null || entityClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
+				entityClass = entityClass.BaseType;
+
+			return entityClass.GetCustomAttributes(typeof(HistoryTraceAttribute), true).Length > 0;
+		}
+
+		#endregion
 	}
 }

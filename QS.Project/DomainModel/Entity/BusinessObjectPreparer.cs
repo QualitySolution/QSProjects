@@ -15,7 +15,7 @@ namespace QS.DomainModel.Entity
 				return;
 			//Подписываемся на события глобально
 			instance = new BusinessObjectPreparer();
-			NhEventListener.RegisterPreLoadListener(instance);
+			GlobalUowEventsTracker.RegisterGlobalListener(instance);
 		}
 
 		private BusinessObjectPreparer() 

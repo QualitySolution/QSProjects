@@ -9,9 +9,6 @@ namespace QS.DomainModel.Tracking
         ISession Session { get; }
         UnitOfWorkTitle ActionTitle { get; }
 
-		IHibernateTracker HibernateTracker { get; }
-
-		void OnPostLoad(PostLoadEvent loadEvent);
-		void OnPostDelete(PostDeleteEvent deleteEvent);
+		SingleUowEventsTracker EventsTracker { get; }
 	}
 }
