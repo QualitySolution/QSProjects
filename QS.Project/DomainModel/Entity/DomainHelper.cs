@@ -44,6 +44,11 @@ namespace QS.DomainModel.Entity
 			return value != null ? (int?)GetId(value) : null;
 		}
 
+		public static bool IsSame(this IDomainObject entity1, IDomainObject entity2)
+		{
+			return EqualDomainObjects(entity1, entity2);
+		}
+
 		public static bool EqualDomainObjects (object obj1, object obj2)
 		{
 			if (obj1 == null || obj2 == null)
