@@ -24,6 +24,7 @@ namespace QS.DomainModel.NotifyChange
 		internal Type[] EntityTypes { get; private set; }
 
 		#region Конструкторы
+
 		internal SubscriberWeakLink(Type entityClass, SingleEntityChangeEventMethod handler)
 		{
 			targetReference = new WeakReference(handler.Target);
@@ -35,10 +36,21 @@ namespace QS.DomainModel.NotifyChange
 
 		internal SubscriberWeakLink(Type[] entityClasses, ManyEntityChangeEventMethod handler)
 		{
+			ParseHandler(handler);
+			EntityTypes = entityClasses;
+		}
+
+		internal SubscriberWeakLink(ManyEntityChangeEventMethod handler)
+		{
+			ParseHandler(handler);
+			EntityTypes = new Type[] { };
+		}
+
+		private void ParseHandler(ManyEntityChangeEventMethod handler)
+		{
 			targetReference = new WeakReference(handler.Target);
 			method = handler.Method;
 			mode = NotifyMode.Many;
-			EntityTypes = entityClasses;
 		}
 
 		#endregion
@@ -70,6 +82,8 @@ namespace QS.DomainModel.NotifyChange
 
 		internal bool IsSuitable(EntityChangeEvent changeEvent)
 		{
+			if (EntityTypes.Length == 0)
+				return true;
 			return EntityTypes.Contains(changeEvent.EntityClass);
 		}
 

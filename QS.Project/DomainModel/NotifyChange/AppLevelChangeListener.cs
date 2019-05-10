@@ -58,6 +58,18 @@ namespace QS.DomainModel.NotifyChange
 
 		#region Подписки
 
+		/// <summary>
+		/// Подписываемся на события изменения любых объектов.
+		/// </summary>
+		public void WatchManyAll(ManyEntityChangeEventMethod subscriber)
+		{
+			lock (ManyEventSubscribers)
+			{
+				ManyEventSubscribers.Add(new SubscriberWeakLink(subscriber));
+				logger.Debug($"Добавлена Many-подписка на все изменения. Всего {ManyEventSubscribers.Count}");
+			}
+		}
+
 		public void WatchMany<TEntity>(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
