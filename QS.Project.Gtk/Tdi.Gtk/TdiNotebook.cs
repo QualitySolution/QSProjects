@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Gtk;
 using NLog;
+using QS.Dialog.GtkUI;
+using QS.Utilities.Gtk;
 
 namespace QS.Tdi.Gtk
 {
@@ -354,6 +356,9 @@ namespace QS.Tdi.Gtk
 			if(maybeSliderActiveDialog != null)
 				OnTabClosed(maybeSliderActiveDialog);
 			OnTabClosed(tab);
+			GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
+				.OfType<IMustBeDestroyed>().ToList()
+				.ForEach(w => w.Destroy());
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			tabBox.TabWidget.Destroy();
 			tabBox.Destroy();

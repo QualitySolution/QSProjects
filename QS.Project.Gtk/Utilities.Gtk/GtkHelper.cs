@@ -9,7 +9,6 @@ namespace QS.Utilities.Gtk
 		{
 			foreach(var child in parent.Children)
 			{
-				yield return child;
 				var container = child as Container;
 				if(container != null)
 				{
@@ -18,6 +17,7 @@ namespace QS.Utilities.Gtk
 						yield return childOfChild;
 					}
 				}
+				yield return child;
 			}
 		}
 	}
