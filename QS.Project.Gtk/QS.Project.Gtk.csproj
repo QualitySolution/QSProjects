@@ -148,13 +148,13 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledEditButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledDeleteButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
-    <Compile Include="RepresentationModel.GtkUI\RepresentationEntry.cs" />
-    <Compile Include="gtk-gui\QS.RepresentationModel.GtkUI.RepresentationEntry.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
     <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
     <Compile Include="Tdi.Gtk\ITDIWidgetResolver.cs" />
     <Compile Include="Tdi.Gtk\TDIWidgetResolverBasic.cs" />
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
+    <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

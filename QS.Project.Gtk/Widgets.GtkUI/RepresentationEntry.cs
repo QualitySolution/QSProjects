@@ -12,10 +12,11 @@ using System.Linq;
 using QS.DomainModel.Config;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using QS.RepresentationModel.GtkUI;
 
-namespace QS.RepresentationModel.GtkUI
+namespace QS.Widgets.GtkUI
 {
-	[System.ComponentModel.ToolboxItem(true)]
+	[ToolboxItem(true)]
 	[Category("QS.Project")]
 	public partial class RepresentationEntry : WidgetOnDialogBase
 	{
@@ -30,10 +31,6 @@ namespace QS.RepresentationModel.GtkUI
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
-
-		//TODO Реализовать удаление
-		//TODO Реализовать удобный выбор через подбор
-
 
 		public BindingControler<RepresentationEntry> Binding { get; private set; }
 

@@ -1479,7 +1479,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.RepresentationModel.GtkUI.RepresentationEntry" design-size="300 31">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.RepresentationEntry" design-size="300 31">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
