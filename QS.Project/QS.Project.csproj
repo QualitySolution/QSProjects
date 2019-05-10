@@ -160,12 +160,18 @@
     <Compile Include="Tools\StaticTools.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="DomainModel\Config\OrmObjectUpdatedEventArgs.cs" />
+    <Compile Include="DomainModel\NotifyChange\AppLevelChangeListener.cs" />
+    <Compile Include="DomainModel\NotifyChange\IEntityChangeWatcher.cs" />
     <Compile Include="DomainModel\Tracking\UowWatcher.cs" />
     <Compile Include="DomainModel\Tracking\UowLink.cs" />
     <Compile Include="DomainModel\Tracking\IUnitOfWorkTracked.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectPreparer.cs" />
     <Compile Include="DomainModel\Tracking\IUowEventListeners.cs" />
     <Compile Include="DomainModel\Tracking\SingleUowEventsTracker.cs" />
+    <Compile Include="DomainModel\NotifyChange\NotifyEntitiesChange.cs" />
+    <Compile Include="DomainModel\NotifyChange\EntityChangeEvent.cs" />
+    <Compile Include="DomainModel\NotifyChange\ListnerWeakLink.cs" />
+    <Compile Include="DomainModel\NotifyChange\UowTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -186,6 +192,7 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
     <Folder Include="Tools\" />
+    <Folder Include="DomainModel\NotifyChange\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

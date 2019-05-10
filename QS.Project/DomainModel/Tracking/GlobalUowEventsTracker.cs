@@ -50,6 +50,11 @@ namespace QS.DomainModel.Tracking
 				{
 					PostDeleteListeners.Add(listener as IUowPostDeleteEventListener);
 				}
+
+			if (listener is IUowPostCommitEventListener)
+				lock(PostCommitListeners) {
+					PostCommitListeners.Add(listener as IUowPostCommitEventListener);
+				}
 		}
 
 		public static void UnregisterGlobalListener(object listener)
@@ -82,6 +87,11 @@ namespace QS.DomainModel.Tracking
 				lock (PostDeleteListeners)
 				{
 					PostDeleteListeners.Remove(listener as IUowPostDeleteEventListener);
+				}
+
+			if(listener is IUowPostCommitEventListener)
+				lock(PostCommitListeners) {
+					PostCommitListeners.Remove(listener as IUowPostCommitEventListener);
 				}
 		}
 
