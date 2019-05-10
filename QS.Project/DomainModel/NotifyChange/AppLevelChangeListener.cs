@@ -109,6 +109,27 @@ namespace QS.DomainModel.NotifyChange
 			return new UowTracker(ManyEventSubscribers);
 		}
 
+		#region Отписка
+
+		public void UnsubscribeAll(object owner)
+		{
+			var singleCount = SingleEventSubscribers.RemoveAll(s => s.Owner == owner);
+			var manyCount = ManyEventSubscribers.RemoveAll(s => s.Owner == owner);
+			logger.Debug($"{owner} отписался от уведомлениий Single={singleCount} Many={manyCount}");
+		}
+
+		public void Unsubscribe(SingleEntityChangeEventMethod subscriber)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Unsubscribe(ManyEntityChangeEventMethod subscriber)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
 		#region Внутриннее
 
 		#endregion

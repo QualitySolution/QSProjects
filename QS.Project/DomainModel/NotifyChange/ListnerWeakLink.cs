@@ -19,6 +19,8 @@ namespace QS.DomainModel.NotifyChange
 		MethodInfo method;
 		NotifyMode mode;
 
+		internal object Owner => targetReference.Target;
+
 		internal Type[] EntityTypes { get; private set; }
 
 		internal SubscriberWeakLink(Type entityClass, SingleEntityChangeEventMethod handler)
