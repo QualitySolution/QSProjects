@@ -20,9 +20,6 @@ namespace QS.DomainModel.UoW
 			BusinessObjectPreparer.Init();
 		}
 
-		//FIXME Временно пока это не будет реализовано напрямую в QS.Project
-		public static Action<object[]> NotifyObjectUpdated;
-
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
 		protected ITransaction transaction;
@@ -30,8 +27,6 @@ namespace QS.DomainModel.UoW
 		protected ISession session;
 
 		public SingleUowEventsTracker EventsTracker { get; } = new SingleUowEventsTracker();
-
-		protected List<object> entityToSave = new List<object>();
 
 		public bool IsNew { get; protected set; }
 
@@ -69,7 +64,6 @@ namespace QS.DomainModel.UoW
 				IsNew = false;
 				GlobalUowEventsTracker.OnPostCommit(this);
 
-				NotifyObjectUpdated?.Invoke(entityToSave.ToArray());
 			} catch(Exception ex) {
 				logger.Error(ex, "Исключение в момент комита.");
 				if(transaction.IsActive)
@@ -77,7 +71,6 @@ namespace QS.DomainModel.UoW
 				throw;
 			} finally {
 				transaction.Dispose();
-				entityToSave.Clear();
 				transaction = null;
 			}
 		}
@@ -145,9 +138,6 @@ namespace QS.DomainModel.UoW
 				Session.Save(entity);
 
 			RaiseSessionScopeEntitySaved(new object[] { entity });
-
-			if(!entityToSave.Contains(entity))
-				entityToSave.Add(entity);
 		}
 
 		public virtual void TrySave(object entity, bool orUpdate = true)
@@ -160,9 +150,6 @@ namespace QS.DomainModel.UoW
 				Session.Save(entity);
 
 			RaiseSessionScopeEntitySaved(new object[] { entity });
-
-			if(!entityToSave.Contains(entity))
-				entityToSave.Add(entity);
 		}
 
 		public void Delete<T>(int id) where T : IDomainObject
@@ -173,14 +160,12 @@ namespace QS.DomainModel.UoW
 		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
 		{
 			OpenTransaction();
-
 			Session.Delete(entity);
 		}
 
 		public void TryDelete(object entity)
 		{
 			OpenTransaction();
-
 			Session.Delete(entity);
 		}
 

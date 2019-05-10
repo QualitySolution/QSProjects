@@ -149,10 +149,8 @@ namespace QSOrmProject.DomainModel
 					ObjectCloner.FieldsCopy (Root, ref externalRootVersion);
 				ObjectToSave.Add (externalRootVersion);
 				Commit ();
-				OrmMain.DelayedNotifyObjectUpdated (ParentUoW.RootObject, entity);
 			} else {
 				ObjectToSave.Add (entity);
-				OrmMain.DelayedNotifyObjectUpdated (RootObject, entity);
 			}
 		}
 

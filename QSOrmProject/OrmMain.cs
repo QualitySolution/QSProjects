@@ -5,6 +5,7 @@ using NHibernate.Proxy;
 using NLog;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Tdi;
 using QSOrmProject.DomainMapping;
@@ -16,8 +17,6 @@ namespace QSOrmProject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public static List<IOrmObjectMapping> ClassMappingList = new List<IOrmObjectMapping>();
-		private static List<DelayedNotifyLink> delayedNotifies = new List<DelayedNotifyLink>();
-		private static DateTime lastCleaning;
 		public static int Count = 0;
 
 		#region Классы сущностей
@@ -74,42 +73,17 @@ namespace QSOrmProject
 		/// Объекты в списке могут быть разных типов, метод разделит списки уведомлений, по типам объектов.
 		/// </summary>
 		/// <param name="subject">Subject.</param>
-		public static void NotifyObjectUpdated(params object[] updatedSubjects)
+		public static void NotifyObjectUpdated(EntityChangeEvent[] updatedSubjects)
 		{
 			if (ClassMappingList == null)
 				return;
-			// Чистим список от удаленных объектов.
-			if (DateTime.Now.Subtract(lastCleaning).TotalSeconds > 1) {
-				delayedNotifies.RemoveAll(d => d.ParentObject == null || d.ChangedObject == null);
-				lastCleaning = DateTime.Now;
-			}
 
-			foreach (Type subjectType in updatedSubjects.Select(s => NHibernateProxyHelper.GuessClass(s)).Distinct()) {
-				IOrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == subjectType);
+			foreach (var entityClassGroup in updatedSubjects.GroupBy(s => s.EntityClass)) {
+				IOrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == entityClassGroup.Key);
 				if (map != null)
-					map.RaiseObjectUpdated(updatedSubjects.Where(s => NHibernateProxyHelper.GuessClass(s) == subjectType).ToArray());
+					map.RaiseObjectUpdated(entityClassGroup.Select(x => x.Entity).ToArray());
 				else
-					logger.Warn("В ClassMapingList класс {0} объекта не найден. Поэтому событие обновления не вызвано.", subjectType);
-
-				// Отсылаем уведомления дочерним объектам если они есть.
-				foreach (DelayedNotifyLink link in delayedNotifies.FindAll(l => OrmMain.Equals(l.ParentObject, updatedSubjects[0]))) {
-					NotifyObjectUpdated(link.ChangedObject);
-					delayedNotifies.Remove(link);
-				}
-
-			}
-		}
-
-		/// <summary>
-		/// Просим отложенно уведомить подписчиков об изменении дочернего объекта,
-		/// при наступлении события обновления родителя.
-		/// </summary>
-		/// <param name="withObject">Уведомление сработает в момент обновления этого объекта.</param>
-		/// <param name="subject">Subject.</param>
-		public static void DelayedNotifyObjectUpdated(object withObject, object subject)
-		{
-			if (!delayedNotifies.Exists(d => d.ChangedObject == subject && d.ParentObject == withObject)) {
-				delayedNotifies.Add(new DelayedNotifyLink(withObject, subject));
+					logger.Warn("В ClassMapingList класс {0} объекта не найден. Поэтому событие обновления не вызвано.", entityClassGroup.Key);
 			}
 		}
 
@@ -270,29 +244,10 @@ namespace QSOrmProject
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
 
-			QS.DomainModel.UoW.UnitOfWorkBase.NotifyObjectUpdated = NotifyObjectUpdated;
+			QS.DomainModel.NotifyChange.NotifyEntitiesChange.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должне отдельно включать.
+			QS.DomainModel.NotifyChange.NotifyEntitiesChange.Instance.WatchManyAll(NotifyObjectUpdated);
+
 			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
-		}
-	}
-
-	internal class DelayedNotifyLink
-	{
-		private WeakReference parentObject;
-
-		public object ParentObject {
-			get { return parentObject.Target; }
-		}
-
-		private WeakReference changedObject;
-
-		public object ChangedObject {
-			get { return changedObject.Target; }
-		}
-
-		public DelayedNotifyLink(object parentObject, object changedObject)
-		{
-			this.parentObject = new WeakReference(parentObject);
-			this.changedObject = new WeakReference(changedObject);
 		}
 	}
 }
