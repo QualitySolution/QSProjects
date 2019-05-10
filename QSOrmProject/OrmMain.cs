@@ -244,8 +244,8 @@ namespace QSOrmProject
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
 
-			QS.DomainModel.NotifyChange.NotifyEntitiesChange.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должне отдельно включать.
-			QS.DomainModel.NotifyChange.NotifyEntitiesChange.Instance.WatchManyAll(NotifyObjectUpdated);
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должне отдельно включать.
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.WatchManyAll(NotifyObjectUpdated);
 
 			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
 		}

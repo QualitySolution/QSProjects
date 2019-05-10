@@ -3,11 +3,11 @@ using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
 {
-	public static class NotifyEntitiesChange
+	public static class NotifyConfiguration
 	{
 		public static IEntityChangeWatcher Instance { get; private set; }
 
-		static NotifyEntitiesChange()
+		static NotifyConfiguration()
 		{
 
 		}
