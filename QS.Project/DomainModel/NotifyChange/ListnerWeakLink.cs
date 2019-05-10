@@ -23,6 +23,7 @@ namespace QS.DomainModel.NotifyChange
 
 		internal Type[] EntityTypes { get; private set; }
 
+		#region Конструкторы
 		internal SubscriberWeakLink(Type entityClass, SingleEntityChangeEventMethod handler)
 		{
 			targetReference = new WeakReference(handler.Target);
@@ -40,7 +41,10 @@ namespace QS.DomainModel.NotifyChange
 			EntityTypes = entityClasses;
 		}
 
-		internal bool IsAlive => targetReference != null && targetReference.IsAlive;
+		#endregion
+
+		//Подписчики являющиеся статическими методами всегда жывы.
+		internal bool IsAlive => method.IsStatic || (targetReference != null && targetReference.IsAlive);
 
 		internal bool Invoke(EntityChangeEvent[] changeEvents)
 		{
@@ -49,9 +53,7 @@ namespace QS.DomainModel.NotifyChange
 			if (mode != NotifyMode.Many)
 				throw new InvalidOperationException("Переданный метод должен реализовать режим Many");
 
-			if (targetReference.Target != null)
-				method.Invoke(targetReference.Target, new object[] {changeEvents });
-
+			method.Invoke(targetReference.Target, new object[] {changeEvents });
 			return true;
 		}
 
@@ -62,9 +64,7 @@ namespace QS.DomainModel.NotifyChange
 			if (mode != NotifyMode.Single)
 				throw new InvalidOperationException("Переданный метод должен реализовать режим Single");
 
-			if (targetReference.Target != null)
-				method.Invoke(targetReference.Target, new object[] { changeEvent });
-
+			method.Invoke(targetReference.Target, new object[] { changeEvent });
 			return true;
 		}
 
