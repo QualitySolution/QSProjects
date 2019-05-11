@@ -117,26 +117,20 @@ namespace QS.Widgets.GtkUI
 		protected Type SubjectType {
 			get { return subjectType; }
 			set {
-				if(subjectType != null) {
-					IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
-					entityConfig.EntityUpdated -= OnExternalObjectUpdated;
-				}
+				DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 				subjectType = value;
 				if(subjectType != null) {
-					IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
-					entityConfig.EntityUpdated += OnExternalObjectUpdated;
+					DomainModel.NotifyChange.NotifyConfiguration.Instance.WatchMany(ExternalEntityChangeEventMethod, subjectType);
 				}
 			}
 		}
 
-		private void OnExternalObjectUpdated(object sender, EntityUpdatedEventArgs e)
+		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
 		{
-			object foundUpdatedObject = e.UpdatedSubjects.FirstOrDefault(s => DomainHelper.EqualDomainObjects(s, Subject));
+			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, Subject));
 			if(foundUpdatedObject != null) {
-				var dlg = DialogHelper.FindParentUowDialog(this);
-
-				if(dlg != null && !dlg.UoW.Session.Contains(foundUpdatedObject))
-					dlg.UoW.Session.Refresh(Subject);
+				if(MyEntityDialogExist && !MyEntityDialog.UoW.Session.Contains(foundUpdatedObject))
+					MyEntityDialog.UoW.Session.Refresh(Subject);
 
 				UpdateWidget();
 				OnChanged();
@@ -344,10 +338,7 @@ namespace QS.Widgets.GtkUI
 		{
 			logger.Debug("EntryReferenceVM Destroyed() called.");
 			//Отписываемся от событий.
-			if(subjectType != null) {
-				IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
-				entityConfig.EntityUpdated -= OnExternalObjectUpdated;
-			}
+			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 			if(subject is INotifyPropertyChanged) {
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.ColumnConfig;
 using QS.DomainModel.Entity;
-using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
 using QS.Tools;
 using NHibernate.Criterion;

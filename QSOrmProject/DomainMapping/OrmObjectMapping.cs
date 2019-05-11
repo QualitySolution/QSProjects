@@ -91,6 +91,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedEventArgs> objectUpdated;
 
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyEntitiesChange.")]
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated {
 			add {
 				lock(eventSetLock) {
@@ -109,6 +110,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> objectUpdatedGeneric;
 
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyEntitiesChange.")]
 		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric {
 			add {
 				lock(eventSetLock) {
@@ -125,29 +127,10 @@ namespace QSOrmProject.DomainMapping
 			}
 		}
 
-		event EventHandler<EntityUpdatedEventArgs> entityUpdated;
-
-		public event EventHandler<EntityUpdatedEventArgs> EntityUpdated {
-			add {
-				lock(eventSetLock) {
-					entityUpdated += value;
-					logger.Debug("Подписка EntityUpdated на обновления {0} оформлена. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
-				}
-			}
-
-			remove {
-				lock(eventSetLock) {
-					entityUpdated -= value;
-					logger.Debug("Кто-то отписался от события EntityUpdated для объекта {0}. {1}", ObjectClass, SubscribersCountText(objectUpdated?.GetInvocationList().Length ?? 0));
-				}
-			}
-		}
-
 		public void RaiseObjectUpdated(params object[] updatedSubjects)
 		{
 			objectUpdatedGeneric?.Invoke(this, new OrmObjectUpdatedGenericEventArgs<TEntity>(updatedSubjects.Cast<TEntity>().ToArray()));
 			objectUpdated?.Invoke(this, new OrmObjectUpdatedEventArgs(updatedSubjects));
-			entityUpdated?.Invoke(this, new EntityUpdatedEventArgs(updatedSubjects));
 		}
 
 		private string SubscribersCountText(int count)
