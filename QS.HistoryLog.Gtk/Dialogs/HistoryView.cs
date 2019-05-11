@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gamma.Widgets;
+using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
@@ -98,8 +99,8 @@ namespace QS.HistoryLog.Dialogs
 
 			var query = UoW.Session.QueryOver<ChangedEntity>()
 				.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
-				.Fetch(x => x.ChangeSet).Eager
-				.Fetch(x => x.ChangeSet.User).Eager;
+				.Fetch(SelectMode.Fetch, x => x.ChangeSet)
+				.Fetch(SelectMode.Fetch, x => x.ChangeSet.User);
 
 			if(!selectperiod.IsAllTime)
 				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd.AddDays(1));
