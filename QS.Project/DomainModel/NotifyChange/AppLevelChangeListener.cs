@@ -106,6 +106,15 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
+		public void WatchMany(ManyEntityChangeEventMethod subscriber, params Type[] entityClasses)
+		{
+			lock(ManyEventSubscribers) {
+				ManyEventSubscribers.Add(new SubscriberWeakLink(entityClasses, subscriber));
+				var list = String.Join(", ", entityClasses.Select(x => x.Name));
+				logger.Debug($"Добавлена Many-подписка на изменение {list}. Всего {ManyEventSubscribers.Count}");
+			}
+		}
+
 		public void WatchOne<TEntity>(SingleEntityChangeEventMethod subscriber)
 		{
 			lock (SingleEventSubscribers)

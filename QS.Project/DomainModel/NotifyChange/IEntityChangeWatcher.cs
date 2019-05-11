@@ -5,6 +5,7 @@ namespace QS.DomainModel.NotifyChange
 	{
 		void WatchOne<TEntity>(SingleEntityChangeEventMethod subscriber);
 		void WatchManyAll(ManyEntityChangeEventMethod subscriber);
+		void WatchMany(ManyEntityChangeEventMethod subscriber, params Type[] entityClasses);
 		void WatchMany<TEntity>(ManyEntityChangeEventMethod subscriber);
 		void WatchMany<TEntity1, TEntity2>(ManyEntityChangeEventMethod subscriber);
 		void WatchMany<TEntity1, TEntity2, TEntity3>(ManyEntityChangeEventMethod subscriber);
