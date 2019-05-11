@@ -250,7 +250,6 @@ namespace QSBanks
 				}
 			}
 			uow.Commit();
-			OrmMain.NotifyObjectUpdated(UpdatedObject.ToArray());
 			return true;
 		}
 
@@ -302,9 +301,6 @@ namespace QSBanks
 			}
 			return actualFileURL;
 		}
-
-
 	}
-
 }
 
