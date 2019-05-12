@@ -31,38 +31,25 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
 		{
 			this.subcribeOnTypes = subcribeOnTypes;
-			foreach (var type in subcribeOnTypes) {
-				var map = OrmMain.GetObjectDescription (type);
-				if (map != null)
-					map.ObjectUpdated += OnExternalUpdateCommon;
-				else
-					logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", type);
-			}
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.WatchMany(HandleEntityChangeEvent, subcribeOnTypes);
 		}
 
-		void OnExternalUpdateCommon (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedEventArgs e)
+		void HandleEntityChangeEvent(QS.DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
 		{
-			if (!UoW.IsAlive)
-			{
-				logger.Warn ("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
+			if(!UoW.IsAlive) {
+				logger.Warn("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.",
 					this);
 				return;
 			}
 
-			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
-				UpdateNodes ();
+			if(changeEvents.Select(x => x.Entity).Any(NeedUpdateFunc))
+				UpdateNodes();
 		}
 
 		public void Destroy()
 		{
 			logger.Debug("{0} called Destroy()", this.GetType());
-
-			foreach (var type in subcribeOnTypes)
-			{
-				var map = OrmMain.GetObjectDescription(type);
-				if (map != null)
-					map.ObjectUpdated -= OnExternalUpdateCommon;
-			}
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 		}
 	}
 }
