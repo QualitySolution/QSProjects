@@ -16,8 +16,8 @@ namespace QS.Tdi.Gtk
 
 		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
 		{
-			if (MainNotebook == null)
-				return;
+			if(MainNotebook == null)
+				throw new InvalidOperationException("Вызвано событие TDIHandleKeyReleaseEvent, но для его корректной работы необходимо заполнить TDIMain.MainNotebook.");
 
 			int platform = (int)Environment.OSVersion.Platform;
 			int version = (int)Environment.OSVersion.Version.Major;
