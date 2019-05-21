@@ -91,7 +91,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedEventArgs> objectUpdated;
 
-		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyEntitiesChange.")]
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated {
 			add {
 				lock(eventSetLock) {
@@ -110,7 +110,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> objectUpdatedGeneric;
 
-		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyEntitiesChange.")]
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
 		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric {
 			add {
 				lock(eventSetLock) {
