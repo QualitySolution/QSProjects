@@ -11,7 +11,6 @@ using QS.DomainModel.UoW;
 using QS.Utilities;
 using QSBanks.CBRSource;
 using QSBanks.Repositories;
-using QSOrmProject;
 using QSProjectsLib;
 using QSSupportLib;
 
@@ -225,8 +224,7 @@ namespace QSBanks
 					uow.Save(bank);
 				}
 			}
-
-			OutputMessage("Обновление счетов, удаление не актуальных банков");
+			OutputMessage("Обновление счетов, удаление неактуальных банков");
 			var bl = activeBanksList.Where(bank => !bicList.Any(y => y.BIC == bank.Bik));
 			index = 0;
 			foreach(var item in bl) {

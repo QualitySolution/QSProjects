@@ -12,9 +12,11 @@ namespace QSBanks
 				.AddDeleteDependence<Bank>(item => item.Region);
 
 			DeleteConfig.AddHibernateDeleteInfo<Bank>()
-				.AddDeleteDependence<Account>(item => item.InBank);
+				.AddDeleteDependence<Account>(item => item.InBank)
+				.AddDeleteDependenceFromCollection(item => item.CorAccounts);
 
-			DeleteConfig.AddHibernateDeleteInfo<Account>();
+			DeleteConfig.AddHibernateDeleteInfo<Account>()
+				.AddClearDependence<Bank>(item => item.DefaultCorAccount);
 		}
 	}
 }
