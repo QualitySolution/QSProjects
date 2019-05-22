@@ -40,6 +40,7 @@
     <Compile Include="Text\VersionHelper.cs" />
     <Compile Include="DateHelper.cs" />
     <Compile Include="Dates\DateRange.cs" />
+    <Compile Include="Text\StringManipulationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
