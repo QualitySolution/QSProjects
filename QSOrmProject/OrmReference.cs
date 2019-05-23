@@ -17,6 +17,7 @@ using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
 using QS;
+using QS.Project.Repositories;
 
 namespace QSOrmProject
 {
@@ -238,8 +239,10 @@ namespace QSOrmProject
 			if(defaultMode != null)
 				ButtonMode = defaultMode.ReferenceButtonMode;
 
+			var user = UserRepository.GetCurrentUser(uow);
+			user.LoadUserPermissions();
 			if (!String.IsNullOrWhiteSpace(map.EditPermisionName)) {
-				if (QSMain.User.Permissions != null && !QSMain.User.Permissions[map.EditPermisionName]) {
+				if (user.Permissions != null && !user.Permissions[map.EditPermisionName]) {
 					ButtonMode &= ~ReferenceButtonMode.CanAll;
 				}
 			}
