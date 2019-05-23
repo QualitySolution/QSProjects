@@ -120,7 +120,7 @@ namespace QS.Widgets.GtkUI
 				DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 				subjectType = value;
 				if(subjectType != null) {
-					DomainModel.NotifyChange.NotifyConfiguration.Instance.WatchMany(ExternalEntityChangeEventMethod, subjectType);
+					DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, subjectType);
 				}
 			}
 		}

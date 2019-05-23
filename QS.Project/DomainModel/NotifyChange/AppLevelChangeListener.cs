@@ -61,7 +61,7 @@ namespace QS.DomainModel.NotifyChange
 		/// <summary>
 		/// Подписываемся на события изменения любых объектов.
 		/// </summary>
-		public void WatchManyAll(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnAll(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
 			{
@@ -70,7 +70,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchMany<TEntity>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity>(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
 			{
@@ -79,7 +79,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchMany<TEntity1, TEntity2>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2>(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
 			{
@@ -88,7 +88,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchMany<TEntity1, TEntity2, TEntity3>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3>(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
 			{
@@ -97,7 +97,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchMany<TEntity1, TEntity2, TEntity3, TEntity4>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3, TEntity4>(ManyEntityChangeEventMethod subscriber)
 		{
 			lock (ManyEventSubscribers)
 			{
@@ -106,7 +106,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchMany(ManyEntityChangeEventMethod subscriber, params Type[] entityClasses)
+		public void BatchSubscribeOnEntity(ManyEntityChangeEventMethod subscriber, params Type[] entityClasses)
 		{
 			lock(ManyEventSubscribers) {
 				ManyEventSubscribers.Add(new SubscriberWeakLink(entityClasses, subscriber));
@@ -115,7 +115,7 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void WatchOne<TEntity>(SingleEntityChangeEventMethod subscriber)
+		public void SingleSubscribeOnEntity<TEntity>(SingleEntityChangeEventMethod subscriber)
 		{
 			lock (SingleEventSubscribers)
 			{

@@ -31,7 +31,7 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
 		{
 			this.subcribeOnTypes = subcribeOnTypes;
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.WatchMany(HandleEntityChangeEvent, subcribeOnTypes);
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(HandleEntityChangeEvent, subcribeOnTypes);
 		}
 
 		void HandleEntityChangeEvent(QS.DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
