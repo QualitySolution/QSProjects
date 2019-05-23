@@ -9,7 +9,7 @@ using System.Data.Bindings.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QS.Widgets.Gtk
+namespace QS.Widgets.GtkUI
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class UserPresetPermissionWidget : Bin, IUserPermissionTab

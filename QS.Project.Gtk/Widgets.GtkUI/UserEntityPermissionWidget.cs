@@ -8,7 +8,7 @@ using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 
-namespace QS.Widgets.Gtk
+namespace QS.Widgets.GtkUI
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class UserEntityPermissionWidget : Bin, IUserPermissionTab

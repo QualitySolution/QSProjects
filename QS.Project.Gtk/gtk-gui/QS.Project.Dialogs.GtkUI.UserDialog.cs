@@ -48,7 +48,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		private global::Gtk.Label label7;
 
-		private global::QS.Widgets.Gtk.UserPermissionWidget userpermissionwidget;
+		private global::QS.Widgets.GtkUI.UserPermissionWidget userpermissionwidget;
 
 		private global::Gtk.Label label8;
 
@@ -286,7 +286,7 @@ namespace QS.Project.Dialogs.GtkUI
 			this.notebook1.SetTabLabel(this.vbox5, this.label7);
 			this.label7.ShowAll();
 			// Container child notebook1.Gtk.Notebook+NotebookChild
-			this.userpermissionwidget = new global::QS.Widgets.Gtk.UserPermissionWidget();
+			this.userpermissionwidget = new global::QS.Widgets.GtkUI.UserPermissionWidget();
 			this.userpermissionwidget.Events = ((global::Gdk.EventMask)(256));
 			this.userpermissionwidget.Name = "userpermissionwidget";
 			this.notebook1.Add(this.userpermissionwidget);

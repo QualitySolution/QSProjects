@@ -9,7 +9,7 @@ using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.Dialog.Gtk;
 
-namespace QS.Widgets.Gtk
+namespace QS.Widgets.GtkUI
 {
 	/// <summary>
 	/// Виджет автоматически дополняет ввод ранее введенными в поле данными.

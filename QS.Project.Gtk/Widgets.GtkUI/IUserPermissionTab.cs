@@ -2,7 +2,7 @@
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 
-namespace QS.Widgets.Gtk
+namespace QS.Widgets.GtkUI
 {
 	public interface IUserPermissionTab
 	{

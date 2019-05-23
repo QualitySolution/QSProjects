@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
-using QS.Widgets.Gtk;
+using QS.Widgets.GtkUI;
 using QS.Project.Repositories;
 using QS.Project.DB;
 using QS.Project.Domain;

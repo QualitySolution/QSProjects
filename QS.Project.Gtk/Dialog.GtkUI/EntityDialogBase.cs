@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Gtk;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;

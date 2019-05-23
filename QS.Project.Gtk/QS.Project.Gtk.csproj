@@ -98,14 +98,11 @@
     <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Widgets.GtkUI\UserPermissionWidget.cs" />
-    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserPermissionWidget.cs" />
     <Compile Include="Widgets.GtkUI\UserEntityPermissionWidget.cs" />
-    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserEntityPermissionWidget.cs" />
     <Compile Include="Project.Dialogs.GtkUI\TypeOfEntityDlg.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.TypeOfEntityDlg.cs" />
     <Compile Include="Widgets.GtkUI\IUserPermissionTab.cs" />
     <Compile Include="Widgets.GtkUI\UserPresetPermissionWidget.cs" />
-    <Compile Include="gtk-gui\QS.Widgets.Gtk.UserPresetPermissionWidget.cs" />
     <Compile Include="Project.Dialogs.GtkUI\RepresentationJournalDialog.cs" />
     <Compile Include="RepresentationModel.GtkUI\IRepresentationModel.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.RepresentationJournalDialog.cs" />
@@ -155,6 +152,10 @@
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.DateRangePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserPermissionWidget.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserEntityPermissionWidget.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserPresetPermissionWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

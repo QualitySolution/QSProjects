@@ -318,7 +318,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.Gtk.UserPermissionWidget" design-size="311 300">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.UserPermissionWidget" design-size="311 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -339,7 +339,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.Gtk.UserEntityPermissionWidget" design-size="300 300">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.UserEntityPermissionWidget" design-size="300 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -594,7 +594,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.Gtk.UserPresetPermissionWidget" design-size="305 300">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.UserPresetPermissionWidget" design-size="305 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -1054,7 +1054,7 @@
               </packing>
             </child>
             <child>
-              <widget class="QS.Widgets.Gtk.UserPermissionWidget" id="userpermissionwidget">
+              <widget class="QS.Widgets.GtkUI.UserPermissionWidget" id="userpermissionwidget">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
               </widget>
