@@ -8,6 +8,7 @@ namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[Category ("Gamma Widgets")]
+	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.DatePicker")]
 	public class yDatePicker : DatePicker
 	{
 		public BindingControler<yDatePicker> Binding { get; private set;}

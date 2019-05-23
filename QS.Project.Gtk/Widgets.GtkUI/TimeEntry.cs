@@ -1,7 +1,9 @@
 ﻿using System;
-using Gtk;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using Gtk;
 
 namespace QS.Widgets.GtkUI
 {
@@ -10,6 +12,8 @@ namespace QS.Widgets.GtkUI
 	public class TimeEntry : Gtk.Entry
 	{
 		static readonly char[] timeSeparators={'-', ':', '.','/','\\',','};
+
+		public BindingControler<TimeEntry> Binding { get; private set; }
 
 		bool showSeconds;
 
@@ -110,6 +114,11 @@ namespace QS.Widgets.GtkUI
 			
 		protected override void OnChanged ()
 		{
+			Binding.FireChange(new Expression<Func<TimeEntry, object>>[] {
+				(w => w.DateTime),
+				(w => w.Time),
+			});
+
 			base.OnChanged ();
 			TimeSpan outTime;
 			if (TryParseTimeSpan(Text,out outTime))
@@ -130,6 +139,11 @@ namespace QS.Widgets.GtkUI
 
 		public TimeEntry()
 		{
+			Binding = new BindingControler<TimeEntry>(this, new Expression<Func<TimeEntry, object>>[] {
+				(w => w.DateTime),
+				(w => w.Time),
+			});
+
 			//Что бы установить ограничения на максимальное количество символов, по умолчанию.
 			ShowSeconds = false; 
 		}

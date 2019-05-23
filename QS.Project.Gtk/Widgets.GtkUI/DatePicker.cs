@@ -1,6 +1,8 @@
 using System;
-using Gtk;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using Gtk;
 
 namespace QS.Widgets.GtkUI
 {
@@ -8,6 +10,8 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DatePicker : Gtk.Bin
 	{
+		public BindingControler<DatePicker> Binding { get; private set; }
+
 		protected DateTime? date = null;
 		public event EventHandler DateChanged;
 		public event EventHandler DateChangedByUser;
@@ -16,6 +20,13 @@ namespace QS.Widgets.GtkUI
 		public DatePicker ()
 		{
 			this.Build ();
+
+			Binding = new BindingControler<DatePicker>(this, new Expression<Func<DatePicker, object>>[] {
+				(w => w.Date),
+				(w => w.DateOrNull),
+				(w => w.DateText),
+				(w => w.IsEmpty)
+			});
 		}
 
 		bool withTime;
@@ -62,6 +73,12 @@ namespace QS.Widgets.GtkUI
 
 		protected virtual void OnDateChanged()
 		{
+			Binding.FireChange(new Expression<Func<DatePicker, object>>[] {
+				(w => w.Date),
+				(w => w.DateOrNull),
+				(w => w.DateText),
+				(w => w.IsEmpty)
+			});
 			DateChanged?.Invoke(this, EventArgs.Empty);
 		}
 

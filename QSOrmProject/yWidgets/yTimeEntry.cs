@@ -8,6 +8,7 @@ namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[Category ("Gamma Widgets")]
+	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.TimeEntry")]
 	public class yTimeEntry : TimeEntry
 	{
 		public BindingControler<yTimeEntry> Binding { get; private set;}
