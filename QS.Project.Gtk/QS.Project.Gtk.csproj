@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -152,6 +151,7 @@
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
+    <Compile Include="Widgets.GtkUI\DateRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.DateRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserPermissionWidget.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserEntityPermissionWidget.cs" />
@@ -169,6 +169,7 @@
     <Folder Include="Helpers\" />
     <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
     <Folder Include="Permissions\" />
+    <Folder Include="Icons.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
@@ -207,6 +208,7 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Icons.GtkUI\DateRange.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
