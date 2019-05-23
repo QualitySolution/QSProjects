@@ -1,7 +1,9 @@
 ﻿using System;
-using Gtk;
-using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using Gamma.Binding.Core;
+using Gtk;
 
 namespace QS.Widgets.GtkUI
 {
@@ -9,6 +11,8 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DateRangePicker : Bin
 	{
+		public BindingControler<DateRangePicker> Binding { get; private set; }
+
 		#region Fields
 
 		Label periodSummary;
@@ -95,11 +99,21 @@ namespace QS.Widgets.GtkUI
 
 		protected virtual void OnStartDateChanged ()
 		{
+			Binding.FireChange(new Expression<Func<DateRangePicker, object>>[] {
+				(w => w.StartDate),
+				(w => w.StartDateOrNull),
+			});
+
 			StartDateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		protected virtual void OnEndDateChanged ()
 		{
+			Binding.FireChange(new Expression<Func<DateRangePicker, object>>[] {
+				(w => w.EndDate),
+				(w => w.EndDateOrNull),
+			});
+
 			EndDateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -108,6 +122,14 @@ namespace QS.Widgets.GtkUI
 		public DateRangePicker()
 		{
 			this.Build ();
+
+			Binding = new BindingControler<DateRangePicker>(this, new Expression<Func<DateRangePicker, object>>[] {
+				(w => w.StartDate),
+				(w => w.StartDateOrNull),
+				(w => w.EndDate),
+				(w => w.EndDateOrNull)
+			});
+
 			UpdateEntryText ();
 		}
 
