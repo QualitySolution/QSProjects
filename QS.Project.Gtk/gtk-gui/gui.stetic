@@ -1582,7 +1582,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.DatePicker" design-size="142 35">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.DatePicker" design-size="144 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -1614,7 +1614,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">resource:QSWidgetLib.icons.x-office-calendar.png</property>
+            <property name="Icon">resource:QS.Icons.GtkUI.Сalendar.png</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
             <signal name="Clicked" handler="OnButtonEditDateClicked" />

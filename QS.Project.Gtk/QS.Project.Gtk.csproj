@@ -212,6 +212,7 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons.GtkUI\DateRange.png" />
+    <EmbeddedResource Include="Icons.GtkUI\Сalendar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
