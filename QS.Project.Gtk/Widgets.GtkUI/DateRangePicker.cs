@@ -17,6 +17,7 @@ namespace QS.Widgets.GtkUI
 
 		Label periodSummary;
 		Calendar StartDateCalendar, EndDateCalendar;
+		DatePicker StartDateEntry, EndDateEntry;
 		bool skipPeriodChangedEvent;
 
 		private DateTime? startDate;
@@ -152,6 +153,8 @@ namespace QS.Widgets.GtkUI
 
 		#region Event handlers
 
+		#region Всплывающий диалог
+
 		protected void OnButtonPickDatePeriodClicked (object sender, EventArgs e)
 		{
 			#region Widget creation
@@ -165,28 +168,51 @@ namespace QS.Widgets.GtkUI
 			selectDate.VBox.Add(periodSummary);
 
 			HBox hbox = new HBox (true, 6);
+			var startVbox = new VBox(false, 3);
+			var endVbox = new VBox(false, 3);
 
 			StartDateCalendar = new Calendar ();
 			StartDateCalendar.DisplayOptions = DisplayOptions;
-			StartDateCalendar.Date = StartDateOrNull ?? DateTime.Today;
 			StartDateCalendar.DaySelected += StartDateCalendar_DaySelected;
+			StartDateCalendar.MonthChanged += StartDateCalendar_MonthChanged;
+			StartDateCalendar.Day = 0;
+			StartDateCalendar_MonthChanged(null, null);
 
 			EndDateCalendar = new Calendar ();
 			EndDateCalendar.DisplayOptions = DisplayOptions;
-			EndDateCalendar.Date = EndDateOrNull ?? DateTime.Today;
 			EndDateCalendar.DaySelected += EndDateCalendar_DaySelected;
+			EndDateCalendar.MonthChanged += EndDateCalendar_MonthChanged;
+			EndDateCalendar.Day = 0;
+			EndDateCalendar_MonthChanged(null, null);
 
-			hbox.Add (StartDateCalendar);
-			hbox.Add (EndDateCalendar);
+			StartDateEntry = new DatePicker();
+			StartDateEntry.DateChanged += StartDateEntry_DateChanged;
+
+			EndDateEntry = new DatePicker();
+			EndDateEntry.DateChanged += EndDateEntry_DateChanged;
+
+			startVbox.Add(StartDateCalendar);
+			startVbox.Add(StartDateEntry);
+			endVbox.Add(EndDateCalendar);
+			endVbox.Add(EndDateEntry);
+
+			hbox.Add(startVbox);
+			hbox.Add(endVbox);
 
 			selectDate.VBox.Add (hbox);
 			selectDate.ShowAll ();
+
+			StartDateEntry.HideCalendarButton = true;
+			EndDateEntry.HideCalendarButton = true;
+
+			StartDateEntry.DateOrNull = StartDateOrNull;
+			EndDateEntry.DateOrNull = EndDateOrNull;
 			#endregion
 
 			int response = selectDate.Run ();
 			if (response == (int)ResponseType.Ok) {
-				startDate = StartDateCalendar.GetDate ();
-				endDate = EndDateCalendar.GetDate ();
+				startDate = StartDateEntry.DateOrNull;
+				endDate = EndDateEntry.DateOrNull;
 				OnStartDateChanged();
 				OnEndDateChanged();
 				OnPeriodChanged ();
@@ -196,38 +222,90 @@ namespace QS.Widgets.GtkUI
 			#region Destroy
 			EndDateCalendar.Destroy ();
 			StartDateCalendar.Destroy ();
+			StartDateEntry.Destroy();
+			EndDateEntry.Destroy();
+			startVbox.Destroy();
+			endVbox.Destroy();
 			hbox.Destroy ();
 			selectDate.Destroy ();
 			#endregion
 		}
 
+		void StartDateCalendar_MonthChanged(object sender, EventArgs e)
+		{
+			if(StartDateCalendar.Date.Month == DateTime.Today.Month && StartDateCalendar.Date.Year == DateTime.Today.Year)
+				StartDateCalendar.MarkDay((uint)DateTime.Today.Day);
+			else
+				StartDateCalendar.UnmarkDay((uint)DateTime.Today.Day);
+		}
+
+		void EndDateCalendar_MonthChanged(object sender, EventArgs e)
+		{
+			if(EndDateCalendar.Date.Month == DateTime.Today.Month && EndDateCalendar.Date.Year == DateTime.Today.Year)
+				EndDateCalendar.MarkDay((uint)DateTime.Today.Day);
+			else
+				EndDateCalendar.UnmarkDay((uint)DateTime.Today.Day);
+		}
+
+		void StartDateEntry_DateChanged(object sender, EventArgs e)
+		{
+			if(StartDateEntry.IsEmpty) {
+				StartDateCalendar.Day = 0;
+			}
+			else if(StartDateCalendar.Date != StartDateEntry.Date) { 
+				StartDateCalendar.Date = StartDateEntry.Date;
+			}
+			UpdatePeriodInDialog();
+		}
+
+		void EndDateEntry_DateChanged(object sender, EventArgs e)
+		{
+			if(EndDateEntry.IsEmpty) {
+				EndDateCalendar.Day = 0;
+			}
+			else if(StartDateCalendar.Date != EndDateEntry.Date) {
+				EndDateCalendar.Date = EndDateEntry.Date;
+			}
+			UpdatePeriodInDialog();
+		}
+
 		void EndDateCalendar_DaySelected (object sender, EventArgs e)
 		{
-			UpdatePeriodInDialog ();
+			if(EndDateCalendar.Day != 0 && EndDateCalendar.Date != EndDateEntry.Date)
+				EndDateEntry.Date = EndDateCalendar.Date;
 		}
 
 		void StartDateCalendar_DaySelected (object sender, EventArgs e)
 		{
-			UpdatePeriodInDialog ();
+			if(StartDateCalendar.Day != 0 && StartDateCalendar.Date != StartDateEntry.Date)
+				StartDateEntry.Date = StartDateCalendar.Date;
 		}
 
 		void UpdatePeriodInDialog()
 		{
 			string text;
-			if(StartDateCalendar.Date.Year != EndDateCalendar.Date.Year)
-				text = String.Format("{0:D} - {1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
-			else if(StartDateCalendar.Date.Month != EndDateCalendar.Date.Month)
-				text = String.Format("{0:dd MMMMM}-{1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
-			else if(StartDateCalendar.Date.Day != EndDateCalendar.Date.Day)
-				text = String.Format("{0:dd}-{1:D}", StartDateCalendar.Date, EndDateCalendar.Date);
+			if(StartDateEntry.IsEmpty && EndDateEntry.IsEmpty)
+				text = String.Empty;
+			else if(EndDateEntry.IsEmpty)
+				text = String.Format("начиная с {0:d}", StartDateEntry.Date);
+			else if(StartDateEntry.IsEmpty)
+				text = String.Format("до {0:d}", EndDateEntry.Date);
+			else if(StartDateEntry.Date.Year != EndDateEntry.Date.Year)
+				text = String.Format("{0:D} - {1:D}", StartDateEntry.Date, EndDateEntry.Date);
+			else if(StartDateEntry.Date.Month != EndDateEntry.Date.Month)
+				text = String.Format("{0:dd MMMMM}-{1:D}", StartDateEntry.Date, EndDateEntry.Date);
+			else if(StartDateEntry.Date.Day != EndDateEntry.Date.Day)
+				text = String.Format("{0:dd}-{1:D}", StartDateEntry.Date, EndDateEntry.Date);
 			else
-				text = String.Format("{0:D}", StartDateCalendar.Date);
+				text = String.Format("{0:D}", StartDateEntry.Date);
 
-			if (StartDateCalendar.Date <= EndDateCalendar.Date)
+			if (StartDateEntry.IsEmpty || EndDateEntry.IsEmpty || StartDateEntry.Date <= EndDateEntry.Date)
 				periodSummary.Markup = text;
 			else
 				periodSummary.Markup = String.Format ("<span foreground=\"red\">{0}</span>", text);
 		}
+
+		#endregion
 
 		protected void OnEntryDateFocusOutEvent (object o, FocusOutEventArgs args)
 		{
