@@ -34,6 +34,12 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
+		public bool HideCalendarButton
+		{
+			get => !buttonEditDate.Visible;
+			set => buttonEditDate.Visible = !value;
+		}
+
 		public string DateText {
 			get {
 				return entryDate.Text;
