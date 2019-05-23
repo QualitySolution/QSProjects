@@ -2,16 +2,16 @@ using System;
 using Gtk;
 using System.ComponentModel;
 
-namespace QSWidgetLib
+namespace QS.Widgets.GtkUI
 {
-	[System.ComponentModel.ToolboxItem(true)]
-	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.DatePicker")]
+	[ToolboxItem(true)]
+	[Category("QS.Project")]
 	public partial class DatePicker : Gtk.Bin
 	{
 		protected DateTime? date = null;
 		public event EventHandler DateChanged;
 		public event EventHandler DateChangedByUser;
-		protected Dialog editDate;
+		protected Gtk.Dialog editDate;
 
 		public DatePicker ()
 		{
@@ -102,7 +102,7 @@ namespace QSWidgetLib
 		protected void OnButtonEditDateClicked (object sender, EventArgs e)
 		{
 			Gtk.Window parentWin = (Gtk.Window) this.Toplevel;
-			editDate = new Dialog(WithTime ? "Укажите дату и время" : "Укажите дату", 
+			editDate = new Gtk.Dialog(WithTime ? "Укажите дату и время" : "Укажите дату", 
 				parentWin, Gtk.DialogFlags.DestroyWithParent);
 			editDate.Modal = true;
 			editDate.AddButton ("Отмена", ResponseType.Cancel);
@@ -212,7 +212,7 @@ namespace QSWidgetLib
 			this.ChildFocus (DirectionType.TabForward);
 		}
 
-		public void ModifyBase(StateType state, Gdk.Color color){
+		public new void ModifyBase(StateType state, Gdk.Color color){
 			entryDate.ModifyBase(state, color);
 		}
 	}

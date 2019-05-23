@@ -156,6 +156,9 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserPermissionWidget.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserEntityPermissionWidget.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.UserPresetPermissionWidget.cs" />
+    <Compile Include="Widgets.GtkUI\DatePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.DatePicker.cs" />
+    <Compile Include="Widgets.GtkUI\TimeEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

@@ -3,10 +3,10 @@ using Gtk;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace QSWidgetLib
+namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem (true)]
-	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.TimeEntry")]
+	[Category("QS.Project")]
 	public class TimeEntry : Gtk.Entry
 	{
 		static readonly char[] timeSeparators={'-', ':', '.','/','\\',','};
