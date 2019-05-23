@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 namespace QSWidgetLib
 {
 	[System.ComponentModel.ToolboxItem (true)]
+	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.DateRangePicker")]
 	public partial class DatePeriodPicker : Bin
 	{
 		#region Fields
