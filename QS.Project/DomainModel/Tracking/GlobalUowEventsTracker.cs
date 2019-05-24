@@ -99,8 +99,15 @@ namespace QS.DomainModel.Tracking
 
 		#region Events
 
+		private PreLoadEvent lastPreLoadEvent;
+
 		public void OnPreLoad(PreLoadEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPreLoadEvent == @event)
+				return;
+			lastPreLoadEvent = @event;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -119,8 +126,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPreLoad(uow, @event);
 		}
 
+		private PostLoadEvent lastPostLoadEvent;
+
 		public void OnPostLoad(PostLoadEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostLoadEvent == @event)
+				return;
+			lastPostLoadEvent = @event;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -139,8 +153,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostLoad(uow, @event);
 		}
 
+		private PostInsertEvent lastPostInsertEvent;
+
 		public void OnPostInsert(PostInsertEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostInsertEvent == @event)
+				return;
+			lastPostInsertEvent = @event;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -159,8 +180,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostInsert(uow, @event);
 		}
 
+		private PostUpdateEvent lastPostUpdateEvent;
+
 		public void OnPostUpdate(PostUpdateEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostUpdateEvent == @event)
+				return;
+			lastPostUpdateEvent = @event;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -179,8 +207,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostUpdate(uow, @event);
 		}
 
+		private PostDeleteEvent lastPostDeleteEvent;
+
 		public void OnPostDelete(PostDeleteEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostDeleteEvent == @event)
+				return;
+			lastPostDeleteEvent = @event;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
