@@ -6,7 +6,7 @@ using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
 {
-	public class UowTracker : ISingleUowEventListener, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostCommitEventListener
+	public class UowTracker : ISingleUowEventListener, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostCommitEventListener, IUowPostDeleteEventListener
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -49,6 +49,12 @@ namespace QS.DomainModel.NotifyChange
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent)
 		{
 			var change = new EntityChangeEvent(updateEvent);
+			entityChanges.Add(change);
+		}
+
+		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
+		{
+			var change = new EntityChangeEvent(deleteEvent);
 			entityChanges.Add(change);
 		}
 	}

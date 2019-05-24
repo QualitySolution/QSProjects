@@ -78,7 +78,11 @@ namespace QSOrmProject
 			if (ClassMappingList == null)
 				return;
 
-			foreach (var entityClassGroup in updatedSubjects.GroupBy(s => s.EntityClass)) {
+			var eventsGroups = updatedSubjects
+				.Where(ev => ev.EventType == TypeOfChangeEvent.Insert || ev.EventType == TypeOfChangeEvent.Update)
+				.GroupBy(s => s.EntityClass);
+
+			foreach (var entityClassGroup in eventsGroups) {
 				IOrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == entityClassGroup.Key);
 				if (map != null)
 					map.RaiseObjectUpdated(entityClassGroup.Select(x => x.Entity).ToArray());

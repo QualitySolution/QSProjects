@@ -6,7 +6,7 @@ using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
 {
-	public class AppLevelChangeListener : ISingleUowEventsListnerFactory, IEntityChangeWatcher, IUowPostInsertEventListener, IUowPostUpdateEventListener
+	public class AppLevelChangeListener : ISingleUowEventsListnerFactory, IEntityChangeWatcher, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostDeleteEventListener
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -31,6 +31,15 @@ namespace QS.DomainModel.NotifyChange
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent)
 		{
 			var change = new EntityChangeEvent(updateEvent);
+			foreach (var subscriber in GetSingleSubscribers(change))
+			{
+				subscriber.Invoke(change);
+			}
+		}
+
+		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
+		{
+			var change = new EntityChangeEvent(deleteEvent);
 			foreach (var subscriber in GetSingleSubscribers(change))
 			{
 				subscriber.Invoke(change);
