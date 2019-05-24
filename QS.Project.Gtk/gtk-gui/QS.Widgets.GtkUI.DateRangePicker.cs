@@ -24,7 +24,8 @@ namespace QS.Widgets.GtkUI
 			this.entryDate = new global::Gtk.Entry();
 			this.entryDate.CanFocus = true;
 			this.entryDate.Name = "entryDate";
-			this.entryDate.IsEditable = false;
+			this.entryDate.IsEditable = true;
+			this.entryDate.MaxLength = 23;
 			this.entryDate.InvisibleChar = '●';
 			this.hbox1.Add(this.entryDate);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.entryDate]));
@@ -49,7 +50,7 @@ namespace QS.Widgets.GtkUI
 			}
 			this.Hide();
 			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryDateFocusOutEvent);
-			this.entryDate.KeyPressEvent += new global::Gtk.KeyPressEventHandler(this.OnEntryDateKeyPressEvent);
+			this.entryDate.Changed += new global::System.EventHandler(this.OnEntryDateChanged);
 			this.buttonPickDatePeriod.Clicked += new global::System.EventHandler(this.OnButtonPickDatePeriodClicked);
 		}
 	}

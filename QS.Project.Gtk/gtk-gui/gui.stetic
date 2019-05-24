@@ -1552,10 +1552,11 @@
           <widget class="Gtk.Entry" id="entryDate">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="IsEditable">False</property>
+            <property name="IsEditable">True</property>
+            <property name="MaxLength">23</property>
             <property name="InvisibleChar">●</property>
             <signal name="FocusOutEvent" handler="OnEntryDateFocusOutEvent" />
-            <signal name="KeyPressEvent" handler="OnEntryDateKeyPressEvent" />
+            <signal name="Changed" handler="OnEntryDateChanged" />
           </widget>
           <packing>
             <property name="Position">0</property>

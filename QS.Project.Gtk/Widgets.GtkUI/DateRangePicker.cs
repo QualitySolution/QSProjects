@@ -309,23 +309,16 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnEntryDateFocusOutEvent (object o, FocusOutEventArgs args)
 		{
-			if (entryDate.Text == "") {
-				startDate = null;
-				endDate = null;
-				return;
+			DateTime? startParsed, endParsed;
+			if(ParseDates(entryDate.Text, out startParsed, out endParsed)) {
+				skipPeriodChangedEvent = true;
+				StartDateOrNull = startParsed;
+				EndDateOrNull = endParsed;
+				skipPeriodChangedEvent = false;
+				OnPeriodChanged();
+				OnPeriodChangedByUser();
 			}
-
-			DateTime start, end;
-			var dateRegex = new Regex (@"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}");
-			var matches = dateRegex.Matches (entryDate.Text); 
-			if (matches.Count == 2 &&
-			    DateTime.TryParse (matches [0].Value, out start) && DateTime.TryParse (matches [1].Value, out end)) {
-
-				startDate = start;
-				EndDate = end;
-			} else {
-				UpdateEntryText ();
-			}
+			UpdateEntryText();
 		}
 
 		#endregion
@@ -346,35 +339,46 @@ namespace QS.Widgets.GtkUI
 			OnPeriodChanged();
 		}
 
-  		#endregion
+		#endregion
 
-		bool ParseDates (ref DateTime start, ref DateTime end)
+		static bool ParseDates (string textRange, out DateTime? start, out DateTime? end)
 		{
-			if (entryDate.Text == "") {
-				startDate = null;
-				endDate = null;
-				return false;
+			if (String.IsNullOrWhiteSpace(textRange)) {
+				start = null;
+				end = null;
+				return true;
 			}
 
-			var dateRegex = new Regex (@"[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}");
-			var matches = dateRegex.Matches (entryDate.Text); 
-			if (matches.Count == 2 &&
-			    DateTime.TryParse (matches [0].Value, out start) && DateTime.TryParse (matches [1].Value, out end)) {
-
-			} else {
-				UpdateEntryText ();
+			DateTime startTemp, endTemp;
+			var dateRegex = new Regex(@"[0-9]{1,2}(\/|\.|\-|\\)[0-9]{1,2}(\/|\.|\-|\\)[0-9]{2,4}");
+			var matches = dateRegex.Matches(textRange);
+			if(matches.Count == 2 && DateTime.TryParse(matches[0].Value, out startTemp) && DateTime.TryParse(matches[1].Value, out endTemp)) {
+				start = startTemp;
+				end = endTemp;
+				return true;
+			} 
+			else if(matches.Count == 1 && DateTime.TryParse(matches[0].Value, out startTemp)) {
+				start = startTemp;
+				end = startTemp;
+				return true;
 			}
-			return true;
+
+			start = null;
+			end = null;
+			return false;
 		}
 
-		[GLib.ConnectBefore]
-		protected void OnEntryDateKeyPressEvent (object o, KeyPressEventArgs args)
+		protected void OnEntryDateChanged(object sender, EventArgs e)
 		{
-			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace)
-			{
-				SetPeriod(null, null);
-				OnPeriodChangedByUser();
+			DateTime? startParsed, endParsed;
+			if(ParseDates(entryDate.Text, out startParsed, out endParsed)) {
+				if(startParsed != null && endParsed != null && startParsed > endParsed)
+					entryDate.ModifyText(StateType.Normal, new Gdk.Color(255, 165, 0));
+				else
+					entryDate.ModifyText(StateType.Normal);
 			}
+			else
+				entryDate.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
 		}
 	}
 }
