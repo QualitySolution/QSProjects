@@ -10,51 +10,36 @@ using QS.DomainModel.UoW;
 
 namespace QSOrmProject.DomainModel
 {
-	public class ChildUnitOfWork<TParentEntity, TChildEntity> : IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> 
+	public class ChildUnitOfWork<TParentEntity, TChildEntity> : IChildUnitOfWorkGeneric<TParentEntity, TChildEntity>
 		where TChildEntity : class, IDomainObject, new()
 		where TParentEntity : IDomainObject, new()
 	{
-		private List<object> ObjectToSave = new List<object> ();
-		private List<object> ObjectToDelete = new List<object> ();
+		private List<object> ObjectToSave = new List<object>();
+		private List<object> ObjectToDelete = new List<object>();
 		private TChildEntity externalRootVersion;
 
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
-		public object RootObject {
-			get { return Root; }
-		}
+		public object RootObject => Root;
 
-		public bool IsAlive { get{ return ParentUoW.IsAlive;
-			}}
+		public bool IsAlive => ParentUoW.IsAlive;
 
 		public ParentReferenceGeneric<TParentEntity, TChildEntity> ParentReference { get; private set; }
 
-		public IUnitOfWorkGeneric<TParentEntity> ParentUoW {
-			get {
-				return ParentReference.ParentUoWGeneric;
-			}
-		}
+		public IUnitOfWorkGeneric<TParentEntity> ParentUoW => ParentReference.ParentUoWGeneric;
 
 		public TChildEntity Root { get; private set; }
 
 		public bool IsNew { get; private set; }
 
-		public bool HasChanges {
-			get {
-				return IsNew || !ObjectCloner.CompareFields (Root, externalRootVersion); 
-			}
-		}
+		public bool HasChanges => IsNew || !ObjectCloner.CompareFields(Root, externalRootVersion);
 
 		// TODO Ксожалению не работает при открытии второй сессии возвращается первая закрытая.
 		// Проблема описана здесь http://osdir.com/ml/nhibernate-development/2010-02/msg00131.html
 		// session = ParentUoW.Session.GetSession (EntityMode.Poco);
 		// класс переделан на ручное использование родительской сессии.
 
-		public ISession Session {
-			get {
-				return ParentUoW.Session;
-			}
-		}
+		public ISession Session => ParentUoW.Session;
 
 		public UnitOfWorkTitle ActionTitle { get; protected set; }
 
@@ -65,45 +50,50 @@ namespace QSOrmProject.DomainModel
 			IsNew = true;
 			ActionTitle = title;
 			ParentReference = parentReference;
-			Root = new TChildEntity ();
+			Root = new TChildEntity();
 		}
 
-		public ChildUnitOfWork (ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root, UnitOfWorkTitle title)
+		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, TChildEntity root, UnitOfWorkTitle title)
 		{
 			IsNew = false;
 			ActionTitle = title;
 			ParentReference = parentReference;
 			externalRootVersion = root;
-			Root = ObjectCloner.Clone (externalRootVersion);
+			Root = ObjectCloner.Clone(externalRootVersion);
 		}
 
-		public void Commit ()
+		public void Commit()
 		{
-			if (IsNew) {
+			if(IsNew) {
 				if(ParentReference.AddNewChild == null)
 					throw new InvalidOperationException(String.Format("Для {0} не настроена функция AddNewChild. Без нее, подчиненный Uow, не может работать.", ParentReference.GetType()));
-					
-				ParentReference.AddNewChild (ParentUoW.Root, Root);
+
+				ParentReference.AddNewChild(ParentUoW.Root, Root);
 				IsNew = false;
 			}
 
-			foreach (var obj in ObjectToDelete) {
-				Session.Delete (obj);
-			}
+			OpenTransaction();
 
-			foreach (var obj in ObjectToSave) {
-				Session.SaveOrUpdate (obj);
-			}
+			foreach(var obj in ObjectToDelete)
+				Session.Delete(obj);
+
+			foreach(var obj in ObjectToSave)
+				Session.SaveOrUpdate(obj);
 		}
 
-		public void Dispose ()
+		void OpenTransaction()
 		{
-			
+			if(Session.Transaction == null)
+				Session.BeginTransaction();
+			else if(!Session.Transaction.IsActive)
+				Session.Transaction.Begin();
 		}
 
-		public IQueryable<T> GetAll<T> () where T : IDomainObject
+		public void Dispose() { }
+
+		public IQueryable<T> GetAll<T>() where T : IDomainObject
 		{
-			return Session.Query<T> ();
+			return Session.Query<T>();
 		}
 
 		public IQueryOver<T, T> Query<T>() where T : class
@@ -116,9 +106,9 @@ namespace QSOrmProject.DomainModel
 			return Session.QueryOver<T>(alias);
 		}
 
-		public T GetById<T> (int id) where T : IDomainObject
+		public T GetById<T>(int id) where T : IDomainObject
 		{
-			return Session.Get<T> (id);
+			return Session.Get<T>(id);
 		}
 
 		public IList<T> GetById<T>(IEnumerable<int> ids) where T : class, IDomainObject
@@ -129,54 +119,55 @@ namespace QSOrmProject.DomainModel
 		public IList<T> GetById<T>(int[] ids) where T : class, IDomainObject
 		{
 			return Session.QueryOver<T>()
-				.Where(x => x.Id.IsIn(ids)).List();
+						  .Where(x => x.Id.IsIn(ids))
+						  .List();
 		}
 
-		public object GetById (Type clazz, int id)
+		public object GetById(Type clazz, int id)
 		{
-			return Session.Get (clazz, id);
+			return Session.Get(clazz, id);
 		}
 
-		public void Save<TEntity> (TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
+		public void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
 		{
 			if(!orUpdate)
 				throw new NotImplementedException("orUpdate = false не реализовано для ChildUnitOfWork");
 
-			if (RootObject.Equals (entity)) {
-				if (externalRootVersion == null)
+			if(RootObject.Equals(entity)) {
+				if(externalRootVersion == null)
 					externalRootVersion = Root;
 				else
-					ObjectCloner.FieldsCopy (Root, ref externalRootVersion);
-				ObjectToSave.Add (externalRootVersion);
-				Commit ();
+					ObjectCloner.FieldsCopy(Root, ref externalRootVersion);
+				ObjectToSave.Add(externalRootVersion);
+				Commit();
 			} else {
-				ObjectToSave.Add (entity);
+				ObjectToSave.Add(entity);
 			}
 		}
 
 		public void TrySave(object entity, bool orUpdate = true)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
 		public void TryDelete(object entity)
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 
-		public void Save ()
+		public void Save()
 		{
-			Save (Root);
+			Save(Root);
 		}
 
-		public void Delete<T> (int id) where T : IDomainObject
+		public void Delete<T>(int id) where T : IDomainObject
 		{
-			Delete (Session.Load<T> (id));
+			Delete(Session.Load<T>(id));
 		}
 
-		public void Delete<TEntity> (TEntity entity) where TEntity : IDomainObject
+		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
 		{
-			ObjectToDelete.Add (entity);
+			ObjectToDelete.Add(entity);
 		}
 
 		public void RaiseSessionScopeEntitySaved(object[] entity)
@@ -185,4 +176,3 @@ namespace QSOrmProject.DomainModel
 		}
 	}
 }
-

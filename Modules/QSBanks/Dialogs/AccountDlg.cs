@@ -4,7 +4,6 @@ using Gamma.Utilities;
 using Gtk;
 using NHibernate.Criterion;
 using NLog;
-using QS.Dialog.Gtk;
 using QSOrmProject;
 using QSValidation;
 
@@ -14,14 +13,7 @@ namespace QSBanks
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		IParentReference<Account> parentReference;
-
-		public IParentReference<Account> ParentReference {
-			set {
-				parentReference = value;
-			}
-			get { return parentReference; }
-		}
+		public IParentReference<Account> ParentReference { set; get; }
 
 		public AccountDlg (IParentReference<Account> parentReference)
 		{

@@ -17,83 +17,74 @@ namespace QSOrmProject
 
 		Action<TParentEntity, TChildEntity> addNewChild;
 		public Action<TParentEntity, TChildEntity> AddNewChild {
-			get { if (addNewChild == null)
-				{
-					var config = ParentReferenceConfig.FindDefaultActions<TParentEntity,TChildEntity> ();
-					if (config != null)
+			get {
+				if(addNewChild == null) {
+					var config = ParentReferenceConfig.FindDefaultActions<TParentEntity, TChildEntity>();
+					if(config != null)
 						return config.AddNewChild;
 				}
 				return addNewChild;
 			}
-			set {
-				addNewChild = value;
-			}
+			set => addNewChild = value;
 		}
 
-		public IUnitOfWorkGeneric<TParentEntity> ParentUoWGeneric { get; private set;}
+		public IUnitOfWorkGeneric<TParentEntity> ParentUoWGeneric { get; private set; }
 
 		#region IParentReferenceCommon implementation
 
-		public IUnitOfWork ParentUoW {
-			get {
-				return ParentUoWGeneric;
-			}
-		}
+		public IUnitOfWork ParentUoW => ParentUoWGeneric;
 
-		public object ParentObject {
-			get { return ParentUoWGeneric.RootObject;
-			}
-		}
+		public object ParentObject => ParentUoWGeneric.RootObject;
 
 		#endregion
 
-		public ParentReferenceGeneric (IUnitOfWorkGeneric<TParentEntity> parentUoW, Expression<Func<TParentEntity, IList<TChildEntity>>> propertyRefExpr)
+		public ParentReferenceGeneric(IUnitOfWorkGeneric<TParentEntity> parentUoW, Expression<Func<TParentEntity, IList<TChildEntity>>> propertyRefExpr)
 		{
 			ParentUoWGeneric = parentUoW;
 			ListPropertyExpr = propertyRefExpr;
 		}
 
-		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem (string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
+		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return CreateChildUoWForNewItem (userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+			return CreateChildUoWForNewItem(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
 
 		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForNewItem(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
 			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this, title);
+			return new ChildUnitOfWork<TParentEntity, TChildEntity>(this, title);
 		}
 
-		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
+		public IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem(TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
-			return CreateChildUoWForItem (childEntity, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
+			return CreateChildUoWForItem(childEntity, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
 
 		public IChildUnitOfWorkGeneric<TParentEntity, TChildEntity> CreateChildUoWForItem(TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
 			var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-			return new ChildUnitOfWork<TParentEntity, TChildEntity> (this, childEntity, title);
+			return new ChildUnitOfWork<TParentEntity, TChildEntity>(this, childEntity, title);
 		}
 
-		public GenericObservableList<TChildEntity> GetObservableList ()
+		public GenericObservableList<TChildEntity> GetObservableList()
 		{
-			var list = ListPropertyExpr.Compile ().Invoke (ParentUoWGeneric.Root);
-			return new GenericObservableList<TChildEntity> (list);
+			var list = ListPropertyExpr.Compile().Invoke(ParentUoWGeneric.Root);
+			return new GenericObservableList<TChildEntity>(list);
 		}
 	}
 
-	public interface IParentReference<TChildEntity> : IParentReferenceCommon 
+	public interface IParentReference<TChildEntity> : IParentReferenceCommon
 		where TChildEntity : IDomainObject, new()
 	{
-		IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem (string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
-		IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem (TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
-		GenericObservableList<TChildEntity> GetObservableList ();
+		IUnitOfWorkGeneric<TChildEntity> CreateUoWForNewItem(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
+		IUnitOfWorkGeneric<TChildEntity> CreateUoWForItem(TChildEntity childEntity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0);
+		GenericObservableList<TChildEntity> GetObservableList();
 	}
 
 	public interface IParentReferenceCommon
 	{
-		IUnitOfWork ParentUoW { get;}
+		IUnitOfWork ParentUoW { get; }
 
-		object ParentObject { get;}
+		object ParentObject { get; }
 	}
 }
