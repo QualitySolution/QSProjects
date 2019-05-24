@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using QS.DomainModel.NotifyChange;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -24,34 +25,23 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelEntitySubscribingBase (params Type[] subcribeOnTypes)
 		{
 			this.subcribeOnTypes = subcribeOnTypes;
-			foreach (var type in subcribeOnTypes) {
-				var map = OrmMain.GetObjectDescription (type);
-				if (map != null)
-					map.ObjectUpdated += OnExternalUpdateCommon;
-				else
-					logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", type);
-			}
+			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdateCommon, subcribeOnTypes);
 		}
 
-		void OnExternalUpdateCommon (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedEventArgs e)
+		void OnExternalUpdateCommon (EntityChangeEvent[] changeEvents)
 		{
 			if (!UoW.IsAlive)
 				throw new InvalidOperationException ($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
 
-			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
+			if (changeEvents.Select(x => x.Entity).Any(NeedUpdateFunc))
 				UpdateNodes ();
 		}
 
-		public void Destroy()
+		public new void Destroy()
 		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
 			base.Destroy();
-			foreach (var type in subcribeOnTypes)
-			{
-				var map = OrmMain.GetObjectDescription(type);
-				if (map != null)
-					map.ObjectUpdated -= OnExternalUpdateCommon;
-			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using QS.DomainModel.NotifyChange;
 using QS.RepresentationModel;
 
 namespace QSOrmProject.RepresentationModel
@@ -31,30 +32,22 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelEntityBase ()
 		{
-			var description = OrmMain.GetObjectDescription<TEntity> ();
-			if (description != null)
-				description.ObjectUpdatedGeneric += OnExternalUpdate;
-			else
-				logger.Warn ("Невозможно подписаться на обновления класа {0}. Не найден класс маппинга.", typeof(TEntity));
+			NotifyConfiguration.Instance.BatchSubscribeOnEntity<TEntity>(OnExternalUpdate);
 		}
 
-		void OnExternalUpdate (object sender, QSOrmProject.UpdateNotification.OrmObjectUpdatedGenericEventArgs<TEntity> e)
+		void OnExternalUpdate (EntityChangeEvent[] changeEvents)
 		{
 			if (!UoW.IsAlive)
 				throw new InvalidOperationException($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
 
-				
-			if (e.UpdatedSubjects.Any (NeedUpdateFunc))
-				UpdateNodes ();
+			if(changeEvents.Select(x => x.Entity).Cast<TEntity>().Any(NeedUpdateFunc))
+				UpdateNodes();
 		}
 
 		public void Destroy()
 		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
-			var description = OrmMain.GetObjectDescription<TEntity> ();
-			if (description != null)
-				description.ObjectUpdatedGeneric -= OnExternalUpdate;
 		}
 	}
 }
-
