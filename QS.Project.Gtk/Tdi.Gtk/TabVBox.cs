@@ -47,6 +47,12 @@ namespace QS.Tdi.Gtk
 		{
 			titleLabel.Markup = String.Format ("<b>{0}</b>", tab.TabName);
 		}
+
+		public override void Destroy()
+		{
+			TabWidget.Destroy();
+			base.Destroy();
+		}
 	}
 }
 

@@ -15,7 +15,7 @@ using QS.Utilities.Text;
 
 namespace QS.Project.Dialogs.GtkUI
 {
-	public partial class RepresentationJournalDialog : SingleUowTabBase, ITdiJournal, IJournalDialog
+	public partial class RepresentationJournalDialog : SingleUowTabBase, IJournalDialog
 	{
         private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private IRepresentationModel representationModel;
@@ -128,8 +128,10 @@ namespace QS.Project.Dialogs.GtkUI
                 RepresentationModel.SearchStrings = null;
                 RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				tableview.RepresentationModel = RepresentationModel;
-                if (RepresentationModel.JournalFilter != null)
-                    SetFilter(RepresentationModel.JournalFilter as Widget);
+				if(RepresentationModel.JournalFilter != null) {
+					Widget resolvedFilterWidget = DialogHelper.FilterWidgetResolver.Resolve(RepresentationModel.JournalFilter);
+					SetFilter(resolvedFilterWidget);
+				}
                 hboxSearch.Visible = RepresentationModel.SearchFieldsExist;
             }
         }

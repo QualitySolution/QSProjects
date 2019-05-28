@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.Tdi;
 
@@ -7,6 +8,13 @@ namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
+		static DialogHelper()
+		{
+			FilterWidgetResolver = new DefaultFilterWidgetResolver();
+		}
+
+		public static IFilterWidgetResolver FilterWidgetResolver { get; set; }
+
 		public static IEntityDialog FindParentEntityDialog(Widget child)
 		{
 			if(child.Parent == null)
@@ -33,12 +41,26 @@ namespace QS.Dialog.Gtk
 
 		public static ITdiTab FindParentTab(Widget child)
 		{
-			if(child.Parent is ITdiTab)
-				return child.Parent as ITdiTab;
+			if(child.Parent.GetTab(out ITdiTab tab))
+				return tab;
 			else if(child.Parent.IsTopLevel)
 				return null;
 			else
 				return FindParentTab(child.Parent);
+		}
+
+		private static bool GetTab(this Widget widget, out ITdiTab tab)
+		{
+			tab = null;
+			if(widget is ITdiTab) {
+				tab = (ITdiTab)widget;
+				return true;
+			}
+			if(widget is ITabView tabWidget) {
+				tab = tabWidget.Tab;
+				return true;
+			}
+			return false;
 		}
 
 		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject

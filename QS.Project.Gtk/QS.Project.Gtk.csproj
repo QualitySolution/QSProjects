@@ -159,6 +159,8 @@
     <Compile Include="Widgets.GtkUI\DatePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.DatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimeEntry.cs" />
+    <Compile Include="Dialog.GtkUI\IFilterWidgetResolver.cs" />
+    <Compile Include="Dialog.GtkUI\ITabView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

@@ -305,7 +305,7 @@ namespace QS.Tdi.Gtk
 					}
 				}
 				if(result == (int)ResponseType.No) {
-					(dlg as Bin).Destroy();
+					GetTabBoxForTab(tab)?.Destroy();
 					return true;
 				}
 				if(result == (int)ResponseType.DeleteEvent)
@@ -356,12 +356,15 @@ namespace QS.Tdi.Gtk
 			if(maybeSliderActiveDialog != null)
 				OnTabClosed(maybeSliderActiveDialog);
 			OnTabClosed(tab);
-			GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
+			if(tabBox != null && tabBox.Tab is Container) {
+				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
 				.OfType<IMustBeDestroyed>().ToList()
 				.ForEach(w => w.Destroy());
+			}
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
-			tabBox.TabWidget.Destroy();
-			tabBox.Destroy();
+			if(tabBox != null) {
+				tabBox.Destroy();
+			}
 		}
 
 		protected void OnTabClosed(ITdiTab tab)

@@ -131,6 +131,19 @@ namespace QS.DomainModel.Entity
 					propertySetter(item, entity);
 			}
 		}
+
+		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject
+		{
+			return GenerateDialogHashName(typeof(TEntity), id);
+		}
+
+		public static string GenerateDialogHashName(Type entityType, int id)
+		{
+			if(!typeof(IDomainObject).IsAssignableFrom(entityType))
+				throw new ArgumentException("Тип должен реализовывать интерфейс IDomainObject", nameof(entityType));
+
+			return string.Format("{0}_{1}", entityType.Name, id);
+		}
 	}
 }
 
