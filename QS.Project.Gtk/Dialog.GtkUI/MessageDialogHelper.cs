@@ -39,7 +39,7 @@ namespace QS.Dialog.GtkUI
 			return result;
 		}
 
-		public static void RunWarningDialog (string warning)
+		public static void RunWarningDialog (string warning, string title = null)
 		{
 			MessageDialog md = new MessageDialog (null,
 				                   DialogFlags.Modal,
@@ -47,6 +47,7 @@ namespace QS.Dialog.GtkUI
 				                   ButtonsType.Ok,
 				                   warning);
 			md.SetPosition (WindowPosition.Center);
+			md.Title = title;
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
@@ -71,12 +72,12 @@ namespace QS.Dialog.GtkUI
 			RunErrorDialog(String.Format(formattedError, args));
 		}
 
-		public static void RunErrorDialog(string error)
+		public static void RunErrorDialog(string error, string title = null)
 		{
-			RunErrorDialog(true, error);
+			RunErrorDialog(true, error, title);
 		}
 
-		public static void RunErrorDialog (bool useMarkup, string error)
+		public static void RunErrorDialog (bool useMarkup, string error, string title = null)
 		{
 			MessageDialog md = new MessageDialog (null,
 				DialogFlags.Modal,
@@ -85,6 +86,7 @@ namespace QS.Dialog.GtkUI
 			    useMarkup,
 				error);
 			md.SetPosition (WindowPosition.Center);
+			md.Title = title;
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
@@ -110,7 +112,7 @@ namespace QS.Dialog.GtkUI
 			RunInfoDialog(String.Format(formattedMessage, args));
 		}
 
-		public static void RunInfoDialog (string message)
+		public static void RunInfoDialog (string message, string title = null)
 		{
 			MessageDialog md = new MessageDialog (null,
 				DialogFlags.Modal,
@@ -118,6 +120,7 @@ namespace QS.Dialog.GtkUI
 				ButtonsType.Ok,
 				message);
 			md.SetPosition (WindowPosition.Center);
+			md.Title = title;
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();

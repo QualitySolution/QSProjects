@@ -161,6 +161,7 @@
     <Compile Include="Widgets.GtkUI\TimeEntry.cs" />
     <Compile Include="Dialog.GtkUI\IFilterWidgetResolver.cs" />
     <Compile Include="Dialog.GtkUI\ITabView.cs" />
+    <Compile Include="Dialog.GtkUI\GtkQuestionDialogsInteractive.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
