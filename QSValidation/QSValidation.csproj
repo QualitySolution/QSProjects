@@ -46,6 +46,11 @@
     <Compile Include="ResultItem.cs" />
     <Compile Include="gtk-gui\QSValidation.ResultItem.cs" />
     <Compile Include="ValidationAttributes.cs" />
+    <Compile Include="ObjectValidator.cs" />
+    <Compile Include="GtkValidationViewFactory.cs" />
+    <Compile Include="IValidationViewFactory.cs" />
+    <Compile Include="IValidationView.cs" />
+    <Compile Include="IValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

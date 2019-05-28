@@ -5,18 +5,18 @@ namespace QSValidation
 	public partial class ResultsListDlg
 	{
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
-		
+
 		private global::Gtk.VBox vboxMessages;
-		
+
 		private global::Gtk.Button buttonOk;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget QSValidation.ResultsListDlg
 			this.Name = "QSValidation.ResultsListDlg";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Проверка корректности данных");
-			this.Icon = global::Stetic.IconLoader.LoadIcon (this, "gtk-apply", global::Gtk.IconSize.Menu);
+			this.Title = global::Mono.Unix.Catalog.GetString("Проверка корректности данных");
+			this.Icon = global::Stetic.IconLoader.LoadIcon(this, "gtk-apply", global::Gtk.IconSize.Menu);
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
 			// Internal child QSValidation.ResultsListDlg.VBox
@@ -24,22 +24,22 @@ namespace QSValidation
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
+			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			global::Gtk.Viewport w2 = new global::Gtk.Viewport ();
+			global::Gtk.Viewport w2 = new global::Gtk.Viewport();
 			w2.ShadowType = ((global::Gtk.ShadowType)(0));
 			// Container child GtkViewport1.Gtk.Container+ContainerChild
-			this.vboxMessages = new global::Gtk.VBox ();
+			this.vboxMessages = new global::Gtk.VBox();
 			this.vboxMessages.Name = "vboxMessages";
 			this.vboxMessages.Spacing = 10;
 			this.vboxMessages.BorderWidth = ((uint)(6));
-			w2.Add (this.vboxMessages);
-			this.GtkScrolledWindow.Add (w2);
-			w1.Add (this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(w1 [this.GtkScrolledWindow]));
+			w2.Add(this.vboxMessages);
+			this.GtkScrolledWindow.Add(w2);
+			w1.Add(this.GtkScrolledWindow);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(w1[this.GtkScrolledWindow]));
 			w5.PackType = ((global::Gtk.PackType)(1));
 			w5.Position = 1;
 			// Internal child QSValidation.ResultsListDlg.ActionArea
@@ -49,23 +49,24 @@ namespace QSValidation
 			w6.BorderWidth = ((uint)(5));
 			w6.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(1));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button ();
+			this.buttonOk = new global::Gtk.Button();
 			this.buttonOk.CanDefault = true;
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseStock = true;
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-close";
-			this.AddActionWidget (this.buttonOk, -7);
-			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w6 [this.buttonOk]));
+			this.AddActionWidget(this.buttonOk, -7);
+			global::Gtk.ButtonBox.ButtonBoxChild w7 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w6[this.buttonOk]));
 			w7.Expand = false;
 			w7.Fill = false;
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 436;
 			this.DefaultHeight = 335;
-			this.Show ();
+			this.Show();
 		}
 	}
 }

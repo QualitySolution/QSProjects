@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QSValidation
 {
-	public partial class ResultsListDlg : Gtk.Dialog
+	public partial class ResultsListDlg : Gtk.Dialog, IValidationView
 	{
 		public ResultsListDlg (List<ValidationResult> list )
 		{
@@ -16,6 +16,14 @@ namespace QSValidation
 				vboxMessages.PackStart (ms, false, false, 0);
 			}
 			vboxMessages.ShowAll ();
+		}
+
+		public void ShowModal()
+		{
+			Modal = true;
+			Show();
+			Run();
+			Destroy();
 		}
 	}
 }
