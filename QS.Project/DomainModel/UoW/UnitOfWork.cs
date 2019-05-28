@@ -10,7 +10,15 @@ namespace QS.DomainModel.UoW
 
 		public bool CanCheckIfDirty { get; set; } = true;
 
-		public bool HasChanges => IsNew || CanCheckIfDirty && Session.IsDirty();
+		public bool HasChanges {
+			get {
+				if(IsNew) {
+					return true;
+				}
+				OpenTransaction();
+				return CanCheckIfDirty && Session.IsDirty();
+			}
+		}
 
 		internal UnitOfWork(UnitOfWorkTitle title)
 		{

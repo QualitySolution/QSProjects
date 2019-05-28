@@ -169,7 +169,7 @@ namespace QS.DomainModel.UoW
 			Session.Delete(entity);
 		}
 
-		private void OpenTransaction()
+		protected void OpenTransaction()
 		{
 			if(transaction == null) {
 				transaction = Session.BeginTransaction();
