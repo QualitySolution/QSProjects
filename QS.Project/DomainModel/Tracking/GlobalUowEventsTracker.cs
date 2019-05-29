@@ -99,8 +99,15 @@ namespace QS.DomainModel.Tracking
 
 		#region Events
 
+		private object lastPreLoadEntity;
+
 		public void OnPreLoad(PreLoadEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPreLoadEntity == @event.Entity)
+				return;
+			lastPreLoadEntity = @event.Entity;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -119,8 +126,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPreLoad(uow, @event);
 		}
 
+		private object lastPostLoadEntity;
+
 		public void OnPostLoad(PostLoadEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostLoadEntity == @event.Entity)
+				return;
+			lastPostLoadEntity = @event.Entity;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -139,8 +153,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostLoad(uow, @event);
 		}
 
+		private object lastPostInsertEntity;
+
 		public void OnPostInsert(PostInsertEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostInsertEntity == @event.Entity)
+				return;
+			lastPostInsertEntity = @event.Entity;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -159,8 +180,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostInsert(uow, @event);
 		}
 
+		private object lastPostUpdateEntity;
+
 		public void OnPostUpdate(PostUpdateEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostUpdateEntity == @event.Entity)
+				return;
+			lastPostUpdateEntity = @event.Entity;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
@@ -179,8 +207,15 @@ namespace QS.DomainModel.Tracking
 			uow.EventsTracker.OnPostUpdate(uow, @event);
 		}
 
+		private object lastPostDeleteEntity;
+
 		public void OnPostDelete(PostDeleteEvent @event)
 		{
+			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
+			if(lastPostDeleteEntity == @event.Entity)
+				return;
+			lastPostDeleteEntity = @event.Entity;
+
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
 			{
