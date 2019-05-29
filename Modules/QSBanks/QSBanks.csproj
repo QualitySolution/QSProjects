@@ -78,7 +78,7 @@
     </Reference>
     <Reference Include="System.Web.Services" />
     <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.6.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
