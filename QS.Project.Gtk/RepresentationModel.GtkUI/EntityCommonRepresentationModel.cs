@@ -68,8 +68,9 @@ namespace QS.RepresentationModel.GtkUI
 				query.Where(FixedRestriction);
 			}
 
-			if(QueryFilter != null) {
-				query.Where(QueryFilter.GetFilter());
+			var filtration = QueryFilter?.GetFilter();
+			if(filtration != null) {
+				query.Where(filtration);
 			}
 
 			foreach(var order in Orders) {
