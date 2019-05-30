@@ -247,6 +247,18 @@ namespace QSBanks
 					banksRemoved++;
 				}
 			}
+
+			foreach(var bank in allBanksList) {
+				if(bank.DefaultCorAccount == null) {
+					if(bank.CorAccounts.Any()) {
+						bank.DefaultCorAccount = bank.CorAccounts.First();
+					} else {
+						uow.Delete(bank);
+						banksRemoved++;
+					}
+				}
+			}
+
 			uow.Commit();
 			return true;
 		}
