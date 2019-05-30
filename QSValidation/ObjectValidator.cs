@@ -8,31 +8,30 @@ namespace QSValidation
 	{
 		private readonly IValidationViewFactory validationViewFactory;
 		private readonly IValidatableObject validatableObject;
-		private readonly IDictionary<object, object> contextItems;
 		private readonly List<ValidationResult> results;
+		private ValidationContext validationContext;
 
 		public bool ShowResultsIfNotValid { get; set; }
 		public IEnumerable<ValidationResult> Results => results;
 
-		public ObjectValidator(IValidationViewFactory viewFactory, IValidatableObject validatableObject, IDictionary<object, object> contextItems = null)
+		public ObjectValidator(IValidationViewFactory viewFactory, IValidatableObject validatableObject, ValidationContext validationContext = null)
 		{
 			ShowResultsIfNotValid = true;
 			results = new List<ValidationResult>();
 			this.validationViewFactory = viewFactory;
 			this.validatableObject = validatableObject;
-			this.contextItems = contextItems;
+			this.validationContext = validationContext;
 		}
 
 		public bool Validate()
 		{
-			return Validate(contextItems);
+			return Validate(validationContext);
 		}
 
-		public bool Validate(IDictionary<object, object> contextItems)
+		public bool Validate(ValidationContext validationContext)
 		{
-			var vc = new ValidationContext(validatableObject, null, contextItems);
 			results.Clear();
-			var isValid = Validator.TryValidateObject(validatableObject, vc, results, true);
+			var isValid = Validator.TryValidateObject(validatableObject, validationContext, results, true);
 			if(!isValid && ShowResultsIfNotValid) {
 				IValidationView view = validationViewFactory.CreateValidationView(results);
 				if(view == null) {

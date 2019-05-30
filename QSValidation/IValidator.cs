@@ -8,7 +8,7 @@ namespace QSValidation
 	{
 		bool ShowResultsIfNotValid { get; set; }
 		bool Validate();
-		bool Validate(IDictionary<object, object> contextItems);
+		bool Validate(ValidationContext validationContext);
 		IEnumerable<ValidationResult> Results { get; }
 	}
 }
