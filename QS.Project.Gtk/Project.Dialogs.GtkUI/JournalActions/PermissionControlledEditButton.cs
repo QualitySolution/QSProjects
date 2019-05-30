@@ -1,6 +1,7 @@
 ﻿using System;
 using QS.DomainModel.Entity.EntityPermissions;
 using QS.RepresentationModel.GtkUI;
+using System.Linq;
 
 namespace QS.Project.Dialogs.GtkUI.JournalActions
 {
@@ -15,7 +16,7 @@ namespace QS.Project.Dialogs.GtkUI.JournalActions
 
 		public override void CheckSensitive(object[] selected)
 		{
-			Button.Sensitive = permission.Update;
+			Button.Sensitive = permission.Update && selected.Any();
 		}
 	}
 }

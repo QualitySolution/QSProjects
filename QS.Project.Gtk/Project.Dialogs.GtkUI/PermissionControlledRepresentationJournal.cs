@@ -17,7 +17,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		private EntityPermission currentUserPermissions;
 
-		public PermissionControlledRepresentationJournal(IRepresentationModel representationModel) : base(representationModel)
+		public PermissionControlledRepresentationJournal(IRepresentationModel representationModel, Buttons buttons = Buttons.All) : base(representationModel)
 		{
 			if(RepresentationModel.EntityType != null) {
 				UpdateUserEntityPermission();
@@ -27,7 +27,12 @@ namespace QS.Project.Dialogs.GtkUI
 					FailInitialize = true;
 				}
 			}
+
+			this.buttons = buttons;
+			ConfigureActionButtons();
 		}
+
+		private readonly Buttons buttons;
 
 		protected override void ConfigureActionButtons()
 		{
@@ -36,14 +41,21 @@ namespace QS.Project.Dialogs.GtkUI
 			}
 
 			UpdateUserEntityPermission();
+			ActionButtons.Clear();
 
-			var editButton = new PermissionControlledEditButton(this, RepresentationModel, currentUserPermissions);
+			if(buttons.HasFlag(Buttons.Add) || buttons.HasFlag(Buttons.All)) {
+				ActionButtons.Add(new PermissionControlledAddButton(this, RepresentationModel, currentUserPermissions));
+			}
+			if(buttons.HasFlag(Buttons.Edit) || buttons.HasFlag(Buttons.All)) {
+				var editButton = new PermissionControlledEditButton(this, RepresentationModel, currentUserPermissions);
+				ActionButtons.Add(editButton);
+				DoubleClickAction = editButton;
+			}
+			if(buttons.HasFlag(Buttons.Delete) || buttons.HasFlag(Buttons.All)) {
+				ActionButtons.Add(new PermissionControlledDeleteButton(this, RepresentationModel, currentUserPermissions));
+			}
 
-			ActionButtons.Add(new PermissionControlledAddButton(this, RepresentationModel, currentUserPermissions));
-			ActionButtons.Add(editButton);
-			ActionButtons.Add(new PermissionControlledDeleteButton(this, RepresentationModel, currentUserPermissions));
-
-			DoubleClickAction = editButton;
+			CreateButtons();
 		}
 
 		private void UpdateUserEntityPermission()
@@ -66,5 +78,15 @@ namespace QS.Project.Dialogs.GtkUI
 
 			currentUserPermissions = PermissionsSettings.EntityPermissionValidator.Validate(RepresentationModel.EntityType, user.Id);
 		}
+	}
+
+	[Flags]
+	public enum Buttons
+	{
+		None = 0,
+		Add = 1,
+		Edit = 2,
+		Delete = 4,
+		All = 7,
 	}
 }

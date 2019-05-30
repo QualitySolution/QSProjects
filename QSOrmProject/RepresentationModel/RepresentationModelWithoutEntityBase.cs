@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using QS.RepresentationModel;
 
 namespace QSOrmProject.RepresentationModel
 {
 	/// <summary>
 	/// Базовый клас презентационной модели без конкретной сущности с подпиской на обновления любых сущностей указанных в конструкторе.
 	/// </summary>
-	public abstract class RepresentationModelWithoutEntityBase<TNode> : RepresentationModelBase<TNode>, IRepresentationModel
+	public abstract class RepresentationModelWithoutEntityBase<TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -15,6 +16,10 @@ namespace QSOrmProject.RepresentationModel
 				return null;
 			}
 		}
+
+		public Type EntityType => null;
+
+		public IJournalFilter JournalFilter => RepresentationFilter as IJournalFilter;
 
 		private Type[] subcribeOnTypes;
 

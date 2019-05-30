@@ -10,7 +10,6 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs.GtkUI.JournalActions;
 using QS.RepresentationModel.GtkUI;
-using QS.Tdi;
 using QS.Utilities.Text;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -174,12 +173,22 @@ namespace QS.Project.Dialogs.GtkUI
 			}
 
 			ConfigureActionButtons();
+			CreateButtons();
+			tableview.Selection.Changed += OnTreeviewSelectionChanged;
+			OnTreeviewSelectionChanged(null, EventArgs.Empty);
+		}
+
+		protected void CreateButtons()
+		{
+			foreach(var item in hboxButtons.Children) {
+				if(item is IJournalActionButton) {
+					item.Destroy();
+				}
+			}
 			foreach(var action in ActionButtons) {
 				hboxButtons.PackStart(action.Button, false, false, 0);
 				action.Button.Show();
 			}
-
-			tableview.Selection.Changed += OnTreeviewSelectionChanged;
 			OnTreeviewSelectionChanged(null, EventArgs.Empty);
 		}
 
