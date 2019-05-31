@@ -48,6 +48,27 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Data.Sqlite" />
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -56,11 +77,18 @@
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
     <Compile Include="Utilities\DataRangeTest.cs" />
+    <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
+    <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
+    <Compile Include="TestDomainMapping\BusinessObjectTestEntityMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
     <Folder Include="Tdi\" />
     <Folder Include="Utilities\" />
+    <Folder Include="DomainModel\" />
+    <Folder Include="DomainModel\Entity\" />
+    <Folder Include="TestDomain\" />
+    <Folder Include="TestDomainMapping\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
@@ -78,6 +106,10 @@
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Testing\QS.Testing.csproj">
+      <Project>{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}</Project>
+      <Name>QS.Testing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
