@@ -172,6 +172,10 @@
     <Compile Include="DomainModel\NotifyChange\EntityChangeEvent.cs" />
     <Compile Include="DomainModel\NotifyChange\ListnerWeakLink.cs" />
     <Compile Include="DomainModel\NotifyChange\UowTracker.cs" />
+    <Compile Include="Project.DB\ISessionProvider.cs" />
+    <Compile Include="Project.DB\DefaultSessionProvider.cs" />
+    <Compile Include="DomainModel\UoW\DefaultUnitOfWorkFactory.cs" />
+    <Compile Include="DomainModel\UoW\IUnitOfWorkFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

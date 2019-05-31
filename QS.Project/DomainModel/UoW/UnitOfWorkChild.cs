@@ -1,6 +1,7 @@
 ﻿using System;
 using NHibernate;
 using QS.DomainModel.Entity;
+using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
@@ -9,7 +10,7 @@ namespace QS.DomainModel.UoW
 	{
 		IUnitOfWork parentUoW;
 
-		internal UnitOfWorkChild(TRootEntity childRoot, IUnitOfWork parentUoW, UnitOfWorkTitle actionTitle)
+		internal UnitOfWorkChild(ISessionProvider sessionProvider, TRootEntity childRoot, IUnitOfWork parentUoW, UnitOfWorkTitle actionTitle) : base(sessionProvider)
 		{
 			IsNew = childRoot.Id == 0;
 			ActionTitle = actionTitle;

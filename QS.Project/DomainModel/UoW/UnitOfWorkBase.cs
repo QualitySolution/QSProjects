@@ -20,11 +20,18 @@ namespace QS.DomainModel.UoW
 			BusinessObjectPreparer.Init();
 		}
 
+		protected UnitOfWorkBase(ISessionProvider sessionProvider)
+		{
+			this.SessionProvider = sessionProvider;
+		}
+
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
 		protected ITransaction transaction;
 
 		protected ISession session;
+
+		protected ISessionProvider SessionProvider;
 
 		public SingleUowEventsTracker EventsTracker { get; } = new SingleUowEventsTracker();
 
@@ -41,7 +48,7 @@ namespace QS.DomainModel.UoW
 		internal virtual ISession InternalSession {
 			get {
 				if(session == null) {
-					session = OrmConfig.OpenSession(null);
+					session = SessionProvider.OpenSession();
 					UowWatcher.RegisterUow(this);
 				}
 

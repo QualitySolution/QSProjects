@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
@@ -18,7 +19,7 @@ namespace QS.DomainModel.UoW
 
 		public bool CanCheckIfDirty { get; set; }
 
-		internal UnitOfWorkWithoutRoot(UnitOfWorkTitle title)
+		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = false;
             ActionTitle = title;

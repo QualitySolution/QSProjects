@@ -1,4 +1,5 @@
 ﻿using QS.DomainModel.Entity;
+using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
@@ -20,7 +21,7 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		internal UnitOfWork(UnitOfWorkTitle title)
+		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = true;
             ActionTitle = title;
@@ -29,7 +30,7 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(TRootEntity root, UnitOfWorkTitle title)
+		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = true;
 			Root = root;
@@ -38,7 +39,7 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(int id, UnitOfWorkTitle title)
+		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = false;
             ActionTitle = title;
