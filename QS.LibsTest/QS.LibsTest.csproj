@@ -80,6 +80,7 @@
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
     <Compile Include="TestDomainMapping\BusinessObjectTestEntityMap.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -89,6 +90,7 @@
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="TestDomain\" />
     <Folder Include="TestDomainMapping\" />
+    <Folder Include="DomainModel\UoW\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
