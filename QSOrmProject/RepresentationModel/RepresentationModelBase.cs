@@ -83,7 +83,8 @@ namespace QSOrmProject.RepresentationModel
 			get {
 				foreach (var prop in typeof(TNode).GetProperties ()) {
 					var att = prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).FirstOrDefault ();
-					if (att != null)
+					var newAtt = prop.GetCustomAttributes(typeof(QS.RepresentationModel.GtkUI.UseForSearchAttribute), true).FirstOrDefault();
+					if(att != null || newAtt != null)
 						yield return prop.Name;
 				}
 			}
@@ -158,7 +159,8 @@ namespace QSOrmProject.RepresentationModel
 					return searchPropCache;
 
 				searchPropCache = typeof(TNode).GetProperties ()
-					.Where (prop => prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).Length > 0)
+					.Where (prop => prop.GetCustomAttributes (typeof(UseForSearchAttribute), true).Length > 0
+						|| prop.GetCustomAttributes(typeof(QS.RepresentationModel.GtkUI.UseForSearchAttribute), true).Length > 0)
 					.ToArray ();
 
 				return searchPropCache;
