@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.NotifyChange;
 using QS.RepresentationModel;
+using QS.RepresentationModel.GtkUI;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -19,6 +21,8 @@ namespace QSOrmProject.RepresentationModel
 		public Type EntityType => ObjectType;
 
 		public IJournalFilter JournalFilter => RepresentationFilter as IJournalFilter;
+
+		public virtual IEnumerable<IJournalPopupItem> PopupItems => new List<IJournalPopupItem>();
 
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QS.RepresentationModel;
+using QS.RepresentationModel.GtkUI;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -20,6 +22,8 @@ namespace QSOrmProject.RepresentationModel
 		public Type EntityType => null;
 
 		public IJournalFilter JournalFilter => RepresentationFilter as IJournalFilter;
+
+		public virtual IEnumerable<IJournalPopupItem> PopupItems => new List<IJournalPopupItem>();
 
 		private Type[] subcribeOnTypes;
 

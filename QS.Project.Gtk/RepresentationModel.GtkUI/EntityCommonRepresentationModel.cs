@@ -98,6 +98,8 @@ namespace QS.RepresentationModel.GtkUI
 			}
 		}
 
+		public virtual IEnumerable<IJournalPopupItem> PopupItems => new List<IJournalPopupItem>();
+
 		public void Destroy()
 		{
 		}

@@ -71,6 +71,7 @@ namespace QS.Project.Dialogs.GtkUI
 		}
 
 		public virtual IJournalAction DoubleClickAction { get; set; }
+		public virtual List<IJournalPopupAction> PopupActions { get; set; }
 
 		#endregion
 
@@ -132,8 +133,25 @@ namespace QS.Project.Dialogs.GtkUI
 					SetFilter(resolvedFilterWidget);
 				}
                 hboxSearch.Visible = RepresentationModel.SearchFieldsExist;
+				UpdatePopupItems();
             }
         }
+
+		private void UpdatePopupItems()
+		{
+			if(PopupActions == null) {
+				PopupActions = new List<IJournalPopupAction>();
+			} else {
+				foreach(var pa in PopupActions) {
+					pa.MenuItem.Destroy();
+				}
+				PopupActions.Clear();
+			}
+
+			foreach(var popupItem in RepresentationModel.PopupItems) {
+				PopupActions.Add(new JournalPopupAction(popupItem));
+			}
+		}
 
 		protected IEntityConfig EntityConfig => DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType);
 
@@ -164,7 +182,7 @@ namespace QS.Project.Dialogs.GtkUI
         {
             Mode = JournalSelectMode.None;
 
-            if(RepresentationModel.EntityType != null)
+			if(RepresentationModel.EntityType != null)
             {
                 object[] att = RepresentationModel.EntityType.GetCustomAttributes (typeof(AppellativeAttribute), true);
                 if (att.Length > 0) {
@@ -175,6 +193,7 @@ namespace QS.Project.Dialogs.GtkUI
 			ConfigureActionButtons();
 			CreateButtons();
 			tableview.Selection.Changed += OnTreeviewSelectionChanged;
+			tableview.ButtonReleaseEvent += OnOrmtableviewButtonReleaseEvent;
 			OnTreeviewSelectionChanged(null, EventArgs.Empty);
 		}
 
@@ -244,21 +263,30 @@ namespace QS.Project.Dialogs.GtkUI
                 DoubleClickAction.Execute ();
         }
 
-		//FIXME Заменить на использование действий
-        //[GLib.ConnectBefore]
-        //protected void OnOrmtableviewButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
-        //{
-        //    if(args.Event.Button == 3 && RepresentationModel.PopupMenuExist)
-        //    {
-        //        var selected = GetSelectResults();
-        //        var menu = RepresentationModel.GetPopupMenu(selected);
-        //        if(menu != null)
-        //        {
-        //            menu.ShowAll();
-        //            menu.Popup();
-        //        }
-        //    }
-        //}
+		private Menu popupMenu;
+
+		[GLib.ConnectBefore]
+        protected void OnOrmtableviewButtonReleaseEvent (object o, ButtonReleaseEventArgs args)
+        {
+            if(args.Event.Button == 3 && PopupActions.Any())
+            {
+				var selected = tableview.GetSelectedObjects();
+				if(popupMenu == null) {
+					popupMenu = new Menu();
+					foreach(var popupAction in PopupActions) {
+						popupMenu.Add(popupAction.MenuItem);
+					}
+				}
+				foreach(var popupAction in PopupActions) {
+					popupAction.SelectedItems = selected;
+					popupAction.CheckSensitive(selected);
+					popupAction.CheckVisibility(selected);
+				}
+				
+				popupMenu.ShowAll();
+                popupMenu.Popup();
+            }
+        }
 
         protected void OnButtonRefreshClicked(object sender, EventArgs e)
         {

@@ -162,6 +162,10 @@
     <Compile Include="Dialog.GtkUI\IFilterWidgetResolver.cs" />
     <Compile Include="Dialog.GtkUI\ITabView.cs" />
     <Compile Include="Dialog.GtkUI\GtkQuestionDialogsInteractive.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalPopupAction.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\JournalActions\JournalPopupAction.cs" />
+    <Compile Include="RepresentationModel.GtkUI\IJournalPopupItem.cs" />
+    <Compile Include="RepresentationModel.GtkUI\JournalPopupItemFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

@@ -33,6 +33,8 @@ namespace QS.RepresentationModel.GtkUI
 		string SearchString { get; set;}
 		string[] SearchStrings { get; set;}
 
+		IEnumerable<IJournalPopupItem> PopupItems { get; }
+
 		void UpdateNodes();
 
 		void Destroy();
