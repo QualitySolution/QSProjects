@@ -1075,6 +1075,24 @@ Global
 		$22.IncludeInstanceMembers = True
 		$22.IncludeStaticEntities = True
 		$0.DotNetNamingPolicy = $26
+		$26.DirectoryNamespaceAssociation = Hierarchical
 		$0.StandardHeader = $27
+		$0.TextStylePolicy = $28
+		$28.FileWidth = 80
+		$28.EolMarker = Unix
+		$28.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $29
+		$29.NewLinesForBracesInProperties = False
+		$29.NewLinesForBracesInAccessors = False
+		$29.NewLinesForBracesInAnonymousMethods = False
+		$29.NewLinesForBracesInControlBlocks = False
+		$29.NewLinesForBracesInAnonymousTypes = False
+		$29.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$29.NewLinesForBracesInLambdaExpressionBody = False
+		$29.scope = text/x-csharp
+		$0.TextStylePolicy = $30
+		$30.FileWidth = 80
+		$30.TabsToSpaces = True
+		$30.scope = text/plain
 	EndGlobalSection
 EndGlobal
