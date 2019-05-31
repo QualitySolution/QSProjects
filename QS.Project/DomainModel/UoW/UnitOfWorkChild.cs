@@ -22,7 +22,7 @@ namespace QS.DomainModel.UoW
 		public object RootObject => Root;
 		public TRootEntity Root { get; private set; }
 
-		internal override ISession InternalSession => parentUoW.Session;
+		public override ISession Session => parentUoW.Session;
 
 		public bool CanCheckIfDirty { get; set; } = true;
 

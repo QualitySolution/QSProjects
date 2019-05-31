@@ -45,7 +45,7 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		internal virtual ISession InternalSession {
+		public virtual ISession Session {
 			get {
 				if(session == null) {
 					session = SessionProvider.OpenSession();
@@ -55,8 +55,6 @@ namespace QS.DomainModel.UoW
 				return session;
 			}
 		}
-
-		public ISession Session => InternalSession;
 
 		public virtual void Commit()
 		{
