@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Event;
+using QS.DomainModel.NotifyChange.Conditions;
 using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
@@ -132,6 +133,17 @@ namespace QS.DomainModel.NotifyChange
 				logger.Debug($"Добавлена Single-подписка на изменение {typeof(TEntity)}. Всего {SingleEventSubscribers.Count}");
 			}
 		}
+
+		public SelectionConditions BatchSubscribe(BatchEntityChangeHandler subscriber)
+		{
+			lock(BatchEventSubscribers) {
+				var condition = new SelectionConditions();
+				BatchEventSubscribers.Add(new SubscriberWeakLink(condition, subscriber));
+				logger.Debug($"Добавлена пакетная подписка с условиями. Всего {BatchEventSubscribers.Count}");
+				return condition;
+			}
+		}
+
 		#endregion
 
 		public ISingleUowEventListener CreateListnerForNewUow(IUnitOfWorkTracked uow)

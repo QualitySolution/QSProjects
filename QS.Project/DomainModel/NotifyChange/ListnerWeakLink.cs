@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using QS.DomainModel.NotifyChange.Conditions;
 
 namespace QS.DomainModel.NotifyChange
 {
@@ -18,6 +19,7 @@ namespace QS.DomainModel.NotifyChange
 		WeakReference targetReference;
 		MethodInfo method;
 		NotifyMode mode;
+		readonly SelectionConditions conditions;
 
 		internal object Owner => targetReference.Target;
 
@@ -40,7 +42,13 @@ namespace QS.DomainModel.NotifyChange
 			EntityTypes = entityClasses;
 		}
 
-		internal SubscriberWeakLink(ManyEntityChangeEventMethod handler)
+		internal SubscriberWeakLink(SelectionConditions conditions, BatchEntityChangeHandler handler)
+		{
+			ParseHandler(handler);
+			this.conditions = conditions;
+		}
+
+		internal SubscriberWeakLink(BatchEntityChangeHandler handler)
 		{
 			ParseHandler(handler);
 			EntityTypes = new Type[] { };
@@ -82,6 +90,9 @@ namespace QS.DomainModel.NotifyChange
 
 		internal bool IsSuitable(EntityChangeEvent changeEvent)
 		{
+			if (conditions != null)
+				return conditions.IsSuitable(changeEvent);
+
 			if (EntityTypes.Length == 0)
 				return true;
 			return EntityTypes.Contains(changeEvent.EntityClass);

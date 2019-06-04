@@ -81,6 +81,9 @@
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
     <Compile Include="TestDomainMapping\BusinessObjectTestEntityMap.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
+    <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
+    <Compile Include="TestDomain\SimpleEntity.cs" />
+    <Compile Include="TestDomainMapping\SimpleEntityMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -91,6 +94,7 @@
     <Folder Include="TestDomain\" />
     <Folder Include="TestDomainMapping\" />
     <Folder Include="DomainModel\UoW\" />
+    <Folder Include="DomainModel\NotifyChange\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

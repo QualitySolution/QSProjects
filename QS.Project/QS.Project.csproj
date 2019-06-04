@@ -176,6 +176,10 @@
     <Compile Include="Project.DB\DefaultSessionProvider.cs" />
     <Compile Include="DomainModel\UoW\DefaultUnitOfWorkFactory.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWorkFactory.cs" />
+    <Compile Include="DomainModel\NotifyChange\Conditions\IConditions.cs" />
+    <Compile Include="DomainModel\NotifyChange\Conditions\SelectionConditions.cs" />
+    <Compile Include="DomainModel\NotifyChange\Conditions\SingleEntityCondition.cs" />
+    <Compile Include="DomainModel\NotifyChange\Conditions\ICondition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -197,6 +201,7 @@
     <Folder Include="DomainModel\Config\" />
     <Folder Include="Tools\" />
     <Folder Include="DomainModel\NotifyChange\" />
+    <Folder Include="DomainModel\NotifyChange\Conditions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
