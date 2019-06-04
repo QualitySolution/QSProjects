@@ -5,12 +5,12 @@ using System.Reflection;
 namespace QS.DomainModel.NotifyChange
 {
 	public delegate void SingleEntityChangeEventMethod(EntityChangeEvent changeEvent);
-	public delegate void ManyEntityChangeEventMethod(EntityChangeEvent[] changeEvents);
+	public delegate void BatchEntityChangeHandler(EntityChangeEvent[] changeEvents);
 
 	public enum NotifyMode
 	{
 		Single,
-		Many
+		Batch
 	}
 
 	public class SubscriberWeakLink
@@ -34,7 +34,7 @@ namespace QS.DomainModel.NotifyChange
 			EntityTypes = new[] { entityClass };
 		}
 
-		internal SubscriberWeakLink(Type[] entityClasses, ManyEntityChangeEventMethod handler)
+		internal SubscriberWeakLink(Type[] entityClasses, BatchEntityChangeHandler handler)
 		{
 			ParseHandler(handler);
 			EntityTypes = entityClasses;
@@ -46,24 +46,24 @@ namespace QS.DomainModel.NotifyChange
 			EntityTypes = new Type[] { };
 		}
 
-		private void ParseHandler(ManyEntityChangeEventMethod handler)
+		private void ParseHandler(BatchEntityChangeHandler handler)
 		{
 			targetReference = new WeakReference(handler.Target);
 			method = handler.Method;
-			mode = NotifyMode.Many;
+			mode = NotifyMode.Batch;
 		}
 
 		#endregion
 
-		//Подписчики являющиеся статическими методами всегда жывы.
+		//Подписчики являющиеся статическими методами всегда живы.
 		internal bool IsAlive => method.IsStatic || (targetReference != null && targetReference.IsAlive);
 
 		internal bool Invoke(EntityChangeEvent[] changeEvents)
 		{
 			if (!IsAlive) return false;
 
-			if (mode != NotifyMode.Many)
-				throw new InvalidOperationException("Переданный метод должен реализовать режим Many");
+			if (mode != NotifyMode.Batch)
+				throw new InvalidOperationException("Переданный метод должен реализовать режим Batch");
 
 			method.Invoke(targetReference.Target, new object[] {changeEvents });
 			return true;

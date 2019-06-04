@@ -11,7 +11,7 @@ namespace QS.DomainModel.NotifyChange
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly List<SubscriberWeakLink> SingleEventSubscribers = new List<SubscriberWeakLink>();
-		private readonly List<SubscriberWeakLink> ManyEventSubscribers = new List<SubscriberWeakLink>();
+		private readonly List<SubscriberWeakLink> BatchEventSubscribers = new List<SubscriberWeakLink>();
 
 		internal AppLevelChangeListener()
 		{
@@ -70,57 +70,57 @@ namespace QS.DomainModel.NotifyChange
 		/// <summary>
 		/// Подписываемся на события изменения любых объектов.
 		/// </summary>
-		public void BatchSubscribeOnAll(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnAll(BatchEntityChangeHandler subscriber)
 		{
-			lock (ManyEventSubscribers)
+			lock (BatchEventSubscribers)
 			{
-				ManyEventSubscribers.Add(new SubscriberWeakLink(subscriber));
-				logger.Debug($"Добавлена Many-подписка на все изменения. Всего {ManyEventSubscribers.Count}");
+				BatchEventSubscribers.Add(new SubscriberWeakLink(subscriber));
+				logger.Debug($"Добавлена пакетная подписка на все изменения. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
-		public void BatchSubscribeOnEntity<TEntity>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity>(BatchEntityChangeHandler subscriber)
 		{
-			lock (ManyEventSubscribers)
+			lock (BatchEventSubscribers)
 			{
-				ManyEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity) }, subscriber));
-				logger.Debug($"Добавлена Many-подписка на изменение {typeof(TEntity)}. Всего {ManyEventSubscribers.Count}");
+				BatchEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity) }, subscriber));
+				logger.Debug($"Добавлена пакетная подписка на изменение {typeof(TEntity)}. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
-		public void BatchSubscribeOnEntity<TEntity1, TEntity2>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2>(BatchEntityChangeHandler subscriber)
 		{
-			lock (ManyEventSubscribers)
+			lock (BatchEventSubscribers)
 			{
-				ManyEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2) }, subscriber));
-				logger.Debug($"Добавлена Many-подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}. Всего {ManyEventSubscribers.Count}");
+				BatchEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2) }, subscriber));
+				logger.Debug($"Добавлена пакетная подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
-		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3>(BatchEntityChangeHandler subscriber)
 		{
-			lock (ManyEventSubscribers)
+			lock (BatchEventSubscribers)
 			{
-				ManyEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2), typeof(TEntity3) }, subscriber));
-				logger.Debug($"Добавлена Many-подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}, {typeof(TEntity3)}. Всего {ManyEventSubscribers.Count}");
+				BatchEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2), typeof(TEntity3) }, subscriber));
+				logger.Debug($"Добавлена пакетная подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}, {typeof(TEntity3)}. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
-		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3, TEntity4>(ManyEntityChangeEventMethod subscriber)
+		public void BatchSubscribeOnEntity<TEntity1, TEntity2, TEntity3, TEntity4>(BatchEntityChangeHandler subscriber)
 		{
-			lock (ManyEventSubscribers)
+			lock (BatchEventSubscribers)
 			{
-				ManyEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2), typeof(TEntity3), typeof(TEntity4) }, subscriber));
-				logger.Debug($"Добавлена Many-подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}, {typeof(TEntity3)}, {typeof(TEntity4)}. Всего {ManyEventSubscribers.Count}");
+				BatchEventSubscribers.Add(new SubscriberWeakLink(new[] { typeof(TEntity1), typeof(TEntity2), typeof(TEntity3), typeof(TEntity4) }, subscriber));
+				logger.Debug($"Добавлена пакетная подписка на изменение {typeof(TEntity1)}, {typeof(TEntity2)}, {typeof(TEntity3)}, {typeof(TEntity4)}. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
-		public void BatchSubscribeOnEntity(ManyEntityChangeEventMethod subscriber, params Type[] entityClasses)
+		public void BatchSubscribeOnEntity(BatchEntityChangeHandler subscriber, params Type[] entityClasses)
 		{
-			lock(ManyEventSubscribers) {
-				ManyEventSubscribers.Add(new SubscriberWeakLink(entityClasses, subscriber));
+			lock(BatchEventSubscribers) {
+				BatchEventSubscribers.Add(new SubscriberWeakLink(entityClasses, subscriber));
 				var list = String.Join(", ", entityClasses.Select(x => x.Name));
-				logger.Debug($"Добавлена Many-подписка на изменение {list}. Всего {ManyEventSubscribers.Count}");
+				logger.Debug($"Добавлена пакетная подписка на изменение {list}. Всего {BatchEventSubscribers.Count}");
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace QS.DomainModel.NotifyChange
 
 		public ISingleUowEventListener CreateListnerForNewUow(IUnitOfWorkTracked uow)
 		{
-			return new UowTracker(ManyEventSubscribers);
+			return new UowTracker(BatchEventSubscribers);
 		}
 
 		#region Отписка
@@ -144,7 +144,7 @@ namespace QS.DomainModel.NotifyChange
 		public void UnsubscribeAll(object owner)
 		{
 			var singleCount = SingleEventSubscribers.RemoveAll(s => s.Owner == owner);
-			var manyCount = ManyEventSubscribers.RemoveAll(s => s.Owner == owner);
+			var manyCount = BatchEventSubscribers.RemoveAll(s => s.Owner == owner);
 			logger.Debug($"{owner} отписался от уведомлениий Single={singleCount} Many={manyCount}");
 		}
 
@@ -153,7 +153,7 @@ namespace QS.DomainModel.NotifyChange
 			throw new NotImplementedException();
 		}
 
-		public void Unsubscribe(ManyEntityChangeEventMethod subscriber)
+		public void Unsubscribe(BatchEntityChangeHandler subscriber)
 		{
 			throw new NotImplementedException();
 		}
