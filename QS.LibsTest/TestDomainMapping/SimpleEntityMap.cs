@@ -8,6 +8,8 @@ namespace QS.Test.TestDomainMapping.TestDomain
 		public SimpleEntityMap()
 		{
 			Id(x => x.Id);
+
+			Map(x => x.Text);
 		}
 	}
 }

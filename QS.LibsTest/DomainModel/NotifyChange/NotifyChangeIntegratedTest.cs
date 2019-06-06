@@ -9,6 +9,7 @@ using System.Linq;
 namespace QS.Test.DomainModel.NotifyChange
 {
 	[TestFixture()]
+	[Category("Integrated")]
 	public class NotifyChangeIntegratedTest : InMemoryDBTestFixtureBase
 	{
 		[OneTimeSetUp]
@@ -69,6 +70,41 @@ namespace QS.Test.DomainModel.NotifyChange
 			}
 		}
 
+		[Test(Description = "Проверяем что можем получить значения полей.")]
+		public void BatchSubscribe_InsertAndUpdateAndDelete_GetOldAndNewPropertyValuesTest()
+		{
+			using (var subscruber = new BatchEventTestSubscruber()) {
+
+				NotifyConfiguration.Instance.BatchSubscribeOnEntity<SimpleEntity>(subscruber.Handler);
+
+				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
+					uow.Root.Text = "Test text";
+					uow.Save();
+					uow.Session.Evict(uow.Root);
+
+					var loadedEntity = uow.GetById<SimpleEntity>(1);
+					loadedEntity.Text = "New test text";
+					uow.Save(loadedEntity);
+					uow.Commit();
+
+					uow.Delete(loadedEntity);
+					uow.Commit();
+				}
+				Assert.That(subscruber.calls.Count, Is.EqualTo(3));
+
+				var event1 = subscruber.calls[0].First();
+				Assert.That(event1.GetOldValue<SimpleEntity>(x => x.Text), Is.Null);
+				Assert.That(event1.GetNewValue<SimpleEntity>(x => x.Text), Is.EqualTo("Test text"));
+
+				var event2 = subscruber.calls[1].First();
+				Assert.That(event2.GetOldValue<SimpleEntity>(x => x.Text), Is.EqualTo("Test text"));
+				Assert.That(event2.GetNewValue<SimpleEntity>(x => x.Text), Is.EqualTo("New test text"));
+
+				var event3 = subscruber.calls[2].First();
+				Assert.That(event3.GetOldValue<SimpleEntity>(x => x.Text), Is.EqualTo("New test text"));
+				Assert.That(event3.GetNewValue<SimpleEntity>(x => x.Text), Is.Null);
+			}
+		}
 	}
 
 

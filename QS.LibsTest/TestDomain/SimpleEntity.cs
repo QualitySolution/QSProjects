@@ -7,6 +7,8 @@ namespace QS.Test.TestDomain
 	{
 		public virtual int Id { get; set; }
 
+		public virtual string Text { get; set; }
+
 		public SimpleEntity()
 		{
 		}
