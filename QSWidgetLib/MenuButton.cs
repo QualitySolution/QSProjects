@@ -10,8 +10,6 @@ namespace QSWidgetLib
 		Label titleLabel;
 		HBox hbox;
 		Arrow arrow;
-		Menu popup_menu;
-
 		bool useMarkup;
 		public bool UseMarkup {
 			get {
@@ -23,14 +21,7 @@ namespace QSWidgetLib
 			}
 		}
 
-		public Menu Menu {
-			get {
-				return popup_menu;
-			}
-			set {
-				popup_menu = value;
-			}
-		}
+		public Menu Menu { get; set; }
 
 		[Browsable(false)]
 		public new string Label {
@@ -90,10 +81,10 @@ namespace QSWidgetLib
 
 		protected override void OnPressed ()
 		{
-			if (popup_menu == null)
+			if (Menu == null)
 				return;
 
-			popup_menu.Popup (null, null, Position, 0, Gtk.Global.CurrentEventTime);
+			Menu.Popup (null, null, Position, 0, Gtk.Global.CurrentEventTime);
 		}
 
 		public virtual ButtonMenuAllocation MenuAllocation { get; set; } = ButtonMenuAllocation.Auto;
