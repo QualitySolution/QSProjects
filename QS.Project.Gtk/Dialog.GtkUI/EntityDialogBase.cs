@@ -176,8 +176,13 @@ namespace QS.Dialog.Gtk
 				return;
 			}
 			Type entityType = typeof(TEntity);
-			var user = UserRepository.GetCurrentUser(UnitOfWorkFactory.CreateWithoutRoot());
-			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(entityType, user.Id);
+			int? currUserId;
+			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				currUserId = UserRepository.GetCurrentUser(uow)?.Id;
+			}
+			if(!currUserId.HasValue)
+				return;
+			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(entityType, currUserId.Value);
 
 			if(!entityPermissions.Read) {
 				var message = PermissionsSettings.GetEntityReadValidateResult(entityType);
