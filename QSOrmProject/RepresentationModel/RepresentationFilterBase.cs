@@ -5,7 +5,7 @@ using QS.RepresentationModel;
 
 namespace QSOrmProject.RepresentationModel
 {
-	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter, IJournalFilter
+	public abstract class RepresentationFilterBase<TFilter> : Gtk.Bin, IRepresentationFilter, IJournalFilter, QS.RepresentationModel.GtkUI.IRepresentationFilter
 		where TFilter : class
 	{
 		bool canNotify = true;
