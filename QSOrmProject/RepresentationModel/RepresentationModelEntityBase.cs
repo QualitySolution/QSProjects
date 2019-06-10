@@ -41,8 +41,9 @@ namespace QSOrmProject.RepresentationModel
 
 		void OnExternalUpdate (EntityChangeEvent[] changeEvents)
 		{
-			if (!UoW.IsAlive)
-				throw new InvalidOperationException($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
+			if(!UoW.IsAlive) {
+				logger.Warn($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
+			}
 
 			if(changeEvents.Select(x => x.Entity).Cast<TEntity>().Any(NeedUpdateFunc))
 				UpdateNodes();
@@ -52,6 +53,7 @@ namespace QSOrmProject.RepresentationModel
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
+
 		}
 	}
 }
