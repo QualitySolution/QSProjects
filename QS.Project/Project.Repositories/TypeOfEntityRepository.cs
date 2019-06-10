@@ -29,7 +29,14 @@ namespace QS.Project.Repositories
 			return items.FirstOrDefault(t => t.Name == strType);
 		}
 
-		public static string GetEntityNameByString(string strType) => GetRealName(GetEntityType(strType));
+		public static string GetEntityNameByString(string strType)
+		{
+			Type type = GetEntityType(strType);
+			if(type == null) {
+				return $"Неизвестный тип ({strType})";
+			}
+			return GetRealName(GetEntityType(strType));
+		}
 
 		public static IList<Type> GetEntityTypesMarkedByEntityPermissionAttribute(bool hideExistingInPermissions = false)
 		{
