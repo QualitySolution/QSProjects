@@ -153,7 +153,9 @@ namespace QS.Project.Dialogs.GtkUI
 			}
 		}
 
-		protected IEntityConfig EntityConfig => DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType);
+		protected IEntityConfig EntityConfig => RepresentationModel.EntityType != null
+													? DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType)
+													: null;
 
 		public override IUnitOfWork UoW { get => RepresentationModel.UoW; }
 
