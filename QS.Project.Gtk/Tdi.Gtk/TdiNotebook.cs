@@ -107,8 +107,10 @@ namespace QS.Tdi.Gtk
 		{
 			ITdiTab tab = sender as ITdiTab;
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
-			if(info == null)
-				throw new ApplicationException();
+			if(info == null) {
+				logger.Warn("Не найдена вкладка");
+				return;
+			}
 			TdiTabInfo masterTabInfo = _tabs.Find(i => i.SlaveTabs.Contains(tab));
 			if(masterTabInfo != null) {
 				info.TabNameLabel.LabelProp = ">" + e.NewName;
@@ -317,7 +319,7 @@ namespace QS.Tdi.Gtk
 		public bool CheckClosingSlaveTabs(ITdiTab tab)
 		{
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
-			if(info.SlaveTabs.Count > 0) {
+			if(info!= null && info.SlaveTabs.Count > 0) {
 				string Message = "Сначала надо закрыть подчиненую вкладку.";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Warning,

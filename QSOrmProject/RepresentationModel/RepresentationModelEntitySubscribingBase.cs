@@ -32,6 +32,7 @@ namespace QSOrmProject.RepresentationModel
 		{
 			if (!UoW.IsAlive) {
 				logger.Warn($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
+				return;
 			}
 
 			if (changeEvents.Select(x => x.Entity).Any(NeedUpdateFunc))
