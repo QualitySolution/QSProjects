@@ -33,7 +33,9 @@ namespace QS.Dialog.Gtk
 				return null;
 			else if(child.Parent is ISingleUoWDialog)
 				return child.Parent as ISingleUoWDialog;
-			else if(child.Parent.IsTopLevel)
+			else if(child.Parent is ITabView && (child.Parent as ITabView).Tab is ISingleUoWDialog)
+				return (child.Parent as ITabView).Tab as ISingleUoWDialog;
+			 else if(child.Parent.IsTopLevel)
 				return null;
 			else
 				return FindParentUowDialog(child.Parent);
