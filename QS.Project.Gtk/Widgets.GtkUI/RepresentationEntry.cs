@@ -129,7 +129,7 @@ namespace QS.Widgets.GtkUI
 		{
 			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, Subject));
 			if(foundUpdatedObject != null) {
-				if(UoW != null && UoW.Session.IsOpen) {
+				if(UoW != null && UoW.Session.IsOpen && UoW.Session.Contains(Subject)) {
 					UoW.Session.Refresh(Subject);
 				}
 
