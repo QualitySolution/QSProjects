@@ -129,8 +129,9 @@ namespace QS.Widgets.GtkUI
 		{
 			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, Subject));
 			if(foundUpdatedObject != null) {
-				if(MyEntityDialogExist && !MyEntityDialog.UoW.Session.Contains(foundUpdatedObject))
-					MyEntityDialog.UoW.Session.Refresh(Subject);
+				if(UoW != null && UoW.Session.IsOpen) {
+					UoW.Session.Refresh(Subject);
+				}
 
 				UpdateWidget();
 				OnChanged();
@@ -260,10 +261,7 @@ namespace QS.Widgets.GtkUI
 
 		protected void SelectSubjectByNode(object node)
 		{
-			var dlg = DialogHelper.FindParentUowDialog(this);
-			var uow = dlg == null ? RepresentationModel.UoW : dlg.UoW;
-
-			Subject = uow.GetById(SubjectType, DomainHelper.GetId(node));
+			Subject = UoW.GetById(SubjectType, DomainHelper.GetId(node));
 		}
 
 		#region AutoCompletion
