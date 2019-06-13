@@ -60,7 +60,7 @@ namespace Gamma.ColumnConfig
 			}
 			else 
 			{
-				throw new NotSupportedException (String.Format ("Type {0} isn't supports.", properyType));
+				throw new NotSupportedException (String.Format ("Type {0} is not supported.", properyType));
 			}
 			return this;
 		}
