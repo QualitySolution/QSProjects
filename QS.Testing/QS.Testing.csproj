@@ -11,6 +11,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Testing</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,10 +62,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Deletion.Testing\DeleteConfigTestBase.cs" />
-    <Compile Include="DB\InMemoryDBTestFixtureBase.cs" />
+    <Compile Include="DB\InMemoryDBGlobalConfigTestFixtureBase.cs" />
     <Compile Include="DB\MonoSqliteConfiguration.cs" />
     <Compile Include="DB\MonoSqliteDriver.cs" />
     <Compile Include="DB\InMemoryDBTestSessionProvider.cs" />
+    <Compile Include="DB\InMemoryDBTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deletion.Testing\" />
