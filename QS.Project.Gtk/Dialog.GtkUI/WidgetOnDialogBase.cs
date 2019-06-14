@@ -23,7 +23,7 @@ namespace QS.Dialog.Gtk
 			}
 		}
 
-		public IUnitOfWork UoW => MyOrmDialog.UoW;
+		public virtual IUnitOfWork UoW => MyOrmDialog.UoW;
 
 		IEntityDialog myEntityDialog;
 

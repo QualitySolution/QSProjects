@@ -13,6 +13,7 @@ using QS.DomainModel.Config;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
 using QS.RepresentationModel.GtkUI;
+using QS.DomainModel.UoW;
 
 namespace QS.Widgets.GtkUI
 {
@@ -28,6 +29,17 @@ namespace QS.Widgets.GtkUI
 		public Func<object, string> ObjectDisplayFunc;
 		private ListStore completionListStore;
 		private bool entryChangedByUser = true;
+
+		public override IUnitOfWork UoW {
+			get {
+				try {
+					return base.UoW;
+				} catch(Exception ex) {
+					logger.Warn(ex, "Не удалось получить базовый UoW");
+				}
+				return RepresentationModel.UoW;
+			}
+		}
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
