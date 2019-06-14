@@ -12,10 +12,13 @@ namespace QS.DB
 	/// </summary>
 	public abstract class InMemoryDBTestFixtureBase
 	{
-		protected static Configuration configuration;
-		protected static IUnitOfWorkFactory UnitOfWorkFactory;
+		protected Configuration configuration;
+		protected IUnitOfWorkFactory UnitOfWorkFactory;
 
-		public static void InitialiseNHibernate(params Assembly[] assemblies)
+		/// <summary>
+		/// Полная инициализация всего необходимого для тестирования в Nh
+		/// </summary>
+		public void InitialiseNHibernate(params Assembly[] assemblies)
 		{
 			if (configuration != null)
 				return;
