@@ -253,8 +253,9 @@ namespace QS.Project.Dialogs.GtkUI
 
         protected void UpdateSum ()
         {
-            labelSum.LabelProp = String.Format ("Количество: {0}", RepresentationModel.ItemsList.Count);
-            logger.Debug ("Количество обновлено {0}", RepresentationModel.ItemsList.Count);
+			var itemsCount = RepresentationModel.ItemsList != null ? RepresentationModel.ItemsList.Count : 0;
+			labelSum.LabelProp = String.Format ("Количество: {0}", itemsCount);
+            logger.Debug ("Количество обновлено {0}", itemsCount);
         }
 
         protected void OnOrmtableviewRowActivated (object o, RowActivatedArgs args)
