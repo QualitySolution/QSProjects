@@ -70,6 +70,7 @@ namespace QSProjectsLib
 					deactivated = DBWorks.GetBoolean(rdr, "deactivated", false);
 					email = DBWorks.GetString(rdr, "email", String.Empty);
 				} catch {
+					logger.Warn ("Ошибка чтения полей deactivated и email.");
 				}
 
 				entryID.Text = rdr["id"].ToString();
@@ -304,8 +305,11 @@ namespace QSProjectsLib
 				} catch(MySqlException ex) {
 					if(ex.Number == 1045)
 						logger.Warn(ex, "Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
-					else
+					else {
+						logger.Error (ex, "Ошибка чтения таблицы пользователей!");
+						QSMain.ErrorMessage (this, ex);
 						return false;
+					}
 				}
 				//Создание пользователя.
 				sql = "CREATE USER @login IDENTIFIED BY @password";
@@ -349,8 +353,11 @@ namespace QSProjectsLib
 				} catch(MySqlException ex) {
 					if(ex.Number == 1045)
 						logger.Warn(ex, "Нет доступа к таблице пользователей, пробую создать пользователя в слепую.");
-					else
+					else {
+						logger.Error (ex, "Ошибка чтения таблицы пользователей!");
+						QSMain.ErrorMessage (this, ex);
 						return false;
+					}
 				}
 
 				//Переименование пользователя.
