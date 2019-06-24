@@ -76,6 +76,11 @@ namespace QS.Widgets.GtkUI
 			set {
 				if(representationModel == value)
 					return;
+				if(value == null) {
+					representationModel = null;
+					SubjectType = null;
+					return;
+				}
 				representationModel = value;
 				SubjectType = RepresentationModel.EntityType;
 				//Включение быстрого выбора
