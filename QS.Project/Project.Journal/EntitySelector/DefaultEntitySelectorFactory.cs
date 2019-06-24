@@ -11,7 +11,7 @@ namespace QS.Project.Journal.EntitySelector
 		private readonly ICommonServices commonServices;
 		private ConstructorInfo journalConstructorInfo;
 		private ConstructorInfo filterConstructorInfo;
-		private TJournalFilterViewModel filter;
+		//private TJournalFilterViewModel filter;
 
 		public DefaultEntitySelectorFactory(ICommonServices commonServices)
 		{
@@ -35,7 +35,7 @@ namespace QS.Project.Journal.EntitySelector
 		{
 			IEntityConfigurationProvider entityConfigurationProvider = new DefaultEntityConfigurationProvider();
 
-			filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
+			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
 			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, entityConfigurationProvider, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
