@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using QS.ViewModels;
 
 namespace QS.Tdi
 {
@@ -10,13 +11,17 @@ namespace QS.Tdi
 
 		public static ITdiTab OpenTabSelfCreateTab(ITdiTabParent tabParent, Type tabClass, Type[] argsTypes, object[] argsValues, ITdiTab afterTab)
 		{
-			var hash = GetTabHash(tabClass, argsTypes, argsValues);
+			string hash = GetTabHash(tabClass, argsTypes, argsValues);
 
 			return tabParent.OpenTab(hash, () => (ITdiTab)Activator.CreateInstance(tabClass, argsValues), afterTab);
 		}
 
 		public static string GetTabHash(Type tabClass, Type[] argsTypes, object[] argsValues)
 		{
+			if(typeof(TabViewModelBase).IsAssignableFrom(tabClass)) {
+				return TabViewModelBase.GenerateHashName(tabClass);
+			}
+
 			var getHashMethod = FindGetHashMethod(tabClass, argsTypes);
 			if (getHashMethod == null)
 			{

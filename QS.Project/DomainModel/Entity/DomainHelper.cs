@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using NHibernate;
 using QS.DomainModel.UoW;
+using QS.Utilities.Text;
 
 namespace QS.DomainModel.Entity
 {
@@ -75,6 +76,16 @@ namespace QS.DomainModel.Entity
 				return (att [0] as AppellativeAttribute);
 			} else
 				return null;
+		}
+
+		public static string GetSubjectName(this Type subjectType)
+		{
+			var atts = subjectType.GetCustomAttributes<AppellativeAttribute>(true);
+			var attribute = atts.FirstOrDefault();
+			if(attribute != null && !string.IsNullOrWhiteSpace(attribute.Nominative)) {
+				return attribute.Nominative.StringToTitleCase();
+			} else
+				return subjectType.Name;
 		}
 
 		public static IEnumerable<Type> GetHavingAttributeEntityTypes<TAttribute>(params Assembly[] assemblies)

@@ -3,6 +3,7 @@ using Gtk;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.Tdi;
+using QS.Views.GtkUI;
 
 namespace QS.Dialog.Gtk
 {
@@ -35,7 +36,9 @@ namespace QS.Dialog.Gtk
 				return child.Parent as ISingleUoWDialog;
 			else if(child.Parent is ITabView && (child.Parent as ITabView).Tab is ISingleUoWDialog)
 				return (child.Parent as ITabView).Tab as ISingleUoWDialog;
-			 else if(child.Parent.IsTopLevel)
+			else if(child.Parent is ITabView && (child.Parent as ITabView).Tab is ISingleUoWDialog)
+				return (child.Parent as ITabView).Tab as ISingleUoWDialog;
+			else if(child.Parent.IsTopLevel)
 				return null;
 			else
 				return FindParentUowDialog(child.Parent);

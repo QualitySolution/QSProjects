@@ -1,7 +1,7 @@
 ﻿using System;
 using QS.Tdi;
 
-namespace QS.Dialog.GtkUI
+namespace QS.Views.GtkUI
 {
 	public interface ITabView
 	{

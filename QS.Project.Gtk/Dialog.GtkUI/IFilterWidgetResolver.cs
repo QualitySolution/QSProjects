@@ -1,16 +1,16 @@
 ﻿using System;
 using Gtk;
-using QS.RepresentationModel;
 namespace QS.Dialog.GtkUI
 {
 	public interface IFilterWidgetResolver
 	{
-		Widget Resolve(IJournalFilter filter);
+		Widget Resolve(RepresentationModel.IJournalFilter filter);
+		Widget Resolve(Project.Journal.IJournalFilter filter);
 	}
 
 	public class DefaultFilterWidgetResolver : IFilterWidgetResolver
 	{
-		public Widget Resolve(IJournalFilter filter)
+		public Widget Resolve(RepresentationModel.IJournalFilter filter)
 		{
 			if(filter == null) {
 				return null;
@@ -19,7 +19,19 @@ namespace QS.Dialog.GtkUI
 			if(filter is Widget) {
 				return (Widget)filter;
 			}
-			throw new InvalidCastException($"Ошибка приведения типа {nameof(IJournalFilter)} к типу {nameof(Widget)}.");
+			throw new InvalidCastException($"Ошибка приведения типа {nameof(RepresentationModel.IJournalFilter)} к типу {nameof(Widget)}.");
+		}
+
+		public Widget Resolve(Project.Journal.IJournalFilter filter)
+		{
+			if(filter == null) {
+				return null;
+			}
+
+			if(filter is Widget) {
+				return (Widget)filter;
+			}
+			throw new InvalidCastException($"Ошибка приведения типа {nameof(RepresentationModel.IJournalFilter)} к типу {nameof(Widget)}.");
 		}
 	}
 }

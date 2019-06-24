@@ -6,9 +6,9 @@ namespace QSOrmProject
 	{
 		private global::Gtk.Button buttonClose;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget QSOrmProject.OneWidgetDialog
 			this.Name = "QSOrmProject.OneWidgetDialog";
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
@@ -23,23 +23,24 @@ namespace QSOrmProject
 			w2.BorderWidth = ((uint)(5));
 			w2.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonClose = new global::Gtk.Button ();
+			this.buttonClose = new global::Gtk.Button();
 			this.buttonClose.CanDefault = true;
 			this.buttonClose.CanFocus = true;
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.UseStock = true;
 			this.buttonClose.UseUnderline = true;
 			this.buttonClose.Label = "gtk-close";
-			this.AddActionWidget (this.buttonClose, -7);
-			global::Gtk.ButtonBox.ButtonBoxChild w3 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonClose]));
+			this.AddActionWidget(this.buttonClose, -7);
+			global::Gtk.ButtonBox.ButtonBoxChild w3 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2[this.buttonClose]));
 			w3.Expand = false;
 			w3.Fill = false;
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 106;
 			this.DefaultHeight = 62;
-			this.Show ();
+			this.Show();
 		}
 	}
 }

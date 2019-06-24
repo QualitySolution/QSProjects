@@ -308,6 +308,7 @@ namespace QS.HistoryLog.Dialogs
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.vpaned1 = new global::Gtk.VPaned();
 			this.vpaned1.CanFocus = true;
+			this.vpaned1.Name = "vpaned1";
 			this.vpaned1.Position = 154;
 			// Container child vpaned1.Gtk.Paned+PanedChild
 			this.GtkScrolledWindowChangesets = new global::Gtk.ScrolledWindow();

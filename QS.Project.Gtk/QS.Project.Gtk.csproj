@@ -147,7 +147,7 @@
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
     <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
     <Compile Include="Tdi.Gtk\ITDIWidgetResolver.cs" />
-    <Compile Include="Tdi.Gtk\TDIWidgetResolverBasic.cs" />
+    <Compile Include="Tdi.Gtk\DefaultTDIWidgetResolver.cs" />
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
@@ -160,13 +160,26 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.DatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimeEntry.cs" />
     <Compile Include="Dialog.GtkUI\IFilterWidgetResolver.cs" />
-    <Compile Include="Dialog.GtkUI\ITabView.cs" />
     <Compile Include="Dialog.GtkUI\GtkQuestionDialogsInteractive.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalPopupAction.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\JournalPopupAction.cs" />
     <Compile Include="RepresentationModel.GtkUI\IJournalPopupItem.cs" />
     <Compile Include="RepresentationModel.GtkUI\JournalPopupItemFactory.cs" />
+    <Compile Include="Project.Search.GtkUI\SearchView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.SearchView.cs" />
+    <Compile Include="Views.GtkUI\TabViewBase.cs" />
+    <Compile Include="Views.GtkUI\TabViewBaseGeneric.cs" />
+    <Compile Include="Views.GtkUI\ITabView.cs" />
+    <Compile Include="Journal.GtkUI\JournalView.cs" />
+    <Compile Include="gtk-gui\QS.Journal.GtkUI.JournalView.cs" />
+    <Compile Include="Views.GtkUI\TabJournalViewBase.cs" />
+    <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
+    <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
+    <Compile Include="Views.GtkUI\FilterViewBase.cs" />
+    <Compile Include="Helpers\GtkHelper.cs" />
     <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
+    <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -181,6 +194,9 @@
     <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
     <Folder Include="Permissions\" />
     <Folder Include="Icons.GtkUI\" />
+    <Folder Include="Project.Search.GtkUI\" />
+    <Folder Include="Journal.GtkUI\" />
+    <Folder Include="Views.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

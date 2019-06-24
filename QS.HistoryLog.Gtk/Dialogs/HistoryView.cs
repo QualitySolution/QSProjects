@@ -70,6 +70,7 @@ namespace QS.HistoryLog.Dialogs
 
 			var lastPos = datatreeChangesets.Vadjustment.Value;
 			UpdateJournal(true);
+			QSMain.WaitRedraw();
 			datatreeChangesets.Vadjustment.Value = lastPos;
 		}
 

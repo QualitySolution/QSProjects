@@ -5,69 +5,70 @@ namespace QSOrmProject.Deletion
 	public partial class CheckOperationDlg
 	{
 		private global::Gtk.VBox vbox2;
-		
+
 		private global::Gtk.Label labelDependence;
-		
+
 		private global::Gtk.Label labelOperation;
-		
+
 		private global::Gtk.Button buttonCancel;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget QSOrmProject.Deletion.CheckOperationDlg
 			this.Name = "QSOrmProject.Deletion.CheckOperationDlg";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Проверка зависимостей у удаляемого объекта");
+			this.Title = global::Mono.Unix.Catalog.GetString("Проверка зависимостей у удаляемого объекта");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(3));
 			this.Modal = true;
 			this.DestroyWithParent = true;
 			this.Gravity = ((global::Gdk.Gravity)(5));
 			// Container child QSOrmProject.Deletion.CheckOperationDlg.Gtk.Container+ContainerChild
-			this.vbox2 = new global::Gtk.VBox ();
+			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.labelDependence = new global::Gtk.Label ();
+			this.labelDependence = new global::Gtk.Label();
 			this.labelDependence.Name = "labelDependence";
 			this.labelDependence.Xalign = 0F;
-			this.labelDependence.LabelProp = global::Mono.Unix.Catalog.GetString ("label2");
-			this.vbox2.Add (this.labelDependence);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.labelDependence]));
+			this.labelDependence.LabelProp = global::Mono.Unix.Catalog.GetString("label2");
+			this.vbox2.Add(this.labelDependence);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelDependence]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.labelOperation = new global::Gtk.Label ();
+			this.labelOperation = new global::Gtk.Label();
 			this.labelOperation.Name = "labelOperation";
 			this.labelOperation.Xalign = 0F;
-			this.labelOperation.LabelProp = global::Mono.Unix.Catalog.GetString ("label1");
+			this.labelOperation.LabelProp = global::Mono.Unix.Catalog.GetString("label1");
 			this.labelOperation.Ellipsize = ((global::Pango.EllipsizeMode)(3));
-			this.vbox2.Add (this.labelOperation);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.labelOperation]));
+			this.vbox2.Add(this.labelOperation);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelOperation]));
 			w2.Position = 1;
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.buttonCancel = new global::Gtk.Button ();
+			this.buttonCancel = new global::Gtk.Button();
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseStock = true;
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
-			this.vbox2.Add (this.buttonCancel);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.buttonCancel]));
+			this.vbox2.Add(this.buttonCancel);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.buttonCancel]));
 			w3.Position = 2;
 			w3.Expand = false;
 			w3.Fill = false;
-			this.Add (this.vbox2);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.Add(this.vbox2);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 468;
 			this.DefaultHeight = 78;
-			this.Show ();
-			this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
-			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelClicked);
+			this.Show();
+			this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
+			this.buttonCancel.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);
 		}
 	}
 }

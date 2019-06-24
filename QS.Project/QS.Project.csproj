@@ -56,13 +56,13 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.6.4\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\packages\Google.Protobuf.3.8.0\lib\net45\Google.Protobuf.dll</HintPath>
+      <HintPath>..\packages\Google.Protobuf.3.7.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.8.0.16\lib\net452\MySql.Data.dll</HintPath>
@@ -74,7 +74,7 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -176,10 +176,56 @@
     <Compile Include="Project.DB\DefaultSessionProvider.cs" />
     <Compile Include="DomainModel\UoW\DefaultUnitOfWorkFactory.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWorkFactory.cs" />
+    <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="DomainModel\NotifyChange\Conditions\IConditions.cs" />
     <Compile Include="DomainModel\NotifyChange\Conditions\SelectionConditions.cs" />
     <Compile Include="DomainModel\NotifyChange\Conditions\SingleEntityCondition.cs" />
     <Compile Include="DomainModel\NotifyChange\Conditions\ICondition.cs" />
+    <Compile Include="Project.Journal\IJournalSearch.cs" />
+    <Compile Include="Project.Journal\JournalNodeBase.cs" />
+    <Compile Include="Project.Journal\IJournalAction.cs" />
+    <Compile Include="Project.Journal\JournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\JournalAction.cs" />
+    <Compile Include="DomainModel\Config\IEntityConfigurationProvider.cs" />
+    <Compile Include="DomainModel\Config\DefaultEntityConfigurationProvider.cs" />
+    <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
+    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
+    <Compile Include="ViewModels\TabViewModelBase.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Project.Services\IInteractiveService.cs" />
+    <Compile Include="Project.Services\CommonServices.cs" />
+    <Compile Include="Project.Services\ICommonServices.cs" />
+    <Compile Include="Project.Services\IPermissionService.cs" />
+    <Compile Include="Project.Services\IUserService.cs" />
+    <Compile Include="Project.Services\IValidationService.cs" />
+    <Compile Include="Project.Services\PermissionService.cs" />
+    <Compile Include="Project.Services\UserService.cs" />
+    <Compile Include="Project.Services\ValidationService.cs" />
+    <Compile Include="Project.Journal\SingleEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\JournalEntityConfig.cs" />
+    <Compile Include="Project.Filter\FilterViewModelBase.cs" />
+    <Compile Include="ViewModels\EntityTabViewModelBase.cs" />
+    <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
+    <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
+    <Compile Include="ViewModels\WidgetViewModelBase.cs" />
+    <Compile Include="ViewModels\WindowViewModelBase.cs" />
+    <Compile Include="Project.Domain\EntityConstructorParam.cs" />
+    <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
+    <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
+    <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
+    <Compile Include="Project.Search\SearchViewModel.cs" />
+    <Compile Include="Project.Journal\JournalSelectedEventArgs.cs" />
+    <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
+    <Compile Include="Project.Journal\JournalSelectMode.cs" />
+    <Compile Include="Project.Journal\EntityLoader\IEntityLoader.cs" />
+    <Compile Include="Project.Journal\EntityLoader\AllEntityLoader.cs" />
+    <Compile Include="Project.Journal\Search\QuerySearch.cs" />
+    <Compile Include="Project.Journal\Search\IQuerySearch.cs" />
+    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoader.cs" />
+    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoaderWithCount.cs" />
+    <Compile Include="Project.Journal\EntitySelector\IEntitySelector.cs" />
+    <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
+    <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -201,7 +247,15 @@
     <Folder Include="DomainModel\Config\" />
     <Folder Include="Tools\" />
     <Folder Include="DomainModel\NotifyChange\" />
+    <Folder Include="Project.Journal\" />
     <Folder Include="DomainModel\NotifyChange\Conditions\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Project.Services\" />
+    <Folder Include="Project.Filter\" />
+    <Folder Include="Project.Search\" />
+    <Folder Include="Project.Journal\EntityLoader\" />
+    <Folder Include="Project.Journal\Search\" />
+    <Folder Include="Project.Journal\EntitySelector\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -214,6 +268,10 @@
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSValidation\QSValidation.csproj">
+      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
+      <Name>QSValidation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

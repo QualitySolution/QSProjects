@@ -30,6 +30,7 @@ namespace QS.Tdi
 
 		void SwitchOnTab(ITdiTab tab);
 
+		ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null);
 		ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null);
 
 		/// <summary>

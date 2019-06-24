@@ -126,7 +126,7 @@ namespace QS.Tdi.Gtk
 				throw new NullReferenceException("Мастер вкладка не найдена в списке активных вкладок.");
 
 			var journalTab = slaveTab as ITdiJournal;
-			if(journalTab != null && ((journalTab.UseSlider == null && DefaultUseSlider) || journalTab.UseSlider.Value)) {
+			if(journalTab != null && (!journalTab.UseSlider.HasValue && DefaultUseSlider || journalTab.UseSlider.Value)) {
 				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)slaveTab);
 				slaveTab = slider;
 			}
@@ -166,6 +166,14 @@ namespace QS.Tdi.Gtk
 			if(widget == null)
 				return;
 			this.CurrentPage = this.PageNum(widget);
+		}
+
+		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
+		{
+			ITdiTab tab = newTabFunc.Invoke();
+			Type tabType = tab.GetType();
+			string hashName = TabHashHelper.GetTabHash(tabType, argTypes ?? new Type[] { }, args ?? new object[] { });
+			return OpenTab(hashName, () => tab, afterTab);
 		}
 
 		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)

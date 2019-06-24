@@ -14,9 +14,7 @@ namespace QSOrmProject.RepresentationModel
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		public Type ObjectType {
-			get { return typeof(TEntity); }
-		}
+		public Type ObjectType => typeof(TEntity);
 
 		public Type EntityType => ObjectType;
 

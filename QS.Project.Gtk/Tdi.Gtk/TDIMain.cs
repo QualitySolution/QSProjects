@@ -7,7 +7,7 @@ namespace QS.Tdi.Gtk
 	{
 		static TDIMain()
 		{
-			TDIWidgetResolver = new TDIWidgetBasicResolver();
+			TDIWidgetResolver = new DefaultTDIWidgetResolver();
 		}
 
 		public static ITDIWidgetResolver TDIWidgetResolver { get; set; }

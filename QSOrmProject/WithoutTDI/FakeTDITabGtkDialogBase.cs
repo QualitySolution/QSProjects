@@ -101,6 +101,14 @@ namespace QSOrmProject
 			throw new NotImplementedException();
 		}
 
+		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
+		{
+			ITdiTab tab = newTabFunc.Invoke();
+			Type tabType = tab.GetType();
+			string hashName = TabHashHelper.GetTabHash(tabType, argTypes ?? new Type[] { }, args ?? new object[] { });
+			return OpenTab(hashName, () => tab, afterTab);
+		}
+
 		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
 		{
 			var tab = newTabFunc();
