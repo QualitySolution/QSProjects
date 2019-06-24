@@ -6,16 +6,14 @@ namespace QS.Journal.GtkUI
 {
 	public static class TreeViewColumnsConfigFactory
 	{
-		public static FluentColumnsConfig<TNode> Create<TNode>() => new FluentColumnsConfig<TNode>();
+		private static Dictionary<Type, Func<IColumnsConfig>> columnsConfigs = new Dictionary<Type, Func<IColumnsConfig>>();
 
-		static Dictionary<Type, IColumnsConfig> columnsConfigs = new Dictionary<Type, IColumnsConfig>();
-
-		public static void Register<TJournalViewModel>(IColumnsConfig config)
+		public static void Register<TJournalViewModel>(Func<IColumnsConfig> columnsConfigFunc)
 		{
 			Type journalType = typeof(TJournalViewModel);
 			if(columnsConfigs.ContainsKey(journalType))
 				throw new InvalidOperationException($"Конфигурация колонок для модели представления \"{journalType.Name}\" уже зарегистрирована");
-			columnsConfigs.Add(journalType, config);
+			columnsConfigs.Add(journalType, columnsConfigFunc);
 		}
 
 		public static IColumnsConfig Resolve<TJournalViewModel>()
@@ -32,7 +30,7 @@ namespace QS.Journal.GtkUI
 
 			if(!columnsConfigs.ContainsKey(journalType))
 				throw new ApplicationException($"Не настроено сопоставление конфигурации колонок для модели представления \"{journalType.Name}\"");
-			return columnsConfigs[journalType];
+			return columnsConfigs[journalType].Invoke();
 		}
 	}
 }
