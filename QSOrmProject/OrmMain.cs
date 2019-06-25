@@ -241,7 +241,7 @@ namespace QSOrmProject
 
 		static OrmMain()
 		{
-			//FIXME Временные пробросы на этап перехода на QS.Poject
+			//FIXME Временные пробросы на этап перехода на QS.Project
 			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
 			QS.Project.DB.Connection.GetConnectionString = () => QSMain.ConnectionString;
 			QS.Project.DB.Connection.GetConnectionDB = () => QSMain.ConnectionDB;

@@ -1,15 +1,15 @@
 ﻿using System;
-using QS.Views.GtkUI;
-using QS.Project.Journal;
-using NLog;
-using Gtk;
-using QSWidgetLib;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using Gtk;
+using NLog;
 using QS.Dialog.Gtk;
-using QS.Project.Search.GtkUI;
-using QS.Project.Search;
 using QS.Helpers;
+using QS.Project.Journal;
+using QS.Project.Search;
+using QS.Project.Search.GtkUI;
+using QS.Views.GtkUI;
+using QSWidgetLib;
 
 namespace QS.Journal.GtkUI
 {
@@ -87,7 +87,7 @@ namespace QS.Journal.GtkUI
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DynamicLoadingEnabled  || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			if(!ViewModel.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
 				return;
 
 			if(!takenAll) {
@@ -157,7 +157,7 @@ namespace QS.Journal.GtkUI
 			}
 
 			tableview.RowActivated += (o, args) => { ViewModel.RowActivatedAction.ExecuteAction(GetSelectedItems()); };
-		}	
+		}
 
 		private MenuItem CreateMenuItemWidget(IJournalAction action)
 		{
@@ -184,26 +184,22 @@ namespace QS.Journal.GtkUI
 			return menuItem;
 		}
 
-		private Menu popupMenu;
-
 		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
 			if(args.Event.Button == 3 && ViewModel.PopupActions.Any()) {
 				var selected = GetSelectedItems();
-				if(popupMenu == null) {
-					popupMenu = new Menu();
-					foreach(var popupAction in ViewModel.PopupActions) {
-						var item = new MenuItem(popupAction.Title);
-						item.Sensitive = popupAction.GetSensitivity(selected);
-						item.Visible = popupAction.GetVisibility(selected);
-						item.Activated += (sender, e) => { popupAction.ExecuteAction(selected); };
-						if(popupAction.ChildActions.Any()) {
-							foreach(var childAction in popupAction.ChildActions) {
-								item.Add(CreatePopupMenuItem(childAction));
-							}
+				Menu popupMenu = new Menu();
+				foreach(var popupAction in ViewModel.PopupActions) {
+					var item = new MenuItem(popupAction.Title);
+					item.Sensitive = popupAction.GetSensitivity(selected);
+					item.Visible = popupAction.GetVisibility(selected);
+					item.Activated += (sender, e) => { popupAction.ExecuteAction(selected); };
+					if(popupAction.ChildActions.Any()) {
+						foreach(var childAction in popupAction.ChildActions) {
+							item.Add(CreatePopupMenuItem(childAction));
 						}
-						popupMenu.Add(item);
 					}
+					popupMenu.Add(item);
 				}
 
 				popupMenu.ShowAll();
