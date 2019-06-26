@@ -103,10 +103,10 @@ namespace QS.Widgets.GtkUI
 		void JournalViewModel_OnEntitySelectedResult(object sender, JournalSelectedNodesEventArgs e)
 		{
 			var selectedNode = e.SelectedNodes.FirstOrDefault();
-			if(selectedNode == null) {
-				return;
-			}
-			Subject = UoW.GetById(SubjectType, selectedNode.Id);
+			if(selectedNode != null)
+				Subject = UoW.GetById(SubjectType, selectedNode.Id);
+
+			ChangedByUser?.Invoke(sender, e);
 		}
 
 		private object subject;
