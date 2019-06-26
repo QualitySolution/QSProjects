@@ -37,7 +37,7 @@ namespace QS.Project.Search.GtkUI
 				Task.Run(() => {
 					searchInProgress = true;
 					try {
-						while((DateTime.Now - lastChangedTime).TotalMilliseconds < 200) {
+						while((DateTime.Now - lastChangedTime).TotalMilliseconds < 1500) {
 							if(cts.IsCancellationRequested) {
 								return;
 							}
