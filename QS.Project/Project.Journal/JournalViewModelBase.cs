@@ -22,7 +22,7 @@ namespace QS.Project.Journal
 
 		public event EventHandler ItemsListUpdated;
 
-		public virtual string FooterInfo => $"Кол-во: {Items.Count} шт.";
+		public virtual string FooterInfo => $"Загружено: {Items.Count} шт.";
 
 		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
 		protected virtual List<IJournalAction> NodeActionsList { get; set; }
