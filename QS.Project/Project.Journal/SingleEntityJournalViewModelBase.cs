@@ -1,11 +1,11 @@
 ﻿using System;
-using QS.DomainModel.Config;
-using QS.Services;
-using QS.DomainModel.Entity;
-using NHibernate;
 using System.ComponentModel;
-using QS.Tdi;
+using NHibernate;
+using QS.DomainModel.Config;
+using QS.DomainModel.Entity;
 using QS.Project.Journal.EntitySelector;
+using QS.Services;
+using QS.Tdi;
 
 namespace QS.Project.Journal
 {

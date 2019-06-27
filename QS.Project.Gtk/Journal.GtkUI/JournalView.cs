@@ -50,7 +50,7 @@ namespace QS.Journal.GtkUI
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
-				checkShowFilter.Active = true;
+				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.Filter.HidenByDefault;
 			}
 
 			var searchView = new SearchView((SearchViewModel)ViewModel.Search);
@@ -72,7 +72,7 @@ namespace QS.Journal.GtkUI
 			}
 
 			Application.Invoke((s, arg) => {
-				labelFooter.LabelProp = ViewModel.FooterInfo;
+				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.YTreeModel.EmitModelChanged();
 			});
 		}
@@ -156,7 +156,9 @@ namespace QS.Journal.GtkUI
 				addDocumentButtonBox.Fill = false;
 			}
 
-			tableview.RowActivated += (o, args) => { ViewModel.RowActivatedAction.ExecuteAction(GetSelectedItems()); };
+			tableview.RowActivated += (o, args) => {
+				ViewModel.RowActivatedAction?.ExecuteAction(GetSelectedItems());
+			};
 		}
 
 		private MenuItem CreateMenuItemWidget(IJournalAction action)

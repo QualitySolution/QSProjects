@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using Gamma.Utilities;
+using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Project.Journal;
 using QS.Services;
 using QS.ViewModels;
-using Gamma.Utilities;
-using System.Linq;
-using QS.Dialog;
 
 namespace QS.Project.Filter
 {
 	public abstract class FilterViewModelBase<TFilter> : WidgetViewModelBase, IDisposable, IJournalFilter, ISingleUoWDialog
 		where TFilter : FilterViewModelBase<TFilter>
 	{
+		public bool HidenByDefault { get; set; }
+
 		public event EventHandler OnFiltered;
 
 		private bool canNotify = true;
