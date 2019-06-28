@@ -166,7 +166,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем указываем журнал по умолчанию, для выбора сущьностей.
+		/// Указываем журнал по умолчанию, для выбора сущьностей.
 		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter<TFilter>()
 		{
@@ -175,7 +175,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем указываем журнал по умолчанию, для выбора сущьностей.
+		/// Указываем журнал по умолчанию, для выбора сущьностей.
 		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
 		{

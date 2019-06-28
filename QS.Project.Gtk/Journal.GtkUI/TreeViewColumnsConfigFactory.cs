@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gamma.ColumnConfig;
+using QS.Project.Journal;
 
 namespace QS.Journal.GtkUI
 {
@@ -9,6 +10,7 @@ namespace QS.Journal.GtkUI
 		private static Dictionary<Type, Func<IColumnsConfig>> columnsConfigs = new Dictionary<Type, Func<IColumnsConfig>>();
 
 		public static void Register<TJournalViewModel>(Func<IColumnsConfig> columnsConfigFunc)
+			where TJournalViewModel : JournalViewModelBase
 		{
 			Type journalType = typeof(TJournalViewModel);
 			if(columnsConfigs.ContainsKey(journalType))
