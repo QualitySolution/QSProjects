@@ -7,11 +7,15 @@ using QS.DomainModel.UoW;
 using System.Linq;
 using QS.Project.Search;
 using QS.Tdi;
+using QS.DomainModel.NotifyChange;
+using NLog;
 
 namespace QS.Project.Journal
 {
 	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal
 	{
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+
 		public abstract Type NodeType { get; }
 
 		public virtual IJournalFilter Filter { get; protected set; }
@@ -125,6 +129,30 @@ namespace QS.Project.Journal
 		public override bool Save()
 		{
 			return false;
+		}
+
+		public void UpdateOnChanges(params Type[] entityTypes)
+		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnEntitiesUpdated, entityTypes);
+		}
+
+		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
+		{
+			//FIXME Нужно фиксить! Это решение всего лишь скрывает проблему. Нужно находить утечку памяти и исправлять ее, а не фиксить падения.
+			if(!UoW.IsAlive) {
+				logger.Warn("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта.",
+					this);
+				return;
+			}
+
+			Refresh();
+		}
+
+		public override void Dispose()
+		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			base.Dispose();
 		}
 	}
 }
