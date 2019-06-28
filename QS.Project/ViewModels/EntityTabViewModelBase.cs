@@ -94,6 +94,7 @@ namespace QS.ViewModels
 		protected IPermissionResult PermissionResult { get; private set; }
 
 		public UserBase CurrentUser { get; set; }
+		protected ICommonServices CommonServices { get; }
 
 		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, ICommonServices commonServices)
 			: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
@@ -102,7 +103,8 @@ namespace QS.ViewModels
 				throw new ArgumentNullException(nameof(ctorParam));
 			}
 
-			UserService = commonServices.UserService;
+			CommonServices = commonServices;
+			UserService = CommonServices.UserService;
 
 			if(ctorParam.IsNewEntity) {
 				if(ctorParam.RootUoW == null) {
@@ -120,12 +122,13 @@ namespace QS.ViewModels
 			ValidationContext = new ValidationContext(Entity);
 			Entity.PropertyChanged += Entity_PropertyChanged;
 			CurrentUser = UserService.GetCurrentUser(UoW);
-			Validator = commonServices.ValidationService.GetValidator(Entity, ValidationContext);
-			PermissionResult = commonServices.PermissionService.ValidateUserPermission(typeof(TEntity), UserService.CurrentUserId);
+			Validator = CommonServices.ValidationService.GetValidator(Entity, ValidationContext);
+			PermissionResult = CommonServices.PermissionService.ValidateUserPermission(typeof(TEntity), UserService.CurrentUserId);
 
 			if(!PermissionResult.CanRead) {
 				AbortOpening(PermissionsSettings.GetEntityReadValidateResult(typeof(TEntity)));
 			}
+
 		}
 
 		protected virtual void BeforeSave()
