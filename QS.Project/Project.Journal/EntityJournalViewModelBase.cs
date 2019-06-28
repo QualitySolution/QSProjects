@@ -32,9 +32,11 @@ namespace QS.Project.Journal
 		public override IJournalFilter Filter {
 			get => filter;
 			protected set {
-				filter.OnFiltered -= FilterViewModel_OnFiltered;
+				if(filter != null)
+					filter.OnFiltered -= FilterViewModel_OnFiltered;
 				filter = value;
-				filter.OnFiltered += FilterViewModel_OnFiltered;
+				if(filter != null)
+					filter.OnFiltered += FilterViewModel_OnFiltered;
 			}
 		}
 
