@@ -9,18 +9,16 @@ using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode, TFilter> : EntityJournalViewModelBase<TNode, TFilter> , IEntitySelector
+	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntityJournalViewModelBase<TNode> , IEntitySelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase<TEntity>
-		where TFilter : class, IJournalFilter
 		where TEntityTab : class, ITdiTab
 	{
 		private readonly ICommonServices commonServices;
 		public Type EntityType { get; }
 
-		public SingleEntityJournalViewModelBase(TFilter filter, IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
+		public SingleEntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
 		{
-			FilterViewModel = filter ?? throw new ArgumentNullException(nameof(filter));
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			EntityType = typeof(TEntity);

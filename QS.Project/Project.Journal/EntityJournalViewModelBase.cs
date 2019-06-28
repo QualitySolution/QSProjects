@@ -16,9 +16,8 @@ using QS.Project.Journal.Search;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TNode, TFilter> : JournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TNode> : JournalViewModelBase
 		where TNode : JournalEntityNodeBase
-		where TFilter : class, IJournalFilter
 	{
 		private const int defaultPageSize = 100;
 
@@ -29,16 +28,15 @@ namespace QS.Project.Journal
 
 		public override Type NodeType => typeof(TNode);
 
-		private TFilter filterViewModel;
-		protected virtual TFilter FilterViewModel {
-			get { return filterViewModel; }
-			set {
-				filterViewModel = value;
-				filterViewModel.OnFiltered += FilterViewModel_OnFiltered;
+		private IJournalFilter filter;
+		public override IJournalFilter Filter {
+			get => filter;
+			protected set {
+				filter.OnFiltered -= FilterViewModel_OnFiltered;
+				filter = value;
+				filter.OnFiltered += FilterViewModel_OnFiltered;
 			}
 		}
-
-		public override IJournalFilter Filter => FilterViewModel;
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 

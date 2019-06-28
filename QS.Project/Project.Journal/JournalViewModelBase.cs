@@ -14,7 +14,7 @@ namespace QS.Project.Journal
 	{
 		public abstract Type NodeType { get; }
 
-		public virtual IJournalFilter Filter { get; }
+		public virtual IJournalFilter Filter { get; protected set; }
 
 		public virtual IJournalSearch Search { get; set; }
 
