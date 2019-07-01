@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
-using System.Collections;
-using System.Collections.Generic;
-using NHibernate.Criterion;
 
 namespace QS.Project.Repositories
 {
@@ -20,18 +19,20 @@ namespace QS.Project.Repositories
 			return uow.GetById<UserBase>(GetCurrentUserId());
 		}
 
-		public static UserBase GetUserById(IUnitOfWork uow, int id)
-		{
-			return uow.GetById<UserBase>(id);
-		}
+		public static UserBase GetUserById(IUnitOfWork uow, int id) => uow.GetById<UserBase>(id);
 
 		public static IList<UserBase> GetUsers(IUnitOfWork uow, bool showDeactivated)
 		{
 			var usersQuery = uow.Session.QueryOver<UserBase>();
-			if(!showDeactivated) {
-				usersQuery.Where(Restrictions.Eq(Projections.Property<UserBase>(x => x.Deactivated), false));
-			}
-			return usersQuery.List();
+			if(!showDeactivated)
+				usersQuery.Where(x => !x.Deactivated);
+			var result = usersQuery.List()
+								   .OrderByDescending(x => x.IsAdmin)
+								   .ThenBy(x => x.Name)
+								   .Distinct(new UserBaseEqualityComparer())
+								   .ToList()
+								   ;
+			return result;
 		}
 	}
 }

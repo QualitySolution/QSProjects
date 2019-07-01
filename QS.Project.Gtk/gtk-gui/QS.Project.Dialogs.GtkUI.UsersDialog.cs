@@ -31,6 +31,8 @@ namespace QS.Project.Dialogs.GtkUI
 			this.Name = "QS.Project.Dialogs.GtkUI.UsersDialog";
 			this.Title = global::Mono.Unix.Catalog.GetString("Пользователи");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
+			this.DefaultWidth = 450;
+			this.DefaultHeight = 600;
 			// Internal child QS.Project.Dialogs.GtkUI.UsersDialog.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
@@ -146,8 +148,6 @@ namespace QS.Project.Dialogs.GtkUI
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
 			this.Show();
 			this.chkShowInactive.Toggled += new global::System.EventHandler(this.OnChkShowInactiveToggled);
 			this.treeviewUsers.RowActivated += new global::Gtk.RowActivatedHandler(this.OnTreeviewUsersRowActivated);

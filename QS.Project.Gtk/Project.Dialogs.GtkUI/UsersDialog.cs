@@ -1,15 +1,13 @@
 ﻿using System;
-using QS.DomainModel.Entity;
 using System.Data.Bindings.Collections.Generic;
-using QS.Project.Domain;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Gamma.GtkWidgets;
 using Gtk;
-using QS.Project.Repositories;
+using QS.Deletion;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
-using QS.Deletion;
+using QS.Project.Domain;
+using QS.Project.Repositories;
 
 namespace QS.Project.Dialogs.GtkUI
 {
@@ -30,17 +28,33 @@ namespace QS.Project.Dialogs.GtkUI
 		private void ConfigureDlg()
 		{
 			treeviewUsers.ColumnsConfig = ColumnsConfigFactory.Create<UserBase>()
-				.AddColumn("Код").AddNumericRenderer(x => x.Id)
-				.AddColumn("Логин").AddTextRenderer(x => x.Login)
-				.AddColumn("Имя").AddTextRenderer(x => x.Name)
-				.AddColumn("Администратор").AddToggleRenderer(x => x.IsAdmin)
-				.RowCells().AddSetter((CellRendererText cell, UserBase node) => {
-					if(node.Deactivated) {
-						cell.Foreground = "gray";
-					} else {
-						cell.Foreground = "black";
-					}
-				})
+				.AddColumn("Код")
+					.AddNumericRenderer(x => x.Id)
+				.AddColumn("Логин")
+					.AddTextRenderer(x => x.Login)
+				.AddColumn("Имя")
+					.AddTextRenderer(x => x.Name)
+				.AddColumn("Администратор")
+					.AddToggleRenderer(x => x.IsAdmin)
+					.Editing(false)
+				.RowCells()
+					.AddSetter<CellRendererText>(
+						(c, n) => {
+							if(n.IsAdmin && n.Deactivated) {
+								c.Foreground = "teal";
+								return;
+							}
+							if(n.IsAdmin && !n.Deactivated) {
+								c.Foreground = "blue";
+								return;
+							}
+							if(!n.IsAdmin && n.Deactivated) {
+								c.Foreground = "gray";
+								return;
+							}
+							c.Foreground = "black";
+						}
+					)
 				.Finish();
 			usersModel.UpdateUsers(chkShowInactive.Active);
 		}
@@ -57,15 +71,10 @@ namespace QS.Project.Dialogs.GtkUI
 
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
-			var selectedUser = treeviewUsers.GetSelectedObject() as UserBase;
-			if(selectedUser == null) {
-				return;
-			}
-
-			if(DeleteHelper.DeleteEntity(typeof(UserBase), selectedUser.Id)) {
+			if (treeviewUsers.GetSelectedObject() is UserBase selectedUser && DeleteHelper.DeleteEntity(typeof(UserBase), selectedUser.Id)) {
 				mySQLUserRepository.DropUser(selectedUser.Login);
 
-				if(selectedUser.Id == UserRepository.GetCurrentUserId()) {
+				if (selectedUser.Id == UserRepository.GetCurrentUserId()) {
 					MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent,
 										   MessageType.Warning, ButtonsType.Close,
 										   "Был удален пользователь, под которым Вы подключились к базе данных, чтобы недопустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
@@ -85,26 +94,23 @@ namespace QS.Project.Dialogs.GtkUI
 
 		private void EditUser()
 		{
-			var selectedUser = treeviewUsers.GetSelectedObject() as UserBase;
-			if(selectedUser == null) {
-				return;
-			}
+			if (treeviewUsers.GetSelectedObject() is UserBase selectedUser) {
+				UserDialog userDialog = new UserDialog(selectedUser.Id);
+				userDialog.ShowAll();
+				if (userDialog.Run() == (int)ResponseType.Ok)
+					usersModel.UpdateUsers(chkShowInactive.Active);
 
-			UserDialog userDialog = new UserDialog(selectedUser.Id);
-			userDialog.ShowAll();
-			if(userDialog.Run() == (int)ResponseType.Ok) {
-				usersModel.UpdateUsers(chkShowInactive.Active);
+				userDialog.Destroy();
 			}
-			userDialog.Destroy();
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
 			UserDialog userDialog = new UserDialog();
 			userDialog.ShowAll();
-			if(userDialog.Run() == (int)ResponseType.Ok) {
+			if (userDialog.Run() == (int)ResponseType.Ok)
 				usersModel.UpdateUsers(chkShowInactive.Active);
-			}
+
 			userDialog.Destroy();
 		}
 
@@ -121,25 +127,20 @@ namespace QS.Project.Dialogs.GtkUI
 		GenericObservableList<UserBase> observableUsers;
 		public virtual GenericObservableList<UserBase> ObservableUsers {
 			get {
-				if(observableUsers == null) {
+				if (observableUsers == null)
 					ObservableUsers = new GenericObservableList<UserBase>();
-				}
 				return observableUsers;
 			}
-			set {
-				SetField(ref observableUsers, value, () => ObservableUsers);
-			}
+			set => SetField(ref observableUsers, value, () => ObservableUsers);
 		}
 
 		public void UpdateUsers(bool showDeactivated)
 		{
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				var users = UserRepository.GetUsers(uow, showDeactivated);
 				ObservableUsers = new GenericObservableList<UserBase>(users);
 				UsersUpdated?.Invoke(this, EventArgs.Empty);
 			}
 		}
-
 	}
-
 }

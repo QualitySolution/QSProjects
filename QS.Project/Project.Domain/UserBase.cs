@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using QS.DomainModel;
 using QS.DomainModel.Entity;
-using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.UoW;
 using QS.Permissions;
 using QS.Project.Repositories;
-using System.Collections.ObjectModel;
 
 namespace QS.Project.Domain
 {
@@ -83,19 +80,25 @@ namespace QS.Project.Domain
 
 		public virtual void LoadUserPermissions()
 		{
-			if(Id == 0) {
+			if (Id == 0) {
 				return;
 			}
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				var userPresetPermission = UserPermissionRepository.GetUserAllPresetPermissions(uow, Id)
 					.Where(x => !x.IsLostPermission)
 					.ToDictionary(x => x.PermissionName);
 				var userPermissions = new Dictionary<string, bool>();
-				foreach(var item in PermissionsSettings.PresetPermissions.Keys) {
+				foreach (var item in PermissionsSettings.PresetPermissions.Keys) {
 					userPermissions.Add(item, userPresetPermission.ContainsKey(item));
 				}
 				permissions = new ReadOnlyDictionary<string, bool>(userPermissions);
 			}
 		}
+	}
+
+	public class UserBaseEqualityComparer : IEqualityComparer<UserBase>
+	{
+		public bool Equals(UserBase x, UserBase y) => x.Id == y.Id;
+		public int GetHashCode(UserBase obj) => obj.Id.GetHashCode();
 	}
 }

@@ -63,6 +63,8 @@ namespace QS.Project.Dialogs.GtkUI
 			this.Name = "QS.Project.Dialogs.GtkUI.UserDialog";
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			this.Modal = true;
+			this.DefaultWidth = 1100;
+			this.DefaultHeight = 850;
 			// Internal child QS.Project.Dialogs.GtkUI.UserDialog.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
@@ -340,8 +342,6 @@ namespace QS.Project.Dialogs.GtkUI
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 414;
-			this.DefaultHeight = 437;
 			this.Show();
 			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
 		}

@@ -4,12 +4,12 @@ namespace QS.Project.Domain
 	public interface IEntityConstructorParam
 	{
 		/// <summary>
-		/// Необходимо создание новой сущьности
+		/// Необходимо создание новой сущности
 		/// </summary>
 		bool IsNewEntity { get; }
 
 		/// <summary>
-		/// Id существующей сущьности
+		/// Id существующей сущности
 		/// </summary>
 		int EntityOpenId { get; }
 

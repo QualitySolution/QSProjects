@@ -705,6 +705,8 @@
     <property name="MemberName" />
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
+    <property name="DefaultWidth">1100</property>
+    <property name="DefaultHeight">850</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">
@@ -1179,6 +1181,8 @@
     <property name="MemberName" />
     <property name="Title" translatable="yes">Пользователи</property>
     <property name="WindowPosition">Center</property>
+    <property name="DefaultWidth">450</property>
+    <property name="DefaultHeight">600</property>
     <property name="Buttons">1</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">

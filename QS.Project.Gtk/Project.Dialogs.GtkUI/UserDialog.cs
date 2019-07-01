@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
-using QS.Widgets.GtkUI;
-using QS.Project.Repositories;
 using QS.Project.DB;
 using QS.Project.Domain;
-using QS.Project.Dialogs.GtkUI.ServiceDlg;
-using QS.Permissions;
-using QS.DomainModel.UoW;
+using QS.Project.Repositories;
+using QS.Widgets.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
 {
@@ -28,7 +25,7 @@ namespace QS.Project.Dialogs.GtkUI
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private const string passFill = "n0tChanG3d";
 
-		private bool isNewUser => User.Id == 0;
+		private bool IsNewUser => User.Id == 0;
 
 		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
@@ -83,15 +80,13 @@ namespace QS.Project.Dialogs.GtkUI
 			entryEmail.Binding.AddBinding(User, x => x.Email, w => w.Text).InitializeFromSource();
 			checkAdmin.Binding.AddBinding(User, x => x.IsAdmin, w => w.Active).InitializeFromSource();
 			textviewComments.Binding.AddBinding(User, x => x.Email, w => w.Buffer.Text).InitializeFromSource();
-
+			checkDeactivated.Binding.AddBinding(User, x => x.Deactivated, w => w.Active).InitializeFromSource();
 			InitializePermissionViews();
 		}
 
-
-
 		private void InitializePermissionViews()
 		{
-			if(isNewUser) {
+			if(IsNewUser) {
 				return;
 			}
 
@@ -119,8 +114,6 @@ namespace QS.Project.Dialogs.GtkUI
 
 		protected void OnButtonOkClicked(object sender, EventArgs e)
 		{
-			string sql;
-
 			if(entryLogin.Text == "root") {
 				string Message = "Операции с пользователем root запрещены.";
 				MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent,
@@ -132,7 +125,7 @@ namespace QS.Project.Dialogs.GtkUI
 				return;
 			}
 
-			if(isNewUser) {
+			if(IsNewUser) {
 				mySQLUserRepository.CreateUser(User, entryPassword.Text, GetExtraFieldsForSelect(), GetExtraFieldsForInsert(), GetPermissionValues());
 			} else {
 				mySQLUserRepository.UpdateUser(User, entryPassword.Text, GetExtraFieldsForUpdate(), GetPermissionValues());
@@ -156,9 +149,9 @@ namespace QS.Project.Dialogs.GtkUI
 		private string GetExtraFieldsForUpdate()
 		{
 			if(permissionViews == null || permissionViews.Count == 0)
-				return String.Empty;
+				return string.Empty;
 
-			string FieldsString = "";
+			string FieldsString = string.Empty;
 			foreach(var view in permissionViews) {
 				FieldsString += ", " + view.DBFieldName + " = @" + view.DBFieldName;
 			}
@@ -168,17 +161,17 @@ namespace QS.Project.Dialogs.GtkUI
 		private string GetExtraFieldsForSelect()
 		{
 			if(permissionViews == null || permissionViews.Count == 0)
-				return String.Empty;
+				return string.Empty;
 
-			return String.Join("", permissionViews.Select(x => $", {x.DBFieldName}"));
+			return string.Join(string.Empty, permissionViews.Select(x => $", {x.DBFieldName}"));
 		}
 
 		private string GetExtraFieldsForInsert()
 		{
 			if(permissionViews == null || permissionViews.Count == 0)
-				return String.Empty;
+				return string.Empty;
 
-			return String.Join("", permissionViews.Select(x => $", @{x.DBFieldName}"));
+			return string.Join(string.Empty, permissionViews.Select(x => $", @{x.DBFieldName}"));
 		}
 
 		#endregion
