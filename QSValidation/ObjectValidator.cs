@@ -25,6 +25,9 @@ namespace QSValidation
 
 		public bool Validate()
 		{
+			if(validationContext == null) {
+				validationContext = new ValidationContext(validatableObject, null, null);
+			}
 			return Validate(validationContext);
 		}
 
