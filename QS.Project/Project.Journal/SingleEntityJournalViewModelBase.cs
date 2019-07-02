@@ -44,8 +44,6 @@ namespace QS.Project.Journal
 
 		protected abstract Func<TNode, TEntityTab> OpenDialogFunction { get; }
 
-		public bool IsActive => UoW.IsAlive;
-
 		public void SearchValues(params string[] values)
 		{
 			Search.SearchValues = values;
