@@ -64,23 +64,14 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		private IEntitySelector entitySelector;
-		private IEntitySelectorFactory entitySelectorFactory;
+		private IEntityAutocompleteSelectorFactory entitySelectorFactory;
 
-		public void SetEntitySelectorFactory(IEntitySelectorFactory entitySelectorFactory)
+		public void SetEntitySelectorFactory(IEntityAutocompleteSelectorFactory entitySelectorFactory)
 		{
 			this.entitySelectorFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
-			CreateSelector();
+			SubjectType = entitySelectorFactory.EntityType;
 			entryObject.IsEditable = true;
 			ConfigureEntryComplition();
-		}
-
-		private void CreateSelector()
-		{
-			entitySelector = entitySelectorFactory.CreateSelector();
-			SubjectType = entitySelector.EntityType;
-			entitySelector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
-			entitySelector.CloseTab += EntitySelector_CloseTab;
 		}
 
 		private void ConfigureEntryComplition()
@@ -92,13 +83,6 @@ namespace QS.Widgets.GtkUI
 			entryObject.Completion.PackStart(cell, true);
 			entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
 		}
-
-		void EntitySelector_CloseTab(object sender, TdiTabCloseEventArgs e)
-		{
-			entitySelector.CloseTab -= EntitySelector_CloseTab;
-			entitySelector = null;
-		}
-
 
 		void JournalViewModel_OnEntitySelectedResult(object sender, JournalSelectedNodesEventArgs e)
 		{
@@ -214,10 +198,10 @@ namespace QS.Widgets.GtkUI
 		/// </summary>
 		public void OpenSelectDialog(string newTabTitle = null)
 		{
-			if(entitySelector == null || !entitySelector.IsActive) {
-				CreateSelector();
+			using(var selector = entitySelectorFactory.CreateSelector()) {
+				selector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
+				MyTab.TabParent.AddSlaveTab(MyTab, selector);
 			}
-			MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
 		}
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
@@ -296,8 +280,8 @@ namespace QS.Widgets.GtkUI
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string), typeof(object));
 
-			using(var autoCompleteSelector = entitySelectorFactory.CreateSelector()) {
-				autoCompleteSelector.Search.SearchValues = new string[] { entryObject.Text };
+			using(var autoCompleteSelector = entitySelectorFactory.CreateAutocompleteSelector()) {
+				autoCompleteSelector.SearchValues(entryObject.Text);
 
 				foreach(var item in autoCompleteSelector.Items) {
 					completionListStore.AppendValues(
@@ -361,8 +345,6 @@ namespace QS.Widgets.GtkUI
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
-			if(entitySelector != null)
-				entitySelector.Dispose();
 			base.OnDestroyed();
 		}
 	}

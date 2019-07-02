@@ -227,6 +227,9 @@
     <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\FilterableSingleEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\EntitySelector\IEntityAutocompleteSelectorFactory.cs" />
+    <Compile Include="Project.Journal\EntitySelector\DefaultEntityAutocompleteSelectorFactory.cs" />
+    <Compile Include="Project.Journal\EntitySelector\IEntityAutocompleteSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

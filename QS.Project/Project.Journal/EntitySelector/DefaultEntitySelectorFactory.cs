@@ -2,16 +2,19 @@
 using QS.Services;
 using QS.DomainModel.Config;
 using System.Reflection;
+using QS.DomainModel.Entity;
 namespace QS.Project.Journal.EntitySelector
 {
-	public class DefaultEntitySelectorFactory<TJournalViewModel, TJournalFilterViewModel> : IEntitySelectorFactory
+	public class DefaultEntitySelectorFactory<TEntity, TJournalViewModel, TJournalFilterViewModel> : IEntitySelectorFactory
 		where TJournalViewModel : JournalViewModelBase, IEntitySelector
 		where TJournalFilterViewModel : class, IJournalFilter
+		where TEntity : class, IDomainObject
 	{
 		private readonly ICommonServices commonServices;
-		private ConstructorInfo journalConstructorInfo;
-		private ConstructorInfo filterConstructorInfo;
-		//private TJournalFilterViewModel filter;
+		protected ConstructorInfo journalConstructorInfo;
+		protected ConstructorInfo filterConstructorInfo;
+
+		public Type EntityType => typeof(TEntity);
 
 		public DefaultEntitySelectorFactory(ICommonServices commonServices)
 		{

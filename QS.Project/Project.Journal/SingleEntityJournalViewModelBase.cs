@@ -9,7 +9,7 @@ using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntityJournalViewModelBase<TNode> , IEntitySelector
+	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntityJournalViewModelBase<TNode> , IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase<TEntity>
 		where TEntityTab : class, ITdiTab
@@ -45,5 +45,10 @@ namespace QS.Project.Journal
 		protected abstract Func<TNode, TEntityTab> OpenDialogFunction { get; }
 
 		public bool IsActive => UoW.IsAlive;
+
+		public void SearchValues(params string[] values)
+		{
+			Search.SearchValues = values;
+		}
 	}
 }
