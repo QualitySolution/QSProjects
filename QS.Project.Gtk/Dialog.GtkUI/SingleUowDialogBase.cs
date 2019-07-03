@@ -28,5 +28,11 @@ namespace QS.Dialog.Gtk
 			Save();
 			OnCloseTab(false);
 		}
+
+		public override void Destroy()
+		{
+			UoW?.Dispose();
+			base.Destroy();
+		}
 	}
 }
