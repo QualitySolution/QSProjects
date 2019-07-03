@@ -4,6 +4,7 @@ using System.Linq;
 using QS.DomainModel.NotifyChange;
 using QS.RepresentationModel;
 using QS.RepresentationModel.GtkUI;
+using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -12,6 +13,8 @@ namespace QSOrmProject.RepresentationModel
 	/// </summary>
 	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
+		public Action<IUnitOfWork> DisposeUoWAction { get; set; }
+
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		public Type ObjectType => typeof(TEntity);
@@ -52,7 +55,7 @@ namespace QSOrmProject.RepresentationModel
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
-
+			DisposeUoWAction?.Invoke(UoW);
 		}
 	}
 }
