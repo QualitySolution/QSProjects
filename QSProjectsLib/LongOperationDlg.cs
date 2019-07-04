@@ -58,15 +58,22 @@ namespace QSProjectsLib
 					});
 			}
 		}
-			
-		public void ReportProgress(int currentStep,string suboperationName)
+
+		public void ReportProgress(int currentStep, string suboperationName)
 		{
-			Gtk.Application.Invoke((sender, args) =>
-				{
-					progressbar1.Adjustment.Value = currentStep;
-					progressbar1.Text = String.Format("{0} ({1}/{2})",
-						suboperationName, progressbar1.Adjustment.Value + 1, progressbar1.Adjustment.Upper+1);			
-				});
+			Gtk.Application.Invoke(
+				(sender, args) => {
+					if(progressbar1?.Adjustment != null) {//костыль. иногда получается, что Adjustment нулл
+						progressbar1.Adjustment.Value = currentStep;
+						progressbar1.Text = String.Format(
+							"{0} ({1}/{2})",
+							suboperationName,
+							progressbar1.Adjustment.Value + 1,
+							progressbar1.Adjustment.Upper + 1
+						);
+					}
+				}
+			);
 		}
 
 		public static LongOperationResult StartOperation(Action<IWorker> doWork, string name, int steps, bool modal=true){			
