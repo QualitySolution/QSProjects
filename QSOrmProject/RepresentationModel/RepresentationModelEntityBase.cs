@@ -4,7 +4,6 @@ using System.Linq;
 using QS.DomainModel.NotifyChange;
 using QS.RepresentationModel;
 using QS.RepresentationModel.GtkUI;
-using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -13,9 +12,7 @@ namespace QSOrmProject.RepresentationModel
 	/// </summary>
 	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
-		public Action<IUnitOfWork> DisposeUoWAction { get; set; }
-
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public Type ObjectType => typeof(TEntity);
 
@@ -30,17 +27,17 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		/// <returns><c>true</c>, если небходимо обновлять список.</returns>
 		/// <param name="updatedSubject">Обновившийся объект</param>
-		protected abstract bool NeedUpdateFunc (TEntity updatedSubject);
+		protected abstract bool NeedUpdateFunc(TEntity updatedSubject);
 
 		/// <summary>
 		/// Создает новый базовый клас и подписывается на обновления для типа TEntity, при этом конструкторе необходима реализация NeedUpdateFunc (TEntity updatedSubject)
 		/// </summary>
-		protected RepresentationModelEntityBase ()
+		protected RepresentationModelEntityBase()
 		{
 			NotifyConfiguration.Instance.BatchSubscribeOnEntity<TEntity>(OnExternalUpdate);
 		}
 
-		void OnExternalUpdate (EntityChangeEvent[] changeEvents)
+		void OnExternalUpdate(EntityChangeEvent[] changeEvents)
 		{
 			if(!UoW.IsAlive) {
 				logger.Warn($"Получена нотификация о внешнем обновлении данные в {this}, в тот момент когда сессия уже закрыта. Возможно RepresentationModel, осталась в памяти при закрытой сессии.");
@@ -53,9 +50,9 @@ namespace QSOrmProject.RepresentationModel
 
 		public void Destroy()
 		{
+			Dispose();
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
-			DisposeUoWAction?.Invoke(UoW);
 		}
 	}
 }

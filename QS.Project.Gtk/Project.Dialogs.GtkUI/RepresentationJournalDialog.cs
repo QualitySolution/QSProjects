@@ -19,13 +19,7 @@ namespace QS.Project.Dialogs.GtkUI
         private static Logger logger = LogManager.GetCurrentClassLogger ();
 		private IRepresentationModel representationModel;
 
-        public bool? UseSlider
-        {
-            get
-            {
-               return EntityConfig?.DefaultUseSlider;
-            }
-        }
+		public bool? UseSlider => EntityConfig?.DefaultUseSlider;
 
 		#region Hash
 
@@ -157,7 +151,7 @@ namespace QS.Project.Dialogs.GtkUI
 													? DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType)
 													: null;
 
-		public override IUnitOfWork UoW { get => RepresentationModel.UoW; }
+		public override IUnitOfWork UoW => RepresentationModel.UoW;
 
 		public yTreeView TreeView => tableview;
 
@@ -378,6 +372,12 @@ namespace QS.Project.Dialogs.GtkUI
 			ylabelSearchAnd3.Visible = entrySearch4.Visible = count > 3;
 			buttonAddAnd.Sensitive = count < 4;
 			searchEntryShown = count;
+		}
+
+		public override void Destroy()
+		{
+			Dispose();
+			base.Destroy();
 		}
 
 		#endregion

@@ -57,6 +57,7 @@ namespace QSOrmProject.RepresentationModel
 
 		public void Destroy()
 		{
+			Dispose();
 			logger.Debug("{0} called Destroy()", this.GetType());
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 		}
