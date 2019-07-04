@@ -12,36 +12,27 @@ namespace QSOrmProject.RepresentationModel
 	/// <summary>
 	/// Базовый класс презентационной модели, не используйте его без необходимости. Используйте наследников.
 	/// </summary>
-	public abstract class RepresentationModelBase<TNode>
+	public abstract class RepresentationModelBase<TNode> : IDisposable
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		#region IRepresentationModel implementation
 
-		IUnitOfWork uow;
+		public IUnitOfWork UoW { get; set; }
 
-		public IUnitOfWork UoW {
-			get { return uow; }
-			set { uow = value; }
-		}
-
+		bool canDisposeUoW = false;
 		public event EventHandler ItemsListUpdated;
 
 		protected void OnItemsListUpdated()
 		{
-			if (ItemsListUpdated != null)
-				ItemsListUpdated (this, EventArgs.Empty);
+			ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 		}
 
 		List<TNode> filtredItemsList;
 
 		IList<TNode> itemsList;
 
-		public IList ItemsList {
-			get {
-				return filtredItemsList ?? itemsList as IList;
-			}
-		}
+		public IList ItemsList => filtredItemsList ?? itemsList as IList;
 
 		protected void SetItemsSource (IList<TNode> list)
 		{
@@ -90,6 +81,12 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
+		protected void CreateDisposableUoW()
+		{
+			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			canDisposeUoW = true;
+		}
+
 		void RepresentationFilter_Refiltered (object sender, EventArgs e)
 		{
 			UpdateNodes ();
@@ -97,9 +94,7 @@ namespace QSOrmProject.RepresentationModel
 
 		public abstract void UpdateNodes ();
 
-		public Type NodeType {
-			get { return typeof(TNode); }
-		}
+		public Type NodeType => typeof(TNode);
 
 		public virtual bool PopupMenuExist { get{ return false;}}
 
@@ -111,16 +106,9 @@ namespace QSOrmProject.RepresentationModel
 
 		#region Косаемо поиска
 
-		public bool SearchFieldsExist{
-			get { return SearchFields.Any ();
-			}
-		}
+		public bool SearchFieldsExist => SearchFields.Any();
 
-		public bool CanEntryFastSelect {
-			get {
-				return typeof(TNode).GetInterface(nameof(INodeWithEntryFastSelect)) != null && SearchFieldsExist;
-			}
-		}
+		public bool CanEntryFastSelect => typeof(TNode).GetInterface(nameof(INodeWithEntryFastSelect)) != null && SearchFieldsExist;
 
 		string[] searchStrings;
 
@@ -141,14 +129,9 @@ namespace QSOrmProject.RepresentationModel
 			}
 		}
 
-		public string SearchString{
-			get{
-				return SearchStrings != null && SearchStrings.Length > 0
-					? SearchStrings[0] : String.Empty;
-			}
-			set{
-				SearchStrings = new string[]{ value };
-			}
+		public string SearchString {
+			get => SearchStrings != null && SearchStrings.Any() ? SearchStrings[0] : string.Empty;
+			set => SearchStrings = new string[] { value };
 		}
 
 		private PropertyInfo[] searchPropCache;
@@ -239,6 +222,12 @@ namespace QSOrmProject.RepresentationModel
 					return false;
 			}
 			return true;
+		}
+
+		public void Dispose()
+		{
+			if(canDisposeUoW)
+				UoW?.Dispose();
 		}
 
 		#endregion
