@@ -92,6 +92,12 @@ namespace QSReport
 		{
 			ReportPrinted?.Invoke(this, EventArgs.Empty);
 		}
+
+		public override void Destroy()
+		{
+			parametersWidget.Destroy();
+			base.Destroy();
+		}
 	}
 }
 

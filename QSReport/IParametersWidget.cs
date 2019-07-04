@@ -8,6 +8,8 @@ namespace QSReport
 		event EventHandler<LoadReportEventArgs> LoadReport;
 
 		string Title { get;}
+
+		void Destroy();
 	}
 
 	public class LoadReportEventArgs : EventArgs
