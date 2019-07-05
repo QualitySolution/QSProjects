@@ -11,13 +11,13 @@ namespace QS.Project.Journal
 {
 	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntityJournalViewModelBase<TNode> , IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
-		where TNode : JournalEntityNodeBase<TEntity>
+		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
 	{
 		private readonly ICommonServices commonServices;
 		public Type EntityType { get; }
 
-		public SingleEntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
+		protected SingleEntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
@@ -43,6 +43,8 @@ namespace QS.Project.Journal
 		protected abstract Func<TEntityTab> CreateDialogFunction { get; }
 
 		protected abstract Func<TNode, TEntityTab> OpenDialogFunction { get; }
+
+		public bool IsActive => UoW.IsAlive;
 
 		public void SearchValues(params string[] values)
 		{

@@ -22,6 +22,13 @@ namespace QS.Project.Journal.Search
 			this.aliasPropertiesToSearch = aliasPropertiesToSearch;
 		}
 
+		private IProjection[] propertiesToSearch;
+
+		public void SetSearchProperties<TEntity>(Expression<Func<TEntity, object>>[] aliasPropertiesToSearch)
+		{
+			propertiesToSearch = aliasPropertiesToSearch.Select(x => Projections.Property(x)).ToArray();
+		}
+
 		public ICriterion GetCriterionForSearch()
 		{
 			if(search == null)
@@ -30,15 +37,27 @@ namespace QS.Project.Journal.Search
 			ICriterion criterion = null;
 
 			var searchString = search.SearchValues?.FirstOrDefault();
-			if(string.IsNullOrWhiteSpace(searchString) || aliasPropertiesToSearch == null || !aliasPropertiesToSearch.Any())
+			if(string.IsNullOrWhiteSpace(searchString))
 				return criterion;
+			
+			if(aliasPropertiesToSearch != null) {
+				foreach(var expr in aliasPropertiesToSearch) {
+					var likeExpr = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(expr)), searchString, MatchMode.Anywhere);
+					if(criterion == null)
+						criterion = likeExpr;
+					else
+						criterion = Restrictions.Or(criterion, likeExpr);
+				}
+			}
 
-			foreach(var expr in aliasPropertiesToSearch) {
-				var likeExpr = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(expr)), searchString, MatchMode.Anywhere);
-				if(criterion == null)
-					criterion = likeExpr;
-				else
-					criterion = Restrictions.Or(criterion, likeExpr);
+			if(propertiesToSearch != null) {
+				foreach(var propertyProjection in propertiesToSearch) {
+					var likeExpr = Restrictions.Like(Projections.Cast(NHibernateUtil.String, propertyProjection), searchString, MatchMode.Anywhere);
+					if(criterion == null)
+						criterion = likeExpr;
+					else
+						criterion = Restrictions.Or(criterion, likeExpr);
+				}
 			}
 
 			return criterion;

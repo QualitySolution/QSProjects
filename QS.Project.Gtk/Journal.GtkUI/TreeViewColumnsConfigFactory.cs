@@ -29,6 +29,12 @@ namespace QS.Journal.GtkUI
 			if(journalType == null) {
 				throw new ArgumentNullException(nameof(journalType));
 			}
+			if(typeof(SimpleEntityJournalViewModelBase).IsAssignableFrom(journalType)) {
+				return FluentColumnsConfig<CommonJournalNode>.Create()
+					.AddColumn("Номер").AddTextRenderer(x => x.Id.ToString())
+					.AddColumn("Название").AddTextRenderer(x => x.Title)
+					.Finish();
+			}
 
 			if(!columnsConfigs.ContainsKey(journalType))
 				throw new ApplicationException($"Не настроено сопоставление конфигурации колонок для модели представления \"{journalType.Name}\"");

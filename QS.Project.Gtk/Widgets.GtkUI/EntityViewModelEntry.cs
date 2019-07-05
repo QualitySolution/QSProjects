@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using QS.Project.Journal.EntitySelector;
 using System.Threading.Tasks;
 using System.Threading;
+using QS.RepresentationModel.GtkUI;
 
 namespace QS.Widgets.GtkUI
 {
@@ -64,9 +65,19 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		private IEntityAutocompleteSelectorFactory entitySelectorFactory;
+		private IEntityAutocompleteSelectorFactory entitySelectorAutocompleteFactory;
+		private IEntitySelectorFactory entitySelectorFactory;
 
-		public void SetEntitySelectorFactory(IEntityAutocompleteSelectorFactory entitySelectorFactory)
+		public void SetEntityAutocompleteSelectorFactory(IEntityAutocompleteSelectorFactory entitySelectorFactory)
+		{
+			entitySelectorAutocompleteFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
+			this.entitySelectorFactory = entitySelectorAutocompleteFactory;
+			SubjectType = entitySelectorFactory.EntityType;
+			entryObject.IsEditable = true;
+			ConfigureEntryComplition();
+		}
+
+		public void SetEntitySelectorFactory(IEntitySelectorFactory entitySelectorFactory)
 		{
 			this.entitySelectorFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
 			SubjectType = entitySelectorFactory.EntityType;
@@ -193,15 +204,23 @@ namespace QS.Widgets.GtkUI
 			UpdateWidget();
 		}
 
+		IEntitySelector entitySelector;
+
 		/// <summary>
 		/// Открывает диалог выбора объекта
 		/// </summary>
 		public void OpenSelectDialog(string newTabTitle = null)
 		{
-			using(var selector = entitySelectorFactory.CreateSelector()) {
-				selector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
-				MyTab.TabParent.AddSlaveTab(MyTab, selector);
+			if(entitySelector != null && entitySelector.IsActive) {
+				MyTab.TabParent.SwitchOnTab(entitySelector);
+				return;
 			}
+			if(entitySelector != null) {
+				entitySelector.Dispose();
+			}
+			entitySelector = entitySelectorFactory.CreateSelector();
+			entitySelector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
+			MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
 		}
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
@@ -280,14 +299,21 @@ namespace QS.Widgets.GtkUI
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string), typeof(object));
 
-			using(var autoCompleteSelector = entitySelectorFactory.CreateAutocompleteSelector()) {
+			using(var autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector()) {
 				autoCompleteSelector.SearchValues(entryObject.Text);
 
 				foreach(var item in autoCompleteSelector.Items) {
-					completionListStore.AppendValues(
-						(item as JournalNodeBase).Title,
-						item
-					);
+					if(item is JournalNodeBase) {
+						completionListStore.AppendValues(
+							(item as JournalNodeBase).Title,
+							item
+						);
+					} else if(item is INodeWithEntryFastSelect) {
+						completionListStore.AppendValues(
+							(item as INodeWithEntryFastSelect).EntityTitle,
+							item
+						);
+					}
 				}
 			}
 

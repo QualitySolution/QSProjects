@@ -69,7 +69,7 @@ namespace QS.DomainModel.Entity
 			return GetSubjectNames (subject.GetType ());
 		}
 
-		public static AppellativeAttribute GetSubjectNames(Type subjectType)
+		public static AppellativeAttribute GetSubjectNames(this Type subjectType)
 		{
 			object[] att = subjectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
 			if (att.Length > 0) {

@@ -135,6 +135,11 @@ namespace QS.Project.Journal
 			querySearch.SetSearchProperties(aliasProperties);
 		}
 
+		protected void RegisterPropertiesToSearch<TEntity>(params Expression<Func<TEntity, object>>[] properties)
+		{
+			querySearch.SetSearchProperties(properties);
+		}
+
 		#endregion Search
 
 		#region Dynamic load
