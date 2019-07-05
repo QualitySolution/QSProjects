@@ -95,7 +95,7 @@ namespace QSReport
 
 		public override void Destroy()
 		{
-			parametersWidget.Destroy();
+			parametersWidget?.Destroy();
 			base.Destroy();
 		}
 	}
