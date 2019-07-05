@@ -386,7 +386,16 @@ namespace QS.Tdi.Gtk
 
 		private TabVBox GetTabBoxForTab(ITdiTab tab)
 		{
-			return this.Children.SingleOrDefault(w => (w as TabVBox).Tab == tab) as TabVBox;
+			return this.Children.SingleOrDefault(w => {
+				TabVBox tabBox = (w as TabVBox);
+				if(tabBox.Tab == tab) {
+					return true;
+				}
+				if(tabBox.Tab is TdiSliderTab) {
+					return (tabBox.Tab as TdiSliderTab).Journal == tab;
+				}
+				return false;
+			}) as TabVBox;
 		}
 	}
 
