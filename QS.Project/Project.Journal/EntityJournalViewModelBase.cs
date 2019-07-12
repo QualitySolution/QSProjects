@@ -13,6 +13,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using QS.Project.Journal.EntityLoader;
 using QS.Project.Journal.Search;
+using NHibernate.Criterion;
 
 namespace QS.Project.Journal
 {
@@ -51,7 +52,7 @@ namespace QS.Project.Journal
 			DynamicLoadingEnabled = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 			Search.OnSearch += Search_OnSearch;
-			querySearch = new QuerySearch(Search);
+			searchHelper = new SearchHelper(Search);
 		}
 
 		void Search_OnSearch(object sender, EventArgs e)
@@ -128,16 +129,16 @@ namespace QS.Project.Journal
 
 		#region Search
 
-		private readonly QuerySearch querySearch;
+		private readonly SearchHelper searchHelper;
 
-		protected void RegisterAliasPropertiesToSearch(params Expression<Func<object>>[] aliasProperties)
+		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
 		{
-			querySearch.SetSearchProperties(aliasProperties);
+			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
 		}
 
-		protected void RegisterPropertiesToSearch<TEntity>(params Expression<Func<TEntity, object>>[] properties)
+		protected ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] propertiesExpr)
 		{
-			querySearch.SetSearchProperties(properties);
+			return searchHelper.GetSearchCriterion(propertiesExpr);
 		}
 
 		#endregion Search
@@ -213,7 +214,7 @@ namespace QS.Project.Journal
 
 			IEntityLoader<TNode> loader = null;
 			if(DynamicLoadingEnabled) {
-				loader = new DynamicEntityLoader<TEntity, TNode>(queryFunc, querySearch);
+				loader = new DynamicEntityLoader<TEntity, TNode>(queryFunc);
 			} else {
 				loader = new AllEntityLoader<TEntity, TNode>(queryFunc);
 			}

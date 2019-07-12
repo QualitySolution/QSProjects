@@ -14,13 +14,11 @@ namespace QS.Project.Journal.EntityLoader
 		where TNode : JournalEntityNodeBase
 	{
 		private readonly Func<IQueryOver<TEntity>> queryFunc;
-		private readonly IQuerySearch querySearch;
 		private readonly int defaultPageSize;
 
-		public DynamicEntityLoaderWithCount(Func<IQueryOver<TEntity>> queryFunc, IQuerySearch querySearch, int pageSize = 100)
+		public DynamicEntityLoaderWithCount(Func<IQueryOver<TEntity>> queryFunc, int pageSize = 100)
 		{
 			this.queryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
-			this.querySearch = querySearch ?? throw new ArgumentNullException(nameof(querySearch));
 			this.defaultPageSize = pageSize;
 			HasUnloadedItems = true;
 			TotalItemsCount = null;
@@ -37,11 +35,7 @@ namespace QS.Project.Journal.EntityLoader
 
 		public List<TNode> LoadItems(int? pageSize = null)
 		{
-			ICriterion searchCriterion = querySearch.GetCriterionForSearch();
 			var workQuery = queryFunc.Invoke().Clone();
-			if(searchCriterion != null) {
-				workQuery.Where(searchCriterion);
-			}
 
 			var itemsResult = workQuery.Skip(LoadedItemsCount).Take(pageSize ?? defaultPageSize).Future<TNode>();
 			if(TotalItemsCount == null) {

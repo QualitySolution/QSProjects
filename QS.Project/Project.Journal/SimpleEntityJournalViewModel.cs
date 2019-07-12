@@ -35,7 +35,6 @@ namespace QS.Project.Journal
 				throw new ArgumentNullException(nameof(openDlgFunc));
 			}
 
-			RegisterPropertiesToSearch(titleExp);
 			Register<TEntity, TEntityTab>(ItemsSourceQueryFunction, createDlgFunc, openDlgFunc);
 		}
 
@@ -70,6 +69,10 @@ namespace QS.Project.Journal
 			if(restrictionFunc != null) {
 				query.Where(restrictionFunc.Invoke());
 			}
+
+			query.Where(GetSearchCriterion(
+				titleExp
+			));
 
 			return query.SelectList(list => list
 					.Select(x => x.Id).WithAlias(() => resultAlias.Id)

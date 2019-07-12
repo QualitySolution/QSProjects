@@ -22,7 +22,10 @@ namespace QS.Project.Search.GtkUI
 		}
 
 		void ConfigureDlg() {
-			entSearchText.Changed += EntSearchText_Changed;
+			entrySearch.Changed += EntSearchText_Changed;
+			entrySearch2.Changed += EntSearchText_Changed;
+			entrySearch3.Changed += EntSearchText_Changed;
+			entrySearch4.Changed += EntSearchText_Changed;
 		}
 
 		DateTime lastChangedTime = DateTime.Now;
@@ -43,7 +46,7 @@ namespace QS.Project.Search.GtkUI
 							}
 						}
 						Application.Invoke((s, arg) => {
-							viewModel.SearchString = entSearchText.Text;
+							viewModel.SearchValues = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
 						});
 					} catch(Exception ex) {
 						logger.Error(ex, $"Ошибка во время ввода строки поиска");
@@ -54,10 +57,30 @@ namespace QS.Project.Search.GtkUI
 			}
 		}
 
-		protected void OnBtnClearClicked(object sender, EventArgs e)
+		protected void OnButtonSearchClearClicked(object sender, EventArgs e)
 		{
-			viewModel.SearchString = string.Empty; 
-			entSearchText.Text = string.Empty;
+			viewModel.SearchValues = new string[0];
+			entrySearch.Text = string.Empty;
+			entrySearch2.Text = string.Empty;
+			entrySearch3.Text = string.Empty;
+			entrySearch4.Text = string.Empty;
+		}
+
+		private int searchEntryShown = 1;
+
+		protected void OnButtonAddAndClicked(object sender, EventArgs e)
+		{
+			SearchVisible(searchEntryShown + 1);
+		}
+
+		private void SearchVisible(int count)
+		{
+			entrySearch.Visible = count > 0;
+			ylabelSearchAnd.Visible = entrySearch2.Visible = count > 1;
+			ylabelSearchAnd2.Visible = entrySearch3.Visible = count > 2;
+			ylabelSearchAnd3.Visible = entrySearch4.Visible = count > 3;
+			buttonAddAnd.Sensitive = count < 4;
+			searchEntryShown = count;
 		}
 
 		protected void OnEntSearchTextWidgetEvent(object o, Gtk.WidgetEventArgs args)
