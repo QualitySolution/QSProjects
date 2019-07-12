@@ -8,11 +8,11 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Utilities.Text;
 using System.ComponentModel.DataAnnotations;
-using QSValidation;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Services;
 using Gamma.Utilities;
+using QS.Validation;
 
 namespace QS.ViewModels
 {

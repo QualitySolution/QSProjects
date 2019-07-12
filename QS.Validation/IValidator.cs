@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace QSValidation
+namespace QS.Validation
 {
 	public interface IValidator
 	{

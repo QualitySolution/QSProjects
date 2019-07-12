@@ -46,16 +46,18 @@
     <Compile Include="ResultItem.cs" />
     <Compile Include="gtk-gui\QSValidation.ResultItem.cs" />
     <Compile Include="ValidationAttributes.cs" />
-    <Compile Include="ObjectValidator.cs" />
     <Compile Include="GtkValidationViewFactory.cs" />
-    <Compile Include="IValidationViewFactory.cs" />
-    <Compile Include="IValidationView.cs" />
-    <Compile Include="IValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Validation\QS.Validation.csproj">
+      <Project>{0178CD90-AD47-45BD-887E-416CAFE86236}</Project>
+      <Name>QS.Validation</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QSValidation
+namespace QS.Validation
 {
 	public interface IValidationView
 	{

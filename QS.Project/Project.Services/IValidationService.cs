@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using QSValidation;
+﻿using System.ComponentModel.DataAnnotations;
+using QS.Validation;
 
 namespace QS.Services
 {
