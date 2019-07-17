@@ -18,10 +18,5 @@ namespace QS.Services
 		{
 			return new ObjectValidator(validationViewFactory, validatableObject, validationContext);
 		}
-
-		IValidator IValidationService.GetValidator(IValidatableObject validatableObject, ValidationContext validationContext)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
