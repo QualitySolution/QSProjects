@@ -232,6 +232,9 @@
     <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\Search\SearchHelper.cs" />
+    <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Commands\DelegateCommandGeneric.cs" />
+    <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -262,6 +265,7 @@
     <Folder Include="Project.Journal\EntityLoader\" />
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
