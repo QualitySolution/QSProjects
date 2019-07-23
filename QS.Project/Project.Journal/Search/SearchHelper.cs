@@ -81,17 +81,26 @@ namespace QS.Project.Journal.Search
 				bool decimalParsed = decimal.TryParse(sv, out decimal decimalValue);
 
 				foreach(var alias in aliases) {
-					bool aliasIsNumeric = false;
+					bool aliasIsInt = false;
+					bool aliasIsDecimal = false;
 					if(alias.Body is UnaryExpression) {
 						UnaryExpression unaryExpession = alias.Body as UnaryExpression;
-						aliasIsNumeric = digitsTypes.Contains(unaryExpession.Operand.Type);
+						aliasIsInt = unaryExpession.Operand.Type == typeof(int);
+						aliasIsDecimal = unaryExpession.Operand.Type == typeof(decimal);
 					} else if(!(alias.Body is MemberExpression)) {
 						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
 					}
 
-					if(aliasIsNumeric) {
-						if((intParsed || decimalParsed)) {
-							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intParsed ? intValue : decimalValue);
+					if(aliasIsInt) {
+						if((intParsed)) {
+							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intValue);
+							disjunctionCriterion.Add(restriction);
+						} else {
+							continue;
+						}
+					} else if(aliasIsDecimal) {
+						if((decimalParsed)) {
+							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), decimalValue);
 							disjunctionCriterion.Add(restriction);
 						} else {
 							continue;
