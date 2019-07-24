@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using QS.DB;
 using QS.Test.TestDomain;
+using QS.Testing.DB;
 
 namespace QS.Test.DomainModel.Entity
 {

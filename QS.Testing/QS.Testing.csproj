@@ -62,15 +62,15 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Deletion.Testing\DeleteConfigTestBase.cs" />
-    <Compile Include="DB\InMemoryDBGlobalConfigTestFixtureBase.cs" />
-    <Compile Include="DB\MonoSqliteConfiguration.cs" />
-    <Compile Include="DB\MonoSqliteDriver.cs" />
-    <Compile Include="DB\InMemoryDBTestSessionProvider.cs" />
-    <Compile Include="DB\InMemoryDBTestFixtureBase.cs" />
+    <Compile Include="Testing.DB\InMemoryDBGlobalConfigTestFixtureBase.cs" />
+    <Compile Include="Testing.DB\MonoSqliteConfiguration.cs" />
+    <Compile Include="Testing.DB\MonoSqliteDriver.cs" />
+    <Compile Include="Testing.DB\InMemoryDBTestSessionProvider.cs" />
+    <Compile Include="Testing.DB\InMemoryDBTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deletion.Testing\" />
-    <Folder Include="DB\" />
+    <Folder Include="Testing.DB\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">

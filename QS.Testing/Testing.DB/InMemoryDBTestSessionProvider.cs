@@ -3,7 +3,7 @@ using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using QS.Project.DB;
 
-namespace QS.DB
+namespace QS.Testing.DB
 {
 	public class InMemoryDBTestSessionProvider : DefaultSessionProvider
 	{

@@ -1,7 +1,9 @@
-﻿using QS.DomainModel.UoW;
+﻿using System.Reflection;
+using NHibernate.Cfg;
+using QS.DomainModel.UoW;
 using QS.Project.DB;
 
-namespace QS.DB
+namespace QS.Testing.DB
 {
 	/// <summary>
 	/// Базовый класс для тестирования работы с базой.
@@ -9,19 +11,26 @@ namespace QS.DB
 	/// по конфигруации.
 	/// Вызовите NewSessionWithSameDB для создание нового Uow к уже имеющейся базе, для создание новых первое созданное к это базе соединение не должно быть закрыто.
 	/// Вызовите NewSessionWithNewDB для переключения в режим по умолчанию, новый UoW с новой систой базой.
-	/// Этот класс в отличии от InMemoryDBTestFixtureBase рассчитывает на то что все необходимое для работы Nh уже сконфигурировано глобально.
 	/// </summary>
-	public abstract class InMemoryDBGlobalConfigTestFixtureBase
+	public abstract class InMemoryDBTestFixtureBase
 	{
+		protected Configuration configuration;
 		protected IUnitOfWorkFactory UnitOfWorkFactory;
 		protected InMemoryDBTestSessionProvider inMemoryDBTestSessionProvider;
 
 		/// <summary>
-		/// Инициализация только фабрики uow без инициализации Nh
+		/// Полная инициализация всего необходимого для тестирования в Nh
 		/// </summary>
-		public void InitialiseUowFactory()
+		public void InitialiseNHibernate(params Assembly[] assemblies)
 		{
-			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(OrmConfig.NhConfig);
+			if (configuration != null)
+				return;
+
+			var db_config = FluentNHibernate.Cfg.Db.MonoSqliteConfiguration.Standard.InMemory();
+
+			OrmConfig.ConfigureOrm(db_config, assemblies);
+			configuration = OrmConfig.NhConfig;
+			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration);
 			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
 		}
 
