@@ -12,6 +12,8 @@ namespace QS.DomainModel.UoW
 	{
 		private static readonly IUnitOfWorkFactory unitOfWorkFactory = new DefaultUnitOfWorkFactory(new DefaultSessionProvider());
 
+		public static IUnitOfWorkFactory GetDefaultFactory => unitOfWorkFactory;
+
 		/// <summary>
 		/// Создаем Unit of Work без корренной сущьности.
 		/// </summary>

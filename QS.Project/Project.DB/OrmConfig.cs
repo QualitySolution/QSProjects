@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Linq;
 using FluentNHibernate.Cfg;
 using NHibernate;
@@ -18,6 +19,14 @@ namespace QS.Project.DB
 			ISession session = interceptor == null ? Sessions.OpenSession() : Sessions.WithOptions().Interceptor(interceptor).OpenSession();
 			session.FlushMode = FlushMode.Commit;
 			return session;
+		}
+
+		public static ISession OpenSession(DbConnection connection)
+		{
+			return Sessions.WithOptions()
+				.Connection(connection)
+				.FlushMode(FlushMode.Commit)
+				.OpenSession();
 		}
 
 		public static Configuration NhConfig {

@@ -9,11 +9,14 @@ namespace QS.DB
 	/// Базовый класс для тестирования работы с базой.
 	/// *Внимание* на при создании нового UoW, создается новая чистая база данных в памяти
 	/// по конфигруации.
+	/// Вызовите NewSessionWithSameDB для создание нового Uow к уже имеющейся базе, для создание новых первое созданное к это базе соединение не должно быть закрыто.
+	/// Вызовите NewSessionWithNewDB для переключения в режим по умолчанию, новый UoW с новой систой базой.
 	/// </summary>
 	public abstract class InMemoryDBTestFixtureBase
 	{
 		protected Configuration configuration;
 		protected IUnitOfWorkFactory UnitOfWorkFactory;
+		protected InMemoryDBTestSessionProvider inMemoryDBTestSessionProvider;
 
 		/// <summary>
 		/// Полная инициализация всего необходимого для тестирования в Nh
@@ -27,7 +30,18 @@ namespace QS.DB
 
 			OrmConfig.ConfigureOrm(db_config, assemblies);
 			configuration = OrmConfig.NhConfig;
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(new InMemoryDBTestSessionProvider(configuration));
+			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration);
+			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+		}
+
+		public void NewSessionWithSameDB()
+		{
+			inMemoryDBTestSessionProvider.UseSameDB = true;
+		}
+
+		public void NewSessionWithNewDB()
+		{
+			inMemoryDBTestSessionProvider.UseSameDB = false;
 		}
 	}
 }
