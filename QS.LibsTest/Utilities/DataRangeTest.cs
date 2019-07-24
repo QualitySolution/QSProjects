@@ -95,5 +95,20 @@ namespace QS.Test.Utilities
 			// + 5 дней
 			Assert.That(mainRange.FillIntervals(20), Is.EqualTo(new DateTime(2019, 1, 26)));
 		}
+
+		[Test(Description = "Игнорирование времени при заполнение интервалов.")]
+		[Category("real case")]
+		public void FillIntervals_IgnogeTimeTest()
+		{
+			var mainRange = new DateRange(new DateTime(2018, 11, 22, 15, 09, 23), DateTime.MaxValue);
+			var exclude = new DateRange(new DateTime(2019, 7, 19), new DateTime(2019, 7, 23));//5 дней
+			var exclude2 = new DateRange(new DateTime(2018, 7, 3), new DateTime(2018, 7, 5));//Три дня
+
+			mainRange.ExcludedRanges.Add(exclude);
+			mainRange.ExcludedRanges.Add(exclude2);
+
+			// + 5 дней
+			Assert.That(mainRange.FillIntervals(365), Is.EqualTo(new DateTime(2019, 11, 27)));
+		}
 	}
 }

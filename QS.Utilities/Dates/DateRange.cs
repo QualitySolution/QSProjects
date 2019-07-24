@@ -6,15 +6,17 @@ namespace QS.Utilities.Dates
 {
 	public class DateRange
 	{
-		public DateTime Begin { get; set; }
-		public DateTime End { get; set; }
+		public DateTime Begin { get; private set; }
+		public DateTime End { get; private set; }
 
 		public List<DateRange> ExcludedRanges { get; set; }
 
 		public DateRange(DateTime begin, DateTime end)
 		{
-			Begin = begin;
-			End = end;
+			//Мы работаем всегда чисто датами, без времени. 
+			//Поэтому не даем возможность внести случайно дату со временем.
+			Begin = begin.Date;
+			End = end.Date;
 
 			ExcludedRanges = new List<DateRange>();
 		}
