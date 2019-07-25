@@ -5,7 +5,7 @@ namespace QS.DomainModel.Entity
 {
 	public interface IBusinessObject
 	{
-		IUnitOfWork UoW {set;}
+		IUnitOfWork UoW { set; get; }
 	}
 }
 

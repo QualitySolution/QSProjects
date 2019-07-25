@@ -5,7 +5,7 @@ using QS.DomainModel.UoW;
 
 namespace QS.DomainModel.Entity
 {
-	public class BusinessObjectPreparer : IUowPreLoadEventListener
+	public class BusinessObjectPreparer : IUowPreLoadEventListener, IUowPostInsertEventListener
 	{
 		private static BusinessObjectPreparer instance;
 
@@ -28,6 +28,13 @@ namespace QS.DomainModel.Entity
 			if (loadEvent.Entity is IBusinessObject)
 			{
 				(loadEvent.Entity as IBusinessObject).UoW = (IUnitOfWork)uow;
+			}
+		}
+
+		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
+		{
+			if(insertEvent.Entity is IBusinessObject && (insertEvent.Entity as IBusinessObject).UoW == null) {
+				(insertEvent.Entity as IBusinessObject).UoW = (IUnitOfWork)uow;
 			}
 		}
 	}
