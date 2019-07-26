@@ -74,6 +74,8 @@ namespace QS.DomainModel.NotifyChange
 		 	?? (InsertEvent as AbstractPostDatabaseOperationEvent) 
 			?? (DeleteEvent as AbstractPostDatabaseOperationEvent);
 
+		public TResult GetOldValueCast<TEntity, TResult>(Expression<Func<TEntity, TResult>> propertyRefExpr) => (TResult)GetOldValue(PropertyUtil.GetName(propertyRefExpr));
+
 		public object GetOldValue<TEntity>(Expression<Func<TEntity, object>> propertyRefExpr) => GetOldValue(PropertyUtil.GetName(propertyRefExpr));
 
 		public object GetOldValue(string propertyName)
@@ -89,6 +91,8 @@ namespace QS.DomainModel.NotifyChange
 					throw new NotImplementedException();
 			}
 		}
+
+		public TResult GetNewValueCast<TEntity, TResult>(Expression<Func<TEntity, TResult>> propertyRefExpr) => (TResult)GetNewValue(PropertyUtil.GetName(propertyRefExpr));
 
 		public object GetNewValue<TEntity>(Expression<Func<TEntity, object>> propertyRefExpr) => GetNewValue(PropertyUtil.GetName(propertyRefExpr));
 
