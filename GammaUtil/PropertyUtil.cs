@@ -17,6 +17,11 @@ namespace Gamma.Utilities
 			return GetPropertyNameCore (propertyRefExpr.Body);
 		}
 
+		public static string GetName<TObject, TProperty>(Expression<Func<TObject, TProperty>> propertyRefExpr)
+		{
+			return GetPropertyNameCore(propertyRefExpr.Body);
+		}
+
 		internal static string GetPropertyNameCore (Expression propertyRefExpr)
 		{
 			if (propertyRefExpr == null)
