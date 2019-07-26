@@ -34,7 +34,7 @@ namespace QS.Tdi
 		ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null);
 
 		/// <summary>
-		/// Открываем вкладку с автоматическим вызовом конструктора в кладки с переданными функции аргументами.
+		/// Открываем вкладку с автоматическим вызовом конструктора вкладки с переданными функции аргументами.
 		/// </summary>
 		ITdiTab OpenTab<TTab>(ITdiTab afterTab = null) where TTab : ITdiTab;
 		ITdiTab OpenTab<TTab, TArg1>(TArg1 arg1, ITdiTab afterTab = null) where TTab : ITdiTab;

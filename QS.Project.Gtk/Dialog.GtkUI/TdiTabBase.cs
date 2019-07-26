@@ -80,14 +80,13 @@ namespace QS.Dialog.Gtk
 				CloseTab (this, new TdiTabCloseEventArgs (askSave));
 		}
 
-		protected void OnTabNameChanged()
+		protected virtual void OnTabNameChanged()
 		{
 			var uowDlg = this as ISingleUoWDialog;
 			if(uowDlg?.UoW?.ActionTitle != null)
 				uowDlg.UoW.ActionTitle.UserActionTitle = $"Вкладка '{TabName}'";
 
-			if (TabNameChanged != null)
-				TabNameChanged (this, new TdiTabNameChangedEventArgs (TabName));
+			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
 		}
 
 		protected void OpenNewTab(ITdiTab tab)

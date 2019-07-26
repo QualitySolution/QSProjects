@@ -6,15 +6,15 @@ using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.UoW;
-using QS.Project.Repositories;
 using QS.Permissions;
+using QS.Project.Repositories;
 using QS.Tdi;
 using QS.Utilities.Gtk;
 using QS.Utilities.Text;
 
 namespace QS.Dialog.Gtk
 {
-	public abstract class EntityDialogBase<TEntity> : Bin, IEntityDialog<TEntity>, ITdiDialog, IEntityDialog
+	public abstract class EntityDialogBase<TEntity> : TdiTabBase, IEntityDialog<TEntity>, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
 		public IUnitOfWork UoW {
@@ -22,14 +22,6 @@ namespace QS.Dialog.Gtk
 				return UoWGeneric;
 			}
 		}
-
-		public HandleSwitchIn HandleSwitchIn { get; private set; }
-		public HandleSwitchOut HandleSwitchOut { get; private set; }
-
-		/// <summary>
-		/// Для хранения пользовательской информации как в WinForms
-		/// </summary>
-		public object Tag;
 
 		private IUnitOfWorkGeneric<TEntity> uowGeneric;
 
@@ -44,7 +36,7 @@ namespace QS.Dialog.Gtk
 			}
 		}
 
-		public bool CompareHashName (string hashName)
+		public override bool CompareHashName (string hashName)
 		{
 			if (Entity == null || UoWGeneric == null || UoWGeneric.IsNew)
 				return false;
@@ -83,7 +75,7 @@ namespace QS.Dialog.Gtk
 
 		private string tabName = String.Empty;
 
-		public string TabName {
+		public override string TabName {
 			get {
 				if (!String.IsNullOrWhiteSpace (tabName))
 					return tabName;
@@ -132,13 +124,12 @@ namespace QS.Dialog.Gtk
 				}
 				return String.Empty;
 			}
-			set {
+			protected set {
 				if (tabName == value)
 					return;
 				tabName = value;
 				OnTabNameChanged ();
 			}
-
 		}
 
 		void Subject_NamePropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -155,17 +146,11 @@ namespace QS.Dialog.Gtk
 
 		public abstract bool Save ();
 
-		public ITdiTabParent TabParent { set; get; }
-
-		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
 		protected EntityPermission entityPermissions { get; set; }
 
-		public bool FailInitialize { get; protected set; }
-
-		public EntityDialogBase()
+		protected EntityDialogBase()
 		{
 			InitializePermissionValidator();
 		}
@@ -189,13 +174,6 @@ namespace QS.Dialog.Gtk
 				MessageDialogHelper.RunErrorDialog(message);
 				FailInitialize = true;
 			}
-		}
-
-
-		protected void OnCloseTab (bool askSave)
-		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
 		}
 
 		protected void OnEntitySaved (bool tabClosed = false)
@@ -223,12 +201,12 @@ namespace QS.Dialog.Gtk
 			base.Destroy ();
 		}
 
-		protected void OnTabNameChanged ()
+		protected override void OnTabNameChanged ()
 		{
+			base.OnTabNameChanged();
+
 			if(UoW?.ActionTitle != null)
 				uowGeneric.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
-
-			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
 		}
 
 		protected void OpenTab (string hashName, Func<ITdiTab> newTabFunc)
@@ -241,11 +219,7 @@ namespace QS.Dialog.Gtk
 				TabParent.SwitchOnTab (tab);
 		}
 
-		protected void OpenSlaveTab(ITdiTab slaveTab)
-		{
-			TabParent.AddSlaveTab(this, slaveTab);
-		}
-
+		[Obsolete("Используете вместо этого метод OpenNewTab")]
 		protected void OpenTab(ITdiTab tab)
 		{
 			TabParent.AddTab(tab, this);
