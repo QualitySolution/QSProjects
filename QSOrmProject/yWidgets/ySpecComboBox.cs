@@ -5,7 +5,6 @@ using Gamma.Utilities;
 using Gtk;
 using NLog;
 using QS.DomainModel.Entity;
-using QSOrmProject;
 using QSProjectsLib;
 
 namespace Gamma.Widgets
@@ -26,7 +25,7 @@ namespace Gamma.Widgets
 			set {
 				if (base.SelectedItem == value)
 					return;
-				
+
 				TreeIter iter;
 				if (value == null)
 				{
@@ -90,9 +89,12 @@ namespace Gamma.Widgets
 			}
 			set {
 				showSpecialStateNot = value;
-				ResetLayout ();
+				ResetLayout();
 			}
 		}
+
+		[Browsable(true)]
+		public string NameForSpecialStateNot { get; set; } = null;
 
 		IEnumerable itemsList;
 
@@ -137,9 +139,12 @@ namespace Gamma.Widgets
 
 		private string RenderText(object item)
 		{
-			if (item is SpecialComboState)
-				return ((SpecialComboState)item).GetEnumTitle ();
-			if (RenderTextFunc != null)
+			if(item is SpecialComboState specialState) {
+				if(!string.IsNullOrEmpty(NameForSpecialStateNot) && specialState == SpecialComboState.Not)
+					return NameForSpecialStateNot;
+				return specialState.GetEnumTitle();
+			}
+			if(RenderTextFunc != null)
 				return RenderTextFunc (item);
 			return DomainHelper.GetObjectTilte (item);
 		}
