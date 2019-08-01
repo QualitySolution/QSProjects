@@ -148,7 +148,8 @@ namespace QS.Widgets.GtkUI
 			if(deletedPermission == null) {
 				return;
 			}
-			ObservablePermissionsSourceList.Add(deletedPermission.PermissionSource);
+			if(!deletedPermission.IsLostPermission)
+				ObservablePermissionsSourceList.Add(deletedPermission.PermissionSource);
 			ObservablePermissionsList.Remove(deletedPermission);
 			if(deletedPermission.Id != 0) {
 				deletePermissionList.Add(deletedPermission);
