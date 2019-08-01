@@ -4,7 +4,7 @@ using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
 
-namespace QSBanks
+namespace QS.Banks.Domain
 {
 	public abstract class AccountOwnerBase : PropertyChangedBase, IAccountOwner
 	{

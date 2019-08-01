@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 
-namespace QSBanks
+namespace QS.Banks.Domain
 {
 	[Appellative(NominativePlural = "Корреспондентский счет")]
 	public class CorAccount : PropertyChangedBase, IValidatableObject, IDomainObject

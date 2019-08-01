@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QS.Banks.Domain;
 using QS.DomainModel.UoW;
 
 namespace QSBanks.Repositories

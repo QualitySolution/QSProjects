@@ -4,6 +4,7 @@ using QS.DomainModel.UoW;
 using QSOrmProject;
 using QS.Tdi;
 using QS.Dialog.Gtk;
+using QS.Banks.Domain;
 
 namespace QSBanks
 {
