@@ -260,7 +260,8 @@ namespace QSProjectsLib
 					labelLoginInfo.Text = "Не удалось подключиться к серверу БД.";
 				else
 					labelLoginInfo.Text = "Ошибка соединения с базой данных.";
-
+				entryPassword.Text = string.Empty;
+				entryPassword.GrabFocus();
 				ConnectionError = "Строка соединения: " + connStr + "\nИсключение: " + ex.ToString();
 				logger.Warn(ex);
 				QSMain.connectionDB.Close();

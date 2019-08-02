@@ -31,8 +31,12 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			IList<Type> items = TypeOfEntityRepository.GetEntityTypesMarkedByEntityPermissionAttribute(Entity.Id == 0);
 			//Добавить сущность, если атрибут убран, но право осталось
-			if(!Entity.IsActive)
-				items.Add(TypeOfEntityRepository.GetEntityType(Entity.Type));
+			if(!Entity.IsActive) {
+				var t = TypeOfEntityRepository.GetEntityType(Entity.Type);
+				//не добавлять, если удалили сам тип
+				if(t != null)
+					items.Add(t);
+			}
 			yentryName.Binding.AddBinding(Entity, e => e.CustomName, w => w.Text).InitializeFromSource();
 			ylistcomboboxEntityType.SetRenderTextFunc<Type>(TypeOfEntityRepository.GetRealName);
 			ylistcomboboxEntityType.ItemsList = items.OrderBy(TypeOfEntityRepository.GetRealName);
