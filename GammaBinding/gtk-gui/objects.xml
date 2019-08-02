@@ -72,6 +72,10 @@
     </itemgroups>
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yComboBoxEntry" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBoxEntry">
+    <itemgroups />
+    <signals />
+  </object>
   <object type="Gamma.GtkWidgets.yCheckButton" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.CheckButton">
     <itemgroups />
     <signals />
