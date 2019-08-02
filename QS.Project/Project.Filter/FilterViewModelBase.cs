@@ -27,6 +27,16 @@ namespace QS.Project.Filter
 			PropertyChanged += FilterViewModelBase_PropertyChanged;
 		}
 
+		/// <summary>
+		/// Устанавливает значение свойству и обновляет фильтр
+		/// </summary>
+		protected void UpdateFilterField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+		{
+			if(SetField(ref field, value, selectorExpression)) {
+				Update();
+			}
+		}
+
 		public void Update()
 		{
 			if(canNotify)
