@@ -94,6 +94,9 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
+		[Browsable(true)]
+		public string NameForSpecialStateNot { get; set; } = null;
+
 		IEnumerable itemsList;
 
 		public override IEnumerable ItemsList {
@@ -137,9 +140,12 @@ namespace QS.Widgets.GtkUI
 
 		private string RenderText(object item)
 		{
-			if (item is SpecialComboState)
-				return ((SpecialComboState)item).GetEnumTitle ();
-			if (RenderTextFunc != null)
+			if(item is SpecialComboState specialState) {
+				if(!string.IsNullOrEmpty(NameForSpecialStateNot) && specialState == SpecialComboState.Not)
+					return NameForSpecialStateNot;
+				return specialState.GetEnumTitle();
+			}
+			if(RenderTextFunc != null)
 				return RenderTextFunc (item);
 			return DomainHelper.GetObjectTilte (item);
 		}
