@@ -18,14 +18,14 @@ namespace QS.Project.Journal.EntitySelector
 
 		public Type EntityType => typeof(TEntity);
 
-		public IEntityAutocompleteSelector CreateAutocompleteSelector()
+		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
 			return journalFunc.Invoke();
 		}
 
-		public IEntitySelector CreateSelector()
+		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
-			return CreateAutocompleteSelector();
+			return CreateAutocompleteSelector(multipleSelect);
 		}
 	}
 }

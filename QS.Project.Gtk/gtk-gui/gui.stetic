@@ -6,7 +6,6 @@
   </configuration>
   <import>
     <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../../QS.Project/bin/Debug/QS.Project.dll" />
     <widget-library name="../../QSValidation/bin/Debug/QSValidation.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QS.Project.Gtk.dll" internal="true" />
