@@ -180,6 +180,7 @@
     <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
+    <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
