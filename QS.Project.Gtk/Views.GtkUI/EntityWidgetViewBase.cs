@@ -7,7 +7,7 @@ namespace QS.Views.GtkUI
 	{
 		protected TViewModel ViewModel { get; }
 
-		public EntityWidgetViewBase(TViewModel viewModel)
+		protected EntityWidgetViewBase(TViewModel viewModel)
 		{
 			ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		}
