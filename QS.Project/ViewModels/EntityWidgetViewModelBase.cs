@@ -1,14 +1,15 @@
 ﻿using System;
-using QS.Services;
-using QS.DomainModel.Entity;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Gamma.Utilities;
+using QS.DomainModel.Entity;
+using QS.Services;
 
 namespace QS.ViewModels
 {
 	public abstract class EntityWidgetViewModelBase<TEntity> : UoWWidgetViewModelBase
-		where TEntity : class, IDomainObject
+		where TEntity : class, IDomainObject, INotifyPropertyChanged
 	{
 		protected ICommonServices CommonServices { get; }
 
@@ -20,6 +21,7 @@ namespace QS.ViewModels
 		: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
 			Entity = entity;
+			Entity.PropertyChanged += Entity_PropertyChanged;
 			this.CommonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			PermissionResult = commonServices.PermissionService.ValidateUserPermission(typeof(TEntity), commonServices.UserService.CurrentUserId);
@@ -31,7 +33,7 @@ namespace QS.ViewModels
 		private Dictionary<string, List<Action>> propertyOnChangeActions = new Dictionary<string, List<Action>>();
 		private List<Action> onAnyPropertyChangedActions = new List<Action>();
 
-		private void Entity_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(propertyTriggerRelations.ContainsKey(e.PropertyName)) {
 				foreach(var relatedPropertyName in propertyTriggerRelations[e.PropertyName]) {
