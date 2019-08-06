@@ -239,6 +239,7 @@
     <Compile Include="Commands\DelegateCommandGeneric.cs" />
     <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
+    <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

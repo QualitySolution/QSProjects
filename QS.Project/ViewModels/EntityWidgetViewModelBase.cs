@@ -10,7 +10,7 @@ namespace QS.ViewModels
 	public abstract class EntityWidgetViewModelBase<TEntity> : UoWWidgetViewModelBase
 		where TEntity : class, IDomainObject
 	{
-		private readonly ICommonServices commonServices;
+		protected ICommonServices CommonServices { get; }
 
 		protected IPermissionResult PermissionResult { get; private set; }
 
@@ -20,7 +20,7 @@ namespace QS.ViewModels
 		: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
 			Entity = entity;
-			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
+			this.CommonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			PermissionResult = commonServices.PermissionService.ValidateUserPermission(typeof(TEntity), commonServices.UserService.CurrentUserId);
 		}

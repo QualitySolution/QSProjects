@@ -139,6 +139,21 @@ namespace QS.Project.Journal
 		}
 
 		/// <summary>
+		/// Добавление конфигурации документа с не стандартным опредлением диалогов, с определенным идентификатором и именем взятым из описания сущности
+		/// </summary>
+		/// <returns>Конфигурация документа</returns>
+		/// <param name="docIdentificationFunc">Уникальный идентификатор типа документа, должен возвращать true только для тех строк для которых должен открываться выбранный тип диалога и больше никакой другой</param>
+		/// <param name="createDlgFunc">Функция вызова диалога создания нового документа</param>
+		/// <param name="openDlgFunc">Функция вызова диалога открытия нового документа</param>
+		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration(Func<ITdiTab> createDlgFunc, Func<TNode, ITdiTab> openDlgFunc, Func<TNode, bool> docIdentificationFunc, string title = "")
+		{
+			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(string.IsNullOrWhiteSpace(title) ? entityTitleName : title, createDlgFunc, openDlgFunc, docIdentificationFunc);
+			documentConfigs.Add(dlgInfo);
+			return this;
+		}
+
+		/// <summary>
 		/// Завершение конфигурации документа, проверка конфликтов и запись конфиругации в модель
 		/// </summary>
 		public void FinishConfiguration()
