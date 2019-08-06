@@ -84,6 +84,7 @@
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="TestDomain\SimpleEntity.cs" />
     <Compile Include="TestDomainMapping\SimpleEntityMap.cs" />
+    <Compile Include="Widgets.GtkUI\PhoneEntryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -95,6 +96,7 @@
     <Folder Include="TestDomainMapping\" />
     <Folder Include="DomainModel\UoW\" />
     <Folder Include="DomainModel\NotifyChange\" />
+    <Folder Include="Widgets.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

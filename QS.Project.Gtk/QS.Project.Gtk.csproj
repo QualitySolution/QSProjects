@@ -10,6 +10,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -181,6 +182,7 @@
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
+    <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
