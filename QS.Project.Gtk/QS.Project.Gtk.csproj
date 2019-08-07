@@ -181,6 +181,7 @@
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
     <Compile Include="Views.GtkUI\EntityWidgetViewBase.cs" />
+    <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

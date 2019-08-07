@@ -240,6 +240,7 @@
     <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Services\IFilePickerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
