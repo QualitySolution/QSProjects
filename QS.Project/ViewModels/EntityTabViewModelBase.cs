@@ -160,8 +160,14 @@ namespace QS.ViewModels
 		{
 		}
 
+		protected virtual void BeforeValidation()
+		{
+
+		}
+
 		protected bool Validate()
 		{
+			BeforeValidation();
 			return Validator.Validate(ValidationContext);
 		}
 
