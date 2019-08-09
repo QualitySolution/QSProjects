@@ -287,7 +287,10 @@ namespace QS.Project.Journal
 							var childNodeAction = new JournalAction(createDlgConfig.Title,
 								(selected) => entityConfig.PermissionResult.CanCreate,
 								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this)
+								(selected) => {
+									TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this);
+									HideJournal(TabParent);
+								}
 							);
 							addParentNodeAction.ChildActionsList.Add(childNodeAction);
 						}
@@ -302,7 +305,7 @@ namespace QS.Project.Journal
 					(selected) => {
 						ITdiTab tab = entityConfig.EntityDocumentConfigurations.First().GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 						TabParent.OpenTab(() => tab, this);
-
+						HideJournal(TabParent);
 					});
 				NodeActionsList.Add(addAction);
 			};
@@ -337,6 +340,7 @@ namespace QS.Project.Journal
 					var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
 
 					TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), this);
+					HideJournal(TabParent);
 				}
 			);
 			if(SelectionMode == JournalSelectionMode.None) {
@@ -377,6 +381,13 @@ namespace QS.Project.Journal
 				}
 			);
 			NodeActionsList.Add(deleteAction);
+		}
+
+		private void HideJournal(ITdiTabParent parenTab)
+		{
+			if(TabParent is ITdiSliderTab slider) {
+				slider.IsHideJournal = true;
+			}
 		}
 
 		#endregion Actions
