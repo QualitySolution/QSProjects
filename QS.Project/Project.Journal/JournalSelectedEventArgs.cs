@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 namespace QS.Project.Journal
 {
 	public class JournalSelectedEventArgs : EventArgs
@@ -9,5 +11,7 @@ namespace QS.Project.Journal
 		{
 			SelectedObjects = selectedobjects;
 		}
+
+		public T[] GetSelectedObjects<T>() => SelectedObjects.OfType<T>().ToArray();
 	}
 }
