@@ -80,6 +80,10 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yRadioButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.radiobutton.png" base-type="Gtk.RadioButton">
+    <itemgroups />
+    <signals />
+  </object>
   <object type="Gamma.Widgets.EnumCheckList" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.VBox">
     <itemgroups />
     <signals />

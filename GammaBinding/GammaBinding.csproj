@@ -109,6 +109,7 @@
     <Compile Include="Widgets\Additions\EnumsListConverter.cs" />
     <Compile Include="GtkWidgets\yButton.cs" />
     <Compile Include="GtkWidgets\yComboBoxEntry.cs" />
+    <Compile Include="GtkWidgets\yRadioButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -122,6 +123,7 @@
     <Folder Include="GtkHelpers\" />
     <Folder Include="icons\" />
     <Folder Include="Binding\" />
+    <Folder Include="Binding\Converters\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
