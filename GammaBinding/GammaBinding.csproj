@@ -154,6 +154,8 @@
       <LogicalName>checkbutton.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="icons\fileselection.png" />
+    <EmbeddedResource Include="icons\comboentry.png" />
+    <EmbeddedResource Include="icons\radiobutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
