@@ -332,7 +332,11 @@ namespace Gamma.Binding
 		private ILevelConfig GetLevelConfig(object node)
 		{
 			var nodeType = node.GetType();
-			return LevelsConfig.FirstOrDefault(x => x.NodeType == nodeType);
+			var foundLevelConfig = LevelsConfig.FirstOrDefault(x => x.NodeType == nodeType);
+			if(foundLevelConfig == null) {
+				return LevelsConfig.FirstOrDefault(x => x.NodeType == nodeType.BaseType);
+			}
+			return foundLevelConfig;
 		}
 
 	#endregion
