@@ -2,6 +2,7 @@
 using Gtk;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 
 namespace Gamma.GtkWidgets
 {
@@ -45,7 +46,7 @@ namespace Gamma.GtkWidgets
 		public object BindedValue
 		{
 			get => Active ? BindValueWhenActivated : null;
-			set => Active = value == BindValueWhenActivated;
+			set => Active = TypeUtil.EqualBoxedValues(value, BindValueWhenActivated);
 		}
 	}
 }
