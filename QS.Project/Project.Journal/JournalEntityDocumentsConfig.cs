@@ -10,26 +10,26 @@ namespace QS.Project.Journal
 		private List<JournalCreateEntityDialogConfig> createEntityDialogConfigs;
 		private Func<TNode, ITdiTab> openEntityDialogFunction;
 		private Func<TNode, bool> nodeIdentificationFunction;
-		public bool HideJournal { get; }
+		public JournalParametersForDocument JournalParameters { get; }
 		private bool withoutCreation;
 
 
-		public JournalEntityDocumentsConfig(string createActionTitle, Func<ITdiTab> createDialogFunc, Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, bool hideJournal = false)
+		public JournalEntityDocumentsConfig(string createActionTitle, Func<ITdiTab> createDialogFunc, Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, JournalParametersForDocument journalParameters = null)
 		{
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
 			openEntityDialogFunction = openDialogFunc;
 			nodeIdentificationFunction = nodeIdentificationFunc;
-			this.HideJournal = hideJournal;
+			JournalParameters = journalParameters ?? JournalParametersForDocument.DefaultShow;
 			createEntityDialogConfigs.Add(new JournalCreateEntityDialogConfig(createActionTitle, createDialogFunc));
 		}
 
-		public JournalEntityDocumentsConfig(Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, bool hideJournal = false)
+		public JournalEntityDocumentsConfig(Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, JournalParametersForDocument journalParameters = null)
 		{
 			withoutCreation = true;
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
 			openEntityDialogFunction = openDialogFunc;
 			nodeIdentificationFunction = nodeIdentificationFunc;
-			this.HideJournal = hideJournal;
+			JournalParameters = journalParameters ?? JournalParametersForDocument.DefaultShow;
 		}
 
 		public void AddCreateDialogConfig(string title, Func<ITdiTab> createDialogFunc)

@@ -244,6 +244,7 @@
     <Compile Include="Tdi\ITdiSliderTab.cs" />
     <Compile Include="Project.Journal\FilterableMultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\EntityAutocompleteSelectorFactory.cs" />
+    <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

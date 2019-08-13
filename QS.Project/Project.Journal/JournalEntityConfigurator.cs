@@ -38,10 +38,10 @@ namespace QS.Project.Journal
 		/// </summary>
 		/// <returns>Конфигурация документа</returns>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(JournalParametersForDocument journalParameters = null)
 			where TEntityTabDialog : class, ITdiTab
 		{
-			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, hideJournal);
+			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, journalParameters);
 		}
 
 		/// <summary>
@@ -50,12 +50,15 @@ namespace QS.Project.Journal
 		/// <returns>Конфигурация документа</returns>
 		/// <param name="createActionTitle">Отображаемое имя документа в действиях с документов</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(string createActionTitle, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(
+			string createActionTitle,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
 			Func<TNode, bool> docIdentificationFunc = (TNode node) => node.EntityType == typeof(TEntity);
 
-			return AddDocumentConfiguration<TEntityTabDialog>(createActionTitle, docIdentificationFunc, hideJournal);
+			return AddDocumentConfiguration<TEntityTabDialog>(createActionTitle, docIdentificationFunc, journalParameters);
 		}
 
 		/// <summary>
@@ -64,10 +67,13 @@ namespace QS.Project.Journal
 		/// <returns>Конфигурация документа</returns>
 		/// <param name="docIdentificationFunc">Уникальный идентификатор типа документа, должен возвращать true только для тех строк для которых должен открываться выбранный тип диалога и больше никакой другой</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(Func<TNode, bool> docIdentificationFunc, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(
+			Func<TNode, bool> docIdentificationFunc,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
-			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, docIdentificationFunc, hideJournal);
+			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, docIdentificationFunc, journalParameters);
 		}
 
 		/// <summary>
@@ -77,7 +83,11 @@ namespace QS.Project.Journal
 		/// <param name="docIdentificationFunc">Уникальный идентификатор типа документа, должен возвращать true только для тех строк для которых должен открываться выбранный тип диалога и больше никакой другой</param>
 		/// <param name="createActionTitle">Отображаемое имя документа в действиях с документов</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(string createActionTitle, Func<TNode, bool> docIdentificationFunc, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(
+			string createActionTitle, 
+			Func<TNode, bool> docIdentificationFunc,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
 			Type dlgType = typeof(TEntityTabDialog);
@@ -89,7 +99,7 @@ namespace QS.Project.Journal
 			Func<TEntityTabDialog> createDlgFunc = () => (TEntityTabDialog)dlgCtorForCreateNewEntity.Invoke(Type.EmptyTypes);
 			Func<TNode, TEntityTabDialog> openDlgFunc = (TNode node) => (TEntityTabDialog)dlgCtorForOpenEntity.Invoke(new object[] { node.Id });
 
-			return AddDocumentConfiguration<TEntityTabDialog>(createActionTitle, createDlgFunc, openDlgFunc, docIdentificationFunc, hideJournal);
+			return AddDocumentConfiguration<TEntityTabDialog>(createActionTitle, createDlgFunc, openDlgFunc, docIdentificationFunc, journalParameters);
 		}
 
 		/// <summary>
@@ -100,10 +110,15 @@ namespace QS.Project.Journal
 		/// <param name="createDlgFunc">Функция вызова диалога создания нового документа</param>
 		/// <param name="openDlgFunc">Функция вызова диалога открытия нового документа</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(Func<TEntityTabDialog> createDlgFunc, Func<TNode, TEntityTabDialog> openDlgFunc, Func<TNode, bool> docIdentificationFunc, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(
+			Func<TEntityTabDialog> createDlgFunc, 
+			Func<TNode, TEntityTabDialog> openDlgFunc, 
+			Func<TNode, bool> docIdentificationFunc,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
-			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, createDlgFunc, openDlgFunc, docIdentificationFunc, hideJournal);
+			return AddDocumentConfiguration<TEntityTabDialog>(entityTitleName, createDlgFunc, openDlgFunc, docIdentificationFunc, journalParameters);
 		}
 
 		/// <summary>
@@ -115,10 +130,16 @@ namespace QS.Project.Journal
 		/// <param name="createDlgFunc">Функция вызова диалога создания нового документа</param>
 		/// <param name="openDlgFunc">Функция вызова диалога открытия нового документа</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(string createActionTitle, Func<TEntityTabDialog> createDlgFunc, Func<TNode, TEntityTabDialog> openDlgFunc, Func<TNode, bool> docIdentificationFunc, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration<TEntityTabDialog>(
+			string createActionTitle, 
+			Func<TEntityTabDialog> createDlgFunc, 
+			Func<TNode, TEntityTabDialog> openDlgFunc, 
+			Func<TNode, bool> docIdentificationFunc,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
-			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(createActionTitle, createDlgFunc, openDlgFunc, docIdentificationFunc, hideJournal);
+			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(createActionTitle, createDlgFunc, openDlgFunc, docIdentificationFunc, journalParameters);
 			documentConfigs.Add(dlgInfo);
 			return this;
 		}
@@ -130,10 +151,14 @@ namespace QS.Project.Journal
 		/// <param name="docIdentificationFunc">Уникальный идентификатор типа документа, должен возвращать true только для тех строк для которых должен открываться выбранный тип диалога и больше никакой другой</param>
 		/// <param name="openDlgFunc">Функция вызова диалога открытия нового документа</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfigurationWithoutCreation<TEntityTabDialog>(Func<TNode, TEntityTabDialog> openDlgFunc, Func<TNode, bool> docIdentificationFunc, bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfigurationWithoutCreation<TEntityTabDialog>(
+			Func<TNode, TEntityTabDialog> openDlgFunc, 
+			Func<TNode, bool> docIdentificationFunc,
+			JournalParametersForDocument journalParameters = null
+		)
 			where TEntityTabDialog : class, ITdiTab
 		{
-			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(openDlgFunc, docIdentificationFunc, hideJournal);
+			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(openDlgFunc, docIdentificationFunc, journalParameters);
 			documentConfigs.Add(dlgInfo);
 			return this;
 		}
@@ -146,9 +171,15 @@ namespace QS.Project.Journal
 		/// <param name="createDlgFunc">Функция вызова диалога создания нового документа</param>
 		/// <param name="openDlgFunc">Функция вызова диалога открытия нового документа</param>
 		/// <typeparam name="TEntityTabDialog">Тип диалога для конфигурируемого документа</typeparam>
-		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration(Func<ITdiTab> createDlgFunc, Func<TNode, ITdiTab> openDlgFunc, Func<TNode, bool> docIdentificationFunc, string title = "", bool hideJournal = false)
+		public JournalEntityConfigurator<TEntity, TNode> AddDocumentConfiguration(
+			Func<ITdiTab> createDlgFunc, 
+			Func<TNode, ITdiTab> openDlgFunc, 
+			Func<TNode, bool> docIdentificationFunc, 
+			string title = "",
+			JournalParametersForDocument journalParameters = null
+		)
 		{
-			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(string.IsNullOrWhiteSpace(title) ? entityTitleName : title, createDlgFunc, openDlgFunc, docIdentificationFunc, hideJournal);
+			var dlgInfo = new JournalEntityDocumentsConfig<TNode>(string.IsNullOrWhiteSpace(title) ? entityTitleName : title, createDlgFunc, openDlgFunc, docIdentificationFunc, journalParameters);
 			documentConfigs.Add(dlgInfo);
 			return this;
 		}

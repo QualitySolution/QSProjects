@@ -289,7 +289,7 @@ namespace QS.Project.Journal
 								(selected) => entityConfig.PermissionResult.CanCreate,
 								(selected) => {
 									TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this);
-									if(documentConfig.HideJournal) {
+									if(documentConfig.JournalParameters.HideJournalForCreateDialog) {
 										HideJournal(TabParent);
 									}
 								}
@@ -308,7 +308,7 @@ namespace QS.Project.Journal
 						var docConfig = entityConfig.EntityDocumentConfigurations.First();
 						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 						TabParent.OpenTab(() => tab, this);
-						if(docConfig.HideJournal) {
+						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
 							HideJournal(TabParent);
 						}
 					});
@@ -345,7 +345,7 @@ namespace QS.Project.Journal
 					var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
 
 					TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), this);
-					if(foundDocumentConfig.HideJournal) {
+					if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
 						HideJournal(TabParent);
 					}
 				}
