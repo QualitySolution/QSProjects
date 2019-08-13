@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using QS.Banks.Domain;
 using QSBanks;
 using QSBanks.CBRSource;
 
