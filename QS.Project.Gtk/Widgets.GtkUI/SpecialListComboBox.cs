@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using Gamma.GtkHelpers;
 using Gamma.Utilities;
+using Gamma.Widgets;
 using Gtk;
 using NLog;
 using QS.DomainModel.Entity;
-using QSProjectsLib;
 
-namespace Gamma.Widgets
+namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem (true)]
-	[Category ("QS Widgets")]
-	[Obsolete("Используйте виджет QS.Widgets.GtkUI.SpecialListComboBox")]
-	public class ySpecComboBox : yListComboBox
+	[Category("QS.Project")]
+	public class SpecialListComboBox : yListComboBox
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -26,7 +26,7 @@ namespace Gamma.Widgets
 			set {
 				if (base.SelectedItem == value)
 					return;
-
+				
 				TreeIter iter;
 				if (value == null)
 				{
@@ -38,7 +38,7 @@ namespace Gamma.Widgets
 						base.SelectedItem = null;
 				}
 				if (value is IDomainObject) {
-					if (ListStoreWorks.SearchListStore<IDomainObject> ((ListStore)Model, item => item.Id == ((IDomainObject)value).Id, 1, out iter))
+					if (ListStoreHelper.SearchListStore<IDomainObject> ((ListStore)Model, item => item.Id == ((IDomainObject)value).Id, 1, out iter))
 					{
 						base.SelectedItem = ((ListStore)Model).GetValue (iter, (int)comboDataColumns.Item);
 					}
@@ -90,7 +90,7 @@ namespace Gamma.Widgets
 			}
 			set {
 				showSpecialStateNot = value;
-				ResetLayout();
+				ResetLayout ();
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Gamma.Widgets
 
 		public new Func<object, string> RenderTextFunc;
 
-		public ySpecComboBox () : base()
+		public SpecialListComboBox () : base()
 		{
 			base.RenderTextFunc = RenderText;
 		}
@@ -151,4 +151,3 @@ namespace Gamma.Widgets
 		}
 	}
 }
-
