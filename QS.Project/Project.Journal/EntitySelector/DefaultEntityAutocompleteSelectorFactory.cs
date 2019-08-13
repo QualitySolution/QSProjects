@@ -17,7 +17,7 @@ namespace QS.Project.Journal.EntitySelector
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 		}
 
-		public IEntityAutocompleteSelector CreateAutocompleteSelector()
+		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
 			IEntityConfigurationProvider entityConfigurationProvider = new DefaultEntityConfigurationProvider();
 

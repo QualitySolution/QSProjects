@@ -238,6 +238,13 @@
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\DelegateCommandGeneric.cs" />
     <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
+    <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
+    <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Services\IFilePickerService.cs" />
+    <Compile Include="Tdi\ITdiSliderTab.cs" />
+    <Compile Include="Project.Journal\FilterableMultipleEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\EntitySelector\EntityAutocompleteSelectorFactory.cs" />
+    <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

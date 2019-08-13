@@ -9,6 +9,7 @@ using NHibernate.Transform;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
+using QS.DomainModel.NotifyChange;
 
 namespace QS.Project.Journal
 {
@@ -36,7 +37,19 @@ namespace QS.Project.Journal
 			}
 
 			Register<TEntity, TEntityTab>(ItemsSourceQueryFunction, createDlgFunc, openDlgFunc);
+			ExternalNotifyChangedWith(typeof(TEntity));
 		}
+
+		public void ExternalNotifyChangedWith(params Type[] entityTypes)
+		{
+			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdate, entityTypes);
+		}
+
+		void OnExternalUpdate(EntityChangeEvent[] changeEvents)
+		{
+			Refresh();
+		}
+
 
 		CommonJournalNode<TEntity> resultAlias = null;
 

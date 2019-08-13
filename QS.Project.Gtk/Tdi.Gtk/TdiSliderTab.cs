@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QS.Tdi.Gtk
 {
-	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath
+	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath, ITdiSliderTab
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private Widget journalWidget;

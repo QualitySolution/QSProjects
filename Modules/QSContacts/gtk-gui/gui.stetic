@@ -5,13 +5,12 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../QSTDI/bin/Debug/QSTDI.dll" />
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
-    <widget-library name="../bin/Debug/QSContacts.dll" internal="true" />
     <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
+    <widget-library name="../bin/Debug/QSContacts.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSContacts.PhonesView" design-size="440 68">
     <property name="MemberName" />

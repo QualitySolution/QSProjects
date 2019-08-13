@@ -4,6 +4,7 @@ using Gamma.Utilities;
 using Gtk;
 using NHibernate.Criterion;
 using NLog;
+using QS.Banks.Domain;
 using QSOrmProject;
 using QSValidation;
 

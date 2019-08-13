@@ -8,7 +8,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
 using QS.Project.Dialogs;
 
-namespace QSBanks
+namespace QS.Banks.Domain
 {
 	[Appellative (
 		Gender = GrammaticalGender.Masculine,
