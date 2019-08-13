@@ -10,7 +10,7 @@ namespace QS.Project.Journal
 		private List<JournalCreateEntityDialogConfig> createEntityDialogConfigs;
 		private Func<TNode, ITdiTab> openEntityDialogFunction;
 		private Func<TNode, bool> nodeIdentificationFunction;
-		private readonly bool hideJournal;
+		public bool HideJournal { get; }
 		private bool withoutCreation;
 
 
@@ -19,7 +19,7 @@ namespace QS.Project.Journal
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
 			openEntityDialogFunction = openDialogFunc;
 			nodeIdentificationFunction = nodeIdentificationFunc;
-			this.hideJournal = hideJournal;
+			this.HideJournal = hideJournal;
 			createEntityDialogConfigs.Add(new JournalCreateEntityDialogConfig(createActionTitle, createDialogFunc));
 		}
 
@@ -29,7 +29,7 @@ namespace QS.Project.Journal
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
 			openEntityDialogFunction = openDialogFunc;
 			nodeIdentificationFunction = nodeIdentificationFunc;
-			this.hideJournal = hideJournal;
+			this.HideJournal = hideJournal;
 		}
 
 		public void AddCreateDialogConfig(string title, Func<ITdiTab> createDialogFunc)
