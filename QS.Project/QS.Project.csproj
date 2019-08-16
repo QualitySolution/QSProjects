@@ -245,6 +245,8 @@
     <Compile Include="Project.Journal\FilterableMultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\EntityAutocompleteSelectorFactory.cs" />
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
+    <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
+    <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -276,6 +278,7 @@
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
+    <Folder Include="DomainModel\Entity\PresetPermissions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

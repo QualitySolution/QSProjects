@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Reflection;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
+using QS.DomainModel.Entity.PresetPermissions;
 namespace QS.Permissions
 {
 	public static class PermissionsSettings
 	{
 		#region For EntityPermission
 		public static IEntityPermissionValidator EntityPermissionValidator { get; set; }
+		public static IPresetPermissionValidator PresetPermissionValidator { get; set; }
 
 		static PermissionsSettings()
 		{
 			EntityPermissionValidator = null;
+			PresetPermissionValidator = null;
 		}
 
 		public static string GetEntityReadValidateResult(Type entityType)
