@@ -10,7 +10,6 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -110,6 +109,7 @@
     <Compile Include="GtkWidgets\yButton.cs" />
     <Compile Include="GtkWidgets\yComboBoxEntry.cs" />
     <Compile Include="GtkWidgets\yRadioButton.cs" />
+    <Compile Include="Binding\Converters\NumbersTypeConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
