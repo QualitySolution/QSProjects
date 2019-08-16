@@ -13,20 +13,20 @@ SERVER="osm.vod.qsolution.ru"
 ;;
 esac
 
-echo "Which version to upload?"
+echo "Which build to upload?"
 echo "1) Release"
 echo "2) Debug"
 read case;
 
-# ssh root@saas.qsolution.ru "systemctl stop qsserver"
-
 case $case in
     1)
-rsync -vizaP ./bin/Release/ admin@$SERVER:/home/admin/OsmBaseScripts
+BUILD="Release"
 ;;
     2)
-rsync -vizaP ./bin/Debug/ admin@$SERVER:/home/admin/OsmBaseScripts
+BUILD="Debug"
 ;;
 esac
 
-# ssh  root@saas.qsolution.ru "sudo systemctl start qsserver"
+msbuild /p:Configuration=$BUILD /p:Platform=x86
+
+rsync -vizaP ./bin/$BUILD/ admin@$SERVER:/home/admin/OsmBaseScripts
