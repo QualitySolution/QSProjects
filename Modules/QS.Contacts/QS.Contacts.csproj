@@ -78,6 +78,7 @@
     <Compile Include="HibernateMapping\PostMap.cs" />
     <Compile Include="Repositories\PhoneTypeRepository.cs" />
     <Compile Include="ContactDefaults.cs" />
+    <Compile Include="ConfigureDeletion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />
