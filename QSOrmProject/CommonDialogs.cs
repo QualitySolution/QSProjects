@@ -71,6 +71,10 @@ namespace QSOrmProject
 			return result;
 		}
 
+		/// <summary>
+		/// Выводит вопрос "Перед печатью {0}, необходимо сохранить изменения в {1}. Сохранить?"
+		/// Диалог использует название сущьности в предложном падеже (Prepositional)
+		/// </summary>
 		public static bool SaveBeforePrint(Type savingEntity, string whatPrint)
 		{
 			string  savingName = "НЕ УКАЗАНО";
