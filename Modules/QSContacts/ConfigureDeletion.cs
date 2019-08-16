@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using QS.Contacts;
 using QS.Deletion;
 
 namespace QSContacts

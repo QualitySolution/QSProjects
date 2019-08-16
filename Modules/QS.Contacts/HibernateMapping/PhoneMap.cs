@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
 
-namespace QSContacts.HMap
+namespace QS.Contacts.HMap
 {
 	public class PhoneMap : ClassMap<Phone>
 	{

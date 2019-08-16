@@ -1,10 +1,9 @@
 ﻿using System;
-using QSOrmProject;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 
-namespace QSContacts
+namespace QS.Contacts
 {
 	[Appellative (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "телефоны",
@@ -75,10 +74,10 @@ namespace QSContacts
 
 		public Phone()
 		{
-			if (String.IsNullOrWhiteSpace(QSContactsMain.DefaultCityCode))
+			if (String.IsNullOrWhiteSpace(ContactDefaults.DefaultCityCode))
 				Number = String.Empty;
 			else
-				Number = String.Format("({0})", QSContactsMain.DefaultCityCode);
+				Number = String.Format("({0})", ContactDefaults.DefaultCityCode);
 			Additional = String.Empty;
 		}
 

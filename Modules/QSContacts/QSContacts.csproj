@@ -73,26 +73,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="PhonesView.cs" />
-    <Compile Include="Domain\Phone.cs" />
-    <Compile Include="Domain\PhoneType.cs" />
     <Compile Include="EmailsView.cs" />
-    <Compile Include="Domain\Email.cs" />
-    <Compile Include="Domain\EmailType.cs" />
-    <Compile Include="QSContactsMain.cs" />
     <Compile Include="gtk-gui\QSContacts.PhonesView.cs" />
     <Compile Include="gtk-gui\QSContacts.EmailsView.cs" />
     <Compile Include="gtk-gui\QSContacts.PersonsView.cs" />
     <Compile Include="PersonsView.cs" />
-    <Compile Include="Domain\Person.cs" />
-    <Compile Include="Domain\Post.cs" />
+    <Compile Include="QSContactsMain.cs" />
     <Compile Include="ConfigureDeletion.cs" />
-    <Compile Include="Repositories\PhoneTypeRepository.cs" />
-    <Compile Include="HibernateMapping\EmailMap.cs" />
-    <Compile Include="HibernateMapping\PhoneMap.cs" />
-    <Compile Include="HibernateMapping\PhoneTypeMap.cs" />
-    <Compile Include="HibernateMapping\EmailTypeMap.cs" />
-    <Compile Include="HibernateMapping\PostMap.cs" />
-    <Compile Include="HibernateMapping\PersonMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -129,11 +116,10 @@
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="HibernateMapping\" />
+    <ProjectReference Include="..\QS.Contacts\QS.Contacts.csproj">
+      <Project>{B1DD034B-EC88-400C-9C6B-83CE68AB3541}</Project>
+      <Name>QS.Contacts</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

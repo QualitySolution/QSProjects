@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using QS.DomainModel.UoW;
 
-namespace QSContacts
+namespace QS.Contacts
 {
 	public static class PhoneTypeRepository
 	{
