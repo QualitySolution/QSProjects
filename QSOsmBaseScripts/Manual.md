@@ -1,4 +1,4 @@
-﻿Для работы скриптов необходимо установить следующее:
+﻿Для работы скриптов необходимо установить следующее, эти пакеты находятся в репозитории (Application:Geo):
 ```shell
 zypper in osm2pgsql perl-DBD-Pg
 ```
@@ -6,7 +6,7 @@ zypper in osm2pgsql perl-DBD-Pg
 ## Установка постгреса
 Нужно установить дополниельный пакет:
 ```shell
-    zypper in postgresql10-contrib
+    zypper in postgresql10-contrib postgresql10-postgis
 ```
 ## Первоначальная установка постреса
 1. После установки инициализируем папку с данным, можно просто запустить службу постгреса
@@ -22,8 +22,8 @@ zypper in osm2pgsql perl-DBD-Pg
     createdb -U postgres osmgis
     psql -U postgres -d osmgis -c 'CREATE EXTENSION postgis; CREATE EXTENSION hstore;'
 ```
-
-4. Можно переходить к последовательности в обновлении базы. Начиная с шага 2.
+4. Загружаем на сервер скрипты подготовки базы. Выполним UploadToServer.sh из каталога QSOsmBaseScripts репозитория. Предварительно скомпилировав проект QSOsmBaseScripts.
+5. Можно переходить к последовательности в обновлении базы. Начиная с шага 2.
 
 ## Последовательность действий для обновления базы ##
 
