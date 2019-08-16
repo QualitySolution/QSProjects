@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "$(dirname "$0")"
 
 wget -N http://download.geofabrik.de/russia/northwestern-fed-district-latest.osm.pbf
 
