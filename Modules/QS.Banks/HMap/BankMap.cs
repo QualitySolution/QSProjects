@@ -1,7 +1,8 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
+using QS.Banks.Domain;
 
-namespace QSBanks.HMap
+namespace QS.Banks.HMap
 {
 	public class BankMap : ClassMap<Bank>
 	{

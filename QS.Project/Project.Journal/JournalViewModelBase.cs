@@ -80,8 +80,13 @@ namespace QS.Project.Journal
 			RaiseItemsUpdated();
 		}
 
+		protected virtual void BeforeItemsUpdated()
+		{
+		}
+
 		protected virtual void RaiseItemsUpdated()
 		{
+			BeforeItemsUpdated();
 			ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 		}
 

@@ -2,10 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
-using QSOrmProject;
 using QS.DomainModel.Entity.EntityPermissions;
 
-namespace QSBanks
+namespace QS.Banks.Domain
 {
 	[Appellative (Gender = GrammaticalGender.Masculine,
 		Nominative = "расчётный счет",

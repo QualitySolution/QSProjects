@@ -25,7 +25,7 @@ namespace QS.Widgets.GtkUI
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		private bool entryChangedByUser = true;
+		private bool entryChangedByUser;
 
 		public BindingControler<EntityViewModelEntry> Binding { get; private set; }
 		public bool CanEditReference { get; set; } = true;
@@ -74,6 +74,7 @@ namespace QS.Widgets.GtkUI
 			this.entitySelectorFactory = entitySelectorAutocompleteFactory;
 			SubjectType = entitySelectorFactory.EntityType;
 			entryObject.IsEditable = true;
+			entryChangedByUser = true;
 			ConfigureEntryComplition();
 		}
 
@@ -81,7 +82,8 @@ namespace QS.Widgets.GtkUI
 		{
 			this.entitySelectorFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
 			SubjectType = entitySelectorFactory.EntityType;
-			entryObject.IsEditable = true;
+			entryObject.IsEditable = false;
+			entryChangedByUser = false;
 			ConfigureEntryComplition();
 		}
 
@@ -298,7 +300,9 @@ namespace QS.Widgets.GtkUI
 		{
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string), typeof(object));
-
+			if(entitySelectorAutocompleteFactory == null) {
+				return;
+			}
 			using(var autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector()) {
 				autoCompleteSelector.SearchValues(entryObject.Text);
 
@@ -337,7 +341,7 @@ namespace QS.Widgets.GtkUI
 		protected void OnEntryObjectChanged(object sender, EventArgs e)
 		{
 			lastChangedTime = DateTime.Now;
-			if(!fillingInProgress) {
+			if(!fillingInProgress && entryChangedByUser) {
 				Task.Run(() => {
 					fillingInProgress = true;
 					try {
@@ -347,9 +351,7 @@ namespace QS.Widgets.GtkUI
 							}
 						}
 						Application.Invoke((s, arg) => {
-							if(entryChangedByUser) {
-								FillAutocomplete();
-							}
+							FillAutocomplete();
 						});
 					} catch(Exception ex) {
 						logger.Error(ex, $"Ошибка во время формирования автодополнения для {nameof(EntityViewModelEntry)}");

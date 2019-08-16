@@ -34,7 +34,7 @@ namespace QS.Project.Journal.EntitySelector
 			}
 		}
 
-		public IEntitySelector CreateSelector()
+		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
 			IEntityConfigurationProvider entityConfigurationProvider = new DefaultEntityConfigurationProvider();
 

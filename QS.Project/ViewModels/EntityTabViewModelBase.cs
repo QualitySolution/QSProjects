@@ -37,7 +37,7 @@ namespace QS.ViewModels
 				if(!string.IsNullOrWhiteSpace(tabName))
 					return tabName;
 				if(UoW != null && UoW.RootObject != null) {
-					AppellativeAttribute subAtt = GetType().GetCustomAttribute<AppellativeAttribute>(true);
+					AppellativeAttribute subAtt = typeof(TEntity).GetCustomAttribute<AppellativeAttribute>(true);
 
 					if(UoW.IsNew) {
 						if(subAtt != null && !string.IsNullOrWhiteSpace(subAtt.Nominative)) {
@@ -128,7 +128,6 @@ namespace QS.ViewModels
 			if(!PermissionResult.CanRead) {
 				AbortOpening(PermissionsSettings.GetEntityReadValidateResult(typeof(TEntity)));
 			}
-
 		}
 
 		protected virtual void BeforeSave()
@@ -160,8 +159,14 @@ namespace QS.ViewModels
 		{
 		}
 
+		protected virtual void BeforeValidation()
+		{
+
+		}
+
 		protected bool Validate()
 		{
+			BeforeValidation();
 			return Validator.Validate(ValidationContext);
 		}
 

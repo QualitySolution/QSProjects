@@ -1,6 +1,6 @@
 ﻿using QS.DomainModel.Entity;
 
-namespace QSBanks
+namespace QS.Banks.Domain
 {
 	[Appellative (NominativePlural = "регионы банков")]
 	public class BankRegion: PropertyChangedBase, IDomainObject

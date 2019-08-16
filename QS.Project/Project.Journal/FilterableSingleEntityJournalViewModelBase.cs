@@ -10,7 +10,7 @@ namespace Vodovoz.JournalViewModels
 {
 	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel> : SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode>
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
-		where TNode : JournalEntityNodeBase<TEntity>
+		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
 		where TFilterViewModel : FilterViewModelBase<TFilterViewModel>
 	{

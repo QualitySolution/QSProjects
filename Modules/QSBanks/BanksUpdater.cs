@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml.Serialization;
 using Gtk;
 using ICSharpCode.SharpZipLib.Zip;
+using QS.Banks.Domain;
 using QS.DomainModel.UoW;
 using QS.Utilities;
 using QSBanks.CBRSource;

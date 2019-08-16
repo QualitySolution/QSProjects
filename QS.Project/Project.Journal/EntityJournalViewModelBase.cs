@@ -287,7 +287,12 @@ namespace QS.Project.Journal
 							var childNodeAction = new JournalAction(createDlgConfig.Title,
 								(selected) => entityConfig.PermissionResult.CanCreate,
 								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this)
+								(selected) => {
+									TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this);
+									if(documentConfig.JournalParameters.HideJournalForCreateDialog) {
+										HideJournal(TabParent);
+									}
+								}
 							);
 							addParentNodeAction.ChildActionsList.Add(childNodeAction);
 						}
@@ -300,9 +305,12 @@ namespace QS.Project.Journal
 					(selected) => entityConfig.PermissionResult.CanCreate,
 					(selected) => entityConfig.PermissionResult.CanCreate,
 					(selected) => {
-						ITdiTab tab = entityConfig.EntityDocumentConfigurations.First().GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
+						var docConfig = entityConfig.EntityDocumentConfigurations.First();
+						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 						TabParent.OpenTab(() => tab, this);
-
+						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
+							HideJournal(TabParent);
+						}
 					});
 				NodeActionsList.Add(addAction);
 			};
@@ -337,6 +345,9 @@ namespace QS.Project.Journal
 					var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
 
 					TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), this);
+					if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
+						HideJournal(TabParent);
+					}
 				}
 			);
 			if(SelectionMode == JournalSelectionMode.None) {
@@ -377,6 +388,13 @@ namespace QS.Project.Journal
 				}
 			);
 			NodeActionsList.Add(deleteAction);
+		}
+
+		private void HideJournal(ITdiTabParent parenTab)
+		{
+			if(TabParent is ITdiSliderTab slider) {
+				slider.IsHideJournal = true;
+			}
 		}
 
 		#endregion Actions
