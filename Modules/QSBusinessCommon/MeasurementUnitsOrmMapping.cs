@@ -1,11 +1,11 @@
-﻿using System;
-using QS.BusinessCommon.Domain;
+﻿using QS.BusinessCommon.Domain;
+using QSBusinessCommon;
 using QSOrmProject;
 using QSOrmProject.DomainMapping;
 
-namespace QSBusinessCommon
+namespace QS.BusinessCommon
 {
-	public static class OrmMapping
+	public static class MeasurementUnitsOrmMapping
 	{
 		public static IOrmObjectMapping GetOrmMapping()
 		{
