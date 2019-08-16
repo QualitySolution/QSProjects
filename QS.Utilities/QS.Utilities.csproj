@@ -41,6 +41,7 @@
     <Compile Include="DateHelper.cs" />
     <Compile Include="Dates\DateRange.cs" />
     <Compile Include="Text\StringManipulationHelper.cs" />
+    <Compile Include="CurrencyWorks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />

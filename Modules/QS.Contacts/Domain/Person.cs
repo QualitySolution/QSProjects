@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
-using QSOrmProject;
-using QSProjectsLib;
+using QS.Utilities.Text;
 
-namespace QSContacts
+namespace QS.Contacts
 {
 	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "персоны",
@@ -39,7 +38,7 @@ namespace QSContacts
 		#endregion
 
 		public virtual string NameWithInitials{
-			get { return StringWorks.PersonNameWithInitials (Lastname, Name, PatronymicName);
+			get { return PersonHelper.PersonNameWithInitials (Lastname, Name, PatronymicName);
 			}
 		}
 

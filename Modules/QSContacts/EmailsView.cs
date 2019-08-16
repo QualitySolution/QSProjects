@@ -5,6 +5,7 @@ using System.Linq;
 using Gamma.Widgets;
 using Gtk;
 using NLog;
+using QS.Contacts;
 using QS.DomainModel.UoW;
 using QSWidgetLib;
 

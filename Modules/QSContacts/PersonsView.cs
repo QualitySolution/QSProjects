@@ -8,6 +8,7 @@ using Gtk;
 using QSOrmProject;
 using System.Linq;
 using Gamma.GtkWidgets;
+using QS.Contacts;
 
 namespace QSContacts
 {

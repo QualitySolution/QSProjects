@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
-using QSOrmProject;
 
-namespace QSContacts
+namespace QS.Contacts
 {
 	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "должности",

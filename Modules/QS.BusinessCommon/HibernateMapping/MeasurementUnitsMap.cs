@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
-using QSBusinessCommon.Domain;
+using QS.BusinessCommon.Domain;
 
-namespace QSBusinessCommon.HMap
+namespace QS.BusinessCommon.HMap
 {
 	public class MeasurementUnitsMap : ClassMap<MeasurementUnits>
 	{

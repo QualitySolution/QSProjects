@@ -1,8 +1,7 @@
 ﻿using System;
 using QS.DomainModel.Entity;
-using QSOrmProject;
 
-namespace QSContacts
+namespace QS.Contacts
 {
 	[Appellative (Gender = GrammaticalGender.Masculine,
 		NominativePlural = "типы e-mail",

@@ -1,13 +1,13 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
 
-namespace QSContacts.HMap
+namespace QS.Contacts.HMap
 {
-	public class PostMap : ClassMap<Post>
+	public class EmailTypeMap : ClassMap<EmailType>
 	{
-		public PostMap ()
+		public EmailTypeMap ()
 		{
-			Table("post");
+			Table("email_types");
 
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
 

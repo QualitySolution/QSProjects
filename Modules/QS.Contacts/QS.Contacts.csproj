@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{301F793C-130B-44EB-A45D-60D5F040B0AD}</ProjectGuid>
+    <ProjectGuid>{B1DD034B-EC88-400C-9C6B-83CE68AB3541}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QS.Banks</RootNamespace>
-    <AssemblyName>QS.Banks</AssemblyName>
+    <RootNamespace>QS.Contacts</RootNamespace>
+    <AssemblyName>QS.Contacts</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,13 +30,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.4.6.6\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
     <Reference Include="Remotion.Linq">
       <HintPath>..\..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -46,51 +58,45 @@
     <Reference Include="NHibernate">
       <HintPath>..\..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="FluentNHibernate">
       <HintPath>..\..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.4.6.6\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\Account.cs" />
-    <Compile Include="Domain\Bank.cs" />
-    <Compile Include="Domain\BankRegion.cs" />
-    <Compile Include="Domain\CorAccount.cs" />
-    <Compile Include="HMap\AccountMap.cs" />
-    <Compile Include="HMap\BankMap.cs" />
-    <Compile Include="HMap\BankRegionMap.cs" />
-    <Compile Include="HMap\CorAccountMap.cs" />
-    <Compile Include="Domain\AccountOwnerBase.cs" />
-    <Compile Include="ConfigureDeletionBanks.cs" />
+    <Compile Include="Domain\Email.cs" />
+    <Compile Include="Domain\EmailType.cs" />
+    <Compile Include="Domain\Person.cs" />
+    <Compile Include="Domain\Phone.cs" />
+    <Compile Include="Domain\PhoneType.cs" />
+    <Compile Include="Domain\Post.cs" />
+    <Compile Include="HibernateMapping\EmailMap.cs" />
+    <Compile Include="HibernateMapping\EmailTypeMap.cs" />
+    <Compile Include="HibernateMapping\PersonMap.cs" />
+    <Compile Include="HibernateMapping\PhoneMap.cs" />
+    <Compile Include="HibernateMapping\PhoneTypeMap.cs" />
+    <Compile Include="HibernateMapping\PostMap.cs" />
+    <Compile Include="Repositories\PhoneTypeRepository.cs" />
+    <Compile Include="ContactDefaults.cs" />
+    <Compile Include="ConfigureDeletion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />
-    <Folder Include="HMap\" />
+    <Folder Include="HibernateMapping\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
+    <ProjectReference Include="..\..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

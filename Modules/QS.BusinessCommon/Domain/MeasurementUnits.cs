@@ -2,10 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
-using QSOrmProject;
-using QSOrmProject.DomainMapping;
 
-namespace QSBusinessCommon.Domain
+namespace QS.BusinessCommon.Domain
 {
 	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",
@@ -65,14 +63,6 @@ namespace QSBusinessCommon.Domain
 		public MeasurementUnits ()
 		{
 			Name = String.Empty;
-		}
-
-		public static IOrmObjectMapping GetOrmMapping()
-		{
-			return OrmObjectMapping<MeasurementUnits>.Create ().Dialog<MeasurementUnitsDlg> ().DefaultTableView ()
-				.Column("ОКЕИ", i => i.OKEI)
-				.SearchColumn ("Наименование", i => i.Name)
-				.Column("Точность", i => i.Digits.ToString()).End ();
 		}
 	}
 }
