@@ -73,9 +73,6 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="gtk-gui\QSBusinessCommon.MeasurementUnitsDlg.cs" />
     <Compile Include="Dialogs\MeasurementUnitsDlg.cs" />
-    <Compile Include="Domain\MeasurementUnits.cs" />
-    <Compile Include="HibernateMapping\MeasurementUnitsMap.cs" />
-    <Compile Include="Repository\MeasurementUnitsRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -108,10 +105,6 @@
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HibernateMapping\" />
-    <Folder Include="Repository\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
