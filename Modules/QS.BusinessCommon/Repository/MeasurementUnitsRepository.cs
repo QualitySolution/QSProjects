@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
-using QSBusinessCommon.Domain;
+using QS.BusinessCommon.Domain;
 
-namespace QSBusinessCommon.Repository
+namespace QS.BusinessCommon.Repository
 {
 	public static class MeasurementUnitsRepository
 	{

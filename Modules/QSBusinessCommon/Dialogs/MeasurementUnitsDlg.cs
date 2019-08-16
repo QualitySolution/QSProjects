@@ -1,7 +1,7 @@
 ﻿using System;
 using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
-using QSBusinessCommon.Domain;
+using QS.BusinessCommon.Domain;
 using QSOrmProject;
 using QSValidation;
 
