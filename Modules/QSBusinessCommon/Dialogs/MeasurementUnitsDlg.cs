@@ -1,8 +1,6 @@
-﻿using System;
-using QS.Dialog.Gtk;
-using QS.DomainModel.UoW;
+﻿using Gamma.Binding.Converters;
 using QS.BusinessCommon.Domain;
-using QSOrmProject;
+using QS.DomainModel.UoW;
 using QSValidation;
 
 namespace QSBusinessCommon

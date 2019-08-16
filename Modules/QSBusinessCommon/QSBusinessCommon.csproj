@@ -81,17 +81,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\QSOrmProject\QSOrmProject.csproj">
-      <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
-      <Name>QSOrmProject</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSValidation\QSValidation.csproj">
       <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
       <Name>QSValidation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\QSProjectsLib\QSProjectsLib.csproj">
-      <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
-      <Name>QSProjectsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
@@ -104,6 +96,10 @@
     <ProjectReference Include="..\..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.BusinessCommon\QS.BusinessCommon.csproj">
+      <Project>{F22749B2-E35B-455D-BD8D-081373B16FC7}</Project>
+      <Name>QS.BusinessCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

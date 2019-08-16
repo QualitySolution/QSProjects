@@ -143,11 +143,11 @@ namespace QSBusinessCommon
 			w12.XOptions = ((global::Gtk.AttachOptions)(4));
 			w12.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child datatable1.Gtk.Table+TableChild
-			this.spinDigits = new global::Gamma.GtkWidgets.ySpinButton(0, 5, 1);
+			this.spinDigits = new global::Gamma.GtkWidgets.ySpinButton(0D, 5D, 1D);
 			this.spinDigits.CanFocus = true;
 			this.spinDigits.Name = "spinDigits";
-			this.spinDigits.Adjustment.PageIncrement = 10;
-			this.spinDigits.ClimbRate = 1;
+			this.spinDigits.Adjustment.PageIncrement = 10D;
+			this.spinDigits.ClimbRate = 1D;
 			this.spinDigits.Numeric = true;
 			this.spinDigits.ValueAsDecimal = 0m;
 			this.spinDigits.ValueAsInt = 0;
@@ -165,7 +165,8 @@ namespace QSBusinessCommon
 			w14.Expand = false;
 			w14.Fill = false;
 			this.Add(this.vbox3);
-			if((this.Child != null)) {
+			if ((this.Child != null))
+			{
 				this.Child.ShowAll();
 			}
 			w1.SetUiManager(UIManager);
