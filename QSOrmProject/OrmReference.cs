@@ -18,6 +18,8 @@ using QSOrmProject.UpdateNotification;
 using QSProjectsLib;
 using QS;
 using QS.Project.Repositories;
+using QS.Dialog.GtkUI;
+using QS.Utilities;
 
 namespace QSOrmProject
 {
@@ -487,8 +489,28 @@ namespace QSOrmProject
 				MessageDialogWorks.RunWarningDialog("У вас нет прав для удаления этого документа.");
 				return;
 			}
-			if (OrmMain.DeleteObject(ytreeviewRef.GetSelectedObject()))
-				UpdateObjectList();
+			List<object> toDelete = new List<object>();
+
+			if(Mode == OrmReferenceMode.MultiSelect) {
+				toDelete.AddRange(ytreeviewRef.GetSelectedObjects());
+			}
+			else
+				toDelete.Add(ytreeviewRef.GetSelectedObject());
+
+			var text = NumberToTextRus.FormatCase(toDelete.Count,
+				"Вы собираетесь удалить {0} объект, вам нужно будет проверить ссылки для каждого из них. Продолжить?",
+				"Вы собираетесь удалить {0} объекта, вам нужно будет проверить ссылки для каждого из них. Продолжить?",
+				"Вы собираетесь удалить {0} объектов, вам нужно будет проверить ссылки для каждого из них. Продолжить?");
+
+			if(toDelete.Count > 1 && !MessageDialogHelper.RunQuestionDialog(text)) {
+				return;
+			}
+
+			foreach(var delete in toDelete) {
+				OrmMain.DeleteObject(delete);
+			}
+
+			UpdateObjectList();
 		}
 
 		public override void Destroy()
