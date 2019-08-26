@@ -109,7 +109,7 @@ namespace QSOrmProject
 			return OpenTab(hashName, () => tab, afterTab);
 		}
 
-		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, bool canSlided = true)
 		{
 			var tab = newTabFunc();
 			RunDlg (tab);

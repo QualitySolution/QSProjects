@@ -16,8 +16,8 @@ namespace QS.Tdi
         /// </summary>
         /// <param name="tab">Вкладка, которую надо открыть.</param>
         /// <param name="afterTab">После какой вкладки добавлять. Обычно после выбранной - в этом случае аргумент "this".</param>
-        /// <param name="CanSlided">Может ли вкладка открыться рядом с журналом. "True" и открывается из журнала - появляется справа, "false" - открывается в отдельной вкладке.</param>
-		void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true);
+        /// <param name="canSlided">Может ли вкладка открыться рядом с журналом. "True" и открывается из журнала - появляется справа, "false" - открывается в отдельной вкладке.</param>
+		void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true);
 
 		/// <summary>
 		/// Выполняем проверку есть ли у вкладки подчиненные, если есть выводится сообщение пользователю с переключение на незакрытую подчинённую вкладку.
@@ -31,7 +31,14 @@ namespace QS.Tdi
 		void SwitchOnTab(ITdiTab tab);
 
 		ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null);
-		ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null);
+
+		/// <summary>
+		/// Добавить вкладку.
+		/// </summary>
+		/// <param name="tab">Вкладка, которую надо открыть.</param>
+		/// <param name="afterTab">После какой вкладки добавлять. Обычно после выбранной - в этом случае аргумент "this".</param>
+		/// <param name="canSlided">Может ли вкладка открыться рядом с журналом. "True" и открывается из журнала - появляется справа, "false" - открывается в отдельной вкладке.</param>
+		ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, bool canSlided = true);
 
 		/// <summary>
 		/// Открываем вкладку с автоматическим вызовом конструктора вкладки с переданными функции аргументами.

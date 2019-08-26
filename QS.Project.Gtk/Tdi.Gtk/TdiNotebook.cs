@@ -176,7 +176,7 @@ namespace QS.Tdi.Gtk
 			return OpenTab(hashName, () => tab, afterTab);
 		}
 
-		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, bool canSlided = true)
 		{
 			ITdiTab tab = FindTab(hashName);
 

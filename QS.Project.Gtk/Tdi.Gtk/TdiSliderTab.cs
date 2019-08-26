@@ -258,8 +258,8 @@ namespace QS.Tdi.Gtk
 		/// </summary>
 		/// <param name="tab">Основная вкладка.</param>
 		/// <param name="afterTab">Дочерняя вкладка.</param>
-		/// <param name="CanSlided">Если true, то открываются в одной вкладке.</param>
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		/// <param name="canSlided">Если true, то открываются в одной вкладке.</param>
+		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
@@ -268,7 +268,7 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 
-			if(CanSlided && afterTab == Journal && tab is ITdiDialog) {
+			if(canSlided && afterTab == Journal && tab is ITdiDialog) {
 				ActiveDialog = (ITdiDialog)tab;
 				return;
 			}
@@ -305,7 +305,7 @@ namespace QS.Tdi.Gtk
 
 		}
 
-		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null)
+		public ITdiTab OpenTab(string hashName, Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, bool canSlided = true)
 		{
 			ITdiTab tab = FindTab(hashName);
 
@@ -321,7 +321,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			tab = newTabFunc();
-			AddTab(tab, afterTab);
+			AddTab(tab, afterTab, canSlided);
 			return tab;
 		}
 
