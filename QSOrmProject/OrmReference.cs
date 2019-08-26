@@ -15,11 +15,11 @@ using QS.Tdi;
 using QS.Utilities.Text;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
-using QSProjectsLib;
-using QS;
 using QS.Project.Repositories;
 using QS.Dialog.GtkUI;
 using QS.Utilities;
+using QS.Dialog.Gtk;
+using QS;
 
 namespace QSOrmProject
 {
@@ -362,14 +362,14 @@ namespace QSOrmProject
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
 			if(!CanCreate) {
-				MessageDialogWorks.RunWarningDialog("У вас нет прав для создания этого документа.");
+				MessageDialogHelper.RunWarningDialog("У вас нет прав для создания этого документа.");
 				return;
 			}
 			ytreeviewRef.Selection.UnselectAll();
 			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
 				SelectObject(EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, null));
 			} else {
-				var tab = TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, 0),
+				var tab = TabParent.OpenTab(DialogHelper.GenerateDialogHashName(objectType, 0),
 					() => OrmMain.CreateObjectDialog(objectType), this
 				);
 				if(tab != null)
@@ -397,16 +397,30 @@ namespace QSOrmProject
 		protected void OnButtonEditClicked(object sender, EventArgs e)
 		{
 			if(!CanEdit) {
-				MessageDialogWorks.RunWarningDialog("У вас нет прав для редактирования этого документа.");
+				MessageDialogHelper.RunWarningDialog("У вас нет прав для редактирования этого документа.");
 				return;
 			}
 			if (OrmMain.GetObjectDescription(objectType).SimpleDialog) {
-				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObject());
+				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, objectType, ytreeviewRef.GetSelectedObjects().First());
 			} else {
-				var selected = ytreeviewRef.GetSelectedObject();
-				TabParent.OpenTab(OrmMain.GenerateDialogHashName(objectType, DomainHelper.GetId(selected)),
-					() => OrmMain.CreateObjectDialog(objectType, selected), this
+				var selected = ytreeviewRef.GetSelectedObjects();
+
+				var text = NumberToTextRus.FormatCase(selected.Length,
+					"Вы действительно хотите открыть {0} вкладку?",
+					"Вы действительно хотите открыть {0} вкладки?",
+					"Вы действительно хотите открыть {0} вкладок?"
 				);
+
+				if(selected.Length > 5 && !MessageDialogHelper.RunQuestionDialog(text))
+					return;
+
+				foreach(var one in selected) {
+					TabParent.OpenTab(DialogHelper.GenerateDialogHashName(objectType, DomainHelper.GetId(one)),
+						() => OrmMain.CreateObjectDialog(objectType, one), 
+						this, 
+						canSlided: selected.Length == 1
+					);
+				}
 			}
 		}
 
@@ -486,23 +500,17 @@ namespace QSOrmProject
 		protected void OnButtonDeleteClicked(object sender, EventArgs e)
 		{
 			if(!CanDelete) {
-				MessageDialogWorks.RunWarningDialog("У вас нет прав для удаления этого документа.");
+				MessageDialogHelper.RunWarningDialog("У вас нет прав для удаления этого документа.");
 				return;
 			}
-			List<object> toDelete = new List<object>();
+			var toDelete = ytreeviewRef.GetSelectedObjects();
 
-			if(Mode == OrmReferenceMode.MultiSelect) {
-				toDelete.AddRange(ytreeviewRef.GetSelectedObjects());
-			}
-			else
-				toDelete.Add(ytreeviewRef.GetSelectedObject());
-
-			var text = NumberToTextRus.FormatCase(toDelete.Count,
+			var text = NumberToTextRus.FormatCase(toDelete.Length,
 				"Вы собираетесь удалить {0} объект, вам нужно будет проверить ссылки для каждого из них. Продолжить?",
 				"Вы собираетесь удалить {0} объекта, вам нужно будет проверить ссылки для каждого из них. Продолжить?",
 				"Вы собираетесь удалить {0} объектов, вам нужно будет проверить ссылки для каждого из них. Продолжить?");
 
-			if(toDelete.Count > 1 && !MessageDialogHelper.RunQuestionDialog(text)) {
+			if(toDelete.Length > 1 && !MessageDialogHelper.RunQuestionDialog(text)) {
 				return;
 			}
 
