@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gtk;
 
-namespace QS.Utilities.Gtk
+namespace QS.Utilities.GtkUI
 {
 	public static class GtkHelper
 	{
