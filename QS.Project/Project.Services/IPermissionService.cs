@@ -1,10 +1,10 @@
 ﻿using System;
-using QS.Project.Domain;
 namespace QS.Services
 {
 	public interface IPermissionService
 	{
 		IPermissionResult ValidateUserPermission(Type entityType, int userId);
+		bool ValidateUserPresetPermission(string permissionName, int userId);
 	}
 
 	public interface IPermissionResult

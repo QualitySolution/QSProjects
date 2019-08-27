@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Gamma.Utilities;
 using QS.Dialog;
 using QS.DomainModel.UoW;
@@ -30,11 +31,23 @@ namespace QS.Project.Filter
 		/// <summary>
 		/// Устанавливает значение свойству и обновляет фильтр
 		/// </summary>
-		protected void UpdateFilterField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
+		protected bool UpdateFilterField<T>(ref T field, T value, Expression<Func<T>> selectorExpression)
 		{
-			if(SetField(ref field, value, selectorExpression)) {
+			bool success = SetField(ref field, value, selectorExpression);
+			if(success)
 				Update();
-			}
+			return success;
+		}
+
+		/// <summary>
+		/// Устанавливает значение свойству и обновляет фильтр
+		/// </summary>
+		protected bool UpdateFilterField<T>(ref T field, T value, [CallerMemberName]string propertyName = "")
+		{
+			bool success = SetField(ref field, value, propertyName);
+			if(success)
+				Update();
+			return success;
 		}
 
 		public void Update()

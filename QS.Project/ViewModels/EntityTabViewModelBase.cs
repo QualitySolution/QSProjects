@@ -155,6 +155,24 @@ namespace QS.ViewModels
 			AfterSave();
 		}
 
+		protected virtual bool SaveBeforeContinue()
+		{
+			var docName = DomainHelper.GetSubjectNames(Entity)?.Nominative?.StringToTitleCase();
+
+			if(string.IsNullOrWhiteSpace(docName))
+				docName = "этот документ.";
+			else
+				docName = string.Concat("\"", docName, "\"");
+
+			var response = AskQuestion(
+				string.Format("Перед продолжением необходимо сохранить {0}\nПродолжить?", docName),
+				"Сохранить?"
+			);
+			if(!response)
+				return false;
+			return Save();
+		}
+
 		protected virtual void AfterSave()
 		{
 		}

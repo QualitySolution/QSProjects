@@ -1,21 +1,22 @@
 ﻿using System;
 using QS.DomainModel.Entity.EntityPermissions;
+using QS.DomainModel.Entity.PresetPermissions;
 namespace QS.Services
 {
 	public class PermissionService : IPermissionService
 	{
-		private readonly IEntityPermissionValidator permissionValidator;
+		readonly IEntityPermissionValidator permissionValidator;
+		readonly IPresetPermissionValidator presetPermissionValidator;
 
-		public PermissionService(IEntityPermissionValidator permissionValidator)
+		public PermissionService(IEntityPermissionValidator entityPermissionValidator, IPresetPermissionValidator presetPermissionValidator)
 		{
-			this.permissionValidator = permissionValidator ?? throw new ArgumentNullException(nameof(permissionValidator));
+			this.presetPermissionValidator = presetPermissionValidator ?? throw new ArgumentNullException(nameof(presetPermissionValidator));
+			this.permissionValidator = entityPermissionValidator ?? throw new ArgumentNullException(nameof(entityPermissionValidator));
 		}
 
-		public IPermissionResult ValidateUserPermission(Type entityType, int userId)
-		{
-			EntityPermission permission = permissionValidator.Validate(entityType, userId);
-			return new PermissionResult(permission);
-		}
+		public IPermissionResult ValidateUserPermission(Type entityType, int userId) => new PermissionResult(permissionValidator.Validate(entityType, userId));
+
+		public bool ValidateUserPresetPermission(string permissionName, int userId) => presetPermissionValidator.Validate(permissionName, userId);
 	}
 
 	public class PermissionResult : IPermissionResult
