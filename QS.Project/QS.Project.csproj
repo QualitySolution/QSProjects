@@ -249,8 +249,8 @@
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
     <Compile Include="Project.VersionControl\IApplicationInfo.cs" />
-    <Compile Include="ErrorReporting\BugMessage.cs" />
-    <Compile Include="ErrorReporting\IBugReportingService.cs" />
+    <Compile Include="ErrorReporting\ErrorReport.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingService.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
   </ItemGroup>
   <ItemGroup>

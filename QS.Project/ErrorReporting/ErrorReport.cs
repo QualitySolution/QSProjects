@@ -5,31 +5,31 @@ namespace QS.ErrorReporting
 {
 	[DataContract]
 	[Serializable]
-	public class BugMessage
+	public class ErrorReport
 	{
 		[DataMember]
-		public string product { get; set;}
+		public string Product { get; set;}
 
 		[DataMember(IsRequired = false)]
 		public string Edition { get; set;}
 
 		[DataMember]
-		public string version { get; set;}
+		public string Version { get; set;}
 
 		[DataMember]
-		public string stackTrace { get; set;}
+		public string StackTrace { get; set;}
 
 		[DataMember]
-		public string description { get; set;}
+		public string Description { get; set;}
 
 		[DataMember]
-		public string email { get; set;}
+		public string Email { get; set;}
 
 		[DataMember]
-		public string userName { get; set;}
+		public string UserName { get; set;}
 
 		[DataMember]
-		public string logFile { get; set;}
+		public string LogFile { get; set;}
 	}
 }
 

@@ -4,10 +4,10 @@ using System.ServiceModel.Web;
 namespace QS.ErrorReporting
 {
 	[ServiceContract]
-	public interface IBugReportingService
+	public interface IErrorReportingService
 	{
 		[OperationContract]
 		[WebInvoke]
-		bool SubmitBugReport (BugMessage bug);
+		bool SubmitErrorReport (ErrorReport report);
 	}
 }

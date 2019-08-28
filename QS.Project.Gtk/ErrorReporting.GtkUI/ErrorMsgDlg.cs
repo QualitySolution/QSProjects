@@ -104,16 +104,16 @@ namespace QS.ErrorReporting.GtkUI
 				}
 			}
 				
-			var result = svc.SubmitBugReport ( 
-				new BugMessage {
-					product = application.ProductName,
+			var result = svc.SubmitErrorReport ( 
+				new ErrorReport {
+					Product = application.ProductName,
 					Edition = application.Edition,
-					version = application.Version.ToString (),
-					stackTrace = AppExceptionText,
-					description = textviewDescription.Buffer.Text,
-					email = entryEmail.Text,
-					userName = user?.Name,
-					logFile = logContent
+					Version = application.Version.ToString (),
+					StackTrace = AppExceptionText,
+					Description = textviewDescription.Buffer.Text,
+					Email = entryEmail.Text,
+					UserName = user?.Name,
+					LogFile = logContent
 			});
 
 			if (result) {
