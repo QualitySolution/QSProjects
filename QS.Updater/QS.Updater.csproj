@@ -53,7 +53,6 @@
     <Compile Include="DTO\UsingStatisticsUniqueIP.cs" />
     <Compile Include="DTO\Result.cs" />
     <Compile Include="UpdateService.cs" />
-    <Compile Include="IApplicationInfo.cs" />
     <Compile Include="IUpdaterUI.cs" />
     <Compile Include="OverallUpdater.cs" />
     <Compile Include="ISkipVersionState.cs" />

@@ -533,6 +533,7 @@ namespace QSProjectsLib
 			}
 		}
 
+		[Obsolete("Для Gtk приложений пользуйтесь аналогичным функционалом из QS.ErrorHandling.GtkUI.UnhandledExceptionHandler без привязки к старой QSSupport.")]
 		public static void SubscribeToUnhadledExceptions ()
 		{
 			AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {

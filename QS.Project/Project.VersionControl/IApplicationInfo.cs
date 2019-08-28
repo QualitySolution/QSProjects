@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QS.Updater
+namespace QS.Project.VersionControl
 {
 	public interface IApplicationInfo
 	{

@@ -248,6 +248,7 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
+    <Compile Include="Project.VersionControl\IApplicationInfo.cs" />
     <Compile Include="BugReporting\BugMessage.cs" />
     <Compile Include="BugReporting\IBugReportingService.cs" />
     <Compile Include="BugReporting\ReportWorker.cs" />
@@ -283,6 +284,7 @@
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
+    <Folder Include="Project.VersionControl\" />
     <Folder Include="BugReporting\" />
   </ItemGroup>
   <ItemGroup>

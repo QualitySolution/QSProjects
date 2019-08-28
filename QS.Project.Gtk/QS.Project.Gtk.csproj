@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -185,6 +184,9 @@
     <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
+    <Compile Include="ErrorHandling.GtkUI\UnhandledExceptionHandler.cs" />
+    <Compile Include="ErrorHandling.GtkUI\ErrorMsgDlg.cs" />
+    <Compile Include="gtk-gui\QS.ErrorHandling.GtkUI.ErrorMsgDlg.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

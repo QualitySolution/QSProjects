@@ -1,8 +1,10 @@
 ﻿using System;
+using QS.Project.Application;
 using QSSupportLib;
 
 namespace QS.Updater
 {
+	//TODO Временный набросок интерфейса, служит пока для разрыва связи с QSSupport, нужно будет переделать расширить и дополнить.
 	public struct ApplicationVersionInfo : IApplicationInfo
 	{
 		public string ProductName => MainSupport.ProjectVerion.Product;
