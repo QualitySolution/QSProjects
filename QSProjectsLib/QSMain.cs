@@ -14,7 +14,9 @@ namespace QSProjectsLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
+		[Obsolete("Настройка оставлена для совместимости со старыми проектами. В новых используйте класс QS.ErrorReporting.GtkUI.UnhandledExceptionHandler")]
 		public static Window ErrorDlgParrent;
+		[Obsolete("Настройка оставлена для совместимости со старыми проектами. В новых используйте класс QS.ErrorReporting.GtkUI.UnhandledExceptionHandler")]
 		public static Thread GuiThread;
 
 		static bool statusBarRedrawHandled;
@@ -533,7 +535,7 @@ namespace QSProjectsLib
 			}
 		}
 
-		[Obsolete("Для Gtk приложений пользуйтесь аналогичным функционалом из QS.ErrorHandling.GtkUI.UnhandledExceptionHandler без привязки к старой QSSupport.")]
+		[Obsolete("Для Gtk приложений пользуйтесь аналогичным функционалом из QS.ErrorReporting.GtkUI.UnhandledExceptionHandler без привязки к старой QSSupport.")]
 		public static void SubscribeToUnhadledExceptions ()
 		{
 			AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {

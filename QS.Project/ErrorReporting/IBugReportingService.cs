@@ -1,7 +1,7 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
 
-namespace QS.BugReporting
+namespace QS.ErrorReporting
 {
 	[ServiceContract]
 	public interface IBugReportingService

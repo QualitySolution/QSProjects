@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using NLog;
 
-namespace QS.BugReporting
+namespace QS.ErrorReporting
 {
 	public static class ReportWorker
 	{

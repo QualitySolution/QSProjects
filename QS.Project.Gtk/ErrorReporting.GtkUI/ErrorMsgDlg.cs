@@ -5,12 +5,11 @@ using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
 using NLog.Targets;
-using QS.BugReporting;
 using QS.Dialog.GtkUI;
 using QS.Project.Domain;
 using QS.Project.VersionControl;
 
-namespace QS.ErrorHandling.GtkUI
+namespace QS.ErrorReporting.GtkUI
 {
 	public partial class ErrorMsgDlg : Gtk.Dialog
 	{

@@ -1989,7 +1989,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.ErrorHandling.GtkUI.ErrorMsgDlg" design-size="1081 733">
+  <widget class="Gtk.Dialog" id="QS.ErrorReporting.GtkUI.ErrorMsgDlg" design-size="1081 733">
     <property name="MemberName" />
     <property name="WidthRequest">1000</property>
     <property name="Title" translatable="yes">Ошибка</property>

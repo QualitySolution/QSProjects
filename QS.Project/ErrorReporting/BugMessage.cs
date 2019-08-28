@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace QS.BugReporting
+namespace QS.ErrorReporting
 {
 	[DataContract]
 	[Serializable]

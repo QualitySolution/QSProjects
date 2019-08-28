@@ -184,9 +184,9 @@
     <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
-    <Compile Include="ErrorHandling.GtkUI\UnhandledExceptionHandler.cs" />
-    <Compile Include="ErrorHandling.GtkUI\ErrorMsgDlg.cs" />
-    <Compile Include="gtk-gui\QS.ErrorHandling.GtkUI.ErrorMsgDlg.cs" />
+    <Compile Include="ErrorReporting.GtkUI\UnhandledExceptionHandler.cs" />
+    <Compile Include="ErrorReporting.GtkUI\ErrorMsgDlg.cs" />
+    <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -204,7 +204,7 @@
     <Folder Include="Project.Search.GtkUI\" />
     <Folder Include="Journal.GtkUI\" />
     <Folder Include="Views.GtkUI\" />
-    <Folder Include="ErrorHandling.GtkUI\" />
+    <Folder Include="ErrorReporting.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

@@ -4,7 +4,7 @@ using Gtk;
 using QS.Project.Domain;
 using QS.Project.VersionControl;
 
-namespace QS.ErrorHandling.GtkUI
+namespace QS.ErrorReporting.GtkUI
 {
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
