@@ -1,5 +1,5 @@
 ﻿using System;
-using QS.Project.Application;
+using QS.Project.VersionControl;
 using QSSupportLib;
 
 namespace QS.Updater
