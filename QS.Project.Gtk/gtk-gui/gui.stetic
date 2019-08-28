@@ -2103,7 +2103,7 @@
                         <property name="BottomAttach">2</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
-                        <property name="AutoSize">True</property>
+                        <property name="AutoSize">False</property>
                         <property name="XOptions">Fill</property>
                         <property name="YOptions">Fill</property>
                         <property name="XExpand">False</property>
@@ -2257,7 +2257,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">resource:QSSupportLib.icons.send-error-report.png</property>
+            <property name="Icon">resource:QS.Icons.GtkUI.SendErrorReport.png</property>
             <property name="Label" translatable="yes">Отправить отчет</property>
             <property name="UseUnderline">True</property>
             <property name="ResponseId">-1</property>
