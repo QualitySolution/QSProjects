@@ -79,6 +79,7 @@
     <Reference Include="Renci.SshNet">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -247,6 +248,9 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
+    <Compile Include="BugReporting\BugMessage.cs" />
+    <Compile Include="BugReporting\IBugReportingService.cs" />
+    <Compile Include="BugReporting\ReportWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -279,6 +283,7 @@
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
+    <Folder Include="BugReporting\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

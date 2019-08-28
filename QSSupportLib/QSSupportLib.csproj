@@ -69,6 +69,7 @@
     <Reference Include="Renci.SshNet">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -91,6 +92,9 @@
     <Compile Include="Dialogs\ApplicationConfigDialog.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ApplicationConfigDialog.cs" />
     <Compile Include="CheckBaseVersion.cs" />
+    <Compile Include="QSBugReporting\BugMessage.cs" />
+    <Compile Include="QSBugReporting\IBugReportingService.cs" />
+    <Compile Include="QSBugReporting\ReportWorker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -104,6 +108,7 @@
     <Folder Include="widgets\" />
     <Folder Include="SerialEncoding\" />
     <Folder Include="Dialogs\" />
+    <Folder Include="QSBugReporting\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
@@ -113,10 +118,6 @@
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QSBugReporting\QSBugReporting.csproj">
-      <Project>{F8E01CD3-8BDD-403B-8264-0ED24AC3FA21}</Project>
-      <Name>QSBugReporting</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>

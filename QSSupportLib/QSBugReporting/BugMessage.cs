@@ -5,6 +5,7 @@ namespace QSBugReporting
 {
 	[DataContract]
 	[Serializable]
+	[Obsolete("Здесь интерфейс отправки ошибок просто продублировани, на время доживания QSSupport, пока она не будет совсем удалена.")]
 	public class BugMessage
 	{
 		[DataMember]
