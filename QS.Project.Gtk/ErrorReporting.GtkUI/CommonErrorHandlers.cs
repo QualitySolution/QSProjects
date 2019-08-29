@@ -21,5 +21,16 @@ namespace QS.ErrorReporting.GtkUI
 			}
 			return false;
 		}
+
+		public static bool NHibernateFlushAfterException (Exception exception, IApplicationInfo application, UserBase user)
+		{
+			var nhEx = ExceptionHelper.FineExceptionTypeInInner<NHibernate.AssertionFailure>(exception);
+			if(nhEx != null && nhEx.Message.Contains("don't flush the Session after an exception occurs")) {
+				MessageDialogHelper.RunErrorDialog("В этом диалоге ранее произошла ошибка, в следстивии ее программа не может " +
+					"сохранить данные. Закройте этот диалог и продолжайте работу в новом.");
+				return true;
+			}
+			return false;
+		}
 	}
 }
