@@ -346,6 +346,7 @@ namespace QSProjectsLib
 			return FieldsString;
 		}
 
+		[Obsolete("Метод использует старый диалог вывода сообщения об ошибке. При переходе на класс UnhandledExceptionHandler, лучше не использовать старые сообщения.")]
 		public static void ErrorMessageWithLog (string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
 			if (level == null)
@@ -354,6 +355,7 @@ namespace QSProjectsLib
 			ErrorMessage (ex, userMessage);
 		}
 
+		[Obsolete("Метод использует старый диалог вывода сообщения об ошибке. При переходе на класс UnhandledExceptionHandler, лучше не использовать старые сообщения.")]
 		public static void ErrorMessageWithLog (Window parent, string userMessage, Logger logger, Exception ex, LogLevel level = null)
 		{
 			if (level == null)
@@ -362,11 +364,13 @@ namespace QSProjectsLib
 			ErrorMessage (parent, ex, userMessage);
 		}
 
+		[Obsolete("Метод использует старый диалог вывода сообщения об ошибке. При переходе на класс UnhandledExceptionHandler, лучше не использовать старые сообщения.")]
 		public static void ErrorMessage (Exception ex, string userMessage = "")
 		{
 			ErrorMessage (ErrorDlgParrent, ex, userMessage);
 		}
 
+		[Obsolete("Метод использует старый диалог вывода сообщения об ошибке. При переходе на класс UnhandledExceptionHandler, лучше не использовать старые сообщения.")]
 		public static void ErrorMessage (Window parent, Exception ex, string userMessage = "")
 		{
 			if (GuiThread == Thread.CurrentThread) {
