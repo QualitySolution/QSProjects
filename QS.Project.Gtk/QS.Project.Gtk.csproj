@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,14 +85,14 @@
     <Reference Include="Renci.SshNet">
       <HintPath>..\..\workwear\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\workwear\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
