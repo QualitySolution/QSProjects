@@ -52,6 +52,7 @@ namespace QSProjectsLib
 				string sql;
 
 				try {
+					var reg = new Regex("password=(.+?)(;|$)");
 					QSMain.CheckConnectionAlive ();
 					DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = "SELECT version();";
@@ -60,7 +61,6 @@ namespace QSProjectsLib
 					if(version.EndsWith("-MariaDB"))
 						sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
 					else if(Version.Parse(version) >= new Version(8, 0, 13)) {
-						var reg = new Regex("password=(.+?)(;|$)");
 						var match = reg.Match(QSMain.ConnectionString);
 						string oldPassword = match.Success ? match.Groups[1].Value : null;
 						sql = $"SET PASSWORD='{entryPassword.Text}' REPLACE '{oldPassword}';";
@@ -71,6 +71,11 @@ namespace QSProjectsLib
 					cmd.CommandText = sql;
 					cmd.ExecuteNonQuery ();
 					logger.Info ("Пароль изменен. Ok");
+
+					//Заменяем пароль с текущей строке одключения, для того чтобы при переподключении не было ошибок 
+					//и чтобы при смене пароля еще раз был текущий пароль.
+					QSMain.ConnectionString = reg.Replace(QSMain.ConnectionString, $"password={entryPassword.Text};");
+
 				} catch (Exception ex) {
 					logger.Error (ex, "Ошибка установки пароля!");
 					QSMain.ErrorMessage (this, ex);
