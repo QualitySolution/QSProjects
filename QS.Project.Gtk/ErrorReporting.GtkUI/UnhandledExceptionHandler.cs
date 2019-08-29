@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 using QS.Project.Domain;
@@ -6,6 +7,14 @@ using QS.Project.VersionControl;
 
 namespace QS.ErrorReporting.GtkUI
 {
+	/// <summary>
+	/// Делегат для перехвата и отдельной обработки некоторых ошибок.
+	/// Метод должне возвращать true, если ошибку он обработал сам 
+	/// и ее больше не надо передавать вниз по списку зарегистированных обработчиков,
+	/// вплодь до стандартного диалога отправки отчета об ошибке.
+	/// </summary>
+	public delegate bool CustomErrorHandler(Exception exception, IApplicationInfo application, UserBase user);
+
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
 	/// Для работы необходимо предварительно сконфигурировать модуль
@@ -27,6 +36,12 @@ namespace QS.ErrorReporting.GtkUI
 		public static UserBase User;
 		public static bool RequestEmail = true;
 		public static bool RequestDescription = true;
+
+		/// <summary>
+		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
+		/// так как если ошибку обработает первый обработчик ко второму она уже не попадет.
+		/// </summary>
+		public static readonly List<CustomErrorHandler> CustomErrorHandlers = new List<CustomErrorHandler>();
 
 		#endregion
 
@@ -59,6 +74,11 @@ namespace QS.ErrorReporting.GtkUI
 
 		private static void RealErrorMessage(Exception exception)
 		{
+			foreach(var handler in CustomErrorHandlers) {
+				if(handler(exception, ApplicationInfo, User))
+					return;
+			}
+
 			if(currentCrashDlg != null) {
 				logger.Debug("Добавляем исключение в уже созданное окно.");
 				currentCrashDlg.AddAnotherException(exception);
