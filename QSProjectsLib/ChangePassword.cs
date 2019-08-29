@@ -1,5 +1,6 @@
 using System;
 using System.Data.Common;
+using System.Text.RegularExpressions;
 using NLog;
 using QSSaaS;
 
@@ -49,10 +50,24 @@ namespace QSProjectsLib
 			} else {
 				logger.Info ("Отправляем новый пароль на сервер...");
 				string sql;
-				sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
+
 				try {
 					QSMain.CheckConnectionAlive ();
 					DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
+					cmd.CommandText = "SELECT version();";
+					var version = (string)cmd.ExecuteScalar();
+					logger.Debug("Server version: " + version);
+					if(version.EndsWith("-MariaDB"))
+						sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
+					else if(Version.Parse(version) >= new Version(8, 0, 13)) {
+						var reg = new Regex("password=(.+?)(;|$)");
+						var match = reg.Match(QSMain.ConnectionString);
+						string oldPassword = match.Success ? match.Groups[1].Value : null;
+						sql = $"SET PASSWORD='{entryPassword.Text}' REPLACE '{oldPassword}';";
+					}
+					else
+						sql = "SET PASSWORD = PASSWORD('" + entryPassword.Text + "')";
+
 					cmd.CommandText = sql;
 					cmd.ExecuteNonQuery ();
 					logger.Info ("Пароль изменен. Ok");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
@@ -388,13 +389,25 @@ namespace QSProjectsLib
 				string sql;
 				try {
 					QSMain.CheckConnectionAlive();
-					sql = "SET PASSWORD FOR @login = PASSWORD(@password)";
+					sql = "SELECT version();";
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					cmd.Parameters.AddWithValue("@login", entryLogin.Text);
-					cmd.Parameters.AddWithValue("@password", entryPassword.Text);
-					cmd.ExecuteNonQuery();
-					cmd.CommandText = "SET PASSWORD FOR @login @'localhost' = PASSWORD(@password)";
-					cmd.ExecuteNonQuery();
+					var version = (string)cmd.ExecuteScalar();
+					logger.Debug("Server version: " + version);
+					if(!version.EndsWith("-MariaDB") && Version.Parse(version) >= new Version(8, 0, 13)) {
+						cmd.CommandText = "ALTER USER @login IDENTIFIED BY @password;";
+						cmd.Parameters.AddWithValue("@login", entryLogin.Text);
+						cmd.Parameters.AddWithValue("@password", entryPassword.Text);
+						cmd.ExecuteNonQuery();
+					}
+					else {
+						cmd.CommandText = "SET PASSWORD FOR @login = PASSWORD(@password)";
+						cmd.Parameters.AddWithValue("@login", entryLogin.Text);
+						cmd.Parameters.AddWithValue("@password", entryPassword.Text);
+						cmd.ExecuteNonQuery();
+						cmd.CommandText = "SET PASSWORD FOR @login @'localhost' = PASSWORD(@password)";
+						cmd.ExecuteNonQuery();
+					}
+
 					logger.Info("Пароль изменен. Ok");
 				} catch(Exception ex) {
 					logger.Error(ex, "Ошибка установки пароля!");
