@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using Gamma.Binding.Core;
-using Gtk;
+using QS.Utilities.Numeric;
 
 namespace QS.Widgets.GtkUI
 {
@@ -19,26 +17,13 @@ namespace QS.Widgets.GtkUI
 		/// </summary>
 		public object Tag;
 
-		private PhoneFormat phoneFormat;
+		private PhoneFormatter phoneFormatter = new PhoneFormatter();
+
 		public PhoneFormat PhoneFormat
 		{
-			get => phoneFormat;
-			set
-			{
-				phoneFormat = value;
-				if (PhoneFormat == PhoneFormat.RussiaOnlyHyphenated)
-				{
-					maxStringLength = 16;
-					separator = '-';
-				}
-			}
+			get => phoneFormatter.Format;
+			set => phoneFormatter.Format = value;
 		}
-
-		#region Параметры работы
-		private int maxStringLength;
-		private char separator;
-
-		#endregion
 
 		public PhoneEntry() 
 		{
@@ -55,7 +40,7 @@ namespace QS.Widgets.GtkUI
 		protected void PhoneTextInserted (object o, Gtk.TextInsertedArgs args)
 		{
 			var curPos = args.Position;
-			var formated = FormatString (Text, ref curPos);
+			var formated = phoneFormatter.FormatString (Text, ref curPos);
 			var OldTextLegth = Text.Length;
 			if(Text != formated)
 			{
@@ -70,7 +55,7 @@ namespace QS.Widgets.GtkUI
 				return;
 
 			int curPos = args.StartPos;
-			var formated = FormatString(Text, ref curPos);
+			var formated = phoneFormatter.FormatString(Text, ref curPos);
 
 			if (Text != formated)
 			{
@@ -79,58 +64,11 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		internal string FormatString(string phone, ref int cursorPos)
-		{
-			string Result = "+7";
-			string startTrimed = Regex.Replace(phone, "^[^0-9\\+]+", "");
-			int removeFromStart = phone.Length - startTrimed.Length;
-			if(startTrimed.StartsWith("8"))
-			{
-				removeFromStart += 1;
-			}
-			else if (startTrimed.StartsWith("+7"))
-			{
-				removeFromStart += 2;
-			}
-
-			string digitsOnly = Regex.Replace(phone.Substring(removeFromStart), "[^0-9]", "");
-			if (digitsOnly.Length == 0 && removeFromStart == 0)
-				return String.Empty;
-
-			cursorPos = Regex.Replace(phone.Substring(removeFromStart, cursorPos - removeFromStart), "[^0-9]", "").Length + Result.Length;
-
-			Result += digitsOnly;
-
-			foreach(var position in hyphenPositions)
-			{
-				if (position + 1 > Result.Length)
-					break;
-
-				if (position < cursorPos)
-					cursorPos++;
-
-				Result = Result.Insert(position, separator.ToString());
-			}
-
-			if (Result.Length > maxStringLength)
-				return Result.Substring(0, maxStringLength);
-			else
-				return Result;
-		}
-
 		protected override void OnChanged()
 		{
 			Binding.FireChange(w => w.Text);
 			base.OnChanged();
 		}
-
-		private int[] hyphenPositions = new int[] { 2, 6, 10, 13 };
-	}
-
-	public enum PhoneFormat
-	{
-		[Display(Name = "+7-XXX-XXX-XX-XX")]
-		RussiaOnlyHyphenated
 	}
 }
 

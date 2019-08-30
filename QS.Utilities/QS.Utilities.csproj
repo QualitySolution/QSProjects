@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -42,6 +43,7 @@
     <Compile Include="Dates\DateRange.cs" />
     <Compile Include="Text\StringManipulationHelper.cs" />
     <Compile Include="CurrencyWorks.cs" />
+    <Compile Include="Numeric\PhoneFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />

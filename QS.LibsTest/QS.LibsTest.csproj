@@ -84,7 +84,7 @@
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="TestDomain\SimpleEntity.cs" />
     <Compile Include="TestDomainMapping\SimpleEntityMap.cs" />
-    <Compile Include="Widgets.GtkUI\PhoneEntryTest.cs" />
+    <Compile Include="Utilities\PhoneFormatterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
