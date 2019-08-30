@@ -14,7 +14,7 @@ namespace QS.Project.Journal
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
 	{
-		private readonly ICommonServices commonServices;
+		protected readonly ICommonServices commonServices;
 		public Type EntityType { get; }
 
 		protected SingleEntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
