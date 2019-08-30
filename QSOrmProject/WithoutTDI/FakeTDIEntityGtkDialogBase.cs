@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using QS.Dialog;
+using QS.Dialog.Gtk;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Tdi;
@@ -170,6 +171,25 @@ namespace QSOrmProject
 				UoWGeneric.Dispose();
 			base.Destroy ();
 		}
+
+		#region Для работы методов OpenTab
+
+		public static string GenerateHashName(int id)
+		{
+			return DialogHelper.GenerateDialogHashName(typeof(TEntity), id);
+		}
+
+		public static string GenerateHashName(TEntity entity)
+		{
+			return DialogHelper.GenerateDialogHashName(typeof(TEntity), entity.Id);
+		}
+
+		public static string GenerateHashName()
+		{
+			return DialogHelper.GenerateDialogHashName(typeof(TEntity), 0);
+		}
+
+		#endregion
 
 		public FakeTDIEntityGtkDialogBase ()
 		{
