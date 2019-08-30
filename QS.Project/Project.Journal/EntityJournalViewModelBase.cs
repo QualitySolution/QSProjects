@@ -117,13 +117,24 @@ namespace QS.Project.Journal
 		#region Ordering
 
 		private bool isDescOrder = false;
-		private Func<TNode, object> OrderFunction = x => x.Id;
+		private Func<TNode, object> orderFunction = x => x.Id;
 
-		protected void SetOrder<TKey>(Func<TNode, object> orderFunc, bool desc = false)
+		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
 		{
-			OrderFunction = orderFunc;
+			orderFunction = orderFunc;
 			isDescOrder = desc;
 		}
+
+		Dictionary<Func<TNode, object>, bool> orderingDictionary;
+		/// <summary>
+		/// Сортировка по нескольким полям. Функция сортировки и порядок 
+		/// передаются через словарь <see cref="orderingDictionary"/>,
+		/// где его ключём является сама функция, а значением - порядок
+		/// сортировки. Значение <c>true</c> указывает на сортировку по убыванию. 
+		/// </summary>
+		/// <param name="orderingDictionary">Словарь с функциями сортировки и
+		/// направлением сортировки</param>
+		protected void SetOrder(Dictionary<Func<TNode, object>, bool> orderingDictionary) => this.orderingDictionary = orderingDictionary;
 
 		#endregion Ordering
 
@@ -181,11 +192,27 @@ namespace QS.Project.Journal
 
 		private List<TNode> OrderItems(List<TNode> items)
 		{
-			if(isDescOrder) {
-				return items.OrderByDescending(OrderFunction).ToList();
-			} else {
-				return items.OrderBy(OrderFunction).ToList();
+			if(orderingDictionary != null && orderingDictionary.Any()) {
+				IOrderedEnumerable<TNode> resultItems = null;
+				bool isFirstValueInDictionary = true;
+				foreach(var item in orderingDictionary) {
+					if(isFirstValueInDictionary) {
+						if(item.Value)
+							resultItems = items.OrderByDescending(item.Key);
+						resultItems = items.OrderBy(item.Key);
+						isFirstValueInDictionary = false;
+					} else {
+						if(item.Value)
+							resultItems = resultItems.ThenByDescending(item.Key);
+						resultItems = resultItems.ThenBy(item.Key);
+					}
+				}
+				return resultItems.ToList();
 			}
+
+			if(isDescOrder)
+				return items.OrderByDescending(orderFunction).ToList();
+			return items.OrderBy(orderFunction).ToList();
 		}
 
 		protected override void UpdateItems(IList items)
