@@ -14,6 +14,9 @@ namespace QS.Test.Widgets.GtkUI
 		[TestCase("+78123098089")]
 		[TestCase("8-812-309-80-89")]
 		[TestCase("8 812 309-8-089")]
+		[TestCase("'+7-812-309-80-89'")]
+		[TestCase(" \t 8-812-309-80-89")]
+		[TestCase("fjklsj ds +7-8123098089")]
 		public void RussiaOnlyHyphenated_ConvertFromAnotherFormatsTest(string insertPhone)
 		{
 			var phoneentry = new PhoneEntry();
@@ -74,6 +77,19 @@ namespace QS.Test.Widgets.GtkUI
 			//881230|98089
 			int pos = 6;
 			phoneentry.FormatString("88123098089", ref pos);
+			//+7-812-30|9-80-89
+			Assert.That(pos, Is.EqualTo(9));
+		}
+
+		[Test(Description = "Проверяем что курсор при вводе останется межу теми же цифрами что и раньше.")]
+		public void RussiaOnlyHyphenated_CursorKeepLocation3Test()
+		{
+			var phoneentry = new PhoneEntry();
+			phoneentry.PhoneFormat = PhoneFormat.RussiaOnlyHyphenated;
+			//Курсор        
+			//df r881230|98089
+			int pos = 10;
+			phoneentry.FormatString("df r88123098089", ref pos);
 			//+7-812-30|9-80-89
 			Assert.That(pos, Is.EqualTo(9));
 		}

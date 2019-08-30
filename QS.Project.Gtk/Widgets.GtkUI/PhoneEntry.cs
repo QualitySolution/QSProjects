@@ -82,14 +82,15 @@ namespace QS.Widgets.GtkUI
 		internal string FormatString(string phone, ref int cursorPos)
 		{
 			string Result = "+7";
-			int removeFromStart = 0;
-			if(phone.StartsWith("8"))
+			string startTrimed = Regex.Replace(phone, "^[^0-9\\+]+", "");
+			int removeFromStart = phone.Length - startTrimed.Length;
+			if(startTrimed.StartsWith("8"))
 			{
-				removeFromStart = 1;
+				removeFromStart += 1;
 			}
-			else if (phone.StartsWith("+7"))
+			else if (startTrimed.StartsWith("+7"))
 			{
-				removeFromStart = 2;
+				removeFromStart += 2;
 			}
 
 			string digitsOnly = Regex.Replace(phone.Substring(removeFromStart), "[^0-9]", "");
