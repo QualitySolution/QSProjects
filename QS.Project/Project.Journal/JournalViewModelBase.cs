@@ -127,11 +127,7 @@ namespace QS.Project.Journal
 
 		public override bool HasChanges => false;
 
-		public override void SaveAndClose()
-		{
-		}
-
-		public override bool Save()
+		public override bool Save(bool close)
 		{
 			return false;
 		}

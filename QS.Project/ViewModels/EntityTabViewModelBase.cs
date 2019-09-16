@@ -134,25 +134,15 @@ namespace QS.ViewModels
 		{
 		}
 
-		public override bool Save()
+		public override bool Save(bool close)
 		{
 			if(!Validate()) {
 				return false;
 			}
 			BeforeSave();
-			bool result = base.Save();
+			bool result = base.Save(close);
 			AfterSave();
 			return result;
-		}
-
-		public override void SaveAndClose()
-		{
-			if(!Validate()) {
-				return;
-			}
-			BeforeSave();
-			base.SaveAndClose();
-			AfterSave();
 		}
 
 		protected virtual bool SaveBeforeContinue()

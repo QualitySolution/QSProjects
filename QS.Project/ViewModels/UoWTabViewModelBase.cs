@@ -24,15 +24,27 @@ namespace QS.ViewModels
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
-		public virtual void SaveAndClose()
+		public void SaveAndClose()
 		{
-			if(!HasChanges || SaveUoW()) {
-				Close(false);
-			}
+			Save(true);
 		}
 
-		public virtual bool Save()
+		public bool Save()
 		{
+			return Save(false);
+		}
+
+		public virtual bool Save(bool close)
+		{
+			if(!close) {
+				return SaveUoW();
+			}
+
+			if(!HasChanges) {
+				Close(false);
+				return true;
+			}
+
 			return SaveUoW();
 		}
 
