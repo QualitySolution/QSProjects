@@ -54,7 +54,8 @@ namespace QS.ViewModels
 
 		/// <summary>
 		/// Устанавливает зависимость свойства сущности к свойствам модели представления.
-		/// Если произойдет изменение указанного свойства сущности, то вызовутся изменения всех связанных свойств модели представления
+		/// Если произойдет изменение указанного (<paramref name="entityTriggeredProperty"/>) свойства сущности,
+		/// то вызовутся изменения всех связанных свойств модели представления (<paramref name="vmChangingPropertiesExpressions"/>)
 		/// </summary>
 		protected void SetPropertyChangeRelation<T>(Expression<Func<TEntity, object>> entityTriggeredProperty, params Expression<Func<T>>[] vmChangingPropertiesExpressions)
 		{
