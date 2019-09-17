@@ -34,10 +34,11 @@ namespace QS.ViewModels
 			return Save(false);
 		}
 
-		public virtual bool Save(bool close)
+		public virtual bool Save(bool needClose)
 		{
-			if(!close) {
-				return SaveUoW();
+			if(!needClose) {
+				SaveUoW();
+				return true;
 			}
 
 			if(!HasChanges) {
@@ -45,16 +46,18 @@ namespace QS.ViewModels
 				return true;
 			}
 
-			return SaveUoW();
+			SaveUoW();
+			Close(false);
+			return true;
 		}
 
-		private bool SaveUoW()
+		private void SaveUoW()
 		{
 			UoW.Save();
 			if(UoW.RootObject != null) {
 				EntitySaved?.Invoke(this, new EntitySavedEventArgs(UoW.RootObject));
 			}
-			return true;
+			return;
 		}
 
 		public virtual void Dispose()
