@@ -14,7 +14,7 @@ namespace QS.Services
 			this.validationViewFactory = validationViewFactory;
 		}
 
-		public IValidator GetValidator(IValidatableObject validatableObject, ValidationContext validationContext = null)
+		public IValidator GetValidator(object validatableObject, ValidationContext validationContext = null)
 		{
 			return new ObjectValidator(validationViewFactory, validatableObject, validationContext);
 		}

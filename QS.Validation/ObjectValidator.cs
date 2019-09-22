@@ -7,14 +7,14 @@ namespace QS.Validation
 	public class ObjectValidator : IValidator
 	{
 		private readonly IValidationViewFactory validationViewFactory;
-		private readonly IValidatableObject validatableObject;
+		private readonly object validatableObject;
 		private readonly List<ValidationResult> results;
 		private ValidationContext validationContext;
 
 		public bool ShowResultsIfNotValid { get; set; }
 		public IEnumerable<ValidationResult> Results => results;
 
-		public ObjectValidator(IValidationViewFactory viewFactory, IValidatableObject validatableObject, ValidationContext validationContext = null)
+		public ObjectValidator(IValidationViewFactory viewFactory, object validatableObject, ValidationContext validationContext = null)
 		{
 			ShowResultsIfNotValid = true;
 			results = new List<ValidationResult>();

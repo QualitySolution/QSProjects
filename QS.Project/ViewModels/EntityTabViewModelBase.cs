@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
+using Gamma.Utilities;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Utilities.Text;
-using System.ComponentModel.DataAnnotations;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Services;
-using Gamma.Utilities;
+using QS.Utilities.Text;
 using QS.Validation;
 
 namespace QS.ViewModels
 {
 	public abstract class EntityTabViewModelBase<TEntity> : UoWTabViewModelBase, IEntityDialog<TEntity>, IEntityDialog
-		where TEntity : class, IDomainObject, INotifyPropertyChanged, IValidatableObject, new()
+		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 	{
 		#region IEntityDialog implementation
 
