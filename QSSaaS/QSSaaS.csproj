@@ -49,7 +49,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.6.6\lib\net40-client\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.7\lib\net40-client\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
