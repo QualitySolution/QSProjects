@@ -1,9 +1,8 @@
 ﻿using System;
 using Gamma.GtkWidgets;
 using QS.Banks.Domain;
-using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
-using QSValidation;
+using QS.Validation.GtkUI;
 
 namespace QSBanks
 {

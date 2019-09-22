@@ -1,7 +1,7 @@
 ﻿using Gamma.Binding.Converters;
 using QS.BusinessCommon.Domain;
 using QS.DomainModel.UoW;
-using QSValidation;
+using QS.Validation.GtkUI;
 
 namespace QSBusinessCommon
 {

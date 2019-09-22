@@ -10,10 +10,9 @@
     <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../../../QSValidation/bin/Debug/QSValidation.dll" />
     <widget-library name="../../../QSExtraGammaWidgets/bin/Debug/QSExtraGammaWidgets.dll" />
-    <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
     <widget-library name="../../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../bin/Debug/QSBanks.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSBanks.AccountsView" design-size="436 318">
     <property name="MemberName" />
