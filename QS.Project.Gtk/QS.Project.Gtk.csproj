@@ -206,6 +206,7 @@
     <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
     <Compile Include="ErrorReporting.GtkUI\CommonErrorHandlers.cs" />
     <Compile Include="ErrorReporting.GtkUI\ExceptionHelper.cs" />
+    <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
