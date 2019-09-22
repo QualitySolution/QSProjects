@@ -256,6 +256,8 @@
     <Compile Include="Validation\IValidationViewFactory.cs" />
     <Compile Include="Validation\IValidator.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
+    <Compile Include="Permissions\EverythingAllowedEntityPermissionValidator.cs" />
+    <Compile Include="Permissions\EverythingAllowedPresetPermissionValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
