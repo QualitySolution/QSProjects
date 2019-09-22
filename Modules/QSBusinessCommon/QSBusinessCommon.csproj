@@ -82,10 +82,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\QSValidation\QSValidation.csproj">
-      <Project>{CE5179E8-3172-4C08-9FE3-9C48C58A3831}</Project>
-      <Name>QSValidation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
       <Name>GammaBinding</Name>

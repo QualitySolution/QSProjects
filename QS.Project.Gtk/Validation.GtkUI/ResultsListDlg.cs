@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.Validation;
 
-namespace QSValidation
+namespace QS.Validation.GtkUI
 {
 	public partial class ResultsListDlg : Gtk.Dialog, IValidationView
 	{

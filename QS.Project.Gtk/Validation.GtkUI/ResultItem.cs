@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSValidation
+namespace QS.Validation.GtkUI
 {
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class ResultItem : Gtk.Bin

@@ -252,6 +252,10 @@
     <Compile Include="ErrorReporting\ErrorReport.cs" />
     <Compile Include="ErrorReporting\IErrorReportingService.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
+    <Compile Include="Validation\IValidationView.cs" />
+    <Compile Include="Validation\IValidationViewFactory.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\ObjectValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -286,6 +290,7 @@
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="Project.VersionControl\" />
     <Folder Include="ErrorReporting\" />
+    <Folder Include="Validation\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -298,10 +303,6 @@
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Validation\QS.Validation.csproj">
-      <Project>{0178CD90-AD47-45BD-887E-416CAFE86236}</Project>
-      <Name>QS.Validation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
