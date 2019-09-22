@@ -213,6 +213,8 @@
     <Compile Include="Validation.GtkUI\ResultsListDlg.cs" />
     <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultsListDlg.cs" />
     <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
+    <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
+    <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -231,6 +233,7 @@
     <Folder Include="Journal.GtkUI\" />
     <Folder Include="Views.GtkUI\" />
     <Folder Include="ErrorReporting.GtkUI\" />
+    <Folder Include="Project.Services.GtkUI\" />
     <Folder Include="Validation.GtkUI\" />
   </ItemGroup>
   <ItemGroup>
