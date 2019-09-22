@@ -6,9 +6,7 @@ namespace QS.Validation
 {
 	public interface IValidator
 	{
-		bool ShowResultsIfNotValid { get; set; }
-		bool Validate();
-		bool Validate(ValidationContext validationContext);
+		bool Validate(object validatableObject, ValidationContext validationContext = null);
 		IEnumerable<ValidationResult> Results { get; }
 	}
 }

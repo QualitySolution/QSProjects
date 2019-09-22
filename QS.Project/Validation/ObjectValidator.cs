@@ -7,35 +7,35 @@ namespace QS.Validation
 	public class ObjectValidator : IValidator
 	{
 		private readonly IValidationViewFactory validationViewFactory;
-		private readonly object validatableObject;
-		private readonly List<ValidationResult> results;
-		private ValidationContext validationContext;
+		private readonly List<ValidationResult> results = new List<ValidationResult>();
 
-		public bool ShowResultsIfNotValid { get; set; }
 		public IEnumerable<ValidationResult> Results => results;
 
-		public ObjectValidator(IValidationViewFactory viewFactory, object validatableObject, ValidationContext validationContext = null)
+		/// <summary>
+		/// Валидатор с указанной фабрикой вюъшек отображает диалог с ошибкой через фабрику.
+		/// </summary>
+		public ObjectValidator(IValidationViewFactory viewFactory) 
 		{
-			ShowResultsIfNotValid = true;
-			results = new List<ValidationResult>();
 			this.validationViewFactory = viewFactory;
-			this.validatableObject = validatableObject;
-			this.validationContext = validationContext;
 		}
 
-		public bool Validate()
+		/// <summary>
+		/// Валидатор без фабрики вьюшек просто проверяет объект.
+		/// </summary>
+		public ObjectValidator()
 		{
+		}
+
+		public bool Validate(object validatableObject, ValidationContext validationContext = null)
+		{
+			results.Clear();
+
 			if(validationContext == null) {
 				validationContext = new ValidationContext(validatableObject, null, null);
 			}
-			return Validate(validationContext);
-		}
 
-		public bool Validate(ValidationContext validationContext)
-		{
-			results.Clear();
 			var isValid = Validator.TryValidateObject(validatableObject, validationContext, results, true);
-			if(!isValid && ShowResultsIfNotValid) {
+			if(!isValid && validationViewFactory != null) {
 				IValidationView view = validationViewFactory.CreateValidationView(results);
 				if(view == null) {
 					throw new InvalidOperationException("Невозможно создать представление результатов валидации");

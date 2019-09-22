@@ -5,6 +5,6 @@ namespace QS.Services
 {
 	public interface IValidationService
 	{
-		IValidator GetValidator(object validatableObject, ValidationContext validationContext = null);
+		IValidator GetValidator();
 	}
 }

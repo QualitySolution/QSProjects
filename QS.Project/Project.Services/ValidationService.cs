@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using QS.Validation;
+﻿using QS.Validation;
 
 namespace QS.Services
 {
@@ -14,9 +11,9 @@ namespace QS.Services
 			this.validationViewFactory = validationViewFactory;
 		}
 
-		public IValidator GetValidator(object validatableObject, ValidationContext validationContext = null)
+		public IValidator GetValidator()
 		{
-			return new ObjectValidator(validationViewFactory, validatableObject, validationContext);
+			return new ObjectValidator(validationViewFactory);
 		}
 	}
 }

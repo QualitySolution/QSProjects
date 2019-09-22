@@ -12,7 +12,6 @@ using QS.Permissions;
 using QS.Project.Domain;
 using QS.Services;
 using QS.Utilities.Text;
-using QS.Validation;
 
 namespace QS.ViewModels
 {
@@ -90,7 +89,6 @@ namespace QS.ViewModels
 
 		protected ValidationContext ValidationContext { get; set; }
 		protected IUserService UserService { get; private set; }
-		protected IValidator Validator { get; private set; }
 		protected IPermissionResult PermissionResult { get; private set; }
 
 		public UserBase CurrentUser { get; set; }
@@ -122,7 +120,6 @@ namespace QS.ViewModels
 			ValidationContext = new ValidationContext(Entity);
 			Entity.PropertyChanged += Entity_PropertyChanged;
 			CurrentUser = UserService.GetCurrentUser(UoW);
-			Validator = CommonServices.ValidationService.GetValidator(Entity, ValidationContext);
 			PermissionResult = CommonServices.PermissionService.ValidateUserPermission(typeof(TEntity), UserService.CurrentUserId);
 
 			if(!PermissionResult.CanRead) {
@@ -175,7 +172,7 @@ namespace QS.ViewModels
 		protected bool Validate()
 		{
 			BeforeValidation();
-			return Validator.Validate(ValidationContext);
+			return CommonServices.ValidationService.GetValidator().Validate(Entity, ValidationContext);
 		}
 
 		void Subject_NamePropertyChanged(object sender, PropertyChangedEventArgs e)
