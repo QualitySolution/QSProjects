@@ -1,6 +1,8 @@
-﻿using QS.DomainModel.UoW;
+﻿using System;
+using QS.DomainModel.UoW;
 namespace QS.Project.Domain
 {
+	[Obsolete("Интерфейс будет удален при удалении класса EntityConstructorParam.")]
 	public interface IEntityConstructorParam
 	{
 		/// <summary>
@@ -19,6 +21,7 @@ namespace QS.Project.Domain
 		IUnitOfWork RootUoW { get; }
 	}
 
+	[Obsolete("Не используйте этот класс для передачи параметров создания UnitOfWork, используйте вместо этого прямое создание UoW. Решили с Вадимим удалить в будущем этот класс. Он не несет никакой функциональности.")]
 	public class EntityConstructorParam : IEntityConstructorParam
 	{
 		EntityConstructorParam()

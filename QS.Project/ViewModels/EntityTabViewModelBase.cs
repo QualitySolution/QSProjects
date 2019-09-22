@@ -97,12 +97,11 @@ namespace QS.ViewModels
 		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, ICommonServices commonServices)
 			: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
+			CommonServices = commonServices;
+
 			if(ctorParam == null) {
 				throw new ArgumentNullException(nameof(ctorParam));
 			}
-
-			CommonServices = commonServices;
-			UserService = CommonServices.UserService;
 
 			if(ctorParam.IsNewEntity) {
 				if(ctorParam.RootUoW == null) {
@@ -117,6 +116,20 @@ namespace QS.ViewModels
 					UoWGeneric = UnitOfWorkFactory.CreateForChildRoot<TEntity>(ctorParam.RootUoW.GetById<TEntity>(ctorParam.EntityOpenId), ctorParam.RootUoW);
 				}
 			}
+		}
+
+		protected EntityTabViewModelBase(IUnitOfWorkGeneric<TEntity> uow, ICommonServices commonServices)
+			: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
+		{
+			CommonServices = commonServices;
+
+			UoWGeneric = uow;
+		}
+
+		private void Initialize()
+		{
+			UserService = CommonServices.UserService;
+
 			ValidationContext = new ValidationContext(Entity);
 			Entity.PropertyChanged += Entity_PropertyChanged;
 			CurrentUser = UserService.GetCurrentUser(UoW);
