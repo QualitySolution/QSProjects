@@ -258,6 +258,8 @@
     <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="Permissions\EverythingAllowedEntityPermissionValidator.cs" />
     <Compile Include="Permissions\EverythingAllowedPresetPermissionValidator.cs" />
+    <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
+    <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
