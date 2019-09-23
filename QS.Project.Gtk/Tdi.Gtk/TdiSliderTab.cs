@@ -90,6 +90,10 @@ namespace QS.Tdi.Gtk
 					journal.TabNameChanged += OnJournalTabNameChanged;
 					journal.CloseTab += OnJournalClose;
 					journalWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+
+					if(journalWidget == null)
+						throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
+
 					this.PackStart(journalWidget);
 					journalWidget.Show();
 					journal.TabParent = this;
@@ -131,6 +135,10 @@ namespace QS.Tdi.Gtk
 
 						dialogVBox = new VBox();
 						activeGlgWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+
+						if(activeGlgWidget == null)
+							throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
+
 						dialogVBox.PackStart(activeGlgWidget);
 						this.PackEnd(dialogVBox);
 						this.PackEnd(boxSeparator, false, true, 6);
