@@ -2,50 +2,31 @@
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using System.Collections.ObjectModel;
+using QS.EntityRepositories;
+using System;
 
 namespace QS.Project.Repositories
 {
+	[Obsolete("Используйте одноимённый класс из QS.EntityRepositories.UserPermissionSingletonRepository")]
 	public static class UserPermissionRepository
 	{
 		public static EntityUserPermission GetUserEntityPermission(IUnitOfWork uow, string entityName, int userId)
 		{
-			TypeOfEntity typeOfEntityAlias = null;
-			EntityUserPermission entityUserPermissionAlias = null;
-			UserBase userBaseAlias = null;
-			return uow.Session.QueryOver<EntityUserPermission>(() => entityUserPermissionAlias)
-				.Left.JoinAlias(() => entityUserPermissionAlias.User, () => userBaseAlias)
-				.Left.JoinAlias(() => entityUserPermissionAlias.TypeOfEntity, () => typeOfEntityAlias)
-				.Where(() => userBaseAlias.Id == userId)
-				.Where(() => typeOfEntityAlias.Type == entityName)
-				.SingleOrDefault();
+			return UserPermissionSingletonRepository.GetInstance().GetUserEntityPermission(uow, entityName, userId);
 		}
 
 		public static IList<EntityUserPermission> GetUserAllEntityPermissions(IUnitOfWork uow, int userId)
 		{
-			return uow.Session.QueryOver<EntityUserPermission>()
-				.Where(x => x.User.Id == userId)
-				.List();
+			return UserPermissionSingletonRepository.GetInstance().GetUserAllEntityPermissions(uow, userId);
 		}
 
 		public static IList<PresetUserPermission> GetUserAllPresetPermissions(IUnitOfWork uow, int userId)
 		{
-			return uow.Session.QueryOver<PresetUserPermission>()
-				.Where(x => x.User.Id == userId)
-				.List();
+			return UserPermissionSingletonRepository.GetInstance().GetUserAllPresetPermissions(uow, userId);
 		}
 
-		private static IReadOnlyDictionary<string, bool> currentUserPresetPermissions;
 		public static IReadOnlyDictionary<string, bool> CurrentUserPresetPermissions { 
-			get {
-				if(currentUserPresetPermissions == null) {
-					using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-						var currentUser = UserRepository.GetCurrentUser(uow);
-						currentUser.LoadUserPermissions();
-						currentUserPresetPermissions = currentUser.Permissions;
-					}
-				}
-				return currentUserPresetPermissions;
-			}
+			get { return UserPermissionSingletonRepository.GetInstance().CurrentUserPresetPermissions; }
 		}
 	}
 }
