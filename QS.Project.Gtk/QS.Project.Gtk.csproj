@@ -215,6 +215,7 @@
     <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
     <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
+    <Compile Include="Tdi.Gtk\BasedOnNameTDIResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
