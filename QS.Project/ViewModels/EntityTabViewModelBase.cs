@@ -116,6 +116,7 @@ namespace QS.ViewModels
 					UoWGeneric = UnitOfWorkFactory.CreateForChildRoot<TEntity>(ctorParam.RootUoW.GetById<TEntity>(ctorParam.EntityOpenId), ctorParam.RootUoW);
 				}
 			}
+			Initialize();
 		}
 
 		protected EntityTabViewModelBase(IUnitOfWorkGeneric<TEntity> uow, ICommonServices commonServices)
@@ -124,6 +125,7 @@ namespace QS.ViewModels
 			CommonServices = commonServices;
 
 			UoWGeneric = uow;
+			Initialize();
 		}
 
 		private void Initialize()
