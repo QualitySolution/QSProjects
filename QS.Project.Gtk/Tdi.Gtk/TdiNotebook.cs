@@ -41,7 +41,7 @@ namespace QS.Tdi.Gtk
 				(md.Image as Image).SetFromStock(Stock.Quit, IconSize.Dialog);
 				int result = md.Run();
 				md.Destroy();
-				if(result == (int)ResponseType.No)
+				if(result == (int)ResponseType.No || result == (int)ResponseType.DeleteEvent)
 					return false;
 			}
 
