@@ -177,6 +177,7 @@ namespace QS.Updater.DB
 		{
 			progressbarTotal.Adjustment.Value++;
 			textviewLog.Buffer.Text = textviewLog.Buffer.Text + args.StatementText + "\n";
+			logger.Debug(args.StatementText);
 			QSMain.WaitRedraw ();
 		}
 
