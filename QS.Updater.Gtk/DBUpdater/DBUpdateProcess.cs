@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using QS.Dialog.GtkUI;
+using QS.Project.DB;
 using QSProjectsLib;
 using QSSupportLib;
 
@@ -16,12 +17,14 @@ namespace QS.Updater.DB
 		public bool Success { get; private set;}
 
 		UpdateHop updateHop;
+		IMySQLProvider SQLProvider;
 
-		public DBUpdateProcess (UpdateHop hop)
+		public DBUpdateProcess (UpdateHop hop, IMySQLProvider mySQLProvider)
 		{
 			this.Build ();
 
 			updateHop = hop;
+			SQLProvider = mySQLProvider;
 			progressbarTotal.Text = String.Format ("Обновление: {0} → {1}", 
 				StringWorks.VersionToShortString (updateHop.Source),
 				StringWorks.VersionToShortString (updateHop.Destanation)
@@ -55,7 +58,7 @@ namespace QS.Updater.DB
 				));
 
 				if(MainSupport.BaseParameters.All.ContainsKey("micro_updates"))
-					MainSupport.BaseParameters.RemoveParameter (QSMain.ConnectionDB,
+					MainSupport.BaseParameters.RemoveParameter (SQLProvider.DbConnection,
 						"micro_updates");
 
 				MainSupport.LoadBaseParameters ();
@@ -94,7 +97,7 @@ namespace QS.Updater.DB
 			progressbarOperation.Visible = true;
 			QSMain.WaitRedraw ();
 
-			using (MySqlCommand cmd = QSMain.connectionDB.CreateCommand ())
+			using (MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand ())
 			{
 				using (MySqlBackup mb = new MySqlBackup(cmd))
 				{
@@ -137,7 +140,7 @@ namespace QS.Updater.DB
 				RunOneUpdate (update, String.Format ("Устанавливаем микро-обновление {0}", StringWorks.VersionToShortString (update.Destanation)));
 				currentDB = update.Destanation;
 				MainSupport.BaseParameters.UpdateParameter(
-					QSMain.ConnectionDB,
+					SQLProvider.DbConnection,
 					"micro_updates",
 					StringWorks.VersionToShortString(currentDB)
 				);
@@ -167,7 +170,7 @@ namespace QS.Updater.DB
 			progressbarTotal.Adjustment.Upper = predictedCount;
 			QSMain.WaitRedraw ();
 
-			var script = new MySqlScript(QSMain.connectionDB, sql);
+			var script = new MySqlScript(SQLProvider.DbConnection, sql);
 			script.StatementExecuted += Script_StatementExecuted;
 			var commands = script.Execute ();
 			logger.Debug ("Выполнено {0} SQL-команд.", commands);

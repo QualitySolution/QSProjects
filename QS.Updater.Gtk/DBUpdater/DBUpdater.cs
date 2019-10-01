@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gtk;
+using QS.Project.DB;
 using QS.Utilities.Text;
 using QSProjectsLib;
 using QSSupportLib;
@@ -156,7 +157,7 @@ namespace QS.Updater.DB
 				if (!QSMain.User.Admin)
 					NotAdminErrorAndExit(false, update.Source, update.Destanation);
 
-				var dlg = new DBUpdateProcess (update);
+				var dlg = new DBUpdateProcess (update, new MySQLProvider());
 				dlg.Show ();
 				dlg.Run ();
 				if(!dlg.Success)
