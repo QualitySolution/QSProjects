@@ -167,7 +167,7 @@ namespace QS.Updater.DB
 					update, 
 					new MySQLProvider(
 						builder.GetConnectionString(true), 
-						new RunOperationView(), 
+						new GtkRunOperationService(), 
 						new GtkQuestionDialogsInteractive()));
 				dlg.Show ();
 				dlg.Run ();

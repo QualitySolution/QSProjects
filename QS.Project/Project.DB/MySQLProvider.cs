@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using NLog;
 using QS.Dialog;
 using QS.Project.Dialogs;
+using QS.Project.Services;
 
 namespace QS.Project.DB
 {
@@ -12,21 +13,21 @@ namespace QS.Project.DB
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		private bool waitResultIsOk;
-		private readonly IRunOperationView runOperation;
+		private readonly IRunOperationService runOperationService;
 		private readonly IInteractiveQuestion question;
 		public MySqlConnection DbConnection { get; private set; }
 
-		public MySQLProvider(string connectionString, IRunOperationView runOperation, IInteractiveQuestion question)
+		public MySQLProvider(string connectionString, IRunOperationService runOperationService, IInteractiveQuestion question)
 		{
-			this.runOperation = runOperation;
+			this.runOperationService = runOperationService;
 			this.question = question;
 			DbConnection = new MySqlConnection(connectionString);
 			DbConnection.Open();
 		}
 
-		public MySQLProvider(IRunOperationView runOperation, IInteractiveQuestion question)
+		public MySQLProvider(IRunOperationService runOperationService, IInteractiveQuestion question)
 		{
-			this.runOperation = runOperation;
+			this.runOperationService = runOperationService;
 			this.question = question;
 			DbConnection = (MySqlConnection)Connection.ConnectionDB;
 		}
@@ -35,7 +36,7 @@ namespace QS.Project.DB
 		{		
 			logger.Info("Проверяем соединение...");
 
-			bool timeout = runOperation.RunOperation(
+			bool timeout = runOperationService.GetRunOperationView().RunOperation(
 				new ThreadStart(DoPing),
 				DbConnection.ConnectionTimeout,
 				"Идет проверка соединения с базой данных.");
@@ -55,7 +56,7 @@ namespace QS.Project.DB
 		{
 			logger.Info("Пытаемся восстановить соединение...");
 
-			bool timeout = runOperation.RunOperation(new ThreadStart(DoConnect),
+			bool timeout = runOperationService.GetRunOperationView().RunOperation(new ThreadStart(DoConnect),
 							   DbConnection.ConnectionTimeout,
 							   "Соединяемся с сервером MySQL.");
 

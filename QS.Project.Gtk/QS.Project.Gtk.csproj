@@ -216,6 +216,7 @@
     <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi.Gtk\BasedOnNameTDIResolver.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

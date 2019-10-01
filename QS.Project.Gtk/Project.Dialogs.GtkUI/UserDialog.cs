@@ -41,7 +41,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()));
 
 			User = mySQLUserRepository.GetUser(userId);
 
@@ -52,7 +52,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()));
 
 			User = new UserBase();
 

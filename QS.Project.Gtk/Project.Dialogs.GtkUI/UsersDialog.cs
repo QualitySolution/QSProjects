@@ -23,7 +23,7 @@ namespace QS.Project.Dialogs.GtkUI
 			this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()));
 			ConfigureDlg();
 		}
 
