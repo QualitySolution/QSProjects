@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using Gtk;
@@ -98,33 +99,46 @@ namespace QS.Updater.DB
 			progressbarOperation.Visible = true;
 			QSMain.WaitRedraw ();
 
-			using (MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand ())
-			{
-				using (MySqlBackup mb = new MySqlBackup(cmd))
-				{
-					var dir = System.IO.Path.GetDirectoryName (entryFileName.Text);
+			var bwExport = new BackgroundWorker();
+			bwExport.DoWork += BwExport_DoWork;
 
-					if (!Directory.Exists (dir))
-						Directory.CreateDirectory (dir);
+			bwExport.RunWorkerAsync();
 
-					logger.Debug (entryFileName.Text);
-					mb.ExportProgressChanged += Mb_ExportProgressChanged;
-					mb.ExportToFile(entryFileName.Text);
-				}
+			while(bwExport.IsBusy) {
+				System.Threading.Thread.Sleep(50);
+				QSMain.WaitRedraw();
 			}
 
 			progressbarOperation.Visible = false;
 			return false;
 		}
 
+		void BwExport_DoWork(object sender, DoWorkEventArgs e)
+		{
+			using(MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand()) {
+				using(MySqlBackup mb = new MySqlBackup(cmd)) {
+					var dir = System.IO.Path.GetDirectoryName(entryFileName.Text);
+
+					if(!Directory.Exists(dir))
+						Directory.CreateDirectory(dir);
+
+					logger.Debug(entryFileName.Text);
+					mb.ExportProgressChanged += Mb_ExportProgressChanged;
+
+					mb.ExportToFile(entryFileName.Text);
+				}
+			}
+		}
+
 		void Mb_ExportProgressChanged (object sender, ExportProgressArgs e)
 		{
-			progressbarOperation.Text = String.Format ("Экспорт {0}", e.CurrentTableName);
-			progressbarOperation.Adjustment.Upper = e.TotalRowsInCurrentTable;
-			progressbarOperation.Adjustment.Value = e.CurrentRowIndexInCurrentTable;
-			progressbarTotal.Adjustment.Upper = e.TotalTables;
-			progressbarTotal.Adjustment.Value = e.CurrentTableIndex;
-			QSMain.WaitRedraw ();
+			Application.Invoke(delegate {
+				progressbarOperation.Text = String.Format ("Экспорт {0}", e.CurrentTableName);
+				progressbarOperation.Adjustment.Upper = e.TotalRowsInCurrentTable;
+				progressbarOperation.Adjustment.Value = e.CurrentRowIndexInCurrentTable;
+				progressbarTotal.Adjustment.Upper = e.TotalRowsInAllTables;
+				progressbarTotal.Adjustment.Value = e.CurrentRowIndexInAllTables;
+			});
 		}
 
 		void ExecuteMicroUpdates()
@@ -207,4 +221,3 @@ namespace QS.Updater.DB
 		}
 	}
 }
-
