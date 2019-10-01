@@ -36,6 +36,7 @@ namespace QSProjectsLib
 		public static DbProviderFactory ProviderDB;
 		public static MySqlConnection connectionDB;
 		public static string ConnectionString;
+		public static MySqlConnectionStringBuilder ConnectionStringBuilder;
 		public static Dictionary<string, UserPermission> ProjectPermission = new Dictionary<string, UserPermission>();
 		public static Dictionary<string, TableInfo> ProjectTables;
 		public static UserInfo User;

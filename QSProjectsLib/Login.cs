@@ -250,6 +250,7 @@ namespace QSProjectsLib
 				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", comboboxConnections.ActiveText);
 				MachineConfig.ConfigSource.Save();
 				QSMain.ConnectionString = connStr;
+				QSMain.ConnectionStringBuilder = conStrBuilder;
 				QSMain.User = new UserInfo(entryUser.Text.ToLower());
 				this.Respond(ResponseType.Ok);
 			}

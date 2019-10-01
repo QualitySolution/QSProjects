@@ -3,7 +3,6 @@ using System.Threading;
 using MySql.Data.MySqlClient;
 using NLog;
 using QS.Tools;
-using QS.Project.Dialogs;
 
 namespace QS.Project.DB
 {
@@ -17,7 +16,7 @@ namespace QS.Project.DB
 		public MySQLProvider(string connectionString)
 		{
 			CheckNotificationTool();
-			DbConnection = new MySqlConnection(Connection.ConnectionString);
+			DbConnection = new MySqlConnection(connectionString);
 			DbConnection.Open();
 		}
 

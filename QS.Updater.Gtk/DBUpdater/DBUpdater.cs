@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -157,7 +157,11 @@ namespace QS.Updater.DB
 				if (!QSMain.User.Admin)
 					NotAdminErrorAndExit(false, update.Source, update.Destanation);
 
-				var dlg = new DBUpdateProcess (update, new MySQLProvider());
+				//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
+				var builder = Project.DB.Connection.ConnectionStringBuilder;
+				builder.ConnectionTimeout = 240;
+
+				var dlg = new DBUpdateProcess (update, new MySQLProvider(builder.GetConnectionString(true)));
 				dlg.Show ();
 				dlg.Run ();
 				if(!dlg.Success)
