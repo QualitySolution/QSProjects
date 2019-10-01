@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gtk;
+using QS.Dialog.GtkUI;
 using QS.Project.DB;
+using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Utilities.Text;
 using QSProjectsLib;
 using QSSupportLib;
@@ -161,7 +163,12 @@ namespace QS.Updater.DB
 				var builder = Project.DB.Connection.ConnectionStringBuilder;
 				builder.ConnectionTimeout = 240;
 
-				var dlg = new DBUpdateProcess (update, new MySQLProvider(builder.GetConnectionString(true)));
+				var dlg = new DBUpdateProcess (
+					update, 
+					new MySQLProvider(
+						builder.GetConnectionString(true), 
+						new RunOperationView(), 
+						new GtkQuestionDialogsInteractive()));
 				dlg.Show ();
 				dlg.Run ();
 				if(!dlg.Success)

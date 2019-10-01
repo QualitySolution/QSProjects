@@ -3,9 +3,11 @@ using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.Deletion;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
+using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 
@@ -21,7 +23,7 @@ namespace QS.Project.Dialogs.GtkUI
 			this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
 			ConfigureDlg();
 		}
 

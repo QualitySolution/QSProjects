@@ -2,7 +2,8 @@
 using System.Threading;
 using MySql.Data.MySqlClient;
 using NLog;
-using QS.Tools;
+using QS.Dialog;
+using QS.Project.Dialogs;
 
 namespace QS.Project.DB
 {
@@ -11,33 +12,30 @@ namespace QS.Project.DB
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		private bool waitResultIsOk;
+		private readonly IRunOperationView runOperation;
+		private readonly IInteractiveQuestion question;
 		public MySqlConnection DbConnection { get; private set; }
 
-		public MySQLProvider(string connectionString)
+		public MySQLProvider(string connectionString, IRunOperationView runOperation, IInteractiveQuestion question)
 		{
-			CheckNotificationTool();
+			this.runOperation = runOperation;
+			this.question = question;
 			DbConnection = new MySqlConnection(connectionString);
 			DbConnection.Open();
 		}
 
-		public MySQLProvider()
+		public MySQLProvider(IRunOperationView runOperation, IInteractiveQuestion question)
 		{
-			CheckNotificationTool();
+			this.runOperation = runOperation;
+			this.question = question;
 			DbConnection = (MySqlConnection)Connection.ConnectionDB;
-		}
-
-		private void CheckNotificationTool()
-		{
-			if(StaticTools.NotificationViewAgent == null) {
-				throw new ApplicationException("Не настроен инструмент уведомления");
-			}
 		}
 
 		public void CheckConnectionAlive()
 		{		
 			logger.Info("Проверяем соединение...");
 
-			bool timeout = StaticTools.NotificationViewAgent.GetRunOperationView().RunOperation(
+			bool timeout = runOperation.RunOperation(
 				new ThreadStart(DoPing),
 				DbConnection.ConnectionTimeout,
 				"Идет проверка соединения с базой данных.");
@@ -57,12 +55,12 @@ namespace QS.Project.DB
 		{
 			logger.Info("Пытаемся восстановить соединение...");
 
-			bool timeout = StaticTools.NotificationViewAgent.GetRunOperationView().RunOperation(new ThreadStart(DoConnect),
+			bool timeout = runOperation.RunOperation(new ThreadStart(DoConnect),
 							   DbConnection.ConnectionTimeout,
 							   "Соединяемся с сервером MySQL.");
 
 			if(!waitResultIsOk || timeout) {
-				bool result = StaticTools.NotificationViewAgent.GetSimpleUserQuestionView().RunQuestionView("Соединение было разорвано. Повторить попытку подключения? В противном случае приложение завершит работу.", "Соединение разорвано");
+				bool result = question.Question("Соединение было разорвано. Повторить попытку подключения? В противном случае приложение завершит работу.", "Соединение разорвано");
 				if(result) {
 					TryConnect();
 				} else {

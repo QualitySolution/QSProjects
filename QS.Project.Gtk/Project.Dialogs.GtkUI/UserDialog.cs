@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Gtk;
 using NLog;
+using QS.Dialog.GtkUI;
 using QS.Project.DB;
+using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Widgets.GtkUI;
@@ -39,7 +41,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
 
 			User = mySQLUserRepository.GetUser(userId);
 
@@ -50,7 +52,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new RunOperationView(), new GtkQuestionDialogsInteractive()));
 
 			User = new UserBase();
 
