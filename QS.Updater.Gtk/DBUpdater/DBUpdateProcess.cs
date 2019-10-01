@@ -42,12 +42,15 @@ namespace QS.Updater.DB
 
 		protected void OnButtonOkClicked (object sender, EventArgs e)
 		{
+			buttonOk.Sensitive = false;
 			try
 			{
 				if(checkCreateBackup.Active)
 				{
-					if(ExecuteBackup ())
+					if(ExecuteBackup ()) {
+						buttonOk.Sensitive = true;
 						return;
+					}
 				}
 
 				logger.Info("Обновляем базу данных до версии {0}", VersionHelper.VersionToShortString(updateHop.Destanation));
