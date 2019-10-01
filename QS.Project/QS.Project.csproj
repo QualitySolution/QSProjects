@@ -256,10 +256,14 @@
     <Compile Include="Validation\IValidationViewFactory.cs" />
     <Compile Include="Validation\IValidator.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
-    <Compile Include="Permissions\EverythingAllowedEntityPermissionValidator.cs" />
-    <Compile Include="Permissions\EverythingAllowedPresetPermissionValidator.cs" />
     <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
     <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
+    <Compile Include="Project.Services\ValidationServiceWithoutView.cs" />
+    <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
+    <Compile Include="Project.Services\Interactive\ConsoleInteractiveMessage.cs" />
+    <Compile Include="Project.Services\Interactive\ConsoleInteractiveQuestion.cs" />
+    <Compile Include="Permissions\DefaultAllowedPermissionService.cs" />
+    <Compile Include="Project.Services\ServicesConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -295,6 +299,7 @@
     <Folder Include="Project.VersionControl\" />
     <Folder Include="ErrorReporting\" />
     <Folder Include="Validation\" />
+    <Folder Include="Project.Services\Interactive\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

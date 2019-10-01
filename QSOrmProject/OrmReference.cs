@@ -186,9 +186,9 @@ namespace QSOrmProject
 		}
 
 		//Проверка флага происходит первой для того чтобы программно можно было в обязательном порядке включить кнопку игнорируя проверку прав
-		private bool CanCreate => ButtonMode.HasFlag(ReferenceButtonMode.CanAdd) || entityPermissions.Create;
-		private bool CanEdit => ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) || entityPermissions.Update;
-		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || entityPermissions.Delete;
+		private bool CanCreate => ButtonMode.HasFlag(ReferenceButtonMode.CanAdd) || permissionResult.CanCreate;
+		private bool CanEdit => ButtonMode.HasFlag(ReferenceButtonMode.CanEdit) || permissionResult.CanUpdate;
+		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || permissionResult.CanDelete;
 
 		public OrmReference(System.Type objType)
 			: this(objType, UnitOfWorkFactory.CreateWithoutRoot())

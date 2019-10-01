@@ -11,6 +11,8 @@ using QS.Project.Repositories;
 using QS.Tdi;
 using QS.Utilities.GtkUI;
 using QS.Utilities.Text;
+using QS.Project.Services;
+using QS.Services;
 
 namespace QS.Dialog.Gtk
 {
@@ -148,7 +150,7 @@ namespace QS.Dialog.Gtk
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
-		protected EntityPermission entityPermissions { get; set; }
+		protected IPermissionResult permissionResult { get; set; }
 
 		protected EntityDialogBase()
 		{
@@ -157,9 +159,8 @@ namespace QS.Dialog.Gtk
 
 		protected void InitializePermissionValidator()
 		{
-			if(PermissionsSettings.EntityPermissionValidator == null) {
-				return;
-			}
+			permissionResult = new PermissionResult(EntityPermission.AllAllowed);
+
 			Type entityType = typeof(TEntity);
 			int? currUserId;
 			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
@@ -167,9 +168,9 @@ namespace QS.Dialog.Gtk
 			}
 			if(!currUserId.HasValue)
 				return;
-			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(entityType, currUserId.Value);
+			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateUserPermission(entityType, currUserId.Value);
 
-			if(!entityPermissions.Read) {
+			if(!permissionResult.CanRead) {
 				var message = PermissionsSettings.GetEntityReadValidateResult(entityType);
 				MessageDialogHelper.RunErrorDialog(message);
 				FailInitialize = true;
