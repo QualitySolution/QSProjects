@@ -5,6 +5,7 @@ using Gtk;
 using MySql.Data.MySqlClient;
 using QS.Dialog.GtkUI;
 using QS.Project.DB;
+using QS.Utilities.Text;
 using QSProjectsLib;
 using QSSupportLib;
 
@@ -25,9 +26,9 @@ namespace QS.Updater.DB
 
 			updateHop = hop;
 			SQLProvider = mySQLProvider;
-			progressbarTotal.Text = String.Format ("Обновление: {0} → {1}", 
-				StringWorks.VersionToShortString (updateHop.Source),
-				StringWorks.VersionToShortString (updateHop.Destanation)
+			progressbarTotal.Text = String.Format ("Обновление: {0} → {1}",
+				VersionHelper.VersionToShortString (updateHop.Source),
+				VersionHelper.VersionToShortString (updateHop.Destanation)
 			);
 				
 			string fileName = System.IO.Path.Combine (
@@ -48,13 +49,13 @@ namespace QS.Updater.DB
 						return;
 				}
 
-				logger.Info("Обновляем базу данных до версии {0}", StringWorks.VersionToShortString(updateHop.Destanation));
+				logger.Info("Обновляем базу данных до версии {0}", VersionHelper.VersionToShortString(updateHop.Destanation));
 				logger.Info ("Проверяем все ли микро обновления установленны.");
 				ExecuteMicroUpdates ();
 
 				logger.Info ("Устанавливаем основное обновление.");
-				RunOneUpdate (updateHop, String.Format ("Обновление базы данных до версии {0}", 
-					StringWorks.VersionToShortString (updateHop.Destanation)
+				RunOneUpdate (updateHop, String.Format ("Обновление базы данных до версии {0}",
+					VersionHelper.VersionToShortString (updateHop.Destanation)
 				));
 
 				if(MainSupport.BaseParameters.All.ContainsKey("micro_updates"))
@@ -67,7 +68,7 @@ namespace QS.Updater.DB
 				ExecuteMicroUpdates ();
 
 				progressbarTotal.Adjustment.Value = progressbarTotal.Adjustment.Upper;
-				logger.Info("Обновление до версии {0}, завершено.", StringWorks.VersionToShortString(updateHop.Destanation));
+				logger.Info("Обновление до версии {0}, завершено.", VersionHelper.VersionToShortString(updateHop.Destanation));
 				Success = true;
 				Respond(Gtk.ResponseType.Ok);
 			}
@@ -137,12 +138,12 @@ namespace QS.Updater.DB
 			while(DBUpdater.microUpdates.Exists(u => u.Source == currentDB))
 			{
 				var update = DBUpdater.microUpdates.Find(u => u.Source == currentDB);
-				RunOneUpdate (update, String.Format ("Устанавливаем микро-обновление {0}", StringWorks.VersionToShortString (update.Destanation)));
+				RunOneUpdate (update, String.Format ("Устанавливаем микро-обновление {0}", VersionHelper.VersionToShortString (update.Destanation)));
 				currentDB = update.Destanation;
 				MainSupport.BaseParameters.UpdateParameter(
 					SQLProvider.DbConnection,
 					"micro_updates",
-					StringWorks.VersionToShortString(currentDB)
+					VersionHelper.VersionToShortString(currentDB)
 				);
 			}
 		}

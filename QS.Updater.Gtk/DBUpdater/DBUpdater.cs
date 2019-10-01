@@ -73,7 +73,7 @@ namespace QS.Updater.DB
 				if (!QSMain.User.Admin)
 					NotAdminErrorAndExit(true, update.Source, update.Destanation);
 
-				logger.Info("Обновляемся до {0}", StringWorks.VersionToShortString(update.Destanation));
+				logger.Info("Обновляемся до {0}", VersionHelper.VersionToShortString(update.Destanation));
 				var trans = QSMain.ConnectionDB.BeginTransaction();
 				try
 				{
@@ -106,10 +106,10 @@ namespace QS.Updater.DB
 				MainSupport.BaseParameters.UpdateParameter(
 					QSMain.ConnectionDB,
 					"micro_updates",
-					StringWorks.VersionToShortString(currentDB)
+					VersionHelper.VersionToShortString(currentDB)
 				);
 
-				MessageDialogWorks.RunInfoDialog("Выполнено микро обновление базы {0} -> {1}.", StringWorks.VersionToShortString(beforeUpdates), StringWorks.VersionToShortString(currentDB));
+				MessageDialogWorks.RunInfoDialog("Выполнено микро обновление базы {0} -> {1}.", VersionHelper.VersionToShortString(beforeUpdates), VersionHelper.VersionToShortString(currentDB));
 			}
 		}
 
@@ -122,8 +122,8 @@ namespace QS.Updater.DB
 					"Для работы текущей версии программы необходимо провести{0} обновление базы ({1} -> {2}), " +
 					"но у вас нет для этого прав. Зайдите в программу под администратором.",
 					isMicro ? " микро" : "",
-				  	StringWorks.VersionToShortString(from),
-				  	StringWorks.VersionToShortString(to)
+				  	VersionHelper.VersionToShortString(from),
+				  	VersionHelper.VersionToShortString(to)
 				));
             md.Show ();
             md.Run ();
@@ -172,7 +172,7 @@ namespace QS.Updater.DB
 			{
 				logger.Error ("Версия базы не соответствует программе, но обновление не найдено");
 				ShowErrorAndExit(CheckBaseVersion.TextMessage + 
-					String.Format("\nОбновление базы для версии {0} не поддерживается.", StringWorks.VersionToShortString(currentDB)));
+					String.Format("\nОбновление базы для версии {0} не поддерживается.", VersionHelper.VersionToShortString(currentDB)));
 			}
 		}
 	}
