@@ -1,19 +1,16 @@
-﻿using System;
-using System.Reflection;
-using Gtk;
+﻿using Gtk;
 using QS.Dialog.GtkUI;
-using QS.DomainModel.Entity;
-using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.UoW;
-using QS.Project.Repositories;
 using QS.Permissions;
-using QS.Tdi;
+using QS.Project.Repositories;
+using QS.Project.Services;
+using QS.Services;
 
 namespace QS
 {
 	public class ReferenceBase : Bin
 	{
-		protected EntityPermission entityPermissions { get; set; }
+		protected IPermissionResult permissionResult { get; set; }
 		protected virtual System.Type objectType { get; set; }
 		public virtual bool FailInitialize { get; private set; }
 
@@ -21,14 +18,10 @@ namespace QS
 
 		protected void InitializePermissionValidator()
 		{
-			if(PermissionsSettings.EntityPermissionValidator == null || objectType == null) {
-				entityPermissions = EntityPermission.AllAllowed;
-				return;
-			}
 			var user = UserRepository.GetCurrentUser(UoW);
-			entityPermissions = PermissionsSettings.EntityPermissionValidator.Validate(objectType, user.Id);
+			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateUserPermission(objectType, user.Id);
 
-			if(!entityPermissions.Read) {
+			if(!permissionResult.CanRead) {
 				var message = PermissionsSettings.GetEntityReadValidateResult(objectType);
 				MessageDialogHelper.RunErrorDialog(message);
 				FailInitialize = true;
