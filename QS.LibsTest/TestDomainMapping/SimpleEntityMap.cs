@@ -1,5 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
-using QS.Test.TestDomain;
+using QS.Test.TestApp.Domain;
 
 namespace QS.Test.TestDomainMapping.TestDomain
 {

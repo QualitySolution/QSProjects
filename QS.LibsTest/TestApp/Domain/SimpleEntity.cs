@@ -1,9 +1,9 @@
 ﻿using System;
 using QS.DomainModel.Entity;
 
-namespace QS.Test.TestDomain
+namespace QS.Test.TestApp.Domain
 {
-	public class SimpleEntity: IDomainObject
+	public class SimpleEntity:  IDomainObject
 	{
 		public virtual int Id { get; set; }
 

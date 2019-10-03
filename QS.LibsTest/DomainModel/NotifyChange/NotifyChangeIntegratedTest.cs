@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using QS.DomainModel.NotifyChange;
-using QS.Test.TestDomain;
+using QS.Test.TestApp.Domain;
 using QS.Testing.DB;
 using System;
 using System.Collections.Generic;

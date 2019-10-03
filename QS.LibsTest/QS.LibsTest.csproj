@@ -70,6 +70,8 @@
       <HintPath>..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -83,7 +85,6 @@
     <Compile Include="TestDomainMapping\BusinessObjectTestEntityMap.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
-    <Compile Include="TestDomain\SimpleEntity.cs" />
     <Compile Include="TestDomainMapping\SimpleEntityMap.cs" />
     <Compile Include="Utilities\PhoneFormatterTest.cs" />
     <Compile Include="Tdi\BasedOnNameTDIResolverTest.cs" />
@@ -91,6 +92,14 @@
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
     <Compile Include="TestNamespace\Views\Two.Level\SecondTestClassView.cs" />
+    <Compile Include="Views.GtkUI\EntityTabViewBaseTest.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="TestApp\Views\ButtonSubscriptionView.cs" />
+    <Compile Include="TestApp\ViewModels\EntityViewModel.cs" />
+    <Compile Include="TestApp\Domain\SimpleEntity.cs" />
+    <Compile Include="TestApp\Domain\FullEntity.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.ButtonSubscriptionView.cs" />
+    <Compile Include="GtkUI\GtkInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -110,6 +119,12 @@
     <Folder Include="TestNamespace\ViewModels\Two.Level\" />
     <Folder Include="TestNamespace\Views\OneLevel\" />
     <Folder Include="TestNamespace\Views\Two.Level\" />
+    <Folder Include="Views.GtkUI\" />
+    <Folder Include="TestApp\" />
+    <Folder Include="TestApp\Views\" />
+    <Folder Include="TestApp\ViewModels\" />
+    <Folder Include="TestApp\Domain\" />
+    <Folder Include="GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
@@ -136,6 +151,11 @@
       <Project>{301F793C-130B-44EB-A45D-60D5F040B0AD}</Project>
       <Name>QS.Banks</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
