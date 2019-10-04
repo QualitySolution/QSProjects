@@ -25,7 +25,7 @@ namespace QSMachineConfig
 			}
 			else
 			{
-				logger.Warn ("Конфигурационный фаил {0} не найден. Конфигурация не загружена.");
+				logger.Warn ("Конфигурационный фаил {0} не найден. Конфигурация не загружена.", FullConfigPath);
 				ConfigSource = new IniConfigSource ();
 				ConfigSource.Save (FullConfigPath);
 			}
