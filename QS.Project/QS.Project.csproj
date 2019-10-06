@@ -265,6 +265,8 @@
     <Compile Include="Permissions\DefaultAllowedPermissionService.cs" />
     <Compile Include="Project.Services\ServicesConfig.cs" />
     <Compile Include="Project.Services\IRunOperationService.cs" />
+    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
+    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

@@ -204,8 +204,6 @@
     <Compile Include="ErrorReporting.GtkUI\UnhandledExceptionHandler.cs" />
     <Compile Include="ErrorReporting.GtkUI\ErrorMsgDlg.cs" />
     <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
-    <Compile Include="ErrorReporting.GtkUI\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting.GtkUI\ExceptionHelper.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
     <Compile Include="Validation.GtkUI\GtkValidationViewFactory.cs" />
     <Compile Include="Validation.GtkUI\QSValidator.cs" />

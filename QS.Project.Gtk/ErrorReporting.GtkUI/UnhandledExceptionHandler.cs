@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Gtk;
+using QS.Dialog;
 using QS.Project.Domain;
 using QS.Project.VersionControl;
 
@@ -13,13 +14,14 @@ namespace QS.ErrorReporting.GtkUI
 	/// и ее больше не надо передавать вниз по списку зарегистированных обработчиков,
 	/// вплодь до стандартного диалога отправки отчета об ошибке.
 	/// </summary>
-	public delegate bool CustomErrorHandler(Exception exception, IApplicationInfo application, UserBase user);
+	public delegate bool CustomErrorHandler(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage);
 
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
 	/// Для работы необходимо предварительно сконфигурировать модуль
 	/// GuiThread - указать поток Gui, нужно для корректной обработки эксепшенов в других потоках.
 	/// ApplicationInfo - Передать класс возвращающий информация о програмамме
+	/// InteractiveMessage - Класс позволяющий обработчикам выдать сообщение пользователю.
 	/// Опционально:
 	/// User - Текущий пользователь
 	/// RequestEmail = true - требовать ввод E-mail
@@ -33,6 +35,7 @@ namespace QS.ErrorReporting.GtkUI
 
 		public static Thread GuiThread;
 		public static IApplicationInfo ApplicationInfo;
+		public static IInteractiveMessage InteractiveMessage;
 		public static UserBase User;
 		public static bool RequestEmail = true;
 		public static bool RequestDescription = true;
@@ -75,7 +78,7 @@ namespace QS.ErrorReporting.GtkUI
 		private static void RealErrorMessage(Exception exception)
 		{
 			foreach(var handler in CustomErrorHandlers) {
-				if(handler(exception, ApplicationInfo, User))
+				if(handler(exception, ApplicationInfo, User, InteractiveMessage))
 					return;
 			}
 
@@ -92,6 +95,5 @@ namespace QS.ErrorReporting.GtkUI
 				logger.Debug("Окно отправки отчета, уничтожено.");
 			}
 		}
-
 	}
 }
