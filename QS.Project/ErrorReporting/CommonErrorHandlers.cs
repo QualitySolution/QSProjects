@@ -8,7 +8,21 @@ namespace QS.ErrorReporting
 {
 	public static class CommonErrorHandlers
 	{
-		public static bool MySqlExceptionIncorrectStringValue(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
+		#region MySQL
+
+		public static bool MySqlException1055OnlyFullGroupBy(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
+		{
+			var mysqlEx = ExceptionHelper.FineExceptionTypeInInner<MySqlException>(exception);
+			if(mysqlEx != null && mysqlEx.Number == 1055) {
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, "На сервере MariaDB\\MySQL включен режим 'only_full_group_by', " +
+					"для нормальной работы программы нужно удалить это значение из опции sql_mode. Обычно по умолчанию этот режим " +
+					"отключен, проверьте свой конфигурационный файл my.cnf");
+				return true;
+			}
+			return false;
+		}
+
+		public static bool MySqlException1366IncorrectStringValue(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
 		{
 			var mysqlEx = ExceptionHelper.FineExceptionTypeInInner<MySqlException>(exception);
 			if(mysqlEx != null && mysqlEx.Number == 1366) {
@@ -21,6 +35,8 @@ namespace QS.ErrorReporting
 			}
 			return false;
 		}
+
+		#endregion
 
 		public static bool NHibernateFlushAfterException (Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
 		{
