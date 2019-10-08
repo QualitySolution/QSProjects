@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using NHibernate;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.Services;
 using QS.Tdi;
@@ -13,7 +12,7 @@ namespace QS.Project.Journal
 	{
 		public Type EntityType { get; }
 
-		protected SimpleEntityJournalViewModelBase(Type entityType, IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
+		protected SimpleEntityJournalViewModelBase(Type entityType, ICommonServices commonServices) : base(commonServices)
 		{
 			EntityType = entityType;
 		}

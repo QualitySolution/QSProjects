@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using NHibernate;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.Services;
 using QS.Tdi;
@@ -23,8 +22,7 @@ namespace QS.Project.Journal
 			Expression<Func<TEntity, object>> titleExp,
 			Func<TEntityTab> createDlgFunc,
 			Func<CommonJournalNode, TEntityTab> openDlgFunc,
-			IEntityConfigurationProvider entityConfigurationProvider, 
-			ICommonServices commonServices) : base(typeof(TEntity), entityConfigurationProvider, commonServices)
+			ICommonServices commonServices) : base(typeof(TEntity), commonServices)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 

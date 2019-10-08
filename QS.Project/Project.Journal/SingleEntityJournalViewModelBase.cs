@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using NHibernate;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.Project.Journal.EntitySelector;
 using QS.Services;
@@ -17,7 +16,7 @@ namespace QS.Project.Journal
 		protected readonly ICommonServices commonServices;
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
+		protected SingleEntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
