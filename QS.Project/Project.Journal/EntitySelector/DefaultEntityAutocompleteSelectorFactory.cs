@@ -19,10 +19,8 @@ namespace QS.Project.Journal.EntitySelector
 
 		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
-			IEntityConfigurationProvider entityConfigurationProvider = new DefaultEntityConfigurationProvider();
-
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, entityConfigurationProvider, commonServices });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}

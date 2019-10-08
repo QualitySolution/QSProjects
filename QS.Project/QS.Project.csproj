@@ -190,8 +190,6 @@
     <Compile Include="Project.Journal\IJournalAction.cs" />
     <Compile Include="Project.Journal\JournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalAction.cs" />
-    <Compile Include="DomainModel\Config\IEntityConfigurationProvider.cs" />
-    <Compile Include="DomainModel\Config\DefaultEntityConfigurationProvider.cs" />
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />

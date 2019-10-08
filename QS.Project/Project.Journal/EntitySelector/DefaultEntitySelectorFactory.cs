@@ -27,19 +27,17 @@ namespace QS.Project.Journal.EntitySelector
 			}
 
 			Type journalType = typeof(TJournalViewModel);
-			journalConstructorInfo = journalType.GetConstructor(new Type[] { filterType, typeof(IEntityConfigurationProvider), typeof(ICommonServices) });
+			journalConstructorInfo = journalType.GetConstructor(new Type[] { filterType, typeof(ICommonServices) });
 			if(journalConstructorInfo == null) {
 				throw new ArgumentException($"Невозможно найти конструктор для журнала {journalType.Name} с параметрами:" +
-					$"{filterType.Name}, {nameof(IEntityConfigurationProvider)}, {nameof(ICommonServices)}");
+					$"{filterType.Name}, {nameof(ICommonServices)}");
 			}
 		}
 
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
-			IEntityConfigurationProvider entityConfigurationProvider = new DefaultEntityConfigurationProvider();
-
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, entityConfigurationProvider, commonServices });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}
