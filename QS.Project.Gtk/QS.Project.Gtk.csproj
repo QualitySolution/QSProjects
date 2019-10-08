@@ -193,7 +193,6 @@
     <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
     <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
-    <Compile Include="Helpers\GtkHelper.cs" />
     <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />

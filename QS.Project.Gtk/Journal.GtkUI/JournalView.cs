@@ -4,10 +4,10 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.Helpers;
 using QS.Project.Journal;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
+using QS.Utilities.GtkUI;
 using QS.Views.GtkUI;
 using QSWidgetLib;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gtk;
 
 namespace QS.Utilities.GtkUI
@@ -18,6 +19,29 @@ namespace QS.Utilities.GtkUI
 					}
 				}
 				yield return child;
+			}
+		}
+
+		public static void WaitRedraw()
+		{
+			while (Application.EventsPending()) {
+				Gtk.Main.Iteration();
+			}
+		}
+
+		static DateTime lastRedraw;
+		/// <summary>
+		/// Главный цикл приложения будет вызываться не чаще чем время указанное в парамерах.
+		/// </summary>
+		/// <param name="milliseconds">Milliseconds.</param>
+		public static void WaitRedraw(int milliseconds)
+		{
+			if (DateTime.Now.Subtract(lastRedraw).Milliseconds < milliseconds)
+				return;
+
+			lastRedraw = DateTime.Now;
+			while (Application.EventsPending()) {
+				Gtk.Main.Iteration();
 			}
 		}
 	}
