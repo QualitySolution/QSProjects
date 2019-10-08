@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using QS.DomainModel.Config;
-using QS.DomainModel.Entity;
-using QS.Services;
-using QS.Tdi;
-using System.Linq;
-using QS.Deletion;
-using System.ComponentModel;
-using NHibernate;
-using NHibernate.Util;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
+using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.Util;
+using QS.Deletion;
+using QS.DomainModel.Entity;
 using QS.Project.Journal.EntityLoader;
 using QS.Project.Journal.Search;
-using NHibernate.Criterion;
+using QS.Services;
+using QS.Tdi;
 
 namespace QS.Project.Journal
 {
@@ -22,7 +21,6 @@ namespace QS.Project.Journal
 	{
 		private const int defaultPageSize = 100;
 
-		private readonly IEntityConfigurationProvider entityConfigurationProvider;
 		private readonly ICommonServices commonServices;
 
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
@@ -43,9 +41,8 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
-		protected EntityJournalViewModelBase(IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(commonServices?.InteractiveService)
+		protected EntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices?.InteractiveService)
 		{
-			this.entityConfigurationProvider = entityConfigurationProvider ?? throw new ArgumentNullException(nameof(entityConfigurationProvider));
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			UseSlider = true;
 			PageSize = defaultPageSize;

@@ -23,7 +23,7 @@ namespace Vodovoz.JournalViewModels
 			}
 		}
 
-		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IEntityConfigurationProvider entityConfigurationProvider, ICommonServices commonServices) : base(entityConfigurationProvider, commonServices)
+		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, ICommonServices commonServices) : base(commonServices)
 		{
 			FilterViewModel = filterViewModel;
 		}
