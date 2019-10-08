@@ -13,7 +13,6 @@ namespace QSOrmProject
 
 		bool SimpleDialog { get;}
 		ITableView TableView { get;}
-		string EditPermisionName { get;}
 		event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated;
 		void RaiseObjectUpdated(params object[] updatedSubjects);
 
