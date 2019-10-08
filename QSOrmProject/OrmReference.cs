@@ -7,19 +7,18 @@ using Gtk;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
+using QS;
+using QS.Dialog.Gtk;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
+using QS.Utilities;
 using QS.Utilities.Text;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
-using QS.Project.Repositories;
-using QS.Dialog.GtkUI;
-using QS.Utilities;
-using QS.Dialog.Gtk;
-using QS;
 
 namespace QSOrmProject
 {
@@ -241,13 +240,6 @@ namespace QSOrmProject
 			if(defaultMode != null)
 				ButtonMode = defaultMode.ReferenceButtonMode;
 
-			var user = UserRepository.GetCurrentUser(uow);
-			user.LoadUserPermissions();
-			if (!String.IsNullOrWhiteSpace(map.EditPermisionName)) {
-				if (user.Permissions != null && !user.Permissions[map.EditPermisionName]) {
-					ButtonMode &= ~ReferenceButtonMode.CanAll;
-				}
-			}
 			UpdateObjectList();
 			ytreeviewRef.Selection.Changed += OnTreeviewSelectionChanged;
 		}
