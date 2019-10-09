@@ -49,7 +49,8 @@ namespace QS.Project.Search.GtkUI
 
 		bool RunSearch()
 		{
-			viewModel.SearchValues = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
+			var allFields = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
+			viewModel.SearchValues = allFields.Where(x => !String.IsNullOrEmpty(x)).ToArray();
 			timerId = 0;
 			return false;
 		}

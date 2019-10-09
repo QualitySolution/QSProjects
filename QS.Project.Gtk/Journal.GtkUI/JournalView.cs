@@ -73,6 +73,7 @@ namespace QS.Journal.GtkUI
 
 			Application.Invoke((s, arg) => {
 				labelFooter.Markup = ViewModel.FooterInfo;
+				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.YTreeModel.EmitModelChanged();
 			});
 		}
@@ -83,7 +84,6 @@ namespace QS.Journal.GtkUI
 		}
 
 		bool takenAll = false;
-		bool isAdjustmentValueChanged = false;
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
