@@ -28,7 +28,7 @@ namespace QS.Project.Journal
 		{
 			var names = DomainHelper.GetSubjectNames(typeof(TEntity));
 			if(names == null || string.IsNullOrWhiteSpace(names.Nominative)) {
-				throw new ApplicationException($"Для типа {nameof(TEntity)} не проставлен аттрибут AppellativeAttribute, или в аттрибуте не проставлено имя Nominative, из-за чего невозможно разрешить правильное имя документа для отображения в журнале с конфигурацией документов по умолчанию.");
+				throw new ApplicationException($"Для типа {typeof(TEntity)} не проставлен аттрибут AppellativeAttribute, или в аттрибуте не проставлено имя Nominative, из-за чего невозможно разрешить правильное имя документа для отображения в журнале с конфигурацией документов по умолчанию.");
 			}
 			return names.Nominative.StringToTitleCase();
 		}
