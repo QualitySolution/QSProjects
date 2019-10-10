@@ -220,9 +220,7 @@
     <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectMode.cs" />
     <Compile Include="Project.Journal\EntityLoader\IEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\AllEntityLoader.cs" />
     <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoaderWithCount.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelector.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
@@ -304,6 +302,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Project.Journal\EntityLoader\DynamicEntityLoaderWithCount.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">

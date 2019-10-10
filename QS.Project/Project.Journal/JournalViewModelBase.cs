@@ -38,9 +38,13 @@ namespace QS.Project.Journal
 
 		public bool DynamicLoadingEnabled {  get; protected set; }
 
+		public abstract bool FullDataLoaded { get; }
+
+		public bool FirstPage = true;
+
 		public abstract void Refresh();
 
-		public abstract bool TryLoad();
+		public abstract void LoadData(bool nextPage);
 
 		private JournalSelectionMode selectionMode;
 		public virtual JournalSelectionMode SelectionMode {

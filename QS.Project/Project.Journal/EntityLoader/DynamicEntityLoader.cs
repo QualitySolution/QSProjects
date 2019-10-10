@@ -2,8 +2,6 @@
 using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
-using QS.Project.Journal.Search;
-using NHibernate.Criterion;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -14,14 +12,13 @@ namespace QS.Project.Journal.EntityLoader
 		where TNode : JournalEntityNodeBase
 	{
 		private readonly Func<IQueryOver<TEntity>> queryFunc;
-		private readonly int defaultPageSize;
 
-		public DynamicEntityLoader(Func<IQueryOver<TEntity>> queryFunc, int defaultPageSize = 100)
+		public DynamicEntityLoader(Func<IQueryOver<TEntity>> queryFunc)
 		{
 			this.queryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
-			this.defaultPageSize = defaultPageSize;
 			HasUnloadedItems = true;
 			TotalItemsCount = null;
+			LoadedItems = new List<TNode>();
 		}
 
 		#region IEntityLoader implementation
@@ -30,27 +27,45 @@ namespace QS.Project.Journal.EntityLoader
 
 		public int? TotalItemsCount { get; private set; }
 
-		public int LoadedItemsCount { get; private set; }
+		public int LoadedItemsCount => LoadedItems.Count;
+		public int ReadedItemsCount { get; set; }
 
-		public List<TNode> LoadItems(int? pageSize = null)
+		public List<TNode> LoadedItems { get; private set; }
+
+		public void LoadPage(int? pageSize = null)
 		{
+			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
+				return;
+
 			var workQuery = queryFunc.Invoke().Clone();
-			var resultItems = workQuery.Skip(LoadedItemsCount).Take(pageSize ?? defaultPageSize).List<TNode>().ToList();
-			var currentLoadItems = resultItems.Count;
-			LoadedItemsCount += currentLoadItems;
-			if(currentLoadItems < pageSize) {
+			if(pageSize.HasValue) {
+				var resultItems = workQuery.Skip(LoadedItemsCount).Take(pageSize.Value).List<TNode>();
+
+				if(resultItems.Count < pageSize) {
+					HasUnloadedItems = false;
+				}
+
+				LoadedItems.AddRange(resultItems);
+			} else {
+				LoadedItems = workQuery.List<TNode>().ToList();
 				HasUnloadedItems = false;
 			}
-			return resultItems;
 		}
 
-		public void Refresh()
+		public TNode NextUnreadedNode()
 		{
-			LoadedItemsCount = 0;
+			if(ReadedItemsCount >= LoadedItems.Count)
+				return null;
+			return LoadedItems[ReadedItemsCount];
+		}
+
+		public void Reset()
+		{
+			LoadedItems.Clear();
+			ReadedItemsCount = 0;
 			HasUnloadedItems = true;
 		}
 
 		#endregion IEntityLoader implementation
-
 	}
 }

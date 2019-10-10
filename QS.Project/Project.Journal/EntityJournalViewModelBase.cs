@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Util;
@@ -19,6 +19,8 @@ namespace QS.Project.Journal
 	public abstract class EntityJournalViewModelBase<TNode> : JournalViewModelBase
 		where TNode : JournalEntityNodeBase
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private const int defaultPageSize = 100;
 
 		private readonly ICommonServices commonServices;
@@ -97,29 +99,14 @@ namespace QS.Project.Journal
 
 		public sealed override void Refresh()
 		{
-			ClearCachedItems();
-			TryLoad();
-		}
-
-		protected virtual void ClearCachedItems()
-		{
-			allRowsCount = null;
-			loadedCount = 0;
-			Items.Clear();
-			foreach(var item in entityLoaders.Values) {
-				item.Refresh();
-			}
+			LoadData(false);
 		}
 
 		#region Ordering
 
-		private bool isDescOrder = false;
-		private Func<TNode, object> orderFunction = x => x.Id;
-
 		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
 		{
-			orderFunction = orderFunc;
-			isDescOrder = desc;
+			orderingDictionary = new Dictionary<Func<TNode, object>, bool> { {orderFunc, desc } };
 		}
 
 		Dictionary<Func<TNode, object>, bool> orderingDictionary;
@@ -155,73 +142,95 @@ namespace QS.Project.Journal
 
 		protected int PageSize { get; set; }
 
-		private int? allRowsCount = null;
-		private int loadedCount = 0;
+		protected int? GetPageSize => DynamicLoadingEnabled ? PageSize : (int?)null;
 
-		public override bool TryLoad()
+		public override bool FullDataLoaded => !entityLoaders.Any(l => l.Value.HasUnloadedItems);
+
+		private bool reloadRequested = false;
+		private Task[] RunningTasks = new Task[] { };
+		private DateTime startLoading;
+
+		public bool LoadInProgress = false;
+
+		public override void LoadData(bool nextPage)
 		{
-			if(!EntityConfigs.Any()) {
-				return false;
+			if(!EntityConfigs.Any()) 
+				return;
+
+			if(LoadInProgress) {
+				if(!nextPage)
+					reloadRequested = true;
+				return;
 			}
 
-			List<TNode> summaryItems = new List<TNode>();
+			logger.Info("Запрос данных...");
+			startLoading = DateTime.Now;
+			LoadInProgress = true;
 
-
-			var loaders = entityLoaders.Values.ToList();
-			var entityCountsForLoad = loaders.Count(x => x.HasUnloadedItems);
-			if(entityCountsForLoad == 0) {
-				return false;
+			FirstPage = !nextPage;
+			if(!nextPage) {
+				Items.Clear();
+				foreach(var item in entityLoaders.Values) {
+					item.Reset();
+				}
 			}
 
-			int currentPageSize = PageSize / entityCountsForLoad;
+			var runLoaders = entityLoaders.Values.Where(x => x.HasUnloadedItems).ToArray();
+			RunningTasks = new Task[runLoaders.Length];
 
-			foreach(var loader in loaders) {
-				var loadedItems = loader.LoadItems(currentPageSize);
-				summaryItems.AddRange(loadedItems);
+			for(int i = 0; i < runLoaders.Length; i++) {
+				var loader = runLoaders[i];
+				RunningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize));
 			}
 
-			var orderedItems = OrderItems(summaryItems);
-
-			UpdateItems(orderedItems);
-
-			return loaders.Any(x => x.HasUnloadedItems);
+			Task.Factory.ContinueWhenAll(RunningTasks, (tasks) => {
+				ReadLoadersInSortOrder();
+				RaiseItemsUpdated();
+				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек." );
+				LoadInProgress = false;
+				if(reloadRequested) {
+					reloadRequested = false;
+					LoadData(false);
+				}
+			});
 		}
 
-		private List<TNode> OrderItems(List<TNode> items)
+		private void ReadLoadersInSortOrder()
+		{
+			var loaders = entityLoaders.Values.ToList();
+			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
+			while(loaders.Any(l => l.NextUnreadedNode() != null)) {
+				if(loaders.Any(l => l.HasUnloadedItems && l.NextUnreadedNode() == null))
+					break; //Уперлись в неподгруженный хвост. Пока хватит, ждем следующей страницы.
+				var taked = filtredLoaders.First();
+				Items.Add(taked.NextUnreadedNode());
+				taked.ReadedItemsCount++;
+			}
+		}
+
+		private IEnumerable<IEntityLoader<TNode>> MakeOrderedEnumerable(IEnumerable<IEntityLoader<TNode>> loaders)
 		{
 			if(orderingDictionary != null && orderingDictionary.Any()) {
-				IOrderedEnumerable<TNode> resultItems = null;
+				IOrderedEnumerable<IEntityLoader<TNode>> resultItems = null;
 				bool isFirstValueInDictionary = true;
-				foreach(var item in orderingDictionary) {
+				foreach(var orderRule in orderingDictionary) {
 					if(isFirstValueInDictionary) {
-						if(item.Value)
-							resultItems = items.OrderByDescending(item.Key);
-						resultItems = items.OrderBy(item.Key);
+						if(orderRule.Value)
+							resultItems = loaders.OrderByDescending(l => orderRule.Key(l.NextUnreadedNode()));
+						else
+							resultItems = loaders.OrderBy(l => orderRule.Key(l.NextUnreadedNode()));
 						isFirstValueInDictionary = false;
 					} else {
-						if(item.Value)
-							resultItems = resultItems.ThenByDescending(item.Key);
-						resultItems = resultItems.ThenBy(item.Key);
+						if(orderRule.Value)
+							resultItems = resultItems.ThenByDescending(l => orderRule.Key(l.NextUnreadedNode()));
+						else
+							resultItems = resultItems.ThenBy(l => orderRule.Key(l.NextUnreadedNode()));
 					}
 				}
-				return resultItems.ToList();
+				return resultItems;
 			}
 
-			if(isDescOrder)
-				return items.OrderByDescending(orderFunction).ToList();
-			return items.OrderBy(orderFunction).ToList();
-		}
-
-		protected override void UpdateItems(IList items)
-		{
-			if(DynamicLoadingEnabled) {
-				foreach(var item in items) {
-					Items.Add(item);
-				}
-			} else {
-				Items = items;
-			}
-			RaiseItemsUpdated();
+			return loaders;
 		}
 
 		#region Entity load configuration
@@ -236,14 +245,7 @@ namespace QS.Project.Journal
 				return;
 			}
 
-			IEntityLoader<TNode> loader = null;
-			if(DynamicLoadingEnabled) {
-				loader = new DynamicEntityLoader<TEntity, TNode>(queryFunc);
-			} else {
-				loader = new AllEntityLoader<TEntity, TNode>(queryFunc);
-			}
-
-			entityLoaders.Add(entityType, loader);
+			entityLoaders.Add(entityType, new DynamicEntityLoader<TEntity, TNode>(queryFunc));
 		}
 
 

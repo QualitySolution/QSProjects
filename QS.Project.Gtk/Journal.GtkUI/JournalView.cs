@@ -67,14 +67,18 @@ namespace QS.Journal.GtkUI
 
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
-			if(!ViewModel.DynamicLoadingEnabled) {
-				tableview.ItemsDataSource = ViewModel.Items;
-			}
+			//Копируем лист чтобы дать возможность ViewModel обновлять его в других потоках...
+			var listClone = ViewModel.Items;
 
 			Application.Invoke((s, arg) => {
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
-				tableview.YTreeModel.EmitModelChanged();
+				tableview.ItemsDataSource = listClone;
+
+				if(!ViewModel.FirstPage) {
+					GtkHelper.WaitRedraw();
+					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+				}
 			});
 		}
 
@@ -83,18 +87,16 @@ namespace QS.Journal.GtkUI
 			ViewModel.Refresh();
 		}
 
-		bool takenAll = false;
+		double lastScrollPosition;
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
 			if(!ViewModel.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
 				return;
 
-			if(!takenAll) {
-				var lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
-				takenAll = !ViewModel.TryLoad();
-				GtkHelper.WaitRedraw();
-				GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+			if(!ViewModel.FullDataLoaded) {
+				lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
+				ViewModel.LoadData(true);
 			}
 		}
 

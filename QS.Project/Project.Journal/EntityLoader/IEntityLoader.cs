@@ -8,9 +8,12 @@ namespace QS.Project.Journal.EntityLoader
 		where TNode : JournalEntityNodeBase
 	{
 		bool HasUnloadedItems { get; }
-		List<TNode> LoadItems(int? pageSize = null);
+		List<TNode> LoadedItems { get; }
+		void LoadPage(int? pageSize = null);
 		int LoadedItemsCount { get; }
+		int ReadedItemsCount { get; set; }
+		TNode NextUnreadedNode();
 		int? TotalItemsCount { get; }
-		void Refresh();
+		void Reset();
 	}
 }
