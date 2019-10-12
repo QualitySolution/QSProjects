@@ -16,7 +16,7 @@ namespace QSProjectsLib
 
 		[Obsolete("Настройка оставлена для совместимости со старыми проектами. В новых используйте класс QS.ErrorReporting.GtkUI.UnhandledExceptionHandler")]
 		public static Window ErrorDlgParrent;
-		[Obsolete("Настройка оставлена для совместимости со старыми проектами. В новых используйте класс QS.ErrorReporting.GtkUI.UnhandledExceptionHandler")]
+
 		public static Thread GuiThread;
 
 		static bool statusBarRedrawHandled;
