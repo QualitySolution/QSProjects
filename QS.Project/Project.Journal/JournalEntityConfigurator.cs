@@ -5,7 +5,6 @@ using QS.DomainModel.Entity;
 using QS.Tdi;
 using QS.Utilities.Text;
 using System.ComponentModel;
-using NHibernate;
 
 namespace QS.Project.Journal
 {
@@ -190,7 +189,7 @@ namespace QS.Project.Journal
 		public void FinishConfiguration()
 		{
 			if(!documentConfigs.Any()) {
-				throw new InvalidOperationException($"Для класса \"{nameof(TEntity)}\" должна быть определена как минимум одна конфигурация диалогов. Для ее определения необходимо вызвать метод \"{nameof(AddDocumentConfiguration)}\"");
+				throw new InvalidOperationException($"Для класса \"{typeof(TEntity)}\" должна быть определена как минимум одна конфигурация диалогов. Для ее определения необходимо вызвать метод \"{nameof(AddDocumentConfiguration)}\"");
 			}
 			JournalEntityConfig<TNode> config = new JournalEntityConfig<TNode>(typeof(TEntity), documentConfigs);
 			OnConfigurationFinished?.Invoke(this, new JournalEntityConfigEventArgs<TNode>(config));
