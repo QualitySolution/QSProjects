@@ -5,6 +5,7 @@ using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
 using QS.Project.Journal;
+using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
 using QS.Utilities.GtkUI;
@@ -18,6 +19,13 @@ namespace QS.Journal.GtkUI
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		#region Глобальные настройки
+
+		public static uint ShowProgressbarDelay = 800;
+		public static uint ProgressPulseTime = 100;
+
+		#endregion
+
 		public JournalView(JournalViewModelBase viewModel) : base(viewModel)
 		{
 			this.Build();
@@ -27,6 +35,7 @@ namespace QS.Journal.GtkUI
 		private void ConfigureJournal()
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -65,6 +74,8 @@ namespace QS.Journal.GtkUI
 			UpdateButtons();
 		}
 
+		#region События загрузчика данных
+
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
 			//Копируем лист чтобы дать возможность ViewModel обновлять его в других потоках...
@@ -81,6 +92,38 @@ namespace QS.Journal.GtkUI
 				}
 			});
 		}
+
+		private LoadingState loadingState;
+
+		void DataLoader_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+		{
+			if(loadingState != LoadingState.InProgress && e.LoadingState == LoadingState.InProgress)
+				GLib.Timeout.Add(ShowProgressbarDelay, new GLib.TimeoutHandler(StartLoadProgress));
+			loadingState = e.LoadingState;
+		}
+
+		bool StartLoadProgress()
+		{
+			progressbarLoading.Visible = loadingState == LoadingState.InProgress;
+
+			if(loadingState == LoadingState.InProgress) {
+				GLib.Timeout.Add(ProgressPulseTime, new GLib.TimeoutHandler(PulseProgress));
+			} 
+			return false;
+		}
+
+		bool PulseProgress()
+		{
+			if(loadingState == LoadingState.Idle) {
+				progressbarLoading.Visible = false;
+				return false;
+			} else {
+				progressbarLoading.Pulse();
+				return true;
+			}
+		}
+
+		#endregion
 
 		private void RefreshSource()
 		{

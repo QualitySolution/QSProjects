@@ -20,6 +20,8 @@ namespace QS.Journal.GtkUI
 
 		private global::Gamma.GtkWidgets.yTreeView tableview;
 
+		private global::Gtk.ProgressBar progressbarLoading;
+
 		private global::Gtk.Label labelFooter;
 
 		protected virtual void Build()
@@ -99,6 +101,14 @@ namespace QS.Journal.GtkUI
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow]));
 			w8.Position = 3;
 			// Container child vboxMain.Gtk.Box+BoxChild
+			this.progressbarLoading = new global::Gtk.ProgressBar();
+			this.progressbarLoading.Name = "progressbarLoading";
+			this.vboxMain.Add(this.progressbarLoading);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.progressbarLoading]));
+			w9.Position = 4;
+			w9.Expand = false;
+			w9.Fill = false;
+			// Container child vboxMain.Gtk.Box+BoxChild
 			this.labelFooter = new global::Gtk.Label();
 			this.labelFooter.Name = "labelFooter";
 			this.labelFooter.Xpad = 6;
@@ -106,16 +116,17 @@ namespace QS.Journal.GtkUI
 			this.labelFooter.LabelProp = global::Mono.Unix.Catalog.GetString("####");
 			this.labelFooter.SingleLineMode = true;
 			this.vboxMain.Add(this.labelFooter);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.labelFooter]));
-			w9.Position = 4;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.labelFooter]));
+			w10.Position = 5;
+			w10.Expand = false;
+			w10.Fill = false;
 			this.Add(this.vboxMain);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.checkShowFilter.Hide();
+			this.progressbarLoading.Hide();
 			this.Hide();
 		}
 	}

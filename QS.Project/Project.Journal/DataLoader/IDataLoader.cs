@@ -7,8 +7,19 @@ namespace QS.Project.Journal.DataLoader
 	{
 		IList Items { get; }
 
+		/// <summary>
+		/// Список с данными был обновлен. Внимание, событие может приходить из другого потока.
+		/// </summary>
 		event EventHandler ItemsListUpdated;
 
+		/// <summary>
+		/// Вызывается при смене состояния загрузки. Может приходит из другого потока.
+		/// </summary>
+		event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
+
+		/// <summary>
+		/// Вызывается если в загрузчике произошла ошибка. Может приходит из другого потока.
+		/// </summary>
 		event EventHandler<LoadErrorEventArgs> LoadError;
 
 		bool DynamicLoadingEnabled { get; set; }
@@ -25,5 +36,16 @@ namespace QS.Project.Journal.DataLoader
 	public class LoadErrorEventArgs : EventArgs
 	{
 		public Exception Exception;
+	}
+
+	public class LoadingStateChangedEventArgs : EventArgs
+	{
+		public LoadingState LoadingState;
+	}
+
+	public enum LoadingState
+	{
+		Idle,
+		InProgress,
 	}
 }

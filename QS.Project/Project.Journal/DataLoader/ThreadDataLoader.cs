@@ -36,6 +36,7 @@ namespace QS.Project.Journal.DataLoader
 		public event EventHandler ItemsListUpdated;
 
 		public event EventHandler<LoadErrorEventArgs> LoadError;
+		public event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
 
 		#endregion
 
@@ -118,9 +119,10 @@ namespace QS.Project.Journal.DataLoader
 				return;
 			}
 
-			logger.Info("Запрос данных...");
 			startLoading = DateTime.Now;
 			LoadInProgress = true;
+			OnLoadingStateChange(LoadingState.InProgress);
+			logger.Info("Запрос данных...");
 
 			FirstPage = !nextPage;
 			if (!nextPage) {
@@ -151,9 +153,10 @@ namespace QS.Project.Journal.DataLoader
 				ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
 				LoadInProgress = false;
-				if (1 == Interlocked.Exchange(ref reloadRequested, 0)) {
+				if(1 == Interlocked.Exchange(ref reloadRequested, 0)) {
 					LoadData(false);
-				}
+				} else
+					OnLoadingStateChange(LoadingState.Idle);
 			});
 		}
 
@@ -215,6 +218,14 @@ namespace QS.Project.Journal.DataLoader
 				Exception = exception
 			};
 			LoadError?.Invoke(this, args);
+		}
+
+		protected virtual void OnLoadingStateChange(LoadingState state)
+		{
+			var args = new LoadingStateChangedEventArgs {
+				LoadingState = state
+			};
+			LoadingStateChanged?.Invoke(this, args);
 		}
 	}
 }
