@@ -45,19 +45,20 @@ namespace QS.Project.Journal.DataLoader
 
 		public readonly List<SortRule<TNode>> OrderRules = new List<SortRule<TNode>>();
 
-		public bool DynamicLoadingEnabled { get; set; }
+		public bool DynamicLoadingEnabled { get; set; } = true;
 
-		protected int PageSize { get; set; } = 100;
+		public int PageSize { get; set; } = 100;
 
 		#region Добавляем множенственны параметры
 
 		/// <summary>
-		/// Добавляем порядок сортировки всей коллекции.
+		/// Добавляем порядок сортировки всей коллекции. Эта настройка нужна только для загрузки с нескольких источников. Для загрузки из одного источкника достаточно будет сортировки в самом запросе.
+		/// Внимание! Чтобы слияние запросов проходило корректно, необходимо чтобы в каждом из запросов элементы были отсортированы в том же порядке.
 		/// Можно вызывать несколько раз, для последовательной сортировки, сначала по одному значению потом по второму.
 		/// </summary>
 		/// <param name="orderByValueFunc">Функция получения значения для сортировки, в простом случае получения значения одного из полей.</param>
 		/// <param name="descending">Если <c>true</c> сортировка в порядке убывания.</param>
-		public void OrderBy(Func<TNode, object> orderByValueFunc, bool descending = false)
+		public void MergeInOrderBy(Func<TNode, object> orderByValueFunc, bool descending = false)
 		{
 			OrderRules.Add(new SortRule<TNode>(orderByValueFunc, descending));
 		}
@@ -78,7 +79,7 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Результат и состояние загрузки
 
-		public virtual IList Items { get; private set; }
+		public IList Items => nodes;
 
 		public bool HasUnloadedItems => AvailableQueryLoaders.Any(l => l.HasUnloadedItems);
 
@@ -102,6 +103,7 @@ namespace QS.Project.Journal.DataLoader
 
 		#endregion
 
+		private List<TNode> nodes = new List<TNode>();
 		private int reloadRequested = 0;
 		private Task[] RunningTasks = new Task[] { };
 		private DateTime startLoading;
@@ -122,7 +124,7 @@ namespace QS.Project.Journal.DataLoader
 
 			FirstPage = !nextPage;
 			if (!nextPage) {
-				Items.Clear();
+				nodes.Clear();
 				foreach (var item in QueryLoaders) {
 					item.Reset();
 				}
@@ -161,7 +163,7 @@ namespace QS.Project.Journal.DataLoader
 
 		private void ReadOneLoader()
 		{
-			Items = AvailableQueryLoaders.First().LoadedItems;
+			nodes = AvailableQueryLoaders.First().LoadedItems;
 		}
 
 		/// <summary>
@@ -175,7 +177,7 @@ namespace QS.Project.Journal.DataLoader
 				if (loaders.Any(l => (l as IQueryLoader<TNode>).HasUnloadedItems && l.NextUnreadedNode() == null))
 					break; //Уперлись в неподгруженный хвост. Пока хватит, ждем следующей страницы.
 				var taked = filtredLoaders.First();
-				Items.Add(taked.TakeNextUnreadedNode());
+				nodes.Add(taked.TakeNextUnreadedNode());
 			}
 		}
 

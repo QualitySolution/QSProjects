@@ -98,8 +98,14 @@
     <Compile Include="TestApp\Domain\FullEntity.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.ButtonSubscriptionView.cs" />
     <Compile Include="GtkUI\GtkInit.cs" />
+    <Compile Include="Project.Journal\ThreadDataLoaderTest.cs" />
+    <Compile Include="TestApp\Domain\Document1.cs" />
+    <Compile Include="TestApp\Domain\Document2.cs" />
     <Compile Include="TestApp\HibernateMapping\BusinessObjectTestEntityMap.cs" />
     <Compile Include="TestApp\HibernateMapping\SimpleEntityMap.cs" />
+    <Compile Include="TestApp\HibernateMapping\Document1Map.cs" />
+    <Compile Include="TestApp\HibernateMapping\Document2Map.cs" />
+    <Compile Include="TestApp\JournalViewModels\DocumentsJournalViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -124,7 +130,9 @@
     <Folder Include="TestApp\ViewModels\" />
     <Folder Include="TestApp\Domain\" />
     <Folder Include="GtkUI\" />
+    <Folder Include="Project.Journal\" />
     <Folder Include="TestApp\HibernateMapping\" />
+    <Folder Include="TestApp\JournalViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
