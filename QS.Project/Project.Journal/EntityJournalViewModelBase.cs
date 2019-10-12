@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
-using QS.Project.Journal.EntityLoader;
+using QS.DomainModel.UoW;
+using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Services;
 using QS.Tdi;
@@ -21,9 +21,8 @@ namespace QS.Project.Journal
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private const int defaultPageSize = 100;
-
 		private readonly ICommonServices commonServices;
+		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
 
@@ -43,12 +42,11 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
-		protected EntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices?.InteractiveService)
+		protected EntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(commonServices?.InteractiveService)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
+			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			UseSlider = true;
-			PageSize = defaultPageSize;
-			DynamicLoadingEnabled = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 			Search.OnSearch += Search_OnSearch;
 			searchHelper = new SearchHelper(Search);
@@ -70,7 +68,7 @@ namespace QS.Project.Journal
 			Close(false);
 		}
 
-		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IQueryOver<TEntity>> queryFunction)
+		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction)
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		{
 			if(queryFunction == null) {
@@ -99,7 +97,7 @@ namespace QS.Project.Journal
 
 		public sealed override void Refresh()
 		{
-			LoadData(false);
+			 DataLoader.LoadData(false);
 		}
 
 		#region Ordering
@@ -138,120 +136,24 @@ namespace QS.Project.Journal
 
 		#endregion Search
 
-		#region Dynamic load
-
-		protected int PageSize { get; set; }
-
-		protected int? GetPageSize => DynamicLoadingEnabled ? PageSize : (int?)null;
-
-		public override bool FullDataLoaded => !entityLoaders.Any(l => l.Value.HasUnloadedItems);
-
-		private bool reloadRequested = false;
-		private Task[] RunningTasks = new Task[] { };
-		private DateTime startLoading;
-
-		public bool LoadInProgress = false;
-
-		public override void LoadData(bool nextPage)
-		{
-			if(!EntityConfigs.Any()) 
-				return;
-
-			if(LoadInProgress) {
-				if(!nextPage)
-					reloadRequested = true;
-				return;
-			}
-
-			logger.Info("Запрос данных...");
-			startLoading = DateTime.Now;
-			LoadInProgress = true;
-
-			FirstPage = !nextPage;
-			if(!nextPage) {
-				Items.Clear();
-				foreach(var item in entityLoaders.Values) {
-					item.Reset();
-				}
-			}
-
-			var runLoaders = entityLoaders.Values.Where(x => x.HasUnloadedItems).ToArray();
-			RunningTasks = new Task[runLoaders.Length];
-
-			for(int i = 0; i < runLoaders.Length; i++) {
-				var loader = runLoaders[i];
-				RunningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize));
-			}
-
-			Task.Factory.ContinueWhenAll(RunningTasks, (tasks) => {
-				ReadLoadersInSortOrder();
-				RaiseItemsUpdated();
-				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек." );
-				LoadInProgress = false;
-				if(reloadRequested) {
-					reloadRequested = false;
-					LoadData(false);
-				}
-			});
-		}
-
-		private void ReadLoadersInSortOrder()
-		{
-			var loaders = entityLoaders.Values.ToList();
-			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
-			while(loaders.Any(l => l.NextUnreadedNode() != null)) {
-				if(loaders.Any(l => l.HasUnloadedItems && l.NextUnreadedNode() == null))
-					break; //Уперлись в неподгруженный хвост. Пока хватит, ждем следующей страницы.
-				var taked = filtredLoaders.First();
-				Items.Add(taked.NextUnreadedNode());
-				taked.ReadedItemsCount++;
-			}
-		}
-
-		private IEnumerable<IEntityLoader<TNode>> MakeOrderedEnumerable(IEnumerable<IEntityLoader<TNode>> loaders)
-		{
-			if(orderingDictionary != null && orderingDictionary.Any()) {
-				IOrderedEnumerable<IEntityLoader<TNode>> resultItems = null;
-				bool isFirstValueInDictionary = true;
-				foreach(var orderRule in orderingDictionary) {
-					if(isFirstValueInDictionary) {
-						if(orderRule.Value)
-							resultItems = loaders.OrderByDescending(l => orderRule.Key(l.NextUnreadedNode()));
-						else
-							resultItems = loaders.OrderBy(l => orderRule.Key(l.NextUnreadedNode()));
-						isFirstValueInDictionary = false;
-					} else {
-						if(orderRule.Value)
-							resultItems = resultItems.ThenByDescending(l => orderRule.Key(l.NextUnreadedNode()));
-						else
-							resultItems = resultItems.ThenBy(l => orderRule.Key(l.NextUnreadedNode()));
-					}
-				}
-				return resultItems;
-			}
-
-			return loaders;
-		}
-
 		#region Entity load configuration
 
-		private Dictionary<Type, IEntityLoader<TNode>> entityLoaders = new Dictionary<Type, IEntityLoader<TNode>>();
-
-		private void CreateLoader<TEntity>(Func<IQueryOver<TEntity>> queryFunc)
-			where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
+		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке. Желательно для новых журналов настраивать DataLoader напрямую.")]
+		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
+			where TEntity : class
 		{
-			var entityType = typeof(TEntity);
-			if(entityLoaders.ContainsKey(entityType)) {
-				return;
-			}
+			if (DataLoader == null)
+				DataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
 
-			entityLoaders.Add(entityType, new DynamicEntityLoader<TEntity, TNode>(queryFunc));
+			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			if (threadLoader == null)
+				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
+
+			threadLoader.AddQuery<TEntity>(queryFunc);
 		}
 
 
 		#endregion Entity load configuration
-
-		#endregion Dynamic load
 
 		#region Permissions
 

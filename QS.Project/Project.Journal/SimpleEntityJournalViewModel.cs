@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
+using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal
 {
@@ -22,7 +23,8 @@ namespace QS.Project.Journal
 			Expression<Func<TEntity, object>> titleExp,
 			Func<TEntityTab> createDlgFunc,
 			Func<CommonJournalNode, TEntityTab> openDlgFunc,
-			ICommonServices commonServices) : base(typeof(TEntity), commonServices)
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices) : base(typeof(TEntity), unitOfWorkFactory, commonServices)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 
@@ -48,7 +50,6 @@ namespace QS.Project.Journal
 			Refresh();
 		}
 
-
 		CommonJournalNode<TEntity> resultAlias = null;
 
 		private Func<ICriterion> filterFunction;
@@ -72,8 +73,8 @@ namespace QS.Project.Journal
 			Search.SearchValues = values;
 		}
 
-		protected Func<IQueryOver<TEntity>> ItemsSourceQueryFunction => () => {
-			var query = UoW.Session.QueryOver<TEntity>();
+		protected Func<IUnitOfWork, IQueryOver<TEntity>> ItemsSourceQueryFunction => (uow) => {
+			var query = uow.Session.QueryOver<TEntity>();
 			if(filterFunction != null) {
 				query.Where(filterFunction.Invoke());
 			}

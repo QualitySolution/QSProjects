@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QS.Project.Journal.EntitySelector;
 using QS.Services;
 using QS.Tdi;
@@ -16,7 +17,7 @@ namespace QS.Project.Journal
 		protected readonly ICommonServices commonServices;
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices)
+		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
@@ -37,7 +38,7 @@ namespace QS.Project.Journal
 		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
 		/// </summary>
 		/// <value>The items source query function.</value>
-		protected abstract Func<IQueryOver<TEntity>> ItemsSourceQueryFunction { get; }
+		protected abstract Func<IUnitOfWork, IQueryOver<TEntity>> ItemsSourceQueryFunction { get; }
 
 		protected abstract Func<TEntityTab> CreateDialogFunction { get; }
 

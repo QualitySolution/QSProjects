@@ -26,7 +26,7 @@ namespace QS.Journal.GtkUI
 
 		private void ConfigureJournal()
 		{
-			ViewModel.ItemsListUpdated += ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -75,7 +75,7 @@ namespace QS.Journal.GtkUI
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.ItemsDataSource = listClone;
 
-				if(!ViewModel.FirstPage) {
+				if(!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();
 					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
@@ -91,12 +91,12 @@ namespace QS.Journal.GtkUI
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
 				return;
 
-			if(!ViewModel.FullDataLoaded) {
+			if(ViewModel.DataLoader.HasUnloadedItems) {
 				lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
-				ViewModel.LoadData(true);
+				ViewModel.DataLoader.LoadData(true);
 			}
 		}
 

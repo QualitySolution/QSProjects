@@ -219,8 +219,6 @@
     <Compile Include="Project.Journal\JournalSelectedEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectMode.cs" />
-    <Compile Include="Project.Journal\EntityLoader\IEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoader.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelector.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
@@ -263,6 +261,11 @@
     <Compile Include="Project.Services\IRunOperationService.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
+    <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\ThreadDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -290,7 +293,6 @@
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
     <Folder Include="Project.Search\" />
-    <Folder Include="Project.Journal\EntityLoader\" />
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
@@ -299,10 +301,10 @@
     <Folder Include="ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
+    <Folder Include="Project.Journal\DataLoader\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Project.Journal\EntityLoader\DynamicEntityLoaderWithCount.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">

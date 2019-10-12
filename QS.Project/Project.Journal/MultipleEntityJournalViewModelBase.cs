@@ -1,11 +1,12 @@
-﻿using QS.Services;
+﻿using QS.DomainModel.UoW;
+using QS.Services;
 
 namespace QS.Project.Journal
 {
 	public abstract class MultipleEntityJournalViewModelBase<TNode> : EntityJournalViewModelBase<TNode>
 		where TNode : JournalEntityNodeBase
 	{
-		protected MultipleEntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices)
+		protected MultipleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
 		{
 		}
 	}
