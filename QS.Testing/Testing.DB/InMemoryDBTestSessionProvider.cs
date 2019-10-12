@@ -27,7 +27,7 @@ namespace QS.Testing.DB
 
 		public override ISession OpenSession()
 		{
-			if(lastSession != null && UseSameDB)
+			if(lastSession != null && lastSession.IsOpen && UseSameDB)
 				return OrmConfig.OpenSession(lastSession.Connection);
 
 			lastSession = base.OpenSession();

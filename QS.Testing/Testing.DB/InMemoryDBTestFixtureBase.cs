@@ -34,6 +34,9 @@ namespace QS.Testing.DB
 			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
 		}
 
+		/// <summary>
+		/// Внимание! Чтобы следующие UoW могли быть созданы, первый созданный Uow не должен закрывать соединение с базой.
+		/// </summary>
 		public void NewSessionWithSameDB()
 		{
 			inMemoryDBTestSessionProvider.UseSameDB = true;
