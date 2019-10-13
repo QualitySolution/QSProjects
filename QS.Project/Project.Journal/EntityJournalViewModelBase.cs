@@ -22,7 +22,7 @@ namespace QS.Project.Journal
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly ICommonServices commonServices;
-		private readonly IUnitOfWorkFactory unitOfWorkFactory;
+		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
 
@@ -45,7 +45,7 @@ namespace QS.Project.Journal
 		protected EntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(commonServices?.InteractiveService)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
-			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
+			this.UnitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 			Search.OnSearch += Search_OnSearch;
@@ -136,8 +136,10 @@ namespace QS.Project.Journal
 		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
 			where TEntity : class
 		{
+			//TODO При удалении этого метода нужно вообще избавиться в этом классе от зависимости от UnitOfWorkFactory
+			//Она сюда была притащена только для этого метода. Надо будет сделать чтобы внешней зависимостю был именно DataLoader.
 			if (DataLoader == null)
-				DataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
+				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
 
 			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
 			if (threadLoader == null)
