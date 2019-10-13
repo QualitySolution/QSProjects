@@ -27,6 +27,8 @@ namespace QS.Project.Journal.DataLoader
 		/// </summary>
 		event EventHandler<LoadErrorEventArgs> LoadError;
 
+		PostLoadProcessing PostLoadProcessingFunc { set; }
+
 		bool DynamicLoadingEnabled { get; set; }
 
 		bool HasUnloadedItems { get; }
@@ -43,6 +45,11 @@ namespace QS.Project.Journal.DataLoader
 
 		void LoadData(bool nextPage);
 	}
+
+	/// <summary>
+	/// Делегат функции пост обработки списка.
+	/// </summary>
+	public delegate void PostLoadProcessing(IList items, uint addedSince);
 
 	public class LoadErrorEventArgs : EventArgs
 	{

@@ -38,6 +38,8 @@ namespace QS.Project.Journal.DataLoader
 		public event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
 		public event EventHandler TotalCountChanged;
 
+		public PostLoadProcessing PostLoadProcessingFunc { set; private get; }
+
 		#endregion
 
 		#region Настройка работы
@@ -106,7 +108,6 @@ namespace QS.Project.Journal.DataLoader
 			}
 		}
 
-
 		#endregion
 
 		#region Загрузка данных
@@ -174,6 +175,8 @@ namespace QS.Project.Journal.DataLoader
 		private void ReadOneLoader()
 		{
 			nodes = AvailableQueryLoaders.First().LoadedItems;
+			if(nodes.Count > 0)
+				PostLoadProcessingFunc?.Invoke(Items, 0);
 		}
 
 		/// <summary>
@@ -181,6 +184,7 @@ namespace QS.Project.Journal.DataLoader
 		/// </summary>
 		private void ReadLoadersInSortOrder()
 		{
+			var beforeCount = nodes.Count;
 			var loaders = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().ToList();
 			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
 			while (loaders.Any(l => l.NextUnreadedNode() != null)) {
@@ -189,6 +193,8 @@ namespace QS.Project.Journal.DataLoader
 				var taked = filtredLoaders.First();
 				nodes.Add(taked.TakeNextUnreadedNode());
 			}
+			if(nodes.Count > beforeCount)
+				PostLoadProcessingFunc(nodes, (uint)beforeCount);
 		}
 
 		private IEnumerable<IPieceReader<TNode>> MakeOrderedEnumerable(IEnumerable<IPieceReader<TNode>> loaders)
