@@ -24,5 +24,6 @@ namespace QS.Project.Journal.DataLoader
 		int ReadedItemsCount { get; }
 		TNode NextUnreadedNode();
 		TNode TakeNextUnreadedNode();
+		IList<TNode> TakeAllUnreadedNodes();
 	}
 }

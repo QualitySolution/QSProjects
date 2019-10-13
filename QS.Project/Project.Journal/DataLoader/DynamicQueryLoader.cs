@@ -89,6 +89,13 @@ namespace QS.Project.Journal.DataLoader
 			return item;
 		}
 
+		public IList<TNode> TakeAllUnreadedNodes()
+		{
+			var readedCount = ReadedItemsCount;
+			ReadedItemsCount = LoadedItems.Count;
+			return LoadedItems.Skip(readedCount).ToList();
+		}
+
 		#endregion
 
 		#region IEntityQueryLoader

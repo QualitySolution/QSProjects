@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -178,9 +178,11 @@ namespace QS.Project.Journal.DataLoader
 
 		private void ReadOneLoader()
 		{
-			nodes = AvailableQueryLoaders.First().LoadedItems;
-			if(nodes.Count > 0)
-				PostLoadProcessingFunc?.Invoke(Items, 0);
+			var beforeCount = nodes.Count;
+			var loader = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().First();
+			nodes.AddRange(loader.TakeAllUnreadedNodes());
+			if(nodes.Count > beforeCount)
+				PostLoadProcessingFunc?.Invoke(nodes, (uint)beforeCount);
 		}
 
 		/// <summary>
@@ -198,7 +200,7 @@ namespace QS.Project.Journal.DataLoader
 				nodes.Add(taked.TakeNextUnreadedNode());
 			}
 			if(nodes.Count > beforeCount)
-				PostLoadProcessingFunc(nodes, (uint)beforeCount);
+				PostLoadProcessingFunc?.Invoke(nodes, (uint)beforeCount);
 		}
 
 		private IEnumerable<IPieceReader<TNode>> MakeOrderedEnumerable(IEnumerable<IPieceReader<TNode>> loaders)
