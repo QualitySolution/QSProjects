@@ -1,8 +1,9 @@
 ﻿using System;
-using QS.Services;
-using QS.DomainModel.Config;
 using System.Reflection;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
+using QS.Services;
+
 namespace QS.Project.Journal.EntitySelector
 {
 	public class DefaultEntitySelectorFactory<TEntity, TJournalViewModel, TJournalFilterViewModel> : IEntitySelectorFactory
@@ -27,17 +28,17 @@ namespace QS.Project.Journal.EntitySelector
 			}
 
 			Type journalType = typeof(TJournalViewModel);
-			journalConstructorInfo = journalType.GetConstructor(new Type[] { filterType, typeof(ICommonServices) });
+			journalConstructorInfo = journalType.GetConstructor(new Type[] { filterType, typeof(IUnitOfWorkFactory), typeof(ICommonServices) });
 			if(journalConstructorInfo == null) {
 				throw new ArgumentException($"Невозможно найти конструктор для журнала {journalType.Name} с параметрами:" +
-					$"{filterType.Name}, {nameof(ICommonServices)}");
+					$"{filterType.Name}, {nameof(IUnitOfWorkFactory)},  {nameof(ICommonServices)}");
 			}
 		}
 
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, commonServices });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}

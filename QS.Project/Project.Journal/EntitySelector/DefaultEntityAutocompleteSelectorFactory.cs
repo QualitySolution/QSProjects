@@ -1,6 +1,6 @@
 ﻿using System;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.DomainModel.UoW;
 using QS.Services;
 
 namespace QS.Project.Journal.EntitySelector
@@ -20,7 +20,7 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, commonServices });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}
