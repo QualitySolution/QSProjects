@@ -102,21 +102,15 @@ namespace QS.Project.Journal
 
 		#region Ordering
 
+		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке загрузки. Желательно для новых журналов настраивать DataLoader напрямую.")]
 		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
 		{
-			orderingDictionary = new Dictionary<Func<TNode, object>, bool> { {orderFunc, desc } };
-		}
+			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			if(threadLoader == null)
+				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
 
-		Dictionary<Func<TNode, object>, bool> orderingDictionary;
-		/// <summary>
-		/// Сортировка по нескольким полям. Функция сортировки и порядок 
-		/// передаются через словарь <see cref="orderingDictionary"/>,
-		/// где его ключём является сама функция, а значением - порядок
-		/// сортировки. Значение <c>true</c> указывает на сортировку по убыванию. 
-		/// </summary>
-		/// <param name="orderingDictionary">Словарь с функциями сортировки и
-		/// направлением сортировки</param>
-		protected void SetOrder(Dictionary<Func<TNode, object>, bool> orderingDictionary) => this.orderingDictionary = orderingDictionary;
+			threadLoader.MergeInOrderBy(orderFunc, desc);
+		}
 
 		#endregion Ordering
 
