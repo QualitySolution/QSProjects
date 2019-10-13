@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -165,7 +165,11 @@ namespace QS.Project.Journal.DataLoader
 					LoadData(false);
 				} else
 					OnLoadingStateChange(LoadingState.Idle);
-			});
+			})
+			.ContinueWith((tsk) => {
+					LoadInProgress = false;
+					OnLoadError(tsk.Exception);
+				}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
 		#endregion
