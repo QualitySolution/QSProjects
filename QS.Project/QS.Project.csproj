@@ -266,6 +266,7 @@
     <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
+    <Compile Include="Project.Services\CurrentPermissionServiceAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
