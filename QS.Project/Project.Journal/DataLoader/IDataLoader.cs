@@ -13,6 +13,11 @@ namespace QS.Project.Journal.DataLoader
 		event EventHandler ItemsListUpdated;
 
 		/// <summary>
+		/// Общее количество строк получено. Внимание, событие может приходить из другого потока.
+		/// </summary>
+		event EventHandler TotalCountChanged;
+
+		/// <summary>
 		/// Вызывается при смене состояния загрузки. Может приходит из другого потока.
 		/// </summary>
 		event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
@@ -29,6 +34,12 @@ namespace QS.Project.Journal.DataLoader
 		bool FirstPage { get; }
 
 		bool LoadInProgress { get; }
+
+		bool TotalCountingInProgress { get; }
+
+		uint? TotalCount { get; }
+
+		void GetTotalCount();
 
 		void LoadData(bool nextPage);
 	}

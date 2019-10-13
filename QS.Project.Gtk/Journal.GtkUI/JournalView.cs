@@ -9,6 +9,7 @@ using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
 using QS.Utilities.GtkUI;
+using QS.Utilities.Text;
 using QS.Views.GtkUI;
 using QSWidgetLib;
 
@@ -23,6 +24,7 @@ namespace QS.Journal.GtkUI
 
 		public static uint ShowProgressbarDelay = 800;
 		public static uint ProgressPulseTime = 100;
+		public static TextSpinner CountingTextSpinner = new TextSpinner(new SpinnerTemplateClock());
 
 		#endregion
 
@@ -36,6 +38,7 @@ namespace QS.Journal.GtkUI
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -72,6 +75,7 @@ namespace QS.Journal.GtkUI
 			tableview.ItemsDataSource = ViewModel.Items;
 			RefreshSource();
 			UpdateButtons();
+			SetTotalLableText();
 		}
 
 		#region События загрузчика данных
@@ -121,6 +125,49 @@ namespace QS.Journal.GtkUI
 				progressbarLoading.Pulse();
 				return true;
 			}
+		}
+
+		#endregion
+
+		#region Отображение общего количества строк
+
+		void SetTotalLableText()
+		{
+			labelTotalRow.Markup = GetTotalRowText();
+		}
+
+		void DataLoader_TotalCountChanged(object sender, EventArgs e)
+		{
+			if(!ViewModel.DataLoader.TotalCountingInProgress) {
+				Application.Invoke((s, arg) => SetTotalLableText());
+			}
+		}
+
+		bool UpdateTotalCount()
+		{
+			SetTotalLableText();
+			return ViewModel.DataLoader.TotalCountingInProgress;
+		}
+
+		string GetTotalRowText()
+		{
+			if(ViewModel.DataLoader.TotalCountingInProgress) {
+				if(ViewModel.DataLoader.TotalCount.HasValue)
+					return $"Всего: {CountingTextSpinner.GetFrame()}{ViewModel.DataLoader.TotalCount}";
+				else
+					return $"Всего: {CountingTextSpinner.GetFrame()}";
+			} else {
+				if(ViewModel.DataLoader.TotalCount.HasValue)
+					return $"Всего: {ViewModel.DataLoader.TotalCount}";
+				else
+					return "Всего: <span foreground=\"blue\" underline=\"single\">???</span>";
+			}
+		}
+
+		protected void OnEventboxTotalRowButtonPressEvent(object o, ButtonPressEventArgs args)
+		{
+			GLib.Timeout.Add(CountingTextSpinner.RecommendedInterval, new GLib.TimeoutHandler(UpdateTotalCount));
+			ViewModel.DataLoader.GetTotalCount();
 		}
 
 		#endregion

@@ -15,16 +15,16 @@ namespace QS.Project.Journal.DataLoader
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public ThreadDataLoader(IUnitOfWorkFactory unitOfWorkFactory)
-		{
-			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
-		}
-
 		#region Обязательные внешние зависимости
 
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
 		#endregion
+
+		public ThreadDataLoader(IUnitOfWorkFactory unitOfWorkFactory)
+		{
+			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
+		}
 
 		#region Опциональные внешние зависимости
 
@@ -34,9 +34,9 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Events
 		public event EventHandler ItemsListUpdated;
-
 		public event EventHandler<LoadErrorEventArgs> LoadError;
 		public event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
+		public event EventHandler TotalCountChanged;
 
 		#endregion
 
@@ -88,6 +88,10 @@ namespace QS.Project.Journal.DataLoader
 
 		public bool LoadInProgress { get; private set; }
 
+		public bool TotalCountingInProgress { get; private set; }
+
+		public uint? TotalCount { get; private set; }
+
 		#endregion
 
 		#region Внутренние хелперы
@@ -102,14 +106,15 @@ namespace QS.Project.Journal.DataLoader
 			}
 		}
 
+
 		#endregion
+
+		#region Загрузка данных
 
 		private List<TNode> nodes = new List<TNode>();
 		private int reloadRequested = 0;
 		private Task[] RunningTasks = new Task[] { };
 		private DateTime startLoading;
-
-		#region Methods
 
 		public void LoadData(bool nextPage)
 		{
@@ -127,6 +132,8 @@ namespace QS.Project.Journal.DataLoader
 			FirstPage = !nextPage;
 			if (!nextPage) {
 				nodes.Clear();
+				TotalCount = null;
+				TotalCountChanged?.Invoke(this, EventArgs.Empty);
 				foreach (var item in QueryLoaders) {
 					item.Reset();
 				}
@@ -134,7 +141,7 @@ namespace QS.Project.Journal.DataLoader
 
 			var runLoaders = AvailableQueryLoaders.Where(x => x.HasUnloadedItems).ToArray();
 
-			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которы мы могли бы прочитать данные.
+			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которых мы могли бы прочитать данные.
 				return;
 
 			RunningTasks = new Task[runLoaders.Length];
@@ -212,8 +219,11 @@ namespace QS.Project.Journal.DataLoader
 
 		#endregion
 
+		#region Вызов событий
+
 		protected virtual void OnLoadError(Exception exception)
 		{
+			logger.Error(exception);
 			var args = new LoadErrorEventArgs {
 				Exception = exception
 			};
@@ -227,5 +237,53 @@ namespace QS.Project.Journal.DataLoader
 			};
 			LoadingStateChanged?.Invoke(this, args);
 		}
+
+		#endregion
+
+		#region Получение общего количества
+
+		private Task[] CountingTasks = new Task[] { };
+		private DateTime startCounting;
+		private readonly object totalCountLock = new object();
+
+		public void GetTotalCount()
+		{
+			if(TotalCountingInProgress) 
+				return;
+
+			if(TotalCount.HasValue)
+				return; //Незачем пресчитывать.
+
+			var runLoaders = AvailableQueryLoaders.ToArray();
+
+			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которы мы могли бы посчитать строки.
+				return;
+
+			startCounting = DateTime.Now;
+			TotalCountingInProgress = true;
+			logger.Info("Запрос общего количества строк...");
+
+			CountingTasks = new Task[runLoaders.Length];
+
+			for(int i = 0; i < runLoaders.Length; i++) {
+				var loader = runLoaders[i];
+				CountingTasks[i] = Task.Factory.StartNew(() => {
+					var countRows = loader.GetTotalItemsCount();
+					Console.WriteLine(countRows);
+					lock(totalCountLock) {
+						TotalCount = (TotalCount ?? 0) + (uint)countRows;
+					}
+					TotalCountChanged?.Invoke(this, EventArgs.Empty);
+				})
+					.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
+			}
+
+			Task.Factory.ContinueWhenAll(CountingTasks, (tasks) => {
+				logger.Info($"{(DateTime.Now - startCounting).TotalSeconds} сек.");
+				TotalCountingInProgress = false;
+			});
+		}
+
+		#endregion
 	}
 }
