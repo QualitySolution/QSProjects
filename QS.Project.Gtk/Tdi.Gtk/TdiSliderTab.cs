@@ -22,6 +22,7 @@ namespace QS.Tdi.Gtk
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		public event EventHandler TabClosed;
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
@@ -80,7 +81,6 @@ namespace QS.Tdi.Gtk
 				if(journal != value) {
 					if(journal != null) {
 						journal.TabNameChanged -= OnJournalTabNameChanged;
-						journal.CloseTab -= OnJournalClose;
 						if(journalWidget != null) {
 							this.Remove(journalWidget);
 							journalWidget.Destroy();
@@ -88,7 +88,6 @@ namespace QS.Tdi.Gtk
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
-					journal.CloseTab += OnJournalClose;
 					journalWidget = TDIMain.TDIWidgetResolver.Resolve(value);
 
 					if(journalWidget == null)
@@ -109,7 +108,6 @@ namespace QS.Tdi.Gtk
 				if(activeDialog != value) {
 					//Remove
 					if(activeDialog != null) {
-						activeDialog.CloseTab -= OnDialogClose;
 						activeDialog.TabNameChanged -= ActiveDialog_TabNameChanged;
 						dialogVBox.Destroy();
 						this.Remove(dialogVBox);
@@ -118,7 +116,6 @@ namespace QS.Tdi.Gtk
 					}
 					//Add
 					if(value != null) {
-						value.CloseTab += OnDialogClose;
 						separatorUpper = new VSeparator();
 						separatorUpper.Show();
 						separatorLower = new VSeparator();
@@ -204,19 +201,53 @@ namespace QS.Tdi.Gtk
 			OnPathUpdate();
 		}
 
-		protected void OnJournalClose(object sender, TdiTabCloseEventArgs arg)
+		#region Методы закрытия
+
+		public bool AskToCloseTab(ITdiTab tab)
 		{
-			if(CloseTab != null)
-				CloseTab(this, arg);
+			if(tab == ActiveDialog) 
+				return CloseDialog(activeDialog, true);
+
+			if(tab == Journal)
+				return TabParent.AskToCloseTab(this);
+
+			return TabParent.AskToCloseTab(tab);
 		}
 
-		protected void OnDialogClose(object sender, TdiTabCloseEventArgs arg)
+		public void ForceCloseTab(ITdiTab tab)
+		{
+			if(tab == ActiveDialog) {
+				CloseDialog(activeDialog, false);
+				return;
+			}
+
+			if(tab == Journal) {
+				TabParent.ForceCloseTab(this);
+				return;
+			}
+			TabParent.ForceCloseTab(tab);
+		}
+
+		public void OnTabClosed()
+		{
+			if(ActiveDialog != null)
+				ActiveDialog.OnTabClosed();
+
+			if(Journal != null)
+				Journal.OnTabClosed();
+
+			//FIXME Добавлено для обратной совместимости
+			CloseTab?.Invoke(this, new TdiTabCloseEventArgs(false));
+
+			TabClosed?.Invoke(this, EventArgs.Empty);
+		}
+
+		protected bool CloseDialog(ITdiDialog dlg, bool AskSave)
 		{
 			if(TabParent.CheckClosingSlaveTabs(this as ITdiTab))
-				return;
+				return false;
 
-			ITdiDialog dlg = sender as ITdiDialog;
-			if(arg.AskSave && dlg.HasChanges) {
+			if(AskSave && dlg.HasChanges) {
 				string Message = "Объект изменён. Сохранить изменения перед закрытием?";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Question,
@@ -226,18 +257,22 @@ namespace QS.Tdi.Gtk
 				int result = md.Run();
 				md.Destroy();
 				if(result == (int)ResponseType.Cancel)
-					return;
+					return false;
 				if(result == (int)ResponseType.Yes) {
 					if(!dlg.Save()) {
 						logger.Warn("Объект не сохранён. Отмена закрытия...");
-						return;
+						return false;
 					}
 				}
 			}
+			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
 			OnSladerTabChanged();
+			return true;
 		}
+
+		#endregion
 
 		public TdiSliderTab(ITdiJournal jour)
 		{
@@ -304,6 +339,8 @@ namespace QS.Tdi.Gtk
 				return TabParent.CheckClosingSlaveTabs(tab);
 		}
 
+		#region Методы открытия вкладки
+
 		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
 		{
 			ITdiTab tab = newTabFunc.Invoke();
@@ -323,7 +360,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			if(afterTab == Journal && ActiveDialog != null) {
-				OnDialogClose(ActiveDialog, new TdiTabCloseEventArgs(true));
+				 CloseDialog(ActiveDialog, true);
 				if(ActiveDialog != null)
 					return null;
 			}
@@ -352,6 +389,8 @@ namespace QS.Tdi.Gtk
 		{
 			return TabHashHelper.OpenTabSelfCreateTab(this, typeof(TTab), new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) }, new object[] { arg1, arg2, arg3 }, afterTab);
 		}
+
+		#endregion
 
 		public override void Destroy()
 		{

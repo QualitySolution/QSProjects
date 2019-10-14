@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -96,7 +96,6 @@ namespace QS.Tdi.Gtk
 				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab);
 				tab = slider;
 			}
-			tab.CloseTab += HandleCloseTab;
 			tab.TabNameChanged += OnTabNameChanged;
 			_tabs.Add(new TdiTabInfo(tab, nameLable));
 			var vbox = new TabVBox(tab);
@@ -189,7 +188,7 @@ namespace QS.Tdi.Gtk
 			return TabHashHelper.OpenTabSelfCreateTab(this, typeof(TTab), new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) }, new object[] { arg1, arg2, arg3 }, afterTab);
 		}
 
-		#region
+		#endregion
 
 		internal void OnSliderTabAdded(object sender, ITdiTab tab)
 		{
@@ -226,18 +225,35 @@ namespace QS.Tdi.Gtk
 
 		#region Закрытие вкладки
 
-		void HandleCloseTab(object sender, TdiTabCloseEventArgs e)
+		public bool AskToCloseTab(ITdiTab tab)
 		{
-			if(CheckClosingSlaveTabs((ITdiTab)sender))
-				return;
+			if(CheckClosingSlaveTabs(tab))
+				return false;
 			
-			ITDICloseControlTab cct = sender as ITDICloseControlTab;
+			ITDICloseControlTab cct = tab as ITDICloseControlTab;
 			if(cct != null && !cct.CanClose()) {
+				return false;
+			}
+
+			if(SaveIfNeed(tab)) {
+				CloseTab(tab);
+				return true;
+			}
+			return false;
+		}
+
+		public void ForceCloseTab(ITdiTab tab)
+		{
+			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
+			if(info == null) {
+				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
 				return;
 			}
 
-			if(!e.AskSave || SaveIfNeed((ITdiTab)sender))
-				CloseTab((ITdiTab)sender);
+			while(info.SlaveTabs.Count > 0)
+				CloseTab(info.SlaveTabs[0]);
+
+			CloseTab(tab);
 		}
 
 		void OnCloseButtonClicked(object sender, EventArgs e)
@@ -254,16 +270,7 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 
-			if(CheckClosingSlaveTabs(tab.Tab))
-				return;
-
-			ITDICloseControlTab cct = tab.Tab as ITDICloseControlTab;
-			if(cct != null && !cct.CanClose()) {
-				return;
-			}
-
-			if(SaveIfNeed(tab.Tab))
-				CloseTab(tab.Tab);
+			AskToCloseTab(tab.Tab);
 		}
 
 		private bool SaveIfNeed(ITdiTab tab)
@@ -343,9 +350,11 @@ namespace QS.Tdi.Gtk
 				this.PrevPage();
 			this.Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
-			if(maybeSliderActiveDialog != null)
+			if(maybeSliderActiveDialog != null) {
 				OnTabClosed(maybeSliderActiveDialog);
+			}
 			OnTabClosed(tab);
+			tab.OnTabClosed();
 			if(tabBox != null && tabBox.Tab is Container) {
 				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
 				.OfType<IMustBeDestroyed>().ToList()
@@ -381,10 +390,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			while(_tabs.Count > 0) {
-				while(_tabs[0].SlaveTabs.Count > 0)
-					CloseTab(_tabs[0].SlaveTabs[0]);
-
-				CloseTab(_tabs[0].TdiTab);
+				ForceCloseTab(_tabs[0].TdiTab);
 			}
 
 			return true;
@@ -458,4 +464,3 @@ namespace QS.Tdi.Gtk
 		}
 	}
 }
-
