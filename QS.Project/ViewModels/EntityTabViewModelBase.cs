@@ -15,7 +15,7 @@ using QS.Utilities.Text;
 
 namespace QS.ViewModels
 {
-	public abstract class EntityTabViewModelBase<TEntity> : UoWTabViewModelBase, IEntityDialog<TEntity>, IEntityDialog
+	public abstract class EntityTabViewModelBase<TEntity> : DialogTabViewModelBase, IEntityDialog<TEntity>, IEntityDialog
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 	{
 		#region IEntityDialog implementation

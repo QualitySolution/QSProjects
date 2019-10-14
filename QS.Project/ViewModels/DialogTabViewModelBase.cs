@@ -5,9 +5,9 @@ using QS.Services;
 
 namespace QS.ViewModels
 {
-	public abstract class UoWTabViewModelBase : TabViewModelBase, ITdiDialog, IDisposable
+	public abstract class DialogTabViewModelBase : TabViewModelBase, ITdiDialog, IDisposable
 	{
-		protected UoWTabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected DialogTabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
 		}
 
