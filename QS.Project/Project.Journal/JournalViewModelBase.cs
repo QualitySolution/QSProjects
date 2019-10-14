@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,10 @@ namespace QS.Project.Journal
 
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
-		public abstract void Refresh();
+		public void Refresh()
+		{
+			DataLoader.LoadData(false);
+		}
 
 		private JournalSelectionMode selectionMode;
 		public virtual JournalSelectionMode SelectionMode {

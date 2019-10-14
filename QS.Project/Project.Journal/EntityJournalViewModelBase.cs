@@ -96,11 +96,6 @@ namespace QS.Project.Journal
 			CreatePopupActions();
 		}
 
-		public sealed override void Refresh()
-		{
-			 DataLoader.LoadData(false);
-		}
-
 		#region Ordering
 
 		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке загрузки. Желательно для новых журналов настраивать DataLoader напрямую.")]
