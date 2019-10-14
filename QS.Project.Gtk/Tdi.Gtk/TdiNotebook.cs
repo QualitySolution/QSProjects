@@ -227,7 +227,11 @@ namespace QS.Tdi.Gtk
 
 		public bool AskToCloseTab(ITdiTab tab)
 		{
-			if(CheckClosingSlaveTabs(tab))
+			var slider = tab.TabParent as TdiSliderTab;
+			if(slider != null)
+				return slider.AskToCloseTab(tab);
+
+			if (CheckClosingSlaveTabs(tab))
 				return false;
 			
 			ITDICloseControlTab cct = tab as ITDICloseControlTab;
@@ -236,7 +240,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			if(SaveIfNeed(tab)) {
-				CloseTab(tab);
+				ForceCloseTab(tab);
 				return true;
 			}
 			return false;
@@ -244,6 +248,12 @@ namespace QS.Tdi.Gtk
 
 		public void ForceCloseTab(ITdiTab tab)
 		{
+			var slider = tab.TabParent as TdiSliderTab;
+			if (slider != null) {
+				slider.ForceCloseTab(tab);
+				return;
+			}
+
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
 			if(info == null) {
 				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
@@ -251,9 +261,9 @@ namespace QS.Tdi.Gtk
 			}
 
 			while(info.SlaveTabs.Count > 0)
-				CloseTab(info.SlaveTabs[0]);
+				ForceCloseTab(info.SlaveTabs[0]);
 
-			CloseTab(tab);
+			CloseTab(info);
 		}
 
 		void OnCloseButtonClicked(object sender, EventArgs e)
@@ -313,6 +323,9 @@ namespace QS.Tdi.Gtk
 
 		public bool CheckClosingSlaveTabs(ITdiTab tab)
 		{
+			if (tab.TabParent is TdiSliderTab)
+				tab = (ITdiTab)tab.TabParent;
+
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
 			if(info!= null && info.SlaveTabs.Count > 0) {
 				string Message = "Сначала надо закрыть подчиненую вкладку.";
@@ -329,17 +342,12 @@ namespace QS.Tdi.Gtk
 			return false;
 		}
 
-		private void CloseTab(ITdiTab tab)
+		private void CloseTab(TdiTabInfo info)
 		{
-			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
-			if(info == null) {
-				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
-				return;
-			}
-
-			if(info.SlaveTabs.Count > 0) {
+			if(info.SlaveTabs.Count > 0)
 				throw new InvalidOperationException("Вкладка не может быть закрыта, если у нее есть подчинёные вкладки.");
-			}
+
+			var tab = info.TdiTab;
 
 			//Закрываем вкладку
 			TabVBox tabBox = GetTabBoxForTab(tab);
