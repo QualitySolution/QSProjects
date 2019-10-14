@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -29,31 +29,48 @@ namespace QS.Tdi.Gtk
 			this.ShowTabs = true;
 		}
 
-		public bool CloseAllTabs()
+		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
 		{
-			if(_tabs.Exists(t => (t.TdiTab is ITdiDialog && (t.TdiTab as ITdiDialog).HasChanges) ||
-			  (t.TdiTab is TdiSliderTab && (t.TdiTab as TdiSliderTab).ActiveDialog != null && (t.TdiTab as TdiSliderTab).ActiveDialog.HasChanges))) {
-				string Message = "Вы действительно хотите закрыть все вкладки? Все несохраненные изменения будут утеряны.";
-				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
-									   MessageType.Question,
-									   ButtonsType.YesNo,
-									   Message);
-				(md.Image as Image).SetFromStock(Stock.Quit, IconSize.Dialog);
-				int result = md.Run();
-				md.Destroy();
-				if(result == (int)ResponseType.No || result == (int)ResponseType.DeleteEvent)
-					return false;
+			ITdiTab tab = sender as ITdiTab;
+			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
+			if(info == null) {
+				logger.Warn("Не найдена вкладка");
+				return;
 			}
-
-			while(_tabs.Count > 0) {
-				while(_tabs[0].SlaveTabs.Count > 0)
-					CloseTab(_tabs[0].SlaveTabs[0]);
-
-				CloseTab(_tabs[0].TdiTab);
-			}
-
-			return true;
+			TdiTabInfo masterTabInfo = _tabs.Find(i => i.SlaveTabs.Contains(tab));
+			if(masterTabInfo != null) {
+				info.TabNameLabel.LabelProp = ">" + e.NewName;
+				info.TabNameLabel.TooltipText = String.Format("Открыто из {0}", masterTabInfo.TdiTab.TabName);
+			} else
+				info.TabNameLabel.LabelProp = e.NewName;
 		}
+
+		public ITdiTab FindTab(string hashName, string masterHashName = null)
+		{
+			if(String.IsNullOrWhiteSpace(hashName))
+				return null;
+
+			TdiTabInfo tab = null;
+			if(String.IsNullOrWhiteSpace(masterHashName)) {
+				tab = Tabs.FirstOrDefault(x => x.MasterTabInfo == null && x.TdiTab.CompareHashName(hashName));
+				return tab?.TdiTab;
+			} else {
+				var master = Tabs.FirstOrDefault(x => x.TdiTab.CompareHashName(masterHashName));
+				if(master == null)
+					return null;
+				return master.SlaveTabs.FirstOrDefault(x => x.CompareHashName(hashName));
+			}
+		}
+
+		public void SwitchOnTab(ITdiTab tab)
+		{
+			var widget = GetTabBoxForTab(tab);
+			if(widget == null)
+				return;
+			this.CurrentPage = this.PageNum(widget);
+		}
+
+		#region Открытие вкладки
 
 		public void AddTab(ITdiTab tab, int after = -1)
 		{
@@ -103,22 +120,6 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
-		{
-			ITdiTab tab = sender as ITdiTab;
-			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
-			if(info == null) {
-				logger.Warn("Не найдена вкладка");
-				return;
-			}
-			TdiTabInfo masterTabInfo = _tabs.Find(i => i.SlaveTabs.Contains(tab));
-			if(masterTabInfo != null) {
-				info.TabNameLabel.LabelProp = ">" + e.NewName;
-				info.TabNameLabel.TooltipText = String.Format("Открыто из {0}", masterTabInfo.TdiTab.TabName);
-			} else
-				info.TabNameLabel.LabelProp = e.NewName;
-		}
-
 		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.TdiTab == masterTab);
@@ -141,31 +142,6 @@ namespace QS.Tdi.Gtk
 		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			AddTab(tab, this.PageNum(GetTabBoxForTab(afterTab)));
-		}
-
-		public ITdiTab FindTab(string hashName, string masterHashName = null)
-		{
-			if(String.IsNullOrWhiteSpace(hashName))
-				return null;
-
-			TdiTabInfo tab = null;
-			if(String.IsNullOrWhiteSpace(masterHashName)) {
-				tab = Tabs.FirstOrDefault(x => x.MasterTabInfo == null && x.TdiTab.CompareHashName(hashName));
-				return tab?.TdiTab;
-			} else {
-				var master = Tabs.FirstOrDefault(x => x.TdiTab.CompareHashName(masterHashName));
-				if(master == null)
-					return null;
-				return master.SlaveTabs.FirstOrDefault(x => x.CompareHashName(hashName));
-			}
-		}
-
-		public void SwitchOnTab(ITdiTab tab)
-		{
-			var widget = GetTabBoxForTab(tab);
-			if(widget == null)
-				return;
-			this.CurrentPage = this.PageNum(widget);
 		}
 
 		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
@@ -213,6 +189,8 @@ namespace QS.Tdi.Gtk
 			return TabHashHelper.OpenTabSelfCreateTab(this, typeof(TTab), new Type[] { typeof(TArg1), typeof(TArg2), typeof(TArg3) }, new object[] { arg1, arg2, arg3 }, afterTab);
 		}
 
+		#region
+
 		internal void OnSliderTabAdded(object sender, ITdiTab tab)
 		{
 			if(TabAdded != null)
@@ -245,6 +223,8 @@ namespace QS.Tdi.Gtk
 			if(currentTab.HandleSwitchIn != null)
 				currentTab.HandleSwitchIn(previousTab);
 		}
+
+		#region Закрытие вкладки
 
 		void HandleCloseTab(object sender, TdiTabCloseEventArgs e)
 		{
@@ -383,6 +363,34 @@ namespace QS.Tdi.Gtk
 				TabClosed(this, new TabClosedEventArgs(tab));
 			}
 		}
+
+		public bool CloseAllTabs()
+		{
+			if(_tabs.Exists(t => (t.TdiTab is ITdiDialog && (t.TdiTab as ITdiDialog).HasChanges) ||
+			  (t.TdiTab is TdiSliderTab && (t.TdiTab as TdiSliderTab).ActiveDialog != null && (t.TdiTab as TdiSliderTab).ActiveDialog.HasChanges))) {
+				string Message = "Вы действительно хотите закрыть все вкладки? Все несохраненные изменения будут утеряны.";
+				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
+									   MessageType.Question,
+									   ButtonsType.YesNo,
+									   Message);
+				(md.Image as Image).SetFromStock(Stock.Quit, IconSize.Dialog);
+				int result = md.Run();
+				md.Destroy();
+				if(result == (int)ResponseType.No || result == (int)ResponseType.DeleteEvent)
+					return false;
+			}
+
+			while(_tabs.Count > 0) {
+				while(_tabs[0].SlaveTabs.Count > 0)
+					CloseTab(_tabs[0].SlaveTabs[0]);
+
+				CloseTab(_tabs[0].TdiTab);
+			}
+
+			return true;
+		}
+
+		#endregion
 
 		private TabVBox GetTabBoxForTab(ITdiTab tab)
 		{
