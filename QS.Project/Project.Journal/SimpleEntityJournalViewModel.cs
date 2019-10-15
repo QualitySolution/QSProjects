@@ -17,8 +17,6 @@ namespace QS.Project.Journal
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TEntityTab : class, ITdiTab
 	{
-		public bool IsActive => UoW.IsAlive;
-
 		public SimpleEntityJournalViewModel(
 			Expression<Func<TEntity, object>> titleExp,
 			Func<TEntityTab> createDlgFunc,
