@@ -76,8 +76,10 @@ namespace QS.Dialog.Gtk
 
 		protected void OnCloseTab (bool askSave)
 		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
+			if(askSave)
+				TabParent.AskToCloseTab(this);
+			else
+				TabParent.ForceCloseTab(this);
 		}
 
 		protected virtual void OnTabNameChanged()
