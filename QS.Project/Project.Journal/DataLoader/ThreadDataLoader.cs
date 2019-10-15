@@ -207,14 +207,14 @@ namespace QS.Project.Journal.DataLoader
 		{
 			if (OrderRules != null && OrderRules.Any()) {
 				IOrderedEnumerable<IPieceReader<TNode>> resultItems = null;
-				bool isFirstValueInDictionary = true;
+				bool isFirstRule = true;
 				foreach (var orderRule in OrderRules) {
-					if (isFirstValueInDictionary) {
+					if (isFirstRule) {
 						if (orderRule.Descending)
 							resultItems = loaders.OrderByDescending(l => orderRule.GetOrderByValue(l.NextUnreadedNode()));
 						else
 							resultItems = loaders.OrderBy(l => orderRule.GetOrderByValue(l.NextUnreadedNode()));
-						isFirstValueInDictionary = false;
+						isFirstRule = false;
 					}
 					else {
 						if (orderRule.Descending)
