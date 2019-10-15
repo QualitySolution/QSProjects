@@ -267,6 +267,7 @@
     <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
     <Compile Include="Project.Services\CurrentPermissionServiceAdapter.cs" />
+    <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

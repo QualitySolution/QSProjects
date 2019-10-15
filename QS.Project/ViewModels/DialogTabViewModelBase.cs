@@ -1,19 +1,17 @@
 ﻿using System;
 using QS.Tdi;
-using QS.DomainModel.UoW;
 using QS.Services;
+using QS.DomainModel.UoW;
 
 namespace QS.ViewModels
 {
-	public abstract class DialogTabViewModelBase : TabViewModelBase, ITdiDialog, IDisposable
+	public abstract class DialogTabViewModelBase : UoWTabViewModelBase, ITdiDialog, IDisposable
 	{
-		protected DialogTabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected DialogTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
 		{
 		}
 
 		#region ITdiDialog implementation
-
-		public virtual IUnitOfWork UoW { get; set; }
 
 		private bool manualChange = false;
 
@@ -58,13 +56,6 @@ namespace QS.ViewModels
 				EntitySaved?.Invoke(this, new EntitySavedEventArgs(UoW.RootObject));
 			}
 			return;
-		}
-
-		public virtual void Dispose()
-		{
-			if(UoW != null) {
-				UoW.Dispose();
-			}
 		}
 
 		public override void Close(bool askSave)

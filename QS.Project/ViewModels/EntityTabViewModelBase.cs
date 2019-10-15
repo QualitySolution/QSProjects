@@ -94,8 +94,13 @@ namespace QS.ViewModels
 		public UserBase CurrentUser { get; set; }
 		protected ICommonServices CommonServices { get; }
 
-		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, ICommonServices commonServices)
-			: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
+		[Obsolete("Этот конструктор реализован для совместимости со старыми вызовами, используето констуруктор который принимает IUnitOfWorkFactory в качетсве нешней зависимости.")]
+		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, ICommonServices commonServices) 
+			: this(ctorParam, QS.DomainModel.UoW.UnitOfWorkFactory.GetDefaultFactory, commonServices)
+		{ }
+
+		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices)
+			: base(unitOfWorkFactory, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
 			CommonServices = commonServices;
 
@@ -120,7 +125,7 @@ namespace QS.ViewModels
 		}
 
 		protected EntityTabViewModelBase(IUnitOfWorkGeneric<TEntity> uow, ICommonServices commonServices)
-			: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
+			: base(null, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
 			CommonServices = commonServices;
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,12 +60,11 @@ namespace QS.Project.Journal
 
 		#endregion
 
-		protected JournalViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
 		{
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
 
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
 			Search = new SearchViewModel(interactiveService);
 			SelectionMode = JournalSelectionMode.None;
 
@@ -105,13 +104,6 @@ namespace QS.Project.Journal
 
 		#endregion Configure actions
 
-		public override bool HasChanges => false;
-
-		public override bool Save(bool close)
-		{
-			return false;
-		}
-
 		public void UpdateOnChanges(params Type[] entityTypes)
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
@@ -120,13 +112,6 @@ namespace QS.Project.Journal
 
 		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
 		{
-			//FIXME Нужно фиксить! Это решение всего лишь скрывает проблему. Нужно находить утечку памяти и исправлять ее, а не фиксить падения.
-			if(!UoW.IsAlive) {
-				logger.Warn("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта.",
-					this);
-				return;
-			}
-
 			Refresh();
 		}
 
