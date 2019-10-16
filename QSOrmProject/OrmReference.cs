@@ -309,6 +309,7 @@ namespace QSOrmProject
 			}
 			else
 			{
+				ytreeviewRef.SearchHighlightText = null;
 				viewList = fullList;
 				if(TableView.RecursiveTreeConfig != null)
 				{
