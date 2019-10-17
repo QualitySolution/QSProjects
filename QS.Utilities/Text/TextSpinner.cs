@@ -24,6 +24,18 @@ namespace QS.Utilities.Text
 		public string[] Frames => new string[] { "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" };
 	}
 
+	public class SpinnerTemplateDots : ISpinnerTemplate
+	{
+		public uint Interval => 80;
+		public string[] Frames => new string[] { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" };
+	}
+
+	public class SpinnerTemplateLine : ISpinnerTemplate
+	{
+		public uint Interval => 130;
+		public string[] Frames => new string[] { "-", "\\", "|", "/" };
+	}
+
 	public class SpinnerTemplateArrow : ISpinnerTemplate
 	{
 		public uint Interval => 120;
