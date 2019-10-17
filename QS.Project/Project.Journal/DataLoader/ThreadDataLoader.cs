@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +39,12 @@ namespace QS.Project.Journal.DataLoader
 		public event EventHandler TotalCountChanged;
 
 		public PostLoadProcessing PostLoadProcessingFunc { set; private get; }
+
+		#endregion
+
+		#region Глобальная настройка
+
+		public static bool ShowLateResults = true;
 
 		#endregion
 
@@ -129,6 +135,7 @@ namespace QS.Project.Journal.DataLoader
 
 		public void LoadData(bool nextPage)
 		{
+			Console.WriteLine("LoadData");
 			if (LoadInProgress) {
 				if (!nextPage)
 					Interlocked.Exchange(ref reloadRequested, 1);
@@ -164,12 +171,14 @@ namespace QS.Project.Journal.DataLoader
 			}
 
 			Task.Factory.ContinueWhenAll(RunningTasks, (tasks) => {
-				if(AvailableQueryLoaders.Count() == 1)
-					ReadOneLoader();
-				else
-					ReadLoadersInSortOrder();
-				CopyNodesToPublish();
-				ItemsListUpdated?.Invoke(this, EventArgs.Empty);
+				if(ShowLateResults || reloadRequested == 0) {
+					if(AvailableQueryLoaders.Count() == 1)
+						ReadOneLoader();
+					else
+						ReadLoadersInSortOrder();
+					CopyNodesToPublish();
+					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
+				}
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
 				LoadInProgress = false;
 				if(1 == Interlocked.Exchange(ref reloadRequested, 0)) {
