@@ -5,12 +5,10 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.Dialog.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
-using QS.Utilities.Debug;
 using QS.Utilities.GtkUI;
 using QS.Utilities.Text;
 using QS.Views.GtkUI;
@@ -108,13 +106,10 @@ namespace QS.Journal.GtkUI
 
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
-			//Копируем лист чтобы дать возможность ViewModel обновлять его в других потоках...
-			var listClone = ViewModel.Items;
-
 			Application.Invoke((s, arg) => {
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
-				tableview.ItemsDataSource = listClone;
+				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
 				if(!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();

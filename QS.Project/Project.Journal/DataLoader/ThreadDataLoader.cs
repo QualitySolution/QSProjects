@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +82,13 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Результат и состояние загрузки
 
-		public IList Items => nodes;
+		public IList Items {
+			get {
+				lock(publishedNodesLock) {
+					return publishedNodes;
+				}
+			}
+		}
 
 		public bool HasUnloadedItems => AvailableQueryLoaders.Any(l => l.HasUnloadedItems);
 
@@ -111,8 +117,12 @@ namespace QS.Project.Journal.DataLoader
 		#endregion
 
 		#region Загрузка данных
+		//Храним отдельно список узлов доступных снаружи и внутренний список с которым работает сам модуль.
+		//Так как мы работает в отдельном потоке, снаружи всегда должен быть доступен предыдущий список. Пока мы обрабатываем новый запрос.
+		private IList publishedNodes;
+		private readonly List<TNode> readedNodes = new List<TNode>();
+		private readonly object publishedNodesLock = new object();
 
-		private List<TNode> nodes = new List<TNode>();
 		private int reloadRequested = 0;
 		private Task[] RunningTasks = new Task[] { };
 		private DateTime startLoading;
@@ -132,7 +142,7 @@ namespace QS.Project.Journal.DataLoader
 
 			FirstPage = !nextPage;
 			if (!nextPage) {
-				nodes.Clear();
+				readedNodes.Clear();
 				TotalCount = null;
 				TotalCountChanged?.Invoke(this, EventArgs.Empty);
 				foreach (var item in QueryLoaders) {
@@ -158,6 +168,7 @@ namespace QS.Project.Journal.DataLoader
 					ReadOneLoader();
 				else
 					ReadLoadersInSortOrder();
+				CopyNodesToPublish();
 				ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
 				LoadInProgress = false;
@@ -176,13 +187,21 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Private
 
+		private void CopyNodesToPublish()
+		{
+			var copied = readedNodes.ToList();
+			lock(publishedNodesLock) {
+				publishedNodes = copied;
+			}
+		}
+
 		private void ReadOneLoader()
 		{
-			var beforeCount = nodes.Count;
+			var beforeCount = readedNodes.Count;
 			var loader = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().First();
-			nodes.AddRange(loader.TakeAllUnreadedNodes());
-			if(nodes.Count > beforeCount)
-				PostLoadProcessingFunc?.Invoke(nodes, (uint)beforeCount);
+			readedNodes.AddRange(loader.TakeAllUnreadedNodes());
+			if(readedNodes.Count > beforeCount)
+				PostLoadProcessingFunc?.Invoke(readedNodes, (uint)beforeCount);
 		}
 
 		/// <summary>
@@ -190,17 +209,17 @@ namespace QS.Project.Journal.DataLoader
 		/// </summary>
 		private void ReadLoadersInSortOrder()
 		{
-			var beforeCount = nodes.Count;
+			var beforeCount = readedNodes.Count;
 			var loaders = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().ToList();
 			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
 			while (loaders.Any(l => l.NextUnreadedNode() != null)) {
 				if (loaders.Any(l => (l as IQueryLoader<TNode>).HasUnloadedItems && l.NextUnreadedNode() == null))
 					break; //Уперлись в неподгруженный хвост. Пока хватит, ждем следующей страницы.
 				var taked = filtredLoaders.First();
-				nodes.Add(taked.TakeNextUnreadedNode());
+				readedNodes.Add(taked.TakeNextUnreadedNode());
 			}
-			if(nodes.Count > beforeCount)
-				PostLoadProcessingFunc?.Invoke(nodes, (uint)beforeCount);
+			if(readedNodes.Count > beforeCount)
+				PostLoadProcessingFunc?.Invoke(readedNodes, (uint)beforeCount);
 		}
 
 		private IEnumerable<IPieceReader<TNode>> MakeOrderedEnumerable(IEnumerable<IPieceReader<TNode>> loaders)
