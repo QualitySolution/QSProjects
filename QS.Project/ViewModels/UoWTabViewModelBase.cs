@@ -5,11 +5,11 @@ using QS.Services;
 
 namespace QS.ViewModels
 {
-	public class UoWTabViewModelBase : TabViewModelBase, ISingleUoWDialog, IDisposable
+	public abstract class UoWTabViewModelBase : TabViewModelBase, ISingleUoWDialog, IDisposable
 	{
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		public UoWTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(interactiveService)
+		protected UoWTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(interactiveService)
 		{
 			this.UnitOfWorkFactory = unitOfWorkFactory;
 		}
