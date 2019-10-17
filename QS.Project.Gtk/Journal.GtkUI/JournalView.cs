@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
+using QS.Dialog.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
+using QS.Utilities.Debug;
 using QS.Utilities.GtkUI;
 using QS.Utilities.Text;
 using QS.Views.GtkUI;
@@ -24,7 +27,6 @@ namespace QS.Journal.GtkUI
 
 		public static uint ShowProgressbarDelay = 800;
 		public static uint ProgressPulseTime = 100;
-		public static TextSpinner CountingTextSpinner = new TextSpinner(new SpinnerTemplateClock());
 
 		#endregion
 
@@ -32,6 +34,7 @@ namespace QS.Journal.GtkUI
 		{
 			this.Build();
 			ConfigureJournal();
+			CreateTextSpinner();
 		}
 
 		private void ConfigureJournal()
@@ -76,6 +79,29 @@ namespace QS.Journal.GtkUI
 			RefreshSource();
 			UpdateButtons();
 			SetTotalLableText();
+		}
+
+		TextSpinner CountingTextSpinner;
+
+		void CreateTextSpinner()
+		{
+			ISpinnerTemplate timeOfDaySpinner = DateTime.Now.TimeOfDay < new TimeSpan(6, 30, 0) || DateTime.Now.TimeOfDay > new TimeSpan(18, 30, 0)
+				? (ISpinnerTemplate)new SpinnerTemplateMoon() : new SpinnerTemplateClock();
+			var whishList = new ISpinnerTemplate[] {
+				timeOfDaySpinner,
+				new SpinnerTemplateDotsScrolling()
+			};
+
+			foreach(var spinner in whishList) {
+				var allChars = String.Join("", spinner.Frames);
+				var layout = labelTotalRow.CreatePangoLayout(allChars);
+				//К сожалению этот способ определения неподдерживаемых символов на винде для нецветных спинеров все равно возваращает 0, даже если символ не поддежривается.
+				if(layout.UnknownGlyphsCount == 0) {
+					CountingTextSpinner = new TextSpinner(spinner);
+					break;
+				}
+				logger.Debug($"Спинер {spinner.GetType()} пропущен, так как используемый шрифт не поддеживает {layout.UnknownGlyphsCount} из {new StringInfo(allChars).LengthInTextElements} используемых символов.");
+			}
 		}
 
 		#region События загрузчика данных
