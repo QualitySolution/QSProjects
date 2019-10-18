@@ -329,6 +329,8 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
 		{
+			if(RepresentationModel == null)
+				return;
 			if(!RepresentationModel.CanEntryFastSelect)
 				return;
 
