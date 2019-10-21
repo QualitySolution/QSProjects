@@ -1,7 +1,7 @@
 ﻿using System;
-using QS.Tdi;
 using QS.DomainModel.UoW;
 using QS.Services;
+using QS.Tdi;
 
 namespace QS.ViewModels
 {
@@ -60,11 +60,10 @@ namespace QS.ViewModels
 			return;
 		}
 
-		public virtual void Dispose()
+		public override void Dispose()
 		{
-			if(UoW != null) {
-				UoW.Dispose();
-			}
+			UoW?.Dispose();
+			base.Dispose();
 		}
 
 		public override void Close(bool askSave)
