@@ -19,13 +19,6 @@ namespace QS.DomainModel.UoW
 
 		bool IsAlive { get;}
 
-		/// <summary>
-		/// Свойство для обхода фичи-бага nHibernate, при котором при вызове
-		/// метода IsDirty() происходила запись объектов в базу.
-		/// </summary>
-		/// <value><c>true</c> if can check if dirty; otherwise, <c>false</c>.</value>
-		bool CanCheckIfDirty { get; set; }
-
 		bool HasChanges { get;}
 
 		/// <param name="orUpdate">

@@ -5,19 +5,9 @@ namespace QS.DomainModel.UoW
 {
 	public class UnitOfWorkWithoutRoot : UnitOfWorkBase, IUnitOfWork
 	{
-		public object RootObject {
-			get { return null;}
-		}
+		public object RootObject => null;
 
-		public bool HasChanges
-		{
-			get
-			{
-				return Session.IsDirty();
-			}
-		}
-
-		public bool CanCheckIfDirty { get; set; }
+		public bool HasChanges => Session.IsDirty();
 
 		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{

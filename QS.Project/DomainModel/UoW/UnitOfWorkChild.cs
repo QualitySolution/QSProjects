@@ -24,9 +24,7 @@ namespace QS.DomainModel.UoW
 
 		public override ISession Session => parentUoW.Session;
 
-		public bool CanCheckIfDirty { get; set; } = true;
-
-		public bool HasChanges => IsNew || CanCheckIfDirty && Session.IsDirty();
+		public bool HasChanges => IsNew || Session.IsDirty();
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
 		{
