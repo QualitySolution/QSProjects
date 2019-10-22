@@ -68,6 +68,27 @@ namespace QS.Project.Journal
 			Close(false);
 		}
 
+		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
+		{
+			if(e?.Entity == null)
+				return;
+			if(SelectionMode != JournalSelectionMode.Single)
+				return;
+			if(!(e.Entity is IDomainObject))
+				return;
+
+			TNode node;
+			try {
+				node = Activator.CreateInstance(typeof(TNode)) as TNode;
+			}
+			catch(MissingMethodException ex) {
+				return;
+			}
+			node.Id = ((IDomainObject)e.Entity).Id;
+			OnItemsSelected(node);
+		}
+
+
 		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IQueryOver<TEntity>> queryFunction)
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		{
@@ -331,6 +352,10 @@ namespace QS.Project.Journal
 					(selected) => {
 						var docConfig = entityConfig.EntityDocumentConfigurations.First();
 						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
+
+						if(tab is ITdiDialog)
+							((ITdiDialog)tab).EntitySaved += Tab_EntitySaved;
+
 						TabParent.OpenTab(() => tab, this);
 						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
 							HideJournal(TabParent);
