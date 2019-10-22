@@ -42,9 +42,9 @@ namespace QS.Project.Journal.DataLoader
 
 		#endregion
 
-		#region Глобальная настройка
+		#region Настройка
 
-		public static bool ShowLateResults = true;
+		public bool ShowLateResults = true;
 
 		#endregion
 

@@ -100,6 +100,7 @@ namespace QS.Project.Journal
 		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
 		{
 			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			threadLoader.ShowLateResults = false;
 			if(threadLoader == null)
 				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
 
@@ -136,7 +137,7 @@ namespace QS.Project.Journal
 			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
 			if (threadLoader == null)
 				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
-
+			threadLoader.ShowLateResults = false;
 			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не перепысывать все старые журналы в водовозе. Надесь этот метот целиком в будущем удалим.
 			if(commonServices.PermissionService != null && commonServices.UserService != null)
 				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
