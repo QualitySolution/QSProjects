@@ -249,15 +249,13 @@ namespace QS.Widgets.GtkUI
 				(w => w.Subject)
 			});
 
-			if(Changed != null)
-				Changed(this, EventArgs.Empty);
+			Changed?.Invoke(this, EventArgs.Empty);
 
 		}
 
 		protected virtual void OnChangedByUser()
 		{
-			if(ChangedByUser != null)
-				ChangedByUser(this, EventArgs.Empty);
+			ChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
 		void UpdateSensitive()

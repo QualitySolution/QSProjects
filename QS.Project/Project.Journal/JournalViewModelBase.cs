@@ -90,7 +90,7 @@ namespace QS.Project.Journal
 			ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal virtual void OnItemsSelected(object[] selectedNodes)
+		internal virtual void OnItemsSelected(params object[] selectedNodes)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
 			Close(false);

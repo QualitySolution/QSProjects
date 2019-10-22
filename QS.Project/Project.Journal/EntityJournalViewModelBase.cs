@@ -62,7 +62,7 @@ namespace QS.Project.Journal
 			Refresh();
 		}
 
-		internal override void OnItemsSelected(object[] selectedNodes)
+		internal override void OnItemsSelected(params object[] selectedNodes)
 		{
 			OnEntitySelectedResult.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
 			Close(false);
