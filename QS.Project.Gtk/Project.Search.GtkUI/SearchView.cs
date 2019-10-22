@@ -16,7 +16,7 @@ namespace QS.Project.Search.GtkUI
 		/// Задержка в передачи запроса на поиск во view model.
 		/// Измеряется в милсекундах.
 		/// </summary>
-		public static uint queryDelay = 0;
+		public static uint QueryDelay = 1500;
 		#endregion
 
 		SearchViewModel viewModel;
@@ -40,9 +40,9 @@ namespace QS.Project.Search.GtkUI
 
 		void EntSearchText_Changed(object sender, EventArgs e)
 		{
-			if(queryDelay != 0) {
+			if(QueryDelay != 0) {
 				GLib.Source.Remove(timerId);
-				timerId = GLib.Timeout.Add(queryDelay, new GLib.TimeoutHandler(RunSearch));
+				timerId = GLib.Timeout.Add(QueryDelay, new GLib.TimeoutHandler(RunSearch));
 			} else
 				RunSearch();
 		}
