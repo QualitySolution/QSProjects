@@ -15,5 +15,11 @@ namespace QS.Views.GtkUI
 		{
 			ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		}
+
+		public override void Destroy()
+		{
+			ViewModel?.Dispose();
+			base.Destroy();
+		}
 	}
 }

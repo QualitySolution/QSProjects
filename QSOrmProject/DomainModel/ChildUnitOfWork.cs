@@ -43,8 +43,6 @@ namespace QSOrmProject.DomainModel
 
 		public UnitOfWorkTitle ActionTitle { get; protected set; }
 
-		public bool CanCheckIfDirty { get; set; }
-
 		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, UnitOfWorkTitle title)
 		{
 			IsNew = true;

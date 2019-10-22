@@ -9,15 +9,12 @@ namespace QS.DomainModel.UoW
 		public object RootObject => Root;
 		public TRootEntity Root { get; private set; }
 
-		public bool CanCheckIfDirty { get; set; } = true;
-
 		public bool HasChanges {
 			get {
-				if(IsNew) {
+				if(IsNew)
 					return true;
-				}
 				OpenTransaction();
-				return CanCheckIfDirty && Session.IsDirty();
+				return Session.IsDirty();
 			}
 		}
 

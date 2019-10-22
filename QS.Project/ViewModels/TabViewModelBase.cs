@@ -1,12 +1,12 @@
 ﻿using System;
-using QS.Tdi;
-using System.Reflection;
 using System.ComponentModel;
+using System.Reflection;
 using QS.Services;
+using QS.Tdi;
 
 namespace QS.ViewModels
 {
-	public abstract class TabViewModelBase : ViewModelBase, ITdiTab
+	public abstract class TabViewModelBase : ViewModelBase, ITdiTab, IDisposable
 	{
 		protected TabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
@@ -100,5 +100,7 @@ namespace QS.ViewModels
 		{
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
+
+		public virtual void Dispose() { }
 	}
 }

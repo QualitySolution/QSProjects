@@ -206,7 +206,7 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active) {
 				IsRadioChange = true;
 				StartDate.Date = DateTime.Today.Date;
-				EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				EndRadioChange();
 			}
 		}
@@ -217,7 +217,7 @@ namespace QSWidgetLib
 				return;
 			IsRadioChange = true;
 			StartDate.Date = DateTime.Today.AddDays(-7);
-			EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 			EndRadioChange();
 		}
 
@@ -227,7 +227,7 @@ namespace QSWidgetLib
 				return;
 			IsRadioChange = true;
 			StartDate.Date = DateTime.Today.AddMonths(-1);
-			EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 			EndRadioChange();
 		}
 
@@ -237,7 +237,7 @@ namespace QSWidgetLib
 				return;
 			IsRadioChange = true;
 			StartDate.Date = DateTime.Today.AddMonths(-3);
-			EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 			EndRadioChange();
 		}
 
@@ -247,7 +247,7 @@ namespace QSWidgetLib
 				return;
 			IsRadioChange = true;
 			StartDate.Date = DateTime.Today.AddMonths(-6);
-			EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 			EndRadioChange();
 		}
 
@@ -257,7 +257,7 @@ namespace QSWidgetLib
 				return;
 			IsRadioChange = true;
 			StartDate.Date = DateTime.Today.AddYears(-1);
-			EndDate.Date = DateTime.Today.AddDays(1).AddMilliseconds(-1);
+			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 			EndRadioChange();
 		}
 

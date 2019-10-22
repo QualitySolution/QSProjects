@@ -104,7 +104,7 @@ namespace QS.HistoryLog.Dialogs
 				.Fetch(SelectMode.Fetch, x => x.ChangeSet.User);
 
 			if(!selectperiod.IsAllTime)
-				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd.AddDays(1));
+				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd);
 
 			if(datacomboObject.SelectedItem is HistoryObjectDesc selectedClassType)
 				query.Where(ce => ce.EntityClassName == selectedClassType.ObjectName);

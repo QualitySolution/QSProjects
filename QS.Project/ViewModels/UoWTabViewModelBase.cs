@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Services;
+using QS.Tdi;
 
 namespace QS.ViewModels
 {
@@ -26,11 +27,10 @@ namespace QS.ViewModels
 			set => unitOfWork = value;
 		 }
 
-		public virtual void Dispose()
+		public override void Dispose()
 		{
-			if(UoW != null) {
-				UoW.Dispose();
-			}
+			UoW?.Dispose();
+			base.Dispose();
 		}
 	}
 }

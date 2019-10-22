@@ -1,7 +1,4 @@
-﻿using System;
-using QS.Dialog.GtkUI;
-using QS.Tdi;
-using QS.ViewModels;
+﻿using QS.Tdi;
 
 namespace QS.Views.GtkUI
 {

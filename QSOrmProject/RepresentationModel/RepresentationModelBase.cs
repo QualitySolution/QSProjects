@@ -18,9 +18,20 @@ namespace QSOrmProject.RepresentationModel
 
 		#region IRepresentationModel implementation
 
-		public IUnitOfWork UoW { get; set; }
+		bool canDisposeUoW;
 
-		bool canDisposeUoW = false;
+		IUnitOfWork uow;
+		public IUnitOfWork UoW {
+			get {
+				if(uow == null || uow.Session != null && !uow.Session.IsOpen) {
+					uow = UnitOfWorkFactory.CreateWithoutRoot();
+					canDisposeUoW = true;
+				}
+				return uow;
+			}
+			set => uow = value;
+		}
+
 		public event EventHandler ItemsListUpdated;
 
 		protected void OnItemsListUpdated()
@@ -79,12 +90,6 @@ namespace QSOrmProject.RepresentationModel
 						yield return prop.Name;
 				}
 			}
-		}
-
-		protected void CreateDisposableUoW()
-		{
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
-			canDisposeUoW = true;
 		}
 
 		void RepresentationFilter_Refiltered (object sender, EventArgs e)
