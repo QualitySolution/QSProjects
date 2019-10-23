@@ -72,8 +72,6 @@ namespace QS.Project.Journal
 		{
 			if(e?.Entity == null)
 				return;
-			if(SelectionMode != JournalSelectionMode.Single)
-				return;
 			if(!(e.Entity is IDomainObject))
 				return;
 
@@ -84,8 +82,11 @@ namespace QS.Project.Journal
 			catch(MissingMethodException ex) {
 				return;
 			}
-			node.Id = ((IDomainObject)e.Entity).Id;
-			OnItemsSelected(node);
+
+			if(AskQuestion("Выбрать созданный объект и вернуться к предыдущему диалогу?")) {
+				node.Id = ((IDomainObject)e.Entity).Id;
+				OnItemsSelected(node);
+			}
 		}
 
 
