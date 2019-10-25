@@ -12,5 +12,6 @@ namespace QS.Project.Journal.EntityLoader
 		int LoadedItemsCount { get; }
 		int? TotalItemsCount { get; }
 		void Refresh();
+		TNode GetNode(int entityId);
 	}
 }

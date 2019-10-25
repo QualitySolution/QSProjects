@@ -74,17 +74,15 @@ namespace QS.Project.Journal
 				return;
 			if(!(e.Entity is IDomainObject))
 				return;
+			if(SelectionMode == JournalSelectionMode.None)
+				return;
 
 			TNode node;
-			try {
-				node = Activator.CreateInstance(typeof(TNode)) as TNode;
-			}
-			catch(MissingMethodException ex) {
+			node = entityLoaders.FirstOrDefault(x => x.Key == e.Entity.GetType()).Value?.GetNode((e.Entity as IDomainObject).Id);
+			if(node == null)
 				return;
-			}
 
 			if(AskQuestion("Выбрать созданный объект и вернуться к предыдущему диалогу?")) {
-				node.Id = ((IDomainObject)e.Entity).Id;
 				OnItemsSelected(node);
 			}
 		}

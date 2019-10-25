@@ -33,6 +33,12 @@ namespace QS.Project.Journal.EntityLoader
 
 		public int LoadedItemsCount { get; private set; }
 
+		public TNode GetNode(int entityId)
+		{
+			var query = queryFunc.Invoke().Clone();
+			return query.Where(x => x.Id == entityId).Take(1).List<TNode>().FirstOrDefault();
+		}
+
 		public List<TNode> LoadItems(int? pageSize = null)
 		{
 			var workQuery = queryFunc.Invoke().Clone();
