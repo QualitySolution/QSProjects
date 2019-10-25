@@ -25,6 +25,7 @@ namespace QS.Journal.GtkUI
 
 		public static uint ShowProgressbarDelay = 800;
 		public static uint ProgressPulseTime = 100;
+		public static bool ThrowExcetionOnDataLoad = true;
 
 		#endregion
 
@@ -40,6 +41,8 @@ namespace QS.Journal.GtkUI
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
+			if(ThrowExcetionOnDataLoad)
+				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -146,6 +149,11 @@ namespace QS.Journal.GtkUI
 				progressbarLoading.Pulse();
 				return true;
 			}
+		}
+
+		void DataLoader_LoadError(object sender, LoadErrorEventArgs e)
+		{
+			Application.Invoke((s, ea) => throw e.Exception);
 		}
 
 		#endregion
