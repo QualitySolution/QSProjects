@@ -4,6 +4,8 @@ using QS.Project.Domain;
 using System.Collections.ObjectModel;
 using QS.EntityRepositories;
 using System;
+using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
+using System.Linq;
 
 namespace QS.Project.Repositories
 {
@@ -15,9 +17,9 @@ namespace QS.Project.Repositories
 			return UserPermissionSingletonRepository.GetInstance().GetUserEntityPermission(uow, entityName, userId);
 		}
 
-		public static IList<EntityUserPermission> GetUserAllEntityPermissions(IUnitOfWork uow, int userId)
+		public static IList<UserPermissionNode> GetUserAllEntityPermissions(IUnitOfWork uow, int userId, IPermissionExtensionStore permissionExtensionStore)
 		{
-			return UserPermissionSingletonRepository.GetInstance().GetUserAllEntityPermissions(uow, userId);
+			return UserPermissionSingletonRepository.GetInstance().GetUserAllEntityPermissions(uow, userId, permissionExtensionStore).ToList();
 		}
 
 		public static IList<PresetUserPermission> GetUserAllPresetPermissions(IUnitOfWork uow, int userId)

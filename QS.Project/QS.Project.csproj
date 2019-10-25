@@ -265,6 +265,18 @@
     <Compile Include="Project.Services\IRunOperationService.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
+    <Compile Include="Project.Domain\EntityPermissionBase.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityPermissionExtendedBase.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityUserPermissionExtended.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IEntityExtendedPermissionValidator.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionExtension.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionExtensionStore.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionNode.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionNodeFactory.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionListViewModel.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
+    <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
+    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -313,6 +325,10 @@
     <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
