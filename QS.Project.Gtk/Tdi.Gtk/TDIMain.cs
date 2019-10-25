@@ -10,6 +10,7 @@ namespace QS.Tdi.Gtk
 			TDIWidgetResolver = new DefaultTDIWidgetResolver();
 		}
 
+		[Obsolete("[Только для Водовоза]Передавайте ITDIWidgetResolver в TdiNotebook напрямую. Это поле надо в будущем удалить.")]
 		public static ITDIWidgetResolver TDIWidgetResolver { get; set; }
 
 		public static TdiNotebook MainNotebook;

@@ -26,6 +26,18 @@ namespace QS.Tdi.Gtk
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
+		#region Внешние зависимости
+		readonly ITDIWidgetResolver widgetResolver;
+		#endregion
+
+		public TdiSliderTab(ITdiJournal jour, ITDIWidgetResolver widgetResolver)
+		{
+			Journal = jour;
+			this.widgetResolver = widgetResolver;
+			HandleSwitchIn = OnSwitchIn;
+			HandleSwitchOut = OnSwitchOut;
+		}
+
 		public string TabName {
 			get {
 				if(activeDialog != null)
@@ -273,13 +285,6 @@ namespace QS.Tdi.Gtk
 		}
 
 		#endregion
-
-		public TdiSliderTab(ITdiJournal jour)
-		{
-			Journal = jour;
-			HandleSwitchIn = OnSwitchIn;
-			HandleSwitchOut = OnSwitchOut;
-		}
 
 		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{
