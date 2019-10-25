@@ -15,6 +15,15 @@ namespace QSBanks
 
 		public IUnitOfWork UoW { get; set; }
 
+		private bool canEdit;
+		public bool CanEdit {
+			get => canEdit;
+			set {
+				canEdit = value;
+				UpdateSensitivity();
+			}
+		}
+
 		IParentReference<Account> parentReference;
 
 		public IParentReference<Account> ParentReference {
@@ -42,7 +51,15 @@ namespace QSBanks
 		public AccountsView ()
 		{
 			this.Build ();
+			CanEdit = true;
 			datatreeviewAccounts.Selection.Changed += OnSelectionChanged;
+		}
+
+		private void UpdateSensitivity()
+		{
+			buttonAdd.Sensitive = CanEdit;
+			buttonEdit.Sensitive = CanEdit;
+			buttonDelete.Sensitive = CanEdit;
 		}
 
 		/// <summary>
@@ -82,7 +99,10 @@ namespace QSBanks
 
 		protected void OnDatatreeviewAccountsRowActivated (object o, Gtk.RowActivatedArgs args)
 		{
-			buttonEdit.Click ();
+			if(!CanEdit) {
+				return;
+			}
+			buttonEdit.Click();
 		}
 
 		protected void OnButtonDeleteClicked (object sender, EventArgs e)
