@@ -1,6 +1,14 @@
 node {
    stage('QS.Libs') {
-      checkout([$class: 'GitSCM', branches: [[name: '*/${BRANCH_NAME}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'QSProjects']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/QualitySolution/QSProjects.git']]])
+      echo sh(script: 'env|sort', returnStdout: true)
+      if (env.CHANGE_ID) {
+          branch = '';
+          ref = '+refs/pull/${CHANGE_ID}/*:refs/remotes/origin/pr/${CHANGE_ID}/*'
+      } else {
+          branch = '${BRANCH_NAME}';
+          ref = '+refs/heads/*:refs/remotes/origin/*'
+      }
+      checkout([$class: 'GitSCM', branches: [[name: branch]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'QSProjects']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'faa4f01a-3033-4806-a4cf-2eac0ecdb522', name: 'origin', refspec: ref, url: 'https://github.com/QualitySolution/QSProjects.git']]])
       sh 'nuget restore QSProjects/QSProjectsLib.sln'
    }
    stage('Gtk.DataBindings') {
