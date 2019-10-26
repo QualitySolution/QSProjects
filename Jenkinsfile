@@ -2,8 +2,8 @@ node {
    stage('QS.Libs') {
       echo sh(script: 'env|sort', returnStdout: true)
       if (env.CHANGE_ID) {
-          branch = '*/merge';
-          ref = '+refs/pull/${CHANGE_ID}/*:refs/remotes/origin/pr/${CHANGE_ID}/*'
+          branch = '';
+          ref = '+refs/pull/${CHANGE_ID}/*:refs/remotes/origin/pr/${CHANGE_ID}/merge'
       } else {
           branch = '${BRANCH_NAME}';
           ref = '+refs/heads/*:refs/remotes/origin/*'
