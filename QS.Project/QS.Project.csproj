@@ -280,6 +280,7 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
+    <Compile Include="Project.Domain\EntityUoWBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
