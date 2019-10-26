@@ -207,7 +207,7 @@
     <Compile Include="Project.Journal\JournalEntityConfig.cs" />
     <Compile Include="Project.Filter\FilterViewModelBase.cs" />
     <Compile Include="ViewModels\EntityTabViewModelBase.cs" />
-    <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
+    <Compile Include="ViewModels\DialogTabViewModelBase.cs" />
     <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
     <Compile Include="ViewModels\WidgetViewModelBase.cs" />
     <Compile Include="ViewModels\WindowViewModelBase.cs" />
@@ -219,10 +219,6 @@
     <Compile Include="Project.Journal\JournalSelectedEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectMode.cs" />
-    <Compile Include="Project.Journal\EntityLoader\IEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\AllEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoader.cs" />
-    <Compile Include="Project.Journal\EntityLoader\DynamicEntityLoaderWithCount.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelector.cs" />
     <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
@@ -265,6 +261,13 @@
     <Compile Include="Project.Services\IRunOperationService.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
+    <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\ThreadDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
+    <Compile Include="Project.Services\CurrentPermissionServiceAdapter.cs" />
+    <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
     <Compile Include="Project.Domain\EntityPermissionBase.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityPermissionExtendedBase.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityUserPermissionExtended.cs" />
@@ -304,7 +307,6 @@
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
     <Folder Include="Project.Search\" />
-    <Folder Include="Project.Journal\EntityLoader\" />
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
@@ -313,6 +315,7 @@
     <Folder Include="ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
+    <Folder Include="Project.Journal\DataLoader\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

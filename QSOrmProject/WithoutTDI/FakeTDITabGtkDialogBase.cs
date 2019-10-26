@@ -17,6 +17,7 @@ namespace QSOrmProject
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
+		public event EventHandler TabClosed;
 
 		private string tabName = String.Empty;
 
@@ -137,6 +138,21 @@ namespace QSOrmProject
 		}
 
 		public void SwitchOnTab(ITdiTab tab)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
+		}
+
+		public bool AskToCloseTab(ITdiTab tab)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ForceCloseTab(ITdiTab tab)
 		{
 			throw new NotImplementedException();
 		}

@@ -43,6 +43,7 @@ namespace QS.ViewModels
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		public event EventHandler TabClosed;
 
 		public virtual bool CompareHashName(string hashName)
 		{
@@ -89,7 +90,15 @@ namespace QS.ViewModels
 
 		public virtual void Close(bool askSave)
 		{
-			CloseTab?.Invoke(this, new TdiTabCloseEventArgs(askSave));
+			if(askSave)
+				TabParent.AskToCloseTab(this);
+			else
+				TabParent.ForceCloseTab(this);
+		}
+
+		public void OnTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 
 		public virtual void Dispose() { }

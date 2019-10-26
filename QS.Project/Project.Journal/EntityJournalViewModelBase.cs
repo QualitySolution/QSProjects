@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,8 +8,10 @@ using NHibernate.Criterion;
 using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
-using QS.Project.Journal.EntityLoader;
+using QS.DomainModel.UoW;
+using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
+using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
 
@@ -19,7 +20,7 @@ namespace QS.Project.Journal
 	public abstract class EntityJournalViewModelBase<TNode> : JournalViewModelBase
 		where TNode : JournalEntityNodeBase
 	{
-		private const int defaultPageSize = 100;
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly ICommonServices commonServices;
 
@@ -41,12 +42,10 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
-		protected EntityJournalViewModelBase(ICommonServices commonServices) : base(commonServices?.InteractiveService)
+		protected EntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices?.InteractiveService)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			UseSlider = true;
-			PageSize = defaultPageSize;
-			DynamicLoadingEnabled = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 			Search.OnSearch += Search_OnSearch;
 			searchHelper = new SearchHelper(Search);
@@ -68,7 +67,7 @@ namespace QS.Project.Journal
 			Close(false);
 		}
 
-		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IQueryOver<TEntity>> queryFunction)
+		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction)
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		{
 			if(queryFunction == null) {
@@ -95,43 +94,18 @@ namespace QS.Project.Journal
 			CreatePopupActions();
 		}
 
-		public sealed override void Refresh()
-		{
-			ClearCachedItems();
-			TryLoad();
-		}
-
-		protected virtual void ClearCachedItems()
-		{
-			allRowsCount = null;
-			loadedCount = 0;
-			Items.Clear();
-			foreach(var item in entityLoaders.Values) {
-				item.Refresh();
-			}
-		}
-
 		#region Ordering
 
-		private bool isDescOrder = false;
-		private Func<TNode, object> orderFunction = x => x.Id;
-
+		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке загрузки. Желательно для новых журналов настраивать DataLoader напрямую.")]
 		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
 		{
-			orderFunction = orderFunc;
-			isDescOrder = desc;
-		}
+			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			threadLoader.ShowLateResults = false;
+			if(threadLoader == null)
+				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
 
-		Dictionary<Func<TNode, object>, bool> orderingDictionary;
-		/// <summary>
-		/// Сортировка по нескольким полям. Функция сортировки и порядок 
-		/// передаются через словарь <see cref="orderingDictionary"/>,
-		/// где его ключём является сама функция, а значением - порядок
-		/// сортировки. Значение <c>true</c> указывает на сортировку по убыванию. 
-		/// </summary>
-		/// <param name="orderingDictionary">Словарь с функциями сортировки и
-		/// направлением сортировки</param>
-		protected void SetOrder(Dictionary<Func<TNode, object>, bool> orderingDictionary) => this.orderingDictionary = orderingDictionary;
+			threadLoader.MergeInOrderBy(orderFunc, desc);
+		}
 
 		#endregion Ordering
 
@@ -151,105 +125,28 @@ namespace QS.Project.Journal
 
 		#endregion Search
 
-		#region Dynamic load
-
-		protected int PageSize { get; set; }
-
-		private int? allRowsCount = null;
-		private int loadedCount = 0;
-
-		public override bool TryLoad()
-		{
-			if(!EntityConfigs.Any()) {
-				return false;
-			}
-
-			List<TNode> summaryItems = new List<TNode>();
-
-
-			var loaders = entityLoaders.Values.ToList();
-			var entityCountsForLoad = loaders.Count(x => x.HasUnloadedItems);
-			if(entityCountsForLoad == 0) {
-				return false;
-			}
-
-			int currentPageSize = PageSize / entityCountsForLoad;
-
-			foreach(var loader in loaders) {
-				var loadedItems = loader.LoadItems(currentPageSize);
-				summaryItems.AddRange(loadedItems);
-			}
-
-			var orderedItems = OrderItems(summaryItems);
-
-			UpdateItems(orderedItems);
-
-			return loaders.Any(x => x.HasUnloadedItems);
-		}
-
-		private List<TNode> OrderItems(List<TNode> items)
-		{
-			if(orderingDictionary != null && orderingDictionary.Any()) {
-				IOrderedEnumerable<TNode> resultItems = null;
-				bool isFirstValueInDictionary = true;
-				foreach(var item in orderingDictionary) {
-					if(isFirstValueInDictionary) {
-						if(item.Value)
-							resultItems = items.OrderByDescending(item.Key);
-						resultItems = items.OrderBy(item.Key);
-						isFirstValueInDictionary = false;
-					} else {
-						if(item.Value)
-							resultItems = resultItems.ThenByDescending(item.Key);
-						resultItems = resultItems.ThenBy(item.Key);
-					}
-				}
-				return resultItems.ToList();
-			}
-
-			if(isDescOrder)
-				return items.OrderByDescending(orderFunction).ToList();
-			return items.OrderBy(orderFunction).ToList();
-		}
-
-		protected override void UpdateItems(IList items)
-		{
-			if(DynamicLoadingEnabled) {
-				foreach(var item in items) {
-					Items.Add(item);
-				}
-			} else {
-				Items = items;
-			}
-			RaiseItemsUpdated();
-		}
-
 		#region Entity load configuration
 
-		private Dictionary<Type, IEntityLoader<TNode>> entityLoaders = new Dictionary<Type, IEntityLoader<TNode>>();
-
-		private void CreateLoader<TEntity>(Func<IQueryOver<TEntity>> queryFunc)
-			where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
+		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке. Желательно для новых журналов настраивать DataLoader напрямую.")]
+		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
+			where TEntity : class
 		{
-			var entityType = typeof(TEntity);
-			if(entityLoaders.ContainsKey(entityType)) {
-				return;
-			}
+			if (DataLoader == null)
+				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
 
-			IEntityLoader<TNode> loader = null;
-			if(DynamicLoadingEnabled) {
-				loader = new DynamicEntityLoader<TEntity, TNode>(queryFunc);
-			} else {
-				loader = new AllEntityLoader<TEntity, TNode>(queryFunc);
-			}
+			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			if (threadLoader == null)
+				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
+			threadLoader.ShowLateResults = false;
+			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не перепысывать все старые журналы в водовозе. Надесь этот метот целиком в будущем удалим.
+			if(commonServices.PermissionService != null && commonServices.UserService != null)
+				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
 
-			entityLoaders.Add(entityType, loader);
+			threadLoader.AddQuery<TEntity>(queryFunc);
 		}
 
 
 		#endregion Entity load configuration
-
-		#endregion Dynamic load
 
 		#region Permissions
 

@@ -1720,15 +1720,68 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="labelFooter">
+          <widget class="Gtk.ProgressBar" id="progressbarLoading">
             <property name="MemberName" />
-            <property name="Xpad">6</property>
-            <property name="Xalign">1</property>
-            <property name="LabelProp" translatable="yes">####</property>
-            <property name="SingleLineMode">True</property>
+            <property name="Visible">False</property>
           </widget>
           <packing>
             <property name="Position">4</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="labelFooter">
+                <property name="MemberName" />
+                <property name="Xpad">6</property>
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">####</property>
+                <property name="SingleLineMode">True</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VSeparator" id="vseparator1">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.EventBox" id="eventboxTotalRow">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+                <signal name="ButtonPressEvent" handler="OnEventboxTotalRowButtonPressEvent" />
+                <child>
+                  <widget class="Gamma.GtkWidgets.yLabel" id="labelTotalRow">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">∑</property>
+                    <property name="UseMarkup">True</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">5</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

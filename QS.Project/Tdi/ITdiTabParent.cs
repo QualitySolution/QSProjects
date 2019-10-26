@@ -30,6 +30,19 @@ namespace QS.Tdi
 
 		void SwitchOnTab(ITdiTab tab);
 
+		/// <summary>
+		/// Попросить закрыть вкладку. Вкладка может не закрыться, если на ней есть изменения и пользователь отменит закрытие.
+		/// </summary>
+		/// <returns><c>true</c>, если вкладка была закрыта, <c>false</c> если нет.</returns>
+		/// <param name="tab">Вкладка которую нужно закрыть</param>
+		bool AskToCloseTab(ITdiTab tab);
+
+		/// <summary>
+		/// Принудительно закрыть вкладку без вопросов.
+		/// </summary>
+		/// <param name="tab">Вкладка</param>
+		void ForceCloseTab(ITdiTab tab);
+
 		ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null);
 
 		/// <summary>
@@ -49,4 +62,3 @@ namespace QS.Tdi
 		ITdiTab OpenTab<TTab, TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3, ITdiTab afterTab = null) where TTab : ITdiTab;
 	}
 }
-

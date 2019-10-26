@@ -1,4 +1,5 @@
-﻿using QS.Project.Filter;
+﻿using QS.DomainModel.UoW;
+using QS.Project.Filter;
 using QS.Services;
 
 namespace QS.Project.Journal
@@ -17,7 +18,7 @@ namespace QS.Project.Journal
 			}
 		}
 
-		public FilterableMultipleEntityJournalViewModelBase(TFilterViewModel filterViewModel, ICommonServices commonServices) : base(commonServices)
+		public FilterableMultipleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
 		{
 			FilterViewModel = filterViewModel;
 		}

@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using System;
+using Gtk;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.UoW;
 using QS.Permissions;
@@ -16,6 +17,8 @@ namespace QS
 
 		public virtual IUnitOfWork UoW { get; set; }
 
+		public event EventHandler TabClosed;
+
 		protected void InitializePermissionValidator()
 		{
 			var user = UserRepository.GetCurrentUser(UoW);
@@ -27,5 +30,11 @@ namespace QS
 				FailInitialize = true;
 			}
 		}
+
+		public void OnTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
+		}
+
 	}
 }

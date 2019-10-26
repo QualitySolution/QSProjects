@@ -7,6 +7,12 @@ namespace QS.Services
 		bool ValidateUserPresetPermission(string permissionName, int userId);
 	}
 
+	public interface ICurrentPermissionService
+	{
+		IPermissionResult ValidateEntityPermission(Type entityType);
+		bool ValidatePresetPermission(string permissionName);
+	}
+
 	public interface IPermissionResult
 	{
 		bool CanCreate 	{ get; }

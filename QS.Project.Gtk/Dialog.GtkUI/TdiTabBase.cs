@@ -22,8 +22,8 @@ namespace QS.Dialog.Gtk
 		#region ITdiTab implementation
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-
 		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+		public event EventHandler TabClosed;
 
 		private string tabName = String.Empty;
 
@@ -76,8 +76,10 @@ namespace QS.Dialog.Gtk
 
 		protected void OnCloseTab (bool askSave)
 		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
+			if(askSave)
+				TabParent.AskToCloseTab(this);
+			else
+				TabParent.ForceCloseTab(this);
 		}
 
 		protected virtual void OnTabNameChanged()
@@ -117,6 +119,11 @@ namespace QS.Dialog.Gtk
 		protected ITdiTab OpenTab<TTab, TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3) where TTab : ITdiTab
 		{
 			return TabParent.OpenTab<TTab, TArg1, TArg2, TArg3>(arg1, arg2, arg3, this);
+		}
+
+		public void OnTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }

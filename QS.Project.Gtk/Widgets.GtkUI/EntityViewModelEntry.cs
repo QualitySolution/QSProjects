@@ -213,16 +213,20 @@ namespace QS.Widgets.GtkUI
 		/// </summary>
 		public void OpenSelectDialog(string newTabTitle = null)
 		{
-			if(entitySelector != null && entitySelector.IsActive) {
+			if(entitySelector != null) {
 				MyTab.TabParent.SwitchOnTab(entitySelector);
 				return;
 			}
-			if(entitySelector != null) {
-				entitySelector.Dispose();
-			}
+
 			entitySelector = entitySelectorFactory.CreateSelector();
 			entitySelector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
+			entitySelector.TabClosed += EntitySelector_TabClosed;
 			MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
+		}
+
+		void EntitySelector_TabClosed(object sender, EventArgs e)
+		{
+			entitySelector = null;
 		}
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)

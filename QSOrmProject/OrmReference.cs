@@ -348,8 +348,7 @@ namespace QSOrmProject
 		protected void OnCloseTab()
 		{
 			logger.Debug("Закрытие диалога {0}", number);
-			if (CloseTab != null)
-				CloseTab(this, new TdiTabCloseEventArgs(false));
+			TabParent.ForceCloseTab(this);
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)

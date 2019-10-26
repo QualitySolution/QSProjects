@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Gdk;
-using Gtk;
 using NLog;
 
 namespace QS.Project.Search.GtkUI
@@ -13,7 +11,17 @@ namespace QS.Project.Search.GtkUI
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		#region Настройка
+		/// <summary>
+		/// Задержка в передачи запроса на поиск во view model.
+		/// Измеряется в милсекундах.
+		/// </summary>
+		public static uint QueryDelay = 1500;
+		#endregion
+
 		SearchViewModel viewModel;
+		uint timerId;
+
 		public SearchView(SearchViewModel viewModel)
 		{
 			this.Build();
@@ -28,33 +36,23 @@ namespace QS.Project.Search.GtkUI
 			entrySearch4.Changed += EntSearchText_Changed;
 		}
 
-		DateTime lastChangedTime = DateTime.Now;
-		bool searchInProgress = false;
 		private CancellationTokenSource cts = new CancellationTokenSource();
 
 		void EntSearchText_Changed(object sender, EventArgs e)
 		{
-			lastChangedTime = DateTime.Now;
+			if(QueryDelay != 0) {
+				GLib.Source.Remove(timerId);
+				timerId = GLib.Timeout.Add(QueryDelay, new GLib.TimeoutHandler(RunSearch));
+			} else
+				RunSearch();
+		}
 
-			if(!searchInProgress) {
-				Task.Run(() => {
-					searchInProgress = true;
-					try {
-						while((DateTime.Now - lastChangedTime).TotalMilliseconds < 1500) {
-							if(cts.IsCancellationRequested) {
-								return;
-							}
-						}
-						Application.Invoke((s, arg) => {
-							viewModel.SearchValues = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
-						});
-					} catch(Exception ex) {
-						logger.Error(ex, $"Ошибка во время ввода строки поиска");
-					} finally {
-						searchInProgress = false;
-					}
-				});
-			}
+		bool RunSearch()
+		{
+			var allFields = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
+			viewModel.SearchValues = allFields.Where(x => !String.IsNullOrEmpty(x)).ToArray();
+			timerId = 0;
+			return false;
 		}
 
 		protected void OnButtonSearchClearClicked(object sender, EventArgs e)

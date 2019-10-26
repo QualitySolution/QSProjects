@@ -252,8 +252,7 @@ namespace QSOrmProject
 
         protected void OnCloseTab ()
         {
-            if (CloseTab != null)
-                CloseTab (this, new TdiTabCloseEventArgs (false));
+			TabParent.ForceCloseTab(this);
         }
 
         protected void OnButtonAddClicked (object sender, EventArgs e)

@@ -5,7 +5,6 @@ using QS.DomainModel.Entity;
 using QS.Tdi;
 using QS.Utilities.Text;
 using System.ComponentModel;
-using NHibernate;
 
 namespace QS.Project.Journal
 {
@@ -28,7 +27,7 @@ namespace QS.Project.Journal
 		{
 			var names = DomainHelper.GetSubjectNames(typeof(TEntity));
 			if(names == null || string.IsNullOrWhiteSpace(names.Nominative)) {
-				throw new ApplicationException($"Для типа {nameof(TEntity)} не проставлен аттрибут AppellativeAttribute, или в аттрибуте не проставлено имя Nominative, из-за чего невозможно разрешить правильное имя документа для отображения в журнале с конфигурацией документов по умолчанию.");
+				throw new ApplicationException($"Для типа {typeof(TEntity)} не проставлен аттрибут AppellativeAttribute, или в аттрибуте не проставлено имя Nominative, из-за чего невозможно разрешить правильное имя документа для отображения в журнале с конфигурацией документов по умолчанию.");
 			}
 			return names.Nominative.StringToTitleCase();
 		}
@@ -190,7 +189,7 @@ namespace QS.Project.Journal
 		public void FinishConfiguration()
 		{
 			if(!documentConfigs.Any()) {
-				throw new InvalidOperationException($"Для класса \"{nameof(TEntity)}\" должна быть определена как минимум одна конфигурация диалогов. Для ее определения необходимо вызвать метод \"{nameof(AddDocumentConfiguration)}\"");
+				throw new InvalidOperationException($"Для класса \"{typeof(TEntity)}\" должна быть определена как минимум одна конфигурация диалогов. Для ее определения необходимо вызвать метод \"{nameof(AddDocumentConfiguration)}\"");
 			}
 			JournalEntityConfig<TNode> config = new JournalEntityConfig<TNode>(typeof(TEntity), documentConfigs);
 			OnConfigurationFinished?.Invoke(this, new JournalEntityConfigEventArgs<TNode>(config));

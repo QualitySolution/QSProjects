@@ -5,7 +5,7 @@ namespace QS.ViewModels
 {
 	public abstract class WidgetViewModelBase : ViewModelBase
 	{
-		public WidgetViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected WidgetViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
 		}
 	}

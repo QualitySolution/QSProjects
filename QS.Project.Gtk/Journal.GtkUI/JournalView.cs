@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
 using QS.Project.Journal;
+using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
 using QS.Utilities.GtkUI;
+using QS.Utilities.Text;
 using QS.Views.GtkUI;
 using QSWidgetLib;
 
@@ -18,15 +21,28 @@ namespace QS.Journal.GtkUI
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
+		#region Глобальные настройки
+
+		public static uint ShowProgressbarDelay = 800;
+		public static uint ProgressPulseTime = 100;
+		public static bool ThrowExcetionOnDataLoad = true;
+
+		#endregion
+
 		public JournalView(JournalViewModelBase viewModel) : base(viewModel)
 		{
 			this.Build();
 			ConfigureJournal();
+			CreateTextSpinner();
 		}
 
 		private void ConfigureJournal()
 		{
-			ViewModel.ItemsListUpdated += ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
+			if(ThrowExcetionOnDataLoad)
+				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -63,38 +79,143 @@ namespace QS.Journal.GtkUI
 			tableview.ItemsDataSource = ViewModel.Items;
 			RefreshSource();
 			UpdateButtons();
+			SetTotalLableText();
 		}
+
+		TextSpinner CountingTextSpinner;
+
+		void CreateTextSpinner()
+		{
+			ISpinnerTemplate timeOfDaySpinner = DateTime.Now.TimeOfDay < new TimeSpan(6, 30, 0) || DateTime.Now.TimeOfDay > new TimeSpan(18, 30, 0)
+				? (ISpinnerTemplate)new SpinnerTemplateMoon() : new SpinnerTemplateClock();
+			var whishList = new ISpinnerTemplate[] {
+				timeOfDaySpinner,
+				new SpinnerTemplateDotsScrolling()
+			};
+
+			foreach(var spinner in whishList) {
+				var allChars = String.Join("", spinner.Frames);
+				var layout = labelTotalRow.CreatePangoLayout(allChars);
+				//К сожалению этот способ определения неподдерживаемых символов на винде для нецветных спинеров все равно возваращает 0, даже если символ не поддежривается.
+				if(layout.UnknownGlyphsCount == 0) {
+					CountingTextSpinner = new TextSpinner(spinner);
+					break;
+				}
+				logger.Debug($"Спинер {spinner.GetType()} пропущен, так как используемый шрифт не поддеживает {layout.UnknownGlyphsCount} из {new StringInfo(allChars).LengthInTextElements} используемых символов.");
+			}
+		}
+
+		#region События загрузчика данных
 
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
-			if(!ViewModel.DynamicLoadingEnabled) {
-				tableview.ItemsDataSource = ViewModel.Items;
-			}
-
 			Application.Invoke((s, arg) => {
 				labelFooter.Markup = ViewModel.FooterInfo;
-				tableview.YTreeModel.EmitModelChanged();
+				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
+				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
+
+				if(!ViewModel.DataLoader.FirstPage) {
+					GtkHelper.WaitRedraw();
+					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+				}
 			});
 		}
+
+		private LoadingState loadingState;
+
+		void DataLoader_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+		{
+			if(loadingState != LoadingState.InProgress && e.LoadingState == LoadingState.InProgress)
+				GLib.Timeout.Add(ShowProgressbarDelay, new GLib.TimeoutHandler(StartLoadProgress));
+			loadingState = e.LoadingState;
+		}
+
+		bool StartLoadProgress()
+		{
+			progressbarLoading.Visible = loadingState == LoadingState.InProgress;
+
+			if(loadingState == LoadingState.InProgress) {
+				GLib.Timeout.Add(ProgressPulseTime, new GLib.TimeoutHandler(PulseProgress));
+			} 
+			return false;
+		}
+
+		bool PulseProgress()
+		{
+			if(loadingState == LoadingState.Idle) {
+				progressbarLoading.Visible = false;
+				return false;
+			} else {
+				progressbarLoading.Pulse();
+				return true;
+			}
+		}
+
+		void DataLoader_LoadError(object sender, LoadErrorEventArgs e)
+		{
+			Application.Invoke((s, ea) => throw e.Exception);
+		}
+
+		#endregion
+
+		#region Отображение общего количества строк
+
+		void SetTotalLableText()
+		{
+			labelTotalRow.Markup = GetTotalRowText();
+		}
+
+		void DataLoader_TotalCountChanged(object sender, EventArgs e)
+		{
+			if(!ViewModel.DataLoader.TotalCountingInProgress) {
+				Application.Invoke((s, arg) => SetTotalLableText());
+			}
+		}
+
+		bool UpdateTotalCount()
+		{
+			SetTotalLableText();
+			return ViewModel.DataLoader.TotalCountingInProgress;
+		}
+
+		string GetTotalRowText()
+		{
+			if(ViewModel.DataLoader.TotalCountingInProgress) {
+				if(ViewModel.DataLoader.TotalCount.HasValue)
+					return $"Всего: {CountingTextSpinner.GetFrame()}{ViewModel.DataLoader.TotalCount}";
+				else
+					return $"Всего: {CountingTextSpinner.GetFrame()}";
+			} else {
+				if(ViewModel.DataLoader.TotalCount.HasValue)
+					return $"Всего: {ViewModel.DataLoader.TotalCount}";
+				else
+					return "Всего: <span foreground=\"blue\" underline=\"single\">???</span>";
+			}
+		}
+
+		protected void OnEventboxTotalRowButtonPressEvent(object o, ButtonPressEventArgs args)
+		{
+			GLib.Timeout.Add(CountingTextSpinner.RecommendedInterval, new GLib.TimeoutHandler(UpdateTotalCount));
+			ViewModel.DataLoader.GetTotalCount();
+		}
+
+		#endregion
 
 		private void RefreshSource()
 		{
 			ViewModel.Refresh();
 		}
 
-		bool takenAll = false;
-		bool isAdjustmentValueChanged = false;
+		double lastScrollPosition;
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
 				return;
 
-			if(!takenAll) {
-				var lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
-				takenAll = !ViewModel.TryLoad();
-				GtkHelper.WaitRedraw();
-				GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+			if(ViewModel.DataLoader.HasUnloadedItems) {
+				lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
+				ViewModel.DataLoader.LoadData(true);
 			}
 		}
 

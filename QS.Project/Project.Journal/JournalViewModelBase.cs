@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using QS.Services;
-using QS.ViewModels;
-using QS.DomainModel.UoW;
 using System.Linq;
-using QS.Project.Search;
-using QS.Tdi;
-using QS.DomainModel.NotifyChange;
 using NLog;
+using QS.DomainModel.NotifyChange;
+using QS.DomainModel.UoW;
+using QS.Project.Journal.DataLoader;
+using QS.Project.Search;
+using QS.Services;
+using QS.Tdi;
+using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
@@ -22,11 +23,11 @@ namespace QS.Project.Journal
 
 		public virtual IJournalSearch Search { get; set; }
 
-		public virtual IList Items { get; protected set; }
+		public IDataLoader DataLoader { get; protected set; }
 
-		public event EventHandler ItemsListUpdated;
+		public IList Items => DataLoader.Items;
 
-		public virtual string FooterInfo => $"Загружено: {Items.Count} шт.";
+		public virtual string FooterInfo => $"Загружено: {DataLoader.Items.Count} шт.";
 
 		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
 		protected virtual List<IJournalAction> NodeActionsList { get; set; }
@@ -36,11 +37,10 @@ namespace QS.Project.Journal
 
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
-		public bool DynamicLoadingEnabled {  get; protected set; }
-
-		public abstract void Refresh();
-
-		public abstract bool TryLoad();
+		public void Refresh()
+		{
+			DataLoader.LoadData(false);
+		}
 
 		private JournalSelectionMode selectionMode;
 		public virtual JournalSelectionMode SelectionMode {
@@ -60,34 +60,15 @@ namespace QS.Project.Journal
 
 		#endregion
 
-		protected JournalViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
 		{
-			Items = new List<object>();
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
 
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
 			Search = new SearchViewModel(interactiveService);
 			SelectionMode = JournalSelectionMode.None;
 
 			UseSlider = false;
-			DynamicLoadingEnabled = false;
-		}
-
-		protected virtual void UpdateItems(IList items)
-		{
-			Items = items;
-			RaiseItemsUpdated();
-		}
-
-		protected virtual void BeforeItemsUpdated()
-		{
-		}
-
-		protected virtual void RaiseItemsUpdated()
-		{
-			BeforeItemsUpdated();
-			ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 		}
 
 		internal virtual void OnItemsSelected(object[] selectedNodes)
@@ -123,15 +104,6 @@ namespace QS.Project.Journal
 
 		#endregion Configure actions
 
-
-
-		public override bool HasChanges => false;
-
-		public override bool Save(bool close)
-		{
-			return false;
-		}
-
 		public void UpdateOnChanges(params Type[] entityTypes)
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
@@ -140,13 +112,6 @@ namespace QS.Project.Journal
 
 		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
 		{
-			//FIXME Нужно фиксить! Это решение всего лишь скрывает проблему. Нужно находить утечку памяти и исправлять ее, а не фиксить падения.
-			if(!UoW.IsAlive) {
-				logger.Warn("Получена нотификация о внешнем обновлении данные в {0}, в тот момент когда сессия уже закрыта.",
-					this);
-				return;
-			}
-
 			Refresh();
 		}
 

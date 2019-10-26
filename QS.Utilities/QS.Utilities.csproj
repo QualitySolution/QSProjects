@@ -44,6 +44,7 @@
     <Compile Include="Text\StringManipulationHelper.cs" />
     <Compile Include="CurrencyWorks.cs" />
     <Compile Include="Numeric\PhoneFormatter.cs" />
+    <Compile Include="Text\TextSpinner.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />
