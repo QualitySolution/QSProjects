@@ -2,7 +2,7 @@ node {
    stage('QS.Libs') {
       echo sh(script: 'env|sort', returnStdout: true)
       if (env.CHANGE_ID) {
-          def branch = null;
+          def branch = '';
           def ref = '+refs/pull/${CHANGE_ID}/*:refs/remotes/origin/pr/${CHANGE_ID}/*'
       } else {
           def branch = '${BRANCH_NAME}';
