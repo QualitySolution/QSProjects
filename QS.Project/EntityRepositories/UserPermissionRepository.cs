@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
@@ -32,11 +34,41 @@ namespace QS.EntityRepositories
 				.SingleOrDefault();
 		}
 
-		public IList<EntityUserPermission> GetUserAllEntityPermissions(IUnitOfWork uow, int userId)
+		public IEnumerable<UserPermissionNode> GetUserAllEntityPermissions(IUnitOfWork uow, int userId, IPermissionExtensionStore permissionExtensionStore)
 		{
-			return uow.Session.QueryOver<EntityUserPermission>()
+			var entityPermissionList = uow.Session.QueryOver<EntityUserPermission>()
 				.Where(x => x.User.Id == userId)
 				.List();
+
+			foreach(var item in entityPermissionList) {
+				var node = new UserPermissionNode();
+				node.EntityUserOnlyPermission = item;
+				node.TypeOfEntity = item.TypeOfEntity;
+				node.EntityPermissionExtended = new List<EntityUserPermissionExtended>();
+				foreach(var extension in permissionExtensionStore.PermissionExtensions) {
+					EntityUserPermissionExtended permissionExtendedAlias = null;
+
+					var permission = uow.Session.QueryOver(() => permissionExtendedAlias)
+						.Where(x => x.User.Id == userId)
+						.And(() => permissionExtendedAlias.PermissionId == extension.PermissionId)
+						.And(x => x.TypeOfEntity.Id == node.TypeOfEntity.Id)
+						.Take(1)?.List()?.FirstOrDefault();
+
+					if(permission != null) {
+						node.EntityPermissionExtended.Add(permission);
+						continue;
+					}
+
+					permission = new EntityUserPermissionExtended();
+					permission.IsPermissionAvailable = null;
+					permission.PermissionId = extension.PermissionId;
+					permission.User = item.User;
+					permission.TypeOfEntity = item.TypeOfEntity;
+					node.EntityPermissionExtended.Add(permission);
+				}
+
+				yield return node;
+			}
 		}
 
 		public IList<PresetUserPermission> GetUserAllPresetPermissions(IUnitOfWork uow, int userId)

@@ -4,9 +4,11 @@ using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
+using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Project.Services.GtkUI;
 
 namespace QS.Widgets.GtkUI
 {
@@ -30,17 +32,10 @@ namespace QS.Widgets.GtkUI
 		{
 			UoW = uow;
 			this.user = user;
-			model = new EntityUserPermissionModel(UoW, user);
 
-			ytreeviewPermissions.ColumnsConfig = ColumnsConfigFactory.Create<EntityUserPermission>()
-				.AddColumn("Документ").AddTextRenderer(x => x.TypeOfEntity.CustomName)
-				.AddColumn("Просмотр").AddToggleRenderer(x => x.CanRead).Editing()
-				.AddColumn("Создание").AddToggleRenderer(x => x.CanCreate).Editing()
-				.AddColumn("Редактирование").AddToggleRenderer(x => x.CanUpdate).Editing()
-				.AddColumn("Удаление").AddToggleRenderer(x => x.CanDelete).Editing()
-				.Finish();
-
-			ytreeviewPermissions.ItemsDataSource = model.ObservablePermissionsList;
+			var permissionExtensionStore = PermissionExtensionSingletonStore.GetInstance();
+			permissionlistview.ViewModel = new PermissionListViewModel(new GtkInteractiveService(), permissionExtensionStore);
+			model = new EntityUserPermissionModel(UoW, user, permissionlistview.ViewModel);
 
 			ytreeviewEntitiesList.ColumnsConfig = ColumnsConfigFactory.Create<TypeOfEntity>()
 				.AddColumn("Документ").AddTextRenderer(x => x.CustomName)
@@ -67,22 +62,6 @@ namespace QS.Widgets.GtkUI
 			AddPermission();
 		}
 
-		private void DeletePermission()
-		{
-			var selected = ytreeviewPermissions.GetSelectedObject() as EntityUserPermission;
-			model.DeletePermission(selected);
-		}
-
-		private void OnButtonDeleteClicked(object sender, EventArgs e)
-		{
-			DeletePermission();
-		}
-
-		protected void OnYtreeviewPermissionsRowActivated(object o, RowActivatedArgs args)
-		{
-			DeletePermission();
-		}
-
 		public void Save()
 		{
 			if(model == null) {
@@ -90,27 +69,28 @@ namespace QS.Widgets.GtkUI
 			}
 			model.Save();
 		}
-
 	}
 
 	internal sealed class EntityUserPermissionModel
 	{
 		private IUnitOfWork uow;
 		private UserBase user;
-		private IList<EntityUserPermission> originalPermissionList;
-		private IList<EntityUserPermission> deletePermissionList = new List<EntityUserPermission>();
+		private IList<UserPermissionNode> originalPermissionList = new List<UserPermissionNode>();
+		private IList<UserPermissionNode> deletePermissionList = new List<UserPermissionNode>();
 		private IList<TypeOfEntity> originalTypeOfEntityList;
+		public PermissionListViewModel PermissionListViewModel { get; set; }
 
-		public GenericObservableList<EntityUserPermission> ObservablePermissionsList { get; private set; }
 		public GenericObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
 
-		public EntityUserPermissionModel(IUnitOfWork uow, UserBase user)
+		public EntityUserPermissionModel(IUnitOfWork uow, UserBase user, PermissionListViewModel permissionListViewModel)
 		{
 			this.user = user;
 			this.uow = uow;
+			this.PermissionListViewModel = permissionListViewModel ?? throw new NullReferenceException(nameof(permissionListViewModel));
 
-			originalPermissionList = UserPermissionRepository.GetUserAllEntityPermissions(uow, user.Id);
-			ObservablePermissionsList = new GenericObservableList<EntityUserPermission>(originalPermissionList.ToList());
+			var permissionList = UserPermissionRepository.GetUserAllEntityPermissions(uow, user.Id, permissionListViewModel.PermissionExtensionStore);
+			PermissionListViewModel.PermissionsList = new GenericObservableList<IPermissionNode>(permissionList.OfType<IPermissionNode>().ToList());
+			PermissionListViewModel.PermissionsList.ElementRemoved += (aList, aIdx, aObject) => DeletePermission(aObject as UserPermissionNode);
 
 			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow);
 			//убираем типы уже загруженные в права
@@ -130,43 +110,58 @@ namespace QS.Widgets.GtkUI
 
 			ObservableTypeOfEntitiesList.Remove(entityNode);
 
-			EntityUserPermission savedPermission;
+			UserPermissionNode savedPermission;
 			var foundOriginalPermission = originalPermissionList.FirstOrDefault(x => x.TypeOfEntity == entityNode);
 			if(foundOriginalPermission == null) {
-				savedPermission = new EntityUserPermission() {
+				savedPermission = new UserPermissionNode();
+				savedPermission.EntityUserOnlyPermission = new EntityUserPermission() {
 					User = user,
 					TypeOfEntity = entityNode
 				};
-				ObservablePermissionsList.Add(savedPermission);
+				savedPermission.EntityPermissionExtended = new List<EntityUserPermissionExtended>();
+				foreach(var item in PermissionListViewModel.PermissionExtensionStore.PermissionExtensions) {
+					var node = new EntityUserPermissionExtended();
+					node.User = user;
+					node.TypeOfEntity = entityNode;
+					node.PermissionId = item.PermissionId;
+					savedPermission.EntityPermissionExtended.Add(node);
+				}
+				savedPermission.TypeOfEntity = entityNode;
+				PermissionListViewModel.PermissionsList.Add(savedPermission);
 			} else {
 				if(deletePermissionList.Contains(foundOriginalPermission)) {
 					deletePermissionList.Remove(foundOriginalPermission);
 				}
 				savedPermission = foundOriginalPermission;
-				ObservablePermissionsList.Add(savedPermission);
+				PermissionListViewModel.PermissionsList.Add(savedPermission);
 			}
+
 		}
 
-		public void DeletePermission(EntityUserPermission deletedPermission)
+		public void DeletePermission(UserPermissionNode deletedPermission)
 		{
 			if(deletedPermission == null) {
 				return;
 			}
 			ObservableTypeOfEntitiesList.Add(deletedPermission.TypeOfEntity);
-			ObservablePermissionsList.Remove(deletedPermission);
-			if(deletedPermission.Id != 0) {
+			PermissionListViewModel.PermissionsList.Remove(deletedPermission);
+			if(deletedPermission.EntityUserOnlyPermission.Id != 0) {
 				deletePermissionList.Add(deletedPermission);
 			}
 		}
 
 		public void Save()
 		{
-			foreach(EntityUserPermission item in ObservablePermissionsList) {
+			foreach(EntityUserPermission item in PermissionListViewModel.PermissionsList.Select(x => x.EntityPermission as EntityUserPermission).Where(x => x != null))
+			{
 				uow.Save(item);
+				PermissionListViewModel.SaveExtendedPermissions(uow);
 			}
 
 			foreach(var item in deletePermissionList) {
-				uow.Delete(item);
+				uow.Delete<EntityUserPermission>(item.EntityPermission as EntityUserPermission);
+				foreach(var extendedPermission in item.EntityPermissionExtended)
+					uow.Delete(extendedPermission);
 			}
 		}
 	}

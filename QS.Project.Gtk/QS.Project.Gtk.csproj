@@ -93,7 +93,9 @@
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -215,6 +217,9 @@
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi.Gtk\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
+    <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
+    <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -272,6 +277,9 @@
     <EmbeddedResource Include="Icons.GtkUI\DateRange.png" />
     <EmbeddedResource Include="Icons.GtkUI\Сalendar.png" />
     <EmbeddedResource Include="Icons.GtkUI\SendErrorReport.png" />
+    <EmbeddedResource Include="Icons.GtkUI\blank-square.png" />
+    <EmbeddedResource Include="Icons.GtkUI\check-symbol.png" />
+    <EmbeddedResource Include="Icons.GtkUI\close-button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
