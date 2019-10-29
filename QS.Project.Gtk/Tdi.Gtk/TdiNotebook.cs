@@ -23,11 +23,7 @@ namespace QS.Tdi.Gtk
 		private List<TdiTabInfo> _tabs;
 
 		#region Внешние зависимости
-		private ITDIWidgetResolver widgetResolver;
-
-		public ITDIWidgetResolver WidgetResolver { 
-			get => widgetResolver ?? TDIMain.TDIWidgetResolver; 
-			set => widgetResolver = value; }
+		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
 		#endregion
 
 		public TdiNotebook()

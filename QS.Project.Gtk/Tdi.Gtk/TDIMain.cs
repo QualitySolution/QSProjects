@@ -5,14 +5,6 @@ namespace QS.Tdi.Gtk
 {
 	public static class TDIMain
 	{
-		static TDIMain()
-		{
-			TDIWidgetResolver = new DefaultTDIWidgetResolver();
-		}
-
-		[Obsolete("[Только для Водовоза]Передавайте ITDIWidgetResolver в TdiNotebook напрямую. Это поле надо в будущем удалить.")]
-		public static ITDIWidgetResolver TDIWidgetResolver { get; set; }
-
 		public static TdiNotebook MainNotebook;
 
 		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
