@@ -94,42 +94,21 @@ namespace QS.ViewModels
 		public UserBase CurrentUser { get; set; }
 		protected ICommonServices CommonServices { get; }
 
-		[Obsolete("Этот конструктор реализован для совместимости со старыми вызовами, используето констуруктор который принимает IUnitOfWorkFactory в качетсве нешней зависимости.")]
-		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, ICommonServices commonServices) 
+		[Obsolete("[Только для Водовоза]Этот конструктор реализован для совместимости со старыми вызовами, используйте констуруктор который принимает IUnitOfWorkFactory в качестве внешней зависимости.")]
+		protected EntityTabViewModelBase(IEntityUoWBuilder ctorParam, ICommonServices commonServices) 
 			: this(ctorParam, QS.DomainModel.UoW.UnitOfWorkFactory.GetDefaultFactory, commonServices)
 		{ }
 
-		protected EntityTabViewModelBase(IEntityConstructorParam ctorParam, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices)
+		protected EntityTabViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices)
 			: base(unitOfWorkFactory, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
 		{
 			CommonServices = commonServices;
 
-			if(ctorParam == null) {
-				throw new ArgumentNullException(nameof(ctorParam));
+			if(uowBuilder == null) {
+				throw new ArgumentNullException(nameof(uowBuilder));
 			}
+			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory);
 
-			if(ctorParam.IsNewEntity) {
-				if(ctorParam.RootUoW == null) {
-					UoWGeneric = UnitOfWorkFactory.CreateWithNewRoot<TEntity>();
-				} else {
-					UoWGeneric = UnitOfWorkFactory.CreateWithNewChildRoot<TEntity>(ctorParam.RootUoW);
-				}
-			} else {
-				if(ctorParam.RootUoW == null) {
-					UoWGeneric = UnitOfWorkFactory.CreateForRoot<TEntity>(ctorParam.EntityOpenId);
-				} else {
-					UoWGeneric = UnitOfWorkFactory.CreateForChildRoot<TEntity>(ctorParam.RootUoW.GetById<TEntity>(ctorParam.EntityOpenId), ctorParam.RootUoW);
-				}
-			}
-			Initialize();
-		}
-
-		protected EntityTabViewModelBase(IUnitOfWorkGeneric<TEntity> uow, ICommonServices commonServices)
-			: base(null, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
-		{
-			CommonServices = commonServices;
-
-			UoWGeneric = uow;
 			Initialize();
 		}
 
