@@ -72,6 +72,7 @@ namespace QS.Test.Project.Journal
 
 				ManualResetEvent oSignalEvent = new ManualResetEvent(false);
 				Exception treadException = null;
+				bool itemsListUpdatedRised = false;
 
 				//Настраиваем загрузчик
 				var dataLoader = new ThreadDataLoader<DocumentJournalNode>(UnitOfWorkFactory);
@@ -84,10 +85,19 @@ namespace QS.Test.Project.Journal
 				dataLoader.MergeInOrderBy((doc) => doc.Date, true);
 
 				dataLoader.LoadError += (sender, e) => {
+					Console.WriteLine("LoadError");
 					treadException = e.Exception;
 					oSignalEvent.Set();
 				};
-				dataLoader.ItemsListUpdated += (sender, e) => oSignalEvent.Set();
+				dataLoader.ItemsListUpdated += (sender, e) => {
+					Console.WriteLine("ItemsListUpdated");
+					itemsListUpdatedRised = true;
+				};
+				dataLoader.LoadingStateChanged += (sender, e) => {
+					Console.WriteLine($"LoadingStateChanged {e.LoadingState}");
+					if (e.LoadingState == LoadingState.Idle)
+						oSignalEvent.Set();
+				};
 
 				//Загружаем данные
 				dataLoader.LoadData(false);
@@ -96,28 +106,36 @@ namespace QS.Test.Project.Journal
 				oSignalEvent.Reset();
 				if (treadException != null)
 					throw treadException;
+				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
 				//Предпологаем что загрузили всего 2 строки, в журнале у нас размер страницы 2.
 				var result = (IList<DocumentJournalNode>)dataLoader.Items;
+				Assert.That(result.Count, Is.GreaterThanOrEqualTo(2));
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[1].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 
 				//Загружаем следующую партию.
+				itemsListUpdatedRised = false;
 				dataLoader.LoadData(true);
 				oSignalEvent.WaitOne();
 				oSignalEvent.Reset();
 				//Предпологаем что загрузили еще минимум 2 строки.
+				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
 				result = (IList<DocumentJournalNode>)dataLoader.Items;
+				Assert.That(result.Count, Is.GreaterThanOrEqualTo(4));
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[1].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[2].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[3].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 
 				//Загружаем следующую партию.
+				itemsListUpdatedRised = false;
 				dataLoader.LoadData(true);
 				oSignalEvent.WaitOne();
 				oSignalEvent.Reset();
 
+				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
 				result = (IList<DocumentJournalNode>)dataLoader.Items;
+				Assert.That(result.Count, Is.GreaterThanOrEqualTo(6));
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[1].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[2].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
@@ -147,6 +165,7 @@ namespace QS.Test.Project.Journal
 
 				ManualResetEvent oSignalEvent = new ManualResetEvent(false);
 				Exception treadException = null;
+				bool itemsListUpdatedRised = false;
 
 				var deniedRead = Substitute.For<IPermissionResult>();
 				deniedRead.CanRead.Returns(false);
@@ -172,7 +191,13 @@ namespace QS.Test.Project.Journal
 					treadException = e.Exception;
 					oSignalEvent.Set();
 				};
-				dataLoader.ItemsListUpdated += (sender, e) => oSignalEvent.Set();
+				dataLoader.ItemsListUpdated += (sender, e) => {
+					itemsListUpdatedRised = true;
+				};
+				dataLoader.LoadingStateChanged += (sender, e) => {
+					if (e.LoadingState == LoadingState.Idle)
+						oSignalEvent.Set();
+				};
 
 				//Загружаем данные
 				dataLoader.LoadData(false);
@@ -182,6 +207,7 @@ namespace QS.Test.Project.Journal
 				if (treadException != null)
 					throw treadException;
 
+				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
 				var result = (IList<DocumentJournalNode>)dataLoader.Items;
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2017, 5, 23)));
 				Assert.That(result.Count, Is.EqualTo(1));
