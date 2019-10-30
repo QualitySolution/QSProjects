@@ -32,8 +32,8 @@ namespace QS.Tdi.Gtk
 
 		public TdiSliderTab(ITdiJournal jour, ITDIWidgetResolver widgetResolver)
 		{
+			this.widgetResolver = widgetResolver ?? throw new ArgumentNullException(nameof(widgetResolver));
 			Journal = jour;
-			this.widgetResolver = widgetResolver;
 			HandleSwitchIn = OnSwitchIn;
 			HandleSwitchOut = OnSwitchOut;
 		}
@@ -100,7 +100,7 @@ namespace QS.Tdi.Gtk
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
-					journalWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+					journalWidget = widgetResolver.Resolve(value);
 
 					if(journalWidget == null)
 						throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
@@ -143,7 +143,7 @@ namespace QS.Tdi.Gtk
 						boxSeparator.PackEnd(separatorLower, true, true, 0);
 
 						dialogVBox = new VBox();
-						activeGlgWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+						activeGlgWidget = widgetResolver.Resolve(value);
 
 						if(activeGlgWidget == null)
 							throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
