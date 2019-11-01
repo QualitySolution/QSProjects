@@ -146,7 +146,7 @@ namespace QS.Updater
 			{
 				Environment.Exit(0);
 			}
-			else if (result.HasUpdate && resultOfDialog == ResponseType.Cancel || resultOfDialog == ResponseType.DeleteEvent)
+			else if (result.HasUpdate && resultOfDialog == ResponseType.No)
 				skip.SaveSkipVersion(result.NewVersion);
 		}
 	}

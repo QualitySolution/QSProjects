@@ -1,7 +1,5 @@
 ﻿using System;
 using Gdk;
-using Gtk;
-using QS.Updater.DTO;
 using QSUpdater;
 
 namespace QS.Updater
