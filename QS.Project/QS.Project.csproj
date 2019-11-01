@@ -211,7 +211,6 @@
     <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
     <Compile Include="ViewModels\WidgetViewModelBase.cs" />
     <Compile Include="ViewModels\WindowViewModelBase.cs" />
-    <Compile Include="Project.Domain\EntityConstructorParam.cs" />
     <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
     <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
     <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
