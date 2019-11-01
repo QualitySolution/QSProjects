@@ -124,23 +124,41 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonEditDateClicked (object sender, EventArgs e)
 		{
-			Gtk.Window parentWin = (Gtk.Window) this.Toplevel;
-			editDate = new Gtk.Dialog(WithTime ? "Укажите дату и время" : "Укажите дату", 
-				parentWin, Gtk.DialogFlags.DestroyWithParent);
-			editDate.Modal = true;
+			Window parentWin = (Window) this.Toplevel;
+			editDate = new Gtk.Dialog(
+				WithTime ? "Укажите дату и время" : "Укажите дату",
+				parentWin,
+				DialogFlags.DestroyWithParent
+			) {
+				Modal = true
+			};
 			editDate.AddButton ("Отмена", ResponseType.Cancel);
 			editDate.AddButton ("Ok", ResponseType.Ok);
 			TimeEntry timeEntry = null;
-			if(WithTime)
-			{
-				HBox timeBox = new HBox();
+			if(WithTime) {
 				Label timeLabel = new Label("Время:");
-				timeLabel.Angle = 1;
-				timeBox.Add(timeLabel);
-				timeEntry = new TimeEntry();
-				timeEntry.DateTime = date ?? DateTime.Now.Date;
-				timeEntry.AutocompleteStep = 5;
-				timeBox.Add(timeEntry);
+				timeEntry = new TimeEntry {
+					DateTime = date ?? DateTime.Today,
+					AutocompleteStep = 5
+				};
+				HScale timeScale = new HScale(0, 1439, 5) {
+					DrawValue = false,
+					Value = 720
+				};
+				timeScale.Adjustment.PageIncrement = 60;
+				timeScale.ValueChanged += (o, args) => {
+					if(!timeEntry.HasFocus)
+						timeEntry.Time = TimeSpan.FromMinutes(timeScale.Value);
+				};
+				timeEntry.Changed += (s, ea) => timeScale.Value = timeEntry.Time.TotalMinutes;
+				VBox timeCtrlBox = new VBox {
+					timeEntry,
+					timeScale
+				};
+				HBox timeBox = new HBox {
+					timeLabel,
+					timeCtrlBox
+				};
 				editDate.VBox.Add(timeBox);
 			}
 			Calendar SelectDate = new Calendar ();
