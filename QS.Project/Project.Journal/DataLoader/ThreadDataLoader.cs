@@ -100,7 +100,13 @@ namespace QS.Project.Journal.DataLoader
 
 		public bool FirstPage { get; private set; } = true;
 
-		public bool LoadInProgress { get; private set; }
+		bool loadInProgress;
+		public bool LoadInProgress { 
+			get => loadInProgress;
+			private set {
+				loadInProgress = value;
+				OnLoadingStateChange(value ? LoadingState.InProgress : LoadingState.Idle);
+			} }
 
 		public bool TotalCountingInProgress { get; private set; }
 
@@ -135,17 +141,20 @@ namespace QS.Project.Journal.DataLoader
 
 		public void LoadData(bool nextPage)
 		{
-			Console.WriteLine("LoadData");
+			Console.WriteLine($"LoadData({nextPage})");
 			if (LoadInProgress) {
 				if (!nextPage)
 					Interlocked.Exchange(ref reloadRequested, 1);
 				return;
 			}
 
-			startLoading = DateTime.Now;
 			LoadInProgress = true;
-			OnLoadingStateChange(LoadingState.InProgress);
-			logger.Info("Запрос данных...");
+			LoadDataInternal(nextPage);
+		}
+
+		private void LoadDataInternal(bool nextPage)
+		{ 
+			startLoading = DateTime.Now;
 
 			FirstPage = !nextPage;
 			if (!nextPage) {
@@ -159,9 +168,12 @@ namespace QS.Project.Journal.DataLoader
 
 			var runLoaders = AvailableQueryLoaders.Where(x => x.HasUnloadedItems).ToArray();
 
-			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которых мы могли бы прочитать данные.
+			if(runLoaders.Length == 0) { //Нет загрузчиков с помощь которых мы могли бы прочитать данные.
+				LoadInProgress = false;
 				return;
+			}
 
+			logger.Info("Запрос данных...");
 			RunningTasks = new Task[runLoaders.Length];
 
 			for (int i = 0; i < runLoaders.Length; i++) {
@@ -180,11 +192,10 @@ namespace QS.Project.Journal.DataLoader
 					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 				}
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
-				LoadInProgress = false;
 				if(1 == Interlocked.Exchange(ref reloadRequested, 0)) {
-					LoadData(false);
+					LoadDataInternal(false);
 				} else
-					OnLoadingStateChange(LoadingState.Idle);
+					LoadInProgress = false;
 			})
 			.ContinueWith((tsk) => {
 					LoadInProgress = false;
@@ -206,6 +217,7 @@ namespace QS.Project.Journal.DataLoader
 
 		private void ReadOneLoader()
 		{
+			logger.Debug("Читаем данные одного загрузчика.");
 			var beforeCount = readedNodes.Count;
 			var loader = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().First();
 			readedNodes.AddRange(loader.TakeAllUnreadedNodes());
@@ -220,6 +232,7 @@ namespace QS.Project.Journal.DataLoader
 		{
 			var beforeCount = readedNodes.Count;
 			var loaders = AvailableQueryLoaders.Cast<IPieceReader<TNode>>().ToList();
+			logger.Debug($"Обьединяем данные из {loaders.Count} загрузчиков.");
 			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
 			while (loaders.Any(l => l.NextUnreadedNode() != null)) {
 				if (loaders.Any(l => (l as IQueryLoader<TNode>).HasUnloadedItems && l.NextUnreadedNode() == null))
