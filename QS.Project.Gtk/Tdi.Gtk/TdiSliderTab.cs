@@ -26,6 +26,18 @@ namespace QS.Tdi.Gtk
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 
+		#region Внешние зависимости
+		readonly ITDIWidgetResolver widgetResolver;
+		#endregion
+
+		public TdiSliderTab(ITdiJournal jour, ITDIWidgetResolver widgetResolver)
+		{
+			this.widgetResolver = widgetResolver ?? throw new ArgumentNullException(nameof(widgetResolver));
+			Journal = jour;
+			HandleSwitchIn = OnSwitchIn;
+			HandleSwitchOut = OnSwitchOut;
+		}
+
 		public string TabName {
 			get {
 				if(activeDialog != null)
@@ -88,7 +100,7 @@ namespace QS.Tdi.Gtk
 					}
 					journal = value;
 					journal.TabNameChanged += OnJournalTabNameChanged;
-					journalWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+					journalWidget = widgetResolver.Resolve(value);
 
 					if(journalWidget == null)
 						throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
@@ -131,7 +143,7 @@ namespace QS.Tdi.Gtk
 						boxSeparator.PackEnd(separatorLower, true, true, 0);
 
 						dialogVBox = new VBox();
-						activeGlgWidget = TDIMain.TDIWidgetResolver.Resolve(value);
+						activeGlgWidget = widgetResolver.Resolve(value);
 
 						if(activeGlgWidget == null)
 							throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
@@ -273,13 +285,6 @@ namespace QS.Tdi.Gtk
 		}
 
 		#endregion
-
-		public TdiSliderTab(ITdiJournal jour)
-		{
-			Journal = jour;
-			HandleSwitchIn = OnSwitchIn;
-			HandleSwitchOut = OnSwitchOut;
-		}
 
 		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{

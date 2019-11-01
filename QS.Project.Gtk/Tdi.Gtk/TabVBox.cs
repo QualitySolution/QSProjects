@@ -15,7 +15,7 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-		public TabVBox (ITdiTab tabWidget)
+		public TabVBox (ITdiTab tabWidget, ITDIWidgetResolver widgetResolver)
 		{
 			tab = tabWidget;
 			titleLabel = new Label ();
@@ -32,7 +32,7 @@ namespace QS.Tdi.Gtk
 
 			this.PackStart (titleLabel, false, true, 2);
 
-			TabWidget = TDIMain.TDIWidgetResolver.Resolve(tabWidget);
+			TabWidget = widgetResolver.Resolve(tabWidget);
 			if(TabWidget == null)
 				throw new InvalidCastException($"Ошибка приведения типа {nameof(ITdiTab)} к типу {nameof(Widget)}.");
 

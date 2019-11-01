@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,6 +21,10 @@ namespace QS.Tdi.Gtk
 		public ReadOnlyCollection<TdiTabInfo> Tabs;
 		public bool DefaultUseSlider = true;
 		private List<TdiTabInfo> _tabs;
+
+		#region Внешние зависимости
+		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
+		#endregion
 
 		public TdiNotebook()
 		{
@@ -93,12 +97,12 @@ namespace QS.Tdi.Gtk
 			box.ShowAll();
 			var journalTab = tab as ITdiJournal;
 			if(journalTab != null && ((journalTab.UseSlider == null && DefaultUseSlider) || journalTab.UseSlider.Value)) {
-				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab);
+				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab, WidgetResolver);
 				tab = slider;
 			}
 			tab.TabNameChanged += OnTabNameChanged;
 			_tabs.Add(new TdiTabInfo(tab, nameLable));
-			var vbox = new TabVBox(tab);
+			var vbox = new TabVBox(tab, WidgetResolver);
 			int inserted;
 			if(after >= 0)
 				inserted = this.InsertPage(vbox, box, after + 1);
@@ -127,7 +131,7 @@ namespace QS.Tdi.Gtk
 
 			var journalTab = slaveTab as ITdiJournal;
 			if(journalTab != null && (!journalTab.UseSlider.HasValue && DefaultUseSlider || journalTab.UseSlider.Value)) {
-				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)slaveTab);
+				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)slaveTab, WidgetResolver);
 				slaveTab = slider;
 			}
 
