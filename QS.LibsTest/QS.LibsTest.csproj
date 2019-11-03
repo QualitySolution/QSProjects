@@ -110,6 +110,7 @@
     <Compile Include="TestApp\HibernateMapping\Document2Map.cs" />
     <Compile Include="TestApp\JournalViewModels\DocumentsJournalViewModel.cs" />
     <Compile Include="Tdi\GtkUI\TdiNotebookTest.cs" />
+    <Compile Include="Navigation\TdiNavigationManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -138,6 +139,7 @@
     <Folder Include="TestApp\HibernateMapping\" />
     <Folder Include="TestApp\JournalViewModels\" />
     <Folder Include="Tdi\GtkUI\" />
+    <Folder Include="Navigation\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
