@@ -16,7 +16,7 @@ namespace QS.Project.Search.GtkUI
 		/// Задержка в передачи запроса на поиск во view model.
 		/// Измеряется в милсекундах.
 		/// </summary>
-		public static uint QueryDelay = 1500;
+		public static uint QueryDelay = 0;
 		#endregion
 
 		SearchViewModel viewModel;
