@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Threading;
 using Gdk;
 using NLog;
 
@@ -35,8 +34,6 @@ namespace QS.Project.Search.GtkUI
 			entrySearch3.Changed += EntSearchText_Changed;
 			entrySearch4.Changed += EntSearchText_Changed;
 		}
-
-		private CancellationTokenSource cts = new CancellationTokenSource();
 
 		void EntSearchText_Changed(object sender, EventArgs e)
 		{
@@ -93,7 +90,7 @@ namespace QS.Project.Search.GtkUI
 
 		public override void Destroy()
 		{
-			cts.Cancel();
+			GLib.Source.Remove(timerId);
 			base.Destroy();
 		}
 	}
