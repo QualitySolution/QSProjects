@@ -77,9 +77,11 @@ namespace QS.Navigation.GtkUI
 			var masterOfClosedPage = SlavePages.FirstOrDefault(x => x.SlavePage.ViewModel == e.Tab);
 			if (masterOfClosedPage != null)
 				masterOfClosedPage.MasterPage.SlavePages.Remove(masterOfClosedPage.SlavePage);
-			var pageToRemove = pages.First(x => x.ViewModel == e.Tab);
-			pages.Remove(pageToRemove);
-			(pageToRemove as IPageInternal).OnClosed();
+			var pageToRemove = pages.FirstOrDefault(x => x.ViewModel == e.Tab);
+			if(pageToRemove != null) {
+				pages.Remove(pageToRemove);
+				(pageToRemove as IPageInternal).OnClosed();
+			}
 		}
 
 		#endregion
