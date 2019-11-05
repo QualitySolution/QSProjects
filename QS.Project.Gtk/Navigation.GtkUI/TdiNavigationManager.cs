@@ -195,8 +195,14 @@ namespace QS.Navigation.GtkUI
 					SwitchOn(openPage);
 				else {
 					openPage = makeViewModelPage(hash);
-					tdiNotebook.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
-					pages.Add(openPage);
+					if(master is ITdiJournal && (master as ITdiTab).TabParent is TdiSliderTab) {
+						var slider = (master as ITdiTab).TabParent as TdiSliderTab;
+						slider.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
+					}
+					else {
+						tdiNotebook.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
+						pages.Add(openPage);
+					}
 				}
 			}
 			return (IPage<TViewModel>)openPage;
