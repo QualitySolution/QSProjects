@@ -220,6 +220,8 @@
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
+    <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
