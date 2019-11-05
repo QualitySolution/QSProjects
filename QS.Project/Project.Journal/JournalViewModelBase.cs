@@ -66,7 +66,6 @@ namespace QS.Project.Journal
 			PopupActionsList = new List<IJournalAction>();
 
 			Search = new SearchViewModel(interactiveService);
-			SelectionMode = JournalSelectionMode.None;
 
 			UseSlider = false;
 		}
