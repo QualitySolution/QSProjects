@@ -50,6 +50,7 @@ namespace QS.Project.Search.GtkUI
 			this.entrySearch = new global::Gtk.Entry();
 			this.entrySearch.WidthRequest = 50;
 			this.entrySearch.CanFocus = true;
+			this.entrySearch.Events = ((global::Gdk.EventMask)(1024));
 			this.entrySearch.Name = "entrySearch";
 			this.entrySearch.IsEditable = true;
 			this.entrySearch.InvisibleChar = '●';
@@ -69,6 +70,7 @@ namespace QS.Project.Search.GtkUI
 			this.entrySearch2 = new global::Gtk.Entry();
 			this.entrySearch2.WidthRequest = 50;
 			this.entrySearch2.CanFocus = true;
+			this.entrySearch2.Events = ((global::Gdk.EventMask)(1024));
 			this.entrySearch2.Name = "entrySearch2";
 			this.entrySearch2.IsEditable = true;
 			this.entrySearch2.InvisibleChar = '●';
@@ -88,6 +90,7 @@ namespace QS.Project.Search.GtkUI
 			this.entrySearch3 = new global::Gtk.Entry();
 			this.entrySearch3.WidthRequest = 50;
 			this.entrySearch3.CanFocus = true;
+			this.entrySearch3.Events = ((global::Gdk.EventMask)(1024));
 			this.entrySearch3.Name = "entrySearch3";
 			this.entrySearch3.IsEditable = true;
 			this.entrySearch3.InvisibleChar = '●';
@@ -107,6 +110,7 @@ namespace QS.Project.Search.GtkUI
 			this.entrySearch4 = new global::Gtk.Entry();
 			this.entrySearch4.WidthRequest = 50;
 			this.entrySearch4.CanFocus = true;
+			this.entrySearch4.Events = ((global::Gdk.EventMask)(1024));
 			this.entrySearch4.Name = "entrySearch4";
 			this.entrySearch4.IsEditable = true;
 			this.entrySearch4.InvisibleChar = '●';
@@ -153,6 +157,10 @@ namespace QS.Project.Search.GtkUI
 			this.ylabelSearchAnd3.Hide();
 			this.entrySearch4.Hide();
 			this.Hide();
+			this.entrySearch.WidgetEvent += new global::Gtk.WidgetEventHandler(this.OnEntrySearchWidgetEvent);
+			this.entrySearch2.WidgetEvent += new global::Gtk.WidgetEventHandler(this.OnEntrySearchWidgetEvent);
+			this.entrySearch3.WidgetEvent += new global::Gtk.WidgetEventHandler(this.OnEntrySearchWidgetEvent);
+			this.entrySearch4.WidgetEvent += new global::Gtk.WidgetEventHandler(this.OnEntrySearchWidgetEvent);
 			this.buttonAddAnd.Clicked += new global::System.EventHandler(this.OnButtonAddAndClicked);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler(this.OnButtonSearchClearClicked);
 		}

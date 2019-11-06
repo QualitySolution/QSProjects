@@ -78,12 +78,13 @@ namespace QS.Project.Search.GtkUI
 			searchEntryShown = count;
 		}
 
-		protected void OnEntSearchTextWidgetEvent(object o, Gtk.WidgetEventArgs args)
+		protected void OnEntrySearchWidgetEvent(object o, Gtk.WidgetEventArgs args)
 		{
 			if(args.Event.Type == EventType.KeyPress) {
 				EventKey eventKey = args.Args.OfType<EventKey>().FirstOrDefault();
 				if(eventKey != null && (eventKey.Key == Gdk.Key.Return || eventKey.Key == Gdk.Key.KP_Enter)) {
-					viewModel.Update();
+					GLib.Source.Remove(timerId);
+					RunSearch();
 				}
 			}
 		}
