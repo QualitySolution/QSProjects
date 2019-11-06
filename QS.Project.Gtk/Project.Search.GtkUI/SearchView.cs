@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Threading;
 using Gdk;
 using NLog;
 
@@ -16,7 +15,7 @@ namespace QS.Project.Search.GtkUI
 		/// Задержка в передачи запроса на поиск во view model.
 		/// Измеряется в милсекундах.
 		/// </summary>
-		public static uint QueryDelay = 1500;
+		public static uint QueryDelay = 0;
 		#endregion
 
 		SearchViewModel viewModel;
@@ -35,8 +34,6 @@ namespace QS.Project.Search.GtkUI
 			entrySearch3.Changed += EntSearchText_Changed;
 			entrySearch4.Changed += EntSearchText_Changed;
 		}
-
-		private CancellationTokenSource cts = new CancellationTokenSource();
 
 		void EntSearchText_Changed(object sender, EventArgs e)
 		{
@@ -81,19 +78,20 @@ namespace QS.Project.Search.GtkUI
 			searchEntryShown = count;
 		}
 
-		protected void OnEntSearchTextWidgetEvent(object o, Gtk.WidgetEventArgs args)
+		protected void OnEntrySearchWidgetEvent(object o, Gtk.WidgetEventArgs args)
 		{
 			if(args.Event.Type == EventType.KeyPress) {
 				EventKey eventKey = args.Args.OfType<EventKey>().FirstOrDefault();
 				if(eventKey != null && (eventKey.Key == Gdk.Key.Return || eventKey.Key == Gdk.Key.KP_Enter)) {
-					viewModel.Update();
+					GLib.Source.Remove(timerId);
+					RunSearch();
 				}
 			}
 		}
 
 		public override void Destroy()
 		{
-			cts.Cancel();
+			GLib.Source.Remove(timerId);
 			base.Destroy();
 		}
 	}

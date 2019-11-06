@@ -120,7 +120,7 @@ namespace QSWidgetLib
 				};
 				HScale timeScale = new HScale(0, 1439, 5) {
 					DrawValue = false,
-					Value = 720
+					Value = Date.Subtract(Date.Date).TotalMinutes
 				};
 				timeScale.Adjustment.PageIncrement = 60;
 				timeScale.ValueChanged += (o, args) => {
