@@ -75,7 +75,6 @@ namespace QS.Widgets.GtkUI
 	{
 		private IUnitOfWork uow;
 		private UserBase user;
-		private IList<UserPermissionNode> originalPermissionList = new List<UserPermissionNode>();
 		private IList<UserPermissionNode> deletePermissionList = new List<UserPermissionNode>();
 		private IList<TypeOfEntity> originalTypeOfEntityList;
 		public PermissionListViewModel PermissionListViewModel { get; set; }
@@ -94,7 +93,7 @@ namespace QS.Widgets.GtkUI
 
 			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow);
 			//убираем типы уже загруженные в права
-			foreach(var item in originalPermissionList) {
+			foreach(var item in permissionList) {
 				if(originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
 					originalTypeOfEntityList.Remove(item.TypeOfEntity);
 				}
@@ -111,7 +110,7 @@ namespace QS.Widgets.GtkUI
 			ObservableTypeOfEntitiesList.Remove(entityNode);
 
 			UserPermissionNode savedPermission;
-			var foundOriginalPermission = originalPermissionList.FirstOrDefault(x => x.TypeOfEntity == entityNode);
+			var foundOriginalPermission = PermissionListViewModel.PermissionsList.OfType<UserPermissionNode>().FirstOrDefault(x => x.TypeOfEntity == entityNode);
 			if(foundOriginalPermission == null) {
 				savedPermission = new UserPermissionNode();
 				savedPermission.EntityUserOnlyPermission = new EntityUserPermission() {
