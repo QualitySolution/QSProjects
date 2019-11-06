@@ -69,13 +69,13 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
+      <HintPath>..\packages\MySql.Data.8.0.18\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.6.7\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\packages\Google.Protobuf.3.9.1\lib\net45\Google.Protobuf.dll</HintPath>
+      <HintPath>..\packages\Google.Protobuf.3.10.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
