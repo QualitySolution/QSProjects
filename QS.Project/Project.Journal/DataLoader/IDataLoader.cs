@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal.DataLoader
 {
@@ -44,6 +46,8 @@ namespace QS.Project.Journal.DataLoader
 		void GetTotalCount();
 
 		void LoadData(bool nextPage);
+
+		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
 	}
 
 	/// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Services;
 
@@ -50,9 +51,9 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Настройка работы
 
-		public readonly List<IQueryLoader<TNode>> QueryLoaders = new List<IQueryLoader<TNode>>();
+		public readonly IList<IQueryLoader<TNode>> QueryLoaders = new List<IQueryLoader<TNode>>();
 
-		public readonly List<SortRule<TNode>> OrderRules = new List<SortRule<TNode>>();
+		public readonly IList<SortRule<TNode>> OrderRules = new List<SortRule<TNode>>();
 
 		public bool DynamicLoadingEnabled { get; set; } = true;
 
@@ -78,7 +79,7 @@ namespace QS.Project.Journal.DataLoader
 		/// <param name="queryFunc">Функция формирования запроса.</param>
 		/// <typeparam name="TRoot">Тип корня запроса</typeparam>
 		public void AddQuery<TRoot>(Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc)
-			where TRoot : class
+			where TRoot : class , IDomainObject
 		{
 			QueryLoaders.Add(new DynamicQueryLoader<TRoot, TNode>(queryFunc, unitOfWorkFactory));
 		}
@@ -335,6 +336,12 @@ namespace QS.Project.Journal.DataLoader
 				logger.Info($"{(DateTime.Now - startCounting).TotalSeconds} сек.");
 				TotalCountingInProgress = false;
 			});
+		}
+
+		public IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow)
+		{
+			foreach(var item in QueryLoaders)
+				yield return item.GetNode(entityId, uow);
 		}
 
 		#endregion

@@ -61,10 +61,29 @@ namespace QS.Project.Journal
 			Refresh();
 		}
 
-		internal override void OnItemsSelected(object[] selectedNodes)
+		internal override void OnItemsSelected(params object[] selectedNodes)
 		{
 			OnEntitySelectedResult.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
 			Close(false);
+		}
+
+		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
+		{
+			if(e?.Entity == null)
+				return;
+			if(!(e.Entity is IDomainObject))
+				return;
+			if(SelectionMode == JournalSelectionMode.None)
+				return;
+
+			TNode node = DataLoader.GetNodes((e.Entity as IDomainObject).Id, UoW)
+						.OfType<TNode>()
+						.FirstOrDefault(x => x.EntityType == e.Entity.GetType());
+
+			if(node == null)
+				return;
+			if(AskQuestion("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
+				OnItemsSelected(new object[] { node });
 		}
 
 		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction)
@@ -129,7 +148,7 @@ namespace QS.Project.Journal
 
 		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке. Желательно для новых журналов настраивать DataLoader напрямую.")]
 		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
-			where TEntity : class
+			where TEntity : class, IDomainObject
 		{
 			if (DataLoader == null)
 				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
@@ -228,6 +247,10 @@ namespace QS.Project.Journal
 					(selected) => {
 						var docConfig = entityConfig.EntityDocumentConfigurations.First();
 						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
+
+						if(tab is ITdiDialog)
+							((ITdiDialog)tab).EntitySaved += Tab_EntitySaved;
+
 						TabParent.OpenTab(() => tab, this);
 						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
 							HideJournal(TabParent);
