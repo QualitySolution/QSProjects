@@ -99,9 +99,9 @@ namespace QS.Project.Journal.DataLoader
 
 		public TNode GetNode(int entityId, IUnitOfWork uow)
 		{
-			return queryFunc.Invoke(uow).Clone()
-					.Where(x => x.Id == entityId)
-					.Take(1).List<TNode>().FirstOrDefault();
+			var query = (queryFunc.Invoke(uow) as IQueryOver<TRoot, TRoot>);
+			return query.Where(x => x.Id == entityId)
+						.Take(1).List<TNode>().FirstOrDefault();
 		}
 
 		#endregion
