@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal.DataLoader
 {
 	public class DynamicQueryLoader<TRoot, TNode> : IQueryLoader<TNode>, IPieceReader<TNode>, IEntityQueryLoader
-		where TRoot : class
+		where TRoot : class, IDomainObject
 		where TNode : class
 	{
 		private readonly Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc;
@@ -94,6 +95,13 @@ namespace QS.Project.Journal.DataLoader
 			var readedCount = ReadedItemsCount;
 			ReadedItemsCount = LoadedItems.Count;
 			return LoadedItems.Skip(readedCount).ToList();
+		}
+
+		public TNode GetNode(int entityId, IUnitOfWork uow)
+		{
+			var query = (queryFunc.Invoke(uow) as IQueryOver<TRoot, TRoot>);
+			return query.Where(x => x.Id == entityId)
+						.Take(1).List<TNode>().FirstOrDefault();
 		}
 
 		#endregion
