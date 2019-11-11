@@ -381,7 +381,7 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-		protected void OnTabClosed(ITdiTab tab)
+		internal void OnTabClosed(ITdiTab tab)
 		{
 			if(TabClosed != null) {
 				TabClosed(this, new TabClosedEventArgs(tab));

@@ -111,6 +111,10 @@
     <Compile Include="TestApp\JournalViewModels\DocumentsJournalViewModel.cs" />
     <Compile Include="Tdi\GtkUI\TdiNotebookTest.cs" />
     <Compile Include="Navigation\TdiNavigationManagerTest.cs" />
+    <Compile Include="TestApp\Dialogs\EmptyDlg.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Dialogs.EmptyDlg.cs" />
+    <Compile Include="TestApp\Dialogs\EmptyJournalTab.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Dialogs.EmptyJournalTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -140,6 +144,7 @@
     <Folder Include="TestApp\JournalViewModels\" />
     <Folder Include="Tdi\GtkUI\" />
     <Folder Include="Navigation\" />
+    <Folder Include="TestApp\Dialogs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
