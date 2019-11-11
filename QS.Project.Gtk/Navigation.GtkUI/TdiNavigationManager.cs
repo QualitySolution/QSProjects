@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.Tdi;
@@ -29,8 +29,8 @@ namespace QS.Navigation.GtkUI
 			get {
 				foreach (var page in pages) {
 					yield return page;
-					foreach (var child in page.ChildPages)
-						yield return child;
+					foreach (var child in page.ChildPagesAll)
+						yield return child.ChildPage;
 				}
 			}
 		}
@@ -42,9 +42,9 @@ namespace QS.Navigation.GtkUI
 				foreach (var page in pages) {
 					if (SlavePages.All(x => x.SlavePage != page))
 						yield return page;
-					foreach (var child in page.ChildPages)
+					foreach (var child in page.ChildPagesAll)
 						if (SlavePages.All(x => x.SlavePage != child))
-							yield return child;
+							yield return child.ChildPage;
 				}
 			}
 		}
@@ -52,8 +52,17 @@ namespace QS.Navigation.GtkUI
 		public IEnumerable<MasterToSlavePair> SlavePages {
 			get {
 				foreach (var page in pages) {
-					foreach (var slave in page.SlavePages)
-						yield return new MasterToSlavePair { MasterPage = page, SlavePage = slave };
+					foreach (var slavePair in page.SlavePagesAll)
+						yield return slavePair;
+				}
+			}
+		}
+
+		public IEnumerable<ParentToChildPair> ChildPages {
+			get {
+				foreach (var page in pages) {
+					foreach (var childPair in page.ChildPagesAll)
+						yield return childPair;
 				}
 			}
 		}
@@ -74,13 +83,20 @@ namespace QS.Navigation.GtkUI
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
 		{
-			var masterOfClosedPage = SlavePages.FirstOrDefault(x => x.SlavePage.ViewModel == e.Tab);
-			if (masterOfClosedPage != null)
-				masterOfClosedPage.MasterPage.SlavePages.Remove(masterOfClosedPage.SlavePage);
+			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage.ViewModel == e.Tab);
+			if (closedPagePair != null)
+				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
 			var pageToRemove = pages.FirstOrDefault(x => x.ViewModel == e.Tab);
 			if(pageToRemove != null) {
 				pages.Remove(pageToRemove);
 				(pageToRemove as IPageInternal).OnClosed();
+			}
+			else {
+				var childPair = ChildPages.FirstOrDefault(x => x.ChildPage.ViewModel == e.Tab);
+				if(childPair != null) {
+					(childPair.ParentPage as IPageInternal).RemoveChildPage(childPair.ChildPage);
+					(childPair.ChildPage as IPageInternal).OnClosed();
+				}
 			}
 		}
 
@@ -88,28 +104,14 @@ namespace QS.Navigation.GtkUI
 
 		#region Поиск
 
-		public IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase
+		public IPage FindPage(ViewModelBase viewModel)
 		{
-			foreach (var page in pages) {
-				var result = FingOnPage<TViewModel>(page, viewModel);
-				if (result != null)
-					return result;
-			}
-			return null;
+			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
 		}
 
-		private IPage<TViewModel> FingOnPage<TViewModel>(IPage page, ViewModelBase viewModel)
-			where TViewModel : ViewModelBase
+		public IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase
 		{
-			if (page.ViewModel == viewModel)
-				return (IPage<TViewModel>)page;
-
-			foreach (var child in page.ChildPages) {
-				var result = FingOnPage<TViewModel>(child, viewModel);
-				if (result != null)
-					return result;
-			}
-			return null;
+			return FindPage(viewModel);
 		}
 
 		#endregion
@@ -178,13 +180,13 @@ namespace QS.Navigation.GtkUI
 					throw new InvalidOperationException($"Страница для {master} не найдена в менеджере.");
 
 				if (hash != null)
-					openPage = masterPage.SlavePages.First(x => x.PageHash == hash);
+					openPage = masterPage.SlavePagesAll.Select(x => x.SlavePage).FirstOrDefault(x => x.PageHash == hash);
 				if (openPage != null)
 					SwitchOn(openPage);
 				else {
 					openPage = makeViewModelPage(hash);
 					tdiNotebook.AddSlaveTab((ITdiTab)master, (ITdiTab)openPage.ViewModel);
-					masterPage.SlavePages.Add(openPage);
+					(masterPage as IPageInternal).AddSlavePage(openPage);
 					pages.Add(openPage);
 				}
 			}
@@ -198,6 +200,8 @@ namespace QS.Navigation.GtkUI
 					if(master is ITdiJournal && (master as ITdiTab).TabParent is TdiSliderTab) {
 						var slider = (master as ITdiTab).TabParent as TdiSliderTab;
 						slider.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
+						var masterPage = FindPage(master);
+						(masterPage as IPageInternal).AddChildPage(openPage);
 					}
 					else {
 						tdiNotebook.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
@@ -215,11 +219,5 @@ namespace QS.Navigation.GtkUI
 		{
 			tdiNotebook.SwitchOnTab((ITdiTab)page.ViewModel);
 		}
-	}
-
-	public class MasterToSlavePair
-	{
-		public IPage MasterPage;
-		public IPage SlavePage;
 	}
 }

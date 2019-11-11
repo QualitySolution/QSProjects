@@ -8,7 +8,11 @@ using QS.Project.Domain;
 using QS.Services;
 using QS.Tdi;
 using QS.Tdi.Gtk;
+using QS.Test.GtkUI;
+using QS.Test.TestApp.JournalViewModels;
 using QS.Test.TestApp.ViewModels;
+using QS.Test.TestApp.Views;
+using QS.ViewModels;
 
 namespace QS.Test.Navigation
 {
@@ -110,6 +114,50 @@ namespace QS.Test.Navigation
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
 			navManager.ForceClosePage(firstPage);
+			Assert.That(eventRised, Is.True);
+		}
+
+		[Test(Description = "Проверка что событие о закрытии страницы приходит для вкладки открытой в слайдере.")]
+		public void Page_PageClosedEvent_RisedOnSlidedPageTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var hashGenerator = Substitute.For<IPageHashGenerator>();
+			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+
+			var commonService = Substitute.For<ICommonServices>();
+			var interactiveService = Substitute.For<IInteractiveService>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
+			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
+			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			IPage page = new Page<EntityViewModel>(viewModel, "hash_1");
+			bool eventRised = false;
+			page.PageClosed += (sender, e) => eventRised = true;
+
+			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService);
+			IPage journal = new Page<TabViewModelBase>(journalViewModel, "journal_1");
+
+			var tabJournalWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
+			var tabWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
+			var resolver = Substitute.For<ITDIWidgetResolver>();
+			resolver.Resolve(Arg.Any<TdiSliderTab>()).Returns(x => x[0]);
+			resolver.Resolve(journalViewModel).Returns(tabJournalWidget);
+			resolver.Resolve(viewModel).Returns(tabWidget);
+			var tdiNotebook = Substitute.For<TdiNotebook>();
+			tdiNotebook.WidgetResolver = resolver;
+
+			var pageFactory = Substitute.For<IViewModelsPageFactory>();
+			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1").ReturnsForAnyArgs(journal);
+			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1").ReturnsForAnyArgs(page);
+
+			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory);
+
+			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
+
+			var dialogPage = navManager.OpenViewModel<EntityViewModel>(journalPage.ViewModel);
+
+			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
+
+			navManager.ForceClosePage(dialogPage);
 			Assert.That(eventRised, Is.True);
 		}
 	}
