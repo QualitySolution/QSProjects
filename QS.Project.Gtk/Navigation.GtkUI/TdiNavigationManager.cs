@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.Tdi;
@@ -49,11 +49,11 @@ namespace QS.Navigation.GtkUI
 			}
 		}
 
-		public IEnumerable<MasterToSlasePair> SlavePages {
+		public IEnumerable<MasterToSlavePair> SlavePages {
 			get {
 				foreach (var page in pages) {
 					foreach (var slave in page.SlavePages)
-						yield return new MasterToSlasePair {MasterPage = page, SlavePage = slave };
+						yield return new MasterToSlavePair { MasterPage = page, SlavePage = slave };
 				}
 			}
 		}
@@ -217,7 +217,7 @@ namespace QS.Navigation.GtkUI
 		}
 	}
 
-	public class MasterToSlasePair
+	public class MasterToSlavePair
 	{
 		public IPage MasterPage;
 		public IPage SlavePage;
