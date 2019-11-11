@@ -31,8 +31,10 @@ namespace QS.DomainModel.Tracking
 			RemoveLost();
 			lock (RegisteredUoWs)
 			{
+				var uowLink = RegisteredUoWs.FirstOrDefault(x => x.Value.UnitOfWork == uow).Value;
+				var createdString = $"Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})";
 				RegisteredUoWs.Remove(uow.Session.GetHashCode());
-				logger.Debug("UnitOfWork завершил работу. {0}", ActiveUowCountText());
+				logger.Debug("UnitOfWork завершил работу. {0}. {1}.", createdString, ActiveUowCountText());
 			}
 		}
 
