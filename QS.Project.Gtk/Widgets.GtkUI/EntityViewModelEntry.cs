@@ -310,6 +310,9 @@ namespace QS.Widgets.GtkUI
 			using(var autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector()) {
 				autoCompleteSelector.SearchValues(entryObject.Text);
 
+				while(autoCompleteSelector.Items == null)
+					Thread.Sleep(200);
+
 				foreach(var item in autoCompleteSelector.Items) {
 					if(item is JournalNodeBase) {
 						completionListStore.AppendValues(
