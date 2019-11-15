@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -144,7 +144,10 @@ namespace QS.Tdi.Gtk
 
 		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
-			AddTab(tab, this.PageNum(GetTabBoxForTab(afterTab)));
+			if(afterTab == null)
+				AddTab(tab);
+			else
+				AddTab(tab, this.PageNum(GetTabBoxForTab(afterTab)));
 		}
 
 		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
@@ -378,7 +381,7 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-		protected void OnTabClosed(ITdiTab tab)
+		internal void OnTabClosed(ITdiTab tab)
 		{
 			if(TabClosed != null) {
 				TabClosed(this, new TabClosedEventArgs(tab));

@@ -280,6 +280,7 @@ namespace QS.Tdi.Gtk
 			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
+			(TabParent as TdiNotebook)?.OnTabClosed(dlg);
 			OnSladerTabChanged();
 			return true;
 		}

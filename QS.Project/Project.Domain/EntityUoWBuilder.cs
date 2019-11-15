@@ -7,6 +7,7 @@ namespace QS.Project.Domain
 	{
 		bool IsNewEntity { get; }
 		IUnitOfWork RootUoW { get; }
+		int EntityOpenId { get; }
 
 		IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory)
 			where TEntity : class, IDomainObject, new();

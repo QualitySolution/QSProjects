@@ -72,4 +72,18 @@
       </widget>
     </child>
   </widget>
+  <widget class="Gtk.Bin" id="QS.Test.TestApp.Dialogs.EmptyDlg" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="QS.Test.TestApp.Dialogs.EmptyJournalTab" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
 </stetic-interface>
