@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Autofac;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
@@ -69,7 +70,10 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.Filter.HidenByDefault;
 			}
 
-			var searchView = new SearchView((SearchViewModel)ViewModel.Search);
+			Widget searchView = ViewModel.AutofacScope?.ResolveOptionalNamed<Widget>("GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search));
+			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
+			if(searchView == null)
+				searchView = new SearchView((SearchViewModel)ViewModel.Search);
 			hboxSearch.Add(searchView);
 			searchView.Show();
 

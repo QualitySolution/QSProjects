@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using NLog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Services;
@@ -13,7 +15,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal
+	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -55,10 +57,10 @@ namespace QS.Project.Journal
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
-
 		public virtual bool? UseSlider { get; protected set; }
-
 		#endregion
+
+		public ILifetimeScope AutofacScope { get; set; }
 
 		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
 		{
