@@ -14,26 +14,27 @@ namespace QSWidgetLib
 			}
 			set { 
 				validationMode = value;
-				switch (validationMode) {
-				case ValidationType.numeric:
-					this.TextInserted += NumericValidate;
-					break;
-				case ValidationType.phone:
-					this.MaxLength = 19;
-					this.TextInserted += PhoneTextInserted;
-					this.TextDeleted += PhoneTextDeleted;
-					break;
-				case ValidationType.price:
-					regex = new Regex (@"^[0-9]{1,6}(\.[0-9]{1,2})?$");
-					this.Changed += RegexValidate;
-					break;
-				case ValidationType.email:
-					regex = new Regex (@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
-						@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
-					this.Changed += RegexValidate;
-					break;
-				default:
-					break;
+				switch(validationMode) {
+					case ValidationType.numeric:
+						this.TextInserted += NumericValidate;
+						break;
+					case ValidationType.phone:
+						this.MaxLength = 19;
+						this.TextInserted += PhoneTextInserted;
+						this.TextDeleted += PhoneTextDeleted;
+						break;
+					case ValidationType.price:
+						regex = new Regex(@"^[0-9]{1,6}(\.[0-9]{1,2})?$");
+						this.Changed += RegexValidate;
+						break;
+					case ValidationType.email:
+						this.Changed += RemoveCasualSymbols;
+						regex = new Regex(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
+							@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
+						this.Changed += RegexValidate;
+						break;
+					default:
+						break;
 				}
 			}
 		}
@@ -136,6 +137,26 @@ namespace QSWidgetLib
 				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal, new Gdk.Color(255,0,0));
 			else
 				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal);
+		}
+
+		private bool ignoreCasualSymbols;
+		public bool IgnoreCasualSymbols 
+		{
+			get => ignoreCasualSymbols;
+			set {
+				if(value)
+					this.Changed += RemoveCasualSymbols;
+				else
+					this.Changed -= RemoveCasualSymbols;
+
+				ignoreCasualSymbols = value;
+			}
+		}
+
+		protected void RemoveCasualSymbols(object sender, System.EventArgs Args)
+		{
+			this.Text = Text.Replace(" ", "");
+			this.Text = Text.Replace("\n", "");
 		}
 	}
 
