@@ -194,7 +194,7 @@
     <Compile Include="Project.Journal\JournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalAction.cs" />
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
-    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Project.Services\IInteractiveService.cs" />

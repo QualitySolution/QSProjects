@@ -17,7 +17,7 @@ using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TNode> : JournalViewModelBase
+	public abstract class EntitiesJournalViewModelBase<TNode> : JournalViewModelBase
 		where TNode : JournalEntityNodeBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -42,7 +42,7 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
-		protected EntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices?.InteractiveService)
+		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices?.InteractiveService)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			UseSlider = true;
