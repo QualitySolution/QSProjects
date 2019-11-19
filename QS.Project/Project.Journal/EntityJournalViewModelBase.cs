@@ -1,134 +1,132 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Util;
-using QS.Deletion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
+using QS.Project.Domain;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Project.Services;
 using QS.Services;
-using QS.Tdi;
+using QS.Utilities.Text;
+using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TNode> : JournalViewModelBase
-		where TNode : JournalEntityNodeBase
+	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
+		where TEntity : class, IDomainObject
+		where TEntityViewModel : ViewModelBase
+		where TNode : class
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		#region Обязательные зависимости
+		#endregion
+		#region Опциональные зависимости
+		protected INavigationManager NavigationManager; //Необязательный так как передопределнные методы открытия диалогов могут быть заменены на неиспользуемые менеджер навигации.
+		protected IDeleteEntityService DeleteEntityService; //Опционально аналогично предыдущиему сервису.
+		public ICurrentPermissionService CurrentPermissionService { get; set; }
+		#endregion
 
-		private readonly ICommonServices commonServices;
+		protected EntityJournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigationManager = null,
+			IDeleteEntityService deleteEntityService = null,
+			ICurrentPermissionService currentPermissionService = null
+			) : base(unitOfWorkFactory, interactiveService)
+		{
+			NavigationManager = navigationManager;
+			CurrentPermissionService = currentPermissionService;
+			DeleteEntityService = deleteEntityService;
 
-		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
+			var dataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
+			dataLoader.CurrentPermissionService = currentPermissionService;
+			dataLoader.AddQuery<TEntity>(ItemsQuery);
+			DataLoader = dataLoader;
+
+			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
+				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
+
+			CreateNodeActions();
+
+			var names = typeof(TEntity).GetSubjectNames();
+			if(!String.IsNullOrEmpty(names?.NominativePlural))
+				TabName = names.NominativePlural.StringToTitleCase();
+
+			//Поиск
+			Search.OnSearch += Search_OnSearch;
+			searchHelper = new SearchHelper(Search);
+
+			UpdateOnChanges(typeof(TEntity));
+		}
+
+		protected override void CreateNodeActions()
+		{
+			base.CreateNodeActions();
+
+			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
+			bool canEdit = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanUpdate;
+			bool canDelete = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanDelete;
+
+			var addAction = new JournalAction("Добавить",
+					(selected) => canCreate,
+					(selected) => true,
+					(selected) => CreateEntityDialog()
+					);
+			NodeActionsList.Add(addAction);
+
+			var editAction = new JournalAction("Изменить",
+					(selected) => canEdit,
+					(selected) => true,
+					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
+					);
+			NodeActionsList.Add(editAction);
+
+			if(SelectionMode == JournalSelectionMode.None)
+				RowActivatedAction = editAction;
+
+			var deleteAction = new JournalAction("Удалить",
+					(selected) => canDelete,
+					(selected) => true,
+					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray())
+					);
+			NodeActionsList.Add(deleteAction);
+		}
+
+		/// <summary>
+		/// Функция формирования запроса.
+		/// ВАЖНО: Необходимо следить чтобы в запросе не было INNER JOIN с ORDER BY и LIMIT.
+		/// Иначе запрос с LIMIT будет выполнятся также медленно как и без него.
+		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
+		/// </summary>
+		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);
+
+		protected virtual void CreateEntityDialog()
+		{
+			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForCreate());
+		}
+
+		protected virtual void EditEntityDialog(TNode node)
+		{
+			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForOpen(DomainHelper.GetId(node)));
+		}
+
+		protected virtual void DeleteEntities(TNode[] nodes)
+		{
+			foreach(var node in nodes)
+				DeleteEntityService.DeleteEntity<TEntity>(DomainHelper.GetId(node));
+		}
 
 		public override Type NodeType => typeof(TNode);
 
-		private IJournalFilter filter;
-		public override IJournalFilter Filter {
-			get => filter;
-			protected set {
-				if(filter != null)
-					filter.OnFiltered -= FilterViewModel_OnFiltered;
-				filter = value;
-				if(filter != null)
-					filter.OnFiltered += FilterViewModel_OnFiltered;
-			}
-		}
-
-		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
-
-		protected EntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices?.InteractiveService)
-		{
-			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
-			UseSlider = true;
-			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
-			Search.OnSearch += Search_OnSearch;
-			searchHelper = new SearchHelper(Search);
-		}
+		#region Поиск
 
 		void Search_OnSearch(object sender, EventArgs e)
 		{
 			Refresh();
 		}
-
-		void FilterViewModel_OnFiltered(object sender, EventArgs e)
-		{
-			Refresh();
-		}
-
-		internal override void OnItemsSelected(params object[] selectedNodes)
-		{
-			OnEntitySelectedResult.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
-			Close(false);
-		}
-
-		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
-		{
-			if(e?.Entity == null)
-				return;
-			if(!(e.Entity is IDomainObject))
-				return;
-			if(SelectionMode == JournalSelectionMode.None)
-				return;
-
-			TNode node = DataLoader.GetNodes((e.Entity as IDomainObject).Id, UoW)
-						.OfType<TNode>()
-						.FirstOrDefault(x => x.EntityType == e.Entity.GetType());
-
-			if(node == null)
-				return;
-			if(AskQuestion("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
-				OnItemsSelected(new object[] { node });
-		}
-
-		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction)
-		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
-		{
-			if(queryFunction == null) {
-				throw new ArgumentNullException(nameof(queryFunction));
-			}
-
-			CreateLoader(queryFunction);
-
-			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
-			configurator.OnConfigurationFinished += (sender, e) => {
-				var config = e.Config;
-				if(EntityConfigs.ContainsKey(config.EntityType)) {
-					throw new InvalidOperationException($"Конфигурация для сущности ({config.EntityType.Name}) уже была добавлена.");
-				}
-				EntityConfigs.Add(config.EntityType, config);
-			};
-			return configurator;
-		}
-
-		protected void FinishJournalConfiguration()
-		{
-			UpdateAllEntityPermissions();
-			CreateNodeActions();
-			CreatePopupActions();
-		}
-
-		#region Ordering
-
-		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке загрузки. Желательно для новых журналов настраивать DataLoader напрямую.")]
-		protected void SetOrder(Func<TNode, object> orderFunc, bool desc = false)
-		{
-			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
-			threadLoader.ShowLateResults = false;
-			if(threadLoader == null)
-				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
-
-			threadLoader.MergeInOrderBy(orderFunc, desc);
-		}
-
-		#endregion Ordering
-
-		#region Search
 
 		private readonly SearchHelper searchHelper;
 
@@ -137,210 +135,11 @@ namespace QS.Project.Journal
 			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
 		}
 
-		protected ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] propertiesExpr)
+		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
 		{
 			return searchHelper.GetSearchCriterion(propertiesExpr);
 		}
 
-		#endregion Search
-
-		#region Entity load configuration
-
-		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке. Желательно для новых журналов настраивать DataLoader напрямую.")]
-		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
-			where TEntity : class, IDomainObject
-		{
-			if (DataLoader == null)
-				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
-
-			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
-			if (threadLoader == null)
-				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
-			threadLoader.ShowLateResults = false;
-			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не перепысывать все старые журналы в водовозе. Надесь этот метот целиком в будущем удалим.
-			if(commonServices.PermissionService != null && commonServices.UserService != null)
-				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
-
-			threadLoader.AddQuery<TEntity>(queryFunc);
-		}
-
-
-		#endregion Entity load configuration
-
-		#region Permissions
-
-		protected void UpdateAllEntityPermissions()
-		{
-			foreach(var entityConfig in EntityConfigs) {
-				UpdateEntityPermissions(entityConfig.Key);
-			}
-		}
-
-		protected virtual void UpdateEntityPermissions<TEntity>()
-		{
-			UpdateEntityPermissions(typeof(TEntity));
-		}
-
-		protected virtual void UpdateEntityPermissions(Type entityType)
-		{
-			IPermissionResult entityPermissionResult = commonServices.PermissionService.ValidateUserPermission(entityType, commonServices.UserService.CurrentUserId);
-
-			if(EntityConfigs.ContainsKey(entityType)) {
-				EntityConfigs[entityType].PermissionResult = entityPermissionResult;
-			}
-		}
-
-		#endregion Permissions
-
-		#region Actions
-
-		protected override void CreateNodeActions()
-		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
-			CreateDefaultAddActions();
-			CreateDefaultEditAction();
-			CreateDefaultDeleteAction();
-		}
-
-		protected override void CreatePopupActions()
-		{
-		}
-
-		private void CreateDefaultAddActions()
-		{
-			if(!EntityConfigs.Any()) {
-				return;
-			}
-
-			var totalCreateDialogConfigs = EntityConfigs
-				.Where(x => x.Value.PermissionResult.CanCreate)
-				.Sum(x => x.Value.EntityDocumentConfigurations
-							.Select(y => y.GetCreateEntityDlgConfigs().Count())
-							.Sum());
-
-			if(EntityConfigs.Values.Count(x => x.PermissionResult.CanRead) > 1 || totalCreateDialogConfigs > 1) {
-				var addParentNodeAction = new JournalAction("Добавить", (selected) => true, (selected) => true, (selected) => { });
-				foreach(var entityConfig in EntityConfigs.Values) {
-					foreach(var documentConfig in entityConfig.EntityDocumentConfigurations) {
-						foreach(var createDlgConfig in documentConfig.GetCreateEntityDlgConfigs()) {
-							var childNodeAction = new JournalAction(createDlgConfig.Title,
-								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => {
-									TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this);
-									if(documentConfig.JournalParameters.HideJournalForCreateDialog) {
-										HideJournal(TabParent);
-									}
-								}
-							);
-							addParentNodeAction.ChildActionsList.Add(childNodeAction);
-						}
-					}
-				}
-				NodeActionsList.Add(addParentNodeAction);
-			} else {
-				var entityConfig = EntityConfigs.First().Value;
-				var addAction = new JournalAction("Добавить",
-					(selected) => entityConfig.PermissionResult.CanCreate,
-					(selected) => entityConfig.PermissionResult.CanCreate,
-					(selected) => {
-						var docConfig = entityConfig.EntityDocumentConfigurations.First();
-						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
-
-						if(tab is ITdiDialog)
-							((ITdiDialog)tab).EntitySaved += Tab_EntitySaved;
-
-						TabParent.OpenTab(() => tab, this);
-						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
-							HideJournal(TabParent);
-						}
-					});
-				NodeActionsList.Add(addAction);
-			};
-		}
-
-		private void CreateDefaultEditAction()
-		{
-			var editAction = new JournalAction("Изменить",
-				(selected) => {
-					var selectedNodes = selected.OfType<TNode>();
-					if(selectedNodes == null || selectedNodes.Count() != 1) {
-						return false;
-					}
-					TNode selectedNode = selectedNodes.First();
-					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
-						return false;
-					}
-					var config = EntityConfigs[selectedNode.EntityType];
-					return config.PermissionResult.CanUpdate;
-				},
-				(selected) => true,
-				(selected) => {
-					var selectedNodes = selected.OfType<TNode>();
-					if(selectedNodes == null || selectedNodes.Count() != 1) {
-						return;
-					}
-					TNode selectedNode = selectedNodes.First();
-					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
-						return;
-					}
-					var config = EntityConfigs[selectedNode.EntityType];
-					var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
-
-					TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), this);
-					if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
-						HideJournal(TabParent);
-					}
-				}
-			);
-			if(SelectionMode == JournalSelectionMode.None) {
-				RowActivatedAction = editAction;
-			}
-			NodeActionsList.Add(editAction);
-		}
-
-		private void CreateDefaultDeleteAction()
-		{
-			var deleteAction = new JournalAction("Удалить",
-				(selected) => {
-					var selectedNodes = selected.OfType<TNode>();
-					if(selectedNodes == null || selectedNodes.Count() != 1) {
-						return false;
-					}
-					TNode selectedNode = selectedNodes.First();
-					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
-						return false;
-					}
-					var config = EntityConfigs[selectedNode.EntityType];
-					return config.PermissionResult.CanDelete;
-				},
-				(selected) => true,
-				(selected) => {
-					var selectedNodes = selected.OfType<TNode>();
-					if(selectedNodes == null || selectedNodes.Count() != 1) {
-						return;
-					}
-					TNode selectedNode = selectedNodes.First();
-					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
-						return;
-					}
-					var config = EntityConfigs[selectedNode.EntityType];
-					if(config.PermissionResult.CanDelete) {
-						DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
-					}
-				}
-			);
-			NodeActionsList.Add(deleteAction);
-		}
-
-		private void HideJournal(ITdiTabParent parenTab)
-		{
-			if(TabParent is ITdiSliderTab slider) {
-				slider.IsHideJournal = true;
-			}
-		}
-
-		#endregion Actions
+		#endregion
 	}
 }

@@ -9,7 +9,7 @@ using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntityJournalViewModelBase<TNode> , IEntityAutocompleteSelector
+	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntitiesJournalViewModelBase<TNode> , IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab

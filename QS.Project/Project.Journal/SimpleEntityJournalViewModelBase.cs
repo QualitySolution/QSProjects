@@ -9,7 +9,7 @@ using QS.Utilities.Text;
 
 namespace QS.Project.Journal
 {
-	public abstract class SimpleEntityJournalViewModelBase : EntityJournalViewModelBase<CommonJournalNode>
+	public abstract class SimpleEntityJournalViewModelBase : EntitiesJournalViewModelBase<CommonJournalNode>
 	{
 		public Type EntityType { get; }
 

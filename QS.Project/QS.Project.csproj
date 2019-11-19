@@ -194,7 +194,7 @@
     <Compile Include="Project.Journal\JournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalAction.cs" />
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
-    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Project.Services\IInteractiveService.cs" />
@@ -285,6 +285,7 @@
     <Compile Include="Navigation\INavigationManager.cs" />
     <Compile Include="Navigation\IPage.cs" />
     <Compile Include="Navigation\IPageHashGenerator.cs" />
+    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
     <Compile Include="Navigation\IViewModelsPageFactory.cs" />
     <Compile Include="Navigation\Page.cs" />
@@ -293,6 +294,7 @@
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
+    <Compile Include="Project.Services\IDeleteEntityService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

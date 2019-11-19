@@ -226,6 +226,7 @@
     <Compile Include="Navigation.GtkUI\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
+    <Compile Include="Project.Services.GtkUI\GtkDeleteEntityService.cs" />
     <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
   </ItemGroup>
