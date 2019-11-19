@@ -110,8 +110,8 @@
     <Compile Include="TestApp\HibernateMapping\Document2Map.cs" />
     <Compile Include="TestApp\JournalViewModels\DocumentsJournalViewModel.cs" />
     <Compile Include="Tdi\GtkUI\TdiNotebookTest.cs" />
-    <Compile Include="Project.Journal\JustEntityJournalViewModelBaseTest.cs" />
-    <Compile Include="TestApp\JournalViewModels\FullQuerySetJustEntityJournalViewModel.cs" />
+    <Compile Include="Project.Journal\EntityJournalViewModelBaseTest.cs" />
+    <Compile Include="TestApp\JournalViewModels\FullQuerySetEntityJournalViewModel.cs" />
     <Compile Include="Navigation\TdiNavigationManagerTest.cs" />
     <Compile Include="TestApp\Dialogs\EmptyDlg.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Dialogs.EmptyDlg.cs" />

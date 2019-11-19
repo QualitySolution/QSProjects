@@ -285,7 +285,7 @@
     <Compile Include="Navigation\INavigationManager.cs" />
     <Compile Include="Navigation\IPage.cs" />
     <Compile Include="Navigation\IPageHashGenerator.cs" />
-    <Compile Include="Project.Journal\JustEntityJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
     <Compile Include="Navigation\IViewModelsPageFactory.cs" />
     <Compile Include="Navigation\Page.cs" />

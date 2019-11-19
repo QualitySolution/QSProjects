@@ -16,7 +16,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JustEntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
 		where TEntity : class, IDomainObject
 		where TEntityViewModel : ViewModelBase
 		where TNode : class
@@ -29,7 +29,7 @@ namespace QS.Project.Journal
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
 		#endregion
 
-		protected JustEntityJournalViewModelBase(
+		protected EntityJournalViewModelBase(
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager = null,

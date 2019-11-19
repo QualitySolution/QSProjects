@@ -13,7 +13,7 @@ using System.Threading;
 namespace QS.Test.Project.Journal
 {
 	[TestFixture()]
-	public class JustEntityJournalViewModelBaseTest : InMemoryDBTestFixtureBase
+	public class EntityJournalViewModelBaseTest : InMemoryDBTestFixtureBase
 	{
 		[Test(Description = "Тест корректного получения данных из журнала при установке запроса целиком.")]
 		public void ItemsQuery_FullSetTest()
@@ -35,7 +35,7 @@ namespace QS.Test.Project.Journal
 
 				var interactiveService = Substitute.For<IInteractiveService>();
 
-				var model = new FullQuerySetJustEntityJournalViewModel(UnitOfWorkFactory, interactiveService);
+				var model = new FullQuerySetEntityJournalViewModel(UnitOfWorkFactory, interactiveService);
 
 				ManualResetEvent oSignalEvent = new ManualResetEvent(false);
 				Exception treadException = null;
@@ -58,7 +58,7 @@ namespace QS.Test.Project.Journal
 				if (treadException != null)
 					throw treadException;
 				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
-				var result = (IList<JustDocumentJournalNode>)model.Items;
+				var result = (IList<FullQuerySetDocumentJournalNode>)model.Items;
 				Assert.That(result.Count, Is.EqualTo(3));
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
 				Assert.That(result[1].Date, Is.EqualTo(new DateTime(2019, 2, 2)));
