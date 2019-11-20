@@ -11,8 +11,5 @@ namespace QS.Project.DB
 
 		internal static Func<DbConnection> GetConnectionDB;
 		public static DbConnection ConnectionDB => GetConnectionDB();
-
-		internal static Func<MySqlConnectionStringBuilder> GetConnectionStringBuilder;
-		public static MySqlConnectionStringBuilder ConnectionStringBuilder => GetConnectionStringBuilder();
 	}
 }
