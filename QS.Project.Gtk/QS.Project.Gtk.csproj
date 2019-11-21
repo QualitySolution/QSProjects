@@ -202,7 +202,7 @@
     <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
-    <Compile Include="Views.GtkUI\EntityWidgetViewBase.cs" />
+    <Compile Include="Views.GtkUI\WidgetViewBase.cs" />
     <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
