@@ -2,7 +2,7 @@
 using QS.ViewModels;
 namespace QS.Views.GtkUI
 {
-	public abstract class EntityWidgetViewBase<TViewModel> : Gtk.Bin
+	public abstract class WidgetViewBase<TViewModel> : Gtk.Bin
 		where TViewModel : UoWWidgetViewModelBase
 	{
 		TViewModel viewModel;
@@ -14,12 +14,12 @@ namespace QS.Views.GtkUI
 			}
 		}
 
-		protected EntityWidgetViewBase(TViewModel viewModel)
+		protected WidgetViewBase(TViewModel viewModel)
 		{
 			this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		}
 
-		protected EntityWidgetViewBase() { }
+		protected WidgetViewBase() { }
 
 		protected virtual void ConfigureWidget() => Sensitive = ViewModel != null;
 	}
