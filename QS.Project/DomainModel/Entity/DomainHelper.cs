@@ -143,11 +143,13 @@ namespace QS.DomainModel.Entity
 			}
 		}
 
+		[Obsolete("Нужно в будущем выпилить отсюда этот метод. Во первых они полностью дублирую аналогичные в DialogHelper, во вторых они очень косвенно относятся к доменной модели и в DialogHelper им самое место.")]
 		public static string GenerateDialogHashName<TEntity>(int id) where TEntity : IDomainObject
 		{
 			return GenerateDialogHashName(typeof(TEntity), id);
 		}
 
+		[Obsolete("Нужно в будущем выпилить отсюда этот метод. Во первых они полностью дублирую аналогичные в DialogHelper, во вторых они очень косвенно относятся к доменной модели и в DialogHelper им самое место.")]
 		public static string GenerateDialogHashName(Type entityType, int id)
 		{
 			if(!typeof(IDomainObject).IsAssignableFrom(entityType))
