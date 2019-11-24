@@ -13,7 +13,7 @@ namespace QS.Updater
 
 		public void CheckUpdateDB()
 		{
-			DB.DBUpdater.TryUpdate();
+			DB.DBUpdater.TryUpdate(QSProjectsLib.QSMain.ConnectionStringBuilder);
 		}
 	}
 }

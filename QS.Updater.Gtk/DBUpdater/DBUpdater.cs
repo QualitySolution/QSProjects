@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Gtk;
+using MySql.Data.MySqlClient;
 using QS.Dialog.GtkUI;
 using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
@@ -145,7 +146,7 @@ namespace QS.Updater.DB
 			Environment.Exit(1);
 		}
 
-		public static void TryUpdate()
+		public static void TryUpdate(MySqlConnectionStringBuilder connectionStringBuilder)
 		{
 			logger.Debug (System.Reflection.Assembly.GetCallingAssembly().FullName);
 			Version currentDB = Version.Parse(MainSupport.BaseParameters.Version);
@@ -160,13 +161,12 @@ namespace QS.Updater.DB
 					NotAdminErrorAndExit(false, update.Source, update.Destanation);
 
 				//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
-				var builder = Project.DB.Connection.ConnectionStringBuilder;
-				builder.ConnectionTimeout = 240;
+				connectionStringBuilder.ConnectionTimeout = 240;
 
 				var dlg = new DBUpdateProcess (
 					update, 
 					new MySQLProvider(
-						builder.GetConnectionString(true), 
+						connectionStringBuilder.GetConnectionString(true), 
 						new GtkRunOperationService(), 
 						new GtkQuestionDialogsInteractive()));
 				dlg.Show ();
@@ -177,7 +177,7 @@ namespace QS.Updater.DB
 
 				MainSupport.LoadBaseParameters ();
 				if (appVersion.Major != update.Destanation.Major && appVersion.Minor != update.Destanation.Minor)
-					TryUpdate ();
+					TryUpdate (connectionStringBuilder);
 			}
 			else
 			{

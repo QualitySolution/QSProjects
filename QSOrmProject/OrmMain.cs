@@ -244,7 +244,6 @@ namespace QSOrmProject
 			//FIXME Временные пробросы на этап перехода на QS.Project
 			QS.Project.Repositories.UserRepository.GetCurrentUserId = () => QSMain.User.Id;
 			QS.Project.DB.Connection.GetConnectionString = () => QSMain.ConnectionString;
-			QS.Project.DB.Connection.GetConnectionStringBuilder = () => QSMain.ConnectionStringBuilder;
 			QS.Project.DB.Connection.GetConnectionDB = () => QSMain.ConnectionDB;
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
