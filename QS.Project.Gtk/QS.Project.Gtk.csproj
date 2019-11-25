@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QS</RootNamespace>
+    <RootNamespace>QS.GtkUI</RootNamespace>
     <AssemblyName>QS.Project.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
