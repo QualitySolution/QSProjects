@@ -38,6 +38,36 @@ namespace QS.Project.Journal
 			ExternalNotifyChangedWith(typeof(TEntity));
 		}
 
+		#region Управление стандартными кнопками
+
+		protected bool addActionEnabled = true;
+		protected bool editActionEnabled = true;
+		protected bool deleteActionEnabled = true;
+
+		public void SetActionsVisible(bool addActionEnabled = true, bool editActionEnabled = true, bool deleteActionEnabled = true)
+		{
+			this.addActionEnabled = addActionEnabled;
+			this.editActionEnabled = editActionEnabled;
+			this.deleteActionEnabled = deleteActionEnabled;
+
+			CreateNodeActions();
+		}
+
+		protected override void CreateNodeActions()
+		{
+			NodeActionsList.Clear();
+			CreateDefaultSelectAction();
+
+			if(addActionEnabled)
+				CreateDefaultAddActions();
+			if(editActionEnabled)
+				CreateDefaultEditAction();
+			if(deleteActionEnabled)
+				CreateDefaultDeleteAction();
+		}
+
+		#endregion
+
 		public void ExternalNotifyChangedWith(params Type[] entityTypes)
 		{
 			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdate, entityTypes);

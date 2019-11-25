@@ -207,7 +207,7 @@ namespace QS.Project.Journal
 		{
 		}
 
-		private void CreateDefaultAddActions()
+		protected void CreateDefaultAddActions()
 		{
 			if(!EntityConfigs.Any()) {
 				return;
@@ -260,7 +260,7 @@ namespace QS.Project.Journal
 			};
 		}
 
-		private void CreateDefaultEditAction()
+		protected void CreateDefaultEditAction()
 		{
 			var editAction = new JournalAction("Изменить",
 				(selected) => {
@@ -300,7 +300,7 @@ namespace QS.Project.Journal
 			NodeActionsList.Add(editAction);
 		}
 
-		private void CreateDefaultDeleteAction()
+		protected void CreateDefaultDeleteAction()
 		{
 			var deleteAction = new JournalAction("Удалить",
 				(selected) => {
