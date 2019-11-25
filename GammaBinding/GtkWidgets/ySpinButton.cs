@@ -18,6 +18,7 @@ namespace Gamma.GtkWidgets
 				(w => w.ValueAsInt),
 				(w => w.ValueAsDecimal),
 				(w => w.ValueAsShort),
+				(w => w.ValueAsUint)
 			});
 		}
 
@@ -28,6 +29,7 @@ namespace Gamma.GtkWidgets
 				(w => w.ValueAsInt),
 				(w => w.ValueAsDecimal),
 				(w => w.ValueAsShort),
+				(w => w.ValueAsUint)
 			});
 		}
 
@@ -37,7 +39,8 @@ namespace Gamma.GtkWidgets
 				(w => w.Value),
 				(w => w.ValueAsInt),
 				(w => w.ValueAsDecimal),
-				(w => w.ValueAsShort)
+				(w => w.ValueAsShort),
+				(w => w.ValueAsUint)
 			);
 			base.OnValueChanged ();
 		}
@@ -45,6 +48,15 @@ namespace Gamma.GtkWidgets
 		public decimal ValueAsDecimal {
 			get { return Convert.ToDecimal (Value); }
 			set { Value = Convert.ToDouble (value); }
+		}
+
+		public uint ValueAsUint {
+			get {
+				if(Value >= 0)
+					return Convert.ToUInt32(Value);
+				return 0;
+			}
+			set { Value = Convert.ToDouble(value); }
 		}
 
 		new public int ValueAsInt {
