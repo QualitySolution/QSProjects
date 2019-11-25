@@ -91,6 +91,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ColumnMapping<TNode> MinWidth(int pixels)
+		{
+			TreeViewColumn.MinWidth = pixels;
+			return this;
+		}
+
 		public ColumnMapping<TNode> Resizable (bool resizeble = true)
 		{
 			TreeViewColumn.Resizable = resizeble;
