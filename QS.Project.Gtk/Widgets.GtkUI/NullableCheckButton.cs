@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
@@ -23,7 +23,7 @@ namespace Vodovoz.ViewWidgets
 		public virtual Pixbuf NoIcon {
 			get {
 				if(noIcon == null)
-					noIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.Icons.GtkUI.close-button.png").ScaleSimple(13, 13, InterpType.Bilinear);
+					noIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.GtkUI.Icons.close-button.png").ScaleSimple(13, 13, InterpType.Bilinear);
 				return noIcon;
 			}
 			set => noIcon = value;
@@ -33,7 +33,7 @@ namespace Vodovoz.ViewWidgets
 		public virtual Pixbuf OkIcon {
 			get {
 				if(okIcon == null)
-					okIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.Icons.GtkUI.check-symbol.png").ScaleSimple(13, 13, InterpType.Bilinear);
+					okIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.GtkUI.Icons.check-symbol.png").ScaleSimple(13, 13, InterpType.Bilinear);
 				return okIcon;
 			}
 			set => okIcon = value;
@@ -43,7 +43,7 @@ namespace Vodovoz.ViewWidgets
 		public virtual Pixbuf NullIcon {
 			get {
 				if(nullIcon == null)
-					nullIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.Icons.GtkUI.blank-square.png").ScaleSimple(13, 13, InterpType.Bilinear);
+					nullIcon = new Pixbuf(System.Reflection.Assembly.GetExecutingAssembly(), "QS.GtkUI.Icons.blank-square.png").ScaleSimple(13, 13, InterpType.Bilinear);
 				return nullIcon;
 			}
 			set => nullIcon = value;

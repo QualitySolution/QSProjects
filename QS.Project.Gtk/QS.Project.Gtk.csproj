@@ -242,7 +242,7 @@
     <Folder Include="Helpers\" />
     <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
     <Folder Include="Permissions\" />
-    <Folder Include="Icons.GtkUI\" />
+    <Folder Include="Icons\" />
     <Folder Include="Project.Search.GtkUI\" />
     <Folder Include="Journal.GtkUI\" />
     <Folder Include="Views.GtkUI\" />
@@ -284,12 +284,12 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Icons.GtkUI\DateRange.png" />
-    <EmbeddedResource Include="Icons.GtkUI\Сalendar.png" />
-    <EmbeddedResource Include="Icons.GtkUI\SendErrorReport.png" />
-    <EmbeddedResource Include="Icons.GtkUI\blank-square.png" />
-    <EmbeddedResource Include="Icons.GtkUI\check-symbol.png" />
-    <EmbeddedResource Include="Icons.GtkUI\close-button.png" />
+    <EmbeddedResource Include="Icons\DateRange.png" />
+    <EmbeddedResource Include="Icons\Сalendar.png" />
+    <EmbeddedResource Include="Icons\SendErrorReport.png" />
+    <EmbeddedResource Include="Icons\blank-square.png" />
+    <EmbeddedResource Include="Icons\check-symbol.png" />
+    <EmbeddedResource Include="Icons\close-button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
