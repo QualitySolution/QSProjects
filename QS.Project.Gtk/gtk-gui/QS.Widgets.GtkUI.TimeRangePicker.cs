@@ -37,7 +37,7 @@ namespace QS.Widgets.GtkUI
 			this.btnSetRange.Name = "btnSetRange";
 			this.btnSetRange.UseUnderline = true;
 			global::Gtk.Image w2 = new global::Gtk.Image();
-			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.GtkUI.Icons.GtkUI.DateRange.png ");
+			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.GtkUI.Icons.DateRange.png ");
 			this.btnSetRange.Image = w2;
 			this.hbox1.Add(this.btnSetRange);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.btnSetRange]));

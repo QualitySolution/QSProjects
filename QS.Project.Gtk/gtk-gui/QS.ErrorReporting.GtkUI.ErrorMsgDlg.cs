@@ -234,7 +234,7 @@ namespace QS.ErrorReporting.GtkUI
 			this.buttonSendReport.UseUnderline = true;
 			this.buttonSendReport.Label = global::Mono.Unix.Catalog.GetString("Отправить отчет");
 			global::Gtk.Image w19 = new global::Gtk.Image();
-			w19.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.GtkUI.SendErrorReport.png");
+			w19.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.GtkUI.Icons.SendErrorReport.png");
 			this.buttonSendReport.Image = w19;
 			w18.Add(this.buttonSendReport);
 			global::Gtk.ButtonBox.ButtonBoxChild w20 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w18[this.buttonSendReport]));

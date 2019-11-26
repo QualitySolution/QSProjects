@@ -36,7 +36,7 @@ namespace QS.Widgets.GtkUI
 			this.buttonPickDatePeriod.Name = "buttonPickDatePeriod";
 			this.buttonPickDatePeriod.UseUnderline = true;
 			global::Gtk.Image w2 = new global::Gtk.Image();
-			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.GtkUI.Icons.GtkUI.DateRange.png");
+			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.GtkUI.Icons.DateRange.png");
 			this.buttonPickDatePeriod.Image = w2;
 			this.hbox1.Add(this.buttonPickDatePeriod);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonPickDatePeriod]));
