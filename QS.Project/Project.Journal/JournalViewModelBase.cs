@@ -19,8 +19,6 @@ namespace QS.Project.Journal
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		public abstract Type NodeType { get; }
-
 		public virtual IJournalFilter Filter { get; protected set; }
 
 		public virtual IJournalSearch Search { get; set; }

@@ -119,8 +119,6 @@ namespace QS.Project.Journal
 				DeleteEntityService.DeleteEntity<TEntity>(DomainHelper.GetId(node));
 		}
 
-		public override Type NodeType => typeof(TNode);
-
 		#region Поиск
 
 		void Search_OnSearch(object sender, EventArgs e)
