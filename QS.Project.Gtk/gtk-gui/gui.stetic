@@ -1551,7 +1551,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">resource:QS.Icons.GtkUI.DateRange.png</property>
+            <property name="Icon">resource:QS.GtkUI.Icons.GtkUI.DateRange.png</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
             <signal name="Clicked" handler="OnButtonPickDatePeriodClicked" />
@@ -2670,7 +2670,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">resource:QS.Icons.GtkUI.DateRange.png</property>
+            <property name="Icon">resource:QS.GtkUI.Icons.GtkUI.DateRange.png </property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
           </widget>
