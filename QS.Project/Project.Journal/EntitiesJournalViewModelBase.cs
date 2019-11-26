@@ -26,8 +26,6 @@ namespace QS.Project.Journal
 
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
 
-		public override Type NodeType => typeof(TNode);
-
 		private IJournalFilter filter;
 		public override IJournalFilter Filter {
 			get => filter;
