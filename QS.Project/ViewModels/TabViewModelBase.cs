@@ -91,9 +91,9 @@ namespace QS.ViewModels
 		public virtual void Close(bool askSave)
 		{
 			if(askSave)
-				TabParent.AskToCloseTab(this);
+				TabParent?.AskToCloseTab(this);
 			else
-				TabParent.ForceCloseTab(this);
+				TabParent?.ForceCloseTab(this);
 		}
 
 		public void OnTabClosed()
