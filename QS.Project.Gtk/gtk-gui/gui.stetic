@@ -2670,7 +2670,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
-            <property name="Icon">resource:QS.GtkUI.Icons.DateRange.png </property>
+            <property name="Icon">resource:QS.GtkUI.Icons.DateRange.png</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
           </widget>
