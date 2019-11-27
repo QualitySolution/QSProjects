@@ -337,7 +337,6 @@ namespace QS.Widgets.GtkUI
 				logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
 
 				autoCompleteSelector.Dispose();
-				autoCompleteSelector = null;
 			});
 		}
 
