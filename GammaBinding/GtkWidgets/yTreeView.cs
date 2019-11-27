@@ -9,6 +9,7 @@ using Gamma.GtkWidgets.Cells;
 using Gtk;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace Gamma.GtkWidgets
 {
@@ -264,7 +265,12 @@ namespace Gamma.GtkWidgets
 						object newval = null;
 						if(cell.EditingValueConverter == null) {
 							try {
-								newval = Convert.ChangeType(args.NewText, cell.DataPropertyInfo.PropertyType);
+								if(cell.DataPropertyInfo.PropertyType == typeof(decimal)) {
+									string val = args.NewText.Replace('.', ',');
+									newval = Convert.ChangeType(val, cell.DataPropertyInfo.PropertyType, new CultureInfo("ru-RU"));
+								} else {
+									newval = Convert.ChangeType(args.NewText, cell.DataPropertyInfo.PropertyType);
+								}
 							} catch(FormatException ex) {
 								Console.WriteLine("'{0}' is not number", args.NewText);
 							}
