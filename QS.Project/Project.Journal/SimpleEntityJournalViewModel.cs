@@ -84,6 +84,8 @@ namespace QS.Project.Journal
 		private Func<ICriterion> restrictionFunc;
 		private readonly Expression<Func<TEntity, object>> titleExp;
 
+		public event EventHandler ListUpdated;
+
 		public void SetFilter<TFilter>(TFilter filter, Func<TFilter, ICriterion> filterFunc)
 			where TFilter : class, IJournalFilter
 		{
