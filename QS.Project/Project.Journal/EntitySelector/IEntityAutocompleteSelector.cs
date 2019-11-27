@@ -7,5 +7,6 @@ namespace QS.Project.Journal.EntitySelector
 	{
 		IList Items { get; }
 		void SearchValues(params string[] values);
+		event EventHandler ListUpdated;
 	}
 }

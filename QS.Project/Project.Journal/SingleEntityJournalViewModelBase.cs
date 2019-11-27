@@ -15,6 +15,9 @@ namespace QS.Project.Journal
 		where TEntityTab : class, ITdiTab
 	{
 		protected readonly ICommonServices commonServices;
+
+		public event EventHandler ListUpdated;
+
 		public Type EntityType { get; }
 
 		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
@@ -29,6 +32,7 @@ namespace QS.Project.Journal
 			if(!EntityConfigs[EntityType].PermissionResult.CanRead) {
 				AbortOpening($"Нет прав для просмотра документов типа: {EntityType.GetSubjectName()}", "Невозможно открыть журнал");
 			}
+			DataLoader.ItemsListUpdated += (sender, e) => ListUpdated?.Invoke(sender, e);
 		}
 
 		/// <summary>

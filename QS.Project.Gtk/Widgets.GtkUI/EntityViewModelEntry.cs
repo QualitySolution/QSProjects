@@ -300,6 +300,7 @@ namespace QS.Widgets.GtkUI
 			args.RetVal = true;
 		}
 
+		private IEntityAutocompleteSelector autoCompleteSelector;
 		private void FillAutocomplete()
 		{
 			logger.Info("Запрос данных для автодополнения...");
@@ -307,8 +308,16 @@ namespace QS.Widgets.GtkUI
 			if(entitySelectorAutocompleteFactory == null) {
 				return;
 			}
-			using(var autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector()) {
-				autoCompleteSelector.SearchValues(entryObject.Text);
+			autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector();
+			autoCompleteSelector.ListUpdated += OnListUpdated;
+			autoCompleteSelector.SearchValues(entryObject.Text);
+		}
+
+		private void OnListUpdated(object sender, EventArgs e)
+		{
+			Gtk.Application.Invoke((senderObject, eventArgs) => {
+				if(autoCompleteSelector?.Items == null)
+					return;
 
 				foreach(var item in autoCompleteSelector.Items) {
 					if(item is JournalNodeBase) {
@@ -323,11 +332,12 @@ namespace QS.Widgets.GtkUI
 						);
 					}
 				}
-			}
+				entryObject.Completion.Model = completionListStore;
+				entryObject.Completion.PopupCompletion = true;
+				logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
 
-			entryObject.Completion.Model = completionListStore;
-			entryObject.Completion.PopupCompletion = true;
-			logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
+				autoCompleteSelector.Dispose();
+			});
 		}
 
 		protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
