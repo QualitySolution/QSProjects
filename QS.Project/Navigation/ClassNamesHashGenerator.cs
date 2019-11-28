@@ -22,9 +22,19 @@ namespace QS.Navigation
 			return InternalGetHash(typeof(TViewModel), ctorValues);
 		}
 
+		public string GetHash(Type viewModelType, ViewModelBase master, Type[] ctorTypes, object[] ctorValues)
+		{
+			return InternalGetHash(viewModelType, ctorValues);
+		}
+
 		public string GetHashNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs)
 		{
 			return InternalGetHash(typeof(TViewModel), ctorArgs.Values.ToArray());
+		}
+
+		public string GetHashNamedArgs(Type viewModelType, ViewModelBase master, IDictionary<string, object> ctorArgs)
+		{
+			return InternalGetHash(viewModelType, ctorArgs.Values.ToArray());
 		}
 
 		#endregion

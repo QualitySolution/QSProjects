@@ -164,12 +164,30 @@ namespace QS.Navigation
 			);
 		}
 
+		public IPage OpenViewModelTypedArgs(Type viewModelType, ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None)
+		{
+			return OpenViewModelInternal(
+				FindPage(master), options,
+				() => hashGenerator.GetHash(viewModelType, master, ctorTypes, ctorValues),
+				(hash) => viewModelsFactory.CreateViewModelTypedArgs(viewModelType, master, ctorTypes, ctorValues, hash)
+			);
+		}
+
 		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
 				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
 				(hash) => viewModelsFactory.CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash)
+			);
+		}
+
+		public IPage OpenViewModelNamedArgs(Type viewModelType, ViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None)
+		{
+			return OpenViewModelInternal(
+				FindPage(master), options,
+				() => hashGenerator.GetHashNamedArgs(viewModelType, master, ctorArgs),
+				(hash) => viewModelsFactory.CreateViewModelNamedArgs(viewModelType, master, ctorArgs, hash)
 			);
 		}
 
