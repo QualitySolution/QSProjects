@@ -32,6 +32,16 @@ namespace QS.Navigation
 		void ForceClosePage(IPage page);
 	}
 
+	/// <summary>
+	/// Интерфейс специально созданный для переходного периода, пока есть микс диалогов базирующихся чисто на Tdi и ViewModels.
+	/// Его не нужно реализовывать в не Tdi менеджерах. И нужно будет удалить когда чисто TDI диалогов не останется.
+	/// </summary>
+	public interface ITdiCompatibilityNavigation
+	{
+		IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(Tdi.ITdiTab master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(Tdi.ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
+	}
+
 	[Flags]
 	public enum OpenViewModelOptions
 	{

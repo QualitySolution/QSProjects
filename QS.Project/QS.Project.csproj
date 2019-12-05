@@ -296,6 +296,8 @@
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
     <Compile Include="Project.Services\IDeleteEntityService.cs" />
+    <Compile Include="Navigation\PageBase.cs" />
+    <Compile Include="Navigation\TdiTabPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

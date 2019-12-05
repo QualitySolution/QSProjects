@@ -7,7 +7,7 @@ using QS.ViewModels;
 
 namespace QS.Navigation.GtkUI
 {
-	public class TdiNavigationManager : INavigationManager
+	public class TdiNavigationManager : INavigationManager, ITdiCompatibilityNavigation
 	{
 		readonly TdiNotebook tdiNotebook;
 		readonly IPageHashGenerator hashGenerator;
@@ -83,16 +83,22 @@ namespace QS.Navigation.GtkUI
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
 		{
-			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage.ViewModel == e.Tab);
+			ITdiTab closedTab;
+			if(e.Tab is TdiSliderTab tdiSlider)
+				closedTab = tdiSlider.Journal;
+			else
+				closedTab = e.Tab;
+
+			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage.ViewModel == closedTab);
 			if (closedPagePair != null)
 				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
-			var pageToRemove = pages.FirstOrDefault(x => x.ViewModel == e.Tab);
+			var pageToRemove = pages.FirstOrDefault(x => x.ViewModel == closedTab);
 			if(pageToRemove != null) {
 				pages.Remove(pageToRemove);
 				(pageToRemove as IPageInternal).OnClosed();
 			}
 			else {
-				var childPair = ChildPages.FirstOrDefault(x => x.ChildPage.ViewModel == e.Tab);
+				var childPair = ChildPages.FirstOrDefault(x => x.ChildPage.ViewModel == closedTab);
 				if(childPair != null) {
 					(childPair.ParentPage as IPageInternal).RemoveChildPage(childPair.ChildPage);
 					(childPair.ChildPage as IPageInternal).OnClosed();
@@ -149,7 +155,7 @@ namespace QS.Navigation.GtkUI
 		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
 		{
 			return OpenViewModelInternal<TViewModel>(
-				master, options, 
+				FindPage(master), options, 
 				() => hashGenerator.GetHash<TViewModel>(master, ctorTypes, ctorValues),
 				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash)
 			);
@@ -158,7 +164,7 @@ namespace QS.Navigation.GtkUI
 		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
 		{
 			return OpenViewModelInternal<TViewModel>(
-				master, options,
+				FindPage(master), options,
 				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
 				(hash) => viewModelsFactory.CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash)
 			);
@@ -166,7 +172,7 @@ namespace QS.Navigation.GtkUI
 
 		#region Внутренне
 
-		private IPage<TViewModel> OpenViewModelInternal<TViewModel>(ViewModelBase master, OpenViewModelOptions options, Func<string> makeHash, Func<string, IPage<TViewModel>> makeViewModelPage) where TViewModel : ViewModelBase
+		private IPage<TViewModel> OpenViewModelInternal<TViewModel>(IPage masterPage, OpenViewModelOptions options, Func<string> makeHash, Func<string, IPage<TViewModel>> makeViewModelPage) where TViewModel : ViewModelBase
 		{
 			string hash = null;
 			if (!options.HasFlag(OpenViewModelOptions.IgnoreHash))
@@ -175,9 +181,8 @@ namespace QS.Navigation.GtkUI
 			IPage openPage = null;
 
 			if (options.HasFlag(OpenViewModelOptions.AsSlave)) {
-				var masterPage = FindPage(master);
 				if (masterPage == null)
-					throw new InvalidOperationException($"Страница для {master} не найдена в менеджере.");
+					throw new InvalidOperationException($"Отсутствует главная страница для добавляемой подчиненой страницы.");
 
 				if (hash != null)
 					openPage = masterPage.SlavePagesAll.Select(x => x.SlavePage).FirstOrDefault(x => x.PageHash == hash);
@@ -185,7 +190,7 @@ namespace QS.Navigation.GtkUI
 					SwitchOn(openPage);
 				else {
 					openPage = makeViewModelPage(hash);
-					tdiNotebook.AddSlaveTab((ITdiTab)master, (ITdiTab)openPage.ViewModel);
+					tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, (ITdiTab)openPage.ViewModel);
 					(masterPage as IPageInternal).AddSlavePage(openPage);
 					pages.Add(openPage);
 				}
@@ -197,20 +202,49 @@ namespace QS.Navigation.GtkUI
 					SwitchOn(openPage);
 				else {
 					openPage = makeViewModelPage(hash);
-					if(master is ITdiJournal && (master as ITdiTab).TabParent is TdiSliderTab) {
-						var slider = (master as ITdiTab).TabParent as TdiSliderTab;
-						slider.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
-						var masterPage = FindPage(master);
+					var masterTab = (masterPage as ITdiPage)?.TdiTab;
+					if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab) {
+						var slider = masterTab.TabParent as TdiSliderTab;
+						slider.AddTab((ITdiTab)openPage.ViewModel, masterTab);
 						(masterPage as IPageInternal).AddChildPage(openPage);
 					}
 					else {
-						tdiNotebook.AddTab((ITdiTab)openPage.ViewModel, (ITdiTab)master);
+						tdiNotebook.AddTab((ITdiTab)openPage.ViewModel, masterTab);
 						pages.Add(openPage);
 					}
 				}
 			}
 			return (IPage<TViewModel>)openPage;
 		}
+		#endregion
+
+		#region ITdiCompatibilityNavigation
+
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		{
+			var types = new Type[] { };
+			var values = new object[] { };
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options);
+		}
+
+		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		{
+			return OpenViewModelInternal<TViewModel>(
+				FindOrCreateMasterPage(master), options,
+				() => hashGenerator.GetHash<TViewModel>(null, ctorTypes, ctorValues),
+				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash)
+			);
+		}
+
+		private IPage FindOrCreateMasterPage(ITdiTab tab)
+		{
+			ITdiPage page = AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
+			if(page == null)
+				page = new TdiTabPage(tab);
+
+			return (IPage)page;
+		}
+
 		#endregion
 
 		#endregion
