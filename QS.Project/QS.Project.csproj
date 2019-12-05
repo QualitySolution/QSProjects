@@ -296,8 +296,13 @@
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
     <Compile Include="Project.Services\IDeleteEntityService.cs" />
+    <Compile Include="Project.Journal\EntitySelection\IEntitySelector.cs" />
+    <Compile Include="Project.Journal\EntitySelection\JournalViewModelSelector.cs" />
+    <Compile Include="Project.Journal\EntitySelection\EntitySelectedEventArgs.cs" />
     <Compile Include="Navigation\PageBase.cs" />
     <Compile Include="Navigation\TdiTabPage.cs" />
+    <Compile Include="Project.Journal\EntitySelection\EntityViewModelOpener.cs" />
+    <Compile Include="Project.Journal\EntitySelection\IEntityDlgOpener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
