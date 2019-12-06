@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Linq;
 using QS.DomainModel.Entity;
-using QS.Project.Journal.EntitySelection;
 
 namespace QS.ViewModels.Control.EEVM
 {

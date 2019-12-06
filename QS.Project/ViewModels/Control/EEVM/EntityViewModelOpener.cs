@@ -1,9 +1,8 @@
 ﻿using System;
 using QS.Navigation;
 using QS.Project.Domain;
-using QS.ViewModels;
 
-namespace QS.Project.Journal.EntitySelection
+namespace QS.ViewModels.Control.EEVM
 {
 	public class EntityViewModelOpener<TEntityViewModel> : IEntityDlgOpener
 		where TEntityViewModel : ViewModelBase

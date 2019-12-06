@@ -3,10 +3,10 @@ using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Project.Journal;
 using QS.Tdi;
-using QS.ViewModels;
 
-namespace QS.Project.Journal.EntitySelection
+namespace QS.ViewModels.Control.EEVM
 {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
 		where TEntity : IDomainObject

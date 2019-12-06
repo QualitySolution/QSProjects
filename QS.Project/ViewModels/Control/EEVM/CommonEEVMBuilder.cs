@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
-using QS.Project.Journal.EntitySelection;
 
 namespace QS.ViewModels.Control.EEVM
 {

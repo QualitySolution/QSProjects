@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QS.Project.Journal.EntitySelection
+namespace QS.ViewModels.Control.EEVM
 {
 	public interface IEntitySelector
 	{
