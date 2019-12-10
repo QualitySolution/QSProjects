@@ -303,7 +303,6 @@
     <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityEntryViewModel.cs" />
     <Compile Include="ViewModels\Control\EEVM\MagicEEVMBuilderFactory.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IVMDialogEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\PropertyBinder.cs" />
     <Compile Include="ViewModels\Control\IPropertyBinder.cs" />
     <Compile Include="ViewModels\Control\EEVM\EntityViewModelOpener.cs" />
