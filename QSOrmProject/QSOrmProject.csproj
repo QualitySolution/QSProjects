@@ -10,7 +10,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -179,6 +179,10 @@
     <Compile Include="Helpers\ListRefreshHelper.cs" />
     <Compile Include="Properties\OrmAttributes.cs" />
     <Compile Include="ReferenceBase.cs" />
+    <Compile Include="ViewModels\Control\EEVM\OrmReferenceSelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\OrmObjectDialogOpener.cs" />
+    <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilderFactory.cs" />
+    <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -233,6 +237,9 @@
     <Folder Include="Domain\" />
     <Folder Include="Users\" />
     <Folder Include="Permissions\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Control\" />
+    <Folder Include="ViewModels\Control\EEVM\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

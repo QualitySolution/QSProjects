@@ -11,14 +11,14 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity: class, IDomainObject
 	{
 		#region Обазательные параметры
-		CommonEEVMBuilderFactory<TBindedEntity> factory;
-		IPropertyBinder<TEntity> PropertyBinder;
+		protected CommonEEVMBuilderFactory<TBindedEntity> factory;
+		protected IPropertyBinder<TEntity> PropertyBinder;
 		#endregion
 
 		#region Опциональные компоненты
-		IEntitySelector EntitySelector;
-		IEntityDlgOpener EntityDlgOpener;
-		IEntityAutocompleteSelector EntityAutocompleteSelector;
+		protected IEntitySelector EntitySelector;
+		protected IEntityDlgOpener EntityDlgOpener;
+		protected IEntityAutocompleteSelector EntityAutocompleteSelector;
 		#endregion
 
 		public CommonEEVMBuilder(CommonEEVMBuilderFactory<TBindedEntity> builderFactory, Expression<Func<TBindedEntity, TEntity>> bindedProperty)
