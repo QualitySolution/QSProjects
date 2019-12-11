@@ -18,7 +18,7 @@ namespace QS.ViewModels.Control.EEVM
 		#region Опциональные компоненты
 		protected IEntitySelector EntitySelector;
 		protected IEntityDlgOpener EntityDlgOpener;
-		protected IEntityAutocompleteSelector EntityAutocompleteSelector;
+		protected IEntityAutocompleteSelector<TEntity> EntityAutocompleteSelector;
 		#endregion
 
 		public CommonEEVMBuilder(CommonEEVMBuilderFactory<TBindedEntity> builderFactory, Expression<Func<TBindedEntity, TEntity>> bindedProperty)
@@ -40,7 +40,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(factory.DialogViewModel, factory.UnitOfWork, factory.NavigationManager);
-			//FIXME Добавить создание автокомплитера
+			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(factory.UnitOfWork, factory.AutofacScope);
 			return this;
 		}
 

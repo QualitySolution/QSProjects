@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -15,5 +17,21 @@ namespace QS.ViewModels.Control.EEVM
 		void OpenSelectDialog();
 		void CleanEntity();
 		void OpenViewEntity();
+
+		int AutocompleteListSize { get; set; }
+		void AutocompleteTextEdited(string text);
+		string GetAutocompleteTitle(object node);
+		void SetEntityByNode(object node);
+		event EventHandler<AutocompleteUpdatedEventArgs> AutoCompleteListUpdated;
+	}
+
+	public class AutocompleteUpdatedEventArgs : EventArgs
+	{
+		public IList List;
+
+		public AutocompleteUpdatedEventArgs(IList list)
+		{
+			this.List = list ?? throw new ArgumentNullException(nameof(list));
+		}
 	}
 }

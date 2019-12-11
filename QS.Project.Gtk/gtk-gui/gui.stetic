@@ -1950,7 +1950,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.OneEntrySearchView" design-size="403 33">
+  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.OneEntrySearchView" design-size="403 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -2683,7 +2683,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.GtkUI.Views.Control.EntityEntry" design-size="341 33">
+  <widget class="Gtk.Bin" id="QS.GtkUI.Views.Control.EntityEntry" design-size="341 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -2694,8 +2694,11 @@
           <widget class="Gtk.Entry" id="entryObject">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
+            <property name="Events">KeyPressMask</property>
             <property name="IsEditable">False</property>
             <property name="InvisibleChar">●</property>
+            <signal name="WidgetEvent" handler="OnEntryObjectWidgetEvent" />
+            <signal name="Changed" handler="OnEntryObjectChanged" />
           </widget>
           <packing>
             <property name="Position">0</property>

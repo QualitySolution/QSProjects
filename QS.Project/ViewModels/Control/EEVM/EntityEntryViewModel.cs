@@ -8,13 +8,13 @@ namespace QS.ViewModels.Control.EEVM
 	public class EntityEntryViewModel<TEntity> : PropertyChangedBase, IEntityEntryViewModel, IDisposable
 		where TEntity: class
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public EntityEntryViewModel(
 			IPropertyBinder<TEntity> binder = null,
 			IEntitySelector entitySelector = null,
 			IEntityDlgOpener dlgOpener = null,
-			IEntityAutocompleteSelector autocompleteSelector = null
+			IEntityAutocompleteSelector<TEntity> autocompleteSelector = null
 			)
 		{
 			if (binder != null)
@@ -33,6 +33,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
+		public event EventHandler<AutocompleteUpdatedEventArgs> AutoCompleteListUpdated;
 
 		#endregion
 
@@ -138,13 +139,38 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region AutoCompletion
 
-		private IEntityAutocompleteSelector autocompleteSelector;
-		public IEntityAutocompleteSelector AutocompleteSelector {
+		public int AutocompleteListSize { get; set; }
+
+		private IEntityAutocompleteSelector<TEntity> autocompleteSelector;
+		public IEntityAutocompleteSelector<TEntity> AutocompleteSelector {
 			get => autocompleteSelector;
 			set {
 				autocompleteSelector = value;
 				OnPropertyChanged(nameof(SensetiveAutoCompleteEntry));
+				autocompleteSelector.AutocompleteLoaded += AutocompleteSelector_AutocompleteLoaded;
 			}
+		}
+
+		public void AutocompleteTextEdited(string searchText)
+		{
+			var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			AutocompleteSelector?.LoadAutocompletion(words, AutocompleteListSize);
+		}
+
+		void AutocompleteSelector_AutocompleteLoaded(object sender, AutocompleteUpdatedEventArgs e)
+		{
+			AutoCompleteListUpdated?.Invoke(this, e);
+		}
+
+		public string GetAutocompleteTitle(object node)
+		{
+			return AutocompleteSelector.GetTitle(node);
+		}
+
+		public void SetEntityByNode(object node)
+		{
+			Entity = AutocompleteSelector.GetEntityByNode(node);
+			ChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -200,6 +226,15 @@ namespace QS.ViewModels.Control.EEVM
 			if (entity is INotifyPropertyChanged notifyPropertyChanged) {
 				notifyPropertyChanged.PropertyChanged -= Entity_PropertyChanged;
 			}
+
+			if (EntitySelector is IDisposable esd)
+				esd.Dispose();
+			if (AutocompleteSelector is IDisposable asd)
+				asd.Dispose();
+			if (EntityBinder is IDisposable ebd)
+				ebd.Dispose();
+			if (DlgOpener is IDisposable dod)
+				dod.Dispose();
 		}
 	}
 }

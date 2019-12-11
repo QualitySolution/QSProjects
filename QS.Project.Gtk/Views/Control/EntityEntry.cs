@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Gdk;
 using Gtk;
 using QS.ViewModels.Control.EEVM;
 
@@ -12,13 +15,18 @@ namespace QS.GtkUI.Views.Control
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private bool entryChangedByUser;
-
-		private ListStore completionListStore;
+		#region Настройка
+		/// <summary>
+		/// Задержка в передачи запроса на поиск во view model.
+		/// Измеряется в милсекундах.
+		/// </summary>
+		public static uint QueryDelay = 0;
+		#endregion
 
 		public EntityEntry()
 		{
 			this.Build();
+			ConfigureEntryComplition();
 		}
 
 		#region Свойства виджета
@@ -35,8 +43,11 @@ namespace QS.GtkUI.Views.Control
 				buttonSelectEntity.Sensitive = ViewModel.SensetiveSelectButton;
 				buttonClear.Sensitive = ViewModel.SensetiveCleanButton;
 				buttonViewEntity.Sensitive = ViewModel.SensetiveViewButton;
-				entryObject.Sensitive = ViewModel.SensetiveAutoCompleteEntry;
+				entryObject.IsEditable = ViewModel.SensetiveAutoCompleteEntry;
 				InternalSetEntryText(ViewModel.EntityTitle);
+
+				viewModel.AutocompleteListSize = 20;
+				viewModel.AutoCompleteListUpdated += ViewModel_AutoCompleteListUpdated;
 			}
 		}
 
@@ -57,7 +68,7 @@ namespace QS.GtkUI.Views.Control
 					buttonViewEntity.Sensitive = ViewModel.SensetiveViewButton;
 					break;
 				case nameof(IEntityEntryViewModel.SensetiveAutoCompleteEntry):
-					entryObject.Sensitive = ViewModel.SensetiveAutoCompleteEntry;
+					entryObject.IsEditable = ViewModel.SensetiveAutoCompleteEntry;
 					break;
 				case nameof(IEntityEntryViewModel.EntityTitle):
 					InternalSetEntryText(ViewModel.EntityTitle);
@@ -89,9 +100,9 @@ namespace QS.GtkUI.Views.Control
 
 		private void InternalSetEntryText(string text)
 		{
-			entryChangedByUser = false;
+			isInternalTextSet = true;
 			entryObject.Text = text ?? String.Empty; //Тут если приходит null, то имеющееся текстовое значение не сбрасывается виджетом, поэтому null преобразуем в пустую строку.
-			entryChangedByUser = true;
+			isInternalTextSet = false;
 		}
 
 		#endregion
@@ -99,10 +110,14 @@ namespace QS.GtkUI.Views.Control
 
 		#region AutoCompletion
 
+		private bool isInternalTextSet;
+		private ListStore completionListStore;
+		uint timerId;
+
 		private void ConfigureEntryComplition()
 		{
 			entryObject.Completion = new EntryCompletion();
-	//		entryObject.Completion.MatchSelected += Completion_MatchSelected;
+			entryObject.Completion.MatchSelected += Completion_MatchSelected;
 			entryObject.Completion.MatchFunc = Completion_MatchFunc;
 			var cell = new CellRendererText();
 			entryObject.Completion.PackStart(cell, true);
@@ -116,93 +131,88 @@ namespace QS.GtkUI.Views.Control
 
 		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var title = (string)tree_model.GetValue(iter, 0);
-			string pattern = String.Format("{0}", Regex.Escape(entryObject.Text));
-			(cell as CellRendererText).Markup =
-				Regex.Replace(title, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			var title =  viewModel.GetAutocompleteTitle(tree_model.GetValue(iter, 0)) ?? String.Empty;
+			var words = entryObject.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach(var word in words) {
+				string pattern = String.Format("{0}", Regex.Escape(word));
+				title = Regex.Replace(title, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			}
+			(cell as CellRendererText).Markup = title;
 		}
 
-		//[GLib.ConnectBefore]
-		//void Completion_MatchSelected(object o, MatchSelectedArgs args)
-		//{
-		//	var node = args.Model.GetValue(args.Iter, 1);
-		//	SelectSubjectByNode(node);
-		//	OnChangedByUser();
-		//	args.RetVal = true;
-		//}
+		[GLib.ConnectBefore]
+		void Completion_MatchSelected(object o, MatchSelectedArgs args)
+		{
+			var node = args.Model.GetValue(args.Iter, 0);
+			viewModel.SetEntityByNode(node);
+			args.RetVal = true;
+		}
 
-		////private void FillAutocomplete()
-		//{
-		//	logger.Info("Запрос данных для автодополнения...");
-		//	completionListStore = new ListStore(typeof(string), typeof(object));
-		//	if(entitySelectorAutocompleteFactory == null) {
-		//		return;
-		//	}
-		//	using(var autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector()) {
-		//		autoCompleteSelector.SearchValues(entryObject.Text);
+		void ViewModel_AutoCompleteListUpdated(object sender, AutocompleteUpdatedEventArgs e)
+		{
+			Application.Invoke((s, arg) => {
+				FillAutocomplete(e.List);
+			});
+		}
 
-		//		foreach(var item in autoCompleteSelector.Items) {
-		//			if(item is JournalNodeBase) {
-		//				completionListStore.AppendValues(
-		//					(item as JournalNodeBase).Title,
-		//					item
-		//				);
-		//			} else if(item is INodeWithEntryFastSelect) {
-		//				completionListStore.AppendValues(
-		//					(item as INodeWithEntryFastSelect).EntityTitle,
-		//					item
-		//				);
-		//			}
-		//		}
-		//	}
+		private void FillAutocomplete(IList list)
+		{
+			logger.Info("Запрос данных для автодополнения...");
+			completionListStore = new ListStore(typeof(object));
 
-		//	entryObject.Completion.Model = completionListStore;
-		//	entryObject.Completion.PopupCompletion = true;
-		//	logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
-		//}
+			foreach (var item in list) {
+				completionListStore.AppendValues(item);
+			}
 
-		//protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
-		//{
-		//	if(string.IsNullOrWhiteSpace(entryObject.Text)) {
-		//		Entity = null;
-		//		OnChangedByUser();
-		//	}
-		//}
+			entryObject.Completion.Model = completionListStore;
+			entryObject.Completion.PopupCompletion = true;
+			logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
+		}
 
-		//DateTime lastChangedTime = DateTime.Now;
-		//bool fillingInProgress = false;
-		//private CancellationTokenSource cts = new CancellationTokenSource();
+		protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
+		{
+			if(string.IsNullOrWhiteSpace(entryObject.Text)) {
+				viewModel.CleanEntity();
+			}
+		}
 
-		//protected void OnEntryObjectChanged(object sender, EventArgs e)
-		//{
-		//	buttonClear.Sensitive
-		//	lastChangedTime = DateTime.Now;
-		//	if(!fillingInProgress && entryChangedByUser) {
-		//		Task.Run(() => {
-		//			fillingInProgress = true;
-		//			try {
-		//				while((DateTime.Now - lastChangedTime).TotalMilliseconds < 200) {
-		//					if(cts.IsCancellationRequested) {
-		//						return;
-		//					}
-		//				}
-		//				Application.Invoke((s, arg) => {
-		//					FillAutocomplete();
-		//				});
-		//			} catch(Exception ex) {
-		//				logger.Error(ex, $"Ошибка во время формирования автодополнения для {nameof(EntityViewModelEntry)}");
-		//			} finally {
-		//				fillingInProgress = false;
-		//			}
-		//		});
-		//	}
-		//}
+		protected void OnEntryObjectChanged(object sender, EventArgs e)
+		{
+			if(isInternalTextSet)
+				return;
 
-		//protected void SelectSubjectByNode(object node)
-		//{
-		//	Entity = UoW.GetById(EntityType, DomainHelper.GetId(node));
-		//}
+			if (QueryDelay != 0) {
+				GLib.Source.Remove(timerId);
+				timerId = GLib.Timeout.Add(QueryDelay, new GLib.TimeoutHandler(RunSearch));
+			}
+			else
+				RunSearch();
+		}
+
+		bool RunSearch()
+		{
+			viewModel.AutocompleteTextEdited(entryObject.Text);
+			timerId = 0;
+			return false;
+		}
+
+		protected void OnEntryObjectWidgetEvent(object o, WidgetEventArgs args)
+		{
+			if (args.Event.Type == EventType.KeyPress && timerId != 0) {
+				EventKey eventKey = args.Args.OfType<EventKey>().FirstOrDefault();
+				if (eventKey != null && (eventKey.Key == Gdk.Key.Return || eventKey.Key == Gdk.Key.KP_Enter)) {
+					GLib.Source.Remove(timerId);
+					RunSearch();
+				}
+			}
+		}
 
 		#endregion
+
+		public override void Destroy()
+		{
+			GLib.Source.Remove(timerId);
+			base.Destroy();
+		}
 	}
 }

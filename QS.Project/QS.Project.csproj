@@ -10,7 +10,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -310,6 +310,8 @@
     <Compile Include="ViewModels\Control\EEVM\EntitySelectedEventArgs.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntitySelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

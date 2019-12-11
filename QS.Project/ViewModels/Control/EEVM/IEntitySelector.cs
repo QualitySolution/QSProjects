@@ -7,9 +7,4 @@ namespace QS.ViewModels.Control.EEVM
 		object RefreshEntity(object entity);
 		event EventHandler<EntitySelectedEventArgs> EntitySelected;
 	}
-
-	public interface IEntityAutocompleteSelector
-	{
-
-	}
 }

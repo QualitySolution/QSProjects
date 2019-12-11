@@ -27,6 +27,7 @@ namespace QS.GtkUI.Views.Control
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.entryObject = new global::Gtk.Entry();
 			this.entryObject.CanFocus = true;
+			this.entryObject.Events = ((global::Gdk.EventMask)(1024));
 			this.entryObject.Name = "entryObject";
 			this.entryObject.IsEditable = false;
 			this.entryObject.InvisibleChar = '●';
@@ -83,6 +84,8 @@ namespace QS.GtkUI.Views.Control
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.entryObject.WidgetEvent += new global::Gtk.WidgetEventHandler(this.OnEntryObjectWidgetEvent);
+			this.entryObject.Changed += new global::System.EventHandler(this.OnEntryObjectChanged);
 			this.buttonClear.Clicked += new global::System.EventHandler(this.OnButtonClearClicked);
 			this.buttonSelectEntity.Clicked += new global::System.EventHandler(this.OnButtonSelectEntityClicked);
 			this.buttonViewEntity.Clicked += new global::System.EventHandler(this.OnButtonViewEntityClicked);
