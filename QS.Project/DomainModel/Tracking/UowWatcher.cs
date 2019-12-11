@@ -26,6 +26,11 @@ namespace QS.DomainModel.Tracking
 			}
 		}
 
+		public static int GetActiveUoWCount()
+		{
+			return RegisteredUoWs.Count;
+		}
+
 		internal static void UnregisterUow(IUnitOfWorkTracked uow)
 		{
 			RemoveLost();
