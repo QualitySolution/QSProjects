@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
-using QS.ViewModels.Control.EEVM;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -37,6 +36,27 @@ namespace QS.ViewModels.Control.EEVM
 		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournal(ICriteria itemsCriteria)
 		{
 			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsCriteria);
+			return this;
+		}
+
+		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter()
+		{
+			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, typeof(TEntity));
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork);
+			return this;
+		}
+
+		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter(QueryOver itemsQuery)
+		{
+			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsQuery);
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork, itemsQuery);
+			return this;
+		}
+
+		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter(ICriteria itemsCriteria)
+		{
+			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsCriteria);
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork, itemsCriteria);
 			return this;
 		}
 
