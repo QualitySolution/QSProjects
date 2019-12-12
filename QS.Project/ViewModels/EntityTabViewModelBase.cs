@@ -60,7 +60,9 @@ namespace QS.ViewModels
 								notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
 								notifySubject.PropertyChanged += Subject_TitlePropertyChanged;
 							}
-							return prop.GetValue(UoW.RootObject, null).ToString();
+							var title = prop.GetValue(UoW.RootObject, null)?.ToString();
+							if(!String.IsNullOrWhiteSpace(title))
+								return title;
 						}
 
 						prop = UoW.RootObject.GetType().GetProperty("Name");
@@ -69,7 +71,9 @@ namespace QS.ViewModels
 								notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
 								notifySubject.PropertyChanged += Subject_NamePropertyChanged;
 							}
-							return prop.GetValue(UoW.RootObject, null).ToString();
+							var name = prop.GetValue(UoW.RootObject, null)?.ToString();
+							if(!String.IsNullOrWhiteSpace(name))
+								return name;
 						}
 
 						if(subAtt != null && !string.IsNullOrWhiteSpace(subAtt.Nominative))
