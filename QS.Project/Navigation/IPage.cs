@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using QS.Tdi;
 using QS.ViewModels;
 
 namespace QS.Navigation
@@ -30,6 +31,14 @@ namespace QS.Navigation
 		bool RemoveSlavePage(IPage page);
 		void AddChildPage(IPage page);
 		bool RemoveChildPage(IPage page);
+	}
+
+	/// <summary>
+	/// Интерфейс специально созданный на переходный период, пока есть микс из диалогов разных типов Tdi и ViewModel
+	/// </summary>
+	public interface ITdiPage
+	{
+		ITdiTab TdiTab { get; }
 	}
 
 	public interface IPage<TViewModel> : IPage

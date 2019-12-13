@@ -22,11 +22,21 @@ namespace QS.Project.Dialogs.GtkUI
 		/// Если пользователь отказался от сохранения возвращаем null.
 		/// </returns>
 		/// <param name="editObject">Объект для редактирования. Если null создаем новый объект.</param>
-		public static object RunSimpleDialog(Window parent, System.Type objectType, object editObject)
+		public static object RunSimpleDialog(Window parent, Type objectType, object editObject)
+		{
+			if(editObject == null)
+				return RunSimpleDialog(parent, objectType, null);
+
+			return RunSimpleDialog(parent, objectType, 
+				DomainHelper.GetId(editObject), 
+				DomainHelper.GetObjectTilte(editObject));
+		}
+
+		public static object RunSimpleDialog(Window parent, Type objectType, int? id, string lastTitle = null)
 		{
 			string actionTitle = null;
 			string dialogTitle = null;
-			if(editObject == null) {
+			if(id == null) {
 				var names = DomainHelper.GetSubjectNames(objectType);
 				if(names != null && names.Gender != GrammaticalGender.Unknown) {
 					switch(names.Gender) {
@@ -48,7 +58,7 @@ namespace QS.Project.Dialogs.GtkUI
 					actionTitle = "Диалог простого редактирования";
 			}
 			else {
-				actionTitle = $"Простое редактирование '{DomainHelper.GetObjectTilte(editObject)}'";
+				actionTitle = lastTitle == null ? "Простое редактирование" : $"Простое редактирование '{lastTitle}'";
 				var names = DomainHelper.GetSubjectNames(objectType);
 				if(names != null && names.Genitive != null) {
 					dialogTitle = $"Редактирование {names.Genitive}";
@@ -57,22 +67,7 @@ namespace QS.Project.Dialogs.GtkUI
 			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
 			{
 				//Создаем объект редактирования
-				object tempObject;
-				if(editObject == null)
-				{
-					tempObject = Activator.CreateInstance (objectType);
-				}
-				else
-				{
-					if(editObject is IDomainObject)
-					{
-						tempObject = uow.GetById(objectType, (editObject as IDomainObject).Id);
-					}
-					else
-					{
-						throw new InvalidCastException ("У объекта переданного для запуска простого диалога, нет интерфейса IDomainObject, объект не может быть открыт.");
-					}
-				}
+				object tempObject = id.HasValue ? uow.GetById(objectType, id.Value) : Activator.CreateInstance(objectType);
 
 				//Создаем диалог
 				Gtk.Dialog editDialog = new Gtk.Dialog(dialogTitle ?? "Редактирование", parent, Gtk.DialogFlags.Modal);

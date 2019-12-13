@@ -296,6 +296,22 @@
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
     <Compile Include="Project.Services\IDeleteEntityService.cs" />
+    <Compile Include="Navigation\PageBase.cs" />
+    <Compile Include="Navigation\TdiTabPage.cs" />
+    <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
+    <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
+    <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEntityEntryViewModel.cs" />
+    <Compile Include="ViewModels\Control\EEVM\MagicEEVMBuilderFactory.cs" />
+    <Compile Include="ViewModels\Control\PropertyBinder.cs" />
+    <Compile Include="ViewModels\Control\IPropertyBinder.cs" />
+    <Compile Include="ViewModels\Control\EEVM\EntityViewModelOpener.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEntityDlgOpener.cs" />
+    <Compile Include="ViewModels\Control\EEVM\EntitySelectedEventArgs.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEntitySelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
+    <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -333,6 +349,8 @@
     <Folder Include="Project.Services\Interactive\" />
     <Folder Include="Project.Journal\DataLoader\" />
     <Folder Include="Navigation\" />
+    <Folder Include="ViewModels\Control\" />
+    <Folder Include="ViewModels\Control\EEVM\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

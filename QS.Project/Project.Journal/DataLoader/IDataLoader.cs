@@ -33,6 +33,8 @@ namespace QS.Project.Journal.DataLoader
 
 		bool DynamicLoadingEnabled { get; set; }
 
+		int PageSize { set; }
+
 		bool HasUnloadedItems { get; }
 
 		bool FirstPage { get; }

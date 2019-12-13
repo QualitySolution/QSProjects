@@ -230,6 +230,8 @@
     <Compile Include="Project.Services.GtkUI\GtkDeleteEntityService.cs" />
     <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
+    <Compile Include="Views\Control\EntityEntry.cs" />
+    <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -251,6 +253,8 @@
     <Folder Include="Project.Services.GtkUI\" />
     <Folder Include="Validation.GtkUI\" />
     <Folder Include="Navigation.GtkUI\" />
+    <Folder Include="Views\" />
+    <Folder Include="Views\Control\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
