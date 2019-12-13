@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using QS.Tdi;
 using QS.ViewModels;
 
 namespace QS.Navigation
@@ -36,10 +37,14 @@ namespace QS.Navigation
 	/// Интерфейс специально созданный для переходного периода, пока есть микс диалогов базирующихся чисто на Tdi и ViewModels.
 	/// Его не нужно реализовывать в не Tdi менеджерах. И нужно будет удалить когда чисто TDI диалогов не останется.
 	/// </summary>
-	public interface ITdiCompatibilityNavigation
+	public interface ITdiCompatibilityNavigation : INavigationManager
 	{
 		IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(Tdi.ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
 		IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(Tdi.ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+
+		ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, OpenPageOptions options = OpenPageOptions.None) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab, TCtorArg1>(ITdiTab masterTab, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TTab : ITdiTab;
 	}
 
 	[Flags]

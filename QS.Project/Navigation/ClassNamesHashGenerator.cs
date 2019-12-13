@@ -54,9 +54,12 @@ namespace QS.Navigation
 			var paramHash = String.Empty;
 
 			foreach (var ctorArg in ctorValues) {
-				var uowBuilder = ctorArg as IEntityUoWBuilder;
-				if (uowBuilder != null) {
+				if(ctorArg is IEntityUoWBuilder uowBuilder) {
 					paramHash += uowBuilder.IsNewEntity ? "~" : $"#{uowBuilder.EntityOpenId}";
+				}
+
+				if(ctorArg is Type type) {
+					paramHash += $"#{type.Name}";
 				}
 			}
 			return paramHash;

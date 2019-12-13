@@ -232,6 +232,8 @@
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
     <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
+    <Compile Include="Navigation.GtkUI\AutofacTdiPageFactory.cs" />
+    <Compile Include="Navigation.GtkUI\ITdiPageFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
