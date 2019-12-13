@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.Tdi;
@@ -124,35 +124,35 @@ namespace QS.Navigation.GtkUI
 
 		#region Открытие
 
-		public IPage<TViewModel> OpenViewModel<TViewModel>(ViewModelBase master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel>(ViewModelBase master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
 			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(ViewModelBase master, TCtorArg1 arg1, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(ViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1) };
 			var values = new object[] { arg1 };
 			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
 			var values = new object[] { arg1, arg2 };
 			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2), typeof(TCtorArg3) };
 			var values = new object[] { arg1, arg2, arg3 };
 			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			return OpenViewModelInternal<TViewModel>(
 				FindPage(master), options, 
@@ -161,7 +161,7 @@ namespace QS.Navigation.GtkUI
 			);
 		}
 
-		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			return OpenViewModelInternal<TViewModel>(
 				FindPage(master), options,
@@ -175,12 +175,12 @@ namespace QS.Navigation.GtkUI
 		private IPage<TViewModel> OpenViewModelInternal<TViewModel>(IPage masterPage, OpenViewModelOptions options, Func<string> makeHash, Func<string, IPage<TViewModel>> makeViewModelPage) where TViewModel : ViewModelBase
 		{
 			string hash = null;
-			if (!options.HasFlag(OpenViewModelOptions.IgnoreHash))
+			if (!options.HasFlag(OpenPageOptions.IgnoreHash))
 				hash = makeHash();
 
 			IPage openPage = null;
 
-			if (options.HasFlag(OpenViewModelOptions.AsSlave)) {
+			if (options.HasFlag(OpenPageOptions.AsSlave)) {
 				if (masterPage == null)
 					throw new InvalidOperationException($"Отсутствует главная страница для добавляемой подчиненой страницы.");
 
@@ -220,14 +220,16 @@ namespace QS.Navigation.GtkUI
 
 		#region ITdiCompatibilityNavigation
 
-		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		#region Открытие ViewModel
+
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
 			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
 		{
 			return OpenViewModelInternal<TViewModel>(
 				FindOrCreateMasterPage(master), options,

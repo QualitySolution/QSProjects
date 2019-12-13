@@ -78,8 +78,8 @@ namespace QS.Test.Navigation
 			var zeroPage = navManager.OpenViewModel<EntityViewModel>(null);
 			Assert.That(zeroPage, Is.EqualTo(masterPage));
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenViewModelOptions.AsSlave);
-			var secondPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenViewModelOptions.AsSlave);
+			var firstPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -113,8 +113,8 @@ namespace QS.Test.Navigation
 
 			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory);
 
-			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenViewModelOptions.AsSlave);
-			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenViewModelOptions.AsSlave);
+			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));

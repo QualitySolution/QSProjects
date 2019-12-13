@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using QS.ViewModels;
 
@@ -16,13 +16,13 @@ namespace QS.Navigation
 		/// передана страница после которой следует разместить созданную или null для размещения в конце списка.</param>
 		/// <param name="options">Параметры режима открытия.</param>
 		/// <typeparam name="TViewModel">Тип ViewModel которую необходимо создать.</typeparam>
-		IPage<TViewModel> OpenViewModel<TViewModel>(ViewModelBase master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
-		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(ViewModelBase master, TCtorArg1 arg1, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
-		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
-		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModel<TViewModel>(ViewModelBase master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(ViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(ViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
 
-		IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
-		IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
 
 		IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase;
 
@@ -38,12 +38,12 @@ namespace QS.Navigation
 	/// </summary>
 	public interface ITdiCompatibilityNavigation
 	{
-		IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(Tdi.ITdiTab master, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
-		IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(Tdi.ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenViewModelOptions options = OpenViewModelOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(Tdi.ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
+		IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(Tdi.ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase;
 	}
 
 	[Flags]
-	public enum OpenViewModelOptions
+	public enum OpenPageOptions
 	{
 		None = 0,
 		AsSlave = 1,
