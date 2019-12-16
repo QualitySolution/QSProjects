@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.GtkUI.Navigation;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.ViewModels;
 
-namespace QS.Navigation.GtkUI
+namespace QS.Navigation
 {
 	public class TdiNavigationManager : INavigationManager, ITdiCompatibilityNavigation
 	{

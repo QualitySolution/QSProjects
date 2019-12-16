@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using QS.Navigation;
 using QS.Tdi;
 
-namespace QS.GtkUI.Navigation
+namespace QS.Navigation
 {
 	public interface ITdiPageFactory
 	{

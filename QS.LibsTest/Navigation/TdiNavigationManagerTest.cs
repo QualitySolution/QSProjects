@@ -2,9 +2,7 @@
 using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
-using QS.GtkUI.Navigation;
 using QS.Navigation;
-using QS.Navigation.GtkUI;
 using QS.Project.Domain;
 using QS.Services;
 using QS.Tdi;

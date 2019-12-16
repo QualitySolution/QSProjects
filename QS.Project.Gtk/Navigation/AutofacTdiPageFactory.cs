@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using QS.Navigation;
 using QS.Tdi;
 
-namespace QS.GtkUI.Navigation
+namespace QS.Navigation
 {
 	public class AutofacTdiPageFactory : ITdiPageFactory
 	{
