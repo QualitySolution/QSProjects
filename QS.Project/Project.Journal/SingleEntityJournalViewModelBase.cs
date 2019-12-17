@@ -20,13 +20,16 @@ namespace QS.Project.Journal
 
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices,
+			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			EntityType = typeof(TEntity);
 			var config = RegisterEntity(ItemsSourceQueryFunction);
-			config.AddDocumentConfiguration("Добавить", CreateDialogFunction, OpenDialogFunction, (node) => node.EntityType == typeof(TEntity)).FinishConfiguration();
+			config.AddDocumentConfiguration("Добавить", CreateDialogFunction, OpenDialogFunction, (node) => node.EntityType == typeof(TEntity),
+				new JournalParametersForDocument { HideJournalForCreateDialog = hideJournalForCreateDialog, HideJournalForOpenDialog = hideJournalForOpenDialog})
+				.FinishConfiguration();
 			FinishJournalConfiguration();
 
 			if(!EntityConfigs[EntityType].PermissionResult.CanRead) {
