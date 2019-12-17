@@ -5,12 +5,22 @@ namespace QS.Permissions
 {
 	public class DefaultAllowedPermissionService : IPermissionService
 	{
-		public IPermissionResult ValidateUserPermission(Type entityType, int userId)
+		public IPermissionResult ValidateEntityPermissionForCurrentUser(Type entityType)
 		{
 			return new PermissionResult(EntityPermission.AllAllowed);
 		}
 
-		public bool ValidateUserPresetPermission(string permissionName, int userId)
+		public IPermissionResult ValidateEntityPermissionForUser(Type entityType, int userId)
+		{
+			return new PermissionResult(EntityPermission.AllAllowed);
+		}
+
+		public bool ValidatePresetPermissionForCurrentUser(string permissionName)
+		{
+			return true;
+		}
+
+		public bool ValidatePresetPermissionForUser(string permissionName, int userId)
 		{
 			return true;
 		}

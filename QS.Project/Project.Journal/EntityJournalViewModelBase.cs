@@ -26,7 +26,7 @@ namespace QS.Project.Journal
 		#region Опциональные зависимости
 		protected INavigationManager NavigationManager; //Необязательный так как передопределнные методы открытия диалогов могут быть заменены на неиспользуемые менеджер навигации.
 		protected IDeleteEntityService DeleteEntityService; //Опционально аналогично предыдущиему сервису.
-		public ICurrentPermissionService CurrentPermissionService { get; set; }
+		public IPermissionService CurrentPermissionService { get; set; }
 		#endregion
 
 		protected EntityJournalViewModelBase(
@@ -34,7 +34,7 @@ namespace QS.Project.Journal
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager = null,
 			IDeleteEntityService deleteEntityService = null,
-			ICurrentPermissionService currentPermissionService = null
+			IPermissionService currentPermissionService = null
 			) : base(unitOfWorkFactory, interactiveService)
 		{
 			NavigationManager = navigationManager;
@@ -42,11 +42,11 @@ namespace QS.Project.Journal
 			DeleteEntityService = deleteEntityService;
 
 			var dataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
-			dataLoader.CurrentPermissionService = currentPermissionService;
+			dataLoader.PermissionService = currentPermissionService;
 			dataLoader.AddQuery<TEntity>(ItemsQuery);
 			DataLoader = dataLoader;
 
-			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
+			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermissionForCurrentUser(typeof(TEntity)).CanRead)
 				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
 
 			CreateNodeActions();
@@ -66,9 +66,9 @@ namespace QS.Project.Journal
 		{
 			base.CreateNodeActions();
 
-			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
-			bool canEdit = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanUpdate;
-			bool canDelete = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanDelete;
+			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermissionForCurrentUser(typeof(TEntity)).CanCreate;
+			bool canEdit = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermissionForCurrentUser(typeof(TEntity)).CanUpdate;
+			bool canDelete = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermissionForCurrentUser(typeof(TEntity)).CanDelete;
 
 			var addAction = new JournalAction("Добавить",
 					(selected) => canCreate,

@@ -24,7 +24,7 @@ namespace QS.ViewModels
 			Entity.PropertyChanged += Entity_PropertyChanged;
 			this.CommonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
-			PermissionResult = commonServices.PermissionService.ValidateUserPermission(typeof(TEntity), commonServices.UserService.CurrentUserId);
+			PermissionResult = commonServices.PermissionService.ValidateEntityPermissionForUser(typeof(TEntity), commonServices.UserService.CurrentUserId);
 		}
 
 		#region Подписки на изменения свойств

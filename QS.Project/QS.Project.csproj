@@ -269,7 +269,6 @@
     <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
-    <Compile Include="Project.Services\CurrentPermissionServiceAdapter.cs" />
     <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
     <Compile Include="Project.Domain\EntityPermissionBase.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityPermissionExtendedBase.cs" />

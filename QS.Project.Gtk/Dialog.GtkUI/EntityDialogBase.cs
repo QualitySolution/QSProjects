@@ -162,13 +162,7 @@ namespace QS.Dialog.Gtk
 			permissionResult = new PermissionResult(EntityPermission.AllAllowed);
 
 			Type entityType = typeof(TEntity);
-			int? currUserId;
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-				currUserId = UserRepository.GetCurrentUser(uow)?.Id;
-			}
-			if(!currUserId.HasValue)
-				return;
-			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateUserPermission(entityType, currUserId.Value);
+			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateEntityPermissionForCurrentUser(entityType);
 
 			if(!permissionResult.CanRead) {
 				var message = PermissionsSettings.GetEntityReadValidateResult(entityType);

@@ -29,7 +29,7 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Опциональные внешние зависимости
 
-		public ICurrentPermissionService CurrentPermissionService { get; set; }
+		public IPermissionService PermissionService { get; set; }
 
 		#endregion
 
@@ -120,8 +120,8 @@ namespace QS.Project.Journal.DataLoader
 
 		protected IEnumerable<IQueryLoader<TNode>> AvailableQueryLoaders {
 			get { //Если сервис прав доступен, проверяем права. Все загрузчики запросов для которых у нас нет права чтения.
-				if(CurrentPermissionService != null)
-					return QueryLoaders.Where(x => !(x is IEntityQueryLoader) || CurrentPermissionService.ValidateEntityPermission((x as IEntityQueryLoader).EntityType).CanRead);
+				if(PermissionService != null)
+					return QueryLoaders.Where(x => !(x is IEntityQueryLoader) || PermissionService.ValidateEntityPermissionForCurrentUser((x as IEntityQueryLoader).EntityType).CanRead);
 				else
 					return QueryLoaders;
 			}

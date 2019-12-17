@@ -3,14 +3,11 @@ namespace QS.Services
 {
 	public interface IPermissionService
 	{
-		IPermissionResult ValidateUserPermission(Type entityType, int userId);
-		bool ValidateUserPresetPermission(string permissionName, int userId);
-	}
+		IPermissionResult ValidateEntityPermissionForUser(Type entityType, int userId);
+		bool ValidatePresetPermissionForUser(string permissionName, int userId);
 
-	public interface ICurrentPermissionService
-	{
-		IPermissionResult ValidateEntityPermission(Type entityType);
-		bool ValidatePresetPermission(string permissionName);
+		IPermissionResult ValidateEntityPermissionForCurrentUser(Type entityType);
+		bool ValidatePresetPermissionForCurrentUser(string permissionName);
 	}
 
 	public interface IPermissionResult

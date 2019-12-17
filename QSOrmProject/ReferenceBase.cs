@@ -21,8 +21,7 @@ namespace QS
 
 		protected void InitializePermissionValidator()
 		{
-			var user = UserRepository.GetCurrentUser(UoW);
-			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateUserPermission(objectType, user.Id);
+			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateEntityPermissionForCurrentUser(objectType);
 
 			if(!permissionResult.CanRead) {
 				var message = PermissionsSettings.GetEntityReadValidateResult(objectType);

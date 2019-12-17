@@ -62,18 +62,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		private void UpdateUserEntityPermission()
 		{
-			permissionResult = new PermissionResult(EntityPermission.AllAllowed);
-
-			UserBase user;
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-				user = UserRepository.GetCurrentUser(uow);
-			}
-			if(user == null) {
-				logger.Warn("Не определен текущий пользователь, при проверке прав в журнале");
-				return;
-			}
-
-			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateUserPermission(RepresentationModel.EntityType, user.Id);
+			permissionResult = ServicesConfig.CommonServices.PermissionService.ValidateEntityPermissionForCurrentUser(RepresentationModel.EntityType);
 		}
 	}
 

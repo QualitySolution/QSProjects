@@ -157,7 +157,7 @@ namespace QS.Project.Journal
 			threadLoader.ShowLateResults = false;
 			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не перепысывать все старые журналы в водовозе. Надесь этот метот целиком в будущем удалим.
 			if(commonServices.PermissionService != null && commonServices.UserService != null)
-				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
+				threadLoader.PermissionService = commonServices.PermissionService;
 
 			threadLoader.AddQuery<TEntity>(queryFunc);
 		}
@@ -181,7 +181,7 @@ namespace QS.Project.Journal
 
 		protected virtual void UpdateEntityPermissions(Type entityType)
 		{
-			IPermissionResult entityPermissionResult = commonServices.PermissionService.ValidateUserPermission(entityType, commonServices.UserService.CurrentUserId);
+			IPermissionResult entityPermissionResult = commonServices.PermissionService.ValidateEntityPermissionForCurrentUser(entityType);
 
 			if(EntityConfigs.ContainsKey(entityType)) {
 				EntityConfigs[entityType].PermissionResult = entityPermissionResult;

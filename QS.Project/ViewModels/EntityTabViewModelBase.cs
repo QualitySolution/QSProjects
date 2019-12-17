@@ -123,7 +123,7 @@ namespace QS.ViewModels
 			ValidationContext = new ValidationContext(Entity);
 			Entity.PropertyChanged += Entity_PropertyChanged;
 			CurrentUser = UserService.GetCurrentUser(UoW);
-			PermissionResult = CommonServices.PermissionService.ValidateUserPermission(typeof(TEntity), UserService.CurrentUserId);
+			PermissionResult = CommonServices.PermissionService.ValidateEntityPermissionForUser(typeof(TEntity), UserService.CurrentUserId);
 
 			if(!PermissionResult.CanRead) {
 				AbortOpening(PermissionsSettings.GetEntityReadValidateResult(typeof(TEntity)));

@@ -5,18 +5,36 @@ namespace QS.Services
 {
 	public class PermissionService : IPermissionService
 	{
-		readonly IEntityPermissionValidator permissionValidator;
-		readonly IPresetPermissionValidator presetPermissionValidator;
+		private readonly IUserService userService;
+		private readonly IEntityPermissionValidator permissionValidator;
+		private readonly IPresetPermissionValidator presetPermissionValidator;
 
-		public PermissionService(IEntityPermissionValidator entityPermissionValidator, IPresetPermissionValidator presetPermissionValidator)
+		public PermissionService(IUserService userService, IEntityPermissionValidator entityPermissionValidator, IPresetPermissionValidator presetPermissionValidator)
 		{
 			this.presetPermissionValidator = presetPermissionValidator ?? throw new ArgumentNullException(nameof(presetPermissionValidator));
+			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 			this.permissionValidator = entityPermissionValidator ?? throw new ArgumentNullException(nameof(entityPermissionValidator));
 		}
 
-		public IPermissionResult ValidateUserPermission(Type entityType, int userId) => new PermissionResult(permissionValidator.Validate(entityType, userId));
+		public IPermissionResult ValidateEntityPermissionForCurrentUser(Type entityType)
+		{
+			return ValidateEntityPermissionForCurrentUser(entityType);
+		}
 
-		public bool ValidateUserPresetPermission(string permissionName, int userId) => presetPermissionValidator.Validate(permissionName, userId);
+		public IPermissionResult ValidateEntityPermissionForUser(Type entityType, int userId)
+		{
+			return new PermissionResult(permissionValidator.Validate(entityType, userId));
+		}
+
+		public bool ValidatePresetPermissionForCurrentUser(string permissionName)
+		{
+			return ValidatePresetPermissionForUser(permissionName, userService.CurrentUserId);
+		}
+
+		public bool ValidatePresetPermissionForUser(string permissionName, int userId)
+		{
+			return presetPermissionValidator.Validate(permissionName, userId);
+		}
 	}
 
 	public class PermissionResult : IPermissionResult
