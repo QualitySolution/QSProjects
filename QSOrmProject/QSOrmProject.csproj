@@ -184,6 +184,7 @@
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\OrmReferenceAutocompleteSelector.cs" />
+    <Compile Include="yWidgets\yEnumMenuButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
