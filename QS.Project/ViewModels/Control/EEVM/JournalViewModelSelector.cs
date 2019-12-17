@@ -46,9 +46,9 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			IPage<TJournalViewModel> page;
 			if(parrentViewModel != null)
-				page = navigationManager.OpenViewModel<TJournalViewModel>(parrentViewModel, OpenViewModelOptions.AsSlave);
+				page = navigationManager.OpenViewModel<TJournalViewModel>(parrentViewModel, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(parrentTab, OpenViewModelOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(parrentTab, OpenPageOptions.AsSlave);
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if (!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;

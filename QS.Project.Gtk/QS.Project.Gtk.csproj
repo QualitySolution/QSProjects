@@ -224,7 +224,7 @@
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
-    <Compile Include="Navigation.GtkUI\TdiNavigationManager.cs" />
+    <Compile Include="Navigation\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
     <Compile Include="Project.Services.GtkUI\GtkDeleteEntityService.cs" />
@@ -232,6 +232,8 @@
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
     <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
+    <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
+    <Compile Include="Navigation\ITdiPageFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -252,7 +254,7 @@
     <Folder Include="ErrorReporting.GtkUI\" />
     <Folder Include="Project.Services.GtkUI\" />
     <Folder Include="Validation.GtkUI\" />
-    <Folder Include="Navigation.GtkUI\" />
+    <Folder Include="Navigation\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />
   </ItemGroup>

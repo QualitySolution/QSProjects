@@ -6,9 +6,10 @@ namespace QS.Navigation
 {
 	public class TdiTabPage : PageBase, IPage, ITdiPage
 	{
-		public TdiTabPage(ITdiTab tab)
+		public TdiTabPage(ITdiTab tab, string hash)
 		{
 			TdiTab = tab;
+			PageHash = hash;
 		}
 
 		public ITdiTab TdiTab { get; protected set; }

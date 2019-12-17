@@ -3,12 +3,12 @@ using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
 using QS.Navigation;
-using QS.Navigation.GtkUI;
 using QS.Project.Domain;
 using QS.Services;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Test.GtkUI;
+using QS.Test.TestApp.Dialogs;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
@@ -78,8 +78,8 @@ namespace QS.Test.Navigation
 			var zeroPage = navManager.OpenViewModel<EntityViewModel>(null);
 			Assert.That(zeroPage, Is.EqualTo(masterPage));
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenViewModelOptions.AsSlave);
-			var secondPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenViewModelOptions.AsSlave);
+			var firstPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -113,8 +113,8 @@ namespace QS.Test.Navigation
 
 			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory);
 
-			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenViewModelOptions.AsSlave);
-			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenViewModelOptions.AsSlave);
+			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -153,6 +153,35 @@ namespace QS.Test.Navigation
 			navManager.ForceClosePage(page1);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
+		}
+
+		[Test(Description = "Проверяем что страницы c чистым TDi открытые в режиме совместимости тоже удаляются.")]
+		public void Tdinotebook_RemoveTDiPagesWhenClosedTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var hashGenerator = new ClassNamesHashGenerator(null);
+
+			var commonService = Substitute.For<ICommonServices>();
+			var interactiveService = Substitute.For<IInteractiveService>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
+			var pageFactory = Substitute.For<IViewModelsPageFactory>();
+			var tabPageFactory = Substitute.For<ITdiPageFactory>();
+
+			var tab = new EmptyDlg();
+			var tabpage = new TdiTabPage(tab, null);
+
+			tabPageFactory.CreateTdiPageTypedArgs<EmptyDlg>(new System.Type[] { }, new object[] { }, "hash_1").ReturnsForAnyArgs(tabpage);
+
+			var notebook = new TdiNotebook();
+			var navManager = new TdiNavigationManager(notebook, hashGenerator, pageFactory, tabPageFactory);
+
+			var page = navManager.OpenTdiTab<EmptyDlg>(null);
+
+			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(1));
+
+			notebook.ForceCloseTab(page.TdiTab);
+
+			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
 
 		[Test(Description = "Проверка что событие о закрытии страницы приходит внешним подписчикам.")]
