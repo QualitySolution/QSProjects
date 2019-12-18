@@ -1,6 +1,8 @@
 ﻿using System;
 using Gtk;
 using QS.Journal.GtkUI;
+using QS.Project.Journal;
+using QS.ViewModels;
 
 namespace QS.Tdi.Gtk
 {
@@ -12,8 +14,21 @@ namespace QS.Tdi.Gtk
 				return (Widget)tab;
 			}
 
-			if(JournalViewFactory.TryCreateView(out Widget widget, tab)) {
-				return widget;
+			if(tab == null) {
+				return null;
+			}
+
+			if(tab is JournalViewModelBase journalTab) {
+				return new JournalView(journalTab);
+			}
+
+			return null;
+		}
+
+		public virtual Widget Resolve(ViewModelBase viewModel)
+		{
+			if(viewModel is JournalViewModelBase journalTab) {
+				return new JournalView(journalTab);
 			}
 
 			return null;

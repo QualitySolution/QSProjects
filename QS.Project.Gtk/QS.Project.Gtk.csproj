@@ -197,7 +197,6 @@
     <Compile Include="Journal.GtkUI\JournalView.cs" />
     <Compile Include="gtk-gui\QS.Journal.GtkUI.JournalView.cs" />
     <Compile Include="Views.GtkUI\TabJournalViewBase.cs" />
-    <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
     <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
     <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
@@ -234,6 +233,7 @@
     <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
+    <Compile Include="Navigation.GtkUI\IWidgetResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
