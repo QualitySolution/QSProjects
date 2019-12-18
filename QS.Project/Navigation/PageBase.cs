@@ -12,6 +12,7 @@ namespace QS.Navigation
 		}
 
 		public event EventHandler PageClosed;
+		public event EventHandler<PageClosingEventArgs> PageClosing;
 		public event EventHandler SlavePagesChanged;
 		public event EventHandler ChildPagesChanged;
 
@@ -56,6 +57,16 @@ namespace QS.Navigation
 		#endregion
 
 		#region IPageInternal
+
+		public bool OnClosing(bool forceClosing)
+		{
+			var eventArgs = new PageClosingEventArgs(forceClosing);
+			PageClosing?.Invoke(this, eventArgs);
+			if(!forceClosing && eventArgs.ClosingCanceled) {
+				return false;
+			}
+			return true;
+		}
 
 		void IPageInternal.OnClosed()
 		{

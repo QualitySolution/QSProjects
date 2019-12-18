@@ -15,6 +15,7 @@ namespace QS.Navigation
 
 		ViewModelBase ViewModel { get; }
 
+		event EventHandler<PageClosingEventArgs> PageClosing;
 		event EventHandler PageClosed;
 
 		IEnumerable<MasterToSlavePair> SlavePagesAll { get; }
@@ -27,6 +28,7 @@ namespace QS.Navigation
 	internal interface IPageInternal
 	{
 		void OnClosed();
+		bool OnClosing(bool forceClosing);
 		void AddSlavePage(IPage page);
 		bool RemoveSlavePage(IPage page);
 		void AddChildPage(IPage page);
@@ -45,6 +47,17 @@ namespace QS.Navigation
 		where TViewModel : ViewModelBase
 	{
 		new TViewModel ViewModel { get; }
+	}
+
+	public class PageClosingEventArgs : EventArgs
+	{
+		public bool ClosingCanceled { get; set; }
+		public bool ForceClosing { get; }
+
+		public PageClosingEventArgs(bool forceClosing = false)
+		{
+			ForceClosing = forceClosing;
+		}
 	}
 
 	public class MasterToSlavePair
