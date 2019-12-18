@@ -94,17 +94,17 @@ namespace QS.Navigation
 
 			var closedPagePair = SlavePages.FirstOrDefault(x => (x.SlavePage as ITdiPage).TdiTab == closedTab);
 			if (closedPagePair != null)
-				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
+				(closedPagePair.MasterPage as PageBase).RemoveSlavePage(closedPagePair.SlavePage);
 			var pageToRemove = pages.Cast<ITdiPage>().FirstOrDefault(x => x.TdiTab == closedTab);
 			if(pageToRemove != null) {
 				pages.Remove(pageToRemove);
-				(pageToRemove as IPageInternal).OnClosed();
+				(pageToRemove as PageBase).OnClosed();
 			}
 			else {
 				var childPair = ChildPages.FirstOrDefault(x => (x.ChildPage as ITdiPage).TdiTab == closedTab);
 				if(childPair != null) {
-					(childPair.ParentPage as IPageInternal).RemoveChildPage(childPair.ChildPage);
-					(childPair.ChildPage as IPageInternal).OnClosed();
+					(childPair.ParentPage as PageBase).RemoveChildPage(childPair.ChildPage);
+					(childPair.ChildPage as PageBase).OnClosed();
 				}
 			}
 		}
@@ -212,7 +212,7 @@ namespace QS.Navigation
 				else {
 					openPage = (ITdiPage)makePage(hash);
 					tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, openPage.TdiTab);
-					(masterPage as IPageInternal).AddSlavePage(openPage);
+					(masterPage as PageBase).AddSlavePage(openPage);
 					pages.Add(openPage);
 				}
 			}
@@ -227,7 +227,7 @@ namespace QS.Navigation
 					if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab) {
 						var slider = masterTab.TabParent as TdiSliderTab;
 						slider.AddTab(openPage.TdiTab, masterTab);
-						(masterPage as IPageInternal).AddChildPage(openPage);
+						(masterPage as PageBase).AddChildPage(openPage);
 					}
 					else {
 						tdiNotebook.AddTab(openPage.TdiTab, masterTab);

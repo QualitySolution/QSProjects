@@ -25,16 +25,6 @@ namespace QS.Navigation
 		IEnumerable<IPage> ChildPages { get; }
 	}
 
-	internal interface IPageInternal
-	{
-		void OnClosed();
-		bool OnClosing(bool forceClosing);
-		void AddSlavePage(IPage page);
-		bool RemoveSlavePage(IPage page);
-		void AddChildPage(IPage page);
-		bool RemoveChildPage(IPage page);
-	}
-
 	/// <summary>
 	/// Интерфейс специально созданный на переходный период, пока есть микс из диалогов разных типов Tdi и ViewModel
 	/// </summary>
