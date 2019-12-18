@@ -3,14 +3,21 @@ using System.ComponentModel;
 using System.Reflection;
 using QS.Services;
 using QS.Tdi;
+using QS.Project.Journal;
 
 namespace QS.ViewModels
 {
-	public abstract class TabViewModelBase : ViewModelBase, ITdiTab, IDisposable
+	public abstract class TabViewModelBase : ViewModelBase, ITdiTab, IDisposable, IJournalSlidedTab
 	{
 		protected TabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
 		}
+
+		#region IJournalSlidedTab implementation
+
+		public virtual SliderOption SliderOption { get; set; }
+
+		#endregion IJournalSlidedTab implementation
 
 		#region ITdiTab implementation
 

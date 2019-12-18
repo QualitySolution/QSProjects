@@ -60,6 +60,9 @@ namespace QS.Project.Journal
 
 		public ILifetimeScope AutofacScope { get; set; }
 
+		//Для журнала нет необходимости открываться в слайдере
+		public override SliderOption SliderOption => SliderOption.WithoutSlider;
+
 		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
 		{
 			NodeActionsList = new List<IJournalAction>();
