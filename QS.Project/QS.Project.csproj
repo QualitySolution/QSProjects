@@ -314,6 +314,10 @@
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
     <Compile Include="Navigation\TabNavigation\TabNavigator.cs" />
     <Compile Include="Project.Journal\IJournalSlidedTab.cs" />
+    <Compile Include="Navigation\TabNavigation\TabNavigatorViewModel.cs" />
+    <Compile Include="Navigation\TabNavigation\TabPageViewModelBase.cs" />
+    <Compile Include="Navigation\TabNavigation\TabSliderPageViewModel.cs" />
+    <Compile Include="Navigation\TabNavigation\TabPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
