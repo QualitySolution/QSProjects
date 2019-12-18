@@ -17,6 +17,8 @@ namespace QS.Navigation
 
 		event EventHandler<PageClosingEventArgs> PageClosing;
 		event EventHandler PageClosed;
+		event EventHandler SlavePagesChanged;
+		event EventHandler ChildPagesChanged;
 
 		IEnumerable<MasterToSlavePair> SlavePagesAll { get; }
 		IEnumerable<ParentToChildPair> ChildPagesAll { get; }

@@ -233,7 +233,15 @@
     <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
+    <Compile Include="Navigation.GtkUI\TabNavigatorView.cs" />
+    <Compile Include="gtk-gui\QS.Navigation.GtkUI.TabNavigatorView.cs" />
     <Compile Include="Navigation.GtkUI\IWidgetResolver.cs" />
+    <Compile Include="Navigation.GtkUI\SliderTabPageView.cs" />
+    <Compile Include="gtk-gui\QS.Navigation.GtkUI.SliderTabPageView.cs" />
+    <Compile Include="Navigation.GtkUI\TabPageView.cs" />
+    <Compile Include="gtk-gui\QS.Navigation.GtkUI.TabPageView.cs" />
+    <Compile Include="Navigation.GtkUI\TabPageTitleView.cs" />
+    <Compile Include="gtk-gui\QS.Navigation.GtkUI.TabPageTitleView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
