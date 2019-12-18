@@ -7,11 +7,13 @@ namespace QS.Navigation
 {
 	public abstract class PageBase: IPage, IPageInternal
 	{
-		public PageBase()
+		protected PageBase()
 		{
 		}
 
 		public event EventHandler PageClosed;
+		public event EventHandler SlavePagesChanged;
+		public event EventHandler ChildPagesChanged;
 
 		public string PageHash { get; protected set; }
 
@@ -63,35 +65,49 @@ namespace QS.Navigation
 		void IPageInternal.AddSlavePage(IPage page)
 		{
 			slavePages.Add(page);
+			SlavePagesChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		bool IPageInternal.RemoveSlavePage(IPage page)
 		{
 			var result = slavePages.Remove(page);
-			if (result)
+			if(result) {
+				SlavePagesChanged?.Invoke(this, EventArgs.Empty);
 				return result;
+			}
 
 			var pair = SlavePagesAll.FirstOrDefault(x => x.SlavePage == page);
 			if (pair == null)
 				return false;
-			return (pair.MasterPage as IPageInternal).RemoveSlavePage(page);
+			result = (pair.MasterPage as IPageInternal).RemoveSlavePage(page);
+			if(result) {
+				SlavePagesChanged?.Invoke(this, EventArgs.Empty);
+			}
+			return result;
 		}
 
 		void IPageInternal.AddChildPage(IPage page)
 		{
 			childPages.Add(page);
+			ChildPagesChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		bool IPageInternal.RemoveChildPage(IPage page)
 		{
 			var result = childPages.Remove(page);
-			if (result)
+			if(result) {
+				ChildPagesChanged?.Invoke(this, EventArgs.Empty);
 				return result;
+			}
 
 			var pair = ChildPagesAll.FirstOrDefault(x => x.ChildPage == page);
 			if (pair == null)
 				return false;
-			return (pair.ParentPage as IPageInternal).RemoveChildPage(page);
+			result = (pair.ParentPage as IPageInternal).RemoveChildPage(page);
+			if(result) {
+				ChildPagesChanged?.Invoke(this, EventArgs.Empty);
+			}
+			return result;
 		}
 
 		#endregion
