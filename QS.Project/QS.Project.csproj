@@ -10,7 +10,6 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -318,6 +317,8 @@
     <Compile Include="Navigation\TabNavigation\TabPageViewModelBase.cs" />
     <Compile Include="Navigation\TabNavigation\TabSliderPageViewModel.cs" />
     <Compile Include="Navigation\TabNavigation\TabPageViewModel.cs" />
+    <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiCompatibilityNavigator.cs" />
+    <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiTabViewModelAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -358,6 +359,7 @@
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
     <Folder Include="Navigation\TabNavigation\" />
+    <Folder Include="Navigation\TabNavigation\TdiAdapter\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
