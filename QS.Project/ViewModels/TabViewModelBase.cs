@@ -4,6 +4,7 @@ using System.Reflection;
 using QS.Services;
 using QS.Tdi;
 using QS.Project.Journal;
+using QS.Navigation;
 
 namespace QS.ViewModels
 {
@@ -21,8 +22,10 @@ namespace QS.ViewModels
 
 		#region ITdiTab implementation
 
+
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
+
 
 		private string tabName = string.Empty;
 
@@ -44,18 +47,32 @@ namespace QS.ViewModels
 			}
 		}
 
-		public ITdiTabParent TabParent { set; get; }
+
+		public ITdiTabParent TabParent {
+			get => (ITdiTabParent)NavigationManager;
+			set { }
+		}
 
 		public bool FailInitialize { get; protected set; }
 
+
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
+
 		public event EventHandler TabClosed;
+
+		protected void RaiseTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
+		}
+
+
+		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
 		public virtual bool CompareHashName(string hashName)
 		{
 			return GenerateHashName(this.GetType()) == hashName;
 		}
+
 
 		#endregion
 
@@ -65,9 +82,12 @@ namespace QS.ViewModels
 		/// <param name="message">Сообщение пользователю при отмене открытия</param>
 		protected void AbortOpening(string message, string title = "Невозможно открыть вкладку")
 		{
+			//throw new AbortCreatingPageException(message, title);
+
 			ShowErrorMessage(message, title);
 			AbortOpening();
 		}
+
 
 		/// <summary>
 		/// Отменяет открытие вкладки
@@ -76,6 +96,8 @@ namespace QS.ViewModels
 		{
 			FailInitialize = true;
 		}
+
+
 
 		public static string GenerateHashName<TTab>() where TTab : TabViewModelBase
 		{
@@ -90,23 +112,27 @@ namespace QS.ViewModels
 			return string.Format("Tab_{0}", tabType.Name);
 		}
 
+
 		protected virtual void OnTabNameChanged()
 		{
 			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
 		}
 
+
 		public virtual void Close(bool askSave)
 		{
 			if(askSave)
-				TabParent?.AskToCloseTab(this);
+				NavigationManager.AskClosePage(NavigationManager.FindPage(this));
 			else
-				TabParent?.ForceCloseTab(this);
+				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
 		}
+
 
 		public void OnTabClosed()
 		{
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
+
 
 		public virtual void Dispose() { }
 	}

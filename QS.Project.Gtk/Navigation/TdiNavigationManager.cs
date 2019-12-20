@@ -123,6 +123,15 @@ namespace QS.Navigation
 			return FindPage(viewModel);
 		}
 
+		public IPage FindPage(string hashName)
+		{
+			if(string.IsNullOrWhiteSpace(hashName)) {
+				return null;
+			}
+
+			return AllPages.FirstOrDefault(x => x.PageHash == hashName);
+		}
+
 		#endregion
 
 		#region Открытие

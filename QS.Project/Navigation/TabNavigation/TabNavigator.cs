@@ -86,6 +86,19 @@ namespace QS.Navigation.TabNavigation
 			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel) as IPage<TViewModel>;
 		}
 
+		public IPage FindPage(ViewModelBase viewModel)
+		{
+			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
+		}
+
+		public IPage FindPage(string hashName)
+		{
+			if(string.IsNullOrWhiteSpace(hashName)) {
+				return null;
+			}
+			return AllPages.FirstOrDefault(x => x.PageHash == hashName);
+		}
+
 		public void SwitchOn(IPage page)
 		{
 			if(AllPages.Contains(page)) {
@@ -281,6 +294,7 @@ namespace QS.Navigation.TabNavigation
 				}
 			}
 			RaisePageChaged();
+			openPage.ViewModel.NavigationManager = this;
 			return openPage;
 		}
 

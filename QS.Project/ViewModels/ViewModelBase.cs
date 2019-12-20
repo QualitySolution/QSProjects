@@ -2,12 +2,18 @@
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Services;
+using QS.Navigation;
+using QS.Navigation.TabNavigation.TdiAdapter;
+using QS.Navigation.TabNavigation;
 
 namespace QS.ViewModels
 {
 	public abstract class ViewModelBase : PropertyChangedBase
 	{
 		private readonly IInteractiveService interactiveService;
+
+		public INavigationManager NavigationManager { get; internal set; }
+		//public ITdiCompatibilityNavigation TdiCompatibilityNavigation { get; internal set; }
 
 		protected ViewModelBase(IInteractiveService interactiveService)
 		{

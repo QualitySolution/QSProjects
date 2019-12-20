@@ -319,6 +319,7 @@
     <Compile Include="Navigation\TabNavigation\TabPageViewModel.cs" />
     <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiCompatibilityNavigator.cs" />
     <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiTabViewModelAdapter.cs" />
+    <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiPageProxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

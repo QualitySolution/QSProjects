@@ -2888,4 +2888,17 @@
       <placeholder />
     </child>
   </widget>
+  <widget class="Gtk.Bin" id="QS.GtkUI.Navigation.TabNavigation.TdiAdapter.TdiTabViewModelAdapterView" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vboxView">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <placeholder />
+        </child>
+      </widget>
+    </child>
+  </widget>
 </stetic-interface>

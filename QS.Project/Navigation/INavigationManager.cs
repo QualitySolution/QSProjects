@@ -28,6 +28,7 @@ namespace QS.Navigation
 		IPage OpenViewModelNamedArgs(Type viewModelType, ViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None);
 
 		IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : ViewModelBase;
+		IPage FindPage(string hashName);
 
 		void SwitchOn(IPage page);
 

@@ -53,8 +53,8 @@ namespace QS.Navigation.GtkUI
 				boxDialog.Visible = false;
 			} 
 			else if(newDialogPage != null && (dialogPage == null || dialogPage != newDialogPage)) {
-				JournalHided = (dialogPage.ViewModel as IJournalSlidedTab)?.SliderOption == SliderOption.UseSliderHided;
 				dialogPage = newDialogPage;
+				JournalHided = (dialogPage.ViewModel as IJournalSlidedTab)?.SliderOption == SliderOption.UseSliderHided;
 				dialogView?.Destroy();
 				dialogView = widgetResolver.Resolve(dialogPage.ViewModel);
 				boxDialogView.Add(dialogView);

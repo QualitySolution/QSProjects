@@ -3,6 +3,8 @@ using Gtk;
 using QS.Journal.GtkUI;
 using QS.Project.Journal;
 using QS.ViewModels;
+using QS.Navigation.TabNavigation.TdiAdapter;
+using QS.GtkUI.Navigation.TabNavigation.TdiAdapter;
 
 namespace QS.Tdi.Gtk
 {
@@ -29,6 +31,10 @@ namespace QS.Tdi.Gtk
 		{
 			if(viewModel is JournalViewModelBase journalTab) {
 				return new JournalView(journalTab);
+			}
+
+			if(viewModel is TdiTabViewModelAdapter) {
+				return new TdiTabViewModelAdapterView(this, (TdiTabViewModelAdapter)viewModel);
 			}
 
 			return null;

@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -242,6 +241,8 @@
     <Compile Include="gtk-gui\QS.Navigation.GtkUI.TabPageView.cs" />
     <Compile Include="Navigation.GtkUI\TabPageTitleView.cs" />
     <Compile Include="gtk-gui\QS.Navigation.GtkUI.TabPageTitleView.cs" />
+    <Compile Include="Navigation\TabNavigation\TdiAdapter\TdiTabViewModelAdapterView.cs" />
+    <Compile Include="gtk-gui\QS.GtkUI.Navigation.TabNavigation.TdiAdapter.TdiTabViewModelAdapterView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -265,6 +266,8 @@
     <Folder Include="Navigation\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />
+    <Folder Include="Navigation\TabNavigation\" />
+    <Folder Include="Navigation\TabNavigation\TdiAdapter\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
