@@ -234,6 +234,7 @@
     <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
+    <Compile Include="Widgets\ValidatedEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -257,6 +258,7 @@
     <Folder Include="Navigation\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />
+    <Folder Include="Widgets\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
