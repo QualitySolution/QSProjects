@@ -149,7 +149,6 @@ namespace QSWidgetLib
 		none,
 		numeric,
 		email,
-		single_word,
 		phone,
 		price
 	};
