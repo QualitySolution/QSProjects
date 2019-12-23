@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.Tdi;
@@ -15,7 +15,7 @@ namespace QS.Navigation
 			PageHash = hash;
 		}
 
-		public new TViewModel ViewModel { get; private set; }
+		public TViewModel ViewModel { get; private set; }
 
 		public ITdiTab TdiTab => ViewModel as ITdiTab;
 

@@ -313,6 +313,7 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
     <Compile Include="ViewModels\DialogViewModelBase.cs" />
+    <Compile Include="Navigation\NavigationManagerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
