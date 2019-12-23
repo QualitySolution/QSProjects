@@ -237,6 +237,7 @@
     <Compile Include="Widgets\ValidatedEntry.cs" />
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolver.cs" />
     <Compile Include="Views\Resolve\IGtkViewResolver.cs" />
+    <Compile Include="Views\Resolve\RegisteredGtkViewResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
