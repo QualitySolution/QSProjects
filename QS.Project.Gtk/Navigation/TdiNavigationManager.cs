@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.Tdi;
@@ -7,7 +7,7 @@ using QS.ViewModels;
 
 namespace QS.Navigation
 {
-	public class TdiNavigationManager : INavigationManager, ITdiCompatibilityNavigation
+	public class TdiNavigationManager : NavigationManagerBase, INavigationManager, ITdiCompatibilityNavigation
 	{
 		readonly TdiNotebook tdiNotebook;
 		readonly IPageHashGenerator hashGenerator;
@@ -225,14 +225,14 @@ namespace QS.Navigation
 
 		#region Открытие ViewModel
 
-		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
 			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options);
 		}
 
-		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : ViewModelBase
+		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindOrCreateMasterPage(master), options,

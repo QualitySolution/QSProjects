@@ -13,7 +13,7 @@ namespace QS.ViewModels.Control.EEVM
 	{
 		public readonly ITdiTab DialogTab;
 
-		public LegacyEEVMBuilderFactory(ViewModelBase dialogViewModel, ITdiTab dialogTab, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation) : base(dialogViewModel, source, unitOfWork, navigation)
+		public LegacyEEVMBuilderFactory(DialogViewModelBase dialogViewModel, ITdiTab dialogTab, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation) : base(dialogViewModel, source, unitOfWork, navigation)
 		{
 			DialogTab = dialogTab;
 		}

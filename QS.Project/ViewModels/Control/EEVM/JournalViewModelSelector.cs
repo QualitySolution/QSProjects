@@ -15,7 +15,7 @@ namespace QS.ViewModels.Control.EEVM
 		private readonly INavigationManager navigationManager;
 		private readonly IUnitOfWork uow;
 		readonly ITdiTab parrentTab;
-		readonly ViewModelBase parrentViewModel;
+		readonly DialogViewModelBase parrentViewModel;
 
 		/// <summary>
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
@@ -25,13 +25,13 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-			if (parrentTab is ViewModelBase viewModel)
+			if (parrentTab is DialogViewModelBase viewModel)
 				parrentViewModel = viewModel;
 			else
 				this.parrentTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab)); ;
 		}
 
-		public JournalViewModelSelector(ViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager)
+		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));

@@ -13,7 +13,7 @@ namespace QS.Navigation
 		/// </summary>
 		string PageHash { get; }
 
-		ViewModelBase ViewModel { get; }
+		DialogViewModelBase ViewModel { get; }
 
 		event EventHandler PageClosed;
 
@@ -42,7 +42,7 @@ namespace QS.Navigation
 	}
 
 	public interface IPage<TViewModel> : IPage
-		where TViewModel : ViewModelBase
+		where TViewModel : DialogViewModelBase
 	{
 		new TViewModel ViewModel { get; }
 	}

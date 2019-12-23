@@ -18,7 +18,7 @@ namespace QS.Project.Journal
 {
 	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
 		where TEntity : class, IDomainObject
-		where TEntityViewModel : ViewModelBase
+		where TEntityViewModel : DialogViewModelBase
 		where TNode : class
 	{
 		#region Обязательные зависимости

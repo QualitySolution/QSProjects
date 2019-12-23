@@ -5,12 +5,12 @@ using QS.Project.Domain;
 namespace QS.ViewModels.Control.EEVM
 {
 	public class EntityViewModelOpener<TEntityViewModel> : IEntityDlgOpener
-		where TEntityViewModel : ViewModelBase
+		where TEntityViewModel : DialogViewModelBase
 	{
 		private readonly INavigationManager navigationManager;
-		private readonly ViewModelBase masterViewModel;
+		private readonly DialogViewModelBase masterViewModel;
 
-		public EntityViewModelOpener(INavigationManager navigationManager, ViewModelBase masterViewModel = null)
+		public EntityViewModelOpener(INavigationManager navigationManager, DialogViewModelBase masterViewModel = null)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.masterViewModel = masterViewModel;
