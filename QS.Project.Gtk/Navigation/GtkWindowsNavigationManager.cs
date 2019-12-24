@@ -55,6 +55,7 @@ namespace QS.Navigation
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
 			gtkPage.GtkDialog.Run();
+			ClosePage(page);
 			gtkPage.GtkDialog.Destroy();
 		}
 	}
