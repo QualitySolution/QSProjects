@@ -169,9 +169,9 @@ namespace QS.Widgets.GtkUI
 					CalendarDisplayOptions.ShowWeekNumbers;
 			SelectDate.DaySelectedDoubleClick += OnCalendarDaySelectedDoubleClick;
 			SelectDate.Date = date ?? DateTime.Now.Date;
-			SelectDate.WidthRequest = DefaultWidthRequest;
 
 			editDate.VBox.Add(SelectDate);
+			editDate.WidthRequest = DefaultWidthRequest;
 			editDate.ShowAll();
 			int response = editDate.Run ();
 			if(response == (int)ResponseType.Ok)

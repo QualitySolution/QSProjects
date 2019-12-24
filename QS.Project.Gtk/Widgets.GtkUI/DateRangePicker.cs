@@ -179,7 +179,6 @@ namespace QS.Widgets.GtkUI
 			StartDateCalendar.MonthChanged += StartDateCalendar_MonthChanged;
 			StartDateCalendar.Day = 0;
 			StartDateCalendar_MonthChanged(null, null);
-			StartDateCalendar.WidthRequest = DefaultWidthRequest;
 
 			EndDateCalendar = new Calendar ();
 			EndDateCalendar.DisplayOptions = DisplayOptions;
@@ -187,7 +186,6 @@ namespace QS.Widgets.GtkUI
 			EndDateCalendar.MonthChanged += EndDateCalendar_MonthChanged;
 			EndDateCalendar.Day = 0;
 			EndDateCalendar_MonthChanged(null, null);
-			EndDateCalendar.WidthRequest = DefaultWidthRequest;
 
 			StartDateEntry = new DatePicker();
 			StartDateEntry.DateChanged += StartDateEntry_DateChanged;
@@ -204,6 +202,7 @@ namespace QS.Widgets.GtkUI
 			hbox.Add(endVbox);
 
 			selectDate.VBox.Add (hbox);
+			selectDate.WidthRequest = DefaultWidthRequest;
 			selectDate.ShowAll ();
 
 			StartDateEntry.HideCalendarButton = true;
