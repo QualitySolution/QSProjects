@@ -6,11 +6,11 @@ using QS.ViewModels;
 
 namespace QS.Navigation
 {
-	public class AutofacViewModelsPageFactory : IViewModelsPageFactory
+	public class AutofacViewModelsGtkPageFactory : IViewModelsPageFactory
 	{
 		readonly IContainer Container;
 
-		public AutofacViewModelsPageFactory(IContainer container)
+		public AutofacViewModelsGtkPageFactory(IContainer container)
 		{
 			Container = container;
 		}
@@ -21,7 +21,7 @@ namespace QS.Navigation
 			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
 			if(viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-			var page = new Page<TViewModel>(viewmodel, hash);
+			var page = new GtkWindowPage<TViewModel>(viewmodel, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;
 		}
@@ -32,7 +32,7 @@ namespace QS.Navigation
 			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
 			if(viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-			var page = new Page<TViewModel>(viewmodel, hash);
+			var page = new GtkWindowPage<TViewModel>(viewmodel, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;
 		}

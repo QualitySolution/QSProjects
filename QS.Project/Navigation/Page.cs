@@ -7,7 +7,7 @@ using QS.ViewModels;
 namespace QS.Navigation
 {
 	public class Page<TViewModel> : PageBase, IPage, IPage<TViewModel>, ITdiPage
-		where TViewModel : ViewModelBase
+		where TViewModel : DialogViewModelBase
 	{
 		public Page(TViewModel viewModel, string hash)
 		{
@@ -15,10 +15,10 @@ namespace QS.Navigation
 			PageHash = hash;
 		}
 
-		public new TViewModel ViewModel { get; private set; }
+		public TViewModel ViewModel { get; private set; }
 
 		public ITdiTab TdiTab => ViewModel as ITdiTab;
 
-		ViewModelBase IPage.ViewModel => ViewModel;
+		DialogViewModelBase IPage.ViewModel => ViewModel;
 	}
 }

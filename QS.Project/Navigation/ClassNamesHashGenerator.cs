@@ -17,12 +17,12 @@ namespace QS.Navigation
 
 		#region IPageHashGenerator
 
-		public string GetHash<TViewModel>(ViewModelBase master, Type[] ctorTypes, object[] ctorValues)
+		public string GetHash<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues)
 		{
 			return InternalGetHash(typeof(TViewModel), ctorValues);
 		}
 
-		public string GetHashNamedArgs<TViewModel>(ViewModelBase master, IDictionary<string, object> ctorArgs)
+		public string GetHashNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs)
 		{
 			return InternalGetHash(typeof(TViewModel), ctorArgs.Values.ToArray());
 		}

@@ -6,11 +6,13 @@ using QS.Tdi;
 
 namespace QS.ViewModels
 {
-	public abstract class TabViewModelBase : ViewModelBase, ITdiTab, IDisposable
+	public abstract class TabViewModelBase : DialogViewModelBase, ITdiTab, IDisposable
 	{
 		protected TabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
 		}
+
+		public override string Title { get => TabName; set => TabName = value; }
 
 		#region ITdiTab implementation
 
@@ -86,14 +88,17 @@ namespace QS.ViewModels
 		protected virtual void OnTabNameChanged()
 		{
 			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
+			OnPropertyChanged(nameof(Title));
 		}
 
-		public virtual void Close(bool askSave)
+		public override void Close(bool askSave)
 		{
 			if(askSave)
 				TabParent?.AskToCloseTab(this);
 			else
 				TabParent?.ForceCloseTab(this);
+
+			base.Close(askSave);
 		}
 
 		public void OnTabClosed()

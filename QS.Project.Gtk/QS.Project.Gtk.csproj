@@ -235,6 +235,13 @@
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
     <Compile Include="Widgets\ValidatedEntry.cs" />
+    <Compile Include="Navigation\GtkWindowPage.cs" />
+    <Compile Include="Navigation\IGtkWindowPage.cs" />
+    <Compile Include="Navigation\GtkWindowsNavigationManager.cs" />
+    <Compile Include="Navigation\AutofacViewModelsGtkPageFactory.cs" />
+    <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolver.cs" />
+    <Compile Include="Views\Resolve\IGtkViewResolver.cs" />
+    <Compile Include="Views\Resolve\RegisteredGtkViewResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -259,6 +266,7 @@
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />
     <Folder Include="Widgets\" />
+    <Folder Include="Views\Resolve\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

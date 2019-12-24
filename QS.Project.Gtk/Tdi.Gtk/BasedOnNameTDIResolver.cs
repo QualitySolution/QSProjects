@@ -1,7 +1,7 @@
-﻿using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Reflection;
 using Gtk;
+using QS.ViewModels;
+using QS.Views.Resolve;
 
 namespace QS.Tdi.Gtk
 {
@@ -17,11 +17,11 @@ namespace QS.Tdi.Gtk
 	/// </summary>
 	public class BasedOnNameTDIResolver : DefaultTDIWidgetResolver
 	{
-		Assembly[] lookupAssemblies;
+		ClassNamesBaseGtkViewResolver gtkViewResolver;
 
 		public BasedOnNameTDIResolver(params Assembly[] lookupAssemblies)
 		{
-			this.lookupAssemblies = lookupAssemblies;
+			this.gtkViewResolver = new ClassNamesBaseGtkViewResolver(lookupAssemblies);
 		}
 
 		public override Widget Resolve(ITdiTab tab)
@@ -30,22 +30,7 @@ namespace QS.Tdi.Gtk
 			if(widget != null)
 				return widget;
 
-
-			var fullClassName = tab.GetType().FullName;
-			var match = Regex.Matches(fullClassName, "^([a-zA-Z\\.]+)\\.ViewModels\\.([a-zA-Z\\.]+)\\.([a-zA-Z]+)ViewModel$");
-			if(match.Count != 1)
-				throw new InvalidOperationException($"Имя класса {fullClassName} не соответствует шаблону `[CoreNamespace].ViewModels.[SubNamespaces].[Name]ViewModel`");
-			var groups = match[0].Groups;
-			var expectedViewName = $"{groups[1].Value}.Views.{groups[2].Value}.{groups[3].Value}View";
-
-			foreach(var assambly in lookupAssemblies) {
-				Type viewClass = assambly.GetType(expectedViewName);
-				if(viewClass != null) {
-					return (Widget)Activator.CreateInstance(viewClass, tab);
-				}
-			}
-
-			return null;
+			return gtkViewResolver.Resolve((DialogViewModelBase)tab);
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace QS.ViewModels.Control.EEVM
 		where TBindedEntity: class, INotifyPropertyChanged
 	{
 		public TBindedEntity BindedEntity { get; set; }
-		public ViewModelBase DialogViewModel { get; set; }
+		public DialogViewModelBase DialogViewModel { get; set; }
 		public IUnitOfWork UnitOfWork { get; set; }
 		public INavigationManager NavigationManager { get; set; }
 
@@ -21,7 +21,7 @@ namespace QS.ViewModels.Control.EEVM
 		/// </summary>
 		public ILifetimeScope AutofacScope { get; set; }
 
-		public CommonEEVMBuilderFactory(ViewModelBase dialogViewModel, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation)
+		public CommonEEVMBuilderFactory(DialogViewModelBase dialogViewModel, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation)
 		{
 			BindedEntity = source;
 			DialogViewModel = dialogViewModel;

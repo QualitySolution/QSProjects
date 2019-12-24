@@ -302,5 +302,36 @@ namespace QS.Test.Navigation
 			Assert.That(eventRised, Is.True);
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
+
+		[Test(Description = "Проверка что можем найти страницу передва DialogViewModelBase.(Реальный баг)")]
+		public void FindPage_ByDialogViewModelBaseTest()
+		{
+			var hashGenerator = Substitute.For<IPageHashGenerator>();
+			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+
+			var commonService = Substitute.For<ICommonServices>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
+			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
+			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new Page<EntityViewModel>(viewModel, "hash_1");
+
+			var tabWidget = Substitute.For<Gtk.Widget>();
+			var resolver = Substitute.For<ITDIWidgetResolver>();
+			resolver.Resolve(viewModel).Returns(tabWidget);
+			var tdiNotebook = Substitute.For<TdiNotebook>();
+			tdiNotebook.WidgetResolver = resolver;
+
+			var pageFactory = Substitute.For<IViewModelsPageFactory>();
+			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1").ReturnsForAnyArgs(page);
+
+			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory);
+
+			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
+
+			DialogViewModelBase dialogViewModel = viewModel;
+			var find = navManager.FindPage(dialogViewModel);
+
+			Assert.That(find, Is.EqualTo(firstPage));
+		}
 	}
 }

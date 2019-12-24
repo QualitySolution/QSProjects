@@ -45,7 +45,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public CommonEEVMBuilder<TBindedEntity, TEntity> UseViewModelDialog<TEntityViewModel>()
-			where TEntityViewModel : ViewModelBase
+			where TEntityViewModel : DialogViewModelBase
 		{
 			EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(factory.NavigationManager, factory.DialogViewModel);
 			return this;

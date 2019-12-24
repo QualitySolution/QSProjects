@@ -43,7 +43,7 @@ namespace QS.Navigation
 
 		public IEnumerable<IPage> ChildPages => childPages;
 
-		ViewModelBase IPage.ViewModel => null;
+		DialogViewModelBase IPage.ViewModel => null;
 
 		#region Приватное
 
