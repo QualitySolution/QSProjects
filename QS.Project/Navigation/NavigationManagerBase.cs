@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.Tdi;
 using QS.ViewModels;
 
 namespace QS.Navigation
@@ -71,9 +70,12 @@ namespace QS.Navigation
 			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
 		}
 
-		public IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : DialogViewModelBase
+		//Внимание здесь специально параметр viewModel не является типом приведения результата TViewModel, так как если 
+		//бы viewModel была типом TViewModel, то в вызове можно было бы не указывать Generic тип, а это бы приводило к 
+		//попытке каста в IPage<DialogViewModelBase> при передаче не типизированного VM.
+		public IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase
 		{
-			return FindPage(viewModel);
+			return (IPage<TViewModel>)FindPage(viewModel);
 		}
 
 		#endregion

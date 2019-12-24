@@ -25,7 +25,8 @@ namespace QS.Navigation
 		IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase;
 		IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase;
 
-		IPage<TViewModel> FindPage<TViewModel>(TViewModel viewModel) where TViewModel : DialogViewModelBase;
+		IPage FindPage(DialogViewModelBase viewModel);
+		IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase;
 
 		void SwitchOn(IPage page);
 
