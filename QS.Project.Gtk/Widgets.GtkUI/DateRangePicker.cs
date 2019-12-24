@@ -11,6 +11,8 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DateRangePicker : Bin
 	{
+		public static int DefaultWidthRequest { get; set; }
+
 		public BindingControler<DateRangePicker> Binding { get; private set; }
 
 		#region Fields
@@ -177,6 +179,7 @@ namespace QS.Widgets.GtkUI
 			StartDateCalendar.MonthChanged += StartDateCalendar_MonthChanged;
 			StartDateCalendar.Day = 0;
 			StartDateCalendar_MonthChanged(null, null);
+			StartDateCalendar.WidthRequest = DefaultWidthRequest;
 
 			EndDateCalendar = new Calendar ();
 			EndDateCalendar.DisplayOptions = DisplayOptions;
@@ -184,6 +187,7 @@ namespace QS.Widgets.GtkUI
 			EndDateCalendar.MonthChanged += EndDateCalendar_MonthChanged;
 			EndDateCalendar.Day = 0;
 			EndDateCalendar_MonthChanged(null, null);
+			EndDateCalendar.WidthRequest = DefaultWidthRequest;
 
 			StartDateEntry = new DatePicker();
 			StartDateEntry.DateChanged += StartDateEntry_DateChanged;
