@@ -2,6 +2,7 @@
 using NHibernate;
 using NHibernate.Transform;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Journal;
 using QS.Services;
 using QS.Test.TestApp.Domain;
@@ -11,8 +12,8 @@ namespace QS.Test.TestApp.JournalViewModels
 {
 	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, EntityViewModel, FullQuerySetDocumentJournalNode>
 	{
-		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory,
-			IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
+		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigationManager) 
+			: base(unitOfWorkFactory, interactiveService, navigationManager)
 		{
 
 		}

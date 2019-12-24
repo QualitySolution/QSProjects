@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Navigation;
 using QS.Services;
 
 namespace QS.ViewModels
@@ -10,6 +11,8 @@ namespace QS.ViewModels
 	/// </summary>
 	public class DialogViewModelBase : ViewModelBase
 	{
+		//FIXME Когда выпилим ViewModel с TDI, добавить заполение свойства через конструктор;
+		public INavigationManager NavigationManager { get; set; }
 
 		public DialogViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
 		{
@@ -19,6 +22,17 @@ namespace QS.ViewModels
 		public virtual string Title {
 			get => title;
 			set => SetField(ref title, value);
+		}
+
+		public virtual void Close(bool askClose)
+		{
+			var page = NavigationManager?.FindPage(this);
+			if(page != null) {
+				if(askClose)
+					NavigationManager.AskClosePage(page);
+				else
+					NavigationManager.ForceClosePage(page);
+			}
 		}
 	}
 }

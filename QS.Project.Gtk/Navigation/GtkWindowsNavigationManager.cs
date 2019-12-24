@@ -43,6 +43,8 @@ namespace QS.Navigation
 
 		protected override void OpenPage(IPage masterPage, IPage page)
 		{
+			//FIXME Временное решение пока не выпилим TDi, и реализуем заполнение этого через конструктор.
+			page.ViewModel.NavigationManager = this;
 			pages.Add(page);
 			var gtkPage = (IGtkWindowPage)page;
 			var gtkMasterPage = (IGtkWindowPage)masterPage;

@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
+using QS.Navigation;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Services;
@@ -34,8 +35,9 @@ namespace QS.Test.Project.Journal
 				uow.Commit();
 
 				var interactiveService = Substitute.For<IInteractiveService>();
+				var navigationManager = Substitute.For<INavigationManager>();
 
-				var model = new FullQuerySetEntityJournalViewModel(UnitOfWorkFactory, interactiveService);
+				var model = new FullQuerySetEntityJournalViewModel(UnitOfWorkFactory, interactiveService, navigationManager);
 
 				ManualResetEvent oSignalEvent = new ManualResetEvent(false);
 				Exception treadException = null;

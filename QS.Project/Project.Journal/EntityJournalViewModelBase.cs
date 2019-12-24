@@ -24,7 +24,6 @@ namespace QS.Project.Journal
 		#region Обязательные зависимости
 		#endregion
 		#region Опциональные зависимости
-		protected INavigationManager NavigationManager; //Необязательный так как передопределнные методы открытия диалогов могут быть заменены на неиспользуемые менеджер навигации.
 		protected IDeleteEntityService DeleteEntityService; //Опционально аналогично предыдущиему сервису.
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
 		#endregion
@@ -32,7 +31,7 @@ namespace QS.Project.Journal
 		protected EntityJournalViewModelBase(
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
-			INavigationManager navigationManager = null,
+			INavigationManager navigationManager,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
 			) : base(unitOfWorkFactory, interactiveService)

@@ -91,12 +91,14 @@ namespace QS.ViewModels
 			OnPropertyChanged(nameof(Title));
 		}
 
-		public virtual void Close(bool askSave)
+		public override void Close(bool askSave)
 		{
 			if(askSave)
 				TabParent?.AskToCloseTab(this);
 			else
 				TabParent?.ForceCloseTab(this);
+
+			base.Close(askSave);
 		}
 
 		public void OnTabClosed()
