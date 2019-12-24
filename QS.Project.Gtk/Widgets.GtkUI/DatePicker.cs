@@ -10,6 +10,8 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DatePicker : Gtk.Bin
 	{
+		public static int DefaultWidthRequest { get; set; }
+
 		public BindingControler<DatePicker> Binding { get; private set; }
 
 		protected DateTime? date = null;
@@ -167,7 +169,8 @@ namespace QS.Widgets.GtkUI
 					CalendarDisplayOptions.ShowWeekNumbers;
 			SelectDate.DaySelectedDoubleClick += OnCalendarDaySelectedDoubleClick;
 			SelectDate.Date = date ?? DateTime.Now.Date;
-			
+			SelectDate.WidthRequest = DefaultWidthRequest;
+
 			editDate.VBox.Add(SelectDate);
 			editDate.ShowAll();
 			int response = editDate.Run ();
