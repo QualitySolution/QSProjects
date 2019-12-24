@@ -8,7 +8,7 @@ using Gamma.Utilities;
 using Gtk;
 using NLog;
 
-namespace QS.Widgets.GtkUI
+namespace QS.Widgets
 {
 	[ToolboxItem(true)]
 	[Category("QS.Project")]

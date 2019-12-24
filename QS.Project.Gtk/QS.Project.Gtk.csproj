@@ -241,8 +241,8 @@
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolver.cs" />
     <Compile Include="Views\Resolve\IGtkViewResolver.cs" />
     <Compile Include="Views\Resolve\RegisteredGtkViewResolver.cs" />
-    <Compile Include="Widgets.GtkUI\MenuButton.cs" />
-    <Compile Include="Widgets.GtkUI\EnumMenuButton.cs" />
+    <Compile Include="Widgets\MenuButton.cs" />
+    <Compile Include="Widgets\EnumMenuButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Gtk;
 
-namespace QS.Widgets.GtkUI
+namespace QS.Widgets
 {
 	[ToolboxItem(true)]
 	public class MenuButton : Button
