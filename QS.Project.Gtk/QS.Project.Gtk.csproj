@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -242,6 +241,8 @@
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolver.cs" />
     <Compile Include="Views\Resolve\IGtkViewResolver.cs" />
     <Compile Include="Views\Resolve\RegisteredGtkViewResolver.cs" />
+    <Compile Include="Widgets\MenuButton.cs" />
+    <Compile Include="Widgets\EnumMenuButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
