@@ -47,7 +47,6 @@ namespace QS.ViewModels
 		public bool FailInitialize { get; protected set; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler TabClosed;
 
 		public virtual bool CompareHashName(string hashName)

@@ -22,7 +22,6 @@ namespace QS.Dialog.Gtk
 		#region ITdiTab implementation
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler TabClosed;
 
 		private string tabName = String.Empty;

@@ -39,15 +39,15 @@ namespace QSOrmProject
 					Title = tdiTab.TabName;
 				tdiTab.TabParent = this;
 				tdiTab.TabNameChanged += TdiTab_TabNameChanged;
-				tdiTab.CloseTab += TdiTab_CloseTab;
+				tdiTab.TabClosed += TdiTab_TabClosed;;
 			}
 
 			this.ReshowWithInitialSize ();
 		}
 
-		void TdiTab_CloseTab (object sender, TdiTabCloseEventArgs e)
+		void TdiTab_TabClosed(object sender, EventArgs e)
 		{
-			Respond (ResponseType.Close);
+			Respond(ResponseType.Close);
 		}
 
 		void TdiTab_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
