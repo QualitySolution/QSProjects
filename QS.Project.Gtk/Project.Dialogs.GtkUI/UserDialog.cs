@@ -8,6 +8,7 @@ using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Project.Services.GtkUI;
 using QS.Widgets.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -29,7 +30,6 @@ namespace QS.Project.Dialogs.GtkUI
 
 		private bool IsNewUser => User.Id == 0;
 
-		string OriginLogin;
 		Dictionary<string, CheckButton> RightCheckButtons;
 		List<IPermissionsView> permissionViews;
 		List<IUserPermissionTab> userPermissionViews;
@@ -41,7 +41,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()));
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
 
 			User = mySQLUserRepository.GetUser(userId);
 
@@ -52,7 +52,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()));
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
 
 			User = new UserBase();
 

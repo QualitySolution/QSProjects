@@ -150,9 +150,6 @@
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UserDialog.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\RunOperationView.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.ServiceDlg.RunOperationView.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\UserNotificationViewAgent.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleQuestionUserView.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleUserNotificationView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\UsersDialog.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UsersDialog.cs" />
     <Compile Include="Permissions\IPermissionMatrix.cs" />

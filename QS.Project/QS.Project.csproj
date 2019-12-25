@@ -160,12 +160,8 @@
     <Compile Include="Project.DB\DBValueReader.cs" />
     <Compile Include="Project.DB\IMySQLProvider.cs" />
     <Compile Include="Project.DB\MySQLProvider.cs" />
-    <Compile Include="Project.Dialogs\ISimpleUserNotificationView.cs" />
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
-    <Compile Include="Project.Dialogs\IUserNotificationViewAgent.cs" />
-    <Compile Include="Project.Dialogs\ISimpleQuestionUserView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
-    <Compile Include="Tools\StaticTools.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="DomainModel\Config\EntityUpdatedEventArgs.cs" />
     <Compile Include="DomainModel\NotifyChange\AppLevelChangeListener.cs" />
