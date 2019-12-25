@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QS.GtkUI</RootNamespace>
+    <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -230,7 +231,7 @@
     <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
-    <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
+    <Compile Include="gtk-gui\QS.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
     <Compile Include="Widgets\ValidatedEntry.cs" />
