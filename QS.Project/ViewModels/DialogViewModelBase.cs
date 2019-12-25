@@ -1,6 +1,4 @@
-﻿using System;
-using QS.Navigation;
-using QS.Services;
+﻿using QS.Navigation;
 
 namespace QS.ViewModels
 {
@@ -14,7 +12,7 @@ namespace QS.ViewModels
 		//FIXME Когда выпилим ViewModel с TDI, добавить заполение свойства через конструктор;
 		public INavigationManager NavigationManager { get; set; }
 
-		public DialogViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		public DialogViewModelBase()
 		{
 		}
 

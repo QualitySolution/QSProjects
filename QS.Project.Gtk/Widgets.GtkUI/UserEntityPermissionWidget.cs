@@ -8,7 +8,6 @@ using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
-using QS.Project.Services.GtkUI;
 
 namespace QS.Widgets.GtkUI
 {
@@ -34,7 +33,7 @@ namespace QS.Widgets.GtkUI
 			this.user = user;
 
 			var permissionExtensionStore = PermissionExtensionSingletonStore.GetInstance();
-			permissionlistview.ViewModel = new PermissionListViewModel(new GtkInteractiveService(), permissionExtensionStore);
+			permissionlistview.ViewModel = new PermissionListViewModel(permissionExtensionStore);
 			model = new EntityUserPermissionModel(UoW, user, permissionlistview.ViewModel);
 
 			ytreeviewEntitiesList.ColumnsConfig = ColumnsConfigFactory.Create<TypeOfEntity>()

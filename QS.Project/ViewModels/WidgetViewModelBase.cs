@@ -1,11 +1,8 @@
-﻿using System;
-using QS.Services;
-
-namespace QS.ViewModels
+﻿namespace QS.ViewModels
 {
 	public abstract class WidgetViewModelBase : ViewModelBase
 	{
-		protected WidgetViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected WidgetViewModelBase() : base()
 		{
 		}
 	}

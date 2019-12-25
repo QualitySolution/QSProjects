@@ -1,13 +1,11 @@
-﻿using System;
-using QS.Navigation;
-using QS.Services;
+﻿using QS.Navigation;
 using QS.ViewModels;
 
 namespace QS.Test.TestApp.ViewModels
 {
 	public class AbortCreationViewModel : DialogViewModelBase
 	{
-		public AbortCreationViewModel(IInteractiveService interactiveService) : base(interactiveService)
+		public AbortCreationViewModel()
 		{
 			throw new AbortCreatingPageException("Вкладка не создана!", "Остановка");
 		}

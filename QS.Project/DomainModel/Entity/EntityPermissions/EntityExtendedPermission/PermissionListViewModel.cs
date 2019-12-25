@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using QS.Commands;
 using QS.DomainModel.UoW;
-using QS.Services;
 using QS.ViewModels;
 
 namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
@@ -19,7 +17,7 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 			set => SetField(ref permissionNodeFactory, value);
 		}
 
-		public PermissionListViewModel(IInteractiveService interactiveService, IPermissionExtensionStore permissionExtensionStore) : base(interactiveService)
+		public PermissionListViewModel(IPermissionExtensionStore permissionExtensionStore)
 		{
 			PermissionExtensionStore = permissionExtensionStore ?? throw new NullReferenceException(nameof(permissionExtensionStore));
 			CreateCommands();

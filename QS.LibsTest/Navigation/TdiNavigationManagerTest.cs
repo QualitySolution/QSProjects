@@ -6,7 +6,6 @@ using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
-using QS.Project.Services.Interactive;
 using QS.Services;
 using QS.Tdi;
 using QS.Tdi.Gtk;
@@ -353,7 +352,6 @@ namespace QS.Test.Navigation
 
 			var builder = new ContainerBuilder();
 			builder.RegisterType<AbortCreationViewModel>().AsSelf();
-			builder.RegisterType<ConsoleInteractiveService>().As<IInteractiveService>();
 
 			var pageFactory = new AutofacViewModelsPageFactory(builder.Build());
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using QS.Services;
 using QS.ViewModels;
 using QS.Project.Journal;
 namespace QS.Project.Search
@@ -26,9 +25,5 @@ namespace QS.Project.Search
 		}
 
 		#endregion IJournalSearch implementation
-
-		public SearchViewModel(IInteractiveService interactiveService) : base(interactiveService)
-		{
-		}
 	}
 }
