@@ -11,7 +11,7 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DateRangePicker : Bin
 	{
-		public static int DefaultWidthRequest { get; set; }
+		public static int DefaultWidthRequest;
 
 		public BindingControler<DateRangePicker> Binding { get; private set; }
 

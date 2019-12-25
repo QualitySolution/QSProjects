@@ -10,7 +10,7 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DatePicker : Gtk.Bin
 	{
-		public static int DefaultWidthRequest { get; set; }
+		public static int DefaultWidthRequest;
 
 		public BindingControler<DatePicker> Binding { get; private set; }
 
