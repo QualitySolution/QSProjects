@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.Dialog;
 using QS.Views.Resolve;
 
 namespace QS.Navigation
@@ -8,8 +9,8 @@ namespace QS.Navigation
 	{
 		readonly IGtkViewResolver viewResolver;
 
-		public GtkWindowsNavigationManager(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IGtkViewResolver viewResolver)
-			: base(hashGenerator, viewModelsFactory)
+		public GtkWindowsNavigationManager(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver)
+			: base(hashGenerator, viewModelsFactory, interactive)
 		{
 			this.viewResolver = viewResolver;
 		}

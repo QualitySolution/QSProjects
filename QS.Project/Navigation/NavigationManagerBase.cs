@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QS.Dialog;
+using QS.ErrorReporting;
 using QS.ViewModels;
 
 namespace QS.Navigation
@@ -9,11 +11,13 @@ namespace QS.Navigation
 	{
 		protected readonly IPageHashGenerator hashGenerator;
 		protected readonly IViewModelsPageFactory viewModelsFactory;
+		protected readonly IInteractiveMessage interactiveMessage;
 
-		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory)
+		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive)
 		{
 			this.hashGenerator = hashGenerator ?? throw new ArgumentNullException(nameof(hashGenerator));
 			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
+			this.interactiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
 		#region Перебор страниц
@@ -147,7 +151,9 @@ namespace QS.Navigation
 				if(openPage != null)
 					SwitchOn(openPage);
 				else {
-					openPage = makePage(hash);
+					openPage = MakePageAndCatchAborting(makePage, hash);
+					if (openPage == null)
+						return null;
 					(masterPage as IPageInternal).AddSlavePage(openPage);
 					OpenSlavePage(masterPage, openPage);
 				}
@@ -157,11 +163,25 @@ namespace QS.Navigation
 				if(openPage != null)
 					SwitchOn(openPage);
 				else {
-					openPage = makePage(hash);
+					openPage = MakePageAndCatchAborting(makePage, hash);
+					if (openPage == null)
+						return null;
 					OpenPage(masterPage, openPage);
 				}
 			}
 			return openPage;
+		}
+
+		IPage MakePageAndCatchAborting(Func<string, IPage> makePage, string hash)
+		{
+			try {
+				return makePage(hash);
+			}
+			catch (Exception ex) when (ex.FineExceptionTypeInInner<AbortCreatingPageException>() != null) {
+				var abortEx = ex.FineExceptionTypeInInner<AbortCreatingPageException>();
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, abortEx.Message, abortEx.Title);
+				return null;
+			}
 		}
 
 		protected void ClosePage(IPage page)

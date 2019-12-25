@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.ViewModels;
@@ -13,8 +14,8 @@ namespace QS.Navigation
 		//Только для режима смешанного использования Tdi и ViewModel 
 		readonly ITdiPageFactory tdiPageFactory;
 
-		public TdiNavigationManager(TdiNotebook tdiNotebook, IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, ITdiPageFactory tdiPageFactory = null)
-			: base(hashGenerator, viewModelsFactory)
+		public TdiNavigationManager(TdiNotebook tdiNotebook, IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, ITdiPageFactory tdiPageFactory = null)
+			: base(hashGenerator, viewModelsFactory, interactive)
 		{
 			this.tdiNotebook = tdiNotebook ?? throw new ArgumentNullException(nameof(tdiNotebook));
 			this.tdiPageFactory = tdiPageFactory;
