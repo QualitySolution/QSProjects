@@ -115,22 +115,22 @@ namespace QS.ViewModels
 
 		protected virtual void ShowInfoMessage(string message, string title = null)
 		{
-			interactiveService.InteractiveMessage.ShowMessage(ImportanceLevel.Info, message, title);
+			interactiveService.ShowMessage(ImportanceLevel.Info, message, title);
 		}
 
 		protected virtual void ShowWarningMessage(string message, string title = null)
 		{
-			interactiveService.InteractiveMessage.ShowMessage(ImportanceLevel.Warning, message, title);
+			interactiveService.ShowMessage(ImportanceLevel.Warning, message, title);
 		}
 
 		protected virtual void ShowErrorMessage(string message, string title = null)
 		{
-			interactiveService.InteractiveMessage.ShowMessage(ImportanceLevel.Error, message, title);
+			interactiveService.ShowMessage(ImportanceLevel.Error, message, title);
 		}
 
 		protected virtual bool AskQuestion(string question, string title = null)
 		{
-			return interactiveService.InteractiveQuestion.Question(question, title);
+			return interactiveService.Question(question, title);
 		}
 
 		#endregion

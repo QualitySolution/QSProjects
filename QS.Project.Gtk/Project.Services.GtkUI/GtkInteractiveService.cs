@@ -7,24 +7,18 @@ namespace QS.Project.Services.GtkUI
 {
 	public class GtkInteractiveService : IInteractiveService
 	{
-		private IInteractiveMessage interactiveMessage;
-		public IInteractiveMessage InteractiveMessage {
-			get {
-				if(interactiveMessage == null) {
-					interactiveMessage = new GtkMessageDialogsInteractive();
-				}
-				return interactiveMessage;
-			}
+		private IInteractiveMessage interactiveMessage = new GtkMessageDialogsInteractive();
+
+		private IInteractiveQuestion interactiveQuestion = new GtkQuestionDialogsInteractive();
+
+		public void ShowMessage(ImportanceLevel level, string message, string title = null)
+		{
+			interactiveMessage.ShowMessage(level, message, title);
 		}
 
-		private IInteractiveQuestion interactiveQuestion;
-		public IInteractiveQuestion InteractiveQuestion {
-			get {
-				if(interactiveQuestion == null) {
-					interactiveQuestion = new GtkQuestionDialogsInteractive();
-				}
-				return interactiveQuestion;
-			}
+		public bool Question(string message, string title = null)
+		{
+			return interactiveQuestion.Question(message, title);
 		}
 	}
 }

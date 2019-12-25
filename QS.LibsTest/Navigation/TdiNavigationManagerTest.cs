@@ -257,7 +257,7 @@ namespace QS.Test.Navigation
 			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1").ReturnsForAnyArgs(journal);
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1").ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService.InteractiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService);
 
 			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
 
@@ -299,7 +299,7 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1").ReturnsForAnyArgs(journal);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService.InteractiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService);
 
 			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
 

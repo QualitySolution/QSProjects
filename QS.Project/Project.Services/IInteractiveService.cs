@@ -1,9 +1,7 @@
 ﻿using QS.Dialog;
 namespace QS.Services
 {
-	public interface IInteractiveService
+	public interface IInteractiveService : IInteractiveMessage, IInteractiveQuestion
 	{
-		IInteractiveMessage InteractiveMessage { get; }
-		IInteractiveQuestion InteractiveQuestion { get; }
 	}
 }
