@@ -359,7 +359,7 @@ namespace QS.Test.Navigation
 
 			var page = navManager.OpenViewModel<AbortCreationViewModel>(null);
 
-			interactive.ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
+			interactive.Received().ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
 		}
 	}
 }
