@@ -22,9 +22,9 @@ namespace QS.Project.Journal.EntitySelector
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			Type filterType = typeof(TJournalFilterViewModel);
-			filterConstructorInfo = filterType.GetConstructor(new Type[] { typeof(IInteractiveService) });
+			filterConstructorInfo = filterType.GetConstructor(new Type[] {});
 			if(filterConstructorInfo == null) {
-				throw new ArgumentException($"Невозможно найти конструктор для фильтра {filterType.Name} с параметром {nameof(IInteractiveService)}");
+				throw new ArgumentException($"Невозможно найти конструктор для фильтра {filterType.Name}");
 			}
 
 			Type journalType = typeof(TJournalViewModel);
@@ -37,7 +37,7 @@ namespace QS.Project.Journal.EntitySelector
 
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
-			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
+			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
 			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
