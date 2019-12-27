@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QS.GtkUI</RootNamespace>
+    <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -149,9 +150,6 @@
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UserDialog.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\RunOperationView.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.ServiceDlg.RunOperationView.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\UserNotificationViewAgent.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleQuestionUserView.cs" />
-    <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\SimpleUserNotificationView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\UsersDialog.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.UsersDialog.cs" />
     <Compile Include="Permissions\IPermissionMatrix.cs" />
@@ -230,7 +228,7 @@
     <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
-    <Compile Include="gtk-gui\QS.GtkUI.Views.Control.EntityEntry.cs" />
+    <Compile Include="gtk-gui\QS.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
     <Compile Include="Navigation\ITdiPageFactory.cs" />
     <Compile Include="Widgets\ValidatedEntry.cs" />

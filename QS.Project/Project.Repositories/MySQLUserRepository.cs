@@ -1,14 +1,11 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using NLog;
-using QS.Permissions;
 using QS.Project.DB;
-using QS.Project.Dialogs;
 using QS.Project.Domain;
-using QS.Tools;
 using System.Collections.Generic;
-using NHibernate.Util;
 using System.Linq;
+using QS.Services;
 
 namespace QS.Project.Repositories
 {
@@ -17,18 +14,12 @@ namespace QS.Project.Repositories
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		private readonly IMySQLProvider mysqlProvider;
+		private readonly IInteractiveService interactiveService;
 
-		public MySQLUserRepository(IMySQLProvider mysqlProvider)
+		public MySQLUserRepository(IMySQLProvider mysqlProvider, IInteractiveService interactiveService)
 		{
-			CheckNotificationTool();
 			this.mysqlProvider = mysqlProvider ?? throw new ArgumentNullException(nameof(mysqlProvider));
-		}
-
-		private void CheckNotificationTool()
-		{
-			if(StaticTools.NotificationViewAgent == null) {
-				throw new ApplicationException("Не настроен инструмент уведомления");
-			}
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 		}
 
 		public string GetPasswordProxy()
@@ -180,7 +171,7 @@ namespace QS.Project.Repositories
 				if(Convert.ToInt32(cmd.ExecuteScalar()) > 0) {
 					string message = "Пользователь с логином " + login + " уже существует в базе. " +
 									 "Создание второго пользователя с таким же логином невозможно.";
-					StaticTools.NotificationViewAgent.GetSimpleUserNotificationView().Notificate(NotificationType.Error, message, "Создание учетной записи на сервере");
+					interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, message, "Создание учетной записи на сервере");
 					return false;
 				}
 
@@ -192,7 +183,7 @@ namespace QS.Project.Repositories
 						string message = "Пользователь с логином " + login + " уже существует на сервере. " +
 										 "Если он использовался для доступа к другим базам, может возникнуть путаница. " +
 										 "Использовать этот логин?";
-						bool result = StaticTools.NotificationViewAgent.GetSimpleUserQuestionView().RunQuestionView(message, "Создание учетной записи на сервере");
+						bool result = interactiveService.Question(message, "Создание учетной записи на сервере");
 						return result;
 					}
 				} catch(MySqlException ex) {
@@ -232,7 +223,7 @@ namespace QS.Project.Repositories
 					if(Convert.ToInt32(cmd.ExecuteScalar()) > 0) {
 						string message = "Пользователь с логином " + newLogin + " уже существует на сервере. " +
 										 "Переименование невозможно.";
-						StaticTools.NotificationViewAgent.GetSimpleUserNotificationView().Notificate(NotificationType.Error, message, "Переименование учетной записи на сервере");
+						interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, message, "Переименование учетной записи на сервере");
 						return false;
 					}
 				} catch(MySqlException ex) {
@@ -324,7 +315,7 @@ namespace QS.Project.Repositories
 			} catch(MySqlException ex) when(ex.Number == 1044) {
 				logger.Error(ex, "Ошибка установки прав!");
 				string message = "У вас не достаточно прав на сервере MySQL для установки полномочий другим пользователям. Возможно некоторые права не были установлены.";
-				StaticTools.NotificationViewAgent.GetSimpleUserNotificationView().Notificate(NotificationType.Error, message, "Установка прав");
+				interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, message, "Установка прав");
 			} catch(Exception ex) {
 				logger.Error(ex, "Ошибка установки прав!");
 				throw ex;

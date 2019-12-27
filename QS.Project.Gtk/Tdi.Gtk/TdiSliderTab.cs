@@ -21,7 +21,6 @@ namespace QS.Tdi.Gtk
 		public ITdiTabParent TabParent { set; get; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler TabClosed;
 		public HandleSwitchIn HandleSwitchIn { get; private set; }
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
@@ -247,9 +246,6 @@ namespace QS.Tdi.Gtk
 
 			if(Journal != null)
 				Journal.OnTabClosed();
-
-			//FIXME Добавлено для обратной совместимости
-			CloseTab?.Invoke(this, new TdiTabCloseEventArgs(false));
 
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}

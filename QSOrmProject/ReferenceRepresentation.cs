@@ -169,7 +169,6 @@ namespace QSOrmProject
 		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || permissionResult.CanDelete;
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-        public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
         private string _tabName = "Справочник";
 

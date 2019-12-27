@@ -7,9 +7,5 @@ namespace QS.ViewModels
 	public class UoWWidgetViewModelBase : WidgetViewModelBase
 	{
 		public IUnitOfWork UoW { get; set; }
-
-		public UoWWidgetViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
-		{
-		}
 	}
 }

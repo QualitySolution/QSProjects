@@ -1,15 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using QS.Dialog;
 using QS.Services;
 using QS.Tdi;
 
 namespace QS.ViewModels
 {
+	[Obsolete("Эта ветка базовых кассов будет удалена с окончательным выпиливанием TDI из ViewModel. Может быть оставлена только для обратной совместимости Водовозовских диалогов.")]
 	public abstract class TabViewModelBase : DialogViewModelBase, ITdiTab, IDisposable
 	{
-		protected TabViewModelBase(IInteractiveService interactiveService) : base(interactiveService)
+		protected TabViewModelBase(IInteractiveService interactiveService) : base()
 		{
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 		}
 
 		public override string Title { get => TabName; set => TabName = value; }
@@ -44,7 +47,6 @@ namespace QS.ViewModels
 		public bool FailInitialize { get; protected set; }
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler TabClosed;
 
 		public virtual bool CompareHashName(string hashName)
@@ -105,6 +107,32 @@ namespace QS.ViewModels
 		{
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
+
+		#region Перенесено из ViewModelBase для поддержания обратной совместимости. умрет здесь вместе с TabViewModelBase
+
+		private readonly IInteractiveService interactiveService;
+
+		protected virtual void ShowInfoMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Info, message, title);
+		}
+
+		protected virtual void ShowWarningMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Warning, message, title);
+		}
+
+		protected virtual void ShowErrorMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Error, message, title);
+		}
+
+		protected virtual bool AskQuestion(string question, string title = null)
+		{
+			return interactiveService.Question(question, title);
+		}
+
+		#endregion
 
 		public virtual void Dispose() { }
 	}

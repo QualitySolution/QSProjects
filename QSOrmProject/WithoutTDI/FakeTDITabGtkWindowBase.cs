@@ -13,7 +13,6 @@ namespace QSOrmProject
 		public HandleSwitchOut HandleSwitchOut { get; private set; }
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 		public event EventHandler TabClosed;
 
 		private string tabName = String.Empty;
@@ -45,8 +44,10 @@ namespace QSOrmProject
 
 		protected void OnCloseTab (bool askSave)
 		{
-			if (CloseTab != null)
-				CloseTab (this, new TdiTabCloseEventArgs (askSave));
+			if (askSave)
+				TabParent.AskToCloseTab(this);
+			else
+				TabParent.ForceCloseTab(this);
 		}
 
 		protected void OnTabNameChanged()

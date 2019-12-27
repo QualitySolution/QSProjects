@@ -7,7 +7,7 @@ using Gdk;
 using Gtk;
 using QS.ViewModels.Control.EEVM;
 
-namespace QS.GtkUI.Views.Control
+namespace QS.Views.Control
 {
 	[ToolboxItem(true)]
 	[Category("QS.Control")]

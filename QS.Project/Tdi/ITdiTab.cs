@@ -13,9 +13,6 @@ namespace QS.Tdi
 		ITdiTabParent TabParent { set; get; }
 		event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
 
-		[Obsolete("Не используйте больше это событие для закрытия вкладки, в будущем оно будет удалено. Если нужно подписаться на зарытие вкладки подписывайтесь на TabClosed. А для закрытия используйте TabParent.AskToCloseTab и TabParent.ForceCloseTab")]
-		event EventHandler<TdiTabCloseEventArgs> CloseTab;
-
 		/// <summary>
 		/// Событие вызывается после закрытия вкладки. Необходимо для того чтобы код открывший вкладку или имещюий на нее ссылку, смог ее освободить или предпринять какие до действия.
 		/// </summary>
@@ -39,17 +36,6 @@ namespace QS.Tdi
 		public TdiTabNameChangedEventArgs(string newName)
 		{
 			NewName = newName;
-		}
-	}
-
-	[Obsolete("Событие CloseTab будет удалено со временем.")]
-	public class TdiTabCloseEventArgs : EventArgs
-	{
-		public bool AskSave { get; private set; }
-
-		public TdiTabCloseEventArgs(bool askSave)
-		{
-			AskSave = askSave;
 		}
 	}
 }

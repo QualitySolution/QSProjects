@@ -157,7 +157,6 @@ namespace QSOrmProject
 		}
 
 		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
-		public event EventHandler<TdiTabCloseEventArgs> CloseTab;
 
 		private string _tabName = "Справочник";
 

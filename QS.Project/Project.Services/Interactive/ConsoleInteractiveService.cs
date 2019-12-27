@@ -5,24 +5,18 @@ namespace QS.Project.Services.Interactive
 {
 	public class ConsoleInteractiveService : IInteractiveService
 	{
-		public IInteractiveMessage interactiveMessage;
-		public IInteractiveMessage InteractiveMessage {
-			get {
-				if(interactiveMessage == null) {
-					interactiveMessage = new ConsoleInteractiveMessage();
-				}
-				return interactiveMessage;
-			}
+		private IInteractiveMessage interactiveMessage = new ConsoleInteractiveMessage();
+
+		private IInteractiveQuestion interactiveQuestion = new ConsoleInteractiveQuestion();
+
+		public void ShowMessage(ImportanceLevel level, string message, string title = null)
+		{
+			interactiveMessage.ShowMessage(level, message, title);
 		}
 
-		public IInteractiveQuestion interactiveQuestion;
-		public IInteractiveQuestion InteractiveQuestion {
-			get {
-				if(interactiveQuestion == null) {
-					interactiveQuestion = new ConsoleInteractiveQuestion();
-				}
-				return interactiveQuestion;
-			}
+		public bool Question(string message, string title = null)
+		{
+			return interactiveQuestion.Question(message, title);
 		}
 	}
 }

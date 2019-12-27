@@ -17,8 +17,7 @@ namespace QS.ViewModels
 
 		public TEntity Entity { get; private set; }
 
-		protected EntityWidgetViewModelBase(TEntity entity, ICommonServices commonServices) 
-		: base((commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
+		protected EntityWidgetViewModelBase(TEntity entity, ICommonServices commonServices)
 		{
 			Entity = entity;
 			Entity.PropertyChanged += Entity_PropertyChanged;

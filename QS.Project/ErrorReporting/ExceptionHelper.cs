@@ -3,7 +3,7 @@ namespace QS.ErrorReporting
 {
 	public static class ExceptionHelper
 	{
-		public static TException FineExceptionTypeInInner<TException> (Exception exception)
+		public static TException FineExceptionTypeInInner<TException> (this Exception exception)
 			where TException : Exception
 		{
 			if(exception is TException)
