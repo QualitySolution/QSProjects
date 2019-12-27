@@ -19,7 +19,7 @@ namespace QS.Project.Journal.EntitySelector
 
 		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
-			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
+			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
 			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
