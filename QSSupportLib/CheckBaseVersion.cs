@@ -35,6 +35,19 @@ namespace QSSupportLib
 				return true;
 			}
 
+			if(String.IsNullOrWhiteSpace(MainSupport.BaseParameters.Edition)) {
+				TextMessage = "Редакция базы не указана!";
+				ResultFlags |= CheckBaseResult.UnsupportEdition;
+				return true;
+			}
+
+			if(!MainSupport.ProjectVerion.AllowEdition.Contains(MainSupport.BaseParameters.Edition)) {
+				ResultFlags |= CheckBaseResult.UnsupportEdition;
+				TextMessage = "Редакция базы данных не поддерживается.\n";
+				TextMessage += "Редакция продукта: " + MainSupport.ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition;
+				return true;
+			}
+
 			Version baseVersion;
 
 			if (String.IsNullOrWhiteSpace (MainSupport.BaseParameters.Version) 
@@ -53,19 +66,6 @@ namespace QSSupportLib
 					ResultFlags |= CheckBaseResult.BaseVersionLess;
 				else
 					ResultFlags |= CheckBaseResult.BaseVersionGreater;
-				return true;
-			}
-
-			if (String.IsNullOrWhiteSpace (MainSupport.BaseParameters.Edition) ) {
-				TextMessage = "Редакция базы не указана!";
-				ResultFlags |= CheckBaseResult.UnsupportEdition;
-				return true;
-			}
-
-			if (!MainSupport.ProjectVerion.AllowEdition.Contains (MainSupport.BaseParameters.Edition)) {
-				ResultFlags |= CheckBaseResult.UnsupportEdition;
-				TextMessage = "Редакция базы данных не поддерживается.\n";
-				TextMessage += "Редакция продукта: " + MainSupport.ProjectVerion.Edition + "\nРедакция базы данных: " + MainSupport.BaseParameters.Edition;
 				return true;
 			}
 
