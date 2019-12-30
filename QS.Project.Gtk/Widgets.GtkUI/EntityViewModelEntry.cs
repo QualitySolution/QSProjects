@@ -87,6 +87,14 @@ namespace QS.Widgets.GtkUI
 			ConfigureEntryComplition();
 		}
 
+		/// <summary>
+		/// Determines whether the completions popup window is resized to the width of the entry
+		/// </summary>
+		public void ComplitionPopupSetWidth(bool isResized)
+		{ 
+			entryObject.Completion.PopupSetWidth = isResized;
+		}
+
 		private void ConfigureEntryComplition()
 		{
 			entryObject.Completion = new EntryCompletion();
