@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using Gdk;
 using NLog;
 
@@ -20,6 +21,7 @@ namespace QS.Project.Search.GtkUI
 
 		SearchViewModel viewModel;
 		uint timerId;
+		private CancellationTokenSource cts = new CancellationTokenSource();
 
 		public SearchView(SearchViewModel viewModel)
 		{
@@ -46,6 +48,9 @@ namespace QS.Project.Search.GtkUI
 
 		bool RunSearch()
 		{
+			if(cts.IsCancellationRequested)
+				return false;
+
 			var allFields = new string[] { entrySearch.Text, entrySearch2.Text, entrySearch3.Text, entrySearch4.Text };
 			viewModel.SearchValues = allFields.Where(x => !String.IsNullOrEmpty(x)).ToArray();
 			timerId = 0;
@@ -87,6 +92,12 @@ namespace QS.Project.Search.GtkUI
 					RunSearch();
 				}
 			}
+		}
+
+		protected override void OnDestroyed()
+		{
+			cts.Cancel();
+			base.OnDestroyed();
 		}
 
 		public override void Destroy()
