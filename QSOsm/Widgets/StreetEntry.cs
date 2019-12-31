@@ -156,8 +156,6 @@ namespace QSOsm
 			queryThread.Start ();
 		}
 
-		private bool entryDestroyed = false;
-
 		private void fillAutocomplete ()
 		{
 			logger.Info ("Запрос улиц...");
@@ -170,15 +168,16 @@ namespace QSOsm
 					s.Districts
 				);
 			}
-			if(entryDestroyed) {
-				logger.Info("Запрос улиц отменён");
-				return;
-			}
 
-			this.Completion.Model = completionListStore;
-			logger.Info ("Получено {0} улиц", streets.Count);
-			if (this.HasFocus)
-				this.Completion.Complete ();
+			try {
+				this.Completion.Model = completionListStore;
+				logger.Info("Получено {0} улиц", streets.Count);
+				if(this.HasFocus)
+					this.Completion.Complete();
+			} 
+			catch {
+				logger.Info("Не получилось отобразить автодополнение. Возможно {0} уже был удалён", this.Name);
+			}
 		}
 
 		protected override void OnChanged ()
@@ -191,12 +190,6 @@ namespace QSOsm
 		{
 			if (StreetSelected != null)
 				StreetSelected (null, EventArgs.Empty);
-		}
-
-		protected override void OnDestroyed()
-		{
-			entryDestroyed = true;
-			base.OnDestroyed();
 		}
 	}
 }

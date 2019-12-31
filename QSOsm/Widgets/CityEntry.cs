@@ -159,8 +159,6 @@ namespace QSOsm
 				CitySelected (null, EventArgs.Empty);
 		}
 
-		private bool entryDestroyed = false;
-
 		void CityEntryTextInserted (object o, TextInsertedArgs args)
 		{
 			if (this.HasFocus && completionListStore == null && !queryIsRunning) {
@@ -185,16 +183,17 @@ namespace QSOsm
 					c.OsmId
 				);
 			}
-			if(entryDestroyed) {
-				logger.Info("Запрос городов отменён");
-				return;
-			}
 
-			logger.Info ("Получено {0} городов", cities.Count);
-			this.Completion.Model = completionListStore;
-			queryIsRunning = false;
-			if (this.HasFocus)
-				this.Completion.Complete ();
+			try {
+				this.Completion.Model = completionListStore;
+				queryIsRunning = false;
+				if(this.HasFocus)
+					this.Completion.Complete();
+				logger.Info("Получено {0} городов", cities.Count);
+			} 
+			catch {
+				logger.Info("Не получилось отобразить автодополнение. Возможно {0} уже был удалён", this.Name);
+			}
 		}
 
 		protected override void OnChanged ()
@@ -202,12 +201,5 @@ namespace QSOsm
 			Binding.FireChange (w => w.City, w => w.CityDistrict, w => w.Locality);
 			base.OnChanged ();
 		}
-
-		protected override void OnDestroyed()
-		{
-			entryDestroyed = true;
-			base.OnDestroyed();
-		}
 	}
 }
-
