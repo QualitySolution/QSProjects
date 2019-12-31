@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
-using QSOsm.DTO;
 
 namespace QSOsm
 {
@@ -158,6 +156,8 @@ namespace QSOsm
 			queryThread.Start ();
 		}
 
+		private bool entryDestroyed = false;
+
 		private void fillAutocomplete ()
 		{
 			logger.Info ("Запрос улиц...");
@@ -170,8 +170,13 @@ namespace QSOsm
 					s.Districts
 				);
 			}
+			if(entryDestroyed) {
+				logger.Info("Запрос улиц отменён");
+				return;
+			}
+
 			this.Completion.Model = completionListStore;
-			logger.Debug ("Получено {0} улиц...", streets.Count);
+			logger.Info ("Получено {0} улиц", streets.Count);
 			if (this.HasFocus)
 				this.Completion.Complete ();
 		}
@@ -186,6 +191,12 @@ namespace QSOsm
 		{
 			if (StreetSelected != null)
 				StreetSelected (null, EventArgs.Empty);
+		}
+
+		protected override void OnDestroyed()
+		{
+			entryDestroyed = true;
+			base.OnDestroyed();
 		}
 	}
 }

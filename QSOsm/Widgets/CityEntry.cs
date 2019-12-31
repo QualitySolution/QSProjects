@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -160,6 +159,8 @@ namespace QSOsm
 				CitySelected (null, EventArgs.Empty);
 		}
 
+		private bool entryDestroyed = false;
+
 		void CityEntryTextInserted (object o, TextInsertedArgs args)
 		{
 			if (this.HasFocus && completionListStore == null && !queryIsRunning) {
@@ -184,7 +185,12 @@ namespace QSOsm
 					c.OsmId
 				);
 			}
-			logger.Debug ("Получено {0} городов...", cities.Count);
+			if(entryDestroyed) {
+				logger.Info("Запрос городов отменён");
+				return;
+			}
+
+			logger.Info ("Получено {0} городов", cities.Count);
 			this.Completion.Model = completionListStore;
 			queryIsRunning = false;
 			if (this.HasFocus)
@@ -195,6 +201,12 @@ namespace QSOsm
 		{
 			Binding.FireChange (w => w.City, w => w.CityDistrict, w => w.Locality);
 			base.OnChanged ();
+		}
+
+		protected override void OnDestroyed()
+		{
+			entryDestroyed = true;
+			base.OnDestroyed();
 		}
 	}
 }

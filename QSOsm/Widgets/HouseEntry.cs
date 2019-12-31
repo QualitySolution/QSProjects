@@ -134,6 +134,8 @@ namespace QSOsm
 			queryThread.Start ();
 		}
 
+		private bool entryDestroyed = false;
+
 		private void fillAutocomplete ()
 		{
 			if (String.IsNullOrWhiteSpace (Street.Name)) {
@@ -162,8 +164,13 @@ namespace QSOsm
 				foreach (var h in houses) {
 					completionListStore.AppendValues (h.ComplexNumber, h.Id, h);
 				}
+				if(entryDestroyed) {
+					logger.Info("Запрос домов на {0} отменён", Street.Name);
+					return;
+				}
+
 				this.Completion.Model = completionListStore;
-				logger.Debug ("Получено {0} домов...", houses.Count);
+				logger.Info ("Получено {0} домов", houses.Count);
 			}
 			if (CompletionLoaded != null)
 				Gtk.Application.Invoke (CompletionLoaded);
@@ -193,6 +200,12 @@ namespace QSOsm
 
 			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion, w => w.Latitude, w => w.Longitude);
 			base.OnChanged ();
+		}
+
+		protected override void OnDestroyed()
+		{
+			entryDestroyed = true;
+			base.OnDestroyed();
 		}
 	}
 }
