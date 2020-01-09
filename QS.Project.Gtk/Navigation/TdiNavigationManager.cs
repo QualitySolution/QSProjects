@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Autofac;
 using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
@@ -54,19 +55,19 @@ namespace QS.Navigation
 
 		#region Открытие ViewModel
 
-		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel>(ITdiTab master, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
-			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options);
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
-		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindOrCreateMasterPage(master), options,
 				() => hashGenerator.GetHash<TViewModel>(null, ctorTypes, ctorValues),
-				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash)
+				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
 
@@ -74,29 +75,29 @@ namespace QS.Navigation
 
 		#region Открытие TdiTab
 
-		public ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, OpenPageOptions options = OpenPageOptions.None)
+		public ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null)
 			where TTab : ITdiTab
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
-			return OpenTdiTab<TTab>(masterTab, types, values, options);
+			return OpenTdiTab<TTab>(masterTab, types, values, options, addingRegistrations);
 		}
 
-		public ITdiPage OpenTdiTab<TTab, TCtorArg1>(ITdiTab masterTab, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None)
+		public ITdiPage OpenTdiTab<TTab, TCtorArg1>(ITdiTab masterTab, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null)
 			where TTab : ITdiTab
 		{
 			var types = new Type[] { typeof(TCtorArg1) };
 			var values = new object[] { arg1 };
-			return OpenTdiTab<TTab>(masterTab, types, values, options);
+			return OpenTdiTab<TTab>(masterTab, types, values, options, addingRegistrations);
 		}
 
-		public ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None)
+		public ITdiPage OpenTdiTab<TTab>(ITdiTab masterTab, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null)
 			where TTab : ITdiTab
 		{
 			return (ITdiPage)OpenViewModelInternal(
 				FindOrCreateMasterPage(masterTab), options,
 				() => hashGenerator.GetHash<TTab>(null, ctorTypes, ctorValues),
-				(hash) => tdiPageFactory.CreateTdiPageTypedArgs<TTab>(ctorTypes, ctorValues, hash)
+				(hash) => tdiPageFactory.CreateTdiPageTypedArgs<TTab>(ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
 

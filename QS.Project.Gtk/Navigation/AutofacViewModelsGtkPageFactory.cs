@@ -15,9 +15,9 @@ namespace QS.Navigation
 			Container = container;
 		}
 
-		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, string hash) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, string hash, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
-			var scope = Container.BeginLifetimeScope();
+			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
 			if(viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
@@ -26,9 +26,9 @@ namespace QS.Navigation
 			return page;
 		}
 
-		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, string hash) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, string hash, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
-			var scope = Container.BeginLifetimeScope();
+			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
 			if(viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;

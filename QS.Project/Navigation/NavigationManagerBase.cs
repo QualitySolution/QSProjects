@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
 using QS.ViewModels;
@@ -86,49 +87,49 @@ namespace QS.Navigation
 
 		#region Открытие
 
-		public IPage<TViewModel> OpenViewModel<TViewModel>(DialogViewModelBase master, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel>(DialogViewModelBase master, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
-			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
+			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(DialogViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(DialogViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1) };
 			var values = new object[] { arg1 };
-			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
+			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
 			var values = new object[] { arg1, arg2 };
-			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
+			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
-		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg1 arg2, TCtorArg1 arg3, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2), typeof(TCtorArg3) };
 			var values = new object[] { arg1, arg2, arg3 };
-			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options);
+			return OpenViewModelTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
-		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
 				() => hashGenerator.GetHash<TViewModel>(master, ctorTypes, ctorValues),
-				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash)
+				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
 
-		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
 				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
-				(hash) => viewModelsFactory.CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash)
+				(hash) => viewModelsFactory.CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash, addingRegistrations)
 			);
 		}
 
