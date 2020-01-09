@@ -162,8 +162,14 @@ namespace QSOsm
 				foreach (var h in houses) {
 					completionListStore.AppendValues (h.ComplexNumber, h.Id, h);
 				}
+
+				if(this.Completion == null) {
+					logger.Info("Запрос домов отменён");
+					return;
+				}
+
 				this.Completion.Model = completionListStore;
-				logger.Debug ("Получено {0} домов...", houses.Count);
+				logger.Info ("Получено {0} домов", houses.Count);
 			}
 			if (CompletionLoaded != null)
 				Gtk.Application.Invoke (CompletionLoaded);

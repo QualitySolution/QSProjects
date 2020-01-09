@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -184,11 +183,17 @@ namespace QSOsm
 					c.OsmId
 				);
 			}
-			logger.Debug ("Получено {0} городов...", cities.Count);
+
+			if(this.Completion == null) {
+				logger.Info("Запрос городов отменён");
+				return;
+			}
+
 			this.Completion.Model = completionListStore;
 			queryIsRunning = false;
-			if (this.HasFocus)
-				this.Completion.Complete ();
+			if(this.HasFocus)
+				this.Completion?.Complete();
+			logger.Info("Получено {0} городов", cities.Count);
 		}
 
 		protected override void OnChanged ()
@@ -198,4 +203,3 @@ namespace QSOsm
 		}
 	}
 }
-
