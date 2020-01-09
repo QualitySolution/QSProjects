@@ -83,8 +83,10 @@ namespace QS.DomainModel.UoW
 		protected virtual void DisposeUoW()
 		{
 			if(transaction != null) {
-				if(!transaction.WasCommitted && !transaction.WasRolledBack)
+				if(!transaction.WasCommitted && !transaction.WasRolledBack
+				&& transaction.IsActive && session.Connection.State == System.Data.ConnectionState.Open)
 					transaction.Rollback();
+
 				transaction.Dispose();
 				transaction = null;
 			}
