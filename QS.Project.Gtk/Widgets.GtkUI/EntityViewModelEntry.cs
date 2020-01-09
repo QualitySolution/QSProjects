@@ -323,6 +323,9 @@ namespace QS.Widgets.GtkUI
 
 		private void OnListUpdated(object sender, EventArgs e)
 		{
+			if(cts.IsCancellationRequested)
+				return;
+
 			Gtk.Application.Invoke((senderObject, eventArgs) => {
 				if(autoCompleteSelector?.Items == null)
 					return;

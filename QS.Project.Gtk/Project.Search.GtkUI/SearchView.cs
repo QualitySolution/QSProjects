@@ -89,10 +89,10 @@ namespace QS.Project.Search.GtkUI
 			}
 		}
 
-		public override void Destroy()
+		protected override void OnDestroyed()
 		{
 			GLib.Source.Remove(timerId);
-			base.Destroy();
+			base.OnDestroyed();
 		}
 	}
 }
