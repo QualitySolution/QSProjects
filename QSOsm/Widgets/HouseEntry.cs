@@ -163,12 +163,13 @@ namespace QSOsm
 					completionListStore.AppendValues (h.ComplexNumber, h.Id, h);
 				}
 
-				try {
-					this.Completion.Model = completionListStore;
-					logger.Info ("Получено {0} домов", houses.Count);
-				} catch {
-					logger.Info("Не получилось отобразить автодополнение. Возможно {0} уже был удалён", this.Name);
+				if(this.Completion == null) {
+					logger.Info("Запрос домов отменён");
+					return;
 				}
+
+				this.Completion.Model = completionListStore;
+				logger.Info ("Получено {0} домов", houses.Count);
 			}
 			if (CompletionLoaded != null)
 				Gtk.Application.Invoke (CompletionLoaded);

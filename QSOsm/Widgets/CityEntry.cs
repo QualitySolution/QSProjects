@@ -184,16 +184,16 @@ namespace QSOsm
 				);
 			}
 
-			try {
-				this.Completion.Model = completionListStore;
-				queryIsRunning = false;
-				if(this.HasFocus)
-					this.Completion.Complete();
-				logger.Info("Получено {0} городов", cities.Count);
-			} 
-			catch {
-				logger.Info("Не получилось отобразить автодополнение. Возможно {0} уже был удалён", this.Name);
+			if(this.Completion == null) {
+				logger.Info("Запрос городов отменён");
+				return;
 			}
+
+			this.Completion.Model = completionListStore;
+			queryIsRunning = false;
+			if(this.HasFocus)
+				this.Completion?.Complete();
+			logger.Info("Получено {0} городов", cities.Count);
 		}
 
 		protected override void OnChanged ()

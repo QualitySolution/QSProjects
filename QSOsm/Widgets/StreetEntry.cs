@@ -169,15 +169,15 @@ namespace QSOsm
 				);
 			}
 
-			try {
-				this.Completion.Model = completionListStore;
-				logger.Info("Получено {0} улиц", streets.Count);
-				if(this.HasFocus)
-					this.Completion.Complete();
-			} 
-			catch {
-				logger.Info("Не получилось отобразить автодополнение. Возможно {0} уже был удалён", this.Name);
+			if(this.Completion == null) {
+				logger.Info("Запрос улиц отменён");
+				return;
 			}
+
+			this.Completion.Model = completionListStore;
+			logger.Info("Получено {0} улиц", streets.Count);
+			if(this.HasFocus)
+				this.Completion?.Complete();
 		}
 
 		protected override void OnChanged ()
