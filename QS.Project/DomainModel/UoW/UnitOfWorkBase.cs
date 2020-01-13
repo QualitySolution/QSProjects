@@ -27,7 +27,7 @@ namespace QS.DomainModel.UoW
 
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
-		protected ITransaction transaction;
+		protected virtual ITransaction transaction { get; set; }
 
 		protected ISession session;
 
@@ -176,7 +176,7 @@ namespace QS.DomainModel.UoW
 			Session.Delete(entity);
 		}
 
-		protected void OpenTransaction()
+		internal virtual void OpenTransaction()
 		{
 			if(transaction == null) {
 				transaction = Session.BeginTransaction();
