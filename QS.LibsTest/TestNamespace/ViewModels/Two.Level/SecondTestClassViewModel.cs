@@ -1,11 +1,11 @@
-﻿using QS.Services;
+﻿using QS.Navigation;
 using QS.ViewModels;
 
 namespace QS.Test.TestNamespace.ViewModels.Two.Level
 {
-	public class SecondTestClassViewModel : TabViewModelBase
+	public class SecondTestClassViewModel : DialogViewModelBase
 	{
-		public SecondTestClassViewModel(IInteractiveService interactiveService) : base(interactiveService)
+		public SecondTestClassViewModel(INavigationManager navigation) : base(navigation)
 		{
 		}
 	}

@@ -92,7 +92,6 @@
     <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="Utilities\PhoneFormatterTest.cs" />
-    <Compile Include="Tdi\BasedOnNameTDIResolverTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
@@ -122,6 +121,9 @@
     <Compile Include="TestApp\Dialogs\EmptyJournalTab.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Dialogs.EmptyJournalTab.cs" />
     <Compile Include="TestApp\ViewModels\AbortCreationViewModel.cs" />
+    <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolverTest.cs" />
+    <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
+    <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
