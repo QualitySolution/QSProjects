@@ -306,6 +306,8 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
     <Compile Include="Navigation\NavigationManagerBase.cs" />
+    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
+    <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

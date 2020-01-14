@@ -244,6 +244,8 @@
     <Compile Include="Navigation\TdiTabPage.cs" />
     <Compile Include="Navigation\TdiPage.cs" />
     <Compile Include="Tdi\ViewModelTdiTab.cs" />
+    <Compile Include="Views\Dialog\EntityDialogViewBase.cs" />
+    <Compile Include="Views\Dialog\DialogViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -269,6 +271,7 @@
     <Folder Include="Views\Control\" />
     <Folder Include="Widgets\" />
     <Folder Include="Views\Resolve\" />
+    <Folder Include="Views\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
