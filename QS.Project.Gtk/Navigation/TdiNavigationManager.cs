@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Autofac;
 using QS.Dialog;
@@ -28,12 +28,12 @@ namespace QS.Navigation
 
 		public bool AskClosePage(IPage page)
 		{
-			return tdiNotebook.AskToCloseTab((ITdiTab)page.ViewModel);
+			return tdiNotebook.AskToCloseTab((page as ITdiPage).TdiTab);
 		}
 
 		public void ForceClosePage(IPage page)
 		{
-			tdiNotebook.ForceCloseTab((ITdiTab)page.ViewModel);
+			tdiNotebook.ForceCloseTab((page as ITdiPage).TdiTab);
 		}
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
@@ -121,7 +121,7 @@ namespace QS.Navigation
 
 		public override void SwitchOn(IPage page)
 		{
-			tdiNotebook.SwitchOnTab((ITdiTab)page.ViewModel);
+			tdiNotebook.SwitchOnTab((page as ITdiPage).TdiTab);
 		}
 
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
