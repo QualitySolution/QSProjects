@@ -1,7 +1,7 @@
 ﻿using System;
 using Gtk;
 
-namespace QS.Tdi.Gtk
+namespace QS.Tdi
 {
 	public interface ITDIWidgetResolver
 	{

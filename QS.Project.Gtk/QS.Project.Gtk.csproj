@@ -106,10 +106,10 @@
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
     <Compile Include="Dialog.GtkUI\DialogHelper.cs" />
     <Compile Include="Dialog.GtkUI\EntityDialogBase.cs" />
-    <Compile Include="Tdi.Gtk\TdiSliderTab.cs" />
-    <Compile Include="Tdi.Gtk\TdiNotebook.cs" />
-    <Compile Include="Tdi.Gtk\TabVBox.cs" />
-    <Compile Include="Tdi.Gtk\TDIMain.cs" />
+    <Compile Include="Tdi\TdiSliderTab.cs" />
+    <Compile Include="Tdi\TdiNotebook.cs" />
+    <Compile Include="Tdi\TabVBox.cs" />
+    <Compile Include="Tdi\TDIMain.cs" />
     <Compile Include="Dialog.GtkUI\TdiTabBase.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnTdiTabBase.cs" />
     <Compile Include="Utilities.GtkUI\GtkHelper.cs" />
@@ -167,8 +167,8 @@
     <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
     <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
-    <Compile Include="Tdi.Gtk\ITDIWidgetResolver.cs" />
-    <Compile Include="Tdi.Gtk\DefaultTDIWidgetResolver.cs" />
+    <Compile Include="Tdi\ITDIWidgetResolver.cs" />
+    <Compile Include="Tdi\DefaultTDIWidgetResolver.cs" />
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
@@ -215,7 +215,7 @@
     <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
     <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
-    <Compile Include="Tdi.Gtk\BasedOnNameTDIResolver.cs" />
+    <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
@@ -244,7 +244,7 @@
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
     <Folder Include="Dialog.GtkUI\" />
-    <Folder Include="Tdi.Gtk\" />
+    <Folder Include="Tdi\" />
     <Folder Include="Utilities.GtkUI\" />
     <Folder Include="Project.Dialogs.GtkUI\" />
     <Folder Include="RepresentationModel.GtkUI\" />

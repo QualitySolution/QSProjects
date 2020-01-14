@@ -96,7 +96,7 @@
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
     <Compile Include="TestNamespace\Views\Two.Level\SecondTestClassView.cs" />
-    <Compile Include="Views.GtkUI\EntityTabViewBaseTest.cs" />
+    <Compile Include="Views\EntityTabViewBaseTest.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="TestApp\Views\ButtonSubscriptionView.cs" />
     <Compile Include="TestApp\ViewModels\EntityViewModel.cs" />
@@ -142,7 +142,7 @@
     <Folder Include="TestNamespace\ViewModels\Two.Level\" />
     <Folder Include="TestNamespace\Views\OneLevel\" />
     <Folder Include="TestNamespace\Views\Two.Level\" />
-    <Folder Include="Views.GtkUI\" />
+    <Folder Include="Views\" />
     <Folder Include="TestApp\" />
     <Folder Include="TestApp\Views\" />
     <Folder Include="TestApp\ViewModels\" />
@@ -154,6 +154,7 @@
     <Folder Include="Tdi\GtkUI\" />
     <Folder Include="Navigation\" />
     <Folder Include="TestApp\Dialogs\" />
+    <Folder Include="Views\Resolve\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

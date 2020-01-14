@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Gtk;
 using NLog;
-using System.Collections.Generic;
+using QS.Tdi.Gtk;
 
-namespace QS.Tdi.Gtk
+namespace QS.Tdi
 {
 	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath, ITdiSliderTab
 	{

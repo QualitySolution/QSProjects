@@ -2,7 +2,7 @@
 using Gtk;
 using QS.Journal.GtkUI;
 
-namespace QS.Tdi.Gtk
+namespace QS.Tdi
 {
 	public class DefaultTDIWidgetResolver : ITDIWidgetResolver
 	{
