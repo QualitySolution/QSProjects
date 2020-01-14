@@ -183,6 +183,7 @@
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\OrmReferenceAutocompleteSelector.cs" />
+    <Compile Include="ViewModels\Dialog\LegacyEntityDialogViewModelBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -240,6 +241,7 @@
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
+    <Folder Include="ViewModels\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

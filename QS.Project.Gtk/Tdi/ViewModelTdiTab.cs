@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Gtk;
 using QS.Dialog.Gtk;
 using QS.ViewModels.Dialog;
@@ -9,7 +9,9 @@ namespace QS.Tdi
 	{
 		public DialogViewModelBase ViewModel;
 
-		public ViewModelTdiTab(DialogViewModelBase viewModel, Widget widget)
+		public ViewModelTdiTab() { }
+
+		public void Setup(DialogViewModelBase viewModel, Widget widget)
 		{
 			if(widget == null) throw new ArgumentNullException(nameof(widget));
 

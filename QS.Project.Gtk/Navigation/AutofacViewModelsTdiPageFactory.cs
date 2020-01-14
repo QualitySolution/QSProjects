@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -19,29 +19,41 @@ namespace QS.Navigation
 
 		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
 		{
-			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
-			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
-			return MakePage(viewmodel, scope, hash);
+			var parameters = ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value));
+			return MakePage<TViewModel>(parameters, hash, addingRegistrations);
 		}
 
 		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
 		{
-			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
-			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
-			return MakePage(viewmodel, scope, hash);
+			var parameters = ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val));
+			return MakePage<TViewModel>(parameters, hash, addingRegistrations);
 		}
 
-		private IPage<TViewModel> MakePage<TViewModel>(TViewModel viewmodel, ILifetimeScope scope, string hash) where TViewModel : DialogViewModelBase
+		private IPage<TViewModel> MakePage<TViewModel>(IEnumerable<Autofac.Core.Parameter> parameters, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
 		{
+			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
+			ViewModelTdiTab viewModelTab = null;
+			ITdiTab tab;
+			var args = parameters.ToList();
+
+			if(!typeof(TViewModel).IsAssignableTo<ITdiTab>())
+				viewModelTab = new ViewModelTdiTab();
+
+			if(typeof(TViewModel).IsAssignableTo<ILegacyViewModel>()) {
+				args.Add(new NamedParameter("myTab", viewModelTab));
+			}
+
+			var viewmodel = scope.Resolve<TViewModel>(args);
 			if (viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-			ITdiTab tab;
+
 			if (viewmodel is ITdiTab tdiTab)
 				tab = tdiTab;
 			else {
 				var resolver = scope.Resolve<IGtkViewResolver>();
 				var view = resolver.Resolve(viewmodel);
-				tab = new ViewModelTdiTab(viewmodel, view);
+				viewModelTab.Setup(viewmodel, view);
+				tab = viewModelTab;
 			}
 			var page = new TdiPage<TViewModel>(viewmodel, tab, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();

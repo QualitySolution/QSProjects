@@ -246,6 +246,7 @@
     <Compile Include="Tdi\ViewModelTdiTab.cs" />
     <Compile Include="Views\Dialog\EntityDialogViewBase.cs" />
     <Compile Include="Views\Dialog\DialogViewBase.cs" />
+    <Compile Include="Views\Dialog\ILegacyViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
