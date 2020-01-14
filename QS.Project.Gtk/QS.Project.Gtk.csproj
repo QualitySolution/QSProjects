@@ -240,6 +240,10 @@
     <Compile Include="Views\Resolve\RegisteredGtkViewResolver.cs" />
     <Compile Include="Widgets\MenuButton.cs" />
     <Compile Include="Widgets\EnumMenuButton.cs" />
+    <Compile Include="Navigation\AutofacViewModelsTdiPageFactory.cs" />
+    <Compile Include="Navigation\TdiTabPage.cs" />
+    <Compile Include="Navigation\TdiPage.cs" />
+    <Compile Include="Tdi\ViewModelTdiTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

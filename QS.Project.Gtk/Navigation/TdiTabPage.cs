@@ -4,6 +4,9 @@ using QS.ViewModels;
 
 namespace QS.Navigation
 {
+	/// <summary>
+	/// Этот класс используется ТОЛЬКО для страниц с ITdiTab без ViewModel, чтобы такие страницы можно было указывать как мастер.
+	/// </summary>
 	public class TdiTabPage : PageBase, IPage, ITdiPage
 	{
 		public TdiTabPage(ITdiTab tab, string hash)

@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using QS.Tdi;
 using QS.ViewModels;
+using QS.Views.Resolve;
 
 namespace QS.Navigation
 {
-	public class AutofacViewModelsPageFactory : IViewModelsPageFactory
+	public class AutofacViewModelsTdiPageFactory : IViewModelsPageFactory
 	{
 		readonly IContainer Container;
 
-		public AutofacViewModelsPageFactory(IContainer container)
+		public AutofacViewModelsTdiPageFactory(IContainer container)
 		{
 			Container = container;
 		}
@@ -19,20 +21,29 @@ namespace QS.Navigation
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
-			if(viewmodel is IAutofacScopeHolder)
-				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-			var page = new Page<TViewModel>(viewmodel, hash);
-			page.PageClosed += (sender, e) => scope.Dispose();
-			return page;
+			return MakePage(viewmodel, scope, hash);
 		}
 
 		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
-			if(viewmodel is IAutofacScopeHolder)
+			return MakePage(viewmodel, scope, hash);
+		}
+
+		private IPage<TViewModel> MakePage<TViewModel>(TViewModel viewmodel, ILifetimeScope scope, string hash) where TViewModel : DialogViewModelBase
+		{
+			if (viewmodel is IAutofacScopeHolder)
 				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-			var page = new Page<TViewModel>(viewmodel, hash);
+			ITdiTab tab;
+			if (viewmodel is ITdiTab tdiTab)
+				tab = tdiTab;
+			else {
+				var resolver = scope.Resolve<IGtkViewResolver>();
+				var view = resolver.Resolve(viewmodel);
+				tab = new ViewModelTdiTab(viewmodel, view);
+			}
+			var page = new TdiPage<TViewModel>(viewmodel, tab, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;
 		}
