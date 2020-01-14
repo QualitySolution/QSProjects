@@ -34,9 +34,8 @@ namespace QS.Project.Journal
 			INavigationManager navigationManager,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
-			) : base(unitOfWorkFactory, interactiveService)
+			) : base(unitOfWorkFactory, interactiveService, navigationManager)
 		{
-			NavigationManager = navigationManager;
 			CurrentPermissionService = currentPermissionService;
 			DeleteEntityService = deleteEntityService;
 

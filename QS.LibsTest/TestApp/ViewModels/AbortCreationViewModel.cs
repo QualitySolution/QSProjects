@@ -5,7 +5,7 @@ namespace QS.Test.TestApp.ViewModels
 {
 	public class AbortCreationViewModel : DialogViewModelBase
 	{
-		public AbortCreationViewModel()
+		public AbortCreationViewModel(INavigationManager navigation) : base(navigation)
 		{
 			throw new AbortCreatingPageException("Вкладка не создана!", "Остановка");
 		}

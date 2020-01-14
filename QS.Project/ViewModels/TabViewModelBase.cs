@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using QS.Dialog;
+using QS.Navigation;
 using QS.Services;
 using QS.Tdi;
 
@@ -10,7 +11,7 @@ namespace QS.ViewModels
 	[Obsolete("Эта ветка базовых кассов будет удалена с окончательным выпиливанием TDI из ViewModel. Может быть оставлена только для обратной совместимости Водовозовских диалогов.")]
 	public abstract class TabViewModelBase : DialogViewModelBase, ITdiTab, IDisposable
 	{
-		protected TabViewModelBase(IInteractiveService interactiveService) : base()
+		protected TabViewModelBase(IInteractiveService interactiveService, INavigationManager navigation) : base(navigation)
 		{
 			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 		}
