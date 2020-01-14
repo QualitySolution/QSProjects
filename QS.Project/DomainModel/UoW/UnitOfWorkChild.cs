@@ -5,6 +5,7 @@ using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
 {
+	[Obsolete("В классе присутствует уязвимость при удалении. Не следует его использовать")]
 	public class UnitOfWorkChild<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity>
 		where TRootEntity : class, IDomainObject, new()
 	{
@@ -15,16 +16,23 @@ namespace QS.DomainModel.UoW
 			IsNew = childRoot.Id == 0;
 			ActionTitle = actionTitle;
 			this.parentUoW = parentUoW;
-			transaction = parentUoW.Session.Transaction;
 			Root = childRoot;
 		}
 
 		public object RootObject => Root;
+		
 		public TRootEntity Root { get; private set; }
+
+		public bool HasChanges => IsNew || Session.IsDirty();
 
 		public override ISession Session => parentUoW.Session;
 
-		public bool HasChanges => IsNew || Session.IsDirty();
+		protected override ITransaction transaction => parentUoW.Session.Transaction;
+
+		internal override void OpenTransaction()
+		{
+			(parentUoW as UnitOfWorkBase).OpenTransaction();
+		}
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
 		{
