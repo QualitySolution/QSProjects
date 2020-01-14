@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../../My-FyiReporting/RdlGtkViewer/RdlGtkViewer/bin/Debug/RdlGtkViewer.exe" />
+    <widget-library name="../bin/Debug/QS.Report.Gtk.dll" internal="true" />
+  </import>
+  <widget class="Gtk.Bin" id="QS.Report.Views.RdlViewerView" design-size="937 269">
+    <action-group name="Default" />
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HBox" id="hbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="QSWidgetLib.LeftSidePanel" id="panelParameters">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <property name="Title">Параметры</property>
+            <property name="IsHided">False</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="fyiReporting.RdlGtkViewer.ReportViewer" id="reportviewer1">
+            <property name="MemberName" />
+            <property name="WidthRequest">0</property>
+            <property name="HeightRequest">0</property>
+            <property name="Events">ButtonPressMask</property>
+            <property name="ShowErrors">False</property>
+            <property name="ShowParameters">False</property>
+            <signal name="ReportPrinted" handler="OnReportviewer1ReportPrinted" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

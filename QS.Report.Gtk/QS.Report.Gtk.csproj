@@ -5,12 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</ProjectGuid>
+    <ProjectGuid>{42708CEE-08D8-43D5-AFE0-9992EB46E9F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>QS.Report</RootNamespace>
-    <AssemblyName>QS.Report</AssemblyName>
+    <AssemblyName>QS.Report.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <Description>Библиотека для работы с отчетами. В этой части библиотеки должна отсутствовать UI часть.</Description>
     <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,25 +28,45 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <WarningsNotAsErrors></WarningsNotAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportInfo.cs" />
-    <Compile Include="IPrintableRDLDocument.cs" />
-    <Compile Include="ViewModels\RdlViewerViewModel.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="Views\RdlViewerView.cs" />
+    <Compile Include="gtk-gui\QS.Report.Views.RdlViewerView.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Report\QS.Report.csproj">
+      <Project>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</Project>
+      <Name>QS.Report</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
+      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
+      <Name>QSWidgetLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\My-FyiReporting\RdlGtkViewer\RdlGtkViewer\RdlGtkViewer.csproj">
+      <Project>{921488F1-F4FC-4438-920E-86E57442B253}</Project>
+      <Name>RdlGtkViewer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
