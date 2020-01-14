@@ -305,8 +305,8 @@
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
-    <Compile Include="ViewModels\DialogViewModelBase.cs" />
     <Compile Include="Navigation\NavigationManagerBase.cs" />
+    <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -346,6 +346,7 @@
     <Folder Include="Navigation\" />
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
+    <Folder Include="ViewModels\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

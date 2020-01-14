@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

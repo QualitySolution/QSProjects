@@ -1,6 +1,6 @@
 ﻿using System;
 using QS.Navigation;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Report.ViewModels
 {

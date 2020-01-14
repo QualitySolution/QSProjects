@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

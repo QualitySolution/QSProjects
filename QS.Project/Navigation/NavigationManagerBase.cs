@@ -4,7 +4,7 @@ using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

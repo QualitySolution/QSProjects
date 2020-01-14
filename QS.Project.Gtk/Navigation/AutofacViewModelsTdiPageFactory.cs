@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using QS.Tdi;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 using QS.Views.Resolve;
 
 namespace QS.Navigation

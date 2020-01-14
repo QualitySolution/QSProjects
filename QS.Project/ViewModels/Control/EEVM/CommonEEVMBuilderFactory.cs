@@ -5,6 +5,7 @@ using Autofac;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {

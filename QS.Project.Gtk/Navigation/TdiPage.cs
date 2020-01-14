@@ -1,5 +1,5 @@
 ﻿using QS.Tdi;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
 {

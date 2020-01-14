@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Gtk;
 using QS.Dialog.Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Tdi
 {

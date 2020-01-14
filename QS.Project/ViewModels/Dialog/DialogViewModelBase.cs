@@ -1,6 +1,6 @@
 ﻿using QS.Navigation;
 
-namespace QS.ViewModels
+namespace QS.ViewModels.Dialog
 {
 	/// <summary>
 	/// Базовый класс для всех ViewModel представляющих из себя диалоги. Это либо вкладки, либо окна в интерфейсе. 
@@ -13,7 +13,7 @@ namespace QS.ViewModels
 
 		protected DialogViewModelBase(INavigationManager navigation)
 		{
-			//FIXME Когда выпилим ViewModel с TDI, добавить сделать проверку на null;
+			//FIXME Когда выпилим ViewModel с TDI, добавить проверку на null;
 			this.NavigationManager = navigation;
 		}
 

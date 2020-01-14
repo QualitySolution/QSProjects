@@ -5,6 +5,7 @@ using QS.Dialog;
 using QS.Navigation;
 using QS.Services;
 using QS.Tdi;
+using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels
 {

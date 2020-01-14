@@ -1,6 +1,5 @@
-﻿using System;
-using Gtk;
-using QS.ViewModels;
+﻿using Gtk;
+using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
 {
