@@ -2,12 +2,13 @@
 using QS.Tdi;
 using QS.Services;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 
 namespace QS.ViewModels
 {
 	public abstract class DialogTabViewModelBase : UoWTabViewModelBase, ITdiDialog, IDisposable
 	{
-		protected DialogTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(unitOfWorkFactory, interactiveService)
+		protected DialogTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
 		}
 

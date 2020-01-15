@@ -285,15 +285,12 @@
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
     <Compile Include="Navigation\IViewModelsPageFactory.cs" />
-    <Compile Include="Navigation\Page.cs" />
     <Compile Include="Project.Domain\EntityUoWBuilder.cs" />
-    <Compile Include="Navigation\AutofacViewModelsPageFactory.cs" />
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
     <Compile Include="Project.Services\IDeleteEntityService.cs" />
     <Compile Include="Navigation\PageBase.cs" />
-    <Compile Include="Navigation\TdiTabPage.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
@@ -308,8 +305,10 @@
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
-    <Compile Include="ViewModels\DialogViewModelBase.cs" />
     <Compile Include="Navigation\NavigationManagerBase.cs" />
+    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
+    <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
+    <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -349,6 +348,7 @@
     <Folder Include="Navigation\" />
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
+    <Folder Include="ViewModels\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

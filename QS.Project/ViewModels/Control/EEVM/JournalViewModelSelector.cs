@@ -5,6 +5,7 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.Tdi;
+using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {

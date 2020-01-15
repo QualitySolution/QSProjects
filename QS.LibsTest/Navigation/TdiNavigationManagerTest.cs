@@ -14,6 +14,7 @@ using QS.Test.TestApp.Dialogs;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Test.Navigation
 {
@@ -31,7 +32,7 @@ namespace QS.Test.Navigation
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new Page<EntityViewModel>(viewModel, "hash_1");
+			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -63,8 +64,8 @@ namespace QS.Test.Navigation
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var masterViewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new Page<EntityViewModel>(viewModel, "hash_1");
-			var masterPage = new Page<EntityViewModel>(masterViewModel, "master_1");
+			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var masterPage = new TdiPage<EntityViewModel>(masterViewModel, masterViewModel, "master_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var masterTabWidget = Substitute.For<Gtk.Widget>();
@@ -101,7 +102,7 @@ namespace QS.Test.Navigation
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var masterTab = Substitute.For<ITdiTab, Gtk.Widget>();
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new Page<EntityViewModel>(viewModel, "hash_1");
+			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -136,9 +137,9 @@ namespace QS.Test.Navigation
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var viewModel1 = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page1 = new Page<EntityViewModel>(viewModel1, "page_1");
+			var page1 = new TdiPage<EntityViewModel>(viewModel1, viewModel1, "page_1");
 			var viewModel2 = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page2 = new Page<EntityViewModel>(viewModel2, "page_2");
+			var page2 = new TdiPage<EntityViewModel>(viewModel2, viewModel2, "page_2");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -202,7 +203,7 @@ namespace QS.Test.Navigation
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new Page<EntityViewModel>(viewModel, "hash_1");
+			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
 			bool eventRised = false;
 			page.PageClosed += (sender, e) => eventRised = true;
 
@@ -234,15 +235,16 @@ namespace QS.Test.Navigation
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveService = Substitute.For<IInteractiveService>();
+			var navigation = Substitute.For<INavigationManager>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			IPage page = new Page<EntityViewModel>(viewModel, "hash_1");
+			IPage page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
 			bool eventRised = false;
 			page.PageClosed += (sender, e) => eventRised = true;
 
-			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService);
-			IPage journal = new Page<TabViewModelBase>(journalViewModel, "journal_1");
+			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService, navigation);
+			IPage journal = new TdiPage<TabViewModelBase>(journalViewModel, journalViewModel, "journal_1");
 
 			var tabJournalWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
 			var tabWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
@@ -281,12 +283,13 @@ namespace QS.Test.Navigation
 			var interactiveService = Substitute.For<IInteractiveService>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
+			var navigation = Substitute.For<INavigationManager>();
 
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
 
-			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService);
+			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService, navigation);
 			bool eventRised = false;
-			IPage journal = new Page<TabViewModelBase>(journalViewModel, "journal_1");
+			IPage journal = new TdiPage<TabViewModelBase>(journalViewModel, journalViewModel, "journal_1");
 			journal.PageClosed += (sender, e) => eventRised = true;
 
 			var tabJournalWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
@@ -322,7 +325,7 @@ namespace QS.Test.Navigation
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new Page<EntityViewModel>(viewModel, "hash_1");
+			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -353,11 +356,11 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			builder.RegisterType<AbortCreationViewModel>().AsSelf();
 
-			var pageFactory = new AutofacViewModelsPageFactory(builder.Build());
+			var pageFactory = new AutofacViewModelsTdiPageFactory(builder.Build());
 
 			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactive);
 
-			var page = navManager.OpenViewModel<AbortCreationViewModel>(null);
+			var page = navManager.OpenViewModel<AbortCreationViewModel, INavigationManager>(null, navManager);
 
 			interactive.Received().ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
 		}

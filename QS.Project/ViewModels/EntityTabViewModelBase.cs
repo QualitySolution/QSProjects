@@ -8,6 +8,7 @@ using Gamma.Utilities;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Services;
@@ -103,8 +104,9 @@ namespace QS.ViewModels
 			: this(ctorParam, QS.DomainModel.UoW.UnitOfWorkFactory.GetDefaultFactory, commonServices)
 		{ }
 
-		protected EntityTabViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices)
-			: base(unitOfWorkFactory, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService)
+		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
+		protected EntityTabViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, INavigationManager navigation = null)
+			: base(unitOfWorkFactory, (commonServices ?? throw new ArgumentNullException(nameof(commonServices))).InteractiveService, navigation)
 		{
 			CommonServices = commonServices;
 

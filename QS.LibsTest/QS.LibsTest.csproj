@@ -92,12 +92,11 @@
     <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="Utilities\PhoneFormatterTest.cs" />
-    <Compile Include="Tdi\BasedOnNameTDIResolverTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
     <Compile Include="TestNamespace\Views\Two.Level\SecondTestClassView.cs" />
-    <Compile Include="Views.GtkUI\EntityTabViewBaseTest.cs" />
+    <Compile Include="Views\EntityTabViewBaseTest.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="TestApp\Views\ButtonSubscriptionView.cs" />
     <Compile Include="TestApp\ViewModels\EntityViewModel.cs" />
@@ -122,6 +121,9 @@
     <Compile Include="TestApp\Dialogs\EmptyJournalTab.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Dialogs.EmptyJournalTab.cs" />
     <Compile Include="TestApp\ViewModels\AbortCreationViewModel.cs" />
+    <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolverTest.cs" />
+    <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
+    <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -140,7 +142,7 @@
     <Folder Include="TestNamespace\ViewModels\Two.Level\" />
     <Folder Include="TestNamespace\Views\OneLevel\" />
     <Folder Include="TestNamespace\Views\Two.Level\" />
-    <Folder Include="Views.GtkUI\" />
+    <Folder Include="Views\" />
     <Folder Include="TestApp\" />
     <Folder Include="TestApp\Views\" />
     <Folder Include="TestApp\ViewModels\" />
@@ -152,6 +154,7 @@
     <Folder Include="Tdi\GtkUI\" />
     <Folder Include="Navigation\" />
     <Folder Include="TestApp\Dialogs\" />
+    <Folder Include="Views\Resolve\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QS.Tdi;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

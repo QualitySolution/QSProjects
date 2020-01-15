@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
 {

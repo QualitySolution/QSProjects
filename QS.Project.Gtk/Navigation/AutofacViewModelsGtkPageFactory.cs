@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {

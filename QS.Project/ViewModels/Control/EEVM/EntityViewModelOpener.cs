@@ -1,6 +1,7 @@
 ﻿using System;
 using QS.Navigation;
 using QS.Project.Domain;
+using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {

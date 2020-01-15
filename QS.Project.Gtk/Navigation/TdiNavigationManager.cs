@@ -4,7 +4,7 @@ using Autofac;
 using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -28,12 +28,12 @@ namespace QS.Navigation
 
 		public bool AskClosePage(IPage page)
 		{
-			return tdiNotebook.AskToCloseTab((ITdiTab)page.ViewModel);
+			return tdiNotebook.AskToCloseTab((page as ITdiPage).TdiTab);
 		}
 
 		public void ForceClosePage(IPage page)
 		{
-			tdiNotebook.ForceCloseTab((ITdiTab)page.ViewModel);
+			tdiNotebook.ForceCloseTab((page as ITdiPage).TdiTab);
 		}
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
@@ -59,6 +59,20 @@ namespace QS.Navigation
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
+		}
+
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1>(ITdiTab master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+		{
+			var types = new Type[] { typeof(TCtorArg1) };
+			var values = new object[] { arg1 };
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
+		}
+
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1, TCtorArg2>(ITdiTab master, TCtorArg1 arg1, TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+		{
+			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
+			var values = new object[] { arg1, arg2 };
 			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
@@ -121,7 +135,7 @@ namespace QS.Navigation
 
 		public override void SwitchOn(IPage page)
 		{
-			tdiNotebook.SwitchOnTab((ITdiTab)page.ViewModel);
+			tdiNotebook.SwitchOnTab((page as ITdiPage).TdiTab);
 		}
 
 		protected override void OpenSlavePage(IPage masterPage, IPage page)

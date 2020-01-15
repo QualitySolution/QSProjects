@@ -1,6 +1,7 @@
 using System;
 using QS.Dialog;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Services;
 using QS.Tdi;
 
@@ -10,7 +11,7 @@ namespace QS.ViewModels
 	{
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		protected UoWTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService) : base(interactiveService)
+		protected UoWTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(interactiveService, navigation)
 		{
 			this.UnitOfWorkFactory = unitOfWorkFactory;
 		}

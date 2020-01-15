@@ -12,7 +12,7 @@ using QS.Project.Journal.Search;
 using QS.Project.Services;
 using QS.Services;
 using QS.Utilities.Text;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
 {
@@ -34,9 +34,8 @@ namespace QS.Project.Journal
 			INavigationManager navigationManager,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
-			) : base(unitOfWorkFactory, interactiveService)
+			) : base(unitOfWorkFactory, interactiveService, navigationManager)
 		{
-			NavigationManager = navigationManager;
 			CurrentPermissionService = currentPermissionService;
 			DeleteEntityService = deleteEntityService;
 

@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using Gtk;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 using QS.Views.Resolve;
 
-namespace QS.Tdi.Gtk
+namespace QS.Tdi
 {
 	/// <summary>
 	/// Для работы этого резолвера классы должны распологаться в проекте по следущим правилам:
