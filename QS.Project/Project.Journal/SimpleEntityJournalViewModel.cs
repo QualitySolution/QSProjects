@@ -10,6 +10,8 @@ using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 
 namespace QS.Project.Journal
 {
@@ -22,7 +24,8 @@ namespace QS.Project.Journal
 			Func<TEntityTab> createDlgFunc,
 			Func<CommonJournalNode, TEntityTab> openDlgFunc,
 			IUnitOfWorkFactory unitOfWorkFactory,
-			ICommonServices commonServices) : base(typeof(TEntity), unitOfWorkFactory, commonServices)
+			ICommonServices commonServices,
+			ICriterionSearch criterionSearch) : base(typeof(TEntity), unitOfWorkFactory, commonServices, criterionSearch)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 

@@ -6,6 +6,8 @@ using QS.Services;
 using QS.Tdi;
 using QS.Project.Filter;
 using QS.DomainModel.UoW;
+using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 
 namespace Vodovoz.JournalViewModels
 {
@@ -24,7 +26,7 @@ namespace Vodovoz.JournalViewModels
 			}
 		}
 
-		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
 		{
 			FilterViewModel = filterViewModel;
 		}

@@ -6,6 +6,8 @@ using QS.DomainModel.UoW;
 using QS.Project.Journal.EntitySelector;
 using QS.Services;
 using QS.Tdi;
+using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 
 namespace QS.Project.Journal
 {
@@ -20,8 +22,8 @@ namespace QS.Project.Journal
 
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices,
-			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices)
+		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch,
+			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices, criterionSearch)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 

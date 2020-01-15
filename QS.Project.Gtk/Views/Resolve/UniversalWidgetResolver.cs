@@ -8,6 +8,7 @@ using QS.Tdi;
 using System.Collections.Generic;
 using QS.Project.Journal;
 using QS.Journal.GtkUI;
+using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
 {

@@ -1,31 +1,24 @@
 ﻿using System;
-using System.Linq.Expressions;
-using NHibernate.Criterion;
 using System.Linq;
+using System.Linq.Expressions;
 using NHibernate;
+using NHibernate.Criterion;
 
-namespace QS.Project.Journal.Search
+namespace QS.Project.Journal.Search.Criterion
 {
-	public class SearchHelper
-	{
-		private readonly IJournalSearch journalSearch;
-
-		public SearchHelper(IJournalSearch journalSearch)
-		{
-			this.journalSearch = journalSearch ?? throw new ArgumentNullException(nameof(journalSearch));
-		}
-
+	public class CriterionSearchModel : SearchModel
+	{ 
 		public ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] aliases)
 		{
 			Type[] digitsTypes = { typeof(decimal), typeof(int) };
 
 			Conjunction conjunctionCriterion = new Conjunction();
 
-			if(journalSearch.SearchValues == null || !journalSearch.SearchValues.Any()) {
+			if(SearchValues == null || !SearchValues.Any()) {
 				return conjunctionCriterion;
 			}
 
-			foreach(var sv in journalSearch.SearchValues) {
+			foreach(var sv in SearchValues) {
 				if(string.IsNullOrWhiteSpace(sv)) {
 					continue;
 				}
@@ -67,11 +60,11 @@ namespace QS.Project.Journal.Search
 
 			Conjunction conjunctionCriterion = new Conjunction();
 
-			if(journalSearch.SearchValues == null || !journalSearch.SearchValues.Any()) {
+			if(SearchValues == null || !SearchValues.Any()) {
 				return conjunctionCriterion;
 			}
 
-			foreach(var sv in journalSearch.SearchValues) {
+			foreach(var sv in SearchValues) {
 				if(string.IsNullOrWhiteSpace(sv)) {
 					continue;
 				}
@@ -114,6 +107,6 @@ namespace QS.Project.Journal.Search
 			}
 
 			return conjunctionCriterion;
-		}
+		}	
 	}
 }

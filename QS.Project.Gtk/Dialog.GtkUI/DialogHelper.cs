@@ -13,15 +13,16 @@ namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
-
 		static DialogHelper()
 		{
-			ViewResolver = new ClassNameUniversalWidgetResolver(new ClassNamesBaseGtkViewResolver());
+			ViewResolver = new UniversalWidgetResolver();
 		}
 
 		private static void RegisterDefaultViews()
 		{
 			ViewResolver.RegisterViewForBaseViewModel<JournalViewModelBase, JournalView>();
+			ViewResolver.RegisterViewForBaseViewModel<MultipleEntrySearchViewModel, MultipleEntrySearchView>();
+			ViewResolver.RegisterViewForBaseViewModel<SingleEntrySearchViewModel, SingleEntrySearchView>();
 		}
 
 		private static UniversalWidgetResolver viewResolver;

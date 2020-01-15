@@ -184,8 +184,6 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\JournalPopupAction.cs" />
     <Compile Include="RepresentationModel.GtkUI\IJournalPopupItem.cs" />
     <Compile Include="RepresentationModel.GtkUI\JournalPopupItemFactory.cs" />
-    <Compile Include="Project.Search.GtkUI\SearchView.cs" />
-    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.SearchView.cs" />
     <Compile Include="Views.GtkUI\TabViewBase.cs" />
     <Compile Include="Views.GtkUI\TabViewBaseGeneric.cs" />
     <Compile Include="Views.GtkUI\ITabView.cs" />
@@ -220,8 +218,6 @@
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
     <Compile Include="Project.Services.GtkUI\GtkDeleteEntityService.cs" />
-    <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
-    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />
@@ -247,6 +243,10 @@
     <Compile Include="Views\Resolve\GtkViewResolveException.cs" />
     <Compile Include="Views\Resolve\UniversalWidgetResolver.cs" />
     <Compile Include="Views\Resolve\ClassNameUniversalWidgetResolver.cs" />
+    <Compile Include="Project.Search.GtkUI\MultipleEntrySearchView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.MultipleEntrySearchView.cs" />
+    <Compile Include="Project.Search.GtkUI\SingleEntrySearchView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.SingleEntrySearchView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

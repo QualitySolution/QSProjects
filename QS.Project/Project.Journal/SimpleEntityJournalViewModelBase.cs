@@ -3,6 +3,8 @@ using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 using QS.Services;
 using QS.Tdi;
 using QS.Utilities.Text;
@@ -13,7 +15,7 @@ namespace QS.Project.Journal
 	{
 		public Type EntityType { get; }
 
-		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
 		{
 			EntityType = entityType;
 		}

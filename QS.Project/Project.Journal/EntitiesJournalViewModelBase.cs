@@ -12,6 +12,7 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
@@ -42,18 +43,12 @@ namespace QS.Project.Journal
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
-		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
+		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
+			SetCriterionSearch(criterionSearch ?? throw new ArgumentNullException(nameof(criterionSearch)));
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
-			Search.OnSearch += Search_OnSearch;
-			searchHelper = new SearchHelper(Search);
-		}
-
-		void Search_OnSearch(object sender, EventArgs e)
-		{
-			Refresh();
 		}
 
 		void FilterViewModel_OnFiltered(object sender, EventArgs e)
@@ -130,19 +125,33 @@ namespace QS.Project.Journal
 
 		#region Search
 
-		private readonly SearchHelper searchHelper;
+		private ICriterionSearch criterionSearch;
+
+		private void SetCriterionSearch(ICriterionSearch criterionSearch)
+		{
+			this.criterionSearch = criterionSearch;
+			criterionSearch.CriterionSearchModel.OnSearch += (sender, e) => Refresh();
+		}
+
+		public override SearchViewModelBase SearchViewModel => criterionSearch.SearchViewModel;
 
 		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
 		{
-			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
+			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
+				return new Conjunction();
+			}
+			return criterionSearch.CriterionSearchModel.GetSearchCriterion(aliasPropertiesExpr);
 		}
 
-		protected ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] propertiesExpr)
+		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
 		{
-			return searchHelper.GetSearchCriterion(propertiesExpr);
+			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
+				return new Conjunction();
+			}
+			return criterionSearch.CriterionSearchModel.GetSearchCriterion(propertiesExpr);
 		}
 
-		#endregion Search
+		#endregion
 
 		#region Entity load configuration
 

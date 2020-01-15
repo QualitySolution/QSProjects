@@ -8,7 +8,7 @@ using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Search;
+using QS.Project.Journal.Search;
 using QS.Services;
 using QS.Tdi;
 using QS.ViewModels;
@@ -20,8 +20,6 @@ namespace QS.Project.Journal
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public virtual IJournalFilter Filter { get; protected set; }
-
-		public virtual IJournalSearch Search { get; set; }
 
 		public IDataLoader DataLoader { get; protected set; }
 
@@ -54,6 +52,14 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
+		#region Search
+
+		public virtual IJournalSearch Search => SearchViewModel?.SearchModel;
+
+		public virtual SearchViewModelBase SearchViewModel { get; protected set; }
+
+		#endregion Search
+
 		#region ITDIJournal implementation
 		public virtual bool? UseSlider { get; protected set; }
 		#endregion
@@ -64,9 +70,6 @@ namespace QS.Project.Journal
 		{
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
-
-			Search = new SearchViewModel();
-
 			UseSlider = false;
 		}
 
