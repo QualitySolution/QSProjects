@@ -62,6 +62,20 @@ namespace QS.Navigation
 			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
 		}
 
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1>(ITdiTab master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+		{
+			var types = new Type[] { typeof(TCtorArg1) };
+			var values = new object[] { arg1 };
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
+		}
+
+		public IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1, TCtorArg2>(ITdiTab master, TCtorArg1 arg1, TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+		{
+			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
+			var values = new object[] { arg1, arg2 };
+			return OpenViewModelOnTdiTypedArgs<TViewModel>(master, types, values, options, addingRegistrations);
+		}
+
 		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
