@@ -1,20 +1,39 @@
 ﻿using System;
 using Gtk;
-using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
+using QS.Project.Journal.Search;
+using QS.Project.Search.GtkUI;
 using QS.Tdi;
 using QS.Views.GtkUI;
+using QS.Views.Resolve;
+using QS.Project.Journal;
+using QS.Journal.GtkUI;
 
 namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
+
 		static DialogHelper()
 		{
-			FilterWidgetResolver = new DefaultFilterWidgetResolver();
+			ViewResolver = new ClassNameUniversalWidgetResolver(new ClassNamesBaseGtkViewResolver());
 		}
 
-		public static IFilterWidgetResolver FilterWidgetResolver { get; set; }
+		private static void RegisterDefaultViews()
+		{
+			ViewResolver.RegisterViewForBaseViewModel<JournalViewModelBase, JournalView>();
+		}
+
+		private static UniversalWidgetResolver viewResolver;
+		public static UniversalWidgetResolver ViewResolver {
+			get { return viewResolver; }
+			set {
+				if(viewResolver != value) {
+					viewResolver = value;
+					RegisterDefaultViews();
+				}
+			}
+		}
 
 		public static IEntityDialog FindParentEntityDialog(Widget child)
 		{

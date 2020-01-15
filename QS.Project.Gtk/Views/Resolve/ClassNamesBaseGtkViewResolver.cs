@@ -31,10 +31,15 @@ namespace QS.Views.Resolve
 
 		public Widget Resolve(DialogViewModelBase viewModel)
 		{
+			return Resolve((ViewModelBase)viewModel);
+		}
+
+		public Widget Resolve(ViewModelBase viewModel)
+		{
 			var fullClassName = viewModel.GetType().FullName;
 			var match = Regex.Matches(fullClassName, "^([a-zA-Z\\.]+)\\.ViewModels(\\.[a-zA-Z\\.]+)*\\.([a-zA-Z]+)ViewModel$");
 			if(match.Count != 1)
-				throw new InvalidOperationException($"Имя класса {fullClassName} не соответствует шаблону `[CoreNamespace].ViewModels.[SubNamespaces].[Name]ViewModel`");
+				throw new GtkViewResolveException($"Имя класса {fullClassName} не соответствует шаблону `[CoreNamespace].ViewModels.[SubNamespaces].[Name]ViewModel`");
 			var groups = match[0].Groups;
 			var expectedViewName = $"{groups[1].Value}.Views{groups[2].Value}.{groups[3].Value}View";
 

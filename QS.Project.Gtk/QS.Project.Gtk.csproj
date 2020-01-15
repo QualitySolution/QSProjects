@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -168,7 +167,6 @@
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
     <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
     <Compile Include="Tdi\ITDIWidgetResolver.cs" />
-    <Compile Include="Tdi\DefaultTDIWidgetResolver.cs" />
     <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
@@ -214,7 +212,6 @@
     <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
     <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
-    <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
@@ -247,6 +244,9 @@
     <Compile Include="Views\Dialog\DialogViewBase.cs" />
     <Compile Include="Views\Dialog\ILegacyViewModel.cs" />
     <Compile Include="Navigation.GtkUI\IWidgetResolver.cs" />
+    <Compile Include="Views\Resolve\GtkViewResolveException.cs" />
+    <Compile Include="Views\Resolve\UniversalWidgetResolver.cs" />
+    <Compile Include="Views\Resolve\ClassNameUniversalWidgetResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

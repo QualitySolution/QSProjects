@@ -6,6 +6,7 @@ using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
 using QS.Utilities.GtkUI;
+using QS.Dialog.Gtk;
 
 namespace QS.Tdi.Gtk
 {
@@ -23,7 +24,7 @@ namespace QS.Tdi.Gtk
 		private List<TdiTabInfo> _tabs;
 
 		#region Внешние зависимости
-		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
+		public ITDIWidgetResolver WidgetResolver { get; set; } = DialogHelper.ViewResolver;
 		#endregion
 
 		public TdiNotebook()

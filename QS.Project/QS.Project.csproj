@@ -10,7 +10,6 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -214,7 +213,6 @@
     <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
     <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
     <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
-    <Compile Include="Project.Search\SearchViewModel.cs" />
     <Compile Include="Project.Journal\JournalSelectedEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
     <Compile Include="Project.Journal\JournalSelectMode.cs" />

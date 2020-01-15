@@ -123,7 +123,7 @@ namespace QS.Project.Dialogs.GtkUI
                 RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
 				tableview.RepresentationModel = RepresentationModel;
 				if(RepresentationModel.JournalFilter != null) {
-					Widget resolvedFilterWidget = DialogHelper.FilterWidgetResolver.Resolve(RepresentationModel.JournalFilter);
+					Widget resolvedFilterWidget = DialogHelper.ViewResolver.Resolve(RepresentationModel.JournalFilter);
 					SetFilter(resolvedFilterWidget);
 				}
                 hboxSearch.Visible = RepresentationModel.SearchFieldsExist;

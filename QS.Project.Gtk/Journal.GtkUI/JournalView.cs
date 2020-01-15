@@ -6,8 +6,10 @@ using Autofac;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
+using QS.Navigation.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
+using QS.Project.Journal.Search;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
 using QS.Utilities.GtkUI;
@@ -63,19 +65,20 @@ namespace QS.Journal.GtkUI
 			ConfigureActions();
 
 			if(ViewModel.Filter != null) {
-				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(ViewModel.Filter);
+				Widget filterWidget = DialogHelper.ViewResolver.Resolve(ViewModel.Filter);
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
 				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.Filter.HidenByDefault;
 			}
+			if(ViewModel.SearchViewModel != null) {
+				Widget searchView = ViewModel.AutofacScope?.ResolveOptionalNamed<Widget>("GtkJournalSearchView", new TypedParameter(ViewModel.SearchViewModel.GetType(), ViewModel.SearchViewModel));
+				if(searchView == null)
+					searchView = DialogHelper.ViewResolver.Resolve(ViewModel.SearchViewModel);
+				hboxSearch.Add(searchView);
+				searchView.Show();
+			}
 
-			Widget searchView = ViewModel.AutofacScope?.ResolveOptionalNamed<Widget>("GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search));
-			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
-			if(searchView == null)
-				searchView = new SearchView((SearchViewModel)ViewModel.Search);
-			hboxSearch.Add(searchView);
-			searchView.Show();
 
 			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel.GetType());
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
