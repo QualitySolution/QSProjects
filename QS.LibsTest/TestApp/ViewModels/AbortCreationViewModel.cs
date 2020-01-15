@@ -1,5 +1,5 @@
 ﻿using QS.Navigation;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Test.TestApp.ViewModels
 {

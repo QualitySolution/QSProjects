@@ -14,6 +14,7 @@ using QS.Test.TestApp.Dialogs;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Test.Navigation
 {
