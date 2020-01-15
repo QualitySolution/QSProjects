@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
+using Gamma.Utilities;
 using NHibernate;
+using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.Utilities.Text;
 
@@ -156,6 +159,30 @@ namespace QS.DomainModel.Entity
 				throw new ArgumentException("Тип должен реализовывать интерфейс IDomainObject", nameof(entityType));
 
 			return string.Format("{0}_{1}", entityType.Name, id);
+		}
+
+		/// <summary>
+		/// Метод перегружает из базы внутренню коллекцию объектов в родительском объекте. Например строки заказа, не трогая сам заказ.
+		/// Пример использования: order.ReloadChildCollection(x => x.Items, x.Order, Uow.Sesion);
+		/// </summary>
+		/// <param name="entity">Объект в котором находится перегружаемая коллекция</param>
+		/// <param name="listSelector">Лямбда указывающая на свойство объекта содержащее коллекцию дочерних объектов.</param>
+		/// <param name="parentPropertySelector">Лямбда указывающая на свойство дочернего объекта, которое ссылается на родителя.</param>
+		/// <param name="session">Session - этим все сказано ;)</param>
+		/// <typeparam name="TEntity">Тип родительской сущьности</typeparam>
+		/// <typeparam name="TChildEntity">Тип дочерней сущьности</typeparam>
+		public static void ReloadChildCollection<TEntity, TChildEntity>(this TEntity entity, Expression<Func<TEntity, IList<TChildEntity>>> listSelector, Expression<Func<TChildEntity, TEntity>> parentPropertySelector, ISession session)
+			where TEntity : class, IDomainObject
+			where TChildEntity : class, IDomainObject
+		{
+			var listPropery = PropertyUtil.GetPropertyInfo(listSelector);
+			//Забываем про элементы старого списка
+			var oldList = listPropery.GetValue(entity) as IList<TChildEntity>;
+			oldList.ToList().ForEach(session.Evict);
+			//Грузим новый список
+			var parentPropertyName = PropertyUtil.GetPropertyInfo(parentPropertySelector).Name;
+			var newList = session.QueryOver<TChildEntity>().Where(Restrictions.Eq(parentPropertyName + ".Id", entity.Id)).List();
+			listPropery.SetValue(entity, newList);
 		}
 	}
 }
