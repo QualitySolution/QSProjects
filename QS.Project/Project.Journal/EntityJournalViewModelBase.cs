@@ -24,7 +24,7 @@ namespace QS.Project.Journal
 		#region Обязательные зависимости
 		#endregion
 		#region Опциональные зависимости
-		protected IDeleteEntityService DeleteEntityService; //Опционально аналогично предыдущиему сервису.
+		protected IDeleteEntityService DeleteEntityService;
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
 		#endregion
 
