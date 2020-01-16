@@ -182,7 +182,10 @@ namespace QS.DomainModel.Entity
 			//Грузим новый список
 			var parentPropertyName = PropertyUtil.GetPropertyInfo(parentPropertySelector).Name;
 			var newList = session.QueryOver<TChildEntity>().Where(Restrictions.Eq(parentPropertyName + ".Id", entity.Id)).List();
-			listPropery.SetValue(entity, newList);
+			oldList.Clear();
+			foreach(var item in newList) {
+				oldList.Add(item);	
+			}
 		}
 	}
 }
