@@ -309,6 +309,7 @@
     <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
+    <Compile Include="Dialog\CommonMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
