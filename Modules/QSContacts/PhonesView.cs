@@ -237,7 +237,7 @@ namespace QSContacts
 		/// </summary>
 		public void RemoveEmpty ()
 		{
-			PhonesList.Where (p => p.Number.Length < QSContactsMain.MinSavePhoneLength)
+			PhonesList.Where (p => p.DigitsNumber.Length < QSContactsMain.MinSavePhoneLength)
 				.ToList ().ForEach (p => PhonesList.Remove (p));
 		}
 	}
