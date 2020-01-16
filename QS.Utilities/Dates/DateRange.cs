@@ -46,6 +46,8 @@ namespace QS.Utilities.Dates
 
 		public int Days => (End - Begin).Days + 1;
 
+		public int Months => ((End.Year - Begin.Year) * 12) + End.Month - Begin.Month;
+
 		public int GetTotalExcludedDays{
 			get {
 				var intervals = GetIntervals.ToArray();

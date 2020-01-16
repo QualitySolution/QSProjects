@@ -110,5 +110,21 @@ namespace QS.Test.Utilities
 			// + 5 дней
 			Assert.That(mainRange.FillIntervals(365), Is.EqualTo(new DateTime(2019, 11, 27)));
 		}
+
+		private static readonly object[] MonthsCalculationCases = new object[] {
+			new object[] {new DateRange(new DateTime(2019, 12, 20), new DateTime(2020, 12, 20)), 12},
+			new object[] {new DateRange(new DateTime(2018, 12, 20), new DateTime(2020, 12, 20)), 24},
+			new object[] {new DateRange(new DateTime(2020, 12, 20), new DateTime(2019, 12, 20)), -12},
+			new object[] {new DateRange(new DateTime(2019, 11, 20), new DateTime(2019, 12, 20)), 1},
+			new object[] {new DateRange(new DateTime(2018, 12, 20), new DateTime(2020, 10, 20)), 22},
+			new object[] {new DateRange(new DateTime(2018, 10, 10), new DateTime(2018, 10, 20)), 0},
+		};
+
+		[Test(Description = "Проверка подсчета месяцев")]
+		[TestCaseSource(nameof(MonthsCalculationCases))]
+		public void MonthsCalculationTest(DateRange range, int result)
+		{
+			Assert.That(range.Months, Is.EqualTo(result));
+		}
 	}
 }
