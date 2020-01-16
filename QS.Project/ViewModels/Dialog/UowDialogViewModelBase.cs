@@ -46,7 +46,7 @@ namespace QS.ViewModels.Dialog
 			Close(false);
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			UoW?.Dispose();
 		}
