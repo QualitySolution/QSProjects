@@ -158,7 +158,7 @@ namespace QS.Project.Repositories
 			}
 		}
 
-		private bool CreateLogin(string login, string password)
+		public bool CreateLogin(string login, string password)
 		{
 			logger.Info("Создание учетной записи на сервере...");
 
