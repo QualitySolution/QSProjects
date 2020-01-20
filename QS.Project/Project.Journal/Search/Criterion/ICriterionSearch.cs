@@ -2,7 +2,7 @@
 {
 	public interface ICriterionSearch
 	{
-		CriterionSearchModel CriterionSearchModel { get; }
+		CriterionSearchModelBase CriterionSearchModel { get; }
 		SearchViewModelBase SearchViewModel { get; }
 	}
 }

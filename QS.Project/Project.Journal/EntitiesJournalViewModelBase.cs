@@ -135,20 +135,30 @@ namespace QS.Project.Journal
 
 		public override SearchViewModelBase SearchViewModel => criterionSearch.SearchViewModel;
 
+		protected virtual CriterionSearchModelBase CriterionSearchModel => criterionSearch.CriterionSearchModel;
+
+		[Obsolete("Заменить на обращение к CriterionSearchModel напрямую. В водовозе не используется")]
 		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
 		{
 			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
 				return new Conjunction();
 			}
-			return criterionSearch.CriterionSearchModel.GetSearchCriterion(aliasPropertiesExpr);
+
+			return CriterionSearchModel.ConfigureSearch()
+				.AddSearchBy(aliasPropertiesExpr)
+				.GetSearchCriterion();
 		}
 
+		[Obsolete("Заменить на обращение к CriterionSearchModel. В водовозе не используется")]
 		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
 		{
 			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
 				return new Conjunction();
 			}
-			return criterionSearch.CriterionSearchModel.GetSearchCriterion(propertiesExpr);
+
+			return CriterionSearchModel.ConfigureSearch()
+				.AddSearchBy(propertiesExpr)
+				.GetSearchCriterion();
 		}
 
 		#endregion

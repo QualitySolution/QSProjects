@@ -5,9 +5,9 @@ namespace QS.Project.Journal.Search.Criterion
 	{
 		public override SearchModel SearchModel => CriterionSearchModel;
 
-		public virtual CriterionSearchModel CriterionSearchModel { get; }
+		public virtual CriterionSearchModelBase CriterionSearchModel { get; }
 
-		public MultipleEntryCriterionSearchViewModel(CriterionSearchModel criterionSearchModel) : base(criterionSearchModel)
+		public MultipleEntryCriterionSearchViewModel(CriterionSearchModelBase criterionSearchModel) : base(criterionSearchModel)
 		{
 			CriterionSearchModel = criterionSearchModel ?? throw new ArgumentNullException(nameof(criterionSearchModel));
 		}

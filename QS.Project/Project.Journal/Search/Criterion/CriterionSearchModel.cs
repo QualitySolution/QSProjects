@@ -6,9 +6,9 @@ using NHibernate.Criterion;
 
 namespace QS.Project.Journal.Search.Criterion
 {
-	public class CriterionSearchModel : SearchModel
-	{ 
-		public ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] aliases)
+	public class CriterionSearchModel : CriterionSearchModelBase
+	{
+		protected internal override ICriterion GetSearchCriterion()
 		{
 			Type[] digitsTypes = { typeof(decimal), typeof(int) };
 
@@ -27,24 +27,33 @@ namespace QS.Project.Journal.Search.Criterion
 				bool intParsed = int.TryParse(sv, out int intValue);
 				bool decimalParsed = decimal.TryParse(sv, out decimal decimalValue);
 
-				foreach(var alias in aliases) {
-					bool aliasIsNumeric = false;
-					if(alias.Body is UnaryExpression) {
-						UnaryExpression unaryExpession = alias.Body as UnaryExpression;
-						aliasIsNumeric = digitsTypes.Contains(unaryExpession.Operand.Type);
-					} else if(!(alias.Body is MemberExpression)) {
-						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
+				foreach(var aliasParameter in AliasParameters) {
+					bool aliasIsInt = false;
+					bool aliasIsDecimal = false;
+					if(aliasParameter.Expression is UnaryExpression) {
+						UnaryExpression unaryExpession = aliasParameter.Expression as UnaryExpression;
+						aliasIsInt = unaryExpession.Operand.Type == typeof(int);
+						aliasIsDecimal = unaryExpession.Operand.Type == typeof(decimal);
+					} else if(!(aliasParameter.Expression is MemberExpression)) {
+						throw new InvalidOperationException($"{nameof(aliasParameter)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
 					}
 
-					if(aliasIsNumeric) {
-						if((intParsed || decimalParsed)) {
-							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intParsed ? intValue : decimalValue);
+					if(aliasIsInt) {
+						if((intParsed)) {
+							ICriterion restriction = Restrictions.Eq(aliasParameter.PropertyProjection, intValue);
+							disjunctionCriterion.Add(restriction);
+						} else {
+							continue;
+						}
+					} else if(aliasIsDecimal) {
+						if((decimalParsed)) {
+							ICriterion restriction = Restrictions.Eq(aliasParameter.PropertyProjection, decimalValue);
 							disjunctionCriterion.Add(restriction);
 						} else {
 							continue;
 						}
 					} else {
-						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
+						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, aliasParameter.PropertyProjection), sv, MatchMode.Anywhere);
 						disjunctionCriterion.Add(likeRestriction);
 					}
 				}
@@ -53,60 +62,5 @@ namespace QS.Project.Journal.Search.Criterion
 
 			return conjunctionCriterion;
 		}
-
-		public ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliases)
-		{
-			Type[] digitsTypes = { typeof(decimal), typeof(int) };
-
-			Conjunction conjunctionCriterion = new Conjunction();
-
-			if(SearchValues == null || !SearchValues.Any()) {
-				return conjunctionCriterion;
-			}
-
-			foreach(var sv in SearchValues) {
-				if(string.IsNullOrWhiteSpace(sv)) {
-					continue;
-				}
-				Disjunction disjunctionCriterion = new Disjunction();
-
-				bool intParsed = int.TryParse(sv, out int intValue);
-				bool decimalParsed = decimal.TryParse(sv, out decimal decimalValue);
-
-				foreach(var alias in aliases) {
-					bool aliasIsInt = false;
-					bool aliasIsDecimal = false;
-					if(alias.Body is UnaryExpression) {
-						UnaryExpression unaryExpession = alias.Body as UnaryExpression;
-						aliasIsInt = unaryExpession.Operand.Type == typeof(int);
-						aliasIsDecimal = unaryExpession.Operand.Type == typeof(decimal);
-					} else if(!(alias.Body is MemberExpression)) {
-						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
-					}
-
-					if(aliasIsInt) {
-						if((intParsed)) {
-							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intValue);
-							disjunctionCriterion.Add(restriction);
-						} else {
-							continue;
-						}
-					} else if(aliasIsDecimal) {
-						if((decimalParsed)) {
-							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), decimalValue);
-							disjunctionCriterion.Add(restriction);
-						} else {
-							continue;
-						}
-					} else {
-						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
-						disjunctionCriterion.Add(likeRestriction);
-					}
-				}
-				conjunctionCriterion.Add(disjunctionCriterion);
-			}
-
-			return conjunctionCriterion;
-		}	
 	}
 }

@@ -312,11 +312,12 @@
     <Compile Include="Project.Journal\Search\SingleEntrySearchViewModel.cs" />
     <Compile Include="Project.Journal\Search\SearchViewModelBase.cs" />
     <Compile Include="Project.Journal\Search\Criterion\ICriterionSearch.cs" />
-    <Compile Include="Project.Journal\Search\Criterion\CriterionSearchModel.cs" />
+    <Compile Include="Project.Journal\Search\Criterion\CriterionSearchModelBase.cs" />
     <Compile Include="Project.Journal\Search\Criterion\SingleEntryCriterionSearch.cs" />
     <Compile Include="Project.Journal\Search\Criterion\MultipleEntryCriterionSearch.cs" />
     <Compile Include="Project.Journal\Search\Criterion\SingleEntryCriterionSearchViewModel.cs" />
     <Compile Include="Project.Journal\Search\Criterion\MultipleEntryCriterionSearchViewModel.cs" />
+    <Compile Include="Project.Journal\Search\Criterion\CriterionSearchModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

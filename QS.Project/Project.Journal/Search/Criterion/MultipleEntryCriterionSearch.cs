@@ -3,7 +3,7 @@ namespace QS.Project.Journal.Search.Criterion
 {
 	public class MultipleEntryCriterionSearch : ICriterionSearch
 	{
-		public CriterionSearchModel CriterionSearchModel => searchViewModel.CriterionSearchModel;
+		public CriterionSearchModelBase CriterionSearchModel => searchViewModel.CriterionSearchModel;
 
 		public SearchViewModelBase SearchViewModel => searchViewModel;
 
