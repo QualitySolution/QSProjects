@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Gtk;
 using QS.Dialog;
 using QS.Views.Resolve;
@@ -55,9 +56,19 @@ namespace QS.Navigation
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
-			gtkPage.GtkDialog.Run();
-			ClosePage(page);
-			gtkPage.GtkDialog.Destroy();
+			gtkPage.GtkDialog.DeleteEvent += GtkDialog_DeleteEvent;
+			gtkPage.ViewModel.PropertyChanged += (sender, e) => gtkPage.GtkDialog.Title = gtkPage.ViewModel.Title;
+		}
+
+		public IPage FindPage(Gdk.Window window)
+		{
+			return AllPages.Cast<IGtkWindowPage>().FirstOrDefault(x => x.GtkDialog.GdkWindow == window);
+		}
+
+		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
+		{
+			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
+			ForceClosePage(page);
 		}
 	}
 }
