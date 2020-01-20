@@ -29,20 +29,19 @@ namespace QS.Utilities.Text
 		{
 			x = x.ToLower();
 			y = y.ToLower();
-			if (string.Compare(x, 0, y, 0, Math.Min(x.Length, y.Length)) == 0) {
-				if (x.Length == y.Length)
-					return 0;
-				return x.Length < y.Length ? -1 : 1;
-			}
 			var a = _re.Split(x);
 			var b = _re.Split(y);
 			int i = 0;
-			while (true) {
+			while (i < a.Length && i < b.Length) {
 				int r = PartCompare(a[i], b[i]);
 				if (r != 0)
 					return r;
 				++i;
 			}
+
+			if (a.Length == b.Length)
+				return 0;
+			return a.Length < b.Length ? -1 : 1;
 		}
 
 		private static int PartCompare(string x, string y)

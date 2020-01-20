@@ -124,6 +124,7 @@
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolverTest.cs" />
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
+    <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -155,6 +156,7 @@
     <Folder Include="Navigation\" />
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
+    <Folder Include="Utilities\Text\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
