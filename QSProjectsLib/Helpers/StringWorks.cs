@@ -51,47 +51,6 @@ namespace QSProjectsLib
 			{ "ОПК", "Огороднический потребительский кооператив" }
 		};
 
-		public class NaturalStringComparerNonStatic : IComparer<string>
-		{
-			public int Compare (string x, string y)
-			{
-				return NaturalStringComparer.Compare (x, y);
-			}
-		}
-
-		public class NaturalStringComparer
-		{
-			private static readonly Regex _re = new Regex (@"(?<=\D)(?=\d)|(?<=\d)(?=\D)", RegexOptions.Compiled);
-
-			public static int Compare (string x, string y)
-			{
-				x = x.ToLower ();
-				y = y.ToLower ();
-				if (string.Compare (x, 0, y, 0, Math.Min (x.Length, y.Length)) == 0) {
-					if (x.Length == y.Length)
-						return 0;
-					return x.Length < y.Length ? -1 : 1;
-				}
-				var a = _re.Split (x);
-				var b = _re.Split (y);
-				int i = 0;
-				while (true) {
-					int r = PartCompare (a [i], b [i]);
-					if (r != 0)
-						return r;
-					++i;
-				}
-			}
-
-			private static int PartCompare (string x, string y)
-			{
-				int a, b;
-				if (int.TryParse (x, out a) && int.TryParse (y, out b))
-					return a.CompareTo (b);
-				return x.CompareTo (y);
-			}
-		}
-
 		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
 		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
 		{
