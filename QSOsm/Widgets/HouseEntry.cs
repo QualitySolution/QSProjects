@@ -6,8 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
+using QS.Utilities.Text;
 using QSOsm.DTO;
-using QSProjectsLib;
 
 namespace QSOsm
 {
@@ -156,7 +156,7 @@ namespace QSOsm
 					if (!houses.Any(x => x.HouseNumber == house.HouseNumber && x.Letter != house.Letter))
 						house.Letter = String.Empty;
 				}
-				houses = houses.OrderBy(x => x.ComplexNumber, new StringWorks.NaturalStringComparerNonStatic()).ToList();
+				houses = houses.OrderBy(x => x.ComplexNumber, new NaturalStringComparer()).ToList();
 
 				completionListStore = new ListStore (typeof(string), typeof(long), typeof(OsmHouse));
 				foreach (var h in houses) {
