@@ -220,6 +220,7 @@
     <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
+    <Compile Include="Widgets\ProgressWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -240,6 +241,7 @@
     <Folder Include="ErrorReporting.GtkUI\" />
     <Folder Include="Project.Services.GtkUI\" />
     <Folder Include="Validation.GtkUI\" />
+    <Folder Include="Widgets\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
