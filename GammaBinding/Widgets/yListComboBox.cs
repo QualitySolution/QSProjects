@@ -167,7 +167,7 @@ namespace Gamma.Widgets
 
 		protected object WrapValueIfNeed(object value)
 		{
-			if (value is string || value is int || value is decimal || value is double || value is long || value is short)
+			if (value is string || value is int || value is uint || value is decimal || value is double || value is long || value is ulong || value is short || value is ushort)
 				return new KeepInObject (value);
 			else
 				return value;
