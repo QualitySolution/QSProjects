@@ -11,13 +11,11 @@ namespace QS.Navigation
 	public abstract class NavigationManagerBase
 	{
 		protected readonly IPageHashGenerator hashGenerator;
-		protected readonly IViewModelsPageFactory viewModelsFactory;
 		protected readonly IInteractiveMessage interactiveMessage;
 
-		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive)
+		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IInteractiveMessage interactive)
 		{
 			this.hashGenerator = hashGenerator ?? throw new ArgumentNullException(nameof(hashGenerator));
-			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
 			this.interactiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
@@ -120,7 +118,7 @@ namespace QS.Navigation
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
 				() => hashGenerator.GetHash<TViewModel>(master, ctorTypes, ctorValues),
-				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash, addingRegistrations)
+				(hash) => GetPageFactory<TViewModel>().CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
 
@@ -129,7 +127,7 @@ namespace QS.Navigation
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
 				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
-				(hash) => viewModelsFactory.CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash, addingRegistrations)
+				(hash) => GetPageFactory<TViewModel>().CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash, addingRegistrations)
 			);
 		}
 
@@ -185,7 +183,7 @@ namespace QS.Navigation
 			}
 		}
 
-		protected void ClosePage(IPage page)
+		protected virtual void ClosePage(IPage page)
 		{
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
@@ -213,6 +211,7 @@ namespace QS.Navigation
 		#region Абстрактные методы
 		public abstract void SwitchOn(IPage page);
 
+		protected abstract IViewModelsPageFactory GetPageFactory<TViewModel>();
 		protected abstract void OpenSlavePage(IPage masterPage, IPage page);
 		protected abstract void OpenPage(IPage masterPage, IPage page);
 		#endregion

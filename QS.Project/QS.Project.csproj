@@ -311,6 +311,7 @@
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
+    <Compile Include="ViewModels\Dialog\ModalDialogViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
