@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using Gtk;
 using NLog;
@@ -114,7 +115,7 @@ namespace QS.Journal.GtkUI
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
 			Application.Invoke((s, arg) => {
-				labelFooter.Markup = ViewModel.FooterInfo;
+				labelFooter.Markup = "Обновляю данные...";
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
@@ -122,6 +123,12 @@ namespace QS.Journal.GtkUI
 					GtkHelper.WaitRedraw();
 					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
+			});
+
+			Task.Run(() => {
+				var footerInfo = ViewModel.FooterInfo;
+				if(footerInfo != null)
+					Application.Invoke((s, args) => labelFooter.Markup = footerInfo);
 			});
 		}
 
