@@ -325,6 +325,7 @@ namespace QSProjectsLib
 			server = Selected.Server;
 			entryUser.Text = Selected.UserName;
 			BaseName = Selected.BaseName;
+			SelectedConnection = Selected.ConnectionName;
 			entryPassword.GrabFocus();
 			if (ApplicationDemoServer == null)
 				return;
