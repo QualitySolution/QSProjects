@@ -157,13 +157,13 @@
     <EmbeddedResource Include="icons\fileselection.png" />
     <EmbeddedResource Include="icons\comboentry.png" />
     <EmbeddedResource Include="icons\radiobutton.png" />
+    <EmbeddedResource Include="icons\button.png" />
+    <EmbeddedResource Include="icons\colorbutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
       <Link>Properties\objects.xml</Link>
     </None>
-    <None Include="icons\colorbutton.png" />
-    <None Include="icons\button.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GammaUtil\GammaUtil.csproj">
