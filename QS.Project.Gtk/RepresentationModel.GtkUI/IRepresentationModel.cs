@@ -6,6 +6,7 @@ using QS.DomainModel.UoW;
 
 namespace QS.RepresentationModel.GtkUI
 {
+	[Obsolete("Осталось только для ВОДОВОЗА. Данный интрефейс и классы с нимми связанные должны быть удалены или перенесены в OrmProject.")]
 	public interface IRepresentationModel
 	{
 		Type NodeType { get;}
@@ -40,11 +41,13 @@ namespace QS.RepresentationModel.GtkUI
 		void Destroy();
 	}
 
+	[Obsolete("Осталось только для ВОДОВОЗА. Данный интрефейс и классы с нимми связанные должны быть удалены или перенесены в OrmProject.")]
 	public interface IRepresentationModelWithParent
 	{
 		object GetParent { get;}
 	}
 
+	[Obsolete("Осталось только для ВОДОВОЗА. Данный интрефейс и классы с нимми связанные должны быть удалены или перенесены в OrmProject.")]
 	public interface INodeWithEntryFastSelect
 	{
 		string EntityTitle { get; }
