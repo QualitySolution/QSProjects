@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,6 +86,15 @@ namespace QS.Journal.GtkUI
 			RefreshSource();
 			UpdateButtons();
 			SetTotalLableText();
+			ViewModel.PropertyChanged += OnFooterInfoChanged;
+		}
+
+		private void OnFooterInfoChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName != nameof(ViewModel.FooterInfo))
+				return;
+
+			Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
 		}
 
 		TextSpinner CountingTextSpinner;
@@ -115,7 +125,7 @@ namespace QS.Journal.GtkUI
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
 			Application.Invoke((s, arg) => {
-				labelFooter.Markup = "Обновляю данные...";
+				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
@@ -123,12 +133,6 @@ namespace QS.Journal.GtkUI
 					GtkHelper.WaitRedraw();
 					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
-			});
-
-			Task.Run(() => {
-				var footerInfo = ViewModel.FooterInfo;
-				if(footerInfo != null)
-					Application.Invoke((s, args) => labelFooter.Markup = footerInfo);
 			});
 		}
 

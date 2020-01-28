@@ -27,7 +27,10 @@ namespace QS.Project.Journal
 
 		public IList Items => DataLoader.Items;
 
-		public virtual string FooterInfo => $"Загружено: {DataLoader.Items.Count} шт.";
+		public virtual string FooterInfo {
+			get => $"Загружено: {DataLoader.Items.Count} шт.";
+			set { }
+		}
 
 		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
 		protected virtual List<IJournalAction> NodeActionsList { get; set; }
