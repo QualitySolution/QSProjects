@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gtk;
+using QS.ViewModels;
 using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
@@ -33,7 +34,7 @@ namespace QS.Views.Resolve
 
 		#endregion
 
-		public Widget Resolve(DialogViewModelBase viewModel)
+		public Widget Resolve(ViewModelBase viewModel)
 		{
 			foreach(var rule in registeredViews) {
 				if(rule.IsMath(viewModel))
@@ -55,12 +56,12 @@ namespace QS.Views.Resolve
 			ViewType = view ?? throw new ArgumentNullException(nameof(view));
 		}
 
-		public bool IsMath(DialogViewModelBase viewModel)
+		public bool IsMath(ViewModelBase viewModel)
 		{
 			return ViewModelType.IsAssignableFrom(viewModel.GetType());
 		}
 
-		public Widget CreateView(DialogViewModelBase viewModel)
+		public Widget CreateView(ViewModelBase viewModel)
 		{
 			return (Widget)Activator.CreateInstance(ViewType, viewModel);
 		}
