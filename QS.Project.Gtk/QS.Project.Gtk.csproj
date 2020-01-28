@@ -248,6 +248,7 @@
     <Compile Include="Views\Dialog\EntityDialogViewBase.cs" />
     <Compile Include="Views\Dialog\DialogViewBase.cs" />
     <Compile Include="Views\Dialog\ILegacyViewModel.cs" />
+    <Compile Include="Views\ViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
