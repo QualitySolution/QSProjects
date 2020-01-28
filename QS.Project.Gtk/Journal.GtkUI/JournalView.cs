@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using Gtk;
 using NLog;
@@ -84,6 +86,15 @@ namespace QS.Journal.GtkUI
 			RefreshSource();
 			UpdateButtons();
 			SetTotalLableText();
+			ViewModel.PropertyChanged += OnFooterInfoChanged;
+		}
+
+		private void OnFooterInfoChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName != nameof(ViewModel.FooterInfo))
+				return;
+
+			Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
 		}
 
 		TextSpinner CountingTextSpinner;
