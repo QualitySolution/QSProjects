@@ -9,10 +9,12 @@ namespace QS.Navigation
 	public class GtkWindowsNavigationManager : NavigationManagerBase, INavigationManager
 	{
 		readonly IGtkViewResolver viewResolver;
+		protected readonly IViewModelsPageFactory viewModelsFactory;
 
 		public GtkWindowsNavigationManager(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver)
-			: base(hashGenerator, viewModelsFactory, interactive)
+			: base(hashGenerator, interactive)
 		{
+			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
 			this.viewResolver = viewResolver;
 		}
 
@@ -69,6 +71,11 @@ namespace QS.Navigation
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
 			ForceClosePage(page);
+		}
+
+		protected override IViewModelsPageFactory GetPageFactory<TViewModel>()
+		{
+			return viewModelsFactory;
 		}
 	}
 }

@@ -1,25 +1,40 @@
 ﻿using System;
 using System.Linq;
 using Autofac;
+using Gtk;
 using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.ViewModels.Dialog;
+using QS.Views.Resolve;
 
 namespace QS.Navigation
 {
 	public class TdiNavigationManager : NavigationManagerBase, INavigationManager, ITdiCompatibilityNavigation
 	{
 		readonly TdiNotebook tdiNotebook;
+		readonly IGtkViewResolver viewResolver;
 
+		protected readonly IViewModelsPageFactory viewModelsFactory;
+		protected readonly AutofacViewModelsGtkPageFactory viewModelsGtkWindowsFactory;
 		//Только для режима смешанного использования Tdi и ViewModel 
 		readonly ITdiPageFactory tdiPageFactory;
 
-		public TdiNavigationManager(TdiNotebook tdiNotebook, IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, ITdiPageFactory tdiPageFactory = null)
-			: base(hashGenerator, viewModelsFactory, interactive)
+		public TdiNavigationManager(
+			TdiNotebook tdiNotebook,
+			IPageHashGenerator hashGenerator, 
+			IViewModelsPageFactory viewModelsFactory, 
+			IInteractiveMessage interactive, 
+			ITdiPageFactory tdiPageFactory = null, 
+			AutofacViewModelsGtkPageFactory viewModelsGtkPageFactory = null, 
+			IGtkViewResolver viewResolver = null)
+			: base(hashGenerator, interactive)
 		{
 			this.tdiNotebook = tdiNotebook ?? throw new ArgumentNullException(nameof(tdiNotebook));
 			this.tdiPageFactory = tdiPageFactory;
+			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
+			this.viewModelsGtkWindowsFactory = viewModelsGtkPageFactory;
+			this.viewResolver = viewResolver;
 
 			tdiNotebook.TabClosed += TdiNotebook_TabClosed;
 		}
@@ -141,11 +156,20 @@ namespace QS.Navigation
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
 		{
 			pages.Add(page);
-			tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, (page as ITdiPage).TdiTab);
+			if(page.ViewModel is ModalDialogViewModelBase)
+				OpenModalPage(page);
+			else
+				tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, (page as ITdiPage).TdiTab);
 		}
 
 		protected override void OpenPage(IPage masterPage, IPage page)
 		{
+			if(page.ViewModel is ModalDialogViewModelBase) {
+				pages.Add(page);
+				OpenModalPage(page);
+				return;
+			}
+
 			var masterTab = (masterPage as ITdiPage)?.TdiTab;
 
 			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab) {
@@ -158,5 +182,53 @@ namespace QS.Navigation
 				tdiNotebook.AddTab((page as ITdiPage).TdiTab, (masterPage as ITdiPage)?.TdiTab);
 			}
 		}
+
+		protected override IViewModelsPageFactory GetPageFactory<TViewModel>()
+		{
+			if(typeof(TViewModel).IsAssignableTo<ModalDialogViewModelBase>())
+				return viewModelsGtkWindowsFactory;
+			else
+				return viewModelsFactory;
+
+		}
+
+		#region ModalDialogs
+
+		protected void OpenModalPage(IPage page)
+		{
+			var gtkPage = (IGtkWindowPage)page;
+			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
+			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, DialogFlags.Modal);
+			gtkPage.GtkDialog.SetDefaultSize(800, 500);
+			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
+			gtkPage.GtkView.Show();
+			gtkPage.GtkDialog.Show();
+			gtkPage.GtkDialog.DeleteEvent += GtkDialog_DeleteEvent;
+			gtkPage.ViewModel.PropertyChanged += (sender, e) => gtkPage.GtkDialog.Title = gtkPage.ViewModel.Title;
+		}
+
+		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
+		{
+			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
+			ClosePage(page);
+		}
+
+		public IPage FindPage(Gdk.Window window)
+		{
+			return AllPages.OfType<IGtkWindowPage>().FirstOrDefault(x => x.GtkDialog.GdkWindow == window);
+		}
+
+		protected override void ClosePage(IPage page)
+		{
+			base.ClosePage(page);
+
+			if(page is IGtkWindowPage gtkPage) {
+				gtkPage.GtkDialog.Respond((int)ResponseType.DeleteEvent);
+				gtkPage.GtkView.Destroy();
+				gtkPage.GtkDialog.Destroy();
+			}
+		}
+
+		#endregion
 	}
 }
