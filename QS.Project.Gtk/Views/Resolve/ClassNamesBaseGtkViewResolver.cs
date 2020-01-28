@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Gtk;
-using QS.ViewModels.Dialog;
+using QS.ViewModels;
 
 namespace QS.Views.Resolve
 {
@@ -29,7 +29,7 @@ namespace QS.Views.Resolve
 			this.lookupAssemblies = lookupAssemblies;
 		}
 
-		public Widget Resolve(DialogViewModelBase viewModel)
+		public Widget Resolve(ViewModelBase viewModel)
 		{
 			var fullClassName = viewModel.GetType().FullName;
 			var match = Regex.Matches(fullClassName, "^([a-zA-Z\\.]+)\\.ViewModels(\\.[a-zA-Z\\.]+)*\\.([a-zA-Z]+)ViewModel$");
