@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
+using QSOsm.Loaders;
 
 namespace QSOsm
 {
-	[System.ComponentModel.ToolboxItem (true)]
-	[System.ComponentModel.Category ("Gamma OSM Widgets")]
+	[System.ComponentModel.ToolboxItem(true)]
+	[System.ComponentModel.Category("Gamma OSM Widgets")]
 	public class StreetEntry : Entry
 	{
 		enum columns
@@ -17,32 +17,33 @@ namespace QSOsm
 			District
 		}
 
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+
+		private IStreetsDataLoader streetsDataLoader;
+		public IStreetsDataLoader StreetsDataLoader {
+			get { return streetsDataLoader; }
+			set { ChangeDataLoader(streetsDataLoader, value); }
+		}
 
 		private ListStore completionListStore;
 
 		public event EventHandler StreetSelected;
-
-		private Thread queryThread;
 
 		public BindingControler<StreetEntry> Binding { get; private set; }
 
 		long cityId;
 
 		public long CityId {
-			get {
-				return cityId;
-			}
+			get { return cityId; }
 			set {
-				if (cityId == value)
+				if(cityId == value)
 					return;
 				cityId = value;
-				if (cityId != 0)
-					OnCityIdSet ();
 			}
 		}
 
-		public bool ExistOnOSM { get; private set;}
+		public bool ExistOnOSM { get; private set; }
 
 		string street;
 
@@ -52,7 +53,7 @@ namespace QSOsm
 			}
 			set {
 				street = value;
-				UpdateText ();
+				UpdateText();
 			}
 		}
 
@@ -64,75 +65,79 @@ namespace QSOsm
 			}
 			set {
 				streetDistrict = value;
-				UpdateText ();
+				UpdateText();
 			}
 		}
 
-		void UpdateText ()
+		void UpdateText()
 		{
 			this.Text = GenerateEntryText();
-			OnStreetSelected ();
+			OnStreetSelected();
 		}
 
 		string GenerateEntryText()
 		{
-			return String.IsNullOrWhiteSpace (StreetDistrict) ? Street : String.Format ("{0} ({1})", Street, StreetDistrict);
+			return String.IsNullOrWhiteSpace(StreetDistrict) ?
+								Street
+								: String.Format($"{Street} ({StreetDistrict})");
 		}
 
-		public StreetEntry ()
+		public StreetEntry()
 		{
-			Binding = new BindingControler<StreetEntry> (this, new Expression<Func<StreetEntry, object>>[] {
+			Binding = new BindingControler<StreetEntry>(this, new Expression<Func<StreetEntry, object>>[] {
 				(w => w.Street), (w => w.StreetDistrict)
 			});
 
-			this.Completion = new EntryCompletion ();
+			this.Completion = new EntryCompletion();
 			this.Completion.MinimumKeyLength = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
-			this.Completion.MatchFunc = Completion_MatchFunc;
-			var cell = new CellRendererText ();
-			this.Completion.PackStart (cell, true);
-			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
+			this.Completion.MatchFunc = (completion, key, iter) => true;
+			var cell = new CellRendererText();
+			this.Completion.PackStart(cell, true);
+			this.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
 		}
 
 		//Костыль, для отображения выпадающего списка
 		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
 		{
-			if (evnt.Key == Gdk.Key.Control_R)
+			if(evnt.Key == Gdk.Key.Control_R)
 				this.InsertText("");
 
 			return base.OnKeyPressEvent(evnt);
 		}
 
-		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
+		private void EntryTextChanges(object o, TextInsertedArgs args)
 		{
-			var streetName = (string)tree_model.GetValue (iter, (int)columns.Street);
-			var district = (string)tree_model.GetValue (iter, (int)columns.District);
-			string pattern = String.Format ("\\b{0}", Regex.Escape (Text.ToLower ()));
-			streetName = Regex.Replace (streetName, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
-			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace (district) ? 
-				streetName : 
-				String.Format ("{0} ({1})", streetName, district);
+			if(cityId != 0)
+				streetsDataLoader.LoadStreets(cityId, Text);
 		}
 
-		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
+		private void EntryTextChanges(object o, TextDeletedArgs args) => EntryTextChanges(o, TextInsertedArgs.Empty as TextInsertedArgs);
+
+
+		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var val = completion.Model.GetValue (iter, (int)columns.Street).ToString ().ToLower ();
-			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (this.Text.ToLower ())));
+			var streetName = (string)tree_model.GetValue(iter, (int)columns.Street);
+			var district = (string)tree_model.GetValue(iter, (int)columns.District);
+			string pattern = String.Format("\\b{0}", Regex.Escape(Text.ToLower()));
+			streetName = Regex.Replace(streetName, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+			(cell as CellRendererText).Markup = String.IsNullOrWhiteSpace(district) ?
+				streetName :
+				String.Format("{0} ({1})", streetName, district);
 		}
 
 		[GLib.ConnectBefore]
-		void Completion_MatchSelected (object o, MatchSelectedArgs args)
+		void Completion_MatchSelected(object o, MatchSelectedArgs args)
 		{
-			Street = args.Model.GetValue (args.Iter, (int)columns.Street).ToString ();
-			StreetDistrict = args.Model.GetValue (args.Iter, (int)columns.District).ToString ();
+			Street = args.Model.GetValue(args.Iter, (int)columns.Street).ToString();
+			StreetDistrict = args.Model.GetValue(args.Iter, (int)columns.District).ToString();
 			ExistOnOSM = true;
 			args.RetVal = true;
 		}
 
 		protected override bool OnFocusOutEvent(Gdk.EventFocus evnt)
 		{
-			if(Text != GenerateEntryText())
-			{
+			if(Text != GenerateEntryText()) {
 				var userText = Text;
 				ExistOnOSM = false;
 				StreetDistrict = String.Empty;
@@ -141,55 +146,58 @@ namespace QSOsm
 			return base.OnFocusOutEvent(evnt);
 		}
 
-		void OnCityIdSet ()
+		private void ChangeDataLoader(IStreetsDataLoader oldValue, IStreetsDataLoader newValue)
 		{
-			logger.Debug("Установлен City Id={0}", CityId);
-			if (queryThread != null && queryThread.IsAlive) {
-				try {
-					queryThread.Abort ();
-				} catch (ThreadAbortException ex) {
-					logger.Warn ("fillAutocomplete() thread for city streets was aborted.");
-				}
-			}
-			queryThread = new Thread (fillAutocomplete);
-			queryThread.IsBackground = true;
-			queryThread.Start ();
-		}
-
-		private void fillAutocomplete ()
-		{
-			logger.Info ("Запрос улиц...");
-			IOsmService svc = OsmWorker.GetOsmService ();
-			var streets = svc.GetStreets (CityId);
-			completionListStore = new ListStore (typeof(string), typeof(string));
-			foreach (var s in streets) {
-				completionListStore.AppendValues (
-					s.Name,
-					s.Districts
-				);
-			}
-
-			if(this.Completion == null) {
-				logger.Info("Запрос улиц отменён");
+			if(oldValue == newValue)
 				return;
+			if(oldValue != null) {
+				oldValue.StreetLoaded -= StreetLoaded;
+				this.TextInserted -= EntryTextChanges;
+				this.TextDeleted -= EntryTextChanges;
 			}
 
-			this.Completion.Model = completionListStore;
-			logger.Info("Получено {0} улиц", streets.Count);
-			if(this.HasFocus)
-				this.Completion?.Complete();
+			streetsDataLoader = newValue;
+			if(StreetsDataLoader == null)
+				return;
+			StreetsDataLoader.StreetLoaded += StreetLoaded;
+			this.TextInserted += EntryTextChanges;
+			this.TextDeleted += EntryTextChanges;
 		}
 
-		protected override void OnChanged ()
+		private void StreetLoaded()
 		{
-			Binding.FireChange (w => w.Street, w => w.StreetDistrict);
-			base.OnChanged ();
+			Application.Invoke((sender, e) => {
+				var streets = streetsDataLoader.GetStreets();
+				completionListStore = new ListStore(typeof(string), typeof(string));
+				foreach(var s in streets) {
+					completionListStore.AppendValues(
+						s.Name,
+						s.Districts
+					);
+				}
+
+				this.Completion.Model = completionListStore;
+				if(this.HasFocus)
+					this.Completion?.Complete();
+			});
 		}
 
-		protected virtual void OnStreetSelected ()
+		protected override void OnChanged()
 		{
-			if (StreetSelected != null)
-				StreetSelected (null, EventArgs.Empty);
+			Binding.FireChange(w => w.Street, w => w.StreetDistrict);
+			base.OnChanged();
+		}
+
+		protected virtual void OnStreetSelected()
+		{
+			StreetSelected?.Invoke(null, EventArgs.Empty);
+		}
+
+		protected override void OnDestroyed()
+		{
+			if(StreetsDataLoader != null)
+				StreetsDataLoader.StreetLoaded -= StreetLoaded;
+			base.OnDestroyed();
 		}
 	}
 }

@@ -38,14 +38,14 @@ namespace WCFServer
 			pgdb = config.GetString ("pgdatabase");
 		}
 
-		public List<OsmCity> GetCities ()
+		public List<OsmCity> GetCities()
 		{
-			var cities = new List<OsmCity> ();
+			var cities = new List<OsmCity>();
 
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 
 						// Insert some data
@@ -53,32 +53,74 @@ namespace WCFServer
 						"FROM osm_cities " +
 						"LEFT JOIN osm_suburb_districts ON osm_suburb_districts.id = osm_cities.suburb_district_id " +
 						"AND osm_cities.name IS NOT NULL AND osm_cities.name <> '';";
-						using (var reader = cmd.ExecuteReader ()) {
-							while (reader.Read ()) {
-								long id = reader.IsDBNull (0) ? 0 : reader.GetInt64 (0);
-								string name = reader.IsDBNull (1) ? String.Empty : reader.GetString (1);
-								string locality = reader.IsDBNull (2) ? String.Empty : reader.GetString (2);
-								string district = reader.IsDBNull (3) ? String.Empty : reader.GetString (3);
-								cities.Add (new OsmCity (id, name, district, AddressHelper.GetLocalityTypeByName (locality)));
+						using(var reader = cmd.ExecuteReader()) {
+							while(reader.Read()) {
+								long id = reader.IsDBNull(0) ? 0 : reader.GetInt64(0);
+								string name = reader.IsDBNull(1) ? String.Empty : reader.GetString(1);
+								string locality = reader.IsDBNull(2) ? String.Empty : reader.GetString(2);
+								string district = reader.IsDBNull(3) ? String.Empty : reader.GetString(3);
+								cities.Add(new OsmCity(id, name, district, AddressHelper.GetLocalityTypeByName(locality)));
 							}
 						}
 					}
 				}
-				cities.Sort (new OsmCityComparer ());
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка при получении списка городов.");
+				cities.Sort(new OsmCityComparer());
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении списка городов.");
 			}
 			return cities;
 		}
 
-		public List<OsmStreet> GetStreets (long cityId)
+		public List<OsmCity> GetCitiesByCriteria(string searchString, int limit)
 		{
-			var streets = new List<OsmStreet> ();
+			logger.Info("загрузка городов по критерию");
+			var cities = new List<OsmCity>();
 
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
+						cmd.Connection = connection;
+
+						// Insert some data
+						cmd.CommandText = "SELECT osm_cities.id, osm_cities.name, osm_cities.place, osm_suburb_districts.name " +
+							"FROM osm_cities " +
+							"LEFT JOIN osm_suburb_districts ON osm_suburb_districts.id = osm_cities.suburb_district_id " +
+							"WHERE osm_cities.name IS NOT NULL " +
+							"AND osm_cities.name <> ''" +
+							$"AND osm_cities.name LIKE '%{searchString}%' " +
+							"LIMIT @limit;";
+						cmd.Parameters.AddWithValue("@limit", limit);
+
+						using(var reader = cmd.ExecuteReader()) {
+							while(reader.Read()) {
+								long id = reader.IsDBNull(0) ? 0 : reader.GetInt64(0);
+								string name = reader.IsDBNull(1) ? String.Empty : reader.GetString(1);
+								string locality = reader.IsDBNull(2) ? String.Empty : reader.GetString(2);
+								string district = reader.IsDBNull(3) ? String.Empty : reader.GetString(3);
+								cities.Add(new OsmCity(id, name, district, AddressHelper.GetLocalityTypeByName(locality)));
+							}
+						}
+					}
+				}
+				logger.Info($"городов загруженно {cities.Count}");
+				cities.Sort(new OsmCityComparer());
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении списка городов.");
+			}
+			return cities;
+		}
+
+		public List<OsmStreet> GetStreets(long cityId)
+		{
+			var streets = new List<OsmStreet>();
+
+			try {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 
 						// Insert some data
@@ -88,7 +130,47 @@ namespace WCFServer
 						"LEFT JOIN osm_streets_to_districts ON osm_streets_to_districts.street_id = osm_streets.id " +
 						"LEFT JOIN osm_city_districts ON osm_streets_to_districts.district_id = osm_city_districts.id " +
 						"WHERE osm_cities.id = @city_id GROUP BY osm_streets.id, osm_streets.name;";
-						cmd.Parameters.AddWithValue ("@city_id", cityId);
+						cmd.Parameters.AddWithValue("@city_id", cityId);
+						using(var reader = cmd.ExecuteReader()) {
+							while(reader.Read()) {
+								long id = reader.GetInt64(0);
+								string name = reader.IsDBNull(1) ? String.Empty : reader.GetString(1);
+								string districts = reader.IsDBNull(2) ? String.Empty : reader.GetString(2);
+								streets.Add(new OsmStreet(id, cityId, name, districts));
+							}
+						}
+					}
+				}
+				streets.Sort(new OsmStreetComparer());
+
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении улиц города с osm_id={0}.", cityId);
+			}
+			return streets;
+		}
+
+		public List<OsmStreet> GetStreetsByCriteria(long cityId, string searchString, int limit)
+		{
+			var streets = new List<OsmStreet> ();
+
+			try {
+				using (var connection = GetPostgisConnection ()) {
+					connection.Open ();
+					using (var cmd = new NpgsqlCommand ()) {
+						cmd.Connection = connection;
+						// Insert some data
+						cmd.CommandText = "SELECT osm_streets.id, osm_streets.name, string_agg(osm_city_districts.name, ',') " +
+						"FROM osm_streets " +
+						"LEFT JOIN osm_cities ON osm_cities.id = osm_streets.city_id " +
+						"LEFT JOIN osm_streets_to_districts ON osm_streets_to_districts.street_id = osm_streets.id " +
+						"LEFT JOIN osm_city_districts ON osm_streets_to_districts.district_id = osm_city_districts.id " +
+						"WHERE osm_cities.id = @city_id " +
+						$"AND osm_streets.name LIKE '%{searchString}%' " +
+						"GROUP BY osm_streets.id, osm_streets.name;";
+						//"LIMIT @limit;";
+						cmd.Parameters.AddWithValue("@city_id", cityId);
+						cmd.Parameters.AddWithValue("@limit", limit);
 						using (var reader = cmd.ExecuteReader ()) {
 							while (reader.Read ()) {
 								long id = reader.GetInt64 (0);
