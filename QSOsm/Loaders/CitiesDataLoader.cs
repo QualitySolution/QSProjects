@@ -54,7 +54,7 @@ namespace QSOsm.Loaders
 			if(token.IsCancellationRequested)
 				throw new OperationCanceledException();
 
-			logger.Info($"Запрос городов... Строка посиска : {searchString} , Кол-во записей {limit}");
+			logger.Info($"Запрос городов... Строка поиска : {searchString} , Кол-во записей {limit}");
 			return OsmWorker.GetOsmService().GetCitiesByCriteria(searchString, limit);
 		}
 
