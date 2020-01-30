@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
 using QSOsm.DTO;
 using Gamma.Utilities;
+using QSOsm.Loaders;
 
 namespace QSOsm
 {
@@ -13,6 +13,12 @@ namespace QSOsm
 	[System.ComponentModel.Category ("Gamma OSM Widgets")]
 	public class CityEntry : Entry
 	{
+		private ICitiesDataLoader citiesDataLoader;
+		public ICitiesDataLoader CitiesDataLoader {
+			get { return citiesDataLoader; }
+			set { ChangeDataLoader(citiesDataLoader, value); }
+		}
+
 		enum columns
 		{
 			City,
@@ -27,13 +33,9 @@ namespace QSOsm
 
 		private ListStore completionListStore;
 
-		private bool queryIsRunning = false;
-
 		public BindingControler<CityEntry> Binding { get; private set; }
 
-		long osmId;
-
-		public long OsmId { get { return osmId; } }
+		public long OsmId { get; private set; }
 
 		string city;
 
@@ -44,7 +46,7 @@ namespace QSOsm
 			set {
 				city = value;
 				if (String.IsNullOrWhiteSpace(city))
-					osmId = default(long);
+					OsmId = default(long);
 				UpdateText ();
 			}
 		}
@@ -81,34 +83,39 @@ namespace QSOsm
 			else if (String.IsNullOrWhiteSpace(CityDistrict))
 				Text = String.Format("{0} {1}", Locality.GetEnumTitle(), City);
 			else
-				Text = String.Format ("{0} {1} ({2})", Locality.GetEnumTitle (), City, CityDistrict);
-			
-			if (osmId == default(long) && City != default(string)) {
-				logger.Debug ("Запрос id для города {0}({1})...", City, CityDistrict);
-				IOsmService svc = OsmWorker.GetOsmService ();
-				if (svc == null) {
-					logger.Warn ("Не удалось получить id города.");
-					return;
-				}
-				osmId = svc.GetCityId (City, CityDistrict, Locality.ToString ());
-				logger.Debug ("id={0}", osmId);
-				OnCitySelected ();
+				Text = String.Format("{0} {1} ({2})", Locality.GetEnumTitle(), City, CityDistrict);
+
+			if(CitiesDataLoader == null) {
+				logger.Warn($"Невозможно получить данные с сервера тк поле {nameof(citiesDataLoader)} не заполнено");
+				return;
+			}
+
+			if(OsmId == default(long) && City != default(string)) {
+				OsmId = citiesDataLoader.GetCityId(city, CityDistrict, Locality);
+				logger.Debug("id={0}", OsmId);
+				OnCitySelected();
 			}
 		}
 
+
+		public void TextUpdated(object o, TextInsertedArgs args)
+		{
+			citiesDataLoader.LoadCities(Text);
+		}
+
+		public void TextUpdated(object o, TextDeletedArgs args) => TextUpdated(o, TextInsertedArgs.Empty as TextInsertedArgs);
+
 		public CityEntry ()
 		{
-			Binding = new BindingControler<CityEntry> (this, new Expression<Func<CityEntry, object>>[] {
+			Binding = new BindingControler<CityEntry>(this, new Expression<Func<CityEntry, object>>[] {
 				(w => w.City), (w => w.CityDistrict), (w => w.Locality)
 			});
 
-			this.TextInserted += CityEntryTextInserted;
-
-			this.Completion = new EntryCompletion ();
+			this.Completion = new EntryCompletion();
 			this.Completion.MinimumKeyLength = 0;
 			this.Completion.MatchSelected += Completion_MatchSelected;
 
-			this.Completion.MatchFunc = Completion_MatchFunc;
+			this.Completion.MatchFunc = (completion, key, iter) => true;
 			var cell = new CellRendererText ();
 			this.Completion.PackStart (cell, true);
 			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
@@ -135,12 +142,6 @@ namespace QSOsm
 				String.Format ("{0} {1} ({2})", localityType.GetEnumTitle (), cityName, district);
 		}
 
-		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
-		{
-			var val = completion.Model.GetValue (iter, (int)columns.City).ToString ().ToLower ();
-			return Regex.IsMatch (val, String.Format ("\\b{0}.*", Regex.Escape (this.Text.ToLower ())));
-		}
-
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
@@ -148,58 +149,64 @@ namespace QSOsm
 			cityDistrict = args.Model.GetValue (args.Iter, (int)columns.District).ToString ();
 			locality = (LocalityType)args.Model.GetValue (args.Iter, (int)columns.Locality);
 			UpdateText ();
-			osmId = (long)args.Model.GetValue (args.Iter, (int)columns.OsmId);
+			OsmId = (long)args.Model.GetValue (args.Iter, (int)columns.OsmId);
 			OnCitySelected ();
 			args.RetVal = true;
 		}
 
-		protected virtual void OnCitySelected ()
+		protected virtual void OnCitySelected()
 		{
-			if (CitySelected != null)
-				CitySelected (null, EventArgs.Empty);
+			CitySelected?.Invoke(null, EventArgs.Empty);
 		}
 
-		void CityEntryTextInserted (object o, TextInsertedArgs args)
+		private void ChangeDataLoader(ICitiesDataLoader oldValue, ICitiesDataLoader newValue)
 		{
-			if (this.HasFocus && completionListStore == null && !queryIsRunning) {
-				Thread queryThread = new Thread (fillAutocomplete);
-				queryThread.IsBackground = true;
-				queryIsRunning = true;
-				queryThread.Start ();
-			}
-		}
-
-		private void fillAutocomplete ()
-		{
-			logger.Info ("Запрос городов...");
-			IOsmService svc = OsmWorker.GetOsmService ();
-			var cities = svc.GetCities ();
-			completionListStore = new ListStore (typeof(string), typeof(string), typeof(LocalityType), typeof(long));
-			foreach (var c in cities) {
-				completionListStore.AppendValues (
-					c.Name,
-					c.SuburbDistrict,
-					c.LocalityType,
-					c.OsmId
-				);
-			}
-
-			if(this.Completion == null) {
-				logger.Info("Запрос городов отменён");
+			if(oldValue == newValue)
 				return;
+			if(oldValue != null) {
+				oldValue.CitiesLoaded -= CitiesLoaded;
+				this.TextInserted -= TextUpdated;
+				this.TextDeleted -= TextUpdated;
 			}
 
-			this.Completion.Model = completionListStore;
-			queryIsRunning = false;
-			if(this.HasFocus)
-				this.Completion?.Complete();
-			logger.Info("Получено {0} городов", cities.Count);
+			citiesDataLoader = newValue;
+			if(CitiesDataLoader == null)
+				return;
+			CitiesDataLoader.CitiesLoaded += CitiesLoaded;
+			this.TextInserted += TextUpdated;
+			this.TextDeleted += TextUpdated;
 		}
 
-		protected override void OnChanged ()
+		private void CitiesLoaded()
+		{
+			Application.Invoke((senderObject, eventArgs) => {
+				OsmCity[] cities = citiesDataLoader.GetCities();
+				completionListStore = new ListStore(typeof(string), typeof(string), typeof(LocalityType), typeof(long));
+				foreach(var c in cities) {
+					completionListStore.AppendValues(
+						c.Name,
+						c.SuburbDistrict,
+						c.LocalityType,
+						c.OsmId
+					);
+				}
+				Completion.Model = completionListStore;
+				if(HasFocus)
+					Completion?.Complete();
+			});
+		}
+
+		protected override void OnChanged()
 		{
 			Binding.FireChange (w => w.City, w => w.CityDistrict, w => w.Locality);
 			base.OnChanged ();
+		}
+
+		protected override void OnDestroyed()
+		{
+			if(CitiesDataLoader != null)
+				citiesDataLoader.CitiesLoaded -= CitiesLoaded;
+			base.OnDestroyed();
 		}
 	}
 }
