@@ -31,29 +31,38 @@ namespace QS.Project.Journal.Search
 				}
 				Disjunction disjunctionCriterion = new Disjunction();
 
-				bool intParsed = int.TryParse(sv, out int intValue);
-				bool decimalParsed = decimal.TryParse(sv, out decimal decimalValue);
-
 				foreach(var alias in aliases) {
-					bool aliasIsNumeric = false;
+					Type typeOfPropery = null;
 					if(alias.Body is UnaryExpression) {
 						UnaryExpression unaryExpession = alias.Body as UnaryExpression;
-						aliasIsNumeric = digitsTypes.Contains(unaryExpession.Operand.Type);
-					} else if(!(alias.Body is MemberExpression)) {
+						typeOfPropery = unaryExpession.Operand.Type;
+					}
+					else if(alias.Body is MemberExpression info)
+						typeOfPropery = info.Type;
+					else {
 						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
 					}
 
-					if(aliasIsNumeric) {
-						if((intParsed || decimalParsed)) {
-							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intParsed ? intValue : decimalValue);
+					if (typeOfPropery == typeof(int)) {
+						if(int.TryParse(sv, out int intValue)){
+							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intValue);
 							disjunctionCriterion.Add(restriction);
-						} else {
-							continue;
 						}
-					} else {
+					}
+					else if (typeOfPropery == typeof(decimal)) {
+						if(decimal.TryParse(sv, out decimal decimalValue)) {
+							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), decimalValue);
+							disjunctionCriterion.Add(restriction);
+						}
+					}
+					else if (typeOfPropery == typeof(string)){
 						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
 						disjunctionCriterion.Add(likeRestriction);
 					}
+					else {
+						throw new NotSupportedException($"Тип {typeOfPropery} не поддерживается");
+					}
+
 				}
 				conjunctionCriterion.Add(disjunctionCriterion);
 			}
