@@ -6,12 +6,15 @@ namespace QS.Services
 		public CommonServices(
 			IValidationService validationService, 
 			IInteractiveService interactiveService,
-			IPermissionService permissionService, 
-			IUserService userService)
+			IPermissionService permissionService,
+			ICurrentPermissionService currentPermissionService,
+			IUserService userService
+		)
 		{
 			ValidationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
 			InteractiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 			PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+			CurrentPermissionService = currentPermissionService ?? throw new ArgumentNullException(nameof(currentPermissionService));
 			UserService = userService ?? throw new ArgumentNullException(nameof(userService));
 		}
 
@@ -20,6 +23,8 @@ namespace QS.Services
 		public IInteractiveService InteractiveService { get; }
 
 		public IPermissionService PermissionService { get; }
+
+		public ICurrentPermissionService CurrentPermissionService { get; }
 
 		public IUserService UserService { get; }
 	}
