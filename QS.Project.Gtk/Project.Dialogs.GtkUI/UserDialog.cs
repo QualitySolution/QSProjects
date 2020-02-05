@@ -110,7 +110,6 @@ namespace QS.Project.Dialogs.GtkUI
 					(view as Widget).Show();
 				}
 			}
-			User.LoadUserPermissions();
 			userpermissionwidget.ConfigureDlg(User.Id);
 		}
 
