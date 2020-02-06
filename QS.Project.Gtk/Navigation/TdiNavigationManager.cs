@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Autofac;
+using Gamma.Utilities;
 using Gtk;
 using QS.Dialog;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.ViewModels.Dialog;
+using QS.Views.Dialog;
 using QS.Views.Resolve;
 
 namespace QS.Navigation
@@ -199,7 +201,8 @@ namespace QS.Navigation
 			var gtkPage = (IGtkWindowPage)page;
 			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, DialogFlags.Modal);
-			gtkPage.GtkDialog.SetDefaultSize(800, 500);
+			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
+			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? 800, defaultsize?.DefaultHeight ?? 500);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
