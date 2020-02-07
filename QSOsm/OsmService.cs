@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nini.Config;
 using NLog;
 using Npgsql;
-using QSOsm;
 using QSOsm.DTO;
 
-namespace WCFServer
+namespace QSOsm
 {
 	public class OsmService : IOsmService
 	{
@@ -15,27 +15,41 @@ namespace WCFServer
 		private static string pgpass;
 		private static string pgdb;
 
-		Logger logger = LogManager.GetCurrentClassLogger ();
+		Logger logger = LogManager.GetCurrentClassLogger();
 
-		static NpgsqlConnection GetPostgisConnection ()
+		static NpgsqlConnection GetPostgisConnection()
 		{
-			return new NpgsqlConnection (PostgresConnectionString);
+			return new NpgsqlConnection(PostgresConnectionString);
 		}
 
 		public static string PostgresConnectionString {
 			get {
-				return String.Format ("Host={0};Username={1};Password={2};Database={3}",
+				return String.Format("Host={0};Username={1};Password={2};Database={3}",
 					pgserver, pguser, pgpass, pgdb);
 			}
 		}
 
 		public static void ConfigureService(IniConfigSource configFile)
 		{
-			IConfig config = configFile.Configs ["OsmService"];
-			pgserver = config.GetString ("pgserver");
-			pguser = config.GetString ("pguser");
-			pgpass = config.GetString ("pgpassword");
-			pgdb = config.GetString ("pgdatabase");
+			IConfig config = configFile.Configs["OsmService"];
+			pgserver = config.GetString("pgserver");
+			pguser = config.GetString("pguser");
+			pgpass = config.GetString("pgpassword");
+			pgdb = config.GetString("pgdatabase");
+		}
+
+		public bool ServiceStatus()
+		{
+			try {
+				//TODO Возможно стоит добавить проверку дополнительных методов службы, по необходимости
+
+				var cities = GetCities();
+				return cities.Any();
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при проверке работоспособности службы OSM");
+				return false;
+			}
 		}
 
 		public List<OsmCity> GetCities()
@@ -152,12 +166,12 @@ namespace WCFServer
 
 		public List<OsmStreet> GetStreetsByCriteria(long cityId, string searchString, int limit)
 		{
-			var streets = new List<OsmStreet> ();
+			var streets = new List<OsmStreet>();
 
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 						// Insert some data
 						cmd.CommandText = "SELECT osm_streets.id, osm_streets.name, string_agg(osm_city_districts.name, ',') " +
@@ -171,125 +185,128 @@ namespace WCFServer
 						//"LIMIT @limit;";
 						cmd.Parameters.AddWithValue("@city_id", cityId);
 						cmd.Parameters.AddWithValue("@limit", limit);
-						using (var reader = cmd.ExecuteReader ()) {
-							while (reader.Read ()) {
-								long id = reader.GetInt64 (0);
-								string name = reader.IsDBNull (1) ? String.Empty : reader.GetString (1);
-								string districts = reader.IsDBNull (2) ? String.Empty : reader.GetString (2);
-								streets.Add (new OsmStreet (id, cityId, name, districts));
+						using(var reader = cmd.ExecuteReader()) {
+							while(reader.Read()) {
+								long id = reader.GetInt64(0);
+								string name = reader.IsDBNull(1) ? String.Empty : reader.GetString(1);
+								string districts = reader.IsDBNull(2) ? String.Empty : reader.GetString(2);
+								streets.Add(new OsmStreet(id, cityId, name, districts));
 							}
 						}
 					}
 				}
-				streets.Sort (new OsmStreetComparer ());
+				streets.Sort(new OsmStreetComparer());
 
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка при получении улиц города с osm_id={0}.", cityId);
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении улиц города с osm_id={0}.", cityId);
 			}
 			return streets;
 		}
 
-		public long GetCityId (string City, string District, string Locality)
+		public long GetCityId(string City, string District, string Locality)
 		{
-			long id = new long ();
+			long id = new long();
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 						cmd.CommandText = "SELECT osm_cities.id " +
 						"FROM osm_cities " +
 						"LEFT JOIN osm_suburb_districts ON osm_suburb_districts.id = osm_cities.suburb_district_id " +
 						"WHERE osm_cities.name = @name " +
-							//Locality query
-						(String.IsNullOrWhiteSpace (Locality) ? 
-							"AND osm_cities.place IS NULL " : 
+						//Locality query
+						(String.IsNullOrWhiteSpace(Locality) ?
+							"AND osm_cities.place IS NULL " :
 							"AND osm_cities.place = @place ") +
-							//District query
-						(String.IsNullOrWhiteSpace (District) ?
+						//District query
+						(String.IsNullOrWhiteSpace(District) ?
 							"AND osm_suburb_districts.name IS NULL;" :
 							"AND osm_suburb_districts.name = @district;");
-						cmd.Parameters.AddWithValue ("@name", City);
-						if (!String.IsNullOrWhiteSpace (Locality))
-							cmd.Parameters.AddWithValue ("@place", Locality);
-						if (!String.IsNullOrWhiteSpace (District))
-							cmd.Parameters.AddWithValue ("@district", District);
-						using (var reader = cmd.ExecuteReader ()) {
-							if (reader.Read ()) {
-								id = reader.IsDBNull (0) ? 0 : reader.GetInt64 (0);
+						cmd.Parameters.AddWithValue("@name", City);
+						if(!String.IsNullOrWhiteSpace(Locality))
+							cmd.Parameters.AddWithValue("@place", Locality);
+						if(!String.IsNullOrWhiteSpace(District))
+							cmd.Parameters.AddWithValue("@district", District);
+						using(var reader = cmd.ExecuteReader()) {
+							if(reader.Read()) {
+								id = reader.IsDBNull(0) ? 0 : reader.GetInt64(0);
 							}
 						}
 					}
 				}
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка при получении osm_id города с параметрами name={0}, district={1}, place={2}.", City, District, Locality.ToString ());
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении osm_id города с параметрами name={0}, district={1}, place={2}.", City, District, Locality.ToString());
 			}
 			return id;
 		}
 
-		public string GetPointRegion (long OsmId)
+		public string GetPointRegion(long OsmId)
 		{
 			string region = String.Empty;
 			bool SPb = false;
 			bool LO = false;
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 						cmd.CommandText = "SELECT " +
 						"ST_Contains((SELECT way FROM planet_osm_polygon WHERE admin_level = '4' AND boundary = 'administrative' AND name = 'Санкт-Петербург'), way) AS SPb, " +
 						"ST_Contains((SELECT way FROM planet_osm_polygon WHERE admin_level = '4' AND boundary = 'administrative' AND name = 'Ленинградская область'), way) AS LO " +
 						"FROM planet_osm_polygon " +
 						"WHERE osm_id = @osm_id;";
-						cmd.Parameters.AddWithValue ("@osm_id", OsmId);
-						using (var reader = cmd.ExecuteReader ()) {
-							if (reader.Read ()) {
-								SPb = reader.GetBoolean (0);
-								LO = reader.GetBoolean (1);
+						cmd.Parameters.AddWithValue("@osm_id", OsmId);
+						using(var reader = cmd.ExecuteReader()) {
+							if(reader.Read()) {
+								SPb = reader.GetBoolean(0);
+								LO = reader.GetBoolean(1);
 							}
 						}
 					}
 				}
-				if (SPb)
+				if(SPb)
 					region = "Санкт-Петербург";
-				else if (LO)
+				else if(LO)
 					region = "Ленинградская область";
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка при получении региона точки с osm_id={0}.", OsmId);
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении региона точки с osm_id={0}.", OsmId);
 			}
 			return region;
 		}
 
-		public List<OsmHouse> GetHouseNumbersWithoutDistrict (long cityId, string street)
+		public List<OsmHouse> GetHouseNumbersWithoutDistrict(long cityId, string street)
 		{
-			return GetHouseNumbers (cityId, street, String.Empty);
+			return GetHouseNumbers(cityId, street, String.Empty);
 		}
 
-		public List<OsmHouse> GetHouseNumbers (long cityId, string street, string districts)
+		public List<OsmHouse> GetHouseNumbers(long cityId, string street, string districts)
 		{
-			var houses = new List<OsmHouse> ();
+			var houses = new List<OsmHouse>();
 			string city = String.Empty;
-			street = street.Replace ('+', ' ');
-			districts = districts.Replace ('+', ' ');
+			street = street.Replace('+', ' ');
+			districts = districts.Replace('+', ' ');
 
-			string[] districtsArray = districts.Split (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] districtsArray = districts.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			try {
-				using (var connection = GetPostgisConnection ()) {
-					connection.Open ();
-					using (var cmd = new NpgsqlCommand ()) {
+				using(var connection = GetPostgisConnection()) {
+					connection.Open();
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 						cmd.CommandText = "SELECT name FROM osm_cities WHERE id = @id;";
-						cmd.Parameters.AddWithValue ("@id", cityId);
-						using (var reader = cmd.ExecuteReader ()) {
-							if (reader.Read ()) {
-								city = reader.IsDBNull (0) ? String.Empty : reader.GetString (0);
+						cmd.Parameters.AddWithValue("@id", cityId);
+						using(var reader = cmd.ExecuteReader()) {
+							if(reader.Read()) {
+								city = reader.IsDBNull(0) ? String.Empty : reader.GetString(0);
 							}
 						}
 					}
 
-					using (var cmd = new NpgsqlCommand ()) {
+					using(var cmd = new NpgsqlCommand()) {
 						cmd.Connection = connection;
 						cmd.CommandText = "SELECT DISTINCT ON (\"addr:housenumber\", tags->'addr:letter') " +
 						"osm_id, \"addr:housenumber\", " +
@@ -302,40 +319,41 @@ namespace WCFServer
 						"AND tags->'addr:city' = @city " +
 						"AND tags->'addr:street' = @street " +
 						"AND EXISTS(SELECT 1 FROM osm_city_ways WHERE city_id = @city_id AND ST_Contains (osm_city_ways.way, planet_osm_polygon.way)) " +
-						(districtsArray.Length < 1 ? 
+						(districtsArray.Length < 1 ?
 								";" :
 							"AND tags->'addr:district' IN (");
-						cmd.Parameters.AddWithValue ("@city", city);
-						cmd.Parameters.AddWithValue ("@street", street);
-						cmd.Parameters.AddWithValue ("@city_id", cityId);
+						cmd.Parameters.AddWithValue("@city", city);
+						cmd.Parameters.AddWithValue("@street", street);
+						cmd.Parameters.AddWithValue("@city_id", cityId);
 
-						for (int i = 0; i < districtsArray.Length; i++) {
-							if (i == 0) {
-								cmd.CommandText += String.Format ("@district{0}", i);
+						for(int i = 0; i < districtsArray.Length; i++) {
+							if(i == 0) {
+								cmd.CommandText += String.Format("@district{0}", i);
 							} else {
-								cmd.CommandText += String.Format (",@district{0}", i);
+								cmd.CommandText += String.Format(",@district{0}", i);
 							}
-							cmd.Parameters.AddWithValue (String.Format ("@district{0}", i), districtsArray [i]);
+							cmd.Parameters.AddWithValue(String.Format("@district{0}", i), districtsArray[i]);
 						}
-						if (districtsArray.Length > 0)
+						if(districtsArray.Length > 0)
 							cmd.CommandText += ");";
 
-						using (var reader = cmd.ExecuteReader ()) {
-							while (reader.Read ()) {
-								houses.Add (new OsmHouse (
-									reader.GetInt64 (0), 
-									reader.IsDBNull (1) ? String.Empty : reader.GetString (1),
-									reader.IsDBNull (2) ? String.Empty : reader.GetString (2),
-									reader.IsDBNull (3) ? String.Empty : reader.GetString (3),
-									(Decimal)reader.GetDouble (4),
-									(Decimal)reader.GetDouble (5)
+						using(var reader = cmd.ExecuteReader()) {
+							while(reader.Read()) {
+								houses.Add(new OsmHouse(
+									reader.GetInt64(0),
+									reader.IsDBNull(1) ? String.Empty : reader.GetString(1),
+									reader.IsDBNull(2) ? String.Empty : reader.GetString(2),
+									reader.IsDBNull(3) ? String.Empty : reader.GetString(3),
+									(Decimal)reader.GetDouble(4),
+									(Decimal)reader.GetDouble(5)
 								));
 							}
 						}
 					}
 				}
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка при получении номеров домов с city_osm_id={0}, street={1}, district={2}.", 
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при получении номеров домов с city_osm_id={0}, street={1}, district={2}.",
 					cityId, street, districts);
 			}
 			//houses.Sort (new StringWorks.NaturalStringComparerNonStatic ());
@@ -343,4 +361,3 @@ namespace WCFServer
 		}
 	}
 }
-
