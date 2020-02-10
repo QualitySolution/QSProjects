@@ -73,7 +73,9 @@ namespace QSOsm
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		List<OsmHouse> GetHouseNumbers (long cityId, string street, string districts);
 
-
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		bool ServiceStatus();
 	}
 }
 
