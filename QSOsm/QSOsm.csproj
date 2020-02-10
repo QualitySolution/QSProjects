@@ -74,12 +74,6 @@
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql">
-      <HintPath>..\..\GMap.NET\References\Windows\Npgsql.dll</HintPath>
-    </Reference>
-    <Reference Include="Nini">
-      <HintPath>..\lib\Nini.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IOsmService.cs" />
@@ -108,7 +102,6 @@
     <Compile Include="Loaders\StreetsDataLoader.cs" />
     <Compile Include="Loaders\HousesDataLoader.cs" />
     <Compile Include="Loaders\CitiesDataLoader.cs" />
-    <Compile Include="OsmService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
