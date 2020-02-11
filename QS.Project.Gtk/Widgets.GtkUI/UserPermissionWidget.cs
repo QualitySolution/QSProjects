@@ -25,10 +25,6 @@ namespace QS.Widgets.GtkUI
 			var userEntityPermissionWidget = new UserEntityPermissionWidget();
 			AddTab(userEntityPermissionWidget);
 			userPermissionTabs.Add(userEntityPermissionWidget);
-
-			var userPresetPermissionWidget = new UserPresetPermissionWidget();
-			AddTab(userPresetPermissionWidget);
-			userPermissionTabs.Add(userPresetPermissionWidget);
 		}
 
 		public void ConfigureDlg(int userId)

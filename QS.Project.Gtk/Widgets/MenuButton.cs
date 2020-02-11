@@ -5,6 +5,7 @@ using Gtk;
 namespace QS.Widgets
 {
 	[ToolboxItem(true)]
+	[Category("QS.Project")]
 	public class MenuButton : Button
 	{
 		Label titleLabel;

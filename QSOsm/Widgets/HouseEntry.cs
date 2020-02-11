@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
-using QS.Utilities.Text;
 using QSOsm.DTO;
+using QSOsm.Loaders;
 
 namespace QSOsm
 {
@@ -19,9 +17,14 @@ namespace QSOsm
 
 		public event EventHandler CompletionLoaded;
 
-		private ListStore completionListStore;
+		private IHousesDataLoader housesDataLoader;
+		public IHousesDataLoader HousesDataLoader 
+		{ 
+			get { return housesDataLoader; }
+			set { ChangeDataLoader(housesDataLoader, value); }
+		}
 
-		private Thread queryThread;
+		private ListStore completionListStore;
 
 		public BindingControler<HouseEntry> Binding { get; private set; }
 
@@ -47,16 +50,17 @@ namespace QSOsm
 		public OsmHouse OsmHouse { get; private set;}
 
 		public virtual decimal? Latitude {
-			get { decimal? latitude, longitude;
-				GetCoordinates(out longitude, out latitude);
-				return latitude; 
+			get {
+				GetCoordinates(out decimal? longitude, out decimal? latitude);
+				return latitude;
 			}
 		}
 
 		public virtual decimal? Longitude {
-			get { decimal? latitude, longitude;
-				GetCoordinates(out longitude, out latitude);
-				return longitude; }
+			get {
+					GetCoordinates(out decimal? longitude, out decimal? latitude);
+					return longitude; 
+				}
 		}
 
 		OsmStreet street;
@@ -119,67 +123,43 @@ namespace QSOsm
 			House = args.Model.GetValue (args.Iter, 0).ToString ();
 			args.RetVal = true;
 		}
-			
-		void OnStreetSet ()
+
+		void OnStreetSet() => HousesDataLoader?.LoadHouses(street);
+
+		private void ChangeDataLoader(IHousesDataLoader oldValue, IHousesDataLoader newValue)
 		{
-			if (queryThread != null && queryThread.IsAlive) {
-				try {
-					queryThread.Abort ();
-				} catch (ThreadAbortException ex) {
-					logger.Warn ("fillAutocomplete() thread for houses was aborted.");
-				}
-			}
-			queryThread = new Thread (fillAutocomplete);
-			queryThread.IsBackground = true;
-			queryThread.Start ();
+			if(oldValue == newValue)
+				return;
+			if(oldValue != null)
+				oldValue.HousesLoaded -= HousesLoaded;
+
+			housesDataLoader = newValue;
+			if(housesDataLoader == null)
+				return;
+			housesDataLoader.HousesLoaded += HousesLoaded;
 		}
 
-		private void fillAutocomplete ()
+		private void HousesLoaded()
 		{
-			if (String.IsNullOrWhiteSpace (Street.Name)) {
-				if (completionListStore != null)
-					completionListStore.Clear ();				
-			} else {
-				
-				logger.Info ("Запрос домов на {0}...", Street.Name);
-				IOsmService svc = OsmWorker.GetOsmService ();
+			Application.Invoke((sender, e) => {
+				OsmHouse[] houses = HousesDataLoader.GetHouses();
+				completionListStore = new ListStore(typeof(string), typeof(long), typeof(OsmHouse));
 
-				List<OsmHouse> houses;
-				if (Street.Districts == null)
-					houses = svc.GetHouseNumbersWithoutDistrict (Street.CityId, Street.Name);
-				else
-					houses = svc.GetHouseNumbers (Street.CityId, Street.Name, Street.Districts);
-
-				//Удаляем литеры А у домов где других литер нет.
-				foreach(var house in houses.Where(x => x.Letter == "А" || x.Letter == "а" || x.Letter == "A" || x.Letter == "a"))
-				{
-					if (!houses.Any(x => x.HouseNumber == house.HouseNumber && x.Letter != house.Letter))
-						house.Letter = String.Empty;
-				}
-				houses = houses.OrderBy(x => x.ComplexNumber, new NaturalStringComparer()).ToList();
-
-				completionListStore = new ListStore (typeof(string), typeof(long), typeof(OsmHouse));
-				foreach (var h in houses) {
-					completionListStore.AppendValues (h.ComplexNumber, h.Id, h);
-				}
-
-				if(this.Completion == null) {
-					logger.Info("Запрос домов отменён");
-					return;
-				}
-
-				this.Completion.Model = completionListStore;
-				logger.Info ("Получено {0} домов", houses.Count);
-			}
-			if (CompletionLoaded != null)
-				Gtk.Application.Invoke (CompletionLoaded);
+				foreach(var h in houses)
+					completionListStore.AppendValues(h.ComplexNumber, h.Id, h);
+					
+				Completion.Model = completionListStore;
+				if(HasFocus)
+					Completion?.Complete();
+				CompletionLoaded?.Invoke(null, EventArgs.Empty);
+		});
 		}
 
 		public void GetCoordinates(out decimal? longitude, out decimal? latitude)
 		{
 			longitude = null;
 			latitude = null;
-			var osmRow = completionListStore == null ? null : completionListStore.Cast<object[]>().FirstOrDefault(row => (string)row[0] == House);
+			var osmRow = completionListStore?.Cast<object[]>().FirstOrDefault(row => (string)row[0] == House);
 			if (osmRow == null)
 				return;
 
@@ -199,6 +179,13 @@ namespace QSOsm
 
 			Binding.FireChange (w => w.House, w => w.Text, w => w.OsmCompletion, w => w.Latitude, w => w.Longitude);
 			base.OnChanged ();
+		}
+
+		protected override void OnDestroyed()
+		{
+			if(HousesDataLoader != null)
+				HousesDataLoader.HousesLoaded -= HousesLoaded;
+			base.OnDestroyed();
 		}
 	}
 }

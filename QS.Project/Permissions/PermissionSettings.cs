@@ -11,9 +11,13 @@ namespace QS.Permissions
 	{
 		public static IPermissionService PermissionService { get; set; }
 
+		public static ICurrentPermissionService CurrentPermissionService { get; set; }
+
 		static PermissionsSettings()
 		{
-			PermissionService = new DefaultAllowedPermissionService();
+			var defaultPermissionService = new DefaultAllowedPermissionService();
+			PermissionService = defaultPermissionService;
+			CurrentPermissionService = defaultPermissionService;
 		}
 
 		#region For EntityPermission

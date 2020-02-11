@@ -11,19 +11,40 @@ namespace QSOsm
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
+		/// Returns cities by criteria from OSM database.
+		/// </summary>
+		/// <returns>The cities.</returns>
+		///	<param name="searchString">city search criteria</param>
+		List<OsmCity> GetCitiesByCriteria (string searchString, int limit);
+
+
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
 		/// Returns all the cities from OSM database.
 		/// </summary>
 		/// <returns>The cities.</returns>
-		List<OsmCity> GetCities ();
+		List<OsmCity> GetCities();
 
 		[OperationContract]
-		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
 		/// <summary>
 		/// Gets the streets for city, identified by id.
 		/// </summary>
 		/// <returns>The streets.</returns>
 		/// <param name="OsmId">City OSM identifier.</param>
-		List<OsmStreet> GetStreets (long cityId);
+		List<OsmStreet> GetStreets(long cityId);
+
+		[OperationContract]
+		[WebGet (ResponseFormat = WebMessageFormat.Json)]
+		/// <summary>
+		/// Gets the streets for city by criteria
+		/// </summary>
+		/// <returns>The streets.</returns>
+		/// <param name="OsmId">City OSM identifier.</param>
+		///	<param name="searchString">city search criteria</param>
+		/// <param name="limit">limit on the number of returned rows</param>
+		List<OsmStreet> GetStreetsByCriteria(long cityId, string searchString, int limit);
 
 		[OperationContract]
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
@@ -52,7 +73,9 @@ namespace QSOsm
 		[WebGet (ResponseFormat = WebMessageFormat.Json)]
 		List<OsmHouse> GetHouseNumbers (long cityId, string street, string districts);
 
-
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		bool ServiceStatus();
 	}
 }
 

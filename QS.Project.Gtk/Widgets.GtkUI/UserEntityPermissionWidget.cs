@@ -75,7 +75,7 @@ namespace QS.Widgets.GtkUI
 		private IUnitOfWork uow;
 		private UserBase user;
 		private IList<UserPermissionNode> deletePermissionList = new List<UserPermissionNode>();
-		private IList<TypeOfEntity> originalTypeOfEntityList;
+		private List<TypeOfEntity> originalTypeOfEntityList;
 		public PermissionListViewModel PermissionListViewModel { get; set; }
 
 		public GenericObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
@@ -90,13 +90,14 @@ namespace QS.Widgets.GtkUI
 			PermissionListViewModel.PermissionsList = new GenericObservableList<IPermissionNode>(permissionList.OfType<IPermissionNode>().ToList());
 			PermissionListViewModel.PermissionsList.ElementRemoved += (aList, aIdx, aObject) => DeletePermission(aObject as UserPermissionNode);
 
-			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow);
+			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow).ToList();
 			//убираем типы уже загруженные в права
 			foreach(var item in permissionList) {
 				if(originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
 					originalTypeOfEntityList.Remove(item.TypeOfEntity);
 				}
 			}
+			SortTypeOfEntityList();
 			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(originalTypeOfEntityList);
 		}
 
@@ -146,6 +147,7 @@ namespace QS.Widgets.GtkUI
 			if(deletedPermission.EntityUserOnlyPermission.Id != 0) {
 				deletePermissionList.Add(deletedPermission);
 			}
+			SortTypeOfEntityList();
 		}
 
 		public void Save()
@@ -161,6 +163,15 @@ namespace QS.Widgets.GtkUI
 				foreach(var extendedPermission in item.EntityPermissionExtended)
 					uow.Delete(extendedPermission);
 			}
+		}
+
+		private void SortTypeOfEntityList()
+		{
+			if(originalTypeOfEntityList?.FirstOrDefault() == null)
+				return;
+
+			originalTypeOfEntityList.Sort((x, y) => 
+					string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
 		}
 	}
 }

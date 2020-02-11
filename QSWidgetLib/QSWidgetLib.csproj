@@ -57,8 +57,6 @@
     <Compile Include="gtk-gui\QSWidgetLib.SelectPeriod.cs" />
     <Compile Include="CheckList.cs" />
     <Compile Include="WidgetId.cs" />
-    <Compile Include="AddressRF.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.AddressRF.cs" />
     <Compile Include="CompanyName.cs" />
     <Compile Include="ImageViewer.cs" />
     <Compile Include="VImagesList.cs" />

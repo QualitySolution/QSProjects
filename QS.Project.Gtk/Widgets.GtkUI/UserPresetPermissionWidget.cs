@@ -31,6 +31,7 @@ namespace QS.Widgets.GtkUI
 		{
 			UoW = uow;
 			this.user = user;
+			user.LoadUserPermissions();
 			model = new PresetUserPermissionModel(UoW, user);
 
 			ytreeviewAvailablePermissions.ColumnsConfig = ColumnsConfigFactory.Create<PresetUserPermissionSource>()

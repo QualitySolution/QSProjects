@@ -249,6 +249,7 @@
     <Compile Include="Views\Dialog\DialogViewBase.cs" />
     <Compile Include="Views\Dialog\ILegacyViewModel.cs" />
     <Compile Include="Views\ViewBase.cs" />
+    <Compile Include="Views\Dialog\WindowSizeAttribute.cs" />
     <Compile Include="Views\Control\EntitySearch.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntitySearch.cs" />
   </ItemGroup>
