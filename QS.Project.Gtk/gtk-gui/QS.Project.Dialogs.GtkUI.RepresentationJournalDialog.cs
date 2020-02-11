@@ -295,7 +295,6 @@ namespace QS.Project.Dialogs.GtkUI
 			this.entrySearch4.Changed += new global::System.EventHandler(this.OnEntrySearchChanged);
 			this.buttonAddAnd.Clicked += new global::System.EventHandler(this.OnButtonAddAndClicked);
 			this.buttonSearchClear.Clicked += new global::System.EventHandler(this.OnButtonSearchClearClicked);
-			this.tableview.RowActivated += new global::Gtk.RowActivatedHandler(this.OnOrmtableviewRowActivated);
 		}
 	}
 }
