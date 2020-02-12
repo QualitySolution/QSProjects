@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Gamma.Binding.Core;
 using Gtk;
 using QSOsm.Loaders;
@@ -106,10 +107,17 @@ namespace QSOsm
 			return base.OnKeyPressEvent(evnt);
 		}
 
+		bool firstCompletion = true;
+
 		private void EntryTextChanges(object o, TextInsertedArgs args)
 		{
-			if(cityId != 0)
+			if(cityId != 0) {
+				if(firstCompletion) {
+					EmptyCompletion();
+					firstCompletion = false;
+				}
 				streetsDataLoader.LoadStreets(cityId, Text);
+			}
 		}
 
 		private void EntryTextChanges(object o, TextDeletedArgs args) => EntryTextChanges(o, TextInsertedArgs.Empty as TextInsertedArgs);
@@ -129,6 +137,10 @@ namespace QSOsm
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected(object o, MatchSelectedArgs args)
 		{
+			if(args.Model.GetValue(args.Iter, (int)columns.Street).ToString() == "Загрузка...") {
+				args.RetVal = false;
+				return;
+			}
 			Street = args.Model.GetValue(args.Iter, (int)columns.Street).ToString();
 			StreetDistrict = args.Model.GetValue(args.Iter, (int)columns.District).ToString();
 			ExistOnOSM = true;
@@ -164,9 +176,17 @@ namespace QSOsm
 			this.TextDeleted += EntryTextChanges;
 		}
 
+		private void EmptyCompletion()
+		{
+			completionListStore = new ListStore(typeof(string), typeof(string));
+			completionListStore.AppendValues("Загрузка...", "");
+			this.Completion.Model = completionListStore;
+			this.Completion.Complete();
+		}
+
 		private void StreetLoaded()
 		{
-			Application.Invoke((sender, e) => {
+
 				var streets = streetsDataLoader.GetStreets();
 				completionListStore = new ListStore(typeof(string), typeof(string));
 				foreach(var s in streets) {
@@ -175,10 +195,11 @@ namespace QSOsm
 						s.Districts
 					);
 				}
-
+			Application.Invoke((sender, e) => {
 				this.Completion.Model = completionListStore;
-				if(this.HasFocus)
-					this.Completion?.Complete();
+				if(this.HasFocus) {
+					this.Completion.Complete();
+				}
 			});
 		}
 
