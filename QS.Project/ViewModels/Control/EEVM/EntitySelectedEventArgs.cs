@@ -7,7 +7,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public EntitySelectedEventArgs(object entity)
 		{
-			Entity = entity;
+			Entity = entity ?? throw new ArgumentNullException(nameof(entity));
 		}
 	}
 }

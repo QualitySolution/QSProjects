@@ -74,6 +74,8 @@ namespace QS.Tdi.Gtk
 			this.CurrentPage = this.PageNum(widget);
 		}
 
+		public ITdiTab CurrentTab => CurrentPage >= 0 ? Tabs[CurrentPage].TdiTab : null;
+
 		#region Открытие вкладки
 
 		public void AddTab(ITdiTab tab, int after = -1)

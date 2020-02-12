@@ -1950,7 +1950,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.OneEntrySearchView" design-size="403 35">
+  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.OneEntrySearchView" design-size="403 37">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -2683,7 +2683,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Views.Control.EntityEntry" design-size="341 35">
+  <widget class="Gtk.Bin" id="QS.Views.Control.EntityEntry" design-size="341 37">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -2757,6 +2757,51 @@
           <packing>
             <property name="Position">3</property>
             <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="QS.Views.Control.EntitySearch" design-size="212 47">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HBox" id="hbox2">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gamma.GtkWidgets.yEntry" id="tbTextForSearch">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+            <signal name="WidgetEvent" handler="OnEntryObjectWidgetEvent" />
+            <signal name="Changed" handler="OnEntryObjectChanged" />
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="btnClear">
+            <property name="MemberName" />
+            <property name="Sensitive">False</property>
+            <property name="Tooltip" translatable="yes">Удаление</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextAndIcon</property>
+            <property name="Icon">stock:gtk-clear Menu</property>
+            <property name="Label" translatable="yes" />
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonClearClicked" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
