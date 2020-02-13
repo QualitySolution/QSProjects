@@ -113,7 +113,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.5.1.0\lib\net461\Autofac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
