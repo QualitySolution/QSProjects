@@ -4,65 +4,92 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
+using QS.Project.Journal;
+using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public class LegacyEEVMBuilder<TBindedEntity, TEntity> : CommonEEVMBuilder<TBindedEntity, TEntity>
-		where TBindedEntity : class, INotifyPropertyChanged
+	public class LegacyEEVMBuilder<TEntity> : CommonEEVMBuilder<TEntity>
 		where TEntity : class, IDomainObject
 	{
-		readonly LegacyEEVMBuilderFactory<TBindedEntity> legacyFactory;
+		readonly ILegacyEEVMBuilderParameters legacyParameters;
 
-		public LegacyEEVMBuilder(LegacyEEVMBuilderFactory<TBindedEntity> builderFactory, Expression<Func<TBindedEntity, TEntity>> bindedProperty) : base(builderFactory, bindedProperty)
+		public LegacyEEVMBuilder(ILegacyEEVMBuilderParameters legacyParameters, IPropertyBinder<TEntity> propertyBinder = null) : base(legacyParameters, propertyBinder)
 		{
-			this.legacyFactory = builderFactory;
-			factory = builderFactory;
+			this.legacyParameters = legacyParameters;
 		}
 
 		#region Fluent Config
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournal()
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal()
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, typeof(TEntity));
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, typeof(TEntity));
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournal(QueryOver itemsQuery)
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal(QueryOver itemsQuery)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsQuery);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsQuery);
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournal(ICriteria itemsCriteria)
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal(ICriteria itemsCriteria)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsCriteria);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsCriteria);
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter()
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter()
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, typeof(TEntity));
-			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, typeof(TEntity));
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork);
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter(QueryOver itemsQuery)
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter(QueryOver itemsQuery)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsQuery);
-			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork, itemsQuery);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsQuery);
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork, itemsQuery);
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseOrmReferenceJournalAndAutocompleter(ICriteria itemsCriteria)
+		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter(ICriteria itemsCriteria)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyFactory.DialogTab, factory.UnitOfWork, itemsCriteria);
-			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(factory.UnitOfWork, itemsCriteria);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsCriteria);
+			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork, itemsCriteria);
 			return this;
 		}
 
-		public LegacyEEVMBuilder<TBindedEntity, TEntity> UseTdiEntityDialog()
+		public LegacyEEVMBuilder<TEntity> UseTdiEntityDialog()
 		{
-			EntityDlgOpener = new OrmObjectDialogOpener<TEntity>(legacyFactory.DialogTab);
+			EntityDlgOpener = new OrmObjectDialogOpener<TEntity>(legacyParameters.DialogTab);
+			return this;
+		}
+
+		#endregion
+
+
+		#region Перехват вызовов для работы без диалогов ParentViewModel
+
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
+			where TJournalViewModel : JournalViewModelBase
+		{
+			if(parameters.DialogViewModel == null)
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.DialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+			else
+				base.UseViewModelJournal<TJournalViewModel>();
+			return this;
+		}
+
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
+			where TJournalViewModel : JournalViewModelBase
+		{
+			if(parameters.DialogViewModel == null) {
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.DialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.UnitOfWork, parameters.AutofacScope);
+			}
+			else
+				base.UseViewModelJournalAndAutocompleter<TJournalViewModel>();
 			return this;
 		}
 

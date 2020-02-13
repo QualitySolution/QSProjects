@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using Autofac;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -9,20 +10,71 @@ using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public class LegacyEEVMBuilderFactory<TBindedEntity> : CommonEEVMBuilderFactory<TBindedEntity>
+	public class LegacyEEVMBuilderFactory<TBindedEntity> : CommonEEVMBuilderFactory<TBindedEntity>, ILegacyEEVMBuilderParameters
 		where TBindedEntity : class, INotifyPropertyChanged
 	{
-		public readonly ITdiTab DialogTab;
+		public ITdiTab DialogTab { get; private set; }
 
-		public LegacyEEVMBuilderFactory(DialogViewModelBase dialogViewModel, ITdiTab dialogTab, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation) : base(dialogViewModel, source, unitOfWork, navigation)
+		public LegacyEEVMBuilderFactory(
+			DialogViewModelBase dialogViewModel,
+			ITdiTab dialogTab,
+			TBindedEntity source,
+			IUnitOfWork unitOfWork,
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null) 
+			: base(dialogViewModel, source, unitOfWork, navigation, autofacScope)
 		{
 			DialogTab = dialogTab;
 		}
 
-		public new LegacyEEVMBuilder<TBindedEntity, TPropertyEntity> ForProperty<TPropertyEntity>(Expression<Func<TBindedEntity, TPropertyEntity>> sourceProperty)
+		public LegacyEEVMBuilderFactory(
+			ITdiTab dialogTab,
+			TBindedEntity source,
+			IUnitOfWork unitOfWork,
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null) 
+			: base(null, source, unitOfWork, navigation, autofacScope)
+		{
+			DialogTab = dialogTab;
+		}
+
+		public new LegacyEEVMBuilder<TPropertyEntity> ForProperty<TPropertyEntity>(Expression<Func<TBindedEntity, TPropertyEntity>> sourceProperty)
 			where TPropertyEntity : class, IDomainObject
 		{
-			return new LegacyEEVMBuilder<TBindedEntity, TPropertyEntity>(this, sourceProperty);
+			var binder = new PropertyBinder<TBindedEntity, TPropertyEntity>(BindedEntity, sourceProperty);
+			return new LegacyEEVMBuilder<TPropertyEntity>(this, binder);
+		}
+	}
+
+	public class LegacyEEVMBuilderFactory : CommonEEVMBuilderFactory, ILegacyEEVMBuilderParameters
+	{
+		public ITdiTab DialogTab { get; private set; }
+
+		public LegacyEEVMBuilderFactory(
+			DialogViewModelBase dialogViewModel,
+			ITdiTab dialogTab,
+			IUnitOfWork unitOfWork,
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null) 
+			: base(null, unitOfWork, navigation, autofacScope)
+		{
+			DialogTab = dialogTab;
+		}
+
+		public LegacyEEVMBuilderFactory(
+			ITdiTab dialogTab, 
+			IUnitOfWork unitOfWork, 
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null) 
+			: base(null, unitOfWork, navigation, autofacScope)
+		{
+			DialogTab = dialogTab;
+		}
+
+		public new LegacyEEVMBuilder<TEntity> ForEntity<TEntity>()
+			where TEntity : class, IDomainObject
+		{
+			return new LegacyEEVMBuilder<TEntity>(this);
 		}
 	}
 }

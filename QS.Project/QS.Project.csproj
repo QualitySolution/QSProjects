@@ -312,8 +312,9 @@
     <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
     <Compile Include="ViewModels\Dialog\ModalDialogViewModelBase.cs" />
-    <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
-    <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" />
+    <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
+    <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
+    <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
