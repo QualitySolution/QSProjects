@@ -208,8 +208,13 @@ namespace QS.ViewModels.Control.EEVM
 		public IPropertyBinder<TEntity> EntityBinder {
 			get => entityBinder;
 			set {
+				if(EntityBinder != null)
+					EntityBinder.Changed -= EntityBinder_Changed;
 				entityBinder = value;
-				entityBinder.Changed += EntityBinder_Changed;
+				if(EntityBinder != null) {
+					Entity = entityBinder.PropertyValue;
+					entityBinder.Changed += EntityBinder_Changed;
+				}
 			}
 		}
 

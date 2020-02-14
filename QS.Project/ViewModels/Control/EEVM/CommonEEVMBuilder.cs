@@ -1,18 +1,14 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using QS.DomainModel.Entity;
+﻿using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public class CommonEEVMBuilder<TBindedEntity, TEntity>
-		where TBindedEntity: class, INotifyPropertyChanged
+	public class CommonEEVMBuilder<TEntity>
 		where TEntity: class, IDomainObject
 	{
 		#region Обазательные параметры
-		protected CommonEEVMBuilderFactory<TBindedEntity> factory;
+		protected IEEVMBuilderParameters parameters;
 		protected IPropertyBinder<TEntity> PropertyBinder;
 		#endregion
 
@@ -22,37 +18,37 @@ namespace QS.ViewModels.Control.EEVM
 		protected IEntityAutocompleteSelector<TEntity> EntityAutocompleteSelector;
 		#endregion
 
-		public CommonEEVMBuilder(CommonEEVMBuilderFactory<TBindedEntity> builderFactory, Expression<Func<TBindedEntity, TEntity>> bindedProperty)
+		public CommonEEVMBuilder(IEEVMBuilderParameters buildParameters, IPropertyBinder<TEntity> propertyBinder = null)
 		{
-			this.factory = builderFactory;
-			PropertyBinder = new PropertyBinder<TBindedEntity, TEntity>(factory.BindedEntity, bindedProperty);
+			this.parameters = buildParameters;
+			this.PropertyBinder = propertyBinder;
 		}
 
 		#region Fluent Config
 
-		public CommonEEVMBuilder<TBindedEntity, TEntity> UseViewModelJournal<TJournalViewModel>()
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
 			where TJournalViewModel : JournalViewModelBase
 		{
-			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(factory.DialogViewModel, factory.UnitOfWork, factory.NavigationManager);
+			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager);
 			return this;
 		}
 
-		public CommonEEVMBuilder<TBindedEntity, TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
 			where TJournalViewModel : JournalViewModelBase
 		{
-			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(factory.DialogViewModel, factory.UnitOfWork, factory.NavigationManager);
-			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(factory.UnitOfWork, factory.AutofacScope);
+			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager);
+			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.UnitOfWork, parameters.AutofacScope);
 			return this;
 		}
 
-		public CommonEEVMBuilder<TBindedEntity, TEntity> UseViewModelDialog<TEntityViewModel>()
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelDialog<TEntityViewModel>()
 			where TEntityViewModel : DialogViewModelBase
 		{
-			EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(factory.NavigationManager, factory.DialogViewModel);
+			EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, parameters.DialogViewModel);
 			return this;
 		}
 
-		public EntityEntryViewModel<TEntity> Finish()
+		public virtual EntityEntryViewModel<TEntity> Finish()
 		{
 			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector);
 		}
