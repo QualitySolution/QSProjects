@@ -82,7 +82,7 @@
     </Reference>
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.5.1.0\lib\net461\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.5.1.1\lib\net461\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
