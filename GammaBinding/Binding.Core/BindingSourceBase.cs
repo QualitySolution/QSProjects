@@ -58,6 +58,9 @@ namespace Gamma.Binding.Core
 			if (!Bridges.Contains (bridge))
 				throw new InvalidOperationException ("Bridge не из этого источника.");
 
+			if(bridge.Mode == BridgeMode.OnlyFromSource)
+				return false;
+
 			return bridge.SetValueToSource (DataSourceObject, value);
 		}
 
