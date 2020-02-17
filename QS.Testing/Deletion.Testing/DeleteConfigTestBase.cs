@@ -217,6 +217,9 @@ namespace QS.Deletion.Testing
 			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
 				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
 
+			if(!prop.IsUpdateable)
+				Assert.Ignore($"Свойство {mapping.MappedClass}.{prop.Name} пропущено так как не записываемое, скорей всего это OneToOne связь которая будет удаляться основной ссылкой.");
+
 			Assert.That(related.DeleteItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name)
 						|| related.ClearItems.Exists(r => r.ObjectClass == mapping.MappedClass && r.PropertyName == prop.Name),
 				"Для свойства {0}.{1} не определены зависимости удаления в классе {2}",
