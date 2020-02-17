@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using QS.DomainModel.Entity;
@@ -43,7 +43,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public virtual TEntity Entity {
 			get { return entity; }
-			protected set {
+			set {
 				if (entity == value)
 					return;
 
@@ -66,6 +66,8 @@ namespace QS.ViewModels.Control.EEVM
 				Changed?.Invoke(this, new EntitySelectedEventArgs(value));
 			}
 		}
+
+		object IEntityEntryViewModel.Entity { get => Entity; set => Entity = (TEntity)value; }
 
 		bool isEditable = true;
 

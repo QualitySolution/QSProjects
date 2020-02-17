@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace QS.ViewModels.Control.EEVM
 {
 	public interface IEntityEntryViewModel : INotifyPropertyChanged
 	{
 		string EntityTitle { get; }
+		object Entity { get; set; }
 
 		bool SensetiveSelectButton { get; }
 		bool SensetiveCleanButton { get; }
