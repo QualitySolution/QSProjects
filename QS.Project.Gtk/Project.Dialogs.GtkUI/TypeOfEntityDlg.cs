@@ -5,7 +5,7 @@ using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Utilities.Text;
-using QS.Validation.GtkUI;
+using QS.Validation;
 
 namespace QS.Project.Dialogs.GtkUI
 {
