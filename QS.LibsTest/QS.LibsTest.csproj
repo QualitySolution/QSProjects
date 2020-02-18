@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -130,6 +131,8 @@
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
+    <Compile Include="ViewModel\Dialog\EntityDialogViewModelBaseTest.cs" />
+    <Compile Include="TestApp\Domain\ValidatedEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -162,6 +165,8 @@
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="Utilities\Text\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="ViewModel\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
