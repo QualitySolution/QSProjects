@@ -5,7 +5,7 @@ using Gtk;
 using NHibernate.Criterion;
 using NLog;
 using QS.Banks.Domain;
-using QS.Validation.GtkUI;
+using QS.Validation;
 using QSOrmProject;
 
 namespace QSBanks

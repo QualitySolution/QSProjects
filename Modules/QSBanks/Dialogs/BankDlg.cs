@@ -2,7 +2,7 @@
 using Gamma.GtkWidgets;
 using QS.Banks.Domain;
 using QS.DomainModel.UoW;
-using QS.Validation.GtkUI;
+using QS.Validation;
 
 namespace QSBanks
 {
