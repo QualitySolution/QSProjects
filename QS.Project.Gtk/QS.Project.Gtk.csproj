@@ -235,7 +235,6 @@
     <Compile Include="Validation\QSValidator.cs" />
     <Compile Include="Validation\ResultItem.cs" />
     <Compile Include="Validation\ResultsListDlg.cs" />
-    <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
