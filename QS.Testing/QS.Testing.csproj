@@ -58,6 +58,7 @@
       <HintPath>..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,10 +68,12 @@
     <Compile Include="Testing.DB\MonoSqliteDriver.cs" />
     <Compile Include="Testing.DB\InMemoryDBTestSessionProvider.cs" />
     <Compile Include="Testing.DB\InMemoryDBTestFixtureBase.cs" />
+    <Compile Include="ViewModels\EntityViewModelsTestsBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deletion.Testing\" />
     <Folder Include="Testing.DB\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
