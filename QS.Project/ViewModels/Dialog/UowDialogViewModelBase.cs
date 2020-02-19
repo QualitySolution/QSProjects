@@ -32,18 +32,19 @@ namespace QS.ViewModels.Dialog
 			set { manualChange = value; }
 		}
 
-		public virtual void Save()
+		public virtual bool Save()
 		{
 			if(UoW.RootObject != null)
 				UoW.Save();
 			else
 				UoW.Commit();
+			return true;
 		}
 
 		public virtual void SaveAndClose()
 		{
-			Save();
-			Close(false);
+			if(Save())
+				Close(false);
 		}
 
 		public virtual void Dispose()

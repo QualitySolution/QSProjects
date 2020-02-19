@@ -223,10 +223,8 @@
     <Compile Include="Project.Services\ICommonServices.cs" />
     <Compile Include="Project.Services\IPermissionService.cs" />
     <Compile Include="Project.Services\IUserService.cs" />
-    <Compile Include="Project.Services\IValidationService.cs" />
     <Compile Include="Project.Services\PermissionService.cs" />
     <Compile Include="Project.Services\UserService.cs" />
-    <Compile Include="Project.Services\ValidationService.cs" />
     <Compile Include="Project.Journal\SingleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalEntityConfig.cs" />
     <Compile Include="Project.Filter\FilterViewModelBase.cs" />
@@ -275,7 +273,6 @@
     <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
     <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
-    <Compile Include="Project.Services\ValidationServiceWithoutView.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveMessage.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveQuestion.cs" />

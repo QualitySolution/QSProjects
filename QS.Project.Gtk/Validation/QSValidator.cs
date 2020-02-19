@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Gtk;
 
-namespace QS.Validation.GtkUI
+namespace QS.Validation
 {
 	public class QSValidator<T> where T : class
 	{

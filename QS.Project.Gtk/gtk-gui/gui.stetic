@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -2403,7 +2403,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.Validation.GtkUI.ResultsListDlg" design-size="436 335">
+  <widget class="Gtk.Dialog" id="QS.Validation.ResultsListDlg" design-size="436 335">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Проверка корректности данных</property>
     <property name="Icon">stock:gtk-apply Menu</property>
@@ -2478,7 +2478,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Validation.GtkUI.ResultItem" design-size="291 24">
+  <widget class="Gtk.Bin" id="QS.Validation.ResultItem" design-size="254 24">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>

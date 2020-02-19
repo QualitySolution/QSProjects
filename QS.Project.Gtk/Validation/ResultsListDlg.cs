@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using QS.Validation;
 
-namespace QS.Validation.GtkUI
+namespace QS.Validation
 {
 	public partial class ResultsListDlg : Gtk.Dialog, IValidationView
 	{

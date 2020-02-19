@@ -231,13 +231,10 @@
     <Compile Include="ErrorReporting.GtkUI\ErrorMsgDlg.cs" />
     <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
-    <Compile Include="Validation.GtkUI\GtkValidationViewFactory.cs" />
-    <Compile Include="Validation.GtkUI\QSValidator.cs" />
-    <Compile Include="Validation.GtkUI\ResultItem.cs" />
-    <Compile Include="Validation.GtkUI\ResultsListDlg.cs" />
-    <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultsListDlg.cs" />
-    <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
-    <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
+    <Compile Include="Validation\GtkValidationViewFactory.cs" />
+    <Compile Include="Validation\QSValidator.cs" />
+    <Compile Include="Validation\ResultItem.cs" />
+    <Compile Include="Validation\ResultsListDlg.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
@@ -276,6 +273,8 @@
     <Compile Include="Views\Dialog\WindowSizeAttribute.cs" />
     <Compile Include="Views\Control\EntitySearch.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntitySearch.cs" />
+    <Compile Include="gtk-gui\QS.Validation.ResultsListDlg.cs" />
+    <Compile Include="gtk-gui\QS.Validation.ResultItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -295,7 +294,7 @@
     <Folder Include="Views.GtkUI\" />
     <Folder Include="ErrorReporting.GtkUI\" />
     <Folder Include="Project.Services.GtkUI\" />
-    <Folder Include="Validation.GtkUI\" />
+    <Folder Include="Validation\" />
     <Folder Include="Navigation\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />
