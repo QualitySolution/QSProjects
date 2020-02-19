@@ -1,16 +1,13 @@
-﻿using System;
-using Autofac;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
-using QS.Services;
 using QS.Test.TestApp.Domain;
 using QS.Validation;
 using QS.ViewModels.Dialog;
 
-namespace QS.Test.ViewModel.Dialog
+namespace QS.Test.ViewModels.Dialog
 {
 	[TestFixture(TestOf = typeof(EntityDialogViewModelBase<>))]
 	public class EntityDialogViewModelBaseTest
