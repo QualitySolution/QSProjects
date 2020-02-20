@@ -12,7 +12,7 @@ namespace QS.Tdi
 		private Widget journalWidget;
 		private Widget activeGlgWidget;
 		private ITdiJournal journal;
-		private ITdiDialog activeDialog;
+		private ITdiTab activeDialog;
 		private VBox boxSeparator;
 		private VSeparator separatorUpper, separatorLower;
 		private VBox dialogVBox;
@@ -112,7 +112,7 @@ namespace QS.Tdi
 			}
 		}
 
-		public ITdiDialog ActiveDialog {
+		public ITdiTab ActiveDialog {
 			get {
 				return activeDialog;
 			}
@@ -251,33 +251,35 @@ namespace QS.Tdi
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 
-		protected bool CloseDialog(ITdiDialog dlg, bool AskSave)
+		protected bool CloseDialog(ITdiTab tab, bool AskSave)
 		{
 			if(TabParent.CheckClosingSlaveTabs(this as ITdiTab))
 				return false;
 
-			if(AskSave && dlg.HasChanges) {
-				string Message = "Объект изменён. Сохранить изменения перед закрытием?";
-				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
-									   MessageType.Question,
-									   ButtonsType.YesNo,
-									   Message);
-				md.AddButton("Отмена", ResponseType.Cancel);
-				int result = md.Run();
-				md.Destroy();
-				if(result == (int)ResponseType.Cancel)
-					return false;
-				if(result == (int)ResponseType.Yes) {
-					if(!dlg.Save()) {
-						logger.Warn("Объект не сохранён. Отмена закрытия...");
+			if (tab is ITdiDialog dlg) {
+				if (AskSave && dlg.HasChanges) {
+					string Message = "Объект изменён. Сохранить изменения перед закрытием?";
+					MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
+										   MessageType.Question,
+										   ButtonsType.YesNo,
+										   Message);
+					md.AddButton("Отмена", ResponseType.Cancel);
+					int result = md.Run();
+					md.Destroy();
+					if (result == (int)ResponseType.Cancel)
 						return false;
+					if (result == (int)ResponseType.Yes) {
+						if (!dlg.Save()) {
+							logger.Warn("Объект не сохранён. Отмена закрытия...");
+							return false;
+						}
 					}
 				}
 			}
 			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
-			(TabParent as TdiNotebook)?.OnTabClosed(dlg);
+			(TabParent as TdiNotebook)?.OnTabClosed(tab);
 			OnSladerTabChanged();
 			return true;
 		}

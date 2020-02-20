@@ -33,9 +33,9 @@ namespace QS.Tdi
 				var w = MainNotebook.CurrentPageWidget;
 				if (w is TabVBox) {
 					var tab = (w as TabVBox).Tab;
-					if (tab is TdiSliderTab) {
-						var dialog = (tab as TdiSliderTab).ActiveDialog;
-						dialog.SaveAndClose ();
+					if (tab is TdiSliderTab slider) {
+						if(slider.ActiveDialog is ITdiDialog dialog)
+							dialog.SaveAndClose ();
 					}
 					if(tab is ITdiDialog)
 					{
