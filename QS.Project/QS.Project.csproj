@@ -336,6 +336,7 @@
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
+    <Compile Include="Navigation\ISlideableViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

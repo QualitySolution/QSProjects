@@ -133,6 +133,9 @@
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
     <Compile Include="ViewModels\Dialog\EntityDialogViewModelBaseTest.cs" />
     <Compile Include="TestApp\Domain\ValidatedEntity.cs" />
+    <Compile Include="TestApp\ViewModels\SlideableViewModel.cs" />
+    <Compile Include="TestApp\Views\EmptyDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />

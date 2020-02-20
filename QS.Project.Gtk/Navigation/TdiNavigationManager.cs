@@ -174,7 +174,7 @@ namespace QS.Navigation
 
 			var masterTab = (masterPage as ITdiPage)?.TdiTab;
 
-			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab) {
+			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab && (page.ViewModel as ISlideableViewModel)?.AlwaysNewPage != true) {
 				var slider = masterTab.TabParent as TdiSliderTab;
 				slider.AddTab((page as ITdiPage).TdiTab, masterTab);
 				(masterPage as IPageInternal).AddChildPage(page);

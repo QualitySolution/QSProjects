@@ -170,7 +170,7 @@ namespace QS.Tdi
 					activeDialog = value;
 					if(activeDialog != null)
 						ActiveDialog_TabNameChanged(this, new TdiTabNameChangedEventArgs(activeDialog.TabName));
-					ITdiTab currentTab = ActiveDialog != null ? ActiveDialog as ITdiTab : this as ITdiTab;
+					ITdiTab currentTab = ActiveDialog ?? this;
 					(TabParent as TdiNotebook).OnSliderTabSwitched(this, currentTab);
 
 					//I-867 Открыть "контрагенты" при создании нового заказа из журнала.
@@ -316,8 +316,8 @@ namespace QS.Tdi
 				return;
 			}
 
-			if(canSlided && afterTab == Journal && tab is ITdiDialog) {
-				ActiveDialog = (ITdiDialog)tab;
+			if(canSlided && afterTab == Journal) {
+				ActiveDialog = tab;
 				return;
 			}
 
