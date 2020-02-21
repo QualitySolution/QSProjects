@@ -15,7 +15,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder
+	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -62,6 +62,14 @@ namespace QS.Project.Journal
 		#endregion
 
 		public ILifetimeScope AutofacScope { get; set; }
+
+		#region ISlideableViewModel
+
+		bool ISlideableViewModel.UseSlider => UseSlider ?? false;
+
+		public bool AlwaysNewPage { get; protected set; }
+
+		#endregion
 
 		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
 		{

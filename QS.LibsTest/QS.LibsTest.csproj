@@ -131,8 +131,11 @@
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
-    <Compile Include="ViewModel\Dialog\EntityDialogViewModelBaseTest.cs" />
+    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBaseTest.cs" />
     <Compile Include="TestApp\Domain\ValidatedEntity.cs" />
+    <Compile Include="TestApp\ViewModels\SlideableViewModel.cs" />
+    <Compile Include="TestApp\Views\EmptyDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -165,8 +168,8 @@
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="Utilities\Text\" />
-    <Folder Include="ViewModel\" />
-    <Folder Include="ViewModel\Dialog\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

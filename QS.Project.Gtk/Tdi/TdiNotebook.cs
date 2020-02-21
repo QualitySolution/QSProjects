@@ -301,9 +301,10 @@ namespace QS.Tdi.Gtk
 
 			if(tab is ITdiDialog)
 				dlg = tab as ITdiDialog;
-			else if(tab is TdiSliderTab && (tab as TdiSliderTab).ActiveDialog != null)
-				dlg = (tab as TdiSliderTab).ActiveDialog;
 			else
+				dlg = (tab as TdiSliderTab)?.ActiveDialog as ITdiDialog;
+
+			if(dlg == null)
 				return true;
 
 			if(dlg.HasChanges) {
@@ -393,7 +394,7 @@ namespace QS.Tdi.Gtk
 		public bool CloseAllTabs()
 		{
 			if(_tabs.Exists(t => (t.TdiTab is ITdiDialog && (t.TdiTab as ITdiDialog).HasChanges) ||
-			  (t.TdiTab is TdiSliderTab && (t.TdiTab as TdiSliderTab).ActiveDialog != null && (t.TdiTab as TdiSliderTab).ActiveDialog.HasChanges))) {
+			  (t.TdiTab is TdiSliderTab && ((t.TdiTab as TdiSliderTab)?.ActiveDialog as ITdiDialog)?.HasChanges == true))) {
 				string Message = "Вы действительно хотите закрыть все вкладки? Все несохраненные изменения будут утеряны.";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Question,

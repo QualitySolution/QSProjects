@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using NSubstitute;
 using NUnit.Framework;
@@ -15,6 +16,7 @@ using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
 using QS.ViewModels.Dialog;
+using QS.Views.Resolve;
 
 namespace QS.Test.Navigation
 {
@@ -364,5 +366,234 @@ namespace QS.Test.Navigation
 
 			interactive.Received().ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
 		}
+
+		#region Тестирование ISlideableViewModel
+
+		[Test(Description = "Тест открытия вкладки журнала внутри слайдера, если мастер вкладка с UseSlider = true.")]
+		public void OpenViewModel_ISlideableViewModel_InSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			parameters["useSlider"] = false;
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+			var slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+			Assert.That(slider.Journal, Is.Not.Null);
+			Assert.That(slider.ActiveDialog, Is.Not.Null);
+		}
+
+		[Test(Description = "Тест открытия вкладки журнала внутри слайдера, если мастер вкладка с UseSlider = true. Доп тест в случае если вторая вкладака тоже UseSlider = true.")]
+		public void OpenViewModel_ISlideableViewModel_InSlider2Test()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			parameters["useSlider"] = true;
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+			var slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+			Assert.That(slider.Journal, Is.Not.Null);
+			Assert.That(slider.ActiveDialog, Is.Not.Null);
+		}
+
+		[Test(Description = "Проверка что вкладка журнала не должна открываться в слайдере при установленном у нее UseSlider = false.")]
+		public void OpenViewModel_ISlideableViewModel_DisableInJournalSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = false;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			parameters["useSlider"] = true;
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.Not.InstanceOf<TdiSliderTab>());
+		}
+
+		[Test(Description = "Проверка что вкладка диалога не открывается внутри слайдера если у нее AlwaysNewPage = true.")]
+		public void OpenViewModel_ISlideableViewModel_DisableInDialogSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			parameters["useSlider"] = false;
+			parameters["alwaysNewPage"] = true;
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
+
+		[Test(Description = "Проверка что вкладка диалога не открывается внутри слайдера если у нее AlwaysNewPage = true. Второй тест на случай если вторая вкадка тоже UseSlider = true")]
+		public void OpenViewModel_ISlideableViewModel_DisableInDialogSliderTest2()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			parameters["useSlider"] = true;
+			parameters["alwaysNewPage"] = true;
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
+
+		#endregion
+
+		#region Slave Mode
+
+		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке с слайдером.")]
+		public void OpenViewModel_AsSlaveOnSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			var slidePage2 = navigation.OpenViewModel<SlideableViewModel>(slidePage.ViewModel, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
+
+		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке с TDI слайдером.")]
+		public void OpenViewModelOnTdi_AsSlaveOnSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var journalTab = new EmptyJournalTab();
+			notebook.AddTab(journalTab);
+
+			var slidePage2 = navigation.OpenViewModelOnTdi<SlideableViewModel>(journalTab, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
+
+		#endregion
 	}
 }
