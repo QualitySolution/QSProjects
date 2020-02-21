@@ -40,10 +40,10 @@ namespace QS.Views.Control
 				if(viewModel != null)
 					ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-				buttonSelectEntity.Sensitive = ViewModel.SensetiveSelectButton;
-				buttonClear.Sensitive = ViewModel.SensetiveCleanButton;
-				buttonViewEntity.Sensitive = ViewModel.SensetiveViewButton;
-				entryObject.IsEditable = ViewModel.SensetiveAutoCompleteEntry;
+				buttonSelectEntity.Sensitive = ViewModel.SensitiveSelectButton;
+				buttonClear.Sensitive = ViewModel.SensitiveCleanButton;
+				buttonViewEntity.Sensitive = ViewModel.SensitiveViewButton;
+				entryObject.IsEditable = ViewModel.SensitiveAutoCompleteEntry;
 				InternalSetEntryText(ViewModel.EntityTitle);
 
 				viewModel.AutocompleteListSize = 20;
@@ -58,17 +58,17 @@ namespace QS.Views.Control
 		void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			switch (e.PropertyName) {
-				case nameof(IEntityEntryViewModel.SensetiveSelectButton):
-					buttonSelectEntity.Sensitive = ViewModel.SensetiveSelectButton;
+				case nameof(IEntityEntryViewModel.SensitiveSelectButton):
+					buttonSelectEntity.Sensitive = ViewModel.SensitiveSelectButton;
 					break;
-				case nameof(IEntityEntryViewModel.SensetiveCleanButton):
-					buttonClear.Sensitive = ViewModel.SensetiveCleanButton;
+				case nameof(IEntityEntryViewModel.SensitiveCleanButton):
+					buttonClear.Sensitive = ViewModel.SensitiveCleanButton;
 					break;
-				case nameof(IEntityEntryViewModel.SensetiveViewButton):
-					buttonViewEntity.Sensitive = ViewModel.SensetiveViewButton;
+				case nameof(IEntityEntryViewModel.SensitiveViewButton):
+					buttonViewEntity.Sensitive = ViewModel.SensitiveViewButton;
 					break;
-				case nameof(IEntityEntryViewModel.SensetiveAutoCompleteEntry):
-					entryObject.IsEditable = ViewModel.SensetiveAutoCompleteEntry;
+				case nameof(IEntityEntryViewModel.SensitiveAutoCompleteEntry):
+					entryObject.IsEditable = ViewModel.SensitiveAutoCompleteEntry;
 					break;
 				case nameof(IEntityEntryViewModel.EntityTitle):
 					InternalSetEntryText(ViewModel.EntityTitle);

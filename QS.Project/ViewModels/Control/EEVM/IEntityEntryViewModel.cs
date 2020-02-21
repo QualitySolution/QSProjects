@@ -17,10 +17,10 @@ namespace QS.ViewModels.Control.EEVM
 		#endregion
 
 		#region Доступность функций View
-		bool SensetiveSelectButton { get; }
-		bool SensetiveCleanButton { get; }
-		bool SensetiveAutoCompleteEntry { get; }
-		bool SensetiveViewButton { get; }
+		bool SensitiveSelectButton { get; }
+		bool SensitiveCleanButton { get; }
+		bool SensitiveAutoCompleteEntry { get; }
+		bool SensitiveViewButton { get; }
 		#endregion
 
 		#region Команды от View
