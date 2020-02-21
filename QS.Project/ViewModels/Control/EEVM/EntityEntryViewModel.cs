@@ -61,8 +61,8 @@ namespace QS.ViewModels.Control.EEVM
 
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(EntityTitle));
-				OnPropertyChanged(nameof(SensetiveCleanButton));
-				OnPropertyChanged(nameof(SensetiveViewButton));
+				OnPropertyChanged(nameof(SensitiveCleanButton));
+				OnPropertyChanged(nameof(SensitiveViewButton));
 				Changed?.Invoke(this, new EntitySelectedEventArgs(value));
 			}
 		}
@@ -75,9 +75,9 @@ namespace QS.ViewModels.Control.EEVM
 			get { return isEditable; }
 			set {
 				isEditable = value;
-				OnPropertyChanged(nameof(SensetiveSelectButton));
-				OnPropertyChanged(nameof(SensetiveCleanButton));
-				OnPropertyChanged(nameof(SensetiveAutoCompleteEntry));
+				OnPropertyChanged(nameof(SensitiveSelectButton));
+				OnPropertyChanged(nameof(SensitiveCleanButton));
+				OnPropertyChanged(nameof(SensitiveAutoCompleteEntry));
 			}
 		}
 
@@ -87,10 +87,10 @@ namespace QS.ViewModels.Control.EEVM
 
 		public string EntityTitle => Entity == null ? null : DomainHelper.GetObjectTilte(Entity);
 
-		public virtual bool SensetiveSelectButton => IsEditable && EntitySelector != null;
-		public virtual bool SensetiveCleanButton => IsEditable && Entity != null;
-		public virtual bool SensetiveAutoCompleteEntry => IsEditable && AutocompleteSelector != null;
-		public virtual bool SensetiveViewButton => DlgOpener != null && Entity != null;
+		public virtual bool SensitiveSelectButton => IsEditable && EntitySelector != null;
+		public virtual bool SensitiveCleanButton => IsEditable && Entity != null;
+		public virtual bool SensitiveAutoCompleteEntry => IsEditable && AutocompleteSelector != null;
+		public virtual bool SensitiveViewButton => DlgOpener != null && Entity != null;
 		#endregion
 
 		#region Выбор сущьности основным способом
@@ -101,7 +101,7 @@ namespace QS.ViewModels.Control.EEVM
 			set {
 				entitySelector = value;
 				EntitySelector.EntitySelected += EntitySelector_EntitySelected;
-				OnPropertyChanged(nameof(SensetiveSelectButton));
+				OnPropertyChanged(nameof(SensitiveSelectButton));
 			}
 		}
 
@@ -128,7 +128,7 @@ namespace QS.ViewModels.Control.EEVM
 			get => dlgOpener;
 			set {
 				dlgOpener = value;
-				OnPropertyChanged(nameof(SensetiveViewButton));
+				OnPropertyChanged(nameof(SensitiveViewButton));
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace QS.ViewModels.Control.EEVM
 			get => autocompleteSelector;
 			set {
 				autocompleteSelector = value;
-				OnPropertyChanged(nameof(SensetiveAutoCompleteEntry));
+				OnPropertyChanged(nameof(SensitiveAutoCompleteEntry));
 				autocompleteSelector.AutocompleteLoaded += AutocompleteSelector_AutocompleteLoaded;
 			}
 		}
