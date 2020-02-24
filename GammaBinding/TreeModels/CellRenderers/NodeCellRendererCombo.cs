@@ -27,9 +27,13 @@ namespace Gamma.GtkWidgets.Cells
 
 		public Func<TNode, TItem, bool> HideItemFunc { get; set; }
 
-		public bool IsDynamicallyFillList => HideItemFunc != null;
+		public bool IsDynamicallyFillList { get; set; }
 
-		public Action<TNode> FillComboListFunc;
+		public Func<TNode, IList<TItem>> ItemsListFunc;
+
+		public IList<TItem> Items { get; set; }
+
+		public string EmptyValueTitle { get; set; }
 
 		public NodeCellRendererCombo()
 		{
@@ -50,21 +54,37 @@ namespace Gamma.GtkWidgets.Cells
 			}
 		}
 
-		public void RefillComboList(object node)
-		{
-			if(!IsDynamicallyFillList)
-				return;
-
-			FillComboListFunc((TNode)node);
-		}
-
 		public override CellEditable StartEditing(Event evnt, Widget widget, string path, Rectangle background_area, Rectangle cell_area, CellRendererState flags)
 		{
 			if(IsDynamicallyFillList) {
 				object obj = MyTreeView.YTreeModel.NodeAtPath(new TreePath(path));
-				RefillComboList(obj);
+				UpdateComboList((TNode)obj);
 			}
 			return base.StartEditing(evnt, widget, path, background_area, cell_area, flags);
+		}
+
+		public void UpdateComboList(TNode node)
+		{
+			ListStore comboListStore = new ListStore(typeof(TItem), typeof(string));
+
+			if(EmptyValueTitle != null)
+				comboListStore.AppendValues(default(TItem), EmptyValueTitle);
+
+			var items = ItemsListFunc?.Invoke(node) ?? Items;
+
+			foreach(var item in items) {
+
+				if(HideItemFunc != null && HideItemFunc(node, item))
+					continue;
+
+				if(DisplayFunc == null)
+					comboListStore.AppendValues(item, item.ToString());
+				else
+					comboListStore.AppendValues(item, DisplayFunc(item));
+			}
+
+			TextColumn = (int)NodeCellRendererColumns.title;
+			Model = comboListStore;
 		}
 	}
 

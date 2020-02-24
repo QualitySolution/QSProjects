@@ -42,6 +42,8 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
+		#region FluentConfig
+
 		public ComboRendererMapping<TNode, TItem> Tag(object tag)
 		{
 			this.tag = tag;
@@ -88,6 +90,7 @@ namespace Gamma.ColumnConfig
 		/// <param name="func">Func</param>
 		public ComboRendererMapping<TNode, TItem> HideCondition(Func<TNode, TItem, bool> func)
 		{
+			cellRenderer.IsDynamicallyFillList = true;
 			cellRenderer.HideItemFunc = func;
 			return this;
 		}
@@ -99,33 +102,21 @@ namespace Gamma.ColumnConfig
 		/// <param name="emptyValueTitle">Title for empty value, if set combobox dispaly first item with default value of type(for class is null), and can user set empty value</param>
 		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList, string emptyValueTitle = null)
 		{
-			FillRendererByList (default(TNode), itemsList, emptyValueTitle);
-
-			cellRenderer.FillComboListFunc = node => FillRendererByList(node, itemsList, emptyValueTitle);
+			cellRenderer.EmptyValueTitle = emptyValueTitle;
+			cellRenderer.Items = itemsList;
+			cellRenderer.UpdateComboList(default(TNode));
 
 			return this;
 		}
 
-		private void FillRendererByList(TNode node, IList<TItem> itemsList, string emptyValueTitle)
+		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func)
 		{
-			ListStore comboListStore = new ListStore (typeof(TItem), typeof(string));
+			cellRenderer.IsDynamicallyFillList = true;
+			cellRenderer.ItemsListFunc = func;
 
-			if(emptyValueTitle != null)
-				comboListStore.AppendValues(default(TItem), emptyValueTitle);
-
-			foreach (var item in itemsList) {
-
-				if(cellRenderer.HideItemFunc != null && cellRenderer.HideItemFunc(node, item))
-					continue;
-
-				if(cellRenderer.DisplayFunc == null)
-					comboListStore.AppendValues (item, item.ToString ());
-				else
-					comboListStore.AppendValues (item, cellRenderer.DisplayFunc(item));
-			}
-
-			cellRenderer.TextColumn = (int)NodeCellRendererColumns.title;
-			cellRenderer.Model = comboListStore;
+			return this;
 		}
+
+		#endregion
 	}
 }

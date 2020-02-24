@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Utilities;
-using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -22,11 +22,9 @@ namespace Gamma.ColumnConfig
 
 			cellRenderer.DataPropertyInfo = prop;
 
-			FillRendererByEnum(default(TNode), prop.PropertyType, excludeItems);
-
-			cellRenderer.FillComboListFunc = node => FillRendererByEnum(node, prop.PropertyType, excludeItems);
-
 			cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle();
+			cellRenderer.Items = GetEnumItems(prop.PropertyType, excludeItems);
+			cellRenderer.UpdateComboList(default(TNode));
 		}
 
 		public EnumRendererMapping(ColumnMapping<TNode> column)
@@ -90,24 +88,18 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		private void FillRendererByEnum(TNode node, Type enumType, Enum[] excludeItems)
+		private IList<TItem> GetEnumItems(Type enumType, Enum[] excludeItems)
 		{
-			ListStore comboListStore = new ListStore(enumType, typeof(string));
-
+			var list = new List<TItem>();
 			foreach(FieldInfo info in enumType.GetFields()) {
 				if(info.Name.Equals("value__"))
 					continue;
 				if(excludeItems != null && excludeItems.Length > 0 && excludeItems.Contains(info.GetValue(null)))
 					continue;
-				if(cellRenderer.HideItemFunc != null && cellRenderer.HideItemFunc(node, (TItem)info.GetValue(null)))
-					continue;
 
-				string title = info.GetEnumTitle();
-				comboListStore.AppendValues(info.GetValue(null), title);
+				list.Add((TItem)info.GetValue(null));
 			}
-
-			cellRenderer.Model = comboListStore;
-			cellRenderer.TextColumn = (int)NodeCellRendererColumns.title;
+			return list;
 		}
 	}
 }
