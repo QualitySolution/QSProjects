@@ -160,6 +160,7 @@
     <EmbeddedResource Include="icons\radiobutton.png" />
     <EmbeddedResource Include="icons\button.png" />
     <EmbeddedResource Include="icons\colorbutton.png" />
+    <EmbeddedResource Include="icons\togglebutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">

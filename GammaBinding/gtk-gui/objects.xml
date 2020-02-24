@@ -92,7 +92,7 @@
     <itemgroups />
     <signals />
   </object>
-  <object type="Gamma.GtkWidgets.yToggleButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.radiobutton.png" base-type="Gtk.ToggleButton">
+  <object type="Gamma.GtkWidgets.yToggleButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.togglebutton.png" base-type="Gtk.ToggleButton">
     <itemgroups />
     <signals />
   </object>
