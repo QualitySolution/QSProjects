@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NHibernate;
-using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Journal.Search;
 using QS.Project.Services;
 using QS.Services;
 using QS.Utilities.Text;
@@ -52,10 +49,6 @@ namespace QS.Project.Journal
 			var names = typeof(TEntity).GetSubjectNames();
 			if(!String.IsNullOrEmpty(names?.NominativePlural))
 				TabName = names.NominativePlural.StringToTitleCase();
-
-			//Поиск
-			Search.OnSearch += Search_OnSearch;
-			searchHelper = new SearchHelper(Search);
 
 			UpdateOnChanges(typeof(TEntity));
 		}
@@ -116,26 +109,5 @@ namespace QS.Project.Journal
 			foreach(var node in nodes)
 				DeleteEntityService.DeleteEntity<TEntity>(DomainHelper.GetId(node));
 		}
-
-		#region Поиск
-
-		void Search_OnSearch(object sender, EventArgs e)
-		{
-			Refresh();
-		}
-
-		private readonly SearchHelper searchHelper;
-
-		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
-		}
-
-		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(propertiesExpr);
-		}
-
-		#endregion
 	}
 }

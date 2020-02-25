@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Autofac;
+using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
+using QS.Project.Journal.Search;
 using QS.Project.Search;
 using QS.Services;
 using QS.Tdi;
@@ -76,7 +79,10 @@ namespace QS.Project.Journal
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
 
+			//Поиск
 			Search = new SearchViewModel();
+			Search.OnSearch += Search_OnSearch;
+			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
 		}
@@ -130,5 +136,26 @@ namespace QS.Project.Journal
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			base.Dispose();
 		}
+
+		#region Поиск
+
+		void Search_OnSearch(object sender, EventArgs e)
+		{
+			Refresh();
+		}
+
+		private readonly SearchHelper searchHelper;
+
+		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
+		{
+			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
+		}
+
+		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
+		{
+			return searchHelper.GetSearchCriterion(propertiesExpr);
+		}
+
+		#endregion
 	}
 }
