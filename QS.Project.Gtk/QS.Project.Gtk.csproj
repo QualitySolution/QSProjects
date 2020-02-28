@@ -136,7 +136,7 @@
     <Compile Include="Tdi\TDIMain.cs" />
     <Compile Include="Dialog.GtkUI\TdiTabBase.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnTdiTabBase.cs" />
-    <Compile Include="Utilities.GtkUI\GtkHelper.cs" />
+    <Compile Include="Utilities\GtkHelper.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnDialogBase.cs" />
     <Compile Include="Dialog.GtkUI\SingleUowDialogBase.cs" />
     <Compile Include="Dialog.GtkUI\SingleUowTabBase.cs" />
@@ -281,7 +281,7 @@
     <Folder Include="Widgets.GtkUI\" />
     <Folder Include="Dialog.GtkUI\" />
     <Folder Include="Tdi\" />
-    <Folder Include="Utilities.GtkUI\" />
+    <Folder Include="Utilities\" />
     <Folder Include="Project.Dialogs.GtkUI\" />
     <Folder Include="RepresentationModel.GtkUI\" />
     <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />

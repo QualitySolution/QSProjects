@@ -2,7 +2,7 @@
 using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 using QS.ViewModels.Dialog;
 
 namespace QS.Views.Dialog

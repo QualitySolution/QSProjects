@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Gtk;
 using QS.Dialog;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 
 namespace QS.Widgets
 {
