@@ -11,7 +11,7 @@ using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 using QS.Utilities.Text;
 using QS.Views.GtkUI;
 using QSWidgetLib;

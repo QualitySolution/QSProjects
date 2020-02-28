@@ -5,7 +5,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 
 namespace QS.Tdi.Gtk
 {
