@@ -337,6 +337,8 @@
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
     <Compile Include="Navigation\ISlideableViewModel.cs" />
+    <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
+    <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

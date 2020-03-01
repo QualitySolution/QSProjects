@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using NHibernate;
-using NHibernate.Criterion;
 using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Journal.Search;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
@@ -28,7 +25,7 @@ namespace QS.Project.Journal
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
 
 		private IJournalFilter filter;
-		public override IJournalFilter Filter {
+		public IJournalFilter Filter {
 			get => filter;
 			protected set {
 				if(filter != null)
