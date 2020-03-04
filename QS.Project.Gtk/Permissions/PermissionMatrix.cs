@@ -67,7 +67,7 @@ namespace QS.Permissions
 			}
 			if(filterFuncs != null && filterFuncs.Any()) {
 				foreach(var func in filterFuncs) {
-					FilteredEntities = Entities.Where(x => func(x)).ToArray();
+					FilteredEntities = FilteredEntities.Where(x => func(x)).ToArray();
 				}
 			}
 			columnNames = FilteredEntities.Select(x => DomainHelper.GetObjectTilte(x)).ToArray();
