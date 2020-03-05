@@ -101,6 +101,7 @@
     <Compile Include="QSBugReporting\BugMessage.cs" />
     <Compile Include="QSBugReporting\IBugReportingService.cs" />
     <Compile Include="QSBugReporting\ReportWorker.cs" />
+    <Compile Include="ErrorReportingSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

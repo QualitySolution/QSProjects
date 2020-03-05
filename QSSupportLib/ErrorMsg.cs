@@ -15,14 +15,16 @@ namespace QSSupportLib
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		List<Exception> AppExceptions = new List<Exception> ();
 		string message;
+		bool reportSent = false;
 
 		protected string AppExceptionText
 		{
-			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));
-			}
+			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));}
 		}
 
-		public ErrorMsg (Window parent, Exception ex, string userMessage)
+		public IErrorReportingSettings ErrorReportingSettings { get; }
+
+		public ErrorMsg (Window parent, Exception ex, string userMessage, IErrorReportingSettings errorReportingSettings)
 		{
 			if (parent != null)
 				this.Parent = parent;
@@ -30,6 +32,7 @@ namespace QSSupportLib
 
 			AppExceptions.Add (ex);
 			message = userMessage;
+			ErrorReportingSettings = errorReportingSettings ?? new DefaultErrorReportingSettings();
 			labelUserMessage.LabelProp = userMessage;
 			labelUserMessage.Visible = userMessage != "";
 			OnExeptionTextUpdate ();
@@ -57,7 +60,7 @@ namespace QSSupportLib
 		{
 			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 			buttonSendReport.Sensitive =
-				(!String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) && (!MainSupport.SendErrorRequestEmail || regex.IsMatch(entryEmail.Text)));
+				(!String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) && (!ErrorReportingSettings.SendErrorRequestEmail || regex.IsMatch(entryEmail.Text)));
 			if (sender is Gtk.Entry) {
 				if (!regex.IsMatch (entryEmail.Text))
 					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
@@ -83,51 +86,92 @@ namespace QSSupportLib
 
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
-			var svc = QSBugReporting.ReportWorker.GetReportService ();
-			if(svc == null)
-			{
-				MessageDialogHelper.RunErrorDialog ("Не удалось установить соединение с сервером Quality Solution.");
+			string log = GetLog();
+			SendReport(log);
+		}
+
+		private void SendReport(string logContent)
+		{
+			var svc = QSBugReporting.ReportWorker.GetReportService();
+			if(svc == null) {
+				MessageDialogHelper.RunErrorDialog("Не удалось установить соединение с сервером Quality Solution.");
 				return;
 			}
-			string logFileName = GetLogFile ();
-			string logContent = String.Empty;
-			if(!String.IsNullOrWhiteSpace (logFileName))
-			{
-				try
-				{
-					logContent = System.IO.File.ReadAllText(logFileName);
-				}
-				catch(Exception ex)
-				{
-					logger.Error (ex, "Не смогли прочитать лог файл {0}, для отправки.");
-				}
-			}
-				
-			var result = svc.SubmitBugReport ( 
+
+			var result = svc.SubmitBugReport(
 				new QSBugReporting.BugMessage {
 					product = MainSupport.ProjectVerion.Product,
 					Edition = MainSupport.ProjectVerion.Edition,
-					version = MainSupport.ProjectVerion.Version.ToString (),
-					stackTrace = String.Format ("{0}{1}", 
-						String.IsNullOrWhiteSpace (message) ? String.Empty : String.Format ("Пользовательское сообщение:{0}\n", message),
+					version = MainSupport.ProjectVerion.Version.ToString(),
+					stackTrace = String.Format("{0}{1}",
+						String.IsNullOrWhiteSpace(message) ? String.Empty : String.Format("Пользовательское сообщение:{0}\n", message),
 						AppExceptionText),
 					description = textviewDescription.Buffer.Text,
 					email = entryEmail.Text,
 					userName = QSMain.User.Name,
 					logFile = logContent
-			});
+				});
 
-			if (result) {
-				this.Respond (ResponseType.Ok);
-			} else
-				MessageDialogHelper.RunWarningDialog ("Отправка сообщения не удалась.\n" +
-				"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
+			if(result) {
+				this.Respond(ResponseType.Ok);
+			} else {
+				MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
+					"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
+			}
+
 		}
-			
-		private string GetLogFile()
+
+		private string GetLogFilePath()
 		{
 			var fileTarget = LogManager.Configuration.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
 			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
+		}
+
+		private string GetShrotLog(int rowCount)
+		{
+			string logFileName = GetLogFilePath();
+			string logContent = String.Empty;
+
+			if(String.IsNullOrWhiteSpace(logFileName))
+				return String.Empty;
+				
+			try {
+				string[] logs = System.IO.File.ReadAllLines(logFileName);
+				if(logs.Length < rowCount)
+					rowCount = logs.Length;
+				logContent = string.Join(Environment.NewLine, logs.Skip(logs.Length - rowCount));
+			} catch(Exception ex) {
+				logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
+			}
+
+			return logContent;
+		}
+
+		private string GetLog()
+		{
+			string logFileName = GetLogFilePath();
+			string logContent = String.Empty;
+			if(!String.IsNullOrWhiteSpace(logFileName)) {
+				try {
+					logContent = System.IO.File.ReadAllText(logFileName);
+				} catch(Exception ex) {
+					logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
+				}
+			}
+
+			return logContent;
+		}
+
+		protected override void OnDestroyed()
+		{
+			if(ErrorReportingSettings.SendAutomatically && !reportSent) {
+				string log = ErrorReportingSettings.LogRowCount != null
+						? GetShrotLog(ErrorReportingSettings.LogRowCount.Value)
+						: GetLog();
+				SendReport(log);
+			}
+		
+			base.OnDestroyed();
 		}
 	}
 }

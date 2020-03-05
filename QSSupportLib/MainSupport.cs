@@ -10,9 +10,9 @@ namespace QSSupportLib
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		public static BaseParam BaseParameters;
 
-		public static bool SendErrorRequestEmail = true;
-
 		public static Action<Exception> HandleStaleObjectStateException;
+
+		public static IErrorReportingSettings ErrorReportingSettings { get; set; } = new DefaultErrorReportingSettings();
 
 		private static ErrorMsg currentCrashDlg;
 
@@ -88,7 +88,7 @@ namespace QSSupportLib
 			else
 			{
 				logger.Debug ("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsg (e.ParentWindow, e.Exception, e.UserMessage);
+				currentCrashDlg = new ErrorMsg (e.ParentWindow, e.Exception, e.UserMessage, ErrorReportingSettings);
 				currentCrashDlg.Run ();
 				currentCrashDlg.Destroy ();
 				currentCrashDlg = null;
