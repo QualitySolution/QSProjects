@@ -134,7 +134,7 @@ namespace QSSupportLib
 			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
 		}
 
-		private string GetShrotLog(int rowCount)
+		private string GetShortLog(int rowCount)
 		{
 			string logFileName = GetLogFilePath();
 			string logContent = String.Empty;
@@ -175,7 +175,7 @@ namespace QSSupportLib
 				if(String.IsNullOrWhiteSpace(textviewDescription.Buffer.Text))
 					textviewDescription.Buffer.Text = "Сообщение отправлено автоматически";
 				string log = errorReportingSettings.LogRowCount != null
-						? GetShrotLog(errorReportingSettings.LogRowCount.Value)
+						? GetShortLog(errorReportingSettings.LogRowCount.Value)
 						: GetLog();
 				SendReport(log);
 			}
