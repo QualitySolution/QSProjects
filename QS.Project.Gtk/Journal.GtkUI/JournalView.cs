@@ -67,9 +67,10 @@ namespace QS.Journal.GtkUI
 
 			//FIXME Этот код только для водовоза
 			var filterProp = ViewModel.GetType().GetProperty("Filter");
-			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.PropertyType == typeof(IJournalFilter)) {
-				var filter = filterProp.GetValue(ViewModel) as IJournalFilter;
-				Widget filterWidget = filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
+			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.PropertyType == typeof(IJournalFilter)
+				&& filterProp.GetValue(ViewModel) is IJournalFilter filter) 
+			{
+				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
