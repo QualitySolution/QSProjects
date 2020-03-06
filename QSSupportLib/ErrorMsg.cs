@@ -22,7 +22,7 @@ namespace QSSupportLib
 			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));}
 		}
 
-		public IErrorReportingSettings ErrorReportingSettings { get; }
+		private IErrorReportingSettings errorReportingSettings { get; }
 
 		public ErrorMsg (Window parent, Exception ex, string userMessage, IErrorReportingSettings errorReportingSettings)
 		{
@@ -32,7 +32,7 @@ namespace QSSupportLib
 
 			AppExceptions.Add (ex);
 			message = userMessage;
-			ErrorReportingSettings = errorReportingSettings ?? new DefaultErrorReportingSettings();
+			this.errorReportingSettings = errorReportingSettings ?? new DefaultErrorReportingSettings();
 			labelUserMessage.LabelProp = userMessage;
 			labelUserMessage.Visible = userMessage != "";
 			OnExeptionTextUpdate ();
@@ -60,7 +60,7 @@ namespace QSSupportLib
 		{
 			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 			buttonSendReport.Sensitive =
-				(!String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) && (!ErrorReportingSettings.SendErrorRequestEmail || regex.IsMatch(entryEmail.Text)));
+				(!String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) && (!errorReportingSettings.SendErrorRequestEmail || regex.IsMatch(entryEmail.Text)));
 			if (sender is Gtk.Entry) {
 				if (!regex.IsMatch (entryEmail.Text))
 					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
@@ -98,6 +98,12 @@ namespace QSSupportLib
 				return;
 			}
 
+			if(!String.IsNullOrWhiteSpace(errorReportingSettings.MessageInfo)) {
+				if(!String.IsNullOrWhiteSpace(textviewDescription.Buffer.Text))
+					textviewDescription.Buffer.Text += Environment.NewLine;
+				textviewDescription.Buffer.Text += errorReportingSettings.MessageInfo;
+			}
+
 			var result = svc.SubmitBugReport(
 				new QSBugReporting.BugMessage {
 					product = MainSupport.ProjectVerion.Product,
@@ -114,6 +120,7 @@ namespace QSSupportLib
 
 			if(result) {
 				this.Respond(ResponseType.Ok);
+				reportSent = true;
 			} else {
 				MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
 					"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
@@ -164,9 +171,11 @@ namespace QSSupportLib
 
 		protected override void OnDestroyed()
 		{
-			if(ErrorReportingSettings.SendAutomatically && !reportSent) {
-				string log = ErrorReportingSettings.LogRowCount != null
-						? GetShrotLog(ErrorReportingSettings.LogRowCount.Value)
+			if(errorReportingSettings.SendAutomatically && !reportSent) {
+				if(String.IsNullOrWhiteSpace(textviewDescription.Buffer.Text))
+					textviewDescription.Buffer.Text = "Сообщение отправлено автоматически";
+				string log = errorReportingSettings.LogRowCount != null
+						? GetShrotLog(errorReportingSettings.LogRowCount.Value)
 						: GetLog();
 				SendReport(log);
 			}

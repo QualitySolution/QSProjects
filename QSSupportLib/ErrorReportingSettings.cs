@@ -9,6 +9,11 @@ namespace QSSupportLib
 		bool SendAutomatically { get; }
 
 		/// <summary>
+		/// Дополнительная информация в сообщение об ошибке
+		/// </summary>
+		string MessageInfo { get; }
+
+		/// <summary>
 		/// Ограничение на кол-во строчек лога в сообщении об ошибке
 		/// </summary>
 		int? LogRowCount { get;}
@@ -26,5 +31,7 @@ namespace QSSupportLib
 		public int? LogRowCount => null;
 
 		public bool SendErrorRequestEmail => true;
+
+		public string MessageInfo => String.Empty;
 	}
 }
