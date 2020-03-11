@@ -35,10 +35,10 @@ namespace QS.ErrorReporting.GtkUI
 
 		public static Thread GuiThread;
 		public static IApplicationInfo ApplicationInfo;
+		public static IDataBaseInfo DataBaseInfo;
 		public static IInteractiveMessage InteractiveMessage;
 		public static UserBase User;
-		public static bool RequestEmail = true;
-		public static bool RequestDescription = true;
+		public static IErrorReportingSettings ErrorReportingSettings;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -88,7 +88,7 @@ namespace QS.ErrorReporting.GtkUI
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User);
+				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings, DataBaseInfo);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;

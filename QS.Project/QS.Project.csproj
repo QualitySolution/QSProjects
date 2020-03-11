@@ -10,7 +10,6 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -339,6 +338,7 @@
     <Compile Include="Navigation\ISlideableViewModel.cs" />
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
+    <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
