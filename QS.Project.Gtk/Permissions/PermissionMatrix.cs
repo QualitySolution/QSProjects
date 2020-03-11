@@ -13,12 +13,16 @@ namespace QS.Permissions
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public PermissionMatrix() { }
-
 		public int PermissionCount { get; private set; }
 		public int ColumnCount { get; private set; }
 
+		public PermissionMatrix()
+		{
+
+		}
+
 		string[] permissionNames;
+
 		public string[] PermissionNames {
 			get {
 				if(permissionNames == null)
@@ -28,6 +32,7 @@ namespace QS.Permissions
 		}
 
 		string[] columnNames;
+
 		public string[] ColumnNames {
 			get {
 				if(columnNames == null) {
@@ -38,19 +43,9 @@ namespace QS.Permissions
 			}
 		}
 
-		private int allColumnCount;
-		List<Func<TPerEntity, bool>> filterFuncs;
 		TPerEntity[] Entities;
-		TPerEntity[] FilteredEntities;
 		TPermissionEnum[] Permissions;
 		bool[,] allowed;
-
-		public void SetFilterFunctions(params Func<TPerEntity, bool>[] filterFuncs)
-		{
-			this.filterFuncs = new List<Func<TPerEntity, bool>>();
-			this.filterFuncs.AddRange(filterFuncs);
-			Init();
-		}
 
 		public void Init()
 		{
@@ -62,26 +57,20 @@ namespace QS.Permissions
 
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				var entities = uow.GetAll<TPerEntity>();
+				columnNames = entities.Select(x => DomainHelper.GetObjectTilte(x)).ToArray();
 				Entities = entities.ToArray();
-				FilteredEntities = Entities;
 			}
-			if(filterFuncs != null && filterFuncs.Any()) {
-				foreach(var func in filterFuncs) {
-					FilteredEntities = FilteredEntities.Where(x => func(x)).ToArray();
-				}
-			}
-			columnNames = FilteredEntities.Select(x => DomainHelper.GetObjectTilte(x)).ToArray();
-			allColumnCount = Entities.Length;
-			ColumnCount = FilteredEntities.Length;
+			ColumnCount = Entities.Length;
 
-			allowed = new bool[PermissionCount, allColumnCount];
+			allowed = new bool[PermissionCount, ColumnCount];
+
 		}
 
 		public void ParseJson(string json)
 		{
 			//Clear
 			for(uint row = 0; row < PermissionCount; row++)
-				for(uint col = 0; col < allColumnCount; col++)
+				for(uint col = 0; col < ColumnCount; col++)
 					allowed[row, col] = false;
 
 			if(String.IsNullOrWhiteSpace(json))
@@ -106,7 +95,7 @@ namespace QS.Permissions
 
 			for(uint row = 0; row < PermissionCount; row++) {
 				var ids = new List<int>();
-				for(uint col = 0; col < allColumnCount; col++)
+				for(uint col = 0; col < ColumnCount; col++)
 					if(allowed[row, col])
 						ids.Add(Entities[col].Id);
 
