@@ -50,8 +50,10 @@ namespace QS.ErrorReporting.GtkUI
 
 		private static ErrorMsgDlg currentCrashDlg;
 
-		public static void SubscribeToUnhadledExceptions()
+		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings)
 		{
+			ErrorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
 				ErrorMessage((Exception)e.ExceptionObject);

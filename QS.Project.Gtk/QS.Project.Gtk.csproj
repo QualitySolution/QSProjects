@@ -276,7 +276,6 @@
     <Compile Include="gtk-gui\QS.Validation.ResultsListDlg.cs" />
     <Compile Include="gtk-gui\QS.Validation.ResultItem.cs" />
     <Compile Include="Tdi\ViewModelTdiJournalTab.cs" />
-    <Compile Include="ErrorReporting.GtkUI\IErrorReportingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

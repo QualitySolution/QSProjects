@@ -339,6 +339,8 @@
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
+    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
