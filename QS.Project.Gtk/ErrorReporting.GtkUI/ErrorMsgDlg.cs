@@ -27,7 +27,9 @@ namespace QS.ErrorReporting.GtkUI
 
 		private IErrorReportingSettings errorReportingSettings { get; }
 
-		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings)
+		private IDataBaseInfo databaseInfo { get; }
+
+		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings, IDataBaseInfo dataBaseInfo = null)
 		{
 			this.Build ();
 
@@ -35,6 +37,7 @@ namespace QS.ErrorReporting.GtkUI
 			this.user = user;
 
 			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+			this.databaseInfo = dataBaseInfo;
 
 			AppExceptions.Add (exception);
 			OnExeptionTextUpdate ();
@@ -106,7 +109,7 @@ namespace QS.ErrorReporting.GtkUI
 					Product = application.ProductName,
 					Edition = application.Edition,
 					Version = application.Version.ToString(),
-					DBName = application.DBName,
+					DBName = databaseInfo?.Name ?? String.Empty,
 					StackTrace = AppExceptionText,
 					Description = textviewDescription.Buffer.Text,
 					Email = entryEmail.Text,

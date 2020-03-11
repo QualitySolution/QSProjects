@@ -7,6 +7,5 @@ namespace QS.Project.VersionControl
 		string Edition { get; }
 		Version Version { get; }
 		string SerialNumber { get; }
-		string DBName { get; }
 	}
 }
