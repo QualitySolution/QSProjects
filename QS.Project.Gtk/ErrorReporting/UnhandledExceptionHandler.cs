@@ -6,7 +6,7 @@ using QS.Dialog;
 using QS.Project.Domain;
 using QS.Project.VersionControl;
 
-namespace QS.ErrorReporting.GtkUI
+namespace QS.ErrorReporting
 {
 	/// <summary>
 	/// Делегат для перехвата и отдельной обработки некоторых ошибок.

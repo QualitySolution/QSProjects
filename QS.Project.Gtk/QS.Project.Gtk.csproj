@@ -227,9 +227,8 @@
     <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
-    <Compile Include="ErrorReporting.GtkUI\UnhandledExceptionHandler.cs" />
-    <Compile Include="ErrorReporting.GtkUI\ErrorMsgDlg.cs" />
-    <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
+    <Compile Include="ErrorReporting\UnhandledExceptionHandler.cs" />
+    <Compile Include="ErrorReporting\ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
     <Compile Include="Validation\GtkValidationViewFactory.cs" />
     <Compile Include="Validation\QSValidator.cs" />
@@ -276,6 +275,7 @@
     <Compile Include="gtk-gui\QS.Validation.ResultsListDlg.cs" />
     <Compile Include="gtk-gui\QS.Validation.ResultItem.cs" />
     <Compile Include="Tdi\ViewModelTdiJournalTab.cs" />
+    <Compile Include="gtk-gui\QS.ErrorReporting.ErrorMsgDlg.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -293,7 +293,7 @@
     <Folder Include="Project.Search.GtkUI\" />
     <Folder Include="Journal.GtkUI\" />
     <Folder Include="Views.GtkUI\" />
-    <Folder Include="ErrorReporting.GtkUI\" />
+    <Folder Include="ErrorReporting\" />
     <Folder Include="Project.Services.GtkUI\" />
     <Folder Include="Validation\" />
     <Folder Include="Navigation\" />
