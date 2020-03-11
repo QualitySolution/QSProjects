@@ -17,6 +17,7 @@ namespace QS.ErrorReporting.GtkUI
 		IApplicationInfo application;
 		UserBase user;
 		List<Exception> AppExceptions = new List<Exception> ();
+		bool reportSent;
 
 		protected string AppExceptionText
 		{
@@ -24,12 +25,16 @@ namespace QS.ErrorReporting.GtkUI
 			}
 		}
 
-		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user)
+		private IErrorReportingSettings errorReportingSettings { get; }
+
+		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings)
 		{
 			this.Build ();
 
 			this.application = application;
 			this.user = user;
+
+			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
 
 			AppExceptions.Add (exception);
 			OnExeptionTextUpdate ();
@@ -58,8 +63,8 @@ namespace QS.ErrorReporting.GtkUI
 		{
 			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 			buttonSendReport.Sensitive =
-				(!UnhandledExceptionHandler.RequestDescription || !String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) 
-				&& (!UnhandledExceptionHandler.RequestEmail || regex.IsMatch(entryEmail.Text)));
+				(!errorReportingSettings.RequestDescription || !String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) 
+				&& (!errorReportingSettings.RequestEmail || regex.IsMatch(entryEmail.Text)));
 			if (sender is Gtk.Entry) {
 				if (!regex.IsMatch (entryEmail.Text))
 					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
@@ -84,49 +89,92 @@ namespace QS.ErrorReporting.GtkUI
 
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
-			var svc = ReportWorker.GetReportService ();
-			if(svc == null)
-			{
-				MessageDialogHelper.RunErrorDialog ("Не удалось установить соединение с сервером Quality Solution.");
+			string log = GetLog();
+			SendReport(log, ErrorReportType.User);
+		}
+
+		private void SendReport(string logContent, ErrorReportType reportType)
+		{
+			var svc = ReportWorker.GetReportService();
+			if(svc == null) {
+				MessageDialogHelper.RunErrorDialog("Не удалось установить соединение с сервером Quality Solution.");
 				return;
 			}
-			string logFileName = GetLogFile ();
-			string logContent = String.Empty;
-			if(!String.IsNullOrWhiteSpace (logFileName))
-			{
-				try
-				{
-					logContent = System.IO.File.ReadAllText(logFileName);
-				}
-				catch(Exception ex)
-				{
-					logger.Error (ex, "Не смогли прочитать лог файл {0}, для отправки.");
-				}
-			}
-				
-			var result = svc.SubmitErrorReport ( 
+
+			var result = svc.SubmitErrorReport(
 				new ErrorReport {
 					Product = application.ProductName,
 					Edition = application.Edition,
-					Version = application.Version.ToString (),
+					Version = application.Version.ToString(),
+					DBName = application.DBName,
 					StackTrace = AppExceptionText,
 					Description = textviewDescription.Buffer.Text,
 					Email = entryEmail.Text,
 					UserName = user?.Name,
-					LogFile = logContent
-			});
+					LogFile = logContent,
+					ReportType = reportType
+				});
 
-			if (result) {
-				this.Respond (ResponseType.Ok);
-			} else
-				MessageDialogHelper.RunWarningDialog ("Отправка сообщения не удалась.\n" +
+			if(result) {
+				this.Respond(ResponseType.Ok);
+				reportSent = true;
+			} else {
+				MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
 				"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
+			}
 		}
-			
-		private string GetLogFile()
+
+		private string GetLogFilePath()
 		{
 			var fileTarget = LogManager.Configuration.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
 			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
+		}
+
+		private string GetShortLog(int rowCount)
+		{
+			string logFileName = GetLogFilePath();
+			string logContent = String.Empty;
+
+			if(String.IsNullOrWhiteSpace(logFileName))
+				return String.Empty;
+
+			try {
+				string[] logs = System.IO.File.ReadAllLines(logFileName);
+				if(logs.Length < rowCount)
+					rowCount = logs.Length;
+				logContent = string.Join(Environment.NewLine, logs.Skip(logs.Length - rowCount));
+			} catch(Exception ex) {
+				logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
+			}
+
+			return logContent;
+		}
+
+		private string GetLog()
+		{
+			string logFileName = GetLogFilePath();
+			string logContent = String.Empty;
+			if(!String.IsNullOrWhiteSpace(logFileName)) {
+				try {
+					logContent = System.IO.File.ReadAllText(logFileName);
+				} catch(Exception ex) {
+					logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
+				}
+			}
+
+			return logContent;
+		}
+
+		protected override void OnDestroyed()
+		{
+			if(errorReportingSettings.SendAutomatically && !reportSent) {
+				string log = errorReportingSettings.LogRowCount != null
+						? GetShortLog(errorReportingSettings.LogRowCount.Value)
+						: GetLog();
+				SendReport(log, ErrorReportType.Automatic);
+			}
+
+			base.OnDestroyed();
 		}
 	}
 }

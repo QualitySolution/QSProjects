@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace QS.ErrorReporting
@@ -30,6 +31,20 @@ namespace QS.ErrorReporting
 
 		[DataMember]
 		public string LogFile { get; set;}
+
+		[DataMember]
+		public string DBName { get; set; }
+
+		[DataMember]
+		public ErrorReportType ReportType { get; set; }
+	}
+
+	public enum ErrorReportType
+	{
+		[Display(Name = "Сообщение отправлено пользователем")]
+		User,
+		[Display(Name = "Сообщение отправлено автоматически")]
+		Automatic,
 	}
 }
 
