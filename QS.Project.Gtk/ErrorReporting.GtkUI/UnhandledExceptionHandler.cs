@@ -35,6 +35,7 @@ namespace QS.ErrorReporting.GtkUI
 
 		public static Thread GuiThread;
 		public static IApplicationInfo ApplicationInfo;
+		public static IDataBaseInfo DataBaseInfo;
 		public static IInteractiveMessage InteractiveMessage;
 		public static UserBase User;
 		public static IErrorReportingSettings ErrorReportingSettings;
@@ -87,7 +88,7 @@ namespace QS.ErrorReporting.GtkUI
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings);
+				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings, DataBaseInfo);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;
