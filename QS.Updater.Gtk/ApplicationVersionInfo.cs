@@ -14,5 +14,7 @@ namespace QS.Updater
 		public Version Version => MainSupport.ProjectVerion.Version;
 
 		public string SerialNumber => MainSupport.BaseParameters.SerialNumber;
+
+		public string DBName => String.Empty;
 	}
 }
