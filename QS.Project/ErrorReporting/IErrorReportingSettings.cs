@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QS.ErrorReporting.GtkUI
+namespace QS.ErrorReporting
 {
 	public interface IErrorReportingSettings
 	{
