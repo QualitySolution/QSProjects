@@ -112,6 +112,7 @@
     <Compile Include="Binding\Converters\NumbersTypeConverter.cs" />
     <Compile Include="Binding\Converters\UintToStringConverter.cs" />
     <Compile Include="GtkWidgets\yToggleButton.cs" />
+    <Compile Include="Binding\Converters\IdToStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
