@@ -23,6 +23,8 @@ namespace QS.Test.Navigation
 	[TestFixture(TestOf = typeof(TdiNavigationManager))]
 	public class TdiNavigationManagerTest
 	{
+		#region Тесты PageHash
+
 		[Test(Description = "Проверка что действительно не открываем повторно вкладку с тем же хешем.")]
 		public void OpenViewModel_DontCreateNewViewModel()
 		{
@@ -127,6 +129,91 @@ namespace QS.Test.Navigation
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
 		}
+
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую.")]
+		public void OpenViewModel_NotSwitchOnSlaveWithSameHashTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<EmptyDialogViewModel>().AsSelf();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var mainPage = navigation.OpenViewModel<EmptyDialogViewModel>(null);
+			var slavePage = navigation.OpenViewModel<SlideableViewModel>(mainPage.ViewModel, OpenPageOptions.AsSlave);
+			var sameSlavePage = navigation.OpenViewModel<SlideableViewModel>(null);
+
+			Assert.That(slavePage.ViewModel, Is.Not.EqualTo(sameSlavePage));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(3));
+		}
+
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
+		public void OpenViewModel_NotSwitchOnSlaveWithSameHash_OnNavigationWithTdiTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(SlideableView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<EmptyDlg>().AsSelf();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var mainPage = navigation.OpenTdiTab<EmptyDlg>(null);
+			var slavePage = navigation.OpenViewModelOnTdi<SlideableViewModel>(mainPage.TdiTab, OpenPageOptions.AsSlave);
+			var sameSlavePage = navigation.OpenViewModel<SlideableViewModel>(null);
+
+			Assert.That(slavePage.ViewModel, Is.Not.EqualTo(sameSlavePage));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(3));
+		}
+
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
+		public void OpenViewModel_NotSwitchOnSlaveWithSameHash_OnTdiTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(SlideableView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var tab = new EmptyDlg();
+			notebook.AddTab(tab);
+			var slavePage = navigation.OpenViewModelOnTdi<SlideableViewModel>(tab, OpenPageOptions.AsSlave);
+			var sameSlavePage = navigation.OpenViewModel<SlideableViewModel>(null);
+
+			Assert.That(slavePage.ViewModel, Is.Not.EqualTo(sameSlavePage));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(3));
+		}
+
+		#endregion
 
 		[Test(Description = "Проверяем что страницы удаляются при закрытии.")]
 		public void ForceClosePage_RemovePagesWhenClosedTest()
