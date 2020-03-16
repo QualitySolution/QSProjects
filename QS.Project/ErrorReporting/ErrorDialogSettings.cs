@@ -2,6 +2,7 @@
 {
 	public class ErrorDialogSettings : IErrorDialogSettings
 	{
-		//FIXME Необходимо реализовать
+		public bool RequestEmail => false;
+		public bool RequestDescription => true;
 	}
 }

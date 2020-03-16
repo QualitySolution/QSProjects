@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using QS.Project.Domain;
 
 namespace QS.ErrorReporting
 {
-	public interface IErrorReportingSettings
+	public interface IErrorReportingParameters
 	{
 		/// <summary>
 		/// Ограничение на кол-во строчек лога в сообщении об ошибке
@@ -31,9 +32,9 @@ namespace QS.ErrorReporting
 		UserBase User { get; set; }
 
 		/// <summary>
-		/// Сама ошибка
+		/// Ошибки
 		/// </summary>
-		Exception Exception { get; set; }
+		IList<Exception> Exceptions { get; set; }
 
 		/// <summary>
 		/// Разрешена автоматическая отправка ошибок

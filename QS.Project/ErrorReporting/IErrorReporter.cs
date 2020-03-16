@@ -1,12 +1,12 @@
-﻿using QS.Project.VersionControl;
-
-namespace QS.ErrorReporting
+﻿namespace QS.ErrorReporting
 {
 	public interface IErrorReporter
 	{
-		IDataBaseInfo DatabaseInfo { get; }
-		IApplicationInfo ApplicationInfo { get; }
+		string DatabaseName { get; }
+		string ProductName { get; }
+		string Version { get; }
+		string Edition { get; }
 
-		bool SendErrorReport(IErrorReportingSettings settings);
+		bool SendErrorReport(IErrorReportingParameters parameters);
 	}
 }

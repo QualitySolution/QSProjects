@@ -32,9 +32,10 @@ namespace QS.ErrorReporting
 
 		public static Thread GuiThread;
 		public static IInteractiveMessage InteractiveMessage;
-		public static IErrorReportingSettings ErrorReportingSettings;
+		public static IErrorReportingParametersFactory ErrorReportingParametersFactory;
 		public static IErrorDialogSettings ErrorDialogSettings;
 		public static IErrorReporter ErrorReporter;
+		public static IApplicationInfo ApplicationInfo;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -46,11 +47,17 @@ namespace QS.ErrorReporting
 
 		private static ErrorMsgDlg currentCrashDlg;
 
-		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings, IErrorDialogSettings errorDialogSettings, IErrorReporter errorReporter)
+		public static void SubscribeToUnhadledExceptions(
+			IErrorReportingParametersFactory errorReportingParametersFactory, 
+			IErrorDialogSettings errorDialogSettings, 
+			IErrorReporter errorReporter, 
+			IApplicationInfo applicationInfo
+		)
 		{
-			ErrorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+			ErrorReportingParametersFactory = errorReportingParametersFactory ?? throw new ArgumentNullException(nameof(errorReportingParametersFactory));
 			ErrorDialogSettings = errorDialogSettings ?? throw new ArgumentNullException(nameof(errorDialogSettings));
 			ErrorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
+			ApplicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
@@ -77,12 +84,13 @@ namespace QS.ErrorReporting
 
 		private static void RealErrorMessage(Exception exception)
 		{
-			ErrorReportingSettings.Exception = exception;
+			var parameters = ErrorReportingParametersFactory.CreateParameters();
+			parameters.Exceptions.Add(exception);
 
-			var appInfo = ErrorReporter.ApplicationInfo;
+			var appInfo = ApplicationInfo;
 	
 			foreach(var handler in CustomErrorHandlers) {
-				if(handler(exception, appInfo, ErrorReportingSettings.User, InteractiveMessage))
+				if(handler(exception, appInfo, parameters.User, InteractiveMessage))
 					return;
 			}
 			if(currentCrashDlg != null) {
@@ -91,7 +99,7 @@ namespace QS.ErrorReporting
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(ErrorReportingSettings, ErrorDialogSettings, ErrorReporter);
+				currentCrashDlg = new ErrorMsgDlg(parameters, ErrorDialogSettings, ErrorReporter);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;

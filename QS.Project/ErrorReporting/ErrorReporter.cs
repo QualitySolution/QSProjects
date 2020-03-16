@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using QS.Project.VersionControl;
 
 namespace QS.ErrorReporting
@@ -7,34 +8,40 @@ namespace QS.ErrorReporting
 	{
 		public ErrorReporter(IErrorReportingService sendService, IApplicationInfo applicationInfo, IDataBaseInfo dataBaseInfo = null, ILogService logService = null)
 		{
-			ApplicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
+			if(applicationInfo == null)
+				throw new ArgumentNullException(nameof(applicationInfo));
 			this.sendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
 			this.logService = logService;
-			DatabaseInfo = dataBaseInfo;
+			ProductName = applicationInfo.ProductName;
+			Version = applicationInfo.Version.ToString();
+			Edition = applicationInfo.Edition;
+			DatabaseName = dataBaseInfo.Name;
 		}
 
 		IErrorReportingService sendService;
 		ILogService logService;
 
-		public IDataBaseInfo DatabaseInfo { get; protected set; }
-		public IApplicationInfo ApplicationInfo { get; protected set; }
+		public string DatabaseName { get; }
+		public string ProductName { get; }
+		public string Version { get; }
+		public string Edition { get; }
 
-		public bool SendErrorReport(IErrorReportingSettings settings)
+		public bool SendErrorReport(IErrorReportingParameters parameters)
 		{
 			ErrorReport errorReport = new ErrorReport();
-			errorReport.DBName = DatabaseInfo?.Name;
-			errorReport.Edition = ApplicationInfo.Edition;
-			errorReport.Product = ApplicationInfo.ProductName;
-			errorReport.Version = ApplicationInfo.Version.ToString();
-			errorReport.Email = settings.Email;
-			errorReport.Description = settings.Description;
-			errorReport.ReportType = settings.ReportType;
-			errorReport.StackTrace = settings.Exception.StackTrace;
-			errorReport.UserName = settings.User.Name;
+			errorReport.DBName = DatabaseName;
+			errorReport.Edition = Edition;
+			errorReport.Product = ProductName;
+			errorReport.Version = Version;
+			errorReport.Email = parameters.Email;
+			errorReport.Description = parameters.Description;
+			errorReport.ReportType = parameters.ReportType;
+			errorReport.StackTrace = String.Join("\n Следующее исключение:\n", parameters.Exceptions.Select(x => x.ToString()));
+			errorReport.UserName = parameters.User?.Name;
 			if(logService != null) {
-				errorReport.LogFile = logService.GetLog(settings.LogRowCount);
+				errorReport.LogFile = logService.GetLog(parameters.LogRowCount);
 			}
-			if(!settings.CanSendAutomatically || String.IsNullOrWhiteSpace(errorReport.Product) || String.IsNullOrWhiteSpace(errorReport.StackTrace))
+			if(!parameters.CanSendAutomatically || String.IsNullOrWhiteSpace(errorReport.Product) || String.IsNullOrWhiteSpace(errorReport.StackTrace))
 				return false;
 			return sendService.SubmitErrorReport(errorReport);
 		}

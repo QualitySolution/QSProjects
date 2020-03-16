@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
@@ -11,26 +10,22 @@ namespace QS.ErrorReporting
 	public partial class ErrorMsgDlg : Gtk.Dialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		List<Exception> AppExceptions = new List<Exception> ();
 		bool reportSent;
 
-		protected string AppExceptionText
-		{
-			get { return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ())); }
-		}
+		protected string AppExceptionText => 
+			string.Join("\n Следующее исключение:\n", errorReportingParameters.Exceptions.Select(ex => ex.ToString()));
 
-		private IErrorReportingSettings errorReportingSettings { get; }
+		private IErrorReportingParameters errorReportingParameters { get; }
 		private IErrorDialogSettings errorDialogSettings { get; }
 		private IErrorReporter errorReporter { get; }
 
-		public ErrorMsgDlg (IErrorReportingSettings errorReportingSettings, IErrorDialogSettings errorDialogSettings, IErrorReporter errorReporter)
+		public ErrorMsgDlg (IErrorReportingParameters errorReportingSettings, IErrorDialogSettings errorDialogSettings, IErrorReporter errorReporter)
 		{
 			this.Build();
-			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+			this.errorReportingParameters = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
 			this.errorDialogSettings = errorDialogSettings ?? throw new ArgumentNullException(nameof(errorDialogSettings));
 			this.errorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
 
-			AppExceptions.Add(errorReportingSettings.Exception);
 			OnExeptionTextUpdate();
 			buttonSendReport.Sensitive = false;
 
@@ -44,7 +39,7 @@ namespace QS.ErrorReporting
 
 		public void AddAnotherException(Exception exception)
 		{
-			AppExceptions.Add(exception);
+			errorReportingParameters.Exceptions.Add(exception);
 			OnExeptionTextUpdate();
 		}
 
@@ -72,28 +67,30 @@ namespace QS.ErrorReporting
 			Clipboard clipboard = Clipboard.Get (Gdk.Atom.Intern ("CLIPBOARD", false));
 
 			string TextMsg = String.Format ("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {3}",
-								 errorReporter.ApplicationInfo.ProductName,
-								 errorReporter.ApplicationInfo.Version,
-								 errorReporter.ApplicationInfo.Edition,
+								 errorReporter.ProductName,
+								 errorReporter.Version,
+								 errorReporter.Edition,
 								 AppExceptionText
 			                 );
 			clipboard.Text = TextMsg;
-			clipboard.Store ();
+			clipboard.Store();
 		}
 
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
-			errorReportingSettings.ReportType = ErrorReportType.User;
-			errorReportingSettings.LogRowCount = null;
+			errorReportingParameters.ReportType = ErrorReportType.User;
+			errorReportingParameters.LogRowCount = null;
+			if(!String.IsNullOrWhiteSpace(errorReportingParameters.Description) && !String.IsNullOrWhiteSpace(textviewDescription.Buffer.Text))
+				errorReportingParameters.Description += "\n";
+			errorReportingParameters.Description += textviewDescription.Buffer.Text;
 			SendReport();
 		}
 
 		private void SendReport()
 		{
-			errorReportingSettings.Description = textviewDescription.Buffer.Text;
-			errorReportingSettings.Email = entryEmail.Text;
-			var res = errorReporter.SendErrorReport(errorReportingSettings);
-			if(res) {
+			errorReportingParameters.Email = entryEmail.Text;
+			var result = errorReporter.SendErrorReport(errorReportingParameters);
+			if(result) {
 				this.Respond(ResponseType.Ok);
 				reportSent = true;
 			} else {
@@ -104,7 +101,7 @@ namespace QS.ErrorReporting
 
 		protected override void OnDestroyed()
 		{
-			if(errorReportingSettings.CanSendAutomatically && !reportSent) {
+			if(errorReportingParameters.CanSendAutomatically && !reportSent) {
 				SendReport();
 			}
 			base.OnDestroyed();
