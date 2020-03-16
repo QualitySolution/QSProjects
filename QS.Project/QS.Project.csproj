@@ -341,6 +341,12 @@
     <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
     <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\ILogService.cs" />
+    <Compile Include="ErrorReporting\LogService.cs" />
+    <Compile Include="ErrorReporting\SingletonErrorReporter.cs" />
+    <Compile Include="ErrorReporting\IErrorReporter.cs" />
+    <Compile Include="ErrorReporting\IErrorDialogSettings.cs" />
+    <Compile Include="ErrorReporting\ErrorDialogSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

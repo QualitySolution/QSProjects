@@ -4,46 +4,37 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
-using NLog.Targets;
 using QS.Dialog.GtkUI;
-using QS.Project.Domain;
-using QS.Project.VersionControl;
 
 namespace QS.ErrorReporting
 {
 	public partial class ErrorMsgDlg : Gtk.Dialog
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		IApplicationInfo application;
-		UserBase user;
+		private static Logger logger = LogManager.GetCurrentClassLogger();
 		List<Exception> AppExceptions = new List<Exception> ();
 		bool reportSent;
 
 		protected string AppExceptionText
 		{
-			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));
-			}
+			get { return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ())); }
 		}
 
 		private IErrorReportingSettings errorReportingSettings { get; }
+		private IErrorDialogSettings errorDialogSettings { get; }
+		private IErrorReporter errorReporter { get; }
 
-		private IDataBaseInfo databaseInfo { get; }
-
-		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings, IDataBaseInfo dataBaseInfo = null)
+		public ErrorMsgDlg (IErrorReportingSettings errorReportingSettings, IErrorDialogSettings errorDialogSettings, IErrorReporter errorReporter)
 		{
-			this.Build ();
-
-			this.application = application;
-			this.user = user;
-
+			this.Build();
 			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
-			this.databaseInfo = dataBaseInfo;
+			this.errorDialogSettings = errorDialogSettings ?? throw new ArgumentNullException(nameof(errorDialogSettings));
+			this.errorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
 
-			AppExceptions.Add (exception);
-			OnExeptionTextUpdate ();
+			AppExceptions.Add(errorReportingSettings.Exception);
+			OnExeptionTextUpdate();
 			buttonSendReport.Sensitive = false;
 
-			entryEmail.Text = user?.Email;
+			entryEmail.Text = errorReportingSettings.User?.Email;
 
 			this.SetPosition (WindowPosition.CenterOnParent);
 
@@ -53,8 +44,8 @@ namespace QS.ErrorReporting
 
 		public void AddAnotherException(Exception exception)
 		{
-			AppExceptions.Add (exception);
-			OnExeptionTextUpdate ();
+			AppExceptions.Add(exception);
+			OnExeptionTextUpdate();
 		}
 
 		public void OnExeptionTextUpdate()
@@ -66,8 +57,8 @@ namespace QS.ErrorReporting
 		{
 			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 			buttonSendReport.Sensitive =
-				(!errorReportingSettings.RequestDescription || !String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) 
-				&& (!errorReportingSettings.RequestEmail || regex.IsMatch(entryEmail.Text)));
+				(!errorDialogSettings.RequestDescription || !String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) 
+				&& (!errorDialogSettings.RequestEmail || regex.IsMatch(entryEmail.Text)));
 			if (sender is Gtk.Entry) {
 				if (!regex.IsMatch (entryEmail.Text))
 					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
@@ -80,10 +71,10 @@ namespace QS.ErrorReporting
 		{
 			Clipboard clipboard = Clipboard.Get (Gdk.Atom.Intern ("CLIPBOARD", false));
 
-			string TextMsg = String.Format ("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {3}", 
-				                 application.ProductName, 
-				                 application.Version,
-				                 application.Edition,
+			string TextMsg = String.Format ("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {3}",
+								 errorReporter.ApplicationInfo.ProductName,
+								 errorReporter.ApplicationInfo.Version,
+								 errorReporter.ApplicationInfo.Edition,
 								 AppExceptionText
 			                 );
 			clipboard.Text = TextMsg;
@@ -92,33 +83,17 @@ namespace QS.ErrorReporting
 
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
-			string log = GetLog();
-			SendReport(log, ErrorReportType.User);
+			errorReportingSettings.ReportType = ErrorReportType.User;
+			errorReportingSettings.LogRowCount = null;
+			SendReport();
 		}
 
-		private void SendReport(string logContent, ErrorReportType reportType)
+		private void SendReport()
 		{
-			var svc = ReportWorker.GetReportService();
-			if(svc == null) {
-				MessageDialogHelper.RunErrorDialog("Не удалось установить соединение с сервером Quality Solution.");
-				return;
-			}
-
-			var result = svc.SubmitErrorReport(
-				new ErrorReport {
-					Product = application.ProductName,
-					Edition = application.Edition,
-					Version = application.Version.ToString(),
-					DBName = databaseInfo?.Name ?? String.Empty,
-					StackTrace = AppExceptionText,
-					Description = textviewDescription.Buffer.Text,
-					Email = entryEmail.Text,
-					UserName = user?.Name,
-					LogFile = logContent,
-					ReportType = reportType
-				});
-
-			if(result) {
+			errorReportingSettings.Description = textviewDescription.Buffer.Text;
+			errorReportingSettings.Email = entryEmail.Text;
+			var res = errorReporter.SendErrorReport(errorReportingSettings);
+			if(res) {
 				this.Respond(ResponseType.Ok);
 				reportSent = true;
 			} else {
@@ -127,56 +102,11 @@ namespace QS.ErrorReporting
 			}
 		}
 
-		private string GetLogFilePath()
-		{
-			var fileTarget = LogManager.Configuration.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
-			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
-		}
-
-		private string GetShortLog(int rowCount)
-		{
-			string logFileName = GetLogFilePath();
-			string logContent = String.Empty;
-
-			if(String.IsNullOrWhiteSpace(logFileName))
-				return String.Empty;
-
-			try {
-				string[] logs = System.IO.File.ReadAllLines(logFileName);
-				if(logs.Length < rowCount)
-					rowCount = logs.Length;
-				logContent = string.Join(Environment.NewLine, logs.Skip(logs.Length - rowCount));
-			} catch(Exception ex) {
-				logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
-			}
-
-			return logContent;
-		}
-
-		private string GetLog()
-		{
-			string logFileName = GetLogFilePath();
-			string logContent = String.Empty;
-			if(!String.IsNullOrWhiteSpace(logFileName)) {
-				try {
-					logContent = System.IO.File.ReadAllText(logFileName);
-				} catch(Exception ex) {
-					logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
-				}
-			}
-
-			return logContent;
-		}
-
 		protected override void OnDestroyed()
 		{
-			if(errorReportingSettings.SendAutomatically && !reportSent) {
-				string log = errorReportingSettings.LogRowCount != null
-						? GetShortLog(errorReportingSettings.LogRowCount.Value)
-						: GetLog();
-				SendReport(log, ErrorReportType.Automatic);
+			if(errorReportingSettings.CanSendAutomatically && !reportSent) {
+				SendReport();
 			}
-
 			base.OnDestroyed();
 		}
 	}

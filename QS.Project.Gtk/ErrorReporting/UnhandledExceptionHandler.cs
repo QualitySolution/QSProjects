@@ -15,17 +15,14 @@ namespace QS.ErrorReporting
 	/// вплодь до стандартного диалога отправки отчета об ошибке.
 	/// </summary>
 	public delegate bool CustomErrorHandler(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage);
-
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
 	/// Для работы необходимо предварительно сконфигурировать модуль
 	/// GuiThread - указать поток Gui, нужно для корректной обработки эксепшенов в других потоках.
-	/// ApplicationInfo - Передать класс возвращающий информация о програмамме
 	/// InteractiveMessage - Класс позволяющий обработчикам выдать сообщение пользователю.
-	/// Опционально:
-	/// User - Текущий пользователь
-	/// RequestEmail = true - требовать ввод E-mail
-	/// RequestDescription = true - требовать ввода описания
+	/// ErrorReportingSettings - Класс настроек и параметров, необходимых для отправки ошибок через IErrorReporer
+	/// ErrorDialogSettings - Класс настроек для диалога отправки ошибок
+	/// ErrorReporter - Класс для отправки сообщений об ошибках
 	/// </summary>
 	public static class UnhandledExceptionHandler
 	{
@@ -34,11 +31,10 @@ namespace QS.ErrorReporting
 		#region Внешние настройки модуля
 
 		public static Thread GuiThread;
-		public static IApplicationInfo ApplicationInfo;
-		public static IDataBaseInfo DataBaseInfo;
 		public static IInteractiveMessage InteractiveMessage;
-		public static UserBase User;
 		public static IErrorReportingSettings ErrorReportingSettings;
+		public static IErrorDialogSettings ErrorDialogSettings;
+		public static IErrorReporter ErrorReporter;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -50,9 +46,11 @@ namespace QS.ErrorReporting
 
 		private static ErrorMsgDlg currentCrashDlg;
 
-		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings)
+		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings, IErrorDialogSettings errorDialogSettings, IErrorReporter errorReporter)
 		{
 			ErrorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+			ErrorDialogSettings = errorDialogSettings ?? throw new ArgumentNullException(nameof(errorDialogSettings));
+			ErrorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
 
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
@@ -79,18 +77,21 @@ namespace QS.ErrorReporting
 
 		private static void RealErrorMessage(Exception exception)
 		{
+			ErrorReportingSettings.Exception = exception;
+
+			var appInfo = ErrorReporter.ApplicationInfo;
+	
 			foreach(var handler in CustomErrorHandlers) {
-				if(handler(exception, ApplicationInfo, User, InteractiveMessage))
+				if(handler(exception, appInfo, ErrorReportingSettings.User, InteractiveMessage))
 					return;
 			}
-
 			if(currentCrashDlg != null) {
 				logger.Debug("Добавляем исключение в уже созданное окно.");
 				currentCrashDlg.AddAnotherException(exception);
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings, DataBaseInfo);
+				currentCrashDlg = new ErrorMsgDlg(ErrorReportingSettings, ErrorDialogSettings, ErrorReporter);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;

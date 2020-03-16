@@ -1,26 +1,43 @@
 ﻿using System;
+using QS.Project.Domain;
+
 namespace QS.ErrorReporting
 {
 	public interface IErrorReportingSettings
 	{
 		/// <summary>
-		/// Отправлять сообщение об ошибке автоматически
-		/// </summary>
-		bool SendAutomatically { get; }
-
-		/// <summary>
 		/// Ограничение на кол-во строчек лога в сообщении об ошибке(отправленной автоматически)
 		/// </summary>
-		int? LogRowCount { get; }
+		int? LogRowCount { get; set; }
 
 		/// <summary>
-		/// Требовать почту для отправки сообщения
+		/// Описание для ошибки
 		/// </summary>
-		bool RequestEmail { get; }
+		string Description { get; set; }
 
 		/// <summary>
-		/// Требовать описания ошибки для отправки сообщения
+		/// E-mail отправляющего ошибку 
 		/// </summary>
-		bool RequestDescription { get; }
+		string Email { get; set; }
+
+		/// <summary>
+		/// Тип отправки ошибки
+		/// </summary>
+		ErrorReportType ReportType { get; set; }
+
+		/// <summary>
+		/// Пользователь, отправивший ошибку
+		/// </summary>
+		UserBase User { get; set; }
+
+		/// <summary>
+		/// Сама ошибка
+		/// </summary>
+		Exception Exception { get; set; }
+
+		/// <summary>
+		/// Разрешена автоматическая отправка ошибок
+		/// </summary>
+		bool CanSendAutomatically { get; set; }
 	}
 }

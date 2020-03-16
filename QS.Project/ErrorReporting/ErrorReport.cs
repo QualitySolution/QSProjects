@@ -9,28 +9,28 @@ namespace QS.ErrorReporting
 	public class ErrorReport
 	{
 		[DataMember]
-		public string Product { get; set;}
+		public string Product { get; set; }
 
 		[DataMember(IsRequired = false)]
-		public string Edition { get; set;}
+		public string Edition { get; set; }
 
 		[DataMember]
-		public string Version { get; set;}
+		public string Version { get; set; }
 
 		[DataMember]
-		public string StackTrace { get; set;}
+		public string StackTrace { get; set; }
 
 		[DataMember]
-		public string Description { get; set;}
+		public string Description { get; set; }
 
 		[DataMember]
-		public string Email { get; set;}
+		public string Email { get; set; }
 
 		[DataMember]
-		public string UserName { get; set;}
+		public string UserName { get; set; }
 
 		[DataMember]
-		public string LogFile { get; set;}
+		public string LogFile { get; set; }
 
 		[DataMember]
 		public string DBName { get; set; }

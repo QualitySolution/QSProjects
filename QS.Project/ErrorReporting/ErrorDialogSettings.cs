@@ -1,6 +1,6 @@
 ﻿namespace QS.ErrorReporting
 {
-	public class ErrorReportingSettings : IErrorReportingSettings
+	public class ErrorDialogSettings : IErrorDialogSettings
 	{
 		//FIXME Необходимо реализовать
 	}
