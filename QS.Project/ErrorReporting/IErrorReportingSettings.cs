@@ -6,7 +6,7 @@ namespace QS.ErrorReporting
 	public interface IErrorReportingSettings
 	{
 		/// <summary>
-		/// Ограничение на кол-во строчек лога в сообщении об ошибке(отправленной автоматически)
+		/// Ограничение на кол-во строчек лога в сообщении об ошибке
 		/// </summary>
 		int? LogRowCount { get; set; }
 
