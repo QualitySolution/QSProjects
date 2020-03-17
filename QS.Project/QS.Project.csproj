@@ -342,6 +342,7 @@
     <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
+    <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
