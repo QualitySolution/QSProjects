@@ -137,6 +137,9 @@
     <Compile Include="TestApp\Views\EmptyDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
     <Compile Include="ErrorReporting\ErrorReporterTest.cs" />
+    <Compile Include="TestApp\ViewModels\EmptyDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\SlideableView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using Gamma.Utilities;
 using NHibernate.Mapping;
 using NUnit.Framework;
+using QS.DomainModel.Entity;
 using QS.Project.DB;
 
 namespace QS.Deletion.Testing
@@ -367,6 +368,17 @@ namespace QS.Deletion.Testing
 			}
 
 			Assert.Fail($"В классе {info.ObjectClass}, нет свойств Title или Name. Что не позволяет при удалении красиво вывести пользователю информациию об удаляемом объекте.");
+		}
+
+		public virtual void DeleteRules_ExistAppellativeAttribute_Test(IDeleteRule info)
+		{
+			var names = info.ObjectClass.GetAttribute<AppellativeAttribute>(true);
+			if(names == null) {
+				Assert.Fail($"У класса {info.ObjectClass} нет атрибута AppellativeAttribute. Он позволит диалогу удаления назвать группу объектов.");
+			}
+
+			if(String.IsNullOrWhiteSpace(names.NominativePlural))
+				Assert.Fail($"У класса {info.ObjectClass} в атрибуте {nameof(AppellativeAttribute)} не заполнено поле {nameof(AppellativeAttribute.NominativePlural)}. Оно позволит диалогу удаления назвать группу объектов.");
 		}
 
 		#endregion

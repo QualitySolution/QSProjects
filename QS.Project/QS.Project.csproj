@@ -346,6 +346,9 @@
     <Compile Include="ErrorReporting\LogService.cs" />
     <Compile Include="ErrorReporting\IErrorReporter.cs" />
     <Compile Include="ErrorReporting\ErrorReporter.cs" />
+    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
+    <Compile Include="Project.DB\NhDataBaseInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
