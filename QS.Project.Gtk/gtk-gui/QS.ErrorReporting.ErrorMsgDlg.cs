@@ -16,11 +16,11 @@ namespace QS.ErrorReporting
 
 		private global::Gtk.Table table1;
 
-		private global::Gtk.Entry entryEmail;
+		private global::Gamma.GtkWidgets.yEntry entryEmail;
 
 		private global::Gtk.ScrolledWindow GtkScrolledWindow1;
 
-		private global::Gtk.TextView textviewDescription;
+		private global::Gamma.GtkWidgets.yTextView textviewDescription;
 
 		private global::Gtk.Label label2;
 
@@ -34,7 +34,7 @@ namespace QS.ErrorReporting
 
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
-		private global::Gtk.TextView textviewError;
+		private global::Gamma.GtkWidgets.yTextView textviewError;
 
 		private global::Gtk.Label GtkLabel1;
 
@@ -106,7 +106,7 @@ namespace QS.ErrorReporting
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.entryEmail = new global::Gtk.Entry();
+			this.entryEmail = new global::Gamma.GtkWidgets.yEntry();
 			this.entryEmail.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточне" +
 				"ния информации об ошибке, а также для оперативного информирования об устранении " +
 				"данной проблемы.";
@@ -126,7 +126,7 @@ namespace QS.ErrorReporting
 			this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
 			this.GtkScrolledWindow1.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow1.Gtk.Container+ContainerChild
-			this.textviewDescription = new global::Gtk.TextView();
+			this.textviewDescription = new global::Gamma.GtkWidgets.yTextView();
 			this.textviewDescription.TooltipMarkup = "В этом поле опишите последовательность действий, которая привела к возникновению " +
 				"ошибки.";
 			this.textviewDescription.CanFocus = true;
@@ -200,7 +200,7 @@ namespace QS.ErrorReporting
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			this.textviewError = new global::Gtk.TextView();
+			this.textviewError = new global::Gamma.GtkWidgets.yTextView();
 			this.textviewError.CanFocus = true;
 			this.textviewError.Name = "textviewError";
 			this.textviewError.Editable = false;

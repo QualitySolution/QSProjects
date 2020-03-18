@@ -31,11 +31,13 @@ namespace QS.ErrorReporting
 		#region Внешние настройки модуля
 
 		public static Thread GuiThread;
-		public static IInteractiveMessage InteractiveMessage;
-		public static IErrorReportingParametersFactory ErrorReportingParametersFactory;
-		public static IErrorDialogSettings ErrorDialogSettings;
-		public static IErrorReporter ErrorReporter;
+		public static IErrorReportingParameters ErrorReportingParameters;
+		public static Func<IErrorReportingService> SendServiceFactory;
 		public static IApplicationInfo ApplicationInfo;
+		public static IDataBaseInfo DataBaseInfo;
+		public static ILogService LogService;
+		public static IInteractiveMessage InteractiveMessage;
+		public static UserBase User;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -48,16 +50,18 @@ namespace QS.ErrorReporting
 		private static ErrorMsgDlg currentCrashDlg;
 
 		public static void SubscribeToUnhadledExceptions(
-			IErrorReportingParametersFactory errorReportingParametersFactory, 
-			IErrorDialogSettings errorDialogSettings, 
-			IErrorReporter errorReporter, 
-			IApplicationInfo applicationInfo
+			Func<IErrorReportingService> sendServiceFactory,
+			IErrorReportingParameters reportingParameters,
+			IApplicationInfo applicationInfo,
+			IInteractiveMessage interactive = null,
+			ILogService logService = null
 		)
 		{
-			ErrorReportingParametersFactory = errorReportingParametersFactory ?? throw new ArgumentNullException(nameof(errorReportingParametersFactory));
-			ErrorDialogSettings = errorDialogSettings ?? throw new ArgumentNullException(nameof(errorDialogSettings));
-			ErrorReporter = errorReporter ?? throw new ArgumentNullException(nameof(errorReporter));
+			SendServiceFactory = sendServiceFactory ?? throw new ArgumentNullException(nameof(sendServiceFactory));
+			ErrorReportingParameters = reportingParameters ?? throw new ArgumentNullException(nameof(reportingParameters));
 			ApplicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
+			InteractiveMessage = interactive;
+			LogService = logService;
 
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
@@ -84,22 +88,19 @@ namespace QS.ErrorReporting
 
 		private static void RealErrorMessage(Exception exception)
 		{
-			var parameters = ErrorReportingParametersFactory.CreateParameters();
-			parameters.Exceptions.Add(exception);
-
-			var appInfo = ApplicationInfo;
-	
 			foreach(var handler in CustomErrorHandlers) {
-				if(handler(exception, appInfo, parameters.User, InteractiveMessage))
+				if(handler(exception, ApplicationInfo, User, InteractiveMessage))
 					return;
 			}
 			if(currentCrashDlg != null) {
 				logger.Debug("Добавляем исключение в уже созданное окно.");
-				currentCrashDlg.AddAnotherException(exception);
+				currentCrashDlg.ErrorReporter.AddException(exception);
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(parameters, ErrorDialogSettings, ErrorReporter);
+				var reporter = new ErrorReporter(SendServiceFactory, ErrorReportingParameters, ApplicationInfo, InteractiveMessage, DataBaseInfo, User, LogService);
+				reporter.AddException(exception);
+				currentCrashDlg = new ErrorMsgDlg(reporter);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;

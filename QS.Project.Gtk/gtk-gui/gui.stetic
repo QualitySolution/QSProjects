@@ -2159,7 +2159,7 @@
                     <property name="RowSpacing">6</property>
                     <property name="ColumnSpacing">6</property>
                     <child>
-                      <widget class="Gtk.Entry" id="entryEmail">
+                      <widget class="Gamma.GtkWidgets.yEntry" id="entryEmail">
                         <property name="MemberName" />
                         <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
                         <property name="CanFocus">True</property>
@@ -2186,7 +2186,7 @@
                         <property name="MemberName" />
                         <property name="ShadowType">In</property>
                         <child>
-                          <widget class="Gtk.TextView" id="textviewDescription">
+                          <widget class="Gamma.GtkWidgets.yTextView" id="textviewDescription">
                             <property name="MemberName" />
                             <property name="Tooltip" translatable="yes">В этом поле опишите последовательность действий, которая привела к возникновению ошибки.</property>
                             <property name="CanFocus">True</property>
@@ -2301,7 +2301,7 @@
                         <property name="HeightRequest">203</property>
                         <property name="ShadowType">In</property>
                         <child>
-                          <widget class="Gtk.TextView" id="textviewError">
+                          <widget class="Gamma.GtkWidgets.yTextView" id="textviewError">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
                             <property name="ShowScrollbars">True</property>

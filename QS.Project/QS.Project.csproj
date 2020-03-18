@@ -10,6 +10,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -344,11 +345,7 @@
     <Compile Include="ErrorReporting\ILogService.cs" />
     <Compile Include="ErrorReporting\LogService.cs" />
     <Compile Include="ErrorReporting\IErrorReporter.cs" />
-    <Compile Include="ErrorReporting\IErrorDialogSettings.cs" />
-    <Compile Include="ErrorReporting\ErrorDialogSettings.cs" />
     <Compile Include="ErrorReporting\ErrorReporter.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingParametersFactory.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingParametersFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

@@ -136,6 +136,7 @@
     <Compile Include="TestApp\ViewModels\SlideableViewModel.cs" />
     <Compile Include="TestApp\Views\EmptyDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
+    <Compile Include="ErrorReporting\ErrorReporterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -170,6 +171,7 @@
     <Folder Include="Utilities\Text\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Dialog\" />
+    <Folder Include="ErrorReporting\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
