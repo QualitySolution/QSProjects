@@ -14,7 +14,7 @@ namespace QS.DomainModel.UoW
 				if(IsNew)
 					return true;
 				OpenTransaction();
-				return Session.IsDirty();
+				return Session.IsDirtyNoFlush();
 			}
 		}
 
