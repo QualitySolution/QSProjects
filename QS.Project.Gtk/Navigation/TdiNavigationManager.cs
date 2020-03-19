@@ -148,6 +148,9 @@ namespace QS.Navigation
 
 		private IPage FindOrCreateMasterPage(ITdiTab tab)
 		{
+			if (tab == null)
+				return null;
+
 			ITdiPage page = AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
 			if(page == null) {
 				page = new TdiTabPage(tab, null);
