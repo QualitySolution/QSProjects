@@ -340,15 +340,17 @@
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingParameters.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingParameters.cs" />
     <Compile Include="ErrorReporting\ILogService.cs" />
     <Compile Include="ErrorReporting\LogService.cs" />
     <Compile Include="ErrorReporting\IErrorReporter.cs" />
     <Compile Include="ErrorReporting\ErrorReporter.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
+    <Compile Include="ErrorReporting\ErrorInfo.cs" />
+    <Compile Include="ErrorReporting\ErrorMessageModelBase.cs" />
+    <Compile Include="ErrorReporting\ErrorMessageViewModel.cs" />
+    <Compile Include="ErrorReporting\IErrorMessageModelFactory.cs" />
+    <Compile Include="ErrorReporting\ErrorMessageModelFactory.cs" />
+    <Compile Include="ErrorReporting\ErrorMessageModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

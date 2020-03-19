@@ -11,7 +11,7 @@ namespace QS.ErrorReporting
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		public string GetLog(int? rowCount)
+		public string GetLog(int? rowCount = null)
 		{
 			string logFileName = GetLogFilePath();
 			string log = String.Empty;

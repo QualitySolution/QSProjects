@@ -228,7 +228,6 @@
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
     <Compile Include="ErrorReporting\UnhandledExceptionHandler.cs" />
-    <Compile Include="ErrorReporting\ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
     <Compile Include="Validation\GtkValidationViewFactory.cs" />
     <Compile Include="Validation\QSValidator.cs" />
@@ -275,7 +274,8 @@
     <Compile Include="gtk-gui\QS.Validation.ResultsListDlg.cs" />
     <Compile Include="gtk-gui\QS.Validation.ResultItem.cs" />
     <Compile Include="Tdi\ViewModelTdiJournalTab.cs" />
-    <Compile Include="gtk-gui\QS.ErrorReporting.ErrorMsgDlg.cs" />
+    <Compile Include="ErrorReporting\ErrorMessageView.cs" />
+    <Compile Include="gtk-gui\QS.ErrorReporting.ErrorMessageView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

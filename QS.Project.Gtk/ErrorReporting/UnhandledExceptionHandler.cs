@@ -31,13 +31,12 @@ namespace QS.ErrorReporting
 		#region Внешние настройки модуля
 
 		public static Thread GuiThread;
-		public static IErrorReportingParameters ErrorReportingParameters;
-		public static Func<IErrorReportingService> SendServiceFactory;
 		public static IApplicationInfo ApplicationInfo;
 		public static IDataBaseInfo DataBaseInfo;
-		public static ILogService LogService;
 		public static IInteractiveMessage InteractiveMessage;
 		public static UserBase User;
+
+		private static IErrorMessageModelFactory errorMessageModelFactory;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -47,21 +46,15 @@ namespace QS.ErrorReporting
 
 		#endregion
 
-		private static ErrorMsgDlg currentCrashDlg;
-
 		public static void SubscribeToUnhadledExceptions(
-			Func<IErrorReportingService> sendServiceFactory,
-			IErrorReportingParameters reportingParameters,
+			IErrorMessageModelFactory errorMessageModelFactory,
 			IApplicationInfo applicationInfo,
-			IInteractiveMessage interactive = null,
-			ILogService logService = null
+			IInteractiveMessage interactive
 		)
 		{
-			SendServiceFactory = sendServiceFactory ?? throw new ArgumentNullException(nameof(sendServiceFactory));
-			ErrorReportingParameters = reportingParameters ?? throw new ArgumentNullException(nameof(reportingParameters));
+			UnhandledExceptionHandler.errorMessageModelFactory = errorMessageModelFactory ?? throw new ArgumentNullException(nameof(errorMessageModelFactory));
 			ApplicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
-			InteractiveMessage = interactive;
-			LogService = logService;
+			InteractiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
@@ -86,24 +79,27 @@ namespace QS.ErrorReporting
 			}
 		}
 
+		private static ErrorMessageViewModel errorMessageViewModel;
 		private static void RealErrorMessage(Exception exception)
 		{
 			foreach(var handler in CustomErrorHandlers) {
 				if(handler(exception, ApplicationInfo, User, InteractiveMessage))
 					return;
 			}
-			if(currentCrashDlg != null) {
+			if(errorMessageViewModel != null) {
 				logger.Debug("Добавляем исключение в уже созданное окно.");
-				currentCrashDlg.ErrorReporter.AddException(exception);
+				errorMessageViewModel.AddException(exception);
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				var reporter = new ErrorReporter(SendServiceFactory, ErrorReportingParameters, ApplicationInfo, InteractiveMessage, DataBaseInfo, User, LogService);
-				reporter.AddException(exception);
-				currentCrashDlg = new ErrorMsgDlg(reporter);
-				currentCrashDlg.Run();
-				currentCrashDlg.Destroy();
-				currentCrashDlg = null;
+				errorMessageViewModel = new ErrorMessageViewModel(errorMessageModelFactory.GetModel(), InteractiveMessage);
+				errorMessageViewModel.AddException(exception);
+
+				var errView = new ErrorMessageView(errorMessageViewModel);
+				errView.ShowAll();
+				errView.Run();
+				errView.Destroy();
+				errorMessageViewModel = null;
 				logger.Debug("Окно отправки отчета, уничтожено.");
 			}
 		}

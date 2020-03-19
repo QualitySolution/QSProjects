@@ -1,95 +1,98 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using QS.Dialog;
-using QS.DomainModel.Entity;
-using QS.Project.Domain;
+using QS.ErrorReporting;
 using QS.Project.VersionControl;
 
-namespace QS.ErrorReporting
+namespace Vodovoz.Tools
 {
-	public class ErrorReporter : PropertyChangedBase, IErrorReporter
+	public class ErrorReporter : IErrorReporter
 	{
-		bool reportSent;
-
-		private readonly IErrorReportingParameters reportingParameters;
-		private readonly Func<IErrorReportingService> sendServiceFactory;
-		private readonly IApplicationInfo applicationInfo;
-		private readonly IInteractiveMessage interactive;
-		ILogService logService;
-
-		public ErrorReporter(Func<IErrorReportingService> sendServiceFactory, IErrorReportingParameters reportingParameters, IApplicationInfo applicationInfo, IInteractiveMessage interactive, IDataBaseInfo dataBaseInfo = null, UserBase user = null, ILogService logService = null)
+		public ErrorReporter(
+			IErrorReportingService sendService,
+			IApplicationInfo applicationInfo,
+			ILogService logService = null,
+			IDataBaseInfo dataBaseInfo = null
+		)
 		{
-			this.sendServiceFactory = sendServiceFactory ?? throw new ArgumentNullException(nameof(sendServiceFactory));
-			this.reportingParameters = reportingParameters ?? throw new ArgumentNullException(nameof(reportingParameters));
-			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
-			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
-			DataBaseInfo = dataBaseInfo;
-			User = user;
+			this.sendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
+			if(applicationInfo == null)
+				throw new ArgumentNullException(nameof(applicationInfo));
+			Edition = applicationInfo.Edition;
+			Version = applicationInfo.Version.ToString();
+			ProductName = applicationInfo.ProductName;
+			DatabaseName = dataBaseInfo?.Name;
 			this.logService = logService;
+			autoSendLogRowCount = 300;
 		}
 
-		public string DatabaseName => DataBaseInfo?.Name;
-		public string ProductName => applicationInfo.ProductName;
-		public string Version => applicationInfo.Version?.ToString();
-		public string Edition => applicationInfo.Edition;
+		ILogService logService;
+		int? autoSendLogRowCount;
+		IErrorReportingService sendService;
 
-		private IList<Exception> Exceptions = new List<Exception>();
+		public string DatabaseName { get; protected set; }
+		public string ProductName { get; protected set; }
+		public string Version { get; protected set; }
+		public string Edition { get; protected set; }
 
-		public string ExceptionText =>
-			string.Join("\n Следующее исключение:\n", Exceptions.Select(ex => ex.ToString()));
+		public bool CanSendAutomatically => true;
 
-		public string Description { get; set ; }
-		public string Email { get; set; }
-
-		public bool CanSendReport => (!reportingParameters.RequestDescription || !String.IsNullOrWhiteSpace(Description))
-				&& (!reportingParameters.RequestEmail || EmailIsValid);
-
-		public bool EmailIsValid => new Regex(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").IsMatch(Email);
-
-		public IDataBaseInfo DataBaseInfo { get; set; }
-		public UserBase User { get; set; }
-
-		public bool SendErrorReport(ErrorReportType reportType)
+		public bool SendErrorReport(ErrorInfo errorInfo)
 		{
-			if (reportType == ErrorReportType.Automatic && !reportingParameters.CanSendAutomatically || reportSent)
+			if(!Validate(errorInfo))
 				return false;
 
-			if (reportType == ErrorReportType.User && !CanSendReport)
+			var errorReport = PrepareReportInfo(errorInfo);
+			return sendService.SubmitErrorReport(errorReport);
+		}
+
+		public bool SendErrorReport(ErrorInfo errorInfo, int logRowsCount)
+		{
+			if(!Validate(errorInfo))
 				return false;
 
-			if (String.IsNullOrWhiteSpace(ProductName) || String.IsNullOrWhiteSpace(ExceptionText))
+			var errorReport = PrepareReportInfo(errorInfo, logRowsCount);
+			return sendService.SubmitErrorReport(errorReport);
+		}
+
+		#region Helpers
+
+		private bool Validate(ErrorInfo errorInfo)
+		{
+			if(errorInfo.ErrorReportType == ErrorReportType.Automatic && !CanSendAutomatically)
 				return false;
 
-			var sendService = sendServiceFactory();
-			if (sendService == null) {
-				interactive.ShowMessage(ImportanceLevel.Error, "Не удалось установить соединение с сервером Quality Solution.");
-				return false;
-			}
+			return true;
+		}
 
+		private ErrorReport PrepareReportInfo(ErrorInfo errorInfo, int? logRowOverrideCount = null)
+		{
 			ErrorReport errorReport = new ErrorReport();
 			errorReport.DBName = DatabaseName;
 			errorReport.Edition = Edition;
 			errorReport.Product = ProductName;
 			errorReport.Version = Version;
-			errorReport.Email = Email;
-			errorReport.Description = Description;
-			errorReport.ReportType = reportType;
-			errorReport.StackTrace = ExceptionText;
-			errorReport.UserName = User?.Name;
+			errorReport.Email = errorInfo.Email;
+			errorReport.Description = errorInfo.Description;
+			errorReport.ReportType = errorInfo.ErrorReportType;
+			errorReport.StackTrace = GetExceptionText(errorInfo);
+			errorReport.UserName = errorInfo.User?.Name;
+
 			if(logService != null) {
-				errorReport.LogFile = logService.GetLog(reportType == ErrorReportType.Automatic ? reportingParameters.LogRowCount : null);
+				if(logRowOverrideCount != null)
+					errorReport.LogFile = logService.GetLog(logRowOverrideCount);
+				else {
+					if(errorInfo.ErrorReportType == ErrorReportType.Automatic)
+						errorReport.LogFile = logService.GetLog(autoSendLogRowCount);
+					else
+						errorReport.LogFile = logService.GetLog();
+				}
 			}
-
-			reportSent = sendService.SubmitErrorReport(errorReport);
-			return reportSent;
+			return errorReport;
 		}
 
-		public void AddException(Exception exception)
-		{
-			Exceptions.Add(exception);
-			OnPropertyChanged(nameof(ExceptionText));
-		}
+		public string GetExceptionText(ErrorInfo errorInfo) =>
+			string.Join("\n Следующее исключение:\n", errorInfo?.Exceptions?.Select(ex => ex.ToString()));
+
+		#endregion
 	}
 }
