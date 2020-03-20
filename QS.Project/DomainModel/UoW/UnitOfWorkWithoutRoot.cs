@@ -7,7 +7,7 @@ namespace QS.DomainModel.UoW
 	{
 		public object RootObject => null;
 
-		public bool HasChanges => Session.IsDirty();
+		public bool HasChanges => Session.IsDirtyNoFlush();
 
 		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{

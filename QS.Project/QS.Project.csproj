@@ -350,6 +350,7 @@
     <Compile Include="ErrorReporting\IErrorMessageModelFactory.cs" />
     <Compile Include="ErrorReporting\ErrorMessageModelFactory.cs" />
     <Compile Include="ErrorReporting\ErrorMessageModel.cs" />
+    <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
