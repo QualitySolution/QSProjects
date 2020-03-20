@@ -18,8 +18,9 @@ namespace QS.ErrorReporting
 		public abstract bool CanSendErrorReportAutomatically { get; }
 		public abstract string ExceptionText { get; }
 		public abstract string ErrorData { get; }
-		public abstract bool SendErrorReport();
+		public abstract void SendErrorReport();
 
+		public virtual bool ReportSent { get; protected set; } = false;
 		public virtual bool IsEmailValid { get; } = true;
 
 		private string email;
@@ -44,6 +45,13 @@ namespace QS.ErrorReporting
 		public virtual ErrorReportType ErrorReportType {
 			get => errorReportType;
 			set { SetField(ref errorReportType, value, () => ErrorReportType); }
+		}
+
+		protected virtual void AddDescription(string description)
+		{
+			if(!String.IsNullOrWhiteSpace(description) && !String.IsNullOrWhiteSpace(Description))
+				Description += "\n";
+			Description += description;
 		}
 	}
 }

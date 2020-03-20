@@ -12,7 +12,7 @@ namespace QS.ErrorReporting
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.errorMessageModel = errorMessageModel ?? throw new ArgumentNullException(nameof(errorMessageModel));
 			errorMessageModel.PropertyChanged += (sender, e) => {
-				OnPropertyChanged(nameof(CanSendErrorReport));
+				OnPropertyChanged(nameof(CanSendErrorReportManually));
 				OnPropertyChanged(nameof(IsEmailValid));
 			};
 			CreateSendReportCommand();
@@ -23,7 +23,7 @@ namespace QS.ErrorReporting
 
 		public string ErrorData => errorMessageModel.ErrorData;
 		public string ExceptionText => errorMessageModel.ExceptionText;
-		public bool CanSendErrorReport => errorMessageModel.CanSendErrorReportManually;
+		public bool CanSendErrorReportManually => errorMessageModel.CanSendErrorReportManually;
 		public bool IsEmailValid => errorMessageModel.IsEmailValid;
 		public bool ReportSent { get; protected set; }
 
@@ -61,20 +61,17 @@ namespace QS.ErrorReporting
 		{
 			SendReportCommand = new DelegateCommand<ErrorReportType>(
 				(errorReportType) => {
-					if(ReportSent)
-						return;
 					errorMessageModel.ErrorReportType = errorReportType;
+					errorMessageModel.SendErrorReport();
 
-					var result = errorMessageModel.SendErrorReport();
-					if(result)
-						ReportSent = true;
-					else
+					if(!errorMessageModel.ReportSent && errorReportType != ErrorReportType.Automatic){
 						interactiveMessage.ShowMessage(ImportanceLevel.Warning, "Отправка сообщения не удалась.\n" +
 							"Проверьте ваше интернет соединение и повторите попытку. " +
 							"Если отправка неудастся возможно имеются проблемы на стороне сервера."
 						);
+					}
 				},
-				(errorReportType) => CanSendErrorReport
+				(errorReportType) => errorReportType == ErrorReportType.Automatic || CanSendErrorReportManually
 			);
 		}
 	}

@@ -345,7 +345,6 @@
     <Compile Include="ErrorReporting\IErrorReporter.cs" />
     <Compile Include="ErrorReporting\ErrorReporter.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorInfo.cs" />
     <Compile Include="ErrorReporting\ErrorMessageModelBase.cs" />
     <Compile Include="ErrorReporting\ErrorMessageViewModel.cs" />
     <Compile Include="ErrorReporting\IErrorMessageModelFactory.cs" />

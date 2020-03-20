@@ -25,7 +25,7 @@ namespace QS.ErrorReporting
 			textviewDescription.Binding.AddBinding(ViewModel, vm => vm.Description, w => w.Buffer.Text).InitializeFromSource();
 
 			ybuttonSendReport.Clicked += (sender, e) => ViewModel.SendReportCommand.Execute(ErrorReportType.User); 
-			ybuttonSendReport.Binding.AddBinding(ViewModel, vm => vm.CanSendErrorReport, w => w.Sensitive).InitializeFromSource();
+			ybuttonSendReport.Binding.AddBinding(ViewModel, vm => vm.CanSendErrorReportManually, w => w.Sensitive).InitializeFromSource();
 
 			ybuttonCopy.Clicked += YbuttonCopy_Clicked;
 			yButtonOK.Clicked += (sender, e) => this.Destroy();

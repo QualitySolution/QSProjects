@@ -1,4 +1,7 @@
-﻿namespace QS.ErrorReporting
+﻿using System;
+using QS.Project.Domain;
+
+namespace QS.ErrorReporting
 {
 	public interface IErrorReporter
 	{
@@ -8,7 +11,21 @@
 		string Edition { get; }
 		bool CanSendAutomatically { get; }
 
-		bool SendErrorReport(ErrorInfo errorInfo);
-		bool SendErrorReport(ErrorInfo errorInfo, int logRowCount);
+		bool SendErrorReport(
+			Exception[] exceptions,
+			ErrorReportType errorReportType = ErrorReportType.Automatic,
+			string description = null,
+			string email = null,
+			UserBase user = null
+		);
+
+		bool SendErrorReport(
+			Exception[] exceptions,
+			int logRowCount,
+			ErrorReportType errorReportType = ErrorReportType.Automatic,
+			string description = null,
+			string email = null,
+			UserBase user = null
+		);
 	}
 }

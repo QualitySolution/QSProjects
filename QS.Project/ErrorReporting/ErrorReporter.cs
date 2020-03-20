@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using QS.ErrorReporting;
+using QS.Project.Domain;
 using QS.Project.VersionControl;
 
-namespace Vodovoz.Tools
+namespace QS.ErrorReporting
 {
 	public class ErrorReporter : IErrorReporter
 	{
@@ -11,7 +11,8 @@ namespace Vodovoz.Tools
 			IErrorReportingService sendService,
 			IApplicationInfo applicationInfo,
 			ILogService logService = null,
-			IDataBaseInfo dataBaseInfo = null
+			IDataBaseInfo dataBaseInfo = null,
+			bool canSendAutomatically = true
 		)
 		{
 			this.sendService = sendService ?? throw new ArgumentNullException(nameof(sendService));
@@ -23,6 +24,7 @@ namespace Vodovoz.Tools
 			DatabaseName = dataBaseInfo?.Name;
 			this.logService = logService;
 			autoSendLogRowCount = 300;
+			CanSendAutomatically = canSendAutomatically;
 		}
 
 		ILogService logService;
@@ -34,54 +36,68 @@ namespace Vodovoz.Tools
 		public string Version { get; protected set; }
 		public string Edition { get; protected set; }
 
-		public bool CanSendAutomatically => true;
+		public bool CanSendAutomatically { get; protected set; }
 
-		public bool SendErrorReport(ErrorInfo errorInfo)
+		public bool SendErrorReport(
+			Exception[] exceptions,
+			ErrorReportType errorReportType,
+			string description,
+			string email,
+			UserBase user
+		)
 		{
-			if(!Validate(errorInfo))
+			if(errorReportType == ErrorReportType.Automatic && !CanSendAutomatically)
 				return false;
 
-			var errorReport = PrepareReportInfo(errorInfo);
-			return sendService.SubmitErrorReport(errorReport);
-		}
-
-		public bool SendErrorReport(ErrorInfo errorInfo, int logRowsCount)
-		{
-			if(!Validate(errorInfo))
-				return false;
-
-			var errorReport = PrepareReportInfo(errorInfo, logRowsCount);
-			return sendService.SubmitErrorReport(errorReport);
-		}
-
-		#region Helpers
-
-		private bool Validate(ErrorInfo errorInfo)
-		{
-			if(errorInfo.ErrorReportType == ErrorReportType.Automatic && !CanSendAutomatically)
-				return false;
-
-			return true;
-		}
-
-		private ErrorReport PrepareReportInfo(ErrorInfo errorInfo, int? logRowOverrideCount = null)
-		{
 			ErrorReport errorReport = new ErrorReport();
 			errorReport.DBName = DatabaseName;
 			errorReport.Edition = Edition;
 			errorReport.Product = ProductName;
 			errorReport.Version = Version;
-			errorReport.Email = errorInfo.Email;
-			errorReport.Description = errorInfo.Description;
-			errorReport.ReportType = errorInfo.ErrorReportType;
-			errorReport.StackTrace = GetExceptionText(errorInfo);
-			errorReport.UserName = errorInfo.User?.Name;
+			errorReport.Email = email;
+			errorReport.Description = description;
+			errorReport.ReportType = errorReportType;
+			errorReport.StackTrace = GetExceptionText(exceptions);
+			errorReport.UserName = user?.Name;
 
+			errorReport = PrepareLog(errorReport);
+			return sendService.SubmitErrorReport(errorReport);
+		}
+
+		public bool SendErrorReport(
+			Exception[] exceptions,
+			int logRowsCount,
+			ErrorReportType errorReportType,
+			string description,
+			string email,
+			UserBase user
+		)
+		{
+			if(errorReportType == ErrorReportType.Automatic && !CanSendAutomatically)
+				return false;
+
+			ErrorReport errorReport = new ErrorReport();
+			errorReport.DBName = DatabaseName;
+			errorReport.Edition = Edition;
+			errorReport.Product = ProductName;
+			errorReport.Version = Version;
+			errorReport.Email = email;
+			errorReport.Description = description;
+			errorReport.ReportType = errorReportType;
+			errorReport.StackTrace = GetExceptionText(exceptions);
+			errorReport.UserName = user?.Name;
+
+			errorReport = PrepareLog(errorReport, logRowsCount);
+			return sendService.SubmitErrorReport(errorReport);
+		}
+
+		private ErrorReport PrepareLog(ErrorReport errorReport, int? logRowOverrideCount = null)
+		{
 			if(logService != null) {
 				if(logRowOverrideCount != null)
 					errorReport.LogFile = logService.GetLog(logRowOverrideCount);
 				else {
-					if(errorInfo.ErrorReportType == ErrorReportType.Automatic)
+					if(errorReport.ReportType == ErrorReportType.Automatic)
 						errorReport.LogFile = logService.GetLog(autoSendLogRowCount);
 					else
 						errorReport.LogFile = logService.GetLog();
@@ -90,9 +106,7 @@ namespace Vodovoz.Tools
 			return errorReport;
 		}
 
-		public string GetExceptionText(ErrorInfo errorInfo) =>
-			string.Join("\n Следующее исключение:\n", errorInfo?.Exceptions?.Select(ex => ex.ToString()));
-
-		#endregion
+		public string GetExceptionText(Exception[] exceptions) =>
+			string.Join("\n Следующее исключение:\n", exceptions.Select(ex => ex.ToString()));
 	}
 }

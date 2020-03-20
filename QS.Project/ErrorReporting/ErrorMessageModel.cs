@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.UoW;
+using QS.Project.Domain;
 using QS.Services;
 
 namespace QS.ErrorReporting
@@ -33,28 +34,33 @@ namespace QS.ErrorReporting
 			$"Редакция: {errorReporter.Edition}\n" +
 			$"Ошибка: {string.Join("\n Следующее исключение:\n", Exceptions.Select(ex => ex.ToString()))}";
 
-		public override bool SendErrorReport()
+		public override void SendErrorReport()
 		{
+			if(ReportSent)
+				return;
 			if(!CanSendErrorReportManually && ErrorReportType != ErrorReportType.Automatic)
-				return false;
+				return;
 			if(!CanSendErrorReportAutomatically && ErrorReportType == ErrorReportType.Automatic)
-				return false;
+				return;
 
-			var errorInfo = new ErrorInfo();
-			errorInfo.Description = Description;
-			errorInfo.Email = Email;
-			errorInfo.ErrorReportType = ErrorReportType;
-
-			if(userService != null && unitOfWorkFactory != null)
-				using(IUnitOfWork uow = unitOfWorkFactory.CreateWithoutRoot()) {
-					errorInfo.User = userService.GetCurrentUser(uow);
+			UserBase user = null;
+			try {
+				if(userService != null && unitOfWorkFactory != null) {
+					using(IUnitOfWork uow = unitOfWorkFactory.CreateWithoutRoot()) {
+						user = userService.GetCurrentUser(uow);
+					}
 				}
-
-			foreach(var ex in Exceptions) {
-				errorInfo.Exceptions.Add(ex);
+			} catch(Exception ex) { 
+				AddDescription($"Не удалось автоматически получить пользователя ({ex.Message})"); 
 			}
 
-			return errorReporter.SendErrorReport(errorInfo);
+			ReportSent = errorReporter.SendErrorReport(
+				Exceptions.ToArray(),
+				ErrorReportType,
+				Description,
+				Email,
+				user
+			);
 		}
 	}
 }
