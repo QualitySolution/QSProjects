@@ -259,7 +259,6 @@ namespace QS.Test.Navigation
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
-			var interactiveService = Substitute.For<IInteractiveService>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			var tabPageFactory = Substitute.For<ITdiPageFactory>();
