@@ -244,7 +244,8 @@ namespace QS.Tdi.Gtk
 				return false;
 			
 			ITDICloseControlTab cct = tab as ITDICloseControlTab;
-			if(cct != null && !cct.CanClose()) {
+			ITDICloseControlTab canCloseActiveDialog = (tab as TdiSliderTab)?.ActiveDialog as ITDICloseControlTab;
+			if((cct != null && !cct.CanClose()) || (canCloseActiveDialog != null && !canCloseActiveDialog.CanClose())) {
 				return false;
 			}
 
