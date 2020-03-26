@@ -5,7 +5,7 @@ using QS.DomainModel.Entity;
 
 namespace QS.Deletion
 {
-	public static partial class DeleteConfig
+	public static class DeleteConfig
 	{
 		private static List<IDeleteInfo> classInfos;
 

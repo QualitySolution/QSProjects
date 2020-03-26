@@ -143,7 +143,6 @@
     <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
     <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
     <Compile Include="Deletion\DeleteConfig.cs" />
-    <Compile Include="Deletion\DeletionCheck.cs" />
     <Compile Include="Deletion\IDeleteInfo.cs" />
     <Compile Include="Deletion\Operations.cs" />
     <Compile Include="Deletion\DeleteDependenceInfo.cs" />
