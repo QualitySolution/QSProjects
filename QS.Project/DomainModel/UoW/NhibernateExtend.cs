@@ -59,7 +59,7 @@ namespace QS.DomainModel.UoW
 			}
 
 			object[] currentState = persister.GetPropertyValues(entity);
-			int[] dirtyProps = oldState.Select((o, i) => (oldState[i] == currentState[i]) ? -1 : i).Where(x => x >= 0).ToArray();
+			int[] dirtyProps = oldState.Select((o, i) => Equals(oldState[i], currentState[i]) ? -1 : i).Where(x => x >= 0).ToArray();
 
 			return (dirtyProps != null && dirtyProps.Length > 0);
 		}
