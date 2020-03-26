@@ -32,7 +32,7 @@ namespace QS.DomainModel.UoW
 		public static bool IsDirtyNoFlush(this ISession session)
 		{
 			var pc = session.GetSessionImplementation().PersistenceContext;
-			if(pc.EntitiesByKey.Values.Any(o => IsDirtyEntity(session, o)))
+			if(pc.EntitiesByKey.Values.ToList().Any(o => IsDirtyEntity(session, o)))
 				return true;
 
 			return pc.CollectionEntries.Keys.Cast<IPersistentCollection>()
