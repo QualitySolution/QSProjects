@@ -178,10 +178,8 @@ namespace QS.DomainModel.UoW
 
 		internal virtual void OpenTransaction()
 		{
-			if(transaction == null) {
+			if(transaction == null || !transaction.IsActive) {
 				transaction = Session.BeginTransaction();
-			} else if(!transaction.IsActive) {
-				transaction.Begin();
 			}
 		}
 
