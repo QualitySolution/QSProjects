@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -13,6 +13,7 @@ namespace QS.Deletion
 	public class DeleteCore : IDeleteCore
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+		private readonly DeleteConfiguration configuration;
 		internal TreeStore ObjectsTreeStore;
 		Operation PreparedOperation;
 		private int countReferenceItems = 0;
@@ -42,20 +43,17 @@ namespace QS.Deletion
 
 		int IDeleteCore.CountReferenceItems => countReferenceItems; 
 
-		public DeleteCore(IUnitOfWork uow): this()
-		{
-			this.uow = uow;
-		}
-
-		public DeleteCore()
+		public DeleteCore(DeleteConfiguration configuration, IUnitOfWork uow = null)
 		{
 			ObjectsTreeStore = new TreeStore (typeof(string), typeof(string));
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.uow = uow;
 		}
 
 		public bool RunDeletion (string table, int id)
 		{
 			logger.Debug ("Поиск зависимостей для объекта таблицы {0}...", table);
-			var info = DeleteConfig.ClassInfos.FirstOrDefault (i => i.TableName == table);
+			var info = configuration.ClassInfos.FirstOrDefault (i => i.TableName == table);
 			if (info == null)
 				throw new InvalidOperationException (String.Format ("Удаление для объектов таблицы {0} не настроено в DeleteConfig", table));
 
@@ -65,7 +63,7 @@ namespace QS.Deletion
 		public bool RunDeletion (Type objectClass, int id)
 		{
 			logger.Debug ("Поиск зависимостей для класса {0}...", objectClass);
-			var info = DeleteConfig.ClassInfos.Find (i => i.ObjectClass == objectClass);
+			var info = configuration.ClassInfos.Find (i => i.ObjectClass == objectClass);
 			if (info == null)
 				throw new InvalidOperationException (String.Format ("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
 
@@ -75,7 +73,7 @@ namespace QS.Deletion
 		public List<DeletedItem> GetDeletionList(Type objectClass, int id)
 		{
 			logger.Debug("Поиск зависимостей для класса {0}...", objectClass);
-			var info = DeleteConfig.ClassInfos.Find(i => i.ObjectClass == objectClass);
+			var info = configuration.ClassInfos.Find(i => i.ObjectClass == objectClass);
 			if(info == null)
 				throw new InvalidOperationException(String.Format("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
 
@@ -259,9 +257,9 @@ namespace QS.Deletion
 
 			if(hinfo.IsSubclass)
 			{
-				var root = hinfo.GetRootDeleteInfo();
+				var root = hinfo.GetRootClass();
 				if (root != null)
-					return root;
+					return configuration.GetDeleteInfo(root);
 			}
 
 			if(hinfo.IsRootForSubclasses)
@@ -269,7 +267,7 @@ namespace QS.Deletion
 				var subclass = NHibernate.NHibernateUtil.GetClass(entity.Entity);
 
 				if (subclass != null)
-					return DeleteConfig.GetDeleteInfo(subclass);
+					return configuration.GetDeleteInfo(subclass);
 			}
 
 			return null;
@@ -280,7 +278,7 @@ namespace QS.Deletion
 			int deleteCount = 0;
 			foreach (var delDepend in currentDeletion.DeleteItems) {
 				int GroupCount = 0;
-				var childClassInfo = delDepend.GetClassInfo();
+				var childClassInfo = configuration.GetDeleteInfo(delDepend);
 				if (childClassInfo == null)
 					throw new InvalidOperationException (String.Format ("Зависимость удаления у класса(таблицы) {0}({1}) ссылается на класс(таблицу) {2}({3}) для которого нет описания.", 
 						currentDeletion.ObjectClass,
@@ -339,7 +337,7 @@ namespace QS.Deletion
 			int clearCount = 0;
 			foreach (var cleanDepend in currentDeletion.ClearItems) {
 				int groupCount = 0;
-				var childClassInfo = cleanDepend.GetClassInfo();
+				var childClassInfo = configuration.GetDeleteInfo(cleanDepend);
 				if (childClassInfo == null)
 					throw new InvalidOperationException (String.Format ("Зависимость очистки у класса {0} ссылается на класс {1} для которого нет описания.", currentDeletion.ObjectClass, cleanDepend.ObjectClass));
 
@@ -376,7 +374,7 @@ namespace QS.Deletion
 			int removeCount = 0;
 			foreach (var removeDepend in currentDeletion.RemoveFromItems) {
 				int groupCount = 0;
-				var childClassInfo = removeDepend.GetClassInfo();
+				var childClassInfo = configuration.GetDeleteInfo(removeDepend);
 				if (childClassInfo == null)
 					throw new InvalidOperationException (String.Format ("Зависимость удаления класса {0} ссылается на коллекцию {2} в классе {1} для которого нет описания.", 
 						currentDeletion.ObjectClass,

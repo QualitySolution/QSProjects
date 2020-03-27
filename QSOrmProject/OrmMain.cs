@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Proxy;
 using NLog;
+using QS.Deletion;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
@@ -165,7 +166,7 @@ namespace QSOrmProject
 		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
 		{
 			var result = new List<DeletionObject>();
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
+			var delete = new DeleteCore(DeleteConfig.Main, uow);
 			var delList = delete.GetDeletionList(objectClass, id);
 
 			foreach(var item in delList) {
@@ -176,7 +177,7 @@ namespace QSOrmProject
 
 		public static bool DeleteObject(string table, int id)
 		{
-			var delete = new QS.Deletion.DeleteCore();
+			var delete = new DeleteCore(DeleteConfig.Main);
 			try {
 				return delete.RunDeletion(table, id);
 			} catch (Exception ex) {
@@ -187,7 +188,7 @@ namespace QSOrmProject
 
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
+			var delete = new DeleteCore(DeleteConfig.Main, uow);
 			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);
@@ -215,7 +216,7 @@ namespace QSOrmProject
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
 			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
+			var delete = new DeleteCore(DeleteConfig.Main, uow);
 			delete.BeforeDeletion = beforeDeletion;
 			try {
 				return delete.RunDeletion(objectClass, id);

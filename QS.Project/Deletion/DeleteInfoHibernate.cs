@@ -271,13 +271,13 @@ namespace QS.Deletion
 			return OrmConfig.NhConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
 		}
 
-		IDeleteInfo IDeleteInfoHibernate.GetRootDeleteInfo()
+		Type IDeleteInfoHibernate.GetRootClass()
 		{
 			if (!IsSubclass)
 				return null;
 
 			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
-			return DeleteConfig.GetDeleteInfo(hmap.RootClazz.MappedClass);
+			return hmap.RootClazz.MappedClass;
 		}
 
 		#endregion

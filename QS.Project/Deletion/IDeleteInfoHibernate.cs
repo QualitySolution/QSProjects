@@ -9,6 +9,6 @@ namespace QS.Deletion
 		bool IsRequiredCascadeDeletion { get; }
 		bool IsSubclass { get; }
 		Type[] GetSubclasses();
-		IDeleteInfo GetRootDeleteInfo();
+		Type GetRootClass();
 	}
 }

@@ -24,11 +24,6 @@ namespace QS.Deletion
 			CollectionName = collectionName;
 		}
 
-		internal IDeleteInfo GetClassInfo()
-		{
-			return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
-		}
-
 		/// <summary>
 		/// Создает класс зависимости удаления на основе свойства bag в родителе. 
 		/// </summary>

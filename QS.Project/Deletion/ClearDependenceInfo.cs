@@ -37,14 +37,6 @@ namespace QS.Deletion
 			ClearField = clearField;
 		}
 
-		internal IDeleteInfo GetClassInfo()
-		{
-			if(ObjectClass != null)
-				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
-			else
-				return DeleteConfig.ClassInfos.OfType<DeleteInfo>().First (i => i.TableName == TableName);
-		}
-
 		public ClearDependenceInfo AddCheckProperty(string property)
 		{
 			PropertyName = property;

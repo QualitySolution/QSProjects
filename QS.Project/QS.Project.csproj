@@ -142,7 +142,6 @@
     <Compile Include="Tdi\ITDICloseControlTab.cs" />
     <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
     <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
-    <Compile Include="Deletion\DeleteConfig.cs" />
     <Compile Include="Deletion\IDeleteInfo.cs" />
     <Compile Include="Deletion\Operations.cs" />
     <Compile Include="Deletion\DeleteDependenceInfo.cs" />
@@ -338,6 +337,8 @@
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
+    <Compile Include="Deletion\DeleteConfiguration.cs" />
+    <Compile Include="Deletion\DeleteConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

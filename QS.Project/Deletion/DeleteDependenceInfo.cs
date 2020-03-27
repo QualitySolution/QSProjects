@@ -48,14 +48,6 @@ namespace QS.Deletion
 
 		private DeleteDependenceInfo() {}
 
-		internal IDeleteInfo GetClassInfo()
-		{
-			if(ObjectClass != null)
-				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
-			else
-				return DeleteConfig.ClassInfos.OfType<DeleteInfo> ().FirstOrDefault (i => i.TableName == TableName);
-		}
-
         public DeleteDependenceInfo AddCheckProperty(string property)
         {
             PropertyName = property;
