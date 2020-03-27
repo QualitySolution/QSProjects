@@ -5,7 +5,7 @@ using Gamma.Utilities;
 using NHibernate.Mapping;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class DeleteDependenceInfo

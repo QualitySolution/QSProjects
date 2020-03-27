@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 
 namespace QS.Deletion

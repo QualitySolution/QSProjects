@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	public class DeleteConfiguration
 	{

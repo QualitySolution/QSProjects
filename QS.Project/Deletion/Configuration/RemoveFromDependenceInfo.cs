@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.Utilities;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class RemoveFromDependenceInfo

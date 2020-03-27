@@ -8,7 +8,7 @@ using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate, IHibernateDeleteRule
 		where TEntity : IDomainObject

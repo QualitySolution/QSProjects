@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using Gtk;
+using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QSOrmProject.Deletion;

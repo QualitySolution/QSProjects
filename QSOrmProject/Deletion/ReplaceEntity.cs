@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using NHibernate.Criterion;
+using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 

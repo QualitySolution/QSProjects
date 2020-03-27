@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Gamma.Utilities;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class ClearDependenceInfo
