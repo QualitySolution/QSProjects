@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -136,8 +136,6 @@ namespace QS.Deletion
 				try {
 					IsHibernateMode = HasHibernateOperations(PreparedOperation);
 					PreparedOperation.Execute (this);
-					ExcuteDlg.AddExcuteOperation("Операции с журналом изменений");
-					DeleteConfig.OnAfterDeletion (sqlTransaction, DeletedItems);
 					ExcuteDlg.AddExcuteOperation("Завершение транзакции");
 					if(sqlTransaction != null)
 						sqlTransaction.Commit ();

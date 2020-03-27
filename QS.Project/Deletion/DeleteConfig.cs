@@ -20,7 +20,6 @@ namespace QS.Deletion
 
 		public static IEnumerable<IDeleteRule> ClassDeleteRules => ClassInfos;
 
-		public static event EventHandler<AfterDeletionEventArgs> AfterDeletion;
 
 
 
@@ -75,14 +74,6 @@ namespace QS.Deletion
 			info.ClearItems.Add (clearDependence);
 		}
 
-		internal static void OnAfterDeletion (System.Data.Common.DbTransaction trans, List<DeletedItem> items)
-		{
-			if (AfterDeletion != null) {
-				AfterDeletion (null, new AfterDeletionEventArgs {
-					CurTransaction = trans,
-					DeletedItems = items
-				});
-			}
 		}
 
 		#region FluentConfig
@@ -102,11 +93,6 @@ namespace QS.Deletion
 		#endregion
 	}
 
-	public class AfterDeletionEventArgs : EventArgs
-	{
-		public System.Data.Common.DbTransaction CurTransaction;
-		public List<DeletedItem> DeletedItems;
-	}
 
 	public class DeletedItem
 	{
