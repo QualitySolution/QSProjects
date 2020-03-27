@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Gamma.Binding.Core;
 using Gtk;
+using Pango;
 
 namespace QS.Widgets.GtkUI
 {
@@ -11,7 +12,7 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DateRangePicker : Bin
 	{
-		public static int DefaultWidthRequest;
+		public static int? CalendarFontSize;
 
 		public BindingControler<DateRangePicker> Binding { get; private set; }
 
@@ -75,6 +76,11 @@ namespace QS.Widgets.GtkUI
 				}
 			}
 		}
+
+		/// <summary>
+		/// Если не заполнена начальная и конечная дата при открытии датапикера ставить текущую дату. По умолчанию - true
+		/// </summary>
+		public bool SetCurrentDateByDefault = true;
 
 		CalendarDisplayOptions DisplayOptions = CalendarDisplayOptions.ShowHeading | CalendarDisplayOptions.ShowDayNames;
 
@@ -148,9 +154,9 @@ namespace QS.Widgets.GtkUI
 			else if (!StartDateOrNull.HasValue && !EndDateOrNull.HasValue)
 				entryDate.Text = String.Empty;
 			else if(StartDateOrNull.HasValue)
-				entryDate.Text = String.Format ("начиная с {0:d}", StartDate);
+				entryDate.Text = String.Format ("Начиная с {0:d}", StartDate);
 			else if(EndDateOrNull.HasValue)
-				entryDate.Text = String.Format ("до {0:d}", EndDate);
+				entryDate.Text = String.Format ("До {0:d}", EndDate);
 		}
 
 		#region Event handlers
@@ -187,6 +193,12 @@ namespace QS.Widgets.GtkUI
 			EndDateCalendar.Day = 0;
 			EndDateCalendar_MonthChanged(null, null);
 
+			if(CalendarFontSize.HasValue) {
+				var desc = new FontDescription { AbsoluteSize = CalendarFontSize.Value * 1000 };
+				StartDateCalendar.ModifyFont(desc);
+				EndDateCalendar.ModifyFont(desc);
+			}
+
 			StartDateEntry = new DatePicker();
 			StartDateEntry.DateChanged += StartDateEntry_DateChanged;
 
@@ -202,14 +214,18 @@ namespace QS.Widgets.GtkUI
 			hbox.Add(endVbox);
 
 			selectDate.VBox.Add (hbox);
-			selectDate.WidthRequest = DefaultWidthRequest;
 			selectDate.ShowAll ();
 
 			StartDateEntry.HideCalendarButton = true;
 			EndDateEntry.HideCalendarButton = true;
 
-			StartDateEntry.DateOrNull = StartDateOrNull;
-			EndDateEntry.DateOrNull = EndDateOrNull;
+			if(SetCurrentDateByDefault && !StartDateOrNull.HasValue && !EndDateOrNull.HasValue) {
+				StartDateEntry.DateOrNull = DateTime.Today.Date;
+				EndDateEntry.DateOrNull = DateTime.Today.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+			} else {
+				StartDateEntry.DateOrNull = StartDateOrNull;
+				EndDateEntry.DateOrNull = EndDateOrNull;
+			}
 			#endregion
 
 			int response = selectDate.Run ();
@@ -254,8 +270,7 @@ namespace QS.Widgets.GtkUI
 		{
 			if(StartDateEntry.IsEmpty) {
 				StartDateCalendar.Day = 0;
-			}
-			else if(StartDateCalendar.Date != StartDateEntry.Date) { 
+			} else {
 				StartDateCalendar.Date = StartDateEntry.Date;
 			}
 			UpdatePeriodInDialog();
@@ -265,8 +280,7 @@ namespace QS.Widgets.GtkUI
 		{
 			if(EndDateEntry.IsEmpty) {
 				EndDateCalendar.Day = 0;
-			}
-			else if(StartDateCalendar.Date != EndDateEntry.Date) {
+			} else {
 				EndDateCalendar.Date = EndDateEntry.Date;
 			}
 			UpdatePeriodInDialog();
