@@ -5,10 +5,11 @@ using QS.Services;
 
 namespace QS.Project.Journal
 {
-	public abstract class MultipleEntityJournalViewModelBase<TNode> : EntitiesJournalViewModelBase<TNode>
+	public abstract class MultipleEntityJournalViewModelBase<TNode, TSearchModel> : EntitiesJournalViewModelBase<TNode, TSearchModel>
 		where TNode : JournalEntityNodeBase
+		where TSearchModel : CriterionSearchModelBase
 	{
-		protected MultipleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
+		protected MultipleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, SearchViewModelBase<TSearchModel> searchViewModel) : base(unitOfWorkFactory, commonServices, searchViewModel)
 		{
 		}
 	}

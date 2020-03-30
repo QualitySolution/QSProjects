@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using NHibernate;
-using NHibernate.Criterion;
 using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
@@ -19,8 +17,9 @@ using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntitiesJournalViewModelBase<TNode> : JournalViewModelBase
+	public abstract class EntitiesJournalViewModelBase<TNode, TSearchModel> : JournalViewModelBase
 		where TNode : JournalEntityNodeBase
+		where TSearchModel : CriterionSearchModelBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -43,10 +42,15 @@ namespace QS.Project.Journal
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
-		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
+		protected EntitiesJournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory, 
+			ICommonServices commonServices, 
+			SearchViewModelBase<TSearchModel> searchViewModel, 
+			INavigationManager navigation = null) 
+		: base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
-			SetCriterionSearch(criterionSearch ?? throw new ArgumentNullException(nameof(criterionSearch)));
+			CriterionSearchViewModel = searchViewModel ?? throw new ArgumentNullException(nameof(searchViewModel));
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 		}
@@ -100,6 +104,22 @@ namespace QS.Project.Journal
 			};
 			return configurator;
 		}
+		/*
+		protected JournalQueryConfigurator<TEntity, TNode> RegisterEntity<TEntity>()
+		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
+		{
+			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
+			configurator.OnConfigurationFinished += (sender, e) => {
+				CreateLoader(configurator.QueryFunc);
+				var config = e.Config;
+				if(EntityConfigs.ContainsKey(config.EntityType)) {
+					throw new InvalidOperationException($"Конфигурация для сущности ({config.EntityType.Name}) уже была добавлена.");
+				}
+				EntityConfigs.Add(config.EntityType, config);
+			};
+
+			return new JournalQueryConfigurator<TEntity, TNode>(configurator, new QueryFactory<TEntity>(CriterionSearchModel));
+		}*/
 
 		protected void FinishJournalConfiguration()
 		{
@@ -125,18 +145,34 @@ namespace QS.Project.Journal
 
 		#region Search
 
-		private ICriterionSearch criterionSearch;
+		private SearchViewModelBase<TSearchModel> criterionSearchViewModel;
+		protected SearchViewModelBase<TSearchModel> CriterionSearchViewModel {
+			get => criterionSearchViewModel;
+			private set {
+				if(criterionSearchViewModel != value) {
+					if(criterionSearchViewModel != null) {
+						criterionSearchViewModel.SearchModel.OnSearch -= SearchModel_OnSearch;
+					}
+					criterionSearchViewModel = value;
 
-		private void SetCriterionSearch(ICriterionSearch criterionSearch)
-		{
-			this.criterionSearch = criterionSearch;
-			criterionSearch.CriterionSearchModel.OnSearch += (sender, e) => Refresh();
+					if(criterionSearchViewModel != null) {
+						criterionSearchViewModel.SearchModel.OnSearch += SearchModel_OnSearch;
+					}
+				}
+			}
 		}
 
-		public override SearchViewModelBase SearchViewModel => criterionSearch.SearchViewModel;
+		void SearchModel_OnSearch(object sender, EventArgs e)
+		{
+			Refresh();
+		}
 
-		protected virtual CriterionSearchModelBase CriterionSearchModel => criterionSearch.CriterionSearchModel;
 
+		public override SearchViewModelBase SearchViewModel => CriterionSearchViewModel;
+
+		protected TSearchModel CriterionSearchModel => CriterionSearchViewModel.SearchModelGeneric;
+
+		/*
 		[Obsolete("Заменить на обращение к CriterionSearchModel напрямую. В водовозе не используется")]
 		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
 		{
@@ -159,7 +195,7 @@ namespace QS.Project.Journal
 			return CriterionSearchModel.ConfigureSearch()
 				.AddSearchBy(propertiesExpr)
 				.GetSearchCriterion();
-		}
+		}*/
 
 		#endregion
 

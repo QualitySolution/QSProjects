@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
+using Gamma.Utilities;
 
 namespace QS.Project.Journal.Search.Criterion
 {
@@ -37,13 +38,56 @@ namespace QS.Project.Journal.Search.Criterion
 		protected internal abstract ICriterion GetSearchCriterion();
 	}
 
+
+	//public abstract class CriterionSearchModelBase : SearchModel
+	//{
+	//	private List<SearchAliasParameter> aliasParameters { get; } = new List<SearchAliasParameter>();
+	//	protected IEnumerable<SearchAliasParameter> AliasParameters => aliasParameters;
+
+	//	protected CriterionSearchModelBase()
+	//	{
+	//	}
+
+	//	/// <summary>
+	//	/// Создает конфигуратор алиасов
+	//	/// </summary>
+	//	/*public CriterionSearchModelConfig ConfigureSearch()
+	//	{
+	//		CriterionSearchConfig = new CriterionSearchModelConfig(this);
+	//		return CriterionSearchConfig;
+	//	}*/
+
+	//	public void AddSearchBy(params Expression<Func<object>>[] propertySelector)
+	//	{
+	//		foreach(var propertyExpr in propertySelector) {
+	//			aliasParameters.Add(new SearchAliasParameter(PropertyUtil.GetMemberInfo(propertyExpr).DeclaringType, propertyExpr, Projections.Property(propertyExpr)));
+	//		}
+	//	}
+
+	//	public void AddSearchBy<TEntity>(params Expression<Func<TEntity, object>>[] propertySelector)
+	//	{
+	//		foreach(var propertyExpr in propertySelector) {
+	//			aliasParameters.Add(new SearchAliasParameter(PropertyUtil.GetMemberInfo(propertyExpr).DeclaringType, propertyExpr, Projections.Property(propertyExpr)));
+	//		}
+	//	}
+
+	//	/// <summary>
+	//	/// Предоставляет поисковый ICriterion.
+	//	/// При формировании ICriterion для доступа к настроенным алиасам 
+	//	/// необходимо обращаться к AliasParameters свойству
+	//	/// </summary>
+	//	protected internal abstract ICriterion GetSearchCriterion();
+	//}
+
 	public class SearchAliasParameter
 	{
+		public Type AliasType { get; }
 		public System.Linq.Expressions.Expression Expression { get; }
 		public PropertyProjection PropertyProjection { get; }
 
-		internal SearchAliasParameter(System.Linq.Expressions.Expression expression, PropertyProjection propertyProjection)
+		internal SearchAliasParameter(Type aliasType, System.Linq.Expressions.Expression expression, PropertyProjection propertyProjection)
 		{
+			AliasType = aliasType ?? throw new ArgumentNullException(nameof(aliasType));
 			Expression = expression ?? throw new ArgumentNullException(nameof(expression));
 			PropertyProjection = propertyProjection ?? throw new ArgumentNullException(nameof(propertyProjection));
 		}
@@ -61,19 +105,19 @@ namespace QS.Project.Journal.Search.Criterion
 			aliasConfig = new CriterionSearchModelAliasConfig(criterionSearchModel, this);
 		}
 
-		public CriterionSearchModelAliasConfig AddSearchBy(params Expression<Func<object>>[] aliases)
+		public CriterionSearchModelAliasConfig AddSearchBy(params Expression<Func<object>>[] propertySelector)
 		{
-			foreach(var alias in aliases) {
-				AliasParameters.Add(new SearchAliasParameter(alias, Projections.Property(alias)));
+			foreach(var propertyExpr in propertySelector) {
+				AliasParameters.Add(new SearchAliasParameter(PropertyUtil.GetMemberInfo(propertyExpr).DeclaringType, propertyExpr, Projections.Property(propertyExpr)));
 			}
 
 			return aliasConfig;
 		}
 
-		public CriterionSearchModelAliasConfig AddSearchBy<TEntity>(params Expression<Func<TEntity, object>>[] aliases)
+		public CriterionSearchModelAliasConfig AddSearchBy<TEntity>(params Expression<Func<TEntity, object>>[] propertySelector)
 		{
-			foreach(var alias in aliases) {
-				AliasParameters.Add(new SearchAliasParameter(alias, Projections.Property(alias)));
+			foreach(var propertyExpr in propertySelector) {
+				AliasParameters.Add(new SearchAliasParameter(PropertyUtil.GetMemberInfo(propertyExpr).DeclaringType, propertyExpr, Projections.Property(propertyExpr)));
 			}
 
 			return aliasConfig;

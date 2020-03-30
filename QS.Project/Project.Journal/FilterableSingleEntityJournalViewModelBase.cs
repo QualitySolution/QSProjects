@@ -1,21 +1,21 @@
 ﻿using System.ComponentModel;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.Services;
 using QS.Tdi;
 using QS.Project.Filter;
 using QS.DomainModel.UoW;
-using QS.Project.Journal.Search;
 using QS.Project.Journal.Search.Criterion;
+using QS.Project.Journal.Search;
 
 namespace Vodovoz.JournalViewModels
 {
-	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel> : SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode>
+	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel, TSearchModel> : SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TSearchModel>
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
 		where TFilterViewModel : FilterViewModelBase<TFilterViewModel>
+		where TSearchModel : CriterionSearchModelBase
 	{
 		private TFilterViewModel filterViewModel;
 		public TFilterViewModel FilterViewModel {
@@ -26,7 +26,7 @@ namespace Vodovoz.JournalViewModels
 			}
 		}
 
-		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
+		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, SearchViewModelBase<TSearchModel> searchViewModel) : base(unitOfWorkFactory, commonServices, searchViewModel)
 		{
 			FilterViewModel = filterViewModel;
 		}

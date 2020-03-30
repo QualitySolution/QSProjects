@@ -318,6 +318,11 @@
     <Compile Include="Project.Journal\Search\Criterion\SingleEntryCriterionSearchViewModel.cs" />
     <Compile Include="Project.Journal\Search\Criterion\MultipleEntryCriterionSearchViewModel.cs" />
     <Compile Include="Project.Journal\Search\Criterion\CriterionSearchModel.cs" />
+    <Compile Include="Project.Journal\Search\Criterion\QueryFactory.cs" />
+    <Compile Include="Project.Journal\JournalQueryConfigurator.cs" />
+    <Compile Include="Project.Journal\Search\SearchViewModelBaseGeneric.cs" />
+    <Compile Include="Project.Journal\Search\IMultipleEntrySearchViewModel.cs" />
+    <Compile Include="Project.Journal\Search\ISingleEntrySearchViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

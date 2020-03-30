@@ -5,6 +5,8 @@ using QS.DomainModel.Entity;
 using QS.Tdi;
 using QS.Utilities.Text;
 using System.ComponentModel;
+using NHibernate;
+using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal
 {

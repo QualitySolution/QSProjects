@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using QS.DomainModel.Entity;
 using QS.Tdi;
+using QS.Project.Journal.Search.Criterion;
 
 namespace QS.Project.Journal.EntitySelector
 {

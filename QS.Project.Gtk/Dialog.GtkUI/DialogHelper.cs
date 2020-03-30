@@ -21,8 +21,8 @@ namespace QS.Dialog.Gtk
 		private static void RegisterDefaultViews()
 		{
 			ViewResolver.RegisterViewForBaseViewModel<JournalViewModelBase, JournalView>();
-			ViewResolver.RegisterViewForBaseViewModel<MultipleEntrySearchViewModel, MultipleEntrySearchView>();
-			ViewResolver.RegisterViewForBaseViewModel<SingleEntrySearchViewModel, SingleEntrySearchView>();
+			ViewResolver.RegisterViewForViewModel<IMultipleEntrySearchViewModel, MultipleEntrySearchView>();
+			ViewResolver.RegisterViewForViewModel<ISingleEntrySearchViewModel, SingleEntrySearchView>();
 		}
 
 		private static UniversalWidgetResolver viewResolver;

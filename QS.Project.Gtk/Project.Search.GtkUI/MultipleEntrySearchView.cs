@@ -2,15 +2,16 @@
 using System.Linq;
 using Gdk;
 using QS.Project.Journal.Search;
+using QS.Project.Journal.Search.Criterion;
 
 namespace QS.Project.Search.GtkUI
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class MultipleEntrySearchView : Gtk.Bin
 	{
-		private readonly MultipleEntrySearchViewModel viewModel;
+		private readonly IMultipleEntrySearchViewModel viewModel;
 
-		public MultipleEntrySearchView(MultipleEntrySearchViewModel viewModel)
+		public MultipleEntrySearchView(IMultipleEntrySearchViewModel viewModel)
 		{
 			this.Build();
 
@@ -39,7 +40,7 @@ namespace QS.Project.Search.GtkUI
 
 		protected void OnButtonSearchClearClicked(object sender, EventArgs e)
 		{
-			viewModel.Clear();
+			viewModel.ClearSearchValues();
 		}
 
 		private int searchEntryShown = 1;

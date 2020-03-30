@@ -2,13 +2,14 @@
 
 namespace QS.Project.Journal.Search
 {
-	public class SingleEntrySearchViewModel : SearchViewModelBase
+	public class SingleEntrySearchViewModel<TSearchModel> : SearchViewModelBase<TSearchModel>, ISingleEntrySearchViewModel
+		where TSearchModel : SearchModel
 	{
-		public override SearchModel SearchModel { get; }
+		public override TSearchModel SearchModelGeneric { get; }
 
-		public SingleEntrySearchViewModel(SearchModel searchModel)
+		public SingleEntrySearchViewModel(TSearchModel searchModel)
 		{
-			SearchModel = searchModel ?? throw new ArgumentNullException(nameof(searchModel));
+			SearchModelGeneric = searchModel ?? throw new ArgumentNullException(nameof(searchModel));
 		}
 
 		private string searchValue;
@@ -29,9 +30,9 @@ namespace QS.Project.Journal.Search
 		protected virtual void OnSearchValueUpdated()
 		{
 			if(string.IsNullOrWhiteSpace(SearchValue)) {
-				UpdateSearchValues(new string[0]);
+				UpdateSearchModel(new string[0]);
 			} else {
-				UpdateSearchValues(SearchValue.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+				UpdateSearchModel(SearchValue.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
 			}
 		}
 

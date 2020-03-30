@@ -17,10 +17,11 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode, TSearchModel> : JournalViewModelBase
 		where TEntity : class, IDomainObject
 		where TEntityViewModel : DialogViewModelBase
 		where TNode : class
+		where TSearchModel : CriterionSearchModelBase
 	{
 		#region Обязательные зависимости
 		#endregion
@@ -34,13 +35,14 @@ namespace QS.Project.Journal
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
-			ICriterionSearch criterionSearch,
+			SearchViewModelBase<TSearchModel> searchViewModel,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
 			) : base(unitOfWorkFactory, interactiveService, navigationManager)
 		{
 			NavigationManager = navigationManager;
-			SetCriterionSearch(criterionSearch ?? throw new ArgumentNullException(nameof(criterionSearch)));
+			CriterionSearchViewModel = searchViewModel ?? throw new ArgumentNullException(nameof(searchViewModel));
+			//SetCriterionSearch(criterionSearch ?? throw new ArgumentNullException(nameof(criterionSearch)));
 			CurrentPermissionService = currentPermissionService;
 			DeleteEntityService = deleteEntityService;
 
@@ -120,22 +122,16 @@ namespace QS.Project.Journal
 
 		#region Поиск
 
-		private ICriterionSearch criterionSearch;
+		protected SearchViewModelBase<TSearchModel> CriterionSearchViewModel { get; private set; }
 
-		private void SetCriterionSearch(ICriterionSearch criterionSearch)
-		{
-			this.criterionSearch = criterionSearch;
-			criterionSearch.CriterionSearchModel.OnSearch += (sender, e) => Refresh();
-		}
+		public override SearchViewModelBase SearchViewModel => CriterionSearchViewModel;
 
-		public override SearchViewModelBase SearchViewModel => criterionSearch.SearchViewModel;
-
-		protected virtual CriterionSearchModelBase CriterionSearchModel => criterionSearch.CriterionSearchModel;
+		protected TSearchModel CriterionSearchModel => CriterionSearchViewModel.SearchModelGeneric;
 
 		[Obsolete("Заменить на обращение к CriterionSearchModel. В водовозе не используется")]
 		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
 		{
-			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
+			if(CriterionSearchModel == null) {
 				return new Conjunction();
 			}
 
@@ -147,7 +143,7 @@ namespace QS.Project.Journal
 		[Obsolete("Заменить на обращение к CriterionSearchModel. В водовозе не используется")]
 		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
 		{
-			if(criterionSearch == null || criterionSearch.CriterionSearchModel == null) {
+			if(CriterionSearchModel == null) {
 				return new Conjunction();
 			}
 

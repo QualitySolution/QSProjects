@@ -1,6 +1,7 @@
 ﻿using System;
 namespace QS.Project.Journal.Search.Criterion
 {
+	/*
 	public class SingleEntryCriterionSearch : ICriterionSearch
 	{
 		public CriterionSearchModelBase CriterionSearchModel => searchViewModel.CriterionSearchModel;
@@ -14,4 +15,5 @@ namespace QS.Project.Journal.Search.Criterion
 			this.searchViewModel = searchViewModel ?? throw new ArgumentNullException(nameof(searchViewModel));
 		}
 	}
+	*/
 }

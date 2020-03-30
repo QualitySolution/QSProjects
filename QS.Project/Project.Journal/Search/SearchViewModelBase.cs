@@ -8,7 +8,7 @@ namespace QS.Project.Journal.Search
 
 		public abstract void ManualSearchUpdate();
 
-		public void UpdateSearchValues(string[] values)
+		public virtual void UpdateSearchModel(string[] values)
 		{
 			SearchModel.SearchValues = values;
 			SearchModel.Update();

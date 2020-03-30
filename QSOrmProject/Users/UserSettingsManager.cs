@@ -2,6 +2,7 @@
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.DomainModel.NotifyChange;
 
 namespace QSOrmProject.Users
 {

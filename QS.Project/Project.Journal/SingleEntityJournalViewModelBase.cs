@@ -11,10 +11,11 @@ using QS.Project.Journal.Search.Criterion;
 
 namespace QS.Project.Journal
 {
-	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntitiesJournalViewModelBase<TNode> , IEntityAutocompleteSelector
+	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode, TSearchModel> : EntitiesJournalViewModelBase<TNode, TSearchModel> , IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
+		where TSearchModel : CriterionSearchModelBase
 	{
 		protected readonly ICommonServices commonServices;
 
@@ -22,8 +23,12 @@ namespace QS.Project.Journal
 
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch,
-			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices, criterionSearch)
+		protected SingleEntityJournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory, 
+			ICommonServices commonServices, 
+			SearchViewModelBase<TSearchModel> searchViewModel,
+			bool hideJournalForOpenDialog = false, 
+			bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices, searchViewModel)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 

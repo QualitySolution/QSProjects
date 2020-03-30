@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace QS.Project.Journal.Search
 {
-	public class MultipleEntrySearchViewModel : SearchViewModelBase
+	public class MultipleEntrySearchViewModel<TSearchModel> : SearchViewModelBase<TSearchModel>, IMultipleEntrySearchViewModel
+		where TSearchModel : SearchModel
 	{
-		public override SearchModel SearchModel { get; }
+		public override TSearchModel SearchModelGeneric { get; }
 
-		public MultipleEntrySearchViewModel(SearchModel searchModel)
+		public MultipleEntrySearchViewModel(TSearchModel searchModel)
 		{
-			SearchModel = searchModel ?? throw new ArgumentNullException(nameof(searchModel));
+			SearchModelGeneric = searchModel ?? throw new ArgumentNullException(nameof(searchModel));
 		}
 
 		private string searchValue1;
@@ -72,10 +73,10 @@ namespace QS.Project.Journal.Search
 			if(!string.IsNullOrWhiteSpace(SearchValue4)) {
 				values.Add(SearchValue4);
 			}
-			UpdateSearchValues(values.ToArray());
+			UpdateSearchModel(values.ToArray());
 		}
 
-		public virtual void Clear()
+		public virtual void ClearSearchValues()
 		{
 			if(string.IsNullOrWhiteSpace(SearchValue1)
 			&& string.IsNullOrWhiteSpace(SearchValue2)

@@ -11,11 +11,17 @@ using QS.Utilities.Text;
 
 namespace QS.Project.Journal
 {
-	public abstract class SimpleEntityJournalViewModelBase : EntitiesJournalViewModelBase<CommonJournalNode>
+	public abstract class SimpleEntityJournalViewModelBase : EntitiesJournalViewModelBase<CommonJournalNode, CriterionSearchModel>
+		//where TSearchModel : CriterionSearchModelBase
 	{
 		public Type EntityType { get; }
 
-		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
+		protected SimpleEntityJournalViewModelBase(
+			Type entityType, 
+			IUnitOfWorkFactory unitOfWorkFactory, 
+			ICommonServices commonServices, 
+			SearchViewModelBase<CriterionSearchModel> searchViewModel) 
+		: base(unitOfWorkFactory, commonServices, searchViewModel)
 		{
 			EntityType = entityType;
 		}

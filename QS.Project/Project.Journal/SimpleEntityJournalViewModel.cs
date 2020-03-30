@@ -18,6 +18,7 @@ namespace QS.Project.Journal
 	public class SimpleEntityJournalViewModel<TEntity, TEntityTab> : SimpleEntityJournalViewModelBase, IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TEntityTab : class, ITdiTab
+		//where TSearchModel : CriterionSearchModelBase
 	{
 		public SimpleEntityJournalViewModel(
 			Expression<Func<TEntity, object>> titleExp,
@@ -25,7 +26,7 @@ namespace QS.Project.Journal
 			Func<CommonJournalNode, TEntityTab> openDlgFunc,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,
-			ICriterionSearch criterionSearch) : base(typeof(TEntity), unitOfWorkFactory, commonServices, criterionSearch)
+			SearchViewModelBase<CriterionSearchModel> searchViewModel) : base(typeof(TEntity), unitOfWorkFactory, commonServices, searchViewModel)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 
@@ -115,9 +116,10 @@ namespace QS.Project.Journal
 				query.Where(restrictionFunc.Invoke());
 			}
 
-			query.Where(GetSearchCriterion(
-				titleExp
-			));
+			query.Where(CriterionSearchModel.ConfigureSearch()
+				.AddSearchBy(titleExp)
+				.GetSearchCriterion()
+			);
 
 			return query.SelectList(list => list
 					.Select(x => x.Id).WithAlias(() => resultAlias.Id)

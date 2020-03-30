@@ -1,15 +1,12 @@
 ﻿using System;
 namespace QS.Project.Journal.Search.Criterion
 {
-	public class MultipleEntryCriterionSearchViewModel : MultipleEntrySearchViewModel
+	/*
+	public class MultipleEntryCriterionSearchViewModel : MultipleEntrySearchViewModel<CriterionSearchModel>
 	{
-		public override SearchModel SearchModel => CriterionSearchModel;
-
-		public virtual CriterionSearchModelBase CriterionSearchModel { get; }
-
-		public MultipleEntryCriterionSearchViewModel(CriterionSearchModelBase criterionSearchModel) : base(criterionSearchModel)
+		public MultipleEntryCriterionSearchViewModel(CriterionSearchModel criterionSearchModel) : base(criterionSearchModel)
 		{
-			CriterionSearchModel = criterionSearchModel ?? throw new ArgumentNullException(nameof(criterionSearchModel));
 		}
 	}
+	*/
 }

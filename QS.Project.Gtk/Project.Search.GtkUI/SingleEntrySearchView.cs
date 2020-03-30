@@ -8,9 +8,9 @@ namespace QS.Project.Search.GtkUI
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class SingleEntrySearchView : Gtk.Bin
 	{
-		private SingleEntrySearchViewModel viewModel;
+		private ISingleEntrySearchViewModel viewModel;
 
-		public SingleEntrySearchView(SingleEntrySearchViewModel viewModel)
+		public SingleEntrySearchView(ISingleEntrySearchViewModel viewModel)
 		{
 			this.Build();
 			this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));

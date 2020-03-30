@@ -30,14 +30,18 @@ namespace QS.Project.Journal.Search.Criterion
 				foreach(var aliasParameter in AliasParameters) {
 					bool aliasIsInt = false;
 					bool aliasIsDecimal = false;
-					if(aliasParameter.Expression is UnaryExpression) {
-						UnaryExpression unaryExpession = aliasParameter.Expression as UnaryExpression;
+					System.Linq.Expressions.Expression expr = aliasParameter.Expression;
+					if(expr is LambdaExpression lambdaExpression) {
+						expr = lambdaExpression.Body;
+					}
+					if(expr is UnaryExpression) {
+						UnaryExpression unaryExpession = expr as UnaryExpression;
 						aliasIsInt = unaryExpession.Operand.Type == typeof(int);
 						aliasIsDecimal = unaryExpession.Operand.Type == typeof(decimal);
-					} else if(!(aliasParameter.Expression is MemberExpression)) {
+					} else if(!(expr is MemberExpression)) {
 						throw new InvalidOperationException($"{nameof(aliasParameter)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
 					}
-
+					LambdaExpression a;
 					if(aliasIsInt) {
 						if((intParsed)) {
 							ICriterion restriction = Restrictions.Eq(aliasParameter.PropertyProjection, intValue);

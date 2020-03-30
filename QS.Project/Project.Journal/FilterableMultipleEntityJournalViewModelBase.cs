@@ -6,9 +6,10 @@ using QS.Services;
 
 namespace QS.Project.Journal
 {
-	public class FilterableMultipleEntityJournalViewModelBase<TNode, TFilterViewModel> : MultipleEntityJournalViewModelBase<TNode>
+	public class FilterableMultipleEntityJournalViewModelBase<TNode, TFilterViewModel, TSearchModel> : MultipleEntityJournalViewModelBase<TNode, TSearchModel>
 		where TNode : JournalEntityNodeBase
 		where TFilterViewModel : FilterViewModelBase<TFilterViewModel>
+		where TSearchModel : CriterionSearchModelBase
 	{
 
 		private TFilterViewModel filterViewModel;
@@ -24,7 +25,7 @@ namespace QS.Project.Journal
 			TFilterViewModel filterViewModel, 
 			IUnitOfWorkFactory unitOfWorkFactory, 
 			ICommonServices commonServices, 
-			ICriterionSearch criterionSearch) : base(unitOfWorkFactory, commonServices, criterionSearch)
+			SearchViewModelBase<TSearchModel> searchViewModel) : base(unitOfWorkFactory, commonServices, searchViewModel)
 		{
 			FilterViewModel = filterViewModel;
 		}

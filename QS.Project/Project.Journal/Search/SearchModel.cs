@@ -1,13 +1,19 @@
 ﻿using System;
+using QS.DomainModel.Entity;
 namespace QS.Project.Journal.Search
 {
-	public class SearchModel : IJournalSearch
+	public class SearchModel : PropertyChangedBase, IJournalSearch
 	{
 		public event EventHandler OnSearch;
 
-		public string[] SearchValues { get; set; }
+		public virtual string[] SearchValues { get; set; }
 
-		public void Update()
+		public virtual void Update()
+		{
+			RaiseOnSearch();
+		}
+
+		protected void RaiseOnSearch()
 		{
 			OnSearch?.Invoke(this, EventArgs.Empty);
 		}

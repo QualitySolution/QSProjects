@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using QS.Project.Journal;
 using QS.Journal.GtkUI;
 using QS.ViewModels.Dialog;
+using System.Linq;
 
 namespace QS.Views.Resolve
 {
@@ -109,18 +110,48 @@ namespace QS.Views.Resolve
 
 		#endregion IGtkViewResolver implementation
 
-		private Type ResolveViewTypeByBaseType(Type viewModelType)
+		private bool TryResolveViewTypeByBaseType(Type viewModelType, out Type viewType)
 		{
+			viewType = null;
 			Type baseType = viewModelType;
 			do {
 				baseType = baseType.BaseType;
 				if(baseViewModelViews.ContainsKey(baseType)) {
-					return baseViewModelViews[baseType];
+					viewType = baseViewModelViews[baseType];
+					return true;
 				}
 			} while(baseType != typeof(ViewModelBase));
-			return null;
+			return false;
 		}
 
+		private bool TryResolveViewTypeByInterface(Type viewModelType, out Type viewType)
+		{
+			viewType = null;
+			Type[] interfaceTypes = viewModelType.GetInterfaces();
+			var interfaceViewTypes = interfaceTypes.Where(x => viewModelViews.ContainsKey(x)).Select(x => viewModelViews[x]);
+			int registeredInterfacesCount = interfaceViewTypes.Count();
+			if(registeredInterfacesCount > 1) {
+				throw new GtkViewResolveException($"Невозможно точно определить View, так как для типа {viewModelType.FullName} зарегистрировано более одного интерфейса.");
+			}
+			if(registeredInterfacesCount == 1) {
+				viewType = interfaceViewTypes.First();
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Разрешает тип View для ViewModel.
+		/// Сначала проверяется точное совпадение по типу ViewModel,
+		/// если не не удается разрешить, то проверятся по наиболее
+		/// близкий базовый класс в структуре наследования, если для
+		/// них не удается разрешить, то проверяются сопоставления по 
+		/// интерфейсам, должено быть совпадение только по одному
+		/// интерфейсу, если найдено несколько сопоставлений по интерфейсу
+		/// то кидается <see cref="GtkViewResolveException"/>
+		/// </summary>
+		/// <param name="viewModelType"></param>
+		/// <exception cref="GtkViewResolveException">Возникает при невозможности разрешить тип</exception>
 		public virtual Type Resolve(Type viewModelType)
 		{
 			if(viewModelType == null) {
@@ -131,16 +162,21 @@ namespace QS.Views.Resolve
 				return viewModelViews[viewModelType];
 			}
 
-			Type viewType = ResolveViewTypeByBaseType(viewModelType);
-			if(viewType == null) {
-				throw new GtkViewResolveException($"Не настроено сопоставление View для {viewModelType.FullName}");
-			} else {
+			Type viewType;
+
+			if(TryResolveViewTypeByBaseType(viewModelType, out viewType)) {
 				return viewType;
 			}
+
+			if(TryResolveViewTypeByInterface(viewModelType, out viewType)) {
+				return viewType;
+			}
+
+			throw new GtkViewResolveException($"Не настроено сопоставление View для {viewModelType.FullName}");
 		}
 
 		public virtual UniversalWidgetResolver RegisterViewForViewModel<TViewModel, TView>()
-			where TViewModel : ViewModelBase
+			where TViewModel : class
 			where TView : Widget
 		{
 			Type viewModelType = typeof(TViewModel);
