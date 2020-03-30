@@ -116,6 +116,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public NumberRendererMapping<TNode> EditedEvent(Gtk.EditedHandler handler)
+		{
+			cellRenderer.Edited += handler;
+			return this;
+		}
+
 		#endregion
 	}
 }
