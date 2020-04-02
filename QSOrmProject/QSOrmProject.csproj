@@ -132,7 +132,6 @@
     <Compile Include="ObjectCloner.cs" />
     <Compile Include="Deletion\DeleteDlg.cs" />
     <Compile Include="gtk-gui\QSOrmProject.Deletion.DeleteDlg.cs" />
-    <Compile Include="Deletion\DeleteCore.cs" />
     <Compile Include="CommonDialogs.cs" />
     <Compile Include="Properties\DialogWorksAttributes.cs" />
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />
