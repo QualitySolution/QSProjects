@@ -76,7 +76,7 @@ namespace QS.Project.Journal
 			NodeActionsList.Add(addAction);
 
 			var editAction = new JournalAction("Изменить",
-					(selected) => canEdit,
+					(selected) => canEdit && selected.Any(),
 					(selected) => true,
 					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
 					);
@@ -86,7 +86,7 @@ namespace QS.Project.Journal
 				RowActivatedAction = editAction;
 
 			var deleteAction = new JournalAction("Удалить",
-					(selected) => canDelete,
+					(selected) => canDelete && selected.Any(),
 					(selected) => true,
 					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray())
 					);
