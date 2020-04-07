@@ -59,7 +59,7 @@ namespace QS.Navigation
 				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, gtkMasterPage?.GtkDialog, DialogFlags.Modal);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
-			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? 800, defaultsize?.DefaultHeight ?? 500);
+			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
