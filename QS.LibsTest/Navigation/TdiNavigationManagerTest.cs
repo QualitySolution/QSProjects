@@ -15,6 +15,7 @@ using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
 using QS.ViewModels.Dialog;
+using QS.Views.Resolve;
 
 namespace QS.Test.Navigation
 {
@@ -190,6 +191,33 @@ namespace QS.Test.Navigation
 			notebook.ForceCloseTab(page.TdiTab);
 
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
+		}
+
+		[Test(Description = "Проверяем что можем закрыть через навигатор модальный диалог.")]
+		public void ForceClosePage_ModalDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<ModalDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<ModalDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			navigation.ForceClosePage(page);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
 		}
 
 		[Test(Description = "Проверка что событие о закрытии страницы приходит внешним подписчикам.")]

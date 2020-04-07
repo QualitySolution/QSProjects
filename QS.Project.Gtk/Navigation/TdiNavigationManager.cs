@@ -45,12 +45,19 @@ namespace QS.Navigation
 
 		public bool AskClosePage(IPage page)
 		{
-			return tdiNotebook.AskToCloseTab((page as ITdiPage).TdiTab);
+			if (page is ITdiPage tdiPage)
+				return tdiNotebook.AskToCloseTab(tdiPage.TdiTab);
+			else
+				ClosePage(page);
+			return true;
 		}
 
 		public void ForceClosePage(IPage page)
 		{
-			tdiNotebook.ForceCloseTab((page as ITdiPage).TdiTab);
+			if (page is ITdiPage tdiPage)
+				tdiNotebook.ForceCloseTab(tdiPage.TdiTab);
+			else
+				ClosePage(page);
 		}
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)

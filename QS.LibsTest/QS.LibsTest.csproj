@@ -130,6 +130,9 @@
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
+    <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\ModalDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
