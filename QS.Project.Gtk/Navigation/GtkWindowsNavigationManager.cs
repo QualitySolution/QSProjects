@@ -13,8 +13,8 @@ namespace QS.Navigation
 		readonly IGtkViewResolver viewResolver;
 		protected readonly IViewModelsPageFactory viewModelsFactory;
 
-		public GtkWindowsNavigationManager(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver)
-			: base(hashGenerator, interactive)
+		public GtkWindowsNavigationManager(IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver, IPageHashGenerator hashGenerator = null)
+			: base(interactive, hashGenerator)
 		{
 			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
 			this.viewResolver = viewResolver;

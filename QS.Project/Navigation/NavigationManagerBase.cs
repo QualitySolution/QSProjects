@@ -13,9 +13,9 @@ namespace QS.Navigation
 		protected readonly IPageHashGenerator hashGenerator;
 		protected readonly IInteractiveMessage interactiveMessage;
 
-		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IInteractiveMessage interactive)
+		protected NavigationManagerBase(IInteractiveMessage interactive, IPageHashGenerator hashGenerator = null)
 		{
-			this.hashGenerator = hashGenerator ?? throw new ArgumentNullException(nameof(hashGenerator));
+			this.hashGenerator = hashGenerator;
 			this.interactiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
@@ -117,7 +117,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
-				() => hashGenerator.GetHash<TViewModel>(master, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TViewModel>(master, ctorTypes, ctorValues),
 				(hash) => GetPageFactory<TViewModel>().CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
@@ -126,7 +126,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
-				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
+				() => hashGenerator?.GetHashNamedArgs<TViewModel>(master, ctorArgs),
 				(hash) => GetPageFactory<TViewModel>().CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash, addingRegistrations)
 			);
 		}

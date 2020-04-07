@@ -24,13 +24,13 @@ namespace QS.Navigation
 
 		public TdiNavigationManager(
 			TdiNotebook tdiNotebook,
-			IPageHashGenerator hashGenerator, 
-			IViewModelsPageFactory viewModelsFactory, 
-			IInteractiveMessage interactive, 
-			ITdiPageFactory tdiPageFactory = null, 
+			IViewModelsPageFactory viewModelsFactory,
+			IInteractiveMessage interactive,
+			IPageHashGenerator hashGenerator = null,
+			ITdiPageFactory tdiPageFactory = null,
 			AutofacViewModelsGtkPageFactory viewModelsGtkPageFactory = null, 
 			IGtkViewResolver viewResolver = null)
-			: base(hashGenerator, interactive)
+			: base(interactive, hashGenerator)
 		{
 			this.tdiNotebook = tdiNotebook ?? throw new ArgumentNullException(nameof(tdiNotebook));
 			this.tdiPageFactory = tdiPageFactory;
@@ -97,7 +97,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindOrCreateMasterPage(master), options,
-				() => hashGenerator.GetHash<TViewModel>(null, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TViewModel>(null, ctorTypes, ctorValues),
 				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
@@ -127,7 +127,7 @@ namespace QS.Navigation
 		{
 			return (ITdiPage)OpenViewModelInternal(
 				FindOrCreateMasterPage(masterTab), options,
-				() => hashGenerator.GetHash<TTab>(null, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TTab>(null, ctorTypes, ctorValues),
 				(hash) => tdiPageFactory.CreateTdiPageTypedArgs<TTab>(ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
