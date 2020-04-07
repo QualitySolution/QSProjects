@@ -200,6 +200,8 @@ namespace QS.Navigation
 		{
 			var gtkPage = (IGtkWindowPage)page;
 			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
+			if(gtkPage.GtkView == null)
+				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, DialogFlags.Modal);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
 			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? 800, defaultsize?.DefaultHeight ?? 500);
