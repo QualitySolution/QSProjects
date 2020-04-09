@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Autofac;
 using Gamma.Utilities;
@@ -43,21 +43,21 @@ namespace QS.Navigation
 
 		#region Закрытие
 
-		public bool AskClosePage(IPage page)
+		public bool AskClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
 			if (page is ITdiPage tdiPage)
-				return tdiNotebook.AskToCloseTab(tdiPage.TdiTab);
+				return tdiNotebook.AskToCloseTab(tdiPage.TdiTab, source);
 			else
-				ClosePage(page);
+				ClosePage(page, source);
 			return true;
 		}
 
-		public void ForceClosePage(IPage page)
+		public void ForceClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
 			if (page is ITdiPage tdiPage)
-				tdiNotebook.ForceCloseTab(tdiPage.TdiTab);
+				tdiNotebook.ForceCloseTab(tdiPage.TdiTab, source);
 			else
-				ClosePage(page);
+				ClosePage(page, source);
 		}
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
@@ -70,7 +70,7 @@ namespace QS.Navigation
 
 			var page = FindPage(closedTab);
 			if (page != null)
-				ClosePage(page);
+				ClosePage(page, e.CloseSource);
 		}
 
 		#endregion
@@ -222,7 +222,7 @@ namespace QS.Navigation
 		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
-			ClosePage(page);
+			ClosePage(page, CloseSource.ClosePage);
 		}
 
 		public IPage FindPage(Gdk.Window window)
@@ -230,9 +230,9 @@ namespace QS.Navigation
 			return AllPages.OfType<IGtkWindowPage>().FirstOrDefault(x => x.GtkDialog.GdkWindow == window);
 		}
 
-		protected override void ClosePage(IPage page)
+		protected override void ClosePage(IPage page, CloseSource source)
 		{
-			base.ClosePage(page);
+			base.ClosePage(page, source);
 
 			if(page is IGtkWindowPage gtkPage) {
 				gtkPage.GtkDialog.Respond((int)ResponseType.DeleteEvent);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Gtk;
 using NLog;
+using QS.Navigation;
 using QS.Tdi.Gtk;
 
 namespace QS.Tdi
@@ -124,7 +125,6 @@ namespace QS.Tdi
 						dialogVBox.Destroy();
 						this.Remove(dialogVBox);
 						this.Remove(boxSeparator);
-						(TabParent as TdiNotebook).OnSliderTabClosed(this, activeDialog);
 					}
 					//Add
 					if(value != null) {
@@ -215,29 +215,29 @@ namespace QS.Tdi
 
 		#region Методы закрытия
 
-		public bool AskToCloseTab(ITdiTab tab)
+		public bool AskToCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			if(tab == ActiveDialog) 
-				return CloseDialog(activeDialog, true);
+				return CloseDialog(activeDialog, source, true);
 
 			if(tab == Journal)
-				return TabParent.AskToCloseTab(this);
+				return TabParent.AskToCloseTab(this, source);
 
-			return TabParent.AskToCloseTab(tab);
+			return TabParent.AskToCloseTab(tab, source);
 		}
 
-		public void ForceCloseTab(ITdiTab tab)
+		public void ForceCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			if(tab == ActiveDialog) {
-				CloseDialog(activeDialog, false);
+				CloseDialog(activeDialog, source, false);
 				return;
 			}
 
 			if(tab == Journal) {
-				TabParent.ForceCloseTab(this);
+				TabParent.ForceCloseTab(this, source);
 				return;
 			}
-			TabParent.ForceCloseTab(tab);
+			TabParent.ForceCloseTab(tab, source);
 		}
 
 		public void OnTabClosed()
@@ -251,7 +251,7 @@ namespace QS.Tdi
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 
-		protected bool CloseDialog(ITdiDialog dlg, bool AskSave)
+		protected bool CloseDialog(ITdiDialog dlg, CloseSource source, bool AskSave)
 		{
 			if(TabParent.CheckClosingSlaveTabs(this as ITdiTab))
 				return false;
@@ -277,7 +277,7 @@ namespace QS.Tdi
 			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
-			(TabParent as TdiNotebook)?.OnTabClosed(dlg);
+			(TabParent as TdiNotebook)?.OnSliderTabClosed(this, dlg, source);
 			OnSladerTabChanged();
 			return true;
 		}
@@ -325,8 +325,6 @@ namespace QS.Tdi
 				TabParent.AddTab(tab, afterTab);
 		}
 
-
-
 		public bool FailInitialize {
 			get {
 				return Journal != null ? Journal.FailInitialize : false;
@@ -363,7 +361,7 @@ namespace QS.Tdi
 			}
 
 			if(afterTab == Journal && ActiveDialog != null) {
-				 CloseDialog(ActiveDialog, true);
+				 CloseDialog(ActiveDialog, CloseSource.FromParentPage, true);
 				if(ActiveDialog != null)
 					return null;
 			}

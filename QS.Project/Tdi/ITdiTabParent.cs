@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Navigation;
 
 namespace QS.Tdi
 {
@@ -35,13 +36,13 @@ namespace QS.Tdi
 		/// </summary>
 		/// <returns><c>true</c>, если вкладка была закрыта, <c>false</c> если нет.</returns>
 		/// <param name="tab">Вкладка которую нужно закрыть</param>
-		bool AskToCloseTab(ITdiTab tab);
+		bool AskToCloseTab(ITdiTab tab, CloseSource source = CloseSource.External);
 
 		/// <summary>
 		/// Принудительно закрыть вкладку без вопросов.
 		/// </summary>
 		/// <param name="tab">Вкладка</param>
-		void ForceCloseTab(ITdiTab tab);
+		void ForceCloseTab(ITdiTab tab, CloseSource source = CloseSource.External);
 
 		ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null);
 

@@ -340,6 +340,7 @@
     <Compile Include="Deletion\Configuration\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\Configuration\IHibernateDeleteRule.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
+    <Compile Include="Navigation\CloseSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

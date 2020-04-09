@@ -6,6 +6,7 @@ using QS.Navigation;
 using QS.Services;
 using QS.Tdi;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.ViewModels
 {
@@ -95,14 +96,14 @@ namespace QS.ViewModels
 			OnPropertyChanged(nameof(Title));
 		}
 
-		public override void Close(bool askSave)
+		public override void Close(bool askSave, CloseSource source)
 		{
 			if(askSave)
-				TabParent?.AskToCloseTab(this);
+				TabParent?.AskToCloseTab(this, source);
 			else
-				TabParent?.ForceCloseTab(this);
+				TabParent?.ForceCloseTab(this, source);
 
-			base.Close(askSave);
+			base.Close(askSave, source);
 		}
 
 		public void OnTabClosed()

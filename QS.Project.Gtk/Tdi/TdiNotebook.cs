@@ -5,6 +5,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
+using QS.Navigation;
 using QS.Utilities.GtkUI;
 
 namespace QS.Tdi.Gtk
@@ -205,10 +206,9 @@ namespace QS.Tdi.Gtk
 				TabAdded(sender, new TabAddedEventArgs(tab));
 		}
 
-		internal void OnSliderTabClosed(object sender, ITdiTab tab)
+		internal void OnSliderTabClosed(object sender, ITdiTab tab, CloseSource source)
 		{
-			if(TabClosed != null)
-				TabClosed(sender, new TabClosedEventArgs(tab));
+			TabClosed?.Invoke(sender, new TabClosedEventArgs(tab, source));
 		}
 
 		internal void OnSliderTabSwitched(object sender, ITdiTab tab)
@@ -234,11 +234,11 @@ namespace QS.Tdi.Gtk
 
 		#region Закрытие вкладки
 
-		public bool AskToCloseTab(ITdiTab tab)
+		public bool AskToCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			var slider = tab.TabParent as TdiSliderTab;
 			if(slider != null)
-				return slider.AskToCloseTab(tab);
+				return slider.AskToCloseTab(tab, source);
 
 			if (CheckClosingSlaveTabs(tab))
 				return false;
@@ -249,17 +249,17 @@ namespace QS.Tdi.Gtk
 			}
 
 			if(SaveIfNeed(tab)) {
-				ForceCloseTab(tab);
+				ForceCloseTab(tab, source);
 				return true;
 			}
 			return false;
 		}
 
-		public void ForceCloseTab(ITdiTab tab)
+		public void ForceCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			var slider = tab.TabParent as TdiSliderTab;
 			if (slider != null) {
-				slider.ForceCloseTab(tab);
+				slider.ForceCloseTab(tab, source);
 				return;
 			}
 
@@ -270,9 +270,9 @@ namespace QS.Tdi.Gtk
 			}
 
 			while(info.SlaveTabs.Count > 0)
-				ForceCloseTab(info.SlaveTabs[0]);
+				ForceCloseTab(info.SlaveTabs[0], CloseSource.WithMasterPage);
 
-			CloseTab(info);
+			CloseTab(info, source);
 		}
 
 		void OnCloseButtonClicked(object sender, EventArgs e)
@@ -289,7 +289,7 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 
-			AskToCloseTab(tab.Tab);
+			AskToCloseTab(tab.Tab, CloseSource.ClosePage);
 		}
 
 		private bool SaveIfNeed(ITdiTab tab)
@@ -351,7 +351,7 @@ namespace QS.Tdi.Gtk
 			return false;
 		}
 
-		private void CloseTab(TdiTabInfo info)
+		private void CloseTab(TdiTabInfo info, CloseSource source)
 		{
 			if(info.SlaveTabs.Count > 0)
 				throw new InvalidOperationException("Вкладка не может быть закрыта, если у нее есть подчинёные вкладки.");
@@ -368,9 +368,9 @@ namespace QS.Tdi.Gtk
 			this.Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if(maybeSliderActiveDialog != null) {
-				OnTabClosed(maybeSliderActiveDialog);
+				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
 			}
-			OnTabClosed(tab);
+			OnTabClosed(tab, source);
 			tab.OnTabClosed();
 			if(tabBox != null && tabBox.Tab is Container) {
 				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
@@ -383,11 +383,9 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-		internal void OnTabClosed(ITdiTab tab)
+		internal void OnTabClosed(ITdiTab tab, CloseSource source)
 		{
-			if(TabClosed != null) {
-				TabClosed(this, new TabClosedEventArgs(tab));
-			}
+			TabClosed?.Invoke(this, new TabClosedEventArgs(tab, source));
 		}
 
 		public bool CloseAllTabs()
@@ -407,7 +405,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			while(_tabs.Count > 0) {
-				ForceCloseTab(_tabs[0].TdiTab);
+				ForceCloseTab(_tabs[0].TdiTab, CloseSource.AppQuit);
 			}
 
 			return true;
@@ -460,12 +458,17 @@ namespace QS.Tdi.Gtk
 	public class TabClosedEventArgs : EventArgs
 	{
 		private ITdiTab tab;
+
+		public CloseSource CloseSource { get; private set; }
+
 		public ITdiTab Tab {
 			get { return tab; }
 		}
-		public TabClosedEventArgs(ITdiTab tab)
+
+		public TabClosedEventArgs(ITdiTab tab, CloseSource source)
 		{
 			this.tab = tab;
+			CloseSource = source;
 		}
 	}
 

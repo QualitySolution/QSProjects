@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Autofac;
 using NSubstitute;
 using NUnit.Framework;
@@ -158,7 +158,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 
-			navManager.ForceClosePage(page1);
+			navManager.ForceClosePage(page1, CloseSource.External);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 		}
@@ -188,7 +188,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(1));
 
-			notebook.ForceCloseTab(page.TdiTab);
+			notebook.ForceCloseTab(page.TdiTab, CloseSource.External);
 
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
@@ -216,7 +216,7 @@ namespace QS.Test.Navigation
 			var page = navigation.OpenViewModel<ModalDialogViewModel>(null);
 			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
 
-			navigation.ForceClosePage(page);
+			navigation.ForceClosePage(page, CloseSource.External);
 			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
 		}
 
@@ -250,7 +250,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
-			navManager.ForceClosePage(firstPage);
+			navManager.ForceClosePage(firstPage, CloseSource.External);
 			Assert.That(eventRised, Is.True);
 		}
 
@@ -295,7 +295,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
-			navManager.ForceClosePage(dialogPage);
+			navManager.ForceClosePage(dialogPage, CloseSource.External);
 			Assert.That(eventRised, Is.True);
 		}
 
@@ -336,7 +336,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(tdiNotebook.Tabs.Count, Is.EqualTo(1));
 			var openedTab = tdiNotebook.Tabs.First().TdiTab;
-			tdiNotebook.ForceCloseTab(openedTab);
+			tdiNotebook.ForceCloseTab(openedTab, CloseSource.External);
 
 			Assert.That(eventRised, Is.True);
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));

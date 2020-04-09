@@ -5,6 +5,7 @@ using QS.Dialog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Tdi;
 using QS.Utilities.Text;
 
@@ -151,13 +152,13 @@ namespace QSOrmProject
 			if (!this.HasChanges || Save ())
 			{
 				OnEntitySaved (true);
-				OnCloseTab (false);
+				OnCloseTab (false, CloseSource.Save);
 			}
 		}
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			OnCloseTab (false);
+			OnCloseTab (false, CloseSource.Cancel);
 		}
 
 		protected void OnEntitySaved (bool tabClosed = false)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -183,7 +183,7 @@ namespace QS.Navigation
 			}
 		}
 
-		protected virtual void ClosePage(IPage page)
+		protected virtual void ClosePage(IPage page, CloseSource source)
 		{
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
