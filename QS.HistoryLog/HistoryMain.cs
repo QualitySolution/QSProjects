@@ -43,7 +43,7 @@ namespace QS.HistoryLog
 
 		internal static string GetObjectTilte(object value)
 		{
-			return value == null ? null : String.Format ("[{0}]", DomainHelper.GetObjectTilte(value));
+			return value == null ? null : String.Format ("[{0}]", DomainHelper.GetTitle(value));
 		}
 	}
 

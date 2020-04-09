@@ -210,7 +210,7 @@ namespace QSOrmProject
 				return ObjectDisplayFunc (item);
 			}
 
-			return DomainHelper.GetObjectTilte (item);
+			return DomainHelper.GetTitle (item);
 		}
 
 		private string[] displayFields;

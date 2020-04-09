@@ -194,7 +194,7 @@ namespace QS.Deletion.Configuration
 				resultList.Add (new EntityDTO{
 					Id = (uint)DomainHelper.GetId (item),
 					ClassType = ObjectClass,
-					Title = DomainHelper.GetObjectTilte (item),
+					Title = DomainHelper.GetTitle (item),
 					Entity = item
 				});
 			}
@@ -246,7 +246,7 @@ namespace QS.Deletion.Configuration
 			return new EntityDTO{
 				Id = (uint)item.Id,
 				ClassType = ObjectClass,
-				Title = DomainHelper.GetObjectTilte (item),
+				Title = DomainHelper.GetTitle (item),
 				Entity = item
 			};
 		}

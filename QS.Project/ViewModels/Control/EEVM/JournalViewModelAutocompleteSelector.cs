@@ -48,7 +48,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public string GetTitle(object node)
 		{
-			return DomainHelper.GetObjectTilte(node);
+			return DomainHelper.GetTitle(node);
 		}
 
 		#region Внутреннее

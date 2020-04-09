@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,7 +14,15 @@ namespace QS.DomainModel.Entity
 {
 	public static class DomainHelper
 	{
-		public static string GetObjectTilte(object value)
+		/// <summary>
+		/// Метод возвращает название объекта через рефлексию.
+		/// Название пытается опытается определить в следующем порядке:
+		/// 1. Если у объекта имеется свойство Title, возвращается его значение.
+		/// 2. Если у объекта имеется свойство Name, возвращается его значение.
+		/// 3. Возвращается результат вызова ToString()
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public static string GetTitle(object value)
 		{
 			var prop = value.GetType ().GetProperty ("Title");
 			if (prop != null) {

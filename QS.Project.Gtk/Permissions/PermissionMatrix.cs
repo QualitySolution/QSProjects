@@ -57,7 +57,7 @@ namespace QS.Permissions
 
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				var entities = uow.GetAll<TPerEntity>();
-				columnNames = entities.Select(x => DomainHelper.GetObjectTilte(x)).ToArray();
+				columnNames = entities.Select(x => DomainHelper.GetTitle(x)).ToArray();
 				Entities = entities.ToArray();
 			}
 			ColumnCount = Entities.Length;

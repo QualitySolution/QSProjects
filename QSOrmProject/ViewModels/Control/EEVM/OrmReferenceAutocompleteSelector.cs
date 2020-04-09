@@ -46,7 +46,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public string GetTitle(object node)
 		{
-			return DomainModel.Entity.DomainHelper.GetObjectTilte(node);
+			return DomainModel.Entity.DomainHelper.GetTitle(node);
 		}
 
 		public void LoadAutocompletion(string[] searchText, int takeCount)

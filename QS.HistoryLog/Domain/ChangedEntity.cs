@@ -48,7 +48,7 @@ namespace QS.HistoryLog.Domain
 			var type = NHibernateProxyHelper.GuessClass(entity);
 
 			EntityClassName = type.Name;
-			EntityTitle = DomainHelper.GetObjectTilte(entity);
+			EntityTitle = DomainHelper.GetTitle(entity);
 			//Обрезаем так как в базе данных поле равно 200.
 			if(EntityTitle != null && EntityTitle.Length > 200)
 				EntityTitle = EntityTitle.Substring(0, 197) + "...";
