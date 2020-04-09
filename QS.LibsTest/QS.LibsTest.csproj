@@ -133,6 +133,12 @@
     <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="TestApp\Views\ModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
+    <Compile Include="TestApp\ViewModels\OnCloseModalDialogViewModel.cs" />
+    <Compile Include="TestApp\ViewModels\OnCloseDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\OnCloseDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseDialogView.cs" />
+    <Compile Include="TestApp\Views\OnCloseModalDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseModalDialogView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />

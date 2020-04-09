@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Autofac;
 using NSubstitute;
 using NUnit.Framework;
@@ -392,5 +392,71 @@ namespace QS.Test.Navigation
 
 			interactive.Received().ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
 		}
+
+		#region IOnCloseActionViewModel
+
+		[Test(Description = "Проверяем что IOnCloseActionViewModel получает вызов при закрытии в модальном диалоге.")]
+		public void IOnCloseActionViewModel_ModalDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<OnCloseModalDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<OnCloseModalDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			CloseSource? source = null;
+			page.ViewModel.OnCloseCall = (cs) => source = cs;
+
+			navigation.ForceClosePage(page, CloseSource.External);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
+			Assert.That(source, Is.EqualTo(CloseSource.External));
+		}
+
+		[Test(Description = "Проверяем что IOnCloseActionViewModel получает вызов при закрытии в обычном диалоге.")]
+		public void IOnCloseActionViewModel_CommonDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<OnCloseDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<OnCloseDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			CloseSource? source = null;
+			page.ViewModel.OnCloseCall = (cs) => source = cs;
+
+			navigation.ForceClosePage(page, CloseSource.External);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
+			Assert.That(source, Is.EqualTo(CloseSource.External));
+		}
+
+		#endregion
 	}
 }

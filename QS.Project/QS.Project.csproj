@@ -340,6 +340,7 @@
     <Compile Include="Deletion\Configuration\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\Configuration\IHibernateDeleteRule.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
+    <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
     <Compile Include="Navigation\CloseSource.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -383,6 +384,7 @@
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Control\ESVM\" />
     <Folder Include="Deletion\Configuration\" />
+    <Folder Include="ViewModels\Extension\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

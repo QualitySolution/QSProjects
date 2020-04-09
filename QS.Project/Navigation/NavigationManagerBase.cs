@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Navigation
 {
@@ -185,6 +186,9 @@ namespace QS.Navigation
 
 		protected virtual void ClosePage(IPage page, CloseSource source)
 		{
+			if (page.ViewModel is IOnCloseActionViewModel onClose)
+				onClose.OnClose(source);
+
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
 				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
