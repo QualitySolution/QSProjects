@@ -195,13 +195,13 @@ namespace QS.Navigation
 			var pageToRemove = pages.FirstOrDefault(x => x == page);
 			if (pageToRemove != null) {
 				pages.Remove(pageToRemove);
-				(pageToRemove as IPageInternal).OnClosed();
+				(pageToRemove as IPageInternal).OnClosed(source);
 			}
 			else {
 				var childPair = ChildPages.FirstOrDefault(x => x.ChildPage == page);
 				if (childPair != null) {
 					(childPair.ParentPage as IPageInternal).RemoveChildPage(childPair.ChildPage);
-					(childPair.ChildPage as IPageInternal).OnClosed();
+					(childPair.ChildPage as IPageInternal).OnClosed(source);
 				}
 			}
 

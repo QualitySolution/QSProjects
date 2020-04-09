@@ -15,7 +15,7 @@ namespace QS.Navigation
 
 		DialogViewModelBase ViewModel { get; }
 
-		event EventHandler PageClosed;
+		event EventHandler<PageClosedEventArgs> PageClosed;
 
 		IEnumerable<MasterToSlavePair> SlavePagesAll { get; }
 		IEnumerable<ParentToChildPair> ChildPagesAll { get; }
@@ -26,7 +26,7 @@ namespace QS.Navigation
 
 	internal interface IPageInternal
 	{
-		void OnClosed();
+		void OnClosed(CloseSource source);
 		void AddSlavePage(IPage page);
 		bool RemoveSlavePage(IPage page);
 		void AddChildPage(IPage page);
@@ -57,5 +57,15 @@ namespace QS.Navigation
 	{
 		public IPage ParentPage;
 		public IPage ChildPage;
+	}
+
+	public class PageClosedEventArgs : EventArgs
+	{
+		public CloseSource CloseSource { get; }
+
+		public PageClosedEventArgs(CloseSource source)
+		{
+			CloseSource = source;
+		}
 	}
 }
