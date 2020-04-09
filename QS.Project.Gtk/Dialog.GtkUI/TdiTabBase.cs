@@ -74,7 +74,7 @@ namespace QS.Dialog.Gtk
 
 		#endregion
 
-		protected void OnCloseTab (bool askSave, CloseSource source)
+		protected void OnCloseTab (bool askSave, CloseSource source = CloseSource.Self)
 		{
 			if(askSave)
 				TabParent.AskToCloseTab(this, source);
