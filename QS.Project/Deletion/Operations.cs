@@ -85,7 +85,7 @@ namespace QS.Deletion
 			if (cancellation.IsCancellationRequested)
 				return;
 
-			core.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity).NominativePlural));
+			core.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity)?.NominativePlural));
 			foreach(var item in DeletingItems)
 			{
 				if (cancellation.IsCancellationRequested)
@@ -115,7 +115,7 @@ namespace QS.Deletion
 			if (cancellation.IsCancellationRequested)
 				return;
 
-			core.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType).NominativePlural));
+			core.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType)?.NominativePlural));
 			var propertyCache = EntityType.GetProperty (PropertyName);
 			foreach(var item in ClearingItems)
 			{
@@ -144,7 +144,7 @@ namespace QS.Deletion
 			if (cancellation.IsCancellationRequested)
 				return;
 
-			core.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType).NominativePlural));
+			core.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType)?.NominativePlural));
 			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
 			var removeMethod = String.IsNullOrEmpty (RemoveMethodName) ? null : RemoveInClassType.GetMethod (RemoveMethodName);
 			foreach(var item in RemoveInItems)
@@ -170,4 +170,3 @@ namespace QS.Deletion
 	}
 
 }
-
