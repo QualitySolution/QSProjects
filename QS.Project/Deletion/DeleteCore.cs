@@ -134,28 +134,21 @@ namespace QS.Deletion
 			AddExcuteOperation("Подготовка");
 			BeforeDeletion?.Invoke();
 
-			try {
-				IsHibernateMode = HasHibernateOperations(RootOperation);
-				RootOperation.Execute (this, cancellation);
+			IsHibernateMode = HasHibernateOperations(RootOperation);
+			RootOperation.Execute (this, cancellation);
 
-				if(cancellation.IsCancellationRequested) {
-					DeletionExecuted = false;
-					return;
-				}
-
-				AddExcuteOperation("Завершение транзакции");
-				if(sqlTransaction != null)
-					sqlTransaction.Commit ();
-				if(uow != null)
-					uow.Commit ();
-				DeletionExecuted = true;
-				return;
-			} catch (Exception ex) {
+			if(cancellation.IsCancellationRequested) {
 				DeletionExecuted = false;
-				if(SqlTransaction != null)
-					sqlTransaction.Rollback ();
-				throw ex;
+				return;
 			}
+
+			AddExcuteOperation("Завершение транзакции");
+			if(sqlTransaction != null)
+				sqlTransaction.Commit ();
+			if(uow != null)
+				uow.Commit ();
+			DeletionExecuted = true;
+			return;
 		}
 
 		#endregion
