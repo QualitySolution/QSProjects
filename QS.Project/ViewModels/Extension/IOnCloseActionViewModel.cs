@@ -12,6 +12,6 @@ namespace QS.ViewModels.Extension
 	/// </summary>
 	public interface IOnCloseActionViewModel
 	{
-		void OnClose(CloseSource closeSource);
+		void OnClose(CloseSource source);
 	}
 }

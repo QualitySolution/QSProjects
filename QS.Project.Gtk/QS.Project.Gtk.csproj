@@ -248,7 +248,6 @@
     <Compile Include="Navigation\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
-    <Compile Include="Project.Services.GtkUI\GtkDeleteEntityService.cs" />
     <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
     <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
@@ -276,6 +275,12 @@
     <Compile Include="Views\Dialog\WindowSizeAttribute.cs" />
     <Compile Include="Views\Control\EntitySearch.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntitySearch.cs" />
+    <Compile Include="Deletion.Views\PrepareDeletionView.cs" />
+    <Compile Include="gtk-gui\QS.Deletion.Views.PrepareDeletionView.cs" />
+    <Compile Include="Deletion.Views\DeletionProcessView.cs" />
+    <Compile Include="gtk-gui\QS.Deletion.Views.DeletionProcessView.cs" />
+    <Compile Include="Deletion.Views\DeletionView.cs" />
+    <Compile Include="gtk-gui\QS.Deletion.Views.DeletionView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -302,6 +307,7 @@
     <Folder Include="Widgets\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="Views\Dialog\" />
+    <Folder Include="Deletion.Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

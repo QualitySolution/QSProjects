@@ -330,6 +330,7 @@
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
     <Compile Include="Deletion\DeleteConfig.cs" />
+    <Compile Include="Project.Services\DeleteEntityGUIService.cs" />
     <Compile Include="Deletion\Configuration\DeleteConfiguration.cs" />
     <Compile Include="Deletion\Configuration\ClearDependenceInfo.cs" />
     <Compile Include="Deletion\Configuration\DeleteDependenceInfo.cs" />
@@ -339,7 +340,11 @@
     <Compile Include="Deletion\Configuration\IDeleteInfoHibernate.cs" />
     <Compile Include="Deletion\Configuration\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\Configuration\IHibernateDeleteRule.cs" />
+    <Compile Include="Deletion\ViewModels\PrepareDeletionViewModel.cs" />
+    <Compile Include="Deletion\ViewModels\DeletionProcessViewModel.cs" />
+    <Compile Include="Deletion\ViewModels\DeletionViewModel.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
+    <Compile Include="Deletion\DeletionAutofacModule.cs" />
     <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
     <Compile Include="Navigation\CloseSource.cs" />
   </ItemGroup>
@@ -384,6 +389,7 @@
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Control\ESVM\" />
     <Folder Include="Deletion\Configuration\" />
+    <Folder Include="Deletion\ViewModels\" />
     <Folder Include="ViewModels\Extension\" />
   </ItemGroup>
   <ItemGroup>

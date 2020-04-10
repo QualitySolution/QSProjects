@@ -34,6 +34,11 @@ namespace QS.Deletion.Configuration
 
 		#region Внутренне использование
 
+		internal IDeleteInfo GetDeleteInfo(string table)
+		{
+			return ClassInfos.FirstOrDefault(i => i.TableName == table);
+		}
+
 		internal IDeleteInfo GetDeleteInfo (Type clazz)
 		{
 			return ClassInfos.FirstOrDefault (i => i.ObjectClass == clazz);
@@ -103,12 +108,5 @@ namespace QS.Deletion.Configuration
 		}
 
 		#endregion
-	}
-
-	public class DeletedItem
-	{
-		public uint ItemId;
-		public Type ItemClass;
-		public string Title;
 	}
 }
