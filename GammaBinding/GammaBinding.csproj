@@ -113,6 +113,7 @@
     <Compile Include="Binding\Converters\UintToStringConverter.cs" />
     <Compile Include="GtkWidgets\yToggleButton.cs" />
     <Compile Include="Binding\Converters\IdToStringConverter.cs" />
+    <Compile Include="GtkWidgets\yProgressBar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -162,6 +163,7 @@
     <EmbeddedResource Include="icons\button.png" />
     <EmbeddedResource Include="icons\colorbutton.png" />
     <EmbeddedResource Include="icons\togglebutton.png" />
+    <EmbeddedResource Include="icons\progressbar.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
