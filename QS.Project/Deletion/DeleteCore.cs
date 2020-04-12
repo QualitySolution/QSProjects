@@ -98,9 +98,23 @@ namespace QS.Deletion
 			OnPropertyChanged(nameof(TotalLinks));
 		}
 
+		internal void RemoveItemToClean(EntityDTO entity)
+		{
+			CleanedItems.Remove(entity);
+			OnPropertyChanged(nameof(ItemsToClean));
+			OnPropertyChanged(nameof(TotalLinks));
+		}
+
 		internal void AddItemToRemoveFrom(EntityDTO entity)
 		{
 			RemoveFromItems.Add(entity);
+			OnPropertyChanged(nameof(ItemsToRemoveFrom));
+			OnPropertyChanged(nameof(TotalLinks));
+		}
+
+		internal void RemoveItemToRemoveFrom(EntityDTO entity)
+		{
+			RemoveFromItems.Remove(entity);
 			OnPropertyChanged(nameof(ItemsToRemoveFrom));
 			OnPropertyChanged(nameof(TotalLinks));
 		}
@@ -125,6 +139,23 @@ namespace QS.Deletion
 
 			if (cancellation.IsCancellationRequested)
 				DeletionExecuted = false;
+			else
+			{
+				//Удаляем все операции очистки ссылок и коллекций для объектов которые сами попали в удаление.
+				foreach (var deleted in DeletedItems) {
+					bool needRemoveFromOperations = false;
+					if(CleanedItems.Contains(deleted)) {
+						RemoveItemToClean(deleted);
+						needRemoveFromOperations = true;
+					}
+					if (RemoveFromItems.Contains(deleted)) {
+						RemoveItemToRemoveFrom(deleted);
+						needRemoveFromOperations = true;
+					}
+					if (needRemoveFromOperations)
+						RemoveDeletedItemsFromOp(RootOperation, deleted, out bool notUse);
+				}
+			}
 		}
 
 		public void RunDeletion(CancellationToken cancellation)
@@ -152,6 +183,8 @@ namespace QS.Deletion
 		}
 
 		#endregion
+
+		#region Внутренние методы заполнения
 
 		void FillChildOperation (IDeleteInfo currentDeletion, Operation parentOperation, EntityDTO masterEntity, CancellationToken cancellation)
 		{
@@ -215,8 +248,6 @@ namespace QS.Deletion
 			if(secondEntity != null)
 				masterEntity.PullsUp.AddRange(secondEntity.PullsUp);
 		}
-
-		#region Внутренние методы заполнения
 
 		private IDeleteInfo CalculateSecondInfo(IDeleteInfo info, EntityDTO entity)
 		{
@@ -330,6 +361,37 @@ namespace QS.Deletion
 					AddItemToRemoveFrom(row);
 					masterEntity.PullsUp.Add(row);
 				}
+			}
+		}
+
+		#endregion
+
+		#region Обработка операций
+
+		void RemoveDeletedItemsFromOp(Operation operation, EntityDTO entity, out bool isEmptyOp)
+		{
+			isEmptyOp = false;
+			if(operation is HibernateCleanOperation cleanOperation) {
+				cleanOperation.ClearingItems.Remove(entity);
+				cleanOperation.CleaningEntity.PullsUp.Remove(entity);
+				isEmptyOp = cleanOperation.ClearingItems.Count == 0;
+			}
+			if (operation is HibernateRemoveFromCollectionOperation fromCollectionOperation) {
+				fromCollectionOperation.RemoveInItems.Remove(entity);
+				fromCollectionOperation.RemovingEntity.PullsUp.Remove(entity);
+				isEmptyOp = fromCollectionOperation.RemoveInItems.Count == 0;
+			}
+
+			foreach (var childOp in operation.ChildBeforeOperations.ToList()) {
+				RemoveDeletedItemsFromOp(childOp, entity, out bool needRemoveOp);
+				if (needRemoveOp)
+					operation.ChildBeforeOperations.Remove(childOp);
+			}
+
+			foreach (var childOp in operation.ChildAfterOperations.ToList()) {
+				RemoveDeletedItemsFromOp(childOp, entity, out bool needRemoveOp);
+				if (needRemoveOp)
+					operation.ChildAfterOperations.Remove(childOp);
 			}
 		}
 

@@ -105,7 +105,7 @@ namespace QS.Deletion
 	class HibernateCleanOperation : Operation, IHibernateOperation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
+		public EntityDTO CleaningEntity { get; set; }
 		public Type EntityType { get; set;}
 		public IList<EntityDTO> ClearingItems { get; set;}
 		public string PropertyName { get; set;}

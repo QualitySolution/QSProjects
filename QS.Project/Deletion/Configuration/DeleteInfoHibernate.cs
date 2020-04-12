@@ -223,6 +223,7 @@ namespace QS.Deletion.Configuration
 		{
 			return new HibernateCleanOperation {
 				ItemId = masterEntity.Id,
+				CleaningEntity = masterEntity,
 				ClearingItems = dependEntities,
 				EntityType = depend.ObjectClass,
 				PropertyName = depend.PropertyName
