@@ -69,7 +69,7 @@ namespace QS.ViewModels.Dialog
 				}
 			}
 			else {
-				var title = DomainHelper.GetObjectTilte(Entity);
+				var title = DomainHelper.GetTitle(Entity);
 
 				if(String.IsNullOrWhiteSpace(title) && !String.IsNullOrWhiteSpace(names?.Nominative))
 					title = names.Nominative.StringToTitleCase();

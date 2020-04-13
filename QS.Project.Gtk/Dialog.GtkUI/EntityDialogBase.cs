@@ -13,6 +13,7 @@ using QS.Utilities;
 using QS.Utilities.Text;
 using QS.Project.Services;
 using QS.Services;
+using QS.Navigation;
 
 namespace QS.Dialog.Gtk
 {
@@ -187,13 +188,13 @@ namespace QS.Dialog.Gtk
 		{
 			if (!this.HasChanges || Save ()) {
 				OnEntitySaved (true);
-				OnCloseTab (false);
+				OnCloseTab (false, CloseSource.Save);
 			}
 		}
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			OnCloseTab (true);
+			OnCloseTab (true, CloseSource.Cancel);
 		}
 
 		public override void Destroy ()

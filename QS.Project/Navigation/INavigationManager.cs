@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autofac;
 using QS.Tdi;
@@ -31,8 +31,8 @@ namespace QS.Navigation
 
 		void SwitchOn(IPage page);
 
-		bool AskClosePage(IPage page);
-		void ForceClosePage(IPage page);
+		bool AskClosePage(IPage page, CloseSource source = CloseSource.External);
+		void ForceClosePage(IPage page, CloseSource source = CloseSource.External);
 	}
 
 	/// <summary>

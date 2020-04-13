@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using NHibernate.Criterion;
+using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
@@ -23,7 +24,7 @@ namespace QS.Deletion
 			if(toE.Id == 0)
 				throw new ArgumentException("Сущьность должна уже иметь ID", nameof(toE));
 
-			var delConfig = DeleteConfig.GetDeleteInfo<TEntity>();
+			var delConfig = DeleteConfig.Main.GetDeleteInfo<TEntity>();
 			if(delConfig == null)
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 
@@ -78,7 +79,7 @@ namespace QS.Deletion
 			if(fromE.Id == 0)
 				throw new ArgumentException("Сущьность должна уже иметь ID", nameof(fromE));
 
-			var delConfig = DeleteConfig.GetDeleteInfo<TEntity>();
+			var delConfig = DeleteConfig.Main.GetDeleteInfo<TEntity>();
 			if(delConfig == null)
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 

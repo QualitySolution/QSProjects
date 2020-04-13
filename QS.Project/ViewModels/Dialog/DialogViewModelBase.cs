@@ -1,4 +1,4 @@
-﻿using QS.Navigation;
+using QS.Navigation;
 
 namespace QS.ViewModels.Dialog
 {
@@ -23,14 +23,14 @@ namespace QS.ViewModels.Dialog
 			set => SetField(ref title, value);
 		}
 
-		public virtual void Close(bool askClose)
+		public virtual void Close(bool askClose, CloseSource source)
 		{
 			var page = NavigationManager?.FindPage(this);
 			if(page != null) {
 				if(askClose)
-					NavigationManager.AskClosePage(page);
+					NavigationManager.AskClosePage(page, source);
 				else
-					NavigationManager.ForceClosePage(page);
+					NavigationManager.ForceClosePage(page, source);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Tdi;
 
 namespace QS.Dialog.Gtk
@@ -26,7 +27,7 @@ namespace QS.Dialog.Gtk
 		public void SaveAndClose()
 		{
 			Save();
-			OnCloseTab(false);
+			OnCloseTab(false, CloseSource.Save);
 		}
 
 		public override void Destroy()

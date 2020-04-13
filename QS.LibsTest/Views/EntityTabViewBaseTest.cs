@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Domain;
 using QS.Services;
 using QS.Test.GtkUI;
@@ -28,7 +29,7 @@ namespace QS.Test.Views.GtkUI
 			viewModel.Received().SaveAndClose();
 
 			view.CancelButton.Click();
-			viewModel.Received().Close(false);
+			viewModel.Received().Close(false, CloseSource.Cancel);
 		}
 	}
 }

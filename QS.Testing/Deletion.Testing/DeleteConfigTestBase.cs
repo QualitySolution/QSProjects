@@ -7,6 +7,7 @@ using Gamma.Utilities;
 using NHibernate.Mapping;
 using NUnit.Framework;
 using QS.DomainModel.Entity;
+using QS.Deletion.Configuration;
 using QS.Project.DB;
 
 namespace QS.Deletion.Testing

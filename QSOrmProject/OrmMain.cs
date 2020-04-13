@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Autofac;
 using NHibernate.Proxy;
 using NLog;
+using QS.Deletion;
+using QS.Deletion.Views;
+using QS.Dialog;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Navigation;
+using QS.Project.Services;
 using QS.Tdi;
+using QS.Utilities.GtkUI;
+using QS.Views.Resolve;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 
@@ -165,38 +175,57 @@ namespace QSOrmProject
 		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
 		{
 			var result = new List<DeletionObject>();
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
-			var delList = delete.GetDeletionList(objectClass, id);
+			var delete = new DeleteCore(DeleteConfig.Main, uow);
+			delete.PrepareDeletion(objectClass, id, new System.Threading.CancellationTokenSource().Token);
 
-			foreach(var item in delList) {
-				result.Add(new DeletionObject() { Id = item.ItemId, Type = item.ItemClass });
+			foreach(var item in delete.DeletedItems) {
+				result.Add(new DeletionObject() { Id = item.Id, Type = item.ClassType });
 			}
 			return result;
 		}
 
+		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(string table, int id)
 		{
-			var delete = new QS.Deletion.DeleteCore();
-			try {
-				return delete.RunDeletion(table, id);
-			} catch (Exception ex) {
-				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
-				return false;
-			}
+			var info = DeleteConfig.Main.GetDeleteInfo(table);
+			if (info == null)
+				throw new InvalidOperationException($"Правила для удаления объектов таблицы {table} не найдено.");
+
+			return DeleteObject(info.ObjectClass, id);
 		}
 
+		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
-			delete.BeforeDeletion = beforeDeletion;
 			try {
-				return delete.RunDeletion(objectClass, id);
+				//Здесь так все криво, просто чтобы сделать независимую реализация чисто для совместимости со старым кодом.
+				var builder = new ContainerBuilder();
+				IContainer container = null;
+				builder.Register((ctx) => new AutofacViewModelsGtkPageFactory(container)).As<IViewModelsPageFactory>();
+				builder.RegisterType<GtkWindowsNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+				builder.RegisterType<DeleteEntityGUIService>().AsSelf();
+				builder.Register(x => DeleteConfig.Main).AsSelf();
+				builder.RegisterType<GtkMessageDialogsInteractive>().As<IInteractiveMessage>();
+				builder.RegisterType<GtkQuestionDialogsInteractive>().As<IInteractiveQuestion>();
+				builder.RegisterModule(new DeletionAutofacModule());
+				builder.Register(ctx => new ClassNamesBaseGtkViewResolver(Assembly.GetAssembly(typeof(DeletionView)))).As<IGtkViewResolver>();
+				container = builder.Build();
+
+				var deleteSerive = container.Resolve<DeleteEntityGUIService>();
+				var deletion = deleteSerive.DeleteEntity(objectClass, id, uow, beforeDeletion);
+
+				while (deletion.DeletionExecuted == null)
+					GtkHelper.WaitRedraw();
+
+				return deletion.DeletionExecuted.Value;
+
 			} catch (Exception ex) {
 				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
 				return false;
 			}
 		}
 
+		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject<TEntity>(int id, IUnitOfWork uow = null)
 		{
 			return DeleteObject(typeof(TEntity), id, uow);
@@ -209,20 +238,14 @@ namespace QSOrmProject
 		/// <param name="subject">Удяляемый объект</param>
 		/// <param name="uow">UnitOfWork в котором нужно выполнить удаление. Если не передать будет созданн новый UnitOfWork.</param>
 		/// <param name="beforeDeletion">Метод который нужно выполнить перед удалением, если пользователь подтвердит удаление.</param>
+		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(object subject, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			if (!(subject is IDomainObject))
 				throw new ArgumentException("Класс должен реализовывать интерфейс IDomainObject", "subject");
 			var objectClass = NHibernateProxyHelper.GuessClass(subject);
 			int id = (subject as IDomainObject).Id;
-			var delete = uow == null ? new QS.Deletion.DeleteCore() : new QS.Deletion.DeleteCore(uow);
-			delete.BeforeDeletion = beforeDeletion;
-			try {
-				return delete.RunDeletion(objectClass, id);
-			} catch (Exception ex) {
-				QSMain.ErrorMessageWithLog("Ошибка удаления.", logger, ex);
-				return false;
-			}
+			return DeleteObject(objectClass, id, beforeDeletion: beforeDeletion);
 		}
 
 		#endregion

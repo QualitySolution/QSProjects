@@ -3,6 +3,7 @@ using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
 using QS.Utilities;
+using QS.Navigation;
 using QS.ViewModels.Dialog;
 
 namespace QS.Views.Dialog
@@ -43,7 +44,7 @@ namespace QS.Views.Dialog
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			ViewModel.Close(false);
+			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}
 }

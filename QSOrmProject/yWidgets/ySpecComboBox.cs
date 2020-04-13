@@ -147,7 +147,7 @@ namespace Gamma.Widgets
 			}
 			if(RenderTextFunc != null)
 				return RenderTextFunc (item);
-			return DomainHelper.GetObjectTilte (item);
+			return DomainHelper.GetTitle (item);
 		}
 	}
 }

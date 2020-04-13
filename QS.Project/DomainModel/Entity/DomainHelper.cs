@@ -12,9 +12,20 @@ using QS.Utilities.Text;
 
 namespace QS.DomainModel.Entity
 {
+	/// <summary>
+	/// Упрощает работу с объектами доменной модели, реализуя простые часто используемые функции.
+	/// </summary>
 	public static class DomainHelper
 	{
-		public static string GetObjectTilte(object value)
+		/// <summary>
+		/// Метод возвращает название объекта через рефлексию.
+		/// Название пытается опытается определить в следующем порядке:
+		/// 1. Если у объекта имеется свойство <c>Title</c>, возвращается его значение.
+		/// 2. Если у объекта имеется свойство <c>Name</c>, возвращается его значение.
+		/// 3. Возвращается результат вызова <c>ToString()</c>
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public static string GetTitle(object value)
 		{
 			var prop = value.GetType ().GetProperty ("Title");
 			if (prop != null) {
@@ -29,6 +40,12 @@ namespace QS.DomainModel.Entity
 			return value.ToString ();
 		}
 
+		/// <summary>
+		/// Метод возвращает <c>Id</c> не типизированого объекта.
+		/// Если класс реализует <c>IDomainObject</c>, используется интерфейс для ускорения.
+		/// Иначе ищется свойство <c>Id</c>, у каласа и возвращается значение.
+		/// Если свойство <c>Id</c> не найдено вызовется эксепшен ArgumentException
+		/// </summary>
 		public static int GetId(object value)
 		{
 			if (value == null)
@@ -48,11 +65,21 @@ namespace QS.DomainModel.Entity
 			return value != null ? (int?)GetId(value) : null;
 		}
 
+		/// <summary>
+		/// Метод расширения для <c>IDomainObject</c> позволяющий сравнивнить экземпляр с другим объектом доменной модели по <c>Id</c> и типу.
+		/// То есть могут быть загружены из разных сессий.
+		/// </summary>
+		/// <returns><c>true</c>, если объекты одинаковые, иначе <c>false</c>.</returns>
 		public static bool IsSame(this IDomainObject entity1, IDomainObject entity2)
 		{
 			return EqualDomainObjects(entity1, entity2);
 		}
 
+		/// <summary>
+		/// Метод сравнивает два объекта доменной модели по типу и <c>Id</c>, они не обязательно должны быть одним и тем же экземпляром класса.
+		/// То есть могут быть загружены из разных сессий.
+		/// </summary>
+		/// <returns><c>true</c>, если объекты одинаковые, иначе <c>false</c>.</returns>
 		public static bool EqualDomainObjects (object obj1, object obj2)
 		{
 			if (obj1 == null || obj2 == null)
@@ -67,11 +94,19 @@ namespace QS.DomainModel.Entity
 			return obj1.Equals (obj2);
 		}
 
+		/// <summary>
+		/// Метод возвращает все наименования тип сущьности указанные через атрибут <c>AppellativeAttribute</c>
+		/// </summary>
+		/// <param name="subject">Экземпляр сущьности</param>
 		public static AppellativeAttribute GetSubjectNames(object subject)
 		{
 			return GetSubjectNames (subject.GetType ());
 		}
 
+		/// <summary>
+		/// Метод возвращает все наименования тип сущьности указанные через атрибут <c>AppellativeAttribute</c>
+		/// </summary>
+		/// <param name="subjectType">Тип сущьности</param>
 		public static AppellativeAttribute GetSubjectNames(this Type subjectType)
 		{
 			object[] att = subjectType.GetCustomAttributes (typeof(AppellativeAttribute), true);

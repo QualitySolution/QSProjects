@@ -4,6 +4,7 @@ using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
 using QS.Utilities;
+using QS.Navigation;
 using QS.ViewModels;
 
 namespace QS.Views.GtkUI
@@ -44,7 +45,7 @@ namespace QS.Views.GtkUI
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			ViewModel.Close(false);
+			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}
 }

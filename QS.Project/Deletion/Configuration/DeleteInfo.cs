@@ -4,7 +4,7 @@ using System.Data.Common;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	public class DeleteInfo : IDeleteInfo
 	{

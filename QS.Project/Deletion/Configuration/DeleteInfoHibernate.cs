@@ -8,7 +8,7 @@ using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate, IHibernateDeleteRule
 		where TEntity : IDomainObject
@@ -194,7 +194,7 @@ namespace QS.Deletion
 				resultList.Add (new EntityDTO{
 					Id = (uint)DomainHelper.GetId (item),
 					ClassType = ObjectClass,
-					Title = DomainHelper.GetObjectTilte (item),
+					Title = DomainHelper.GetTitle (item),
 					Entity = item
 				});
 			}
@@ -223,6 +223,7 @@ namespace QS.Deletion
 		{
 			return new HibernateCleanOperation {
 				ItemId = masterEntity.Id,
+				CleaningEntity = masterEntity,
 				ClearingItems = dependEntities,
 				EntityType = depend.ObjectClass,
 				PropertyName = depend.PropertyName
@@ -246,7 +247,7 @@ namespace QS.Deletion
 			return new EntityDTO{
 				Id = (uint)item.Id,
 				ClassType = ObjectClass,
-				Title = DomainHelper.GetObjectTilte (item),
+				Title = DomainHelper.GetTitle (item),
 				Entity = item
 			};
 		}
@@ -271,13 +272,13 @@ namespace QS.Deletion
 			return OrmConfig.NhConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
 		}
 
-		IDeleteInfo IDeleteInfoHibernate.GetRootDeleteInfo()
+		Type IDeleteInfoHibernate.GetRootClass()
 		{
 			if (!IsSubclass)
 				return null;
 
 			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
-			return DeleteConfig.GetDeleteInfo(hmap.RootClazz.MappedClass);
+			return hmap.RootClazz.MappedClass;
 		}
 
 		#endregion

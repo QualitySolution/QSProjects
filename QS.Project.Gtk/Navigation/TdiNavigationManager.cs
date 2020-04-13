@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Autofac;
 using Gamma.Utilities;
@@ -24,13 +24,13 @@ namespace QS.Navigation
 
 		public TdiNavigationManager(
 			TdiNotebook tdiNotebook,
-			IPageHashGenerator hashGenerator, 
-			IViewModelsPageFactory viewModelsFactory, 
-			IInteractiveMessage interactive, 
-			ITdiPageFactory tdiPageFactory = null, 
+			IViewModelsPageFactory viewModelsFactory,
+			IInteractiveMessage interactive,
+			IPageHashGenerator hashGenerator = null,
+			ITdiPageFactory tdiPageFactory = null,
 			AutofacViewModelsGtkPageFactory viewModelsGtkPageFactory = null, 
 			IGtkViewResolver viewResolver = null)
-			: base(hashGenerator, interactive)
+			: base(interactive, hashGenerator)
 		{
 			this.tdiNotebook = tdiNotebook ?? throw new ArgumentNullException(nameof(tdiNotebook));
 			this.tdiPageFactory = tdiPageFactory;
@@ -43,14 +43,21 @@ namespace QS.Navigation
 
 		#region Закрытие
 
-		public bool AskClosePage(IPage page)
+		public bool AskClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
-			return tdiNotebook.AskToCloseTab((page as ITdiPage).TdiTab);
+			if (page is ITdiPage tdiPage)
+				return tdiNotebook.AskToCloseTab(tdiPage.TdiTab, source);
+			else
+				ClosePage(page, source);
+			return true;
 		}
 
-		public void ForceClosePage(IPage page)
+		public void ForceClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
-			tdiNotebook.ForceCloseTab((page as ITdiPage).TdiTab);
+			if (page is ITdiPage tdiPage)
+				tdiNotebook.ForceCloseTab(tdiPage.TdiTab, source);
+			else
+				ClosePage(page, source);
 		}
 
 		void TdiNotebook_TabClosed(object sender, TabClosedEventArgs e)
@@ -63,7 +70,7 @@ namespace QS.Navigation
 
 			var page = FindPage(closedTab);
 			if (page != null)
-				ClosePage(page);
+				ClosePage(page, e.CloseSource);
 		}
 
 		#endregion
@@ -97,7 +104,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindOrCreateMasterPage(master), options,
-				() => hashGenerator.GetHash<TViewModel>(null, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TViewModel>(null, ctorTypes, ctorValues),
 				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
@@ -127,7 +134,7 @@ namespace QS.Navigation
 		{
 			return (ITdiPage)OpenViewModelInternal(
 				FindOrCreateMasterPage(masterTab), options,
-				() => hashGenerator.GetHash<TTab>(null, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TTab>(null, ctorTypes, ctorValues),
 				(hash) => tdiPageFactory.CreateTdiPageTypedArgs<TTab>(ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
@@ -217,9 +224,11 @@ namespace QS.Navigation
 		{
 			var gtkPage = (IGtkWindowPage)page;
 			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
+			if(gtkPage.GtkView == null)
+				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, DialogFlags.Modal);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
-			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? 800, defaultsize?.DefaultHeight ?? 500);
+			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
@@ -230,7 +239,7 @@ namespace QS.Navigation
 		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
-			ClosePage(page);
+			ClosePage(page, CloseSource.ClosePage);
 		}
 
 		public IPage FindPage(Gdk.Window window)
@@ -238,9 +247,9 @@ namespace QS.Navigation
 			return AllPages.OfType<IGtkWindowPage>().FirstOrDefault(x => x.GtkDialog.GdkWindow == window);
 		}
 
-		protected override void ClosePage(IPage page)
+		protected override void ClosePage(IPage page, CloseSource source)
 		{
-			base.ClosePage(page);
+			base.ClosePage(page, source);
 
 			if(page is IGtkWindowPage gtkPage) {
 				gtkPage.GtkDialog.Respond((int)ResponseType.DeleteEvent);

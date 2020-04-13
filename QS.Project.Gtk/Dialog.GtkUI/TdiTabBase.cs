@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Gtk;
+using QS.Navigation;
 using QS.Tdi;
 
 namespace QS.Dialog.Gtk
@@ -73,12 +74,12 @@ namespace QS.Dialog.Gtk
 
 		#endregion
 
-		protected void OnCloseTab (bool askSave)
+		protected void OnCloseTab (bool askSave, CloseSource source = CloseSource.Self)
 		{
 			if(askSave)
-				TabParent.AskToCloseTab(this);
+				TabParent.AskToCloseTab(this, source);
 			else
-				TabParent.ForceCloseTab(this);
+				TabParent.ForceCloseTab(this, source);
 		}
 
 		protected virtual void OnTabNameChanged()

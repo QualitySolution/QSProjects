@@ -4,17 +4,17 @@ using System.Linq;
 using Gamma.Utilities;
 using Gtk;
 using NLog;
+using QS;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
-using QS.Tdi.Gtk;
 using QS.Utilities.Text;
 using QSOrmProject.RepresentationModel;
 using QSProjectsLib;
-using QS;
 
 namespace QSOrmProject
 {
@@ -249,9 +249,9 @@ namespace QSOrmProject
             RepresentationModel.SearchStrings = ormtableview.SearchHighlightTexts = searchList.ToArray();
         }
 
-        protected void OnCloseTab ()
+        protected void OnCloseTab (CloseSource source)
         {
-			TabParent.ForceCloseTab(this);
+			TabParent.ForceCloseTab(this, source);
         }
 
         protected void OnButtonAddClicked (object sender, EventArgs e)
@@ -291,7 +291,7 @@ namespace QSOrmProject
 				logger.Debug("Выбрано {0} id:({1})", objectType, String.Join(",", selected.Select(x => x.EntityId)));
 				ObjectSelected(this, new ReferenceRepresentationSelectedEventArgs(selected));
 				Application.Invoke(delegate {
-					OnCloseTab();
+					OnCloseTab(CloseSource.Self);
 				});
             }
         }
@@ -328,7 +328,7 @@ namespace QSOrmProject
                 logger.Debug("Выбрано {0} id:({1})", objectType, String.Join(",", selected.Select(x =>x.EntityId)));
                 ObjectSelected (this, new ReferenceRepresentationSelectedEventArgs (selected));
             }
-            OnCloseTab ();
+            OnCloseTab (CloseSource.Self);
         }
 
         protected RepresentationSelectResult[] GetSelectResults()

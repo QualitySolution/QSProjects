@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using QS.DomainModel.Entity;
 
 namespace QS.Deletion
@@ -19,7 +20,7 @@ namespace QS.Deletion
 				ChildBeforeOperations.Sum(o => o.GetOperationsCount());
 		}
 
-		internal abstract void Execute (IDeleteCore core);
+		internal abstract void Execute (IDeleteCore core, CancellationToken cancellation);
 	}
 
 	interface IHibernateOperation {}
@@ -29,16 +30,25 @@ namespace QS.Deletion
 		public string TableName;
 		public string WhereStatment;
 
-		internal override void Execute (IDeleteCore core)
+		internal override void Execute (IDeleteCore core, CancellationToken cancellation)
 		{
-			ChildBeforeOperations.ForEach (o => o.Execute (core));
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			ChildBeforeOperations.ForEach (o => o.Execute (core, cancellation));
+
+			if (cancellation.IsCancellationRequested)
+				return;
 
 			core.AddExcuteOperation(String.Format("Удаляем из таблицы {0}", TableName));
 			core.ExecuteSql(
 				String.Format ("DELETE FROM {0} {1}", TableName, WhereStatment),
 				ItemId);
 
-			ChildAfterOperations.ForEach (o => o.Execute (core));
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			ChildAfterOperations.ForEach (o => o.Execute (core, cancellation));
 		}
 	}
 
@@ -48,8 +58,11 @@ namespace QS.Deletion
 		public string WhereStatment;
 		public string CleanField;
 
-		internal override void Execute (IDeleteCore core)
+		internal override void Execute (IDeleteCore core, CancellationToken cancellation)
 		{
+			if (cancellation.IsCancellationRequested)
+				return;
+
 			var sql = $"UPDATE {TableName} SET {CleanField} = NULL " + WhereStatment;
 			core.AddExcuteOperation(String.Format("Очищаем ссылки в таблице {0}", TableName));
 			core.ExecuteSql(sql, ItemId);
@@ -62,35 +75,53 @@ namespace QS.Deletion
 
 		public IList<EntityDTO> DeletingItems { get; set;}
 
-		internal override void Execute (IDeleteCore core)
+		internal override void Execute (IDeleteCore core, CancellationToken cancellation)
 		{
-			ChildBeforeOperations.ForEach (o => o.Execute (core));
+			if (cancellation.IsCancellationRequested)
+				return;
 
-			core.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity).NominativePlural));
+			ChildBeforeOperations.ForEach (o => o.Execute (core, cancellation));
+
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			core.AddExcuteOperation(String.Format("Удаляем {0}", DomainHelper.GetSubjectNames(DeletingItems[0].Entity)?.NominativePlural));
 			foreach(var item in DeletingItems)
 			{
+				if (cancellation.IsCancellationRequested)
+					return;
+
 				logger.Debug ("Удаляем {0}...", item.Title);
 				core.UoW.TryDelete (item.Entity);
 			}
 
-			ChildAfterOperations.ForEach (o => o.Execute (core));
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			ChildAfterOperations.ForEach (o => o.Execute (core, cancellation));
 		}
 	}
 
 	class HibernateCleanOperation : Operation, IHibernateOperation
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
+		public EntityDTO CleaningEntity { get; set; }
 		public Type EntityType { get; set;}
 		public IList<EntityDTO> ClearingItems { get; set;}
 		public string PropertyName { get; set;}
 
-		internal override void Execute (IDeleteCore core)
+		internal override void Execute (IDeleteCore core, CancellationToken cancellation)
 		{
-			core.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType).NominativePlural));
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			core.AddExcuteOperation(String.Format("Очищаем ссылки в {0}", DomainHelper.GetSubjectNames(EntityType)?.NominativePlural));
 			var propertyCache = EntityType.GetProperty (PropertyName);
 			foreach(var item in ClearingItems)
 			{
+				if (cancellation.IsCancellationRequested)
+					return;
+
 				logger.Debug ("Очищаем свойство {0} в {1}...", PropertyName, item.Title);
 				propertyCache.SetValue (item.Entity, null, null);
 				core.UoW.TrySave (item.Entity);
@@ -108,13 +139,19 @@ namespace QS.Deletion
 		public string CollectionName { get; set;}
 		public string RemoveMethodName { get; set;}
 
-		internal override void Execute (IDeleteCore core)
+		internal override void Execute (IDeleteCore core, CancellationToken cancellation)
 		{
-			core.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType).NominativePlural));
+			if (cancellation.IsCancellationRequested)
+				return;
+
+			core.AddExcuteOperation(String.Format("Очищаем коллекции в {0}", DomainHelper.GetSubjectNames(RemoveInClassType)?.NominativePlural));
 			var collectionProp = RemoveInClassType.GetProperty (CollectionName);
 			var removeMethod = String.IsNullOrEmpty (RemoveMethodName) ? null : RemoveInClassType.GetMethod (RemoveMethodName);
 			foreach(var item in RemoveInItems)
 			{
+				if (cancellation.IsCancellationRequested)
+					return;
+
 				logger.Debug ("Удаляем {2} из коллекции {0} в {1}...", CollectionName, item.Title, RemovingEntity.Title);
 				if(removeMethod != null)
 				{
@@ -133,4 +170,3 @@ namespace QS.Deletion
 	}
 
 }
-

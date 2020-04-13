@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	internal interface IDeleteInfoHibernate : IDeleteInfo
 	{
@@ -9,6 +9,6 @@ namespace QS.Deletion
 		bool IsRequiredCascadeDeletion { get; }
 		bool IsSubclass { get; }
 		Type[] GetSubclasses();
-		IDeleteInfo GetRootDeleteInfo();
+		Type GetRootClass();
 	}
 }

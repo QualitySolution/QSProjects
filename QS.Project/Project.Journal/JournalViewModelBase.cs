@@ -90,7 +90,7 @@ namespace QS.Project.Journal
 		internal virtual void OnItemsSelected(object[] selectedNodes)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
-			Close(false);
+			Close(false, CloseSource.Self);
 		}
 
 		#region Configure actions

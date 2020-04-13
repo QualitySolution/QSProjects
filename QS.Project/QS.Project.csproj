@@ -141,22 +141,12 @@
     <Compile Include="Tdi\ITDICloseControlTab.cs" />
     <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
     <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
-    <Compile Include="Deletion\DeleteConfig.cs" />
-    <Compile Include="Deletion\DeletionCheck.cs" />
-    <Compile Include="Deletion\IDeleteInfo.cs" />
     <Compile Include="Deletion\Operations.cs" />
-    <Compile Include="Deletion\DeleteDependenceInfo.cs" />
-    <Compile Include="Deletion\DeleteInfo.cs" />
-    <Compile Include="Deletion\DeleteInfoHibernate.cs" />
-    <Compile Include="Deletion\IDeleteInfoHibernate.cs" />
-    <Compile Include="Deletion\ClearDependenceInfo.cs" />
     <Compile Include="Project.DB\OrmConfig.cs" />
     <Compile Include="Deletion\EntityDTO.cs" />
     <Compile Include="Deletion\IDeleteCore.cs" />
     <Compile Include="DomainModel\Entity\DomainHelper.cs" />
-    <Compile Include="Deletion\RemoveFromDependenceInfo.cs" />
     <Compile Include="Deletion\InternalHelper.cs" />
-    <Compile Include="Deletion\IHibernateDeleteRule.cs" />
     <Compile Include="Tdi\TabHashHelper.cs" />
     <Compile Include="Project.Domain\EntityUserPermission.cs" />
     <Compile Include="Project.HibernateMapping\EntityUserPermissionMap.cs" />
@@ -343,6 +333,24 @@
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
     <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
+    <Compile Include="Deletion\DeleteConfig.cs" />
+    <Compile Include="Project.Services\DeleteEntityGUIService.cs" />
+    <Compile Include="Deletion\Configuration\DeleteConfiguration.cs" />
+    <Compile Include="Deletion\Configuration\ClearDependenceInfo.cs" />
+    <Compile Include="Deletion\Configuration\DeleteDependenceInfo.cs" />
+    <Compile Include="Deletion\Configuration\DeleteInfo.cs" />
+    <Compile Include="Deletion\Configuration\DeleteInfoHibernate.cs" />
+    <Compile Include="Deletion\Configuration\IDeleteInfo.cs" />
+    <Compile Include="Deletion\Configuration\IDeleteInfoHibernate.cs" />
+    <Compile Include="Deletion\Configuration\RemoveFromDependenceInfo.cs" />
+    <Compile Include="Deletion\Configuration\IHibernateDeleteRule.cs" />
+    <Compile Include="Deletion\ViewModels\PrepareDeletionViewModel.cs" />
+    <Compile Include="Deletion\ViewModels\DeletionProcessViewModel.cs" />
+    <Compile Include="Deletion\ViewModels\DeletionViewModel.cs" />
+    <Compile Include="Deletion\DeleteCore.cs" />
+    <Compile Include="Deletion\DeletionAutofacModule.cs" />
+    <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
+    <Compile Include="Navigation\CloseSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -384,6 +392,9 @@
     <Folder Include="ViewModels\Control\EEVM\" />
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Control\ESVM\" />
+    <Folder Include="Deletion\Configuration\" />
+    <Folder Include="Deletion\ViewModels\" />
+    <Folder Include="ViewModels\Extension\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

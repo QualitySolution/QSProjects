@@ -8,6 +8,7 @@ using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Dialogs.GtkUI.JournalActions;
 using QS.RepresentationModel.GtkUI;
 using QS.Utilities.Text;
@@ -241,7 +242,7 @@ namespace QS.Project.Dialogs.GtkUI
 				logger.Debug("Выбрано {0} id:({1})", RepresentationModel.NodeType, String.Join(",", nodes.Select(DomainHelper.GetIdOrNull)));
 				ObjectSelected(this, new JournalObjectSelectedEventArgs(nodes));
 			}
-			OnCloseTab(false);
+			OnCloseTab(false, CloseSource.Self);
 		}
 
 		#endregion

@@ -13,8 +13,8 @@ namespace QS.Navigation
 		readonly IGtkViewResolver viewResolver;
 		protected readonly IViewModelsPageFactory viewModelsFactory;
 
-		public GtkWindowsNavigationManager(IPageHashGenerator hashGenerator, IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver)
-			: base(hashGenerator, interactive)
+		public GtkWindowsNavigationManager(IViewModelsPageFactory viewModelsFactory, IInteractiveMessage interactive, IGtkViewResolver viewResolver, IPageHashGenerator hashGenerator = null)
+			: base(interactive, hashGenerator)
 		{
 			this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
 			this.viewResolver = viewResolver;
@@ -22,14 +22,14 @@ namespace QS.Navigation
 
 		#region Закрытие
 
-		public bool AskClosePage(IPage page)
+		public bool AskClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
 			throw new  NotImplementedException();
 		}
 
-		public void ForceClosePage(IPage page)
+		public void ForceClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
-			ClosePage(page);
+			ClosePage(page, source);
 			(page as IGtkWindowPage).GtkDialog.Respond((int)ResponseType.DeleteEvent); 
 			(page as IGtkWindowPage).GtkView.Destroy();
 			(page as IGtkWindowPage).GtkDialog.Destroy();
@@ -55,9 +55,11 @@ namespace QS.Navigation
 			var gtkPage = (IGtkWindowPage)page;
 			var gtkMasterPage = (IGtkWindowPage)masterPage;
 			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
+			if(gtkPage.GtkView == null)
+				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, gtkMasterPage?.GtkDialog, DialogFlags.Modal);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
-			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? 800, defaultsize?.DefaultHeight ?? 500);
+			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
@@ -73,7 +75,7 @@ namespace QS.Navigation
 		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
-			ForceClosePage(page);
+			ForceClosePage(page, CloseSource.ClosePage);
 		}
 
 		protected override IViewModelsPageFactory GetPageFactory<TViewModel>()
