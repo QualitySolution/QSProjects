@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using QS.Deletion;
+using QS.Deletion.Configuration;
 
 namespace QS.Contacts
 {

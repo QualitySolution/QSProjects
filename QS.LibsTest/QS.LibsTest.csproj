@@ -130,6 +130,22 @@
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
+    <Compile Include="Deletion\DeleteIntegratedTest.cs" />
+    <Compile Include="TestApp\Domain\Linked\DependDeleteItem.cs" />
+    <Compile Include="TestApp\Domain\Linked\AlsoDeleteItem.cs" />
+    <Compile Include="TestApp\Domain\Linked\RootDeleteItem.cs" />
+    <Compile Include="TestApp\HibernateMapping\Linked\MainItemMap.cs" />
+    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem2Map.cs" />
+    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem1Map.cs" />
+    <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\ModalDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
+    <Compile Include="TestApp\ViewModels\OnCloseModalDialogViewModel.cs" />
+    <Compile Include="TestApp\ViewModels\OnCloseDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\OnCloseDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseDialogView.cs" />
+    <Compile Include="TestApp\Views\OnCloseModalDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseModalDialogView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -162,6 +178,8 @@
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="Utilities\Text\" />
+    <Folder Include="TestApp\Domain\Linked\" />
+    <Folder Include="TestApp\HibernateMapping\Linked\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Tdi;
 using QS.Services;
 using QS.DomainModel.UoW;
@@ -41,12 +41,12 @@ namespace QS.ViewModels
 			}
 
 			if(!HasChanges) {
-				Close(false);
+				Close(false, CloseSource.Save);
 				return true;
 			}
 
 			SaveUoW();
-			Close(false);
+			Close(false, CloseSource.Save);
 			return true;
 		}
 
@@ -59,9 +59,9 @@ namespace QS.ViewModels
 			return;
 		}
 
-		public override void Close(bool askSave)
+		public override void Close(bool askSave, CloseSource source)
 		{
-			base.Close(askSave);
+			base.Close(askSave, source);
 			Dispose();
 		}
 

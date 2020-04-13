@@ -15,6 +15,7 @@ using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
 using QS.ViewModels.Dialog;
+using QS.Views.Resolve;
 
 namespace QS.Test.Navigation
 {
@@ -43,7 +44,7 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
 			var secondPage = navManager.OpenViewModel<EntityViewModel>(null);
@@ -78,7 +79,7 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "_1", null).ReturnsForAnyArgs(masterPage, page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var zeroPage = navManager.OpenViewModel<EntityViewModel>(null);
 			Assert.That(zeroPage, Is.EqualTo(masterPage));
@@ -117,7 +118,7 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
 			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
@@ -150,14 +151,14 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, null, null).ReturnsForAnyArgs(page1, page2);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var firstPage = navManager.OpenViewModel<EntityViewModel, int>(null, 1);
 			var secondPage = navManager.OpenViewModel<EntityViewModel, int>(null, 2);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 
-			navManager.ForceClosePage(page1);
+			navManager.ForceClosePage(page1, CloseSource.External);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 		}
@@ -181,15 +182,42 @@ namespace QS.Test.Navigation
 			tabPageFactory.CreateTdiPageTypedArgs<EmptyDlg>(new System.Type[] { }, new object[] { }, "hash_1").ReturnsForAnyArgs(tabpage);
 
 			var notebook = new TdiNotebook();
-			var navManager = new TdiNavigationManager(notebook, hashGenerator, pageFactory, interactiveMessage, tabPageFactory);
+			var navManager = new TdiNavigationManager(notebook, pageFactory, interactiveMessage, hashGenerator, tabPageFactory);
 
 			var page = navManager.OpenTdiTab<EmptyDlg>(null);
 
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(1));
 
-			notebook.ForceCloseTab(page.TdiTab);
+			notebook.ForceCloseTab(page.TdiTab, CloseSource.External);
 
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
+		}
+
+		[Test(Description = "Проверяем что можем закрыть через навигатор модальный диалог.")]
+		public void ForceClosePage_ModalDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<ModalDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<ModalDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			navigation.ForceClosePage(page, CloseSource.External);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
 		}
 
 		[Test(Description = "Проверка что событие о закрытии страницы приходит внешним подписчикам.")]
@@ -216,13 +244,13 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
-			navManager.ForceClosePage(firstPage);
+			navManager.ForceClosePage(firstPage, CloseSource.External);
 			Assert.That(eventRised, Is.True);
 		}
 
@@ -259,7 +287,7 @@ namespace QS.Test.Navigation
 			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1", null).ReturnsForAnyArgs(journal);
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveService, hashGenerator);
 
 			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
 
@@ -267,7 +295,7 @@ namespace QS.Test.Navigation
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
-			navManager.ForceClosePage(dialogPage);
+			navManager.ForceClosePage(dialogPage, CloseSource.External);
 			Assert.That(eventRised, Is.True);
 		}
 
@@ -302,13 +330,13 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1", null).ReturnsForAnyArgs(journal);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveService);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveService, hashGenerator);
 
 			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
 
 			Assert.That(tdiNotebook.Tabs.Count, Is.EqualTo(1));
 			var openedTab = tdiNotebook.Tabs.First().TdiTab;
-			tdiNotebook.ForceCloseTab(openedTab);
+			tdiNotebook.ForceCloseTab(openedTab, CloseSource.External);
 
 			Assert.That(eventRised, Is.True);
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
@@ -336,7 +364,7 @@ namespace QS.Test.Navigation
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactiveMessage);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
 			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
 
@@ -358,11 +386,77 @@ namespace QS.Test.Navigation
 
 			var pageFactory = new AutofacViewModelsTdiPageFactory(builder.Build());
 
-			var navManager = new TdiNavigationManager(tdiNotebook, hashGenerator, pageFactory, interactive);
+			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactive, hashGenerator);
 
 			var page = navManager.OpenViewModel<AbortCreationViewModel, INavigationManager>(null, navManager);
 
 			interactive.Received().ShowMessage(Arg.Any<ImportanceLevel>(), "Вкладка не создана!", "Остановка");
 		}
+
+		#region IOnCloseActionViewModel
+
+		[Test(Description = "Проверяем что IOnCloseActionViewModel получает вызов при закрытии в модальном диалоге.")]
+		public void IOnCloseActionViewModel_ModalDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<OnCloseModalDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<OnCloseModalDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			CloseSource? source = null;
+			page.ViewModel.OnCloseCall = (cs) => source = cs;
+
+			navigation.ForceClosePage(page, CloseSource.External);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
+			Assert.That(source, Is.EqualTo(CloseSource.External));
+		}
+
+		[Test(Description = "Проверяем что IOnCloseActionViewModel получает вызов при закрытии в обычном диалоге.")]
+		public void IOnCloseActionViewModel_CommonDialogTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<OnCloseDialogViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var page = navigation.OpenViewModel<OnCloseDialogViewModel>(null);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			CloseSource? source = null;
+			page.ViewModel.OnCloseCall = (cs) => source = cs;
+
+			navigation.ForceClosePage(page, CloseSource.External);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(0));
+			Assert.That(source, Is.EqualTo(CloseSource.External));
+		}
+
+		#endregion
 	}
 }

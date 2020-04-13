@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Gamma.Utilities;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class ClearDependenceInfo
@@ -35,14 +35,6 @@ namespace QS.Deletion
 			TableName = tableName;
 			WhereStatment = sqlwhere;
 			ClearField = clearField;
-		}
-
-		internal IDeleteInfo GetClassInfo()
-		{
-			if(ObjectClass != null)
-				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
-			else
-				return DeleteConfig.ClassInfos.OfType<DeleteInfo>().First (i => i.TableName == TableName);
 		}
 
 		public ClearDependenceInfo AddCheckProperty(string property)

@@ -11,7 +11,7 @@ namespace QS.Navigation
 		{
 		}
 
-		public event EventHandler PageClosed;
+		public event EventHandler<PageClosedEventArgs> PageClosed;
 
 		public string PageHash { get; protected set; }
 
@@ -55,9 +55,9 @@ namespace QS.Navigation
 
 		#region IPageInternal
 
-		void IPageInternal.OnClosed()
+		void IPageInternal.OnClosed(CloseSource source)
 		{
-			PageClosed?.Invoke(this, EventArgs.Empty);
+			PageClosed?.Invoke(this, new PageClosedEventArgs(source));
 		}
 
 		void IPageInternal.AddSlavePage(IPage page)

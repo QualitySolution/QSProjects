@@ -5,6 +5,7 @@ using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Navigation
 {
@@ -13,9 +14,9 @@ namespace QS.Navigation
 		protected readonly IPageHashGenerator hashGenerator;
 		protected readonly IInteractiveMessage interactiveMessage;
 
-		protected NavigationManagerBase(IPageHashGenerator hashGenerator, IInteractiveMessage interactive)
+		protected NavigationManagerBase(IInteractiveMessage interactive, IPageHashGenerator hashGenerator = null)
 		{
-			this.hashGenerator = hashGenerator ?? throw new ArgumentNullException(nameof(hashGenerator));
+			this.hashGenerator = hashGenerator;
 			this.interactiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
@@ -117,7 +118,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
-				() => hashGenerator.GetHash<TViewModel>(master, ctorTypes, ctorValues),
+				() => hashGenerator?.GetHash<TViewModel>(master, ctorTypes, ctorValues),
 				(hash) => GetPageFactory<TViewModel>().CreateViewModelTypedArgs<TViewModel>(master, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
 		}
@@ -126,7 +127,7 @@ namespace QS.Navigation
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
-				() => hashGenerator.GetHashNamedArgs<TViewModel>(master, ctorArgs),
+				() => hashGenerator?.GetHashNamedArgs<TViewModel>(master, ctorArgs),
 				(hash) => GetPageFactory<TViewModel>().CreateViewModelNamedArgs<TViewModel>(master, ctorArgs, hash, addingRegistrations)
 			);
 		}
@@ -183,21 +184,24 @@ namespace QS.Navigation
 			}
 		}
 
-		protected virtual void ClosePage(IPage page)
+		protected virtual void ClosePage(IPage page, CloseSource source)
 		{
+			if (page.ViewModel is IOnCloseActionViewModel onClose)
+				onClose.OnClose(source);
+
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
 				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
 			var pageToRemove = pages.FirstOrDefault(x => x == page);
 			if (pageToRemove != null) {
 				pages.Remove(pageToRemove);
-				(pageToRemove as IPageInternal).OnClosed();
+				(pageToRemove as IPageInternal).OnClosed(source);
 			}
 			else {
 				var childPair = ChildPages.FirstOrDefault(x => x.ChildPage == page);
 				if (childPair != null) {
 					(childPair.ParentPage as IPageInternal).RemoveChildPage(childPair.ChildPage);
-					(childPair.ChildPage as IPageInternal).OnClosed();
+					(childPair.ChildPage as IPageInternal).OnClosed(source);
 				}
 			}
 

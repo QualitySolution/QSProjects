@@ -12,6 +12,7 @@ using QS.Dialog.Gtk;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
 using QS.Tdi;
@@ -344,10 +345,10 @@ namespace QSOrmProject
 			UpdateTreeViewSource();
 		}
 
-		protected void OnCloseTab()
+		protected void OnCloseTab(CloseSource source)
 		{
 			logger.Debug("Закрытие диалога {0}", number);
-			TabParent.ForceCloseTab(this);
+			TabParent.ForceCloseTab(this, source);
 		}
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
@@ -444,7 +445,7 @@ namespace QSOrmProject
 			}
 			else
 				logger.Warn("Никто не подписался на событие выбора в диалоге.");
-			OnCloseTab();
+			OnCloseTab(CloseSource.Self);
 		}
 
 		private void CreateFilterWidget()

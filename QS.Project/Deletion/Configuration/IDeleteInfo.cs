@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	internal interface IDeleteInfo : IDeleteRule
 	{

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.Utilities;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class RemoveFromDependenceInfo
@@ -22,11 +22,6 @@ namespace QS.Deletion
 		{
 			ObjectClass = objectClass;
 			CollectionName = collectionName;
-		}
-
-		internal IDeleteInfo GetClassInfo()
-		{
-			return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
 		}
 
 		/// <summary>

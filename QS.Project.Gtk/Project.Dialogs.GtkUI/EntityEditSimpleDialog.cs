@@ -29,7 +29,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 			return RunSimpleDialog(parent, objectType, 
 				DomainHelper.GetId(editObject), 
-				DomainHelper.GetObjectTilte(editObject));
+				DomainHelper.GetTitle(editObject));
 		}
 
 		public static object RunSimpleDialog(Window parent, Type objectType, int? id, string lastTitle = null)

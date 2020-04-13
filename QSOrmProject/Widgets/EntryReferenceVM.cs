@@ -161,7 +161,7 @@ namespace QSOrmProject
 				return;
 			}
 
-			InternalSetEntryText(DomainHelper.GetObjectTilte (Subject));
+			InternalSetEntryText(DomainHelper.GetTitle (Subject));
 		}
 
 		private void InternalSetEntryText(string text)

@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Navigation;
 using QS.Tdi;
 
 namespace QSOrmProject
@@ -42,12 +43,12 @@ namespace QSOrmProject
 
 		#endregion
 
-		protected void OnCloseTab (bool askSave)
+		protected void OnCloseTab (bool askSave, CloseSource source)
 		{
 			if (askSave)
-				TabParent.AskToCloseTab(this);
+				TabParent.AskToCloseTab(this, source);
 			else
-				TabParent.ForceCloseTab(this);
+				TabParent.ForceCloseTab(this, source);
 		}
 
 		protected void OnTabNameChanged()
@@ -138,12 +139,12 @@ namespace QSOrmProject
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 
-		public bool AskToCloseTab(ITdiTab tab)
+		public bool AskToCloseTab(ITdiTab tab, CloseSource source)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void ForceCloseTab(ITdiTab tab)
+		public void ForceCloseTab(ITdiTab tab, CloseSource source)
 		{
 			throw new NotImplementedException();
 		}

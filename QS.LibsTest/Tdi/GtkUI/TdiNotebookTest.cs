@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
+using QS.Navigation;
 using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Test.GtkUI;
@@ -22,7 +23,7 @@ namespace QS.Test.Tdi.GtkUI
 
 			Assert.That(notebook.Tabs.First().TdiTab, Is.EqualTo(tab));
 
-			notebook.ForceCloseTab(tab);
+			notebook.ForceCloseTab(tab, CloseSource.External);
 			tab.Received().OnTabClosed();
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(0));
 		}
@@ -39,7 +40,7 @@ namespace QS.Test.Tdi.GtkUI
 
 			Assert.That(notebook.Tabs.First().TdiTab, Is.InstanceOf<TdiSliderTab>());
 
-			notebook.ForceCloseTab(tab);
+			notebook.ForceCloseTab(tab, CloseSource.External);
 			tab.Received().OnTabClosed();
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(0));
 		}
@@ -65,7 +66,7 @@ namespace QS.Test.Tdi.GtkUI
 			var slider = tabJournal.TabParent as TdiSliderTab;
 
 			Assert.That(slider.ActiveDialog, Is.EqualTo(tab));
-			notebook.ForceCloseTab(tab);
+			notebook.ForceCloseTab(tab, CloseSource.External);
 
 			Assert.That(slider.ActiveDialog, Is.Null);
 			Assert.That(tabEventRised, Is.True);

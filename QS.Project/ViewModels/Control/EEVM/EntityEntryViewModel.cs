@@ -83,7 +83,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region Свойства для использования во View
 
-		public string EntityTitle => Entity == null ? null : DomainHelper.GetObjectTilte(Entity);
+		public string EntityTitle => Entity == null ? null : DomainHelper.GetTitle(Entity);
 
 		public virtual bool SensetiveSelectButton => IsEditable && EntitySelector != null;
 		public virtual bool SensetiveCleanButton => IsEditable && Entity != null;

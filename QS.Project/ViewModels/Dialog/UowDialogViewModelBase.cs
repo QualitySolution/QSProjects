@@ -43,7 +43,7 @@ namespace QS.ViewModels.Dialog
 		public virtual void SaveAndClose()
 		{
 			Save();
-			Close(false);
+			Close(false, CloseSource.Save);
 		}
 
 		public virtual void Dispose()

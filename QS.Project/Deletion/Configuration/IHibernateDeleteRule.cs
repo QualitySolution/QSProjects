@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 	public interface IHibernateDeleteRule : IDeleteRule
 	{

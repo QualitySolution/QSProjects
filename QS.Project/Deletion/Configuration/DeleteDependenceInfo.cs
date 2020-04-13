@@ -5,7 +5,7 @@ using Gamma.Utilities;
 using NHibernate.Mapping;
 using QS.Project.DB;
 
-namespace QS.Deletion
+namespace QS.Deletion.Configuration
 {
 
 	public class DeleteDependenceInfo
@@ -47,14 +47,6 @@ namespace QS.Deletion
 		}
 
 		private DeleteDependenceInfo() {}
-
-		internal IDeleteInfo GetClassInfo()
-		{
-			if(ObjectClass != null)
-				return DeleteConfig.ClassInfos.Find (i => i.ObjectClass == ObjectClass);
-			else
-				return DeleteConfig.ClassInfos.OfType<DeleteInfo> ().FirstOrDefault (i => i.TableName == TableName);
-		}
 
         public DeleteDependenceInfo AddCheckProperty(string property)
         {

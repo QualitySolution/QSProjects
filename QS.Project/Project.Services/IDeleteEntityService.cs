@@ -1,9 +1,12 @@
 ﻿using System;
+using QS.Deletion;
+using QS.DomainModel.UoW;
+
 namespace QS.Project.Services
 {
 	public interface IDeleteEntityService
 	{
-		bool DeleteEntity<TEntity>(int id);
-		bool DeleteEntity(Type clazz, int id);
+		DeleteCore DeleteEntity<TEntity>(int id, IUnitOfWork uow = null, Action beforeDeletion = null);
+		DeleteCore DeleteEntity(Type clazz, int id, IUnitOfWork uow = null, Action beforeDeletion = null);
 	}
 }
