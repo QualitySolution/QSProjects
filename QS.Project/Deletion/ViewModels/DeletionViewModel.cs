@@ -6,10 +6,11 @@ using QS.Navigation;
 using QS.Utilities;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Deletion.ViewModels
 {
-	public class DeletionViewModel : ModalDialogViewModelBase
+	public class DeletionViewModel : ModalDialogViewModelBase, IOnCloseActionViewModel
 	{
 		public readonly DeleteCore Deletion;
 		public Action DeletionAccepted;
@@ -71,7 +72,7 @@ namespace QS.Deletion.ViewModels
 
 		public void CancelDeletion()
 		{
-			Close(false, CloseSource.Self);
+			Close(false, CloseSource.Cancel);
 		}
 
 		#endregion
@@ -100,7 +101,13 @@ namespace QS.Deletion.ViewModels
 			rootNode.Childs.Sort();
 		}
 
-#endregion
+		public void OnClose(CloseSource source)
+		{
+			if(source != CloseSource.Self)
+				Deletion.DeletionExecuted = false;
+		}
+
+		#endregion
 	}
 
 	public class TreeNode : IComparable<TreeNode>
