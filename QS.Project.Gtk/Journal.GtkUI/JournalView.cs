@@ -137,6 +137,9 @@ namespace QS.Journal.GtkUI
 
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
+			if(isDestroyed)
+				return;
+
 			Application.Invoke((s, arg) => {
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
@@ -389,8 +392,10 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
+		private bool isDestroyed = false;
 		public override void Destroy()
 		{
+			isDestroyed = true;
 			base.Destroy();
 			ViewModel.Dispose();
 		}
