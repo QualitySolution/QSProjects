@@ -28,7 +28,7 @@ node {
    }
     stage('Test'){
        try {
-            sh 'xvfb-run mono QSProjects/packages/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe QSProjects/QS.LibsTest/bin/Debug/QS.LibsTest.dll'
+            sh 'xvfb-run mono QSProjects/packages/NUnit.ConsoleRunner.3.11.1/tools/nunit3-console.exe QSProjects/QS.LibsTest/bin/Debug/QS.LibsTest.dll'
        } catch (e) {}
        finally{
            nunit testResultsPattern: 'TestResult.xml'
