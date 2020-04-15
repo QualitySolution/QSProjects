@@ -214,8 +214,10 @@ namespace QSOrmProject
 				var deleteSerive = container.Resolve<DeleteEntityGUIService>();
 				var deletion = deleteSerive.DeleteEntity(objectClass, id, uow, beforeDeletion);
 
-				while (deletion.DeletionExecuted == null)
+				while (deletion.DeletionExecuted == null) {
 					GtkHelper.WaitRedraw();
+					System.Threading.Thread.Sleep(50);
+				}
 
 				return deletion.DeletionExecuted.Value;
 
