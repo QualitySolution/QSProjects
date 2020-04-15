@@ -50,6 +50,8 @@ namespace QS.Project.Journal.DataLoader
 		void LoadData(bool nextPage);
 
 		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
+
+		void CancelLoading();
 	}
 
 	/// <summary>

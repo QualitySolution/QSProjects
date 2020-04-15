@@ -137,17 +137,18 @@ namespace QS.Journal.GtkUI
 
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
-			if(isDestroyed)
-				return;
-
 			Application.Invoke((s, arg) => {
+				if(isDestroyed)
+					return;
+					
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
 				if(!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();
-					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+					if(GtkScrolledWindow?.Vadjustment != null)
+						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
 			});
 		}
@@ -396,6 +397,7 @@ namespace QS.Journal.GtkUI
 		public override void Destroy()
 		{
 			isDestroyed = true;
+			ViewModel.DataLoader.CancelLoading();
 			base.Destroy();
 			ViewModel.Dispose();
 		}
