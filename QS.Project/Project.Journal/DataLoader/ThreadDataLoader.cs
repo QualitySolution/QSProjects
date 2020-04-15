@@ -25,6 +25,7 @@ namespace QS.Project.Journal.DataLoader
 		public ThreadDataLoader(IUnitOfWorkFactory unitOfWorkFactory)
 		{
 			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
+			cts = new CancellationTokenSource();
 		}
 
 		#region Опциональные внешние зависимости
@@ -140,8 +141,17 @@ namespace QS.Project.Journal.DataLoader
 		private Task[] RunningTasks = new Task[] { };
 		private DateTime startLoading;
 
+		private CancellationTokenSource cts;
+		public void CancelLoading()
+		{
+			cts.Cancel();
+		}
+
 		public void LoadData(bool nextPage)
 		{
+			if(cts.IsCancellationRequested)
+				cts = new CancellationTokenSource();
+
 			Console.WriteLine($"LoadData({nextPage})");
 			if (LoadInProgress) {
 				if (!nextPage)
@@ -154,7 +164,7 @@ namespace QS.Project.Journal.DataLoader
 		}
 
 		private void LoadDataInternal(bool nextPage)
-		{ 
+		{
 			startLoading = DateTime.Now;
 
 			FirstPage = !nextPage;
@@ -179,7 +189,7 @@ namespace QS.Project.Journal.DataLoader
 
 			for (int i = 0; i < runLoaders.Length; i++) {
 				var loader = runLoaders[i];
-				RunningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize))
+				RunningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize), cts.Token)
 					.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
 			}
 
@@ -190,18 +200,22 @@ namespace QS.Project.Journal.DataLoader
 					else
 						ReadLoadersInSortOrder();
 					CopyNodesToPublish();
+					if(cts.IsCancellationRequested) {
+						logger.Info($"Загрузка данных отменена");
+						return;
+					}
 					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 				}
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
 				if(1 == Interlocked.Exchange(ref reloadRequested, 0)) {
 					LoadDataInternal(false);
-				} else
-					LoadInProgress = false;
-			})
+				}
+			}, cts.Token)
 			.ContinueWith((tsk) => {
-					LoadInProgress = false;
+				LoadInProgress = false;
+				if(tsk.IsFaulted)
 					OnLoadError(tsk.Exception);
-				}, TaskContinuationOptions.OnlyOnFaulted);
+			});
 		}
 
 		#endregion
@@ -313,6 +327,9 @@ namespace QS.Project.Journal.DataLoader
 			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которы мы могли бы посчитать строки.
 				return;
 
+			if(cts.IsCancellationRequested)
+				cts = new CancellationTokenSource();
+
 			startCounting = DateTime.Now;
 			TotalCountingInProgress = true;
 			logger.Info("Запрос общего количества строк...");
@@ -327,9 +344,13 @@ namespace QS.Project.Journal.DataLoader
 					lock(totalCountLock) {
 						TotalCount = (TotalCount ?? 0) + (uint)countRows;
 					}
+					if(cts.IsCancellationRequested) {
+						logger.Info($"Загрузка общего количества строк отменена");
+						return;
+					}
 					TotalCountChanged?.Invoke(this, EventArgs.Empty);
-				})
-					.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
+				}, cts.Token)
+				.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
 			}
 
 			Task.Factory.ContinueWhenAll(CountingTasks, (tasks) => {
