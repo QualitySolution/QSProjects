@@ -173,6 +173,9 @@ namespace Gamma.Binding
 		public bool IterParent (out TreeIter iter, TreeIter child)
 		{
 			iter = TreeIter.Zero;
+			if(child.Equals(TreeIter.Zero))
+				return false;
+
 			var node = NodeFromIter(child);
 			var levelInfo = GetLevelConfig(node);
 			if (levelInfo.IsFirstLevel)
