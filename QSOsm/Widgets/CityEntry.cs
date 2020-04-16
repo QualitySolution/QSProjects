@@ -190,9 +190,11 @@ namespace QSOsm
 						c.OsmId
 					);
 				}
-				Completion.Model = completionListStore;
-				if(HasFocus)
-					Completion?.Complete();
+				if(Completion != null) {
+					Completion.Model = completionListStore;
+					if(HasFocus)
+						Completion?.Complete();
+				}
 			});
 		}
 
