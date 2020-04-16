@@ -42,7 +42,7 @@ namespace QSOsm.Loaders
 			CancelLoading();
 
 			CurrentLoadTask = Task.Run(() => GetOsmStreets(cityId,searchString, limit, cancelTokenSource.Token));
-			CurrentLoadTask.ContinueWith(SaveStreets,TaskContinuationOptions.OnlyOnRanToCompletion);
+			CurrentLoadTask.ContinueWith(SaveStreets, cancelTokenSource.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
 			CurrentLoadTask.ContinueWith((arg) => logger.Error(arg.Exception, "Ошибка при загрузке улиц"), TaskContinuationOptions.OnlyOnFaulted);
 		}
 
@@ -56,12 +56,11 @@ namespace QSOsm.Loaders
 			return Osm.GetStreetsByCriteria(cityId, searchString, limit);
 		}
 
-
 		protected void SaveStreets(Task<List<OsmStreet>> newSteets)
 		{
 			Streets = newSteets.Result.ToArray();
 			logger.Info($"Улиц загружено : {Streets.Length}");
-			StreetLoaded.Invoke();
+			StreetLoaded?.Invoke();
 		}
 
 		public OsmStreet[] GetStreets()

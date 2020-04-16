@@ -58,9 +58,9 @@ namespace QSOsm
 
 		public virtual decimal? Longitude {
 			get {
-					GetCoordinates(out decimal? longitude, out decimal? latitude);
-					return longitude; 
-				}
+				GetCoordinates(out decimal? longitude, out decimal? latitude);
+				return longitude; 
+			}
 		}
 
 		OsmStreet street;
@@ -147,12 +147,14 @@ namespace QSOsm
 
 				foreach(var h in houses)
 					completionListStore.AppendValues(h.ComplexNumber, h.Id, h);
-					
-				Completion.Model = completionListStore;
-				if(HasFocus)
-					Completion?.Complete();
-				CompletionLoaded?.Invoke(null, EventArgs.Empty);
-		});
+
+				if(Completion != null) {
+					Completion.Model = completionListStore;
+					if(HasFocus)
+						Completion?.Complete();
+					CompletionLoaded?.Invoke(null, EventArgs.Empty);
+				}
+			});
 		}
 
 		public void GetCoordinates(out decimal? longitude, out decimal? latitude)

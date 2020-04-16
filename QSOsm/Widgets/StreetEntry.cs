@@ -186,19 +186,20 @@ namespace QSOsm
 
 		private void StreetLoaded()
 		{
-
-				var streets = streetsDataLoader.GetStreets();
-				completionListStore = new ListStore(typeof(string), typeof(string));
-				foreach(var s in streets) {
-					completionListStore.AppendValues(
-						s.Name,
-						s.Districts
-					);
-				}
+			var streets = streetsDataLoader.GetStreets();
+			completionListStore = new ListStore(typeof(string), typeof(string));
+			foreach(var s in streets) {
+				completionListStore.AppendValues(
+					s.Name,
+					s.Districts
+				);
+			}
 			Application.Invoke((sender, e) => {
-				this.Completion.Model = completionListStore;
-				if(this.HasFocus) {
-					this.Completion.Complete();
+				if(Completion != null) {
+					Completion.Model = completionListStore;
+					if(HasFocus) {
+						Completion.Complete();
+					}
 				}
 			});
 		}
