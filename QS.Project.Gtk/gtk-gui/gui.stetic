@@ -2086,9 +2086,9 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.ErrorReporting.ErrorMsgDlg" design-size="1081 733">
+  <widget class="Gtk.Dialog" id="QS.ErrorReporting.ErrorMsgDlg" design-size="912 623">
     <property name="MemberName" />
-    <property name="WidthRequest">1000</property>
+    <property name="WidthRequest">800</property>
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
     <property name="TypeHint">Dialog</property>

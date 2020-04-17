@@ -48,7 +48,7 @@ namespace QS.ErrorReporting
 		{
 			global::Stetic.Gui.Initialize(this);
 			// Widget QS.ErrorReporting.ErrorMsgDlg
-			this.WidthRequest = 1000;
+			this.WidthRequest = 800;
 			this.Name = "QS.ErrorReporting.ErrorMsgDlg";
 			this.Title = global::Mono.Unix.Catalog.GetString("Ошибка");
 			this.Icon = global::Stetic.IconLoader.LoadIcon(this, "gtk-dialog-error", global::Gtk.IconSize.Menu);
@@ -274,8 +274,8 @@ namespace QS.ErrorReporting
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 1081;
-			this.DefaultHeight = 733;
+			this.DefaultWidth = 912;
+			this.DefaultHeight = 623;
 			this.Show();
 			this.buttonSendReport.Clicked += new global::System.EventHandler(this.OnButtonSendReportClicked);
 			this.buttonCopy.Clicked += new global::System.EventHandler(this.OnButtonCopyClicked);
