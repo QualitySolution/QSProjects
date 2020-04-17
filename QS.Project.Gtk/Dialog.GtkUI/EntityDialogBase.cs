@@ -9,7 +9,7 @@ using QS.DomainModel.UoW;
 using QS.Permissions;
 using QS.Project.Repositories;
 using QS.Tdi;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 using QS.Utilities.Text;
 using QS.Project.Services;
 using QS.Services;

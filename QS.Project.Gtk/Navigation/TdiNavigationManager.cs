@@ -169,11 +169,23 @@ namespace QS.Navigation
 
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
 		{
-			pages.Add(page);
-			if(page.ViewModel is ModalDialogViewModelBase)
+			if(page.ViewModel is ModalDialogViewModelBase) {
+				pages.Add(page);
 				OpenModalPage(page);
-			else
+				return;
+			}
+
+			var masterTab = (masterPage as ITdiPage)?.TdiTab;
+
+			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab && (page.ViewModel as ISlideableViewModel)?.AlwaysNewPage != true) {
+				var slider = masterTab.TabParent as TdiSliderTab;
+				slider.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab);
+				(masterPage as IPageInternal).AddChildPage(page);
+			}
+			else {
+				pages.Add(page);
 				tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, (page as ITdiPage).TdiTab);
+			}
 		}
 
 		protected override void OpenPage(IPage masterPage, IPage page)
@@ -186,7 +198,7 @@ namespace QS.Navigation
 
 			var masterTab = (masterPage as ITdiPage)?.TdiTab;
 
-			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab) {
+			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab && (page.ViewModel as ISlideableViewModel)?.AlwaysNewPage != true) {
 				var slider = masterTab.TabParent as TdiSliderTab;
 				slider.AddTab((page as ITdiPage).TdiTab, masterTab);
 				(masterPage as IPageInternal).AddChildPage(page);

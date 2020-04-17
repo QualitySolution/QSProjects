@@ -4,6 +4,7 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
 using QS.Tdi;
+using QS.Validation;
 
 namespace QS.ViewModels.Dialog
 {
@@ -17,7 +18,7 @@ namespace QS.ViewModels.Dialog
 		/// Внимание!!! Чтобы аргумент ITdiTab myTab заполнялся автоматически в наследуещем классе в конструкторе необходимо указывать такое же имя аргумента "myTab"
 		/// </summary>
 		/// <param name="myTab">Tdi вкладка в которую будет помещена View от создаваемой ViewModel.</param>
-		public LegacyEntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ITdiTab myTab, ITdiCompatibilityNavigation navigation) : base(uowBuilder, unitOfWorkFactory, navigation)
+		public LegacyEntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ITdiTab myTab, ITdiCompatibilityNavigation navigation, IValidator validator = null) : base(uowBuilder, unitOfWorkFactory, navigation, validator)
 		{
 			TdiTab = myTab ?? throw new ArgumentNullException(nameof(myTab));
 		}

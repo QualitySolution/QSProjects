@@ -42,7 +42,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

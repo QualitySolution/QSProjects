@@ -57,13 +57,13 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\packages\Google.Protobuf.3.11.3\lib\net45\Google.Protobuf.dll</HintPath>
+      <HintPath>..\packages\Google.Protobuf.3.11.4\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\MySql.Data.dll</HintPath>
@@ -75,17 +75,17 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Renci.SshNet">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.5.1.1\lib\net461\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.5.1.2\lib\net461\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers">
-      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics.Vectors">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -93,16 +93,16 @@
     <Reference Include="mscorlib" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="Ubiety.Dns.Core">
       <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\Ubiety.Dns.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -213,10 +213,8 @@
     <Compile Include="Project.Services\ICommonServices.cs" />
     <Compile Include="Project.Services\IPermissionService.cs" />
     <Compile Include="Project.Services\IUserService.cs" />
-    <Compile Include="Project.Services\IValidationService.cs" />
     <Compile Include="Project.Services\PermissionService.cs" />
     <Compile Include="Project.Services\UserService.cs" />
-    <Compile Include="Project.Services\ValidationService.cs" />
     <Compile Include="Project.Journal\SingleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalEntityConfig.cs" />
     <Compile Include="Project.Filter\FilterViewModelBase.cs" />
@@ -265,7 +263,6 @@
     <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
     <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
-    <Compile Include="Project.Services\ValidationServiceWithoutView.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveMessage.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveQuestion.cs" />
@@ -329,6 +326,14 @@
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
+    <Compile Include="Navigation\ISlideableViewModel.cs" />
+    <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
+    <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
+    <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
+    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
+    <Compile Include="Project.DB\NhDataBaseInfo.cs" />
+    <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
     <Compile Include="Deletion\DeleteConfig.cs" />
     <Compile Include="Project.Services\DeleteEntityGUIService.cs" />
     <Compile Include="Deletion\Configuration\DeleteConfiguration.cs" />

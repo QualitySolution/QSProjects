@@ -1,10 +1,12 @@
 ﻿using System;
+using QS.Validation;
+
 namespace QS.Services
 {
 	public class CommonServices : ICommonServices
 	{
 		public CommonServices(
-			IValidationService validationService, 
+			IValidator validationService, 
 			IInteractiveService interactiveService,
 			IPermissionService permissionService,
 			ICurrentPermissionService currentPermissionService,
@@ -18,7 +20,7 @@ namespace QS.Services
 			UserService = userService ?? throw new ArgumentNullException(nameof(userService));
 		}
 
-		public IValidationService ValidationService { get; }
+		public IValidator ValidationService { get; }
 
 		public IInteractiveService InteractiveService { get; }
 

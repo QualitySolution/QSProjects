@@ -26,6 +26,7 @@ namespace QS.Validation
 		{
 		}
 
+		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		public bool Validate(object validatableObject, ValidationContext validationContext = null)
 		{
 			results.Clear();

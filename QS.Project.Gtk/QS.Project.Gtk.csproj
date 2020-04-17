@@ -66,7 +66,7 @@
       <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
@@ -78,10 +78,10 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\packages\Google.Protobuf.3.11.3\lib\net45\Google.Protobuf.dll</HintPath>
+      <HintPath>..\packages\Google.Protobuf.3.11.4\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Renci.SshNet">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
@@ -98,10 +98,10 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.5.1.1\lib\net461\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.5.1.2\lib\net461\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers">
-      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics.Vectors">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -109,16 +109,16 @@
     <Reference Include="mscorlib" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="Ubiety.Dns.Core">
       <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\Ubiety.Dns.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -136,7 +136,7 @@
     <Compile Include="Tdi\TDIMain.cs" />
     <Compile Include="Dialog.GtkUI\TdiTabBase.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnTdiTabBase.cs" />
-    <Compile Include="Utilities.GtkUI\GtkHelper.cs" />
+    <Compile Include="Utilities\GtkHelper.cs" />
     <Compile Include="Dialog.GtkUI\WidgetOnDialogBase.cs" />
     <Compile Include="Dialog.GtkUI\SingleUowDialogBase.cs" />
     <Compile Include="Dialog.GtkUI\SingleUowTabBase.cs" />
@@ -227,17 +227,13 @@
     <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
-    <Compile Include="ErrorReporting.GtkUI\UnhandledExceptionHandler.cs" />
-    <Compile Include="ErrorReporting.GtkUI\ErrorMsgDlg.cs" />
-    <Compile Include="gtk-gui\QS.ErrorReporting.GtkUI.ErrorMsgDlg.cs" />
+    <Compile Include="ErrorReporting\UnhandledExceptionHandler.cs" />
+    <Compile Include="ErrorReporting\ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
-    <Compile Include="Validation.GtkUI\GtkValidationViewFactory.cs" />
-    <Compile Include="Validation.GtkUI\QSValidator.cs" />
-    <Compile Include="Validation.GtkUI\ResultItem.cs" />
-    <Compile Include="Validation.GtkUI\ResultsListDlg.cs" />
-    <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultsListDlg.cs" />
-    <Compile Include="gtk-gui\QS.Validation.GtkUI.ResultItem.cs" />
-    <Compile Include="Project.Services.GtkUI\GtkAppServicesConfig.cs" />
+    <Compile Include="Validation\GtkValidationViewFactory.cs" />
+    <Compile Include="Validation\QSValidator.cs" />
+    <Compile Include="Validation\ResultItem.cs" />
+    <Compile Include="Validation\ResultsListDlg.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
@@ -275,6 +271,10 @@
     <Compile Include="Views\Dialog\WindowSizeAttribute.cs" />
     <Compile Include="Views\Control\EntitySearch.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntitySearch.cs" />
+    <Compile Include="gtk-gui\QS.Validation.ResultsListDlg.cs" />
+    <Compile Include="gtk-gui\QS.Validation.ResultItem.cs" />
+    <Compile Include="Tdi\ViewModelTdiJournalTab.cs" />
+    <Compile Include="gtk-gui\QS.ErrorReporting.ErrorMsgDlg.cs" />
     <Compile Include="Deletion.Views\PrepareDeletionView.cs" />
     <Compile Include="gtk-gui\QS.Deletion.Views.PrepareDeletionView.cs" />
     <Compile Include="Deletion.Views\DeletionProcessView.cs" />
@@ -286,7 +286,7 @@
     <Folder Include="Widgets.GtkUI\" />
     <Folder Include="Dialog.GtkUI\" />
     <Folder Include="Tdi\" />
-    <Folder Include="Utilities.GtkUI\" />
+    <Folder Include="Utilities\" />
     <Folder Include="Project.Dialogs.GtkUI\" />
     <Folder Include="RepresentationModel.GtkUI\" />
     <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
@@ -298,9 +298,9 @@
     <Folder Include="Project.Search.GtkUI\" />
     <Folder Include="Journal.GtkUI\" />
     <Folder Include="Views.GtkUI\" />
-    <Folder Include="ErrorReporting.GtkUI\" />
+    <Folder Include="ErrorReporting\" />
     <Folder Include="Project.Services.GtkUI\" />
-    <Folder Include="Validation.GtkUI\" />
+    <Folder Include="Validation\" />
     <Folder Include="Navigation\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Control\" />

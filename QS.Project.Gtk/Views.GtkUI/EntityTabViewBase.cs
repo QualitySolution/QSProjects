@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using QS.DomainModel.Entity;
+using QS.Utilities;
 using QS.Navigation;
-using QS.Utilities.GtkUI;
 using QS.ViewModels;
 
 namespace QS.Views.GtkUI

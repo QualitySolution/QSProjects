@@ -16,7 +16,7 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Services;
 using QS.Tdi;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 using QS.Views.Resolve;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;

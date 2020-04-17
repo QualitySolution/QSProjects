@@ -11,9 +11,11 @@ using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 using QS.Utilities.Text;
+using QS.ViewModels;
 using QS.Views.GtkUI;
+using QS.Views.Resolve;
 using QSWidgetLib;
 
 namespace QS.Journal.GtkUI
@@ -63,12 +65,24 @@ namespace QS.Journal.GtkUI
 			}
 			ConfigureActions();
 
-			if(ViewModel.Filter != null) {
-				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(ViewModel.Filter);
+			//FIXME Этот код только для водовоза
+			var filterProp = ViewModel.GetType().GetProperty("Filter");
+			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.GetValue(ViewModel) is IJournalFilter filter) {
+				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
-				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.Filter.HidenByDefault;
+				checkShowFilter.Active = hboxFilter.Visible = !filter.HidenByDefault;
+			}
+
+			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
+				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
+				Widget filterView = viewResolver.Resolve(filterViewModel);
+
+				hboxFilter.Add(filterView);
+				filterView.Show();
+				checkShowFilter.Visible = true;
+				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.JournalFilter.HidenByDefault;
 			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
@@ -124,13 +138,17 @@ namespace QS.Journal.GtkUI
 		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
 			Application.Invoke((s, arg) => {
+				if(isDestroyed)
+					return;
+					
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
 				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
 				if(!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();
-					GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+					if(GtkScrolledWindow?.Vadjustment != null)
+						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
 			});
 		}
@@ -375,8 +393,11 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
+		private bool isDestroyed = false;
 		public override void Destroy()
 		{
+			isDestroyed = true;
+			ViewModel.DataLoader.CancelLoading();
 			base.Destroy();
 			ViewModel.Dispose();
 		}

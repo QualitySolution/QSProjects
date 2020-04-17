@@ -2086,9 +2086,9 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.ErrorReporting.GtkUI.ErrorMsgDlg" design-size="1081 733">
+  <widget class="Gtk.Dialog" id="QS.ErrorReporting.ErrorMsgDlg" design-size="912 623">
     <property name="MemberName" />
-    <property name="WidthRequest">1000</property>
+    <property name="WidthRequest">800</property>
     <property name="Title" translatable="yes">Ошибка</property>
     <property name="Icon">stock:gtk-dialog-error Menu</property>
     <property name="TypeHint">Dialog</property>
@@ -2403,7 +2403,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.Validation.GtkUI.ResultsListDlg" design-size="436 335">
+  <widget class="Gtk.Dialog" id="QS.Validation.ResultsListDlg" design-size="436 335">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Проверка корректности данных</property>
     <property name="Icon">stock:gtk-apply Menu</property>
@@ -2478,7 +2478,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Validation.GtkUI.ResultItem" design-size="291 24">
+  <widget class="Gtk.Bin" id="QS.Validation.ResultItem" design-size="254 24">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>

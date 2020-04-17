@@ -44,7 +44,7 @@ namespace QSOsm.Loaders
 			CancelLoading();
 
 			CurrentLoadTask = Task.Run(() => GetOsmCities(searchString, limit, cancelTokenSource.Token));
-			CurrentLoadTask.ContinueWith(SaveCities, TaskContinuationOptions.OnlyOnRanToCompletion);
+			CurrentLoadTask.ContinueWith(SaveCities, cancelTokenSource.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
 			CurrentLoadTask.ContinueWith((arg) => logger.Error(arg.Exception, "Ошибка при загрузке городов"), TaskContinuationOptions.OnlyOnFaulted);
 		}
 
@@ -61,8 +61,8 @@ namespace QSOsm.Loaders
 		private void SaveCities(Task<List<OsmCity>> newCities)
 		{
 			Cities = newCities.Result.ToArray();
-			CitiesLoaded?.Invoke();
 			logger.Info($"Городов загружено : {Cities.Length}");
+			CitiesLoaded?.Invoke();
 		}
 
 		public OsmCity[] GetCities()

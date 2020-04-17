@@ -34,6 +34,8 @@ namespace QS.Test.DomainModel.NotifyChange
 			}
 		}
 
+		#region Проверка условий
+
 		[Test(Description = "Проверяем что реагируем только на определенный тип событий, в частности удаление.")]
 		public void NotifyOnlyDeleteEventTest()
 		{
@@ -56,7 +58,90 @@ namespace QS.Test.DomainModel.NotifyChange
 			}
 		}
 
-		[Test(Description = "Проверяем что реагируем только на определенный тип событий, в частности удаление.")]
+		[Test(Description = "Проверяем что можем фильтровать события по свойству объекта.")]
+		public void NotifyByWhereConditionTest()
+		{
+			using (var subscruber = new BatchEventTestSubscruber()) {
+				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+					.IfEntity<SimpleEntity>().AndWhere(x => x.Text == "1");
+
+				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+					var entity1 = new SimpleEntity { Text = "1" };
+					uow.Save(entity1);
+
+					var entity2 = new SimpleEntity { Text = "2" };
+					uow.Save(entity2);
+					uow.Commit();
+				}
+
+				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscruber.calls.First();
+				Assert.That(changeEvents.Count(), Is.EqualTo(1));
+				Assert.That(changeEvents.First().EventType, Is.EqualTo(TypeOfChangeEvent.Insert));
+				var entity = changeEvents.First().GetEntity<SimpleEntity>();
+				Assert.That(entity.Text, Is.EqualTo("1"));
+			}
+		}
+
+		[Test(Description = "Проверяем что можем фильтровать события с двумя условиями через И.")]
+		public void NotifyByWhereAndTwoConditionTest()
+		{
+			using (var subscruber = new BatchEventTestSubscruber()) {
+				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+					.IfEntity<SimpleEntity>()
+					.AndWhere(x => x.Text.Contains("1"))
+					.AndWhere(x => x.Text.Contains("2"));
+
+				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+					var entity1 = new SimpleEntity { Text = "1,2" };
+					uow.Save(entity1);
+					var entity2 = new SimpleEntity { Text = "2" };
+					uow.Save(entity2);
+					var entity3 = new SimpleEntity { Text = "1" };
+					uow.Save(entity3);
+					uow.Commit();
+				}
+
+				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscruber.calls.First();
+				Assert.That(changeEvents.Count(), Is.EqualTo(1));
+				Assert.That(changeEvents.First().EventType, Is.EqualTo(TypeOfChangeEvent.Insert));
+				var entity = changeEvents.First().GetEntity<SimpleEntity>();
+				Assert.That(entity.Text, Is.EqualTo("1,2"));
+			}
+		}
+
+		[Test(Description = "Проверяем что можем фильтровать события с двумя условиями через ИЛИ.")]
+		public void NotifyByWhereOrTwoConditionTest()
+		{
+			using (var subscruber = new BatchEventTestSubscruber()) {
+				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+					.IfEntity<SimpleEntity>()
+					.AndWhere(x => x.Text.Contains("1"))
+					.Or.IfEntity<SimpleEntity>()
+					.AndWhere(x => x.Text.Contains("2"));
+
+				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+					var entity1 = new SimpleEntity { Text = "1,2" };
+					uow.Save(entity1);
+					var entity2 = new SimpleEntity { Text = "2" };
+					uow.Save(entity2);
+					var entity3 = new SimpleEntity { Text = "1" };
+					uow.Save(entity3);
+					var entity4 = new SimpleEntity { Text = "4" };
+					uow.Save(entity4);
+					uow.Commit();
+				}
+
+				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscruber.calls.First();
+				Assert.That(changeEvents.Count(), Is.EqualTo(3));
+			}
+		}
+
+		#endregion
+
+		[Test(Description = "Проверяем что подписка BatchSubscribeOnEntity реагирует на сохранение.")]
 		public void DirectBatchSubscribe_NotifySaveEventTest()
 		{
 			using (var subscruber = new BatchEventTestSubscruber()) {

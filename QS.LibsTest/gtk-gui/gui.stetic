@@ -86,6 +86,20 @@
       <placeholder />
     </child>
   </widget>
+  <widget class="Gtk.Bin" id="QS.Test.TestApp.Views.EmptyDialogView" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="QS.Test.TestApp.Views.SlideableView" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
   <widget class="Gtk.Bin" id="QS.Test.TestApp.Views.ModalDialogView" design-size="300 300">
     <property name="MemberName" />
     <property name="Visible">False</property>

@@ -1,7 +1,7 @@
 ﻿using System;
 using Gamma.Binding.Converters;
 using QS.Deletion.ViewModels;
-using QS.Utilities.GtkUI;
+using QS.Utilities;
 
 namespace QS.Deletion.Views
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Gtk;
 
-namespace QS.Utilities.GtkUI
+namespace QS.Utilities
 {
 	public static class GtkHelper
 	{

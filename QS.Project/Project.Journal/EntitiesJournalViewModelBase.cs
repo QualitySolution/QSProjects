@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using NHibernate;
-using NHibernate.Criterion;
 using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Journal.Search;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
@@ -28,7 +25,7 @@ namespace QS.Project.Journal
 		protected Dictionary<Type, JournalEntityConfig<TNode>> EntityConfigs { get; private set; }
 
 		private IJournalFilter filter;
-		public override IJournalFilter Filter {
+		public IJournalFilter Filter {
 			get => filter;
 			protected set {
 				if(filter != null)
@@ -47,13 +44,6 @@ namespace QS.Project.Journal
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
-			Search.OnSearch += Search_OnSearch;
-			searchHelper = new SearchHelper(Search);
-		}
-
-		void Search_OnSearch(object sender, EventArgs e)
-		{
-			Refresh();
 		}
 
 		void FilterViewModel_OnFiltered(object sender, EventArgs e)
@@ -127,22 +117,6 @@ namespace QS.Project.Journal
 		}
 
 		#endregion Ordering
-
-		#region Search
-
-		private readonly SearchHelper searchHelper;
-
-		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
-		}
-
-		protected ICriterion GetSearchCriterion<TEntity>(params Expression<Func<TEntity, object>>[] propertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(propertiesExpr);
-		}
-
-		#endregion Search
 
 		#region Entity load configuration
 

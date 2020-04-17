@@ -36,8 +36,12 @@ namespace QS.Navigation
 			ITdiTab tab;
 			var args = parameters.ToList();
 
-			if(!typeof(TViewModel).IsAssignableTo<ITdiTab>())
-				viewModelTab = new ViewModelTdiTab();
+			if(!typeof(TViewModel).IsAssignableTo<ITdiTab>()) {
+				if(typeof(TViewModel).IsAssignableTo<ISlideableViewModel>())
+					viewModelTab = new ViewModelTdiJournalTab();
+				else
+					viewModelTab = new ViewModelTdiTab();
+			}
 
 			if(typeof(TViewModel).IsAssignableTo<ILegacyViewModel>()) {
 				args.Add(new NamedParameter("myTab", viewModelTab));

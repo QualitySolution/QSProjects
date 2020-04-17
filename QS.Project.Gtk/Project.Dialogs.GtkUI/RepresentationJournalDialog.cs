@@ -15,6 +15,7 @@ using QS.Utilities.Text;
 
 namespace QS.Project.Dialogs.GtkUI
 {
+	[Obsolete("Используется только в ВОДОВОЗЕ. Удалить, когда удалите из водовоза.")]
 	public partial class RepresentationJournalDialog : SingleUowTabBase, IJournalDialog
 	{
         private static Logger logger = LogManager.GetCurrentClassLogger ();

@@ -6,7 +6,7 @@ using QS.Dialog;
 using QS.Project.Domain;
 using QS.Project.VersionControl;
 
-namespace QS.ErrorReporting.GtkUI
+namespace QS.ErrorReporting
 {
 	/// <summary>
 	/// Делегат для перехвата и отдельной обработки некоторых ошибок.
@@ -35,10 +35,10 @@ namespace QS.ErrorReporting.GtkUI
 
 		public static Thread GuiThread;
 		public static IApplicationInfo ApplicationInfo;
+		public static IDataBaseInfo DataBaseInfo;
 		public static IInteractiveMessage InteractiveMessage;
 		public static UserBase User;
-		public static bool RequestEmail = true;
-		public static bool RequestDescription = true;
+		public static IErrorReportingSettings ErrorReportingSettings;
 
 		/// <summary>
 		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
@@ -50,8 +50,10 @@ namespace QS.ErrorReporting.GtkUI
 
 		private static ErrorMsgDlg currentCrashDlg;
 
-		public static void SubscribeToUnhadledExceptions()
+		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings)
 		{
+			ErrorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
+
 			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
 				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
 				ErrorMessage((Exception)e.ExceptionObject);
@@ -88,7 +90,7 @@ namespace QS.ErrorReporting.GtkUI
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User);
+				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings, DataBaseInfo);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;

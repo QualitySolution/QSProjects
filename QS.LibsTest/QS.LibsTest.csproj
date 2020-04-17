@@ -38,7 +38,7 @@
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.4.2.1\lib\net46\NSubstitute.dll</HintPath>
@@ -47,7 +47,7 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Data.Sqlite" />
     <Reference Include="Antlr3.Runtime">
@@ -74,13 +74,15 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Autofac">
-      <HintPath>..\packages\Autofac.5.1.1\lib\net461\Autofac.dll</HintPath>
+      <HintPath>..\packages\Autofac.5.1.2\lib\net461\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -146,6 +148,15 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseDialogView.cs" />
     <Compile Include="TestApp\Views\OnCloseModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseModalDialogView.cs" />
+    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBaseTest.cs" />
+    <Compile Include="TestApp\Domain\ValidatedEntity.cs" />
+    <Compile Include="TestApp\ViewModels\SlideableViewModel.cs" />
+    <Compile Include="TestApp\Views\EmptyDialogView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
+    <Compile Include="TestApp\ViewModels\EmptyDialogViewModel.cs" />
+    <Compile Include="TestApp\Views\SlideableView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
+    <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -178,6 +189,8 @@
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="Utilities\Text\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Dialog\" />
     <Folder Include="TestApp\Domain\Linked\" />
     <Folder Include="TestApp\HibernateMapping\Linked\" />
   </ItemGroup>

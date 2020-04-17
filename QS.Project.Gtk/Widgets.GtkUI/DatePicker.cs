@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gtk;
+using Pango;
 
 namespace QS.Widgets.GtkUI
 {
@@ -10,7 +11,7 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class DatePicker : Gtk.Bin
 	{
-		public static int DefaultWidthRequest;
+		public static int? CalendarFontSize;
 
 		public BindingControler<DatePicker> Binding { get; private set; }
 
@@ -118,7 +119,7 @@ namespace QS.Widgets.GtkUI
 		}
 
 		private bool _AutoSeparation = true;
-		[System.ComponentModel.DefaultValue(true)]
+		[DefaultValue(true)]
 		public bool AutoSeparation{
 			get { return _AutoSeparation;}
 			set { _AutoSeparation = value;}
@@ -170,8 +171,11 @@ namespace QS.Widgets.GtkUI
 			SelectDate.DaySelectedDoubleClick += OnCalendarDaySelectedDoubleClick;
 			SelectDate.Date = date ?? DateTime.Now.Date;
 
+			if(CalendarFontSize.HasValue) {
+				var desc = new FontDescription { AbsoluteSize = CalendarFontSize.Value * 1000 };
+				SelectDate.ModifyFont(desc);
+			}
 			editDate.VBox.Add(SelectDate);
-			editDate.WidthRequest = DefaultWidthRequest;
 			editDate.ShowAll();
 			int response = editDate.Run ();
 			if(response == (int)ResponseType.Ok)

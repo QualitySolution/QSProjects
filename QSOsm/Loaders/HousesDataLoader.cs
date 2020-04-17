@@ -35,12 +35,13 @@ namespace QSOsm.Loaders
 		public void LoadHouses(OsmStreet street)
 		{
 			CancelLoading();
+
 			logger.Info($"Запрос домов...");
 			if(street.Districts != null)
 				CurrentLoadTask = Task.Run(() => Osm.GetHouseNumbers(street.CityId, street.Name, street.Districts), cancelTokenSource.Token);
 			else
-				CurrentLoadTask = Task.Run(() => Osm.GetHouseNumbersWithoutDistrict(street.CityId, street.Name));
-			CurrentLoadTask.ContinueWith(SaveHouses, TaskContinuationOptions.OnlyOnRanToCompletion);
+				CurrentLoadTask = Task.Run(() => Osm.GetHouseNumbersWithoutDistrict(street.CityId, street.Name), cancelTokenSource.Token);
+			CurrentLoadTask.ContinueWith(SaveHouses, cancelTokenSource.Token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
 			CurrentLoadTask.ContinueWith((arg) => logger.Error("Ошибка при загрузке домов", arg.Exception), TaskContinuationOptions.OnlyOnFaulted);
 		}
 
@@ -55,7 +56,7 @@ namespace QSOsm.Loaders
 			houses = houses.OrderBy(x => x.ComplexNumber, new NaturalStringComparer()).ToList();
 			Houses = houses.ToArray();
 			logger.Info($"Домов загружено : {Houses.Length}");
-			HousesLoaded.Invoke();
+			HousesLoaded?.Invoke();
 		}
 
 		public OsmHouse[] GetHouses()

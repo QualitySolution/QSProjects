@@ -10,22 +10,21 @@ namespace QS.DomainModel.Entity
 	{
 		public virtual void FirePropertyChanged ()
 		{
-			if (PropertyChanged != null)
-				PropertyChanged.Invoke (null, null);
+			OnPropertyChanged(null);
 		}
 
 		public virtual event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged ([CallerMemberName]string propertyName = "")
+		protected virtual void OnPropertyChanged ([CallerMemberName]string propertyName = "")
 		{
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) {
-				var att = this.GetType ().GetProperty (propertyName).GetCustomAttributes (typeof(PropertyChangedAlsoAttribute), true);
-				handler (this, new PropertyChangedEventArgs (propertyName));
-				if(att.Length > 0)
-				{
-					foreach(string propName in (att[0] as PropertyChangedAlsoAttribute).PropertiesNames)
-						handler (this, new PropertyChangedEventArgs (propName));
+			if (PropertyChanged != null) {
+				PropertyChanged(this, new PropertyChangedEventArgs (propertyName));
+				if(!String.IsNullOrWhiteSpace(propertyName)) {
+					var att = this.GetType().GetProperty(propertyName).GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
+					if(att.Length > 0) {
+						foreach(string propName in (att[0] as PropertyChangedAlsoAttribute).PropertiesNames)
+							PropertyChanged(this, new PropertyChangedEventArgs(propName));
+					}
 				}
 			}
 		}

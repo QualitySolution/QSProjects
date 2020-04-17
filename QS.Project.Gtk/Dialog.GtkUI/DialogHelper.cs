@@ -9,11 +9,7 @@ namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
-		static DialogHelper()
-		{
-			FilterWidgetResolver = new DefaultFilterWidgetResolver();
-		}
-
+		[Obsolete("Оставлено только для ВОДОВОЗА. В других проектах не используется так как откзывается от антипатерна ServiceLocation.")]
 		public static IFilterWidgetResolver FilterWidgetResolver { get; set; }
 
 		public static IEntityDialog FindParentEntityDialog(Widget child)

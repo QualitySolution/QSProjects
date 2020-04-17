@@ -10,7 +10,11 @@ namespace QS.DomainModel.NotifyChange.Conditions
 
 		#region Fluent
 
+		/// <summary>
+		/// Уведомить только если тип измененого объекта <typeparamref name="TEntity"/>
+		/// </summary>
 		public SingleEntityCondition<TEntity> IfEntity<TEntity>()
+			where TEntity: class
 		{
 			var condition = new SingleEntityCondition<TEntity>(this);
 			conditions.Add(condition);
