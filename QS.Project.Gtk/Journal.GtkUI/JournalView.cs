@@ -75,6 +75,15 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Active = hboxFilter.Visible = !filter.HidenByDefault;
 			}
 
+			var footerProp = ViewModel.GetType().GetProperty("Footer");
+			if(DialogHelper.FooterWidgetResolver != null && footerProp != null && footerProp.GetValue(ViewModel) is IJournalFilterViewModel footer) {
+				Widget footerWidget = DialogHelper.FooterWidgetResolver.Resolve(footer);
+				hboxFooter.Add(footerWidget);
+				footerWidget.Show();
+				checkShowFilter.Visible = true;
+				checkShowFilter.Active = hboxFooter.Visible = !footer.HidenByDefault;
+			}
+
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
 				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
 				Widget filterView = viewResolver.Resolve(filterViewModel);

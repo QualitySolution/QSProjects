@@ -8,4 +8,9 @@ namespace QS.Dialog.GtkUI
 		Widget Resolve(RepresentationModel.IJournalFilter filter);
 		Widget Resolve(Project.Journal.IJournalFilter filter);
 	}
+
+	public interface IFooterWidgetResolver
+	{
+		Widget Resolve(Project.Journal.IJournalFilterViewModel filter);
+	}
 }

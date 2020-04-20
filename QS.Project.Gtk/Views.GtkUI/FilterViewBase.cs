@@ -23,4 +23,15 @@ namespace QS.Views.GtkUI
 			base.Destroy();
 		}
 	}
+
+	public class FooterViewBase<TFooter> : Gtk.Bin
+		where TFooter : FooterViewModelBase<TFooter>
+	{
+		protected TFooter ViewModel { get; }
+
+		public FooterViewBase(TFooter filterViewModel)
+		{
+			ViewModel = filterViewModel;
+		}
+	}
 }

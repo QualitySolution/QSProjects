@@ -36,6 +36,11 @@ namespace QS.Project.Journal
 			}
 		}
 
+		private IJournalFilterViewModel footer;
+		public IJournalFilterViewModel Footer {
+			get => footer;
+			set => footer = value;
+		}
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.

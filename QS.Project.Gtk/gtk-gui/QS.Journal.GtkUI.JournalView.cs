@@ -20,6 +20,8 @@ namespace QS.Journal.GtkUI
 
 		private global::Gamma.GtkWidgets.yTreeView tableview;
 
+		private global::Gtk.HBox hboxFooter;
+
 		private global::Gtk.ProgressBar progressbarLoading;
 
 		private global::Gtk.HBox hbox1;
@@ -109,13 +111,22 @@ namespace QS.Journal.GtkUI
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow]));
 			w8.Position = 3;
 			// Container child vboxMain.Gtk.Box+BoxChild
-			this.progressbarLoading = new global::Gtk.ProgressBar();
-			this.progressbarLoading.Name = "progressbarLoading";
-			this.vboxMain.Add(this.progressbarLoading);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.progressbarLoading]));
+			this.hboxFooter = new global::Gtk.HBox();
+			this.hboxFooter.Name = "hboxFooter";
+			this.hboxFooter.Spacing = 6;
+			this.vboxMain.Add(this.hboxFooter);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxFooter]));
 			w9.Position = 4;
 			w9.Expand = false;
 			w9.Fill = false;
+			// Container child vboxMain.Gtk.Box+BoxChild
+			this.progressbarLoading = new global::Gtk.ProgressBar();
+			this.progressbarLoading.Name = "progressbarLoading";
+			this.vboxMain.Add(this.progressbarLoading);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.progressbarLoading]));
+			w10.Position = 5;
+			w10.Expand = false;
+			w10.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
@@ -128,16 +139,16 @@ namespace QS.Journal.GtkUI
 			this.labelFooter.LabelProp = global::Mono.Unix.Catalog.GetString("####");
 			this.labelFooter.SingleLineMode = true;
 			this.hbox1.Add(this.labelFooter);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.labelFooter]));
-			w10.Position = 0;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.labelFooter]));
+			w11.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.vseparator1 = new global::Gtk.VSeparator();
 			this.vseparator1.Name = "vseparator1";
 			this.hbox1.Add(this.vseparator1);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vseparator1]));
-			w11.Position = 1;
-			w11.Expand = false;
-			w11.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vseparator1]));
+			w12.Position = 1;
+			w12.Expand = false;
+			w12.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.eventboxTotalRow = new global::Gtk.EventBox();
 			this.eventboxTotalRow.Events = ((global::Gdk.EventMask)(256));
@@ -149,15 +160,15 @@ namespace QS.Journal.GtkUI
 			this.labelTotalRow.UseMarkup = true;
 			this.eventboxTotalRow.Add(this.labelTotalRow);
 			this.hbox1.Add(this.eventboxTotalRow);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.eventboxTotalRow]));
-			w13.Position = 2;
-			w13.Expand = false;
-			w13.Fill = false;
-			this.vboxMain.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
-			w14.Position = 5;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.eventboxTotalRow]));
+			w14.Position = 2;
 			w14.Expand = false;
 			w14.Fill = false;
+			this.vboxMain.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
+			w15.Position = 6;
+			w15.Expand = false;
+			w15.Fill = false;
 			this.Add(this.vboxMain);
 			if ((this.Child != null))
 			{
