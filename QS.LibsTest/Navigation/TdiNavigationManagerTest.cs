@@ -707,6 +707,39 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 		}
 
+		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке диалога внури TDI слайдера.")]
+		[Category("real case")]
+		public void OpenViewModelOnTdi_AsSlaveOnDialogInSliderTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var journalTab = new EmptyJournalTab();
+			notebook.AddTab(journalTab);
+
+			var dialogTab = new EmptyDlg();
+			journalTab.TabParent.AddTab(dialogTab, journalTab);
+
+			var slidePage2 = navigation.OpenViewModelOnTdi<SlideableViewModel>(dialogTab, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+		}
+
 		#endregion
 		#region IOnCloseActionViewModel
 
