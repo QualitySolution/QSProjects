@@ -30,6 +30,8 @@ namespace QS.Project.Journal
 
 		public IList Items => DataLoader.Items;
 
+		public ViewModelBase Footer { get; set; }
+
 		public virtual string FooterInfo {
 			get => $"Загружено: {DataLoader.Items.Count} шт.";
 			set { }

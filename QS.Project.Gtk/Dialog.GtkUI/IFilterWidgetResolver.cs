@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using QS.ViewModels;
 namespace QS.Dialog.GtkUI
 {
 	[Obsolete("Используется только в ВОДОВОЗЕ. Удалить когда в водовозе не останется классов.")]
@@ -11,6 +12,6 @@ namespace QS.Dialog.GtkUI
 
 	public interface IFooterWidgetResolver
 	{
-		Widget Resolve(Project.Journal.IJournalFilterViewModel filter);
+		Widget Resolve(ViewModelBase footer);
 	}
 }

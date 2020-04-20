@@ -89,10 +89,4 @@ namespace QS.Project.Filter
 
 		public void Dispose() => UoW?.Dispose();
 	}
-
-	public abstract class FooterViewModelBase<TFilter> : WidgetViewModelBase, IJournalFilterViewModel
-		where TFilter : FooterViewModelBase<TFilter>
-	{
-		public bool HidenByDefault { get; set; }
-	}
 }
