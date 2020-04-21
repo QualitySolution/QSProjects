@@ -1,6 +1,7 @@
 ﻿using System;
 using Gtk;
 using QS.Journal.GtkUI;
+using QS.Views.Resolve;
 
 namespace QS.Tdi
 {
@@ -12,7 +13,9 @@ namespace QS.Tdi
 				return (Widget)tab;
 			}
 
-			if(JournalViewFactory.TryCreateView(out Widget widget, tab)) {
+			IGtkViewResolver viewResolver = null;
+
+			if(JournalViewFactory.TryCreateView(out Widget widget, tab, viewResolver)) {
 				return widget;
 			}
 

@@ -24,6 +24,7 @@ namespace QS.Journal.GtkUI
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
+		readonly IGtkViewResolver journalViewResolver;
 
 		#region Глобальные настройки
 
@@ -33,9 +34,10 @@ namespace QS.Journal.GtkUI
 
 		#endregion
 
-		public JournalView(JournalViewModelBase viewModel) : base(viewModel)
+		public JournalView(JournalViewModelBase viewModel, IGtkViewResolver viewResolver) : base(viewModel)
 		{
 			this.Build();
+			journalViewResolver = viewResolver;
 			ConfigureJournal();
 			CreateTextSpinner();
 		}
@@ -85,8 +87,8 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.JournalFilter.HidenByDefault;
 			}
 
-			if(DialogHelper.FooterWidgetResolver != null && ViewModel.Footer != null && ViewModel.Footer is ViewModelBase footerViewModel) {
-				Widget footerWidget = DialogHelper.FooterWidgetResolver.Resolve(footerViewModel);
+			if(ViewModel.Footer != null && ViewModel.Footer is ViewModelBase footerViewModel) {
+				Widget footerWidget = journalViewResolver.Resolve(footerViewModel);
 
 				hboxFooter.Add(footerWidget);
 				footerWidget.Show();
