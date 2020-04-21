@@ -261,7 +261,7 @@ namespace QS.Widgets.GtkUI
 		[GLib.ConnectBefore]
 		protected void OnEntryObjectKeyPressEvent(object o, KeyPressEventArgs args)
 		{
-			if(RepresentationModel.CanEntryFastSelect)
+			if(RepresentationModel == null || RepresentationModel.CanEntryFastSelect)
 				return;
 
 			if(args.Event.Key == Gdk.Key.Delete || args.Event.Key == Gdk.Key.BackSpace) {
