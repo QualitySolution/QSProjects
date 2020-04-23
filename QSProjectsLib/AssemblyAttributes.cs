@@ -38,6 +38,7 @@ namespace QSProjectsLib
 	public class AssemblyEditionAttribute : Attribute 
 	{
 		public string Edition;
+		public string Title;
 		public string[] AllowEdition;
 		public AssemblyEditionAttribute(string edition) { Edition = edition; }
 		public AssemblyEditionAttribute() { }
