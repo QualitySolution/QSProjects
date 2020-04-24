@@ -411,13 +411,16 @@ namespace QSProjectsLib
 			AssemblyEditionAttribute editionAtt = assembly.GetCustomAttributes (typeof(AssemblyEditionAttribute), false).OfType<AssemblyEditionAttribute> ().FirstOrDefault ();
 
 			dialog.ProgramName = ((AssemblyTitleAttribute)att [0]).Title;
+			if(!String.IsNullOrEmpty(editionAtt?.Title))
+				dialog.ProgramName += $" {editionAtt.Title}";
 
-			dialog.Version = StringWorks.VersionToShortString (assembly.GetName ().Version) 
-				+ (editionAtt != null && editionAtt.Edition != "gpl" ? String.Format ("({0})", editionAtt.Edition) : String.Empty);
+			dialog.Version = StringWorks.VersionToShortString(assembly.GetName().Version);
+			if(editionAtt != null && String.IsNullOrEmpty(editionAtt.Title) && editionAtt.Edition != "gpl" && editionAtt.Edition != "com")
+				dialog.Version += $"-{editionAtt.Edition}";
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyLogoIconAttribute), false);
 			if (att.Length > 0) {
-				dialog.Logo = new Gdk.Pixbuf (assembly, ((AssemblyLogoIconAttribute)att [0]).ResourceName); //Gdk.Pixbuf.LoadFromResource();
+				dialog.Logo = new Gdk.Pixbuf (assembly, ((AssemblyLogoIconAttribute)att [0]).ResourceName);
 			}
 
 			att = assembly.GetCustomAttributes (typeof(AssemblyDescriptionAttribute), false);

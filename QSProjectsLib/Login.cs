@@ -61,6 +61,15 @@ namespace QSProjectsLib
 			object[] att = ass.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
 			string app = ((AssemblyTitleAttribute)att[0]).Title;
 
+			//Редакции
+			var editionAtt = ass.GetCustomAttribute<AssemblyEditionAttribute>();
+			if(editionAtt != null) {
+				if(!String.IsNullOrEmpty(editionAtt.Title))
+					app += $" {editionAtt.Title}";
+				else if(editionAtt.Edition != "gpl" && editionAtt.Edition != "com")
+					ver += $"-{editionAtt.Edition}";
+			}
+
 			object[] betaAtt = ass.GetCustomAttributes(typeof(AssemblyBetaBuildAttribute), false);
 			if (betaAtt.Length > 0) {
 				var buildDate = System.IO.File.GetLastWriteTime(ass.Location);
