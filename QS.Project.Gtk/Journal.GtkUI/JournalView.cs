@@ -51,18 +51,7 @@ namespace QS.Journal.GtkUI
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
-			switch(ViewModel.SelectionMode) {
-				case JournalSelectionMode.None:
-				case JournalSelectionMode.Single:
-					tableview.Selection.Mode = SelectionMode.Single;
-					break;
-				case JournalSelectionMode.Multiple:
-					tableview.Selection.Mode = SelectionMode.Multiple;
-					break;
-				default:
-					tableview.Selection.Mode = SelectionMode.None;
-					break;
-			}
+			SetSeletionMode(ViewModel.SelectionMode);
 			ConfigureActions();
 
 			//FIXME Этот код только для водовоза
@@ -99,15 +88,15 @@ namespace QS.Journal.GtkUI
 			RefreshSource();
 			UpdateButtons();
 			SetTotalLableText();
-			ViewModel.PropertyChanged += OnFooterInfoChanged;
+			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
 		}
 
-		private void OnFooterInfoChanged(object sender, PropertyChangedEventArgs e)
+		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if(e.PropertyName != nameof(ViewModel.FooterInfo))
-				return;
-
-			Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
+			if(e.PropertyName == nameof(ViewModel.FooterInfo))
+				Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
+			if(e.PropertyName == nameof(ViewModel.SelectionMode))
+				SetSeletionMode(ViewModel.SelectionMode);
 		}
 
 		TextSpinner CountingTextSpinner;
@@ -130,6 +119,22 @@ namespace QS.Journal.GtkUI
 					break;
 				}
 				logger.Debug($"Спинер {spinner.GetType()} пропущен, так как используемый шрифт не поддеживает {layout.UnknownGlyphsCount} из {new StringInfo(allChars).LengthInTextElements} используемых символов.");
+			}
+		}
+
+		void SetSeletionMode(JournalSelectionMode mode)
+		{
+			switch(mode) {
+				case JournalSelectionMode.None:
+				case JournalSelectionMode.Single:
+					tableview.Selection.Mode = SelectionMode.Single;
+					break;
+				case JournalSelectionMode.Multiple:
+					tableview.Selection.Mode = SelectionMode.Multiple;
+					break;
+				default:
+					tableview.Selection.Mode = SelectionMode.None;
+					break;
 			}
 		}
 
