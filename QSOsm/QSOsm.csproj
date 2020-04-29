@@ -76,40 +76,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IOsmService.cs" />
-    <Compile Include="OsmWorker.cs" />
     <Compile Include="Widgets\CityEntry.cs" />
     <Compile Include="Widgets\StreetEntry.cs" />
     <Compile Include="Widgets\HouseEntry.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="AddressHelper.cs" />
-    <Compile Include="DTO\OsmCity.cs" />
-    <Compile Include="DTO\OsmHouse.cs" />
-    <Compile Include="DTO\OsmStreet.cs" />
-    <Compile Include="Data\JsonAddress.cs" />
     <Compile Include="Widgets\JsonAddressEntry.cs" />
     <Compile Include="gtk-gui\QSOsm.JsonAddressEntry.cs" />
-    <Compile Include="DTO\OsmEnums.cs" />
-    <Compile Include="Spuntik\SputnikRouteResponse.cs" />
-    <Compile Include="Spuntik\RouteSummary.cs" />
-    <Compile Include="Spuntik\SputnikMain.cs" />
-    <Compile Include="Osrm\OsrmMain.cs" />
-    <Compile Include="Osrm\RouteResponse.cs" />
-    <Compile Include="PointOnEarth.cs" />
-    <Compile Include="Osrm\Route.cs" />
-    <Compile Include="Osrm\OsrmEnums.cs" />
-    <Compile Include="Loaders\OsmDataLoader.cs" />
-    <Compile Include="Loaders\StreetsDataLoader.cs" />
-    <Compile Include="Loaders\HousesDataLoader.cs" />
-    <Compile Include="Loaders\CitiesDataLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
-    <Folder Include="DTO\" />
-    <Folder Include="Data\" />
-    <Folder Include="Spuntik\" />
-    <Folder Include="Osrm\" />
-    <Folder Include="Loaders\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -125,9 +100,9 @@
       <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
       <Name>GammaUtil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QSFNS\QSFNS.csproj">
-      <Project>{22FCCEC7-A025-43A8-A05F-EEB60A4AAF3C}</Project>
-      <Name>QSFNS</Name>
+    <ProjectReference Include="..\QS.Osm\QS.Osm.csproj">
+      <Project>{72968ef4-2127-45c7-9bfe-2470dacddc3e}</Project>
+      <Name>QS.Osm</Name>
     </ProjectReference>
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
@@ -140,10 +115,6 @@
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
-      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

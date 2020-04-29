@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
-using QSOsm.Data;
-using QSOsm.DTO;
 using Gamma.Utilities;
+using QS.Osm.Data;
+using QS.Osm.DTO;
 using QSOrmProject;
 
 namespace QSOsm

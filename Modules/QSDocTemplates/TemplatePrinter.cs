@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gtk;
+using QS.DocTemplates;
 using QS.Print;
 using QSProjectsLib;
 
@@ -63,10 +64,5 @@ namespace QSDocTemplates
 				}
 			}
 		}
-	}
-
-	public interface IPrintableOdtDocument : IPrintableDocument
-	{
-		IDocTemplate GetTemplate();
 	}
 }

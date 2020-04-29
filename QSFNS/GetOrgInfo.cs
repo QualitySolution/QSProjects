@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Gtk;
-using suggestionscsharp;
 using System.Threading;
+using QS.FNS;
+using suggestionscsharp;
 
 namespace QSFNS
 {

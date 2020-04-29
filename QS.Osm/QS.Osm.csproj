@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{72968EF4-2127-45C7-9BFE-2470DACDDC3E}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>QS.Osm</RootNamespace>
+        <AssemblyName>QS.Osm</AssemblyName>
+        <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f">
+          <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4">
+          <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4">
+          <HintPath>..\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
+          <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+        </Reference>
+        <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b">
+          <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b">
+          <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75">
+          <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.ComponentModel.DataAnnotations" />
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="System.ServiceModel" />
+        <Reference Include="System.ServiceModel.Web" />
+        <Reference Include="System.Transactions" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="AddressHelper.cs" />
+        <Compile Include="Data\JsonAddress.cs" />
+        <Compile Include="DTO\OsmCity.cs" />
+        <Compile Include="DTO\OsmEnums.cs" />
+        <Compile Include="DTO\OsmHouse.cs" />
+        <Compile Include="DTO\OsmStreet.cs" />
+        <Compile Include="IOsmService.cs" />
+        <Compile Include="Loaders\CitiesDataLoader.cs" />
+        <Compile Include="Loaders\HousesDataLoader.cs" />
+        <Compile Include="Loaders\OsmDataLoader.cs" />
+        <Compile Include="Loaders\StreetsDataLoader.cs" />
+        <Compile Include="OsmWorker.cs" />
+        <Compile Include="Osrm\OsrmEnums.cs" />
+        <Compile Include="Osrm\OsrmMain.cs" />
+        <Compile Include="Osrm\Route.cs" />
+        <Compile Include="Osrm\RouteResponse.cs" />
+        <Compile Include="PointOnEarth.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Spuntik\RouteSummary.cs" />
+        <Compile Include="Spuntik\SputnikMain.cs" />
+        <Compile Include="Spuntik\SputnikRouteResponse.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
+        <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
+        <Name>GammaUtil</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\QS.FNS\QS.FNS.csproj">
+        <Project>{d45b738b-cdd9-4061-b51f-992e0aab96dd}</Project>
+        <Name>QS.FNS</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\QS.Project\QS.Project.csproj">
+        <Project>{28a78143-42e3-40e7-86f5-dd7e1679be86}</Project>
+        <Name>QS.Project</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+        <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
+        <Name>QS.Utilities</Name>
+      </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>

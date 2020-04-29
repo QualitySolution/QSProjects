@@ -132,7 +132,6 @@
     <Compile Include="gtk-gui\QSProjectsLib.CreatorProgress.cs" />
     <Compile Include="Helpers\BooleanWorks.cs" />
     <Compile Include="ClipboardWorkaround.cs" />
-    <Compile Include="Helpers\PerformanceHelper.cs" />
     <Compile Include="WindowStartupFix.cs" />
     <Compile Include="Permissions\IPermissionsView.cs" />
   </ItemGroup>

@@ -59,9 +59,6 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="GetOrgInfo.cs" />
     <Compile Include="gtk-gui\QSFNS.GetOrgInfo.cs" />
-    <Compile Include="FNSMain.cs" />
-    <Compile Include="DaData\SuggestClient.cs" />
-    <Compile Include="DaData\SuggestModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,9 +67,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DaData\" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\QS.FNS\QS.FNS.csproj">
+      <Project>{d45b738b-cdd9-4061-b51f-992e0aab96dd}</Project>
+      <Name>QS.FNS</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

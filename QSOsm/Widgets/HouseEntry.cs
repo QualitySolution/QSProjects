@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Gamma.Binding.Core;
 using Gtk;
-using QSOsm.DTO;
-using QSOsm.Loaders;
+using QS.Osm.DTO;
+using QS.Osm.Loaders;
 
 namespace QSOsm
 {
