@@ -3,6 +3,7 @@ using QSProjectsLib;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using QS.DocTemplates;
 
 namespace QSDocTemplates
 {

@@ -5,16 +5,16 @@ namespace QS.Utilities
 	{
 		public static string CurrencyShortName = "₽";
 
-		public static string CurrencyShortFomat = "{0:N2} ₽";
+		public static string CurrencyShortFormat = "{0:N2} ₽";
 
 		public static string GetShortCurrencyString(Decimal value)
 		{
-			return String.Format(CurrencyShortFomat, value);
+			return String.Format(CurrencyShortFormat, value);
 		}
 
 		public static string ToShortCurrencyString(this Decimal value)
 		{
-			return String.Format(CurrencyShortFomat, value);
+			return String.Format(CurrencyShortFormat, value);
 		}
 	}
 }
