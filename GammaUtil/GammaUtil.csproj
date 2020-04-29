@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyChainFromExpression.cs" />
     <Compile Include="PropertyUtil.cs" />
     <Compile Include="TypeUtil.cs" />
     <Compile Include="AttributeUtil.cs" />
