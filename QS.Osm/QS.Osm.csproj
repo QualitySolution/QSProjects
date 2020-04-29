@@ -9,7 +9,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>QS.Osm</RootNamespace>
         <AssemblyName>QS.Osm</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,11 +33,11 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f">
-          <HintPath>..\..\Vodovoz\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+          <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4">
-          <HintPath>..\..\Vodovoz\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+          <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Microsoft.CSharp" />
@@ -45,22 +45,22 @@
           <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
         </Reference>
         <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4">
-          <HintPath>..\..\Vodovoz\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
+          <HintPath>..\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
           <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
         </Reference>
         <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b">
-          <HintPath>..\..\Vodovoz\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+          <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b">
-          <HintPath>..\..\Vodovoz\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+          <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75">
-          <HintPath>..\..\Vodovoz\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
+          <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
           <Private>True</Private>
         </Reference>
         <Reference Include="System" />
