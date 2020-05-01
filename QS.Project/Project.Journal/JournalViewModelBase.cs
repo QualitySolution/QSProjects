@@ -37,6 +37,8 @@ namespace QS.Project.Journal
 			set { }
 		}
 
+		public JournalActionsViewModel RawJournalActions { get; set; }
+
 		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
 		protected virtual List<IJournalAction> NodeActionsList { get; set; }
 
@@ -56,6 +58,11 @@ namespace QS.Project.Journal
 			set {
 				if(SetField(ref selectionMode, value, () => SelectionMode)) {
 					CreateNodeActions();
+
+					if (value != JournalSelectionMode.None) {
+						RawJournalActions.SelectButtonVisibility = true;
+						//RowActivatedAction += CreateSelectAction;
+					}
 				}
 			}
 		}
@@ -105,6 +112,15 @@ namespace QS.Project.Journal
 
 		protected virtual void CreatePopupActions()
 		{
+		}
+
+		protected void CreateSelectAction(object[] selected)
+		{
+			OnItemsSelected(selected);
+			
+			/*if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
+				RowActivatedAction = selectAction;
+			}*/
 		}
 
 		protected virtual void CreateDefaultSelectAction()

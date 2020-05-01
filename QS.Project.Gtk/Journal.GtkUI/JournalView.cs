@@ -94,6 +94,17 @@ namespace QS.Journal.GtkUI
 				footerWidget.Show();
 			}
 
+			if(ViewModel.RawJournalActions != null && ViewModel.RawJournalActions is JournalActionsViewModel actionsViewModel) {
+
+				//Widget actionsView = journalViewResolver.Resolve(actionsViewModel);
+
+				//if(actionsView == null)
+				Widget actionsView = new JournalActionsView(ViewModel.RawJournalActions);
+
+				hboxFooter.Add(actionsView);
+				actionsView.Show();
+			}
+
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
 			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
 			if(searchView == null)
@@ -386,10 +397,15 @@ namespace QS.Journal.GtkUI
 		void Selection_Changed(object sender, EventArgs e)
 		{
 			UpdateButtons();
+			ViewModel.RawJournalActions.SelectedObjs = GetSelectedItems();
 		}
 
 		private void UpdateButtons()
 		{
+			ViewModel.RawJournalActions.EditButtonSensitivity = 
+			ViewModel.RawJournalActions.DeleteButtonSensitivity =
+			ViewModel.RawJournalActions.SelectButtonSensitivity = GetSelectedItems().Any();
+
 			if(actionsSensitivity != null) {
 				foreach(var item in actionsSensitivity) {
 					item.Invoke();

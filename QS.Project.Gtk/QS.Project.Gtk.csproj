@@ -281,6 +281,8 @@
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionProcessView.cs" />
     <Compile Include="Deletion.Views\DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionView.cs" />
+    <Compile Include="Views.GtkUI\JournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Views.GtkUI.JournalActionsView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

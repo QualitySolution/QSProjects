@@ -315,6 +315,60 @@ namespace QS.Project.Journal
 			}
 		}
 
+		protected void CreateNewEntity() {
+
+			var entityConfig = EntityConfigs.First().Value;
+			var docConfig = entityConfig.EntityDocumentConfigurations.First();
+			ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
+
+			if(tab is ITdiDialog)
+				((ITdiDialog)tab).EntitySaved += Tab_EntitySaved;
+
+			TabParent.OpenTab(() => tab, this);
+			if(docConfig.JournalParameters.HideJournalForCreateDialog) {
+				HideJournal(TabParent);
+			}
+		}
+
+		protected void OpenDialog(object[] selected) {
+
+			var selectedNodes = selected.OfType<TNode>();
+			if(selectedNodes == null || selectedNodes.Count() != 1) {
+				return;
+			}
+			TNode selectedNode = selectedNodes.First();
+			if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
+				return;
+			}
+			var config = EntityConfigs[selectedNode.EntityType];
+			var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
+
+			TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), this);
+			if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
+				HideJournal(TabParent);
+			}
+
+			/*if(SelectionMode == JournalSelectionMode.None) {
+				RowActivatedAction = editAction;
+			}*/
+		}
+
+		protected void DeleteEntity(object[] selected)
+		{
+			var selectedNodes = selected.OfType<TNode>();
+			if(selectedNodes == null || selectedNodes.Count() != 1) {
+				return;
+			}
+			TNode selectedNode = selectedNodes.First();
+			if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
+				return;
+			}
+			var config = EntityConfigs[selectedNode.EntityType];
+			if(config.PermissionResult.CanDelete) {
+				DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
+			}
+		}
+
 		#endregion Actions
 	}
 }
