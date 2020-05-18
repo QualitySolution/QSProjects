@@ -75,6 +75,7 @@ namespace QSOrmProject
 		/// Выводит вопрос "Перед печатью {0}, необходимо сохранить изменения в {1}. Сохранить?"
 		/// Диалог использует название сущьности в предложном падеже (Prepositional)
 		/// </summary>
+		[Obsolete("Используйте не статический класс CommonMessages не зависящий от UI")]
 		public static bool SaveBeforePrint(Type savingEntity, string whatPrint)
 		{
 			string  savingName = "НЕ УКАЗАНО";
