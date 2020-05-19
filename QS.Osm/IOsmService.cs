@@ -75,6 +75,14 @@ namespace QS.Osm
 
 		[OperationContract]
 		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		long GetBuildingCountInCity(string city);
+		
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
+		long GetBuildingCountInRegion(string region);
+
+		[OperationContract]
+		[WebGet(ResponseFormat = WebMessageFormat.Json)]
 		bool ServiceStatus();
 	}
 }
