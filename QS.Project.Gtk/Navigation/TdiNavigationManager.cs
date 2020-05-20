@@ -103,7 +103,7 @@ namespace QS.Navigation
 		public IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(ITdiTab master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
-				FindOrCreateMasterPage(master), options,
+				FindOrCreatePage(master), options,
 				() => hashGenerator?.GetHash<TViewModel>(null, ctorTypes, ctorValues),
 				(hash) => viewModelsFactory.CreateViewModelTypedArgs<TViewModel>(null, ctorTypes, ctorValues, hash, addingRegistrations)
 			);
@@ -141,12 +141,15 @@ namespace QS.Navigation
 
 		#endregion
 
+
+		public IPage CurrentPage => FindOrCreatePage(tdiNotebook.CurrentTab);
+
 		private IPage FindPage(ITdiTab tab)
 		{
 			return AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
 		}
 
-		private IPage FindOrCreateMasterPage(ITdiTab tab)
+		private IPage FindOrCreatePage(ITdiTab tab)
 		{
 			if (tab == null)
 				return null;

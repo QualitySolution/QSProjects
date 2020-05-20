@@ -42,6 +42,8 @@ namespace QS.Navigation
 			throw new NotImplementedException();
 		}
 
+		public IPage CurrentPage => throw new NotImplementedException();
+
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
 		{
 			OpenPage(masterPage, page);
