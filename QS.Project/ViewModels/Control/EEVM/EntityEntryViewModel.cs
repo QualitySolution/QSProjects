@@ -63,7 +63,7 @@ namespace QS.ViewModels.Control.EEVM
 				OnPropertyChanged(nameof(EntityTitle));
 				OnPropertyChanged(nameof(SensitiveCleanButton));
 				OnPropertyChanged(nameof(SensitiveViewButton));
-				Changed?.Invoke(this, new EntitySelectedEventArgs(value));
+				Changed?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
