@@ -2,7 +2,7 @@
 
 namespace QS.DomainModel.Entity
 {
-	[AttributeUsage(AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 	public class PropertyChangedAlsoAttribute : Attribute
 	{
 		public string[] PropertiesNames;

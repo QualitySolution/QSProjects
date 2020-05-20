@@ -20,11 +20,10 @@ namespace QS.DomainModel.Entity
 			if (PropertyChanged != null) {
 				PropertyChanged(this, new PropertyChangedEventArgs (propertyName));
 				if(!String.IsNullOrWhiteSpace(propertyName)) {
-					var att = this.GetType().GetProperty(propertyName).GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
-					if(att.Length > 0) {
-						foreach(string propName in (att[0] as PropertyChangedAlsoAttribute).PropertiesNames)
+					var attributes = this.GetType().GetProperty(propertyName).GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
+					foreach(PropertyChangedAlsoAttribute attribute in attributes)
+						foreach(string propName in attribute.PropertiesNames)
 							PropertyChanged(this, new PropertyChangedEventArgs(propName));
-					}
 				}
 			}
 		}
