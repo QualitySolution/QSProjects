@@ -29,6 +29,8 @@ namespace QS.Navigation
 		IPage FindPage(DialogViewModelBase viewModel);
 		IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase;
 
+		IPage CurrentPage { get; }
+
 		void SwitchOn(IPage page);
 
 		bool AskClosePage(IPage page, CloseSource source = CloseSource.External);
