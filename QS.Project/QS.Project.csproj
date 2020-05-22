@@ -353,6 +353,7 @@
     <Compile Include="Deletion\DeletionAutofacModule.cs" />
     <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
     <Compile Include="Navigation\CloseSource.cs" />
+    <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
