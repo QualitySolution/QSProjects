@@ -10,11 +10,11 @@ namespace QS.Dialog.GtkUI
 					MessageDialogHelper.RunErrorDialog(message, title);
 					break;
 				case ImportanceLevel.Warning:
-					MessageDialogHelper.RunWarningDialog(message);
+					MessageDialogHelper.RunWarningDialog(message, title);
 					break;
 				case ImportanceLevel.Info:
 				default:
-					MessageDialogHelper.RunInfoDialog(message);
+					MessageDialogHelper.RunInfoDialog(message, title);
 					break;
 			}
 		}
