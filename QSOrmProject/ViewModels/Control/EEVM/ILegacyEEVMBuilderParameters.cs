@@ -5,6 +5,6 @@ namespace QS.ViewModels.Control.EEVM
 {
 	public interface ILegacyEEVMBuilderParameters : IEEVMBuilderParameters
 	{
-		ITdiTab DialogTab { get; }
+		Func<ITdiTab> GetDialogTab { get; }
 	}
 }

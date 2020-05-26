@@ -15,21 +15,18 @@ namespace QS.ViewModels.Control.EEVM
 	{
 		private readonly INavigationManager navigationManager;
 		private readonly IUnitOfWork uow;
-		readonly ITdiTab parrentTab;
+		readonly Func<ITdiTab> getParrentTab;
 		readonly DialogViewModelBase parrentViewModel;
 
 		/// <summary>
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
 		[Obsolete("Констуктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public JournalViewModelSelector(ITdiTab parrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager)
+		public JournalViewModelSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-			if (parrentTab is DialogViewModelBase viewModel)
-				parrentViewModel = viewModel;
-			else
-				this.parrentTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab)); ;
+			this.getParrentTab = getParrentTab ?? throw new ArgumentNullException(nameof(getParrentTab)); ;
 		}
 
 		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager)
@@ -49,7 +46,7 @@ namespace QS.ViewModels.Control.EEVM
 			if(parrentViewModel != null)
 				page = navigationManager.OpenViewModel<TJournalViewModel>(parrentViewModel, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(parrentTab, OpenPageOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(getParrentTab(), OpenPageOptions.AsSlave);
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if (!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;

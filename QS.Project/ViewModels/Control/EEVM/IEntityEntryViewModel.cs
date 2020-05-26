@@ -9,11 +9,16 @@ namespace QS.ViewModels.Control.EEVM
 		#region Выбранная сущьность
 		string EntityTitle { get; }
 		object Entity { get; set; }
+		TEntity GetEntity<TEntity>() where TEntity : class;
 		#endregion
 
 		#region События для внешних подписчиков
 		event EventHandler Changed;
 		event EventHandler ChangedByUser;
+		#endregion
+
+		#region Настройки виджета
+		bool IsEditable { get; set; }
 		#endregion
 
 		#region Доступность функций View

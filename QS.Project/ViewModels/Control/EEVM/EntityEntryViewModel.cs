@@ -69,6 +69,12 @@ namespace QS.ViewModels.Control.EEVM
 
 		object IEntityEntryViewModel.Entity { get => Entity; set => Entity = (TEntity)value; }
 
+
+		public TEntity1 GetEntity<TEntity1>() where TEntity1 : class
+		{
+			return Entity as TEntity1;
+		}
+
 		bool isEditable = true;
 
 		public bool IsEditable {
