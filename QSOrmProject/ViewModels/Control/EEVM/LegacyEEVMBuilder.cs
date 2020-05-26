@@ -1,11 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using NHibernate;
+﻿using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
-using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -23,46 +19,46 @@ namespace QS.ViewModels.Control.EEVM
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal()
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, typeof(TEntity));
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, typeof(TEntity));
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal(QueryOver itemsQuery)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsQuery);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, itemsQuery);
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournal(ICriteria itemsCriteria)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsCriteria);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, itemsCriteria);
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter()
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, typeof(TEntity));
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, typeof(TEntity));
 			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork);
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter(QueryOver itemsQuery)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsQuery);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, itemsQuery);
 			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork, itemsQuery);
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseOrmReferenceJournalAndAutocompleter(ICriteria itemsCriteria)
 		{
-			EntitySelector = new OrmReferenceSelector(legacyParameters.DialogTab, parameters.UnitOfWork, itemsCriteria);
+			EntitySelector = new OrmReferenceSelector(legacyParameters.GetDialogTab, parameters.UnitOfWork, itemsCriteria);
 			EntityAutocompleteSelector = new OrmReferenceAutocompleteSelector<TEntity>(parameters.UnitOfWork, itemsCriteria);
 			return this;
 		}
 
 		public LegacyEEVMBuilder<TEntity> UseTdiEntityDialog()
 		{
-			EntityDlgOpener = new OrmObjectDialogOpener<TEntity>(legacyParameters.DialogTab);
+			EntityDlgOpener = new OrmObjectDialogOpener<TEntity>(legacyParameters.GetDialogTab);
 			return this;
 		}
 
@@ -75,7 +71,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null)
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.DialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
 			else
 				base.UseViewModelJournal<TJournalViewModel>();
 			return this;
@@ -85,7 +81,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null) {
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.DialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
 				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.UnitOfWork, parameters.AutofacScope);
 			}
 			else

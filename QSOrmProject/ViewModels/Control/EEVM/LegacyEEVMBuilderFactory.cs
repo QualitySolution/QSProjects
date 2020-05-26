@@ -13,7 +13,7 @@ namespace QS.ViewModels.Control.EEVM
 	public class LegacyEEVMBuilderFactory<TBindedEntity> : CommonEEVMBuilderFactory<TBindedEntity>, ILegacyEEVMBuilderParameters
 		where TBindedEntity : class, INotifyPropertyChanged
 	{
-		public ITdiTab DialogTab { get; private set; }
+		public Func<ITdiTab> GetDialogTab { get; private set; }
 
 		public LegacyEEVMBuilderFactory(
 			DialogViewModelBase dialogViewModel,
@@ -24,7 +24,7 @@ namespace QS.ViewModels.Control.EEVM
 			ILifetimeScope autofacScope = null) 
 			: base(dialogViewModel, source, unitOfWork, navigation, autofacScope)
 		{
-			DialogTab = dialogTab;
+			GetDialogTab = () => dialogTab;
 		}
 
 		public LegacyEEVMBuilderFactory(
@@ -35,7 +35,7 @@ namespace QS.ViewModels.Control.EEVM
 			ILifetimeScope autofacScope = null) 
 			: base(null, source, unitOfWork, navigation, autofacScope)
 		{
-			DialogTab = dialogTab;
+			GetDialogTab = () => dialogTab;
 		}
 
 		public new LegacyEEVMBuilder<TPropertyEntity> ForProperty<TPropertyEntity>(Expression<Func<TBindedEntity, TPropertyEntity>> sourceProperty)
@@ -48,27 +48,37 @@ namespace QS.ViewModels.Control.EEVM
 
 	public class LegacyEEVMBuilderFactory : CommonEEVMBuilderFactory, ILegacyEEVMBuilderParameters
 	{
-		public ITdiTab DialogTab { get; private set; }
+		public Func<ITdiTab> GetDialogTab { get; private set; }
 
 		public LegacyEEVMBuilderFactory(
 			DialogViewModelBase dialogViewModel,
 			ITdiTab dialogTab,
 			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
-			ILifetimeScope autofacScope = null) 
+			ILifetimeScope autofacScope = null)
 			: base(null, unitOfWork, navigation, autofacScope)
 		{
-			DialogTab = dialogTab;
+			GetDialogTab = () => dialogTab;
 		}
 
 		public LegacyEEVMBuilderFactory(
-			ITdiTab dialogTab, 
-			IUnitOfWork unitOfWork, 
+			ITdiTab dialogTab,
+			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
-			ILifetimeScope autofacScope = null) 
+			ILifetimeScope autofacScope = null)
 			: base(null, unitOfWork, navigation, autofacScope)
 		{
-			DialogTab = dialogTab;
+			GetDialogTab = () => dialogTab;
+		}
+
+		public LegacyEEVMBuilderFactory(
+			Func<ITdiTab> getDialogTab,
+			IUnitOfWork unitOfWork,
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null)
+			: base(null, unitOfWork, navigation, autofacScope)
+		{
+			GetDialogTab = getDialogTab;
 		}
 
 		public new LegacyEEVMBuilder<TEntity> ForEntity<TEntity>()

@@ -8,22 +8,22 @@ namespace QS.ViewModels.Control.EEVM
 {
 	public class OrmObjectDialogOpener<TEntity> : IEntityDlgOpener
 	{
-		readonly ITdiTab MyTab;
+		readonly Func<ITdiTab> GetMyTab;
 
-		public OrmObjectDialogOpener(ITdiTab parrentTab)
+		public OrmObjectDialogOpener(Func<ITdiTab> getParrentTab)
 		{
-			MyTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab));
+			GetMyTab = getParrentTab ?? throw new ArgumentNullException(nameof(getParrentTab));
 		}
 
 		public void OpenEntityDlg(int id)
 		{
 			if(OrmMain.GetObjectDescription(typeof(TEntity)).SimpleDialog) {
-				EntityEditSimpleDialog.RunSimpleDialog((MyTab.TabParent as Widget).Toplevel as Window, typeof(TEntity), id);
+				EntityEditSimpleDialog.RunSimpleDialog((GetMyTab().TabParent as Widget).Toplevel as Window, typeof(TEntity), id);
 				return;
 			}
 
 			ITdiTab dlg = OrmMain.CreateObjectDialog(typeof(TEntity), id);
-			MyTab.TabParent.AddTab(dlg, MyTab);
+			GetMyTab().TabParent.AddTab(dlg, GetMyTab());
 		}
 	}
 }

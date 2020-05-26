@@ -9,7 +9,7 @@ namespace QS.ViewModels.Control.EEVM
 {
 	public class OrmReferenceSelector : IEntitySelector
 	{
-		readonly ITdiTab MyTab;
+		readonly Func<ITdiTab> GetMyTab;
 		readonly IUnitOfWork UoW;
 
 		ICriteria ItemsCriteria;
@@ -18,25 +18,25 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region Конструкторы
 
-		public OrmReferenceSelector(ITdiTab parrentTab, IUnitOfWork unitOfWork, ICriteria itemsCriteria)
+		public OrmReferenceSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, ICriteria itemsCriteria)
 		{
-			MyTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab));
+			GetMyTab = getParrentTab ?? throw new ArgumentNullException(nameof(getParrentTab));
 			UoW = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			ItemsCriteria = itemsCriteria ?? throw new ArgumentNullException(nameof(itemsCriteria));
 			SubjectType = itemsCriteria.GetRootEntityTypeIfAvailable();
 		}
 
-		public OrmReferenceSelector(ITdiTab parrentTab, IUnitOfWork unitOfWork, QueryOver itemsQuery)
+		public OrmReferenceSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, QueryOver itemsQuery)
 		{
-			MyTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab));
+			GetMyTab = getParrentTab ?? throw new ArgumentNullException(nameof(getParrentTab));
 			UoW = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			ItemsQuery = itemsQuery ?? throw new ArgumentNullException(nameof(itemsQuery));
 			SubjectType = ItemsQuery.DetachedCriteria.GetRootEntityTypeIfAvailable();
 		}
 
-		public OrmReferenceSelector(ITdiTab parrentTab, IUnitOfWork unitOfWork, Type subjectType)
+		public OrmReferenceSelector(Func<ITdiTab> GetParrentTab, IUnitOfWork unitOfWork, Type subjectType)
 		{
-			MyTab = parrentTab ?? throw new ArgumentNullException(nameof(parrentTab));
+			GetMyTab = GetParrentTab ?? throw new ArgumentNullException(nameof(GetParrentTab));
 			UoW = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			SubjectType = subjectType;
 		}
@@ -61,7 +61,7 @@ namespace QS.ViewModels.Control.EEVM
 
 			SelectDialog.Mode = OrmReferenceMode.Select;
 			SelectDialog.ObjectSelected += OnSelectDialogObjectSelected;
-			MyTab.TabParent.AddSlaveTab(MyTab, SelectDialog);
+			GetMyTab().TabParent.AddSlaveTab(GetMyTab(), SelectDialog);
 		}
 
 		void OnSelectDialogObjectSelected(object sender, OrmReferenceObjectSectedEventArgs e)
