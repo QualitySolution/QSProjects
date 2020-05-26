@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.ComponentModel;
 
@@ -15,6 +15,10 @@ namespace QS.ViewModels.Control.EEVM
 		#region События для внешних подписчиков
 		event EventHandler Changed;
 		event EventHandler ChangedByUser;
+		#endregion
+
+		#region Настройки виджета
+		bool IsEditable { get; set; }
 		#endregion
 
 		#region Доступность функций View
