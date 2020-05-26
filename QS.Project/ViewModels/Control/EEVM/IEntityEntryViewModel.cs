@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 
@@ -9,6 +9,7 @@ namespace QS.ViewModels.Control.EEVM
 		#region Выбранная сущьность
 		string EntityTitle { get; }
 		object Entity { get; set; }
+		TEntity GetEntity<TEntity>() where TEntity : class;
 		#endregion
 
 		#region События для внешних подписчиков
