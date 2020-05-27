@@ -25,7 +25,7 @@ namespace QS.DomainModel.Entity
 		/// 3. Возвращается результат вызова <c>ToString()</c>
 		/// </summary>
 		/// <param name="value">Value.</param>
-		public static string GetTitle(object value)
+		public static string GetTitle(this object value)
 		{
 			var prop = value.GetType ().GetProperty ("Title");
 			if (prop != null) {
@@ -46,7 +46,7 @@ namespace QS.DomainModel.Entity
 		/// Иначе ищется свойство <c>Id</c>, у каласа и возвращается значение.
 		/// Если свойство <c>Id</c> не найдено вызовется эксепшен ArgumentException
 		/// </summary>
-		public static int GetId(object value)
+		public static int GetId(this object value)
 		{
 			if (value == null)
 				throw new ArgumentNullException ();
@@ -60,7 +60,7 @@ namespace QS.DomainModel.Entity
 			return (int)prop.GetValue (value, null);
 		}
 
-		public static int? GetIdOrNull(object value)
+		public static int? GetIdOrNull(this object value)
 		{
 			return value != null ? (int?)GetId(value) : null;
 		}
@@ -98,7 +98,7 @@ namespace QS.DomainModel.Entity
 		/// Метод возвращает все наименования тип сущьности указанные через атрибут <c>AppellativeAttribute</c>
 		/// </summary>
 		/// <param name="subject">Экземпляр сущьности</param>
-		public static AppellativeAttribute GetSubjectNames(object subject)
+		public static AppellativeAttribute GetSubjectNames(this object subject)
 		{
 			return GetSubjectNames (subject.GetType ());
 		}
