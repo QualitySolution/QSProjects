@@ -49,6 +49,12 @@ namespace QS.Project.Journal.Search
 							disjunctionCriterion.Add(restriction);
 						}
 					}
+					else if(typeOfPropery == typeof(uint) || typeOfPropery == typeof(uint?)) {
+						if(uint.TryParse(sv, out uint uintValue)) {
+							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), uintValue);
+							disjunctionCriterion.Add(restriction);
+						}
+					}
 					else if (typeOfPropery == typeof(decimal)) {
 						if(decimal.TryParse(sv, out decimal decimalValue)) {
 							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), decimalValue);
