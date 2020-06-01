@@ -144,7 +144,7 @@ namespace QS.Views.Control
 		void Completion_MatchSelected(object o, MatchSelectedArgs args)
 		{
 			var node = args.Model.GetValue(args.Iter, 0);
-			viewModel.SetEntityByNode(node);
+			viewModel.AutocompleteSelectNode(node);
 			args.RetVal = true;
 		}
 

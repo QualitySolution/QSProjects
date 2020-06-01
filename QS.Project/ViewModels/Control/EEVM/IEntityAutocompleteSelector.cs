@@ -7,6 +7,5 @@ namespace QS.ViewModels.Control.EEVM
 		string GetTitle(object node);
 		event EventHandler<AutocompleteUpdatedEventArgs> AutocompleteLoaded;
 		void LoadAutocompletion(string[] searchText, int takeCount);
-		TEntity GetEntityByNode(object node);
 	}
 }

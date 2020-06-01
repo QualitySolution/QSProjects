@@ -68,13 +68,5 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(e.Subject));
 		}
-
-		public object RefreshEntity(object entity)
-		{
-			if(UoW.Session.IsOpen && UoW.Session.Contains(entity)) {
-				UoW.Session.Refresh(entity);
-			}
-			return entity;
-		}
 	}
 }

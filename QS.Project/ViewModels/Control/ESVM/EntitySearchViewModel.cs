@@ -82,8 +82,7 @@ namespace QS.ViewModels.Control.ESVM
 
 		public void SelectNode(object node)
 		{
-			var entity = AutocompleteSelector.GetEntityByNode(node);
-			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(entity));
+			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(node));
 			CleanEntity();
 		}
 

@@ -40,12 +40,6 @@ namespace QS.ViewModels.Control.EEVM
 			JournalViewModel.Search.Update();
 		}
 
-		public TEntity GetEntityByNode(object node)
-		{
-			var id = DomainHelper.GetId(node);
-			return uow.GetById<TEntity>(id);
-		}
-
 		public string GetTitle(object node)
 		{
 			return DomainHelper.GetTitle(node);

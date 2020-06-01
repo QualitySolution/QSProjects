@@ -55,19 +55,9 @@ namespace QS.ViewModels.Control.EEVM
 			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;
 		}
 
-		public object RefreshEntity(object entity)
-		{
-			if (uow.Session.IsOpen && uow.Session.Contains(entity)) {
-				uow.Session.Refresh(entity);
-			}
-			return entity;
-		}
-
 		void ViewModel_OnSelectResult(object sender, JournalSelectedEventArgs e)
 		{
-			var id = DomainHelper.GetId(e.SelectedObjects.First());
-			var entity = uow.GetById<TEntity>(id);
-			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(entity));
+			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(e.SelectedObjects.First()));
 		}
 
 	}
