@@ -356,6 +356,7 @@
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
+    <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
