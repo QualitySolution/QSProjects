@@ -76,7 +76,13 @@ namespace QS.ViewModels.Control.EEVM
 			return Entity as TEntity1;
 		}
 
-		public IEntityAdapter<TEntity> EntityAdapter { get; set; }
+		private IEntityAdapter<TEntity> entityAdapter;
+		public IEntityAdapter<TEntity> EntityAdapter {
+			get => entityAdapter; set {
+				entityAdapter = value;
+				entityAdapter.EntityEntryViewModel = this;
+			}
+		}
 
 		#endregion
 

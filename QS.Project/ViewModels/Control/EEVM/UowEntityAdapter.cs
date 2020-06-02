@@ -6,11 +6,9 @@ using QS.DomainModel.UoW;
 namespace QS.ViewModels.Control.EEVM
 {
 	public class UowEntityAdapter<TEntity> : IEntityAdapter<TEntity>, IDisposable
-		where TEntity : IDomainObject
+		where TEntity : class, IDomainObject
 	{
 		private readonly IUnitOfWork uow;
-
-		TEntity entity;
 
 		public UowEntityAdapter(IUnitOfWork uow)
 		{
@@ -19,23 +17,25 @@ namespace QS.ViewModels.Control.EEVM
 			DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
 		}
 
-		public void Dispose()
-		{
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
-		}
+		public EntityEntryViewModel<TEntity> EntityEntryViewModel { set; get; }
+
 
 		public TEntity GetEntityByNode(object node)
 		{
-			entity = uow.GetById<TEntity>(node.GetId());
-			return entity;
+			return uow.GetById<TEntity>(node.GetId());
 		}
 
 		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
 		{
-			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, entity));
-			if(foundUpdatedObject != null && uow.Session.IsOpen && uow.Session.Contains(entity)) {
-				uow.Session.Refresh(entity);
+			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, EntityEntryViewModel.Entity));
+			if(foundUpdatedObject != null && uow.Session.IsOpen && uow.Session.Contains(EntityEntryViewModel.Entity)) {
+				uow.Session.Refresh(EntityEntryViewModel.Entity);
 			}
+		}
+
+		public void Dispose()
+		{
+			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 		}
 	}
 }
