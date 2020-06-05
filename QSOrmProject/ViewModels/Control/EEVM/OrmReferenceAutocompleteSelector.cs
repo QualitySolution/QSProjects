@@ -39,11 +39,6 @@ namespace QS.ViewModels.Control.EEVM
 
 		public event EventHandler<AutocompleteUpdatedEventArgs> AutocompleteLoaded;
 
-		public TEntity GetEntityByNode(object node)
-		{
-			return (TEntity)node;
-		}
-
 		public string GetTitle(object node)
 		{
 			return DomainModel.Entity.DomainHelper.GetTitle(node);

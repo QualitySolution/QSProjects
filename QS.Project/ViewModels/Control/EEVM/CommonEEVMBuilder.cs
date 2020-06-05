@@ -1,4 +1,5 @@
-﻿using QS.DomainModel.Entity;
+﻿using System;
+using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
 
@@ -13,6 +14,7 @@ namespace QS.ViewModels.Control.EEVM
 		#endregion
 
 		#region Опциональные компоненты
+		protected IEntityAdapter<TEntity> EntityAdapter;
 		protected IEntitySelector EntitySelector;
 		protected IEntityDlgOpener EntityDlgOpener;
 		protected IEntityAutocompleteSelector<TEntity> EntityAutocompleteSelector;
@@ -48,9 +50,22 @@ namespace QS.ViewModels.Control.EEVM
 			return this;
 		}
 
+		public virtual CommonEEVMBuilder<TEntity> UseAdapter(IEntityAdapter<TEntity> adapter)
+		{
+			EntityAdapter = adapter;
+			return this;
+		}
+
+		public virtual CommonEEVMBuilder<TEntity> UseFuncAdapter(Func<object, TEntity> getEntityByNode)
+		{
+			EntityAdapter = new FuncEntityAdapter<TEntity>(getEntityByNode);
+			return this;
+		}
+
 		public virtual EntityEntryViewModel<TEntity> Finish()
 		{
-			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector);
+			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(parameters.UnitOfWork);
+			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector, entityAdapter);
 		}
 
 		#endregion

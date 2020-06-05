@@ -38,7 +38,7 @@ namespace QS.ViewModels.Control.EEVM
 		int AutocompleteListSize { get; set; }
 		void AutocompleteTextEdited(string text);
 		string GetAutocompleteTitle(object node);
-		void SetEntityByNode(object node);
+		void AutocompleteSelectNode(object node);
 		event EventHandler<AutocompleteUpdatedEventArgs> AutoCompleteListUpdated;
 		#endregion
 	}

@@ -1,12 +1,11 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
 using QS.DomainModel.Entity;
 
 namespace QS.ViewModels.Control.EEVM
 {
 	public class EntityEntryViewModel<TEntity> : PropertyChangedBase, IEntityEntryViewModel, IDisposable
-		where TEntity: class
+		where TEntity : class
 	{
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -14,19 +13,21 @@ namespace QS.ViewModels.Control.EEVM
 			IPropertyBinder<TEntity> binder = null,
 			IEntitySelector entitySelector = null,
 			IEntityDlgOpener dlgOpener = null,
-			IEntityAutocompleteSelector<TEntity> autocompleteSelector = null
+			IEntityAutocompleteSelector<TEntity> autocompleteSelector = null,
+			IEntityAdapter<TEntity> entityAdapter = null
 			)
 		{
-			if (binder != null)
+			if(binder != null)
 				this.EntityBinder = binder;
-			if (entitySelector != null)
+			if(entitySelector != null)
 				this.EntitySelector = entitySelector;
-			if (dlgOpener != null)
+			if(dlgOpener != null)
 				this.DlgOpener = dlgOpener;
-			if (autocompleteSelector != null)
+			if(autocompleteSelector != null)
 				this.AutocompleteSelector = autocompleteSelector;
 
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
+			if(entityAdapter != null)
+				this.EntityAdapter = entityAdapter;
 		}
 
 		#region События
@@ -37,23 +38,23 @@ namespace QS.ViewModels.Control.EEVM
 
 		#endregion
 
-		#region Публичные свойства
+		#region Работа с сущьностью
 
 		private TEntity entity;
 
 		public virtual TEntity Entity {
 			get { return entity; }
 			set {
-				if (entity == value)
+				if(entity == value)
 					return;
 
-				if (entity is INotifyPropertyChanged notifyPropertyOldEntity)
+				if(entity is INotifyPropertyChanged notifyPropertyOldEntity)
 					notifyPropertyOldEntity.PropertyChanged -= Entity_PropertyChanged;
 
 				entity = value;
 
-				if (entity is INotifyPropertyChanged notifyPropertyNewEntity) {
-					notifyPropertyNewEntity.PropertyChanged += Entity_PropertyChanged;;
+				if(entity is INotifyPropertyChanged notifyPropertyNewEntity) {
+					notifyPropertyNewEntity.PropertyChanged += Entity_PropertyChanged; ;
 				}
 
 				if(EntityBinder != null)
@@ -74,6 +75,18 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			return Entity as TEntity1;
 		}
+
+		private IEntityAdapter<TEntity> entityAdapter;
+		public IEntityAdapter<TEntity> EntityAdapter {
+			get => entityAdapter; set {
+				entityAdapter = value;
+				entityAdapter.EntityEntryViewModel = this;
+			}
+		}
+
+		#endregion
+
+		#region Публичные свойства
 
 		bool isEditable = true;
 
@@ -121,7 +134,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		void EntitySelector_EntitySelected(object sender, EntitySelectedEventArgs e)
 		{
-			Entity = (TEntity)e.Entity;
+			Entity = EntityAdapter?.GetEntityByNode(e.Entity);
 			ChangedByUser?.Invoke(this, e);
 		}
 
@@ -175,9 +188,9 @@ namespace QS.ViewModels.Control.EEVM
 			return AutocompleteSelector.GetTitle(node);
 		}
 
-		public void SetEntityByNode(object node)
+		public void AutocompleteSelectNode(object node)
 		{
-			Entity = AutocompleteSelector.GetEntityByNode(node);
+			Entity = EntityAdapter?.GetEntityByNode(node);
 			ChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -188,14 +201,6 @@ namespace QS.ViewModels.Control.EEVM
 		void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			OnPropertyChanged(nameof(EntityTitle));
-		}
-
-		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
-		{
-			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, Entity));
-			if (foundUpdatedObject != null && entitySelector != null) {
-				Entity = (TEntity)entitySelector.RefreshEntity(Entity);
-			}
 		}
 
 		#endregion
@@ -213,6 +218,7 @@ namespace QS.ViewModels.Control.EEVM
 		#region Entity binding
 
 		IPropertyBinder<TEntity> entityBinder;
+
 		public IPropertyBinder<TEntity> EntityBinder {
 			get => entityBinder;
 			set {
@@ -235,19 +241,20 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void Dispose()
 		{
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
-			if (entity is INotifyPropertyChanged notifyPropertyChanged) {
+			if(entity is INotifyPropertyChanged notifyPropertyChanged) {
 				notifyPropertyChanged.PropertyChanged -= Entity_PropertyChanged;
 			}
 
-			if (EntitySelector is IDisposable esd)
+			if(EntitySelector is IDisposable esd)
 				esd.Dispose();
-			if (AutocompleteSelector is IDisposable asd)
+			if(AutocompleteSelector is IDisposable asd)
 				asd.Dispose();
-			if (EntityBinder is IDisposable ebd)
+			if(EntityBinder is IDisposable ebd)
 				ebd.Dispose();
-			if (DlgOpener is IDisposable dod)
+			if(DlgOpener is IDisposable dod)
 				dod.Dispose();
+			if(EntityAdapter is IDisposable ead)
+				ead.Dispose();
 		}
 	}
 }
