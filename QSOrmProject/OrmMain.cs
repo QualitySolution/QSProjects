@@ -262,6 +262,16 @@ namespace QSOrmProject
 			e.Result = DeleteObject(e.TableName, e.ObjectId);
 		}
 
+		static void EnableLegacyDeletion()
+        {
+			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
+		}
+
+		public static void DisableLegacyDeletion()
+		{
+			QSProjectsLib.QSMain.RunOrmDeletion -= RunDeletionFromProjectLib;
+		}
+
 		#endregion
 
 		static OrmMain()
@@ -276,7 +286,8 @@ namespace QSOrmProject
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должне отдельно включать.
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
 
-			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
+			EnableLegacyDeletion();
+
 		}
 	}
 }
