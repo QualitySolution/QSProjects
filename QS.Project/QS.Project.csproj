@@ -10,7 +10,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -357,6 +357,7 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
+    <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
