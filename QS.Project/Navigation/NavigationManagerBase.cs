@@ -20,6 +20,12 @@ namespace QS.Navigation
 			this.interactiveMessage = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
+		#region События
+
+		public EventHandler<ViewModelOpenedEventArgs> ViewModelOpened;
+
+		#endregion
+
 		#region Перебор страниц
 		protected readonly List<IPage> pages = new List<IPage>();
 
@@ -169,6 +175,7 @@ namespace QS.Navigation
 					OpenPage(masterPage, openPage);
 				}
 			}
+			ViewModelOpened?.Invoke(this, new ViewModelOpenedEventArgs(openPage));
 			return openPage;
 		}
 
