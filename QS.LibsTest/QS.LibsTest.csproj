@@ -105,11 +105,11 @@
     <Compile Include="TestNamespace\Views\Two.Level\SecondTestClassView.cs" />
     <Compile Include="Views\EntityTabViewBaseTest.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="TestApp\Views\ButtonSubscriptionView.cs" />
-    <Compile Include="TestApp\ViewModels\EntityViewModel.cs" />
+    <Compile Include="TestApp\Views\ButtonSubscriptionTabView.cs" />
+    <Compile Include="TestApp\ViewModels\EntityTabViewModel.cs" />
     <Compile Include="TestApp\Domain\SimpleEntity.cs" />
     <Compile Include="TestApp\Domain\FullEntity.cs" />
-    <Compile Include="gtk-gui\QS.Test.TestApp.Views.ButtonSubscriptionView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.ButtonSubscriptionTabView.cs" />
     <Compile Include="GtkUI\GtkInit.cs" />
     <Compile Include="Project.Journal\ThreadDataLoaderTest.cs" />
     <Compile Include="TestApp\Domain\Document1.cs" />
