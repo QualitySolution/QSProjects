@@ -149,8 +149,14 @@ namespace QS.Tdi.Gtk
 		{
 			if(afterTab == null)
 				AddTab(tab);
-			else
-				AddTab(tab, this.PageNum(GetTabBoxForTab(afterTab)));
+			else {
+				var tabBox = GetTabBoxForTab(afterTab);
+				if(tabBox == null) {
+					AddTab(tab);
+				} else {
+					AddTab(tab, this.PageNum(tabBox));
+				}
+			}
 		}
 
 		public ITdiTab OpenTab(Func<ITdiTab> newTabFunc, ITdiTab afterTab = null, Type[] argTypes = null, object[] args = null)
