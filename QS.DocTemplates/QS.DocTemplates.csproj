@@ -33,10 +33,6 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Microsoft.CSharp" />
-        <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-          <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="System" />
         <Reference Include="System.ComponentModel.DataAnnotations" />
         <Reference Include="System.Configuration" />
@@ -47,6 +43,9 @@
         <Reference Include="System.ServiceModel" />
         <Reference Include="System.Transactions" />
         <Reference Include="System.Xml" />
+        <Reference Include="NLog">
+          <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="DocParserBase.cs" />
@@ -56,9 +55,6 @@
         <Compile Include="PatternField.cs" />
         <Compile Include="PatternTable.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
@@ -73,6 +69,9 @@
         <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
         <Name>QS.Utilities</Name>
       </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
