@@ -1,7 +1,11 @@
-﻿using NHibernate;
+﻿using System;
+using Autofac;
+using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
+using QS.ViewModels.Dialog;
+using QS.ViewModels.Resolve;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -67,7 +71,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region Перехват вызовов для работы без диалогов ParentViewModel
 
-		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
+		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null)
@@ -77,7 +81,7 @@ namespace QS.ViewModels.Control.EEVM
 			return this;
 		}
 
-		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
+		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null) {
@@ -86,6 +90,39 @@ namespace QS.ViewModels.Control.EEVM
 			}
 			else
 				base.UseViewModelJournalAndAutocompleter<TJournalViewModel>();
+			return this;
+		}
+
+		public new virtual CommonEEVMBuilder<TEntity> UseViewModelDialog<TEntityViewModel>()
+			where TEntityViewModel : DialogViewModelBase
+		{
+			if(legacyParameters.GetDialogTab != null)
+				EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, legacyParameters.GetDialogTab);
+			else
+				EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, parameters.DialogViewModel);
+			return this;
+		}
+
+		public new virtual CommonEEVMBuilder<TEntity> MakeByType()
+		{
+			if(parameters.DialogViewModel == null) {
+				if(parameters.AutofacScope == null)
+					throw new NullReferenceException($"{nameof(parameters.AutofacScope)} не задан для билдера. Без него использование {nameof(MakeByType)} невозможно.");
+				var resolver = parameters.AutofacScope.Resolve<IViewModelResolver>();
+
+				var journalViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.Journal);
+				var entitySelectorType = typeof(JournalViewModelSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+				EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+
+				var entityAutocompleteSelectorType = typeof(JournalViewModelAutocompleteSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+				EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>)Activator.CreateInstance(entityAutocompleteSelectorType, parameters.UnitOfWork, parameters.AutofacScope);
+
+				var dialogViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.EditDialog);
+				var entityDlgOpenerType = typeof(EntityViewModelOpener<>).MakeGenericType(dialogViewModelType);
+				EntityDlgOpener = (IEntityDlgOpener)Activator.CreateInstance(entityDlgOpenerType, parameters.NavigationManager, legacyParameters.GetDialogTab);
+			}
+			else
+				base.MakeByType();
 			return this;
 		}
 

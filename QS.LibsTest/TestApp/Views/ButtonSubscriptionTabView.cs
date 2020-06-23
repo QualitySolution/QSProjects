@@ -5,9 +5,9 @@ using QS.Views.GtkUI;
 
 namespace QS.Test.TestApp.Views
 {
-	public partial class ButtonSubscriptionView : EntityTabViewBase<EntityViewModel, FullEntity>
+	public partial class ButtonSubscriptionTabView : EntityTabViewBase<EntityTabViewModel, FullEntity>
 	{
-		public ButtonSubscriptionView(EntityViewModel viewModel) : base(viewModel)
+		public ButtonSubscriptionTabView(EntityTabViewModel viewModel) : base(viewModel)
 		{
 			this.Build();
 			CommonButtonSubscription();

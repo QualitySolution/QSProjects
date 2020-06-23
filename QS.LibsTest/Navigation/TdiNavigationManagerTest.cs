@@ -29,14 +29,14 @@ namespace QS.Test.Navigation
 		public void OpenViewModel_DontCreateNewViewModel()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -45,12 +45,12 @@ namespace QS.Test.Navigation
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
-			var secondPage = navManager.OpenViewModel<EntityViewModel>(null);
+			var firstPage = navManager.OpenViewModel<EntityTabViewModel>(null);
+			var secondPage = navManager.OpenViewModel<EntityTabViewModel>(null);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -60,16 +60,16 @@ namespace QS.Test.Navigation
 		public void OpenViewModel_DontCreateNewViewModelAsSlave()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("master_1", "hash_1", "hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("master_1", "hash_1", "hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var masterViewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
-			var masterPage = new TdiPage<EntityViewModel>(masterViewModel, masterViewModel, "master_1");
+			var masterViewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
+			var masterPage = new TdiPage<EntityTabViewModel>(masterViewModel, masterViewModel, "master_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var masterTabWidget = Substitute.For<Gtk.Widget>();
@@ -80,15 +80,15 @@ namespace QS.Test.Navigation
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "_1", null).ReturnsForAnyArgs(masterPage, page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "_1", null).ReturnsForAnyArgs(masterPage, page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var zeroPage = navManager.OpenViewModel<EntityViewModel>(null);
+			var zeroPage = navManager.OpenViewModel<EntityTabViewModel>(null);
 			Assert.That(zeroPage, Is.EqualTo(masterPage));
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
-			var secondPage = navManager.OpenViewModel<EntityViewModel>(masterViewModel, OpenPageOptions.AsSlave);
+			var firstPage = navManager.OpenViewModel<EntityTabViewModel>(masterViewModel, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModel<EntityTabViewModel>(masterViewModel, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -98,15 +98,15 @@ namespace QS.Test.Navigation
 		public void OpenViewModel_DontCreateNewViewModelAsSlave_TdiMixedMaster()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var masterTab = Substitute.For<ITdiTab, Gtk.Widget>();
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -119,12 +119,12 @@ namespace QS.Test.Navigation
 			Assert.That(tdiNotebook.Tabs.Count, Is.EqualTo(1));
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var firstPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
-			var secondPage = navManager.OpenViewModelOnTdi<EntityViewModel>(masterTab, OpenPageOptions.AsSlave);
+			var firstPage = navManager.OpenViewModelOnTdi<EntityTabViewModel>(masterTab, OpenPageOptions.AsSlave);
+			var secondPage = navManager.OpenViewModelOnTdi<EntityTabViewModel>(masterTab, OpenPageOptions.AsSlave);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 			Assert.That(firstPage, Is.EqualTo(secondPage));
@@ -219,16 +219,16 @@ namespace QS.Test.Navigation
 		public void ForceClosePage_RemovePagesWhenClosedTest()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs((string)null);
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs((string)null);
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var viewModel1 = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page1 = new TdiPage<EntityViewModel>(viewModel1, viewModel1, "page_1");
-			var viewModel2 = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page2 = new TdiPage<EntityViewModel>(viewModel2, viewModel2, "page_2");
+			var viewModel1 = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page1 = new TdiPage<EntityTabViewModel>(viewModel1, viewModel1, "page_1");
+			var viewModel2 = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page2 = new TdiPage<EntityTabViewModel>(viewModel2, viewModel2, "page_2");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -237,12 +237,12 @@ namespace QS.Test.Navigation
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, null, null).ReturnsForAnyArgs(page1, page2);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, null, null).ReturnsForAnyArgs(page1, page2);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel, int>(null, 1);
-			var secondPage = navManager.OpenViewModel<EntityViewModel, int>(null, 2);
+			var firstPage = navManager.OpenViewModel<EntityTabViewModel, int>(null, 1);
+			var secondPage = navManager.OpenViewModel<EntityTabViewModel, int>(null, 2);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(2));
 
@@ -311,14 +311,14 @@ namespace QS.Test.Navigation
 		public void Page_PageClosedEvent_RisedTest()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
 			bool eventRised = false;
 			page.PageClosed += (sender, e) => eventRised = true;
 
@@ -329,11 +329,11 @@ namespace QS.Test.Navigation
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
+			var firstPage = navManager.OpenViewModel<EntityTabViewModel>(null);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
@@ -346,23 +346,23 @@ namespace QS.Test.Navigation
 		{
 			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveService = Substitute.For<IInteractiveService>();
 			var navigation = Substitute.For<INavigationManager>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			IPage page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			IPage page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
 			bool eventRised = false;
 			page.PageClosed += (sender, e) => eventRised = true;
 
 			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService, navigation);
 			IPage journal = new TdiPage<TabViewModelBase>(journalViewModel, journalViewModel, "journal_1");
 
-			var tabJournalWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
-			var tabWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
+			var tabJournalWidget = new ButtonSubscriptionTabView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
+			var tabWidget = new ButtonSubscriptionTabView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(Arg.Any<TdiSliderTab>()).Returns(x => x[0]);
 			resolver.Resolve(journalViewModel).Returns(tabJournalWidget);
@@ -372,13 +372,13 @@ namespace QS.Test.Navigation
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			pageFactory.CreateViewModelTypedArgs<TabViewModelBase>(null, new System.Type[] { }, new object[] { }, "journal_1", null).ReturnsForAnyArgs(journal);
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveService, hashGenerator);
 
 			var journalPage = navManager.OpenViewModel<TabViewModelBase>(null);
 
-			var dialogPage = navManager.OpenViewModel<EntityViewModel>(journalPage.ViewModel);
+			var dialogPage = navManager.OpenViewModel<EntityTabViewModel>(journalPage.ViewModel);
 
 			Assert.That(navManager.TopLevelPages.Count(), Is.EqualTo(1));
 
@@ -392,7 +392,7 @@ namespace QS.Test.Navigation
 		{
 			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("journal_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("journal_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveService = Substitute.For<IInteractiveService>();
@@ -400,14 +400,14 @@ namespace QS.Test.Navigation
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 			var navigation = Substitute.For<INavigationManager>();
 
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
 
 			var journalViewModel = Substitute.For<TabViewModelBase, ITdiJournal, ITdiTab>(interactiveService, navigation);
 			bool eventRised = false;
 			IPage journal = new TdiPage<TabViewModelBase>(journalViewModel, journalViewModel, "journal_1");
 			journal.PageClosed += (sender, e) => eventRised = true;
 
-			var tabJournalWidget = new ButtonSubscriptionView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
+			var tabJournalWidget = new ButtonSubscriptionTabView(viewModel);// Просто чтобы был хоть какой то настоящий виджет.
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(Arg.Any<TdiSliderTab>()).Returns(x => x[0]);
 			resolver.Resolve(journalViewModel).Returns(tabJournalWidget);
@@ -433,14 +433,14 @@ namespace QS.Test.Navigation
 		public void FindPage_ByDialogViewModelBaseTest()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
-			hashGenerator.GetHash<EntityViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
+			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
 			var commonService = Substitute.For<ICommonServices>();
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
-			var viewModel = Substitute.For<EntityViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
-			var page = new TdiPage<EntityViewModel>(viewModel, viewModel, "hash_1");
+			var viewModel = Substitute.For<EntityTabViewModel, ITdiTab>(entityBuilder, uowFactory, commonService);
+			var page = new TdiPage<EntityTabViewModel>(viewModel, viewModel, "hash_1");
 
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
@@ -449,11 +449,11 @@ namespace QS.Test.Navigation
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
-			pageFactory.CreateViewModelTypedArgs<EntityViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
+			pageFactory.CreateViewModelTypedArgs<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }, "hash_1", null).ReturnsForAnyArgs(page);
 
 			var navManager = new TdiNavigationManager(tdiNotebook, pageFactory, interactiveMessage, hashGenerator);
 
-			var firstPage = navManager.OpenViewModel<EntityViewModel>(null);
+			var firstPage = navManager.OpenViewModel<EntityTabViewModel>(null);
 
 			DialogViewModelBase dialogViewModel = viewModel;
 			var find = navManager.FindPage(dialogViewModel);

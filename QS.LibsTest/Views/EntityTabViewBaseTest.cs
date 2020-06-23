@@ -21,9 +21,9 @@ namespace QS.Test.Views.GtkUI
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var entityBuilder = Substitute.For<IEntityUoWBuilder>();
 
-			var viewModel = Substitute.For<EntityViewModel>(entityBuilder, uowFactory, commonService);
+			var viewModel = Substitute.For<EntityTabViewModel>(entityBuilder, uowFactory, commonService);
 
-			var view = new ButtonSubscriptionView(viewModel);
+			var view = new ButtonSubscriptionTabView(viewModel);
 
 			view.SaveButton.Click();
 			viewModel.Received().SaveAndClose();

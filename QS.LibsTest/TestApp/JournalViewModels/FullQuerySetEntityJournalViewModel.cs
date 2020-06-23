@@ -10,7 +10,7 @@ using QS.Test.TestApp.ViewModels;
 
 namespace QS.Test.TestApp.JournalViewModels
 {
-	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, EntityViewModel, FullQuerySetDocumentJournalNode>
+	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, EntityTabViewModel, FullQuerySetDocumentJournalNode>
 	{
 		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigationManager) 
 			: base(unitOfWorkFactory, interactiveService, navigationManager)

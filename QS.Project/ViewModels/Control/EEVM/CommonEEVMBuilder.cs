@@ -1,7 +1,9 @@
 ﻿using System;
+using Autofac;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Resolve;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -47,6 +49,25 @@ namespace QS.ViewModels.Control.EEVM
 			where TEntityViewModel : DialogViewModelBase
 		{
 			EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, parameters.DialogViewModel);
+			return this;
+		}
+
+		public virtual CommonEEVMBuilder<TEntity> MakeByType()
+		{
+			if (parameters.AutofacScope == null)
+				throw new NullReferenceException($"{nameof(parameters.AutofacScope)} не задан для билдера. Без него использование {nameof(MakeByType)} невозможно.");
+			var resolver = parameters.AutofacScope.Resolve<IViewModelResolver>();
+
+			var journalViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.Journal);
+			var entitySelectorType = typeof(JournalViewModelSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+			EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager);
+
+			var entityAutocompleteSelectorType = typeof(JournalViewModelAutocompleteSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+			EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>) Activator.CreateInstance(entityAutocompleteSelectorType, parameters.UnitOfWork, parameters.AutofacScope);
+
+			var dialogViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.EditDialog);
+			var entityDlgOpenerType = typeof(EntityViewModelOpener<>).MakeGenericType(dialogViewModelType);
+			EntityDlgOpener = (IEntityDlgOpener) Activator.CreateInstance(entityDlgOpenerType, parameters.NavigationManager, parameters.DialogViewModel);
 			return this;
 		}
 
