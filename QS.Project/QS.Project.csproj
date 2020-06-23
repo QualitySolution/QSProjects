@@ -359,7 +359,7 @@
     <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
-    <Compile Include="ViewModels\Resolve\AutofacViewModelReslover.cs" />
+    <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

@@ -6,11 +6,11 @@ using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Resolve
 {
-	public class AutofacViewModelReslover : IViewModelResolver
+	public class AutofacViewModelResolver : IViewModelResolver
 	{
 		private readonly IContainer container;
 
-		public AutofacViewModelReslover(IContainer container)
+		public AutofacViewModelResolver(IContainer container)
 		{
 			this.container = container;
 		}
