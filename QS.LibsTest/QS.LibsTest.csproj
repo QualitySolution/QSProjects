@@ -157,6 +157,8 @@
     <Compile Include="TestApp\Views\SlideableView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
+    <Compile Include="ViewModels\Resove\AutofacViewModelResloverTest.cs" />
+    <Compile Include="TestApp\ViewModels\EntityDialogViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -193,6 +195,7 @@
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="TestApp\Domain\Linked\" />
     <Folder Include="TestApp\HibernateMapping\Linked\" />
+    <Folder Include="ViewModels\Resove\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">

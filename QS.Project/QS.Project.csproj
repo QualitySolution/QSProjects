@@ -358,6 +358,8 @@
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
+    <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
+    <Compile Include="ViewModels\Resolve\AutofacViewModelReslover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -402,6 +404,7 @@
     <Folder Include="Deletion\Configuration\" />
     <Folder Include="Deletion\ViewModels\" />
     <Folder Include="ViewModels\Extension\" />
+    <Folder Include="ViewModels\Resolve\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
