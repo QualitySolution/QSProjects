@@ -9,8 +9,8 @@ using QS.ViewModels.Resolve;
 
 namespace QS.Test.ViewModels.Resove
 {
-	[TestFixture(TestOf = typeof(AutofacViewModelReslover))]
-	public class AutofacViewModelResloverTest
+	[TestFixture(TestOf = typeof(AutofacViewModelResolver))]
+	public class AutofacViewModelResolverTest
 	{
 		[Test(Description = "Можем найти классс журнала.")]
 		public void ResolveJournalTest()
@@ -22,7 +22,7 @@ namespace QS.Test.ViewModels.Resove
 				.AsSelf();
 			container = builder.Build();
 
-			var resolver = new AutofacViewModelReslover(container);
+			var resolver = new AutofacViewModelResolver(container);
 			var result = resolver.GetTypeOfViewModel(typeof(Document1), TypeOfViewModel.Journal);
 			Assert.That(result, Is.EqualTo(typeof(FullQuerySetEntityJournalViewModel)));
 		}
@@ -37,7 +37,7 @@ namespace QS.Test.ViewModels.Resove
 				.AsSelf();
 			container = builder.Build();
 
-			var resolver = new AutofacViewModelReslover(container);
+			var resolver = new AutofacViewModelResolver(container);
 			var result = resolver.GetTypeOfViewModel(typeof(SimpleEntity), TypeOfViewModel.EditDialog);
 			Assert.That(result, Is.EqualTo(typeof(EntityDialogViewModel)));
 		}

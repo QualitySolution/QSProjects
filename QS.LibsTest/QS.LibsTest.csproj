@@ -157,7 +157,7 @@
     <Compile Include="TestApp\Views\SlideableView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
-    <Compile Include="ViewModels\Resove\AutofacViewModelResloverTest.cs" />
+    <Compile Include="ViewModels\Resove\AutofacViewModelResolverTest.cs" />
     <Compile Include="TestApp\ViewModels\EntityDialogViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
