@@ -59,15 +59,19 @@ namespace QS.ViewModels.Control.EEVM
 			var resolver = parameters.AutofacScope.Resolve<IViewModelResolver>();
 
 			var journalViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.Journal);
-			var entitySelectorType = typeof(JournalViewModelSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
-			EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager);
+			if(journalViewModelType != null) {
+				var entitySelectorType = typeof(JournalViewModelSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+				EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager);
 
-			var entityAutocompleteSelectorType = typeof(JournalViewModelAutocompleteSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
-			EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>) Activator.CreateInstance(entityAutocompleteSelectorType, parameters.UnitOfWork, parameters.AutofacScope);
-
+				var entityAutocompleteSelectorType = typeof(JournalViewModelAutocompleteSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
+				EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>) Activator.CreateInstance(entityAutocompleteSelectorType, parameters.UnitOfWork, parameters.AutofacScope);
+			}
+			
 			var dialogViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.EditDialog);
-			var entityDlgOpenerType = typeof(EntityViewModelOpener<>).MakeGenericType(dialogViewModelType);
-			EntityDlgOpener = (IEntityDlgOpener) Activator.CreateInstance(entityDlgOpenerType, parameters.NavigationManager, parameters.DialogViewModel);
+			if(dialogViewModelType != null) {
+				var entityDlgOpenerType = typeof(EntityViewModelOpener<>).MakeGenericType(dialogViewModelType);
+				EntityDlgOpener = (IEntityDlgOpener) Activator.CreateInstance(entityDlgOpenerType, parameters.NavigationManager, parameters.DialogViewModel);
+			}
 			return this;
 		}
 
