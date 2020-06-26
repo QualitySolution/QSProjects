@@ -7,7 +7,7 @@ using Gdk;
 using Gtk;
 using Image = Gtk.Image;
 
-namespace Vodovoz.ViewWidgets
+namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem(true)]
 	[Category("QsProjectsLib")]

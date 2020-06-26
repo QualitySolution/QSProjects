@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using Gtk;
 using Gtk.DataBindings;
 using NHibernate.Transform;
-using QSBanks;
 using QSOrmProject;
 using QSOrmProject.RepresentationModel;
 
-namespace Vodovoz.ViewModel
+namespace QSBanks
 {
 
 	//!!!! Набросок, начал делать и решил отложить не рабочий код.
