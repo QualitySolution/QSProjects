@@ -5,9 +5,9 @@ using Gamma.GtkWidgets;
 using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.Project.Repositories;
-using QS.Widgets.GtkUI;
+using QS.Widgets;
 
-namespace QS.Project.Dialogs.GtkUI
+namespace QS.Project.Dialogs
 {
 	[ToolboxItem(true)]
 	public partial class PermissionListView : Gtk.Bin

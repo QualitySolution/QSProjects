@@ -249,7 +249,6 @@
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
     <Compile Include="Tdi\BasedOnNameTDIResolver.cs" />
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
-    <Compile Include="gtk-gui\QS.Project.Dialogs.GtkUI.PermissionListView.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
     <Compile Include="Widgets\ProgressWidget.cs" />
@@ -293,6 +292,7 @@
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionProcessView.cs" />
     <Compile Include="Deletion.Views\DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Dialogs.PermissionListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

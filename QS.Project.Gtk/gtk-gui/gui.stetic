@@ -405,7 +405,7 @@
               </packing>
             </child>
             <child>
-              <widget class="QS.Project.Dialogs.GtkUI.PermissionListView" id="permissionlistview">
+              <widget class="QS.Project.Dialogs.PermissionListView" id="permissionlistview">
                 <property name="MemberName" />
                 <property name="Events">ButtonPressMask</property>
               </widget>
@@ -2513,7 +2513,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Project.Dialogs.GtkUI.PermissionListView" design-size="680 300">
+  <widget class="Gtk.Bin" id="QS.Project.Dialogs.PermissionListView" design-size="680 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>

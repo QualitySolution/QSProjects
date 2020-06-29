@@ -7,7 +7,7 @@ using Gdk;
 using Gtk;
 using Image = Gtk.Image;
 
-namespace QS.Widgets.GtkUI
+namespace QS.Widgets
 {
 	[ToolboxItem(true)]
 	[Category("QsProjectsLib")]
