@@ -44,10 +44,10 @@ namespace QS.Project.Services
 				var deletionPage = navigation.OpenViewModel<DeletionViewModel, DeleteCore>(null, deletion);
 				deletionPage.ViewModel.DeletionAccepted = () => RunDeletion(deletion);
 			}
-			else {
-				if(interactive.Question(String.Format("Удалить {0}?", deletion.RootEntity.Title)))
-					RunDeletion(deletion);
-			}
+			else if(interactive.Question($"Удалить {deletion.RootEntity.Title}?"))
+				RunDeletion(deletion);
+			else
+				deletion.DeletionExecuted = false;
 			#endregion
 			return deletion;
 		}
