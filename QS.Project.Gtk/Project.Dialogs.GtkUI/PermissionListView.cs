@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.Project.Repositories;
-using Vodovoz.ViewWidgets;
+using QS.Widgets;
 
-namespace QS.Project.Dialogs.GtkUI
+namespace QS.Project.Dialogs
 {
 	[ToolboxItem(true)]
 	public partial class PermissionListView : Gtk.Bin

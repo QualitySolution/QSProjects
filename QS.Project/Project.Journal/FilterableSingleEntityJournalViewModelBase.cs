@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
-using QS.Project.Journal;
 using QS.Services;
 using QS.Tdi;
 using QS.Project.Filter;
 using QS.DomainModel.UoW;
 
-namespace Vodovoz.JournalViewModels
+namespace QS.Project.Journal
 {
 	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel> : SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode>
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
