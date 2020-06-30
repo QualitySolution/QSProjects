@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Gtk;
 using NLog;
@@ -318,6 +318,8 @@ namespace QS.Tdi
 			}
 
 			if(canSlided && afterTab == Journal) {
+				if (ActiveDialog != null)
+					CloseDialog(CloseSource.FromParentPage, true);
 				ActiveDialog = tab;
 				return;
 			}
