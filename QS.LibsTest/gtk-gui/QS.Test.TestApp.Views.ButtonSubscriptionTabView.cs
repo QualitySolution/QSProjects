@@ -15,10 +15,10 @@ namespace QS.Test.TestApp.Views
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
-			// Widget QS.Test.TestApp.Views.ButtonSubscriptionView
+			// Widget QS.Test.TestApp.Views.ButtonSubscriptionTabView
 			global::Stetic.BinContainer.Attach(this);
-			this.Name = "QS.Test.TestApp.Views.ButtonSubscriptionView";
-			// Container child QS.Test.TestApp.Views.ButtonSubscriptionView.Gtk.Container+ContainerChild
+			this.Name = "QS.Test.TestApp.Views.ButtonSubscriptionTabView";
+			// Container child QS.Test.TestApp.Views.ButtonSubscriptionTabView.Gtk.Container+ContainerChild
 			this.vbox1 = new global::Gtk.VBox();
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;

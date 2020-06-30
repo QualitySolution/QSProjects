@@ -12,6 +12,7 @@ using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Test.GtkUI;
 using QS.Test.TestApp.Dialogs;
+using QS.Test.TestApp.JournalViewModels;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
@@ -214,7 +215,7 @@ namespace QS.Test.Navigation
 		}
 
 		#endregion
-
+		#region DeletePage
 		[Test(Description = "Проверяем что страницы удаляются при закрытии.")]
 		public void ForceClosePage_RemovePagesWhenClosedTest()
 		{
@@ -280,6 +281,55 @@ namespace QS.Test.Navigation
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
 
+		[Test(Description = "Проверяем что ViewModel открытая в слайдере удаляется из дочерних ViewModel журнала.(реальный баг)")]
+		[Category("real case")]
+		public void CloseDialogInSlide_RemovePageFromChildTest()
+		{
+			GtkInit.AtOnceInitGtk();
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<DialogWithEntityUoWBuilderViewModel>().AsSelf();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var entityBuilder1 = Substitute.For<IEntityUoWBuilder>();
+			entityBuilder1.EntityOpenId.Returns(1);
+			var entityBuilder2 = Substitute.For<IEntityUoWBuilder>();
+			entityBuilder2.EntityOpenId.Returns(2);
+
+			//Открываем как бы вкладку журнала.
+			var parameters = new Dictionary<string, object> { { "useSlider", true } };
+			var pageJournal = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+			//Открываем вкладку диалога
+			var pageFirstOpened = navigation.OpenViewModel<DialogWithEntityUoWBuilderViewModel, IEntityUoWBuilder>(pageJournal.ViewModel, entityBuilder1);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
+			Assert.That(pageJournal.ChildPages.Count(), Is.EqualTo(1));
+
+			//Открываем другой элемент журнала, так как это в слайдере старая должна закрытся.
+			var pageAnother = navigation.OpenViewModel<DialogWithEntityUoWBuilderViewModel, IEntityUoWBuilder>(pageJournal.ViewModel, entityBuilder2);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
+			Assert.That(pageJournal.ChildPages.Count(), Is.EqualTo(1));
+
+			//Повторно открываем вкладу, смотрим что она создалась заново.
+			var pageSecondOpened = navigation.OpenViewModel<DialogWithEntityUoWBuilderViewModel, IEntityUoWBuilder>(pageJournal.ViewModel, entityBuilder1);
+			Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
+			Assert.That(pageJournal.ChildPages.Count(), Is.EqualTo(1));
+			Assert.That(pageFirstOpened.ViewModel, Is.Not.EqualTo(pageSecondOpened));
+		}
+		#endregion
 		[Test(Description = "Проверяем что можем закрыть через навигатор модальный диалог.")]
 		public void ForceClosePage_ModalDialogTest()
 		{
