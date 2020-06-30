@@ -167,6 +167,9 @@
     <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
     <Compile Include="ViewModels\Resove\AutofacViewModelResolverTest.cs" />
     <Compile Include="TestApp\ViewModels\EntityDialogViewModel.cs" />
+    <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
+    <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
