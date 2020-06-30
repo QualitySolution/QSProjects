@@ -193,7 +193,7 @@ namespace QS.Tdi
 		void ActiveDialog_TabNameChanged(object sender, TdiTabNameChangedEventArgs e)
 		{
 			SetNewDialogTitle(e.NewName);
-			OnSladerTabChanged();
+			OnSliderTabChanged();
 		}
 
 		void SetNewDialogTitle(string tilte)
@@ -203,10 +203,10 @@ namespace QS.Tdi
 
 		void OnJournalTabNameChanged(object sender, TdiTabNameChangedEventArgs arg)
 		{
-			OnSladerTabChanged();
+			OnSliderTabChanged();
 		}
 
-		private void OnSladerTabChanged()
+		private void OnSliderTabChanged()
 		{
 			if(TabNameChanged != null)
 				TabNameChanged(this, new TdiTabNameChangedEventArgs(TabName));
@@ -281,7 +281,7 @@ namespace QS.Tdi
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
 			(TabParent as TdiNotebook)?.OnSliderTabClosed(this, oldTab, source);
-			OnSladerTabChanged();
+			OnSliderTabChanged();
 			return true;
 		}
 

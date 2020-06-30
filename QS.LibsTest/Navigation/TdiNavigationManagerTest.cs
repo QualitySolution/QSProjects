@@ -283,7 +283,7 @@ namespace QS.Test.Navigation
 
 		[Test(Description = "Проверяем что ViewModel открытая в слайдере удаляется из дочерних ViewModel журнала.(реальный баг)")]
 		[Category("real case")]
-		public void CloseDialogInSlade_RemovePageFromChildTest()
+		public void CloseDialogInSlide_RemovePageFromChildTest()
 		{
 			GtkInit.AtOnceInitGtk();
 			var builder = new ContainerBuilder();
