@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gtk;
 using NLog;
@@ -218,7 +218,7 @@ namespace QS.Tdi
 		public bool AskToCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			if(tab == ActiveDialog) 
-				return CloseDialog(activeDialog, source, true);
+				return CloseDialog(source, true);
 
 			if(tab == Journal)
 				return TabParent.AskToCloseTab(this, source);
@@ -229,7 +229,7 @@ namespace QS.Tdi
 		public void ForceCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
 			if(tab == ActiveDialog) {
-				CloseDialog(activeDialog, source, false);
+				CloseDialog(source, false);
 				return;
 			}
 
@@ -251,12 +251,12 @@ namespace QS.Tdi
 			TabClosed?.Invoke(this, EventArgs.Empty);
 		}
 
-		protected bool CloseDialog(ITdiTab tab, CloseSource source, bool AskSave)
+		protected bool CloseDialog(CloseSource source, bool AskSave)
 		{
 			if(TabParent.CheckClosingSlaveTabs(this as ITdiTab))
 				return false;
 
-			if (tab is ITdiDialog dlg) {
+			if (ActiveDialog is ITdiDialog dlg) {
 				if (AskSave && dlg.HasChanges) {
 					string Message = "Объект изменён. Сохранить изменения перед закрытием?";
 					MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
@@ -276,10 +276,11 @@ namespace QS.Tdi
 					}
 				}
 			}
+			var oldTab = ActiveDialog;
 			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
 			activeGlgWidget.Destroy();
-			(TabParent as TdiNotebook)?.OnSliderTabClosed(this, tab, source);
+			(TabParent as TdiNotebook)?.OnSliderTabClosed(this, oldTab, source);
 			OnSladerTabChanged();
 			return true;
 		}
@@ -363,7 +364,7 @@ namespace QS.Tdi
 			}
 
 			if(afterTab == Journal && ActiveDialog != null) {
-				 CloseDialog(ActiveDialog, CloseSource.FromParentPage, true);
+				 CloseDialog(CloseSource.FromParentPage, true);
 				if(ActiveDialog != null)
 					return null;
 			}
