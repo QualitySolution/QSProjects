@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -9,7 +9,7 @@
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
     <widget-library name="../bin/Debug/QS.LibsTest.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QS.Test.TestApp.Views.ButtonSubscriptionView" design-size="300 300">
+  <widget class="Gtk.Bin" id="QS.Test.TestApp.Views.ButtonSubscriptionTabView" design-size="300 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
