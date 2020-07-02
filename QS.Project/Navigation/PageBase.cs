@@ -15,6 +15,11 @@ namespace QS.Navigation
 
 		public string PageHash { get; protected set; }
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		public object Tag { get; set; }
+
 		public IEnumerable<MasterToSlavePair> SlavePagesAll {
 			get {
 				foreach (var item in slavePages)
