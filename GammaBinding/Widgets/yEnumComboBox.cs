@@ -10,40 +10,52 @@ using Gamma.GtkHelpers;
 
 namespace Gamma.Widgets
 {
-	[ToolboxItem (true)]
-	[Category ("Gamma Widgets")]
+	[ToolboxItem(true)]
+	[Category("Gamma Widgets")]
 	public class yEnumComboBox : ComboBox
 	{
 		ListStore comboListStore;
 
-		enum comboDataColumns {
+		enum comboDataColumns
+		{
 			Title,
 			Item
 		}
 
-		List<object> fieldsToHide = new List<object> ();
+		public BindingControler<yEnumComboBox> Binding { get; private set; }
 
-		public BindingControler<yEnumComboBox> Binding { get; private set;}
+		#region HideItems
+		List<object> fieldsToHide = new List<object>();
 
-		public void AddEnumToHideList (object[] items)
+		public void AddEnumToHideList(object[] items)
 		{
-			fieldsToHide.AddRange (items);
-			ResetLayout ();
+			fieldsToHide.AddRange(items);
+			ResetLayout();
 		}
 
-		public void RemoveEnumFromHideList (object[] items)
+		public void RemoveEnumFromHideList(object[] items)
 		{
-			foreach (object item in items)
-				if (fieldsToHide.Contains (item))
-					fieldsToHide.Remove (item);
-			ResetLayout ();
+			foreach(object item in items)
+				if(fieldsToHide.Contains(item))
+					fieldsToHide.Remove(item);
+			ResetLayout();
 		}
 
-		public void ClearEnumHideList ()
+		public void ClearEnumHideList()
 		{
-			fieldsToHide.Clear ();
-			ResetLayout ();
+			fieldsToHide.Clear();
+			ResetLayout();
 		}
+
+		public object[] HiddenItems {
+			get => fieldsToHide.ToArray(); 
+			set {
+				fieldsToHide.Clear();
+				AddEnumToHideList(value);
+			}
+		}
+
+		#endregion
 
 		public event EventHandler<ItemSelectedEventArgs> EnumItemSelected;
 
@@ -57,11 +69,11 @@ namespace Gamma.Widgets
 				return itemsEnum;
 			}
 			set {
-				if (itemsEnum == value)
+				if(itemsEnum == value)
 					return;
 				itemsEnum = value;
 
-				ResetLayout ();
+				ResetLayout();
 			}
 		}
 
@@ -70,7 +82,7 @@ namespace Gamma.Widgets
 		/// <summary>
 		/// If true combo will select first item by default, insted of empty combo state.
 		/// </summary>
-		[DefaultValue (false)]
+		[DefaultValue(false)]
 		public bool DefaultFirst {
 			get {
 				return defaultFirst;
@@ -91,23 +103,23 @@ namespace Gamma.Widgets
 				return selectedItem;
 			}
 			set {
-				if (selectedItem == value || (selectedItem != null && selectedItem.Equals (value))) //Second expression needed to correct check enums value wrapped in object
+				if(selectedItem == value || (selectedItem != null && selectedItem.Equals(value))) //Second expression needed to correct check enums value wrapped in object
 					return;
 
 				TreeIter iter;
-				if (!ListStoreHelper.SearchListStore (comboListStore, value, (int)comboDataColumns.Item, out iter))
+				if(!ListStoreHelper.SearchListStore(comboListStore, value, (int)comboDataColumns.Item, out iter))
 					return;
 
 				IsNotUserChange = true;
 				selectedItem = value;
-				SetActiveIter (iter);
+				SetActiveIter(iter);
 
-				Binding.FireChange (				
+				Binding.FireChange(
 					(w => w.Active),
 					(w => w.ActiveText),
 					(w => w.SelectedItem),
 					(w => w.SelectedItemOrNull));
-				OnEnumItemSelected ();
+				OnEnumItemSelected();
 				IsNotUserChange = false;
 			}
 		}
@@ -117,14 +129,14 @@ namespace Gamma.Widgets
 				return selectedItem is SpecialComboState ? null : selectedItem;
 			}
 			set {
-				if (value == null) {
-					if (ShowSpecialStateNot)
+				if(value == null) {
+					if(ShowSpecialStateNot)
 						SelectedItem = SpecialComboState.Not;
 					else if(ShowSpecialStateAll)
 						SelectedItem = SpecialComboState.All;
 					else
 						SelectedItem = SpecialComboState.None;
-				} 
+				}
 				else
 					SelectedItem = value;
 			}
@@ -132,115 +144,115 @@ namespace Gamma.Widgets
 
 		bool useShortTitle;
 
-		[Browsable (true)]
+		[Browsable(true)]
 		public bool UseShortTitle {
 			get {
 				return useShortTitle;
 			}
 			set {
 				useShortTitle = value;
-				ResetLayout ();
+				ResetLayout();
 			}
 		}
 
 		bool showSpecialStateAll;
 
-		[Browsable (true)]
+		[Browsable(true)]
 		public bool ShowSpecialStateAll {
 			get {
 				return showSpecialStateAll;
 			}
 			set {
 				showSpecialStateAll = value;
-				ResetLayout ();
+				ResetLayout();
 			}
 		}
 
 		bool showSpecialStateNot;
 
-		[Browsable (true)]
+		[Browsable(true)]
 		public bool ShowSpecialStateNot {
 			get {
 				return showSpecialStateNot;
 			}
 			set {
 				showSpecialStateNot = value;
-				ResetLayout ();
+				ResetLayout();
 			}
 		}
 
-		public yEnumComboBox ()
+		public yEnumComboBox()
 		{
-			Binding = new BindingControler<yEnumComboBox> (this, new Expression<Func<yEnumComboBox, object>>[] {
+			Binding = new BindingControler<yEnumComboBox>(this, new Expression<Func<yEnumComboBox, object>>[] {
 				(w => w.Active),
 				(w => w.ActiveText),
 				(w => w.SelectedItem),
 				(w => w.SelectedItemOrNull)
 			});
 
-			comboListStore = new ListStore (typeof(string), typeof(object));
-			CellRendererText text = new CellRendererText ();
-			PackStart (text, false);
-			AddAttribute (text, "text", (int)comboDataColumns.Title);
+			comboListStore = new ListStore(typeof(string), typeof(object));
+			CellRendererText text = new CellRendererText();
+			PackStart(text, false);
+			AddAttribute(text, "text", (int)comboDataColumns.Title);
 			Model = comboListStore;
 		}
 
-		void ResetLayout ()
+		void ResetLayout()
 		{
 			selectedItem = null;
-			comboListStore.Clear ();
+			comboListStore.Clear();
 
-			if (ItemsEnum == null)
+			if(ItemsEnum == null)
 				return;
 
-			if (!ItemsEnum.IsEnum)
-				throw new NotSupportedException (string.Format ("ItemsEnum only supports enum types, specified was {0}", ItemsEnum));
+			if(!ItemsEnum.IsEnum)
+				throw new NotSupportedException(string.Format("ItemsEnum only supports enum types, specified was {0}", ItemsEnum));
 
 			//Fill special fields
-			if (ShowSpecialStateAll) {
-				AppendEnumItem (typeof(SpecialComboState).GetField ("All"));
+			if(ShowSpecialStateAll) {
+				AppendEnumItem(typeof(SpecialComboState).GetField("All"));
 			}
-			if (ShowSpecialStateNot) {
-				AppendEnumItem (typeof(SpecialComboState).GetField ("Not"));
-			}
-
-			foreach (FieldInfo info in ItemsEnum.GetFields()) {
-				AppendEnumItem (info);
+			if(ShowSpecialStateNot) {
+				AppendEnumItem(typeof(SpecialComboState).GetField("Not"));
 			}
 
-			if (ShowSpecialStateAll || ShowSpecialStateNot || DefaultFirst)
+			foreach(FieldInfo info in ItemsEnum.GetFields()) {
+				AppendEnumItem(info);
+			}
+
+			if(ShowSpecialStateAll || ShowSpecialStateNot || DefaultFirst)
 				Active = 0;
 		}
 
-		void AppendEnumItem (FieldInfo info)
+		void AppendEnumItem(FieldInfo info)
 		{
-			if (info.Name.Equals ("value__"))
+			if(info.Name.Equals("value__"))
 				return;
-			if (fieldsToHide.Contains (info.GetValue (null)))
+			if(fieldsToHide.Contains(info.GetValue(null)))
 				return;
-			string item = UseShortTitle ? info.GetShortTitle () : info.GetEnumTitle ();
-			comboListStore.AppendValues (item, info.GetValue (null));
+			string item = UseShortTitle ? info.GetShortTitle() : info.GetEnumTitle();
+			comboListStore.AppendValues(item, info.GetValue(null));
 		}
 
-		void OnEnumItemSelected ()
+		void OnEnumItemSelected()
 		{
-			if (EnumItemSelected != null) {
-				EnumItemSelected (this, new ItemSelectedEventArgs (SelectedItem));
+			if(EnumItemSelected != null) {
+				EnumItemSelected(this, new ItemSelectedEventArgs(SelectedItem));
 			}
 		}
 
-		protected override void OnChanged ()
+		protected override void OnChanged()
 		{
 			TreeIter iter;
 
-			if (GetActiveIter (out iter)) {
-				SelectedItem = Model.GetValue (iter, (int)comboDataColumns.Item);
-			} else {
+			if(GetActiveIter(out iter)) {
+				SelectedItem = Model.GetValue(iter, (int)comboDataColumns.Item);
+			}
+			else {
 				SelectedItem = SpecialComboState.None;
 			}
-			base.OnChanged ();
-			if(!IsNotUserChange && ChangedByUser != null)
-			{
+			base.OnChanged();
+			if(!IsNotUserChange && ChangedByUser != null) {
 				ChangedByUser(this, EventArgs.Empty);
 			}
 		}
