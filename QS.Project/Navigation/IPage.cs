@@ -15,6 +15,11 @@ namespace QS.Navigation
 
 		DialogViewModelBase ViewModel { get; }
 
+		/// <summary>
+		/// Для хранения пользовательской информации как в WinForms
+		/// </summary>
+		object Tag { get; set; }
+
 		event EventHandler<PageClosedEventArgs> PageClosed;
 
 		IEnumerable<MasterToSlavePair> SlavePagesAll { get; }
