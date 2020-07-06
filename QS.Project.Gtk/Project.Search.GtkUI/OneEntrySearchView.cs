@@ -28,6 +28,14 @@ namespace QS.Project.Search.GtkUI
 			entrySearch.Changed += EntSearchText_Changed;
 		}
 
+		public OneEntrySearchView() : base()
+		{
+		}
+
+		public OneEntrySearchView(IntPtr raw) : base(raw)
+		{
+		}
+
 		void EntSearchText_Changed(object sender, EventArgs e)
 		{
 			if(QueryDelay != 0) {
