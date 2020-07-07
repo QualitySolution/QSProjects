@@ -18,54 +18,37 @@ namespace QS.Banks.Domain
 		public virtual int Id { get; set; }
 
 		string name;
-
 		public virtual string Name {
-			get {
-				if(string.IsNullOrEmpty(name)) {
-					return "Основной";
-				}
-				return name; 
-			}
-			set { SetField (ref name, value, () => Name); }
+			get => string.IsNullOrEmpty(name) ? "Основной" : name;
+			set => SetField (ref name, value);
 		}
 
 		string number;
-
-		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.")]
 		[Display (Name = "Номер")]
 		public virtual string Number {
-			get { return number; }
-			set { SetField (ref number, value, () => Number); }
+			get => number;
+			set => SetField (ref number, value);
 		}
 
-		public virtual string Title{
-			get{
-				return "Счет: " + Name;
-			}
-		}
 		string code1c;
-
 		[Display (Name = "Код 1с")]
 		public virtual string Code1c {
-			get { return code1c; }
-			set { SetField (ref code1c, value, () => Code1c); }
+			get => code1c;
+			set => SetField (ref code1c, value);
 		}
 
 		bool inactive;
-
 		[Display (Name = "Неактивный")]
 		public virtual bool Inactive {
-			get { return inactive; }
-			set { SetField (ref inactive, value, () => Inactive); }
+			get => inactive;
+			set => SetField (ref inactive, value);
 		}
 
 		Bank inBank;
-
-		[Required (ErrorMessage = "Банк должен быть заполнен.")]
 		[Display (Name = "Банк")]
 		public virtual Bank InBank {
-			get { return inBank; }
-			set {SetField (ref inBank, value, () => InBank);
+			get => inBank;
+			set { SetField (ref inBank, value);
 				Inactive = InBank == null || InBank.Deleted;
 			}
 		}
@@ -73,18 +56,15 @@ namespace QS.Banks.Domain
 		CorAccount bankCorAccount;
 		[Display(Name = "Кор. счет выбранного банка")]
 		public virtual CorAccount BankCorAccount {
-			get { return bankCorAccount; }
-			set { SetField(ref bankCorAccount, value, () => BankCorAccount); }
+			get => bankCorAccount;
+			set => SetField(ref bankCorAccount, value);
 		}
 
-		#endregion
-
 		bool isDefault;
-
 		public virtual bool IsDefault {
-			get { return isDefault; }
+			get => isDefault;
 			set {
-				if(SetField(ref isDefault, value, () => IsDefault) && value && Owner != null){
+				if(SetField(ref isDefault, value) && value && Owner != null){
 					foreach(var item in Owner.Accounts) {
 						if(item != this) {
 							item.IsDefault = false;
@@ -93,23 +73,28 @@ namespace QS.Banks.Domain
 				}
 			}
 		}
+		
+		public virtual string Title => "Счет: " + Name;
 
 		/// <summary>
 		/// Ссылка на владельца счета. Необходима для возможности установки счета по умолчанию.
 		/// </summary>
 		public virtual IAccountOwner Owner { get; set; }
+		
+		#endregion
 
-		public Account ()
-		{
-		}
 		#region IValidatableObject implementation
 
 		public virtual IEnumerable<ValidationResult> Validate (ValidationContext validationContext)
 		{
-			if(!new Regex (@"^[0-9]*$").IsMatch (Number))
-				yield return new ValidationResult("Номер счета может содержать только цифры.", new[]{ "Number" });
+			if(Number == null || !new Regex(@"^[0-9]*$").IsMatch(Number))
+				yield return new ValidationResult("Номер счета не может быть пустым и должен содержать только цифры.", new[] { nameof(Number) });
+			if(Number?.Length < 20 || Number?.Length > 25)
+				yield return new ValidationResult("Номер банковского счета должен содержать 20 цифр и не превышать 25-ти.", new[] { nameof(Number) });
+			if(InBank == null)
+				yield return new ValidationResult("Банк должен быть заполнен.", new[] { nameof(InBank) });
 			if(BankCorAccount == null || !BankCorAccount.InBank.Equals(InBank)) {
-				yield return new ValidationResult("Должен быть выбран кор. счет выбранного банка.");
+				yield return new ValidationResult("Должен быть выбран кор. счет выбранного банка.", new[] { nameof(BankCorAccount) });
 			}
 		}
 
