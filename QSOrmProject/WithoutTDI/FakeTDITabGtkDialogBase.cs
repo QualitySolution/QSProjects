@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Dialog.GtkUI;
 using QS.Navigation;
 using QS.Tdi;
 
@@ -150,12 +151,14 @@ namespace QSOrmProject
 
 		public bool AskToCloseTab(ITdiTab tab, CloseSource source)
 		{
-			throw new NotImplementedException();
+			if(MessageDialogHelper.RunQuestionDialog("Вы действительно хотите закрыть окно?"))
+				tab.OnTabClosed();
+			return true;
 		}
 
 		public void ForceCloseTab(ITdiTab tab, CloseSource source)
 		{
-			throw new NotImplementedException();
+			tab.OnTabClosed();
 		}
 
 		#endregion
