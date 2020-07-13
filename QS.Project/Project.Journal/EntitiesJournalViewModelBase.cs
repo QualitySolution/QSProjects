@@ -12,10 +12,11 @@ using QS.Project.Journal.DataLoader;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
+using QS.Project.Journal.EntitySelector;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntitiesJournalViewModelBase<TNode> : JournalViewModelBase
+	public abstract class EntitiesJournalViewModelBase<TNode> : JournalViewModelBase, IEntityAutocompleteSelector
 		where TNode : JournalEntityNodeBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -37,6 +38,7 @@ namespace QS.Project.Journal
 		}
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
+		public event EventHandler ListUpdated;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
 		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
@@ -313,6 +315,11 @@ namespace QS.Project.Journal
 			if(TabParent is ITdiSliderTab slider) {
 				slider.IsHideJournal = true;
 			}
+		}
+
+		public void SearchValues(params string[] values)
+		{
+			Search.SearchValues = values;
 		}
 
 		#endregion Actions
