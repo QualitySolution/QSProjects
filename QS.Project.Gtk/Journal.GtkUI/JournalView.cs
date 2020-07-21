@@ -362,7 +362,10 @@ namespace QS.Journal.GtkUI
 					popupMenu.Add(item);
 				}
 
-				popupMenu.ShowAll();
+				if (popupMenu.Children.Length == 0)
+					return;
+				
+				popupMenu.Show();
 				popupMenu.Popup();
 			}
 		}
