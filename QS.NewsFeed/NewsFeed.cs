@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel.Syndication;
 
-namespace QSSupportLib
+namespace QS.NewsFeed
 {
 	public class NewsFeed
 	{
@@ -12,16 +14,16 @@ namespace QSSupportLib
 		/// В базе данных хранится максимум 64 символа.
 		/// </summary>
 		public string Id;
-		public int DataBaseId;
+		public uint DataBaseId;
 		public Uri FeedUri;
-		public List<string> ReadItems;
+		public HashSet<string> ReadItems = new HashSet<string>();
+		public SyndicationFeed Feed;
 
 		public NewsFeed (string feedId , string title, string url)
 		{
 			Title = title;
 			FeedUri = new Uri (url);
 			Id = feedId;
-			ReadItems = new List<string> ();
 		}
 
 		/// <summary>
@@ -34,9 +36,10 @@ namespace QSSupportLib
 			if (ReadItems.Contains (itemid))
 				return false;
 			ReadItems.Add (itemid);
-			MainNewsFeed.UpdateFeedReads (this);
 			return true;
 		}
+
+		public int UnreadNewsCount => Feed.Items.Count(x => !ReadItems.Contains(x.Id));
 	}
 }
 
