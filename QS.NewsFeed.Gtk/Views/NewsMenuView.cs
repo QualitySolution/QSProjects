@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel.Syndication;
 using Gtk;
 using QS.NewsFeed.ViewModels;
@@ -35,6 +36,16 @@ namespace QS.NewsFeed.Views
 			menuLabel.Visible = false;
 
 			viewModel.PropertyChanged += ViewModel_PropertyChanged;
+			viewModel.ReadStatusChanged += ViewModel_ReadStatusChanged;
+		}
+
+		void ViewModel_ReadStatusChanged(object sender, ReadStatusChangedEventArgs e)
+		{
+			var menuitem = (Submenu as Menu).Children
+				.OfType<MenuItemId<SyndicationItem>>()
+				.First(x => x.ID.Id == e.Item.Id);
+			var news = viewModel.News.First(x => x.Item.Id == e.Item.Id);
+			(menuitem.Child as Label).Markup = ItemFormat(news.Item.Title.Text, news.Read);
 		}
 
 		void ViewModel_PropertyChanged(object sender1, System.ComponentModel.PropertyChangedEventArgs args)
@@ -52,7 +63,6 @@ namespace QS.NewsFeed.Views
 			}
 			else
 				throw new InvalidCastException("Некорректная привязка события.");
-
 		}
 
 		void UpdateIcon()
@@ -74,11 +84,7 @@ namespace QS.NewsFeed.Views
 			MenuItemId<SyndicationItem> newsItem;
 			foreach (var news in viewModel.News) {
 				Label itemLabel = new Label();
-				if (news.Read)
-					itemLabel.Text = news.Item.Title.Text;
-				else {
-					itemLabel.Markup = String.Format("<b>{0}</b>", news.Item.Title.Text);
-				}
+				itemLabel.Markup = ItemFormat(news.Item.Title.Text, news.Read);
 				newsItem = new MenuItemId<SyndicationItem>();
 				newsItem.Add(itemLabel);
 				newsItem.ID = news.Item;
@@ -90,6 +96,11 @@ namespace QS.NewsFeed.Views
 			UpdateIcon();
 			newsMenu.ShowAll();
 			logger.Info("Ок");
+		}
+
+		private string ItemFormat(string text, bool read)
+		{
+			return read ? text : String.Format("<b>{0}</b>", text);
 		}
 	}
 }

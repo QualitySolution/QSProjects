@@ -43,7 +43,7 @@ namespace QS.NewsFeed.ViewModels
 
 		}
 
-		public EventHandler<ReadStatusChangedEventArgs> ReadStatusChanged;
+		public event EventHandler<ReadStatusChangedEventArgs> ReadStatusChanged;
 
 		#region Действия View
 
@@ -54,6 +54,7 @@ namespace QS.NewsFeed.ViewModels
 			}
 			reader.AddReadItem(item);
 			ReadStatusChanged?.Invoke(this, new ReadStatusChangedEventArgs(item));
+			OnPropertyChanged(nameof(UnreadNewsCount));
 		}
 
 		#endregion
@@ -61,7 +62,7 @@ namespace QS.NewsFeed.ViewModels
 
 	public class ReadStatusChangedEventArgs : EventArgs
 	{
-		SyndicationItem Item;
+		public readonly SyndicationItem Item;
 
 		public ReadStatusChangedEventArgs(SyndicationItem item)
 		{

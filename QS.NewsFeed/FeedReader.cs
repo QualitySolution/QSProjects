@@ -74,7 +74,6 @@ namespace QS.NewsFeed
 
 		public void SaveFirstRead()
 		{
-			logger.Info ("Сохраняем новыe feeds");
 			string sql = "INSERT INTO read_news (user_id, feed_id, items) " +
 					"VALUES (@user_id, @feed_id, @items)";
 			var inserts = NewsFeeds.Where(f => f.FirstRead).Select(feed => new {
@@ -84,8 +83,10 @@ namespace QS.NewsFeed
 			}).ToArray();
 
 			if(inserts.Any()) {
+				logger.Info("Сохраняем новыe feeds");
 				connection.Execute(sql, inserts);
 				NewsFeeds.Where(f => f.FirstRead).AsList().ForEach(x => x.FirstRead = false);
+				logger.Info("Ok");
 			}
 		}
 
