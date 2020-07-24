@@ -107,9 +107,6 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="ErrorMsg.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ErrorMsg.cs" />
-    <Compile Include="widgets\NewsMenuItem.cs" />
-    <Compile Include="NewsFeed.cs" />
-    <Compile Include="MainNewsFeed.cs" />
     <Compile Include="widgets\SerialNumberEntry.cs" />
     <Compile Include="SerialEncoding\Base58Encoding.cs" />
     <Compile Include="SerialEncoding\ArrayHelpers.cs" />
@@ -129,7 +126,6 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="icons\internet-news-reader.png" />
     <EmbeddedResource Include="icons\send-error-report.png" />
   </ItemGroup>
   <ItemGroup>
