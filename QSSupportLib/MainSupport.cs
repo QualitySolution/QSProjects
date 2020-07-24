@@ -16,19 +16,6 @@ namespace QSSupportLib
 
 		private static ErrorMsg currentCrashDlg;
 
-		private static AppVersion projectVerion;
-
-		public static AppVersion ProjectVerion {
-			get {
-				if (projectVerion == null)
-					projectVerion = new AppVersion ();
-				return projectVerion;
-			}
-			set {
-				projectVerion = value;
-			}
-		}
-
 		static MainSupport ()
 		{
 			QSMain.RunErrorMessageDlg += HandleRunErrorMessageDlg;
@@ -40,20 +27,6 @@ namespace QSSupportLib
 		public static void Init()
 		{
 			
-		}
-
-		[Obsolete("Используйте вместо этой проверки класс CheckBaseVersion. (Удалить после 17.11.16)")]
-		public static bool CheckVersion (Window parent)
-		{
-			//Если найдены ошибки.
-			if (CheckBaseVersion.Check ()) {
-				if (CheckBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater)
-					return false;
-				CheckBaseVersion.ShowErrorMessage (parent);
-				return false;
-			}
-
-			return true;
 		}
 
 		public static void TestVersion (Window parent)

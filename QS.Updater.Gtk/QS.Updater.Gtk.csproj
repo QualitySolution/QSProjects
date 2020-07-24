@@ -45,7 +45,6 @@
     <Compile Include="DBUpdater\DBUpdater.cs" />
     <Compile Include="gtk-gui\QS.Updater.DB.DBUpdateProcess.cs" />
     <Compile Include="DBUpdater\SQLDBUpdater.cs" />
-    <Compile Include="ApplicationVersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

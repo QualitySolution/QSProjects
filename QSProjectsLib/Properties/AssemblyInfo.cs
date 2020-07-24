@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using QSProjectsLib;
 
 [assembly: AssemblyTitle("QSProjectsLib")]
-[assembly: AssemblyEdition ("gpl")]
 [assembly: AssemblyDescription("Библиотека с каркасом нашего приложения.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Quality Solution")]
@@ -14,9 +13,6 @@ using QSProjectsLib;
 [assembly: AssemblyCopyright("Quality Solution 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-[assembly: AssemblyAuthor ("Ганьков Андрей <gav@qsolution.ru>")]
-[assembly: AssemblyAuthor ("Виноградов Андрей <vad@qsolution.ru>")]
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,

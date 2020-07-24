@@ -103,7 +103,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseParam.cs" />
     <Compile Include="MainSupport.cs" />
-    <Compile Include="AppVersion.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="ErrorMsg.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ErrorMsg.cs" />

@@ -372,6 +372,8 @@
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
+    <Compile Include="Project.VersionControl\AssemblyAttributes.cs" />
+    <Compile Include="Project.VersionControl\ApplicationVersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

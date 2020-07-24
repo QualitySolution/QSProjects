@@ -42,7 +42,7 @@ namespace QS.Updater
 				logger.Info ("Получаем данные от сервера");
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 												application.ProductName,
-				                                application.Edition,
+				                                application.Modification,
 												application.SerialNumber,
 												application.Version.Major,
 												application.Version.Minor,

@@ -83,7 +83,7 @@ namespace QS.ErrorReporting
 			string TextMsg = String.Format ("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {3}", 
 				                 application.ProductName, 
 				                 application.Version,
-				                 application.Edition,
+				                 application.Modification,
 								 AppExceptionText
 			                 );
 			clipboard.Text = TextMsg;
@@ -107,7 +107,7 @@ namespace QS.ErrorReporting
 			var result = svc.SubmitErrorReport(
 				new ErrorReport {
 					Product = application.ProductName,
-					Edition = application.Edition,
+					Edition = application.Modification,
 					Version = application.Version.ToString(),
 					DBName = databaseInfo?.Name ?? String.Empty,
 					StackTrace = AppExceptionText,
