@@ -293,6 +293,7 @@
     <Compile Include="Deletion.Views\DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.PermissionListView.cs" />
+    <Compile Include="Project.Views\AboutView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -320,6 +321,7 @@
     <Folder Include="Views\Resolve\" />
     <Folder Include="Views\Dialog\" />
     <Folder Include="Deletion.Views\" />
+    <Folder Include="Project.Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

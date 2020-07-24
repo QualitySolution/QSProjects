@@ -373,6 +373,7 @@
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
     <Compile Include="Project.VersionControl\AssemblyAttributes.cs" />
+    <Compile Include="Project.ViewModels\AboutViewModel.cs" />
     <Compile Include="Project.VersionControl\ApplicationVersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -419,6 +420,7 @@
     <Folder Include="Deletion\ViewModels\" />
     <Folder Include="ViewModels\Extension\" />
     <Folder Include="ViewModels\Resolve\" />
+    <Folder Include="Project.ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
