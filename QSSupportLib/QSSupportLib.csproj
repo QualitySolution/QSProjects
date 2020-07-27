@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="BaseParam.cs" />
     <Compile Include="MainSupport.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="ErrorMsg.cs" />

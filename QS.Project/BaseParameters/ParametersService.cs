@@ -1,37 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Dynamic;
 using NLog;
 
-namespace QSSupportLib
+namespace QS.BaseParameters
 {
-	public class BaseParam
+	public class ParametersService : DynamicObject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public string Product {
-			get{ return All.ContainsKey ("product_name") ? All ["product_name"] : null; }
-		}
+		Dictionary<string, object> All = new Dictionary<string, object>();
+		private readonly DbConnection connection;
 
-		public string Version {
-			get{ return All.ContainsKey ("version") ? All ["version"] : null; }
-		}
-
-		public string Edition {
-			get{ return All.ContainsKey ("edition") ? All ["edition"] : null; }
-		}
-
-		public string SerialNumber {
-			get{ return All.ContainsKey ("serial_number") ? All ["serial_number"] : null; }
-		}
-
-		public Dictionary<string, string> All;
-
-		public BaseParam (DbConnection con)
+		public ParametersService (DbConnection connection)
 		{
-			All = new Dictionary<string, string> ();
+			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+
 			string sql = "SELECT * FROM base_parameters";
-			DbCommand cmd = con.CreateCommand ();
+			DbCommand cmd = connection.CreateCommand ();
 			cmd.CommandText = sql;
 			using (DbDataReader rdr = cmd.ExecuteReader ()) {
 				while (rdr.Read ()) {
@@ -40,7 +27,8 @@ namespace QSSupportLib
 			}
 		}
 
-		public void UpdateParameter (DbConnection con, string name, string value)
+		#region Изменение параметров
+		public void UpdateParameter (DbConnection con, string name, object value)
 		{
 			string sql;
 			if (All.ContainsKey (name))
@@ -54,30 +42,20 @@ namespace QSSupportLib
 				sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value)";
 
 			logger.Debug ("Изменяем параметр базы {0}={1}", name, value);
-			try {
-				DbCommand cmd = con.CreateCommand ();
-				cmd.CommandText = sql;
-				DbParameter paramName = cmd.CreateParameter ();
-				paramName.ParameterName = "@name";
-				paramName.Value = name;
-				cmd.Parameters.Add (paramName);
-				DbParameter paramValue = cmd.CreateParameter ();
-				paramValue.ParameterName = "@str_value";
-				paramValue.Value = value;
-				cmd.Parameters.Add (paramValue);
-				cmd.ExecuteNonQuery ();
+			DbCommand cmd = con.CreateCommand ();
+			cmd.CommandText = sql;
+			DbParameter paramName = cmd.CreateParameter ();
+			paramName.ParameterName = "@name";
+			paramName.Value = name;
+			cmd.Parameters.Add (paramName);
+			DbParameter paramValue = cmd.CreateParameter ();
+			paramValue.ParameterName = "@str_value";
+			paramValue.Value = value;
+			cmd.Parameters.Add (paramValue);
+			cmd.ExecuteNonQuery ();
 
-				if (All.ContainsKey (name))
-					All [name] = value;
-				else
-					All.Add (name, value);
-
-				logger.Debug ("Ок");
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка изменения параметра");
-				throw ex;
-			}
-
+			All [name] = value;
+			logger.Debug ("Ок");
 		}
 
 		public void RemoveParameter (DbConnection con, string name)
@@ -103,7 +81,22 @@ namespace QSSupportLib
 				logger.Error (ex, "Ошибка удаления параметра");
 				throw ex;
 			}
-
 		}
+		#endregion
+
+		#region Dynamic
+
+		public override bool TryGetMember(GetMemberBinder binder, out object result)
+		{
+			return All.TryGetValue(binder.Name, out result);
+		}
+
+		public override bool TrySetMember(SetMemberBinder binder, object value)
+		{
+			UpdateParameter(connection, binder.Name, value);
+			return true;
+		} 
+
+		#endregion
 	}
 }

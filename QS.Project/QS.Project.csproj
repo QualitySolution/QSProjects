@@ -375,6 +375,7 @@
     <Compile Include="Project.VersionControl\AssemblyAttributes.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
     <Compile Include="Project.VersionControl\ApplicationVersionInfo.cs" />
+    <Compile Include="BaseParameters\ParametersService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -421,6 +422,7 @@
     <Folder Include="ViewModels\Extension\" />
     <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
+    <Folder Include="BaseParameters\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

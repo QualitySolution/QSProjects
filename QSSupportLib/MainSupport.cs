@@ -8,7 +8,6 @@ namespace QSSupportLib
 	public static class MainSupport
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-		public static BaseParam BaseParameters;
 
 		public static bool SendErrorRequestEmail = true;
 
