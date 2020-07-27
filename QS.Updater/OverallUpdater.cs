@@ -1,6 +1,5 @@
 ﻿using System;
 using QS.Project.VersionControl;
-using QSSupportLib;
 
 namespace QS.Updater
 {
@@ -10,32 +9,33 @@ namespace QS.Updater
 		private readonly IApplicationInfo application;
 		private readonly ISkipVersionState skip;
 		private readonly IDBUpdater dBUpdater;
+		private readonly CheckBaseVersion checkBaseVersion;
 
-		public OverallUpdater(IUpdaterUI updaterUI, IApplicationInfo application, ISkipVersionState skips, IDBUpdater dBUpdater)
+		public OverallUpdater(IUpdaterUI updaterUI, IApplicationInfo application, ISkipVersionState skips, IDBUpdater dBUpdater, CheckBaseVersion checkBaseVersion)
 		{
 			this.updaterUI = updaterUI;
 			this.application = application;
 			this.skip = skips;
 			this.dBUpdater = dBUpdater;
+			this.checkBaseVersion = checkBaseVersion;
 		}
 
 		public void RunCheckVersion(bool updateDB, bool updateApp)
 		{
-			//FIXME Убрать зависимотсь от QSSupport
-			CheckBaseVersion.Check();
+			checkBaseVersion.Check();
 
-			if(CheckBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess && updateDB) {
+			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess && updateDB) {
 				dBUpdater.CheckUpdateDB();
 				RunCheckVersion(updateDB, updateApp);
 				return;
 			}
 
-			if(CheckBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater && updateApp) {
+			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater && updateApp) {
 				CreateAppUpdater().StartCheckUpdateThread(UpdaterFlags.UpdateRequired);
 			}
 
-			if(CheckBaseVersion.ResultFlags != CheckBaseResult.Ok) {
-				updaterUI.InteractiveMessage.ShowMessage(Dialog.ImportanceLevel.Warning, CheckBaseVersion.TextMessage);
+			if(checkBaseVersion.ResultFlags != CheckBaseResult.Ok) {
+				updaterUI.InteractiveMessage.ShowMessage(Dialog.ImportanceLevel.Warning, checkBaseVersion.TextMessage);
 				Environment.Exit(0);
 			}
 
