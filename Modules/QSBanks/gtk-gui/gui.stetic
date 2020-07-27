@@ -7,7 +7,6 @@
   <import>
     <widget-library name="../../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
     <widget-library name="../../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
-    <widget-library name="../../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
     <widget-library name="../../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../../../QSExtraGammaWidgets/bin/Debug/QSExtraGammaWidgets.dll" />
