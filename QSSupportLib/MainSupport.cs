@@ -28,21 +28,6 @@ namespace QSSupportLib
 			
 		}
 
-		public static void TestVersion (Window parent)
-		{
-			if (CheckBaseVersion.Check ()) {
-				CheckBaseVersion.ShowErrorMessage (parent);
-			}
-		}
-
-		public static string GetTitle ()
-		{
-			System.Reflection.Assembly assembly = Assembly.GetCallingAssembly ();
-			object[] att = assembly.GetCustomAttributes (typeof(AssemblyTitleAttribute), false);
-
-			return ((AssemblyTitleAttribute)att [0]).Title;
-		}
-
 		static void HandleRunErrorMessageDlg (object sender, QSMain.RunErrorMessageDlgEventArgs e)
 		{
 			if(HandleStaleObjectStateException != null 

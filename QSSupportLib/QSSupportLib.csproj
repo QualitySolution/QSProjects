@@ -114,7 +114,6 @@
     <Compile Include="SerialEncoding\SNEncoder.cs" />
     <Compile Include="Dialogs\ApplicationConfigDialog.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ApplicationConfigDialog.cs" />
-    <Compile Include="CheckBaseVersion.cs" />
     <Compile Include="QSBugReporting\BugMessage.cs" />
     <Compile Include="QSBugReporting\IBugReportingService.cs" />
     <Compile Include="QSBugReporting\ReportWorker.cs" />
