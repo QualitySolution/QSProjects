@@ -105,13 +105,6 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="ErrorMsg.cs" />
     <Compile Include="gtk-gui\QSSupportLib.ErrorMsg.cs" />
-    <Compile Include="widgets\SerialNumberEntry.cs" />
-    <Compile Include="SerialEncoding\Base58Encoding.cs" />
-    <Compile Include="SerialEncoding\ArrayHelpers.cs" />
-    <Compile Include="SerialEncoding\SerialCommon.cs" />
-    <Compile Include="Dialogs\EditSerialNumber.cs" />
-    <Compile Include="gtk-gui\QSSupportLib.EditSerialNumber.cs" />
-    <Compile Include="SerialEncoding\SNEncoder.cs" />
     <Compile Include="QSBugReporting\BugMessage.cs" />
     <Compile Include="QSBugReporting\IBugReportingService.cs" />
     <Compile Include="QSBugReporting\ReportWorker.cs" />
@@ -124,8 +117,6 @@
     <EmbeddedResource Include="icons\send-error-report.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="widgets\" />
-    <Folder Include="SerialEncoding\" />
     <Folder Include="Dialogs\" />
     <Folder Include="QSBugReporting\" />
   </ItemGroup>

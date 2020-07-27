@@ -93,7 +93,10 @@ namespace QS.BaseParameters
 
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
-			UpdateParameter(binder.Name, value);
+			if (value == null)
+				RemoveParameter(binder.Name);
+			else
+				UpdateParameter(binder.Name, value);
 			return true;
 		} 
 

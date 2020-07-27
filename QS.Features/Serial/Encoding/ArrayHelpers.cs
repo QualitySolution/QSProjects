@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace QSSupportLib.Serial
+namespace QS.Serial.Encoding
 {
 	public class ArrayHelpers
 	{

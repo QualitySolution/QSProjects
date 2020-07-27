@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 
-namespace QSSupportLib.Serial
+namespace QS.Serial.Encoding
 {
 	// Implements https://en.bitcoin.it/wiki/Base58Check_encoding
 	public static class Base58Encoding

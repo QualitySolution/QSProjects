@@ -1,18 +1,26 @@
 ﻿using System;
 
-namespace QSSupportLib.Serial
+namespace QS.Serial.Encoding
 {
 	public class SNEncoder
 	{
 		public byte CodeVersion { get; private set;}
 
-		public string Product { get; private set;}
+		public string DecodedProduct { get; private set;}
 
 		public bool IsValid { get; private set;}
 
 		public bool IsNotSupport { get; private set;}
 
+		public bool IsAnotherProduct { get; private set; }
+
 		private string number;
+		private readonly string forProduct;
+
+		public SNEncoder(string forProduct)
+		{
+			this.forProduct = forProduct;
+		}
 
 		public virtual string Number {
 			get {return number;}
@@ -52,17 +60,17 @@ namespace QSSupportLib.Serial
 					return;
 				}
 
-				Product = SerialCommon.GetProductFromBinary(summaryArray, 8);
-
-				IsValid = true;
+				DecodedProduct = SerialCommon.GetProductFromBinary(summaryArray, 8);
+				IsAnotherProduct = DecodedProduct != forProduct;
+				IsValid = !IsAnotherProduct && !IsNotSupport;
 			}
 		}
 
 		private void Clear()
 		{
-			Product = String.Empty;
+			DecodedProduct = String.Empty;
 			CodeVersion = default(byte);
-			IsValid = IsNotSupport = false;
+			IsValid = IsNotSupport = IsAnotherProduct = false;
 		}
 
 		public string ComponentsText{
@@ -73,14 +81,12 @@ namespace QSSupportLib.Serial
 					return String.Format("Версия кодирования: {0}\n" +
 						"Продукт: {1}",
 						CodeVersion,
-						Product
+						DecodedProduct
 					);
 				else
 					return "Не корректный Сер. номер.";
 			}
 		}
-
-
 	}
 }
 

@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Linq;
-using QSSupportLib.Serial;
+using System.Linq.Expressions;
+using Gamma.Binding.Core;
+using QS.Serial.Encoding;
 
-namespace QSSupportLib
+namespace QS.Serial.Widgets
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public class SerialNumberEntry : Gtk.Entry
 	{
+		public BindingControler<SerialNumberEntry> Binding { get; private set; }
+
 		private int? SetPos;
 
 		public SerialNumberEntry()
 		{
+			Binding = new BindingControler<SerialNumberEntry>(this, new Expression<Func<SerialNumberEntry, object>>[] {
+				(w => w.Text)
+			});
 		}
 
 		protected override void OnTextInserted(string text, ref int position)
@@ -61,6 +68,7 @@ namespace QSSupportLib
 				SetPos = newPos;
 			}
 
+			Binding.FireChange(w => w.Text);
 			base.OnChanged();
 		}
 	}

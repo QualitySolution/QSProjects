@@ -2,7 +2,7 @@
 using System.Text;
 using System.Numerics;
 
-namespace QSSupportLib.Serial
+namespace QS.Serial.Encoding
 {
 	public static class SerialCommon
 	{
