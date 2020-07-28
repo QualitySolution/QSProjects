@@ -9,8 +9,10 @@ namespace QS.Utilities.Text
 		public static string ReplaceFirstOccurrence(this string Source, string Find, string Replace)
 		{
 			int Place = Source.IndexOf(Find);
-			string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
-			return result;
+			if (Place == -1)
+				return Source;
+
+			return Source.Remove(Place, Find.Length).Insert(Place, Replace);
 		}
 
 		/// <summary>
@@ -19,8 +21,10 @@ namespace QS.Utilities.Text
 		public static string ReplaceLastOccurrence(this string Source, string Find, string Replace)
 		{
 			int Place = Source.LastIndexOf(Find);
-			string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
-			return result;
+			if (Place == -1)
+				return Source;
+
+			return Source.Remove(Place, Find.Length).Insert(Place, Replace);
 		}
 	}
 }
