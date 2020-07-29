@@ -220,8 +220,11 @@ namespace Gamma.Widgets
 				AppendEnumItem(info);
 			}
 
-			if(ShowSpecialStateAll || ShowSpecialStateNot || DefaultFirst)
+			if(ShowSpecialStateAll || ShowSpecialStateNot || DefaultFirst) {
+				IsNotUserChange = true;
 				Active = 0;
+				IsNotUserChange = false;
+			}
 		}
 
 		void AppendEnumItem(FieldInfo info)
@@ -244,6 +247,7 @@ namespace Gamma.Widgets
 		protected override void OnChanged()
 		{
 			TreeIter iter;
+			bool isNotUserChange = IsNotUserChange;
 
 			if(GetActiveIter(out iter)) {
 				SelectedItem = Model.GetValue(iter, (int)comboDataColumns.Item);
@@ -252,7 +256,7 @@ namespace Gamma.Widgets
 				SelectedItem = SpecialComboState.None;
 			}
 			base.OnChanged();
-			if(!IsNotUserChange && ChangedByUser != null) {
+			if(!isNotUserChange && ChangedByUser != null) {
 				ChangedByUser(this, EventArgs.Empty);
 			}
 		}
