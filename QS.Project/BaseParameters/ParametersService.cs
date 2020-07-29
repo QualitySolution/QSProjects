@@ -16,16 +16,25 @@ namespace QS.BaseParameters
 		public ParametersService (DbConnection connection)
 		{
 			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			ReloadParameters();
+		}
 
+		#region Загрузка
+
+		public void ReloadParameters()
+		{
+			All.Clear();
 			string sql = "SELECT * FROM base_parameters";
-			DbCommand cmd = connection.CreateCommand ();
+			DbCommand cmd = connection.CreateCommand();
 			cmd.CommandText = sql;
-			using (DbDataReader rdr = cmd.ExecuteReader ()) {
-				while (rdr.Read ()) {
-					All.Add (rdr ["name"].ToString (), rdr ["str_value"].ToString ());
+			using (DbDataReader rdr = cmd.ExecuteReader()) {
+				while (rdr.Read()) {
+					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
 		}
+
+		#endregion
 
 		#region Изменение параметров
 		public void UpdateParameter (string name, object value)
