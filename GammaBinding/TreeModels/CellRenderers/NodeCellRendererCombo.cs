@@ -23,6 +23,8 @@ namespace Gamma.GtkWidgets.Cells
 
 		public Func<TItem, string> DisplayFunc { get; set; }
 
+		public Func<TItem, string> DisplayListFunc { get; set; }
+
 		public yTreeView MyTreeView { get; set; }
 
 		public Func<TNode, TItem, bool> HideItemFunc { get; set; }
@@ -77,10 +79,12 @@ namespace Gamma.GtkWidgets.Cells
 				if(HideItemFunc != null && HideItemFunc(node, item))
 					continue;
 
-				if(DisplayFunc == null)
-					comboListStore.AppendValues(item, item.ToString());
-				else
+				if(DisplayListFunc != null)
+					comboListStore.AppendValues(item, DisplayListFunc(item));
+				else if(DisplayFunc != null)
 					comboListStore.AppendValues(item, DisplayFunc(item));
+				else
+					comboListStore.AppendValues(item, item.ToString());
 			}
 
 			TextColumn = (int)NodeCellRendererColumns.title;

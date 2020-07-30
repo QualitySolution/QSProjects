@@ -65,6 +65,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ComboRendererMapping<TNode, TItem> SetDisplayListFunc(Func<TItem, string> displayListFunc)
+		{
+			cellRenderer.DisplayListFunc = displayListFunc;
+			return this;
+		}
+
 		public ComboRendererMapping<TNode, TItem> Editing (bool on = true)
 		{
 			cellRenderer.Editable = on;
