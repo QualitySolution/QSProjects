@@ -22,7 +22,7 @@ namespace QS.Deletion.Configuration
 			ClassInfos.Add (info);
 		}
 
-		public DeleteInfoHibernate<TEntity> ExistingDeleteRule<TEntity> () where TEntity : IDomainObject
+		public DeleteInfoHibernate<TEntity> ExistingDeleteRule<TEntity> () where TEntity : class, IDomainObject
 		{
 			return ClassInfos.OfType<DeleteInfoHibernate<TEntity>>().First();
 		}
@@ -96,7 +96,7 @@ namespace QS.Deletion.Configuration
 		#region FluentConfig
 
 		public DeleteInfoHibernate<TEntity> AddHibernateDeleteInfo<TEntity> ()
-			where TEntity : IDomainObject
+			where TEntity : class, IDomainObject
 		{
 			var info = (DeleteInfoHibernate<TEntity>) ClassInfos.Find (i => i.ObjectClass == typeof(TEntity));
 			if (info != null)
