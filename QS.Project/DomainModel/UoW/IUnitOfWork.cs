@@ -23,7 +23,7 @@ namespace QS.DomainModel.UoW
 
 		/// <param name="orUpdate">
 		/// По умолчанию установлен в true это значит то будет вызываться метод SaveOrUpdate вместо Save.
-		/// Этот параметр нуже тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
+		/// Этот параметр нужен тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
 		/// делает SELECT что бы проверить нет ли уже объекта для обновления. Что при большом количестве объектов приводит к задержкам сохранения.
 		/// </param>
 		void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject;

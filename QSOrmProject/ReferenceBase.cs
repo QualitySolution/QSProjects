@@ -11,6 +11,14 @@ namespace QS
 {
 	public class ReferenceBase : Bin
 	{
+		#region Конструктор для обхода бага GLib.MissingIntPtrCtorException: GLib.Object 
+		public ReferenceBase(IntPtr raw) : base(raw){}
+		#endregion
+
+		protected ReferenceBase()
+		{
+		}
+
 		protected IPermissionResult permissionResult { get; set; }
 		protected virtual System.Type objectType { get; set; }
 		public virtual bool FailInitialize { get; private set; }

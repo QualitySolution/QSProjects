@@ -216,6 +216,10 @@ namespace QSOrmProject
 			InitializePermissionValidator();
 			ConfigureDlg();
 		}
+		#region Конструкторы для обхода бага GLib.MissingIntPtrCtorException: GLib.Object 
+		public OrmReference(IntPtr raw) : base(raw){}
+		protected OrmReference(){}
+		#endregion
 
 		void ConfigureDlg()
 		{
