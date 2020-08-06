@@ -16,7 +16,7 @@ namespace QS.Deletion
 			Main.AddDeleteInfo(info);
 		}
 
-		public static DeleteInfoHibernate<TEntity> ExistingDeleteRule<TEntity> () where TEntity : IDomainObject
+		public static DeleteInfoHibernate<TEntity> ExistingDeleteRule<TEntity> () where TEntity : class, IDomainObject
 		{
 			return Main.ExistingDeleteRule<TEntity>();
 		}
@@ -39,7 +39,7 @@ namespace QS.Deletion
 		#region FluentConfig
 
 		public static DeleteInfoHibernate<TEntity> AddHibernateDeleteInfo<TEntity> ()
-			where TEntity : IDomainObject
+			where TEntity : class, IDomainObject
 		{
 			return Main.AddHibernateDeleteInfo<TEntity>();
 		}

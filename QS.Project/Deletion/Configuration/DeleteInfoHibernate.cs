@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Utilities;
+using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
@@ -11,8 +12,10 @@ using QS.Project.DB;
 namespace QS.Deletion.Configuration
 {
 	public class DeleteInfoHibernate<TEntity> : IDeleteInfoHibernate, IHibernateDeleteRule
-		where TEntity : IDomainObject
+		where TEntity : class, IDomainObject
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		#region Свойства
 
 		public Type ObjectClass {
@@ -161,7 +164,13 @@ namespace QS.Deletion.Configuration
 			{
 				CheckAndLoadEntity(core, masterEntity);
 				var value = (TEntity)masterEntity.Entity.GetPropertyValue(depend.ParentPropertyName);
-
+				try {
+					NHibernateUtil.Initialize(value);
+				}
+				catch(ObjectNotFoundException ex) {
+					logger.Error($"{masterEntity.ClassType}#{masterEntity.Id}.{depend.ParentPropertyName} ссылается на {ex.EntityName}, но его нет в базе данных.");
+					value = null;
+				}
 				return MakeResultList(value == null ? new List<TEntity>() : new List<TEntity> {	value});
 			}
 
