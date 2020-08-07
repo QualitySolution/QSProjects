@@ -100,6 +100,11 @@ namespace Gamma.Utilities
 			return subject.GetType ().GetProperty (propertyName).GetValue (subject, null);
 		}
 
+		public static void SetPropertyValue(this object subject, string propertyName, object value)
+		{
+			subject.GetType().GetProperty(propertyName).SetValue(subject, value, null);
+		}
+
 		public static PropertyInfo GetPropertyInfo<TObject> (this TObject type,
 			Expression<Func<TObject, object>> propertyRefExpr)
 		{
