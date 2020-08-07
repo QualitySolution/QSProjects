@@ -91,7 +91,7 @@ namespace QS.Deletion
 				if (cancellation.IsCancellationRequested)
 					return;
 
-				logger.Debug ("Удаляем {0}...", item.Title);
+				logger.Debug ($"Удаляем [{item.Id}] {item.Title}...");
 				core.UoW.TryDelete (item.Entity);
 			}
 
