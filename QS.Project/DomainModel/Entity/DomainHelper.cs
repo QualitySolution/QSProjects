@@ -88,8 +88,8 @@ namespace QS.DomainModel.Entity
 			if (NHibernateUtil.GetClass (obj1) != NHibernateUtil.GetClass (obj2))
 				return false;
 
-			if (obj1 is IDomainObject)
-				return (obj1 as IDomainObject).Id == (obj2 as IDomainObject).Id;
+			if (obj1 is IDomainObject domainObject && domainObject.Id != 0)
+				return domainObject.Id == (obj2 as IDomainObject).Id;
 
 			return obj1.Equals (obj2);
 		}
