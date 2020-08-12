@@ -170,6 +170,7 @@ namespace QS.Deletion.Configuration
 				catch(ObjectNotFoundException ex) {
 					logger.Error($"{masterEntity.ClassType}#{masterEntity.Id}.{depend.ParentPropertyName} ссылается на {ex.EntityName}, но его нет в базе данных.");
 					value = null;
+					masterEntity.Entity.SetPropertyValue(depend.ParentPropertyName, null);
 				}
 				return MakeResultList(value == null ? new List<TEntity>() : new List<TEntity> {	value});
 			}
