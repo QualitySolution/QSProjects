@@ -141,7 +141,7 @@ namespace QSProjectsLib
 
 			MachineConfig.SaveConfigFile();
 
-			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "", ""));
+			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "Login0", ""));
 
 			server = config.Get("Server");
 			entryUser.Text = config.Get("UserLogin");
