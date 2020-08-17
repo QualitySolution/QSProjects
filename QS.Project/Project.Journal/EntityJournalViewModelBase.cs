@@ -63,14 +63,14 @@ namespace QS.Project.Journal
 
 			var addAction = new JournalAction("Добавить",
 					(selected) => canCreate,
-					(selected) => true,
+					(selected) => VisibleCreateAction,
 					(selected) => CreateEntityDialog()
 					);
 			NodeActionsList.Add(addAction);
 
 			var editAction = new JournalAction("Изменить",
 					(selected) => canEdit && selected.Any(),
-					(selected) => true,
+					(selected) => VisibleEditAction,
 					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
 					);
 			NodeActionsList.Add(editAction);
@@ -80,7 +80,7 @@ namespace QS.Project.Journal
 
 			var deleteAction = new JournalAction("Удалить",
 					(selected) => canDelete && selected.Any(),
-					(selected) => true,
+					(selected) => VisibleDeleteAction,
 					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray())
 					);
 			NodeActionsList.Add(deleteAction);
@@ -94,6 +94,15 @@ namespace QS.Project.Journal
 		/// </summary>
 		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);
 
+		#region Видимость предопределенных действий
+
+		public virtual bool VisibleCreateAction { get; set; } = true;
+		public virtual bool VisibleEditAction { get; set; } = true;
+		public virtual bool VisibleDeleteAction { get; set; } = true;
+
+		#endregion
+
+		#region Предопределенные действия
 		protected virtual void CreateEntityDialog()
 		{
 			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForCreate());
@@ -109,5 +118,6 @@ namespace QS.Project.Journal
 			foreach(var node in nodes)
 				DeleteEntityService.DeleteEntity<TEntity>(DomainHelper.GetId(node));
 		}
+		#endregion
 	}
 }
