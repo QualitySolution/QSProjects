@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using Gamma.Utilities;
@@ -146,6 +147,15 @@ namespace QS.Navigation
 			);
 		}
 
+		public ITdiPage OpenTdiTabOnTdiNamedArgs<TTab>(ITdiTab masterTab, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab
+		{
+			return (ITdiPage)OpenViewModelInternal(
+				FindOrCreatePage(masterTab), options,
+				() => hashGenerator?.GetHashNamedArgs<TTab>(null, ctorArgs),
+				(hash) => tdiPageFactory.CreateTdiPageNamedArgs<TTab>(ctorArgs, hash, addingRegistrations)
+			);
+		}
+
 		#endregion
 
 		#region Открытие TdiTab из ViewModel
@@ -177,6 +187,15 @@ namespace QS.Navigation
 				FindPage(master), options,
 				() => hashGenerator?.GetHash<TTab>(null, ctorTypes, ctorValues),
 				(hash) => tdiPageFactory.CreateTdiPageTypedArgs<TTab>(ctorTypes, ctorValues, hash, addingRegistrations)
+			);
+		}
+
+		public ITdiPage OpenTdiTabNamedArgs<TTab>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab
+		{
+			return (ITdiPage)OpenViewModelInternal(
+				FindPage(master), options,
+				() => hashGenerator?.GetHashNamedArgs<TTab>(null, ctorArgs),
+				(hash) => tdiPageFactory.CreateTdiPageNamedArgs<TTab>(ctorArgs, hash, addingRegistrations)
 			);
 		}
 
