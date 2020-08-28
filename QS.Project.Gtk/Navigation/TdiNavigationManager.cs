@@ -232,9 +232,9 @@ namespace QS.Navigation
 
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
 		{
-			if(page.ViewModel is ModalDialogViewModelBase) {
+			if(page.ViewModel is WindowDialogViewModelBase) {
 				pages.Add(page);
-				OpenModalPage(page);
+				OpenWindowPage(page);
 				return;
 			}
 
@@ -253,9 +253,9 @@ namespace QS.Navigation
 
 		protected override void OpenPage(IPage masterPage, IPage page)
 		{
-			if(page.ViewModel is ModalDialogViewModelBase) {
+			if(page.ViewModel is WindowDialogViewModelBase) {
 				pages.Add(page);
-				OpenModalPage(page);
+				OpenWindowPage(page);
 				return;
 			}
 
@@ -274,27 +274,29 @@ namespace QS.Navigation
 
 		protected override IViewModelsPageFactory GetPageFactory<TViewModel>()
 		{
-			if(typeof(TViewModel).IsAssignableTo<ModalDialogViewModelBase>())
+			if(typeof(TViewModel).IsAssignableTo<WindowDialogViewModelBase>())
 				return viewModelsGtkWindowsFactory;
 			else
 				return viewModelsFactory;
 
 		}
 
-		#region ModalDialogs
+		#region WindowDialogs
 
-		protected void OpenModalPage(IPage page)
+		protected void OpenWindowPage(IPage page)
 		{
 			var gtkPage = (IGtkWindowPage)page;
-			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
+			WindowDialogViewModelBase viewModel = (WindowDialogViewModelBase)page.ViewModel;
+			gtkPage.GtkView = viewResolver.Resolve(viewModel);
 			if(gtkPage.GtkView == null)
 				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
-			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, DialogFlags.Modal);
+			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, viewModel.IsModal ? DialogFlags.Modal : DialogFlags.DestroyWithParent);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
 			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
+			MoveWindow(gtkPage.GtkDialog, viewModel.WindowPosition);
 			gtkPage.GtkDialog.DeleteEvent += GtkDialog_DeleteEvent;
 			gtkPage.ViewModel.PropertyChanged += (sender, e) => gtkPage.GtkDialog.Title = gtkPage.ViewModel.Title;
 		}
@@ -303,6 +305,26 @@ namespace QS.Navigation
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
 			ClosePage(page, CloseSource.ClosePage);
+		}
+
+		private void MoveWindow(Window window, WindowGravity gravity)
+		{
+			if(gravity == WindowGravity.None)
+				return;
+
+			int x = (window.Screen.Width / 2) - (window.Allocation.Width / 2);
+			int y = (window.Screen.Height / 2) - (window.Allocation.Height / 2);
+
+			if(gravity.HasFlag(WindowGravity.Left))
+				x = 0;
+			if(gravity.HasFlag(WindowGravity.Top))
+				y = 0;
+			if(gravity.HasFlag(WindowGravity.Right))
+				x = window.Screen.Width - window.Allocation.Width;
+			if(gravity.HasFlag(WindowGravity.Bottom))
+				y = window.Screen.Height - window.Allocation.Height;
+
+			window.Move(x, y);
 		}
 
 		public IPage FindPage(Gdk.Window window)

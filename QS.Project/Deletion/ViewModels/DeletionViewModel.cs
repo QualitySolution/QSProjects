@@ -10,7 +10,7 @@ using QS.ViewModels.Extension;
 
 namespace QS.Deletion.ViewModels
 {
-	public class DeletionViewModel : ModalDialogViewModelBase, IOnCloseActionViewModel
+	public class DeletionViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
 	{
 		public readonly DeleteCore Deletion;
 		public Action DeletionAccepted;
