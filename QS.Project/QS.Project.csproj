@@ -10,7 +10,6 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -335,7 +334,7 @@
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
-    <Compile Include="ViewModels\Dialog\ModalDialogViewModelBase.cs" />
+    <Compile Include="ViewModels\Dialog\WindowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
@@ -372,6 +371,7 @@
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
+    <Compile Include="Dialog\WindowGravity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
