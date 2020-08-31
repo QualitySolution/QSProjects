@@ -5,7 +5,7 @@ using QS.ViewModels.Extension;
 
 namespace QS.Test.TestApp.ViewModels
 {
-	public class OnCloseModalDialogViewModel : ModalDialogViewModelBase, IOnCloseActionViewModel
+	public class OnCloseModalDialogViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
 	{
 		public OnCloseModalDialogViewModel(INavigationManager navigation) : base(navigation)
 		{

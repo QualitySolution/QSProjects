@@ -4,7 +4,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Test.TestApp.ViewModels
 {
-	public class ModalDialogViewModel : ModalDialogViewModelBase
+	public class ModalDialogViewModel : WindowDialogViewModelBase
 	{
 		public ModalDialogViewModel(INavigationManager navigation) : base(navigation)
 		{
