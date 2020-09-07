@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Gamma.Binding;
 using Gamma.ColumnConfig;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
 namespace QSOrmProject.RepresentationModel
@@ -12,7 +14,7 @@ namespace QSOrmProject.RepresentationModel
 	/// <summary>
 	/// Базовый класс презентационной модели, не используйте его без необходимости. Используйте наследников.
 	/// </summary>
-	public abstract class RepresentationModelBase<TNode> : IDisposable
+	public abstract class RepresentationModelBase<TNode> : PropertyChangedBase, IDisposable
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -56,6 +58,7 @@ namespace QSOrmProject.RepresentationModel
 		}
 
 		public abstract IColumnsConfig ColumnsConfig { get;}
+		public virtual IyTreeModel YTreeModel { get; protected set; }
 
 		private IRepresentationFilter representationFilter;
 
@@ -94,7 +97,7 @@ namespace QSOrmProject.RepresentationModel
 
 		void RepresentationFilter_Refiltered (object sender, EventArgs e)
 		{
-			UpdateNodes ();
+			UpdateNodes();
 		}
 
 		public abstract void UpdateNodes ();
