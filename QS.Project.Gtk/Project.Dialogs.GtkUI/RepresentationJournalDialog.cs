@@ -112,9 +112,7 @@ namespace QS.Project.Dialogs.GtkUI
 		#region Основные свойства
 
 		protected IRepresentationModel RepresentationModel {
-            get {
-                return representationModel;
-            }
+            get => representationModel;
             set {
                 if (representationModel == value)
                     return;
@@ -123,7 +121,15 @@ namespace QS.Project.Dialogs.GtkUI
                 representationModel = value;
                 RepresentationModel.SearchStrings = null;
                 RepresentationModel.ItemsListUpdated += RepresentationModel_ItemsListUpdated;
-				tableview.RepresentationModel = RepresentationModel;
+                tableview.RepresentationModel = RepresentationModel;
+                
+                RepresentationModel.PropertyChanged += (sender, args) => {
+	                if(args.PropertyName == nameof(RepresentationModel.YTreeModel) && RepresentationModel.YTreeModel != null)
+		                tableview.YTreeModel = RepresentationModel.YTreeModel;
+                };
+                if(RepresentationModel.YTreeModel != null)
+					tableview.YTreeModel = RepresentationModel.YTreeModel;
+                
 				if(RepresentationModel.JournalFilter != null) {
 					Widget resolvedFilterWidget = DialogHelper.FilterWidgetResolver.Resolve(RepresentationModel.JournalFilter);
 					SetFilter(resolvedFilterWidget);
@@ -150,8 +156,8 @@ namespace QS.Project.Dialogs.GtkUI
 		}
 
 		protected IEntityConfig EntityConfig => RepresentationModel.EntityType != null
-													? DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType)
-													: null;
+			? DomainConfiguration.GetEntityConfig(RepresentationModel.EntityType)
+			: null;
 
 		public override IUnitOfWork UoW => RepresentationModel.UoW;
 
@@ -161,7 +167,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		void RepresentationModel_ItemsListUpdated (object sender, EventArgs e)
 		{
-			UpdateSum ();
+			UpdateSum();
 		}
 
 		public RepresentationJournalDialog(IRepresentationModel representation, string tilte) : this(representation)
@@ -214,7 +220,7 @@ namespace QS.Project.Dialogs.GtkUI
 		private JournalSelectMode mode;
 
 		public JournalSelectMode Mode {
-			get { return mode; }
+			get => mode;
 			set {
 				mode = value;
 				hboxSelect.Visible = (mode == JournalSelectMode.Single || mode == JournalSelectMode.Multiple);
@@ -250,8 +256,8 @@ namespace QS.Project.Dialogs.GtkUI
         protected void UpdateSum ()
         {
 			var itemsCount = RepresentationModel.ItemsList != null ? RepresentationModel.ItemsList.Count : 0;
-			labelSum.LabelProp = String.Format ("Количество: {0}", itemsCount);
-            logger.Debug ("Количество обновлено {0}", itemsCount);
+			labelSum.LabelProp = $"Количество: {itemsCount}";
+			logger.Debug("Количество обновлено {0}", itemsCount);
         }
 
         protected void OnOrmtableviewRowActivated (object o, RowActivatedArgs args)
@@ -329,6 +335,10 @@ namespace QS.Project.Dialogs.GtkUI
 				searchList.Add(entrySearch4.Text);
 
 			RepresentationModel.SearchStrings = tableview.SearchHighlightTexts = searchList.ToArray();
+			
+			if(searchList.All(String.IsNullOrWhiteSpace)) {
+				tableview.YTreeModel = RepresentationModel.YTreeModel;
+			}
 		}
 
 		protected void OnButtonAddAndClicked(object sender, EventArgs e)

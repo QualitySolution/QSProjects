@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Gamma.Binding;
 using Gamma.ColumnConfig;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
 namespace QS.RepresentationModel.GtkUI
@@ -12,7 +14,7 @@ namespace QS.RepresentationModel.GtkUI
 	/// <summary>
 	/// Базовый класс презентационной модели, не используйте его без необходимости. Используйте наследников.
 	/// </summary>
-	public abstract class RepresentationModelBase<TNode>
+	public abstract class RepresentationModelBase<TNode> : PropertyChangedBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -53,7 +55,8 @@ namespace QS.RepresentationModel.GtkUI
 				OnSearchRefilter ();
 		}
 
-		public abstract IColumnsConfig ColumnsConfig { get;}
+		public abstract IColumnsConfig ColumnsConfig { get; }
+		public virtual IyTreeModel YTreeModel { get; }
 
 		private IRepresentationFilter representationFilter;
 
