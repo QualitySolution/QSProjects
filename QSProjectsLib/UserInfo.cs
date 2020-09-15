@@ -58,6 +58,7 @@ namespace QSProjectsLib
 			if (login == "root") {
 				logger.Info ("Вход под root, отмена чтения...");
 				Admin = true;
+				Permissions = QSMain.ProjectPermission.ToDictionary(x => x.Key, x => false);
 				return;
 			}
 
