@@ -11,8 +11,6 @@ namespace QSProjectsLib
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		private bool loadedInConstructor = false;
-
 		public int Id;
 
 		public bool Admin;
@@ -101,7 +99,6 @@ namespace QSProjectsLib
 
 			rdr.Close ();
 			Email = tryGetUserEmail ();
-			loadedInConstructor = true;
 		}
 
 		string tryGetUserEmail ()
