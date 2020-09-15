@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using NLog;
 using QSSaaS;
@@ -158,12 +159,15 @@ namespace QSProjectsLib
 			Name = rdr ["name"].ToString ();
 			Id = rdr.GetInt32 ("id");
 			Admin = rdr.GetBoolean (QSMain.AdminFieldName);
-
+			var fieldNames = Enumerable.Range(0, rdr.FieldCount).Select(i => rdr.GetName(i)).ToArray();
 
 			Permissions = new Dictionary<string, bool> ();
 			foreach (KeyValuePair<string, UserPermission> Right in QSMain.ProjectPermission) {
 				string FieldName = Right.Value.DataBaseName;
-				Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
+				if(fieldNames.Contains(FieldName))
+					Permissions.Add (Right.Key, rdr.GetBoolean (FieldName));
+				else
+					Permissions.Add(Right.Key, false);
 			}
 
 			rdr.Close ();
