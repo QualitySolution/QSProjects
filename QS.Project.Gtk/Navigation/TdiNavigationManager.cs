@@ -314,15 +314,16 @@ namespace QS.Navigation
 
 			int x = (window.Screen.Width / 2) - (window.Allocation.Width / 2);
 			int y = (window.Screen.Height / 2) - (window.Allocation.Height / 2);
+			bool isWindows = System.IO.Path.DirectorySeparatorChar == '\\';
 
 			if(gravity.HasFlag(WindowGravity.Left))
 				x = 0;
 			if(gravity.HasFlag(WindowGravity.Top))
 				y = 0;
 			if(gravity.HasFlag(WindowGravity.Right))
-				x = window.Screen.Width - window.Allocation.Width;
+				x = window.Screen.Width - window.Allocation.Width - (isWindows ? 10 : 0);
 			if(gravity.HasFlag(WindowGravity.Bottom))
-				y = window.Screen.Height - window.Allocation.Height;
+				y = window.Screen.Height - window.Allocation.Height - (isWindows ? 74 : 0);
 
 			window.Move(x, y);
 		}
