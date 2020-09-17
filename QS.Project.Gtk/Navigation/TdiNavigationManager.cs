@@ -227,7 +227,10 @@ namespace QS.Navigation
 
 		public override void SwitchOn(IPage page)
 		{
-			tdiNotebook.SwitchOnTab((page as ITdiPage).TdiTab);
+			if(page is ITdiPage tdiPage)
+				tdiNotebook.SwitchOnTab(tdiPage.TdiTab);
+			else if(page is IGtkWindowPage gtkWindowPage)
+				gtkWindowPage.GtkDialog.Present();
 		}
 
 		protected override void OpenSlavePage(IPage masterPage, IPage page)
