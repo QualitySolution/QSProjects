@@ -2020,7 +2020,6 @@
             <property name="CanFocus">True</property>
             <property name="IsEditable">False</property>
             <property name="InvisibleChar">●</property>
-            <signal name="KeyPressEvent" handler="OnEntryObjectKeyPressEvent" />
             <signal name="Changed" handler="OnEntryObjectChanged" />
             <signal name="FocusOutEvent" handler="OnEntryObjectFocusOutEvent" />
           </widget>

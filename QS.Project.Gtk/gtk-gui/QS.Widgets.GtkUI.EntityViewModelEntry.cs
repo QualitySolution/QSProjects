@@ -81,7 +81,6 @@ namespace QS.Widgets.GtkUI
 				this.Child.ShowAll();
 			}
 			this.Hide();
-			this.entryObject.KeyPressEvent += new global::Gtk.KeyPressEventHandler(this.OnEntryObjectKeyPressEvent);
 			this.entryObject.Changed += new global::System.EventHandler(this.OnEntryObjectChanged);
 			this.entryObject.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryObjectFocusOutEvent);
 			this.buttonClear.Clicked += new global::System.EventHandler(this.OnButtonClearClicked);

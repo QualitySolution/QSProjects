@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
+using Gamma.Binding;
 using Gamma.ColumnConfig;
 using QS.DomainModel.UoW;
 
@@ -9,30 +11,34 @@ namespace QS.RepresentationModel.GtkUI
 	[Obsolete("Осталось только для ВОДОВОЗА. Данный интрефейс и классы с нимми связанные должны быть удалены или перенесены в OrmProject.")]
 	public interface IRepresentationModel
 	{
-		Type NodeType { get;}
+		Type NodeType { get; }
 
-		Type EntityType { get;}
+		Type EntityType { get; }
 
-		IUnitOfWork UoW { get;}
+		IUnitOfWork UoW { get; }
 
-		IJournalFilter JournalFilter{ get;}
+		IJournalFilter JournalFilter { get; }
 
-		IColumnsConfig ColumnsConfig { get;}
+		IColumnsConfig ColumnsConfig { get; }
 
-		IList ItemsList { get;}
+		IList ItemsList { get; }
+
+		IyTreeModel YTreeModel { get; }
 
 		event EventHandler ItemsListUpdated;
+		
+		event PropertyChangedEventHandler PropertyChanged;
 
-		IEnumerable<string> SearchFields { get;}
+		IEnumerable<string> SearchFields { get; }
 
-		bool SearchFieldsExist { get;}
+		bool SearchFieldsExist { get; }
 
 		bool CanEntryFastSelect { get; }
 
 		bool SearchFilterNodeFunc(object item, string key);
 
-		string SearchString { get; set;}
-		string[] SearchStrings { get; set;}
+		string SearchString { get; set; }
+		string[] SearchStrings { get; set; }
 
 		IEnumerable<IJournalPopupItem> PopupItems { get; }
 

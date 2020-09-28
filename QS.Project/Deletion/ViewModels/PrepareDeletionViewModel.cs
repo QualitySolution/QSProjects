@@ -6,7 +6,7 @@ using QS.ViewModels.Extension;
 
 namespace QS.Deletion.ViewModels
 {
-	public class PrepareDeletionViewModel : ModalDialogViewModelBase, IOnCloseActionViewModel
+	public class PrepareDeletionViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
 	{
 		internal readonly DeleteCore Deletion;
 		private readonly CancellationTokenSource cancellation;

@@ -170,6 +170,7 @@
     <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
+    <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />

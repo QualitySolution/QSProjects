@@ -21,9 +21,17 @@ namespace QS.Widgets.GtkUI
 	[Category("QS.Project")]
 	public partial class RepresentationEntry : WidgetOnDialogBase
 	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+		public RepresentationEntry()
+		{
+			this.Build();
+			Binding = new BindingControler<RepresentationEntry>(this, new Expression<Func<RepresentationEntry, object>>[] {
+				(w => w.Subject)
+			});
+		}
+		
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		private System.Type subjectType;
+		private Type subjectType;
 		private bool sensitive = true;
 		public bool CanEditReference = true;
 		public Func<object, string> ObjectDisplayFunc;
@@ -43,6 +51,8 @@ namespace QS.Widgets.GtkUI
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
+
+		public Buttons JournalButtons { get; set; } = Buttons.All;
 
 		public BindingControler<RepresentationEntry> Binding { get; private set; }
 
@@ -115,11 +125,7 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		public int SubjectId {
-			get {
-				return DomainHelper.GetId(Subject);
-			}
-		}
+		public int SubjectId => DomainHelper.GetId(Subject);
 
 		public TEntity GetSubject<TEntity>()
 		{
@@ -178,14 +184,6 @@ namespace QS.Widgets.GtkUI
 			entryChangedByUser = true;
 		}
 
-		public RepresentationEntry()
-		{
-			this.Build();
-			Binding = new BindingControler<RepresentationEntry>(this, new Expression<Func<RepresentationEntry, object>>[] {
-				(w => w.Subject)
-			});
-		}
-
 		protected void OnButtonSelectEntityClicked(object sender, EventArgs e)
 		{
 			OpenSelectDialog();
@@ -207,14 +205,12 @@ namespace QS.Widgets.GtkUI
 				}
 			}
 
-			PermissionControlledRepresentationJournal SelectDialog;
-
-			SelectDialog = new PermissionControlledRepresentationJournal(RepresentationModel);
+			var selectDialog = new PermissionControlledRepresentationJournal(RepresentationModel, JournalButtons);
 			if(newTabTitle != null)
-				SelectDialog.CustomTabName(newTabTitle);
-			SelectDialog.Mode = JournalSelectMode.Single;
-			SelectDialog.ObjectSelected += SelectDialog_ObjectSelected;
-			MyTab.TabParent.AddSlaveTab(MyTab, SelectDialog);
+				selectDialog.CustomTabName(newTabTitle);
+			selectDialog.Mode = JournalSelectMode.Single;
+			selectDialog.ObjectSelected += SelectDialog_ObjectSelected;
+			MyTab.TabParent.AddSlaveTab(MyTab, selectDialog);
 		}
 
 		void SelectDialog_ObjectSelected(object sender, JournalObjectSelectedEventArgs e)

@@ -19,8 +19,9 @@ namespace QS.DomainModel.Entity
 		{
 			if (PropertyChanged != null) {
 				PropertyChanged(this, new PropertyChangedEventArgs (propertyName));
-				if(!String.IsNullOrWhiteSpace(propertyName)) {
-					var attributes = this.GetType().GetProperty(propertyName).GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
+				var propertyInfo = this.GetType().GetProperty(propertyName);
+				if(propertyInfo != null) {
+					var attributes = propertyInfo.GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
 					foreach(PropertyChangedAlsoAttribute attribute in attributes)
 						foreach(string propName in attribute.PropertiesNames)
 							PropertyChanged(this, new PropertyChangedEventArgs(propName));

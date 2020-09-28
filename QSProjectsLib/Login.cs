@@ -30,6 +30,7 @@ namespace QSProjectsLib
 		public string DefaultConnection;
 		public string DemoMessage;
 		private string server;
+		private const bool ShowPassInException = false;
 
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -144,7 +145,7 @@ namespace QSProjectsLib
 
 			MachineConfig.SaveConfigFile();
 
-			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "", ""));
+			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "Login0", ""));
 
 			server = config.Get("Server");
 			entryUser.Text = config.Get("UserLogin");
@@ -266,7 +267,7 @@ namespace QSProjectsLib
 					labelLoginInfo.Text = "Ошибка соединения с базой данных.";
 				entryPassword.Text = string.Empty;
 				entryPassword.GrabFocus();
-				ConnectionError = "Строка соединения: " + connStr + "\nИсключение: " + ex.ToString();
+				ConnectionError = "Строка соединения: " + conStrBuilder.GetConnectionString(ShowPassInException) + "\nИсключение: " + ex.ToString();
 				logger.Warn(ex);
 				QSMain.connectionDB.Close();
 			}

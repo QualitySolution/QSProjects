@@ -39,6 +39,7 @@
     <Compile Include="ReportInfo.cs" />
     <Compile Include="IPrintableRDLDocument.cs" />
     <Compile Include="ViewModels\RdlViewerViewModel.cs" />
+    <Compile Include="RDLReportsHashGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
