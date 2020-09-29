@@ -47,7 +47,7 @@ namespace QS.Utilities.Numeric
 			string Result = Starttext;
 			string startTrimed = Regex.Replace(phone, "^[^0-9\\+]+", "");
 			int removeFromStart = phone.Length - startTrimed.Length;
-			if (startTrimed.StartsWith("8")) {
+			if (startTrimed.StartsWith("8") || startTrimed.StartsWith("7")) {
 				removeFromStart += 1;
 			}
 			else if (startTrimed.StartsWith("+7")) {
