@@ -13,7 +13,8 @@ namespace QS.Test.Utilities
 		[TestCase("+7(812)309-80-89")]
 		[TestCase("+7(812) 309 80 89")]
 		[TestCase("+7 812 309 - 80 - 89")]
-		[TestCase("88123098089")]
+		[TestCase("88123098089")] 
+		[TestCase("78123098089")]
 		[TestCase("+78123098089")]
 		[TestCase("8-812-309-80-89")]
 		[TestCase("8 812 309-8-089")]
@@ -106,12 +107,23 @@ namespace QS.Test.Utilities
 		[TestCase("'+7-812-309-80-89'")]
 		[TestCase(" \t 8-812-309-80-89")]
 		[TestCase("fjklsj ds +7-8123098089")]
+		[TestCase("78123098089")]
 		public void BracketWithWhitespaceLastTen_ConvertFromAnotherFormatsTest(string insertPhone)
 		{
 			var phoneFormatter = new PhoneFormatter(PhoneFormat.BracketWithWhitespaceLastTen);
 			var result = phoneFormatter.FormatString(insertPhone);
 
 			Assert.That(result, Is.EqualTo("(812) 309 - 80 - 89"));
+		}
+
+		[Test(Description = "Проверяем что корректно конвертируем номер из других вариантов написания.")]
+		[TestCase("79536600012", "(953) 660 - 00 - 12")]
+		public void BracketWithWhitespaceLastTen_ConvertFromAnotherFormatsTest1(string insertPhone, string result)
+		{
+			var phoneFormatter = new PhoneFormatter(PhoneFormat.BracketWithWhitespaceLastTen);
+			var _result = phoneFormatter.FormatString(insertPhone);
+
+			Assert.That(_result, Is.EqualTo(result));
 		}
 		#endregion
 	}
