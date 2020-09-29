@@ -45,7 +45,7 @@ namespace QS.Test.Utilities
 			int pos = 1;
 
 			phoneFormatter.FormatString("8", ref pos);
-			Assert.That(pos, Is.EqualTo(2));
+			Assert.That(pos, Is.EqualTo(4));
 
 			pos = 5;
 			phoneFormatter.FormatString("+7812", ref pos);
@@ -117,7 +117,10 @@ namespace QS.Test.Utilities
 		}
 
 		[Test(Description = "Проверяем что корректно конвертируем номер из других вариантов написания.")]
-		[TestCase("79536600012", "(953) 660 - 00 - 12")]
+		[TestCase("78536600012", "(853) 660 - 00 - 12")]
+		[TestCase("88536600012", "(853) 660 - 00 - 12")]
+		[TestCase( "8536600012", "(853) 660 - 00 - 12")]
+		[TestCase( "7536600012", "(753) 660 - 00 - 12")]
 		public void BracketWithWhitespaceLastTen_ConvertFromAnotherFormatsTest1(string insertPhone, string result)
 		{
 			var phoneFormatter = new PhoneFormatter(PhoneFormat.BracketWithWhitespaceLastTen);
