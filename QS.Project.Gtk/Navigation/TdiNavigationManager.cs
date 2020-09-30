@@ -297,6 +297,8 @@ namespace QS.Navigation
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
 			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
+			if(viewModel.EnableMinimizeMaximize)
+				gtkPage.GtkDialog.TypeHint = Gdk.WindowTypeHint.Normal;
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
 			MoveWindow(gtkPage.GtkDialog, viewModel.WindowPosition);
