@@ -6,14 +6,34 @@ namespace QS.Utilities.Numeric
 {
 	public class PhoneFormatter
 	{
-		public PhoneFormat Format;
+		public readonly PhoneFormat Format;
 
 		#region Настройки форматов
-		private int MaxStringLength => Format == PhoneFormat.RussiaOnlyHyphenated ? 16 : 0;
-		private string Separator => Format == PhoneFormat.RussiaOnlyHyphenated ? "-" : "";
-		private int[] SeparatorPositions => Format == PhoneFormat.RussiaOnlyHyphenated ? hyphenPositions : new int[] { };
+		private int MaxStringLength;
+		private string Starttext;
+		private SeparatorPosition[] SeparatorPositions;
 
-		private int[] hyphenPositions = new int[] { 2, 6, 10, 13 };
+		public PhoneFormatter(PhoneFormat format)
+		{
+			Format = format;
+			switch (Format) {
+				case PhoneFormat.RussiaOnlyHyphenated:
+					MaxStringLength = 16;
+					Starttext = "+7";
+					SeparatorPositions = new SeparatorPosition[] { new SeparatorPosition(2, "-"), new SeparatorPosition(6, "-"), new SeparatorPosition(10, "-"), new SeparatorPosition(13, "-") };
+					break;
+				case PhoneFormat.BracketWithWhitespaceLastTen:
+					MaxStringLength = 19;
+					Starttext = "";
+					SeparatorPositions = new SeparatorPosition[] { new SeparatorPosition(0, "("), new SeparatorPosition(4, ") "), new SeparatorPosition(9, " - "), new SeparatorPosition(14, " - ")};
+					break;
+				case PhoneFormat.DigitsTen:
+					MaxStringLength = 10;
+					Starttext = "";
+					SeparatorPositions = new SeparatorPosition[] {new SeparatorPosition(0,"") };
+					break;
+			}
+		}
 		#endregion
 
 		public string FormatString(string phone)
@@ -24,10 +44,11 @@ namespace QS.Utilities.Numeric
 
 		public string FormatString(string phone, ref int cursorPos)
 		{
-			string Result = "+7";
+			string Result = Starttext;
 			string startTrimed = Regex.Replace(phone, "^[^0-9\\+]+", "");
 			int removeFromStart = phone.Length - startTrimed.Length;
-			if (startTrimed.StartsWith("8")) {
+			int digitsLength = Regex.Replace(phone.Substring(removeFromStart), "[^0-9]", "").Length;
+			if (digitsLength == 11 && (startTrimed.StartsWith("8") || startTrimed.StartsWith("7"))) {
 				removeFromStart += 1;
 			}
 			else if (startTrimed.StartsWith("+7")) {
@@ -43,14 +64,14 @@ namespace QS.Utilities.Numeric
 
 			Result += digitsOnly;
 
-			foreach (var position in SeparatorPositions) {
-				if (position + 1 > Result.Length)
+			foreach (var point in SeparatorPositions) {
+				if (point.position + 1 > Result.Length)
 					break;
 
-				if (position < cursorPos)
+				if (point.position < cursorPos)
 					cursorPos++;
 
-				Result = Result.Insert(position, Separator);
+				Result = Result.Insert(point.position, point.separator);
 			}
 
 			if (Result.Length > MaxStringLength)
@@ -61,9 +82,33 @@ namespace QS.Utilities.Numeric
 
 	}
 
+	class SeparatorPosition {
+		public int position;
+		public string separator;
+
+		public SeparatorPosition(int position, string separator)
+		{
+			this.position = position;
+			this.separator = separator;
+		}
+	}
+
 	public enum PhoneFormat
 	{
+		/// <summary>
+		/// +7-XXX-XXX-XX-XX
+		/// </summary>
 		[Display(Name = "+7-XXX-XXX-XX-XX")]
-		RussiaOnlyHyphenated
+		RussiaOnlyHyphenated,
+		/// <summary>
+		/// (XXX) XXX - XX - XX
+		/// </summary>
+		[Display(Name = "(XXX) XXX - XX - XX")]
+		BracketWithWhitespaceLastTen,
+		/// <summary>
+		/// XXXXXXXXXX
+		/// </summary>
+		[Display(Name = "XXXXXXXXXX")]
+		DigitsTen
 	}
 }
