@@ -120,7 +120,7 @@ namespace Gamma.Binding
 
 		public bool IterNext(ref TreeIter iter)
 		{
-			if((sourceList == null) || (sourceList.Count == 0))
+			if((sourceList == null) || (sourceList.Count == 0) || iter.UserData == IntPtr.Zero)
 				return (false);
 
 			object node = NodeFromIter(iter);
