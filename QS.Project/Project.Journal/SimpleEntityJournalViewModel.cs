@@ -36,6 +36,8 @@ namespace QS.Project.Journal
 
 			Register<TEntity, TEntityTab>(ItemsSourceQueryFunction, createDlgFunc, openDlgFunc);
 			ExternalNotifyChangedWith(typeof(TEntity));
+			
+			DataLoader.ItemsListUpdated += (sender, e) => ListUpdated?.Invoke(sender, e);
 		}
 
 		#region Управление стандартными кнопками
@@ -122,7 +124,6 @@ namespace QS.Project.Journal
 				)
 				.TransformUsing(Transformers.AliasToBean<CommonJournalNode<TEntity>>());
 		};
-
 	}
 
 	public class CommonJournalNode<TEntity> : CommonJournalNode
