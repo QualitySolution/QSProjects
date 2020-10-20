@@ -47,9 +47,9 @@ namespace QS.Utilities.Debug
 				else if(propValue is IDictionary){
 					builder.AppendLine (String.Format ("{0}{1}:", indentString, property.Name));
 					PrintDictionary(builder, propValue as IDictionary, objType.Assembly, indent + 2);
-				} else if(propValue is IEnumerable) {
+				} else if(propValue is IEnumerable && !(propValue is string)) {
 					builder.AppendLine(String.Format("{0}{1}:", indentString, property.Name));
-					PrintEnumerable(builder, propValue as IDictionary, objType.Assembly, indent + 2);
+					PrintEnumerable(builder, propValue as IEnumerable, objType.Assembly, indent + 2);
 				} else
 				{
 					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, property.Name, propValue));
