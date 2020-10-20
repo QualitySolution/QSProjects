@@ -52,7 +52,7 @@ namespace QS.Utilities.Debug
 					PrintEnumerable(builder, propValue as IEnumerable, objType.Assembly, indent + 2);
 				} else
 				{
-					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, property.Name, propValue));
+					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, property.Name, propValue ?? "null"));
 				}
 			}
 		}
