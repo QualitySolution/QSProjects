@@ -5,12 +5,28 @@ using System.Collections;
 
 namespace QS.Utilities.Debug
 {
+	/// <summary>
+	/// Помощник упрощающий вывод дебажной информции из кода. 
+	/// </summary>
 	public static class DebugPrint
 	{
+		/// <summary>
+		/// Возвращает значения всех свойств класса в иерархическом виде, то есть свойства с классами разворачиваются в глубину, на следующий уровень.
+		/// Метод поддеживает работу с любыми списками реализующими IEnumerable и словарями реализующими IDictionary.
+		/// Можно как подать список в качестве аргумента, так и найденные в классе списки будут развернуты.
+		/// </summary>
+		/// <returns>Строка для вывода на консоль или в лог.</returns>
+		/// <param name="obj">Объект для обхода</param>
 		public static string Values(object obj)
 		{
 			StringBuilder builder = new StringBuilder ();
-			PrintProperties(builder, obj, 0);
+			if(obj is IDictionary dic) {
+				PrintDictionary(builder, dic, Assembly.GetCallingAssembly(), 0);
+			}else if(obj is IEnumerable list) {
+				PrintEnumerable(builder, list, Assembly.GetCallingAssembly(), 0);
+			}
+			else
+				PrintProperties(builder, obj, 0);
 			return builder.ToString ();
 		}
 
@@ -31,8 +47,10 @@ namespace QS.Utilities.Debug
 				else if(propValue is IDictionary){
 					builder.AppendLine (String.Format ("{0}{1}:", indentString, property.Name));
 					PrintDictionary(builder, propValue as IDictionary, objType.Assembly, indent + 2);
-				}
-				else
+				} else if(propValue is IEnumerable) {
+					builder.AppendLine(String.Format("{0}{1}:", indentString, property.Name));
+					PrintEnumerable(builder, propValue as IDictionary, objType.Assembly, indent + 2);
+				} else
 				{
 					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, property.Name, propValue));
 				}
@@ -54,6 +72,22 @@ namespace QS.Utilities.Debug
 				{
 					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, par.Key, par.Value));
 				}
+			}
+		}
+
+		private static void PrintEnumerable(StringBuilder builder, IEnumerable list, Assembly ass, int indent)
+		{
+			if(list == null) return;
+			string indentString = new string(' ', indent);
+			int index = 0;
+			foreach(var value in list) {
+				if(value.GetType().Assembly == ass) {
+					builder.AppendLine(String.Format("{0}{1}:", indentString, index));
+					PrintProperties(builder, value, indent + 2);
+				} else {
+					builder.AppendLine(String.Format("{0}{1}: {2}", indentString, index, value));
+				}
+				index++;
 			}
 		}
 
