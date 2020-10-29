@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QS.Project.VersionControl
+namespace QS.Project.Versioning
 {
 	/// <summary>
 	/// Атрибут для указания ссылки на ресурс логотипа программы.

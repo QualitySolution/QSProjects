@@ -2,7 +2,7 @@
 using System.Linq;
 using QS.BaseParameters;
 
-namespace QS.Project.VersionControl
+namespace QS.Project.Versioning
 {
 	public class CheckBaseVersion
 	{

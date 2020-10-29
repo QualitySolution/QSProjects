@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QSUpdater;
 
 namespace QS.Updater

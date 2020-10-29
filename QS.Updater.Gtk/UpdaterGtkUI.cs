@@ -6,9 +6,8 @@ using System.Threading;
 using Gtk;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QS.Utilities.Text;
-using QSSupportLib;
 using QSUpdater;
 
 namespace QS.Updater

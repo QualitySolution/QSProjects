@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Gtk;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QS.Project.ViewModels;
 
 namespace QS.Project.Views

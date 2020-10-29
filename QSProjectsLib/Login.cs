@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSMachineConfig;
 using QSSaaS;

@@ -4,7 +4,7 @@ using System.Threading;
 using Gtk;
 using QS.Dialog;
 using QS.Project.Domain;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 
 namespace QS.ErrorReporting
 {

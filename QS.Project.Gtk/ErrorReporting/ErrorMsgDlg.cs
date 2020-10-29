@@ -7,7 +7,7 @@ using NLog;
 using NLog.Targets;
 using QS.Dialog.GtkUI;
 using QS.Project.Domain;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 
 namespace QS.ErrorReporting
 {
