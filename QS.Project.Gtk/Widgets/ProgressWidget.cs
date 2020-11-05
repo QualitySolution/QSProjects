@@ -37,7 +37,7 @@ namespace QS.Widgets
 			GtkHelper.WaitRedraw();
 		}
 
-		public void Start(double maxValue, double minValue = 0, string text = null, double startValue = 0)
+		public void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0)
 		{
 			Adjustment = new Adjustment(startValue, minValue, maxValue, 1, 1, 1);
 			Text = text;
