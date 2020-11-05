@@ -20,7 +20,6 @@ namespace QS.Project.Versioning
 	public class AssemblySupportAttribute : Attribute 
 	{
 		public string SupportInfo;
-		public AssemblySupportAttribute() : this(string.Empty) {}
 		public AssemblySupportAttribute(string supportInfo)
 		{ 
 			SupportInfo = supportInfo;

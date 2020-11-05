@@ -33,19 +33,21 @@ namespace QS.Project.ViewModels
 
 		public string Description {
 			get {
-				var att = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-
-				string comments = String.Empty;
-
-				if (ApplicationInfo.IsBeta) {
-					comments += String.Format("Бета редакция от {0:g}\n", ApplicationInfo.BuildDate);
-				}
-
-				comments += ((AssemblyDescriptionAttribute)att[0]).Description;
-
+				var description = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
 				var support = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblySupportAttribute>()?.SupportInfo;
-				comments += support ?? "\nТелефон тех. поддержки +7(812)309-80-89";
-				return comments; 
+
+				var text = new List<string>();
+
+				if (ApplicationInfo.IsBeta)
+					text.Add(String.Format("Бета редакция от {0:g}", ApplicationInfo.BuildDate));
+
+				if(String.IsNullOrWhiteSpace(description))
+					text.Add(description);
+
+				if(String.IsNullOrWhiteSpace(support))
+					text.Add(support);
+
+				return String.Join("\n", text);
 			}
 		}
 
