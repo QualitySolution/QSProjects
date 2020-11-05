@@ -10,7 +10,7 @@ namespace QS.BaseParameters
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public Dictionary<string, object> All = new Dictionary<string, object>();
+		public Dictionary<string, string> All = new Dictionary<string, string>();
 		private readonly DbConnection connection;
 
 		public ParametersService (DbConnection connection)
@@ -42,7 +42,7 @@ namespace QS.BaseParameters
 			string sql;
 			if (All.ContainsKey (name))
 			{
-				if(All[name] == value)
+				if(All[name] == value.ToString())
 					return;
 
 				sql = "UPDATE base_parameters SET str_value = @str_value WHERE name = @name";
@@ -63,7 +63,7 @@ namespace QS.BaseParameters
 			cmd.Parameters.Add (paramValue);
 			cmd.ExecuteNonQuery ();
 
-			All [name] = value;
+			All [name] = value.ToString();
 			logger.Debug ("Ок");
 		}
 
@@ -97,7 +97,13 @@ namespace QS.BaseParameters
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-			return All.TryGetValue(binder.Name, out result);
+			Console.WriteLine(binder.ReturnType);
+			if (All.TryGetValue(binder.Name, out string strValue)) {
+				result = strValue;
+			}
+			else
+				result = null;
+			return true;
 		}
 
 		public override bool TrySetMember(SetMemberBinder binder, object value)

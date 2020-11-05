@@ -172,6 +172,7 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
     <Compile Include="Updater\UpdateConfigurationTests.cs" />
+    <Compile Include="BaseParameters\ParametersServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -210,6 +211,7 @@
     <Folder Include="TestApp\HibernateMapping\Linked\" />
     <Folder Include="ViewModels\Resove\" />
     <Folder Include="Updater\" />
+    <Folder Include="BaseParameters\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
