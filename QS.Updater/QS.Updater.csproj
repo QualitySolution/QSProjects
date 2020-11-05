@@ -58,9 +58,11 @@
     <Compile Include="OverallUpdater.cs" />
     <Compile Include="ISkipVersionState.cs" />
     <Compile Include="IDBUpdater.cs" />
+    <Compile Include="DB\UpdateConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTO\" />
+    <Folder Include="DB\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">

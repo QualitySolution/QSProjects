@@ -171,6 +171,7 @@
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
+    <Compile Include="Updater\UpdateConfigurationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -208,6 +209,7 @@
     <Folder Include="TestApp\Domain\Linked\" />
     <Folder Include="TestApp\HibernateMapping\Linked\" />
     <Folder Include="ViewModels\Resove\" />
+    <Folder Include="Updater\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
@@ -233,6 +235,10 @@
     <ProjectReference Include="..\Modules\QS.Banks\QS.Banks.csproj">
       <Project>{301F793C-130B-44EB-A45D-60D5F040B0AD}</Project>
       <Name>QS.Banks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
+      <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
+      <Name>QS.Updater</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
