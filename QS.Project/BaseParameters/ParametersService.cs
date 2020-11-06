@@ -61,7 +61,7 @@ namespace QS.BaseParameters
 			cmd.Parameters.Add (paramName);
 			DbParameter paramValue = cmd.CreateParameter ();
 			paramValue.ParameterName = "@str_value";
-			paramValue.Value = value;
+			paramValue.Value = value.ToString();
 			cmd.Parameters.Add (paramValue);
 			cmd.ExecuteNonQuery ();
 

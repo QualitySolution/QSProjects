@@ -103,6 +103,8 @@ namespace QS.Test.BaseParameters
 			}
 		}
 
+		#endregion
+
 		[Test(Description = "Проверка что успешно читаем значение Version.")]
 		public void GetValue_ReturnVersionCase()
 		{
@@ -114,7 +116,16 @@ namespace QS.Test.BaseParameters
 			}
 		}
 
-		#endregion
+		[Test(Description = "Проверка что успешно читаем значение bool.")]
+		public void GetValue_ReturnBooleanCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "IsTrue", str_value = "True" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.IsTrue(typeof(bool)), Is.EqualTo(true));
+			}
+		}
 
 		#endregion
 		#region SetValues
@@ -130,6 +141,61 @@ namespace QS.Test.BaseParameters
 				Assert.That(inDB, Is.EqualTo("String result"));
 			}
 		}
+
+		#region Другие типы
+		[Test(Description = "Проверка что можем создать параметр из int.")]
+		public void SetValue_NewParameter_IntCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				dynamic parameters = new ParametersService(connection);
+				parameters.Answer = 42;
+				Assert.That(parameters.Answer(typeof(int)), Is.EqualTo(42));
+				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "Answer" });
+				Assert.That(inDB, Is.EqualTo("42"));
+			}
+		}
+
+		[Test(Description = "Проверка что можем создать параметр из decimal.")]
+		public void SetValue_NewParameter_DecimalCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				dynamic parameters = new ParametersService(connection);
+				parameters.VodkaPrice = 2.87m;
+				Assert.That(parameters.VodkaPrice(typeof(decimal)), Is.EqualTo(2.87m));
+				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "VodkaPrice" });
+				Assert.That(inDB, Is.EqualTo("2,87"));
+			}
+		}
+
+		[Test(Description = "Проверка что можем создать параметр из bool.")]
+		public void SetValue_NewParameter_BooleanCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				dynamic parameters = new ParametersService(connection);
+				parameters.IsTest = true;
+				Assert.That(parameters.IsTest(typeof(bool)), Is.EqualTo(true));
+				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "IsTest" });
+				Assert.That(inDB, Is.EqualTo("True"));
+			}
+		}
+
+		[Test(Description = "Проверка что можем создать параметр из Version.")]
+		public void SetValue_NewParameter_VersionCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				dynamic parameters = new ParametersService(connection);
+				parameters.Version = new Version(2, 4);
+				Assert.That(parameters.Version(typeof(Version)), Is.EqualTo(new Version(2, 4)));
+				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "Version" });
+				Assert.That(inDB, Is.EqualTo("2.4"));
+			}
+		}
+
+		#endregion
 
 		[Test(Description = "Проверка что можем обновить значение параметра.")]
 		public void SetValue_UpdateParameter_StringCase()
