@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System;
+using Dapper;
 using Mono.Data.Sqlite;
 using NUnit.Framework;
 using QS.BaseParameters;
@@ -29,6 +30,92 @@ namespace QS.Test.BaseParameters
 				Assert.That(parameters.GetStringValueTest, Is.EqualTo("String result"));
 			}
 		}
+
+		#region Цифры
+
+		[Test(Description = "Проверка что успешно читаем значение int.")]
+		public void GetValue_ReturnIntCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "Number", str_value = "42" });
+				dynamic parameters = new ParametersService(connection);
+				int value = parameters.Number(typeof(int));
+				Assert.That(value, Is.EqualTo(42));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение long.")]
+		public void GetValue_ReturnLongCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "Number", str_value = "9223372036854775807" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.Number(typeof(long)), Is.EqualTo(9223372036854775807));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение uint.")]
+		public void GetValue_ReturnUIntCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "Number", str_value = "2" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.Number(typeof(uint)), Is.EqualTo(2));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение double.")]
+		public void GetValue_ReturnDoubleCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "PI", str_value = "3,14159265359" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.PI(typeof(double)), Is.EqualTo(3.14159265359d));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение Decimal.")]
+		public void GetValue_ReturnDecimalCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "USD", str_value = "76,76" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.USD(typeof(decimal)), Is.EqualTo(76.76m));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение int?.")]
+		public void GetValue_ReturnIntNulableCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "Number", str_value = 42 });
+				dynamic parameters = new ParametersService(connection);
+				int? value = parameters.NotExist(typeof(int?));
+				Assert.That(value, Is.Null);
+				value = parameters.Number(typeof(int?));
+				Assert.That(value, Is.EqualTo(42));
+			}
+		}
+
+		[Test(Description = "Проверка что успешно читаем значение Version.")]
+		public void GetValue_ReturnVersionCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				connection.Execute(sqlInsert, new { name = "version", str_value = "2.3.4" });
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.version(typeof(Version)), Is.EqualTo(new Version(2, 3, 4)));
+			}
+		}
+
+		#endregion
+
 		#endregion
 		#region SetValues
 		[Test(Description = "Проверка что можем создать параметр.")]

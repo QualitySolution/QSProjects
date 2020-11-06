@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Dynamic;
+using System.Linq;
 using NLog;
 
 namespace QS.BaseParameters
@@ -97,7 +99,6 @@ namespace QS.BaseParameters
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
-			Console.WriteLine(binder.ReturnType);
 			if (All.TryGetValue(binder.Name, out string strValue)) {
 				result = strValue;
 			}
@@ -113,7 +114,39 @@ namespace QS.BaseParameters
 			else
 				UpdateParameter(binder.Name, value);
 			return true;
-		} 
+		}
+
+		public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+		{
+			var returnType = args.FirstOrDefault() as Type;
+			if (returnType == null)
+				throw new NotSupportedException("Поддерживается только режимв вызова ParameterName(Type returnType).");
+
+			if (All.TryGetValue(binder.Name, out string strValue))
+				result = ConvertTo(strValue, returnType);
+			else
+				result = null;
+			return true;
+		}
+
+		#endregion
+
+		#region private
+
+		private object ConvertTo(string value, Type type)
+		{
+			if (type == typeof(string)) {
+				return value;
+			}
+			if (type == typeof(Version))
+				return Version.Parse(value);
+
+			TypeConverter typeConverter = TypeDescriptor.GetConverter(type);
+			if (typeConverter == null)
+				throw new NotSupportedException($"Конвертация значения в {type} не поддеживается.");
+
+			return typeConverter.ConvertFromString(value);
+		}
 
 		#endregion
 	}
