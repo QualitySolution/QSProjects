@@ -66,13 +66,13 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.5.2.7\lib\net461\NHibernate.dll</HintPath>
+      <HintPath>..\packages\NHibernate.5.3.3\lib\net461\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
+      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

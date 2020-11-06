@@ -255,7 +255,16 @@ namespace QS.Tdi.Gtk
 				return false;
 			}
 
-			if(SaveIfNeed(tab)) {
+			bool canClose = true;
+			try
+			{
+				canClose = SaveIfNeed(tab);
+			}
+			catch (Exception e)
+			{
+				logger.Error(e, "Возникла ошибка при проверке закрытия вкладки");
+			}
+			if(canClose) {
 				ForceCloseTab(tab, source);
 				return true;
 			}

@@ -293,10 +293,14 @@ namespace QS.Navigation
 			gtkPage.GtkView = viewResolver.Resolve(viewModel);
 			if(gtkPage.GtkView == null)
 				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
-			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, tdiNotebook.Toplevel as Window, viewModel.IsModal ? DialogFlags.Modal : DialogFlags.DestroyWithParent);
+			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title, 
+				viewModel.IsModal ? tdiNotebook.Toplevel as Window : null, 
+				viewModel.IsModal ? DialogFlags.Modal : DialogFlags.DestroyWithParent);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
 			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
+			if(viewModel.EnableMinimizeMaximize)
+				gtkPage.GtkDialog.TypeHint = Gdk.WindowTypeHint.Normal;
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
 			MoveWindow(gtkPage.GtkDialog, viewModel.WindowPosition);

@@ -17,12 +17,12 @@ namespace QS.Widgets.GtkUI
 		/// </summary>
 		public object Tag;
 
-		private PhoneFormatter phoneFormatter = new PhoneFormatter();
+		private PhoneFormatter phoneFormatter ;
 
 		public PhoneFormat PhoneFormat
 		{
 			get => phoneFormatter.Format;
-			set => phoneFormatter.Format = value;
+			set => phoneFormatter = new PhoneFormatter(value);
 		}
 
 		public PhoneEntry() 
@@ -31,8 +31,7 @@ namespace QS.Widgets.GtkUI
 				(w => w.Text)
 			});
 
-			PhoneFormat = PhoneFormat.RussiaOnlyHyphenated;
-
+			phoneFormatter = new PhoneFormatter(PhoneFormat.RussiaOnlyHyphenated);
 			this.TextInserted += PhoneTextInserted;
 			this.TextDeleted += PhoneTextDeleted;
 		}

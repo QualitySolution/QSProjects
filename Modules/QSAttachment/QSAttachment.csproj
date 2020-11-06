@@ -36,6 +36,10 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=8.0.19.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
+      <HintPath>..\..\packages\MySql.Data.8.0.19\lib\net452\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -44,7 +48,7 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Data" />
     <Reference Include="itextsharp">
-      <HintPath>..\..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
+      <HintPath>..\..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ComponentModel" />
@@ -77,29 +81,24 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="NLog">
-      <HintPath>..\..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\..\packages\Google.Protobuf.3.12.3\lib\net45\Google.Protobuf.dll</HintPath>
+      <HintPath>..\..\packages\Google.Protobuf.3.13.0\lib\net45\Google.Protobuf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="K4os.Compression.LZ4">
-      <HintPath>..\..\packages\K4os.Compression.LZ4.1.1.11\lib\net45\K4os.Compression.LZ4.dll</HintPath>
+      <HintPath>..\..\packages\K4os.Compression.LZ4.1.2.6\lib\net45\K4os.Compression.LZ4.dll</HintPath>
     </Reference>
     <Reference Include="K4os.Hash.xxHash">
       <HintPath>..\..\packages\K4os.Hash.xxHash.1.0.6\lib\net45\K4os.Hash.xxHash.dll</HintPath>
     </Reference>
     <Reference Include="K4os.Compression.LZ4.Streams">
-      <HintPath>..\..\packages\K4os.Compression.LZ4.Streams.1.1.11\lib\net45\K4os.Compression.LZ4.Streams.dll</HintPath>
+      <HintPath>..\..\packages\K4os.Compression.LZ4.Streams.1.2.6\lib\net45\K4os.Compression.LZ4.Streams.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\packages\MySql.Data.8.0.20\lib\net452\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Ubiety.Dns.Core">
-      <HintPath>..\..\packages\MySql.Data.8.0.20\lib\net452\Ubiety.Dns.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Zstandard.Net">
-      <HintPath>..\..\packages\MySql.Data.8.0.20\lib\net452\Zstandard.Net.dll</HintPath>
+    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
+      <HintPath>..\..\packages\MySql.Data.8.0.19\lib\net452\Ubiety.Dns.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -49,7 +49,7 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
