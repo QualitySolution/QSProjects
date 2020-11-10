@@ -1,4 +1,7 @@
 ﻿using System;
+using QS.BaseParameters;
+using QS.Project.DB;
+using QS.Project.Versioning;
 
 namespace QS.Updater
 {
@@ -12,7 +15,8 @@ namespace QS.Updater
 				new UpdaterGtkUI(app, skips),
 				app,
 				skips,
-				new SQLDBUpdater()
+				new SQLDBUpdater(),
+				new CheckBaseVersion(app, new ParametersService(Connection.ConnectionDB))
 			);
 			updater.RunCheckVersion(updateDB, updateApp);
 		}

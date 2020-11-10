@@ -39,12 +39,10 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="MainUpdater.cs" />
     <Compile Include="UpdaterGtkUI.cs" />
-    <Compile Include="DBUpdater\DBUpdateProcess.cs" />
+    <Compile Include="DB.Views\UpdateProcessView.cs" />
     <Compile Include="gtk-gui\QS.Updater.NewVersionDialog.cs" />
     <Compile Include="SkipVersionStateIniConfig.cs" />
-    <Compile Include="DBUpdater\DBUpdater.cs" />
-    <Compile Include="gtk-gui\QS.Updater.DB.DBUpdateProcess.cs" />
-    <Compile Include="DBUpdater\SQLDBUpdater.cs" />
+    <Compile Include="gtk-gui\QS.Updater.DB.Views.UpdateProcessView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -144,6 +142,10 @@
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -152,6 +154,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="DBUpdater\README.md" />
   </ItemGroup>
 </Project>
