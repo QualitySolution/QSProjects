@@ -11,7 +11,7 @@
     <AssemblyName>QS.Report</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <Description>Библиотека для работы с отчетами. В этой части библиотеки должна отсутствовать UI часть.</Description>
-    <ReleaseVersion>1.0</ReleaseVersion>
+    <ReleaseVersion>1.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -4,7 +4,6 @@ using Gamma.Utilities;
 using Newtonsoft.Json;
 using QS.DomainModel.Entity;
 using QS.Osm.DTO;
-using suggestionscsharp;
 
 namespace QS.Osm.Data
 {
@@ -212,24 +211,6 @@ namespace QS.Osm.Data
 			RoomType = source.RoomType;
 			АddressAddition = source.АddressAddition;
 			SingleText = source.SingleText;
-		}
-
-		public void CopyFrom(AddressData source)
-		{
-			PostalCode = source.postal_code;
-			Region = source.region;
-			City = source.city;
-			if (source.settlement != null)
-				City += " " + source.settlement_with_type;
-			LocalityType = LocalityType.city; //FIXME Тут скорей всего нужен более детальный подход. Без примеров не стал разбираться.
-			//CityDistrict = source.;
-			Street = source.street_with_type.Replace(source.street_type, source.street_type_full);
-			//StreetDistrict = source.StreetDistrict;
-			Building = source.house;
-			if (source.block != null)
-				Building += " " + source.block_type + source.block;
-			Room = source.flat;
-			RoomType = ParseDaDataRoomType(source.flat_type);
 		}
 
 		public void FillFromText(string address)

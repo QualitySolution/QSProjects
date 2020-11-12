@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSTelemetry</RootNamespace>
     <AssemblyName>QSTelemetry</AssemblyName>
-    <ReleaseVersion>1.1</ReleaseVersion>
+    <ReleaseVersion>1.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
