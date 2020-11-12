@@ -6,11 +6,9 @@
   </configuration>
   <import>
     <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
-    <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
-    <widget-library name="../../QSFNS/bin/Debug/QSFNS.dll" />
-    <widget-library name="../bin/Debug/QSOsm.dll" internal="true" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
+    <widget-library name="../../QSOrmProject/bin/Debug/QSOrmProject.dll" />
+    <widget-library name="../bin/Debug/QSOsm.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QSOsm.JsonAddressEntry" design-size="730 164">
     <property name="MemberName" />
