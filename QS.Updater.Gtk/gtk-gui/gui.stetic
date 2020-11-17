@@ -5,10 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSProjectsLib/bin/Release/QSProjectsLib.dll" />
-    <widget-library name="../../QS.Project.Gtk/bin/Release/QS.Project.Gtk.dll" />
-    <widget-library name="../../../GammaBinding/GammaBinding/bin/Release/GammaBinding.dll" />
-    <widget-library name="../bin/Release/QSUpdater.dll" internal="true" />
+    <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
+    <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
+    <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QS.Updater.NewVersionDialog" design-size="548 389">
     <property name="MemberName" />
