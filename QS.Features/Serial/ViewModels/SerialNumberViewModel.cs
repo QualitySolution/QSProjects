@@ -6,7 +6,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Serial.ViewModels
 {
-	public class SerialNumberViewModel : ModalDialogViewModelBase
+	public class SerialNumberViewModel : WindowDialogViewModelBase
 	{
 		private readonly SNEncoder SerialNumberEncoder;
 		private readonly dynamic parametersService;
@@ -16,6 +16,8 @@ namespace QS.Serial.ViewModels
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			serialNumber = this.parametersService.serial_number;
+
+			Title = "Замена серийного номера";
 		}
 
 		#region Свойства

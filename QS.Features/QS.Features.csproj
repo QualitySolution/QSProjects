@@ -44,6 +44,20 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.5.2.0\lib\net461\Autofac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,11 +66,13 @@
     <Compile Include="Serial\Encoding\SerialCommon.cs" />
     <Compile Include="Serial\Encoding\SNEncoder.cs" />
     <Compile Include="Serial\ViewModels\SerialNumberViewModel.cs" />
+    <Compile Include="Features\FeaturesAutofacModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serial\" />
     <Folder Include="Serial\Encoding\" />
     <Folder Include="Serial\ViewModels\" />
+    <Folder Include="Features\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

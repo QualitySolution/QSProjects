@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Project.Versioning;
 
 namespace QS.Serial.Encoding
 {
@@ -17,9 +18,9 @@ namespace QS.Serial.Encoding
 		private string number;
 		private readonly string forProduct;
 
-		public SNEncoder(string forProduct)
+		public SNEncoder(IApplicationInfo info)
 		{
-			this.forProduct = forProduct;
+			this.forProduct = info.ProductName;
 		}
 
 		public virtual string Number {

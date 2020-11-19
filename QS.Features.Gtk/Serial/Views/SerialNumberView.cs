@@ -13,6 +13,7 @@ namespace QS.Serial.Views
 			this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 
 			serialnumberentry1.Binding.AddBinding(viewModel, vm => vm.SerialNumber, w => w.Text).InitializeFromSource();
+			ybuttonApply.Binding.AddBinding(viewModel, v => v.SensetiveOk, w => w.Sensitive).InitializeFromSource();
 		}
 
 		protected void OnYbuttonApplyClicked(object sender, EventArgs e)
