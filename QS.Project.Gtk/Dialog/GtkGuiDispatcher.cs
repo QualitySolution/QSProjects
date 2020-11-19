@@ -20,6 +20,14 @@ namespace QS.Dialog
 			Application.Invoke((sender, e) => action());
 		}
 
+		public void WaitInMainLoop(Func<bool> checkStop, uint sleepMilliseconds = 20)
+		{
+			while(!checkStop()) {
+				GtkHelper.WaitRedraw();
+				Thread.Sleep((int)sleepMilliseconds);
+			}
+		}
+
 		public void WaitRedraw()
 		{
 			GtkHelper.WaitRedraw();

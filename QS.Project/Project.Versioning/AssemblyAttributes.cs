@@ -50,6 +50,7 @@ namespace QS.Project.Versioning
 
 	/// <summary>
 	/// Атрибут для указания модификации сборки, например для отдельных сборок под конкретных заказчиков.
+	/// Не является обязательным для общей сборки проекта.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)]
 	public class AssemblyModificationAttribute : Attribute 
