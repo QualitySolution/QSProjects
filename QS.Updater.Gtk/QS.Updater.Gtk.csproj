@@ -84,10 +84,6 @@
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
-      <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
-      <Name>QSProjectsLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSMachineConfig\QSMachineConfig.csproj">
       <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
       <Name>QSMachineConfig</Name>

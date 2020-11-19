@@ -17,6 +17,11 @@ namespace QS.Project.DB
 		private readonly IInteractiveQuestion question;
 		public MySqlConnection DbConnection { get; private set; }
 
+		public MySQLProvider(MySqlConnectionStringBuilder connectionStringBuilder, IRunOperationService runOperationService, IInteractiveQuestion question)
+			: this(connectionStringBuilder.GetConnectionString(true), runOperationService, question)
+		{
+		}
+
 		public MySQLProvider(string connectionString, IRunOperationService runOperationService, IInteractiveQuestion question)
 		{
 			this.runOperationService = runOperationService;

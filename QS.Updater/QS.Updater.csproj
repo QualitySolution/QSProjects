@@ -102,9 +102,9 @@
     <Compile Include="ISkipVersionState.cs" />
     <Compile Include="IDBUpdater.cs" />
     <Compile Include="DB\UpdateConfiguration.cs" />
-    <Compile Include="DB\IDBChangePermission.cs" />
     <Compile Include="DB\ViewModels\UpdateProcessViewModel.cs" />
     <Compile Include="VersionCheckerService.cs" />
+    <Compile Include="DB\SQLDBUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTO\" />
@@ -123,7 +123,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="DB\SQLDBUpdater.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

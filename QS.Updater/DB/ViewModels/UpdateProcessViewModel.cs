@@ -9,11 +9,10 @@ using QS.Dialog;
 using QS.Navigation;
 using QS.Project.DB;
 using QS.Project.Versioning;
-using QS.Updater.DB;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 
-namespace DB.ViewModels
+namespace QS.Updater.DB.ViewModels
 {
 	public class UpdateProcessViewModel : WindowDialogViewModelBase
 	{
@@ -53,8 +52,13 @@ namespace DB.ViewModels
 				String.Format("{0}{1:yyMMdd-HHmm}.sql", applicationInfo.ProductName, DateTime.Now)
 			);
 
+			IsModal = true;
+
 			dbVersion = GetCurrentDBVersion();
 			hops = configuration.GetHopsToLast(dbVersion).ToArray();
+			Title = String.Format("Обновление: {0} → {1}",
+						dbVersion.VersionToShortString(),
+						hops.Last().Destanation.VersionToShortString());
 		}
 
 		#region Свойства для View
@@ -65,7 +69,7 @@ namespace DB.ViewModels
 			set => SetField(ref fileName, value);
 		}
 
-		private bool needCreateBackup;
+		private bool needCreateBackup = true;
 		public virtual bool NeedCreateBackup {
 			get => needCreateBackup;
 			set => SetField(ref needCreateBackup, value);
@@ -79,19 +83,7 @@ namespace DB.ViewModels
 		}
 
 		public IProgressBarDisplayable OperationProgress { get; set; }
-
-		private IProgressBarDisplayable totalProgress;
-		public IProgressBarDisplayable TotalProgress {
-			get => totalProgress; set {
-				totalProgress = value;
-				if(value != null) {
-					TotalProgress.Start(0, text: String.Format("Обновление: {0} → {1}",
-						VersionHelper.VersionToShortString(dbVersion),
-						VersionHelper.VersionToShortString(hops.Last().Destanation)
-					));
-				}
-			}
-		}
+		public IProgressBarDisplayable TotalProgress { get; set; }
 
 		private bool buttonExcuteSensitive = true;
 		public virtual bool ButtonExcuteSensitive {
@@ -104,16 +96,18 @@ namespace DB.ViewModels
 
 		public void Execute()
 		{
+			ButtonExcuteSensitive = false;
 			try {
 				if (NeedCreateBackup) {
 					if (ExecuteBackup()) {
+						buttonExcuteSensitive = true;
 						return;
 					}
 				}
 
 				TotalProgress.Start(maxValue: hops.Length, text: String.Format("Обновление: {0} → {1}",
-						VersionHelper.VersionToShortString(dbVersion),
-						VersionHelper.VersionToShortString(hops.Last().Destanation)
+						dbVersion.VersionToShortString(),
+						hops.Last().Destanation.VersionToShortString()
 					));
 				foreach (var hop in hops) {
 					RunOneUpdate(hop);
@@ -139,7 +133,7 @@ namespace DB.ViewModels
 		#endregion
 
 		#region Внутреннее
-
+		#region Резервное копирование
 		bool ExecuteBackup()
 		{
 			logger.Info("Создаем резервную копию базы.");
@@ -151,18 +145,47 @@ namespace DB.ViewModels
 
 			var bwExport = new BackgroundWorker();
 			bwExport.DoWork += BwExport_DoWork;
-
 			bwExport.RunWorkerAsync();
 
-			while (bwExport.IsBusy) {
-				System.Threading.Thread.Sleep(50);
-				guiDispatcher.WaitRedraw();
-			}
-
+			guiDispatcher.WaitInMainLoop(() => !bwExport.IsBusy, 50);
 			OperationProgress.Close();
 			return false;
 		}
 
+		void BwExport_DoWork(object sender, DoWorkEventArgs e)
+		{
+			using(MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand()) {
+				using(MySqlBackup mb = new MySqlBackup(cmd)) {
+					var dir = System.IO.Path.GetDirectoryName(FileName);
+
+					if(!Directory.Exists(dir))
+						Directory.CreateDirectory(dir);
+
+					logger.Debug(FileName);
+					currentTable = null;
+					mb.ExportProgressChanged += Mb_ExportProgressChanged;
+					mb.ExportToFile(FileName);
+				}
+			}
+		}
+
+		private string currentTable;
+		void Mb_ExportProgressChanged(object sender, ExportProgressArgs e)
+		{
+			guiDispatcher.RunInGuiTread(delegate {
+				if(currentTable == null)
+					TotalProgress.Start(maxValue: e.TotalRowsInAllTables, text: "Создание резервной копии");
+
+				if(currentTable != e.CurrentTableName)
+					OperationProgress.Start(e.TotalRowsInCurrentTable, text: $"Экспорт {e.CurrentTableName}");
+
+				OperationProgress.Update(e.CurrentRowIndexInCurrentTable);
+				TotalProgress.Update(e.CurrentRowIndexInAllTables);
+			});
+		}
+		#endregion
+
+		#region Обновление
 		void RunOneUpdate(UpdateHop updateScript)
 		{
 			var operationName = (updateScript.UpdateType == UpdateType.MicroUpdate ? "Микро-обновление" : "Обновление")
@@ -190,46 +213,13 @@ namespace DB.ViewModels
 			logger.Debug("Выполнено {0} SQL-команд.", commands);
 		}
 
-		void BwExport_DoWork(object sender, DoWorkEventArgs e)
-		{
-			using (MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand()) {
-				using (MySqlBackup mb = new MySqlBackup(cmd)) {
-					var dir = System.IO.Path.GetDirectoryName(FileName);
-
-					if (!Directory.Exists(dir))
-						Directory.CreateDirectory(dir);
-
-					logger.Debug(FileName);
-					currentTable = null;
-					mb.ExportProgressChanged += Mb_ExportProgressChanged;
-
-					mb.ExportToFile(FileName);
-				}
-			}
-		}
-
 		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)
 		{
 			OperationProgress.Add();
 			commandsLog += args.StatementText + "\n";
 			logger.Debug(args.StatementText);
 		}
-
-		private string currentTable;
-		void Mb_ExportProgressChanged(object sender, ExportProgressArgs e)
-		{
-			guiDispatcher.RunInGuiTread( delegate {
-				if (currentTable == null)
-					totalProgress.Start(maxValue: e.TotalRowsInAllTables, text: "Создание резервной копии");
-
-				if (currentTable != e.CurrentTableName)
-					OperationProgress.Start(e.TotalRowsInCurrentTable, text: $"Экспорт {e.CurrentTableName}");
-
-				OperationProgress.Update(e.CurrentRowIndexInCurrentTable);
-				totalProgress.Update(e.CurrentRowIndexInAllTables);
-			});
-		}
-
+		#endregion
 		#endregion
 
 		#region DbVersion

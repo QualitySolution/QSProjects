@@ -154,8 +154,6 @@ namespace QS.Updater.DB.Views
 			this.hbox2.Add(this.buttonCancel);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonCancel]));
 			w12.Position = 1;
-			w12.Expand = false;
-			w12.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.buttonExecute = new global::Gamma.GtkWidgets.yButton();
 			this.buttonExecute.CanFocus = true;
@@ -166,8 +164,6 @@ namespace QS.Updater.DB.Views
 			this.hbox2.Add(this.buttonExecute);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonExecute]));
 			w13.Position = 2;
-			w13.Expand = false;
-			w13.Fill = false;
 			this.dialog1_VBox.Add(this.hbox2);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox[this.hbox2]));
 			w14.Position = 6;

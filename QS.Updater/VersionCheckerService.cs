@@ -20,11 +20,12 @@ namespace QS.Updater
 		{
 			checkBaseVersion.Check();
 
-			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess && updateDB) {
+			if(updateDB) {
 				var dBUpdater = autofacScope.Resolve<IDBUpdater>();
-				dBUpdater.CheckUpdateDB();
-				RunUpdate(updateDB, updateApp);
-				return;
+				if(dBUpdater.HasUpdates) {
+					dBUpdater.UpdateDB();
+					return;
+				}
 			}
 
 			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater && updateApp) {

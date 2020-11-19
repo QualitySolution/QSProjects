@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
+using Autofac;
 using MySql.Data.MySqlClient;
 using QS.Dialog;
+using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Versioning;
+using QS.Services;
+using QS.Updater.DB.ViewModels;
 using QS.Utilities.Text;
 
 namespace QS.Updater.DB
@@ -15,44 +21,43 @@ namespace QS.Updater.DB
 	{
 		static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		private readonly UpdateConfiguration configuration;
+		private readonly INavigationManager navigation;
+		private readonly IGuiDispatcher gui;
 		private readonly dynamic parametersService;
-		private readonly IApplicationInfo applicationInfo;
 		private readonly DbConnection connection;
-		private readonly IDBChangePermission permission;
+		private readonly MySqlConnectionStringBuilder connectionStringBuilder;
+		private readonly IUserService userService;
+		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 		private readonly IInteractiveMessage interactiveMessage;
-		private readonly CheckBaseVersion checkBaseVersion;
 
-		public SQLDBUpdater(UpdateConfiguration configuration, BaseParameters.ParametersService parametersService, IApplicationInfo applicationInfo, DbConnection connection, IDBChangePermission permission, IInteractiveMessage interactiveMessage, CheckBaseVersion checkBaseVersion)
+		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, IApplicationInfo applicationInfo, DbConnection connection, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IUnitOfWorkFactory unitOfWorkFactory, IInteractiveMessage interactiveMessage)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
-			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
-			this.permission = permission ?? throw new ArgumentNullException(nameof(permission));
+			this.connectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
+			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
-			this.checkBaseVersion = checkBaseVersion;
 		}
 
-		public void CheckMicroUpdatesDB()
+		#region Private
+
+		private Version CurrentDBVersion => parametersService.micro_updates != null ? parametersService.micro_updates(typeof(Version)) : parametersService.version(typeof(Version));
+
+		public bool HasUpdates => configuration.GetHopsToLast(CurrentDBVersion).Any();
+
+		#endregion
+		private void RunMicroUpdateOnly()
 		{
-			Version currentDB = new Version();
-			if(parametersService.micro_updates != null)
-				currentDB = Version.Parse(parametersService.micro_updates);
-
-			var dbMainVersion = Version.Parse(parametersService.version);
-
-			if(currentDB < dbMainVersion)
-				currentDB = dbMainVersion;
-
-			logger.Info("Проверяем микро обновления базы(текущая версия:{0})", VersionHelper.VersionToShortString(currentDB));
+			var currentDB = CurrentDBVersion;
 			var beforeUpdates = currentDB;
+			var hops = configuration.GetHopsToLast(currentDB).ToList();
+			logger.Info("Начинаем микро обновление(текущая версия:{0})", VersionHelper.VersionToShortString(currentDB));
 
-			while(configuration.MicroUpdates.Exists(u => u.Source == currentDB)) {
-				var update = configuration.MicroUpdates.Find(u => u.Source == currentDB);
-
-				if(!permission.HasPermission)
-					NotAdminErrorAndExit(true, update.Source, update.Destanation);
-
+			foreach(var update in hops) {
 				logger.Info("Обновляемся до {0}", VersionHelper.VersionToShortString(update.Destanation));
 				var trans = connection.BeginTransaction();
 				try {
@@ -76,72 +81,58 @@ namespace QS.Updater.DB
 					throw ex;
 				}
 			}
-
-			if(currentDB != beforeUpdates) {
-				parametersService.micro_updates = VersionHelper.VersionToShortString(currentDB);
-
-				interactiveMessage.ShowMessage(ImportanceLevel.Info, String.Format("Выполнено микро обновление базы {0} -> {1}.",
-					VersionHelper.VersionToShortString(beforeUpdates),
-					VersionHelper.VersionToShortString(currentDB)));
-			}
+				
+			parametersService.micro_updates = VersionHelper.VersionToShortString(currentDB);
+			interactiveMessage.ShowMessage(ImportanceLevel.Info, String.Format("Выполнено микро обновление базы {0} -> {1}.",
+				VersionHelper.VersionToShortString(beforeUpdates),
+				VersionHelper.VersionToShortString(currentDB)));
 		}
 
-		public void CheckUpdateDB(MySqlConnectionStringBuilder connectionStringBuilder)
+		private void RunUpdateDB()
 		{
-			logger.Debug(System.Reflection.Assembly.GetCallingAssembly().FullName);
-			Version currentDB = Version.Parse(parametersService.version);
-			var appVersion = applicationInfo.Version;
-			if(currentDB.Major == appVersion.Major && currentDB.Minor == appVersion.Minor)
-				return;
+			//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
+			connectionStringBuilder.ConnectionTimeout = 240;
 
-			var update = configuration.Updates.Find(u => u.Source == currentDB);
-			if(update != null) {
-				if(!permission.HasPermission)
-					NotAdminErrorAndExit(false, update.Source, update.Destanation);
-
-				//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
-				connectionStringBuilder.ConnectionTimeout = 240;
-
-				var dlg = new DBUpdateProcess(
-					update,
-					new MySQLProvider(
-						connectionStringBuilder.GetConnectionString(true),
-						new GtkRunOperationService(),
-						new GtkQuestionDialogsInteractive()),
-						applicationInfo,
-						parametersService
-					);
-				dlg.Show();
-				dlg.Run();
-				if(!dlg.Success)
-					Environment.Exit(1);
-				dlg.Destroy();
-
-				parametersService.ReloadParameters();
-				if(appVersion.Major != update.Destanation.Major && appVersion.Minor != update.Destanation.Minor)
-					CheckUpdateDB(connectionStringBuilder);
-			}
-			else {
-				logger.Error("Версия базы не соответствует программе, но обновление не найдено");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, 
-					checkBaseVersion.TextMessage +
-					String.Format("\nОбновление базы для версии {0} не поддерживается.", VersionHelper.VersionToShortString(currentDB)));
+			var page = navigation.OpenViewModel<UpdateProcessViewModel>(null, addingRegistrations: c => 
+				c.Register(cxt => connectionStringBuilder));
+			var isClosed = false;
+			CloseSource source= CloseSource.Self;
+			page.PageClosed += (sender, e) => {
+				isClosed = true;
+				source = e.CloseSource;
+			};
+			gui.WaitInMainLoop(() => isClosed);
+			if(source != CloseSource.Save) {
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, "База данных не обновлена, дальнейшая работа приложения не возможна. Приложение будет закрыто.", "Выход");
 				Environment.Exit(1);
 			}
 		}
 
-		public void CheckUpdateDB()
+		public void UpdateDB()
 		{
-			throw new NotImplementedException();
+			var hops = configuration.GetHopsToLast(CurrentDBVersion).ToList();
+			if(!hops.Any()) {
+				logger.Info("Нет обновлений для базы данных.");
+				return;
+			}
+
+			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
+				if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser(uow).IsAdmin)
+					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destanation);
+			}
+
+			if(hops.All(x => x.UpdateType == UpdateType.MicroUpdate))
+				RunMicroUpdateOnly();
+			else
+				RunUpdateDB();
 		}
 
-		private void NotAdminErrorAndExit(bool isMicro, Version from, Version to)
+		private void NotAdminErrorAndExit(Version from, Version to)
 		{
 			interactiveMessage.ShowMessage(ImportanceLevel.Error,
 				String.Format(
-					"Для работы текущей версии программы необходимо провести{0} обновление базы ({1} -> {2}), " +
+					"Для работы текущей версии программы необходимо провести обновление базы ({0} -> {1}), " +
 					"но у вас нет для этого прав. Зайдите в программу под администратором.",
-					isMicro ? " микро" : "",
 				  	VersionHelper.VersionToShortString(from),
 				  	VersionHelper.VersionToShortString(to)
 				));

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
-using DB.ViewModels;
 using Gtk;
+using QS.Updater.DB.ViewModels;
 using QS.Utilities;
 using QS.Views.Dialog;
 
