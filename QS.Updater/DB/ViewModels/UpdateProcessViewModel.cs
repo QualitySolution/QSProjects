@@ -3,18 +3,21 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using MySql.Data.MySqlClient;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
 using QS.Project.DB;
 using QS.Project.Versioning;
+using QS.Services;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Updater.DB.ViewModels
 {
-	public class UpdateProcessViewModel : WindowDialogViewModelBase
+	public class UpdateProcessViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
 	{
 		static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -24,8 +27,9 @@ namespace QS.Updater.DB.ViewModels
 		IMySQLProvider SQLProvider;
 		private readonly IApplicationInfo applicationInfo;
 		private readonly dynamic parametersService;
-		private readonly IInteractiveMessage interactive;
+		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
+		CancellationTokenSource cancellation = new CancellationTokenSource();
 
 		private UpdateHop[] hops;
 		Version dbVersion;
@@ -36,7 +40,7 @@ namespace QS.Updater.DB.ViewModels
 			IMySQLProvider mySQLProvider,
 			IApplicationInfo applicationInfo,
 			ParametersService parametersService,
-			IInteractiveMessage interactive,
+			IInteractiveService interactive,
 			IGuiDispatcher guiDispatcher) : base(navigation)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -99,8 +103,9 @@ namespace QS.Updater.DB.ViewModels
 			ButtonExcuteSensitive = false;
 			try {
 				if (NeedCreateBackup) {
-					if (ExecuteBackup()) {
+					if (ExecuteBackup() || cancellation.IsCancellationRequested) {
 						buttonExcuteSensitive = true;
+						cancellation = new CancellationTokenSource();
 						return;
 					}
 				}
@@ -110,7 +115,10 @@ namespace QS.Updater.DB.ViewModels
 						hops.Last().Destanation.VersionToShortString()
 					));
 				foreach (var hop in hops) {
+					if(cancellation.IsCancellationRequested)
+						return;
 					RunOneUpdate(hop);
+					TotalProgress.Add();
 				}
 
 				TotalProgress.Close();
@@ -127,7 +135,8 @@ namespace QS.Updater.DB.ViewModels
 
 		public void Cancel()
 		{
-			Close(false, CloseSource.Cancel);
+			if(interactive.Question("Остановка процеса обновления на середине приведет к неработоспособному состоянию базы данны. Действительно хотите остановить?", "Остановка операции"))
+				Close(false, CloseSource.Cancel);
 		}
 
 		#endregion
@@ -172,6 +181,9 @@ namespace QS.Updater.DB.ViewModels
 		private string currentTable;
 		void Mb_ExportProgressChanged(object sender, ExportProgressArgs e)
 		{
+			if(cancellation.IsCancellationRequested)
+				(sender as MySqlBackup).StopAllProcess();
+
 			guiDispatcher.RunInGuiTread(delegate {
 				if(currentTable == null)
 					TotalProgress.Start(maxValue: e.TotalRowsInAllTables, text: "Создание резервной копии");
@@ -209,8 +221,9 @@ namespace QS.Updater.DB.ViewModels
 
 			var script = new MySqlScript(SQLProvider.DbConnection, sql);
 			script.StatementExecuted += Script_StatementExecuted;
-			var commands = script.Execute();
-			logger.Debug("Выполнено {0} SQL-команд.", commands);
+			var commands = script.ExecuteAsync(cancellation.Token);
+			guiDispatcher.WaitInMainLoop(() => commands.Status != System.Threading.Tasks.TaskStatus.Running, 50);
+			logger.Debug("Выполнено {0} SQL-команд.", commands.Result);
 		}
 
 		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)
@@ -228,6 +241,11 @@ namespace QS.Updater.DB.ViewModels
 		{
 			var versionString = parametersService.micro_updates ?? parametersService.version;
 			return Version.Parse(versionString);
+		}
+
+		public void OnClose(CloseSource source)
+		{
+			cancellation.Cancel();
 		}
 
 		#endregion
