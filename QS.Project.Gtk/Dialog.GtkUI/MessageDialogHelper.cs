@@ -47,7 +47,7 @@ namespace QS.Dialog.GtkUI
 				                   ButtonsType.Ok,
 				                   warning);
 			md.SetPosition (WindowPosition.Center);
-			md.Title = title;
+			md.Title = title ?? "Предупреждение";
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
@@ -86,7 +86,7 @@ namespace QS.Dialog.GtkUI
 			    useMarkup,
 				error);
 			md.SetPosition (WindowPosition.Center);
-			md.Title = title;
+			md.Title = title ?? "Ошибка";
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
@@ -120,7 +120,7 @@ namespace QS.Dialog.GtkUI
 				ButtonsType.Ok,
 				message);
 			md.SetPosition (WindowPosition.Center);
-			md.Title = title;
+			md.Title = title ?? "Информация";
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();

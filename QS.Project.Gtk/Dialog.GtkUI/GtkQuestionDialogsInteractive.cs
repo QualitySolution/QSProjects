@@ -13,7 +13,7 @@ namespace QS.Dialog.GtkUI
 								   ButtonsType.YesNo,
 								   message);
 			md.SetPosition(WindowPosition.Center);
-			md.Title = title;
+			md.Title = title ?? "Вопрос";
 			md.ShowAll();
 			bool result = md.Run() == (int)ResponseType.Yes;
 			md.Destroy();
