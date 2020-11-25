@@ -11,7 +11,7 @@
     <RootNamespace>QS.Test</RootNamespace>
     <AssemblyName>QS.LibsTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.1</ReleaseVersion>
+    <ReleaseVersion>1.3</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -189,6 +189,7 @@
     <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
     <Compile Include="Updater\UpdateConfigurationTests.cs" />
     <Compile Include="BaseParameters\ParametersServiceTest.cs" />
+    <Compile Include="Serial\SerialNumberEncoderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -228,6 +229,7 @@
     <Folder Include="ViewModels\Resove\" />
     <Folder Include="Updater\" />
     <Folder Include="BaseParameters\" />
+    <Folder Include="Serial\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
@@ -257,6 +259,10 @@
     <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
       <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
       <Name>QS.Updater</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Features\QS.Features.csproj">
+      <Project>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</Project>
+      <Name>QS.Features</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
