@@ -8,10 +8,10 @@ namespace QS.Serial.ViewModels
 {
 	public class SerialNumberViewModel : WindowDialogViewModelBase
 	{
-		private readonly SNEncoder SerialNumberEncoder;
+		private readonly SerialNumberEncoder SerialNumberEncoder;
 		private readonly dynamic parametersService;
 
-		public SerialNumberViewModel(INavigationManager navigation, SNEncoder encoder, ParametersService parametersService) : base(navigation)
+		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder, ParametersService parametersService) : base(navigation)
 		{
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));

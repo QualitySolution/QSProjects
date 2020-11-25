@@ -64,7 +64,7 @@
     <Compile Include="Serial\Encoding\ArrayHelpers.cs" />
     <Compile Include="Serial\Encoding\Base58Encoding.cs" />
     <Compile Include="Serial\Encoding\SerialCommon.cs" />
-    <Compile Include="Serial\Encoding\SNEncoder.cs" />
+    <Compile Include="Serial\Encoding\SerialNumberEncoder.cs" />
     <Compile Include="Serial\ViewModels\SerialNumberViewModel.cs" />
     <Compile Include="Features\FeaturesAutofacModule.cs" />
   </ItemGroup>

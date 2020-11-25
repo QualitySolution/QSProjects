@@ -3,7 +3,7 @@ using QS.Project.Versioning;
 
 namespace QS.Serial.Encoding
 {
-	public class SNEncoder
+	public class SerialNumberEncoder
 	{
 		public byte CodeVersion { get; private set;}
 
@@ -18,7 +18,7 @@ namespace QS.Serial.Encoding
 		private string number;
 		private readonly string forProduct;
 
-		public SNEncoder(IApplicationInfo info)
+		public SerialNumberEncoder(IApplicationInfo info)
 		{
 			this.forProduct = info.ProductName;
 		}

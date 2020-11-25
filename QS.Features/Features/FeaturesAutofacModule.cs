@@ -10,7 +10,7 @@ namespace QS.Features
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterType<SNEncoder>().AsSelf();
+			builder.RegisterType<SerialNumberEncoder>().AsSelf();
 			#region ViewModels
 			builder.RegisterAssemblyTypes(System.Reflection.Assembly.GetAssembly(typeof(SerialNumberViewModel)))
 				.Where(t => t.IsAssignableTo<ViewModelBase>() && t.Name.EndsWith("ViewModel"))
