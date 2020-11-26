@@ -9,6 +9,8 @@ namespace Gamma.Binding.Converters
 		{
 			if (targetType == typeof(int))
 				return (System.Convert.ToInt32 (value));
+			if(targetType == typeof(double))
+				return System.Convert.ToDouble(value);
 			return null;
 		}
 
@@ -20,6 +22,8 @@ namespace Gamma.Binding.Converters
 				return (System.Convert.ToUInt16(value));
 			if (targetType == typeof(byte))
 				return (System.Convert.ToByte(value));
+			if(targetType == typeof(double))
+				return System.Convert.ToDouble(value);
 			return null;
 		}
 	}
