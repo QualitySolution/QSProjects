@@ -1,9 +1,10 @@
 ﻿using System;
+using QS.DomainModel.Entity;
 using QS.Project.Versioning;
 
 namespace QS.Serial.Encoding
 {
-	public class SerialNumberEncoder
+	public class SerialNumberEncoder : PropertyChangedBase
 	{
 		public byte CodeVersion { get; private set;}
 
@@ -20,9 +21,10 @@ namespace QS.Serial.Encoding
 
 		public SerialNumberEncoder(IApplicationInfo info)
 		{
-			this.forProduct = info.ProductName;
+			this.forProduct = info?.ProductName;
 		}
 
+		[PropertyChangedAlso("ComponentsText")]
 		public virtual string Number {
 			get {return number;}
 			set { 
@@ -78,14 +80,12 @@ namespace QS.Serial.Encoding
 			get{
 				if(IsNotSupport)
 					return "Версия формата не поддерживается.";
-				else if (IsValid)
+				else 
 					return String.Format("Версия кодирования: {0}\n" +
 						"Продукт: {1}",
 						CodeVersion,
 						DecodedProduct
 					);
-				else
-					return "Не корректный Сер. номер.";
 			}
 		}
 	}
