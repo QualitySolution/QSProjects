@@ -29,6 +29,8 @@ namespace QS.Project.Versioning
 
 		public DateTime BuildDate => System.IO.File.GetLastWriteTime(Assembly.Location);
 
+		public byte ProductCode => Assembly.GetCustomAttribute<AssemblyProductCodeAttribute>()?.Number ?? 0;
+
 		#region Внутрение
 		private Assembly Assembly => Assembly.GetEntryAssembly();
 		#endregion

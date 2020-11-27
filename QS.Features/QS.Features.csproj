@@ -10,7 +10,7 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Features</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.3</ReleaseVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -67,6 +67,8 @@
     <Compile Include="Serial\Encoding\SerialNumberEncoder.cs" />
     <Compile Include="Serial\ViewModels\SerialNumberViewModel.cs" />
     <Compile Include="Features\FeaturesAutofacModule.cs" />
+    <Compile Include="Serial\ProductService.cs" />
+    <Compile Include="Features\ProductEdition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serial\" />

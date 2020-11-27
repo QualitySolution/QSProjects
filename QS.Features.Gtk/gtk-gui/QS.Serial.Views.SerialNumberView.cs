@@ -18,13 +18,13 @@ namespace QS.Serial.Views
 
 		private global::Gtk.HBox hboxResult;
 
-		private global::Gtk.Label labelResult;
+		private global::Gamma.GtkWidgets.yLabel labelResult;
 
 		private global::Gtk.HBox hbox1;
 
-		private global::Gamma.GtkWidgets.yButton ybuttonCancel;
-
 		private global::Gamma.GtkWidgets.yButton ybuttonApply;
+
+		private global::Gamma.GtkWidgets.yButton ybuttonCancel;
 
 		protected virtual void Build()
 		{
@@ -79,14 +79,12 @@ namespace QS.Serial.Views
 			this.hboxResult.Spacing = 6;
 			this.hboxResult.BorderWidth = ((uint)(12));
 			// Container child hboxResult.Gtk.Box+BoxChild
-			this.labelResult = new global::Gtk.Label();
+			this.labelResult = new global::Gamma.GtkWidgets.yLabel();
 			this.labelResult.Name = "labelResult";
-			this.labelResult.LabelProp = global::Mono.Unix.Catalog.GetString("Введите серийник");
+			this.labelResult.LabelProp = global::Mono.Unix.Catalog.GetString("ylabel1");
 			this.hboxResult.Add(this.labelResult);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hboxResult[this.labelResult]));
 			w5.Position = 0;
-			w5.Expand = false;
-			w5.Fill = false;
 			this.dialog1_VBox.Add(this.hboxResult);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox[this.hboxResult]));
 			w6.Position = 2;
@@ -97,18 +95,6 @@ namespace QS.Serial.Views
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.ybuttonCancel = new global::Gamma.GtkWidgets.yButton();
-			this.ybuttonCancel.CanFocus = true;
-			this.ybuttonCancel.Name = "ybuttonCancel";
-			this.ybuttonCancel.UseStock = true;
-			this.ybuttonCancel.UseUnderline = true;
-			this.ybuttonCancel.Label = "gtk-cancel";
-			this.hbox1.Add(this.ybuttonCancel);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.ybuttonCancel]));
-			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
-			// Container child hbox1.Gtk.Box+BoxChild
 			this.ybuttonApply = new global::Gamma.GtkWidgets.yButton();
 			this.ybuttonApply.CanFocus = true;
 			this.ybuttonApply.Name = "ybuttonApply";
@@ -116,8 +102,22 @@ namespace QS.Serial.Views
 			this.ybuttonApply.UseUnderline = true;
 			this.ybuttonApply.Label = "gtk-apply";
 			this.hbox1.Add(this.ybuttonApply);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.ybuttonApply]));
-			w8.Position = 2;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.ybuttonApply]));
+			w7.PackType = ((global::Gtk.PackType)(1));
+			w7.Position = 0;
+			w7.Expand = false;
+			w7.Fill = false;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.ybuttonCancel = new global::Gamma.GtkWidgets.yButton();
+			this.ybuttonCancel.CanFocus = true;
+			this.ybuttonCancel.Name = "ybuttonCancel";
+			this.ybuttonCancel.UseStock = true;
+			this.ybuttonCancel.UseUnderline = true;
+			this.ybuttonCancel.Label = "gtk-cancel";
+			this.hbox1.Add(this.ybuttonCancel);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.ybuttonCancel]));
+			w8.PackType = ((global::Gtk.PackType)(1));
+			w8.Position = 1;
 			w8.Expand = false;
 			w8.Fill = false;
 			this.dialog1_VBox.Add(this.hbox1);

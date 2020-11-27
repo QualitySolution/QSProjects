@@ -90,4 +90,15 @@ namespace QS.Project.Versioning
 	{
 		
 	}
+
+	/// <summary>
+	/// Атрибут позволяющий указать код продукта, это уникальный номер программы для Quality Solution
+	/// Зашит внутри серийного номера начиная с версии 2.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Assembly)]
+	public class AssemblyProductCodeAttribute : Attribute
+	{
+		public byte Number;
+		public AssemblyProductCodeAttribute(byte number) { Number = number; }
+	}
 }

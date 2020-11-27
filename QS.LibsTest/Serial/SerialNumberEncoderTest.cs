@@ -10,7 +10,6 @@ namespace QS.Test.Serial
 	public class SerialNumberEncoderTest
 	{
 		[Test(Description = "Тест набора серийных номеров версии 1")]
-
 		[TestCase("PuWW-Hddh-2fjH-A2Sk-nC", true)]//АО "Первый хлебокомбинат"
 		[TestCase("Pjr7-iiQj-vnW9-gNXb-oi", true)]//ООО «Беловопромжелдортранс»
 		[TestCase("PaBj-9oB8-Bx6H-c3Vu-En", true)]//Охранное Агентство "Алекс-А"

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using QS.BaseParameters;
+using QS.Dialog;
 using QS.Navigation;
 using QS.Serial.Encoding;
 using QS.ViewModels.Dialog;
@@ -10,14 +13,18 @@ namespace QS.Serial.ViewModels
 	{
 		private readonly SerialNumberEncoder SerialNumberEncoder;
 		private readonly dynamic parametersService;
+		private readonly IInteractiveQuestion interactive;
+		private readonly byte lastEdition;
 
-		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder, ParametersService parametersService) : base(navigation)
+		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder, ParametersService parametersService, IInteractiveQuestion interactive) : base(navigation)
 		{
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
+			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			serialNumber = this.parametersService.serial_number;
-
 			Title = "Замена серийного номера";
+			SerialNumberEncoder.Number = serialNumber;
+			lastEdition = SerialNumberEncoder.EditionId;
 		}
 
 		#region Свойства
@@ -53,6 +60,11 @@ namespace QS.Serial.ViewModels
 		{
 			parametersService.serial_number = SerialNumber;
 			Close(false, CloseSource.Save);
+			if(lastEdition != SerialNumberEncoder.EditionId &&
+				interactive.Question("Редакция программы изменилась, перезапустить приложение?")) {
+				Process.Start(Assembly.GetEntryAssembly().Location);
+				Environment.Exit(0);
+			}
 		}
 	}
 }

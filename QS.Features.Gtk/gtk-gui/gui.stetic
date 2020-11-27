@@ -8,7 +8,7 @@
     <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QS.Features.Gtk.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QS.Serial.Views.SerialNumberView" design-size="542 214">
+  <widget class="Gtk.Bin" id="QS.Serial.Views.SerialNumberView" design-size="542 205">
     <property name="MemberName" />
     <child>
       <widget class="Gtk.VBox" id="dialog1_VBox">
@@ -72,15 +72,13 @@
             <property name="Spacing">6</property>
             <property name="BorderWidth">12</property>
             <child>
-              <widget class="Gtk.Label" id="labelResult">
+              <widget class="Gamma.GtkWidgets.yLabel" id="labelResult">
                 <property name="MemberName" />
-                <property name="LabelProp" translatable="yes">Введите серийник</property>
+                <property name="LabelProp" translatable="yes">ylabel1</property>
               </widget>
               <packing>
                 <property name="Position">0</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
           </widget>
@@ -96,7 +94,22 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <placeholder />
+              <widget class="Gamma.GtkWidgets.yButton" id="ybuttonApply">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="UseStock">True</property>
+                <property name="Type">StockItem</property>
+                <property name="StockId">gtk-apply</property>
+                <signal name="Clicked" handler="OnYbuttonApplyClicked" />
+                <property name="label">gtk-apply</property>
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
             </child>
             <child>
               <widget class="Gamma.GtkWidgets.yButton" id="ybuttonCancel">
@@ -109,24 +122,8 @@
                 <property name="label">gtk-cancel</property>
               </widget>
               <packing>
+                <property name="PackType">End</property>
                 <property name="Position">1</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="ybuttonApply">
-                <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="UseStock">True</property>
-                <property name="Type">StockItem</property>
-                <property name="StockId">gtk-apply</property>
-                <signal name="Clicked" handler="OnYbuttonApplyClicked" />
-                <property name="label">gtk-apply</property>
-              </widget>
-              <packing>
-                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
