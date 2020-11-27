@@ -14,13 +14,15 @@ namespace QS.Updater
 		private readonly IUpdateService updateService;
 		private readonly IApplicationInfo application;
 		private readonly ISkipVersionState skip;
+		private readonly dynamic parametersService;
 		private readonly IUpdaterUI uI;
 
-		public ApplicationUpdater(IUpdaterUI updaterUI, IUpdateService updateService, IApplicationInfo application, ISkipVersionState skips)
+		public ApplicationUpdater(IUpdaterUI updaterUI, IUpdateService updateService, IApplicationInfo application, ISkipVersionState skips, BaseParameters.ParametersService parametersService = null)
 		{
 			this.updateService = updateService;
 			this.application = application;
 			this.skip = skips;
+			this.parametersService = parametersService;
 			this.uI = updaterUI;
 		}
 
@@ -43,7 +45,7 @@ namespace QS.Updater
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 												application.ProductName,
 				                                application.Modification,
-												application.SerialNumber,
+												parametersService?.serial_number,
 												application.Version.Major,
 												application.Version.Minor,
 												application.Version.Build,
