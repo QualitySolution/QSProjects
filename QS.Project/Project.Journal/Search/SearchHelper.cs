@@ -121,7 +121,16 @@ namespace QS.Project.Journal.Search
 							continue;
 						}
 					} else {
-						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
+						SimpleExpression likeRestriction;
+
+						if (alias.Body.Type == typeof(IProjection)) {
+							var projection = (IProjection) alias.Compile().Invoke();
+							likeRestriction = Restrictions.Like(projection, sv, MatchMode.Anywhere);
+							disjunctionCriterion.Add(likeRestriction);
+							continue;
+						}
+						
+						likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
 						disjunctionCriterion.Add(likeRestriction);
 					}
 				}
