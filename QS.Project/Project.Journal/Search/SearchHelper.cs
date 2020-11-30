@@ -120,21 +120,8 @@ namespace QS.Project.Journal.Search
 						} else {
 							continue;
 						}
-					} else
-					{
-						SimpleExpression likeRestriction;
-
-						if (alias.Body.Type == typeof(IProjection))
-						{
-							var projection = (IProjection) alias.Compile().Invoke();
-							
-							likeRestriction = Restrictions.Like(projection, sv, MatchMode.Anywhere);
-							disjunctionCriterion.Add(likeRestriction);
-							continue;
-						}
-						
-						likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
-						
+					} else {
+						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
 						disjunctionCriterion.Add(likeRestriction);
 					}
 				}
