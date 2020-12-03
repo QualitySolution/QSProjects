@@ -16,6 +16,7 @@ using QSOrmProject.UpdateNotification;
 namespace QSOrmProject
 {
 	[ToolboxItem (true)]
+	[Obsolete("Используйте новый виджет EntityEntry и новый тип журналов QS.Project.Journal")]
 	public partial class EntryReferenceVM : QS.Dialog.Gtk.WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();

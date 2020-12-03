@@ -1,26 +1,27 @@
 ﻿using System;
-using QS.Dialog.Gtk;
-using QS.Project.Journal;
-using System.Linq;
-using Gamma.Binding.Core;
-using System.Linq.Expressions;
-using NLog;
 using System.ComponentModel;
-using QS.DomainModel.Entity;
-using QS.DomainModel.Config;
-using QS.Project.Dialogs.GtkUI;
-using Gtk;
-using QS.Tdi;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using QS.Project.Journal.EntitySelector;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using Gamma.Binding.Core;
+using Gtk;
+using NLog;
+using QS.Dialog.Gtk;
+using QS.DomainModel.Config;
+using QS.DomainModel.Entity;
+using QS.Project.Dialogs.GtkUI;
+using QS.Project.Journal;
+using QS.Project.Journal.EntitySelector;
 using QS.RepresentationModel.GtkUI;
+using QS.Tdi;
 
 namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem(true)]
 	[Category("QS.Project")]
+	[Obsolete("Используйте новый виджет EntityEntry и новый тип журналов QS.Project.Journal")]
 	public partial class EntityViewModelEntry : WidgetOnDialogBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();

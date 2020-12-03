@@ -1,24 +1,25 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using Gamma.Binding.Core;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.DomainModel.Entity;
-using QS.Tdi;
-using QS.Project.Dialogs.GtkUI;
-using QS.Project.Dialogs;
-using System.Linq;
 using QS.DomainModel.Config;
-using Gamma.Binding.Core;
-using System.Linq.Expressions;
-using QS.RepresentationModel.GtkUI;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Dialogs;
+using QS.Project.Dialogs.GtkUI;
+using QS.RepresentationModel.GtkUI;
+using QS.Tdi;
 
 namespace QS.Widgets.GtkUI
 {
 	[ToolboxItem(true)]
 	[Category("QS.Project")]
+	[Obsolete("Используйте новый виджет EntityEntry и новый тип журналов QS.Project.Journal")]
 	public partial class RepresentationEntry : WidgetOnDialogBase
 	{
 		public RepresentationEntry()
