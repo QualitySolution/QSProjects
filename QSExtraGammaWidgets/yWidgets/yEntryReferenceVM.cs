@@ -8,6 +8,7 @@ namespace Gamma.Widgets
 {
 	[ToolboxItem (true)]
 	[Category ("Gamma Widgets")]
+	[Obsolete("Используйте новый виджет EntityEntry и новый тип журналов QS.Project.Journal")]
 	public class yEntryReferenceVM : EntryReferenceVM
 	{
 		public BindingControler<yEntryReferenceVM> Binding { get; private set; }
