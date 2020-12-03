@@ -96,7 +96,11 @@
     <itemgroups />
     <signals />
   </object>
-	<object type="Gamma.GtkWidgets.yProgressBar" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.progressbar.png" base-type="Gtk.ProgressBar">
+  <object type="Gamma.GtkWidgets.yNotebook" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.notebook.png" base-type="Gtk.Notebook">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yProgressBar" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.progressbar.png" base-type="Gtk.ProgressBar">
     <itemgroups />
     <signals />
   </object>
