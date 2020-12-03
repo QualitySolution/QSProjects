@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using QS.Project.Domain;
+using QS.Tdi;
 using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
@@ -43,13 +45,13 @@ namespace QS.Navigation
 				}
 			}
 			if (hash == null)
-				hash = NameHash(typeViewModel) + ParametersHash(ctorValues);
+				hash = NameHash(typeViewModel) + ParametersHash(typeViewModel, ctorValues);
 
 			//Если в сгенерированом хеше есть ~ значит мы не хотим проверку по хешу, поэтому возвращаем null
 			return hash.Contains("~") ? null : hash;
 		}
 
-		private string ParametersHash(object[] ctorValues)
+		private string ParametersHash(Type typeViewModel, object[] ctorValues)
 		{
 			var paramHash = String.Empty;
 
@@ -57,6 +59,10 @@ namespace QS.Navigation
 				if(ctorArg is IEntityUoWBuilder uowBuilder) {
 					paramHash += uowBuilder.IsNewEntity ? "~" : $"#{uowBuilder.EntityOpenId}";
 				}
+
+				//Только для диалогов TDI
+				if(typeViewModel.IsAssignableTo<ITdiDialog>() && ctorArg is int entityId)
+					paramHash += $"#{entityId}";
 
 				if(ctorArg is Type type) {
 					paramHash += $"#{type.Name}";
