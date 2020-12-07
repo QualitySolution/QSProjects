@@ -124,9 +124,10 @@ namespace QS.Tdi.Gtk
 				//то открыть окно "контрагенты"
 				((ITdiTabAddedNotifier)tab).OnTabAdded();
 			}
+
 		}
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+        public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.TdiTab == masterTab);
 			if(info == null)
@@ -397,6 +398,14 @@ namespace QS.Tdi.Gtk
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			if(tabBox != null) {
 				tabBox.Destroy();
+			}
+
+            tab.TabNameChanged -= OnTabNameChanged;
+			
+            if (tab is IDisposable)
+            {
+				(tab as IDisposable).Dispose();
+				tab = null;
 			}
 		}
 

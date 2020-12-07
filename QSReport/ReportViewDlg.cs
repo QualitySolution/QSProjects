@@ -4,7 +4,7 @@ using QS.Report;
 
 namespace QSReport
 {
-	public partial class ReportViewDlg : QS.Dialog.Gtk.TdiTabBase
+	public partial class ReportViewDlg : QS.Dialog.Gtk.TdiTabBase, IDisposable
 	{
 		protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
@@ -95,9 +95,17 @@ namespace QSReport
 
 		public override void Destroy()
 		{
-			parametersWidget?.Destroy();
+			parametersWidget.Destroy();
 			base.Destroy();
 		}
-	}
+
+        public override void Dispose()
+        {
+			reportviewer1?.Dispose();
+			reportviewer1 = null;
+			parametersWidget.LoadReport -= ParametersWidget_LoadReport;
+			base.Dispose();
+        }
+    }
 }
 
