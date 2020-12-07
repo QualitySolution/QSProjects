@@ -8,7 +8,13 @@ namespace QS.Project.Services
 {
 	public static class ServicesConfig
 	{
-		public static ICommonServices CommonServices => new CommonServices(ValidationService, InteractiveService, PermissionsSettings.PermissionService, PermissionsSettings.CurrentPermissionService, UserService);
+		public static ICommonServices CommonServices => new CommonServices(
+			ValidationService,
+			InteractiveService,
+			PermissionsSettings.PermissionService, 
+			PermissionsSettings.CurrentPermissionService,
+			UserService);
+		
 		public static IValidator ValidationService { get; set; }
 		public static IInteractiveService InteractiveService { get; set; }
 		public static IUserService UserService { get; set; }
