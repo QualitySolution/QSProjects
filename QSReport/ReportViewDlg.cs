@@ -95,7 +95,7 @@ namespace QSReport
 
 		public override void Destroy()
 		{
-			parametersWidget.Destroy();
+			parametersWidget?.Destroy();
 			base.Destroy();
 		}
 
@@ -103,7 +103,9 @@ namespace QSReport
         {
 			reportviewer1?.Dispose();
 			reportviewer1 = null;
-			parametersWidget.LoadReport -= ParametersWidget_LoadReport;
+			if(parametersWidget != null) {
+				parametersWidget.LoadReport -= ParametersWidget_LoadReport;
+			}
 			base.Dispose();
         }
     }
