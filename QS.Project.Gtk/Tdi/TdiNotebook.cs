@@ -407,6 +407,7 @@ namespace QS.Tdi.Gtk
 				(tab as IDisposable).Dispose();
 				tab = null;
 			}
+			GC.Collect();
 		}
 
 		internal void OnTabClosed(ITdiTab tab, CloseSource source)
