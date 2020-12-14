@@ -19,6 +19,35 @@ namespace QS.HistoryLog
 
 		readonly List<ChangedEntity> changes = new List<ChangedEntity>();
 
+		private static string[] listOfCallersWithDifficultToFindInCodeNames =
+		{
+			".ctor",
+			"Activate",
+			"ButtonSendErrorSendedEmails_Clicked",
+			"ConfigureDlg",
+			"ConfigureWidget",
+			"Create",
+			"CreateSalesEquipmentAgreementAndAddEquipment",
+			"CreateTasks",
+			"CreateUoW",
+			"DocPrinterInit",
+			"FillWaterFixedPrices",
+			"LoadNomenclatures",
+			"NotifyIfNewClient",
+			"OnActionComplaintsActivated",
+			"OnButton1Clicked",
+			"OnButtonSaveCommentClicked",
+			"PopupItems",
+			"ReceivePayment",
+			"RefreshPaymentStatus",
+			"RemoveAgreementBeingCreateForEachAdding",
+			"SendNewNotifications",
+			"SendPayment",
+			"SynchronizePaymentStatuses",
+			"TimerOnElapsed",
+			"UoW"
+		};
+
 		public HibernateTracker()
 		{
 		}
@@ -107,7 +136,15 @@ namespace QS.HistoryLog
 				var reg = new Regex("user id=(.+?)(;|$)");
 				var match = reg.Match(conStr);
 				string dbLogin = match.Success ? match.Groups[1].Value : null;
-				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle ?? userUoW.ActionTitle?.CallerMemberName, user, dbLogin);
+
+				var callerName = userUoW.ActionTitle?.CallerMemberName ?? "";
+
+				if (listOfCallersWithDifficultToFindInCodeNames.Contains(callerName))
+                {
+					callerName = userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOf('\\') + 1) + " (" + userUoW.ActionTitle.CallerLineNumber + ") - " + callerName;
+				}
+
+				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle ?? callerName, user, dbLogin);
 				changeset.AddChange(changes.ToArray());
 				uow.Save(changeset);
 				uow.Commit();
