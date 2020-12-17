@@ -381,6 +381,8 @@
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Dialog\IGuiDispatcher.cs" />
     <Compile Include="Dialog\WindowGravity.cs" />
+    <Compile Include="Project.Versioning\Product\IProductService.cs" />
+    <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -429,6 +431,7 @@
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="BaseParameters\ViewModels\" />
+    <Folder Include="Project.Versioning\Product\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
