@@ -14,9 +14,12 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Project.Domain;
 using QS.Project.Services;
+using QS.Services;
 using QS.Tdi;
 using QS.Utilities;
+using QS.ViewModels;
 using QS.Views.Resolve;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
@@ -125,15 +128,16 @@ namespace QSOrmProject
 		/// <returns>Виджет с интерфейсом ITdiDialog</returns>
 		/// <param name="objectClass">Класс объекта для которого нужно создать диалог.</param>
 		/// <param name="parameters">Параметры конструктора диалога.</param>
-		public static ITdiDialog CreateObjectDialog(System.Type objectClass, params object[] parameters)
+		public static ITdiDialog CreateObjectDialog(Type objectClass, params object[] parameters)
 		{
-			System.Type dlgType = GetDialogType(objectClass);
+			Type dlgType = GetDialogType(objectClass);
 			if (dlgType == null) {
 				InvalidOperationException ex = new InvalidOperationException(
 												   String.Format("Для класса {0} нет привязанного диалога.", objectClass));
 				logger.Error(ex);
 				throw ex;
 			}
+
 			Type[] paramTypes = new Type[parameters.Length];
 			for (int i = 0; i < parameters.Length; i++) {
 				if(parameters[i] is INHibernateProxy)
@@ -142,7 +146,25 @@ namespace QSOrmProject
 					paramTypes[i] = parameters[i].GetType();
 			}
 
-			System.Reflection.ConstructorInfo ci = dlgType.GetConstructor(paramTypes);
+			// Guess ViewModel
+			Type viewModelType = typeof(EntityTabViewModelBase<>);
+			Type[] typeArgs = { objectClass };
+			viewModelType = viewModelType.MakeGenericType(typeArgs);
+
+			if (dlgType.IsSubclassOf(viewModelType))
+			{
+				Type[] constructorArgs = { typeof(IEntityUoWBuilder), typeof(IUnitOfWorkFactory), typeof(ICommonServices) };
+				var ctor = dlgType.GetConstructor(constructorArgs);
+				
+				return (ITdiDialog)ctor.Invoke(new object[] {
+						EntityUoWBuilder.ForOpen(parameters.FirstOrDefault().GetId()),
+						UnitOfWorkFactory.GetDefaultFactory,
+						ServicesConfig.CommonServices
+					});
+			}
+
+			// Guess Dialog
+			ConstructorInfo ci = dlgType.GetConstructor(paramTypes);
 			if (ci == null) {
 				InvalidOperationException ex = new InvalidOperationException(
 												   String.Format("Конструктор для диалога {0} с параметрами({1}) не найден.", dlgType.ToString(), NHibernate.Util.CollectionPrinter.ToString(paramTypes)));
