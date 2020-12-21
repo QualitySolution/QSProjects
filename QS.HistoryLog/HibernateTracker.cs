@@ -107,7 +107,13 @@ namespace QS.HistoryLog
 				var reg = new Regex("user id=(.+?)(;|$)");
 				var match = reg.Match(conStr);
 				string dbLogin = match.Success ? match.Groups[1].Value : null;
-				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle ?? userUoW.ActionTitle?.CallerMemberName, user, dbLogin);
+
+				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
+						?? userUoW.ActionTitle?.CallerMemberName + " - " 
+							+ userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOf('\\') + 1)
+							+ " (" + userUoW.ActionTitle.CallerLineNumber + ")",
+					user,
+					dbLogin);
 				changeset.AddChange(changes.ToArray());
 				uow.Save(changeset);
 				uow.Commit();
