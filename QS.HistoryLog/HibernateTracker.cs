@@ -110,7 +110,7 @@ namespace QS.HistoryLog
 
 				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
 						?? userUoW.ActionTitle?.CallerMemberName + " - " 
-							+ userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOf('\\') + 1)
+							+ userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOf(System.IO.Path.DirectorySeparatorChar) + 1)
 							+ " (" + userUoW.ActionTitle.CallerLineNumber + ")",
 					user,
 					dbLogin);
