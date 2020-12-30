@@ -164,9 +164,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSMachineConfig\QSMachineConfig.csproj">
-      <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
-      <Name>QSMachineConfig</Name>
+    <ProjectReference Include="..\QS.MachineConfig\QS.MachineConfig.csproj">
+      <Project>{769710d2-bf98-4120-9e07-67bd740cfa1d}</Project>
+      <Name>QS.MachineConfig</Name>
     </ProjectReference>
     <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
