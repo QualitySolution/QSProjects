@@ -12,6 +12,11 @@ namespace QS.Services
 			 CurrentUserId = UserRepository.GetCurrentUserId();
 		}
 
+		public UserService(int currentUserId)
+		{
+			CurrentUserId = currentUserId;
+		}
+
 		public int CurrentUserId { get; }
 
 		public UserBase GetCurrentUser(IUnitOfWork uow)
