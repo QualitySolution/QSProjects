@@ -104,10 +104,6 @@
         <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
         <Name>GammaUtil</Name>
       </ProjectReference>
-      <ProjectReference Include="..\QS.FNS\QS.FNS.csproj">
-        <Project>{d45b738b-cdd9-4061-b51f-992e0aab96dd}</Project>
-        <Name>QS.FNS</Name>
-      </ProjectReference>
       <ProjectReference Include="..\QS.Project\QS.Project.csproj">
         <Project>{28a78143-42e3-40e7-86f5-dd7e1679be86}</Project>
         <Name>QS.Project</Name>
