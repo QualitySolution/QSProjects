@@ -6,7 +6,7 @@
     <ProjectGuid>{769710D2-BF98-4120-9E07-67BD740CFA1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>QSMachineConfig</RootNamespace>
-    <AssemblyName>QSMachineConfig</AssemblyName>
+    <AssemblyName>QS.MachineConfig</AssemblyName>
     <ReleaseVersion>1.0</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -47,16 +47,15 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.5\lib\net40-client\NLog.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultMachineConfig.cs" />
+    <Compile Include="IMachineConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MachineConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="NLog" Version="4.7.5" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
