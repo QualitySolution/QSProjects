@@ -7,10 +7,21 @@ namespace QS.Report
 {
 	public class ReportInfo
 	{
+		#region Настройки отчета
+
+		/// <summary>
+		/// Техническое имя отчета
+		/// </summary>
 		public string Identifier { get; set; }
 
+		/// <summary>
+		/// Имя отчета для пользователя
+		/// </summary>
 		public string Title { get; set; }
 
+		/// <summary>
+		/// Словать с параметрами отчета
+		/// </summary>
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
 		/// <summary>
@@ -18,6 +29,18 @@ namespace QS.Report
 		/// Если значение false то время будет обрезаться, в строковом представлении при передачи в отчет.
 		/// </summary>
 		public bool ParameterDatesWithTime { get; set; } = true;
+
+		/// <summary>
+		/// Указывается надо ли передвать серверу в ConnectionString параметр Allow User Variables=True
+		/// </summary>
+		public bool UseUserVariables { get; set; } = false;
+
+		/// <summary>
+		/// Строковое представление отчета в виде XML. Для передачи отчета через память без записи на диск.
+		/// </summary>
+		public string Source { get; set; }
+
+		#endregion
 
 		public string GetPath ()
 		{
@@ -38,11 +61,6 @@ namespace QS.Report
 			return System.IO.Path.Combine (parts.ToArray ());
 		}
 
-		/// <summary>
-		/// Строковое представление отчета в виде XML. Для передачи отчета через память без записи на диск.
-		/// </summary>
-		public string Source { get; set; }
-
 		public Uri GetReportUri ()
 		{
 			return new Uri (GetPath ());
@@ -50,6 +68,7 @@ namespace QS.Report
 
 		public string Path { get; set; }
 
+		#region Обработка параметров
 		public string GetParametersString ()
 		{
 			if (Parameters == null)
@@ -90,8 +109,7 @@ namespace QS.Report
 			}
 			return value.ToString ();
 		}
-
-		public bool UseUserVariables { get; set; } = false;
+		#endregion
 
 		public string ConnectionString {
 			get {
