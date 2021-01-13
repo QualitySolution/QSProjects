@@ -1,5 +1,7 @@
 ﻿using System;
+using Autofac;
 using QS.Report.ViewModels;
+using QS.Views.Resolve;
 
 namespace QS.Report.Views
 {
@@ -7,16 +9,27 @@ namespace QS.Report.Views
 	{
 		RdlViewerViewModel ViewModel;
 
-		public RdlViewerView(RdlViewerViewModel model)
+		public RdlViewerView(RdlViewerViewModel viewModel)
 		{
 			this.Build();
-			ViewModel = model;
+			ViewModel = viewModel;
 
-			reportviewer1.DefaultExportFileName = ViewModel.ReportInfo.Title;
+			reportviewer1.DefaultExportFileName = ViewModel.ReportInfo?.Title;
 
-			//FIXME Реализовать режим работы с панелью. Видимо нужно делать отдельно новый тип панелей на ViewModel.
-			panelParameters.Visible = false;
+			if(ViewModel.ReportParametersViewModel != null) {
+				var resolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
+				var widget = resolver.Resolve(ViewModel.ReportParametersViewModel);
+				panelParameters.Panel = widget;
+				ViewModel.LoadReport = LoadReport;
+			}
+			else {
+				panelParameters.Visible = false;
+				LoadReport();
+			}
+		}
 
+		public void LoadReport()
+		{
 			if(ViewModel.ReportInfo.Source != null)
 				reportviewer1.LoadReport(ViewModel.ReportInfo.Source, ViewModel.ReportInfo.GetParametersString(), ViewModel.ReportInfo.ConnectionString, true);
 			else
