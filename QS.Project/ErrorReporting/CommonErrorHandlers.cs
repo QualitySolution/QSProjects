@@ -12,7 +12,7 @@ namespace QS.ErrorReporting
 
 		public static bool MySqlException1055OnlyFullGroupBy(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
 		{
-			var mysqlEx = ExceptionHelper.FineExceptionTypeInInner<MySqlException>(exception);
+			var mysqlEx = ExceptionHelper.FindExceptionTypeInInner<MySqlException>(exception);
 			if(mysqlEx != null && mysqlEx.Number == 1055) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, "На сервере MariaDB\\MySQL включен режим 'only_full_group_by', " +
 					"для нормальной работы программы нужно удалить это значение из опции sql_mode. Обычно по умолчанию этот режим " +
@@ -24,7 +24,7 @@ namespace QS.ErrorReporting
 
 		public static bool MySqlException1366IncorrectStringValue(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
 		{
-			var mysqlEx = ExceptionHelper.FineExceptionTypeInInner<MySqlException>(exception);
+			var mysqlEx = ExceptionHelper.FindExceptionTypeInInner<MySqlException>(exception);
 			if(mysqlEx != null && mysqlEx.Number == 1366) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, "При сохранении в базу данных произошла ошибка «Incorrect string value», " +
 					"обычно это означает что вы вставили в поле диалога какие-то символы не поддерживаемые текущей кодировкой поля таблицы. " +
@@ -40,7 +40,7 @@ namespace QS.ErrorReporting
 
 		public static bool NHibernateFlushAfterException (Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage)
 		{
-			var nhEx = ExceptionHelper.FineExceptionTypeInInner<NHibernate.AssertionFailure>(exception);
+			var nhEx = ExceptionHelper.FindExceptionTypeInInner<NHibernate.AssertionFailure>(exception);
 			if(nhEx != null && nhEx.Message.Contains("don't flush the Session after an exception occurs")) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, "В этом диалоге ранее произошла ошибка, в следстивии ее программа не может " +
 					"сохранить данные. Закройте этот диалог и продолжайте работу в новом.");

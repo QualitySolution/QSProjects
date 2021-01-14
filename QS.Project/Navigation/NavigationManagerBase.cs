@@ -184,8 +184,8 @@ namespace QS.Navigation
 			try {
 				return makePage(hash);
 			}
-			catch (Exception ex) when (ex.FineExceptionTypeInInner<AbortCreatingPageException>() != null) {
-				var abortEx = ex.FineExceptionTypeInInner<AbortCreatingPageException>();
+			catch (Exception ex) when (ex.FindExceptionTypeInInner<AbortCreatingPageException>() != null) {
+				var abortEx = ex.FindExceptionTypeInInner<AbortCreatingPageException>();
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, abortEx.Message, abortEx.Title);
 				return null;
 			}
