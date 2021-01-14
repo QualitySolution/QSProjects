@@ -35,7 +35,7 @@ namespace QS.Updater.DB
 			Hops.Add(new UpdateHop {
 				UpdateType = UpdateType.MicroUpdate,
 				Source = source,
-				Destanation = destination,
+				Destination = destination,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
 			});
@@ -57,7 +57,7 @@ namespace QS.Updater.DB
 			Hops.Add(new UpdateHop {
 				UpdateType = UpdateType.Update,
 				Source = source,
-				Destanation = destination,
+				Destination = destination,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
 			});
@@ -73,14 +73,14 @@ namespace QS.Updater.DB
 				while(true) {
 					var nextMicro = GetNextMicroUpdate(last);
 					if (nextMicro != null) {
-						last = nextMicro.Destanation;
+						last = nextMicro.Destination;
 						yield return nextMicro;
 					}
 					else break;
 				}
 				var next = GetNextUpdate(last);
 				if (next != null) {
-					last = next.Destanation;
+					last = next.Destination;
 					yield return next;
 				}
 				else break;
@@ -104,7 +104,7 @@ namespace QS.Updater.DB
 	{
 		public UpdateType UpdateType;
 		public Version Source;
-		public Version Destanation;
+		public Version Destination;
 
 		public string Resource;
 		public Assembly Assembly;

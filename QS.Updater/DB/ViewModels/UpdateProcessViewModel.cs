@@ -62,7 +62,7 @@ namespace QS.Updater.DB.ViewModels
 			hops = configuration.GetHopsToLast(dbVersion).ToArray();
 			Title = String.Format("Обновление: {0} → {1}",
 						dbVersion.VersionToShortString(),
-						hops.Last().Destanation.VersionToShortString());
+						hops.Last().Destination.VersionToShortString());
 		}
 
 		#region Свойства для View
@@ -112,7 +112,7 @@ namespace QS.Updater.DB.ViewModels
 
 				TotalProgress.Start(maxValue: hops.Length, text: String.Format("Обновление: {0} → {1}",
 						dbVersion.VersionToShortString(),
-						hops.Last().Destanation.VersionToShortString()
+						hops.Last().Destination.VersionToShortString()
 					));
 				foreach (var hop in hops) {
 					if(cancellation.IsCancellationRequested)
@@ -201,7 +201,7 @@ namespace QS.Updater.DB.ViewModels
 		void RunOneUpdate(UpdateHop updateScript)
 		{
 			var operationName = (updateScript.UpdateType == UpdateType.MicroUpdate ? "Микро-обновление" : "Обновление")
-				+ $" базы до " + updateScript.Destanation.VersionToShortString();
+				+ $" базы до " + updateScript.Destination.VersionToShortString();
 			logger.Info(operationName);
 			CommandsLog += operationName + "\n";
 

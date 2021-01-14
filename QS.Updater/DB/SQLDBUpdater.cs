@@ -58,7 +58,7 @@ namespace QS.Updater.DB
 			logger.Info("Начинаем микро обновление(текущая версия:{0})", VersionHelper.VersionToShortString(currentDB));
 
 			foreach(var update in hops) {
-				logger.Info("Обновляемся до {0}", VersionHelper.VersionToShortString(update.Destanation));
+				logger.Info("Обновляемся до {0}", VersionHelper.VersionToShortString(update.Destination));
 				var trans = connection.BeginTransaction();
 				try {
 					string sql;
@@ -74,7 +74,7 @@ namespace QS.Updater.DB
 					cmd.Transaction = trans;
 					cmd.ExecuteNonQuery();
 					trans.Commit();
-					currentDB = update.Destanation;
+					currentDB = update.Destination;
 				}
 				catch(Exception ex) {
 					trans.Rollback();
@@ -118,7 +118,7 @@ namespace QS.Updater.DB
 
 			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
 				if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser(uow).IsAdmin)
-					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destanation);
+					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);
 			}
 
 			if(hops.All(x => x.UpdateType == UpdateType.MicroUpdate))
