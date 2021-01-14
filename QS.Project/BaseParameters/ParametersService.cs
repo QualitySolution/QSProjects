@@ -96,6 +96,7 @@ namespace QS.BaseParameters
 		#endregion
 
 		#region Dynamic
+		public dynamic Dynamic => this;
 
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
