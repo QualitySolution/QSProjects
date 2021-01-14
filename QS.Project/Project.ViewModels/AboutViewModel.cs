@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using QS.Project.Versioning;
+using QS.Project.Versioning.Product;
 using QS.Utilities.Text;
 using QS.ViewModels;
 
@@ -10,9 +11,12 @@ namespace QS.Project.ViewModels
 {
 	public class AboutViewModel : ViewModelBase
 	{
-		public AboutViewModel(IApplicationInfo applicationInfo)
+		private readonly IProductService productService;
+
+		public AboutViewModel(IApplicationInfo applicationInfo, IProductService productService = null)
 		{
 			ApplicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
+			this.productService = productService;
 		}
 
 		public IApplicationInfo ApplicationInfo { get; }
@@ -38,8 +42,11 @@ namespace QS.Project.ViewModels
 
 				var text = new List<string>();
 
+				if(productService?.EditionName != null)
+					text.Add(productService?.EditionName);
+
 				if (ApplicationInfo.IsBeta)
-					text.Add(String.Format("Бета редакция от {0:g}", ApplicationInfo.BuildDate));
+					text.Add(String.Format("Бета от {0:g}", ApplicationInfo.BuildDate));
 
 				if(String.IsNullOrWhiteSpace(description))
 					text.Add(description);
