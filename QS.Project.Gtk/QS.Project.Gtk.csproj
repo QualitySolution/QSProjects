@@ -10,7 +10,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -142,20 +141,20 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
-    <Compile Include="Dialog.GtkUI\DialogHelper.cs" />
-    <Compile Include="Dialog.GtkUI\EntityDialogBase.cs" />
+    <Compile Include="Dialog\DialogHelper.cs" />
+    <Compile Include="Dialog\EntityDialogBase.cs" />
     <Compile Include="Tdi\TdiSliderTab.cs" />
     <Compile Include="Tdi\TdiNotebook.cs" />
     <Compile Include="Tdi\TabVBox.cs" />
     <Compile Include="Tdi\TDIMain.cs" />
-    <Compile Include="Dialog.GtkUI\TdiTabBase.cs" />
-    <Compile Include="Dialog.GtkUI\WidgetOnTdiTabBase.cs" />
+    <Compile Include="Dialog\TdiTabBase.cs" />
+    <Compile Include="Dialog\WidgetOnTdiTabBase.cs" />
     <Compile Include="Utilities\GtkHelper.cs" />
-    <Compile Include="Dialog.GtkUI\WidgetOnDialogBase.cs" />
-    <Compile Include="Dialog.GtkUI\SingleUowDialogBase.cs" />
-    <Compile Include="Dialog.GtkUI\SingleUowTabBase.cs" />
-    <Compile Include="Dialog.GtkUI\MessageDialogHelper.cs" />
-    <Compile Include="Dialog.GtkUI\WidgetOnEntityDialogBase.cs" />
+    <Compile Include="Dialog\WidgetOnDialogBase.cs" />
+    <Compile Include="Dialog\SingleUowDialogBase.cs" />
+    <Compile Include="Dialog\SingleUowTabBase.cs" />
+    <Compile Include="Dialog\MessageDialogHelper.cs" />
+    <Compile Include="Dialog\WidgetOnEntityDialogBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Widgets.GtkUI\UserPermissionWidget.cs" />
@@ -175,7 +174,7 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationEditButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationButtonBase.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\RepresentationDeleteButton.cs" />
-    <Compile Include="Dialog.GtkUI\GtkMessageDialogsInteractive.cs" />
+    <Compile Include="Dialog\GtkMessageDialogsInteractive.cs" />
     <Compile Include="Print\IImagePrinter.cs" />
     <Compile Include="Print\DocumentPrinters.cs" />
     <Compile Include="Print\IOdtDocPrinter.cs" />
@@ -204,10 +203,10 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledDeleteButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
-    <Compile Include="Dialog.GtkUI\QueryFilterWidgetBase.cs" />
+    <Compile Include="Dialog\QueryFilterWidgetBase.cs" />
     <Compile Include="Tdi\ITDIWidgetResolver.cs" />
     <Compile Include="Tdi\DefaultTDIWidgetResolver.cs" />
-    <Compile Include="Dialog.GtkUI\IMustBeDestroyed.cs" />
+    <Compile Include="Dialog\IMustBeDestroyed.cs" />
     <Compile Include="Widgets.GtkUI\RepresentationEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.RepresentationEntry.cs" />
     <Compile Include="Widgets.GtkUI\DateRangePicker.cs" />
@@ -218,8 +217,8 @@
     <Compile Include="Widgets.GtkUI\DatePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.DatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimeEntry.cs" />
-    <Compile Include="Dialog.GtkUI\IFilterWidgetResolver.cs" />
-    <Compile Include="Dialog.GtkUI\GtkQuestionDialogsInteractive.cs" />
+    <Compile Include="Dialog\IFilterWidgetResolver.cs" />
+    <Compile Include="Dialog\GtkQuestionDialogsInteractive.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\IJournalPopupAction.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\JournalPopupAction.cs" />
     <Compile Include="RepresentationModel.GtkUI\IJournalPopupItem.cs" />
@@ -234,11 +233,11 @@
     <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
     <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
-    <Compile Include="Dialog.GtkUI\SingleUoWWidgetBase.cs" />
+    <Compile Include="Dialog\SingleUoWWidgetBase.cs" />
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.EntityViewModelEntry.cs" />
     <Compile Include="Views.GtkUI\WidgetViewBase.cs" />
-    <Compile Include="Dialog.GtkUI\GtkFilePicker.cs" />
+    <Compile Include="Dialog\GtkFilePicker.cs" />
     <Compile Include="Widgets.GtkUI\SpecialListComboBox.cs" />
     <Compile Include="Widgets.GtkUI\PhoneEntry.cs" />
     <Compile Include="ErrorReporting\UnhandledExceptionHandler.cs" />
@@ -295,10 +294,14 @@
     <Compile Include="Deletion.Views\DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Deletion.Views.DeletionView.cs" />
     <Compile Include="gtk-gui\QS.Project.Dialogs.PermissionListView.cs" />
+    <Compile Include="Project.Views\AboutView.cs" />
+    <Compile Include="BaseParameters.Views\BaseParametersView.cs" />
+    <Compile Include="gtk-gui\QS.BaseParameters.Views.BaseParametersView.cs" />
+    <Compile Include="Dialog\GtkGuiDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
-    <Folder Include="Dialog.GtkUI\" />
+    <Folder Include="Dialog\" />
     <Folder Include="Tdi\" />
     <Folder Include="Utilities\" />
     <Folder Include="Project.Dialogs.GtkUI\" />
@@ -322,6 +325,8 @@
     <Folder Include="Views\Resolve\" />
     <Folder Include="Views\Dialog\" />
     <Folder Include="Deletion.Views\" />
+    <Folder Include="Project.Views\" />
+    <Folder Include="BaseParameters.Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">

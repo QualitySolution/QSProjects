@@ -6,9 +6,8 @@ using System.Threading;
 using Gtk;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QS.Utilities.Text;
-using QSSupportLib;
 using QSUpdater;
 
 namespace QS.Updater
@@ -19,10 +18,12 @@ namespace QS.Updater
 
 		private readonly IApplicationInfo application;
 		private readonly ISkipVersionState skip;
+		private readonly CheckBaseVersion checkBaseVersion;
 
-		public UpdaterGtkUI(IApplicationInfo application, ISkipVersionState skips) {
+		public UpdaterGtkUI(IApplicationInfo application, ISkipVersionState skips, CheckBaseVersion checkBaseVersion) {
 			this.application = application;
 			this.skip = skips;
+			this.checkBaseVersion = checkBaseVersion;
 		}
 
 		public IInteractiveMessage InteractiveMessage => new GtkMessageDialogsInteractive();
@@ -68,7 +69,7 @@ namespace QS.Updater
 										 application.Version.VersionToShortString());
 			else if (!result.HasUpdate && flags.HasFlag(UpdaterFlags.UpdateRequired))
 			{
-				InteractiveMessage.ShowMessage(ImportanceLevel.Error, "Необходимое обновление программы не найдено.\n" + CheckBaseVersion.TextMessage);
+				InteractiveMessage.ShowMessage(ImportanceLevel.Error, "Необходимое обновление программы не найдено.\n" + checkBaseVersion.TextMessage);
 				Environment.Exit(1);
 			}
 

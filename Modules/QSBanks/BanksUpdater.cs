@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,12 +8,12 @@ using System.Xml.Serialization;
 using Gtk;
 using ICSharpCode.SharpZipLib.Zip;
 using QS.Banks.Domain;
+using QS.BaseParameters;
 using QS.DomainModel.UoW;
 using QS.Utilities;
 using QSBanks.CBRSource;
 using QSBanks.Repositories;
 using QSProjectsLib;
-using QSSupportLib;
 
 namespace QSBanks
 {
@@ -24,9 +24,8 @@ namespace QSBanks
 		public static void CheckBanksUpdate(bool forceUpdate)
 		{
 			if(!forceUpdate) {
-				DateTime lastModified = new DateTime();
-				if(MainSupport.BaseParameters.All.ContainsKey("last_banks_update"))
-					lastModified = DateTime.Parse(MainSupport.BaseParameters.All["last_banks_update"]);
+				dynamic parameters = new ParametersService(QSMain.ConnectionDB);
+				DateTime lastModified = parameters.last_banks_update ?? default(DateTime);
 
 				int withoutUpdate = (int)DateTime.Now.Subtract(lastModified).TotalDays;
 				if(withoutUpdate < UpdatePeriod) {
@@ -56,6 +55,12 @@ namespace QSBanks
 		List<Bank> activeBanksList;
 		List<Account> accountsList;
 		List<BankRegion> regionsList;
+		private readonly ParametersService parametersService;
+
+		public BanksUpdater(ParametersService parametersService)
+		{
+			this.parametersService = parametersService;
+		}
 
 		private void LoadBanks(IUnitOfWork uow)
 		{
@@ -120,7 +125,7 @@ namespace QSBanks
 					"Деактивировано счетов: {3}\nДеактивировано банков: {4}",
 						banksAdded, banksFixed, banksRemoved, accountsDeactivated, banksDeactivated));
 				//Записываем дату
-				MainSupport.BaseParameters.UpdateParameter(QSMain.ConnectionDB, "last_banks_update", DateTime.Now.ToString("O"));
+				parametersService.UpdateParameter("last_banks_update", DateTime.Now.ToString("O"));
 			}
 		}
 

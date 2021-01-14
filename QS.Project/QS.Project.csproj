@@ -10,7 +10,6 @@
     <RootNamespace>QS</RootNamespace>
     <AssemblyName>QS.Project</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ReleaseVersion>1.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -270,7 +269,7 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
-    <Compile Include="Project.VersionControl\IApplicationInfo.cs" />
+    <Compile Include="Project.Versioning\IApplicationInfo.cs" />
     <Compile Include="ErrorReporting\ErrorReport.cs" />
     <Compile Include="ErrorReporting\IErrorReportingService.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
@@ -346,7 +345,7 @@
     <Compile Include="Navigation\ISlideableViewModel.cs" />
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
-    <Compile Include="Project.VersionControl\IDataBaseInfo.cs" />
+    <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
     <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
@@ -376,7 +375,16 @@
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
+    <Compile Include="Project.Versioning\AssemblyAttributes.cs" />
+    <Compile Include="Project.ViewModels\AboutViewModel.cs" />
+    <Compile Include="Project.Versioning\ApplicationVersionInfo.cs" />
+    <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
+    <Compile Include="BaseParameters\ParametersService.cs" />
+    <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
+    <Compile Include="Dialog\IGuiDispatcher.cs" />
     <Compile Include="Dialog\WindowGravity.cs" />
+    <Compile Include="Project.Versioning\Product\IProductService.cs" />
+    <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -408,7 +416,7 @@
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
-    <Folder Include="Project.VersionControl\" />
+    <Folder Include="Project.Versioning\" />
     <Folder Include="ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
@@ -422,6 +430,10 @@
     <Folder Include="Deletion\ViewModels\" />
     <Folder Include="ViewModels\Extension\" />
     <Folder Include="ViewModels\Resolve\" />
+    <Folder Include="Project.ViewModels\" />
+    <Folder Include="BaseParameters\" />
+    <Folder Include="BaseParameters\ViewModels\" />
+    <Folder Include="Project.Versioning\Product\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -5,10 +5,8 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSSupportLib/bin/Debug/QSSupportLib.dll" />
-    <widget-library name="../../QSProjectsLib/bin/Debug/QSProjectsLib.dll" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
-    <widget-library name="../../QS.Updater/bin/Debug/QS.Updater.dll" />
+    <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QS.Updater.NewVersionDialog" design-size="548 389">
@@ -123,13 +121,9 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QS.Updater.DB.DBUpdateProcess" design-size="487 382">
+  <widget class="Gtk.Bin" id="QS.Updater.DB.Views.UpdateProcessView" design-size="492 329">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">Требуется обновление базы данных</property>
-    <property name="WindowPosition">CenterOnParent</property>
-    <property name="Buttons">2</property>
-    <property name="HelpButton">False</property>
-    <child internal-child="VBox">
+    <child>
       <widget class="Gtk.VBox" id="dialog1_VBox">
         <property name="MemberName" />
         <property name="BorderWidth">2</property>
@@ -147,7 +141,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.CheckButton" id="checkCreateBackup">
+          <widget class="Gamma.GtkWidgets.yCheckButton" id="checkCreateBackup">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Label" translatable="yes">Создать резервную копию перед обновлением</property>
@@ -170,7 +164,7 @@
             <property name="Spacing">6</property>
             <property name="BorderWidth">6</property>
             <child>
-              <widget class="Gtk.Entry" id="entryFileName">
+              <widget class="Gamma.GtkWidgets.yEntry" id="entryFileName">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">False</property>
@@ -178,7 +172,7 @@
               </widget>
               <packing>
                 <property name="Position">0</property>
-                <property name="AutoSize">True</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
             <child>
@@ -207,7 +201,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.ProgressBar" id="progressbarTotal">
+          <widget class="QS.Widgets.ProgressWidget" id="progressbarTotal">
             <property name="MemberName" />
           </widget>
           <packing>
@@ -218,7 +212,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.ProgressBar" id="progressbarOperation">
+          <widget class="QS.Widgets.ProgressWidget" id="progressbarOperation">
             <property name="MemberName" />
             <property name="Visible">False</property>
           </widget>
@@ -239,7 +233,7 @@
                 <property name="HeightRequest">246</property>
                 <property name="ShadowType">In</property>
                 <child>
-                  <widget class="Gtk.TextView" id="textviewLog">
+                  <widget class="Gamma.GtkWidgets.yTextView" id="textviewLog">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="ShowScrollbars">True</property>
@@ -264,45 +258,47 @@
             <property name="AutoSize">True</property>
           </packing>
         </child>
-      </widget>
-    </child>
-    <child internal-child="ActionArea">
-      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
-        <property name="MemberName" />
-        <property name="Spacing">10</property>
-        <property name="BorderWidth">5</property>
-        <property name="Size">2</property>
-        <property name="LayoutStyle">End</property>
         <child>
-          <widget class="Gtk.Button" id="buttonCancel">
+          <widget class="Gtk.HBox" id="hbox2">
             <property name="MemberName" />
-            <property name="CanDefault">True</property>
-            <property name="CanFocus">True</property>
-            <property name="UseStock">True</property>
-            <property name="Type">StockItem</property>
-            <property name="StockId">gtk-cancel</property>
-            <property name="ResponseId">-6</property>
-            <property name="label">gtk-cancel</property>
+            <property name="Spacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="buttonCancel">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="UseStock">True</property>
+                <property name="Type">StockItem</property>
+                <property name="StockId">gtk-cancel</property>
+                <signal name="Clicked" handler="OnButtonCancelClicked" />
+                <property name="label">gtk-cancel</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonExecute">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="UseStock">True</property>
+                <property name="Type">StockItem</property>
+                <property name="StockId">gtk-execute</property>
+                <signal name="Clicked" handler="OnButtonExecuteClicked" />
+                <property name="label">gtk-execute</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
           </widget>
           <packing>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.Button" id="buttonOk">
-            <property name="MemberName" />
-            <property name="CanDefault">True</property>
-            <property name="CanFocus">True</property>
-            <property name="UseStock">True</property>
-            <property name="Type">StockItem</property>
-            <property name="StockId">gtk-execute</property>
-            <property name="ResponseId">-1</property>
-            <signal name="Clicked" handler="OnButtonOkClicked" />
-            <property name="label">gtk-execute</property>
-          </widget>
-          <packing>
-            <property name="Position">1</property>
+            <property name="Position">6</property>
+            <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>

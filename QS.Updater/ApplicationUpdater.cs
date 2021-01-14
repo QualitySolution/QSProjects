@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 using QSUpdater;
 
 namespace QS.Updater
@@ -14,13 +14,15 @@ namespace QS.Updater
 		private readonly IUpdateService updateService;
 		private readonly IApplicationInfo application;
 		private readonly ISkipVersionState skip;
+		private readonly dynamic parametersService;
 		private readonly IUpdaterUI uI;
 
-		public ApplicationUpdater(IUpdaterUI updaterUI, IUpdateService updateService, IApplicationInfo application, ISkipVersionState skips)
+		public ApplicationUpdater(IUpdaterUI updaterUI, IUpdateService updateService, IApplicationInfo application, ISkipVersionState skips, BaseParameters.ParametersService parametersService = null)
 		{
 			this.updateService = updateService;
 			this.application = application;
 			this.skip = skips;
+			this.parametersService = parametersService;
 			this.uI = updaterUI;
 		}
 
@@ -42,8 +44,8 @@ namespace QS.Updater
 				logger.Info ("Получаем данные от сервера");
 				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 												application.ProductName,
-				                                application.Edition,
-												application.SerialNumber,
+				                                application.Modification,
+												parametersService?.serial_number,
 												application.Version.Major,
 												application.Version.Minor,
 												application.Version.Build,

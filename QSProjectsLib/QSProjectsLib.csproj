@@ -11,7 +11,7 @@
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -118,7 +118,6 @@
     <Compile Include="gtk-gui\QSProjectsLib.Delete.cs" />
     <Compile Include="ViewReportExt.cs" />
     <Compile Include="QSMain.cs" />
-    <Compile Include="AssemblyAttributes.cs" />
     <Compile Include="EditConnection.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.EditConnection.cs" />
     <Compile Include="Connection.cs" />
@@ -171,6 +170,14 @@
     <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
       <Name>QSSaaS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
+      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
+      <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

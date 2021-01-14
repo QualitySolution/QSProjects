@@ -7,7 +7,7 @@ namespace QSBanks
 {
 	public partial class BanksUpdateWindow : Gtk.Window
 	{
-		BanksUpdater updater = new BanksUpdater();
+		BanksUpdater updater = new BanksUpdater(new QS.BaseParameters.ParametersService(QSMain.ConnectionDB));
 
 		public BanksUpdateWindow() :
 				base(Gtk.WindowType.Toplevel)

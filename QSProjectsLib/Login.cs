@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
-using QSSaaS;
+using QS.Project.Versioning;
+using QS.Utilities.Text;
 using QSMachineConfig;
+using QSSaaS;
 
 namespace QSProjectsLib
 {
@@ -56,27 +57,20 @@ namespace QSProjectsLib
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection>();
 			DefaultServer = "localhost";
-			Assembly ass = Assembly.GetCallingAssembly();
-			Version version = ass.GetName().Version;
-			string ver = version.ToString(version.Revision == 0 ? (version.Build == 0 ? 2 : 3) : 4);
-			object[] att = ass.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-			string app = ((AssemblyTitleAttribute)att[0]).Title;
+			var appInfo = new ApplicationVersionInfo();
+			string ver = appInfo.Version.VersionToShortString();
+			string app = appInfo.ProductTitle;
 
 			//Редакции
-			var editionAtt = ass.GetCustomAttribute<AssemblyEditionAttribute>();
-			if(editionAtt != null) {
-				if(!String.IsNullOrEmpty(editionAtt.Title))
-					app += $" {editionAtt.Title}";
-				else if(editionAtt.Edition != "gpl" && editionAtt.Edition != "com")
-					ver += $"-{editionAtt.Edition}";
-			}
+			if(!String.IsNullOrEmpty(appInfo.ModificationTitle))
+				app += $" {appInfo.ModificationTitle}";
+			else if(!String.IsNullOrEmpty(appInfo.Modification))
+				ver += $"-{appInfo.Modification}";
 
-			object[] betaAtt = ass.GetCustomAttributes(typeof(AssemblyBetaBuildAttribute), false);
-			if (betaAtt.Length > 0) {
-				var buildDate = System.IO.File.GetLastWriteTime(ass.Location);
+			if (appInfo.IsBeta) {
 				labelAppName.LabelProp = String.Format("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>" +
 				"\n<span foreground=\"gray\" font_family=\"Philosopher\">beta ({2:g})</span>",
-					app, ver, buildDate);
+					app, ver, appInfo.BuildDate);
 			}
 			else {
 				labelAppName.LabelProp = String.Format("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>",

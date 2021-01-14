@@ -1,9 +1,12 @@
 ﻿using System;
 namespace QS.Dialog
 {
+	/// <summary>
+	/// Интерфейс позволяющий управлять прогресс баром не зависимо от графического тул кита.
+	/// </summary>
 	public interface IProgressBarDisplayable
 	{
-		void Start(double maxValue, double minValue = 0, string text = null, double startValue = 0);
+		void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0);
 
 		void Update(double curValue);
 

@@ -2,7 +2,7 @@
 using MySql.Data.MySqlClient;
 using QS.Dialog;
 using QS.Project.Domain;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 
 namespace QS.ErrorReporting
 {

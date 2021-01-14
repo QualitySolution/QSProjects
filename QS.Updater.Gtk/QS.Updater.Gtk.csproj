@@ -37,26 +37,15 @@
   <ItemGroup>
     <Compile Include="NewVersionDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="MainUpdater.cs" />
     <Compile Include="UpdaterGtkUI.cs" />
-    <Compile Include="DBUpdater\DBUpdateProcess.cs" />
+    <Compile Include="DB.Views\UpdateProcessView.cs" />
     <Compile Include="gtk-gui\QS.Updater.NewVersionDialog.cs" />
     <Compile Include="SkipVersionStateIniConfig.cs" />
-    <Compile Include="DBUpdater\DBUpdater.cs" />
-    <Compile Include="gtk-gui\QS.Updater.DB.DBUpdateProcess.cs" />
-    <Compile Include="DBUpdater\SQLDBUpdater.cs" />
-    <Compile Include="ApplicationVersionInfo.cs" />
+    <Compile Include="gtk-gui\QS.Updater.DB.Views.UpdateProcessView.cs" />
+    <Compile Include="UpdaterAutofacModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="MySql.Data, Version=8.0.19.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
-      <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MySqlBackup, Version=2.3.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\MySqlBackup.NET.2.3.1\lib\net452\MySqlBackup.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Nini">
@@ -80,55 +69,21 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
-    <Reference Include="Renci.SshNet">
-      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics.Vectors">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf">
-      <HintPath>..\packages\Google.Protobuf.3.13.0\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.5.2.0\lib\net461\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="K4os.Compression.LZ4">
-      <HintPath>..\packages\K4os.Compression.LZ4.1.2.6\lib\net46\K4os.Compression.LZ4.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Hash.xxHash">
-      <HintPath>..\packages\K4os.Hash.xxHash.1.0.6\lib\net46\K4os.Hash.xxHash.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Compression.LZ4.Streams">
-      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.2.6\lib\net46\K4os.Compression.LZ4.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
-      <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\Ubiety.Dns.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QSSupportLib\QSSupportLib.csproj">
-      <Project>{9DF71899-3CE4-48F4-B3C3-0B21B15037B1}</Project>
-      <Name>QSSupportLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
-      <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
-      <Name>QSProjectsLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
@@ -149,6 +104,10 @@
       <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
       <Name>QS.MachineConfig</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -157,6 +116,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="DBUpdater\README.md" />
   </ItemGroup>
 </Project>

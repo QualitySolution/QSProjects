@@ -4,7 +4,7 @@ using System.Threading;
 using Gtk;
 using QS.Dialog;
 using QS.Project.Domain;
-using QS.Project.VersionControl;
+using QS.Project.Versioning;
 
 namespace QS.ErrorReporting
 {
@@ -19,7 +19,7 @@ namespace QS.ErrorReporting
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
 	/// Для работы необходимо предварительно сконфигурировать модуль
-	/// GuiThread - указать поток Gui, нужно для корректной обработки эксепшенов в других потоках.
+	/// GtkGuiDispatcher.GuiThread - указать поток Gui, нужно для корректной обработки эксепшенов в других потоках.
 	/// ApplicationInfo - Передать класс возвращающий информация о програмамме
 	/// InteractiveMessage - Класс позволяющий обработчикам выдать сообщение пользователю.
 	/// Опционально:
@@ -33,7 +33,6 @@ namespace QS.ErrorReporting
 
 		#region Внешние настройки модуля
 
-		public static Thread GuiThread;
 		public static IApplicationInfo ApplicationInfo;
 		public static IDataBaseInfo DataBaseInfo;
 		public static IInteractiveMessage InteractiveMessage;
@@ -66,7 +65,7 @@ namespace QS.ErrorReporting
 
 		public static void ErrorMessage(Exception ex)
 		{
-			if(GuiThread == Thread.CurrentThread) {
+			if(GtkGuiDispatcher.GuiThread == Thread.CurrentThread) {
 				RealErrorMessage(ex);
 			}
 			else {
