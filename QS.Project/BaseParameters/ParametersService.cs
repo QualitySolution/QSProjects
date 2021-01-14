@@ -21,6 +21,13 @@ namespace QS.BaseParameters
 			ReloadParameters();
 		}
 
+		/// <summary>
+		/// Используется только для создания класса в тестах не связанного с базой.
+		/// </summary>
+		protected ParametersService()
+		{
+		}
+
 		#region Загрузка
 
 		public void ReloadParameters()
