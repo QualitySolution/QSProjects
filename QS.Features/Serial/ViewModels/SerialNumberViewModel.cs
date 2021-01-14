@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using Autofac;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
+using QS.Project.Versioning.Product;
 using QS.Serial.Encoding;
 using QS.ViewModels.Dialog;
 
@@ -14,13 +16,15 @@ namespace QS.Serial.ViewModels
 		private readonly SerialNumberEncoder SerialNumberEncoder;
 		private readonly dynamic parametersService;
 		private readonly IInteractiveQuestion interactive;
+		private readonly ILifetimeScope autofacScope;
 		private readonly byte lastEdition;
 
-		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder, ParametersService parametersService, IInteractiveQuestion interactive) : base(navigation)
+		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder, ParametersService parametersService, IInteractiveQuestion interactive, ILifetimeScope autofacScope) : base(navigation)
 		{
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
+			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			serialNumber = this.parametersService.serial_number;
 			Title = "Замена серийного номера";
 			SerialNumberEncoder.Number = serialNumber;
@@ -50,6 +54,10 @@ namespace QS.Serial.ViewModels
 					"Если вы уверены что серийный номер правильный, попробуйте обновить программу.";
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";
+				if(SerialNumberEncoder.IsValid) {
+					var productService = autofacScope.Resolve<IProductService>(new TypedParameter(typeof(ISerialNumberService), new SerialNumberService(SerialNumber)));
+					return productService?.EditionName;
+				}
 				return null;
 			} 
 		}

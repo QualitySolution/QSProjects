@@ -67,7 +67,8 @@
     <Compile Include="Serial\Encoding\SerialNumberEncoder.cs" />
     <Compile Include="Serial\ViewModels\SerialNumberViewModel.cs" />
     <Compile Include="Features\FeaturesAutofacModule.cs" />
-    <Compile Include="Serial\ProductService.cs" />
+    <Compile Include="Serial\ISerialNumberService.cs" />
+    <Compile Include="Serial\SerialNumberService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serial\" />
