@@ -27,7 +27,9 @@ namespace QSOsm
 			OsmId
 		}
 
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+        public bool AcceptUnknownCities { get; set; }
+
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		public event EventHandler CitySelected;
 
@@ -119,7 +121,9 @@ namespace QSOsm
 			var cell = new CellRendererText ();
 			this.Completion.PackStart (cell, true);
 			this.Completion.SetCellDataFunc (cell, OnCellLayoutDataFunc);
-		}
+
+            FocusOutEvent += OnFocusOutEvent;
+        }
 
 		//Костыль, для отображения выпадающего списка
 		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
@@ -154,7 +158,14 @@ namespace QSOsm
 			args.RetVal = true;
 		}
 
-		protected virtual void OnCitySelected()
+        void OnFocusOutEvent(object o, Gtk.FocusOutEventArgs args)
+        {
+            if (AcceptUnknownCities && !Text.Contains(City)){
+                City = Text;
+            }
+        }
+
+        protected virtual void OnCitySelected()
 		{
 			CitySelected?.Invoke(null, EventArgs.Empty);
 		}
