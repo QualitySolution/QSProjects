@@ -46,7 +46,9 @@ namespace QSReport
 			var printer = new DocumentPrinter(PrinterSettings);
 			printer.DocumentsPrinted += (sender, e) => DocumentsPrinted?.Invoke(sender, e);
 			printer.PrintingCanceled += (sender, e) => PrintingCanceled?.Invoke(sender, e);
-			printer.PrintAll(rdlToPrinter);
+			if(rdlToPrinter.Count > 0) {
+				printer.PrintAll(rdlToPrinter);
+			}
 			DocumentPrinters.ImagePrinter?.Print(imgToPrinter.ToArray(), printer.PrintSettings);
 			DocumentPrinters.OdtDocPrinter?.Print(odtToPrinter.ToArray(), printer.PrintSettings);
 			PrinterSettings = printer.PrintSettings;
