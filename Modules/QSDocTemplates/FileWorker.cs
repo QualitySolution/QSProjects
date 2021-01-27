@@ -134,6 +134,77 @@ namespace QSDocTemplates
 			}
 		}
 
+		/// <summary>
+		/// Подготавливает ODT документ к выгрузке
+		/// </summary>
+		/// <param name="template">Шаблон</param>
+		/// <param name="mode">Режим редактирования файла</param>
+		/// <returns>Строку с именем файла</returns>
+		public string PrepareToExportODT(IDocTemplate template, FileEditMode mode)
+		{
+			logger.Info("Сохраняем временный файл...");
+			OdtWorks odt;
+			odt = new OdtWorks(template.File);
+			odt.DocParser = template.DocParser;
+			odt.DocParser.UpdateFields();
+			odt.UpdateFields();
+			if (odt.DocParser.FieldsHasValues)
+			{
+				odt.FillValues();
+			}
+			var file = odt.GetArray();
+			odt.Close();
+
+			var opened = openedFiles.FirstOrDefault(x => x.Template == template);
+
+			if (opened == null)
+			{
+				opened = new OpenedFile(this, template, mode);
+				openedFiles.Add(opened);
+			}
+			else
+				opened.StopWatch();
+
+			if (File.Exists(opened.TempFilePath))
+				File.SetAttributes(opened.TempFilePath, FileAttributes.Normal);
+
+			try
+			{
+				File.WriteAllBytes(opened.TempFilePath, file);
+			}
+			catch (UnauthorizedAccessException)
+			{
+				string tempName = opened.TempFilePath;
+				FileInfo fi = new FileInfo(opened.TempFilePath);
+				int tryesCount = 0;
+				bool error = true;
+
+				while (error)
+				{
+					tryesCount++;
+					tempName = string.Format("{0}{1}({2}){3}",
+						fi.Directory + Path.DirectorySeparatorChar.ToString(),
+						Path.GetFileNameWithoutExtension(fi.Name),
+						tryesCount,
+						fi.Extension);
+					try
+					{
+						File.WriteAllBytes(tempName, file);
+						error = false;
+					}
+					catch (UnauthorizedAccessException)
+					{
+						error = true;
+					}
+				}
+				opened.TempFilePath = tempName;
+			}
+
+			File.SetAttributes(opened.TempFilePath, FileAttributes.ReadOnly);
+
+			return opened.TempFilePath;
+		}
+
 		#region IDisposable implementation
 		public void Dispose()
 		{
