@@ -19,7 +19,8 @@ namespace QS.DomainModel.Entity
 	{
 		/// <summary>
 		/// Метод возвращает название объекта через рефлексию.
-		/// Название пытается опытается определить в следующем порядке:
+		/// Название пытаемся получить в следующем порядке:
+		/// 0. Если объект null возвращаем null
 		/// 1. Если у объекта имеется свойство <c>Title</c>, возвращается его значение.
 		/// 2. Если у объекта имеется свойство <c>Name</c>, возвращается его значение.
 		/// 3. Возвращается результат вызова <c>ToString()</c>
@@ -27,6 +28,9 @@ namespace QS.DomainModel.Entity
 		/// <param name="value">Value.</param>
 		public static string GetTitle(this object value)
 		{
+			if(value == null)
+				return null;
+
 			var prop = value.GetType ().GetProperty ("Title");
 			if (prop != null) {
 				return prop.GetValue (value, null)?.ToString();
