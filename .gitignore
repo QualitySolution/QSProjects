@@ -11,3 +11,6 @@ packages/
 .vs/
 *.csproj.user
 mono_crash.*.json
+
+#Idea
+.idea
