@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using fyiReporting.RDL;
 
 namespace QS.Report
 {
@@ -29,6 +30,11 @@ namespace QS.Report
 		/// Если значение false то время будет обрезаться, в строковом представлении при передачи в отчет.
 		/// </summary>
 		public bool ParameterDatesWithTime { get; set; } = true;
+		
+		/// <summary>
+		/// Запрещённые для экспорта форматы
+		/// </summary>
+		public OutputPresentationType[] RestrictedOutputPresentationTypes { get; set; }
 
 		/// <summary>
 		/// Указывается надо ли передвать серверу в ConnectionString параметр Allow User Variables=True
