@@ -62,9 +62,9 @@ namespace QSReport
 		{
 			logger.Debug (String.Format ("Report Parameters[{0}]", info.GetParametersString ()));
 			if(info.Source != null)
-				reportviewer1.LoadReport(info.Source, info.GetParametersString(), info.ConnectionString, true);
+				reportviewer1.LoadReport(info.Source, info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
 			else
-				reportviewer1.LoadReport (info.GetReportUri (), info.GetParametersString (), info.ConnectionString, true);
+				reportviewer1.LoadReport(info.GetReportUri(), info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
 		}
 
 		public ReportViewDlg (IParametersWidget widget)
