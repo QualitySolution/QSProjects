@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Gamma.Binding.Core;
 using Gdk;
 using Gtk;
 using QS.ViewModels.Control.EEVM;
@@ -23,9 +24,12 @@ namespace QS.Views.Control
 		public static uint QueryDelay = 0;
 		#endregion
 
+		public BindingControler<EntityEntry> Binding { get; private set; }
+
 		public EntityEntry()
 		{
 			this.Build();
+			Binding = new BindingControler<EntityEntry>(this);
 			ConfigureEntryComplition();
 		}
 
