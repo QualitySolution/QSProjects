@@ -298,6 +298,7 @@
     <Compile Include="BaseParameters.Views\BaseParametersView.cs" />
     <Compile Include="gtk-gui\QS.BaseParameters.Views.BaseParametersView.cs" />
     <Compile Include="Dialog\GtkGuiDispatcher.cs" />
+    <Compile Include="Views\Dialog\SavedDialogViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
