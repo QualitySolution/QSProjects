@@ -105,6 +105,33 @@ namespace QS.BaseParameters
 		#region Dynamic
 		public dynamic Dynamic => this;
 
+		public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+		{
+			if(indexes.Length == 1 && indexes[0] is string name) {
+				if(All.TryGetValue(name, out string strValue)) {
+					result = strValue;
+				}
+				else
+					result = null;
+				return true;
+			}
+
+			return base.TryGetIndex(binder, indexes, out result);
+		}
+
+		public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+		{
+			if(indexes.Length == 1 && indexes[0] is string name) {
+				if(value == null)
+					RemoveParameter(name);
+				else
+					UpdateParameter(name, value);
+				return true;
+			}
+
+			return base.TrySetIndex(binder, indexes, value);
+		}
+
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
 			if (All.TryGetValue(binder.Name, out string strValue)) {
@@ -128,7 +155,7 @@ namespace QS.BaseParameters
 		{
 			var returnType = args.FirstOrDefault() as Type;
 			if (returnType == null)
-				throw new NotSupportedException("Поддерживается только режимв вызова ParameterName(Type returnType).");
+				throw new NotSupportedException("Поддерживается только при вызове вида ParameterName(Type returnType).");
 
 			if (All.TryGetValue(binder.Name, out string strValue))
 				result = ConvertTo(strValue, returnType);
