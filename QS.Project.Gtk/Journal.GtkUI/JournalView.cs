@@ -20,7 +20,6 @@ using QSWidgetLib;
 
 namespace QS.Journal.GtkUI
 {
-	[System.ComponentModel.ToolboxItem(true)]
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -71,7 +70,8 @@ namespace QS.Journal.GtkUI
 				hboxFilter.Add(filterView);
 				filterView.Show();
 				checkShowFilter.Visible = true;
-				checkShowFilter.Active = hboxFilter.Visible = !ViewModel.JournalFilter.HidenByDefault;
+				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
+				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
 			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
@@ -97,6 +97,12 @@ namespace QS.Journal.GtkUI
 				Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
 			if(e.PropertyName == nameof(ViewModel.SelectionMode))
 				SetSeletionMode(ViewModel.SelectionMode);
+		}
+
+		void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName == nameof(ViewModel.JournalFilter.IsShow))
+				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 		}
 
 		TextSpinner CountingTextSpinner;
