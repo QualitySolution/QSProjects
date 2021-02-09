@@ -8,9 +8,13 @@ namespace QS.Project.Journal
 	public class JournalFilterViewModelBase<TFilter> : ViewModelBase, IDisposable, IJournalFilterViewModel
 		where TFilter : JournalFilterViewModelBase<TFilter>
 	{
-		public bool HidenByDefault { get; set; }
-
 		private bool canNotify = true;
+
+		private bool isShow = true;
+		public virtual bool IsShow {
+			get => isShow;
+			set => SetField(ref isShow, value);
+		}
 
 		private IUnitOfWork uow;
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
