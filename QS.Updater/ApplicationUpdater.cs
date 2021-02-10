@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
+using Autofac;
+using QS.BaseParameters;
 using QS.Project.Versioning;
-using QSUpdater;
 
 namespace QS.Updater
 {
@@ -9,59 +10,63 @@ namespace QS.Updater
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		public UpdateResult UpdateResult { get; private set; }
-
-		private readonly IUpdateService updateService;
-		private readonly IApplicationInfo application;
-		private readonly ISkipVersionState skip;
-		private readonly dynamic parametersService;
-		private readonly IUpdaterUI uI;
-
-		public ApplicationUpdater(IUpdaterUI updaterUI, IUpdateService updateService, IApplicationInfo application, ISkipVersionState skips, BaseParameters.ParametersService parametersService = null)
+		public ApplicationUpdater()
 		{
-			this.updateService = updateService;
-			this.application = application;
-			this.skip = skips;
-			this.parametersService = parametersService;
-			this.uI = updaterUI;
 		}
 
-		public void StartCheckUpdateThread (UpdaterFlags flags)
+		public void StartCheckUpdate(UpdaterFlags flags, ILifetimeScope autofacScope)
 		{
-			if (flags.HasFlag(UpdaterFlags.StartInThread)) {
-				Thread loadThread = new Thread (() => ThreadWorks (flags));
-				loadThread.Start ();
-				if (flags.HasFlag(UpdaterFlags.UpdateRequired))
-					loadThread.Join ();
-			} else
-				ThreadWorks (flags);
+			ThreadWorks(flags, autofacScope);
 		}
 
-		void ThreadWorks (UpdaterFlags flags)
+		/// <summary>
+		/// Запускает процесс обновления в отдельном потоке.
+		/// </summary>
+		/// <param name="flags">Флаги апдейтера</param>
+		/// <param name="container">Контейнер Autofac нужен для содания скопа</param>
+		public void StartCheckUpdateThread (UpdaterFlags flags, IContainer container)
+		{
+			//Важно здесь создаем новый скоп, так как общий снаружи может закрыться.
+			var threadScope = container.BeginLifetimeScope();
+			Task.Run(() => ThreadWorks(flags, threadScope))
+				.ContinueWith((tsk) => {
+					if(tsk.IsFaulted)
+						logger.Error(tsk.Exception, "Ошибка при выполении запроса обновления в фоновом потоке.");
+					threadScope.Dispose();
+					logger.Debug("Скоп потока убит.");
+				});
+		}
+
+		void ThreadWorks (UpdaterFlags flags, ILifetimeScope threadScope)
 		{
 			string checkVersion = String.Empty, checkResult = String.Empty;
+			var application = threadScope.Resolve<IApplicationInfo>();
+			dynamic parametersService = ResolutionExtensions.ResolveOptional<ParametersService>(threadScope);
+			var updateService = threadScope.Resolve<IUpdateService>();
+			var skip = threadScope.Resolve<ISkipVersionState>();
+			var uI = threadScope.Resolve<IUpdaterUI>();
 			try {
-				logger.Info ("Получаем данные от сервера");
-				string parameters = String.Format ("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
+				logger.Info("Запрашиваем информацию о новых версиях с сервера");
+				string parameters = String.Format("product.{0};edition.{1};serial.{2};major.{3};minor.{4};build.{5};revision.{6}",
 												application.ProductName,
-				                                application.Modification,
+												application.Modification,
 												parametersService?.serial_number,
 												application.Version.Major,
 												application.Version.Minor,
 												application.Version.Build,
-												application.Version.Revision); 
+												application.Version.Revision);
 
-				var updateResult = updateService.checkForUpdate (parameters);
-				if (flags.HasFlag(UpdaterFlags.ShowAnyway) || (updateResult.HasUpdate && !skip.IsSkipedVersion(updateResult.NewVersion)))
-				{
+				var updateResult = updateService.checkForUpdate(parameters);
+				if(flags.HasFlag(UpdaterFlags.ShowAnyway) || (updateResult.HasUpdate && !skip.IsSkipedVersion(updateResult.NewVersion))) {
 					uI.ShowAppNewVersionDialog(updateResult, flags);
 				}
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка доступа к серверу обновления.");
-				if (flags.HasFlag(UpdaterFlags.ShowAnyway))
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка доступа к серверу обновления.");
+				if(flags.HasFlag(UpdaterFlags.ShowAnyway))
 					uI.InteractiveMessage.ShowMessage(Dialog.ImportanceLevel.Error, "Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже.");
-				if (flags.HasFlag(UpdaterFlags.UpdateRequired))
-					Environment.Exit (1);
+				if(flags.HasFlag(UpdaterFlags.UpdateRequired))
+					Environment.Exit(1);
 			}
 		}
 	}
