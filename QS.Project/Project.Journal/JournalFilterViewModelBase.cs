@@ -5,7 +5,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public class JournalFilterViewModelBase<TFilter> : ViewModelBase, IDisposable, IJournalFilterViewModel
+	public abstract class JournalFilterViewModelBase<TFilter> : ViewModelBase, IDisposable, IJournalFilterViewModel
 		where TFilter : JournalFilterViewModelBase<TFilter>
 	{
 		private bool canNotify = true;
