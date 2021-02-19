@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
 using NLog;
+using QS.Project.DB;
 
 namespace QS.BaseParameters
 {
@@ -13,11 +14,11 @@ namespace QS.BaseParameters
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
 		public Dictionary<string, string> All = new Dictionary<string, string>();
-		private readonly DbConnection connection;
+		private readonly IConnectionFactory connectionFactory;
 
-		public ParametersService (DbConnection connection)
+		public ParametersService (IConnectionFactory connectionFactory)
 		{
-			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
 			ReloadParameters();
 		}
 
@@ -34,11 +35,13 @@ namespace QS.BaseParameters
 		{
 			All.Clear();
 			string sql = "SELECT * FROM base_parameters";
-			DbCommand cmd = connection.CreateCommand();
-			cmd.CommandText = sql;
-			using (DbDataReader rdr = cmd.ExecuteReader()) {
-				while (rdr.Read()) {
-					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+			using(var connection = connectionFactory.OpenConnection()) {
+				DbCommand cmd = connection.CreateCommand();
+				cmd.CommandText = sql;
+				using(DbDataReader rdr = cmd.ExecuteReader()) {
+					while(rdr.Read()) {
+						All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+					}
 				}
 			}
 		}
@@ -60,18 +63,19 @@ namespace QS.BaseParameters
 				sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value)";
 
 			logger.Debug ("Изменяем параметр базы {0}={1}", name, value);
-			DbCommand cmd = connection.CreateCommand ();
-			cmd.CommandText = sql;
-			DbParameter paramName = cmd.CreateParameter ();
-			paramName.ParameterName = "@name";
-			paramName.Value = name;
-			cmd.Parameters.Add (paramName);
-			DbParameter paramValue = cmd.CreateParameter ();
-			paramValue.ParameterName = "@str_value";
-			paramValue.Value = value.ToString();
-			cmd.Parameters.Add (paramValue);
-			cmd.ExecuteNonQuery ();
-
+			using(var connection = connectionFactory.OpenConnection()) {
+				DbCommand cmd = connection.CreateCommand();
+				cmd.CommandText = sql;
+				DbParameter paramName = cmd.CreateParameter();
+				paramName.ParameterName = "@name";
+				paramName.Value = name;
+				cmd.Parameters.Add(paramName);
+				DbParameter paramValue = cmd.CreateParameter();
+				paramValue.ParameterName = "@str_value";
+				paramValue.Value = value.ToString();
+				cmd.Parameters.Add(paramValue);
+				cmd.ExecuteNonQuery();
+			}
 			All [name] = value.ToString();
 			logger.Debug ("Ок");
 		}
@@ -85,14 +89,15 @@ namespace QS.BaseParameters
 			else
 				throw new ArgumentException ("Нет указанного параметра базы", name);
 			try {
-				DbCommand cmd = connection.CreateCommand ();
-				cmd.CommandText = sql;
-				DbParameter paramName = cmd.CreateParameter ();
-				paramName.ParameterName = "@name";
-				paramName.Value = name;
-				cmd.Parameters.Add (paramName);
-				cmd.ExecuteNonQuery ();
-
+				using(var connection = connectionFactory.OpenConnection()) {
+					DbCommand cmd = connection.CreateCommand();
+					cmd.CommandText = sql;
+					DbParameter paramName = cmd.CreateParameter();
+					paramName.ParameterName = "@name";
+					paramName.Value = name;
+					cmd.Parameters.Add(paramName);
+					cmd.ExecuteNonQuery();
+				}
 				All.Remove (name);
 				logger.Debug ("Ок");
 			} catch (Exception ex) {

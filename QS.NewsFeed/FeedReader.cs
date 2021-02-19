@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Xml;
 using Dapper;
+using QS.Project.DB;
 using QS.Services;
 
 namespace QS.NewsFeed
@@ -15,13 +15,13 @@ namespace QS.NewsFeed
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public List<NewsFeed> NewsFeeds;
-		private readonly DbConnection connection;
+		private readonly IConnectionFactory connectionFactory;
 		private readonly IUserService userService;
 
-		public FeedReader(List<NewsFeed> feeds, DbConnection connection, IUserService userService)
+		public FeedReader(List<NewsFeed> feeds, IConnectionFactory connectionFactory, IUserService userService)
 		{
 			NewsFeeds = feeds ?? throw new ArgumentNullException(nameof(feeds));
-			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
 			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 		}
 
@@ -36,20 +36,23 @@ namespace QS.NewsFeed
 			if (NewsFeeds == null)
 				NewsFeeds = new List<NewsFeed> ();
 
-			string sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
-			var param = new { user_id = userService.CurrentUserId };
-			var readed = connection.Query(sql, param);
+			using(var connection = connectionFactory.OpenConnection()) {
+				string sql = "SELECT * FROM `read_news` WHERE user_id = @user_id";
+				var param = new { user_id = userService.CurrentUserId };
+				var readed = connection.Query(sql, param);
 
-			foreach(var row in readed) { 
-				NewsFeed feed = NewsFeeds.Find (f => f.Id == row.feed_id);
-				if (feed != null) {
-					feed.FirstRead = false;
-					feed.DataBaseId = row.id;
-					string[] items = (row.items ?? "").Split (',');
-					foreach (var item in items)
-						feed.ReadItems.Add(item);
-				} else
-					logger.Warn ($"В базе найден feed_id={row.feed_id}, но в программе он не настроен.");
+				foreach(var row in readed) {
+					NewsFeed feed = NewsFeeds.Find(f => f.Id == row.feed_id);
+					if(feed != null) {
+						feed.FirstRead = false;
+						feed.DataBaseId = row.id;
+						string[] items = (row.items ?? "").Split(',');
+						foreach(var item in items)
+							feed.ReadItems.Add(item);
+					}
+					else
+						logger.Warn($"В базе найден feed_id={row.feed_id}, но в программе он не настроен.");
+				}
 			}
 			logger.Info ("Ok");
 		}
@@ -84,8 +87,10 @@ namespace QS.NewsFeed
 
 			if(inserts.Any()) {
 				logger.Info("Сохраняем новыe feeds");
-				connection.Execute(sql, inserts);
-				NewsFeeds.Where(f => f.FirstRead).AsList().ForEach(x => x.FirstRead = false);
+				using(var connection = connectionFactory.OpenConnection()) {
+					connection.Execute(sql, inserts);
+					NewsFeeds.Where(f => f.FirstRead).AsList().ForEach(x => x.FirstRead = false);
+				}
 				logger.Info("Ok");
 			}
 		}
@@ -97,8 +102,9 @@ namespace QS.NewsFeed
 			logger.Info ("Обновляем прочитанные новости...");
 			string sql = "UPDATE read_news SET items = @items WHERE id = @id";
 			var parameters = new { id = feed.DataBaseId, items = String.Join(",", feed.ReadItems) };
-
-			connection.Execute(sql, parameters);
+			using(var connection = connectionFactory.OpenConnection()) {
+				connection.Execute(sql, parameters);
+			}
 			logger.Info ("Ok");
 		}
 

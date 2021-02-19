@@ -385,6 +385,8 @@
     <Compile Include="Dialog\WindowGravity.cs" />
     <Compile Include="Project.Versioning\Product\IProductService.cs" />
     <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
+    <Compile Include="Project.DB\IConnectionFactory.cs" />
+    <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
