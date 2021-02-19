@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using QS.Banks.Domain;
 using QS.BaseParameters;
 using QS.DomainModel.UoW;
+using QS.Project.DB;
 using QS.Utilities;
 using QSBanks.CBRSource;
 using QSBanks.Repositories;
@@ -24,7 +25,7 @@ namespace QSBanks
 		public static void CheckBanksUpdate(bool forceUpdate)
 		{
 			if(!forceUpdate) {
-				dynamic parameters = new ParametersService(QSMain.ConnectionDB);
+				dynamic parameters = new ParametersService(new MySqlConnectionFactory(QSMain.ConnectionString));
 				DateTime lastModified = parameters.last_banks_update ?? default(DateTime);
 
 				int withoutUpdate = (int)DateTime.Now.Subtract(lastModified).TotalDays;

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using Gtk;
+using QS.Project.DB;
 using QSProjectsLib;
 
 namespace QSBanks
 {
 	public partial class BanksUpdateWindow : Gtk.Window
 	{
-		BanksUpdater updater = new BanksUpdater(new QS.BaseParameters.ParametersService(QSMain.ConnectionDB));
+		BanksUpdater updater = new BanksUpdater(new QS.BaseParameters.ParametersService(new MySqlConnectionFactory(QSMain.ConnectionString)));
 
 		public BanksUpdateWindow() :
 				base(Gtk.WindowType.Toplevel)
