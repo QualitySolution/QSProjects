@@ -10,7 +10,6 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -117,6 +116,7 @@
     <Compile Include="GtkWidgets\yProgressBar.cs" />
     <Compile Include="Binding\Converters\NullToZeroConverter.cs" />
     <Compile Include="GtkWidgets\yNotebook.cs" />
+    <Compile Include="GtkWidgets\yTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -168,6 +168,7 @@
     <EmbeddedResource Include="icons\togglebutton.png" />
     <EmbeddedResource Include="icons\progressbar.png" />
     <EmbeddedResource Include="icons\notebook.png" />
+    <EmbeddedResource Include="icons\table.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
