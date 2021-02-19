@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Bindings;
+using System.Globalization;
+using System.Linq;
 using Gamma.Binding;
 using Gamma.Binding.Core;
 using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
-using System.Collections.Generic;
-using System.Linq;
-using System.Globalization;
 
 namespace Gamma.GtkWidgets
 {
@@ -77,15 +77,16 @@ namespace Gamma.GtkWidgets
 						"Type '{0}' is not supported. Data source must implement IList.",
 						value.GetType()
 					));
+
 				if(value is IObservableList) {
 					if(Reorderable)
 						YTreeModel = new ObservableListReorderableTreeModel(value as IObservableList);
 					else
 						YTreeModel = new ObservableListTreeModel(value as IObservableList);
-				} else if(value is IList) {
-					YTreeModel = new ListTreeModel(value as IList);
-				} else
-					return;
+				}
+				else { 
+					YTreeModel = new ListTreeModel(list);
+				}
 				itemsDataSource = value;
 				VerifyNodeTypes();
 			}
