@@ -1,25 +1,29 @@
 <objects attr-sync="off">
-  <object type="Gamma.GtkWidgets.ySpinButton" palette-category="Gamma Gtk" init-properties="Lower Upper StepIncrement" allow-children="false" icon="spinbutton.png" base-type="Gtk.SpinButton">
-    <itemgroups>
-      <itemgroup label="ySpinButton Properties">
-        <property name="ValueAsDecimal" />
-        <property name="ValueAsInt" />
-      </itemgroup>
-    </itemgroups>
-  </object>
-  <object type="Gamma.GtkWidgets.yTreeView" palette-category="Gamma Gtk" allow-children="false" icon="treeview.png" base-type="Gtk.TreeView">
-    <itemgroups>
-      <itemgroup label="yTreeView Properties">
-        <property name="SearchHighlightText" />
-      </itemgroup>
-    </itemgroups>
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yLabel" palette-category="Gamma Gtk" allow-children="false" icon="label.png" base-type="Gtk.Label">
+  <object type="Gamma.GtkWidgets.yButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.button.png" base-type="Gtk.Button">
     <itemgroups />
     <signals />
   </object>
-  <object type="Gamma.GtkWidgets.yTextView" palette-category="Gamma Gtk" allow-children="false" icon="textview.png" base-type="Gtk.TextView">
+  <object type="Gamma.GtkWidgets.yCheckButton" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.CheckButton">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yColorButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.colorbutton.png" base-type="Gtk.ColorButton">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yComboBox" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
+    <itemgroups>
+      <itemgroup label="yComboBox Properties">
+        <property name="ActiveText" />
+      </itemgroup>
+    </itemgroups>
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yComboBoxEntry" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.comboentry.png" base-type="Gtk.ComboBoxEntry">
+    <itemgroups />
+    <signals />
+  </object>
+   <object type="Gamma.GtkWidgets.yEntry" palette-category="Gamma Gtk" allow-children="false" icon="entry.png" base-type="Gtk.Entry">
     <itemgroups />
     <signals />
   </object>
@@ -39,6 +43,18 @@
       </itemgroup>
     </signals>
   </object>
+  <object type="Gamma.Widgets.EnumCheckList" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.VBox">
+    <itemgroups />
+    <signals />
+  </object>	
+  <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.fileselection.png" base-type="Gtk.FileChooserButton">
+      <itemgroups />
+    <signals />
+  </object>	
+  <object type="Gamma.GtkWidgets.yLabel" palette-category="Gamma Gtk" allow-children="false" icon="label.png" base-type="Gtk.Label">
+    <itemgroups />
+    <signals />
+  </object>
   <object type="Gamma.Widgets.yListComboBox" palette-category="Gamma Widgets" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
     <itemgroups>
       <itemgroup label="yListComboBox Properties">
@@ -52,56 +68,44 @@
       </itemgroup>
     </signals>
   </object>
-  <object type="Gamma.GtkWidgets.yEntry" palette-category="Gamma Gtk" allow-children="false" icon="entry.png" base-type="Gtk.Entry">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.fileselection.png" base-type="Gtk.FileChooserButton">
-      <itemgroups />
-    <signals />
-  </object>
- <object type="Gamma.GtkWidgets.yColorButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.colorbutton.png" base-type="Gtk.ColorButton">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yComboBox" palette-category="Gamma Gtk" allow-children="false" icon="combo.png" base-type="Gtk.ComboBox">
-    <itemgroups>
-      <itemgroup label="yComboBox Properties">
-        <property name="ActiveText" />
-      </itemgroup>
-    </itemgroups>
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yComboBoxEntry" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.comboentry.png" base-type="Gtk.ComboBoxEntry">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yCheckButton" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.CheckButton">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yRadioButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.radiobutton.png" base-type="Gtk.RadioButton">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.Widgets.EnumCheckList" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.VBox">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.button.png" base-type="Gtk.Button">
-    <itemgroups />
-    <signals />
-  </object>
-  <object type="Gamma.GtkWidgets.yToggleButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.togglebutton.png" base-type="Gtk.ToggleButton">
-    <itemgroups />
-    <signals />
-  </object>
   <object type="Gamma.GtkWidgets.yNotebook" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.notebook.png" base-type="Gtk.Notebook">
     <itemgroups />
     <signals />
   </object>
   <object type="Gamma.GtkWidgets.yProgressBar" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.progressbar.png" base-type="Gtk.ProgressBar">
     <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yRadioButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.radiobutton.png" base-type="Gtk.RadioButton">
+    <itemgroups />
+    <signals />
+  </object>	
+  <object type="Gamma.GtkWidgets.ySpinButton" palette-category="Gamma Gtk" init-properties="Lower Upper StepIncrement" allow-children="false" icon="spinbutton.png" base-type="Gtk.SpinButton">
+    <itemgroups>
+      <itemgroup label="ySpinButton Properties">
+        <property name="ValueAsDecimal" />
+        <property name="ValueAsInt" />
+      </itemgroup>
+    </itemgroups>
+  </object>	
+  <object type="Gamma.GtkWidgets.yTable" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.table.png" base-type="Gtk.Table">
+    <itemgroups />
+    <signals />
+  </object>	
+  <object type="Gamma.GtkWidgets.yTextView" palette-category="Gamma Gtk" allow-children="false" icon="textview.png" base-type="Gtk.TextView">
+    <itemgroups />
+    <signals />
+  </object>	
+  <object type="Gamma.GtkWidgets.yToggleButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.togglebutton.png" base-type="Gtk.ToggleButton">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yTreeView" palette-category="Gamma Gtk" allow-children="false" icon="treeview.png" base-type="Gtk.TreeView">
+    <itemgroups>
+      <itemgroup label="yTreeView Properties">
+        <property name="SearchHighlightText" />
+      </itemgroup>
+    </itemgroups>
     <signals />
   </object>
 </objects>
