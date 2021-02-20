@@ -20,7 +20,7 @@ namespace QS.Project.DB
 			var connection = new MySqlConnection(connectionString);
 			connection.Open();
 			logger.Debug("Открыто новое соединение с БД");
-			connection.StateChange += (sender, e) => logger.Debug($"Cоединения с БД тепер: {e.CurrentState}");
+			connection.StateChange += (sender, e) => logger.Debug($"Cоединение с БД теперь: {e.CurrentState}");
 			return connection;
 		}
 
