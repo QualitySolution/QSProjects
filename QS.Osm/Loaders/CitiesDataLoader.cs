@@ -50,12 +50,24 @@ namespace QS.Osm.Loaders
 
 		private List<OsmCity> GetOsmCities(string searchString, int limit, CancellationToken token)
 		{
-			Task.Delay(Delay).Wait();
-			if(token.IsCancellationRequested)
-				throw new OperationCanceledException();
-
-			logger.Info($"Запрос городов... Строка поиска : {searchString} , Кол-во записей {limit}");
-			return OsmWorker.GetOsmService().GetCitiesByCriteria(searchString, limit);
+			try
+			{
+				Task.Delay(Delay, token).Wait();
+				logger.Info($"Запрос городов... Строка поиска : {searchString} , Кол-во записей {limit}");
+				return OsmWorker.GetOsmService().GetCitiesByCriteria(searchString, limit);
+			}
+			catch (AggregateException ae)
+			{
+				ae.Handle(ex =>
+				{
+					if (ex is TaskCanceledException)
+					{
+						logger.Info("Запрос городов отменен");
+					}
+					return ex is TaskCanceledException;
+				});
+				return new List<OsmCity>();
+			}
 		}
 
 		private void SaveCities(Task<List<OsmCity>> newCities)

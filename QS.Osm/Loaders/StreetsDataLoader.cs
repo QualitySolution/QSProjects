@@ -48,17 +48,28 @@ namespace QS.Osm.Loaders
 
 		protected List<OsmStreet> GetOsmStreets(long cityId, string searchString, int limit, CancellationToken token)
 		{
-			Task.Delay(Delay).Wait();
-			if(token.IsCancellationRequested)
-				throw new OperationCanceledException();
-
-			logger.Info($"Запрос улиц... Строка поиска : {searchString} , Кол-во записей {limit}");
-			return Osm.GetStreetsByCriteria(cityId, searchString, limit);
+            try
+            {
+				Task.Delay(Delay, token).Wait();
+				logger.Info($"Запрос улиц... Строка поиска : {searchString} , Кол-во записей {limit}");
+				return Osm.GetStreetsByCriteria(cityId, searchString, limit);
+			} catch (AggregateException ae)
+            {
+				ae.Handle(ex =>
+				{
+					if (ex is TaskCanceledException)
+                    {
+						logger.Info("Запрос улиц отменен");
+					}
+					return ex is TaskCanceledException;
+				});
+				return new List<OsmStreet>();
+			}
 		}
 
-		protected void SaveStreets(Task<List<OsmStreet>> newSteets)
+		protected void SaveStreets(Task<List<OsmStreet>> newStreets)
 		{
-			Streets = newSteets.Result.ToArray();
+			Streets = newStreets.Result.ToArray();
 			logger.Info($"Улиц загружено : {Streets.Length}");
 			StreetLoaded?.Invoke();
 		}
