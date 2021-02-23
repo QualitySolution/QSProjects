@@ -14,5 +14,10 @@ namespace Gamma.GtkWidgets
 		{
 			Binding = new BindingControler<yTable>(this);
 		}
+
+		public yTable() : base(0,0, false)
+		{
+			Binding = new BindingControler<yTable>(this);
+		}
 	}
 }
