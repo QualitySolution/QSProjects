@@ -2,6 +2,7 @@
 using Gtk;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 
 namespace Gamma.GtkWidgets
 {
@@ -23,6 +24,19 @@ namespace Gamma.GtkWidgets
 			Binding.FireChange (w => w.Text);
 			base.OnChanged ();
 		}
+
+		#region Colors
+
+		private string textColor;
+		public string TextColor {
+			get => textColor;
+			set {
+				textColor = value;
+				ModifyText(StateType.Normal, ColorUtil.Create(value));
+			}
+		}
+
+		#endregion
 	}
 }
 
