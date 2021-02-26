@@ -68,11 +68,13 @@
     <Compile Include="Testing.DB\InMemoryDBTestSessionProvider.cs" />
     <Compile Include="Testing.DB\InMemoryDBTestFixtureBase.cs" />
     <Compile Include="ViewModels\EntityViewModelsTestsBase.cs" />
+    <Compile Include="Testing.Gui\GuiDispatcherForTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deletion.Testing\" />
     <Folder Include="Testing.DB\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Testing.Gui\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
