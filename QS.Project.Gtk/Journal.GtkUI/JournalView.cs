@@ -81,7 +81,7 @@ namespace QS.Journal.GtkUI
 			hboxSearch.Add(searchView);
 			searchView.Show();
 
-			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel.GetType());
+			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel);
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
 			tableview.ItemsDataSource = ViewModel.Items;
