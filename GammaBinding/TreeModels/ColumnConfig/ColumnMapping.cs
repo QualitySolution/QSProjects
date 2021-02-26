@@ -109,6 +109,12 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ColumnMapping<TNode> Visible(bool visible)
+		{
+			TreeViewColumn.Visible = visible;
+			return this;
+		}
+
 		public ColumnMapping<TNode> EnterToNextCell ()
 		{
 			IsEnterToNextCell = true;
