@@ -110,7 +110,7 @@
     <Compile Include="GtkWidgets\yComboBoxEntry.cs" />
     <Compile Include="GtkWidgets\yRadioButton.cs" />
     <Compile Include="Binding\Converters\NumbersTypeConverter.cs" />
-    <Compile Include="Binding\Converters\UintToStringConverter.cs" />
+    <Compile Include="Binding\Converters\NumbersToStringConverter.cs" />
     <Compile Include="GtkWidgets\yToggleButton.cs" />
     <Compile Include="Binding\Converters\IdToStringConverter.cs" />
     <Compile Include="GtkWidgets\yProgressBar.cs" />
