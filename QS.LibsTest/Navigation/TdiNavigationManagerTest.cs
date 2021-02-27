@@ -479,7 +479,7 @@ namespace QS.Test.Navigation
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
 
-		[Test(Description = "Проверка что можем найти страницу передва DialogViewModelBase.(Реальный баг)")]
+		[Test(Description = "Проверка что можем найти страницу передав DialogViewModelBase.(Реальный баг)")]
 		public void FindPage_ByDialogViewModelBaseTest()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
@@ -698,7 +698,7 @@ namespace QS.Test.Navigation
 
 		#region Slave Mode
 
-		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке с слайдером.")]
+		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкладке со слайдером.")]
 		public void OpenViewModel_AsSlaveOnSliderTest()
 		{
 			var builder = new ContainerBuilder();
@@ -788,6 +788,35 @@ namespace QS.Test.Navigation
 
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+		}
+
+		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к WindowDialogViewModelBase отдельного окна.")]
+		public void OpenViewModel_AsSlaveOnWindowDialogTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			builder.Register((ctx) => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<ViewModelBase>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<ModalDialogViewModel>().AsSelf();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var windowPage = navigation.OpenViewModel<ModalDialogViewModel>(null, OpenPageOptions.IgnoreHash);
+			var slidePage2 = navigation.OpenViewModel<SlideableViewModel>(windowPage.ViewModel, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(windowPage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
 		}
 
 		#endregion
