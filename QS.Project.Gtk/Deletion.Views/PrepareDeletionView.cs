@@ -15,7 +15,7 @@ namespace QS.Deletion.Views
 			this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 			viewModel.Deletion.PropertyChanged += Deletion_PropertyChanged;
 			ylabelOperation.Binding.AddBinding(viewModel.Deletion, e => e.OperationTitle, w => w.Text).InitializeFromSource();
-			var converter = new UintToStringConverter();
+			var converter = new NumbersToStringConverter();
 			ylabelToDelete.Binding.AddBinding(viewModel.Deletion, e => e.ItemsToDelete, w => w.Text, converter).InitializeFromSource();
 			ylabelToClean.Binding.AddBinding(viewModel.Deletion, e => e.ItemsToClean, w => w.Text, converter).InitializeFromSource();
 			ylabelToRemoveFrom.Binding.AddBinding(viewModel.Deletion, e => e.ItemsToRemoveFrom, w => w.Text, converter).InitializeFromSource();
