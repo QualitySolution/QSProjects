@@ -39,5 +39,21 @@ namespace QS.Utilities.Text
 				parts.Add(patronymicName);
 			return String.Join(" ", parts);
 		}
+
+		/// <summary>
+		/// Метод разбирает полное имя(ФИО) на части.
+		/// Текущая реализация при отсутвии каких-то частей учитывает только порядок следования слов.
+		/// </summary>
+		/// <param name="fullname">Входящая строка ФИО</param>
+		/// <param name="surname">Фамилия</param>
+		/// <param name="name">Имя</param>
+		/// <param name="patronymicName">Отчество</param>
+		public static void SplitFullName(this string fullname, out string surname, out string name, out string patronymicName)
+		{
+			var parts = fullname.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			surname = parts.Length > 0 ? parts[0] : null;
+			name = parts.Length > 1 ? parts[1] : null;
+			patronymicName = parts.Length > 2 ? parts[2] : null;
+		}
 	}
 }
