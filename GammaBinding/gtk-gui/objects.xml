@@ -51,6 +51,10 @@
       <itemgroups />
     <signals />
   </object>	
+  <object type="Gamma.GtkWidgets.yImage" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.image.png" base-type="Gtk.Image">
+    <itemgroups />
+    <signals />
+  </object>
   <object type="Gamma.GtkWidgets.yLabel" palette-category="Gamma Gtk" allow-children="false" icon="label.png" base-type="Gtk.Label">
     <itemgroups />
     <signals />

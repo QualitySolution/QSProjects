@@ -117,6 +117,7 @@
     <Compile Include="Binding\Converters\NullToZeroConverter.cs" />
     <Compile Include="GtkWidgets\yNotebook.cs" />
     <Compile Include="GtkWidgets\yTable.cs" />
+    <Compile Include="GtkWidgets\yImage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -169,6 +170,7 @@
     <EmbeddedResource Include="icons\progressbar.png" />
     <EmbeddedResource Include="icons\notebook.png" />
     <EmbeddedResource Include="icons\table.png" />
+    <EmbeddedResource Include="icons\image.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
