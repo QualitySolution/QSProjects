@@ -104,6 +104,7 @@
     <Compile Include="DB\ViewModels\UpdateProcessViewModel.cs" />
     <Compile Include="VersionCheckerService.cs" />
     <Compile Include="DB\SQLDBUpdater.cs" />
+    <Compile Include="DTO\VersionRequests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTO\" />

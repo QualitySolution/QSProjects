@@ -5,7 +5,7 @@ using QSUpdater;
 
 namespace QS.Updater
 {
-    [ServiceContract]
+	[ServiceContract]
     public interface IUpdateService
     {
         [OperationContract]
@@ -13,5 +13,8 @@ namespace QS.Updater
 
         [OperationContract, WebGet(ResponseFormat = WebMessageFormat.Json)]
         UsingStatisticsResult GetUsingStatistics(string product, int days, int minCount = 0);
-    }
+
+		[OperationContract, WebGet(ResponseFormat = WebMessageFormat.Json)]
+		VersionRequests[] GetVersionsStatistics(string product, int days);
+	}
 }
