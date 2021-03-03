@@ -50,7 +50,11 @@
   <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.fileselection.png" base-type="Gtk.FileChooserButton">
       <itemgroups />
     <signals />
-  </object>	
+  </object>
+  <object type="Gamma.GtkWidgets.yHBox" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.hbox.png" base-type="Gtk.HBox">
+    <itemgroups />
+    <signals />
+  </object>		
   <object type="Gamma.GtkWidgets.yImage" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.image.png" base-type="Gtk.Image">
     <itemgroups />
     <signals />
@@ -112,4 +116,8 @@
     </itemgroups>
     <signals />
   </object>
+  <object type="Gamma.GtkWidgets.yVBox" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.vbox.png" base-type="Gtk.VBox">
+    <itemgroups />
+    <signals />
+  </object>	
 </objects>
