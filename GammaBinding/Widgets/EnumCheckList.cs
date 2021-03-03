@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
+using Gamma.Widgets.Additions;
 using Gtk;
 
 namespace Gamma.Widgets
@@ -15,17 +16,74 @@ namespace Gamma.Widgets
 		public BindingControler<EnumCheckList> Binding { get; private set; }
 
 		private Type enumType;
-
 		public Type EnumType {
 			get => enumType; set {
 				enumType = value;
+				fieldsToHide.Clear();
 				FillWidgets();
 			}
 		}
 
+		private readonly List<Enum> fieldsToHide = new List<Enum>();
+
+		public void AddEnumToHideList(IEnumerable<Enum> items)
+		{
+			fieldsToHide.AddRange(items);
+			UpdateVisibility();
+		}
+		
+		public void RemoveEnumFromHideList(IEnumerable<Enum> items)
+		{
+			foreach(var item in items) {
+				if(fieldsToHide.Contains(item)) {
+					fieldsToHide.Remove(item);
+				}
+			}
+			UpdateVisibility();
+		}
+		
+		public void ClearEnumHideList()
+		{
+			fieldsToHide.Clear();
+			UpdateVisibility();
+		}
+
+		private void UpdateVisibility()
+		{
+			foreach(var check in Children.Cast<yCheckButton>()) {
+				if(fieldsToHide.Contains(check.Tag)) {
+					if(!check.Visible) {
+						continue;
+					}
+					check.Visible = false;
+					if(!RememberStateOnHide) {
+						check.Active = false;
+					}
+				}
+				else if(!check.Visible) {
+					check.Visible = true;
+				}
+			}
+		}
+		
+		public void SelectAll()
+		{
+			foreach(var check in Children.Cast<yCheckButton>()) {
+				if(!check.Active) {
+					check.Active = true;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Default false
+		/// If true, checkboxes will not change their state when enums are added and removed from hide list
+		/// </summary>
+		public bool RememberStateOnHide { get; set; } = false;
+
 		public IEnumerable<Enum> SelectedValues {
 			get {
-				foreach(yCheckButton check in Children) {
+				foreach(var check in Children.Cast<yCheckButton>()) {
 					if(check.Active)
 						yield return (Enum)check.Tag;
 				}
@@ -35,14 +93,14 @@ namespace Gamma.Widgets
 		bool externalSet = false;
 
 		/// <summary>
-		/// If you want bind list to typed enum list, use EnumsListConverter<TEnum>.
+		/// If you want bind list to typed enum list, use <see cref="EnumsListConverter{TEnum}"/>
 		/// </summary>
 		/// <value>The selected enum values.</value>
 		public IList<Enum> SelectedValuesList {
 			get { return SelectedValues.ToList(); }
 			set {
 				externalSet = true;
-				foreach(yCheckButton check in Children) {
+				foreach(var check in Children.Cast<yCheckButton>()) {
 					var itemValue = (Enum)check.Tag;
 					var active = value.Contains(itemValue);
 					if(check.Active != active)
