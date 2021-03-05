@@ -46,6 +46,10 @@
   <object type="Gamma.Widgets.EnumCheckList" palette-category="Gamma Gtk" allow-children="false" icon="checkbutton.png" base-type="Gtk.VBox">
     <itemgroups />
     <signals />
+  </object>
+  <object type="Gamma.GtkWidgets.yEventBox" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.eventbox.png" base-type="Gtk.EventBox">
+    <itemgroups />
+    <signals />
   </object>	
   <object type="Gamma.GtkWidgets.yFileChooserButton" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.fileselection.png" base-type="Gtk.FileChooserButton">
       <itemgroups />
@@ -54,7 +58,7 @@
   <object type="Gamma.GtkWidgets.yHBox" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.hbox.png" base-type="Gtk.HBox">
     <itemgroups />
     <signals />
-  </object>		
+  </object>
   <object type="Gamma.GtkWidgets.yImage" palette-category="Gamma Gtk" allow-children="false" icon="Gamma.icons.image.png" base-type="Gtk.Image">
     <itemgroups />
     <signals />

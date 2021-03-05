@@ -120,6 +120,7 @@
     <Compile Include="GtkWidgets\yImage.cs" />
     <Compile Include="GtkWidgets\yVBox.cs" />
     <Compile Include="GtkWidgets\yHBox.cs" />
+    <Compile Include="GtkWidgets\yEventBox.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -175,6 +176,7 @@
     <EmbeddedResource Include="icons\image.png" />
     <EmbeddedResource Include="icons\hbox.png" />
     <EmbeddedResource Include="icons\vbox.png" />
+    <EmbeddedResource Include="icons\eventbox.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">
