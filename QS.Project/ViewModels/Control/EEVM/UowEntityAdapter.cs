@@ -14,7 +14,7 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
 
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
+			DomainModel.NotifyChange.NotifyConfiguration.Instance?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
 		}
 
 		public EntityEntryViewModel<TEntity> EntityEntryViewModel { set; get; }
@@ -35,7 +35,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void Dispose()
 		{
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
+			DomainModel.NotifyChange.NotifyConfiguration.Instance?.UnsubscribeAll(this);
 		}
 	}
 }
