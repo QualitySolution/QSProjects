@@ -6,24 +6,36 @@ namespace QS.Utilities.Text
 		string[] Frames { get; }
 	}
 
+	/// <summary>
+	/// Не доступен на используемом по умолчанию в GTK 2 на Windows шрифте.
+	/// </summary>
 	public class SpinnerTemplateClock : ISpinnerTemplate
 	{
 		public uint Interval => 100;
 		public string[] Frames => new string[] {"🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙","🕚"};
 	}
 
+	/// <summary>
+	/// Не доступен на используемом по умолчанию в GTK 2 на Windows шрифте.
+	/// </summary>
 	public class SpinnerTemplateEarth : ISpinnerTemplate
 	{
 		public uint Interval => 180;
 		public string[] Frames => new string[] { "🌍", "🌎","🌏" };
 	}
 
+	/// <summary>
+	/// Не доступен на используемом по умолчанию в GTK 2 на Windows шрифте.
+	/// </summary>
 	public class SpinnerTemplateMoon : ISpinnerTemplate
 	{
 		public uint Interval => 80;
 		public string[] Frames => new string[] { "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" };
 	}
 
+	/// <summary>
+	/// Не доступен на используемом по умолчанию в GTK 2 на Windows шрифте.
+	/// </summary>
 	public class SpinnerTemplateDots : ISpinnerTemplate
 	{
 		public uint Interval => 80;
@@ -48,6 +60,23 @@ namespace QS.Utilities.Text
 		public string[] Frames => new string[] { "[    ]", "[=   ]", "[==  ]", "[=== ]", "[ ===]", "[  ==]", "[   =]", "[    ]", "[   =]", "[  ==]", "[ ===]", "[====]", "[=== ]", "[==  ]", "[=   ]" };
 	}
 
+	public class SpinnerTemplateBouncingBall : ISpinnerTemplate
+	{
+		public uint Interval => 80;
+		public string[] Frames => new string[] { 
+		    "( ●    )",
+			"(  ●   )",
+			"(   ●  )",
+			"(    ● )",
+			"(     ●)",
+			"(    ● )",
+			"(   ●  )",
+			"(  ●   )",
+			"( ●    )",
+			"(●     )" 
+		};
+	}
+
 	public class SpinnerTemplateDotsScrolling : ISpinnerTemplate
 	{
 		public uint Interval => 200;
@@ -58,6 +87,44 @@ namespace QS.Utilities.Text
 	{
 		public uint Interval => 120;
 		public string[] Frames => new string[] { "◴", "◷", "◶", "◵" };
+	}
+
+	public class SpinnerTemplateToggle : ISpinnerTemplate
+	{
+		public uint Interval => 120;
+		public string[] Frames => new string[] {"☗","☖"};
+	}
+
+	public class SpinnerTemplateAesthetic : ISpinnerTemplate
+	{
+		public uint Interval => 80;
+		public string[] Frames => new string[] {
+			"▰▱▱▱▱▱▱",
+			"▰▰▱▱▱▱▱",
+			"▰▰▰▱▱▱▱",
+			"▰▰▰▰▱▱▱",
+			"▰▰▰▰▰▱▱",
+			"▰▰▰▰▰▰▱",
+			"▰▰▰▰▰▰▰",
+			"▰▱▱▱▱▱▱"
+		};
+	}
+
+	public class SpinnerTemplateAestheticScrolling : ISpinnerTemplate
+	{
+		public uint Interval => 80;
+		public string[] Frames => new string[] {
+			"▰▱▱▱▱▱▱",
+			"▰▰▱▱▱▱▱",
+			"▰▰▰▱▱▱▱",
+			"▱▰▰▰▱▱▱",
+			"▱▱▰▰▰▱▱",
+			"▱▱▱▰▰▰▱",
+			"▱▱▱▱▰▰▰",
+			"▱▱▱▱▱▰▰",
+			"▱▱▱▱▱▱▰",
+			"▱▱▱▱▱▱▱",
+		};
 	}
 
 	public class TextSpinner
