@@ -4,6 +4,7 @@ using Nini.Config;
 
 namespace QSMachineConfig
 {
+    [Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
     public class DefaultMachineConfig : IMachineConfig
     {
         private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
