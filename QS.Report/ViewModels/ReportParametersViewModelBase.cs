@@ -31,7 +31,7 @@ namespace QS.Report.ViewModels
 		#region Параметры отчета
 		protected abstract Dictionary<string, object> Parameters { get; }
 
-		public ReportInfo ReportInfo => new ReportInfo {
+		public virtual ReportInfo ReportInfo => new ReportInfo {
 			Identifier = identifier,
 			Title = title,
 			Parameters = Parameters
