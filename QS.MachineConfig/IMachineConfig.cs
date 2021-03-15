@@ -1,8 +1,10 @@
-﻿using Nini.Config;
+﻿using System;
+using Nini.Config;
 
 namespace QSMachineConfig
 {
-    public interface IMachineConfig
+	[Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
+	public interface IMachineConfig
     {
         IniConfigSource ConfigSource { get; set; }
         string ConfigFileName { get; set; }
