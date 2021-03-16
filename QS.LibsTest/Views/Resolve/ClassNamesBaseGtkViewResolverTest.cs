@@ -49,5 +49,18 @@ namespace QS.Test.Views.Resolve
 
 			Assert.That(view, Is.InstanceOf<ZeroLevelTestView>());
 		}
+
+		[Test(Description = "Проверяем что резольвер корректно работает с классами в именах которых есть цифры(Реальный баг)")]
+		[Category("real case")]
+		public void CanResolveClassNameWithDigitsTest()
+		{
+			var navigation = Substitute.For<INavigationManager>();
+			var tab = new NumberName123987TestViewModel(navigation);
+
+			var resolver = new ClassNamesBaseGtkViewResolver(typeof(OneLevelTestView));
+			var view = resolver.Resolve(tab);
+
+			Assert.That(view, Is.InstanceOf<NumberName123987TestView>());
+		}
 	}
 }
