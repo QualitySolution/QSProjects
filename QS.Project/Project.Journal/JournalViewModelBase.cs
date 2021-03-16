@@ -61,6 +61,9 @@ namespace QS.Project.Journal
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
+		/// <summary>
+		/// Устанавливает использовать ли систему вложенных вкладок
+		/// </summary>
 		public virtual bool? UseSlider { get; protected set; }
 		#endregion
 
@@ -87,7 +90,7 @@ namespace QS.Project.Journal
 			UseSlider = false;
 		}
 
-		internal virtual void OnItemsSelected(object[] selectedNodes)
+		protected virtual void OnItemsSelected(object[] selectedNodes)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
 			Close(false, CloseSource.Self);
