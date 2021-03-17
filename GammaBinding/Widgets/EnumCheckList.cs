@@ -75,6 +75,15 @@ namespace Gamma.Widgets
 			}
 		}
 		
+		public void UnselectAll()
+		{
+			foreach(var check in Children.Cast<yCheckButton>()) {
+				if(check.Active) {
+					check.Active = false;
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Default false
 		/// If true, checkboxes will not change their state when enums are added and removed from hide list
@@ -84,7 +93,7 @@ namespace Gamma.Widgets
 		public IEnumerable<Enum> SelectedValues {
 			get {
 				foreach(var check in Children.Cast<yCheckButton>()) {
-					if(check.Active)
+					if(check.Active && check.Visible)
 						yield return (Enum)check.Tag;
 				}
 			}
