@@ -127,12 +127,11 @@ namespace QS.Widgets.GtkUI
 				ModifyText (StateType.Normal, new Gdk.Color (255, 0, 0)); 
 		}
 
-		protected override bool OnFocusOutEvent (Gdk.EventFocus evnt)
+		protected override bool OnFocusOutEvent(Gdk.EventFocus evnt)
 		{
-			var result = base.OnFocusOutEvent (evnt);
-			TimeSpan timeSpan;
-			if(TryParseTimeSpan(Text,out timeSpan)){
-				Text = timeSpan.ToString();
+			var result = base.OnFocusOutEvent(evnt);
+			if(TryParseTimeSpan(Text, out TimeSpan timeSpan)) {
+				Text = showSeconds ? timeSpan.ToString() : timeSpan.ToString().Substring(0, 5);
 			}
 			return result;
 		}
