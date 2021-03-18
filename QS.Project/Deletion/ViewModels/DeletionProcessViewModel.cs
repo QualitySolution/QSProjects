@@ -25,8 +25,12 @@ namespace QS.Deletion.ViewModels
 
 		public void OnClose(CloseSource source)
 		{
-			if(source == CloseSource.ClosePage || source == CloseSource.AppQuit || source == CloseSource.Cancel)
-				cancellation?.Cancel();
+			if(source == CloseSource.ClosePage || source == CloseSource.AppQuit || source == CloseSource.Cancel) {
+				try {
+					cancellation?.Cancel();
+				}
+				catch(ObjectDisposedException) { }
+			}
 		}
 	}
 }
