@@ -28,7 +28,11 @@ namespace Gamma.Widgets
 
 		public void AddEnumToHideList(IEnumerable<Enum> items)
 		{
-			fieldsToHide.AddRange(items);
+			foreach(var item in items) {
+				if(!fieldsToHide.Contains(item)) {
+					fieldsToHide.Add(item);
+				}
+			}
 			UpdateVisibility();
 		}
 		
