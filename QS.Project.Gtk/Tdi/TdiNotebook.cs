@@ -111,6 +111,8 @@ namespace QS.Tdi.Gtk
 				inserted = this.InsertPage(vbox, box, after + 1);
 			else
 				inserted = this.AppendPage(vbox, box);
+
+			this.SetTabReorderable(vbox, true);
 			tab.TabParent = this;
 			vbox.Show();
 			this.ShowTabs = true;
