@@ -79,7 +79,7 @@ namespace QS.Tdi.Gtk
 
 		#region Открытие вкладки
 
-		public void AddTab(ITdiTab tab, int after = -1)
+		public void AddTab(ITdiTab tab, ITdiTab afterTab = null)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
@@ -107,10 +107,13 @@ namespace QS.Tdi.Gtk
 			_tabs.Add(new TdiTabInfo(tab, nameLable));
 			var vbox = new TabVBox(tab, WidgetResolver);
 			int inserted;
-			if(after >= 0)
-				inserted = this.InsertPage(vbox, box, after + 1);
-			else
+			if(afterTab != null)
+            {
+				inserted = this.InsertPage(vbox, box, this.PageNum(GetTabBoxForTab(afterTab)) + 1);
+				tab.TabClosed += (s, e) => { SwitchOnTab(afterTab); };
+			} else {
 				inserted = this.AppendPage(vbox, box);
+			}
 
 			this.SetTabReorderable(vbox, true);
 			tab.TabParent = this;
@@ -126,7 +129,6 @@ namespace QS.Tdi.Gtk
 				//то открыть окно "контрагенты"
 				((ITdiTabAddedNotifier)tab).OnTabAdded();
 			}
-
 		}
 
         public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
@@ -157,7 +159,7 @@ namespace QS.Tdi.Gtk
 				if(tabBox == null) {
 					AddTab(tab);
 				} else {
-					AddTab(tab, this.PageNum(tabBox));
+					AddTab(tab, afterTab);
 				}
 			}
 		}
