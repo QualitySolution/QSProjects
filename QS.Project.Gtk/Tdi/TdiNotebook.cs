@@ -32,6 +32,7 @@ namespace QS.Tdi.Gtk
 			_tabs = new List<TdiTabInfo>();
 			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
+			this.PageReordered += TdiNotebook_PageReordered;
 		}
 
 		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
@@ -107,15 +108,15 @@ namespace QS.Tdi.Gtk
 			_tabs.Add(new TdiTabInfo(tab, nameLable));
 			var vbox = new TabVBox(tab, WidgetResolver);
 			int inserted;
-			if(afterTab != null)
+			if (afterTab != null)
             {
 				inserted = this.InsertPage(vbox, box, this.PageNum(GetTabBoxForTab(afterTab)) + 1);
 				tab.TabClosed += (s, e) => { SwitchOnTab(afterTab); };
 			} else {
 				inserted = this.AppendPage(vbox, box);
+				this.SetTabReorderable(vbox, true);
 			}
 
-			this.SetTabReorderable(vbox, true);
 			tab.TabParent = this;
 			vbox.Show();
 			this.ShowTabs = true;
@@ -131,7 +132,29 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-        public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+        private void TdiNotebook_PageReordered(object o, PageReorderedArgs args)
+        {
+			var tab = ((TabVBox)args.P0).Tab;
+
+			var slaves = GetSlaveTabs(tab);
+			foreach(var slave in slaves)
+            {
+				var newPosition = (int)args.P1;
+				if (PageNum(GetTabBoxForTab(slave)) > newPosition)
+                {
+					newPosition++;
+				}
+
+				ReorderChild(GetTabBoxForTab(slave), newPosition);
+			}
+		}
+
+		private IList<ITdiTab> GetSlaveTabs(ITdiTab tab)
+		{
+			return _tabs.Find(t => t.TdiTab == tab).SlaveTabs;
+		}
+
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.TdiTab == masterTab);
 			if(info == null)
