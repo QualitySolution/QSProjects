@@ -11,6 +11,7 @@ using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services.GtkUI;
+using QS.Services;
 
 namespace QS.Project.Dialogs.GtkUI
 {
@@ -18,10 +19,12 @@ namespace QS.Project.Dialogs.GtkUI
 	{
 		UsersModel usersModel;
 		MySQLUserRepository mySQLUserRepository;
+        private readonly IInteractiveService interactiveService;
 
-		public UsersDialog()
+        public UsersDialog(IInteractiveService interactiveService = null)
 		{
-			this.Build();
+            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+            this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
@@ -98,7 +101,7 @@ namespace QS.Project.Dialogs.GtkUI
 		private void EditUser()
 		{
 			if (treeviewUsers.GetSelectedObject() is UserBase selectedUser) {
-				UserDialog userDialog = new UserDialog(selectedUser.Id);
+				UserDialog userDialog = new UserDialog(selectedUser.Id, interactiveService);
 				userDialog.ShowAll();
 				if (userDialog.Run() == (int)ResponseType.Ok)
 					usersModel.UpdateUsers(chkShowInactive.Active);
@@ -109,7 +112,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		protected void OnButtonAddClicked(object sender, EventArgs e)
 		{
-			UserDialog userDialog = new UserDialog();
+			UserDialog userDialog = new UserDialog(interactiveService);
 			userDialog.ShowAll();
 			if (userDialog.Run() == (int)ResponseType.Ok)
 				usersModel.UpdateUsers(chkShowInactive.Active);
