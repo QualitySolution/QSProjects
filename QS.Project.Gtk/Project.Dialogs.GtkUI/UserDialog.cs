@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Gamma.GtkWidgets;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
@@ -9,6 +11,7 @@ using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services.GtkUI;
+using QS.Services;
 using QS.Widgets.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -26,7 +29,8 @@ namespace QS.Project.Dialogs.GtkUI
 		#endregion
 
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private const string passFill = "n0tChanG3d";
+        private readonly IInteractiveService interactiveService;
+        private const string passFill = "n0tChanG3d";
 
 		private bool IsNewUser => User.Id == 0;
 
@@ -37,9 +41,10 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public UserBase User { get; private set; }
 
-		public UserDialog(int userId)
+		public UserDialog(int userId, IInteractiveService interactiveService)
 		{
-			this.Build();
+            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+            this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
 
@@ -48,9 +53,10 @@ namespace QS.Project.Dialogs.GtkUI
 			ConfigureDlg();
 		}
 
-		public UserDialog()
+		public UserDialog(IInteractiveService interactiveService)
 		{
-			this.Build();
+            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+            this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
 
@@ -125,7 +131,13 @@ namespace QS.Project.Dialogs.GtkUI
 				md.Destroy();
 				return;
 			}
-
+			var regex = new Regex(@"^[a-zA-Z\d.,-_]");
+			if (!regex.IsMatch(entryLogin.Text))
+			{
+				interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, "Логин может состоять только из букв английского алфавита, нижнего подчеркивания, дефиса, точки и запятой");
+				entryLogin.Text = string.Empty;
+				return;
+			}
 			if(IsNewUser) {
 				mySQLUserRepository.CreateUser(User, entryPassword.Text, GetExtraFieldsForSelect(), GetExtraFieldsForInsert(), GetPermissionValues());
 			} else {
