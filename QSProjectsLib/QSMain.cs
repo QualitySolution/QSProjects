@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using Gtk;
 using MySql.Data.MySqlClient;
@@ -10,6 +8,7 @@ using NLog;
 
 namespace QSProjectsLib
 {
+	[Obsolete]
 	public static class QSMain
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
