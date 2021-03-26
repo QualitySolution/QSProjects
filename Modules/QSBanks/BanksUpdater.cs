@@ -9,11 +9,12 @@ using Gtk;
 using ICSharpCode.SharpZipLib.Zip;
 using QS.Banks.Domain;
 using QS.BaseParameters;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.UoW;
+using QS.Project.DB;
 using QS.Utilities;
 using QSBanks.CBRSource;
 using QSBanks.Repositories;
-using QSProjectsLib;
 
 namespace QSBanks
 {
@@ -24,18 +25,21 @@ namespace QSBanks
 		public static void CheckBanksUpdate(bool forceUpdate)
 		{
 			if(!forceUpdate) {
-				dynamic parameters = new ParametersService(QSMain.ConnectionDB);
-				DateTime lastModified = parameters.last_banks_update ?? default(DateTime);
+				dynamic parameters = new ParametersService(Connection.ConnectionDB);
+				DateTime.TryParse(parameters.last_banks_update, out DateTime lastModified);
 
 				int withoutUpdate = (int)DateTime.Now.Subtract(lastModified).TotalDays;
 				if(withoutUpdate < UpdatePeriod) {
 					return;
 				}
-				var runUpdate = MessageDialogWorks.RunQuestionDialog(
-					lastModified == default(DateTime) ? "Справочник банков никогда не обновлялся. Обновить?" :
-					NumberToTextRus.FormatCase(withoutUpdate, "Cправочник банков обновлялся\n{0} день назад. Обновить?",
-					"Cправочник банков обновлялся\n{0} дня назад. Обновить?",
-					"Cправочник банков обновлялся\n{0} дней назад. Обновить?"));
+				var runUpdate = MessageDialogHelper.RunQuestionDialog(
+					lastModified == default(DateTime)
+						? "Справочник банков никогда не обновлялся. Обновить?"
+						: NumberToTextRus.FormatCase(
+							withoutUpdate,
+							"Cправочник банков обновлялся\n{0} день назад. Обновить?",
+							"Cправочник банков обновлялся\n{0} дня назад. Обновить?",
+							"Cправочник банков обновлялся\n{0} дней назад. Обновить?"));
 				if(!runUpdate) {
 					return;
 				}
