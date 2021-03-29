@@ -79,8 +79,14 @@ namespace QS.ErrorReporting
 		private static void RealErrorMessage(Exception exception)
 		{
 			foreach(var handler in CustomErrorHandlers) {
-				if(handler(exception, ApplicationInfo, User, InteractiveMessage))
-					return;
+				try {
+					if(handler(exception, ApplicationInfo, User, InteractiveMessage)) {
+						return;
+					}
+				}
+				catch(Exception ex) {
+					logger.Error(ex, "Ошибка в CustomErrorHandler");
+				}
 			}
 
 			if(currentCrashDlg != null) {
