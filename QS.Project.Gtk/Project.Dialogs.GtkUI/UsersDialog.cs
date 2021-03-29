@@ -22,8 +22,8 @@ namespace QS.Project.Dialogs.GtkUI
         private readonly IInteractiveService interactiveService;
 
         public UsersDialog(IInteractiveService interactiveService = null)
-		{
-            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+        {
+	        this.interactiveService = interactiveService;
             this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
