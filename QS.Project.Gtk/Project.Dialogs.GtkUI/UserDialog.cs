@@ -41,9 +41,9 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public UserBase User { get; private set; }
 
-		public UserDialog(int userId, IInteractiveService interactiveService = null)
+		public UserDialog(int userId, IInteractiveService interactiveService)
 		{
-            this.interactiveService = interactiveService;
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
@@ -53,9 +53,9 @@ namespace QS.Project.Dialogs.GtkUI
 			ConfigureDlg();
 		}
 
-		public UserDialog(IInteractiveService interactiveService = null)
+		public UserDialog(IInteractiveService interactiveService)
 		{
-            this.interactiveService = interactiveService;
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
@@ -134,7 +134,7 @@ namespace QS.Project.Dialogs.GtkUI
 			var regex = new Regex(@"^[a-zA-Z\d.,-_]");
 			if (!regex.IsMatch(entryLogin.Text))
 			{
-				interactiveService?.ShowMessage(Dialog.ImportanceLevel.Error, "Логин может состоять только из букв английского алфавита, нижнего подчеркивания, дефиса, точки и запятой");
+				interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, "Логин может состоять только из букв английского алфавита, нижнего подчеркивания, дефиса, точки и запятой");
 				entryLogin.Text = string.Empty;
 				return;
 			}
