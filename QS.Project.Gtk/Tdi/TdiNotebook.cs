@@ -32,6 +32,7 @@ namespace QS.Tdi.Gtk
 			_tabs = new List<TdiTabInfo>();
 			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
+			this.PageReordered += TdiNotebook_PageReordered;
 		}
 
 		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
@@ -126,7 +127,28 @@ namespace QS.Tdi.Gtk
 				//то открыть окно "контрагенты"
 				((ITdiTabAddedNotifier)tab).OnTabAdded();
 			}
+		}
 
+        private void TdiNotebook_PageReordered(object o, PageReorderedArgs args)
+        {
+			var tab = ((TabVBox)args.P0).Tab;
+
+			var slaves = GetSlaveTabs(tab);
+			foreach(var slave in slaves)
+            {
+				var newPosition = (int)args.P1;
+				if (PageNum(GetTabBoxForTab(slave)) > newPosition)
+                {
+					newPosition++;
+				}
+
+				ReorderChild(GetTabBoxForTab(slave), newPosition);
+			}
+		}
+
+		private IList<ITdiTab> GetSlaveTabs(ITdiTab tab)
+		{
+			return _tabs.Find(t => t.TdiTab == tab).SlaveTabs;
 		}
 
         public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
