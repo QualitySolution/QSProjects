@@ -43,7 +43,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public UserDialog(int userId, IInteractiveService interactiveService)
 		{
-            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
@@ -55,7 +55,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public UserDialog(IInteractiveService interactiveService)
 		{
-            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
 			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());

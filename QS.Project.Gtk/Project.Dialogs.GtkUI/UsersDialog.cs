@@ -21,9 +21,9 @@ namespace QS.Project.Dialogs.GtkUI
 		MySQLUserRepository mySQLUserRepository;
         private readonly IInteractiveService interactiveService;
 
-        public UsersDialog(IInteractiveService interactiveService = null)
-		{
-            this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+        public UsersDialog(IInteractiveService interactiveService)
+        {
+	        this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
