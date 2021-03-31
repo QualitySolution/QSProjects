@@ -39,7 +39,7 @@ namespace QS.NewsFeed
 			return true;
 		}
 
-		public int UnreadNewsCount => Feed.Items.Count(x => !ReadItems.Contains(x.Id));
+		public int UnreadNewsCount => Feed != null ? Feed.Items.Count(x => !ReadItems.Contains(x.Id)) : 0;
 	}
 }
 
