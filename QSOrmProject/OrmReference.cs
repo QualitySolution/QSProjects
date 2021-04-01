@@ -34,6 +34,7 @@ namespace QSOrmProject
 		private bool inUpdating;
 		private IList fullList;
 		private IList viewList;
+		private bool isOwnerUow;
 
 		int number = -1;
 
@@ -67,8 +68,10 @@ namespace QSOrmProject
 
 		public override IUnitOfWork UoW {
 			get {
-				if (uow == null)
+				if (uow == null) {
 					uow = UnitOfWorkFactory.CreateWithoutRoot();
+					isOwnerUow = true;
+				}
 				return uow;
 			}
 			set { uow = value; }
@@ -192,6 +195,7 @@ namespace QSOrmProject
 		public OrmReference(System.Type objType)
 			: this(objType, UnitOfWorkFactory.CreateWithoutRoot())
 		{
+			isOwnerUow = true;
 		}
 
 		public OrmReference(System.Type objType, IUnitOfWork uow)
@@ -200,7 +204,9 @@ namespace QSOrmProject
 		}
 
 		public OrmReference(QueryOver query)
-			: this(UnitOfWorkFactory.CreateWithoutRoot(), query) { }
+			: this(UnitOfWorkFactory.CreateWithoutRoot(), query) {
+			isOwnerUow = true;
+		}
 
 		public OrmReference(IUnitOfWork uow, QueryOver query)
 			: this(query.DetachedCriteria.GetRootEntityTypeIfAvailable(), uow, query.DetachedCriteria.GetExecutableCriteria(uow.Session))
@@ -524,6 +530,8 @@ namespace QSOrmProject
 			if (map != null) {
 				map.ObjectUpdated -= OnRefObjectUpdated;
 			}
+			if(isOwnerUow)
+				UoW.Dispose();
 			base.Destroy();
 		}
 
