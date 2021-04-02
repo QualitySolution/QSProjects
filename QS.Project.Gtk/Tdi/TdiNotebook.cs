@@ -32,7 +32,6 @@ namespace QS.Tdi.Gtk
 			_tabs = new List<TdiTabInfo>();
 			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
-			this.PageReordered += TdiNotebook_PageReordered;
 		}
 
 		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
@@ -129,33 +128,34 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-        private void TdiNotebook_PageReordered(object o, PageReorderedArgs args)
+        protected override void OnPageReordered(Widget p0, uint p1)
         {
-			var tab = ((TabVBox)args.P0).Tab;
+			var tab = ((TabVBox)p0).Tab;
 
 			var slaves = GetSlaveTabs(tab);
 
-			if (args.P1 > 0)
-            {
-				TabVBox vboxBefore = (TabVBox)GetNthPage((int)args.P1 - 1);
+			if (p1 > 0)
+			{
+				TabVBox vboxBefore = (TabVBox)GetNthPage((int)p1 - 1);
 
-                if (GetSlaveTabs(vboxBefore.Tab).Any())
-                {
-					ReorderChild(args.P0, (int)args.P1 + 1);
+				if (GetSlaveTabs(vboxBefore.Tab).Any())
+				{
+					ReorderChild(p0, (int)p1 + 1);
 				}
-            }
+			}
 
-            foreach(var slave in slaves)
-            {
-				var newPosition = (int)args.P1;
+			foreach (var slave in slaves)
+			{
+				var newPosition = (int)p1;
 				if (PageNum(GetTabBoxForTab(slave)) > newPosition)
-                {
+				{
 					newPosition++;
 				}
 
 				ReorderChild(GetTabBoxForTab(slave), newPosition);
 			}
-		}
+			base.OnPageReordered(p0, p1);
+        }
 
 		private IList<ITdiTab> GetSlaveTabs(ITdiTab tab)
 		{
