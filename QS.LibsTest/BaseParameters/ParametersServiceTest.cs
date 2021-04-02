@@ -1,6 +1,6 @@
 ﻿using System;
 using Dapper;
-using Mono.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using NUnit.Framework;
 using QS.BaseParameters;
 
