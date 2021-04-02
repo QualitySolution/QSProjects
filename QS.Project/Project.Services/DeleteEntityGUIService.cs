@@ -34,8 +34,10 @@ namespace QS.Project.Services
 			using(var cancellation = new CancellationTokenSource()) {
 				var preparePage = navigation.OpenViewModel<PrepareDeletionViewModel, DeleteCore, CancellationTokenSource>(null, deletion, cancellation);
 				deletion.PrepareDeletion(clazz, id, cancellation.Token);
-				if(cancellation.IsCancellationRequested)
+				if(cancellation.IsCancellationRequested) {
+					deletion.Close();
 					return deletion;
+				}
 				navigation.ForceClosePage(preparePage, CloseSource.External);
 			}
 			#endregion
@@ -43,11 +45,17 @@ namespace QS.Project.Services
 			if(deletion.TotalLinks > 0) {
 				var deletionPage = navigation.OpenViewModel<DeletionViewModel, DeleteCore>(null, deletion);
 				deletionPage.ViewModel.DeletionAccepted = () => RunDeletion(deletion);
+				deletionPage.PageClosed += delegate (object sender, PageClosedEventArgs e) {
+					if(e.CloseSource != CloseSource.Self)
+						deletion.Close();
+				};
 			}
 			else if(interactive.Question($"Удалить {deletion.RootEntity.Title}?"))
 				RunDeletion(deletion);
-			else
+			else {
+				deletion.Close();
 				deletion.DeletionExecuted = false;
+			}
 			#endregion
 			return deletion;
 		}
@@ -57,9 +65,12 @@ namespace QS.Project.Services
 			using(var cancellation = new CancellationTokenSource()) {
 				var progressPage = navigation.OpenViewModel<DeletionProcessViewModel, DeleteCore, CancellationTokenSource>(null, deletion, cancellation);
 				deletion.RunDeletion(cancellation.Token);
-				if(cancellation.IsCancellationRequested)
+				if(cancellation.IsCancellationRequested) {
+					deletion.Close();
 					return;
+				}
 				navigation.ForceClosePage(progressPage, CloseSource.External);
+				deletion.Close();
 			}
 		}
 	} 
