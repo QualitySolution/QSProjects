@@ -134,25 +134,26 @@ namespace QS.Tdi.Gtk
 
 			var slaves = GetSlaveTabs(tab);
 
-			if (p1 > 0)
+			if (p1 > 0 && GetTabReorderable(p0))
 			{
 				TabVBox vboxBefore = (TabVBox)GetNthPage((int)p1 - 1);
 
 				if (GetSlaveTabs(vboxBefore.Tab).Any())
 				{
 					ReorderChild(p0, (int)p1 + 1);
+					return;
 				}
 			}
 
 			foreach (var slave in slaves)
 			{
 				var newPosition = (int)p1;
-				if (PageNum(GetTabBoxForTab(slave)) > newPosition)
-				{
-					newPosition++;
-				}
+                if (PageNum(GetTabBoxForTab(slave)) > newPosition)
+                {
+                    newPosition++;
+                }
 
-				ReorderChild(GetTabBoxForTab(slave), newPosition);
+                ReorderChild(GetTabBoxForTab(slave), newPosition);
 			}
 			base.OnPageReordered(p0, p1);
         }
