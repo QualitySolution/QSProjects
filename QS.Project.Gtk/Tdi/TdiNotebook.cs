@@ -111,6 +111,8 @@ namespace QS.Tdi.Gtk
 				inserted = this.InsertPage(vbox, box, after + 1);
 			else
 				inserted = this.AppendPage(vbox, box);
+
+			this.SetTabReorderable(vbox, true);
 			tab.TabParent = this;
 			vbox.Show();
 			this.ShowTabs = true;
@@ -124,7 +126,40 @@ namespace QS.Tdi.Gtk
 				//то открыть окно "контрагенты"
 				((ITdiTabAddedNotifier)tab).OnTabAdded();
 			}
+		}
 
+        protected override void OnPageReordered(Widget p0, uint p1)
+        {
+			var tab = ((TabVBox)p0).Tab;
+
+			var slaves = GetSlaveTabs(tab);
+
+			if (p1 > 0)
+			{
+				TabVBox vboxBefore = (TabVBox)GetNthPage((int)p1 - 1);
+
+				if (GetSlaveTabs(vboxBefore.Tab).Any())
+				{
+					ReorderChild(p0, (int)p1 + 1);
+				}
+			}
+
+			foreach (var slave in slaves)
+			{
+				var newPosition = (int)p1;
+				if (PageNum(GetTabBoxForTab(slave)) > newPosition)
+				{
+					newPosition++;
+				}
+
+				ReorderChild(GetTabBoxForTab(slave), newPosition);
+			}
+			base.OnPageReordered(p0, p1);
+        }
+
+		private IList<ITdiTab> GetSlaveTabs(ITdiTab tab)
+		{
+			return _tabs.Find(t => t.TdiTab == tab).SlaveTabs;
 		}
 
         public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
@@ -141,6 +176,7 @@ namespace QS.Tdi.Gtk
 
 			info.SlaveTabs.Add(slaveTab);
 			this.AddTab(slaveTab, masterTab);
+			this.SetTabReorderable(GetTabBoxForTab(slaveTab), false);
 			var addedTabInfo = _tabs.Find(t => t.TdiTab == slaveTab);
 			addedTabInfo.MasterTabInfo = info;
 			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
