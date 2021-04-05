@@ -131,7 +131,7 @@ namespace QS.Project.Dialogs.GtkUI
 				md.Destroy();
 				return;
 			}
-			var regex = new Regex(@"^[a-zA-Z\d.,-_]");
+			var regex = new Regex(@"^[A-Za-z\d.,_-]+\Z");
 			if (!regex.IsMatch(entryLogin.Text))
 			{
 				interactiveService.ShowMessage(Dialog.ImportanceLevel.Error, "Логин может состоять только из букв английского алфавита, нижнего подчеркивания, дефиса, точки и запятой");
