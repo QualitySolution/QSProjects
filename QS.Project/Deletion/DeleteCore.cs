@@ -19,12 +19,15 @@ namespace QS.Deletion
 		internal bool IsHibernateMode;
 		internal System.Action BeforeDeletion;
 
+		private bool isOwnerUow;
 		IUnitOfWork uow;
 
 		IUnitOfWork IDeleteCore.UoW {
 			get {
-				if (uow == null)
+				if (uow == null) {
 					uow = UnitOfWorkFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
+					isOwnerUow = true;
+				}
 				return uow;
 			}
 		}
@@ -180,6 +183,15 @@ namespace QS.Deletion
 				uow.Commit ();
 			DeletionExecuted = true;
 			return;
+		}
+
+		/// <summary>
+		/// Закрывает uow созданный внутри движка.
+		/// </summary>
+		public void Close()
+		{
+			if(isOwnerUow)
+				uow.Dispose();
 		}
 
 		#endregion
