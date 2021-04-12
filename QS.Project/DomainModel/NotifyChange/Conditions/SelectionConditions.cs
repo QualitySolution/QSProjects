@@ -24,6 +24,14 @@ namespace QS.DomainModel.NotifyChange.Conditions
 			return condition;
 		}
 
+
+		/// <summary>
+		/// Добавляем в исключения указанные Uow. То есть, уведомления сделанные одним из этих uow, не будут прилетать подписчику.
+		/// Например мы можем заходеть не получать уведомленя на изменения сделанные в своей сессии.
+		/// Обратите внимание, метод можно вызвать несколько раз. Каждый раз список исключений будет расширятся.
+		/// </summary>
+		/// <returns>The uow.</returns>
+		/// <param name="unitOfWorks">Списко UnitOfWorks</param>
 		public SelectionConditions ExcludeUow(params IUnitOfWork[] unitOfWorks)
 		{
 			foreach(var uow in unitOfWorks) {
