@@ -419,27 +419,22 @@ namespace QS.Journal.GtkUI
 
 		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)
 		{
-			switch (args.Event.Key)
-			{
-				case Gdk.Key.Insert:
-					ExecuteTypeJournalAction(JournalActionType.Add);
-					break;
-				case Gdk.Key.Delete:
-					ExecuteTypeJournalAction(JournalActionType.Delete);
-					break;
-			}
+			ExecuteTypeJournalAction(args.Event.Key.ToString());
 		}
 
-		private void ExecuteTypeJournalAction(JournalActionType journalActionType)
+		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			var nodeAction = ViewModel.NodeActions
-					.Where(n => n is ITypeJournalAction typeJournalAction && typeJournalAction.ActionType == journalActionType);
+			var nodeActions = ViewModel.NodeActions.Where(n => !string.IsNullOrEmpty(n.HotKeys) &&
+				n.HotKeys.Replace(" ", string.Empty).ToLower()
+				.Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
+				.Contains(hotKey.ToLower()));
 
-			if (nodeAction.Count() > 1)
-				throw new InvalidOperationException($"Должен быть только один NodeAction с типом {journalActionType.ToString()}");
+			if (nodeActions.Count() > 1)
+				throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
 
-			if (nodeAction.Count() == 1)
-				nodeAction.ElementAt(0).ExecuteAction(GetSelectedItems());
+			if (nodeActions.Count() == 1)
+				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
 		}
+
 	}
 }

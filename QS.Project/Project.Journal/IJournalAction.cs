@@ -9,5 +9,6 @@ namespace QS.Project.Journal
 		bool GetSensitivity(object[] selectedNodes);
 		Action<object[]> ExecuteAction { get; }
 		IEnumerable<IJournalAction> ChildActions { get; }
+		string HotKeys { get; }
 	}
 }
