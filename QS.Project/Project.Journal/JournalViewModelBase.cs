@@ -110,10 +110,11 @@ namespace QS.Project.Journal
 
 		protected virtual void CreateDefaultSelectAction()
 		{
-			var selectAction = new JournalAction("Выбрать",
+			var selectAction = new TypeJournalAction("Выбрать",
 				(selected) => selected.Any(),
 				(selected) => SelectionMode != JournalSelectionMode.None,
-				OnItemsSelected
+				OnItemsSelected,
+				JournalActionType.Select
 			);
 			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
 				RowActivatedAction = selectAction;

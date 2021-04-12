@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -125,6 +125,8 @@
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
+    <Compile Include="Project.Journal\ITypeJournalAction.cs" />
+    <Compile Include="Project.Journal\TypeJournalAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project.Domain\UserBase.cs" />
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />

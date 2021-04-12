@@ -217,7 +217,7 @@ namespace QS.Project.Journal
 				NodeActionsList.Add(addParentNodeAction);
 			} else {
 				var entityConfig = EntityConfigs.First().Value;
-				var addAction = new JournalAction("Добавить",
+				var addAction = new TypeJournalAction("Добавить",
 					(selected) => entityConfig.PermissionResult.CanCreate,
 					(selected) => entityConfig.PermissionResult.CanCreate,
 					(selected) => {
@@ -231,14 +231,15 @@ namespace QS.Project.Journal
 						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
 							HideJournal(TabParent);
 						}
-					});
+					},
+					JournalActionType.Add);
 				NodeActionsList.Add(addAction);
 			};
 		}
 
 		protected void CreateDefaultEditAction()
 		{
-			var editAction = new JournalAction("Изменить",
+			var editAction = new TypeJournalAction("Изменить",
 				(selected) => {
 					var selectedNodes = selected.OfType<TNode>();
 					if(selectedNodes == null || selectedNodes.Count() != 1) {
@@ -268,7 +269,8 @@ namespace QS.Project.Journal
 					if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
 						HideJournal(TabParent);
 					}
-				}
+				},
+				JournalActionType.Edit
 			);
 			if(SelectionMode == JournalSelectionMode.None) {
 				RowActivatedAction = editAction;
@@ -278,7 +280,7 @@ namespace QS.Project.Journal
 
 		protected void CreateDefaultDeleteAction()
 		{
-			var deleteAction = new JournalAction("Удалить",
+			var deleteAction = new TypeJournalAction("Удалить",
 				(selected) => {
 					var selectedNodes = selected.OfType<TNode>();
 					if(selectedNodes == null || selectedNodes.Count() != 1) {
@@ -305,7 +307,8 @@ namespace QS.Project.Journal
 					if(config.PermissionResult.CanDelete) {
 						DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
 					}
-				}
+				},
+				JournalActionType.Delete
 			);
 			NodeActionsList.Add(deleteAction);
 		}

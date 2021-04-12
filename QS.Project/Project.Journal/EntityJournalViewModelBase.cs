@@ -61,27 +61,30 @@ namespace QS.Project.Journal
 			bool canEdit = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanUpdate;
 			bool canDelete = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanDelete;
 
-			var addAction = new JournalAction("Добавить",
+			var addAction = new TypeJournalAction("Добавить",
 					(selected) => canCreate,
 					(selected) => VisibleCreateAction,
-					(selected) => CreateEntityDialog()
+					(selected) => CreateEntityDialog(),
+					JournalActionType.Add
 					);
 			NodeActionsList.Add(addAction);
 
-			var editAction = new JournalAction("Изменить",
+			var editAction = new TypeJournalAction("Изменить",
 					(selected) => canEdit && selected.Any(),
 					(selected) => VisibleEditAction,
-					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
+					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog),
+					JournalActionType.Edit
 					);
 			NodeActionsList.Add(editAction);
 
 			if(SelectionMode == JournalSelectionMode.None)
 				RowActivatedAction = editAction;
 
-			var deleteAction = new JournalAction("Удалить",
+			var deleteAction = new TypeJournalAction("Удалить",
 					(selected) => canDelete && selected.Any(),
 					(selected) => VisibleDeleteAction,
-					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray())
+					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray()),
+					JournalActionType.Delete
 					);
 			NodeActionsList.Add(deleteAction);
 		}

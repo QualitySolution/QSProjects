@@ -37,6 +37,7 @@ namespace QS.Journal.GtkUI
 			this.Build();
 			ConfigureJournal();
 			CreateTextSpinner();
+			KeyPressEvent += JournalView_KeyPressEvent;
 		}
 
 		private void ConfigureJournal()
@@ -414,6 +415,31 @@ namespace QS.Journal.GtkUI
 			ViewModel.DataLoader.CancelLoading();
 			base.Destroy();
 			ViewModel.Dispose();
+		}
+
+		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)
+		{
+			switch (args.Event.Key)
+			{
+				case Gdk.Key.Insert:
+					ExecuteTypeJournalAction(JournalActionType.Add);
+					break;
+				case Gdk.Key.Delete:
+					ExecuteTypeJournalAction(JournalActionType.Delete);
+					break;
+			}
+		}
+
+		private void ExecuteTypeJournalAction(JournalActionType journalActionType)
+		{
+			var nodeAction = ViewModel.NodeActions
+					.Where(n => n is ITypeJournalAction typeJournalAction && typeJournalAction.ActionType == journalActionType);
+
+			if (nodeAction.Count() > 1)
+				throw new InvalidOperationException($"Должен быть только один NodeAction с типом {journalActionType.ToString()}");
+
+			if (nodeAction.Count() == 1)
+				nodeAction.ElementAt(0).ExecuteAction(GetSelectedItems());
 		}
 	}
 }
