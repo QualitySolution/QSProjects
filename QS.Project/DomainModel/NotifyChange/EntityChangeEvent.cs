@@ -1,7 +1,7 @@
 ﻿using System;
-using NHibernate.Event;
 using System.Linq.Expressions;
 using Gamma.Utilities;
+using NHibernate.Event;
 
 namespace QS.DomainModel.NotifyChange
 {
@@ -32,6 +32,7 @@ namespace QS.DomainModel.NotifyChange
 			DeleteEvent = null;
 			EntityClass = InsertEvent.Persister.MappedClass;
 			Entity = InsertEvent.Entity;
+			Session = InsertEvent.Session;
 		}
 
 		public EntityChangeEvent(PostUpdateEvent updateEvent)
@@ -41,6 +42,7 @@ namespace QS.DomainModel.NotifyChange
 			DeleteEvent = null;
 			EntityClass = UpdateEvent.Persister.MappedClass;
 			Entity = UpdateEvent.Entity;
+			Session = UpdateEvent.Session;
 		}
 
 		public EntityChangeEvent(PostDeleteEvent deleteEvent)
@@ -50,9 +52,12 @@ namespace QS.DomainModel.NotifyChange
 			DeleteEvent = deleteEvent;
 			EntityClass = DeleteEvent.Persister.MappedClass;
 			Entity = DeleteEvent.Entity;
+			Session = DeleteEvent.Session;
 		}
 
-		#endregion
+		#endregion 
+
+		public IEventSource Session { get; }
 
 		#region Доступ к данным
 
