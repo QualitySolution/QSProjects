@@ -13,13 +13,14 @@ namespace QS.Project.Journal
 		/// <param name="sensitiveFunc">Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие,к примеру,как объект выпадающего меню), при выделенных Node-ах.</param>
 		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
-		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc, Action<object[]> executeAction)
+		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc, Action<object[]> executeAction, string hotKeys = null)
 		{
 			ChildActionsList = new List<IJournalAction>();
 			Title = title;
 			this.sensitiveFunc = sensitiveFunc;
 			this.visibleFunc = visibleFunc;
 			ExecuteAction = executeAction;
+			HotKeys = hotKeys;
 		}
 
 		public string Title { get; }
@@ -43,7 +44,7 @@ namespace QS.Project.Journal
 		/// <value>Объекты - в данном случае это Node-ы журнала</value>
 		public Action<object[]> ExecuteAction { get; }
 
-		public bool GetSensitivity(object[] selectedNodes)
+        public bool GetSensitivity(object[] selectedNodes)
 		{
 			return sensitiveFunc.Invoke(selectedNodes);
 		}
@@ -52,5 +53,7 @@ namespace QS.Project.Journal
 		{
 			return visibleFunc.Invoke(selectedNodes);
 		}
+
+		public string HotKeys { get; }
 	}
 }

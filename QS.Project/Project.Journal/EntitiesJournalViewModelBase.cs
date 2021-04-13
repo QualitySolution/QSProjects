@@ -231,7 +231,9 @@ namespace QS.Project.Journal
 						if(docConfig.JournalParameters.HideJournalForCreateDialog) {
 							HideJournal(TabParent);
 						}
-					});
+					},
+					"Insert"
+					);
 				NodeActionsList.Add(addAction);
 			};
 		}
@@ -305,7 +307,8 @@ namespace QS.Project.Journal
 					if(config.PermissionResult.CanDelete) {
 						DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
 					}
-				}
+				},
+				"Delete"
 			);
 			NodeActionsList.Add(deleteAction);
 		}

@@ -64,7 +64,8 @@ namespace QS.Project.Journal
 			var addAction = new JournalAction("Добавить",
 					(selected) => canCreate,
 					(selected) => VisibleCreateAction,
-					(selected) => CreateEntityDialog()
+					(selected) => CreateEntityDialog(),
+					"Insert"
 					);
 			NodeActionsList.Add(addAction);
 
@@ -81,7 +82,8 @@ namespace QS.Project.Journal
 			var deleteAction = new JournalAction("Удалить",
 					(selected) => canDelete && selected.Any(),
 					(selected) => VisibleDeleteAction,
-					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray())
+					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray()),
+					"Delete"
 					);
 			NodeActionsList.Add(deleteAction);
 		}
