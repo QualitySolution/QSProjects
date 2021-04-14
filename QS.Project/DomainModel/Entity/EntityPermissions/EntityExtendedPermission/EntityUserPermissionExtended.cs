@@ -5,7 +5,10 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 {
 	public class EntityUserPermissionExtended : EntityPermissionExtendedBase
 	{
-		public override PermissionExtendedType PermissionExtendedType => PermissionExtendedType.User; 
+		public override PermissionExtendedType PermissionExtendedType {
+			get => PermissionExtendedType.User;
+			set { }
+		}
 
 		private UserBase user;
 		[Display(Name = "Пользователь")]
