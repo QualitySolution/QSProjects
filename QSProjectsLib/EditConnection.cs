@@ -7,51 +7,51 @@ namespace QSProjectsLib
 {
 	public partial class EditConnection : Dialog
 	{
-		ListStore connectionsListStore = new ListStore (typeof(string), typeof(Connection));
-		List<string> sectionsToDelete = new List<string> ();
+		ListStore connectionsListStore = new ListStore(typeof(string), typeof(Connection));
+		List<string> sectionsToDelete = new List<string>();
 		List<Connection> connections;
 		TreeIter currentIter;
 		string lastEdited;
 
 		public event EventHandler EditingDone;
 
-		protected virtual void OnEditingDone ()
+		protected virtual void OnEditingDone()
 		{
-			if (EditingDone != null)
-				EditingDone (null, EventArgs.Empty);
+			if(EditingDone != null)
+				EditingDone(null, EventArgs.Empty);
 		}
 
-		public EditConnection (List<Connection> Connections)
+		public EditConnection(List<Connection> Connections)
 		{
-			this.Build ();
+			this.Build();
 			this.Title = "Настройка соединений";
 			connections = Connections;
-		
-			labelInfo.ModifyFg (StateType.Normal, new Gdk.Color (255, 0, 0));
+
+			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
 			entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
 			comboConnectionType.Active = 0;
 
 			//Creating connections treeview
 			treeConnections.Model = connectionsListStore;
 
-			TreeViewColumn connectionColumn = new TreeViewColumn ();
+			TreeViewColumn connectionColumn = new TreeViewColumn();
 			connectionColumn.Title = "Соединения";
-			CellRendererText connectionCell = new CellRendererText ();
+			CellRendererText connectionCell = new CellRendererText();
 			connectionCell.Editable = false;
-			connectionColumn.PackStart (connectionCell, true);
-			connectionColumn.AddAttribute (connectionCell, "text", 0);
+			connectionColumn.PackStart(connectionCell, true);
+			connectionColumn.AddAttribute(connectionCell, "text", 0);
 
-			treeConnections.AppendColumn (connectionColumn);
+			treeConnections.AppendColumn(connectionColumn);
 
 			//Filling in info
-			for (int i = 0; i < Connections.Count; i++)
-				connectionsListStore.AppendValues (Connections [i].ConnectionName, Connections [i]);
+			for(int i = 0; i < Connections.Count; i++)
+				connectionsListStore.AppendValues(Connections[i].ConnectionName, Connections[i]);
 
 			//Selecting first node and filling in its information
-			var conn = Connections [0];
+			var conn = Connections[0];
 			entryName.Text = conn.ConnectionName;
 			entryBase.Text = conn.BaseName;
-			if (conn.Type == ConnectionType.MySQL) {
+			if(conn.Type == ConnectionType.MySQL) {
 				comboConnectionType.Active = 0;
 				entryLogin.Text = String.Empty;
 				entryServer.Text = conn.Server;
@@ -63,19 +63,25 @@ namespace QSProjectsLib
 
 			buttonCreateBase.Sensitive = DBCreator.Scripts.Count > 0;
 
-			treeConnections.Model.GetIterFirst (out currentIter);
-			treeConnections.Selection.SelectIter (currentIter);
+			treeConnections.Model.GetIterFirst(out currentIter);
+			treeConnections.Selection.SelectIter(currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
 
 			buttonHelp.Visible = !String.IsNullOrEmpty(Login.CreateDBHelpUrl);
 			buttonHelp.TooltipText = Login.CreateDBHelpTooltip;
 		}
 
-		void HandleChanged (object sender, EventArgs e)
+		void HandleChanged(object sender, EventArgs e)
 		{
 			TreeIter iter;
-			treeConnections.Selection.GetSelected (out iter);
-			treeConnections.ActivateRow (treeConnections.Model.GetPath (iter), treeConnections.Columns [0]);
+			treeConnections.Selection.GetSelected(out iter);
+			treeConnections.ActivateRow(treeConnections.Model.GetPath(iter), treeConnections.Columns[0]);
+		}
+
+		private void CheckCreateDBSensetive(){
+			buttonCreateBase.Sensitive = DBCreator.Scripts.Count > 0 
+				&& !String.IsNullOrWhiteSpace(entryServer.Text) 
+				&& !String.IsNullOrWhiteSpace(entryBase.Text);
 		}
 
 		protected void OnTreeviewConnectionsRowActivated (object o, RowActivatedArgs args)
@@ -296,6 +302,16 @@ namespace QSProjectsLib
 		protected void OnButtonHelpClicked(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start(Login.CreateDBHelpUrl);
+		}
+
+		protected void OnEntryServerChanged(object sender, EventArgs e)
+		{
+			CheckCreateDBSensetive();
+		}
+
+		protected void OnEntryBaseChanged(object sender, EventArgs e)
+		{
+			CheckCreateDBSensetive();
 		}
 	}
 }
