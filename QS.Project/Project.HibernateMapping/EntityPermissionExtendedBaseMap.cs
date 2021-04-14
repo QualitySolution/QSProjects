@@ -10,22 +10,20 @@ namespace QS.Project.HibernateMapping
 		{
 			Table("entity_permission_extended");
 
-			DiscriminateSubClassesOnColumn("permission_type");
-			Map(x => x.PermissionExtendedType).Column("permission_type").CustomType<PermissionExtendedTypeStringType>().Update().Not.Insert();
-
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
+			DiscriminateSubClassesOnColumn("permission_type");
+
+			Map(x => x.PermissionExtendedType).Column("permission_type").CustomType<PermissionExtendedTypeStringType>().Update().Not.Insert();
 			Map(x => x.PermissionId).Column("permission_id");
-
-
 			Map(x => x.IsPermissionAvailable).Column("is_permission_available");
 
 			References(x => x.TypeOfEntity).Column("type_of_entity_id");
 		}
 	}
 
-	public class EntityUserExtendedPermissionExtendedMao : SubclassMap<EntityUserPermissionExtended>
+	public class EntityUserExtendedPermissionExtendedMap : SubclassMap<EntityUserPermissionExtended>
 	{
-		public EntityUserExtendedPermissionExtendedMao()
+		public EntityUserExtendedPermissionExtendedMap()
 		{
 			DiscriminatorValue(PermissionExtendedType.User.ToString());
 			References(x => x.User).Column("user_id");
