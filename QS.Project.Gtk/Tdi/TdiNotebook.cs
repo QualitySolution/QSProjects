@@ -299,6 +299,8 @@ namespace QS.Tdi.Gtk
 			AskToCloseTab(tab.Tab, CloseSource.ClosePage);
 		}
 
+
+		/// <returns><c>true</c>, если можно закрывать вкладку, если закрытие вкладки отменено то <c>false</c></returns>
 		private bool SaveIfNeed(ITdiTab tab)
 		{
 			if(CheckClosingSlaveTabs(tab))
@@ -324,12 +326,13 @@ namespace QS.Tdi.Gtk
 				md.Destroy();
 				if(result == (int)ResponseType.Yes) {
 					if(!dlg.Save()) {
-						logger.Warn("Вкладка не сохранена. Отмена закрытия...");
+						logger.Info("Вкладка не сохранена. Отмена закрытия...");
 						return false;
 					}
+					else
+						return true;
 				}
 				if(result == (int)ResponseType.No) {
-					GetTabBoxForTab(tab)?.Destroy();
 					return true;
 				}
 				if(result == (int)ResponseType.DeleteEvent)
