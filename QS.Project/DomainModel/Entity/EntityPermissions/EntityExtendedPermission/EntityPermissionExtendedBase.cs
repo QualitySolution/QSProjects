@@ -7,7 +7,8 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 	{
 		public virtual int Id { get; set; }
 
-		public virtual PermissionExtendedType PermissionExtendedType { get;}
+		[Display(Name = "Тип")]
+		public abstract PermissionExtendedType PermissionExtendedType { get; set; }
 
 		private bool? isPermissionAvailable;
 		[Display(Name = "Доступно ли право ?")]
@@ -32,7 +33,9 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 
 	public enum PermissionExtendedType
 	{
+		[Display(Name = "Для пользователя")]
 		User,
+		[Display(Name = "Для подразделения")]
 		Subdivision
 	}
 
