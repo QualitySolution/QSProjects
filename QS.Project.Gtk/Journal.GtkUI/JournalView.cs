@@ -86,7 +86,7 @@ namespace QS.Journal.GtkUI
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
 			tableview.ItemsDataSource = ViewModel.Items;
-			RefreshSource();
+			ViewModel.Refresh();
 			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
@@ -244,11 +244,6 @@ namespace QS.Journal.GtkUI
 		}
 
 		#endregion
-
-		private void RefreshSource()
-		{
-			ViewModel.Refresh();
-		}
 
 		double lastScrollPosition;
 
@@ -419,6 +414,11 @@ namespace QS.Journal.GtkUI
 
 		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)
 		{
+			if(args.Event.Key == Gdk.Key.F5) {
+				ViewModel.Refresh();
+				return;
+			}
+
 			ExecuteTypeJournalAction(args.Event.Key.ToString());
 		}
 
