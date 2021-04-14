@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -1740,6 +1740,7 @@
                         <property name="CanFocus">True</property>
                         <property name="IsEditable">True</property>
                         <property name="InvisibleChar">●</property>
+                        <signal name="Changed" handler="OnEntryBaseChanged" />
                       </widget>
                       <packing>
                         <property name="TopAttach">3</property>
@@ -1790,6 +1791,7 @@
                         <signal name="TextDeleted" handler="OnEntryServerTextDeleted" />
                         <signal name="FocusInEvent" handler="OnEntryServerFocusInEvent" />
                         <signal name="FocusOutEvent" handler="OnEntryServerFocusOutEvent" />
+                        <signal name="Changed" handler="OnEntryServerChanged" />
                       </widget>
                       <packing>
                         <property name="TopAttach">2</property>

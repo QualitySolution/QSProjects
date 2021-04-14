@@ -378,7 +378,9 @@ namespace QSProjectsLib
 			this.entryServer.TextDeleted += new global::Gtk.TextDeletedHandler(this.OnEntryServerTextDeleted);
 			this.entryServer.FocusInEvent += new global::Gtk.FocusInEventHandler(this.OnEntryServerFocusInEvent);
 			this.entryServer.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryServerFocusOutEvent);
+			this.entryServer.Changed += new global::System.EventHandler(this.OnEntryServerChanged);
 			this.entryName.Changed += new global::System.EventHandler(this.OnEntryNameChanged);
+			this.entryBase.Changed += new global::System.EventHandler(this.OnEntryBaseChanged);
 			this.comboConnectionType.Changed += new global::System.EventHandler(this.OnComboConnectionTypeChanged);
 			this.buttonCreateBase.Clicked += new global::System.EventHandler(this.OnButtonCreateBaseClicked);
 			this.buttonHelp.Clicked += new global::System.EventHandler(this.OnButtonHelpClicked);
