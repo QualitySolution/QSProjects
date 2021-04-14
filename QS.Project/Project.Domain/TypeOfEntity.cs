@@ -12,8 +12,6 @@ namespace QS.Project.Domain
 	Nominative = "тип документа")]
 	public class TypeOfEntity : PropertyChangedBase, IDomainObject, IValidatableObject
 	{
-		public TypeOfEntity() { }
-
 		#region Свойства
 
 		public virtual int Id { get; set; }
@@ -24,6 +22,9 @@ namespace QS.Project.Domain
 			get => customName;
 			set => SetField(ref customName, value, () => CustomName);
 		}
+
+		[Display(Name = "Название")]
+		public virtual string Name => CustomName;
 
 		string type;
 		[Display(Name = "Тип документа")]
