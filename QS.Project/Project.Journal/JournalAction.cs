@@ -13,7 +13,7 @@ namespace QS.Project.Journal
 		/// <param name="sensitiveFunc">Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие,к примеру,как объект выпадающего меню), при выделенных Node-ах.</param>
 		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
-		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc, Action<object[]> executeAction, string hotKeys = null)
+		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc, Action<object[]> executeAction = null, string hotKeys = null)
 		{
 			ChildActionsList = new List<IJournalAction>();
 			Title = title;
