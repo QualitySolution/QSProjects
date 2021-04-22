@@ -35,7 +35,7 @@ namespace QS.Validation
             if(password.Contains(" ") && !Settings.AllowWhitespaces) {
                 errorMessages.Add("Пароль не должен содержать пробелы");
             }
-            if(Settings.NotAllowedStrings.Any(password.Contains)) {
+            if(Settings.NotAllowedStrings != null && Settings.NotAllowedStrings.Any(password.Contains)) {
                 errorMessages.Add(
                     $"Пароль не должен содержать запрещённые символы и слова ( {String.Join(" ", Settings.NotAllowedStrings)} )");
             }
@@ -44,12 +44,12 @@ namespace QS.Validation
             }
             if(Settings.MinNumberCount != 0 && password.Count(Char.IsNumber) < Settings.MinNumberCount) {
                 errorMessages.Add(
-                    $"Пароль должен содержать минимум {Settings.MinNumberCount} {GetFormattedNumberString(Settings.MinNumberCount)}");
+                    $"Пароль должен содержать более {Settings.MinNumberCount - 1} {GetFormattedNumberString(Settings.MinNumberCount - 1)}");
             }
             if(Settings.MinOtherCharactersCount != 0 && password.Count(x => !Char.IsLetterOrDigit(x)) < Settings.MinOtherCharactersCount) {
                 errorMessages.Add(
-                    $"Пароль должен содержать минимум {Settings.MinOtherCharactersCount} спец. {GetFormattedCharacterString(Settings.MinOtherCharactersCount)}\n" +
-                    "( . ; : & ? и др.)");
+                    $"Пароль должен содержать более {Settings.MinOtherCharactersCount - 1} спец. {GetFormattedCharacterString(Settings.MinOtherCharactersCount - 1)}\n" +
+                    "( . ; : ? и др.)");
             }
             if(Settings.MinLetterSameCaseCount != 0
                 && password.Count(Char.IsUpper) < Settings.MinLetterSameCaseCount
