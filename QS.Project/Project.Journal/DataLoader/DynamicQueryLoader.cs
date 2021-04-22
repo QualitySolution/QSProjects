@@ -35,8 +35,11 @@ namespace QS.Project.Journal.DataLoader
 		public int GetTotalItemsCount()
 		{
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
+				var query = queryFunc.Invoke(uow);
+				if(query == null)
+					return 0;
 
-				return queryFunc.Invoke(uow).ClearOrders().RowCount();
+				return query.ClearOrders().RowCount();
 			}
 		}
 
@@ -47,8 +50,12 @@ namespace QS.Project.Journal.DataLoader
 				return;
 
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-
 				var workQuery = queryFunc.Invoke(uow);
+				if(workQuery == null) {
+					HasUnloadedItems = false;
+					return;
+				}
+
 				if (pageSize.HasValue) {
 					var resultItems = workQuery.Skip(LoadedItemsCount).Take(pageSize.Value).List<TNode>();
 
