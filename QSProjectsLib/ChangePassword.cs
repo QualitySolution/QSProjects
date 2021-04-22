@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
 using QS.Validation;
@@ -100,6 +101,16 @@ namespace QSProjectsLib
 			if(password1 != password2) {
 				errorMessages.Add("Пароли должны совпадать");
 				result = false;
+			}
+
+			if(errorMessages.Count > 3) {
+				labelValidationMessage.Markup = $"<span foreground=\"red\">{String.Join("\n", errorMessages.Take(3))}</span>";
+			}
+			else if (errorMessages.Any()) {
+				labelValidationMessage.Markup = $"<span foreground=\"red\">{String.Join("\n", errorMessages)}</span>";
+			}
+			else {
+				labelValidationMessage.Markup = "";
 			}
 
 			buttonOk.Sensitive = result;

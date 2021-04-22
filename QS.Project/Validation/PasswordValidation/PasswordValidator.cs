@@ -24,13 +24,13 @@ namespace QS.Validation
             }
             if(password.Length > Settings.MaxLength) {
                 errorMessages.Add(
-                    $"Пароль должен содержать не более {Settings.MaxLength} {GetFormattedCharacterString(Settings.MaxLength)}");
+                    $"Пароль не должен содержать более {Settings.MaxLength} {GetFormattedCharacterString(Settings.MaxLength)}");
             }
             if(Settings.AllowEmpty) {
                 return !errorMessages.Any();
             }
             if(password.Length < Settings.MinLength) {
-                errorMessages.Add($"Пароль должен быть длиннее {Settings.MaxLength} {GetFormattedCharacterString(Settings.MaxLength)}");
+                errorMessages.Add($"Пароль должен быть длиннее {Settings.MinLength - 1} {GetFormattedCharacterString(Settings.MinLength)}");
             }
             if(password.Contains(" ") && !Settings.AllowWhitespaces) {
                 errorMessages.Add("Пароль не должен содержать пробелы");
@@ -40,7 +40,7 @@ namespace QS.Validation
                     $"Пароль не должен содержать запрещённые символы и слова ( {String.Join(" ", Settings.NotAllowedStrings)} )");
             }
             if(Settings.ASCIIOnly && !StringValidationHelper.ContainsOnlyASCIICharacters(password)) {
-                errorMessages.Add("Пароль должен содержать только цифры, разрешённые спец. символы и буквы английского алфавита");
+                errorMessages.Add("Пароль должен содержать только цифры,\nразрешённые спец. символы и буквы английского алфавита");
             }
             if(Settings.MinNumberCount != 0 && password.Count(Char.IsNumber) < Settings.MinNumberCount) {
                 errorMessages.Add(
@@ -48,21 +48,22 @@ namespace QS.Validation
             }
             if(Settings.MinOtherCharactersCount != 0 && password.Count(x => !Char.IsLetterOrDigit(x)) < Settings.MinOtherCharactersCount) {
                 errorMessages.Add(
-                    $"Пароль должен содержать минимум {Settings.MinOtherCharactersCount} спец. {GetFormattedCharacterString(Settings.MinOtherCharactersCount)}");
+                    $"Пароль должен содержать минимум {Settings.MinOtherCharactersCount} спец. {GetFormattedCharacterString(Settings.MinOtherCharactersCount)}\n" +
+                    "( . ; : & ? и др.)");
             }
             if(Settings.MinLetterSameCaseCount != 0
                 && password.Count(Char.IsUpper) < Settings.MinLetterSameCaseCount
                 && password.Count(Char.IsLower) < Settings.MinLetterSameCaseCount
             ) {
                 errorMessages.Add(
-                    $"Пароль должен содержать минимум {Settings.MinLetterSameCaseCount} {GetFormattedSameCaseString(Settings.MinLetterSameCaseCount)}");
+                    $"Пароль должен содержать минимум\n{Settings.MinLetterSameCaseCount} {GetFormattedSameCaseString(Settings.MinLetterSameCaseCount)}");
             }
             return !errorMessages.Any();
         }
 
         private string GetFormattedCharacterString(int number)
         {
-            return NumberToTextRus.Case(number, "символ", "символа", "символов");
+            return NumberToTextRus.Case(number, "символа", "символов", "символов");
         }
 
         private string GetFormattedNumberString(int number)
