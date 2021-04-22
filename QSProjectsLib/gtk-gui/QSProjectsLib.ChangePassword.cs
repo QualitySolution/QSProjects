@@ -150,7 +150,7 @@ namespace QSProjectsLib
 				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 403;
-			this.DefaultHeight = 226;
+			this.DefaultHeight = 170;
 			this.Show();
 			this.entryPassword2.Changed += new global::System.EventHandler(this.OnEntryPasswordChanged);
 			this.entryPassword.Changed += new global::System.EventHandler(this.OnEntryPasswordChanged);

@@ -964,7 +964,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.ChangePassword" design-size="403 226">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.ChangePassword" design-size="403 170">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Смена пароля</property>
     <property name="Icon">stock:gtk-dialog-authentication Menu</property>
