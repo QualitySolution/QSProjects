@@ -229,7 +229,7 @@ namespace QS.Updater.DB.ViewModels
 		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)
 		{
 			OperationProgress.Add();
-			commandsLog += args.StatementText + "\n";
+			CommandsLog += args.StatementText + "\n";
 			logger.Debug(args.StatementText);
 		}
 		#endregion
