@@ -17,17 +17,21 @@ namespace QS.Validation
 
         public bool Validate(string password, out IList<string> errorMessages)
         {
+            if(password == null) {
+                password = "";
+            }
             errorMessages = new List<string>();
 
             if(Settings == null) {
                 return true;
             }
+            if(Settings.AllowEmpty && String.IsNullOrEmpty(password)) {
+                return true;
+            }
+
             if(password.Length > Settings.MaxLength) {
                 errorMessages.Add(
                     $"Пароль не должен содержать более {Settings.MaxLength} {GetFormattedCharacterString(Settings.MaxLength)}");
-            }
-            if(Settings.AllowEmpty) {
-                return !errorMessages.Any();
             }
             if(password.Length < Settings.MinLength) {
                 errorMessages.Add($"Пароль должен быть длиннее {Settings.MinLength - 1} {GetFormattedCharacterString(Settings.MinLength)}");
