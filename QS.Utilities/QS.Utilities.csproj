@@ -35,6 +35,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NumberToTextRus.cs" />
     <Compile Include="Text\PersonHelper.cs" />
+    <Compile Include="Text\StringValidationHelper.cs" />
     <Compile Include="Text\TitleHelper.cs" />
     <Compile Include="Debug\Print.cs" />
     <Compile Include="Numeric\NumbersHelper.cs" />

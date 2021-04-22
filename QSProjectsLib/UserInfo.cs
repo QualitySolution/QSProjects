@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MySql.Data.MySqlClient;
 using NLog;
+using QS.Validation;
 using QSSaaS;
 
 namespace QSProjectsLib
@@ -124,6 +125,16 @@ namespace QSProjectsLib
 		public void ChangeUserPassword (Gtk.Window Parrent)
 		{
 			ChangePassword win = new ChangePassword ();
+			//win.ParentWindow = Parrent;
+			win.TransientFor = Parrent;
+			win.Show ();
+			win.Run ();
+			win.Destroy ();
+		}
+
+		public void ChangeUserPassword (Gtk.Window Parrent, IPasswordValidator passwordValidator)
+		{
+			ChangePassword win = new ChangePassword (passwordValidator);
 			//win.ParentWindow = Parrent;
 			win.TransientFor = Parrent;
 			win.Show ();

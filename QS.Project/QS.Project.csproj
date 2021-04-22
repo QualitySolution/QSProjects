@@ -222,6 +222,10 @@
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
     <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
     <Compile Include="Tools\PerformanceHelper.cs" />
+    <Compile Include="Validation\PasswordValidation\DefaultPasswordValidationSettings.cs" />
+    <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
+    <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
+    <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Project.Services\IInteractiveService.cs" />
