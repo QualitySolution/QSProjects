@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -964,7 +964,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.ChangePassword" design-size="342 163">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.ChangePassword" design-size="403 170">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Смена пароля</property>
     <property name="Icon">stock:gtk-dialog-authentication Menu</property>
@@ -1085,6 +1085,18 @@
           <packing>
             <property name="Position">1</property>
             <property name="AutoSize">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="labelValidationMessage">
+            <property name="MemberName" />
+            <property name="Yalign">0</property>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
           </packing>
         </child>
       </widget>
