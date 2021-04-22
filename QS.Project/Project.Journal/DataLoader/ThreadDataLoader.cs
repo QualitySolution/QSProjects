@@ -84,6 +84,21 @@ namespace QS.Project.Journal.DataLoader
 		public void AddQuery<TRoot>(Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc)
 			where TRoot : class , IDomainObject
 		{
+			QueryLoaders.Add(new DynamicQueryLoader<TRoot, TNode>((uow, isCounting) => queryFunc(uow), unitOfWorkFactory));
+		}
+
+		/// <summary>
+		/// Добавляем функцию получения запроса для загрузчика.
+		/// Если функция возвращает null запрос не будет выполнятся. Это поведение используется в ситуации с несколькими запросами,
+		/// в определенных обстоятельствах, например из-за параметров фильтра, некоторые запросы не имеет смысл выполнять.
+		/// </summary>
+		/// <param name="queryFunc">Функция получения запроса, имеет параметры: 
+		/// uow - для которого создается запрос 
+		/// isCounting - указание является ли запрос подсчетом количества строк</param>
+		/// <typeparam name="TRoot">Тип корня запроса</typeparam>
+		public void AddQuery<TRoot>(Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc)
+			where TRoot : class, IDomainObject
+		{
 			QueryLoaders.Add(new DynamicQueryLoader<TRoot, TNode>(queryFunc, unitOfWorkFactory));
 		}
 
