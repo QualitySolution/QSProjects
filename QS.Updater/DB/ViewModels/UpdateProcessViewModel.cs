@@ -224,6 +224,10 @@ namespace QS.Updater.DB.ViewModels
 			var commands = script.ExecuteAsync(cancellation.Token);
 			guiDispatcher.WaitInMainLoop(() => commands.Status != System.Threading.Tasks.TaskStatus.Running, 50);
 			logger.Debug("Выполнено {0} SQL-команд.", commands.Result);
+			if(updateScript.UpdateType == UpdateType.MicroUpdate) {
+				parametersService.ReloadParameters();
+				parametersService.micro_updates = updateScript.Destination.VersionToShortString();
+			}
 		}
 
 		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)

@@ -80,9 +80,9 @@ namespace QS.Updater.DB
 					trans.Rollback();
 					throw ex;
 				}
+				parametersService.micro_updates = VersionHelper.VersionToShortString(currentDB);
 			}
 				
-			parametersService.micro_updates = VersionHelper.VersionToShortString(currentDB);
 			interactiveMessage.ShowMessage(ImportanceLevel.Info, String.Format("Выполнено микро обновление базы {0} -> {1}.",
 				VersionHelper.VersionToShortString(beforeUpdates),
 				VersionHelper.VersionToShortString(currentDB)));
