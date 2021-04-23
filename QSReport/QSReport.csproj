@@ -47,7 +47,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.5\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

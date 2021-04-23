@@ -13,7 +13,6 @@
         <FileAlignment>512</FileAlignment>
         <ProductVersion>8.0.30703</ProductVersion>
         <SchemaVersion>2.0</SchemaVersion>
-        <ReleaseVersion>1.4</ReleaseVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -73,7 +72,7 @@
           <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
         </Reference>
         <Reference Include="NHibernate">
-          <HintPath>..\packages\NHibernate.5.3.3\lib\net461\NHibernate.dll</HintPath>
+          <HintPath>..\packages\NHibernate.5.3.8\lib\net461\NHibernate.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

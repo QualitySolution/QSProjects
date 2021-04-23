@@ -9,7 +9,6 @@
     <AssemblyName>QSScan</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ReleaseVersion>1.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +52,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.5\lib\net40-client\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.9\lib\net40-client\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
