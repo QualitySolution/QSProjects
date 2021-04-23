@@ -11,10 +11,14 @@ namespace QS.Project.Journal.DataLoader
 		where TRoot : class, IDomainObject
 		where TNode : class
 	{
-		private readonly Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc;
+		private readonly Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc;
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 
-		public DynamicQueryLoader(Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc, IUnitOfWorkFactory unitOfWorkFactory)
+		/// <param name="queryFunc">Функция получения запроса, имеет параметры: 
+		/// uow - для которого создается запрос 
+		/// isCounting - указание является ли запрос подсчетом количества строк </param>
+		/// <param name="unitOfWorkFactory">Unit of work factory.</param>
+		public DynamicQueryLoader(Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc, IUnitOfWorkFactory unitOfWorkFactory)
 		{
 			this.queryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
 			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
@@ -35,7 +39,7 @@ namespace QS.Project.Journal.DataLoader
 		public int GetTotalItemsCount()
 		{
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-				var query = queryFunc.Invoke(uow);
+				var query = queryFunc.Invoke(uow, true);
 				if(query == null)
 					return 0;
 
@@ -50,7 +54,7 @@ namespace QS.Project.Journal.DataLoader
 				return;
 
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-				var workQuery = queryFunc.Invoke(uow);
+				var workQuery = queryFunc.Invoke(uow, false);
 				if(workQuery == null) {
 					HasUnloadedItems = false;
 					return;
@@ -106,7 +110,7 @@ namespace QS.Project.Journal.DataLoader
 
 		public TNode GetNode(int entityId, IUnitOfWork uow)
 		{
-			var query = (queryFunc.Invoke(uow) as IQueryOver<TRoot, TRoot>);
+			var query = (queryFunc.Invoke(uow, false) as IQueryOver<TRoot, TRoot>);
 			return query.Where(x => x.Id == entityId)
 						.Take(1).List<TNode>().FirstOrDefault();
 		}
