@@ -252,12 +252,12 @@ namespace QSAttachment
 			string sql = String.Format ("INSERT INTO {0} (name, item_group, item_id, size, file) " +
 			             "VALUES (@name, @item_group, @item_id, @size, @file)", TableName);
 			MySqlCommand cmd = new MySqlCommand (sql, (MySqlConnection)QSMain.ConnectionDB, trans);
-			cmd.Prepare ();
 			cmd.Parameters.AddWithValue ("@name", "");
 			cmd.Parameters.AddWithValue ("@item_group", AttachToTable);
 			cmd.Parameters.AddWithValue ("@item_id", ItemId);
 			cmd.Parameters.AddWithValue ("@size", 0);
 			cmd.Parameters.AddWithValue ("@file", null);
+			cmd.Prepare ();
 			foreach (object[] row in FilesStore) {
 				if ((int)row [(int)FilesCol.id] > 0)
 					continue;
