@@ -45,9 +45,6 @@
         <Reference Include="System.ServiceModel" />
         <Reference Include="System.Transactions" />
         <Reference Include="System.Xml" />
-        <Reference Include="NLog">
-          <HintPath>..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
-        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="DocParserBase.cs" />
@@ -73,7 +70,7 @@
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-      <None Include="packages.config" />
+      <PackageReference Include="NLog" Version="4.7.9" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
