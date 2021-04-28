@@ -47,12 +47,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper">
-      <HintPath>..\packages\Dapper.2.0.78\lib\net461\Dapper.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,7 +68,8 @@
     <EmbeddedResource Include="Icons\internet-news-reader.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="NLog" Version="4.7.9" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
