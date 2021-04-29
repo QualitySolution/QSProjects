@@ -104,7 +104,7 @@ namespace QS.HistoryLog
 
 			using(var uow = UnitOfWorkFactory.CreateWithoutRoot())
 			{
-				var user = UserRepository.GetCurrentUser(uow);
+				var user = UserRepository.GetCurrentUser(userUoW);
 
 				var conStr = userUoW.Session.Connection.ConnectionString;
 				var reg = new Regex("user id=(.+?)(;|$)");

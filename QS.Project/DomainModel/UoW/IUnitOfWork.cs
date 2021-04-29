@@ -11,6 +11,8 @@ namespace QS.DomainModel.UoW
 	{
 		UnitOfWorkTitle ActionTitle { get; }
 
+		int? UserId { get; set; }
+
 		NHibernate.ISession Session{ get;}
 
 		object RootObject{ get;}

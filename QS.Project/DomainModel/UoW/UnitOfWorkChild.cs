@@ -19,6 +19,8 @@ namespace QS.DomainModel.UoW
 			Root = childRoot;
 		}
 
+		public int? UserId { get; set; }
+
 		public object RootObject => Root;
 		
 		public TRootEntity Root { get; private set; }

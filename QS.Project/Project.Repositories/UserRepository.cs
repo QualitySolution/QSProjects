@@ -13,10 +13,12 @@ namespace QS.Project.Repositories
 
 		public static UserBase GetCurrentUser(IUnitOfWork uow)
 		{
-			if(GetCurrentUserId == null)
+			if(uow.UserId == null && GetCurrentUserId == null)
+            {
 				return null;
+			}
 
-			return uow.GetById<UserBase>(GetCurrentUserId());
+			return uow.GetById<UserBase>(uow.UserId ?? GetCurrentUserId());
 		}
 
 		public static UserBase GetUserById(IUnitOfWork uow, int id) => uow.GetById<UserBase>(id);

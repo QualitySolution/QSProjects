@@ -18,7 +18,9 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
+        public int? UserId { get; set; }
+
+        internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = true;
             ActionTitle = title;

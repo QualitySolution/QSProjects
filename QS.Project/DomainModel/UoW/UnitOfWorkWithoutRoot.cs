@@ -9,7 +9,9 @@ namespace QS.DomainModel.UoW
 
 		public bool HasChanges => Session.IsDirtyNoFlush();
 
-		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
+        public int? UserId { get; set; }
+
+        internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
 		{
 			IsNew = false;
             ActionTitle = title;

@@ -42,8 +42,9 @@ namespace QSOrmProject.DomainModel
 		public ISession Session => ParentUoW.Session;
 
 		public UnitOfWorkTitle ActionTitle { get; protected set; }
+        public int? UserId { get; set; }
 
-		public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, UnitOfWorkTitle title)
+        public ChildUnitOfWork(ParentReferenceGeneric<TParentEntity, TChildEntity> parentReference, UnitOfWorkTitle title)
 		{
 			IsNew = true;
 			ActionTitle = title;
