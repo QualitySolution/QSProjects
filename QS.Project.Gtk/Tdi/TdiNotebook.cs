@@ -33,9 +33,21 @@ namespace QS.Tdi.Gtk
                 _useTabColors = value;
                 if (value)
                 {
+                    _currentColor = Colors?.Length - 1 ?? 0;
+                }
+            }
+        }
+        private bool _keepColors;
+        public bool KeepColors
+        {
+            get => _keepColors;
+            set
+            {// сохранение у вкладок своего цвета, возможны повторения если true
+                _keepColors = value;
+                if (!value)
+                {
                     this.PageReordered += RecalculateColors;
                     this.TabClosed += RecalculateColors;
-                    _currentColor = Colors?.Length - 1 ?? 0;
                 }
             }
         }
@@ -181,7 +193,6 @@ namespace QS.Tdi.Gtk
 			}
 			base.OnPageReordered(p0, p1);
         }
-
 
         #region Работа с цветными префиксами
 

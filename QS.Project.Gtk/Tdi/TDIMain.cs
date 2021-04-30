@@ -9,11 +9,12 @@ namespace QS.Tdi
 		public static TdiNotebook MainNotebook;
 
         /// <summary>
-        /// Включает цветные префиксы для групированных вкладок
+        /// Включает цветные префиксы для группированных вкладок
         /// </summary>
         /// <param name="colors">Список чередуемых цветов</param>
+        /// <param name="keepColors">Сохранение цветов за каждой вкладкой, но возможны повторения цветов</param>
         /// <param name="prefix">Используемый символ-префикс</param>
-        public static void SetTabsColorHighlighting(bool enable, string[] colors = null, char prefix = '\u25CF')
+        public static void SetTabsColorHighlighting(bool enable, bool keepColors, string[] colors = null, char prefix = '\u25CF')
         {
             if (MainNotebook == null)
                 throw new NullReferenceException("Не присвоен MainNotebook для настройки цветных префиксов.");
@@ -21,6 +22,7 @@ namespace QS.Tdi
             MainNotebook.Colors = enable ? colors ?? new[] { "aqua", "orange" } : null;
             MainNotebook.Markup = enable ? "<span color='{0}'>" + prefix + "</span> {1}" : null;
             MainNotebook.UseTabColors = enable;
+            MainNotebook.KeepColors = keepColors;
         }
 
 		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
