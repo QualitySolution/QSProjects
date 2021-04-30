@@ -8,7 +8,35 @@ namespace QS.Tdi
 	{
 		public static TdiNotebook MainNotebook;
 
-		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
+        /// <summary>
+        /// Включает цветные префиксы для группированных вкладок
+        /// </summary>
+        /// <param name="colors">Список чередуемых цветов</param>
+        /// <param name="keepColors">Сохранение цветов за каждой вкладкой, но возможны повторения цветов</param>
+        /// <param name="prefix">Используемый символ-префикс</param>
+        public static void SetTabsColorHighlighting(bool enable, bool keepColors, string[] colors = null, char prefix = '\u25CF')
+        {
+            if (MainNotebook == null)
+                throw new NullReferenceException("Не присвоен MainNotebook для настройки цветных префиксов.");
+
+            MainNotebook.Colors = enable ? colors ?? new[] { "aqua", "orange" } : null;
+            MainNotebook.Markup = enable ? "<span color='{0}'>" + prefix + "</span> {1}" : null;
+            MainNotebook.UseTabColors = enable;
+            MainNotebook.KeepColors = keepColors;
+        }
+
+        /// <summary>
+        /// Устанавливает возможность перемещать вкладки
+        /// </summary>
+        public static void SetTabsReordering(bool enable = true)
+        {
+            if (MainNotebook == null)
+                throw new NullReferenceException("Не присвоен MainNotebook для настройки перемещения вкладок.");
+
+            MainNotebook.AllowToReorderTabs = enable;
+        }
+
+        public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
 		{
 			if(MainNotebook == null)
 				throw new InvalidOperationException("Вызвано событие TDIHandleKeyReleaseEvent, но для его корректной работы необходимо заполнить TDIMain.MainNotebook.");
