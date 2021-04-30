@@ -23,6 +23,25 @@ namespace QS.Tdi.Gtk
 		public bool DefaultUseSlider = true;
 		private List<TdiTabInfo> _tabs;
 
+        private int _currentColor;
+        private bool _useTabColors;
+		public bool UseTabColors
+        {
+            get => _useTabColors;
+            set 
+            {
+                _useTabColors = value;
+                if (value)
+                {
+                    this.PageReordered += RecalculateColors;
+                    this.TabClosed += RecalculateColors;
+                    _currentColor = Colors?.Length - 1 ?? 0;
+                }
+            }
+        }
+		public string[] Colors { get; set; }
+        public string Markup;
+
 		#region Внешние зависимости
 		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
 		#endregion
@@ -44,10 +63,10 @@ namespace QS.Tdi.Gtk
 			}
 			TdiTabInfo masterTabInfo = _tabs.Find(i => i.SlaveTabs.Contains(tab));
 			if(masterTabInfo != null) {
-				info.TabNameLabel.LabelProp = ">" + e.NewName;
+				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, masterTabInfo.Color, e.NewName) : ">" + e.NewName;
 				info.TabNameLabel.TooltipText = String.Format("Открыто из {0}", masterTabInfo.TdiTab.TabName);
 			} else
-				info.TabNameLabel.LabelProp = e.NewName;
+				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, info.Color, e.NewName) : e.NewName;
 		}
 
 		public ITdiTab FindTab(string hashName, string masterHashName = null)
@@ -88,7 +107,12 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 			HBox box = new HBox();
-			Label nameLable = new Label(tab.TabName);
+			Label nameLable = new Label();
+			if (after == -1 && _useTabColors)
+			{// открыли не подчиненную вкладку - поменяли цвет
+			    SwitchCurrentColor();
+			}
+			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tab.TabName) : tab.TabName;
 			box.Add(nameLable);
 			Image closeImage = new Image(Stock.Close, IconSize.Menu);
 			Button closeButton = new Button(closeImage);
@@ -104,7 +128,7 @@ namespace QS.Tdi.Gtk
 				tab = slider;
 			}
 			tab.TabNameChanged += OnTabNameChanged;
-			_tabs.Add(new TdiTabInfo(tab, nameLable));
+			_tabs.Add(new TdiTabInfo(tab, nameLable) { Color = _useTabColors ? Colors[_currentColor] : null });
 			var vbox = new TabVBox(tab, WidgetResolver);
 			int inserted;
 			if(after >= 0)
@@ -157,6 +181,33 @@ namespace QS.Tdi.Gtk
 			}
 			base.OnPageReordered(p0, p1);
         }
+
+
+        #region Работа с цветными префиксами
+
+        private void RecalculateColors(object o, EventArgs args)
+        {
+            _currentColor = Colors.Length - 1;// цвета всегда будут начинаться с Colors[0]
+            for (var i = 0; i < NPages; i++)
+            {// массив _tabs не пересортировывается при смене порядка, так что ищем по страницам
+                var master = _tabs.FirstOrDefault(tinfo => tinfo.TdiTab == ((TabVBox)GetNthPage(i)).Tab);
+                if (master?.MasterTabInfo == null)
+                {// находим инфо родителей, меняем у них цвета и разметку
+                    SwitchCurrentColor();
+                    master.Color = Colors[_currentColor];
+                    master.TabNameLabel.Markup = String.Format(Markup, master.Color, master.TdiTab.TabName);
+                    foreach (var servant in _tabs.Where(t => t.MasterTabInfo != null && master == t.MasterTabInfo))
+                    {// а затем меняем разметку в инфо лейбла у детей
+                        servant.TabNameLabel.Markup = String.Format(Markup, master.Color, servant.TdiTab.TabName);
+                    }
+                }
+            }
+        }
+
+        private void SwitchCurrentColor() =>
+            _currentColor = _currentColor == (Colors.Length - 1) || Colors.Length == 1 ? 0 : _currentColor + 1;
+
+        #endregion
 
 		private IList<ITdiTab> GetSlaveTabs(ITdiTab tab)
 		{
@@ -501,6 +552,7 @@ namespace QS.Tdi.Gtk
 		public ITdiTab TdiTab;
 		public Label TabNameLabel;
 		public List<ITdiTab> SlaveTabs = new List<ITdiTab>();
+        public string Color;
 
 		public TdiTabInfo(ITdiTab tab, Label label, TdiTabInfo masterTabInfo = null)
 		{
