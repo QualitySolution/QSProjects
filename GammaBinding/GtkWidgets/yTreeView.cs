@@ -335,6 +335,11 @@ namespace Gamma.GtkWidgets
 		{
 			if(aIter.Equals(TreeIter.Zero))
 				return;
+
+			if(YTreeModel == null) {
+				throw new InvalidOperationException($"{nameof(YTreeModel)} can not be null");
+			}
+
 			object node = YTreeModel.NodeFromIter(aIter);
 			var nodeCell = aCell as INodeCellRenderer;
 			if(nodeCell != null) {
@@ -344,10 +349,7 @@ namespace Gamma.GtkWidgets
 					else
 						nodeCell.RenderNode(node);
 				} catch(Exception ex) {
-					throw new InvalidProgramException(
-						String.Format("Exception inside rendering column {0}.", aColumn.Title),
-						ex
-					);
+					throw new InvalidProgramException($"Exception inside rendering column {aColumn?.Title}.", ex);
 				}
 			}
 		}
