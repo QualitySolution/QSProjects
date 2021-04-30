@@ -25,7 +25,18 @@ namespace QS.Tdi
             MainNotebook.KeepColors = keepColors;
         }
 
-		public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
+        /// <summary>
+        /// Устанавливает возможность перемещать вкладки
+        /// </summary>
+        public static void SetTabsReordering(bool enable = true)
+        {
+            if (MainNotebook == null)
+                throw new NullReferenceException("Не присвоен MainNotebook для настройки перемещения вкладок.");
+
+            MainNotebook.AllowToReorderTabs = enable;
+        }
+
+        public static void TDIHandleKeyReleaseEvent (object o, KeyReleaseEventArgs args)
 		{
 			if(MainNotebook == null)
 				throw new InvalidOperationException("Вызвано событие TDIHandleKeyReleaseEvent, но для его корректной работы необходимо заполнить TDIMain.MainNotebook.");

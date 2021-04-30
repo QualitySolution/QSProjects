@@ -53,6 +53,7 @@ namespace QS.Tdi.Gtk
         }
 		public string[] Colors { get; set; }
         public string Markup;
+        public bool AllowToReorderTabs { get; set; }
 
 		#region Внешние зависимости
 		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
@@ -148,7 +149,7 @@ namespace QS.Tdi.Gtk
 			else
 				inserted = this.AppendPage(vbox, box);
 
-			this.SetTabReorderable(vbox, true);
+			this.SetTabReorderable(vbox, AllowToReorderTabs);
 			tab.TabParent = this;
 			vbox.Show();
 			this.ShowTabs = true;
