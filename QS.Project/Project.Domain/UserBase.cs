@@ -67,33 +67,7 @@ namespace QS.Project.Domain
 			set => SetField(ref description, value, () => Description);
 		}
 
-
-		private ReadOnlyDictionary<string, bool> permissions;
-		public virtual IReadOnlyDictionary<string, bool> Permissions => permissions;
-
 		#endregion
-
-		public UserBase()
-		{
-			permissions = new ReadOnlyDictionary<string, bool>(new Dictionary<string, bool>());
-		}
-
-		public virtual void LoadUserPermissions()
-		{
-			if (Id == 0) {
-				return;
-			}
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-				var userPresetPermission = UserPermissionRepository.GetUserAllPresetPermissions(uow, Id)
-					.Where(x => !x.IsLostPermission)
-					.ToDictionary(x => x.PermissionName);
-				var userPermissions = new Dictionary<string, bool>();
-				foreach (var item in PermissionsSettings.PresetPermissions.Keys) {
-					userPermissions.Add(item, userPresetPermission.ContainsKey(item));
-				}
-				permissions = new ReadOnlyDictionary<string, bool>(userPermissions);
-			}
-		}
 	}
 
 	public class UserBaseEqualityComparer : IEqualityComparer<UserBase>

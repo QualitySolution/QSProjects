@@ -7,8 +7,6 @@ namespace QS.EntityRepositories
 {
 	public interface IUserPermissionRepository
 	{
-		IReadOnlyDictionary<string, bool> CurrentUserPresetPermissions { get; }
-
 		IEnumerable<UserPermissionNode> GetUserAllEntityPermissions(IUnitOfWork uow, int userId, IPermissionExtensionStore permissionExtensionStore);
 		IList<PresetUserPermission> GetUserAllPresetPermissions(IUnitOfWork uow, int userId);
 		EntityUserPermission GetUserEntityPermission(IUnitOfWork uow, string entityName, int userId);

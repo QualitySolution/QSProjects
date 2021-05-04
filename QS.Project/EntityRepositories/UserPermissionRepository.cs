@@ -77,19 +77,5 @@ namespace QS.EntityRepositories
 				.Where(x => x.User.Id == userId)
 				.List();
 		}
-
-		private IReadOnlyDictionary<string, bool> currentUserPresetPermissions;
-		public IReadOnlyDictionary<string, bool> CurrentUserPresetPermissions {
-			get {
-				if(currentUserPresetPermissions == null) {
-					using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-						var currentUser = UserRepository.GetCurrentUser(uow);
-						currentUser.LoadUserPermissions();
-						currentUserPresetPermissions = currentUser.Permissions;
-					}
-				}
-				return currentUserPresetPermissions;
-			}
-		}
 	}
 }
