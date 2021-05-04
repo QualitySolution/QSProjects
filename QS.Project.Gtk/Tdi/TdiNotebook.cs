@@ -44,7 +44,7 @@ namespace QS.Tdi.Gtk
             set
             {// сохранение у вкладок своего цвета, возможны повторения если true
                 _keepColors = value;
-                if (!value)
+                if (!value && _useTabColors)
                 {
                     this.PageReordered += RecalculateColors;
                     this.TabClosed += RecalculateColors;
@@ -53,7 +53,7 @@ namespace QS.Tdi.Gtk
         }
 		public string[] Colors { get; set; }
         public string Markup;
-        public bool AllowToReorderTabs { get; set; }
+        public bool AllowToReorderTabs { get; set; } = true;
 
 		#region Внешние зависимости
 		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
