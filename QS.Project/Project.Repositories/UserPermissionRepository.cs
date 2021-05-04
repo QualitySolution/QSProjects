@@ -26,9 +26,5 @@ namespace QS.Project.Repositories
 		{
 			return UserPermissionSingletonRepository.GetInstance().GetUserAllPresetPermissions(uow, userId);
 		}
-
-		public static IReadOnlyDictionary<string, bool> CurrentUserPresetPermissions { 
-			get { return UserPermissionSingletonRepository.GetInstance().CurrentUserPresetPermissions; }
-		}
 	}
 }
