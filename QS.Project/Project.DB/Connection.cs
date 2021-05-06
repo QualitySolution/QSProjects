@@ -10,5 +10,12 @@ namespace QS.Project.DB
 
 		internal static Func<DbConnection> GetConnectionDB;
 		public static DbConnection ConnectionDB => GetConnectionDB();
+
+		internal static Action<string> ChangeDbConnectionStringAction;
+		public static void ChangeDbConnectionString(string newConnectionString)
+		{
+			ChangeDbConnectionStringAction(newConnectionString);
+		}
+
 	}
 }

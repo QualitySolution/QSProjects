@@ -54,6 +54,8 @@
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
+    <Compile Include="Project.DB\Passwords\DatabasePasswordModel.cs" />
+    <Compile Include="Project.DB\Passwords\IDatabasePasswordModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project.Domain\UserBase.cs" />
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
@@ -155,6 +157,7 @@
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Project.Services\IInteractiveService.cs" />
