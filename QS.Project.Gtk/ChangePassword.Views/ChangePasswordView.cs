@@ -40,9 +40,7 @@ namespace QS.ChangePassword.Views
             buttonOK.CanFocus = false;
             buttonOK.Clicked += (sender, args) => {
                 if(viewModel.Save()) {
-                    var button = new Button();
-                    AddActionWidget(button, ResponseType.Ok);
-                    button.Click();
+                   Respond(ResponseType.Ok);
                 }
             };
             buttonOK.Sensitive = viewModel.CanSave;

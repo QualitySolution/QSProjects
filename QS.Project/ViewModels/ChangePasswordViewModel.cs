@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Security;
 using QS.Navigation;
-using QS.Project.DB;
 using QS.Project.DB.Passwords;
 using QS.Utilities.Text;
 using QS.Validation;
@@ -14,18 +12,18 @@ namespace QS.ViewModels
 {
     public class ChangePasswordViewModel : DialogViewModelBase
     {
-        public ChangePasswordViewModel(IDatabasePasswordModel databasePasswordModel, DbConnection dbConnection,
-            IPasswordValidator passwordValidator, INavigationManager navigation)
+        public ChangePasswordViewModel(
+            IChangePasswordModel changePasswordModel,
+            IPasswordValidator passwordValidator, 
+            INavigationManager navigation)
             : base(navigation)
         {
-            this.databasePasswordModel = databasePasswordModel ?? throw new ArgumentNullException(nameof(databasePasswordModel));
-            this.dbConnection = dbConnection ?? throw new ArgumentNullException(nameof(dbConnection));
+            this.changePasswordModel = changePasswordModel ?? throw new ArgumentNullException(nameof(changePasswordModel));
             this.passwordValidator = passwordValidator ?? throw new ArgumentNullException(nameof(passwordValidator));
             OnPasswordUpdated();
         }
 
-        private readonly IDatabasePasswordModel databasePasswordModel;
-        private readonly DbConnection dbConnection;
+        private readonly IChangePasswordModel changePasswordModel;
         private readonly IPasswordValidator passwordValidator;
         
         public int? MaxMessages => 3;
@@ -77,29 +75,16 @@ namespace QS.ViewModels
             if(!CanSave) {
                 return false;
             }
-            if(!databasePasswordModel.IsCurrentUserPassword(dbConnection, OldPassword?.ToPlainString())) {
+            if(!changePasswordModel.IsCurrentUserPassword(OldPassword)) {
                 SetValidationResult(false, "Неверно введён текущий пароль");
                 return false;
             }
-            if(databasePasswordModel.IsCurrentUserPassword(dbConnection, NewPassword?.ToPlainString())) {
+            if(changePasswordModel.IsCurrentUserPassword(NewPassword)) {
                 SetValidationResult(false, "Новый пароль не должен совпадать со старым");
                 return false;
             }
-            SaveNewPassword();
+            changePasswordModel.ChangePassword(newPassword);
             return true;
-        }
-
-        private void SaveNewPassword()
-        {
-            databasePasswordModel.ChangePassword(dbConnection, newPassword?.ToPlainString());
-            var dbConnectionStringBuilder = new DbConnectionStringBuilder {
-                ConnectionString = Connection.ConnectionString,
-                ["Password"] = newPassword?.ToPlainString()
-            };
-
-            //Заменяем пароль с текущей строке одключения, для того чтобы при переподключении не было ошибок 
-            //и чтобы при смене пароля еще раз был текущий пароль.
-            Connection.ChangeDbConnectionString(dbConnectionStringBuilder.ConnectionString);
         }
 
         private void OnPasswordUpdated()

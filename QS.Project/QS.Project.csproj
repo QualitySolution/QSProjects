@@ -54,8 +54,11 @@
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
-    <Compile Include="Project.DB\Passwords\DatabasePasswordModel.cs" />
-    <Compile Include="Project.DB\Passwords\IDatabasePasswordModel.cs" />
+    <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
+    <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
+    <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
+    <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project.Domain\UserBase.cs" />
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
