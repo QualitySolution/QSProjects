@@ -55,8 +55,7 @@ namespace QS.Validation
                 errorMessages.Add($"Пароль должен содержать минимум {Settings.MinOtherCharactersCount} спец. {NumberToTextRus.Case(Settings.MinOtherCharactersCount, "символ", "символа", "символов")} ( . + - * : ? и др.)");
             }
             if(Settings.MinLetterSameCaseCount != 0
-                && password.Count(Char.IsUpper) < Settings.MinLetterSameCaseCount
-                && password.Count(Char.IsLower) < Settings.MinLetterSameCaseCount
+                && (password.Count(Char.IsUpper) < Settings.MinLetterSameCaseCount || password.Count(Char.IsLower) < Settings.MinLetterSameCaseCount)
             ) {
                 errorMessages.Add(
                     $"Пароль должен содержать минимум {Settings.MinLetterSameCaseCount} {NumberToTextRus.Case(Settings.MinLetterSameCaseCount, "прописную", "прописных", "прописных")} " +

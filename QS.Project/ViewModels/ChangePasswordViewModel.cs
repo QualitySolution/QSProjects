@@ -40,7 +40,7 @@ namespace QS.ViewModels
             set => SetField(ref validationStatus, value);
         }
 
-        private SecureString oldPassword;
+        private SecureString oldPassword = new SecureString();
         public SecureString OldPassword {
             get => oldPassword;
             set {
@@ -50,7 +50,7 @@ namespace QS.ViewModels
             }
         }
 
-        private SecureString newPassword;
+        private SecureString newPassword = new SecureString();
         public SecureString NewPassword {
             get => newPassword;
             set {
@@ -60,7 +60,7 @@ namespace QS.ViewModels
             }
         }
 
-        private SecureString newPasswordConfirm;
+        private SecureString newPasswordConfirm = new SecureString();
         public SecureString NewPasswordConfirm {
             get => newPasswordConfirm;
             set {
@@ -101,7 +101,7 @@ namespace QS.ViewModels
                 SetValidationResult(false, String.Join("\n", MaxMessages.HasValue ? errorMessages.Take(MaxMessages.Value) : errorMessages));
             }
             else {
-                SetValidationResult(true, "🗸");
+                SetValidationResult(true, "ok");
             }
         }
 
