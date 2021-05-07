@@ -16,7 +16,7 @@ namespace QS.Widgets
 		public BindingControler<NullableCheckButton> Binding { get; private set; }
 
 
-		private RenderMode renderMode = RenderMode.Icon;
+		private RenderMode renderMode = RenderMode.Symbol;
 		public RenderMode RenderMode { get => renderMode; set { renderMode = value; ConfigureValue(); } }
 
 		private Pixbuf noIcon;
