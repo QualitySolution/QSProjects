@@ -24,6 +24,9 @@ namespace QS.Project.DB.Passwords
 
         public virtual void ChangePassword(SecureString newPassword)
         {
+            if(newPassword == null) {
+                throw new ArgumentNullException(nameof(newPassword));
+            }
             if(connection.State != ConnectionState.Open) {
                 throw new ArgumentException("Connection is not open");
             }
@@ -42,6 +45,9 @@ namespace QS.Project.DB.Passwords
 
         public virtual bool IsCurrentUserPassword(SecureString password)
         {
+            if(password == null) {
+                throw new ArgumentNullException(nameof(password));
+            }
             if(connection.State != ConnectionState.Open) {
                 throw new ArgumentException("Connection is not open");
             }
