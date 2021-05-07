@@ -51,6 +51,13 @@ namespace QSProjectsLib
 			}
 		}
 
+		public static void ChangeConnectionString(string newConnectionString)
+		{
+			ConnectionString = newConnectionString;
+			connectionDB = new MySqlConnection(newConnectionString);
+			ConnectionStringBuilder.ConnectionString = newConnectionString;
+		}
+
 		//События
 		public static event EventHandler<ReferenceUpdatedEventArgs> ReferenceUpdated;
 		public static event EventHandler<RunErrorMessageDlgEventArgs> RunErrorMessageDlg;
