@@ -121,6 +121,7 @@
     <Compile Include="GtkWidgets\yVBox.cs" />
     <Compile Include="GtkWidgets\yHBox.cs" />
     <Compile Include="GtkWidgets\yEventBox.cs" />
+    <Compile Include="Binding\Converters\BoolReverseConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
