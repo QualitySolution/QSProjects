@@ -67,12 +67,8 @@
     <Compile Include="LegalName.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.LegalName.cs" />
     <Compile Include="CommonValues.cs" />
-    <Compile Include="SidePanels\RightSidePanel.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.RightSidePanel.cs" />
     <Compile Include="SearchEntity.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.SearchEntity.cs" />
-    <Compile Include="SidePanels\HideHorizontalSeparator.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.SidePanels.HideHorizontalSeparator.cs" />
     <Compile Include="LegalNameAlternative.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.LegalNameAlternative.cs" />
   </ItemGroup>
@@ -88,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />
-    <Folder Include="SidePanels\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.9" />
