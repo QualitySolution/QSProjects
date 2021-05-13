@@ -4,6 +4,7 @@ using Gtk;
 namespace QSWidgetLib.SidePanels
 {
 	[System.ComponentModel.ToolboxItem(true)]
+	[Obsolete("Замените на аналогичный из библоитеки Gamma. Планируется полностью удалить библиотеку QSWidgetLib. Остался только ВВ.")]
 	public partial class HideHorizontalSeparator : Gtk.Bin
 	{
 		public event ToggledHandler Toggled;

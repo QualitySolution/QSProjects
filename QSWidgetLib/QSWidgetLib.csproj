@@ -67,8 +67,6 @@
     <Compile Include="LegalName.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.LegalName.cs" />
     <Compile Include="CommonValues.cs" />
-    <Compile Include="SidePanels\LeftSidePanel.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.LeftSidePanel.cs" />
     <Compile Include="SidePanels\RightSidePanel.cs" />
     <Compile Include="gtk-gui\QSWidgetLib.RightSidePanel.cs" />
     <Compile Include="SearchEntity.cs" />

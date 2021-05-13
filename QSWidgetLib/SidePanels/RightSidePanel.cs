@@ -3,6 +3,7 @@
 namespace QSWidgetLib
 {
 	[System.ComponentModel.ToolboxItem(true)]
+	[Obsolete("Замените на аналогичный из библоитеки Gamma. Планируется полностью удалить библиотеку QSWidgetLib. Остался только ВВ.")]
 	public partial class RightSidePanel : Gtk.Bin
 	{
 		public event EventHandler PanelOpened;
