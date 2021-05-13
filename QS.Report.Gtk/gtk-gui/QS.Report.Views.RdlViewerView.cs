@@ -8,7 +8,7 @@ namespace QS.Report.Views
 
 		private global::Gtk.HBox hbox1;
 
-		private global::QSWidgetLib.LeftSidePanel panelParameters;
+		private global::Gamma.Widgets.SidePanels.LeftSidePanel panelParameters;
 
 		private global::fyiReporting.RdlGtkViewer.ReportViewer reportviewer1;
 
@@ -26,7 +26,7 @@ namespace QS.Report.Views
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.panelParameters = new global::QSWidgetLib.LeftSidePanel();
+			this.panelParameters = new global::Gamma.Widgets.SidePanels.LeftSidePanel();
 			this.panelParameters.Events = ((global::Gdk.EventMask)(256));
 			this.panelParameters.Name = "panelParameters";
 			this.panelParameters.Title = "Параметры";

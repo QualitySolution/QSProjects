@@ -5,9 +5,9 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../../../My-FyiReporting/RdlGtkViewer/RdlGtkViewer/bin/Debug/RdlGtkViewer.exe" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QS.Report.Gtk.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QS.Report.Views.RdlViewerView" design-size="937 269">
@@ -19,7 +19,7 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <widget class="QSWidgetLib.LeftSidePanel" id="panelParameters">
+          <widget class="Gamma.Widgets.SidePanels.LeftSidePanel" id="panelParameters">
             <property name="MemberName" />
             <property name="Events">ButtonPressMask</property>
             <property name="Title">Параметры</property>
