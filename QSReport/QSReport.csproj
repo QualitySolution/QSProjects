@@ -74,10 +74,6 @@
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
-      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
-      <Name>QSWidgetLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\My-FyiReporting\RdlEngine\RdlEngine.csproj">
       <Project>{C97E91F4-B310-44E2-9B6C-96775395722D}</Project>
       <Name>RdlEngine</Name>
@@ -101,6 +97,10 @@
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
+      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
+      <Name>GammaBinding</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
