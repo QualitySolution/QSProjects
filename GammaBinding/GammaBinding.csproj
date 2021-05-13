@@ -121,6 +121,12 @@
     <Compile Include="GtkWidgets\yVBox.cs" />
     <Compile Include="GtkWidgets\yHBox.cs" />
     <Compile Include="GtkWidgets\yEventBox.cs" />
+    <Compile Include="Widgets\SidePanels\HideHorizontalSeparator.cs" />
+    <Compile Include="Widgets\SidePanels\LeftSidePanel.cs" />
+    <Compile Include="Widgets\SidePanels\RightSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.LeftSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.RightSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.HideHorizontalSeparator.cs" />
     <Compile Include="Binding\Converters\BoolReverseConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -136,6 +142,7 @@
     <Folder Include="icons\" />
     <Folder Include="Binding\" />
     <Folder Include="Binding\Converters\" />
+    <Folder Include="Widgets\SidePanels\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -178,6 +185,8 @@
     <EmbeddedResource Include="icons\hbox.png" />
     <EmbeddedResource Include="icons\vbox.png" />
     <EmbeddedResource Include="icons\eventbox.png" />
+    <EmbeddedResource Include="icons\hseparator.png" />
+    <EmbeddedResource Include="icons\vseparator.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-gui\objects.xml">

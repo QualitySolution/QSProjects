@@ -123,5 +123,27 @@
   <object type="Gamma.GtkWidgets.yVBox" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.vbox.png" base-type="Gtk.VBox">
     <itemgroups />
     <signals />
-  </object>	
+  </object>
+  <object type="Gamma.Widgets.SidePanels.HideHorizontalSeparator" palette-category="Gamma Widgets" allow-children="false" icon="Gamma.icons.hseparator.png" base-type="Gtk.Bin">
+    <itemgroups />
+    <signals />
+  </object>
+  <object type="Gamma.Widgets.SidePanels.LeftSidePanel" palette-category="Gamma Widgets" allow-children="false" icon="Gamma.icons.vseparator.png" base-type="Gtk.Bin">
+    <itemgroups>
+      <itemgroup label="SidePanel">
+        <property name="Title" />
+		<property name="IsHided" />
+      </itemgroup>
+    </itemgroups>
+    <signals />
+  </object>		
+  <object type="Gamma.Widgets.SidePanels.RightSidePanel" palette-category="Gamma Widgets" allow-children="false" icon="Gamma.icons.vseparator.png" base-type="Gtk.Bin">
+    <itemgroups>
+      <itemgroup label="SidePanel">
+        <property name="Title" />
+		<property name="IsHided" />
+      </itemgroup>
+    </itemgroups>
+    <signals />
+  </object>		
 </objects>
