@@ -6,7 +6,7 @@ using NHibernate.Criterion;
 
 namespace QS.Project.DB
 {
-      public static class CustomProjections
+    public static class CustomProjections
     {
         public static IProjection Date(params Expression<Func<object>>[] properties)
         {
@@ -80,7 +80,7 @@ namespace QS.Project.DB
                         return Projections.SqlFunction("GROUP_CONCAT_ORDER_BY_DESC",
                             NHibernateUtil.String, projection, orderByProjection, separatorProjection);
                     default:
-                        throw new NotSupportedException($"{nameof(OrderByDirection)}{orderByDirection} is not supported");
+                        throw new NotSupportedException($"{nameof(OrderByDirection)}.{orderByDirection} is not supported");
                 }
             }
 
