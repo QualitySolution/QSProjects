@@ -1,12 +1,12 @@
 using NHibernate;
+using NHibernate.Dialect;
 using NHibernate.Dialect.Function;
-using NHibernate.Spatial.Dialect;
 
 namespace QS.Project.DB
 {
-    public class MySQL57SpatialExtendedDialect : MySQL57SpatialDialect
+    public class MySQL57ExtendedDialect : MySQL57Dialect
     {
-        public MySQL57SpatialExtendedDialect()
+        public MySQL57ExtendedDialect()
         {
             RegisterFunction("DATE", new StandardSQLFunction("DATE", NHibernateUtil.Date));
 
