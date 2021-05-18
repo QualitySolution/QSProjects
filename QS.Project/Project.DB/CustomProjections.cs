@@ -63,7 +63,7 @@ namespace QS.Project.DB
                         return Projections.SqlFunction("GROUP_CONCAT_DISTINCT_ORDER_BY_DESC",
                             NHibernateUtil.String, projection, orderByProjection, separatorProjection);
                     default:
-                        throw new NotSupportedException($"{nameof(OrderByDirection)}{orderByDirection} is not supported");
+                        throw new NotSupportedException($"{nameof(OrderByDirection)}.{orderByDirection} is not supported");
                 }
             }
             //DISTINCT
