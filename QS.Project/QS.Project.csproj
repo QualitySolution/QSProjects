@@ -55,7 +55,7 @@
     <Compile Include="Project.DB\CustomProjections.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
-    <Compile Include="Project.DB\MySQL57SpatialExtendedDialect.cs" />
+    <Compile Include="Project.DB\MySQL57ExtendedDialect.cs" />
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
@@ -405,7 +405,6 @@
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="MySql.Data" Version="8.0.24" />
     <PackageReference Include="NHibernate" Version="5.3.8" />
-    <PackageReference Include="NHibernate.Spatial.MySQL" Version="6.0.0" />
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
