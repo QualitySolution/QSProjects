@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package QS.Cloud.Core;
+
+service CloudFeatures {
+  rpc AvailableFeatures (FeaturesRequest) returns (FeaturesResponse);
+}
+
+message FeaturesRequest {
+  string base_guid = 1;
+}
+
+message FeaturesResponse {
+  repeated Feature features = 1;
+}
+
+message Feature{
+  string name = 1;
+}

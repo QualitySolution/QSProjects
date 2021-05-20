@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Protos" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+      <PackageReference Include="Grpc.Core" Version="2.37.1" />
+      <PackageReference Include="Grpc.Tools" Version="2.37.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Protos\CloudFeatures.proto" />
+      <Protobuf Include="Protos\CloudFeatures.proto" />
+    </ItemGroup>
+
+</Project>
