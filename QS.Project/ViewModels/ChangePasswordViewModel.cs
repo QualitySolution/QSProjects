@@ -79,7 +79,7 @@ namespace QS.ViewModels
                 SetValidationResult(false, "Неверно введён текущий пароль");
                 return false;
             }
-            if(changePasswordModel.IsCurrentUserPassword(NewPassword)) {
+            if(OldPassword.ToPlainString().Equals(NewPassword.ToPlainString())) {
                 SetValidationResult(false, "Новый пароль не должен совпадать со старым");
                 return false;
             }
