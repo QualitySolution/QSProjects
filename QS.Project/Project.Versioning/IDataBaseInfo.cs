@@ -13,5 +13,10 @@ namespace QS.Project.Versioning
 		/// Возвращаяет <see langword="true"/> если подключены к демонстрационной базе данных.
 		/// </summary>
 		bool IsDemo { get; }
+
+		/// <summary>
+		/// Возвращает GUID базы
+		/// </summary>
+		Guid? BaseGuid { get; }
 	}
 }
