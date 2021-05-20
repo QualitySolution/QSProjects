@@ -16,17 +16,27 @@ namespace Gamma.GtkWidgets
 			get => base.Filename;
 			set => base.SetFilename(value);
 		}
+		
+		public new string CurrentFolder
+		{
+			get => base.CurrentFolder;
+			set => base.SetCurrentFolder(value);
+		}
 
 		public yFileChooserButton() : base((Widget)null) {
 			Binding = new BindingControler<yFileChooserButton>(this, new Expression<Func<yFileChooserButton, object>>[] {
 				w => w.Filename,
+				w => w.CurrentFolder,
 				w => w.Filenames
 			});
 		}
 
         protected override void OnSelectionChanged()
         {
-			Binding.FireChange(w => w.Filename, w => w.Filenames);
+			Binding.FireChange(
+				w => w.Filename, 
+				w => w.CurrentFolder, 
+				w => w.Filenames);
 			base.OnSelectionChanged();
         }
     }
