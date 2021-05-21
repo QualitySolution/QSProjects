@@ -44,5 +44,17 @@ namespace QS.Utilities
 				Gtk.Main.Iteration();
 			}
 		}
+		
+		public static Window GetParentWindow(Widget widget)
+		{
+			switch(widget) {
+				case null:
+					return null;
+				case Window w:
+					return w;
+				default:
+					return GetParentWindow(widget.Parent);
+			}
+		}
 	}
 }

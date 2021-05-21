@@ -52,8 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
+    <Compile Include="Project.DB\CustomProjections.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
+    <Compile Include="Project.DB\MySQL57ExtendedDialect.cs" />
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />

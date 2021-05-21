@@ -1,4 +1,3 @@
-using System.Data.Common;
 using MySql.Data.MySqlClient;
 
 namespace QS.Project.Repositories
