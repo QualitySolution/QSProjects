@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -19,7 +18,7 @@ namespace QS.ViewModels.Dialog
 
 		public TEntity Entity => UoWGeneric.Root;
 
-		public EntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(unitOfWorkFactory, navigation)
+		public EntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(unitOfWorkFactory, navigation, validator)
 		{
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
@@ -29,7 +28,7 @@ namespace QS.ViewModels.Dialog
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
 
-			this.validator = validator;
+			Validations.Add(new ValidationRequest(Entity));
 		}
 
 		#region Создание имени диалога
@@ -77,26 +76,6 @@ namespace QS.ViewModels.Dialog
 				return title;
 			}
 			return Entity.ToString();
-		}
-
-		#endregion
-
-		#region Валидация сущности
-
-		protected ValidationContext ValidationContext { get; set; }
-
-		private readonly IValidator validator;
-
-		protected virtual bool Validate()
-		{
-			return validator?.Validate(Entity, ValidationContext) ?? true;
-		}
-
-		public override bool Save()
-		{
-			if (!Validate())
-				return false;
-			return base.Save();
 		}
 
 		#endregion
