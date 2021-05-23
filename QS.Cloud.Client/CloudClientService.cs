@@ -12,16 +12,25 @@ namespace QS.Cloud.Client
         public static string ServiceAddress = "core.cloud.qsolution.ru";
         public static int ServicePort = 4200;
         
-        private readonly Channel channel;
         private readonly string sessionId;
 
         private readonly Metadata headers;
         
         public CloudClientService(string sessionId)
         {
-            channel = new Channel(ServiceAddress, ServicePort, ChannelCredentials.Insecure);
             this.sessionId = sessionId;
             headers = new Metadata {{"Authorization", $"Bearer {sessionId}"}};
+        }
+        
+        private Channel channel;
+        private Channel Channel {
+            get {
+                if(channel == null || channel.State == ChannelState.Shutdown)
+                    channel = new Channel(ServiceAddress, ServicePort, ChannelCredentials.Insecure);
+                if (channel.State == ChannelState.TransientFailure)
+                    channel.ConnectAsync();
+                return channel;
+            }
         }
         
         #region Запросы
