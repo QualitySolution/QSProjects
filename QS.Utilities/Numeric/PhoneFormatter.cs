@@ -82,6 +82,29 @@ namespace QS.Utilities.Numeric
 
 	}
 
+	public class PhoneValidator
+	{
+		private readonly PhoneFormat format;
+
+		public PhoneValidator(PhoneFormat format)
+		{
+			this.format = format;
+		}
+
+		public bool Validate(string phone, bool emptyIsValid = true)
+		{
+			if(String.IsNullOrWhiteSpace(phone))
+				return emptyIsValid;
+
+			switch(format) {
+				case PhoneFormat.RussiaOnlyHyphenated:
+					return Regex.IsMatch(phone, "^\\+7-[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$");
+				default:
+					throw new NotImplementedException($"Формат {format} не реализован.");
+			}
+		}
+	}
+
 	class SeparatorPosition {
 		public int position;
 		public string separator;
