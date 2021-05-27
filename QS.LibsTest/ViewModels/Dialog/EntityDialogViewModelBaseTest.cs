@@ -1,4 +1,6 @@
-﻿using NSubstitute;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -24,7 +26,8 @@ namespace QS.Test.ViewModels.Dialog
 			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
-			validation.Validate(entity, null).Returns(true);
+			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(true);
+			validation.Validate(Arg.Any<IEnumerable<ValidationRequest>>()).Returns(true);
 
 			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation, validation);
 
@@ -32,7 +35,7 @@ namespace QS.Test.ViewModels.Dialog
 			uow.Received().Save();
 		}
 
-		[Test(Description = "Проверяем что ViewModel сохраняет entity если проверка прошла.")]
+		[Test(Description = "Проверяем что ViewModel НЕ сохраняем entity если проверка НЕ прошла.")]
 		public void Validate_DontSaveIfValidationFailTest()
 		{
 			var entity = Substitute.For<ValidatedEntity>();
@@ -44,7 +47,8 @@ namespace QS.Test.ViewModels.Dialog
 			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
-			validation.Validate(entity, null).Returns(false);
+			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(false);
+			validation.Validate(Arg.Any<IEnumerable<ValidationRequest>>()).Returns(false);
 
 			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation, validation);
 
