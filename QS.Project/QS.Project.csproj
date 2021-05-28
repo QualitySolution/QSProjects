@@ -328,6 +328,7 @@
     <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
+    <Compile Include="Validation\ValidationRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

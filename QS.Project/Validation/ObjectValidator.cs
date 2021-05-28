@@ -29,13 +29,21 @@ namespace QS.Validation
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		public bool Validate(object validatableObject, ValidationContext validationContext = null)
 		{
+			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)});
+		}
+
+		/// <returns>Возвращает <see langword="true"/> если объекты корректны.</returns>
+		public bool Validate(IEnumerable<ValidationRequest> requests)
+		{
 			results.Clear();
 
-			if(validationContext == null) {
-				validationContext = new ValidationContext(validatableObject, null, null);
+			var isValid = true;
+
+			foreach(var request in requests) {
+				var isItemValid = Validator.TryValidateObject(request.ValidateObject, request.ValidationContext, results, true);
+				isValid &= isItemValid;
 			}
 
-			var isValid = Validator.TryValidateObject(validatableObject, validationContext, results, true);
 			if(!isValid && validationViewFactory != null) {
 				IValidationView view = validationViewFactory.CreateValidationView(results);
 				if(view == null) {

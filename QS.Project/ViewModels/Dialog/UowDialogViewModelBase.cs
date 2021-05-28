@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Validation;
 
 namespace QS.ViewModels.Dialog
 {
@@ -8,9 +11,10 @@ namespace QS.ViewModels.Dialog
 	{
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		protected UowDialogViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation) : base(navigation)
+		protected UowDialogViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(navigation)
 		{
 			this.UnitOfWorkFactory = unitOfWorkFactory;
+			this.validator = validator;
 		}
 
 		private IUnitOfWork unitOfWork;
@@ -34,6 +38,9 @@ namespace QS.ViewModels.Dialog
 
 		public virtual bool Save()
 		{
+			if(!Validate())
+				return false;
+
 			if(UoW.RootObject != null)
 				UoW.Save();
 			else
@@ -51,5 +58,20 @@ namespace QS.ViewModels.Dialog
 		{
 			UoW?.Dispose();
 		}
+
+		#region Валидация
+
+		private readonly IValidator validator;
+		public readonly List<ValidationRequest> Validations = new List<ValidationRequest>();
+
+		protected virtual bool Validate()
+		{
+			if(validator == null || !Validations.Any())
+				return true;
+
+			return validator.Validate(Validations);
+		}
+
+		#endregion
 	}
 }
