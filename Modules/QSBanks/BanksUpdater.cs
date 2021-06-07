@@ -220,22 +220,22 @@ namespace QSBanks
 				var currentBankLoadedAccounts = loadedAccounts[item.BIC];
 				IList<Account> accountsWithDeletedBankCorAccount = new List<Account>();
 				
-				foreach(var account in bank.CorAccounts.ToList())
+				foreach(var corAccount in bank.CorAccounts.ToList())
 				{
-					if(currentBankLoadedAccounts.ContainsKey(account.CorAccountNumber))
+					if(currentBankLoadedAccounts.ContainsKey(corAccount.CorAccountNumber))
 					{
-						currentBankLoadedAccounts.Remove(account.CorAccountNumber);
+						currentBankLoadedAccounts.Remove(corAccount.CorAccountNumber);
 					}
 					else
 					{
-						bank.CorAccounts.Remove(account);
+						bank.CorAccounts.Remove(corAccount);
 
-						if(bank.DefaultCorAccount?.Id == account.Id)
+						if(bank.DefaultCorAccount?.Id == corAccount.Id)
 						{
 							bank.DefaultCorAccount = null;
 						}
 						
-						var accountsWithCurrentCorAccount = accountsList.Where(x => x.BankCorAccount?.Id == account.Id).ToList();
+						var accountsWithCurrentCorAccount = accountsList.Where(x => x.BankCorAccount?.Id == corAccount.Id).ToList();
 						
 						if(accountsWithCurrentCorAccount.Any())
 						{
