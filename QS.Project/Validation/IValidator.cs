@@ -8,6 +8,10 @@ namespace QS.Validation
 	{
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		bool Validate(object validatableObject, ValidationContext validationContext = null);
+
+		/// <returns>Возвращает <see langword="true"/> если объекты корректены.</returns>
+		bool Validate(IEnumerable<ValidationRequest> requests);
+
 		/// <summary>
 		/// Детальные результаты последней проверки.
 		/// </summary>

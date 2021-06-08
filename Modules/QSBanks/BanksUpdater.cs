@@ -190,7 +190,7 @@ namespace QSBanks
 			UpdateRegions(uow);
 
 			OutputMessage("Обновление банков");
-			var bicList = bicDocument.BICDirectoryEntry.Where(x => x.Accounts != null);
+			var bicList = bicDocument.BICDirectoryEntry.Where(x => x.Accounts != null).ToList();
 			Dictionary<string, Dictionary<string, AccountsType>> loadedAccounts = bicList
 				.ToDictionary(x => x.BIC, x => x.Accounts.ToDictionary(y => y.Account));
 			var storedBanksDict = allBanksList.ToDictionary(x => x.Bik);
@@ -218,33 +218,69 @@ namespace QSBanks
 				bank.Name = item.ParticipantInfo.NameP;
 				bank.Region = regionsList.FirstOrDefault(x => x.RegionNum == int.Parse(item.ParticipantInfo.Rgn));
 				var currentBankLoadedAccounts = loadedAccounts[item.BIC];
-				foreach(var account in bank.CorAccounts.ToList()) {
-					if(currentBankLoadedAccounts.ContainsKey(account.CorAccountNumber)) {
-						currentBankLoadedAccounts.Remove(account.CorAccountNumber);
-					} else {
-						bank.CorAccounts.Remove(account);
+				IList<Account> accountsWithDeletedBankCorAccount = new List<Account>();
+				
+				foreach(var corAccount in bank.CorAccounts.ToList())
+				{
+					if(currentBankLoadedAccounts.ContainsKey(corAccount.CorAccountNumber))
+					{
+						currentBankLoadedAccounts.Remove(corAccount.CorAccountNumber);
+					}
+					else
+					{
+						bank.CorAccounts.Remove(corAccount);
+
+						if(bank.DefaultCorAccount?.Id == corAccount.Id)
+						{
+							bank.DefaultCorAccount = null;
+						}
+						
+						var accountsWithCurrentCorAccount = accountsList.Where(x => x.BankCorAccount?.Id == corAccount.Id).ToList();
+						
+						if(accountsWithCurrentCorAccount.Any())
+						{
+							foreach(var curAccount in accountsWithCurrentCorAccount)
+							{
+								curAccount.BankCorAccount = null;
+								accountsWithDeletedBankCorAccount.Add(curAccount);
+							}
+						}
 					}
 				}
-				foreach(var acc in currentBankLoadedAccounts) {
+				
+				foreach(var acc in currentBankLoadedAccounts)
+				{
 					bank.CorAccounts.Add(new CorAccount { CorAccountNumber = acc.Key, InBank = bank });
 				}
-				uow.Save(bank);
-				if(bank.DefaultCorAccount == null) {
-					bank.DefaultCorAccount = bank.CorAccounts.First();
-					uow.Save(bank);
+				
+				if(accountsWithDeletedBankCorAccount.Any())
+				{
+					foreach(var curAccount in accountsWithDeletedBankCorAccount)
+					{
+						curAccount.BankCorAccount = bank.CorAccounts.FirstOrDefault();
+						uow.Save(curAccount);
+					}
 				}
+				
+				uow.Save(bank);
 			}
 			OutputMessage("Обновление счетов, удаление неактуальных банков");
 			var bl = activeBanksList.Where(bank => !bicList.Any(y => y.BIC == bank.Bik));
 			index = 0;
-			foreach(var item in bl) {
+			
+			foreach(var item in bl)
+			{
 				Progress(index, bl.Count());
 				index++;
-				var account = accountsList.Where(x => !x.Inactive).FirstOrDefault(a => a.InBank == item);
-				if(account != null) {
-					if(item.Deleted) {
+				var account = accountsList.Where(x => !x.Inactive).FirstOrDefault(a => a.InBank.Id == item.Id);
+				
+				if(account != null)
+				{
+					if(item.Deleted)
+					{
 						continue;
 					}
+					
 					account.Inactive = true;
 					UpdatedObject.Add(account);
 					accountsDeactivated++;
@@ -252,20 +288,22 @@ namespace QSBanks
 					item.Deleted = true;
 					UpdatedObject.Add(item);
 					banksDeactivated++;
-				} else {
-					uow.Delete(item);
-					banksRemoved++;
+				}
+				else
+				{
+					DeleteBank(uow, item);
 				}
 			}
 
-			foreach(var bank in allBanksList) {
-				if(bank.DefaultCorAccount == null) {
-					if(bank.CorAccounts.Any()) {
-						bank.DefaultCorAccount = bank.CorAccounts.First();
-					} else {
-						uow.Delete(bank);
-						banksRemoved++;
-					}
+			foreach(var bank in allBanksList.Where(b => b.DefaultCorAccount == null))
+			{
+				if(bank.CorAccounts.Any())
+				{
+					bank.DefaultCorAccount = bank.CorAccounts.First();
+				}
+				else
+				{
+					DeleteBank(uow, bank);
 				}
 			}
 
@@ -281,6 +319,12 @@ namespace QSBanks
 			bank.Region != null && bank.Region.RegionNum == int.Parse(loadedBank.ParticipantInfo.Rgn);
 		}
 
+		private void DeleteBank(IUnitOfWork uow, Bank bank)
+		{
+			uow.Delete(bank);
+			banksRemoved++;
+		}
+		
 		private Stream DownloadBICFile()
 		{
 			if(bicZipFile != null) {

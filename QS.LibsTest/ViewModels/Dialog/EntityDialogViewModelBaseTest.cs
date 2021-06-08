@@ -1,4 +1,6 @@
-﻿using NSubstitute;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using NSubstitute;
 using NUnit.Framework;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -19,34 +21,36 @@ namespace QS.Test.ViewModels.Dialog
 			var uow = Substitute.For<IUnitOfWorkGeneric<ValidatedEntity>>();
 			uow.Root.Returns(entity);
 			uow.RootObject.Returns(entity);
-			var uowFacrory = Substitute.For<IUnitOfWorkFactory>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFacrory).Returns(uow);
+			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
-			validation.Validate(entity, null).Returns(true);
+			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(true);
+			validation.Validate(Arg.Any<IEnumerable<ValidationRequest>>()).Returns(true);
 
-			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFacrory, navigation, validation);
+			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation, validation);
 
 			Assert.That(viewModel.Save(), Is.True);
 			uow.Received().Save();
 		}
 
-		[Test(Description = "Проверяем что ViewModel сохраняет entity если проверка прошла.")]
+		[Test(Description = "Проверяем что ViewModel НЕ сохраняем entity если проверка НЕ прошла.")]
 		public void Validate_DontSaveIfValidationFailTest()
 		{
 			var entity = Substitute.For<ValidatedEntity>();
 			var uow = Substitute.For<IUnitOfWorkGeneric<ValidatedEntity>>();
 			uow.Root.Returns(entity);
 			uow.RootObject.Returns(entity);
-			var uowFacrory = Substitute.For<IUnitOfWorkFactory>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFacrory).Returns(uow);
+			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
-			validation.Validate(entity, null).Returns(false);
+			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(false);
+			validation.Validate(Arg.Any<IEnumerable<ValidationRequest>>()).Returns(false);
 
-			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFacrory, navigation, validation);
+			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation, validation);
 
 			Assert.That(viewModel.Save(), Is.False);
 			uow.DidNotReceive().Save();
@@ -59,12 +63,12 @@ namespace QS.Test.ViewModels.Dialog
 			var uow = Substitute.For<IUnitOfWorkGeneric<ValidatedEntity>>();
 			uow.Root.Returns(entity);
 			uow.RootObject.Returns(entity);
-			var uowFacrory = Substitute.For<IUnitOfWorkFactory>();
+			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFacrory).Returns(uow);
+			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 
-			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFacrory, navigation);
+			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation);
 
 			Assert.That(viewModel.Save(), Is.True);
 			uow.Received().Save();
