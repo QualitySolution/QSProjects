@@ -40,7 +40,7 @@ namespace QS.Cloud.Client
             if (string.IsNullOrWhiteSpace(baseGuid))
                 throw new ArgumentException("Guid должен быть указан", nameof(baseGuid));
 
-            var client = new CloudFeatures.CloudFeaturesClient(channel);
+            var client = new CloudFeatures.CloudFeaturesClient(Channel);
             var request = new FeaturesRequest
             {
                 BaseGuid = baseGuid
