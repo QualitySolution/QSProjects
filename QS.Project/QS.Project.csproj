@@ -211,9 +211,9 @@
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
     <Compile Include="Project.Versioning\IApplicationInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorReport.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingService.cs" />
-    <Compile Include="ErrorReporting\ReportWorker.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\ErrorReport.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\IErrorReportingService.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\ReportWorker.cs" />
     <Compile Include="Validation\IValidationView.cs" />
     <Compile Include="Validation\IValidationViewFactory.cs" />
     <Compile Include="Validation\IValidator.cs" />
@@ -226,8 +226,8 @@
     <Compile Include="Permissions\DefaultAllowedPermissionService.cs" />
     <Compile Include="Project.Services\ServicesConfig.cs" />
     <Compile Include="Project.Services\IRunOperationService.cs" />
-    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\CommonErrorHandlers.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\ThreadDataLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
@@ -287,8 +287,8 @@
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\ErrorReportingSettings.cs" />
+    <Compile Include="..\QS.Project.Core\ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
     <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
     <Compile Include="Deletion\DeleteConfig.cs" />
@@ -361,7 +361,7 @@
     <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="Project.Versioning\" />
-    <Folder Include="ErrorReporting\" />
+    <Folder Include="..\QS.Project.Core\ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
     <Folder Include="Project.Journal\DataLoader\" />
