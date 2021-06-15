@@ -22,6 +22,11 @@ namespace QS.Utilities.Numeric
 					Starttext = "+7";
 					SeparatorPositions = new SeparatorPosition[] { new SeparatorPosition(2, "-"), new SeparatorPosition(6, "-"), new SeparatorPosition(10, "-"), new SeparatorPosition(13, "-") };
 					break;
+				case PhoneFormat.RussiaOnlyShort:
+					MaxStringLength = 12;
+					Starttext = "+7";
+					SeparatorPositions = new SeparatorPosition[] { };
+					break;
 				case PhoneFormat.BracketWithWhitespaceLastTen:
 					MaxStringLength = 19;
 					Starttext = "";
@@ -123,6 +128,11 @@ namespace QS.Utilities.Numeric
 		/// </summary>
 		[Display(Name = "+7-XXX-XXX-XX-XX")]
 		RussiaOnlyHyphenated,
+		/// <summary>
+		/// +7XXXXXXXXXX
+		/// </summary>
+		[Display(Name = "+7XXXXXXXXXX")]
+		RussiaOnlyShort,
 		/// <summary>
 		/// (XXX) XXX - XX - XX
 		/// </summary>
