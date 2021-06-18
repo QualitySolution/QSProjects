@@ -119,11 +119,23 @@ namespace QS.Dialog.GtkUI
 				MessageType.Info,
 				ButtonsType.Ok,
 				message);
+
+			var messageLabel = GetMessageLabel(md);
+			if(messageLabel != null)
+            {
+				messageLabel.LineWrap = false;
+			}
+
 			md.SetPosition (WindowPosition.Center);
 			md.Title = title ?? "Информация";
 			md.ShowAll ();
 			md.Run ();
 			md.Destroy ();
+		}
+
+		private static Label GetMessageLabel(MessageDialog messageDialog)
+        {
+			return ((messageDialog.VBox.Children[0] as HBox)?.Children[1] as VBox)?.Children[0] as Label;
 		}
 	}
 }
