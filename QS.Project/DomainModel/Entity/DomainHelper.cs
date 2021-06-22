@@ -70,6 +70,21 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
+		/// Собирает список Id из любой коллекции(IEnumerable).
+		/// По сути у каждого элемента коллекции вызывает метод GetId, со всеми вытекающими:
+		/// - он упадет при отсутствии поля Id, у элемента
+		/// - порядок и количество элементов будет идентичное, оригинальному перечислению
+		/// - если в коллекции будут элементы с дубликатами id, в результатах дубликаты тоже будут 
+		/// </summary>
+		/// <returns>The identifiers.</returns>
+		/// <param name="valueList">Value list.</param>
+		public static IEnumerable<int> GetIds(this IEnumerable<object> valueList)
+		{
+			foreach(var value in valueList)
+				yield return GetId(value);
+		}
+
+		/// <summary>
 		/// Метод расширения для <c>IDomainObject</c> позволяющий сравнивнить экземпляр с другим объектом доменной модели по <c>Id</c> и типу.
 		/// То есть могут быть загружены из разных сессий.
 		/// </summary>
