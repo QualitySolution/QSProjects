@@ -50,6 +50,7 @@ namespace Gamma.ColumnConfig
 		/// </summary>
 		/// <param name="propertyRefExpr">Property Name expr.</param>
 		/// <typeparam name="TVMNode">Node type</typeparam>
+		[Obsolete("Используете вызов Add{*}Renderer напрямую.")]
 		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, object>> propertyRefExpr)
 		{
 			DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
@@ -65,6 +66,7 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		[Obsolete("Используете вызов AddTextRenderer напрямую.")]
 		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, string>> propertyRefExpr)
 		{
 			//DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
@@ -78,6 +80,7 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		[Obsolete("Используете вызов AddToggleRenderer напрямую.")]
 		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, bool>> propertyRefExpr)
 		{
 			//DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
