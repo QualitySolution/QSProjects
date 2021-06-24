@@ -3,7 +3,7 @@ using System.Linq;
 using Gamma.Utilities;
 using Gtk;
 using QS.Dialog;
-using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 using QS.Views.Dialog;
 using QS.Views.Resolve;
 
@@ -56,19 +56,19 @@ namespace QS.Navigation
 			page.ViewModel.NavigationManager = this;
 			pages.Add(page);
 			var gtkPage = (IGtkWindowPage)page;
-			WindowDialogViewModelBase windowDialog = page.ViewModel as WindowDialogViewModelBase;
+			IWindowDialogSettings windowSettings = page.ViewModel as IWindowDialogSettings;
 			var gtkMasterPage = (IGtkWindowPage)masterPage;
 			gtkPage.GtkView = viewResolver.Resolve(page.ViewModel);
 			if(gtkPage.GtkView == null)
 				throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
-			var isModal = windowDialog?.IsModal ?? false;
+			var isModal = windowSettings?.IsModal ?? false;
 			gtkPage.GtkDialog = new Gtk.Dialog(gtkPage.ViewModel.Title,
 				isModal ? gtkMasterPage?.GtkDialog : null,
 				isModal ? DialogFlags.Modal : DialogFlags.DestroyWithParent);
 			var defaultsize = gtkPage.GtkView.GetType().GetAttribute<WindowSizeAttribute>(true);
 			gtkPage.GtkDialog.SetDefaultSize(defaultsize?.DefaultWidth ?? gtkPage.GtkView.WidthRequest, defaultsize?.DefaultHeight ?? gtkPage.GtkView.WidthRequest);
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
-			if(windowDialog?.EnableMinimizeMaximize ?? true)
+			if(windowSettings?.EnableMinimizeMaximize ?? true)
 				gtkPage.GtkDialog.TypeHint = Gdk.WindowTypeHint.Normal;
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
