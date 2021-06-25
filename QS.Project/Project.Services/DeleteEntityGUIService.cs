@@ -30,6 +30,7 @@ namespace QS.Project.Services
 		public DeleteCore DeleteEntity(Type clazz, int id, IUnitOfWork uow = null, Action beforeDeletion = null)
 		{
 			var deletion = new DeleteCore(configuration, uow);
+			deletion.BeforeDeletion = beforeDeletion;
 			#region Подготовка удаления
 			using(var cancellation = new CancellationTokenSource()) {
 				var preparePage = navigation.OpenViewModel<PrepareDeletionViewModel, DeleteCore, CancellationTokenSource>(null, deletion, cancellation);
