@@ -70,6 +70,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="NLog" Version="4.7.10" />
   </ItemGroup>
 </Project>
