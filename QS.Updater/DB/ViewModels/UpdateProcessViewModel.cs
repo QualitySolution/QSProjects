@@ -58,7 +58,8 @@ namespace QS.Updater.DB.ViewModels
 
 			IsModal = true;
 
-			dbVersion = GetCurrentDBVersion();
+			//FIXME Здесь проверка micro_updates оставлена для совместимости и возможности корректного обновления со старых версий программ. Удаление сделает невозможным начать обновление с установленного микроапдейта.
+			dbVersion = this.parametersService.micro_updates != null ? this.parametersService.micro_updates(typeof(Version)) : this.parametersService.version(typeof(Version));
 			hops = configuration.GetHopsToLast(dbVersion).ToArray();
 			Title = String.Format("Обновление: {0} → {1}",
 						dbVersion.VersionToShortString(),
@@ -224,10 +225,8 @@ namespace QS.Updater.DB.ViewModels
 			var commands = script.ExecuteAsync(cancellation.Token);
 			guiDispatcher.WaitInMainLoop(() => commands.Status != System.Threading.Tasks.TaskStatus.Running, 50);
 			logger.Debug("Выполнено {0} SQL-команд.", commands.Result);
-			if(updateScript.UpdateType == UpdateType.MicroUpdate) {
-				parametersService.ReloadParameters();
-				parametersService.micro_updates = updateScript.Destination.VersionToShortString();
-			}
+			parametersService.ReloadParameters();
+			parametersService.version = updateScript.Destination.VersionToShortString();
 		}
 
 		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)
@@ -239,19 +238,9 @@ namespace QS.Updater.DB.ViewModels
 		#endregion
 		#endregion
 
-		#region DbVersion
-
-		Version GetCurrentDBVersion()
-		{
-			var versionString = parametersService.micro_updates ?? parametersService.version;
-			return Version.Parse(versionString);
-		}
-
 		public void OnClose(CloseSource source)
 		{
 			cancellation.Cancel();
 		}
-
-		#endregion
 	}
 }
