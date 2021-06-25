@@ -329,6 +329,7 @@
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
     <Compile Include="Validation\ValidationRequest.cs" />
+    <Compile Include="ViewModels\Extension\IWindowDialogSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
