@@ -6,4 +6,13 @@
         <Company>Quality Solution</Company>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="ErrorReporting\CommonErrorHandlers.cs" />
+      <None Include="ErrorReporting\CommonErrorHandlers.cs" />
+      <Compile Remove="ErrorReporting\IErrorReportingService.cs" />
+      <None Include="ErrorReporting\IErrorReportingService.cs" />
+      <Compile Remove="ErrorReporting\ReportWorker.cs" />
+      <None Include="ErrorReporting\ReportWorker.cs" />
+    </ItemGroup>
+
 </Project>
