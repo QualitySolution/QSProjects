@@ -46,7 +46,7 @@ namespace QS.ChangePassword.Views
             buttonOK.Sensitive = viewModel.CanSave;
 
             buttonCancel.CanFocus = false;
-            buttonCancel.Clicked += (sender, args) => viewModel.Close(false, CloseSource.Cancel);
+            buttonCancel.Clicked += (sender, args) => viewModel.Close(true, CloseSource.Cancel);
 
             yentryOldPassword.Changed += (sender, args) => viewModel.OldPassword = yentryOldPassword.Text?.ToSecureString();
             yentryNewPassword.Changed += (sender, args) => viewModel.NewPassword = yentryNewPassword.Text?.ToSecureString();

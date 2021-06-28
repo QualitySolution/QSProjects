@@ -116,10 +116,19 @@ namespace QS.Project.Dialogs.GtkUI
 					}
 					uow.TrySave (tempObject);
 					uow.Commit ();
-				} 
+				}
 				else
-					tempObject = null;
-				
+				{
+					var questionResult = MessageDialogHelper.RunQuestionDialog("Объект изменен. Сохранить изменения перед закрытием?");
+					if (questionResult)
+					{
+						uow.TrySave (tempObject);
+						uow.Commit ();
+					}
+					else
+						tempObject = null;
+				}
+
 				editDialog.Destroy();
 				return tempObject;
 			}
