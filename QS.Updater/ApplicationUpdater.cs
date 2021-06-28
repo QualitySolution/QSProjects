@@ -10,6 +10,8 @@ namespace QS.Updater
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
+		public static Uri ServiceUrl = new Uri("http://saas.qsolution.ru:2048/Updater");
+
 		public ApplicationUpdater()
 		{
 		}

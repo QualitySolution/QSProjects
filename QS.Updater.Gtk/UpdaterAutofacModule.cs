@@ -16,7 +16,7 @@ namespace QS.Updater
 			builder.RegisterType<VersionCheckerService>().AsSelf();
 			builder.RegisterType<CheckBaseVersion>().AsSelf();
 			builder.RegisterType<ApplicationUpdater>().AsSelf();
-			builder.Register(c => new WebChannelFactory<IUpdateService>(new WebHttpBinding { AllowCookies = true }, UpdateConfiguration.ServiceUrl).CreateChannel())
+			builder.Register(c => new WebChannelFactory<IUpdateService>(new WebHttpBinding { AllowCookies = true }, ApplicationUpdater.ServiceUrl).CreateChannel())
 				.As<IUpdateService>();
 			builder.RegisterType<SkipVersionStateIniConfig>().As<ISkipVersionState>();
 			builder.RegisterType<SQLDBUpdater>().As<IDBUpdater>();
