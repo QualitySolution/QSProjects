@@ -49,6 +49,9 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="QS.Updater.Core">
+      <HintPath>..\QS.Updater.Core\bin\x86\Debug\netstandard2.0\QS.Updater.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,7 +64,6 @@
     <Compile Include="IUpdaterUI.cs" />
     <Compile Include="ISkipVersionState.cs" />
     <Compile Include="IDBUpdater.cs" />
-    <Compile Include="DB\UpdateConfiguration.cs" />
     <Compile Include="DB\ViewModels\UpdateProcessViewModel.cs" />
     <Compile Include="VersionCheckerService.cs" />
     <Compile Include="DB\SQLDBUpdater.cs" />

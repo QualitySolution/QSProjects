@@ -7,8 +7,6 @@ namespace QS.Updater.DB
 {
 	public class UpdateConfiguration
 	{
-		public static Uri ServiceUrl = new Uri("http://saas.qsolution.ru:2048/Updater");
-
 		public IEnumerable<UpdateHop> MicroUpdates => Hops.Where(x => x.UpdateType == UpdateType.MicroUpdate);
 
 		public IEnumerable<UpdateHop> Updates => Hops.Where(x => x.UpdateType == UpdateType.Update);
