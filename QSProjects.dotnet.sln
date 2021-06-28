@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Cloud.Client", "QS.Cloud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Core", "QS.Updater.Core\QS.Updater.Core.csproj", "{495BEA95-C407-4F71-A464-F806D3B3D472}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.LibsTest.Core", "QS.LibsTest.Core\QS.LibsTest.Core.csproj", "{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{495BEA95-C407-4F71-A464-F806D3B3D472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{495BEA95-C407-4F71-A464-F806D3B3D472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{495BEA95-C407-4F71-A464-F806D3B3D472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

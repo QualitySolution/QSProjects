@@ -132,7 +132,6 @@
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
-    <Compile Include="Updater\UpdateConfigurationTests.cs" />
     <Compile Include="BaseParameters\ParametersServiceTest.cs" />
     <Compile Include="Serial\SerialNumberEncoderTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
@@ -174,7 +173,6 @@
     <Folder Include="TestApp\Domain\Linked\" />
     <Folder Include="TestApp\HibernateMapping\Linked\" />
     <Folder Include="ViewModels\Resove\" />
-    <Folder Include="Updater\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="Serial\" />
   </ItemGroup>
