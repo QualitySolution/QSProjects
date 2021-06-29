@@ -266,7 +266,7 @@ namespace QS.Tdi
 					md.AddButton("Отмена", ResponseType.Cancel);
 					int result = md.Run();
 					md.Destroy();
-					if (result == (int)ResponseType.Cancel)
+					if (result == (int)ResponseType.Cancel || result == (int)ResponseType.DeleteEvent)
 						return false;
 					if (result == (int)ResponseType.Yes) {
 						if (!dlg.Save()) {
