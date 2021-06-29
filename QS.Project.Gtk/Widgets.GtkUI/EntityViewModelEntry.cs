@@ -304,6 +304,11 @@ namespace QS.Widgets.GtkUI
 		private IEntityAutocompleteSelector autoCompleteSelector;
 		private void FillAutocomplete()
 		{
+			if(cts.IsCancellationRequested) 
+			{
+				return;
+			}
+			
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string), typeof(object));
 			if(entitySelectorAutocompleteFactory == null) {
