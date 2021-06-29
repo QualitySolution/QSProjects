@@ -49,9 +49,6 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="QS.Updater.Core">
-      <HintPath>..\QS.Updater.Core\bin\x86\Debug\netstandard2.0\QS.Updater.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +75,10 @@
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
+      <Project>{bc159ba7-ef22-4800-ac34-de4b2b386aae}</Project>
+      <Name>QS.Updater.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
