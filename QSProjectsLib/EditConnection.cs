@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gtk;
+using QS.DBScripts.Controllers;
 using QSMachineConfig;
 
 namespace QSProjectsLib
@@ -10,6 +11,7 @@ namespace QSProjectsLib
 		ListStore connectionsListStore = new ListStore(typeof(string), typeof(Connection));
 		List<string> sectionsToDelete = new List<string>();
 		List<Connection> connections;
+		private readonly IDBCreator dbCreator;
 		TreeIter currentIter;
 		string lastEdited;
 
@@ -21,11 +23,12 @@ namespace QSProjectsLib
 				EditingDone(null, EventArgs.Empty);
 		}
 
-		public EditConnection(List<Connection> Connections)
+		public EditConnection(List<Connection> Connections, IDBCreator dbCreator = null)
 		{
 			this.Build();
 			this.Title = "Настройка соединений";
 			connections = Connections;
+			this.dbCreator = dbCreator;
 
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
 			entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
@@ -61,7 +64,7 @@ namespace QSProjectsLib
 				entryLogin.Text = conn.AccountLogin;
 			}
 
-			buttonCreateBase.Sensitive = DBCreator.Scripts.Count > 0;
+			buttonCreateBase.Sensitive = dbCreator != null;
 
 			treeConnections.Model.GetIterFirst(out currentIter);
 			treeConnections.Selection.SelectIter(currentIter);
@@ -79,7 +82,7 @@ namespace QSProjectsLib
 		}
 
 		private void CheckCreateDBSensetive(){
-			buttonCreateBase.Sensitive = DBCreator.Scripts.Count > 0 
+			buttonCreateBase.Sensitive = dbCreator != null 
 				&& !String.IsNullOrWhiteSpace(entryServer.Text) 
 				&& !String.IsNullOrWhiteSpace(entryBase.Text);
 		}
@@ -296,7 +299,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonCreateBaseClicked(object sender, EventArgs e)
 		{
-			DBCreator.RunCreation (entryServer.Text, entryBase.Text);
+			dbCreator.RunCreation (entryServer.Text, entryBase.Text);
 		}
 
 		protected void OnButtonHelpClicked(object sender, EventArgs e)
