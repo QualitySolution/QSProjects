@@ -146,7 +146,6 @@
     <Folder Include="TestDomain\" />
     <Folder Include="DomainModel\UoW\" />
     <Folder Include="DomainModel\NotifyChange\" />
-    <Folder Include="Widgets.GtkUI\" />
     <Folder Include="TestNamespace\" />
     <Folder Include="TestNamespace\ViewModels\" />
     <Folder Include="TestNamespace\Views\" />
