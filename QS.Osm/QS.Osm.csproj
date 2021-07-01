@@ -49,7 +49,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AddressHelper.cs" />
-        <Compile Include="Data\JsonAddress.cs" />
         <Compile Include="DTO\OsmCity.cs" />
         <Compile Include="DTO\OsmEnums.cs" />
         <Compile Include="DTO\OsmHouse.cs" />
