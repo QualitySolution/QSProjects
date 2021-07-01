@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using QS.Tdi;
 using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
@@ -28,24 +27,7 @@ namespace QS.Navigation
 		IEnumerable<IPage> SlavePages { get; }
 		IEnumerable<IPage> ChildPages { get; }
 	}
-
-	internal interface IPageInternal
-	{
-		void OnClosed(CloseSource source);
-		void AddSlavePage(IPage page);
-		bool RemoveSlavePage(IPage page);
-		void AddChildPage(IPage page);
-		bool RemoveChildPage(IPage page);
-	}
-
-	/// <summary>
-	/// Интерфейс специально созданный на переходный период, пока есть микс из диалогов разных типов Tdi и ViewModel
-	/// </summary>
-	public interface ITdiPage : IPage
-	{
-		ITdiTab TdiTab { get; }
-	}
-
+	
 	public interface IPage<TViewModel> : IPage
 		where TViewModel : DialogViewModelBase
 	{

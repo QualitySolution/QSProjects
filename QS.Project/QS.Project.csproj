@@ -51,6 +51,8 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
+    <Compile Include="Navigation\ITdiPage.cs" />
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\CustomProjections.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
@@ -66,9 +68,7 @@
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
     <Compile Include="Project.Repositories\UserRepository.cs" />
     <Compile Include="DomainModel\Entity\IDomainObject.cs" />
-    <Compile Include="DomainModel\Entity\PropertyChangedBase.cs" />
     <Compile Include="DomainModel\Entity\AppellativeAttribute.cs" />
-    <Compile Include="DomainModel\Entity\PropertyChangedAlsoAttribute.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWork.cs" />
     <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWorkGeneric.cs" />
@@ -164,7 +164,6 @@
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Project.Services\IInteractiveService.cs" />
     <Compile Include="Project.Services\CommonServices.cs" />
     <Compile Include="Project.Services\ICommonServices.cs" />
@@ -242,8 +241,7 @@
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
     <Compile Include="Dialog\IProgressBarDisplayable.cs" />
-    <Compile Include="Navigation\INavigationManager.cs" />
-    <Compile Include="Navigation\IPage.cs" />
+    <Compile Include="Navigation\IPageInternal.cs" />
     <Compile Include="Navigation\IPageHashGenerator.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
@@ -271,9 +269,7 @@
     <Compile Include="Navigation\NavigationManagerBase.cs" />
     <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
-    <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
-    <Compile Include="ViewModels\Dialog\WindowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
@@ -299,8 +295,6 @@
     <Compile Include="Deletion\ViewModels\DeletionViewModel.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
     <Compile Include="Deletion\DeletionAutofacModule.cs" />
-    <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
-    <Compile Include="Navigation\CloseSource.cs" />
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
@@ -315,13 +309,11 @@
     <Compile Include="BaseParameters\ParametersService.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Dialog\IGuiDispatcher.cs" />
-    <Compile Include="Dialog\WindowGravity.cs" />
     <Compile Include="Project.Versioning\Product\IProductService.cs" />
     <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
     <Compile Include="Validation\ValidationRequest.cs" />
-    <Compile Include="ViewModels\Extension\IWindowDialogSettings.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
     <Compile Include="ErrorReporting\ErrorReport.cs" />
     <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
@@ -372,7 +364,6 @@
     <Folder Include="ViewModels\Control\ESVM\" />
     <Folder Include="Deletion\Configuration\" />
     <Folder Include="Deletion\ViewModels\" />
-    <Folder Include="ViewModels\Extension\" />
     <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
@@ -380,6 +371,10 @@
     <Folder Include="Project.Versioning\Product\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>

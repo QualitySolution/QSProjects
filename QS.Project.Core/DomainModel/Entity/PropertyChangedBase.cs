@@ -70,7 +70,5 @@ namespace QS.DomainModel.Entity
 			return body.Member.Name;
 		}
 	}
-
-
 }
 
