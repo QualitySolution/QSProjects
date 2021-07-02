@@ -5,10 +5,11 @@ namespace QS.DBScripts.ViewModels
 {
 	public class AdminLoginViewModel : WindowDialogViewModelBase
 	{
-		public AdminLoginViewModel(INavigationManager navigation) : base(navigation)
+		public AdminLoginViewModel(INavigationManager navigation, string loginByDefault = null) : base(navigation)
 		{
 			IsModal = true;
 			WindowPosition = Dialog.WindowGravity.Center;
+			login = loginByDefault;
 		}
 
 		#region Свойства

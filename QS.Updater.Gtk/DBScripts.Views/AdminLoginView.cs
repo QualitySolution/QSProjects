@@ -11,6 +11,8 @@ namespace QS.DBScripts.Views
 			this.Build();
 			entryLogin.Binding.AddBinding(ViewModel, v => v.Login, w => w.Text).InitializeFromSource();
 			entryPassword.Binding.AddBinding(ViewModel, v => v.Password, w => w.Text).InitializeFromSource();
+			if(!String.IsNullOrWhiteSpace(ViewModel.Login))
+				entryPassword.GrabFocus();
 		}
 
 		protected void OnButtonOkClicked(object sender, EventArgs e)
@@ -26,6 +28,11 @@ namespace QS.DBScripts.Views
 		protected void OnEntryLoginActivated(object sender, EventArgs e)
 		{
 			this.ChildFocus(Gtk.DirectionType.TabForward);
+		}
+
+		protected void OnEntryPasswordActivated(object sender, EventArgs e)
+		{
+			ViewModel.Accept();
 		}
 	}
 }
