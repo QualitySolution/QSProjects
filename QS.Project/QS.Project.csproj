@@ -119,8 +119,6 @@
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
     <Compile Include="DomainModel\Config\IEntityConfig.cs" />
     <Compile Include="Deletion\DeleteHelper.cs" />
-    <Compile Include="Dialog\IInteractiveMessage.cs" />
-    <Compile Include="Dialog\IInteractiveQuestion.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkChild.cs" />
     <Compile Include="Project.DB\DBValueReader.cs" />
     <Compile Include="Project.DB\IMySQLProvider.cs" />
@@ -164,7 +162,6 @@
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
-    <Compile Include="Project.Services\IInteractiveService.cs" />
     <Compile Include="Project.Services\CommonServices.cs" />
     <Compile Include="Project.Services\ICommonServices.cs" />
     <Compile Include="Project.Services\IPermissionService.cs" />

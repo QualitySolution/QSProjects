@@ -3,6 +3,7 @@ using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.Deletion;
+using QS.Dialog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -11,7 +12,6 @@ using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services.GtkUI;
-using QS.Services;
 
 namespace QS.Project.Dialogs.GtkUI
 {
