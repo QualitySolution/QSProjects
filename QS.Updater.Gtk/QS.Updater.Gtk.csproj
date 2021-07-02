@@ -43,6 +43,8 @@
     <Compile Include="SkipVersionStateIniConfig.cs" />
     <Compile Include="gtk-gui\QS.Updater.DB.Views.UpdateProcessView.cs" />
     <Compile Include="UpdaterAutofacModule.cs" />
+    <Compile Include="DBScripts.Views\AdminLoginView.cs" />
+    <Compile Include="gtk-gui\DBScripts.Views.AdminLoginView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -103,6 +105,10 @@
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
       <Name>GammaBinding</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
+      <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
+      <Name>QS.Updater.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -119,5 +125,8 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DBScripts.Views" />
   </ItemGroup>
 </Project>

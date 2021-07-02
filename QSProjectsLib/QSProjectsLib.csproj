@@ -108,8 +108,6 @@
     <Compile Include="LongOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.LongOperationDlg.cs" />
     <Compile Include="DBCreator\DBCreator.cs" />
-    <Compile Include="DBCreator\GetPassword.cs" />
-    <Compile Include="gtk-gui\QSProjectsLib.GetPassword.cs" />
     <Compile Include="DBCreator\CreatorProgress.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.CreatorProgress.cs" />
     <Compile Include="Helpers\BooleanWorks.cs" />
