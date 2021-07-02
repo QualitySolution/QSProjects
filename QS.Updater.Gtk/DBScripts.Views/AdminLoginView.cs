@@ -2,7 +2,7 @@
 using QS.DBScripts.ViewModels;
 using QS.Views.Dialog;
 
-namespace DBScripts.Views
+namespace QS.DBScripts.Views
 {
 	public partial class AdminLoginView : DialogViewBase<AdminLoginViewModel>
 	{
