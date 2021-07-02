@@ -237,7 +237,6 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
-    <Compile Include="Dialog\IProgressBarDisplayable.cs" />
     <Compile Include="Navigation\IPageInternal.cs" />
     <Compile Include="Navigation\IPageHashGenerator.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />

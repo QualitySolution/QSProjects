@@ -11,5 +11,4 @@
       <PackageReference Include="Autofac" Version="6.2.0" />
       <PackageReference Include="NHibernate" Version="5.3.8" />
     </ItemGroup>
-
 </Project>
