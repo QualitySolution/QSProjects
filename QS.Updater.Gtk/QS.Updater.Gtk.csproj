@@ -109,8 +109,6 @@
       <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
       <Name>QS.Updater.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
-      <Project>{E241E348-D0D8-43B2-8341-D33C5ADAB98E}</Project>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
