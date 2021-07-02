@@ -123,6 +123,7 @@ namespace QS.DBScripts.Views
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.entryPassword.Activated += new global::System.EventHandler(this.OnEntryPasswordActivated);
 			this.entryLogin.Activated += new global::System.EventHandler(this.OnEntryLoginActivated);
 			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
 			this.buttonCancel.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);

@@ -368,7 +368,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Project>{80540F2C-3187-4018-BB15-DD31173C8176}</Project>
       <Name>QS.Project.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">

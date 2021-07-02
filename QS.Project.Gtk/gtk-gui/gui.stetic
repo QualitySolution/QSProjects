@@ -3680,7 +3680,6 @@
   </widget>
   <widget class="Gtk.Bin" id="QS.Dialog.Views.ProgressWindowView" design-size="500 6">
     <property name="MemberName" />
-    <property name="WidthRequest">500</property>
     <property name="Visible">False</property>
     <child>
       <widget class="Gamma.GtkWidgets.yVBox" id="yvbox1">
@@ -3689,6 +3688,7 @@
         <child>
           <widget class="QS.Widgets.ProgressWidget" id="progresswidget1">
             <property name="MemberName" />
+            <property name="WidthRequest">500</property>
           </widget>
           <packing>
             <property name="Position">0</property>

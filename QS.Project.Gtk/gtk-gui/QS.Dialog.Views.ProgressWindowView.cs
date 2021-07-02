@@ -13,7 +13,6 @@ namespace QS.Dialog.Views
 			global::Stetic.Gui.Initialize(this);
 			// Widget QS.Dialog.Views.ProgressWindowView
 			global::Stetic.BinContainer.Attach(this);
-			this.WidthRequest = 500;
 			this.Name = "QS.Dialog.Views.ProgressWindowView";
 			// Container child QS.Dialog.Views.ProgressWindowView.Gtk.Container+ContainerChild
 			this.yvbox1 = new global::Gamma.GtkWidgets.yVBox();
@@ -21,6 +20,7 @@ namespace QS.Dialog.Views
 			this.yvbox1.Spacing = 6;
 			// Container child yvbox1.Gtk.Box+BoxChild
 			this.progresswidget1 = new global::QS.Widgets.ProgressWidget();
+			this.progresswidget1.WidthRequest = 500;
 			this.progresswidget1.Name = "progresswidget1";
 			this.yvbox1.Add(this.progresswidget1);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.progresswidget1]));
