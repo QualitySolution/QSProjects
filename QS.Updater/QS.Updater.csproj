@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
@@ -81,7 +81,7 @@
       <Name>QS.Project</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
-      <Project>{bc159ba7-ef22-4800-ac34-de4b2b386aae}</Project>
+      <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
       <Name>QS.Updater.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
