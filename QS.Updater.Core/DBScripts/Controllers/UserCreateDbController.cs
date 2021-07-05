@@ -15,30 +15,40 @@ namespace QS.DBScripts.Controllers
 		private readonly INavigationManager navigation;
 		private readonly ILifetimeScope autofacScope;
 		private readonly IInteractiveService interactive;
+		private readonly IGuiDispatcher guiDispatcher;
 
-		public UserCreateDbController(INavigationManager navigation, ILifetimeScope autofacScope, IInteractiveService interactive)
+		public UserCreateDbController(INavigationManager navigation, ILifetimeScope autofacScope, IInteractiveService interactive, IGuiDispatcher guiDispatcher)
 		{
 
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
+			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 		}
 
 		public void RunCreation(string server, string dbname)
 		{
 			var page = navigation.OpenViewModel<AdminLoginViewModel, string>(null, "root");
 			page.PageClosed += delegate (object sender, PageClosedEventArgs e) {
-				if(e.CloseSource == CloseSource.Save)
-					StartCreation(server, dbname, page.ViewModel.Login, page.ViewModel.Password);
+				if(e.CloseSource == CloseSource.Save) {
+					//Вызываем через guiDispatcher для того чтобы диалог с паролем закрылся, до начала операции создания БД.
+					guiDispatcher.RunInGuiTread(() => StartCreation(server, dbname, page.ViewModel.Login, page.ViewModel.Password));
+				}
 			};
 		}
 
 		void StartCreation(string server, string dbname, string login, string password)
 		{
 			var createMOdel = autofacScope.Resolve<MySqlDbCreateModel>(new TypedParameter(typeof(IDbCreateController), this));
-			bool success = createMOdel.RunCreation(server, dbname, login, password);
-			if (success)
-				interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
+			try {
+				bool success = createMOdel.RunCreation(server, dbname, login, password);
+				if (success)
+					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
+			}
+			finally {
+				if(progressPage != null)
+					navigation.ForceClosePage(progressPage, CloseSource.FromParentPage);
+			}
 		}
 
 		#region Взаимодействие с моделью
