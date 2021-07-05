@@ -9,6 +9,7 @@ using QS.Project.Journal.DataLoader;
 using QS.Project.Services;
 using QS.Services;
 using QS.Utilities.Text;
+using QS.ViewModels;
 using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
@@ -19,11 +20,28 @@ namespace QS.Project.Journal
 		where TNode : class
 	{
 		#region Обязательные зависимости
+		
+		protected EntityJournalActionsViewModel EntityJournalActionsViewModel { get; }
+		
 		#endregion
 		#region Опциональные зависимости
 		protected IDeleteEntityService DeleteEntityService;
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
 		#endregion
+		
+		protected EntityJournalViewModelBase(
+			EntityJournalActionsViewModel journalActionsViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigationManager,
+			IDeleteEntityService deleteEntityService = null,
+			ICurrentPermissionService currentPermissionService = null
+		) : this(unitOfWorkFactory, interactiveService, navigationManager, deleteEntityService, currentPermissionService)
+		{
+			EntityJournalActionsViewModel = journalActionsViewModel;
+			
+			InitializeJournalActionsViewModel();
+		}
 
 		protected EntityJournalViewModelBase(
 			IUnitOfWorkFactory unitOfWorkFactory,
@@ -44,7 +62,10 @@ namespace QS.Project.Journal
 			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
 				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
 
-			CreateNodeActions();
+			if(EntityJournalActionsViewModel == null)
+			{
+				CreateNodeActions();
+			}
 
 			var names = typeof(TEntity).GetSubjectNames();
 			if(!String.IsNullOrEmpty(names?.NominativePlural))
@@ -52,7 +73,13 @@ namespace QS.Project.Journal
 
 			UpdateOnChanges(typeof(TEntity));
 		}
+		
+		protected override void InitializeJournalActionsViewModel()
+		{
+			EntityJournalActionsViewModel.Initialize(typeof(TEntity), SelectionMode, OnItemsSelected, CreateEntityDialog, EditEntityDialog);
+		}
 
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		protected override void CreateNodeActions()
 		{
 			base.CreateNodeActions();
@@ -98,23 +125,36 @@ namespace QS.Project.Journal
 
 		#region Видимость предопределенных действий
 
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		public virtual bool VisibleCreateAction { get; set; } = true;
+		
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		public virtual bool VisibleEditAction { get; set; } = true;
+		
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		public virtual bool VisibleDeleteAction { get; set; } = true;
 
 		#endregion
 
 		#region Предопределенные действия
+		
 		protected virtual void CreateEntityDialog()
 		{
 			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForCreate());
 		}
 
+		protected virtual void EditEntityDialog(object node)
+		{
+			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForOpen(DomainHelper.GetId(node)));
+		}
+		
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		protected virtual void EditEntityDialog(TNode node)
 		{
 			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForOpen(DomainHelper.GetId(node)));
 		}
 
+		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]
 		protected virtual void DeleteEntities(TNode[] nodes)
 		{
 			foreach(var node in nodes)

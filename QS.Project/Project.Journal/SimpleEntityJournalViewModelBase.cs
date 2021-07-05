@@ -6,6 +6,7 @@ using QS.DomainModel.UoW;
 using QS.Services;
 using QS.Tdi;
 using QS.Utilities.Text;
+using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
@@ -13,12 +14,16 @@ namespace QS.Project.Journal
 	{
 		public Type EntityType { get; }
 
-		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		protected SimpleEntityJournalViewModelBase(
+			EntitiesJournalActionsViewModel journalActionsViewModel,
+			Type entityType,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices) : base(journalActionsViewModel, unitOfWorkFactory, commonServices)
 		{
 			EntityType = entityType;
 		}
 
-		protected void Register<TEntity, TEntityTab>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc, Func<TEntityTab> createDlgFunc, Func<CommonJournalNode, TEntityTab> openDlgFunc)
+		protected void Register<TEntity, TEntityTab>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc, Func<TEntityTab> createDlgFunc, Func<JournalEntityNodeBase, TEntityTab> openDlgFunc)
 			where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 			where TEntityTab : class, ITdiTab
 		{

@@ -45,7 +45,12 @@ namespace QS.ViewModels
 			}
 		}
 
-		public ITdiTabParent TabParent { set; get; }
+		private ITdiTabParent tabParent;
+		public ITdiTabParent TabParent
+		{
+			get => tabParent;
+			set => SetField(ref tabParent, value);
+		}
 
 		public bool FailInitialize { get; protected set; }
 

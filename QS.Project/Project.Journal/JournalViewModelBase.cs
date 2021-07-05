@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Autofac;
@@ -24,6 +25,22 @@ namespace QS.Project.Journal
 
 		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
 
+		private object[] selectedItems = new object[0];
+		public object[] SelectedItems
+		{
+			get => selectedItems; 
+			set
+			{
+				if(SetField(ref selectedItems, value))
+				{
+					if(JournalActionsViewModel != null)
+					{
+						JournalActionsViewModel.SelectedItems = SelectedItems;
+					}
+				}
+			}
+		}
+
 		public virtual IJournalSearch Search { get; set; }
 
 		public IDataLoader DataLoader { get; protected set; }
@@ -35,12 +52,17 @@ namespace QS.Project.Journal
 			set { }
 		}
 
+		[Obsolete("Лучше использовать JournalActionsViewModel")]
 		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
+
+		[Obsolete("Лучше использовать JournalActionsViewModel")]
 		protected virtual List<IJournalAction> NodeActionsList { get; set; }
 
+		public JournalActionsViewModel JournalActionsViewModel { get; }
 		public virtual IEnumerable<IJournalAction> PopupActions => PopupActionsList;
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
 
+		[Obsolete("Лучше использовать JournalActionsViewModel")]
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
 		public void Refresh()
@@ -49,11 +71,21 @@ namespace QS.Project.Journal
 		}
 
 		private JournalSelectionMode selectionMode;
-		public virtual JournalSelectionMode SelectionMode {
+		public virtual JournalSelectionMode SelectionMode 
+		{
 			get => selectionMode;
-			set {
-				if(SetField(ref selectionMode, value, () => SelectionMode)) {
-					CreateNodeActions();
+			set 
+			{
+				if(SetField(ref selectionMode, value)) 
+				{
+					if(JournalActionsViewModel == null)
+					{
+						CreateNodeActions();
+					}
+					else
+					{
+						InitializeJournalActionsViewModel();
+					}
 				}
 			}
 		}
@@ -77,7 +109,21 @@ namespace QS.Project.Journal
 
 		#endregion
 
-		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
+		protected JournalViewModelBase(
+			JournalActionsViewModel journalActionsViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigation) : this(unitOfWorkFactory, interactiveService, navigation)
+		{
+			JournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
+			
+			PropertyChanged += OnPropertyChanged;
+		}
+
+		protected JournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
@@ -89,7 +135,22 @@ namespace QS.Project.Journal
 
 			UseSlider = false;
 		}
+		
+		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName == nameof(TabParent))
+			{
+				JournalActionsViewModel.TabParent = TabParent;
+			}
+		}
 
+		protected virtual void OnItemsSelected()
+		{
+			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(SelectedItems));
+			Close(false, CloseSource.Self);
+		}
+		
+		[Obsolete("Лучше использовать перегрузку этого метода без прараметров, после перехода на JournalActionsViewModel")]
 		protected virtual void OnItemsSelected(object[] selectedNodes)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
@@ -104,20 +165,29 @@ namespace QS.Project.Journal
 			CreateDefaultSelectAction();
 		}
 
+		protected virtual void InitializeJournalActionsViewModel()
+		{
+			JournalActionsViewModel.CreateDefaultSelectAction(SelectionMode, OnItemsSelected);
+		}
+
 		protected virtual void CreatePopupActions()
 		{
 		}
 
+		[Obsolete("Лучше использовать JournalActionsViewModel")]
 		protected virtual void CreateDefaultSelectAction()
 		{
 			var selectAction = new JournalAction("Выбрать",
-				(selected) => selected.Any(),
-				(selected) => SelectionMode != JournalSelectionMode.None,
+				selected => selected.Any(),
+				selected => SelectionMode != JournalSelectionMode.None,
 				OnItemsSelected
 			);
-			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
+			
+			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) 
+			{
 				RowActivatedAction = selectAction;
 			}
+			
 			NodeActionsList.Add(selectAction);
 		}
 
@@ -137,6 +207,8 @@ namespace QS.Project.Journal
 		public override void Dispose()
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			PropertyChanged -= OnPropertyChanged;
+			JournalActionsViewModel?.UoW?.Dispose();
 			base.Dispose();
 		}
 

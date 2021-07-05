@@ -17,7 +17,7 @@ using QS.ViewModels;
 using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
-using QSWidgetLib;
+using QS.Widgets;
 
 namespace QS.Journal.GtkUI
 {
@@ -54,7 +54,6 @@ namespace QS.Journal.GtkUI
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
 			SetSeletionMode(ViewModel.SelectionMode);
-			ConfigureActions();
 
 			//FIXME Этот код только для водовоза
 			var filterProp = ViewModel.GetType().GetProperty("Filter");
@@ -75,6 +74,36 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Visible = true;
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
+			}
+			
+			if(ViewModel.JournalActionsViewModel is JournalActionsViewModel actionsViewModel)
+			{
+				Widget actionsView;
+				
+				if(ViewModel.AutofacScope != null)
+				{
+					var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
+					actionsView = viewResolver.Resolve(actionsViewModel);
+				}
+				else
+				{
+					actionsView = DialogHelper.JournalActionsResolver.Resolve(actionsViewModel);
+				}
+
+				actionsView.Show();
+				hboxButtons.Add(actionsView);
+				Box.BoxChild documentButtonBox = (Box.BoxChild)hboxButtons[actionsView];
+				documentButtonBox.Expand = false;
+				documentButtonBox.Fill = false;
+				
+				tableview.RowActivated += (o, args) =>
+				{
+					ViewModel.JournalActionsViewModel?.RowActivatedAction?.Invoke();
+				};
+			}
+			else
+			{
+				ConfigureActions();
 			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
@@ -265,9 +294,13 @@ namespace QS.Journal.GtkUI
 			return tableview.GetSelectedObjects();
 		}
 
+		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
 		List<System.Action> actionsSensitivity;
+		
+		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
 		List<System.Action> actionsVisibility;
 
+		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
 		private void ConfigureActions()
 		{
 			if(actionsSensitivity == null) {
@@ -281,7 +314,7 @@ namespace QS.Journal.GtkUI
 			} else {
 				actionsVisibility.Clear();
 			}
-
+			
 			foreach(var action in ViewModel.NodeActions) {
 				Widget actionWidget;
 
@@ -317,12 +350,14 @@ namespace QS.Journal.GtkUI
 				addDocumentButtonBox.Expand = false;
 				addDocumentButtonBox.Fill = false;
 			}
-
-			tableview.RowActivated += (o, args) => {
+			
+			tableview.RowActivated += (o, args) => 
+			{
 				ViewModel.RowActivatedAction?.ExecuteAction(GetSelectedItems());
 			};
 		}
 
+		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
 		private MenuItem CreateMenuItemWidget(IJournalAction action)
 		{
 			MenuItem menuItem = new MenuItem(action.Title);
@@ -388,9 +423,11 @@ namespace QS.Journal.GtkUI
 
 		void Selection_Changed(object sender, EventArgs e)
 		{
+			ViewModel.SelectedItems = GetSelectedItems();
 			UpdateButtons();
 		}
 
+		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
 		private void UpdateButtons()
 		{
 			if(actionsSensitivity != null) {
@@ -421,7 +458,14 @@ namespace QS.Journal.GtkUI
 				return;
 			}
 
-			ExecuteTypeJournalAction(args.Event.Key.ToString());
+			if(ViewModel.JournalActionsViewModel is null)
+			{
+				ExecuteTypeJournalAction(args.Event.Key.ToString());
+			}
+			else
+			{
+				ExecuteJournalAction(args.Event.Key);
+			}
 		}
 
 		private void ExecuteTypeJournalAction(string hotKey)
@@ -438,5 +482,25 @@ namespace QS.Journal.GtkUI
 				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
 		}
 
+		private void ExecuteJournalAction(Gdk.Key key)
+		{
+			switch(key)
+			{
+				case Gdk.Key.Insert:
+					if(ViewModel.JournalActionsViewModel is IJournalCommands journalAddCommand
+					   && journalAddCommand.AddCommand != null)
+					{
+						journalAddCommand.AddCommand.Execute();
+					}
+					break;
+				case Gdk.Key.Delete:
+					if(ViewModel.JournalActionsViewModel is IJournalCommands journalDeleteCommand
+					   && journalDeleteCommand.DeleteCommand != null)
+					{
+						journalDeleteCommand.DeleteCommand.Execute();
+					}
+					break;
+			}
+		}
 	}
 }

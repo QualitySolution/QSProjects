@@ -3,12 +3,16 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Journal;
 using QS.Services;
+using QS.ViewModels;
 
 namespace QS.Test.TestApp.JournalViewModels
 {
 	public class DocumentsJournalViewModel : MultipleEntityJournalViewModelBase<DocumentJournalNode>
 	{
-		public DocumentsJournalViewModel(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		public DocumentsJournalViewModel(
+			EntitiesJournalActionsViewModel journalActionsViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices) : base(journalActionsViewModel, unitOfWorkFactory, commonServices)
 		{
 		}
 	}

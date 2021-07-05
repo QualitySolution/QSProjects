@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
@@ -18,11 +19,12 @@ namespace QS.Project.Journal
 		where TEntityTab : class, ITdiTab
 	{
 		public SimpleEntityJournalViewModel(
+			EntitiesJournalActionsViewModel journalActionsViewModel,
 			Expression<Func<TEntity, object>> titleExp,
 			Func<TEntityTab> createDlgFunc,
-			Func<CommonJournalNode, TEntityTab> openDlgFunc,
+			Func<JournalEntityNodeBase, TEntityTab> openDlgFunc,
 			IUnitOfWorkFactory unitOfWorkFactory,
-			ICommonServices commonServices) : base(typeof(TEntity), unitOfWorkFactory, commonServices)
+			ICommonServices commonServices) : base(journalActionsViewModel, typeof(TEntity), unitOfWorkFactory, commonServices)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 
@@ -45,27 +47,21 @@ namespace QS.Project.Journal
 		protected bool addActionEnabled = true;
 		protected bool editActionEnabled = true;
 		protected bool deleteActionEnabled = true;
-
+		
 		public void SetActionsVisible(bool addActionEnabled = true, bool editActionEnabled = true, bool deleteActionEnabled = true)
 		{
 			this.addActionEnabled = addActionEnabled;
 			this.editActionEnabled = editActionEnabled;
 			this.deleteActionEnabled = deleteActionEnabled;
 
-			CreateNodeActions();
+			InitializeJournalActionsViewModel();
 		}
 
-		protected override void CreateNodeActions()
+		protected override void InitializeJournalActionsViewModel()
 		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
-
-			if(addActionEnabled)
-				CreateDefaultAddActions();
-			if(editActionEnabled)
-				CreateDefaultEditAction();
-			if(deleteActionEnabled)
-				CreateDefaultDeleteAction();
+			EntitiesJournalActionsViewModel.Initialize(
+				SelectionMode, EntityConfigs, this, HideJournal, OnItemsSelected,
+				true, addActionEnabled, editActionEnabled, deleteActionEnabled);
 		}
 
 		#endregion

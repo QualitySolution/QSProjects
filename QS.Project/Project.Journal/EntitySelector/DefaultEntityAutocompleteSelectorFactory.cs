@@ -2,6 +2,7 @@
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Services;
+using QS.ViewModels;
 
 namespace QS.Project.Journal.EntitySelector
 {
@@ -20,7 +21,9 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
+			var journalActions = (EntitiesJournalActionsViewModel)JournalActionsConstructorInfo.Invoke(new object[] { });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(
+				new object[] { journalActions, filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}

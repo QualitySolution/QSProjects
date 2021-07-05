@@ -68,6 +68,7 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialog\IJournalActionsResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
     <Compile Include="Dialog\DialogHelper.cs" />
@@ -230,6 +231,12 @@
     <Compile Include="Views\Dialog\SavedDialogViewBase.cs" />
     <Compile Include="ChangePassword.Views\ChangePasswordView.cs" />
     <Compile Include="gtk-gui\QS.ChangePassword.Views.ChangePasswordView.cs" />
+    <Compile Include="Views.GtkUI\JournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Views.GtkUI.JournalActionsView.cs" />
+    <Compile Include="Views.GtkUI\EntitiesJournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Views.GtkUI.EntitiesJournalActionsView.cs" />
+    <Compile Include="Views.GtkUI\EntityJournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Views.GtkUI.EntityJournalActionsView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
