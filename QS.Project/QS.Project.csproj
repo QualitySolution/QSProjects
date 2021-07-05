@@ -304,7 +304,6 @@
     <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ParametersService.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
-    <Compile Include="Dialog\IGuiDispatcher.cs" />
     <Compile Include="Project.Versioning\Product\IProductService.cs" />
     <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
@@ -368,7 +367,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{80540F2C-3187-4018-BB15-DD31173C8176}</Project>
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
