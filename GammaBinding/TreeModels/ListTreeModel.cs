@@ -120,7 +120,7 @@ namespace Gamma.Binding
 
 		public int IterNChildren (TreeIter iter)
 		{
-			if (iter.Equals (TreeIter.Zero))
+			if (iter.Equals(TreeIter.Zero as object))
 				return SourceList.Count;
 			else
 				return 0;

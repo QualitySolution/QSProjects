@@ -333,7 +333,7 @@ namespace Gamma.GtkWidgets
 		private void NodeRenderColumnFunc(Gtk.TreeViewColumn aColumn, Gtk.CellRenderer aCell,
 			Gtk.TreeModel aModel, Gtk.TreeIter aIter)
 		{
-			if(aIter.Equals(TreeIter.Zero))
+			if(aIter.Equals(TreeIter.Zero as object))
 				return;
 
 			if(YTreeModel == null) {

@@ -153,7 +153,7 @@ namespace Gamma.Binding
 
 		public int IterNChildren (TreeIter iter)
 		{
-			if (iter.Equals (TreeIter.Zero))
+			if (iter.Equals(TreeIter.Zero as object))
 				return SourceList.Count;
 			else
 			{
@@ -180,7 +180,7 @@ namespace Gamma.Binding
 		public bool IterParent (out TreeIter iter, TreeIter child)
 		{
 			iter = TreeIter.Zero;
-			if(child.Equals(TreeIter.Zero))
+			if(child.Equals(TreeIter.Zero as object))
 				return false;
 
 			var node = NodeFromIter(child);
