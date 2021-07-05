@@ -78,14 +78,7 @@ namespace QS.DBScripts.Models
 
 				controller.Progress.Start(text: "Получаем скрипт создания базы");
 
-				string sqlScript;
-				using (Stream stream = script.ResourceAssembly.GetManifestResourceStream(script.ResourceName)) {
-					if (stream == null)
-						throw new InvalidOperationException(String.Format("Ресурс {0} со скриптом не найден.", script.ResourceName));
-					StreamReader reader = new StreamReader(stream);
-					sqlScript = reader.ReadToEnd();
-				}
-
+				string sqlScript = script.GetSqlScript();
 				int predictedCount = Regex.Matches(sqlScript, ";").Count;
 
 				logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
