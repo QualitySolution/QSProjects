@@ -38,7 +38,7 @@ namespace QS.Views.Dialog
 
 		protected void OnButtonCancelClicked(object sender, EventArgs e)
 		{
-			ViewModel.Close(true, CloseSource.Cancel);
+			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}
 }
