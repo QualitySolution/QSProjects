@@ -45,7 +45,7 @@ namespace QS.Views.GtkUI
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
-			ViewModel.Close(true, CloseSource.Cancel);
+			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}
 }
