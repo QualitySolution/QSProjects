@@ -66,13 +66,13 @@ namespace QS.Deletion.ViewModels
 
 		public void RunDetetion()
 		{
-			Close(true, CloseSource.Self);
+			Close(false, CloseSource.Self);
 			DeletionAccepted();
 		}
 
 		public void CancelDeletion()
 		{
-			Close(true, CloseSource.Cancel);
+			Close(false, CloseSource.Cancel);
 		}
 
 		#endregion

@@ -20,7 +20,7 @@ namespace QS.Deletion.ViewModels
 
 		public void CancelOperation()
 		{
-			Close(true, CloseSource.Cancel);
+			Close(false, CloseSource.Cancel);
 		}
 
 		public void OnClose(CloseSource source	)
