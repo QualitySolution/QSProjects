@@ -45,6 +45,7 @@ namespace QS.Updater.DB
 
 		#region Private
 
+		//FIXME Здесь проверка micro_updates оставлена для совместимости и возможности корректного обновления со старых версий программ. Удаление сделает невозможным начать обновление с установленного микроапдейта.
 		private Version CurrentDBVersion => parametersService.micro_updates != null ? parametersService.micro_updates(typeof(Version)) : parametersService.version(typeof(Version));
 
 		public bool HasUpdates => configuration.GetHopsToLast(CurrentDBVersion).Any();
@@ -80,7 +81,7 @@ namespace QS.Updater.DB
 					trans.Rollback();
 					throw ex;
 				}
-				parametersService.micro_updates = VersionHelper.VersionToShortString(currentDB);
+				parametersService.version = VersionHelper.VersionToShortString(currentDB);
 			}
 				
 			interactiveMessage.ShowMessage(ImportanceLevel.Info, String.Format("Выполнено микро обновление базы {0} -> {1}.",

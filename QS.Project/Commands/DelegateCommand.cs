@@ -12,12 +12,16 @@ namespace QS.Commands
 			this.execute = execute;
 		}
 
-		public DelegateCommand(Action execute) : this(execute, null)
+		public DelegateCommand(Action execute) : this(execute, () => true)
 		{
 		}
 
 		public bool CanExecute()
 		{
+            if(canExecute == null)
+            {
+				return false;
+            }
 			return canExecute.Invoke();
 		}
 
