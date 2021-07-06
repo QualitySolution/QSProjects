@@ -119,11 +119,15 @@ namespace QS.Project.Dialogs.GtkUI
 				}
 				else
 				{
-					var questionResult = MessageDialogHelper.RunQuestionDialog("Объект изменен. Сохранить изменения перед закрытием?");
-					if (questionResult)
+					if (uow.HasChanges)
 					{
-						uow.TrySave (tempObject);
-						uow.Commit ();
+						var questionResult = MessageDialogHelper.RunQuestionDialog("Объект изменен. Сохранить изменения перед закрытием?");
+
+						if (questionResult)
+						{
+							uow.TrySave(tempObject);
+							uow.Commit();
+						}
 					}
 					else
 						tempObject = null;
