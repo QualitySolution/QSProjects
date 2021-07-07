@@ -92,7 +92,7 @@ namespace QS.DBScripts.Models
 				}
 
 				controller.Progress.Add(text: $"Создаем базу <{dbname}>");
-				cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8 ;", dbname);
+				cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbname);
 				cmd.ExecuteNonQuery();
 				cmd.CommandText = String.Format("USE `{0}` ;", dbname);
 				cmd.ExecuteNonQuery();
