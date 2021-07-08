@@ -208,9 +208,9 @@
       <Project>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</Project>
       <Name>QS.Features</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.Core.csproj">
-      <Project>{acb569d0-7d4d-44bb-bd1d-a0c2424cbc50}</Project>
-      <Name>QS.Utilities.Core</Name>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
+      <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
