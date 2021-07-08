@@ -68,6 +68,7 @@ namespace Gamma.Widgets
 					check.Visible = true;
 				}
 			}
+			Binding.FireChange(x => x.SelectedValuesList);
 		}
 		
 		public void SelectAll()
