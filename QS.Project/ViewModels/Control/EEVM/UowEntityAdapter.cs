@@ -27,9 +27,12 @@ namespace QS.ViewModels.Control.EEVM
 
 		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
 		{
-			object foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, EntityEntryViewModel.Entity));
+			var foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, EntityEntryViewModel.Entity));
 			if(foundUpdatedObject != null && uow.Session.IsOpen && uow.Session.Contains(EntityEntryViewModel.Entity)) {
-				uow.Session.Refresh(EntityEntryViewModel.Entity);
+				if(foundUpdatedObject.EventType == DomainModel.NotifyChange.TypeOfChangeEvent.Delete)
+					EntityEntryViewModel.Entity = null;
+				else
+					uow.Session.Refresh(EntityEntryViewModel.Entity);
 			}
 		}
 
