@@ -21,7 +21,7 @@ node {
    }
    stage('Test dotnet')
    {
-   	sh 'dotnet test QSProjects/QSProjectsLib.sln'
+   	sh 'dotnet test QSProjects/QSProjects.dotnet.sln'
    }
    stage('Build Net4.x') {
         sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'

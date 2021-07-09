@@ -39,7 +39,7 @@ nuget restore ../QSProjects/QSProjectsLib.sln;
 nuget restore ../My-FyiReporting/MajorsilenceReporting-Linux-GtkViewer.sln
 ;;&
     *5*)
-dotnet test QSProjectsLib.sln
+dotnet test QSProjects.dotnet.sln
 ;;&
     *6*)
 msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln    
