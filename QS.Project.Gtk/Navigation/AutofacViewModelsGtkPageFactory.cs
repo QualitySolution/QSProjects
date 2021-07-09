@@ -9,7 +9,7 @@ namespace QS.Navigation
 	public class AutofacViewModelsGtkPageFactory : IViewModelsPageFactory
 	{
 		//Здесь используется ILifetimeScope вместо IContainer, чтобы можно было создвать
-		//спопы с заменненой на windows навигацией, переопредляющий только конкртеный скоп.
+		//скопы с заменненым менеджером навигации, переопределенным только для отдельного скопа.
 		readonly ILifetimeScope Container;
 
 		public AutofacViewModelsGtkPageFactory(ILifetimeScope container)
