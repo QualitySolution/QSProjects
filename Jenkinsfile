@@ -19,13 +19,9 @@ node {
       checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/QSBuild']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'My-FyiReporting']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/QualitySolution/My-FyiReporting.git']]]
       sh 'nuget restore My-FyiReporting/MajorsilenceReporting-Linux-GtkViewer.sln'
    }
-   stage('Build dotnet')
-   {
-   	sh 'dotnet publish QSProjects/QSProjects.dotnet.sln'
-   }
    stage('Test dotnet')
    {
-   	sh 'dotnet test QSProjects/QSProjects.dotnet.sln'
+   	sh 'dotnet test QSProjects/QSProjectsLib.sln'
    }
    stage('Build Net4.x') {
         sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'
