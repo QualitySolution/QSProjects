@@ -39,9 +39,9 @@ namespace QS.DBScripts.Controllers
 
 		void StartCreation(string server, string dbname, string login, string password)
 		{
-			var createMOdel = autofacScope.Resolve<MySqlDbCreateModel>(new TypedParameter(typeof(IDbCreateController), this));
+			var createModel = autofacScope.Resolve<MySqlDbCreateModel>(new TypedParameter(typeof(IDbCreateController), this));
 			try {
-				bool success = createMOdel.RunCreation(server, dbname, login, password);
+				bool success = createModel.RunCreation(server, dbname, login, password);
 				if (success)
 					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
 			}
