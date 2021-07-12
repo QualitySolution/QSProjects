@@ -57,7 +57,7 @@ namespace QS.DBScripts.Controllers
 			interactive.ShowMessage(ImportanceLevel.Error, text);
 		}
 
-		public bool BaseExistDropIt(string dbname)
+		public bool NeedDropDatabaseIfExists(string dbname)
 		{
 			return interactive.Question($"База с именем `{dbname}` уже существует на сервере. Удалить существующую базу перед соданием новой?");
 		}

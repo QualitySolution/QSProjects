@@ -64,7 +64,7 @@ namespace QS.DBScripts.Models
 				using (var rdr = cmd.ExecuteReader()) {
 					while (rdr.Read()) {
 						if (rdr[0].ToString() == dbname) {
-							if (controller.BaseExistDropIt(dbname)) {
+							if (controller.NeedDropDatabaseIfExists(dbname)) {
 								needDropBase = true;
 								break;
 							}

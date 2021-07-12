@@ -9,6 +9,6 @@ namespace QS.DBScripts.Controllers
 
 		void WasError(String text);
 
-		bool BaseExistDropIt(string dbname);
+		bool NeedDropDatabaseIfExists(string dbname);
 	}
 }
