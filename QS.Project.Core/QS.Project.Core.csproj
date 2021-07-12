@@ -1,9 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>QS</RootNamespace>
         <Company>Quality Solution</Company>
+        <LangVersion>8</LangVersion>
+        <ProjectGuid>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</ProjectGuid>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="6.2.0" />
+      <PackageReference Include="NHibernate" Version="5.3.8" />
+    </ItemGroup>
 </Project>

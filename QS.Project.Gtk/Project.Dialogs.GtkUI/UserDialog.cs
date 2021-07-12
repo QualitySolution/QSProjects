@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Gamma.GtkWidgets;
 using Gtk;
 using NLog;
+using QS.Dialog;
 using QS.Dialog.GtkUI;
 using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services.GtkUI;
-using QS.Services;
 using QS.Widgets.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI

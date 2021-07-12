@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
+using QS.DBScripts.Controllers;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSMachineConfig;
@@ -18,7 +19,10 @@ namespace QSProjectsLib
 		public static string CreateDBHelpTooltip;
 		public static string CreateDBHelpUrl;
 		public static string OverwriteDefaultConnection;
-  		#endregion
+		#endregion
+		#region Расширения
+		public Func<IDBCreator> GetDBCreator;
+		#endregion
 
 		public List<Connection> Connections;
 		String connectionError;
@@ -338,7 +342,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)
 		{
-			EditConnection dlg = new EditConnection(Connections);
+			EditConnection dlg = new EditConnection(Connections, GetDBCreator?.Invoke());
 			dlg.EditingDone += (se, ev) => UpdateFromGConf();
 			dlg.Run();
 			dlg.Destroy();

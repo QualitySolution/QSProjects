@@ -107,11 +107,6 @@
     <Compile Include="Helpers\RusNumber.cs" />
     <Compile Include="LongOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.LongOperationDlg.cs" />
-    <Compile Include="DBCreator\DBCreator.cs" />
-    <Compile Include="DBCreator\GetPassword.cs" />
-    <Compile Include="gtk-gui\QSProjectsLib.GetPassword.cs" />
-    <Compile Include="DBCreator\CreatorProgress.cs" />
-    <Compile Include="gtk-gui\QSProjectsLib.CreatorProgress.cs" />
     <Compile Include="Helpers\BooleanWorks.cs" />
     <Compile Include="ClipboardWorkaround.cs" />
     <Compile Include="WindowStartupFix.cs" />
@@ -126,7 +121,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />
-    <Folder Include="DBCreator\" />
     <Folder Include="Permissions\" />
     <Folder Include="icons\" />
   </ItemGroup>
@@ -137,6 +131,10 @@
     <ProjectReference Include="..\QS.MachineConfig\QS.MachineConfig.csproj">
       <Project>{769710d2-bf98-4120-9e07-67bd740cfa1d}</Project>
       <Name>QS.MachineConfig</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
