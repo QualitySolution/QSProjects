@@ -1,72 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>QS.Utilities</RootNamespace>
-    <AssemblyName>QS.Utilities</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NumberToTextRus.cs" />
-    <Compile Include="Text\PersonHelper.cs" />
-    <Compile Include="Text\SecureStringExtensions.cs" />
-    <Compile Include="Text\StringExtensions.cs" />
-    <Compile Include="Text\StringValidationHelper.cs" />
-    <Compile Include="Text\TitleHelper.cs" />
-    <Compile Include="Debug\Print.cs" />
-    <Compile Include="Numeric\NumbersHelper.cs" />
-    <Compile Include="Text\VersionHelper.cs" />
-    <Compile Include="DateHelper.cs" />
-    <Compile Include="Dates\DateRange.cs" />
-    <Compile Include="Text\StringManipulationHelper.cs" />
-    <Compile Include="CurrencyWorks.cs" />
-    <Compile Include="Numeric\PhoneFormatter.cs" />
-    <Compile Include="Text\TextSpinner.cs" />
-    <Compile Include="Text\NaturalStringComparer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Text\" />
-    <Folder Include="Debug\" />
-    <Folder Include="Numeric\" />
-    <Folder Include="Dates\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <DotNetNamingPolicy ResourceNamePolicy="FileFormatDefault" DirectoryNamespaceAssociation="PrefixedHierarchical" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Company>Quality Solution</Company>
+        <RootNamespace>QS.Utilities</RootNamespace>
+        <ProjectGuid>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    </ItemGroup>
 </Project>

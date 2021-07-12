@@ -1,15 +1,14 @@
-﻿using NSubstitute;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using NSubstitute;
 using NUnit.Framework;
+using QS.Dialog;
 using QS.Navigation;
-using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
-using QS.Services;
 using QS.Test.TestApp.Domain;
 using QS.Test.TestApp.JournalViewModels;
 using QS.Testing.DB;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace QS.Test.Project.Journal
 {

@@ -51,6 +51,10 @@
       <Project>{c97e91f4-b310-44e2-9b6c-96775395722d}</Project>
       <Name>RdlEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Report\QS.Report.csproj">
       <Project>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</Project>
       <Name>QS.Report</Name>

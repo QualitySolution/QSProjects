@@ -10,7 +10,6 @@ using QS.Dialog;
 using QS.Navigation;
 using QS.Project.DB;
 using QS.Project.Versioning;
-using QS.Services;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;

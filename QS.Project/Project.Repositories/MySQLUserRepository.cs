@@ -1,11 +1,11 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
-using NLog;
-using QS.Project.DB;
-using QS.Project.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using QS.Services;
+using MySql.Data.MySqlClient;
+using NLog;
+using QS.Dialog;
+using QS.Project.DB;
+using QS.Project.Domain;
 
 namespace QS.Project.Repositories
 {

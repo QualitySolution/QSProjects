@@ -61,7 +61,6 @@
     <Compile Include="IUpdaterUI.cs" />
     <Compile Include="ISkipVersionState.cs" />
     <Compile Include="IDBUpdater.cs" />
-    <Compile Include="DB\UpdateConfiguration.cs" />
     <Compile Include="DB\ViewModels\UpdateProcessViewModel.cs" />
     <Compile Include="VersionCheckerService.cs" />
     <Compile Include="DB\SQLDBUpdater.cs" />
@@ -73,9 +72,17 @@
     <Folder Include="DB\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
+      <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
+      <Name>QS.Updater.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
