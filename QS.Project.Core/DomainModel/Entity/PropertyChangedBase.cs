@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
@@ -19,8 +20,8 @@ namespace QS.DomainModel.Entity
 		{
 			if (PropertyChanged != null) {
 				PropertyChanged(this, new PropertyChangedEventArgs (propertyName));
-				var propertyInfo = this.GetType().GetProperty(propertyName);
-				if(propertyInfo != null) {
+				var propertyInfos = this.GetType().GetProperties().Where(x => x.Name == propertyName);
+				foreach (var propertyInfo in propertyInfos) {
 					var attributes = propertyInfo.GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
 					foreach(PropertyChangedAlsoAttribute attribute in attributes)
 						foreach(string propName in attribute.PropertiesNames)
