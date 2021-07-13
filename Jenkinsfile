@@ -21,7 +21,8 @@ node {
    }
    stage('Test dotnet')
    {
-   	sh 'dotnet test QSProjects/QSProjects.dotnet.sln'
+   	  sh 'dotnet test --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
+   	  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
    }
    stage('Build Net4.x') {
         sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'
