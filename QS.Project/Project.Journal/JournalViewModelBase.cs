@@ -58,6 +58,7 @@ namespace QS.Project.Journal
 			}
 		}
 
+		public Action UpdateJournalActions;
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
