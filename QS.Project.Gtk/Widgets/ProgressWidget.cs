@@ -12,6 +12,8 @@ namespace QS.Widgets
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		public double Value => Adjustment.Value;
+
 		public void Add(double addValue = 1, string text = null)
 		{
 			if(Adjustment == null)
