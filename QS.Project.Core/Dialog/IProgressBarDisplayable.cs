@@ -14,6 +14,8 @@ namespace QS.Dialog
 
 		void Add(double addValue = 1, string text = null);
 
+		double Value { get; }
+
 		void Close();
 	}
 }
