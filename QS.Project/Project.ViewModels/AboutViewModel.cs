@@ -24,12 +24,12 @@ namespace QS.Project.ViewModels
 		#region Инфа для View
 
 		public string ProgramName => ApplicationInfo.ProductTitle
-			+ (!String.IsNullOrEmpty(ApplicationInfo.ModificationTitle) ? $" {ApplicationInfo.ModificationTitle}" : String.Empty);
+			+ (!ApplicationInfo.ModificationIsHidden && !String.IsNullOrEmpty(ApplicationInfo.ModificationTitle) ? $" {ApplicationInfo.ModificationTitle}" : String.Empty);
 
 		public string Version {
 			get {
 				var text = ApplicationInfo.Version.VersionToShortString();
-				if (String.IsNullOrEmpty(ApplicationInfo.ModificationTitle) && !String.IsNullOrWhiteSpace(ApplicationInfo.Modification))
+				if (!ApplicationInfo.ModificationIsHidden && String.IsNullOrEmpty(ApplicationInfo.ModificationTitle) && !String.IsNullOrWhiteSpace(ApplicationInfo.Modification))
 					text += $"-{ApplicationInfo.Modification}";
 				return text;
 			}
