@@ -8,9 +8,9 @@ namespace QS.Project.Versioning
 		string ProductTitle { get; }
 		string Modification { get; }
 		string ModificationTitle { get; }
+		bool ModificationIsHidden { get; }
 		string[] СompatibleModifications { get; }
 		Version Version { get; }
-
 		bool IsBeta { get;  }
 		DateTime BuildDate { get; }
 	}

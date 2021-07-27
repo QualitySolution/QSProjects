@@ -66,10 +66,13 @@ namespace QSProjectsLib
 			string app = appInfo.ProductTitle;
 
 			//Редакции
-			if(!String.IsNullOrEmpty(appInfo.ModificationTitle))
-				app += $" {appInfo.ModificationTitle}";
-			else if(!String.IsNullOrEmpty(appInfo.Modification))
-				ver += $"-{appInfo.Modification}";
+			if (!appInfo.ModificationIsHidden)
+			{
+				if (!String.IsNullOrEmpty(appInfo.ModificationTitle))
+					app += $" {appInfo.ModificationTitle}";
+				else if (!String.IsNullOrEmpty(appInfo.Modification))
+					ver += $"-{appInfo.Modification}";
+			}
 
 			if (appInfo.IsBeta) {
 				labelAppName.LabelProp = String.Format("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>" +

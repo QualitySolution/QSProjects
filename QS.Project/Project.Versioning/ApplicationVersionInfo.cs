@@ -11,6 +11,7 @@ namespace QS.Project.Versioning
 
 		public string Modification => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.Name;
 		public string ModificationTitle => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.Title;
+		public bool ModificationIsHidden => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.HideFromUser ?? true;
 		public string[] СompatibleModifications {
 			get {
 				var modificationAttributes = Assembly.GetCustomAttributes<AssemblyСompatibleModificationAttribute>();
@@ -22,8 +23,6 @@ namespace QS.Project.Versioning
 			}
 
 		public Version Version => Assembly.GetName().Version;
-
-		public string SerialNumber => throw new NotImplementedException();
 
 		public bool IsBeta => Assembly.GetCustomAttribute<AssemblyBetaBuildAttribute>() != null;
 
