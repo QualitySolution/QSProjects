@@ -130,8 +130,12 @@ namespace QS.Report
 		public ReportInfo (string connectionString = "")
 		{
 			if (string.IsNullOrWhiteSpace(connectionString))
-				_connectionString = Project.DB.Connection.ConnectionString ?? "";
-			else 
+				try {
+					_connectionString = Project.DB.Connection.ConnectionString;
+				} catch (NullReferenceException) {
+					_connectionString = "";
+				}
+			else
 				_connectionString = connectionString;
 		}
 	}
