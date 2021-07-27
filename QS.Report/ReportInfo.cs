@@ -152,7 +152,7 @@ namespace QS.Report
 		{
 			if (string.IsNullOrWhiteSpace(connectionString))
             {
-				_connectionString = Project.DB.Connection.ConnectionString;
+				_connectionString = Project.DB.Connection.ConnectionString ?? "";
 			}
 			else
             {
