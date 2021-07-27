@@ -53,14 +53,10 @@ namespace QS.Report
 		public string GetPath ()
 		{
 			if (!String.IsNullOrWhiteSpace(Path))
-            {
 				return Path;
-			}
 
 			if (String.IsNullOrEmpty(Identifier))
-            {
 				return null;
-			}
 
 			var splited = Identifier.Split('.').ToList();
 			var ReportName = splited.Last();
@@ -84,9 +80,7 @@ namespace QS.Report
 		public string GetParametersString()
 		{
 			if (Parameters == null)
-            {
 				return String.Empty;
-			}
 
 			var parametersList = Parameters
 				.Select(param => MakeParameterString(param.Key, param.Value));
@@ -98,15 +92,11 @@ namespace QS.Report
 		{
 			string valueStr;
 			if (!(value is string) && value is IEnumerable enumerableValue)
-            {
 				valueStr = BuildMiltiValue(enumerableValue);
-			}
             else
-            {
 				valueStr = ValueToValidString(value);
-			}
 
-			return String.Format("{0}={1}", key, valueStr);
+			return $"{key}={valueStr}";
 		}
 
 		private string BuildMiltiValue(IEnumerable values)
@@ -118,32 +108,21 @@ namespace QS.Report
 		private string ValueToValidString(object value)
 		{
 			if (value == null)
-            {
 				return String.Empty;
-			}
-			if (value is DateTime dateTime)
-			{
+			if (value is DateTime dateTime) {
                 if (ParameterDatesWithTime)
-                {
 					return dateTime.ToString("O");
-				}
 				else
-                {
 					return dateTime.ToString("O").Substring(0, 10);
-				}
 			}
 			return value.ToString();
 		}
 		#endregion
 
-		public string ConnectionString
-		{
-			get
-			{
+		public string ConnectionString {
+			get {
 				if (UseUserVariables)
-                {
 					return _connectionString + ";Allow User Variables=True";
-				}
 				return _connectionString;
 			}
 		}
@@ -151,13 +130,9 @@ namespace QS.Report
 		public ReportInfo (string connectionString = "")
 		{
 			if (string.IsNullOrWhiteSpace(connectionString))
-            {
 				_connectionString = Project.DB.Connection.ConnectionString ?? "";
-			}
-			else
-            {
+			else 
 				_connectionString = connectionString;
-			}
 		}
 	}
 }
