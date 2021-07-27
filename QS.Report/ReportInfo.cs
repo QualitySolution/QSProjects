@@ -8,6 +8,8 @@ namespace QS.Report
 {
 	public class ReportInfo
 	{
+		private readonly string _connectionString;
+
 		#region Настройки отчета
 
 		/// <summary>
@@ -50,37 +52,44 @@ namespace QS.Report
 
 		public string GetPath ()
 		{
-			if (!String.IsNullOrWhiteSpace (Path))
+			if (!String.IsNullOrWhiteSpace(Path))
+            {
 				return Path;
+			}
 
-			if(String.IsNullOrEmpty(Identifier))
+			if (String.IsNullOrEmpty(Identifier))
+            {
 				return null;
+			}
 
-			var splited = Identifier.Split ('.').ToList ();
-			var ReportName = splited.Last ();
-			splited.RemoveAt (splited.Count - 1);
-			var parts = new List<string> ();
-			parts.Add (System.IO.Directory.GetCurrentDirectory ());
-			parts.Add ("Reports");
-			parts.AddRange (splited);
-			parts.Add (ReportName + ".rdl");
-			return System.IO.Path.Combine (parts.ToArray ());
+			var splited = Identifier.Split('.').ToList();
+			var ReportName = splited.Last();
+			splited.RemoveAt(splited.Count - 1);
+			var parts = new List<string>();
+			parts.Add(System.IO.Directory.GetCurrentDirectory());
+			parts.Add("Reports");
+			parts.AddRange(splited);
+			parts.Add(ReportName + ".rdl");
+			return System.IO.Path.Combine(parts.ToArray());
 		}
 
 		public Uri GetReportUri ()
 		{
-			return new Uri (GetPath ());
+			return new Uri(GetPath());
 		}
 
 		public string Path { get; set; }
 
 		#region Обработка параметров
-		public string GetParametersString ()
+		public string GetParametersString()
 		{
 			if (Parameters == null)
+            {
 				return String.Empty;
+			}
+
 			var parametersList = Parameters
-			.Select(param => MakeParameterString(param.Key, param.Value));
+				.Select(param => MakeParameterString(param.Key, param.Value));
 
 			return String.Join("&", parametersList);
 		}
@@ -88,46 +97,67 @@ namespace QS.Report
 		private string MakeParameterString(string key, object value)
 		{
 			string valueStr;
-			if(!(value is string) && value is IEnumerable)
-				valueStr = BuildMiltiValue(value as IEnumerable);
-			else
+			if (!(value is string) && value is IEnumerable enumerableValue)
+            {
+				valueStr = BuildMiltiValue(enumerableValue);
+			}
+            else
+            {
 				valueStr = ValueToValidString(value);
+			}
 
 			return String.Format("{0}={1}", key, valueStr);
 		}
 
-		private string BuildMiltiValue (IEnumerable values)
+		private string BuildMiltiValue(IEnumerable values)
 		{
 			var valuesList = values.Cast<object>().Select(ValueToValidString);
 			return String.Join(",", valuesList);
 		}
 
-		private string ValueToValidString (object value)
+		private string ValueToValidString(object value)
 		{
 			if (value == null)
+            {
 				return String.Empty;
-			if (value is DateTime)
-			{
-				if(ParameterDatesWithTime)
-					return ((DateTime)value).ToString ("O");
-				else
-					return ((DateTime)value).ToString("O").Substring(0,10);
 			}
-			return value.ToString ();
+			if (value is DateTime dateTime)
+			{
+                if (ParameterDatesWithTime)
+                {
+					return dateTime.ToString("O");
+				}
+				else
+                {
+					return dateTime.ToString("O").Substring(0, 10);
+				}
+			}
+			return value.ToString();
 		}
 		#endregion
 
-		public string ConnectionString {
-			get {
+		public string ConnectionString
+		{
+			get
+			{
 				if (UseUserVariables)
-					return Project.DB.Connection.ConnectionString + ";Allow User Variables=True";
-				return Project.DB.Connection.ConnectionString;
+                {
+					return _connectionString + ";Allow User Variables=True";
+				}
+				return _connectionString;
 			}
 		}
 
-		public ReportInfo ()
+		public ReportInfo (string connectionString = "")
 		{
-
+			if (string.IsNullOrWhiteSpace(connectionString))
+            {
+				_connectionString = Project.DB.Connection.ConnectionString;
+			}
+			else
+            {
+				_connectionString = connectionString;
+			}
 		}
 	}
 }
