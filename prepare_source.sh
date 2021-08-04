@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 echo "Что делаем?"
 echo "1) git pull"
 echo "2) nuget restore"
@@ -46,6 +48,5 @@ msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln
 mono ~/.nuget/packages/nunit.consolerunner/3.12.0/tools/nunit3-console.exe QS.LibsTest/bin/Debug/QS.LibsTest.dll
 ;;&
 esac
-
 
 read -p "Press enter to exit"
