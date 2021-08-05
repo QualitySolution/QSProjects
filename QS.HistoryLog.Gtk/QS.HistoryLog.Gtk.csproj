@@ -88,10 +88,6 @@
       <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
       <Name>GammaBinding</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
-      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
-      <Name>GammaUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
@@ -107,6 +103,10 @@
     <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj">
       <Project>{3D3D6700-C625-46C5-9702-5F010A8DD035}</Project>
       <Name>QS.HistoryLog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\Gamma.Utilities\Gamma.Utilities.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>Gamma.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
