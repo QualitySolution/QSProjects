@@ -10,6 +10,7 @@ namespace QS.Dialog.ViewModels
 		{
 			IsModal = true;
 			WindowPosition = WindowGravity.Center;
+			Title = "Подождите...";
 		}
 
 		public IProgressBarDisplayable Progress { get; set; }
