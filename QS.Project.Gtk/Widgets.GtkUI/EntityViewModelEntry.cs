@@ -396,7 +396,7 @@ namespace QS.Widgets.GtkUI
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
-			base.OnDestroyed();
+			Application.Invoke((s, arg) => base.OnDestroyed());
 		}
 	}
 }
