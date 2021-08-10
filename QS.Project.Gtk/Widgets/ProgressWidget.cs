@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using Gtk;
 using QS.Dialog;
@@ -24,12 +24,11 @@ namespace QS.Widgets
 
 			Adjustment.Value += addValue;
 			if(Adjustment.Value > Adjustment.Upper)
-				logger.Warn("Значение ({0}) прогресс бара в статусной строке больше максимального ({1})",
+				logger.Warn("Значение ({0}) прогресс больше максимального ({1})",
 							Adjustment.Value,
 							Adjustment.Upper
 						   );
 			GtkHelper.WaitRedraw();
-			System.Threading.Thread.Sleep(1000);
 		}
 
 		public void Close()
