@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
+using QS.DBScripts.Controllers;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSMachineConfig;
@@ -18,7 +19,10 @@ namespace QSProjectsLib
 		public static string CreateDBHelpTooltip;
 		public static string CreateDBHelpUrl;
 		public static string OverwriteDefaultConnection;
-  		#endregion
+		#endregion
+		#region Расширения
+		public Func<IDBCreator> GetDBCreator;
+		#endregion
 
 		public List<Connection> Connections;
 		String connectionError;
@@ -62,10 +66,13 @@ namespace QSProjectsLib
 			string app = appInfo.ProductTitle;
 
 			//Редакции
-			if(!String.IsNullOrEmpty(appInfo.ModificationTitle))
-				app += $" {appInfo.ModificationTitle}";
-			else if(!String.IsNullOrEmpty(appInfo.Modification))
-				ver += $"-{appInfo.Modification}";
+			if (!appInfo.ModificationIsHidden)
+			{
+				if (!String.IsNullOrEmpty(appInfo.ModificationTitle))
+					app += $" {appInfo.ModificationTitle}";
+				else if (!String.IsNullOrEmpty(appInfo.Modification))
+					ver += $"-{appInfo.Modification}";
+			}
 
 			if (appInfo.IsBeta) {
 				labelAppName.LabelProp = String.Format("<span foreground=\"gray\" size=\"larger\" font_family=\"Philosopher\"><b>{0} v.{1}</b></span>" +
@@ -338,7 +345,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)
 		{
-			EditConnection dlg = new EditConnection(Connections);
+			EditConnection dlg = new EditConnection(Connections, GetDBCreator?.Invoke());
 			dlg.EditingDone += (se, ev) => UpdateFromGConf();
 			dlg.Run();
 			dlg.Destroy();

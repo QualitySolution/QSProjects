@@ -121,6 +121,7 @@ namespace QS.Journal.GtkUI
 			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+			ViewModel.UpdateJournalActions += UpdateButtons;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

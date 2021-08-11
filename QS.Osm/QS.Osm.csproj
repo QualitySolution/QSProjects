@@ -49,7 +49,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AddressHelper.cs" />
-        <Compile Include="Data\JsonAddress.cs" />
         <Compile Include="DTO\OsmCity.cs" />
         <Compile Include="DTO\OsmEnums.cs" />
         <Compile Include="DTO\OsmHouse.cs" />
@@ -71,9 +70,9 @@
         <Compile Include="Spuntik\SputnikRouteResponse.cs" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
+      <ProjectReference Include="..\..\GammaBinding\Gamma.Utilities\Gamma.Utilities.csproj">
         <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
-        <Name>GammaUtil</Name>
+        <Name>Gamma.Utilities</Name>
       </ProjectReference>
       <ProjectReference Include="..\QS.Project\QS.Project.csproj">
         <Project>{28a78143-42e3-40e7-86f5-dd7e1679be86}</Project>
@@ -92,7 +91,7 @@
       <PackageReference Include="NLog" Version="4.7.10" />
       <PackageReference Include="Remotion.Linq" Version="2.2.0" />
       <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-      <PackageReference Include="RestSharp" Version="106.11.7" />
+      <PackageReference Include="RestSharp" Version="106.12.0" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
