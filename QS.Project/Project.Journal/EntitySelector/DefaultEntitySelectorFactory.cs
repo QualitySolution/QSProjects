@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Services;

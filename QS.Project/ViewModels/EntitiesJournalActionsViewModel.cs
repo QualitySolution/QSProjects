@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QS.Commands;
 using QS.Deletion;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.Services;
