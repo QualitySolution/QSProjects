@@ -48,13 +48,13 @@
     <Folder Include="Serial\Views\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Features\QS.Features.csproj">
       <Project>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</Project>
       <Name>QS.Features</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>

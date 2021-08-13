@@ -265,9 +265,13 @@
     <Folder Include="Dialog\Views\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
+      <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
+      <Name>Gamma.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
@@ -292,10 +296,6 @@
     <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
       <Project>{5EF2A7DA-3886-4809-95DF-880BD783A211}</Project>
       <Name>QS.Project.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\Gamma.Utilities\Gamma.Utilities.csproj">
-      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
-      <Name>Gamma.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
