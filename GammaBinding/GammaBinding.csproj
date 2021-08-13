@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Gamma</RootNamespace>
+    <AssemblyName>GammaBinding</AssemblyName>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererCombo.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererSpin.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererText.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererToggle.cs" />
+    <Compile Include="TreeModels\CellRenderers\INodeCellRenderer.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ColumnMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ComboRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\EnumRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\IColumnMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\IRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\NumberRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\RendererMappingBase.cs" />
+    <Compile Include="TreeModels\ColumnConfig\RowMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\TextRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ToggleRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\IColumnsConfig.cs" />
+    <Compile Include="TreeModels\ColumnConfig\FluentColumnsConfig.cs" />
+    <Compile Include="TreeModels\ColumnsConfigFactory.cs" />
+    <Compile Include="TreeModels\IyTreeModel.cs" />
+    <Compile Include="TreeModels\ObservableListTreeModel.cs" />
+    <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
+    <Compile Include="TreeModels\ListTreeModel.cs" />
+    <Compile Include="Binding.Core\BindingBridge.cs" />
+    <Compile Include="Binding.Core\BindingControler.cs" />
+    <Compile Include="Binding.Core\BindingSource.cs" />
+    <Compile Include="Binding.Core\IBindingControler.cs" />
+    <Compile Include="Binding.Core\FuncBindingBridge.cs" />
+    <Compile Include="Binding.Core\Helpers\ExpressionVisitor.cs" />
+    <Compile Include="Binding.Core\Helpers\FetchPropertyFromExpression.cs" />
+    <Compile Include="Binding.Core\Helpers\PropertyChainFromExp.cs" />
+    <Compile Include="GtkWidgets\yTreeView.cs" />
+    <Compile Include="GtkWidgets\yLabel.cs" />
+    <Compile Include="GtkWidgets\yTextView.cs" />
+    <Compile Include="Widgets\yEnumComboBox.cs" />
+    <Compile Include="Widgets\Additions\Enums.cs" />
+    <Compile Include="GtkHelpers\ListStoreHelper.cs" />
+    <Compile Include="Widgets\yListComboBox.cs" />
+    <Compile Include="Widgets\EventArgs\ItemSelectedEventArgs.cs" />
+    <Compile Include="Binding.Core\IBindingSourceInternal.cs" />
+    <Compile Include="Binding.Core\IBindingBridgeInternal.cs" />
+    <Compile Include="GtkWidgets\ySpinButton.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="GtkWidgets\yEntry.cs" />
+    <Compile Include="Binding\IValueConverter.cs" />
+    <Compile Include="GtkWidgets\yComboBox.cs" />
+    <Compile Include="GtkWidgets\yCheckButton.cs" />
+    <Compile Include="Binding.Core\BindingObjectSource.cs" />
+    <Compile Include="Binding.Core\BindingSourceBase.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererProgress.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ProgressRendererMapping.cs" />
+    <Compile Include="TreeModels\RecursiveTreeModel.cs" />
+    <Compile Include="TreeModels\RecursiveTreeConfig.cs" />
+    <Compile Include="TreeModels\IRecursiveTreeConfig.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererPixbuf.cs" />
+    <Compile Include="TreeModels\ColumnConfig\PixbufRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\SearchHighlightAttribute.cs" />
+    <Compile Include="Binding.Core\Helpers\FetchPropertyInfoFromExpression.cs" />
+    <Compile Include="TreeModels\LevelTreeModel.cs" />
+    <Compile Include="TreeModels\LevelConfig.cs" />
+    <Compile Include="NotifyPropertyChangedBase.cs" />
+    <Compile Include="GtkWidgets\yFileChooserButton.cs" />
+    <Compile Include="GtkWidgets\yColorButton.cs" />
+    <Compile Include="Binding.Core\IBindingSource.cs" />
+    <Compile Include="Widgets\EnumCheckList.cs" />
+    <Compile Include="Widgets\Additions\EnumsListConverter.cs" />
+    <Compile Include="GtkWidgets\yButton.cs" />
+    <Compile Include="GtkWidgets\yComboBoxEntry.cs" />
+    <Compile Include="GtkWidgets\yRadioButton.cs" />
+    <Compile Include="Binding\Converters\NumbersTypeConverter.cs" />
+    <Compile Include="Binding\Converters\NumbersToStringConverter.cs" />
+    <Compile Include="GtkWidgets\yToggleButton.cs" />
+    <Compile Include="Binding\Converters\IdToStringConverter.cs" />
+    <Compile Include="GtkWidgets\yProgressBar.cs" />
+    <Compile Include="Binding\Converters\NullToZeroConverter.cs" />
+    <Compile Include="GtkWidgets\yNotebook.cs" />
+    <Compile Include="GtkWidgets\yTable.cs" />
+    <Compile Include="GtkWidgets\yImage.cs" />
+    <Compile Include="GtkWidgets\yVBox.cs" />
+    <Compile Include="GtkWidgets\yHBox.cs" />
+    <Compile Include="GtkWidgets\yEventBox.cs" />
+    <Compile Include="Widgets\SidePanels\HideHorizontalSeparator.cs" />
+    <Compile Include="Widgets\SidePanels\LeftSidePanel.cs" />
+    <Compile Include="Widgets\SidePanels\RightSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.LeftSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.RightSidePanel.cs" />
+    <Compile Include="gtk-gui\Gamma.Widgets.SidePanels.HideHorizontalSeparator.cs" />
+    <Compile Include="Binding\Converters\BoolReverseConverter.cs" />
+    <Compile Include="Binding\Converters\GuidToStringConverter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\objects.xml">
+      <LogicalName>objects.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\spinbutton.png">
+      <LogicalName>spinbutton.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\treeview.png">
+      <LogicalName>treeview.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\label.png">
+      <LogicalName>label.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\textview.png">
+      <LogicalName>textview.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\combo.png">
+      <LogicalName>combo.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\entry.png">
+      <LogicalName>entry.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\checkbutton.png">
+      <LogicalName>checkbutton.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="icons\fileselection.png" />
+    <EmbeddedResource Include="icons\comboentry.png" />
+    <EmbeddedResource Include="icons\radiobutton.png" />
+    <EmbeddedResource Include="icons\button.png" />
+    <EmbeddedResource Include="icons\colorbutton.png" />
+    <EmbeddedResource Include="icons\togglebutton.png" />
+    <EmbeddedResource Include="icons\progressbar.png" />
+    <EmbeddedResource Include="icons\notebook.png" />
+    <EmbeddedResource Include="icons\table.png" />
+    <EmbeddedResource Include="icons\image.png" />
+    <EmbeddedResource Include="icons\hbox.png" />
+    <EmbeddedResource Include="icons\vbox.png" />
+    <EmbeddedResource Include="icons\eventbox.png" />
+    <EmbeddedResource Include="icons\hseparator.png" />
+    <EmbeddedResource Include="icons\vseparator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gtk-gui\objects.xml">
+      <Link>Properties\objects.xml</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gamma.Utilities\Gamma.Utilities.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>Gamma.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Name>System.Data.Bindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gamma.Utilities.Gtk\Gamma.Utilities.Gtk.csproj">
+      <Project>{5735D438-792E-40CE-BAFD-25814C8879BC}</Project>
+      <Name>Gamma.Utilities.Gtk</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
