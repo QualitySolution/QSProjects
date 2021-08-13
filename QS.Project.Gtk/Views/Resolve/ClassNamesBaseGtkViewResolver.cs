@@ -41,6 +41,10 @@ namespace QS.Views.Resolve
 			foreach(var assambly in lookupAssemblies) {
 				Type viewClass = assambly.GetType(expectedViewName);
 				if(viewClass != null) {
+					var construstorWithResolver = viewClass.GetConstructor(new[] { viewModel.GetType(), typeof(IGtkViewResolver) });
+					if(construstorWithResolver != null) {
+						return (Widget)construstorWithResolver.Invoke(new object[] { viewModel, this });
+					}
 					return (Widget)Activator.CreateInstance(viewClass, viewModel);
 				}
 			}
