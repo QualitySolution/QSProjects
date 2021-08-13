@@ -87,11 +87,53 @@ namespace QS.Dialog.GtkUI
 			return !String.IsNullOrWhiteSpace(filePath);
 		}
 
+		public bool OpenSelectFilePicker(out string[] filePaths)
+		{
+			filePaths = Array.Empty<string>();
+			FileChooserDialog Chooser = new FileChooserDialog
+			(
+				"Выберите файл для загрузки...",
+				null,
+				FileChooserAction.Open,
+				"Отмена", ResponseType.Cancel,
+				"Загрузить", ResponseType.Accept
+			)
+			{
+				SelectMultiple = true
+			};
+
+			if(MIMEFilters?.Any() ?? false)
+			{
+				FileFilter filter = new FileFilter();
+
+				foreach(var item in MIMEFilters)
+					filter.AddMimeType(item);
+
+				Chooser.AddFilter(filter);
+			}
+
+			if((ResponseType)Chooser.Run() == ResponseType.Accept)
+			{
+				Chooser.Hide();
+				filePaths = Chooser.Filenames;
+			}
+
+			Chooser.Destroy();
+			MIMEFilters = null;
+
+			return filePaths.Any() && filePaths.FirstOrDefault(String.IsNullOrWhiteSpace) == null;
+		}
+
 		public bool OpenSelectFilePicker(out string filePath, params string[] MIMEFilter)
 		{
 			MIMEFilters = MIMEFilter;
 			return OpenSelectFilePicker(out filePath);
 		}
 
+		public bool OpenSelectFilePicker(out string[] filePaths, params string[] MIMEFilter)
+		{
+			MIMEFilters = MIMEFilter;
+			return OpenSelectFilePicker(out filePaths);
+		}
 	}
 }
