@@ -51,6 +51,10 @@
       <Project>{c97e91f4-b310-44e2-9b6c-96775395722d}</Project>
       <Name>RdlEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
@@ -70,10 +74,6 @@
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

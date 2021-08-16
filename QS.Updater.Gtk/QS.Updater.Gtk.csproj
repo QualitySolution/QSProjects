@@ -77,6 +77,10 @@
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
@@ -100,10 +104,6 @@
     <ProjectReference Include="..\QS.MachineConfig\QS.MachineConfig.csproj">
       <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
       <Name>QS.MachineConfig</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
       <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
