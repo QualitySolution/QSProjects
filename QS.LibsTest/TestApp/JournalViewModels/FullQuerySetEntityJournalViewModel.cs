@@ -1,10 +1,10 @@
 ﻿using System;
 using NHibernate;
 using NHibernate.Transform;
+using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal;
-using QS.Services;
 using QS.Test.TestApp.Domain;
 using QS.Test.TestApp.ViewModels;
 

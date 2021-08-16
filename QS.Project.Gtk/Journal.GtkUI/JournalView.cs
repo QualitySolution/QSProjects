@@ -14,12 +14,14 @@ using QS.Project.Search.GtkUI;
 using QS.Utilities;
 using QS.Utilities.Text;
 using QS.ViewModels;
+using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
 using QSWidgetLib;
 
 namespace QS.Journal.GtkUI
 {
+	[WindowSize(900, 600)]
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -90,6 +92,7 @@ namespace QS.Journal.GtkUI
 			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+			ViewModel.UpdateJournalActions += UpdateButtons;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

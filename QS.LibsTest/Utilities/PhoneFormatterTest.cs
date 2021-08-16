@@ -93,7 +93,7 @@ namespace QS.Test.Utilities
 		}
 
 		#endregion
-		#region MyRegion
+		#region BracketWithWhitespaceLastTen
 
 		[Test(Description = "Проверяем что корректно конвертируем номер из других вариантов написания.")]
 		[TestCase("+7(812)3098089")]
@@ -127,6 +127,30 @@ namespace QS.Test.Utilities
 			var _result = phoneFormatter.FormatString(insertPhone);
 
 			Assert.That(_result, Is.EqualTo(result));
+		}
+		#endregion
+
+		#region RussiaOnlyShort
+
+		[Test(Description = "Проверяем что корректно конвертируем номер из других вариантов написания.")]
+		[TestCase("+7(812)3098089")]
+		[TestCase("+7(812)309-80-89")]
+		[TestCase("+7(812) 309 80 89")]
+		[TestCase("+7 812 309 - 80 - 89")]
+		[TestCase("88123098089")]
+		[TestCase("+78123098089")]
+		[TestCase("8-812-309-80-89")]
+		[TestCase("8 812 309-8-089")]
+		[TestCase("'+7-812-309-80-89'")]
+		[TestCase(" \t 8-812-309-80-89")]
+		[TestCase("fjklsj ds +7-8123098089")]
+		[TestCase("78123098089")]
+		public void RussiaOnlyShort_ConvertFromAnotherFormatsTest(string insertPhone)
+		{
+			var phoneFormatter = new PhoneFormatter(PhoneFormat.RussiaOnlyShort);
+			var result = phoneFormatter.FormatString(insertPhone);
+
+			Assert.That(result, Is.EqualTo("+78123098089"));
 		}
 		#endregion
 	}

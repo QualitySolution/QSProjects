@@ -3,6 +3,7 @@ using QS.Services;
 using QS.Permissions;
 using QS.Project.Services.Interactive;
 using QS.Validation;
+using QS.Dialog;
 
 namespace QS.Project.Services
 {

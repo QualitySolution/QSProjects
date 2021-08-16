@@ -57,6 +57,7 @@ namespace QS.Project.Versioning
 	{
 		public string Name;
 		public string Title;
+		public bool HideFromUser;
 		public AssemblyModificationAttribute(string name) { Name = name; }
 		public AssemblyModificationAttribute() { }
 	}

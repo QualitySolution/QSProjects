@@ -55,6 +55,10 @@
     <Compile Include="ViewModels\NewsMenuViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
@@ -68,8 +72,8 @@
     <EmbeddedResource Include="Icons\internet-news-reader.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.78" />
-    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="NLog" Version="4.7.10" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -51,6 +51,8 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
+    <Compile Include="Navigation\ITdiPage.cs" />
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\CustomProjections.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
@@ -66,9 +68,7 @@
     <Compile Include="Project.HibernateMapping\UserBaseMap.cs" />
     <Compile Include="Project.Repositories\UserRepository.cs" />
     <Compile Include="DomainModel\Entity\IDomainObject.cs" />
-    <Compile Include="DomainModel\Entity\PropertyChangedBase.cs" />
     <Compile Include="DomainModel\Entity\AppellativeAttribute.cs" />
-    <Compile Include="DomainModel\Entity\PropertyChangedAlsoAttribute.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWork.cs" />
     <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWorkGeneric.cs" />
@@ -119,8 +119,6 @@
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
     <Compile Include="DomainModel\Config\IEntityConfig.cs" />
     <Compile Include="Deletion\DeleteHelper.cs" />
-    <Compile Include="Dialog\IInteractiveMessage.cs" />
-    <Compile Include="Dialog\IInteractiveQuestion.cs" />
     <Compile Include="DomainModel\UoW\UnitOfWorkChild.cs" />
     <Compile Include="Project.DB\DBValueReader.cs" />
     <Compile Include="Project.DB\IMySQLProvider.cs" />
@@ -164,8 +162,6 @@
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="Project.Services\IInteractiveService.cs" />
     <Compile Include="Project.Services\CommonServices.cs" />
     <Compile Include="Project.Services\ICommonServices.cs" />
     <Compile Include="Project.Services\IPermissionService.cs" />
@@ -179,7 +175,6 @@
     <Compile Include="ViewModels\DialogTabViewModelBase.cs" />
     <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
     <Compile Include="ViewModels\WidgetViewModelBase.cs" />
-    <Compile Include="ViewModels\WindowViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
     <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
     <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
@@ -211,9 +206,6 @@
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
     <Compile Include="Project.Versioning\IApplicationInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorReport.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingService.cs" />
-    <Compile Include="ErrorReporting\ReportWorker.cs" />
     <Compile Include="Validation\IValidationView.cs" />
     <Compile Include="Validation\IValidationViewFactory.cs" />
     <Compile Include="Validation\IValidator.cs" />
@@ -226,8 +218,6 @@
     <Compile Include="Permissions\DefaultAllowedPermissionService.cs" />
     <Compile Include="Project.Services\ServicesConfig.cs" />
     <Compile Include="Project.Services\IRunOperationService.cs" />
-    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\ThreadDataLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
@@ -247,9 +237,7 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
-    <Compile Include="Dialog\IProgressBarDisplayable.cs" />
-    <Compile Include="Navigation\INavigationManager.cs" />
-    <Compile Include="Navigation\IPage.cs" />
+    <Compile Include="Navigation\IPageInternal.cs" />
     <Compile Include="Navigation\IPageHashGenerator.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
@@ -277,9 +265,7 @@
     <Compile Include="Navigation\NavigationManagerBase.cs" />
     <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
-    <Compile Include="ViewModels\Dialog\DialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
-    <Compile Include="ViewModels\Dialog\WindowDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
     <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
@@ -287,8 +273,6 @@
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
     <Compile Include="DomainModel\UoW\NhibernateExtend.cs" />
     <Compile Include="Deletion\DeleteConfig.cs" />
@@ -307,8 +291,6 @@
     <Compile Include="Deletion\ViewModels\DeletionViewModel.cs" />
     <Compile Include="Deletion\DeleteCore.cs" />
     <Compile Include="Deletion\DeletionAutofacModule.cs" />
-    <Compile Include="ViewModels\Extension\IOnCloseActionViewModel.cs" />
-    <Compile Include="Navigation\CloseSource.cs" />
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
@@ -322,13 +304,18 @@
     <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ParametersService.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
-    <Compile Include="Dialog\IGuiDispatcher.cs" />
-    <Compile Include="Dialog\WindowGravity.cs" />
     <Compile Include="Project.Versioning\Product\IProductService.cs" />
     <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
     <Compile Include="Validation\ValidationRequest.cs" />
+    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
+    <Compile Include="ErrorReporting\ErrorReport.cs" />
+    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingService.cs" />
+    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
+    <Compile Include="ErrorReporting\ReportWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -361,7 +348,7 @@
     <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="Project.Versioning\" />
-    <Folder Include="ErrorReporting\" />
+    <Folder Include="..\QS.Project.Core\ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
     <Folder Include="Project.Journal\DataLoader\" />
@@ -372,7 +359,6 @@
     <Folder Include="ViewModels\Control\ESVM\" />
     <Folder Include="Deletion\Configuration\" />
     <Folder Include="Deletion\ViewModels\" />
-    <Folder Include="ViewModels\Extension\" />
     <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
@@ -380,17 +366,21 @@
     <Folder Include="Project.Versioning\Product\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaUtil\GammaUtil.csproj">
-      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
-      <Name>GammaUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GammaBinding\Gamma.Utilities\Gamma.Utilities.csproj">
+      <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
+      <Name>Gamma.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -398,15 +388,15 @@
     <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
+    <PackageReference Include="Google.Protobuf" Version="3.17.3" />
     <PackageReference Include="Iesi.Collections" Version="4.0.4" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.2.6" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.6" />
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.6" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.24" />
+    <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="NHibernate" Version="5.3.8" />
-    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="SSH.NET" Version="2020.0.1" />

@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Gamma.Utilities;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Dialect.Function;
 
 namespace QS.Project.DB
 {
@@ -107,6 +110,18 @@ namespace QS.Project.DB
             }
 
             return Projections.SqlFunction("ABS", returnType, projections);
+        }
+
+        public static IProjection Concat_WS(string separator = " ", params Expression<Func<object>>[] properties)
+        {
+            return Concat_WS(separator, properties.Select(Projections.Property).ToArray());
+        }
+
+        public static IProjection Concat_WS(string separator = " ", params IProjection[] projections)
+        {
+            List<IProjection> projectionList = new List<IProjection> {Projections.Constant(separator)};
+            projectionList.AddRange(projections);
+            return Projections.SqlFunction("CONCAT_WS", NHibernateUtil.String, projectionList.ToArray());
         }
     }
 

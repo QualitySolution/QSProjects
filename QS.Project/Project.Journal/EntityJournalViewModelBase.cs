@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NHibernate;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;

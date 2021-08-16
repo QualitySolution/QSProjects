@@ -107,7 +107,8 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnImageviewerPhotoButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
-			if(((Gdk.EventButton)args.Event).Type == Gdk.EventType.TwoButtonPress) {
+			if(args.Event.Type == EventType.TwoButtonPress && ImageFile != null)
+			{
 				string filePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_img.jpg");
 				FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
 				fs.Write(ImageFile, 0, ImageFile.Length);

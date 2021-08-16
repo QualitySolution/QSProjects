@@ -6,13 +6,13 @@ using System.Linq.Expressions;
 using Autofac;
 using NHibernate.Criterion;
 using NLog;
+using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Project.Search;
-using QS.Services;
 using QS.Tdi;
 using QS.ViewModels;
 
@@ -58,6 +58,7 @@ namespace QS.Project.Journal
 			}
 		}
 
+		public Action UpdateJournalActions;
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation

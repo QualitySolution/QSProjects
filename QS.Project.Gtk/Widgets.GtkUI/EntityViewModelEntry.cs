@@ -304,6 +304,11 @@ namespace QS.Widgets.GtkUI
 		private IEntityAutocompleteSelector autoCompleteSelector;
 		private void FillAutocomplete()
 		{
+			if(cts.IsCancellationRequested) 
+			{
+				return;
+			}
+			
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string), typeof(object));
 			if(entitySelectorAutocompleteFactory == null) {
@@ -391,7 +396,7 @@ namespace QS.Widgets.GtkUI
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
-			base.OnDestroyed();
+			Application.Invoke((s, arg) => base.OnDestroyed());
 		}
 	}
 }
