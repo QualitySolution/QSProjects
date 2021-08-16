@@ -67,7 +67,20 @@ namespace QS.Widgets.GtkUI
 		}
 
 		private IEntityAutocompleteSelectorFactory entitySelectorAutocompleteFactory;
+		[Browsable(false)]
+		public IEntityAutocompleteSelectorFactory EntitySelectorAutocompleteFactory
+		{
+			get => entitySelectorAutocompleteFactory;
+			set => SetEntityAutocompleteSelectorFactory(value);
+		}
+
 		private IEntitySelectorFactory entitySelectorFactory;
+		[Browsable(false)]
+		public IEntitySelectorFactory EntitySelectorFactory
+		{
+			get => entitySelectorFactory;
+			set => SetEntitySelectorFactory(value);
+		}
 
 		public void SetEntityAutocompleteSelectorFactory(IEntityAutocompleteSelectorFactory entitySelectorFactory)
 		{
