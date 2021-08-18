@@ -60,13 +60,13 @@
         <Project>{28a78143-42e3-40e7-86f5-dd7e1679be86}</Project>
         <Name>QS.Project</Name>
       </ProjectReference>
+      <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
+        <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
+        <Name>Gamma.Utilities</Name>
+      </ProjectReference>
       <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
         <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
         <Name>QS.Utilities</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\..\GammaBinding\Gamma.Utilities\Gamma.Utilities.csproj">
-        <Project>{1BF2A638-420D-456C-96A7-36873A0FB894}</Project>
-        <Name>Gamma.Utilities</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

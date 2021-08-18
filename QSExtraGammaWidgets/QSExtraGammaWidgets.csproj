@@ -50,13 +50,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QSOrmProject\QSOrmProject.csproj">
       <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
       <Name>QSOrmProject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\GammaBinding\GammaBinding\GammaBinding.csproj">
-      <Project>{190CEA0D-EA23-4C91-8030-203A5AFED7B7}</Project>
-      <Name>GammaBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
