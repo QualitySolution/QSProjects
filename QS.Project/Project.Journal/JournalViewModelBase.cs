@@ -82,10 +82,12 @@ namespace QS.Project.Journal
 					{
 						CreateNodeActions();
 					}
-					else
+
+					JournalActionsViewModel.SelectionMode = SelectionMode;
+					/*else
 					{
 						InitializeJournalActionsViewModel();
-					}
+					}*/
 				}
 			}
 		}
@@ -209,7 +211,12 @@ namespace QS.Project.Journal
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			PropertyChanged -= OnPropertyChanged;
-			JournalActionsViewModel?.UoW?.Dispose();
+
+			if (JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)
+			{
+				disposableJournalActionsViewModel.Dispose();
+			}
+			
 			base.Dispose();
 		}
 

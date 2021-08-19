@@ -8,12 +8,12 @@ using QS.Services;
 
 namespace QS.ViewModels
 {
-	public class EntityJournalActionsViewModel : JournalActionsViewModel, IJournalCommands
+	public class EntityJournalActionsViewModel : JournalActionsViewModel
 	{
 		private Type entityType;
 		private Action CreateEntityDialogAction;
 		private Action<object> EditEntityDialogAction;
-		private Action editAction; 
+		private Action editAction;
 		
 		protected IDeleteEntityService DeleteEntityService;
 
@@ -38,7 +38,7 @@ namespace QS.ViewModels
 			{
 				if (SetField(ref selectedItems, value)) 
 				{
-					OnPropertyChanged(nameof(CanSelect));
+					//OnPropertyChanged(nameof(CanSelect));
 					OnPropertyChanged(nameof(CanCreate));
 					OnPropertyChanged(nameof(CanEdit));
 					OnPropertyChanged(nameof(CanDelete));

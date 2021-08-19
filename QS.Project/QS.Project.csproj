@@ -61,7 +61,6 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
-    <Compile Include="Project.Journal\IJournalCommands.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

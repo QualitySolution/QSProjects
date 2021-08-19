@@ -1,8 +1,9 @@
-﻿using QS.ViewModels;
+﻿using System.Linq;
+using Gamma.GtkWidgets;
+using QS.ViewModels;
 
 namespace QS.Views.GtkUI
 {
-    [System.ComponentModel.ToolboxItem(true)]
     public partial class JournalActionsView : ViewBase<JournalActionsViewModel>
     {
         public JournalActionsView(JournalActionsViewModel viewModel) : base(viewModel)
@@ -13,10 +14,29 @@ namespace QS.Views.GtkUI
 
         private void Configure()
         {
-            btnSelect.Clicked += (sender, args) => ViewModel.SelectCommand.Execute();
-                       
-            btnSelect.Binding.AddBinding(ViewModel, vm => vm.CanSelect, w => w.Sensitive).InitializeFromSource();
-			btnSelect.Binding.AddBinding(ViewModel, vm => vm.IsSelectVisible, w => w.Visible).InitializeFromSource();
+            CreateActions();
+        }
+
+        private void CreateActions()
+        {
+            if(ViewModel.JournalActions.Any())
+            {
+                foreach(var action in ViewModel.JournalActions)
+                {
+                    var btn = new yButton();
+
+                    btn.Clicked += (sender, args) => action.ExecuteAction?.Invoke();
+                    
+                    btn.Binding.AddSource(action)
+                        .AddBinding(a => a.Label, w => w.Label)
+                        .AddBinding(a => a.Sensitive, w => w.Sensitive)
+                        .AddBinding(a => a.Visible, w => w.Visible)
+                        .InitializeFromSource();
+                    
+                    btn.Show();
+                    yhboxBtns.Add(btn);
+                }
+            }
         }
     }
 }

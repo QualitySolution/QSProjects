@@ -1,19 +1,37 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using QS.Commands;
+using QS.DomainModel.Entity;
 using QS.Project.Journal;
 using QS.Tdi;
 
 namespace QS.ViewModels
 {
-	public class JournalActionsViewModel : UoWWidgetViewModelBase
+	public class JournalActionsViewModel : WidgetViewModelBase
 	{
-		private bool isSelectVisible;
 		protected object[] selectedItems = new object[0];
 
-		protected JournalSelectionMode SelectionMode { get; set; }
+		private JournalSelectionMode selectionMode;
+		public JournalSelectionMode SelectionMode
+		{
+			get => selectionMode;
+			set
+			{
+				if(SetField(ref selectionMode, value))
+				{
+					if(JournalActions.Any())
+					{
+						foreach(var action in JournalActions)
+						{
+							OnPropertyChanged(nameof(action.Visible));
+						}
+					}
+				}
+			}
+		}
+
 		protected Action OnItemsSelectedAction { get; set; }
-		public bool CanSelect => CanSelectFunc != null && CanSelectFunc.Invoke();
+		
 		public virtual object[] SelectedItems
 		{
 			get => selectedItems;
@@ -21,28 +39,32 @@ namespace QS.ViewModels
 			{
 				if(SetField(ref selectedItems, value))
 				{
-					OnPropertyChanged(nameof(CanSelect));
+					if(JournalActions.Any())
+					{
+						foreach(var action in JournalActions)
+						{
+							OnPropertyChanged(nameof(action.Sensitive));
+						}
+					}
 				}
 			}
 		}
 
-		public DelegateCommand SelectCommand { get; private set; }
 		public ITdiTabParent TabParent { get; set; }
-		public bool IsSelectVisible
-		{
-			get => isSelectVisible;
-			set => SetField(ref isSelectVisible, value);
-		}
 		
 		public Action RowActivatedAction { get; set; }
-		public Action SelectAction { get; set; }
-		public Func<bool> CanSelectFunc { get; set; }
+		
+		public IList<ButtonElement> JournalActions { get; set; } = new List<ButtonElement>();
 
 		protected virtual void InitializeRowActivatedAction()
 		{
 			if (SelectionMode != JournalSelectionMode.None) 
 			{
-				RowActivatedAction = SelectAction; 
+				if(JournalActions.Any())
+				{
+					RowActivatedAction =
+						JournalActions.SingleOrDefault(a => a.ActionType == ActionType.Select)?.ExecuteAction; 
+				}
 			}
 		}
 		
@@ -71,16 +93,75 @@ namespace QS.ViewModels
 		{
 			if(createSelectAction)
 			{
-				SelectAction = DefaultSelectAction;
-				CanSelectFunc = CanSelectEntity;
-				SelectCommand = new DelegateCommand(SelectAction, () => CanSelect);
-				IsSelectVisible = SelectionMode != JournalSelectionMode.None;
+				CreateAction();
 				InitializeRowActivatedAction();
 			}
-			else
-			{
-				IsSelectVisible = false;
-			}
 		}
+
+		private void CreateAction()
+		{
+			var selectAction = new ButtonElement(
+				"Выбрать",
+				CanSelectEntity,
+				() => SelectionMode != JournalSelectionMode.None,
+				OnItemsSelectedAction,
+				ActionType.Select
+			);
+			
+			JournalActions.Add(selectAction);
+		}
+	}
+
+	public class ButtonElement : PropertyChangedBase
+	{
+		private string label;
+		
+		public ButtonElement(
+			string label,
+			Func<bool> sensitiveFunc,
+			Func<bool> visibleFunc,
+			Action executeAction,
+			ActionType actionType,
+			string hotkeys = null)
+		{
+			SensitiveFunc = sensitiveFunc;
+			VisibleFunc = visibleFunc;
+			Label = label;
+			ExecuteAction = executeAction;
+			ActionType = actionType;
+			HotKeys = hotkeys;
+		}
+
+		public Func<bool> SensitiveFunc { get; set; }
+		public Func<bool> VisibleFunc { get; set; }
+
+		public bool Sensitive => SensitiveFunc != null && SensitiveFunc.Invoke();
+		public bool Visible => VisibleFunc != null && VisibleFunc.Invoke();
+
+		public string Label
+		{
+			get => label;
+			set => SetField(ref label, value);
+		}
+
+		public Action ExecuteAction { get; set; }
+		public IList<ButtonElement> ChildButtonElements { get; set; } = new List<ButtonElement>();
+		public ActionType ActionType { get; }
+		public string HotKeys { get; }
+
+		public new void OnPropertyChanged(string propertyName = "")
+		{
+			base.OnPropertyChanged(propertyName);
+		}
+	}
+
+	public enum ActionType
+	{
+		Select,
+		Add,
+		MultipleAdd,
+		Edit,
+		Delete,
+		Custom
 	}
 }

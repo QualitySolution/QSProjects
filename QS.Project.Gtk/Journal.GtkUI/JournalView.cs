@@ -459,16 +459,10 @@ namespace QS.Journal.GtkUI
 				return;
 			}
 
-			if(ViewModel.JournalActionsViewModel is null)
-			{
-				ExecuteTypeJournalAction(args.Event.Key.ToString());
-			}
-			else
-			{
-				ExecuteJournalAction(args.Event.Key);
-			}
+			ExecuteTypeJournalAction(args.Event.Key.ToString());
 		}
 
+		//TODO сделать поиск горячих клавиш в journalActionsViewModel
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
 			var nodeActions = ViewModel.NodeActions.Where(n => !string.IsNullOrEmpty(n.HotKeys) &&
@@ -481,27 +475,6 @@ namespace QS.Journal.GtkUI
 
 			if (nodeActions.Count() == 1)
 				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
-		}
-
-		private void ExecuteJournalAction(Gdk.Key key)
-		{
-			switch(key)
-			{
-				case Gdk.Key.Insert:
-					if(ViewModel.JournalActionsViewModel is IJournalCommands journalAddCommand
-					   && journalAddCommand.AddCommand != null)
-					{
-						journalAddCommand.AddCommand.Execute();
-					}
-					break;
-				case Gdk.Key.Delete:
-					if(ViewModel.JournalActionsViewModel is IJournalCommands journalDeleteCommand
-					   && journalDeleteCommand.DeleteCommand != null)
-					{
-						journalDeleteCommand.DeleteCommand.Execute();
-					}
-					break;
-			}
 		}
 	}
 }
