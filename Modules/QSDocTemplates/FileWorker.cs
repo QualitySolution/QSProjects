@@ -258,11 +258,11 @@ namespace QSDocTemplates
 			{
 				Watcher = new FileSystemWatcher();
 				Watcher.Path = tempDir;
-				Watcher.NotifyFilter = NotifyFilters.LastWrite;
+				Watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
 				Watcher.Filter = tempFile;
 
 				Watcher.Changed += OnFileChangedByUser;
-			}
+            }
 
 			Watcher.EnableRaisingEvents = true;
 		}
@@ -279,7 +279,7 @@ namespace QSDocTemplates
 			try 
 			{
 				byte[] file;
-				using (FileStream fs = new FileStream (e.FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+				using (FileStream fs = new FileStream (TempFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
 					using (MemoryStream ms = new MemoryStream ()) {
 						fs.CopyTo (ms);
 						file = ms.ToArray ();
