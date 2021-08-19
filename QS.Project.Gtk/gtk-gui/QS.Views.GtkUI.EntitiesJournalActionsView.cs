@@ -6,14 +6,6 @@ namespace QS.Views.GtkUI
 	{
 		private global::Gamma.GtkWidgets.yHBox yhboxBtns;
 
-		private global::Gamma.GtkWidgets.yButton btnSelect;
-
-		private global::Gamma.GtkWidgets.yHBox yhboxAddBtn;
-
-		private global::Gamma.GtkWidgets.yButton btnEdit;
-
-		private global::Gamma.GtkWidgets.yButton btnDelete;
-
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -24,46 +16,6 @@ namespace QS.Views.GtkUI
 			this.yhboxBtns = new global::Gamma.GtkWidgets.yHBox();
 			this.yhboxBtns.Name = "yhboxBtns";
 			this.yhboxBtns.Spacing = 6;
-			// Container child yhboxBtns.Gtk.Box+BoxChild
-			this.btnSelect = new global::Gamma.GtkWidgets.yButton();
-			this.btnSelect.CanFocus = true;
-			this.btnSelect.Name = "btnSelect";
-			this.btnSelect.UseUnderline = true;
-			this.btnSelect.Label = global::Mono.Unix.Catalog.GetString("Выбрать");
-			this.yhboxBtns.Add(this.btnSelect);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.yhboxBtns[this.btnSelect]));
-			w1.Position = 0;
-			w1.Expand = false;
-			w1.Fill = false;
-			// Container child yhboxBtns.Gtk.Box+BoxChild
-			this.yhboxAddBtn = new global::Gamma.GtkWidgets.yHBox();
-			this.yhboxAddBtn.Name = "yhboxAddBtn";
-			this.yhboxAddBtn.Spacing = 6;
-			this.yhboxBtns.Add(this.yhboxAddBtn);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.yhboxBtns[this.yhboxAddBtn]));
-			w2.Position = 1;
-			// Container child yhboxBtns.Gtk.Box+BoxChild
-			this.btnEdit = new global::Gamma.GtkWidgets.yButton();
-			this.btnEdit.CanFocus = true;
-			this.btnEdit.Name = "btnEdit";
-			this.btnEdit.UseUnderline = true;
-			this.btnEdit.Label = global::Mono.Unix.Catalog.GetString("Изменить");
-			this.yhboxBtns.Add(this.btnEdit);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.yhboxBtns[this.btnEdit]));
-			w3.Position = 2;
-			w3.Expand = false;
-			w3.Fill = false;
-			// Container child yhboxBtns.Gtk.Box+BoxChild
-			this.btnDelete = new global::Gamma.GtkWidgets.yButton();
-			this.btnDelete.CanFocus = true;
-			this.btnDelete.Name = "btnDelete";
-			this.btnDelete.UseUnderline = true;
-			this.btnDelete.Label = global::Mono.Unix.Catalog.GetString("Удалить");
-			this.yhboxBtns.Add(this.btnDelete);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.yhboxBtns[this.btnDelete]));
-			w4.Position = 3;
-			w4.Expand = false;
-			w4.Fill = false;
 			this.Add(this.yhboxBtns);
 			if ((this.Child != null))
 			{

@@ -65,7 +65,7 @@ namespace QS.Views.GtkUI
 
 			menuButton.Menu = childActionButtons;
 			menuButton.Show();
-			yhboxAddBtn.Add(menuButton);
+            yhboxBtns.Add(menuButton);
 		}
 
 		private MenuItem CreateMenuItemWidget(ButtonElement action)
