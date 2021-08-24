@@ -1,6 +1,7 @@
 ﻿using QS.DomainModel.UoW;
 using QS.Project.Filter;
 using QS.Services;
+using QS.Tdi;
 
 namespace QS.Project.Journal
 {
@@ -21,6 +22,16 @@ namespace QS.Project.Journal
 		public FilterableMultipleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
 		{
 			FilterViewModel = filterViewModel;
+		}
+
+		public override bool CanOpen()
+		{
+			return false;
+		}
+
+		public override ITdiTab GetTabToOpen(JournalEntityNodeBase node)
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

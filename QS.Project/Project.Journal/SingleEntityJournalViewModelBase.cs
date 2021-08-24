@@ -55,5 +55,15 @@ namespace QS.Project.Journal
 		{
 			Search.SearchValues = values;
 		}
+
+		public override bool CanOpen()
+		{
+			return true;
+		}
+
+		public override ITdiTab GetTabToOpen(JournalEntityNodeBase node)
+		{
+			return OpenDialogFunction?.Invoke((TNode)node);
+		}
 	}
 }

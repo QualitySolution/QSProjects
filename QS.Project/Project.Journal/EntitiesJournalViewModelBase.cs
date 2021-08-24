@@ -38,6 +38,8 @@ namespace QS.Project.Journal
 		}
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
+		public abstract bool CanOpen();
+		public abstract ITdiTab GetTabToOpen(JournalEntityNodeBase node);
 		public event EventHandler ListUpdated;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
