@@ -6,8 +6,6 @@ namespace QS.Views.GtkUI
 	{
 		private global::Gamma.GtkWidgets.yHBox yhboxBtns;
 
-		private global::Gamma.GtkWidgets.yButton btnSelect;
-
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -18,17 +16,6 @@ namespace QS.Views.GtkUI
 			this.yhboxBtns = new global::Gamma.GtkWidgets.yHBox();
 			this.yhboxBtns.Name = "yhboxBtns";
 			this.yhboxBtns.Spacing = 6;
-			// Container child yhboxBtns.Gtk.Box+BoxChild
-			this.btnSelect = new global::Gamma.GtkWidgets.yButton();
-			this.btnSelect.CanFocus = true;
-			this.btnSelect.Name = "btnSelect";
-			this.btnSelect.UseUnderline = true;
-			this.btnSelect.Label = global::Mono.Unix.Catalog.GetString("Выбрать");
-			this.yhboxBtns.Add(this.btnSelect);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.yhboxBtns[this.btnSelect]));
-			w1.Position = 0;
-			w1.Expand = false;
-			w1.Fill = false;
 			this.Add(this.yhboxBtns);
 			if ((this.Child != null))
 			{
