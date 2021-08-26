@@ -6,7 +6,7 @@ namespace QS.Project.Journal.EntitySelector
 	public interface IEntitySelector : ITdiTab, IDisposable
 	{
 		event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
-		bool CanOpen();
+		bool CanOpen(JournalEntityNodeBase node);
 		/// <summary>
 		///
 		/// </summary>

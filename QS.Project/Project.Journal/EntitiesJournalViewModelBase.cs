@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using NHibernate;
-using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -38,8 +37,19 @@ namespace QS.Project.Journal
 		}
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
-		public abstract bool CanOpen();
-		public abstract ITdiTab GetTabToOpen(JournalEntityNodeBase node);
+
+		public virtual bool CanOpen(JournalEntityNodeBase node)
+		{
+			return node != null && EntityConfigs[node.EntityType].PermissionResult.CanUpdate;
+		}
+
+		public virtual ITdiTab GetTabToOpen(JournalEntityNodeBase node)
+		{
+			var config = EntityConfigs[node.EntityType];
+			var foundDocumentConfig =
+				config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified((TNode)node));
+			return foundDocumentConfig?.GetOpenEntityDlgFunction()?.Invoke((TNode)node);
+		}
 		public event EventHandler ListUpdated;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.

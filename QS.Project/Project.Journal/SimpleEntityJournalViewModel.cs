@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.Services;
@@ -86,19 +85,6 @@ namespace QS.Project.Journal
 		private Func<ICriterion> filterFunction;
 		private Func<ICriterion> restrictionFunc;
 		private readonly Expression<Func<TEntity, object>> titleExp;
-
-		public override bool CanOpen()
-		{
-			return true;
-		}
-
-		public override ITdiTab GetTabToOpen(JournalEntityNodeBase node)
-		{
-			var config = EntityConfigs[node.EntityType];
-			var foundDocumentConfig =
-				config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified((CommonJournalNode)node));
-			return foundDocumentConfig?.GetOpenEntityDlgFunction()?.Invoke((CommonJournalNode)node);
-		}
 
 		public event EventHandler ListUpdated;
 

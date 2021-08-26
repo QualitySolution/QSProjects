@@ -250,9 +250,11 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
-			entitySelector = entitySelectorFactory.CreateSelector();
-			if (entitySelector.CanOpen()) {
-				var entityTab = entitySelector.GetTabToOpen(selectedNode);
+			if(entitySelector == null)
+				entitySelector = entitySelectorFactory.CreateSelector();
+
+			var entityTab = entitySelector.GetTabToOpen(selectedNode);
+			if(entityTab != null) {
 				MyTab.TabParent.AddTab(entityTab, MyTab);
 				entitySelector = null;
 				return;
@@ -295,8 +297,13 @@ namespace QS.Widgets.GtkUI
 
 		void UpdateSensitive()
 		{
+			if (entitySelector == null)
+				entitySelector = entitySelectorFactory?.CreateSelector();
+			var canOpen = entitySelector?.CanOpen(selectedNode) ?? false;
+			entitySelector = null;
+
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null && canOpen;
 			buttonClear.Sensitive = sensitive && (subject != null || string.IsNullOrWhiteSpace(entryObject.Text));
 		}
 
@@ -304,6 +311,7 @@ namespace QS.Widgets.GtkUI
 		{
 			Subject = UoW.GetById(SubjectType, node.GetId());
 			selectedNode = node as JournalEntityNodeBase;
+			UpdateSensitive();
 		}
 
 		#region AutoCompletion
