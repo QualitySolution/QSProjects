@@ -31,26 +31,13 @@ namespace QS.Project.Journal
 		#endregion
 		
 		protected EntityJournalViewModelBase(
-			EntityJournalActionsViewModel journalActionsViewModel,
+			JournalActionsViewModel journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
-		) : this(unitOfWorkFactory, interactiveService, navigationManager, deleteEntityService, currentPermissionService)
-		{
-			EntityJournalActionsViewModel = journalActionsViewModel;
-			
-			InitializeJournalActionsViewModel();
-		}
-
-		protected EntityJournalViewModelBase(
-			IUnitOfWorkFactory unitOfWorkFactory,
-			IInteractiveService interactiveService,
-			INavigationManager navigationManager,
-			IDeleteEntityService deleteEntityService = null,
-			ICurrentPermissionService currentPermissionService = null
-			) : base(unitOfWorkFactory, interactiveService, navigationManager)
+			) : base(journalActionsViewModel, unitOfWorkFactory, interactiveService, navigationManager)
 		{
 			CurrentPermissionService = currentPermissionService;
 			DeleteEntityService = deleteEntityService;
@@ -63,11 +50,6 @@ namespace QS.Project.Journal
 			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
 				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
 
-			if(EntityJournalActionsViewModel == null)
-			{
-				CreateNodeActions();
-			}
-
 			var names = typeof(TEntity).GetSubjectNames();
 			if(!String.IsNullOrEmpty(names?.NominativePlural))
 				TabName = names.NominativePlural.StringToTitleCase();
@@ -77,7 +59,7 @@ namespace QS.Project.Journal
 		
 		protected override void InitializeJournalActionsViewModel()
 		{
-			EntityJournalActionsViewModel.Initialize(typeof(TEntity), SelectionMode, OnItemsSelected, CreateEntityDialog, EditEntityDialog);
+			EntityJournalActionsViewModel.Initialize(typeof(TEntity), CreateEntityDialog, EditEntityDialog);
 		}
 
 		[Obsolete("Лучше использовать EntityJournalActionsViewModel")]

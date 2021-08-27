@@ -78,16 +78,7 @@ namespace QS.Project.Journal
 			{
 				if(SetField(ref selectionMode, value)) 
 				{
-					if(JournalActionsViewModel == null)
-					{
-						CreateNodeActions();
-					}
-
 					JournalActionsViewModel.SelectionMode = SelectionMode;
-					/*else
-					{
-						InitializeJournalActionsViewModel();
-					}*/
 				}
 			}
 		}
@@ -116,18 +107,9 @@ namespace QS.Project.Journal
 			JournalActionsViewModel journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
-			INavigationManager navigation) : this(unitOfWorkFactory, interactiveService, navigation)
-		{
-			JournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
-			
-			PropertyChanged += OnPropertyChanged;
-		}
-
-		protected JournalViewModelBase(
-			IUnitOfWorkFactory unitOfWorkFactory,
-			IInteractiveService interactiveService,
 			INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
+			JournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
 
@@ -137,8 +119,10 @@ namespace QS.Project.Journal
 			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
+			PropertyChanged += OnPropertyChanged;
+			JournalActionsViewModel.OnItemsSelectedAction += OnItemsSelected;
 		}
-		
+
 		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(e.PropertyName == nameof(TabParent))
@@ -170,7 +154,7 @@ namespace QS.Project.Journal
 
 		protected virtual void InitializeJournalActionsViewModel()
 		{
-			JournalActionsViewModel.CreateDefaultSelectAction(SelectionMode, OnItemsSelected);
+			JournalActionsViewModel.CreateDefaultSelectAction();
 		}
 
 		protected virtual void CreatePopupActions()
@@ -211,6 +195,7 @@ namespace QS.Project.Journal
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			PropertyChanged -= OnPropertyChanged;
+			JournalActionsViewModel.OnItemsSelectedAction -= OnItemsSelected;
 
 			if (JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)
 			{

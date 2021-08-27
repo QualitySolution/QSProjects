@@ -60,8 +60,7 @@ namespace QS.Project.Journal
 		protected override void InitializeJournalActionsViewModel()
 		{
 			EntitiesJournalActionsViewModel.Initialize(
-				SelectionMode, EntityConfigs, this, HideJournal, OnItemsSelected,
-				true, addActionEnabled, editActionEnabled, deleteActionEnabled);
+				EntityConfigs, this, HideJournal, true, addActionEnabled, editActionEnabled, deleteActionEnabled);
 		}
 
 		#endregion

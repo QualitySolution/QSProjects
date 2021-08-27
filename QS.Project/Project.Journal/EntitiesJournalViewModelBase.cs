@@ -165,7 +165,14 @@ namespace QS.Project.Journal
 
 		protected override void InitializeJournalActionsViewModel()
 		{
-			EntitiesJournalActionsViewModel.Initialize(SelectionMode, EntityConfigs, this, HideJournal, OnItemsSelected);
+			if(EntitiesJournalActionsViewModel != null)
+			{
+				EntitiesJournalActionsViewModel.Initialize(EntityConfigs, this, HideJournal);
+			}
+			else
+			{
+				base.InitializeJournalActionsViewModel();
+			}
 		}
 
 		protected override void CreatePopupActions()

@@ -160,6 +160,7 @@
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
+    <Compile Include="ViewModels\ButtonsJournalActionsViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\EntitiesJournalActionsViewModel.cs" />
     <Compile Include="ViewModels\EntityJournalActionsViewModel.cs" />

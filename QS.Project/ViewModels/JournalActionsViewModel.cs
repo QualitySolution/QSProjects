@@ -19,18 +19,20 @@ namespace QS.ViewModels
 			{
 				if(SetField(ref selectionMode, value))
 				{
+					InitializeRowActivatedAction();
+					
 					if(JournalActions.Any())
 					{
 						foreach(var action in JournalActions)
 						{
-							OnPropertyChanged(nameof(action.Visible));
+							action.OnPropertyChanged(nameof(action.Visible));
 						}
 					}
 				}
 			}
 		}
 
-		protected Action OnItemsSelectedAction { get; set; }
+		public Action OnItemsSelectedAction;
 		
 		public virtual object[] SelectedItems
 		{
@@ -43,7 +45,7 @@ namespace QS.ViewModels
 					{
 						foreach(var action in JournalActions)
 						{
-							OnPropertyChanged(nameof(action.Sensitive));
+							action.OnPropertyChanged(nameof(action.Sensitive));
 						}
 					}
 				}
@@ -54,7 +56,7 @@ namespace QS.ViewModels
 		
 		public Action RowActivatedAction { get; set; }
 		
-		public IList<ButtonElement> JournalActions { get; set; } = new List<ButtonElement>();
+		public IList<DefaultJournalAction> JournalActions { get; set; } = new List<DefaultJournalAction>();
 
 		protected virtual void InitializeRowActivatedAction()
 		{
@@ -67,25 +69,23 @@ namespace QS.ViewModels
 				}
 			}
 		}
+
+		#region Дефолтные значения экшена Выбрать
 		
 		protected virtual void DefaultSelectAction()
 		{
 			OnItemsSelectedAction?.Invoke();
 		}
 		
-		public virtual bool CanSelectEntity()
+		public virtual bool CanSelect()
 		{
 			return SelectedItems != null && SelectedItems.Any();
 		}
 		
-		public virtual void CreateDefaultSelectAction(
-			JournalSelectionMode selectionMode,
-			Action onItemsSelected,
-			bool createSelectAction = true)
+		#endregion
+		
+		public void CreateDefaultSelectAction(bool createSelectAction = true)
 		{
-			SelectionMode = selectionMode;
-			OnItemsSelectedAction = onItemsSelected;
-
 			CreateSelectAction(createSelectAction);
 		}
 
@@ -100,11 +100,11 @@ namespace QS.ViewModels
 
 		private void CreateAction()
 		{
-			var selectAction = new ButtonElement(
+			var selectAction = new DefaultJournalAction(
 				"Выбрать",
-				CanSelectEntity,
+				CanSelect,
 				() => SelectionMode != JournalSelectionMode.None,
-				OnItemsSelectedAction,
+				DefaultSelectAction,
 				ActionType.Select
 			);
 			
@@ -112,11 +112,11 @@ namespace QS.ViewModels
 		}
 	}
 
-	public class ButtonElement : PropertyChangedBase
+	public class DefaultJournalAction : PropertyChangedBase
 	{
 		private string label;
 		
-		public ButtonElement(
+		public DefaultJournalAction(
 			string label,
 			Func<bool> sensitiveFunc,
 			Func<bool> visibleFunc,
@@ -145,7 +145,7 @@ namespace QS.ViewModels
 		}
 
 		public Action ExecuteAction { get; set; }
-		public IList<ButtonElement> ChildButtonElements { get; set; } = new List<ButtonElement>();
+		public IList<DefaultJournalAction> ChildButtonElements { get; set; } = new List<DefaultJournalAction>();
 		public ActionType ActionType { get; }
 		public string HotKeys { get; }
 

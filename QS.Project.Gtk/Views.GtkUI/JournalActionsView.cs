@@ -24,7 +24,8 @@ namespace QS.Views.GtkUI
                 foreach(var action in ViewModel.JournalActions)
                 {
                     var btn = new yButton();
-
+                    btn.Show();
+                    
                     btn.Clicked += (sender, args) => action.ExecuteAction?.Invoke();
                     
                     btn.Binding.AddSource(action)
@@ -33,7 +34,6 @@ namespace QS.Views.GtkUI
                         .AddBinding(a => a.Visible, w => w.Visible)
                         .InitializeFromSource();
                     
-                    btn.Show();
                     yhboxBtns.Add(btn);
                 }
             }

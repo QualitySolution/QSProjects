@@ -49,7 +49,7 @@ namespace QS.Views.GtkUI
 			}
 		}
 		
-		private void CreateMultipleButton(string label, IList<ButtonElement> childActions)
+		private void CreateMultipleButton(string label, IList<DefaultJournalAction> childActions)
 		{
 			var menuButton = new MenuButton 
 			{
@@ -68,7 +68,7 @@ namespace QS.Views.GtkUI
             yhboxBtns.Add(menuButton);
 		}
 
-		private MenuItem CreateMenuItemWidget(ButtonElement action)
+		private MenuItem CreateMenuItemWidget(DefaultJournalAction action)
 		{
 			MenuItem menuItem = new MenuItem(action.Label);
 

@@ -444,12 +444,12 @@ namespace QS.Journal.GtkUI
 		}
 
 		private bool isDestroyed = false;
+		
 		public override void Destroy()
 		{
 			isDestroyed = true;
 			ViewModel.DataLoader.CancelLoading();
 			base.Destroy();
-			ViewModel.Dispose();
 		}
 
 		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)

@@ -9,16 +9,16 @@ using QS.Tdi;
 
 namespace QS.ViewModels
 {
-	public class EntitiesJournalActionsViewModel : JournalActionsViewModel
+	public class EntitiesJournalActionsViewModel : ButtonsJournalActionsViewModel
 	{
 		private Action hideJournalAction;
-		protected IReadOnlyDictionary<Type, JournalEntityConfig> entityConfigs;
-		protected ITdiTab journalTab;
-		protected readonly IInteractiveService interactiveService;
+		protected IReadOnlyDictionary<Type, JournalEntityConfig> EntityConfigs;
+		protected ITdiTab JournalTab;
+		protected readonly IInteractiveService InteractiveService;
 
 		public EntitiesJournalActionsViewModel(IInteractiveService interactiveService)
 		{
-			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+			InteractiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 		}
 
 		public override object[] SelectedItems 
@@ -39,15 +39,17 @@ namespace QS.ViewModels
 			}
 		}
 
-		protected virtual bool CanCreateEntity()
+		#region Дефолтные значения экшена Добавить
+		
+		protected override bool CanCreateEntity()
 		{
-			var entityConfig = entityConfigs.First().Value;
+			var entityConfig = EntityConfigs.First().Value;
 			return entityConfig.PermissionResult.CanCreate;
 		}
 
-		protected virtual void DefaultAddAction()
+		protected override void DefaultAddAction()
 		{
-			var entityConfig = entityConfigs.First().Value;
+			var entityConfig = EntityConfigs.First().Value;
 			var docConfig = entityConfig.EntityDocumentConfigurations.First();
 			ITdiTab newTab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 
@@ -56,15 +58,19 @@ namespace QS.ViewModels
 				dlg.EntitySaved += OnNewEntitySaved;
 			}
 
-			TabParent.OpenTab(() => newTab, journalTab);
+			TabParent.OpenTab(() => newTab, JournalTab);
 
 			if (docConfig.JournalParameters.HideJournalForCreateDialog) 
 			{
 				hideJournalAction?.Invoke();
 			}
 		}
+		
+		#endregion
 
-		protected virtual bool CanEditEntity()
+		#region Дефолтные значения экшена Изменить
+
+		protected override bool CanEditEntity()
 		{
 			if (SelectedItems == null) {
 				return false;
@@ -79,31 +85,35 @@ namespace QS.ViewModels
 
 			var selectedNode = selectedNodes.First();
 
-			if (!entityConfigs.ContainsKey(selectedNode.EntityType)) 
+			if (!EntityConfigs.ContainsKey(selectedNode.EntityType)) 
 			{
 				return false;
 			}
 
-			var config = entityConfigs[selectedNode.EntityType];
+			var config = EntityConfigs[selectedNode.EntityType];
 			return config.PermissionResult.CanUpdate;
 		}
 
-		protected virtual void DefaultEditAction()
+		protected override void DefaultEditAction()
 		{
 			var selectedNodes = SelectedItems.OfType<JournalEntityNodeBase>().ToArray();
 			var selectedNode = selectedNodes.First();
-			var config = entityConfigs[selectedNode.EntityType];
+			var config = EntityConfigs[selectedNode.EntityType];
 			var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
 
-			TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), journalTab);
+			TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), JournalTab);
 
 			if (foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) 
 			{
 				hideJournalAction?.Invoke();
 			}
 		}
+		
+		#endregion
 
-		protected virtual bool CanDeleteEntity()
+		#region Дефолтные значения экшена Удалить
+
+		protected override bool CanDeleteEntity()
 		{
 			if (SelectedItems == null) {
 				return false;
@@ -118,26 +128,28 @@ namespace QS.ViewModels
 
 			var selectedNode = selectedNodes.First();
 
-			if (!entityConfigs.ContainsKey(selectedNode.EntityType)) 
+			if (!EntityConfigs.ContainsKey(selectedNode.EntityType)) 
 			{
 				return false;
 			}
 
-			var config = entityConfigs[selectedNode.EntityType];
+			var config = EntityConfigs[selectedNode.EntityType];
 			return config.PermissionResult.CanDelete;
 		}
 
-		protected virtual void DefaultDeleteAction()
+		protected override void DefaultDeleteAction()
 		{
 			var selectedNodes = SelectedItems.OfType<JournalEntityNodeBase>();
 			var selectedNode = selectedNodes.First();
-			var config = entityConfigs[selectedNode.EntityType];
+			var config = EntityConfigs[selectedNode.EntityType];
 
 			if (config.PermissionResult.CanDelete)
 			{
 				DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
 			}
 		}
+		
+		#endregion
 
 		private void OnNewEntitySaved(object sender, EntitySavedEventArgs e)
 		{
@@ -156,23 +168,27 @@ namespace QS.ViewModels
 				return;
 			}
 
-			if (interactiveService.Question("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
+			if (InteractiveService.Question("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
 			{
 				OnItemsSelectedAction?.Invoke();
 			}
 		}
 
-		private void CreateAddActions(bool createAddAction)
+		#region Создание экшенов
+		
+		#region Создание экшена Добавить
+
+		protected override void CreateAddAction(bool createAddAction)
 		{
 			if(createAddAction)
 			{
-				var totalCreateDialogConfigs = entityConfigs
+				var totalCreateDialogConfigs = EntityConfigs
 					.Where(x => x.Value.PermissionResult.CanCreate)
 					.Sum(x => x.Value.EntityDocumentConfigurations
 						.Select(y => y.GetCreateEntityDlgConfigs().Count())
 						.Sum());
 
-				if(entityConfigs.Values.Count(x => x.PermissionResult.CanRead) > 1 || totalCreateDialogConfigs > 1)
+				if(EntityConfigs.Values.Count(x => x.PermissionResult.CanRead) > 1 || totalCreateDialogConfigs > 1)
 				{
 					CreateMultipleAddActions();
 				}
@@ -185,38 +201,26 @@ namespace QS.ViewModels
 
 		private void CreateSingleAddAction()
 		{
-			CreateAction("Добавить", CanCreateEntity, () => true, DefaultAddAction, ActionType.Add);
-		}
-
-		private void CreateAction(
-			string label,
-			Func<bool> sensitiveFunc,
-			Func<bool> visibleFunc,
-			Action executeAction,
-			ActionType actionType,
-			string hotkeys = null)
-		{
-			var action = new ButtonElement(label, sensitiveFunc, visibleFunc, executeAction, actionType, hotkeys);
-			JournalActions.Add(action);
+			CreateAction(DefaultAddLabel(), CanCreateEntity, () => true, DefaultAddAction, ActionType.Add);
 		}
 
 		private void CreateMultipleAddActions()
 		{
 			var addParentNodeAction =
-				new ButtonElement("Добавить", () => true, () => true, () => { }, ActionType.MultipleAdd);
+				new DefaultJournalAction(DefaultAddLabel(), () => true, () => true, () => { }, ActionType.MultipleAdd);
 
-			foreach(var entityConfig in entityConfigs.Values)
+			foreach(var entityConfig in EntityConfigs.Values)
 			{
 				foreach(var documentConfig in entityConfig.EntityDocumentConfigurations)
 				{
 					foreach(var createDlgConfig in documentConfig.GetCreateEntityDlgConfigs())
 					{
-						var childNodeAction = new ButtonElement(createDlgConfig.Title,
+						var childNodeAction = new DefaultJournalAction(createDlgConfig.Title,
 							() => entityConfig.PermissionResult.CanCreate,
 							() => entityConfig.PermissionResult.CanCreate,
 							() =>
 							{
-								TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, journalTab);
+								TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, JournalTab);
 
 								if(documentConfig.JournalParameters.HideJournalForCreateDialog)
 								{
@@ -232,54 +236,25 @@ namespace QS.ViewModels
 
 			JournalActions.Add(addParentNodeAction);
 		}
+		
+		#endregion
 
-		private void CreateActions(bool createAddAction, bool createEditAction, bool createDeleteAction)
-		{
-			CreateAddActions(createAddAction);
-			CreateEditAction(createEditAction);
-			CreateDeleteAction(createDeleteAction);
-		}
+		#endregion
 
-		private void CreateEditAction(bool createEditAction)
-		{
-			if(createEditAction)
-			{
-				CreateAction("Изменить", CanEditEntity, () => true, DefaultEditAction, ActionType.Edit);
-			}
-		}
-
-		private void UpdateRowActivatedAction()
-		{
-			if(SelectionMode == JournalSelectionMode.None)
-			{
-				RowActivatedAction = JournalActions.SingleOrDefault(a => a.ActionType == ActionType.Delete)?.ExecuteAction;
-			}
-		}
-
-		private void CreateDeleteAction(bool createDeleteAction)
-		{
-			if(createDeleteAction)
-			{
-				CreateAction("Удалить", CanDeleteEntity, () => true, DefaultDeleteAction, ActionType.Delete);
-			}
-		}
-
-		public virtual void Initialize(
-			JournalSelectionMode selectionMode,
+		public void Initialize(
 			Dictionary<Type, JournalEntityConfig> entityConfigs,
 			ITdiTab journalTab,
 			Action hideJournal,
-			Action onItemsSelected,
 			bool createSelectAction = true,
 			bool createAddAction = true,
 			bool createEditAction = true,
 			bool createDeleteAction = true)
 		{
-			this.entityConfigs = entityConfigs;
-			this.journalTab = journalTab;
+			EntityConfigs = entityConfigs;
+			JournalTab = journalTab;
 			hideJournalAction = hideJournal;
 			
-			CreateDefaultSelectAction(selectionMode, onItemsSelected, createSelectAction);
+			CreateDefaultSelectAction(createSelectAction);
 			CreateActions(createAddAction, createEditAction, createDeleteAction);
 		}
 	}

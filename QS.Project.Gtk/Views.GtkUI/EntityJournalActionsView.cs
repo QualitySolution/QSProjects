@@ -1,4 +1,6 @@
-﻿using QS.ViewModels;
+﻿using System.Linq;
+using Gamma.GtkWidgets;
+using QS.ViewModels;
 
 namespace QS.Views.GtkUI
 {
@@ -12,28 +14,29 @@ namespace QS.Views.GtkUI
 
         private void Configure()
         {
-            //btnSelect.Clicked += (sender, e) => ViewModel.SelectCommand.Execute();
-            btnAdd.Clicked += (sender, e) => ViewModel.AddCommand.Execute();
-            btnEdit.Clicked += (sender, e) => ViewModel.EditCommand.Execute();
-            btnDelete.Clicked += (sender, e) => ViewModel.DeleteCommand.Execute();
+            CreateActions();
+        }
 
-            /*btnSelect.Binding.AddSource(ViewModel)
-                .AddBinding(vm => vm.CanSelect, w => w.Sensitive)
-                .AddBinding(vm => vm.IsSelectVisible, w => w.Visible)
-                .InitializeFromSource();*/
-            btnAdd.Binding.AddSource(ViewModel)
-                .AddBinding(vm => vm.CanCreate, w => w.Sensitive)
-                .AddBinding(vm => vm.IsAddVisible, w => w.Visible)
-                .InitializeFromSource();
-            btnEdit.Binding.AddSource(ViewModel)
-                .AddBinding(vm => vm.CanEdit, w => w.Sensitive)
-                .AddBinding(vm => vm.IsEditVisible, w => w.Visible)
-                .InitializeFromSource();
-            btnDelete.Binding.AddSource(ViewModel)
-                .AddBinding(vm => vm.CanDelete, w => w.Sensitive)
-                .AddBinding(vm => vm.IsDeleteVisible, w => w.Visible)
-                .InitializeFromSource();
-            
+        private void CreateActions()
+        {
+            if(ViewModel.JournalActions.Any())
+            {
+                foreach(var action in ViewModel.JournalActions)
+                {
+                    var btn = new yButton();
+                    btn.Show();
+
+                    btn.Clicked += (sender, args) => action.ExecuteAction?.Invoke();
+
+                    btn.Binding.AddSource(action)
+                        .AddBinding(a => a.Label, w => w.Label)
+                        .AddBinding(a => a.Sensitive, w => w.Sensitive)
+                        .AddBinding(a => a.Visible, w => w.Visible)
+                        .InitializeFromSource();
+
+                    yhboxBtns.Add(btn);
+                }
+            }
         }
     }
 }
