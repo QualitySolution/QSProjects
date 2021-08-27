@@ -12,22 +12,21 @@ namespace QS.ViewModels
 		private Action createEntityDialogAction;
 		private Action<object> editEntityDialogAction;
 		private readonly IDeleteEntityService deleteEntityService;
+		private readonly ICurrentPermissionService currentPermissionService;
 
 		public EntityJournalActionsViewModel(
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null)
 		{
-			CurrentPermissionService = currentPermissionService;
+			this.currentPermissionService = currentPermissionService;
 			this.deleteEntityService = deleteEntityService;
 		}
-
-		public ICurrentPermissionService CurrentPermissionService { get; }
 
 		#region Дефолтные значения экшена Добавить
 
 		protected override bool CanCreateEntity()
 		{
-			return CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(entityType).CanCreate;
+			return currentPermissionService == null || currentPermissionService.ValidateEntityPermission(entityType).CanCreate;
 		}
 
 		protected override void DefaultAddAction()
@@ -41,7 +40,7 @@ namespace QS.ViewModels
 		
 		protected override bool CanEditEntity()
 		{
-			return (CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(entityType).CanUpdate)
+			return (currentPermissionService == null || currentPermissionService.ValidateEntityPermission(entityType).CanUpdate)
 			       && SelectedItems.Any();
 		}
 
@@ -59,7 +58,7 @@ namespace QS.ViewModels
 
 		protected override bool CanDeleteEntity()
 		{
-			return (CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(entityType).CanDelete)
+			return (currentPermissionService == null || currentPermissionService.ValidateEntityPermission(entityType).CanDelete)
 			       && SelectedItems.Any();
 		}
 

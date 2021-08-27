@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QS.Project.Journal
 {
 	public class JournalSelectedEventArgs : EventArgs
 	{
-		public object[] SelectedObjects { get; }
+		public IList<object> SelectedObjects { get; }
 
-		public JournalSelectedEventArgs(object[] selectedobjects)
+		public JournalSelectedEventArgs(IList<object> selectedobjects)
 		{
 			SelectedObjects = selectedobjects;
 		}

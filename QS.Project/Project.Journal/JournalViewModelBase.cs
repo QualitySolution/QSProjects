@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using Autofac;
 using NHibernate.Criterion;
@@ -25,8 +23,8 @@ namespace QS.Project.Journal
 
 		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
 
-		private object[] selectedItems = new object[0];
-		public object[] SelectedItems
+		private IList<object> selectedItems;
+		public IList<object> SelectedItems
 		{
 			get => selectedItems; 
 			set
@@ -52,18 +50,9 @@ namespace QS.Project.Journal
 			set { }
 		}
 
-		[Obsolete("Лучше использовать JournalActionsViewModel")]
-		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
-
-		[Obsolete("Лучше использовать JournalActionsViewModel")]
-		protected virtual List<IJournalAction> NodeActionsList { get; set; }
-
 		public JournalActionsViewModel JournalActionsViewModel { get; }
 		public virtual IEnumerable<IJournalAction> PopupActions => PopupActionsList;
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
-
-		[Obsolete("Лучше использовать JournalActionsViewModel")]
-		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
 		public void Refresh()
 		{
@@ -83,7 +72,6 @@ namespace QS.Project.Journal
 			}
 		}
 
-		public Action UpdateJournalActions;
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
@@ -110,7 +98,7 @@ namespace QS.Project.Journal
 			INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
 			JournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
-			NodeActionsList = new List<IJournalAction>();
+			SelectedItems = new List<object>();
 			PopupActionsList = new List<IJournalAction>();
 
 			//Поиск
@@ -119,16 +107,7 @@ namespace QS.Project.Journal
 			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
-			PropertyChanged += OnPropertyChanged;
 			JournalActionsViewModel.OnItemsSelectedAction += OnItemsSelected;
-		}
-
-		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if(e.PropertyName == nameof(TabParent))
-			{
-				JournalActionsViewModel.TabParent = TabParent;
-			}
 		}
 
 		protected virtual void OnItemsSelected()
@@ -136,21 +115,8 @@ namespace QS.Project.Journal
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(SelectedItems));
 			Close(false, CloseSource.Self);
 		}
-		
-		[Obsolete("Лучше использовать перегрузку этого метода без прараметров, после перехода на JournalActionsViewModel")]
-		protected virtual void OnItemsSelected(object[] selectedNodes)
-		{
-			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
-			Close(false, CloseSource.Self);
-		}
 
 		#region Configure actions
-
-		protected virtual void CreateNodeActions()
-		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
-		}
 
 		protected virtual void InitializeJournalActionsViewModel()
 		{
@@ -159,23 +125,6 @@ namespace QS.Project.Journal
 
 		protected virtual void CreatePopupActions()
 		{
-		}
-
-		[Obsolete("Лучше использовать JournalActionsViewModel")]
-		protected virtual void CreateDefaultSelectAction()
-		{
-			var selectAction = new JournalAction("Выбрать",
-				selected => selected.Any(),
-				selected => SelectionMode != JournalSelectionMode.None,
-				OnItemsSelected
-			);
-			
-			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) 
-			{
-				RowActivatedAction = selectAction;
-			}
-			
-			NodeActionsList.Add(selectAction);
 		}
 
 		#endregion Configure actions
@@ -194,7 +143,6 @@ namespace QS.Project.Journal
 		public override void Dispose()
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
-			PropertyChanged -= OnPropertyChanged;
 			JournalActionsViewModel.OnItemsSelectedAction -= OnItemsSelected;
 
 			if (JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)

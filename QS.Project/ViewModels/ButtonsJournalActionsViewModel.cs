@@ -109,10 +109,8 @@ namespace QS.ViewModels
 						RowActivatedAction = editAction.ExecuteAction;
 					}
 				}
-				else
-				{
-					base.InitializeRowActivatedAction();
-				}
+				
+				base.InitializeRowActivatedAction();
 			}
 		}
 	}

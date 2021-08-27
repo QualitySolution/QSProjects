@@ -17,7 +17,6 @@ using QS.ViewModels;
 using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
-using QS.Widgets;
 
 namespace QS.Journal.GtkUI
 {
@@ -101,10 +100,6 @@ namespace QS.Journal.GtkUI
 					ViewModel.JournalActionsViewModel?.RowActivatedAction?.Invoke();
 				};
 			}
-			else
-			{
-				ConfigureActions();
-			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
 			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
@@ -118,10 +113,8 @@ namespace QS.Journal.GtkUI
 
 			tableview.ItemsDataSource = ViewModel.Items;
 			ViewModel.Refresh();
-			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions += UpdateButtons;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -290,98 +283,9 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
-		private object[] GetSelectedItems()
+		private IList<object> GetSelectedItems()
 		{
-			return tableview.GetSelectedObjects();
-		}
-
-		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
-		List<System.Action> actionsSensitivity;
-		
-		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
-		List<System.Action> actionsVisibility;
-
-		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
-		private void ConfigureActions()
-		{
-			if(actionsSensitivity == null) {
-				actionsSensitivity = new List<System.Action>();
-			} else {
-				actionsSensitivity.Clear();
-			}
-
-			if(actionsVisibility == null) {
-				actionsVisibility = new List<System.Action>();
-			} else {
-				actionsVisibility.Clear();
-			}
-			
-			foreach(var action in ViewModel.NodeActions) {
-				Widget actionWidget;
-
-				if(action.ChildActions.Any()) {
-					MenuButton menuButton = new MenuButton();
-					menuButton.Label = action.Title;
-					Menu childActionButtons = new Menu();
-					foreach(var childAction in action.ChildActions) {
-						childActionButtons.Add(CreateMenuItemWidget(childAction));
-					}
-					menuButton.Menu = childActionButtons;
-					actionWidget = menuButton;
-				} else {
-					Button button = new Button();
-					button.Label = action.Title;
-
-					button.Clicked += (sender, e) => { action.ExecuteAction(GetSelectedItems()); };
-
-					actionsSensitivity.Add(() => {
-						button.Sensitive = action.GetSensitivity(GetSelectedItems());
-					});
-
-					actionsVisibility.Add(() => {
-						button.Visible = action.GetVisibility(GetSelectedItems());
-					});
-					actionWidget = button;
-				}
-
-				actionWidget.ShowAll();
-
-				hboxButtons.Add(actionWidget);
-				Box.BoxChild addDocumentButtonBox = (Box.BoxChild)hboxButtons[actionWidget];
-				addDocumentButtonBox.Expand = false;
-				addDocumentButtonBox.Fill = false;
-			}
-			
-			tableview.RowActivated += (o, args) => 
-			{
-				ViewModel.RowActivatedAction?.ExecuteAction(GetSelectedItems());
-			};
-		}
-
-		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
-		private MenuItem CreateMenuItemWidget(IJournalAction action)
-		{
-			MenuItem menuItem = new MenuItem(action.Title);
-
-			menuItem.Activated += (sender, e) => {
-				action.ExecuteAction(GetSelectedItems());
-			};
-
-			actionsSensitivity.Add(() => {
-				menuItem.Sensitive = action.GetSensitivity(GetSelectedItems());
-			});
-
-			actionsVisibility.Add(() => {
-				menuItem.Visible = action.GetVisibility(GetSelectedItems());
-			});
-
-			if(action.ChildActions.Any()) {
-				foreach(var childAction in action.ChildActions) {
-					menuItem.Add(CreateMenuItemWidget(childAction));
-				}
-			}
-
-			return menuItem;
+			return tableview.GetSelectedObjects().ToList();
 		}
 
 		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
@@ -425,22 +329,6 @@ namespace QS.Journal.GtkUI
 		void Selection_Changed(object sender, EventArgs e)
 		{
 			ViewModel.SelectedItems = GetSelectedItems();
-			UpdateButtons();
-		}
-
-		[Obsolete("Удалить при полном переходе на JournalActionsViewModel")]
-		private void UpdateButtons()
-		{
-			if(actionsSensitivity != null) {
-				foreach(var item in actionsSensitivity) {
-					item.Invoke();
-				}
-			}
-			if(actionsVisibility != null) {
-				foreach(var item in actionsVisibility) {
-					item.Invoke();
-				}
-			}
 		}
 
 		private bool isDestroyed = false;
@@ -461,20 +349,24 @@ namespace QS.Journal.GtkUI
 
 			ExecuteTypeJournalAction(args.Event.Key.ToString());
 		}
-
-		//TODO сделать поиск горячих клавиш в journalActionsViewModel
+		
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			var nodeActions = ViewModel.NodeActions.Where(n => !string.IsNullOrEmpty(n.HotKeys) &&
-				n.HotKeys.Replace(" ", string.Empty).ToLower()
-				.Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
-				.Contains(hotKey.ToLower()));
+			if(ViewModel.JournalActionsViewModel != null && ViewModel.JournalActionsViewModel.JournalActions.Any())
+			{
+				var nodeActions = 
+					ViewModel.JournalActionsViewModel.JournalActions.Where(
+						n => !string.IsNullOrEmpty(n.HotKeys)
+						     && n.HotKeys.Replace(" ", string.Empty).ToLower()
+					    .Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
+					    .Contains(hotKey.ToLower()));
 
-			if (nodeActions.Count() > 1)
-				throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
+				if (nodeActions.Count() > 1)
+					throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
 
-			if (nodeActions.Count() == 1)
-				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
+				if (nodeActions.Count() == 1)
+					nodeActions.ElementAt(0).ExecuteAction();
+			}
 		}
 	}
 }

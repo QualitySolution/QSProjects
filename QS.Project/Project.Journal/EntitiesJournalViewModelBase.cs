@@ -67,7 +67,7 @@ namespace QS.Project.Journal
 
 		protected override void OnItemsSelected()
 		{
-			OnEntitySelectedResult?.Invoke(this, new JournalSelectedNodesEventArgs(SelectedItems.Cast<JournalEntityNodeBase>().ToArray()));
+			OnEntitySelectedResult?.Invoke(this, new JournalSelectedNodesEventArgs(SelectedItems.Cast<JournalEntityNodeBase>().ToList()));
 			Close(false, CloseSource.Self);
 		}
 

@@ -376,8 +376,10 @@ namespace QS.Project.Journal.DataLoader
 			});
 		}
 
-		public IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow)
+		public IEnumerable<object> GetNodes(int entityId)
 		{
+			var uow = unitOfWorkFactory.CreateWithoutRoot();
+			
 			foreach(var item in QueryLoaders)
 				yield return item.GetNode(entityId, uow);
 		}

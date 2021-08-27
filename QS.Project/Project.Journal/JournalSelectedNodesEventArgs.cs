@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace QS.Project.Journal
 {
 	public class JournalSelectedNodesEventArgs : EventArgs
 	{
-		public JournalEntityNodeBase[] SelectedNodes { get; }
+		public IList<JournalEntityNodeBase> SelectedNodes { get; }
 
-		public JournalSelectedNodesEventArgs(JournalEntityNodeBase[] selectedNodes)
+		public JournalSelectedNodesEventArgs(IList<JournalEntityNodeBase> selectedNodes)
 		{
 			SelectedNodes = selectedNodes;
 		}

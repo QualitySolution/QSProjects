@@ -13,7 +13,7 @@ namespace QS.Project.Journal
 		/// <param name="sensitiveFunc">Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие,к примеру,как объект выпадающего меню), при выделенных Node-ах.</param>
 		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
-		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc, Action<object[]> executeAction = null, string hotKeys = null)
+		public JournalAction(string title, Func<IList<object>, bool> sensitiveFunc, Func<IList<object>, bool> visibleFunc, Action<IList<object>> executeAction = null, string hotKeys = null)
 		{
 			ChildActionsList = new List<IJournalAction>();
 			Title = title;
@@ -27,11 +27,11 @@ namespace QS.Project.Journal
 		/// <summary>
 		/// Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.
 		/// </summary>
-		private readonly Func<object[], bool> sensitiveFunc;
+		private readonly Func<IList<object>, bool> sensitiveFunc;
 		/// <summary>
 		/// Функция проверки Visible(видно ли действие,к примеру,как объект выпадающего меню), при выделенных Node-ах.
 		/// </summary>
-		private readonly Func<object[], bool> visibleFunc;
+		private readonly Func<IList<object>, bool> visibleFunc;
 		/// <summary>
 		/// Дочерние действия.
 		/// </summary>
@@ -42,14 +42,14 @@ namespace QS.Project.Journal
 		/// Выполняемое действие при вызове.
 		/// </summary>
 		/// <value>Объекты - в данном случае это Node-ы журнала</value>
-		public Action<object[]> ExecuteAction { get; }
+		public Action<IList<object>> ExecuteAction { get; }
 
-        public bool GetSensitivity(object[] selectedNodes)
+        public bool GetSensitivity(IList<object> selectedNodes)
 		{
 			return sensitiveFunc.Invoke(selectedNodes);
 		}
 
-		public bool GetVisibility(object[] selectedNodes)
+		public bool GetVisibility(IList<object> selectedNodes)
 		{
 			return visibleFunc.Invoke(selectedNodes);
 		}

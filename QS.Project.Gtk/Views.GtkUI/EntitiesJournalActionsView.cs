@@ -26,9 +26,9 @@ namespace QS.Views.GtkUI
 			{
 				foreach(var action in ViewModel.JournalActions)
 				{
-					if(action.ChildButtonElements.Any())
+					if(action.ChildDefaultJournalActions.Any())
 					{
-						CreateMultipleButton(action.Label, action.ChildButtonElements);
+						CreateMultipleButton(action.Label, action.ChildDefaultJournalActions);
 					}
 					else
 					{
@@ -78,9 +78,9 @@ namespace QS.Views.GtkUI
 
 			menuItem.Visible = action.Visible;
 
-			if(action.ChildButtonElements.Any())
+			if(action.ChildDefaultJournalActions.Any())
 			{
-				foreach(var childAction in action.ChildButtonElements)
+				foreach(var childAction in action.ChildDefaultJournalActions)
 				{
 					menuItem.Add(CreateMenuItemWidget(childAction));
 				}

@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.Project.Journal;
-using QS.Tdi;
 
 namespace QS.ViewModels
 {
 	public class JournalActionsViewModel : WidgetViewModelBase
 	{
-		protected object[] selectedItems = new object[0];
+		protected IList<object> selectedItems;
 
 		private JournalSelectionMode selectionMode;
 		public JournalSelectionMode SelectionMode
@@ -34,7 +33,7 @@ namespace QS.ViewModels
 
 		public Action OnItemsSelectedAction;
 		
-		public virtual object[] SelectedItems
+		public virtual IList<object> SelectedItems
 		{
 			get => selectedItems;
 			set
@@ -52,8 +51,6 @@ namespace QS.ViewModels
 			}
 		}
 
-		public ITdiTabParent TabParent { get; set; }
-		
 		public Action RowActivatedAction { get; set; }
 		
 		public IList<DefaultJournalAction> JournalActions { get; set; } = new List<DefaultJournalAction>();
@@ -145,7 +142,7 @@ namespace QS.ViewModels
 		}
 
 		public Action ExecuteAction { get; set; }
-		public IList<DefaultJournalAction> ChildButtonElements { get; set; } = new List<DefaultJournalAction>();
+		public IList<DefaultJournalAction> ChildDefaultJournalActions { get; set; } = new List<DefaultJournalAction>();
 		public ActionType ActionType { get; }
 		public string HotKeys { get; }
 

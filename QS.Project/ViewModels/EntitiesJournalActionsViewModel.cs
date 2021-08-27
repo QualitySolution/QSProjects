@@ -21,24 +21,6 @@ namespace QS.ViewModels
 			InteractiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 		}
 
-		public override object[] SelectedItems 
-		{
-			get => selectedItems;
-			set 
-			{
-				if (SetField(ref selectedItems, value)) 
-				{
-					if(JournalActions.Any())
-					{
-						foreach(var action in JournalActions)
-						{
-							action.OnPropertyChanged(nameof(action.Sensitive));
-						}
-					}
-				}
-			}
-		}
-
 		#region Дефолтные значения экшена Добавить
 		
 		protected override bool CanCreateEntity()
@@ -53,14 +35,14 @@ namespace QS.ViewModels
 			var docConfig = entityConfig.EntityDocumentConfigurations.First();
 			ITdiTab newTab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 
-			if (newTab is ITdiDialog dlg) 
+			if (newTab is ITdiDialog dlg)
 			{
 				dlg.EntitySaved += OnNewEntitySaved;
 			}
 
-			TabParent.OpenTab(() => newTab, JournalTab);
+			JournalTab.TabParent.OpenTab(() => newTab, JournalTab);
 
-			if (docConfig.JournalParameters.HideJournalForCreateDialog) 
+			if (docConfig.JournalParameters.HideJournalForCreateDialog)
 			{
 				hideJournalAction?.Invoke();
 			}
@@ -101,7 +83,7 @@ namespace QS.ViewModels
 			var config = EntityConfigs[selectedNode.EntityType];
 			var foundDocumentConfig = config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(selectedNode));
 
-			TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), JournalTab);
+			JournalTab.TabParent.OpenTab(() => foundDocumentConfig.GetOpenEntityDlgFunction().Invoke(selectedNode), JournalTab);
 
 			if (foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) 
 			{
@@ -153,7 +135,7 @@ namespace QS.ViewModels
 
 		private void OnNewEntitySaved(object sender, EntitySavedEventArgs e)
 		{
-			if (!(e?.Entity is IDomainObject))
+			if (!(e?.Entity is IDomainObject entity))
 			{
 				return;
 			}
@@ -168,8 +150,18 @@ namespace QS.ViewModels
 				return;
 			}
 
+			var node = (JournalTab as JournalViewModelBase).DataLoader.GetNodes(entity.Id)
+				.OfType<JournalEntityNodeBase>()
+				.FirstOrDefault(x => x.EntityType == e.Entity.GetType());
+
+			if(node == null)
+			{
+				return;
+			}
+
 			if (InteractiveService.Question("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
 			{
+				selectedItems.Add(node);
 				OnItemsSelectedAction?.Invoke();
 			}
 		}
@@ -201,7 +193,7 @@ namespace QS.ViewModels
 
 		private void CreateSingleAddAction()
 		{
-			CreateAction(DefaultAddLabel(), CanCreateEntity, () => true, DefaultAddAction, ActionType.Add);
+			CreateAction(DefaultAddLabel(), CanCreateEntity, () => true, DefaultAddAction, ActionType.Add, "Insert");
 		}
 
 		private void CreateMultipleAddActions()
@@ -220,7 +212,7 @@ namespace QS.ViewModels
 							() => entityConfig.PermissionResult.CanCreate,
 							() =>
 							{
-								TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, JournalTab);
+								JournalTab.TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, JournalTab);
 
 								if(documentConfig.JournalParameters.HideJournalForCreateDialog)
 								{
@@ -229,7 +221,7 @@ namespace QS.ViewModels
 							},
 							ActionType.Add
 						);
-						addParentNodeAction.ChildButtonElements.Add(childNodeAction);
+						addParentNodeAction.ChildDefaultJournalActions.Add(childNodeAction);
 					}
 				}
 			}
