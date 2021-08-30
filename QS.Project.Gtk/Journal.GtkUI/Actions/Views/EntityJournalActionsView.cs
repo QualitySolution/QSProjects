@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Gamma.GtkWidgets;
 using QS.Project.Journal.Actions.ViewModels;
-using QS.ViewModels;
+using QS.Views;
 
-namespace QS.Views.GtkUI
+namespace QS.Project.Journal.Actions.Views
 {
     public partial class EntityJournalActionsView : ViewBase<EntityJournalActionsViewModel>
     {

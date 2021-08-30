@@ -231,14 +231,14 @@
     <Compile Include="Views\Dialog\SavedDialogViewBase.cs" />
     <Compile Include="ChangePassword.Views\ChangePasswordView.cs" />
     <Compile Include="gtk-gui\QS.ChangePassword.Views.ChangePasswordView.cs" />
-    <Compile Include="Views.GtkUI\JournalActionsView.cs" />
-    <Compile Include="gtk-gui\QS.Views.GtkUI.JournalActionsView.cs" />
-    <Compile Include="Views.GtkUI\EntitiesJournalActionsView.cs" />
-    <Compile Include="gtk-gui\QS.Views.GtkUI.EntitiesJournalActionsView.cs" />
-    <Compile Include="Views.GtkUI\EntityJournalActionsView.cs" />
-    <Compile Include="gtk-gui\QS.Views.GtkUI.EntityJournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.JournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.EntitiesJournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.EntityJournalActionsView.cs" />
     <Compile Include="Dialog\Views\ProgressWindowView.cs" />
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
+    <Compile Include="Journal.GtkUI\Actions\Views\EntitiesJournalActionsView.cs" />
+    <Compile Include="Journal.GtkUI\Actions\Views\EntityJournalActionsView.cs" />
+    <Compile Include="Journal.GtkUI\Actions\Views\JournalActionsView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -270,6 +270,8 @@
     <Folder Include="BaseParameters.Views\" />
     <Folder Include="ChangePassword.Views\" />
     <Folder Include="Dialog\Views\" />
+    <Folder Include="Journal.GtkUI\Actions\" />
+    <Folder Include="Journal.GtkUI\Actions\Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">

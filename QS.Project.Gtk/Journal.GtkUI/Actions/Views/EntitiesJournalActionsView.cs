@@ -3,10 +3,10 @@ using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.Project.Journal.Actions.ViewModels;
-using QS.ViewModels;
+using QS.Views;
 using QS.Widgets;
 
-namespace QS.Views.GtkUI
+namespace QS.Project.Journal.Actions.Views
 {
     public partial class EntitiesJournalActionsView : ViewBase<EntitiesJournalActionsViewModel>
     {

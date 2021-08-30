@@ -3677,7 +3677,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Views.GtkUI.JournalActionsView" design-size="104 33">
+  <widget class="Gtk.Bin" id="QS.Project.Journal.Actions.Views.JournalActionsView" design-size="104 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -3690,7 +3690,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Views.GtkUI.EntitiesJournalActionsView" design-size="342 33">
+  <widget class="Gtk.Bin" id="QS.Project.Journal.Actions.Views.EntitiesJournalActionsView" design-size="342 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -3709,7 +3709,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Views.GtkUI.EntityJournalActionsView" design-size="313 33">
+  <widget class="Gtk.Bin" id="QS.Project.Journal.Actions.Views.EntityJournalActionsView" design-size="313 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
