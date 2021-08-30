@@ -2,6 +2,7 @@
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.ViewModels;
 using QS.Widgets;
 

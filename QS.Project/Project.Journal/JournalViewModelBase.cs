@@ -9,6 +9,7 @@ using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Project.Search;
@@ -145,7 +146,7 @@ namespace QS.Project.Journal
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
 			JournalActionsViewModel.OnItemsSelectedAction -= OnItemsSelected;
 
-			if (JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)
+			if(JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)
 			{
 				disposableJournalActionsViewModel.Dispose();
 			}

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Gamma.GtkWidgets;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.ViewModels;
 
 namespace QS.Views.GtkUI

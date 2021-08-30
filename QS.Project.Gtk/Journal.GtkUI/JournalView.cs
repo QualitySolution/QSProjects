@@ -8,6 +8,7 @@ using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
 using QS.Project.Journal;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;

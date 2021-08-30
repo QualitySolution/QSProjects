@@ -10,7 +10,7 @@ using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
-using QS.ViewModels;
+using QS.Project.Journal.Actions.ViewModels;
 
 namespace QS.Project.Journal
 {

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
-using QS.Project.Journal;
+using QS.ViewModels;
 
-namespace QS.ViewModels
+namespace QS.Project.Journal.Actions.ViewModels
 {
 	public class JournalActionsViewModel : WidgetViewModelBase
 	{
@@ -127,6 +127,7 @@ namespace QS.ViewModels
 			ExecuteAction = executeAction;
 			ActionType = actionType;
 			HotKeys = hotkeys;
+			ChildDefaultJournalActions = new List<DefaultJournalAction>();
 		}
 
 		public Func<bool> SensitiveFunc { get; set; }
@@ -142,7 +143,7 @@ namespace QS.ViewModels
 		}
 
 		public Action ExecuteAction { get; set; }
-		public IList<DefaultJournalAction> ChildDefaultJournalActions { get; set; } = new List<DefaultJournalAction>();
+		public IList<DefaultJournalAction> ChildDefaultJournalActions { get; }
 		public ActionType ActionType { get; }
 		public string HotKeys { get; }
 

@@ -4,7 +4,7 @@ using QS.DomainModel.Entity;
 using QS.Project.Services;
 using QS.Services;
 
-namespace QS.ViewModels
+namespace QS.Project.Journal.Actions.ViewModels
 {
 	public class EntityJournalActionsViewModel : ButtonsJournalActionsViewModel
 	{

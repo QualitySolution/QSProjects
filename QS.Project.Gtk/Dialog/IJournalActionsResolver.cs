@@ -1,4 +1,5 @@
 using Gtk;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.ViewModels;
 
 namespace QS.Dialog

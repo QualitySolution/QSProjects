@@ -3,6 +3,7 @@ using System.Reflection;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Services;
 using QS.ViewModels;
 

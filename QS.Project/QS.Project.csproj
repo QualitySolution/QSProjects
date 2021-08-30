@@ -61,6 +61,10 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\ButtonsJournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\EntitiesJournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\EntityJournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\JournalActionsViewModel.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -160,11 +164,7 @@
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
-    <Compile Include="ViewModels\ButtonsJournalActionsViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
-    <Compile Include="ViewModels\EntitiesJournalActionsViewModel.cs" />
-    <Compile Include="ViewModels\EntityJournalActionsViewModel.cs" />
-    <Compile Include="ViewModels\JournalActionsViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />
     <Compile Include="Project.Services\CommonServices.cs" />
     <Compile Include="Project.Services\ICommonServices.cs" />

@@ -1,6 +1,6 @@
 ﻿using QS.DomainModel.UoW;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Services;
-using QS.ViewModels;
 
 namespace QS.Project.Journal
 {

@@ -37,22 +37,12 @@ namespace QS.Views.Resolve
 				throw new InvalidOperationException($"Имя класса {fullClassName} не соответствует шаблону `[CoreNamespace].ViewModels.[SubNamespaces].[Name]ViewModel`");
 			var groups = match[0].Groups;
 			var expectedViewName = $"{groups[1].Value}.Views{groups[2].Value}.{groups[3].Value}View";
-			var expectedViewName2 = $"{groups[1].Value}.Views{groups[2].Value}.GtkUI.{groups[3].Value}View";
 
 			foreach(var assembly in lookupAssemblies) 
 			{
 				Type viewClass = assembly.GetType(expectedViewName);
-				
-				if(viewClass == null)
-				{
-					viewClass = assembly.GetType(expectedViewName2);
 
-					if(viewClass != null)
-					{
-						return (Widget)Activator.CreateInstance(viewClass, viewModel);
-					}
-				}
-				else
+				if(viewClass != null)
 				{
 					return (Widget)Activator.CreateInstance(viewClass, viewModel);
 				}

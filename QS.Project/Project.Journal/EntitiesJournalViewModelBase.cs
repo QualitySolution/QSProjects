@@ -6,12 +6,12 @@ using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
 using QS.Project.Journal.EntitySelector;
-using QS.ViewModels;
 
 namespace QS.Project.Journal
 {

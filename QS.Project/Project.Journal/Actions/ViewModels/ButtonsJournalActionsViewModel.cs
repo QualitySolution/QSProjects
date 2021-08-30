@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using QS.Project.Journal;
+using QS.ViewModels;
 
-namespace QS.ViewModels
+namespace QS.Project.Journal.Actions.ViewModels
 {
 	public abstract class ButtonsJournalActionsViewModel : JournalActionsViewModel
 	{

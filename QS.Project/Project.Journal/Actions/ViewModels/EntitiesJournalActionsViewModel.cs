@@ -4,10 +4,10 @@ using System.Linq;
 using QS.Deletion;
 using QS.Dialog;
 using QS.DomainModel.Entity;
-using QS.Project.Journal;
 using QS.Tdi;
+using QS.ViewModels;
 
-namespace QS.ViewModels
+namespace QS.Project.Journal.Actions.ViewModels
 {
 	public class EntitiesJournalActionsViewModel : ButtonsJournalActionsViewModel
 	{
