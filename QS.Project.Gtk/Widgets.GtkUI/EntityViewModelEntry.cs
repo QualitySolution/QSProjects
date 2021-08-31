@@ -250,17 +250,13 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
-			if(entitySelector == null)
-				entitySelector = entitySelectorFactory.CreateSelector();
-
-			var entityTab = entitySelector.GetTabToOpen(selectedNode);
-			if(entityTab != null) {
-				MyTab.TabParent.AddTab(entityTab, MyTab);
-				entitySelector = null;
-				return;
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				var entityTab = localSelector?.GetTabToOpen(selectedNode);
+				if(entityTab != null) {
+					MyTab.TabParent.AddTab(entityTab, MyTab);
+					return;
+				}
 			}
-
-			entitySelector = null;
 
 			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
 			if(entityConfig.SimpleDialog) {
@@ -297,10 +293,10 @@ namespace QS.Widgets.GtkUI
 
 		void UpdateSensitive()
 		{
-			if (entitySelector == null)
-				entitySelector = entitySelectorFactory?.CreateSelector();
-			var canOpen = entitySelector?.CanOpen(selectedNode) ?? false;
-			entitySelector = null;
+			bool canOpen;
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				canOpen = localSelector?.CanOpen(selectedNode) ?? false;
+			}
 
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
 			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null && canOpen;
