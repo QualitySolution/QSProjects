@@ -183,6 +183,9 @@ namespace Gamma.GtkWidgets
 				}
 				AppendColumn(tvc);
 			}
+
+			if(ColumnsConfig.ConfiguredColumns.Any(x => x.HasToolTip))
+				HasTooltip = true;
 		}
 
 		private CellRenderer editingCell;
@@ -248,6 +251,7 @@ namespace Gamma.GtkWidgets
 			}
 		}
 
+		#region Edit Functions
 		private void NumericNodeCellEdited(object o, Gtk.EditedArgs args)
 		{
 			TreeIter iter;
@@ -329,6 +333,7 @@ namespace Gamma.GtkWidgets
 				}
 			}
 		}
+		#endregion
 
 		private void NodeRenderColumnFunc(Gtk.TreeViewColumn aColumn, Gtk.CellRenderer aCell,
 			Gtk.TreeModel aModel, Gtk.TreeIter aIter)
@@ -353,7 +358,8 @@ namespace Gamma.GtkWidgets
 				}
 			}
 		}
-
+		
+		#region GetSelected
 		public object[] GetSelectedObjects()
 		{
 			return GetSelectedObjects<object>();
@@ -400,7 +406,27 @@ namespace Gamma.GtkWidgets
 				Selection.SelectIter(iter);
 			}
 		}
+		#endregion
 
+		#region Tooltip
+
+		protected override bool OnQueryTooltip(int x, int y, bool keyboard_tooltip, Tooltip tooltip)
+		{
+			ConvertWidgetToBinWindowCoords(x, y, out int binX, out int binY);	
+			GetPathAtPos(binX, binY, out TreePath path, out TreeViewColumn column);
+
+			var columnConf = ColumnsConfig.ConfiguredColumns.FirstOrDefault(c => c.TreeViewColumn == column);
+			if(columnConf != null && columnConf.HasToolTip) {
+				object node = YTreeModel.NodeAtPath(path);
+				var text = columnConf.GetTooltipText(node);
+				tooltip.Text = text;
+				return text != null;
+			}
+
+			return base.OnQueryTooltip(x, y, keyboard_tooltip, tooltip);
+		}
+
+		#endregion
 	}
 }
 
