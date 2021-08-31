@@ -40,15 +40,25 @@ namespace QS.Project.Journal
 
 		public virtual bool CanOpen(JournalEntityNodeBase node)
 		{
-			return node != null && EntityConfigs[node.EntityType].PermissionResult.CanUpdate;
+			if(node == null)
+			{
+				return false;
+			}
+			return !EntityConfigs.TryGetValue(node.EntityType, out var config)
+				? throw new InvalidOperationException($"Не найдена конфигурация для {node.EntityType.Name}")
+				: config.PermissionResult.CanUpdate;
 		}
 
 		public virtual ITdiTab GetTabToOpen(JournalEntityNodeBase node)
 		{
-			var config = EntityConfigs[node.EntityType];
+			EntityConfigs.TryGetValue(node.EntityType, out var config);
 			var foundDocumentConfig =
-				config.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified((TNode)node));
-			return foundDocumentConfig?.GetOpenEntityDlgFunction()?.Invoke((TNode)node);
+				config?.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified((TNode)node)) ??
+				throw new InvalidOperationException($"Не найдена конфигурация для {node.EntityType.Name}");
+
+			return foundDocumentConfig.GetOpenEntityDlgFunction()?.Invoke((TNode)node) ??
+			       throw new InvalidOperationException(
+				       $"Не найдена конфигурация для открытия диалога в {nameof(foundDocumentConfig)}");
 		}
 		public event EventHandler ListUpdated;
 
