@@ -121,9 +121,9 @@ namespace QS.Widgets.GtkUI
 
 		void JournalViewModel_OnEntitySelectedResult(object sender, JournalSelectedNodesEventArgs e)
 		{
-			var selectedNode = e.SelectedNodes.FirstOrDefault();
-			if(selectedNode != null)
-				Subject = UoW.GetById(SubjectType, selectedNode.Id);
+			var selectedNodeFromJournal = e.SelectedNodes.FirstOrDefault();
+			if (selectedNodeFromJournal != null)
+				SelectSubjectByNode(selectedNodeFromJournal);
 
 			ChangedByUser?.Invoke(sender, e);
 		}
@@ -139,10 +139,15 @@ namespace QS.Widgets.GtkUI
 					notifyPropertyChangedSubject.PropertyChanged += OnSubjectPropertyChanged;
 				}
 				subject = value;
+				if (value == null) {
+					selectedNode = null;
+				}
 				UpdateWidget();
 				OnChanged();
 			}
 		}
+
+		private JournalEntityNodeBase selectedNode;
 
 		public int SubjectId {
 			get {
@@ -245,6 +250,14 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				var entityTab = localSelector?.GetTabToOpen(selectedNode);
+				if(entityTab != null) {
+					MyTab.TabParent.AddTab(entityTab, MyTab);
+					return;
+				}
+			}
+
 			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
 			if(entityConfig.SimpleDialog) {
 				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
@@ -280,14 +293,21 @@ namespace QS.Widgets.GtkUI
 
 		void UpdateSensitive()
 		{
+			bool canOpen;
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				canOpen = localSelector?.CanOpen(selectedNode) ?? false;
+			}
+
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null && canOpen;
 			buttonClear.Sensitive = sensitive && (subject != null || string.IsNullOrWhiteSpace(entryObject.Text));
 		}
 
 		protected void SelectSubjectByNode(object node)
 		{
-			Subject = UoW.GetById(SubjectType, DomainHelper.GetId(node));
+			Subject = UoW.GetById(SubjectType, node.GetId());
+			selectedNode = node as JournalEntityNodeBase;
+			UpdateSensitive();
 		}
 
 		#region AutoCompletion

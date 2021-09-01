@@ -36,7 +36,7 @@ namespace QS.Project.Journal
 
 			Register<TEntity, TEntityTab>(ItemsSourceQueryFunction, createDlgFunc, openDlgFunc);
 			ExternalNotifyChangedWith(typeof(TEntity));
-			
+
 			DataLoader.ItemsListUpdated += (sender, e) => ListUpdated?.Invoke(sender, e);
 		}
 
