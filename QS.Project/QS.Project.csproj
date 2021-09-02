@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
     <Compile Include="Navigation\ITdiPage.cs" />
+    <Compile Include="Print\SelectablePrintDocument.cs" />
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\CustomProjections.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
