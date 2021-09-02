@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
-using QS.DomainModel.Entity;
 using QS.Print;
 
 namespace QSReport
@@ -59,31 +58,6 @@ namespace QSReport
 			PrintableDocuments?.Clear();
 			PrintableDocuments.Add(doc);
 			PrintSelectedDocuments();
-		}
-	}
-
-	public class SelectablePrintDocument : PropertyChangedBase
-	{
-		private bool selected;
-		public virtual bool Selected {
-			get => selected;
-			set => SetField(ref selected, value, () => Selected);
-		}
-
-		public IPrintableDocument Document { get; set; }
-
-		public PageOrientation GetPageOrientation() => Document.Orientation == DocumentOrientation.Portrait ? PageOrientation.Portrait : PageOrientation.Landscape;
-
-		private int copies;
-		public int Copies {
-			get => copies;
-			set => SetField(ref copies, value < 1 ? 1 : value, () => Copies);
-		}
-
-		public SelectablePrintDocument(IPrintableDocument document)
-		{
-			Document = document;
-			Copies = document.CopiesToPrint;
 		}
 	}
 }
