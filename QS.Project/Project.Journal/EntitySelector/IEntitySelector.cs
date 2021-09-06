@@ -6,12 +6,11 @@ namespace QS.Project.Journal.EntitySelector
 	public interface IEntitySelector : ITdiTab, IDisposable
 	{
 		event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
-		bool CanOpen(JournalEntityNodeBase node);
+		bool CanOpen(Type subjectType);
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="node"></param>
 		/// <returns>Возвращает вкладку для редактирования существующей сущности</returns>
-		ITdiTab GetTabToOpen(JournalEntityNodeBase node);
+		ITdiTab GetTabToOpen(Type subjectType, int subjectId);
 	}
 }

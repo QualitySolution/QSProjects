@@ -139,15 +139,10 @@ namespace QS.Widgets.GtkUI
 					notifyPropertyChangedSubject.PropertyChanged += OnSubjectPropertyChanged;
 				}
 				subject = value;
-				if (value == null) {
-					selectedNode = null;
-				}
 				UpdateWidget();
 				OnChanged();
 			}
 		}
-
-		private JournalEntityNodeBase selectedNode;
 
 		public int SubjectId {
 			get {
@@ -251,7 +246,7 @@ namespace QS.Widgets.GtkUI
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
 			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
-				var entityTab = localSelector?.GetTabToOpen(selectedNode);
+				var entityTab = localSelector?.GetTabToOpen(SubjectType, SubjectId);
 				if(entityTab != null) {
 					MyTab.TabParent.AddTab(entityTab, MyTab);
 					return;
@@ -295,7 +290,7 @@ namespace QS.Widgets.GtkUI
 		{
 			bool canOpen;
 			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
-				canOpen = localSelector?.CanOpen(selectedNode) ?? false;
+				canOpen = localSelector?.CanOpen(SubjectType) ?? false;
 			}
 
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
@@ -306,7 +301,6 @@ namespace QS.Widgets.GtkUI
 		protected void SelectSubjectByNode(object node)
 		{
 			Subject = UoW.GetById(SubjectType, node.GetId());
-			selectedNode = node as JournalEntityNodeBase;
 			UpdateSensitive();
 		}
 
