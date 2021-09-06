@@ -38,27 +38,30 @@ namespace QS.Project.Journal
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
 
-		public virtual bool CanOpen(JournalEntityNodeBase node)
+		public virtual bool CanOpen(Type subjectType)
 		{
-			if(node == null)
-			{
-				return false;
-			}
-			return !EntityConfigs.TryGetValue(node.EntityType, out var config)
-				? throw new InvalidOperationException($"Не найдена конфигурация для {node.EntityType.Name}")
+			return !EntityConfigs.TryGetValue(subjectType, out var config)
+				? throw new InvalidOperationException($"Не найдена конфигурация для {subjectType.Name}")
 				: config.PermissionResult.CanUpdate;
 		}
 
-		public virtual ITdiTab GetTabToOpen(JournalEntityNodeBase node)
+		public virtual ITdiTab GetTabToOpen(Type subjectType, int subjectId)
 		{
-			EntityConfigs.TryGetValue(node.EntityType, out var config);
-			var foundDocumentConfig =
-				config?.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified((TNode)node)) ??
-				throw new InvalidOperationException($"Не найдена конфигурация для {node.EntityType.Name}");
+			var constructorInfo = typeof(TNode).GetConstructor(new Type[]{});
+			var node = constructorInfo?.Invoke(new object[]{}) as TNode;
+			if (node == null)
+				return null;
 
-			return foundDocumentConfig.GetOpenEntityDlgFunction()?.Invoke((TNode)node) ??
-			       throw new InvalidOperationException(
-				       $"Не найдена конфигурация для открытия диалога в {nameof(foundDocumentConfig)}");
+			node.Id = subjectId;
+			EntityConfigs.TryGetValue(subjectType, out var config);
+			var foundDocumentConfig =
+				(config ?? throw new InvalidOperationException($"Не найдена конфигурация для {subjectType.Name}"))
+				.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(node));
+
+			return (foundDocumentConfig?.GetOpenEntityDlgFunction()
+			     ?? throw new InvalidOperationException(
+				        $"Не найдена конфигурация для открытия диалога в {nameof(foundDocumentConfig)}"))
+				.Invoke(node);
 		}
 		public event EventHandler ListUpdated;
 
