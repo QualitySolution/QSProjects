@@ -199,7 +199,10 @@ namespace QSAttachment
 				                       (Gtk.Window)this.Toplevel,
 				                       FileChooserAction.Save,
 				                       "Отмена", ResponseType.Cancel,
-				                       "Сохранить", ResponseType.Accept);
+				                       "Сохранить", ResponseType.Accept)
+				{
+					DoOverwriteConfirmation = true
+				};
 
 			fc.CurrentName = (string)FilesStore.GetValue (iter, (int)FilesCol.name);
 			fc.Show (); 
