@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Autofac;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
@@ -32,6 +33,7 @@ namespace QS.ViewModels.Resolve
 			var viewModels = container.ComponentRegistry.Registrations
 				.Where(x => x.Activator.LimitType.Name.EndsWith("ViewModel"))
 				.Select(x => x.Activator.LimitType)
+				.Where(x => x.GetCustomAttribute<DontUseAsDefaultViewModelAttribute>() == null)
 				.Where(x => ViewModelMatch(x, typeof(EntityJournalViewModelBase<,,>), 0, typeOfEntity))
 				.ToList();
 			if (viewModels.Count == 0)
@@ -47,6 +49,7 @@ namespace QS.ViewModels.Resolve
 			var viewModels = container.ComponentRegistry.Registrations
 				.Where(x => x.Activator.LimitType.Name.EndsWith("ViewModel"))
 				.Select(x => x.Activator.LimitType)
+				.Where(x => x.GetCustomAttribute<DontUseAsDefaultViewModelAttribute>() == null)
 				.Where(x => ViewModelMatch(x, typeof(EntityDialogViewModelBase<>), 0, typeOfEntity))
 				.ToList();
 			if (viewModels.Count == 0)
@@ -66,5 +69,15 @@ namespace QS.ViewModels.Resolve
 
 			return false;
 		}
+	}
+
+	/// <summary>
+	/// Атрибут позволяет поменить ViewModel, чтобы она не использовалась в резольвинге по типу сущьности.
+	/// Помогает когда у вас есть дополнительные диалоги или журналы для сущности.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class)]
+	public class DontUseAsDefaultViewModelAttribute : Attribute
+	{
+
 	}
 }
