@@ -423,7 +423,21 @@ namespace QS.Widgets.GtkUI
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
-			Application.Invoke((s, arg) => base.OnDestroyed());
+
+			if(autoCompleteSelector != null)
+			{
+				autoCompleteSelector.ListUpdated -= OnListUpdated;
+			}
+			
+			if(entryObject != null)
+			{
+				entryObject.Changed -= OnEntryObjectChanged;
+				entryObject.FocusOutEvent -= OnEntryObjectFocusOutEvent;
+				entryObject.Completion.MatchSelected -= Completion_MatchSelected;
+				entryObject.Completion = null;
+			}
+			
+			base.OnDestroyed();
 		}
 	}
 }
