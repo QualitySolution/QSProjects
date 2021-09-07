@@ -11,8 +11,6 @@ namespace QS.ViewModels.Dialog
 	{
 		public INavigationManager NavigationManager { get; set; }
 
-		protected bool CloseViewModel = true;
-		
 		protected DialogViewModelBase(INavigationManager navigation)
 		{
 			//FIXME Когда выпилим ViewModel с TDI, добавить проверку на null;
@@ -30,7 +28,7 @@ namespace QS.ViewModels.Dialog
 			var page = NavigationManager?.FindPage(this);
 			if(page != null) {
 				if(askClose)
-					CloseViewModel = NavigationManager.AskClosePage(page, source);
+					NavigationManager.AskClosePage(page, source);
 				else
 					NavigationManager.ForceClosePage(page, source);
 			}
