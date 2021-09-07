@@ -433,8 +433,12 @@ namespace QS.Widgets.GtkUI
 			{
 				entryObject.Changed -= OnEntryObjectChanged;
 				entryObject.FocusOutEvent -= OnEntryObjectFocusOutEvent;
-				entryObject.Completion.MatchSelected -= Completion_MatchSelected;
-				entryObject.Completion = null;
+
+				if(entryObject.Completion != null)
+				{
+					entryObject.Completion.MatchSelected -= Completion_MatchSelected;
+					entryObject.Completion = null;
+				}
 			}
 			
 			base.OnDestroyed();
