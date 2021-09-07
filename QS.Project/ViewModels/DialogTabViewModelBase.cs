@@ -62,7 +62,10 @@ namespace QS.ViewModels
 		public override void Close(bool askSave, CloseSource source)
 		{
 			base.Close(askSave, source);
-			Dispose();
+			
+			if(CloseViewModel) {
+				Dispose();
+			}
 		}
 
 		#endregion

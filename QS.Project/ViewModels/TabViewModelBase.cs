@@ -98,10 +98,12 @@ namespace QS.ViewModels
 
 		public override void Close(bool askSave, CloseSource source)
 		{
-			if(askSave)
-				TabParent?.AskToCloseTab(this, source);
-			else
-				TabParent?.ForceCloseTab(this, source);
+			if(TabParent != null) {
+				if(askSave)
+					CloseViewModel = TabParent.AskToCloseTab(this, source);
+				else
+					TabParent.ForceCloseTab(this, source);
+			}
 
 			base.Close(askSave, source);
 		}
