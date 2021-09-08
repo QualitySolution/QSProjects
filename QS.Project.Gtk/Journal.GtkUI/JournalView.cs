@@ -42,6 +42,7 @@ namespace QS.Journal.GtkUI
 			KeyPressEvent += JournalView_KeyPressEvent;
 		}
 
+		private Widget FilterView;
 		private void ConfigureJournal()
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
@@ -60,6 +61,7 @@ namespace QS.Journal.GtkUI
 			var filterProp = ViewModel.GetType().GetProperty("Filter");
 			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.GetValue(ViewModel) is IJournalFilter filter) {
 				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
+				FilterView = filterWidget;
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
@@ -69,7 +71,7 @@ namespace QS.Journal.GtkUI
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
 				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
 				Widget filterView = viewResolver.Resolve(filterViewModel);
-
+				FilterView = filterView;
 				hboxFilter.Add(filterView);
 				filterView.Show();
 				checkShowFilter.Visible = true;
@@ -411,8 +413,8 @@ namespace QS.Journal.GtkUI
 		{
 			isDestroyed = true;
 			ViewModel.DataLoader.CancelLoading();
+			FilterView?.Destroy();
 			base.Destroy();
-			ViewModel.Dispose();
 		}
 
 		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)
