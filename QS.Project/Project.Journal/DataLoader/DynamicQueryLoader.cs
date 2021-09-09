@@ -61,7 +61,7 @@ namespace QS.Project.Journal.DataLoader
 					return;
 				}
 
-				if (((CriteriaImpl) workQuery.UnderlyingCriteria).Session != uow.Session)
+				if (workQuery.UnderlyingCriteria is CriteriaImpl criteriaImpl && criteriaImpl.Session != uow.Session)
 					throw new InvalidOperationException(
 						"Метод создания запроса должен использовать переданный ему uow");
 				
