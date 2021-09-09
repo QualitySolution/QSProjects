@@ -34,6 +34,7 @@ namespace Gamma.ColumnConfig
 			get { return Renderers;	}
 		}
 
+
 		#endregion
 
 		public ColumnMapping (FluentColumnsConfig<TNode> parentConfig, string title)
@@ -130,6 +131,15 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		/// <summary>
+		/// Позволяет установить функцию получения текста всплывающей подсказки для ячеек колонки.
+		/// </summary>
+		public ColumnMapping<TNode> ToolTipText(Func<TNode, string> tooltipText)
+		{
+			cellTooltipTextFunc = tooltipText;
+			return this;
+		}
+
 		public ColumnMapping<TNode> AddColumn(string title)
 		{
 			return myConfig.AddColumn (title);
@@ -219,6 +229,16 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
+
+		#endregion
+
+		#region ToolTip
+
+		private Func<TNode, string> cellTooltipTextFunc;
+
+		public bool HasToolTip => cellTooltipTextFunc != null;
+
+		public string GetTooltipText(object node) => cellTooltipTextFunc((TNode)node);
 
 		#endregion
 	}

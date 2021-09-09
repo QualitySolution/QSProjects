@@ -457,7 +457,9 @@ namespace QS.Tdi.Gtk
 				tab = (ITdiTab)tab.TabParent;
 
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
-			if(info!= null && info.SlaveTabs.Count > 0) {
+			if(info!= null && info.SlaveTabs.Count > 0)
+			{
+				logger.Warn($"У {tab.TabName} открыта подчиненная вкладка {info.SlaveTabs[0].TabName}");
 				string Message = "Сначала надо закрыть подчиненую вкладку.";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Warning,

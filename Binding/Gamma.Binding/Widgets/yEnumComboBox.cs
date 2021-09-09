@@ -27,13 +27,13 @@ namespace Gamma.Widgets
 		#region HideItems
 		List<object> fieldsToHide = new List<object>();
 
-		public void AddEnumToHideList(object[] items)
+		public void AddEnumToHideList(params object[] items)
 		{
 			fieldsToHide.AddRange(items);
 			ResetLayout();
 		}
 
-		public void RemoveEnumFromHideList(object[] items)
+		public void RemoveEnumFromHideList(params object[] items)
 		{
 			foreach(object item in items)
 				if(fieldsToHide.Contains(item))

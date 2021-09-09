@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using NHibernate;
-using NHibernate.Util;
 using QS.Deletion;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -38,6 +37,32 @@ namespace QS.Project.Journal
 		}
 
 		public event EventHandler<JournalSelectedNodesEventArgs> OnEntitySelectedResult;
+
+		public virtual bool CanOpen(Type subjectType)
+		{
+			return !EntityConfigs.TryGetValue(subjectType, out var config)
+				? throw new InvalidOperationException($"Не найдена конфигурация для {subjectType.Name}")
+				: config.PermissionResult.CanUpdate;
+		}
+
+		public virtual ITdiTab GetTabToOpen(Type subjectType, int subjectId)
+		{
+			var constructorInfo = typeof(TNode).GetConstructor(new Type[]{});
+			var node = constructorInfo?.Invoke(new object[]{}) as TNode;
+			if (node == null)
+				return null;
+
+			node.Id = subjectId;
+			EntityConfigs.TryGetValue(subjectType, out var config);
+			var foundDocumentConfig =
+				(config ?? throw new InvalidOperationException($"Не найдена конфигурация для {subjectType.Name}"))
+				.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(node));
+
+			return (foundDocumentConfig?.GetOpenEntityDlgFunction()
+			     ?? throw new InvalidOperationException(
+				        $"Не найдена конфигурация для открытия диалога в {nameof(foundDocumentConfig)}"))
+				.Invoke(node);
+		}
 		public event EventHandler ListUpdated;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.

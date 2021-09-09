@@ -10,15 +10,7 @@ namespace QS.Osm.Osrm
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
-		#region Настройки
 		public static string ServerUrl;
-
-		#endregion
-		[Obsolete("Старый вариант для ветки заказов. Удалить после(7 марта 2018, надеюсь заказы уже запустим)")]
-		public static RouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = false, bool geometry = false)
-		{
-			return GetRoute(routePOIs, alt, geometry ? GeometryOverview.Simplified : GeometryOverview.False);
-		}
 
 		public static RouteResponse GetRoute(List<PointOnEarth> routePOIs, bool alt = false, GeometryOverview geometry = GeometryOverview.False)
 		{

@@ -241,7 +241,6 @@ namespace QSDocTemplates
 		private string tempDir;
 		private string tempFile;
 		private FileEditMode editMode;
-		private bool _isOpenEvent;
 
 		public OpenedFile(FileWorker worker, IDocTemplate template, FileEditMode mode)
 		{
@@ -259,13 +258,12 @@ namespace QSDocTemplates
 			{
 				Watcher = new FileSystemWatcher();
 				Watcher.Path = tempDir;
-				Watcher.NotifyFilter = NotifyFilters.LastWrite;
-				Watcher.Filter = $".~lock.{tempFile}#";
+				Watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+				Watcher.Filter = tempFile;
 
 				Watcher.Changed += OnFileChangedByUser;
             }
 
-            _isOpenEvent = true;
 			Watcher.EnableRaisingEvents = true;
 		}
 
@@ -277,13 +275,6 @@ namespace QSDocTemplates
 
 		private void OnFileChangedByUser (object source, FileSystemEventArgs e)
 		{
-			if (_isOpenEvent)
-			{
-				_isOpenEvent = false;
-
-				return;
-			}
-
 			logger.Info ("Файл <{0}> изменен, обновляем...", e.Name);
 			try 
 			{
