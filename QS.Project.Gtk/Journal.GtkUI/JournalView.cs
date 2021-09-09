@@ -70,10 +70,11 @@ namespace QS.Journal.GtkUI
 
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
 				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
-				Widget filterView = viewResolver.Resolve(filterViewModel);
-				FilterView = filterView;
-				hboxFilter.Add(filterView);
-				filterView.Show();
+				FilterView = viewResolver.Resolve(filterViewModel);
+				if(FilterView == null)
+					throw new InvalidOperationException($"Не найдена View для {filterViewModel.GetType()}");
+				hboxFilter.Add(FilterView);
+				FilterView.Show();
 				checkShowFilter.Visible = true;
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
