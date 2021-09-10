@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.Services;
 using QS.Tdi;
 using NHibernate.Transform;
 using System.Linq.Expressions;
+using System.Reflection;
 using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
@@ -124,6 +126,26 @@ namespace QS.Project.Journal
 				)
 				.TransformUsing(Transformers.AliasToBean<CommonJournalNode<TEntity>>());
 		};
+
+		public override ITdiTab GetTabToOpen(Type subjectType, int subjectId)
+		{
+			var constructorInfos = typeof(CommonJournalNode<TEntity>)
+				.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance);
+			var node = constructorInfos.First().Invoke(new object[]{}) as CommonJournalNode;
+			if (node == null)
+				return null;
+
+			node.Id = subjectId;
+			EntityConfigs.TryGetValue(subjectType, out var config);
+			var foundDocumentConfig =
+				(config ?? throw new InvalidOperationException($"Не найдена конфигурация для {subjectType.Name}"))
+				.EntityDocumentConfigurations.FirstOrDefault(x => x.IsIdentified(node));
+
+			return (foundDocumentConfig?.GetOpenEntityDlgFunction()
+			        ?? throw new InvalidOperationException(
+				        $"Не найдена конфигурация для открытия диалога в {nameof(foundDocumentConfig)}"))
+				.Invoke(node);
+		}
 	}
 
 	public class CommonJournalNode<TEntity> : CommonJournalNode
