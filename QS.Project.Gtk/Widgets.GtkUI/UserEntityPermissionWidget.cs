@@ -41,8 +41,16 @@ namespace QS.Widgets.GtkUI
 				.Finish();
 
 			ytreeviewEntitiesList.ItemsDataSource = model.ObservableTypeOfEntitiesList;
+			searchDocuments.TextChanged += SearchDocumentsOnTextChanged;
 
 			Sensitive = true;
+		}
+
+		private void SearchDocumentsOnTextChanged(object sender, EventArgs e)
+		{
+			ytreeviewEntitiesList.ItemsDataSource = null;
+			model.SearchTypes(searchDocuments.Text);
+			ytreeviewEntitiesList.ItemsDataSource = model.ObservableTypeOfEntitiesList;
 		}
 
 		private void AddPermission()
@@ -77,6 +85,7 @@ namespace QS.Widgets.GtkUI
 		private IList<UserPermissionNode> deletePermissionList = new List<UserPermissionNode>();
 		private List<TypeOfEntity> originalTypeOfEntityList;
 		public PermissionListViewModel PermissionListViewModel { get; set; }
+		private IList<UserPermissionNode> permissionList;
 
 		public GenericObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
 
@@ -86,7 +95,7 @@ namespace QS.Widgets.GtkUI
 			this.uow = uow;
 			this.PermissionListViewModel = permissionListViewModel ?? throw new NullReferenceException(nameof(permissionListViewModel));
 
-			var permissionList = UserPermissionRepository.GetUserAllEntityPermissions(uow, user.Id, permissionListViewModel.PermissionExtensionStore);
+			permissionList = UserPermissionRepository.GetUserAllEntityPermissions(uow, user.Id, permissionListViewModel.PermissionExtensionStore);
 			PermissionListViewModel.PermissionsList = new GenericObservableList<IPermissionNode>(permissionList.OfType<IPermissionNode>().ToList());
 			PermissionListViewModel.PermissionsList.ElementRemoved += (aList, aIdx, aObject) => DeletePermission(aObject as UserPermissionNode);
 
@@ -99,6 +108,34 @@ namespace QS.Widgets.GtkUI
 			}
 			SortTypeOfEntityList();
 			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(originalTypeOfEntityList);
+
+		}
+		
+		public void SearchTypes(string searchString)
+		{
+			originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(uow).ToList();
+			//убираем типы уже загруженные в права
+			foreach(var item in permissionList) {
+				if(originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
+					originalTypeOfEntityList.Remove(item.TypeOfEntity);
+				}
+			}
+			SortTypeOfEntityList();
+			
+			ObservableTypeOfEntitiesList = null;
+			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(originalTypeOfEntityList);
+
+			if (searchString != "")
+			{
+				for (int i = 0; i < ObservableTypeOfEntitiesList.Count; i++)
+				{
+					if (ObservableTypeOfEntitiesList[i].Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) == -1)
+					{
+						ObservableTypeOfEntitiesList.Remove(ObservableTypeOfEntitiesList[i]);
+						i -= 1;
+					}
+				}
+			}
 		}
 
 		public void AddPermission(TypeOfEntity entityNode)
@@ -173,5 +210,6 @@ namespace QS.Widgets.GtkUI
 			originalTypeOfEntityList.Sort((x, y) => 
 					string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
 		}
+		
 	}
 }
