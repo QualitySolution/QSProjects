@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="355 342">
+  <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="355 358">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Вход в систему</property>
     <property name="Icon">stock:gtk-connect LargeToolbar</property>
@@ -258,6 +258,32 @@
               </packing>
             </child>
             <child>
+              <widget class="Gtk.Label" id="labelKeyboardLayoutInfo">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="LabelProp" translatable="yes">&lt;span foreground="red"&gt;&lt;b&gt;Внимание: включен русский язык&lt;/b&gt;&lt;/span&gt;</property>
+                <property name="UseMarkup">True</property>
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+                <property name="AutoSize">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="labelCapslockInfo">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="LabelProp" translatable="yes">&lt;span foreground="red"&gt;&lt;b&gt;Внимание: включен Caps Lock&lt;/b&gt;&lt;/span&gt;</property>
+                <property name="UseMarkup">True</property>
+              </widget>
+              <packing>
+                <property name="Position">4</property>
+                <property name="AutoSize">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.HBox" id="hbox1">
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
@@ -292,7 +318,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">3</property>
+                <property name="Position">5</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
