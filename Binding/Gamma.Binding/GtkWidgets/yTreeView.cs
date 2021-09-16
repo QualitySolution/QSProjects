@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data.Bindings;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using Gamma.Binding;
 using Gamma.Binding.Core;
 using Gamma.ColumnConfig;
@@ -147,7 +148,11 @@ namespace Gamma.GtkWidgets
 
 		public yTreeView()
 		{
-			Binding = new BindingControler<yTreeView>(this);
+			Binding = new BindingControler<yTreeView>(this, new Expression<Func<yTreeView, object>>[] {
+				(w => w.SelectedRow),
+				(w => w.SelectedRows),
+			});
+			Selection.Changed += Selection_Changed;
 		}
 
 		void ReconfigureColumns()
@@ -358,8 +363,30 @@ namespace Gamma.GtkWidgets
 				}
 			}
 		}
-		
-		#region GetSelected
+
+		#region Selection
+
+		#region Свойства можно биндить на viewModel
+		public object[] SelectedRows {
+			get => GetSelectedObjects();
+			set => SelectObject(value);
+		}
+
+		public object SelectedRow {
+			get => GetSelectedObject();
+			set => SelectObject(value);
+		}
+
+		void Selection_Changed(object sender, EventArgs e)
+		{
+			if(Selection.Mode == SelectionMode.Multiple)
+				Binding.FireChange(x => x.SelectedRows);
+			else
+				Binding.FireChange(x => x.SelectedRow);
+		}
+
+		#endregion
+
 		public object[] GetSelectedObjects()
 		{
 			return GetSelectedObjects<object>();

@@ -18,6 +18,8 @@ namespace QS.Widgets.GtkUI
 
 		private global::QS.Project.Dialogs.PermissionListView permissionlistview;
 
+		private global::QSWidgetLib.SearchEntity searchDocuments;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -75,6 +77,15 @@ namespace QS.Widgets.GtkUI
 			this.vbox2.Add(this.hbox2);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox2]));
 			w6.Position = 0;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.searchDocuments = new global::QSWidgetLib.SearchEntity();
+			this.searchDocuments.Events = ((global::Gdk.EventMask)(256));
+			this.searchDocuments.Name = "searchDocuments";
+			this.vbox2.Add(this.searchDocuments);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.searchDocuments]));
+			w7.Position = 1;
+			w7.Expand = false;
+			w7.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
