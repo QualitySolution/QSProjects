@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
@@ -88,6 +90,12 @@ namespace QSProjectsLib
 			CellRendererText cell = new CellRendererText();
 			comboboxConnections.PackStart(cell, false);
 			comboboxConnections.AddAttribute(cell, "text", 0);
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				KeyReleaseEvent += LoginKeyReleaseEvent;
+				FocusInEvent += LoginFocusInEvent;
+			}
 		}
 
 		public void SetDefaultNames(string ProjectName)
@@ -349,6 +357,22 @@ namespace QSProjectsLib
 			dlg.EditingDone += (se, ev) => UpdateFromGConf();
 			dlg.Run();
 			dlg.Destroy();
+		}
+
+		private void LoginKeyReleaseEvent(object o, KeyReleaseEventArgs args)
+		{
+			CheckKeyboardState();
+		}
+
+		private void LoginFocusInEvent(object o, FocusInEventArgs args)
+		{
+			CheckKeyboardState();
+		}
+
+		private void CheckKeyboardState()
+		{
+			labelCapslockInfo.Visible = Control.IsKeyLocked(Keys.CapsLock);
+			labelKeyboardLayoutInfo.Visible = InputLanguage.CurrentInputLanguage.Culture.KeyboardLayoutId != 1033; // не английская раскладка
 		}
 	}
 }
