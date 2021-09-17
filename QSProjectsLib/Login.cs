@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
@@ -371,8 +370,24 @@ namespace QSProjectsLib
 
 		private void CheckKeyboardState()
 		{
-			labelCapslockInfo.Visible = Control.IsKeyLocked(Keys.CapsLock);
-			labelKeyboardLayoutInfo.Visible = InputLanguage.CurrentInputLanguage.Culture.KeyboardLayoutId != 1033; // не английская раскладка
+			int capsLock = 0x14;
+			IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
+			uint process = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
+			int keyboardLayout = NativeMethods.GetKeyboardLayout(process).ToInt32() & 0xFFFF;
+			labelKeyboardLayoutInfo.Visible = keyboardLayout != 1033; // не английская раскладка
+			labelCapslockInfo.Visible = NativeMethods.GetKeyState(capsLock) != 0;
 		}
+	}
+	
+	internal class NativeMethods
+	{
+		[DllImport("user32.dll")]
+		internal static extern IntPtr GetKeyboardLayout(uint idThread);
+		[DllImport("user32.dll")]
+		internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr process);
+		[DllImport("user32.dll")]
+		internal static extern IntPtr GetForegroundWindow();
+		[DllImport("user32.dll")]
+		internal static extern short GetKeyState(int keyCode);
 	}
 }
