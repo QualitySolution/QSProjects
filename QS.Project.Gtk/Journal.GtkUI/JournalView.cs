@@ -30,7 +30,7 @@ namespace QS.Journal.GtkUI
 
 		public static uint ShowProgressbarDelay = 800;
 		public static uint ProgressPulseTime = 100;
-		public static bool ThrowExcetionOnDataLoad = true;
+		public static bool ThrowExceptionOnDataLoad = true;
 
 		#endregion
 
@@ -48,7 +48,7 @@ namespace QS.Journal.GtkUI
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
-			if(ThrowExcetionOnDataLoad)
+			if(ThrowExceptionOnDataLoad)
 				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
