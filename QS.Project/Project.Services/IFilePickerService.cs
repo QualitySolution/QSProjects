@@ -6,9 +6,9 @@ namespace QS.Project.Services
 	{
 		bool OpenSaveFilePicker(string fileName, out string filePath);
 		bool OpenSaveFilePicker(string fileName, out string filePath, params string[] MIMEFilter);
-
 		bool OpenSelectFilePicker(out string filePath);
 		bool OpenSelectFilePicker(out string[] filePath);
+		bool OpenAttachFilePicker(out string filePath);
 		bool OpenSelectFilePicker(out string filePath, params string[] MIMEFilter);
 		bool OpenSelectFilePicker(out string[] filePath, params string[] MIMEFilter);
 	}

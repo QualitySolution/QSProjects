@@ -60,6 +60,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gtk-gui\QSAttachment.Views.Widgets.AttachmentsView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Attachment.cs" />
@@ -68,6 +69,8 @@
     <Compile Include="GetFromScanner.cs" />
     <Compile Include="gtk-gui\QSAttachment.GetFromScanner.cs" />
     <Compile Include="AttachedFile.cs" />
+    <Compile Include="ScanDialogService.cs" />
+    <Compile Include="Views\Widgets\AttachmentsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,6 +85,22 @@
     <EmbeddedResource Include="icons\scanner32.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QS.Attachments\QS.Attachments.csproj">
+      <Project>{0bf087b7-b2c5-46be-9941-bb0ad8aae7d3}</Project>
+      <Name>QS.Attachments</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3c0f3944-cbd5-4bd6-83d4-cf33ad6fc68c}</Project>
+      <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
+      <Project>{28a78143-42e3-40e7-86f5-dd7e1679be86}</Project>
+      <Name>QS.Project</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
