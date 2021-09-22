@@ -85,6 +85,10 @@
     <EmbeddedResource Include="icons\scanner32.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
+      <Project>{54f958f5-7e58-4c89-9a04-8835e63b97c3}</Project>
+      <Name>System.Data.Bindings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
       <Name>Gamma.Binding</Name>

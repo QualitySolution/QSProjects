@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Bindings.Collections;
 using System.Diagnostics;
 using System.IO;
 using NLog;
@@ -31,7 +31,7 @@ namespace QS.Attachments.ViewModels.Widgets
 			IFilePickerService filePickerService,
 			IScanDialogService scanDialogService,
 			int currentUserId,
-			IList<IAttachment> attachments)
+			ICovarianceList<IAttachment> attachments)
 		{
 			_attachmentFactory = attachmentFactory ?? throw new ArgumentNullException(nameof(attachmentFactory));
 			_filePickerService = filePickerService ?? throw new ArgumentNullException(nameof(filePickerService));
@@ -40,7 +40,7 @@ namespace QS.Attachments.ViewModels.Widgets
 			Attachments = attachments;
 		}
 
-		public IList<IAttachment> Attachments { get; }
+		public ICovarianceList<IAttachment> Attachments { get; }
 
 		public IAttachment SelectedAttachment
 		{
