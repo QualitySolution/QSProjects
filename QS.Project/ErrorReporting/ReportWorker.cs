@@ -8,9 +8,9 @@ namespace QS.ErrorReporting
 	{
 		public static String ServiceAddress = "http://saas.qsolution.ru:2048/ErrorReporting";
 
-		public static IErrorReportingService GetReportService ()
+		public static IErrorReportSender GetReportService ()
 		{
-			return new HttpErrorReportingService(ServiceAddress);
+			return new HttpErrorReportSender(ServiceAddress);
 		}
 	}
 }

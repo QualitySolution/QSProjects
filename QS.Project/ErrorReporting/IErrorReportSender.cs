@@ -1,6 +1,6 @@
 namespace QS.ErrorReporting
 {
-	public interface IErrorReportingService
+	public interface IErrorReportSender
 	{
 		bool SubmitErrorReport (ErrorReport report);
 	}

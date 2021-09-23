@@ -10,12 +10,12 @@ using NLog;
 
 namespace QS.ErrorReporting
 {
-	public class HttpErrorReportingService : IErrorReportingService
+	public class HttpErrorReportSender : IErrorReportSender
 	{
 		private readonly string serviceAddress;
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		public HttpErrorReportingService(string serviceAddress)
+		public HttpErrorReportSender(string serviceAddress)
 		{
 			this.serviceAddress = serviceAddress;
 		}

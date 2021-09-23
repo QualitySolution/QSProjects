@@ -53,8 +53,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorReporting\HttpErrorReportingService.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingService.cs" />
+    <Compile Include="ErrorReporting\HttpErrorReportSender.cs" />
+    <Compile Include="ErrorReporting\IErrorReportSender.cs" />
     <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
     <Compile Include="Navigation\ITdiPage.cs" />
     <Compile Include="Print\SelectablePrintDocument.cs" />
