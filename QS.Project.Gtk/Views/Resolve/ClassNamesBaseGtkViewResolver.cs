@@ -38,12 +38,13 @@ namespace QS.Views.Resolve
 			var groups = match[0].Groups;
 			var expectedViewName = $"{groups[1].Value}.Views{groups[2].Value}.{groups[3].Value}View";
 
-			foreach(var assembly in lookupAssemblies) 
-			{
+			foreach(var assembly in lookupAssemblies) {
 				Type viewClass = assembly.GetType(expectedViewName);
-
-				if(viewClass != null)
-				{
+				if(viewClass != null) {
+					var constructorWithResolver = viewClass.GetConstructor(new[] { viewModel.GetType(), typeof(IGtkViewResolver) });
+					if(constructorWithResolver != null) {
+						return (Widget)constructorWithResolver.Invoke(new object[] { viewModel, this });
+					}
 					return (Widget)Activator.CreateInstance(viewClass, viewModel);
 				}
 			}
