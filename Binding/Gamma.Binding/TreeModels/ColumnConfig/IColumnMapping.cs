@@ -15,5 +15,9 @@ namespace Gamma.ColumnConfig
 		IEnumerable<IRendererMapping> ConfiguredRenderers { get;}
 
 		object tag { get; }
+
+		bool HasToolTip { get; }
+
+		string GetTooltipText(object node);
 	}
 }

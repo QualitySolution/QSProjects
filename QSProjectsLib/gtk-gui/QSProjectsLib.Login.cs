@@ -27,7 +27,11 @@ namespace QSProjectsLib
 		private global::Gtk.Label label2;
 		
 		private global::Gtk.Label label4;
-		
+
+		private global::Gtk.Label labelKeyboardLayoutInfo;
+
+		private global::Gtk.Label labelCapslockInfo;
+
 		private global::Gtk.HBox hbox1;
 		
 		private global::Gtk.Label labelLoginInfo;
@@ -194,7 +198,25 @@ namespace QSProjectsLib
 			w14.Expand = false;
 			w14.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.hbox1 = new global::Gtk.HBox ();
+			this.labelKeyboardLayoutInfo = new global::Gtk.Label();
+			this.labelKeyboardLayoutInfo.Name = "labelKeyboardLayoutInfo";
+			this.labelKeyboardLayoutInfo.LabelProp = global::Mono.Unix.Catalog.GetString("<span foreground=\"red\"><b>Внимание: включен русский язык</b></span>");
+			this.labelKeyboardLayoutInfo.UseMarkup = true;
+			this.vbox2.Add(this.labelKeyboardLayoutInfo);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelKeyboardLayoutInfo]));
+			w15.Position = 3;
+			w15.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.labelCapslockInfo = new global::Gtk.Label();
+			this.labelCapslockInfo.Name = "labelCapslockInfo";
+			this.labelCapslockInfo.LabelProp = global::Mono.Unix.Catalog.GetString("<span foreground=\"red\"><b>Внимание: включен Caps Lock</b></span>");
+			this.labelCapslockInfo.UseMarkup = true;
+			this.vbox2.Add(this.labelCapslockInfo);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelCapslockInfo]));
+			w16.Position = 4;
+			w16.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			this.hbox1.BorderWidth = ((uint)(6));
@@ -202,39 +224,39 @@ namespace QSProjectsLib
 			this.labelLoginInfo = new global::Gtk.Label ();
 			this.labelLoginInfo.Name = "labelLoginInfo";
 			this.labelLoginInfo.Wrap = true;
-			this.hbox1.Add (this.labelLoginInfo);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.labelLoginInfo]));
-			w15.Position = 0;
-			w15.Fill = false;
+			this.hbox1.Add(this.labelLoginInfo);
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.labelLoginInfo]));
+			w17.Position = 0;
+			w17.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonErrorInfo = new global::Gtk.Button ();
 			this.buttonErrorInfo.CanFocus = true;
 			this.buttonErrorInfo.Name = "buttonErrorInfo";
 			this.buttonErrorInfo.UseUnderline = true;
-			this.buttonErrorInfo.Label = global::Mono.Unix.Catalog.GetString ("Подробнее..");
-			global::Gtk.Image w16 = new global::Gtk.Image ();
-			w16.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-dialog-error", global::Gtk.IconSize.Button);
-			this.buttonErrorInfo.Image = w16;
-			this.hbox1.Add (this.buttonErrorInfo);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.buttonErrorInfo]));
-			w17.Position = 1;
-			w17.Fill = false;
-			this.vbox2.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox1]));
-			w18.Position = 3;
-			w18.Expand = false;
-			w18.Fill = false;
-			w1.Add (this.vbox2);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
-			w19.Position = 0;
-			w19.Expand = false;
+			this.buttonErrorInfo.Label = global::Mono.Unix.Catalog.GetString("Подробнее..");
+			global::Gtk.Image w18 = new global::Gtk.Image();
+			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-dialog-error", global::Gtk.IconSize.Button);
+			this.buttonErrorInfo.Image = w18;
+			this.hbox1.Add(this.buttonErrorInfo);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonErrorInfo]));
+			w19.Position = 1;
 			w19.Fill = false;
+			this.vbox2.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox1]));
+			w20.Position = 5;
+			w20.Expand = false;
+			w20.Fill = false;
+			w1.Add(this.vbox2);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(w1[this.vbox2]));
+			w21.Position = 0;
+			w21.Expand = false;
+			w21.Fill = false;
 			// Internal child QSProjectsLib.Login.ActionArea
-			global::Gtk.HButtonBox w20 = this.ActionArea;
-			w20.Name = "dialog1_ActionArea";
-			w20.Spacing = 10;
-			w20.BorderWidth = ((uint)(5));
-			w20.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w22 = this.ActionArea;
+			w22.Name = "dialog1_ActionArea";
+			w22.Spacing = 10;
+			w22.BorderWidth = ((uint)(5));
+			w22.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -242,36 +264,38 @@ namespace QSProjectsLib
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString ("О_тменить");
-			global::Gtk.Image w21 = new global::Gtk.Image ();
-			w21.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-cancel", global::Gtk.IconSize.Menu);
-			this.buttonCancel.Image = w21;
-			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w22 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w20 [this.buttonCancel]));
-			w22.Expand = false;
-			w22.Fill = false;
+			global::Gtk.Image w23 = new global::Gtk.Image();
+			w23.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-cancel", global::Gtk.IconSize.Menu);
+			this.buttonCancel.Image = w23;
+			this.AddActionWidget(this.buttonCancel, -6);
+			global::Gtk.ButtonBox.ButtonBoxChild w24 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w22[this.buttonCancel]));
+			w24.Expand = false;
+			w24.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("_OK");
-			global::Gtk.Image w23 = new global::Gtk.Image ();
-			w23.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-ok", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w23;
-			w20.Add (this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w24 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w20 [this.buttonOk]));
-			w24.Position = 1;
-			w24.Expand = false;
-			w24.Fill = false;
+			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString("_OK");
+			global::Gtk.Image w25 = new global::Gtk.Image();
+			w25.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w25;
+			w22.Add(this.buttonOk);
+			global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w22[this.buttonOk]));
+			w26.Position = 1;
+			w26.Expand = false;
+			w26.Fill = false;
 			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 355;
-			this.DefaultHeight = 342;
+			this.DefaultHeight = 358;
 			this.buttonDemo.Hide ();
-			this.buttonErrorInfo.Hide ();
-			this.Show ();
+			this.labelKeyboardLayoutInfo.Hide();
+			this.labelCapslockInfo.Hide();
+			this.buttonErrorInfo.Hide();
+			this.Show();
 			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);
 			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);
 			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);

@@ -56,15 +56,8 @@ namespace QS.ViewModels
 			if(UoW.RootObject != null) {
 				EntitySaved?.Invoke(this, new EntitySavedEventArgs(UoW.RootObject));
 			}
-			return;
 		}
-
-		public override void Close(bool askSave, CloseSource source)
-		{
-			base.Close(askSave, source);
-			Dispose();
-		}
-
+		
 		#endregion
 	}
 }

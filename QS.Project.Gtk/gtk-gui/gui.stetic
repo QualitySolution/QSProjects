@@ -5,6 +5,7 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
+    <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QS.Project.Gtk.dll" internal="true" />
   </import>
@@ -337,7 +338,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.UserEntityPermissionWidget" design-size="760 298">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.UserEntityPermissionWidget" design-size="784 298">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -418,6 +419,18 @@
           <packing>
             <property name="Position">0</property>
             <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="QSWidgetLib.SearchEntity" id="searchDocuments">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
           </packing>
         </child>
       </widget>

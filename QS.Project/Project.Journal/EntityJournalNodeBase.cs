@@ -7,7 +7,7 @@ namespace QS.Project.Journal
 	{
 		public Type EntityType { get; }
 
-		public virtual int Id { get; protected set; }
+		public virtual int Id { get; set; }
 
 		protected JournalEntityNodeBase(Type entityType)
 		{

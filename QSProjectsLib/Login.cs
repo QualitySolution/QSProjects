@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
@@ -88,6 +89,12 @@ namespace QSProjectsLib
 			CellRendererText cell = new CellRendererText();
 			comboboxConnections.PackStart(cell, false);
 			comboboxConnections.AddAttribute(cell, "text", 0);
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				KeyReleaseEvent += LoginKeyReleaseEvent;
+				FocusInEvent += LoginFocusInEvent;
+			}
 		}
 
 		public void SetDefaultNames(string ProjectName)
@@ -350,5 +357,37 @@ namespace QSProjectsLib
 			dlg.Run();
 			dlg.Destroy();
 		}
+
+		private void LoginKeyReleaseEvent(object o, KeyReleaseEventArgs args)
+		{
+			CheckKeyboardState();
+		}
+
+		private void LoginFocusInEvent(object o, FocusInEventArgs args)
+		{
+			CheckKeyboardState();
+		}
+
+		private void CheckKeyboardState()
+		{
+			int capsLock = 0x14;
+			IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
+			uint process = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
+			int keyboardLayout = NativeMethods.GetKeyboardLayout(process).ToInt32() & 0xFFFF;
+			labelKeyboardLayoutInfo.Visible = keyboardLayout != 1033; // не английская раскладка
+			labelCapslockInfo.Visible = NativeMethods.GetKeyState(capsLock) != 0;
+		}
+	}
+	
+	internal class NativeMethods
+	{
+		[DllImport("user32.dll")]
+		internal static extern IntPtr GetKeyboardLayout(uint idThread);
+		[DllImport("user32.dll")]
+		internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr process);
+		[DllImport("user32.dll")]
+		internal static extern IntPtr GetForegroundWindow();
+		[DllImport("user32.dll")]
+		internal static extern short GetKeyState(int keyCode);
 	}
 }

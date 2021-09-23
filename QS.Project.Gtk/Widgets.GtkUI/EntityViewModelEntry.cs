@@ -121,9 +121,9 @@ namespace QS.Widgets.GtkUI
 
 		void JournalViewModel_OnEntitySelectedResult(object sender, JournalSelectedNodesEventArgs e)
 		{
-			var selectedNode = e.SelectedNodes.FirstOrDefault();
-			if(selectedNode != null)
-				Subject = UoW.GetById(SubjectType, selectedNode.Id);
+			var selectedNodeFromJournal = e.SelectedNodes.FirstOrDefault();
+			if (selectedNodeFromJournal != null)
+				SelectSubjectByNode(selectedNodeFromJournal);
 
 			ChangedByUser?.Invoke(sender, e);
 		}
@@ -245,6 +245,14 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				var entityTab = localSelector?.GetTabToOpen(SubjectType, SubjectId);
+				if(entityTab != null) {
+					MyTab.TabParent.AddTab(entityTab, MyTab);
+					return;
+				}
+			}
+
 			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
 			if(entityConfig.SimpleDialog) {
 				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
@@ -280,14 +288,20 @@ namespace QS.Widgets.GtkUI
 
 		void UpdateSensitive()
 		{
+			bool canOpen;
+			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
+				canOpen = localSelector?.CanOpen(SubjectType) ?? false;
+			}
+
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null && canOpen;
 			buttonClear.Sensitive = sensitive && (subject != null || string.IsNullOrWhiteSpace(entryObject.Text));
 		}
 
 		protected void SelectSubjectByNode(object node)
 		{
-			Subject = UoW.GetById(SubjectType, DomainHelper.GetId(node));
+			Subject = UoW.GetById(SubjectType, node.GetId());
+			UpdateSensitive();
 		}
 
 		#region AutoCompletion
@@ -409,7 +423,25 @@ namespace QS.Widgets.GtkUI
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
-			Application.Invoke((s, arg) => base.OnDestroyed());
+
+			if(autoCompleteSelector != null)
+			{
+				autoCompleteSelector.ListUpdated -= OnListUpdated;
+			}
+			
+			if(entryObject != null)
+			{
+				entryObject.Changed -= OnEntryObjectChanged;
+				entryObject.FocusOutEvent -= OnEntryObjectFocusOutEvent;
+
+				if(entryObject.Completion != null)
+				{
+					entryObject.Completion.MatchSelected -= Completion_MatchSelected;
+					entryObject.Completion = null;
+				}
+			}
+			
+			base.OnDestroyed();
 		}
 	}
 }

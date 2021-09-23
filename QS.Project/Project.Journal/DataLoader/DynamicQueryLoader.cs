@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
+using NHibernate.Impl;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
@@ -60,6 +61,10 @@ namespace QS.Project.Journal.DataLoader
 					return;
 				}
 
+				if (workQuery.UnderlyingCriteria is CriteriaImpl criteriaImpl && criteriaImpl.Session != uow.Session)
+					throw new InvalidOperationException(
+						"Метод создания запроса должен использовать переданный ему uow");
+				
 				if (pageSize.HasValue) {
 					var resultItems = workQuery.Skip(LoadedItemsCount).Take(pageSize.Value).List<TNode>();
 

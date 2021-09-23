@@ -43,7 +43,7 @@ namespace QS.Project.Journal.Search
 						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");
 					}
 
-					if (typeOfPropery == typeof(int)) {
+					if (typeOfPropery == typeof(int) || typeOfPropery == typeof(int?)) {
 						if(int.TryParse(sv, out int intValue)){
 							ICriterion restriction = Restrictions.Eq(Projections.Property(alias), intValue);
 							disjunctionCriterion.Add(restriction);
@@ -78,8 +78,6 @@ namespace QS.Project.Journal.Search
 
 		public ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliases)
 		{
-			Type[] digitsTypes = { typeof(decimal), typeof(int) };
-
 			Conjunction conjunctionCriterion = new Conjunction();
 
 			if(journalSearch.SearchValues == null || !journalSearch.SearchValues.Any()) {
@@ -100,7 +98,8 @@ namespace QS.Project.Journal.Search
 					bool aliasIsDecimal = false;
 					if(alias.Body is UnaryExpression) {
 						UnaryExpression unaryExpession = alias.Body as UnaryExpression;
-						aliasIsInt = unaryExpession.Operand.Type == typeof(int);
+						aliasIsInt = unaryExpession.Operand.Type == typeof(int) || unaryExpession.Operand.Type == typeof(int?) 
+							|| unaryExpession.Operand.Type == typeof(uint) || unaryExpession.Operand.Type == typeof(uint?);
 						aliasIsDecimal = unaryExpession.Operand.Type == typeof(decimal);
 					} else if(!(alias.Body is MemberExpression)) {
 						throw new InvalidOperationException($"{nameof(alias)} должен быть {nameof(UnaryExpression)} или {nameof(MemberExpression)}");

@@ -107,7 +107,7 @@ namespace QS.ViewModels
 				TabParent?.AskToCloseTab(this, source);
 			else
 				TabParent?.ForceCloseTab(this, source);
-
+			
 			base.Close(askSave, source);
 		}
 

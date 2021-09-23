@@ -30,7 +30,7 @@ namespace QS.Journal.GtkUI
 
 		public static uint ShowProgressbarDelay = 800;
 		public static uint ProgressPulseTime = 100;
-		public static bool ThrowExcetionOnDataLoad = true;
+		public static bool ThrowExceptionOnDataLoad = true;
 
 		#endregion
 
@@ -42,12 +42,13 @@ namespace QS.Journal.GtkUI
 			KeyPressEvent += JournalView_KeyPressEvent;
 		}
 
+		private Widget FilterView;
 		private void ConfigureJournal()
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
-			if(ThrowExcetionOnDataLoad)
+			if(ThrowExceptionOnDataLoad)
 				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
@@ -59,6 +60,7 @@ namespace QS.Journal.GtkUI
 			var filterProp = ViewModel.GetType().GetProperty("Filter");
 			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.GetValue(ViewModel) is IJournalFilter filter) {
 				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
+				FilterView = filterWidget;
 				hboxFilter.Add(filterWidget);
 				filterWidget.Show();
 				checkShowFilter.Visible = true;
@@ -67,10 +69,11 @@ namespace QS.Journal.GtkUI
 
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
 				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
-				Widget filterView = viewResolver.Resolve(filterViewModel);
-
-				hboxFilter.Add(filterView);
-				filterView.Show();
+				FilterView = viewResolver.Resolve(filterViewModel);
+				if(FilterView == null)
+					throw new InvalidOperationException($"Не найдена View для {filterViewModel.GetType()}");
+				hboxFilter.Add(FilterView);
+				FilterView.Show();
 				checkShowFilter.Visible = true;
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
@@ -338,6 +341,7 @@ namespace QS.Journal.GtkUI
 		{
 			isDestroyed = true;
 			ViewModel.DataLoader.CancelLoading();
+			FilterView?.Destroy();
 			base.Destroy();
 		}
 
