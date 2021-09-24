@@ -74,7 +74,7 @@ namespace QS.Project.Journal
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,
 			INavigationManager navigation = null)
-			: base(journalActionsViewModel, unitOfWorkFactory, commonServices?.InteractiveService, navigation)
+			: base(unitOfWorkFactory, commonServices?.InteractiveService, navigation, journalActionsViewModel)
 		{
 			if(journalActionsViewModel is EntitiesJournalActionsViewModel entitiesJournalActionsViewModel)
 			{
@@ -189,15 +189,11 @@ namespace QS.Project.Journal
 
 		#region Actions
 
-		protected override void InitializeJournalActionsViewModel()
+		protected virtual void InitializeJournalActionsViewModel()
 		{
 			if(EntitiesJournalActionsViewModel != null)
 			{
 				EntitiesJournalActionsViewModel.Initialize(EntityConfigs, this, HideJournal);
-			}
-			else
-			{
-				base.InitializeJournalActionsViewModel();
 			}
 		}
 

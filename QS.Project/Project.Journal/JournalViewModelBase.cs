@@ -104,12 +104,13 @@ namespace QS.Project.Journal
 		#endregion
 
 		protected JournalViewModelBase(
-			JournalActionsViewModel journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
-			INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
+			INavigationManager navigation,
+			JournalActionsViewModel journalActionsViewModel = null
+		) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
-			JournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
+			JournalActionsViewModel = journalActionsViewModel;
 			SelectedItems = new List<object>();
 			PopupActionsList = new List<IJournalAction>();
 
@@ -119,6 +120,7 @@ namespace QS.Project.Journal
 			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
+			//FIXME Предусмотреть что она может быть пустой
 			JournalActionsViewModel.OnItemsSelectedAction += OnItemsSelected;
 		}
 
@@ -129,11 +131,6 @@ namespace QS.Project.Journal
 		}
 
 		#region Configure actions
-
-		protected virtual void InitializeJournalActionsViewModel()
-		{
-			JournalActionsViewModel.CreateDefaultSelectAction();
-		}
 
 		protected virtual void CreatePopupActions()
 		{
