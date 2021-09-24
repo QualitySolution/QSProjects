@@ -233,11 +233,9 @@
     <Compile Include="gtk-gui\QS.ChangePassword.Views.ChangePasswordView.cs" />
     <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.JournalActionsView.cs" />
     <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.EntitiesJournalActionsView.cs" />
-    <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.EntityJournalActionsView.cs" />
     <Compile Include="Dialog\Views\ProgressWindowView.cs" />
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
     <Compile Include="Journal.GtkUI\Actions\Views\EntitiesJournalActionsView.cs" />
-    <Compile Include="Journal.GtkUI\Actions\Views\EntityJournalActionsView.cs" />
     <Compile Include="Journal.GtkUI\Actions\Views\JournalActionsView.cs" />
   </ItemGroup>
   <ItemGroup>
