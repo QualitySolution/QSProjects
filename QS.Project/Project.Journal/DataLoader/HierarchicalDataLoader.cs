@@ -103,20 +103,18 @@ namespace QS.Project.Journal.DataLoader
 
 			LoadInProgress = true;
 			DateTime startTime = DateTime.Now;
-			Task.Factory.StartNew(() => Items = (IList)_queryFunc(_unitOfWorkFactory.CreateWithoutRoot()).List<TNode>())
+			Task.Factory.StartNew(() =>
+				{
+					var loadedItems = _queryFunc(_unitOfWorkFactory.CreateWithoutRoot()).List<TNode>();
+					TotalCount = (uint?)loadedItems?.Count;
+					Items = (IList)RearangeNodes(loadedItems);
+				})
 				.ContinueWith((tsk) => {
 					LoadInProgress = false;
 					if(tsk.IsFaulted)
 					{
 						OnLoadError(tsk.Exception);
 					}
-
-					if (!nextPage)
-					{
-						TotalCount = (uint?)Items?.Count;
-						Items = (IList)RearangeNodes((IList<TNode>)Items);
-					}
-
 					_logger.Info($"Загружено за {(DateTime.Now - startTime).TotalSeconds} сек.");
 					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 					TotalCountChanged?.Invoke(this, EventArgs.Empty);
