@@ -414,9 +414,21 @@ namespace QS.Widgets.GtkUI
 
 		#endregion
 
+		public void DestroyEntry()
+		{
+			OnDestroyed();
+		}
+
+		private bool _isDisposed;
+		
 		protected override void OnDestroyed()
 		{
-			logger.Debug("EntityViewModelEntry Destroyed() called.");
+			if(_isDisposed)
+			{
+				return;
+			}
+			
+			logger.Debug("EntityViewModelEntry OnDestroyed() called.");
 			//Отписываемся от событий.
 			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 			if(subject is INotifyPropertyChanged) {
@@ -442,6 +454,7 @@ namespace QS.Widgets.GtkUI
 			}
 			
 			base.OnDestroyed();
+			_isDisposed = true;
 		}
 	}
 }
