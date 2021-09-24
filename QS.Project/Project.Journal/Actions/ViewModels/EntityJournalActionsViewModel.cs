@@ -1,13 +1,19 @@
 using System;
 using System.Linq;
 using QS.DomainModel.Entity;
+using QS.Navigation;
+using QS.Project.Domain;
 using QS.Project.Services;
 using QS.Services;
+using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal.Actions.ViewModels
 {
-	public class EntityJournalActionsViewModel : ButtonsJournalActionsViewModel
+	public class EntityJournalActionsViewModel<TEntityViewModel, TEntity> : ButtonsJournalActionsViewModel
+		where TEntityViewModel : DialogViewModelBase
 	{
+		public INavigationManager NavigationManager { get; }
+		
 		private Type entityType;
 		private Action createEntityDialogAction;
 		private Action<object> editEntityDialogAction;
@@ -15,11 +21,14 @@ namespace QS.Project.Journal.Actions.ViewModels
 		private readonly ICurrentPermissionService currentPermissionService;
 
 		public EntityJournalActionsViewModel(
+			INavigationManager navigationManager,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null)
 		{
+			NavigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.currentPermissionService = currentPermissionService;
 			this.deleteEntityService = deleteEntityService;
+			Initialize(typeof(TEntity), CreateEntityDialog, EditEntityDialog);
 		}
 
 		#region Дефолтные значения экшена Добавить
@@ -72,6 +81,20 @@ namespace QS.Project.Journal.Actions.ViewModels
 		
 		#endregion
 
+		#region Предопределенные действия
+		
+		protected virtual void CreateEntityDialog()
+		{
+			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(MyJournal, EntityUoWBuilder.ForCreate());
+		}
+
+		protected virtual void EditEntityDialog(object node)
+		{
+			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(MyJournal, EntityUoWBuilder.ForOpen(DomainHelper.GetId(node)));
+		}
+		
+		#endregion
+		
 		public virtual void Initialize(
 			Type entityType,
 			Action createEntityDialogAction,

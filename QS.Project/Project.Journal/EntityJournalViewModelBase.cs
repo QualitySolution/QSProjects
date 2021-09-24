@@ -4,39 +4,33 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
-using QS.Project.Domain;
 using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Services;
 using QS.Utilities.Text;
-using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TEntity, TNode> : JournalViewModelBase
 		where TEntity : class, IDomainObject
-		where TEntityViewModel : DialogViewModelBase
 		where TNode : class
 	{
 		#region Обязательные зависимости
-		
-		protected EntityJournalActionsViewModel EntityJournalActionsViewModel { get; }
-		
+
 		#endregion
 		#region Опциональные зависимости
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
 		#endregion
 		
 		protected EntityJournalViewModelBase(
-			EntityJournalActionsViewModel journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
-			ICurrentPermissionService currentPermissionService = null
-			) : base(journalActionsViewModel, unitOfWorkFactory, interactiveService, navigationManager)
+			ICurrentPermissionService currentPermissionService = null,
+			JournalActionsViewModel journalActionsViewModel = null
+			) : base(unitOfWorkFactory, interactiveService, navigationManager, journalActionsViewModel)
 		{
 			CurrentPermissionService = currentPermissionService;
-			EntityJournalActionsViewModel = journalActionsViewModel ?? throw new ArgumentNullException(nameof(journalActionsViewModel));
 
 			var dataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
 			dataLoader.CurrentPermissionService = currentPermissionService;
@@ -51,12 +45,6 @@ namespace QS.Project.Journal
 				TabName = names.NominativePlural.StringToTitleCase();
 
 			UpdateOnChanges(typeof(TEntity));
-			InitializeJournalActionsViewModel();
-		}
-		
-		protected override void InitializeJournalActionsViewModel()
-		{
-			EntityJournalActionsViewModel.Initialize(typeof(TEntity), CreateEntityDialog, EditEntityDialog);
 		}
 
 		/// <summary>
@@ -66,19 +54,5 @@ namespace QS.Project.Journal
 		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
 		/// </summary>
 		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);
-
-		#region Предопределенные действия
-		
-		protected virtual void CreateEntityDialog()
-		{
-			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForCreate());
-		}
-
-		protected virtual void EditEntityDialog(object node)
-		{
-			NavigationManager.OpenViewModel<TEntityViewModel, IEntityUoWBuilder>(this, EntityUoWBuilder.ForOpen(DomainHelper.GetId(node)));
-		}
-		
-		#endregion
 	}
 }
