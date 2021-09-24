@@ -2,7 +2,6 @@
 using System.Linq;
 using Gtk;
 using QS.Project.Services;
-using QS.Tdi;
 
 namespace QS.Dialog.GtkUI
 {
@@ -21,11 +20,15 @@ namespace QS.Dialog.GtkUI
 				null,
 				chooserAction,
 				buttonData
-			);
+			)
+			{
+				DoOverwriteConfirmation = true
+			};
 
 			if(fileName != null)
 			{
 				chooser.SetUri(fileName);
+				chooser.CurrentName = fileName;
 			}
 			
 			return chooser;
@@ -72,12 +75,12 @@ namespace QS.Dialog.GtkUI
 			object[] buttonData = {
 				"Отмена",
 				ResponseType.Cancel,
-				"Загрузить",
+				"Сохранить",
 				ResponseType.Accept
 			};
 			
 			var chooser = CreateNewFileChooserDialog(
-				out filePath, "Укажите файл для сохранения", FileChooserAction.Save, fileName, buttonData);
+				out filePath, "Укажите путь для сохранения файла", FileChooserAction.Save, fileName, buttonData);
 
 			CreateFilters(chooser);
 			CheckAcceptButtonClicked(ref filePath, chooser);

@@ -9,6 +9,7 @@ using System.IO;
 
 namespace QSAttachment
 {
+	[Obsolete("Используйте AttachmentsViewmodel, этот класс можно будет удалить после проверки корректности работы нового")]
 	[System.ComponentModel.ToolboxItem (true)]
 	public partial class Attachment : Gtk.Bin
 	{

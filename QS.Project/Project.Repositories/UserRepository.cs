@@ -22,12 +22,12 @@ namespace QS.Project.Repositories
 
 		public static UserBase GetUserById(IUnitOfWork uow, int id) => uow.GetById<UserBase>(id);
 		
-		public static string GetTempDirForCurrentUser(int currentUserId, string partOfPath)
+		public static string GetTempDirForCurrentUser(int currentUserId, string subDirectory)
 		{
 			if(currentUserId == default(int))
 				return string.Empty;
 
-			return Path.Combine(Path.GetTempPath(), partOfPath, currentUserId.ToString());
+			return Path.Combine(Path.GetTempPath(), subDirectory, currentUserId.ToString());
 		}
 
 		public static IList<UserBase> GetUsers(IUnitOfWork uow, bool showDeactivated)

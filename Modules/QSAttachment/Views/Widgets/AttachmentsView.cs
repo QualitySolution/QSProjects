@@ -1,6 +1,5 @@
 ﻿using System;
 using Gamma.ColumnConfig;
-using QS.Attachments;
 using QS.Attachments.ViewModels.Widgets;
 using QS.Views.GtkUI;
 
@@ -31,7 +30,7 @@ namespace QSAttachment.Views.Widgets
 
 		private void ConfigureTreeFiles()
 		{
-			treeFiles.ColumnsConfig = new FluentColumnsConfig<IAttachment>()
+			treeFiles.ColumnsConfig = new FluentColumnsConfig<QS.Attachments.Domain.Attachment>()
 				.AddColumn("Файл").AddTextRenderer(n => n.FileName)
 				.AddColumn("")
 				.Finish();
@@ -43,7 +42,7 @@ namespace QSAttachment.Views.Widgets
 
 		private void OnTreeFilesSelectionChanged(object sender, EventArgs e)
 		{
-			ViewModel.SelectedAttachment = treeFiles.GetSelectedObject<IAttachment>();
+			ViewModel.SelectedAttachment = treeFiles.GetSelectedObject<QS.Attachments.Domain.Attachment>();
 		}
 	}
 }

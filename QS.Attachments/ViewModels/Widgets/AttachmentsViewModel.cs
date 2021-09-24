@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Data.Bindings.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using NLog;
+using QS.Attachments.Domain;
+using QS.Attachments.Factories;
 using QS.Commands;
 using QS.Project.Repositories;
 using QS.Project.Services;
@@ -18,7 +20,7 @@ namespace QS.Attachments.ViewModels.Widgets
 		private readonly IFilePickerService _filePickerService;
 		private readonly IScanDialogService _scanDialogService;
 		private readonly int _currentUserId;
-		private IAttachment _selectedAttachment;
+		private Attachment _selectedAttachment;
 
 		private DelegateCommand _addCommand;
 		private DelegateCommand _openCommand;
@@ -31,7 +33,7 @@ namespace QS.Attachments.ViewModels.Widgets
 			IFilePickerService filePickerService,
 			IScanDialogService scanDialogService,
 			int currentUserId,
-			ICovarianceList<IAttachment> attachments)
+			IList<Attachment> attachments)
 		{
 			_attachmentFactory = attachmentFactory ?? throw new ArgumentNullException(nameof(attachmentFactory));
 			_filePickerService = filePickerService ?? throw new ArgumentNullException(nameof(filePickerService));
@@ -40,9 +42,11 @@ namespace QS.Attachments.ViewModels.Widgets
 			Attachments = attachments;
 		}
 
-		public ICovarianceList<IAttachment> Attachments { get; }
+		public IList<Attachment> Attachments { get; }
 
-		public IAttachment SelectedAttachment
+		public string TempSubDirectory { get; set; } = string.Empty;
+
+		public Attachment SelectedAttachment
 		{
 			get => _selectedAttachment;
 			set
@@ -78,7 +82,7 @@ namespace QS.Attachments.ViewModels.Widgets
 		public DelegateCommand OpenCommand => _openCommand ?? (_openCommand = new DelegateCommand(
 				() =>
 				{
-					var vodUserTempDir = UserRepository.GetTempDirForCurrentUser(_currentUserId, SelectedAttachment.PartOfPath);
+					var vodUserTempDir = UserRepository.GetTempDirForCurrentUser(_currentUserId, TempSubDirectory);
 
 					if(string.IsNullOrWhiteSpace(vodUserTempDir))
 					{

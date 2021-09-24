@@ -1,6 +1,4 @@
-﻿using QS.Tdi;
-
-namespace QS.Project.Services
+﻿namespace QS.Project.Services
 {
 	public interface IFilePickerService
 	{
