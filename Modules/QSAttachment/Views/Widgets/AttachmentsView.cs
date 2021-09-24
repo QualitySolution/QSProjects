@@ -35,14 +35,9 @@ namespace QSAttachment.Views.Widgets
 				.AddColumn("")
 				.Finish();
 
+			treeFiles.Binding.AddBinding(ViewModel, vm => vm.SelectedAttachment, w => w.SelectedRow).InitializeFromSource();
 			treeFiles.ItemsDataSource = ViewModel.Attachments;
-			treeFiles.Selection.Changed += OnTreeFilesSelectionChanged;
 			treeFiles.RowActivated += (sender, args) => ViewModel.OpenCommand.Execute();
-		}
-
-		private void OnTreeFilesSelectionChanged(object sender, EventArgs e)
-		{
-			ViewModel.SelectedAttachment = treeFiles.GetSelectedObject<QS.Attachments.Domain.Attachment>();
 		}
 	}
 }
