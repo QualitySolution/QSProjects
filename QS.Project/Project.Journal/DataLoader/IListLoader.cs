@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public interface IDataLoader
+	public interface IListLoader
 	{
 		IList Items { get; }
 

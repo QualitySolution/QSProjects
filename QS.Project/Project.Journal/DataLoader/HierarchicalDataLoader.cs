@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public class HierarchicalDataLoader<TEntity, TNode> : IDataLoader
+	public class HierarchicalDataLoader<TEntity, TNode> : IListLoader
 		where TEntity : class, IDomainObject
 		where TNode : class, IHierarchicalNode<TNode, TNode>
 	{

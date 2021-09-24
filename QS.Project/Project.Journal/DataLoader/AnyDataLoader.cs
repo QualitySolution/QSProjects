@@ -11,7 +11,7 @@ namespace QS.Project.Journal.DataLoader
 	/// Данный загрузчик позволяет журналу как угодно получать данные. Может из кода, может другим способом.
 	/// Пока реализован только однопоточный режим.
 	/// </summary>
-	public class AnyDataLoader<TNode> : IDataLoader
+	public class AnyDataLoader<TNode> : IListLoader
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		private readonly Func<CancellationToken, IList<TNode>> getNodes;

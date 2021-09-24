@@ -26,8 +26,8 @@ namespace QS.Project.Journal
 
 		protected virtual Func<IUnitOfWork, IQueryOver<TEntity>> ItemsSourceQueryFunction { get; private set; }
 
-		protected IDataLoader _dataLoader;
-		public override IDataLoader DataLoader
+		protected IListLoader _dataLoader;
+		public override IListLoader DataLoader
 		{
 			get
 			{

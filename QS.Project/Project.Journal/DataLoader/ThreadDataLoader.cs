@@ -11,7 +11,7 @@ using QS.Services;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public class ThreadDataLoader<TNode> : IDataLoader
+	public class ThreadDataLoader<TNode> : IListLoader
 		where TNode: class
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
