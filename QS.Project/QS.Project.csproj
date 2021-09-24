@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -66,6 +66,9 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\HierarchicalDataLoader.cs" />
+    <Compile Include="Project.Journal\HierarchicalJournalViewModelBase.cs" />
+    <Compile Include="Project.Journal\IHierarchicalNode.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -272,8 +275,8 @@
     <Compile Include="ViewModels\Dialog\UowDialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
-    <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" /> 
-    <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" /> 
+    <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
+    <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" />
     <Compile Include="Navigation\ISlideableViewModel.cs" />
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
