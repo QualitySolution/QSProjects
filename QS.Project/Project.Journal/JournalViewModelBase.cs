@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -21,9 +21,7 @@ namespace QS.Project.Journal
 	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-
-		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
-
+		
 		private IList<object> selectedItems;
 		public IList<object> SelectedItems
 		{
@@ -51,7 +49,20 @@ namespace QS.Project.Journal
 			set { }
 		}
 
-		public JournalActionsViewModel JournalActionsViewModel { get; }
+		#region Дочерние ViewModels
+		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
+
+		private JournalActionsViewModel journalActionsViewModel;
+		public JournalActionsViewModel JournalActionsViewModel {
+			get => journalActionsViewModel;
+			protected set {
+				journalActionsViewModel = value;
+				if(journalActionsViewModel != null)
+					journalActionsViewModel.MyJournal = this;
+			}
+		}
+
+		#endregion
 		public virtual IEnumerable<IJournalAction> PopupActions => PopupActionsList;
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
 

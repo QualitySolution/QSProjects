@@ -8,6 +8,8 @@ namespace QS.Project.Journal.Actions.ViewModels
 {
 	public class JournalActionsViewModel : WidgetViewModelBase
 	{
+		public JournalViewModelBase MyJournal { get; set; }
+		
 		protected IList<object> selectedItems;
 
 		private JournalSelectionMode selectionMode;
