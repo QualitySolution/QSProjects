@@ -7,7 +7,6 @@ using Autofac;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.Project.Journal;
 using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
@@ -19,7 +18,7 @@ using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
 
-namespace QS.Journal.GtkUI
+namespace QS.Project.Journal.Views
 {
 	[WindowSize(900, 600)]
 	public partial class JournalView : TabViewBase<JournalViewModelBase>

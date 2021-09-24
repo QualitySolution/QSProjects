@@ -158,10 +158,8 @@
     <Compile Include="Views.GtkUI\TabViewBase.cs" />
     <Compile Include="Views.GtkUI\TabViewBaseGeneric.cs" />
     <Compile Include="Views.GtkUI\ITabView.cs" />
-    <Compile Include="Journal.GtkUI\JournalView.cs" />
-    <Compile Include="gtk-gui\QS.Journal.GtkUI.JournalView.cs" />
-    <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
-    <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
+    <Compile Include="Project.Journal\JournalViewFactory.cs" />
+    <Compile Include="Project.Journal\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
     <Compile Include="Dialog\SingleUoWWidgetBase.cs" />
     <Compile Include="Widgets.GtkUI\EntityViewModelEntry.cs" />
@@ -235,8 +233,10 @@
     <Compile Include="gtk-gui\QS.Project.Journal.Actions.Views.EntitiesJournalActionsView.cs" />
     <Compile Include="Dialog\Views\ProgressWindowView.cs" />
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
-    <Compile Include="Journal.GtkUI\Actions\Views\EntitiesJournalActionsView.cs" />
-    <Compile Include="Journal.GtkUI\Actions\Views\JournalActionsView.cs" />
+    <Compile Include="Project.Journal\Views\JournalView.cs" />
+    <Compile Include="Project.Journal\Actions.Views\EntitiesJournalActionsView.cs" />
+    <Compile Include="Project.Journal\Actions.Views\JournalActionsView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Journal.Views.JournalView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
@@ -252,7 +252,7 @@
     <Folder Include="Permissions\" />
     <Folder Include="Icons\" />
     <Folder Include="Project.Search.GtkUI\" />
-    <Folder Include="Journal.GtkUI\" />
+    <Folder Include="Project.Journal\" />
     <Folder Include="Views.GtkUI\" />
     <Folder Include="ErrorReporting\" />
     <Folder Include="Project.Services.GtkUI\" />
@@ -268,8 +268,8 @@
     <Folder Include="BaseParameters.Views\" />
     <Folder Include="ChangePassword.Views\" />
     <Folder Include="Dialog\Views\" />
-    <Folder Include="Journal.GtkUI\Actions\" />
-    <Folder Include="Journal.GtkUI\Actions\Views\" />
+    <Folder Include="Project.Journal\Views\" />
+    <Folder Include="Project.Journal\Actions.Views\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">

@@ -1,9 +1,9 @@
 ﻿using System;
 using Gtk;
+using QS.Project.Journal.Views;
 using QS.Tdi;
-using QS.Project.Journal;
 
-namespace QS.Journal.GtkUI
+namespace QS.Project.Journal
 {
 	public static class JournalViewFactory
 	{

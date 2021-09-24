@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gamma.ColumnConfig;
-using QS.Project.Journal;
 
-namespace QS.Journal.GtkUI
+namespace QS.Project.Journal
 {
 	public static class TreeViewColumnsConfigFactory
 	{

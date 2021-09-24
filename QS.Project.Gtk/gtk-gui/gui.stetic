@@ -1625,7 +1625,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Journal.GtkUI.JournalView" design-size="472 257">
+  <widget class="Gtk.Bin" id="QS.Project.Journal.Views.JournalView" design-size="472 257">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
