@@ -1,7 +1,7 @@
-﻿using System;
+﻿using QS.DomainModel.UoW;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal.DataLoader
 {

@@ -90,7 +90,15 @@ namespace QS.Journal.GtkUI
 			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel);
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
-			tableview.ItemsDataSource = ViewModel.Items;
+			if(tableview.ColumnsConfig.TreeModelFunc != null)
+			{
+				tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke(ViewModel.Items);
+			}
+			else
+			{
+				tableview.ItemsDataSource = ViewModel.Items;
+			}
+
 			ViewModel.Refresh();
 			UpdateButtons();
 			SetTotalLableText();
@@ -106,15 +114,15 @@ namespace QS.Journal.GtkUI
 				SetSeletionMode(ViewModel.SelectionMode);
 		}
 
-		void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(e.PropertyName == nameof(ViewModel.JournalFilter.IsShow))
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 		}
 
-		TextSpinner CountingTextSpinner;
+		private TextSpinner CountingTextSpinner;
 
-		void CreateTextSpinner()
+		private void CreateTextSpinner()
 		{
 			ISpinnerTemplate timeOfDaySpinner = DateTime.Now.TimeOfDay < new TimeSpan(6, 30, 0) || DateTime.Now.TimeOfDay > new TimeSpan(18, 30, 0)
 				? (ISpinnerTemplate)new SpinnerTemplateMoon() : new SpinnerTemplateClock();
@@ -135,7 +143,7 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
-		void SetSeletionMode(JournalSelectionMode mode)
+		private void SetSeletionMode(JournalSelectionMode mode)
 		{
 			switch(mode) {
 				case JournalSelectionMode.None:
@@ -153,7 +161,7 @@ namespace QS.Journal.GtkUI
 
 		#region События загрузчика данных
 
-		void ViewModel_ItemsListUpdated(object sender, EventArgs e)
+		private void ViewModel_ItemsListUpdated(object sender, EventArgs e)
 		{
 			Application.Invoke((s, arg) => {
 				if(isDestroyed)
@@ -161,9 +169,17 @@ namespace QS.Journal.GtkUI
 					
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
-				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
 
-				if(!ViewModel.DataLoader.FirstPage) {
+				if (tableview.ColumnsConfig.TreeModelFunc != null)
+				{
+					tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke(ViewModel.Items);
+				}
+				else
+				{
+					tableview.ItemsDataSource = ViewModel.Items;
+				}
+
+				if (!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();
 					if(GtkScrolledWindow?.Vadjustment != null)
 						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
@@ -173,14 +189,14 @@ namespace QS.Journal.GtkUI
 
 		private LoadingState loadingState;
 
-		void DataLoader_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+		private void DataLoader_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
 		{
 			if(loadingState != LoadingState.InProgress && e.LoadingState == LoadingState.InProgress)
 				GLib.Timeout.Add(ShowProgressbarDelay, new GLib.TimeoutHandler(StartLoadProgress));
 			loadingState = e.LoadingState;
 		}
 
-		bool StartLoadProgress()
+		private bool StartLoadProgress()
 		{
 			progressbarLoading.Visible = loadingState == LoadingState.InProgress;
 
@@ -190,7 +206,7 @@ namespace QS.Journal.GtkUI
 			return false;
 		}
 
-		bool PulseProgress()
+		private bool PulseProgress()
 		{
 			if(loadingState == LoadingState.Idle) {
 				progressbarLoading.Visible = false;
@@ -201,7 +217,7 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
-		void DataLoader_LoadError(object sender, LoadErrorEventArgs e)
+		private void DataLoader_LoadError(object sender, LoadErrorEventArgs e)
 		{
 			Application.Invoke((s, ea) => throw e.Exception);
 		}
@@ -210,25 +226,25 @@ namespace QS.Journal.GtkUI
 
 		#region Отображение общего количества строк
 
-		void SetTotalLableText()
+		private void SetTotalLableText()
 		{
 			labelTotalRow.Markup = GetTotalRowText();
 		}
 
-		void DataLoader_TotalCountChanged(object sender, EventArgs e)
+		private void DataLoader_TotalCountChanged(object sender, EventArgs e)
 		{
 			if(!ViewModel.DataLoader.TotalCountingInProgress) {
 				Application.Invoke((s, arg) => SetTotalLableText());
 			}
 		}
 
-		bool UpdateTotalCount()
+		private bool UpdateTotalCount()
 		{
 			SetTotalLableText();
 			return ViewModel.DataLoader.TotalCountingInProgress;
 		}
 
-		string GetTotalRowText()
+		private string GetTotalRowText()
 		{
 			if(ViewModel.DataLoader.TotalCountingInProgress) {
 				if(ViewModel.DataLoader.TotalCount.HasValue)
@@ -251,9 +267,9 @@ namespace QS.Journal.GtkUI
 
 		#endregion
 
-		double lastScrollPosition;
+		private double lastScrollPosition;
 
-		void Vadjustment_ValueChanged(object sender, EventArgs e)
+		private void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
 			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
 				return;
@@ -269,8 +285,8 @@ namespace QS.Journal.GtkUI
 			return tableview.GetSelectedObjects();
 		}
 
-		List<System.Action> actionsSensitivity;
-		List<System.Action> actionsVisibility;
+		private List<System.Action> actionsSensitivity;
+		private List<System.Action> actionsVisibility;
 
 		private void ConfigureActions()
 		{
@@ -352,7 +368,7 @@ namespace QS.Journal.GtkUI
 			return menuItem;
 		}
 
-		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+		private void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
 			if(args.Event.Button == 3 && ViewModel.PopupActions.Any()) {
 				var selected = GetSelectedItems();
@@ -390,7 +406,7 @@ namespace QS.Journal.GtkUI
 			return menuItem;
 		}
 
-		void Selection_Changed(object sender, EventArgs e)
+		private void Selection_Changed(object sender, EventArgs e)
 		{
 			UpdateButtons();
 		}
