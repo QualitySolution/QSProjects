@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
@@ -20,6 +21,14 @@ namespace QS.Project.Repositories
 		}
 
 		public static UserBase GetUserById(IUnitOfWork uow, int id) => uow.GetById<UserBase>(id);
+		
+		public static string GetTempDirForCurrentUser(int currentUserId, string subDirectory)
+		{
+			if(currentUserId == default(int))
+				return string.Empty;
+
+			return Path.Combine(Path.GetTempPath(), subDirectory, currentUserId.ToString());
+		}
 
 		public static IList<UserBase> GetUsers(IUnitOfWork uow, bool showDeactivated)
 		{

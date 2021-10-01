@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <LangVersion>7.3</LangVersion>
+        <RootNamespace>QS</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+      <ProjectReference Include="..\QS.Project\QS.Project.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentNHibernate" Version="3.1.0" />
+      <PackageReference Include="NLog" Version="4.7.10" />
+      <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

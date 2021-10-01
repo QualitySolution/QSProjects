@@ -2,48 +2,91 @@
 using System.Linq;
 using Gtk;
 using QS.Project.Services;
-using QS.Tdi;
 
 namespace QS.Dialog.GtkUI
 {
 	public class GtkFilePicker : IFilePickerService
 	{
 		private string[] MIMEFilters { get; set; }
+		
+		private FileChooserDialog CreateNewFileChooserDialog(
+			out string filePath, string title, FileChooserAction chooserAction, string fileName = null, params object[] buttonData)
+		{
+			filePath = string.Empty;
+			
+			var chooser = new FileChooserDialog
+			(
+				title,
+				null,
+				chooserAction,
+				buttonData
+			)
+			{
+				DoOverwriteConfirmation = true
+			};
+
+			if(fileName != null)
+			{
+				chooser.SetUri(fileName);
+				chooser.CurrentName = fileName;
+			}
+			
+			return chooser;
+		}
+		
+		private void CreateFilters(FileChooserDialog chooser)
+		{
+			if(!(MIMEFilters?.Any() ?? false)) return;
+			
+			var filter = new FileFilter();
+
+			foreach(var item in MIMEFilters)
+				filter.AddMimeType(item);
+
+			chooser.AddFilter(filter);
+		}
+		
+		private void CheckAcceptButtonClicked(ref string filePath, FileChooserDialog chooser)
+		{
+			if((ResponseType)chooser.Run() == ResponseType.Accept)
+			{
+				chooser.Hide();
+				filePath = chooser.Filename;
+			}
+		}
+		
+		private void CheckAcceptButtonClicked(ref string[] filePaths, FileChooserDialog chooser)
+		{
+			if((ResponseType)chooser.Run() == ResponseType.Accept)
+			{
+				chooser.Hide();
+				filePaths = chooser.Filenames;
+			}
+		}
+		
+		private void DestroyDialog(FileChooserDialog chooser)
+		{
+			chooser.Destroy();
+			MIMEFilters = null;
+		}
 
 		public bool OpenSaveFilePicker(string fileName, out string filePath)
 		{
-			filePath = string.Empty;
-			FileChooserDialog Chooser = new FileChooserDialog
-			(
-				"Укажите файл для сохранения",
-				null,
-				FileChooserAction.Save,
-				"Отмена", ResponseType.Cancel,
-				"Загрузить", ResponseType.Accept
-			);
+			object[] buttonData = {
+				"Отмена",
+				ResponseType.Cancel,
+				"Сохранить",
+				ResponseType.Accept
+			};
+			
+			var chooser = CreateNewFileChooserDialog(
+				out filePath, "Укажите путь для сохранения файла", FileChooserAction.Save, fileName, buttonData);
 
-			Chooser.SetUri(fileName);
+			CreateFilters(chooser);
+			CheckAcceptButtonClicked(ref filePath, chooser);
+			DestroyDialog(chooser);
 
-			if(MIMEFilters?.Any() ?? false) 
-			{
-				FileFilter filter = new FileFilter();
-
-				foreach(var item in MIMEFilters)
-					filter.AddMimeType(item);
-
-				Chooser.AddFilter(filter);
-			}
-
-			if((ResponseType)Chooser.Run() == ResponseType.Accept) 
-			{
-				Chooser.Hide();
-				filePath = Chooser.Filename;
-			}
-
-			Chooser.Destroy();
-			MIMEFilters = null;
-
-			return !String.IsNullOrWhiteSpace(filePath);
+			return !string.IsNullOrWhiteSpace(filePath);
 		}
 
 		public bool OpenSaveFilePicker(string fileName, out string filePath, params string[] MIMEFilter)
@@ -54,43 +97,27 @@ namespace QS.Dialog.GtkUI
 
 		public bool OpenSelectFilePicker(out string filePath)
 		{
-			filePath = string.Empty;
+			object[] buttonData = {
+				"Отмена",
+				ResponseType.Cancel,
+				"Загрузить",
+				ResponseType.Accept
+			};
+			
+			var chooser = CreateNewFileChooserDialog(
+				out filePath, "Выберите файл для загрузки...", FileChooserAction.Open, null, buttonData);
 
-			FileChooserDialog Chooser = new FileChooserDialog
-			(
-				"Выберите файл для загрузки...",
-				null,
-				FileChooserAction.Open,
-				"Отмена", ResponseType.Cancel,
-				"Загрузить", ResponseType.Accept
-			);
+			CreateFilters(chooser);
+			CheckAcceptButtonClicked(ref filePath, chooser);
+			DestroyDialog(chooser);
 
-			if(MIMEFilters?.Any() ?? false) 
-			{
-				FileFilter filter = new FileFilter();
-
-				foreach(var item in MIMEFilters)
-					filter.AddMimeType(item);
-
-				Chooser.AddFilter(filter);
-			}
-
-			if((ResponseType)Chooser.Run() == ResponseType.Accept) 
-			{
-				Chooser.Hide();
-				filePath = Chooser.Filename;
-			}
-
-			Chooser.Destroy();
-			MIMEFilters = null;
-
-			return !String.IsNullOrWhiteSpace(filePath);
+			return !string.IsNullOrWhiteSpace(filePath);
 		}
 
 		public bool OpenSelectFilePicker(out string[] filePaths)
 		{
 			filePaths = Array.Empty<string>();
-			FileChooserDialog Chooser = new FileChooserDialog
+			var chooser = new FileChooserDialog
 			(
 				"Выберите файл для загрузки...",
 				null,
@@ -102,26 +129,11 @@ namespace QS.Dialog.GtkUI
 				SelectMultiple = true
 			};
 
-			if(MIMEFilters?.Any() ?? false)
-			{
-				FileFilter filter = new FileFilter();
+			CreateFilters(chooser);
+			CheckAcceptButtonClicked(ref filePaths, chooser);
+			DestroyDialog(chooser);
 
-				foreach(var item in MIMEFilters)
-					filter.AddMimeType(item);
-
-				Chooser.AddFilter(filter);
-			}
-
-			if((ResponseType)Chooser.Run() == ResponseType.Accept)
-			{
-				Chooser.Hide();
-				filePaths = Chooser.Filenames;
-			}
-
-			Chooser.Destroy();
-			MIMEFilters = null;
-
-			return filePaths.Any() && filePaths.FirstOrDefault(String.IsNullOrWhiteSpace) == null;
+			return filePaths.Any() && filePaths.FirstOrDefault(string.IsNullOrWhiteSpace) == null;
 		}
 
 		public bool OpenSelectFilePicker(out string filePath, params string[] MIMEFilter)
@@ -134,6 +146,25 @@ namespace QS.Dialog.GtkUI
 		{
 			MIMEFilters = MIMEFilter;
 			return OpenSelectFilePicker(out filePaths);
+		}
+
+		public bool OpenAttachFilePicker(out string filePath)
+		{
+			object[] buttonData = {
+				"Отмена",
+				ResponseType.Cancel,
+				"Прикрепить",
+				ResponseType.Accept
+			};
+
+			var chooser = CreateNewFileChooserDialog(
+				out filePath, "Выберите файл для прикрепления...", FileChooserAction.Open, null, buttonData);
+
+			CreateFilters(chooser);
+			CheckAcceptButtonClicked(ref filePath, chooser);
+			DestroyDialog(chooser);
+
+			return !string.IsNullOrWhiteSpace(filePath);
 		}
 	}
 }
