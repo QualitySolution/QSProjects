@@ -6,11 +6,10 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.Test.TestApp.Domain;
-using QS.Test.TestApp.ViewModels;
 
 namespace QS.Test.TestApp.JournalViewModels
 {
-	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, EntityDialogViewModel, FullQuerySetDocumentJournalNode>
+	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, FullQuerySetDocumentJournalNode>
 	{
 		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigationManager) 
 			: base(unitOfWorkFactory, interactiveService, navigationManager)
