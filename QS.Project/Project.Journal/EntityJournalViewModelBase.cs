@@ -26,9 +26,9 @@ namespace QS.Project.Journal
 			IUnitOfWorkFactory unitOfWorkFactory,
 			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
-			ICurrentPermissionService currentPermissionService = null,
-			JournalActionsViewModel journalActionsViewModel = null
-			) : base(unitOfWorkFactory, interactiveService, navigationManager, journalActionsViewModel)
+			JournalActionsViewModel journalActionsViewModel = null,
+			ICurrentPermissionService currentPermissionService = null
+		) : base(unitOfWorkFactory, interactiveService, navigationManager, journalActionsViewModel)
 		{
 			CurrentPermissionService = currentPermissionService;
 
