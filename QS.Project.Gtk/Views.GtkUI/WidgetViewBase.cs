@@ -3,7 +3,7 @@ using QS.ViewModels;
 namespace QS.Views.GtkUI
 {
 	public abstract class WidgetViewBase<TViewModel> : Gtk.Bin
-		where TViewModel : UoWWidgetViewModelBase
+		where TViewModel : WidgetViewModelBase
 	{
 		TViewModel viewModel;
 		public TViewModel ViewModel {
