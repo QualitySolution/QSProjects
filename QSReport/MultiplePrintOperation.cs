@@ -12,7 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QS
+namespace QS.Report
 {
 	public class MultiplePrintOperation
 	{
@@ -20,13 +20,11 @@ namespace QS
 		private readonly IUnitOfWork _uow;
 		private readonly UserPrintingRepository _userPrintingRepository;
 		private readonly ICommonServices _commonServices;
-		private readonly IInteractiveService _interactiveService;
 
-		public MultiplePrintOperation(IUnitOfWork uow, ICommonServices commonServices, IInteractiveService interactiveService, UserPrintingRepository userPrintingRepository)
+		public MultiplePrintOperation(IUnitOfWork uow, ICommonServices commonServices, UserPrintingRepository userPrintingRepository)
 		{
 			_uow = uow ?? throw new ArgumentNullException(nameof(uow));
 			_commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
-			_interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
 			_userPrintingRepository = userPrintingRepository ?? throw new ArgumentNullException(nameof(userPrintingRepository));
 		}
 

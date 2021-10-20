@@ -16,8 +16,8 @@ namespace QS.Report.ViewModels
 {
 	public class SelectablePrintersViewModel : DialogViewModelBase
 	{
-		private DelegateCommand _savePrintSettings;
-		private DelegateCommand<PrinterNode> _openPrinterSettings;
+		private DelegateCommand _savePrintSettingsCommand;
+		private DelegateCommand<PrinterNode> _openPrinterSettingsCommand;
 		private readonly IList<UserSelectedPrinter> _savedUserPrinterList;
 		private readonly IUnitOfWork _uow;
 		private readonly UserBase _user;
@@ -66,7 +66,7 @@ namespace QS.Report.ViewModels
 		#region Commands
 
 		public DelegateCommand SavePrintSettingsCommand =>
-			_savePrintSettings ?? (_savePrintSettings = new DelegateCommand(() =>
+			_savePrintSettingsCommand ?? (_savePrintSettingsCommand = new DelegateCommand(() =>
 			{
 				var selectedPrinters = AllPrintersWithSelected.Where(x => x.IsChecked).Select(x => x.Printer).ToArray();
 
@@ -91,7 +91,7 @@ namespace QS.Report.ViewModels
 			));
 
 		public DelegateCommand<PrinterNode> OpenPrinterSettingsCommand =>
-			_openPrinterSettings ?? (_openPrinterSettings = new DelegateCommand<PrinterNode>((selectedItem) =>
+			_openPrinterSettingsCommand ?? (_openPrinterSettingsCommand = new DelegateCommand<PrinterNode>((selectedItem) =>
 			{
 				if (selectedItem != null)
 				{

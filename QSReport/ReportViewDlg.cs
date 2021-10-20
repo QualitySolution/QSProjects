@@ -14,6 +14,7 @@ namespace QSReport
 
 		private ReportInfo reportInfo;
 		private IParametersWidget parametersWidget;
+		private IUnitOfWork _uow;
 
 		public event EventHandler ReportPrinted;
 
@@ -70,11 +71,10 @@ namespace QSReport
 
 			if (info.PrintType == ReportInfo.PrintingType.MultiplePrinters)
 			{
-				var uow = UnitOfWorkFactory.CreateWithoutRoot();
+				_uow = UnitOfWorkFactory.CreateWithoutRoot();
 				var commonService = ServicesConfig.CommonServices;
-				var interactiveService = ServicesConfig.InteractiveService;
 				var userPrintSettingsRepository = new UserPrintingRepository();
-				multiplePrintOperation = new MultiplePrintOperation(uow, commonService, interactiveService, userPrintSettingsRepository);
+				multiplePrintOperation = new MultiplePrintOperation(_uow, commonService, userPrintSettingsRepository);
 			}
 
 			if(info.Source != null)
@@ -133,6 +133,7 @@ namespace QSReport
 			if(parametersWidget != null) {
 				parametersWidget.LoadReport -= ParametersWidget_LoadReport;
 			}
+			_uow.Dispose();
 			base.Dispose();
         }
     }
