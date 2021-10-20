@@ -48,6 +48,11 @@ namespace QS.Report
 		/// </summary>
 		public string Source { get; set; }
 
+		/// <summary>
+		/// Тип печати
+		/// </summary>
+		public PrintingType PrintType { get; set; }
+
 		#endregion
 
 		public string GetPath ()
@@ -137,6 +142,12 @@ namespace QS.Report
 				}
 			else
 				_connectionString = connectionString;
+		}
+
+		public enum PrintingType
+		{
+			Default,
+			MultiplePrinters
 		}
 	}
 }

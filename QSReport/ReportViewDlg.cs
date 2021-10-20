@@ -1,6 +1,10 @@
 ﻿using System;
 using Gtk;
+using QS;
+using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Report;
+using QS.Report.Repository;
 
 namespace QSReport
 {
@@ -61,11 +65,34 @@ namespace QSReport
 		void LoadReport(ReportInfo info)
 		{
 			logger.Debug (String.Format ("Report Parameters[{0}]", info.GetParametersString ()));
+
+			MultiplePrintOperation multiplePrintOperation = null;
+
+			if (info.PrintType == ReportInfo.PrintingType.MultiplePrinters)
+			{
+				var uow = UnitOfWorkFactory.CreateWithoutRoot();
+				var commonService = ServicesConfig.CommonServices;
+				var interactiveService = ServicesConfig.InteractiveService;
+				var userPrintSettingsRepository = new UserPrintingRepository();
+				multiplePrintOperation = new MultiplePrintOperation(uow, commonService, interactiveService, userPrintSettingsRepository);
+			}
+
 			if(info.Source != null)
+			{
 				reportviewer1.LoadReport(info.Source, info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
+			}	
 			else
-				reportviewer1.LoadReport(info.GetReportUri(), info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
-		}
+			{
+				if (multiplePrintOperation == null)
+				{
+					reportviewer1.LoadReport(info.GetReportUri(), info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
+				}
+				else
+				{
+					reportviewer1.LoadReport(info.GetReportUri(), info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes, multiplePrintOperation.Run);
+				}
+			}
+}
 
 		public ReportViewDlg (IParametersWidget widget)
 		{
