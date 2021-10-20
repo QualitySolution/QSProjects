@@ -17,13 +17,13 @@ namespace QS.Report
 	public class MultiplePrintOperation
 	{
 		private Pages _pages;
-		private readonly IUnitOfWork _uow;
+		private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 		private readonly UserPrintingRepository _userPrintingRepository;
 		private readonly ICommonServices _commonServices;
 
-		public MultiplePrintOperation(IUnitOfWork uow, ICommonServices commonServices, UserPrintingRepository userPrintingRepository)
+		public MultiplePrintOperation(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, UserPrintingRepository userPrintingRepository)
 		{
-			_uow = uow ?? throw new ArgumentNullException(nameof(uow));
+			_unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			_commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			_userPrintingRepository = userPrintingRepository ?? throw new ArgumentNullException(nameof(userPrintingRepository));
 		}
@@ -96,7 +96,7 @@ namespace QS.Report
 		{
 			_pages = pages;
 
-			var selectablePrintersViewModel = new SelectablePrintersViewModel(null, _uow, _commonServices, _userPrintingRepository);
+			var selectablePrintersViewModel = new SelectablePrintersViewModel(null, _unitOfWorkFactory, _commonServices, _userPrintingRepository);
 			var selectablePrintersView = new SelectablePrintersView(selectablePrintersViewModel);
 			selectablePrintersView.ShowAll();
 			var response = selectablePrintersView.Run();
@@ -104,6 +104,7 @@ namespace QS.Report
 
 			if (response != (int)ResponseType.Ok)
 			{
+				selectablePrintersViewModel.Dispose();
 				return;
 			}
 
@@ -112,6 +113,8 @@ namespace QS.Report
 			{
 				Task.Run(() => Print(printer, selectablePrintersViewModel.UserPrintSettings, selectablePrintersViewModel.IsWindowsOs));
 			}
+
+			selectablePrintersViewModel.Dispose();
 		}
 	}
 }

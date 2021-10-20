@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace QS.Report.ViewModels
 {
-	public class SelectablePrintersViewModel : DialogViewModelBase
+	public class SelectablePrintersViewModel : DialogViewModelBase, IDisposable
 	{
 		private DelegateCommand _savePrintSettingsCommand;
 		private DelegateCommand<PrinterNode> _openPrinterSettingsCommand;
@@ -22,12 +22,13 @@ namespace QS.Report.ViewModels
 		private readonly IUnitOfWork _uow;
 		private readonly UserBase _user;
 
-		public SelectablePrintersViewModel(INavigationManager navigation, IUnitOfWork uow, ICommonServices commonServices, UserPrintingRepository userPrintingRepository) : base(navigation)
+		public SelectablePrintersViewModel(INavigationManager navigation, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, UserPrintingRepository userPrintingRepository) : base(navigation)
 		{
-			_uow = uow ?? throw new ArgumentNullException(nameof(uow));
-			_user = commonServices.UserService.GetCurrentUser(uow);
+			_uow = (unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory))).CreateWithoutRoot();
 
-			_savedUserPrinterList = userPrintingRepository.GetUserSelectedPrinters(uow, _user.Id);
+			_user = commonServices.UserService.GetCurrentUser(_uow);
+
+			_savedUserPrinterList = userPrintingRepository.GetUserSelectedPrinters(_uow, _user.Id);
 
 			UserPrintSettings = userPrintingRepository.GetUserPrintSettings(_uow, _user.Id) ?? new UserPrintSettings
 			{
@@ -115,11 +116,16 @@ namespace QS.Report.ViewModels
 		public IEnumerable<PrinterNode> AllPrintersWithSelected { get; }
 		public UserPrintSettings UserPrintSettings { get; }
 		public bool IsWindowsOs => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-		
+
 		public class PrinterNode
 		{
 			public bool IsChecked { get; set; }
 			public UserSelectedPrinter Printer { get; set; }
+		}
+
+		public void Dispose()
+		{
+			_uow?.Dispose();
 		}
 	}
 }
