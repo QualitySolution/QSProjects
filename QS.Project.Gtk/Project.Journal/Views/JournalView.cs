@@ -78,7 +78,7 @@ namespace QS.Project.Journal.Views
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
 			}
 			
-			if(ViewModel.JournalActionsViewModel is JournalActionsViewModel actionsViewModel)
+			if(ViewModel.JournalActions is JournalActionsViewModel actionsViewModel)
 			{
 				Widget actionsView;
 				
@@ -100,7 +100,7 @@ namespace QS.Project.Journal.Views
 				
 				tableview.RowActivated += (o, args) =>
 				{
-					ViewModel.JournalActionsViewModel?.RowActivatedAction?.Invoke();
+					ViewModel.JournalActions?.RowActivatedAction?.Invoke();
 				};
 			}
 
@@ -356,10 +356,10 @@ namespace QS.Project.Journal.Views
 		
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			if(ViewModel.JournalActionsViewModel != null && ViewModel.JournalActionsViewModel.JournalActions.Any())
+			if(ViewModel.JournalActions != null && ViewModel.JournalActions.JournalActions.Any())
 			{
 				var nodeActions = 
-					ViewModel.JournalActionsViewModel.JournalActions.Where(
+					ViewModel.JournalActions.JournalActions.Where(
 						n => !string.IsNullOrEmpty(n.HotKeys)
 						     && n.HotKeys.Replace(" ", string.Empty).ToLower()
 					    .Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)

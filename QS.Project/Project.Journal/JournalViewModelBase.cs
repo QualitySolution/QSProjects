@@ -30,9 +30,9 @@ namespace QS.Project.Journal
 			{
 				if(SetField(ref selectedItems, value))
 				{
-					if(JournalActionsViewModel != null)
+					if(JournalActions != null)
 					{
-						JournalActionsViewModel.SelectedItems = SelectedItems;
+						JournalActions.SelectedItems = SelectedItems;
 					}
 				}
 			}
@@ -52,13 +52,13 @@ namespace QS.Project.Journal
 		#region Дочерние ViewModels
 		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
 
-		private JournalActionsViewModel journalActionsViewModel;
-		public JournalActionsViewModel JournalActionsViewModel {
-			get => journalActionsViewModel;
+		private JournalActionsViewModel journalActions;
+		public JournalActionsViewModel JournalActions {
+			get => journalActions;
 			protected set {
-				journalActionsViewModel = value;
-				if(journalActionsViewModel != null)
-					journalActionsViewModel.MyJournal = this;
+				journalActions = value;
+				if(journalActions != null)
+					journalActions.MyJournal = this;
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace QS.Project.Journal
 			{
 				if(SetField(ref selectionMode, value)) 
 				{
-					JournalActionsViewModel.SelectionMode = SelectionMode;
+					JournalActions.SelectionMode = SelectionMode;
 				}
 			}
 		}
@@ -110,7 +110,7 @@ namespace QS.Project.Journal
 			JournalActionsViewModel journalActionsViewModel = null
 		) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
-			JournalActionsViewModel = journalActionsViewModel;
+			JournalActions = journalActionsViewModel;
 			SelectedItems = new List<object>();
 			PopupActionsList = new List<IJournalAction>();
 
@@ -121,7 +121,7 @@ namespace QS.Project.Journal
 
 			UseSlider = false;
 			//FIXME Предусмотреть что она может быть пустой
-			JournalActionsViewModel.OnItemsSelectedAction += OnItemsSelected;
+			JournalActions.OnItemsSelectedAction += OnItemsSelected;
 		}
 
 		protected virtual void OnItemsSelected()
@@ -152,9 +152,9 @@ namespace QS.Project.Journal
 		public override void Dispose()
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
-			JournalActionsViewModel.OnItemsSelectedAction -= OnItemsSelected;
+			JournalActions.OnItemsSelectedAction -= OnItemsSelected;
 
-			if(JournalActionsViewModel is IDisposable disposableJournalActionsViewModel)
+			if(JournalActions is IDisposable disposableJournalActionsViewModel)
 			{
 				disposableJournalActionsViewModel.Dispose();
 			}
