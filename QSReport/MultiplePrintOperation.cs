@@ -100,21 +100,17 @@ namespace QS.Report
 			var selectablePrintersView = new SelectablePrintersView(selectablePrintersViewModel);
 			selectablePrintersView.ShowAll();
 			var response = selectablePrintersView.Run();
+
+			if (response == (int)ResponseType.Ok)
+			{
+				var selectedPrinters = selectablePrintersViewModel.AllPrintersWithSelected.Where(x => x.IsChecked).Select(x => x.Printer.Name);
+				foreach (var printer in selectedPrinters)
+				{
+					Task.Run(() => Print(printer, selectablePrintersViewModel.UserPrintSettings, selectablePrintersViewModel.IsWindowsOs));
+				}
+			}
+
 			selectablePrintersView.Destroy();
-
-			if (response != (int)ResponseType.Ok)
-			{
-				selectablePrintersViewModel.Dispose();
-				return;
-			}
-
-			var selectedPrinters = selectablePrintersViewModel.AllPrintersWithSelected.Where(x => x.IsChecked).Select(x => x.Printer.Name);
-			foreach (var printer in selectedPrinters)
-			{
-				Task.Run(() => Print(printer, selectablePrintersViewModel.UserPrintSettings, selectablePrintersViewModel.IsWindowsOs));
-			}
-
-			selectablePrintersViewModel.Dispose();
 		}
 	}
 }

@@ -74,6 +74,12 @@ namespace QS.Report.ViewModels
 				var printersToDelete = _savedUserPrinterList.Except(selectedPrinters).ToArray();
 				foreach (var printer in printersToDelete)
 				{
+					var delPrinter = AllPrintersWithSelected.Single(x => x.Printer.Name == printer.Name);
+					delPrinter.Printer = new UserSelectedPrinter
+					{
+						Name = printer.Name,
+						User = _user
+					};
 					_savedUserPrinterList.Remove(printer);
 					_uow.Delete(printer);
 				}

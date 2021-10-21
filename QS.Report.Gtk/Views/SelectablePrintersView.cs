@@ -34,5 +34,11 @@ namespace QS.Report.Views
 			buttonOpenSettings.Visible = _selectablePrintersViewModel.IsWindowsOs;
 			buttonOpenSettings.Clicked += (sender, args) => _selectablePrintersViewModel.OpenPrinterSettingsCommand.Execute(ytreeviewPrinters.GetSelectedObject<SelectablePrintersViewModel.PrinterNode>());
 		}
+
+		public override void Destroy()
+		{
+			_selectablePrintersViewModel.Dispose();
+			base.Destroy();
+		}
 	}
 }
