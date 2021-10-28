@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Gamma.Binding;
 using Gtk;
+using NHibernate.Loader.Custom;
 using NLog;
 using QS.Dialog.Gtk;
 using QS.Project.Journal;
@@ -46,10 +49,15 @@ namespace QS.Journal.GtkUI
 		private void ConfigureJournal()
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
-			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
-			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
-			if(ThrowExceptionOnDataLoad)
-				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
+			if(ViewModel.DataLoader is IListLoader listLoader)
+			{
+				listLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
+				listLoader.TotalCountChanged += DataLoader_TotalCountChanged;
+				if (ThrowExceptionOnDataLoad)
+				{
+					listLoader.LoadError += DataLoader_LoadError;
+				}
+			}
 			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
@@ -99,11 +107,26 @@ namespace QS.Journal.GtkUI
 				tableview.ItemsDataSource = ViewModel.Items;
 			}
 
+			if(ViewModel.DataLoader is IHierarchicalDataLoader loader)
+			{
+				tableview.RowExpanded += Tableview_RowExpanded;
+			}
+
 			ViewModel.Refresh();
 			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
 			ViewModel.UpdateJournalActions += UpdateButtons;
+		}
+
+		private void Tableview_RowExpanded(object o, RowExpandedArgs args)
+		{
+			if(ViewModel.DataLoader is IHierarchicalDataLoader loader)
+{
+				var obj = tableview.YTreeModel.NodeAtPath(args.Path);
+
+				loader.PreloadGrandchilds(obj);
+			}
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -132,7 +155,7 @@ namespace QS.Journal.GtkUI
 			};
 
 			foreach(var spinner in whishList) {
-				var allChars = String.Join("", spinner.Frames);
+				var allChars = string.Join("", spinner.Frames);
 				var layout = labelTotalRow.CreatePangoLayout(allChars);
 				//К сожалению этот способ определения неподдерживаемых символов на винде для нецветных спинеров все равно возваращает 0, даже если символ не поддежривается.
 				if(layout.UnknownGlyphsCount == 0) {
@@ -172,17 +195,21 @@ namespace QS.Journal.GtkUI
 
 				if (tableview.ColumnsConfig.TreeModelFunc != null)
 				{
-					tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke(ViewModel.Items);
+					tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke((IList)ViewModel.Items);
 				}
 				else
 				{
 					tableview.ItemsDataSource = ViewModel.Items;
 				}
-
-				if (!ViewModel.DataLoader.FirstPage) {
+				
+				if (!(ViewModel.DataLoader is IListLoader listLoader)
+					|| !listLoader.FirstPage)
+				{
 					GtkHelper.WaitRedraw();
 					if(GtkScrolledWindow?.Vadjustment != null)
+					{
 						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+					}
 				}
 			});
 		}
@@ -233,7 +260,9 @@ namespace QS.Journal.GtkUI
 
 		private void DataLoader_TotalCountChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DataLoader.TotalCountingInProgress) {
+			if(ViewModel.DataLoader is IListLoader listLoader
+				&& !listLoader.TotalCountingInProgress)
+			{
 				Application.Invoke((s, arg) => SetTotalLableText());
 			}
 		}
@@ -241,28 +270,40 @@ namespace QS.Journal.GtkUI
 		private bool UpdateTotalCount()
 		{
 			SetTotalLableText();
-			return ViewModel.DataLoader.TotalCountingInProgress;
+			if (ViewModel.DataLoader is IListLoader listLoader)
+			{
+				return listLoader.TotalCountingInProgress;
+			}
+			return false;
 		}
 
 		private string GetTotalRowText()
 		{
-			if(ViewModel.DataLoader.TotalCountingInProgress) {
-				if(ViewModel.DataLoader.TotalCount.HasValue)
-					return $"Всего: {CountingTextSpinner.GetFrame()}{ViewModel.DataLoader.TotalCount}";
+			if (ViewModel.DataLoader is IListLoader listLoader)
+			{
+				if (listLoader.TotalCountingInProgress)
+				{
+					if (listLoader.TotalCount.HasValue)
+						return $"Всего: {CountingTextSpinner.GetFrame()}{listLoader.TotalCount}";
+					else
+						return $"Всего: {CountingTextSpinner.GetFrame()}";
+				}
 				else
-					return $"Всего: {CountingTextSpinner.GetFrame()}";
-			} else {
-				if(ViewModel.DataLoader.TotalCount.HasValue)
-					return $"Всего: {ViewModel.DataLoader.TotalCount}";
-				else
-					return "Всего: <span foreground=\"blue\" underline=\"single\">???</span>";
+				{
+					if (listLoader.TotalCount.HasValue)
+						return $"Всего: {listLoader.TotalCount}";
+				}
 			}
+			return "Всего: <span foreground=\"blue\" underline=\"single\">???</span>";
 		}
 
 		protected void OnEventboxTotalRowButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
 			GLib.Timeout.Add(CountingTextSpinner.RecommendedInterval, new GLib.TimeoutHandler(UpdateTotalCount));
-			ViewModel.DataLoader.GetTotalCount();
+			if (ViewModel.DataLoader is IListLoader listLoader)
+			{
+				listLoader.GetTotalCount();
+			}
 		}
 
 		#endregion
@@ -271,12 +312,16 @@ namespace QS.Journal.GtkUI
 
 		private void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			if(!(ViewModel.DataLoader is IListLoader listLoader)
+				|| !listLoader.DynamicLoadingEnabled
+				|| GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			{
 				return;
+			}
 
-			if(ViewModel.DataLoader.HasUnloadedItems) {
+			if (listLoader.HasUnloadedItems) {
 				lastScrollPosition = GtkScrolledWindow.Vadjustment.Value;
-				ViewModel.DataLoader.LoadData(true);
+				listLoader.LoadData(true);
 			}
 		}
 
@@ -429,7 +474,7 @@ namespace QS.Journal.GtkUI
 		public override void Destroy()
 		{
 			isDestroyed = true;
-			ViewModel.DataLoader.CancelLoading();
+			(ViewModel.DataLoader as IListLoader)?.CancelLoading();
 			FilterView?.Destroy();
 			base.Destroy();
 		}

@@ -26,15 +26,15 @@ namespace QS.Project.Journal
 
 		protected virtual Func<IUnitOfWork, IQueryOver<TEntity>> ItemsSourceQueryFunction { get; private set; }
 
-		protected IListLoader _dataLoader;
-		public override IListLoader DataLoader
+		protected IDataLoader _dataLoader;
+		public override IDataLoader DataLoader
 		{
 			get
 			{
 				if(_dataLoader == null)
 				{
 					var loader = new HierarchicalDataLoader<TEntity, TNode>(_unitOfWorkFactory, _parentEntityPropertyExpr);
-					loader.AddQueryFunc(ItemsSourceQueryFunction);
+					loader.SetQueryFunc(ItemsSourceQueryFunction);
 					_dataLoader = loader;
 				}
 				return _dataLoader;

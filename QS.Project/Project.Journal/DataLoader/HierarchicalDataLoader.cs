@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public class HierarchicalDataLoader<TEntity, TNode> : IListLoader
+	public class HierarchicalDataLoader<TEntity, TNode> : IHierarchicalDataLoader
 		where TEntity : class, IDomainObject
 		where TNode : class, IHierarchicalNode<TNode, TNode>
 	{
@@ -22,6 +22,7 @@ namespace QS.Project.Journal.DataLoader
 		protected readonly IUnitOfWorkFactory _unitOfWorkFactory;
 		protected Expression<Func<TEntity, object>> _parentEntityPropertyExpr;
 		private Func<IUnitOfWork, IQueryOver<TEntity>> _queryFunc;
+		private Func<IUnitOfWork, Func<IQueryOver<TEntity, TEntity>>, IQueryOver<TEntity, TEntity>> _mappingFunc;
 		CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
 		private bool _loadInProgress;
@@ -34,6 +35,18 @@ namespace QS.Project.Journal.DataLoader
 		}
 
 		public IList Items { get; private set; }
+
+		private IQueryOver<TEntity> SetOrderBy(IQueryOver<TEntity, TEntity> queryOver)
+		{
+			return queryOver.OrderBy(Projections.Property(_parentEntityPropertyExpr)).Asc
+				.OrderBy(Projections.Id()).Asc
+				.TransformUsing(Transformers.AliasToBean<TNode>());
+		}
+
+		private IQueryOver<TEntity> AggregateQueryFunctions(IUnitOfWork unitOfWork)
+        {
+			return _mappingFunc(SetOrderBy(_queryFunc(unitOfWork) as IQueryOver<TEntity, TEntity>));
+        }
 
 		public PostLoadProcessing PostLoadProcessingFunc { set => throw new NotImplementedException(); }
 		public bool DynamicLoadingEnabled { get; set; } = true;
@@ -62,6 +75,14 @@ namespace QS.Project.Journal.DataLoader
 			}
 		}
 
+		public void PreloadGrandchilds(object node) => PreloadGrandchilds((TNode)node);
+
+		public void PreloadGrandchilds(TNode node)
+		{
+
+			//node.GetId();
+		}
+
 		public void CancelLoading()
 		{
 			_cancellationTokenSource.Cancel();
@@ -77,25 +98,24 @@ namespace QS.Project.Journal.DataLoader
 			TotalCountingInProgress = true;
 			if (Items == null)
 			{
-				LoadData(false);
+				LoadData();
 			}
 			TotalCountingInProgress = false;
 		}
 
 		private int reloadRequested = 0;
-		
+
 		/// <summary>
 		/// Загрузка данных
 		/// </summary>
-		/// <param name="nextPage"></param>
-		public void LoadData(bool nextPage)
+		public void LoadData()
 		{
-			if(_cancellationTokenSource.IsCancellationRequested)
+			if (_cancellationTokenSource.IsCancellationRequested)
 			{
 				_cancellationTokenSource = new CancellationTokenSource();
 			}
 
-			if(LoadInProgress)
+			if (LoadInProgress)
 			{
 				Interlocked.Exchange(ref reloadRequested, 1);
 				return;
@@ -105,13 +125,14 @@ namespace QS.Project.Journal.DataLoader
 			DateTime startTime = DateTime.Now;
 			Task.Factory.StartNew(() =>
 				{
-					var loadedItems = _queryFunc(_unitOfWorkFactory.CreateWithoutRoot()).List<TNode>();
+					var loadedItems = _aggregatedQueryFunc(_unitOfWorkFactory.CreateWithoutRoot()).List<TNode>();
 					TotalCount = (uint?)loadedItems?.Count;
 					Items = (IList)RearangeNodes(loadedItems);
 				})
-				.ContinueWith((tsk) => {
+				.ContinueWith((tsk) =>
+				{
 					LoadInProgress = false;
-					if(tsk.IsFaulted)
+					if (tsk.IsFaulted)
 					{
 						OnLoadError(tsk.Exception);
 					}
@@ -134,12 +155,12 @@ namespace QS.Project.Journal.DataLoader
 
 			foreach (var node in result)
 			{
-				if(currentRootId != null)
+				if (currentRootId != null)
 				{
 					node.Parent = parentNode;
 				}
 
-				if(node.Children == null)
+				if (node.Children == null)
 				{
 					node.Children = new List<TNode>();
 				}
@@ -154,16 +175,15 @@ namespace QS.Project.Journal.DataLoader
 		/// Добавление запроса по сущности с маппингом
 		/// </summary>
 		/// <param name="itemsSourceQueryFunction"></param>
-		public void AddQueryFunc(Func<IUnitOfWork, IQueryOver<TEntity>> itemsSourceQueryFunction)
+		public void SetQueryFunc(Func<IUnitOfWork, IQueryOver<TEntity>> itemsSourceQueryFunction)
 		{
-			_queryFunc = (unitOfWork) =>
-			{
-				return (itemsSourceQueryFunction(unitOfWork) as IQueryOver<TEntity, TEntity>)
-					.OrderBy(Projections.Property(_parentEntityPropertyExpr)).Asc
-					.OrderBy(Projections.Id()).Asc
-					.TransformUsing(Transformers.AliasToBean<TNode>());
-			};
+			_queryFunc = itemsSourceQueryFunction;
 		}
+
+		public void SetMappingFunc(Func<IUnitOfWork, IQueryOver<TEntity>> mappingFunc)
+        {
+			_mappingFunc = mappingFunc;
+        }
 
 		protected virtual void OnLoadingStateChange(LoadingState state)
 		{

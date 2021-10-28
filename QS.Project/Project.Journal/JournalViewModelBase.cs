@@ -26,7 +26,7 @@ namespace QS.Project.Journal
 
 		public virtual IJournalSearch Search { get; set; }
 
-		public virtual IListLoader DataLoader { get; protected set; }
+		public virtual IDataLoader DataLoader { get; protected set; }
 
 		public IList Items => DataLoader.Items;
 
@@ -45,7 +45,8 @@ namespace QS.Project.Journal
 
 		public void Refresh()
 		{
-			DataLoader.LoadData(false);
+			(DataLoader as IListLoader)?.LoadData(false);
+			(DataLoader as IHierarchicalDataLoader)?.LoadData();
 		}
 
 		private JournalSelectionMode selectionMode;

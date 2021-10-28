@@ -1,19 +1,10 @@
-﻿using QS.DomainModel.UoW;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public interface IListLoader
+	public interface IListLoader : IDataLoader
 	{
-		IList Items { get; }
-
-		/// <summary>
-		/// Список с данными был обновлен. Внимание, событие может приходить из другого потока.
-		/// </summary>
-		event EventHandler ItemsListUpdated;
-
 		/// <summary>
 		/// Общее количество строк получено. Внимание, событие может приходить из другого потока.
 		/// </summary>
@@ -48,8 +39,6 @@ namespace QS.Project.Journal.DataLoader
 		void GetTotalCount();
 
 		void LoadData(bool nextPage);
-
-		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
 
 		void CancelLoading();
 	}

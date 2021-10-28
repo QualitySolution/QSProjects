@@ -3,6 +3,7 @@ using Autofac;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Journal;
+using QS.Project.Journal.DataLoader;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -35,7 +36,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void LoadAutocompletion(string[] searchText, int takeCount)
 		{
-			JournalViewModel.DataLoader.PageSize = takeCount;
+			(JournalViewModel.DataLoader as IListLoader).PageSize = takeCount;
 			JournalViewModel.Search.SearchValues = searchText;
 			JournalViewModel.Search.Update();
 		}

@@ -67,6 +67,8 @@
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
     <Compile Include="Project.Journal\DataLoader\HierarchicalDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\IHierarchicalDataLoader.cs" />
     <Compile Include="Project.Journal\HierarchicalJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\IHierarchicalNode.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
