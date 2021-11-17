@@ -44,14 +44,13 @@ namespace Gamma.GtkWidgets.Cells
 
 		public void RenderNode(object node)
 		{
-			if(node is TNode) {
-				var propValue = (TItem)DataPropertyInfo.GetValue(node, null);
+			if(node is TNode typpedNode) {
+				var propValue = (TItem)DataPropertyInfo.GetValue(typpedNode, null);
 				if(propValue != null)
 					Text = DisplayFunc == null ? propValue.ToString() : DisplayFunc(propValue);
 				else
-					Text = String.Empty;
+					Text = string.Empty;
 
-				var typpedNode = (TNode)node;
 				LambdaSetters.ForEach(a => a.Invoke(this, typpedNode));
 			}
 		}
@@ -62,7 +61,8 @@ namespace Gamma.GtkWidgets.Cells
 				object obj = MyTreeView.YTreeModel.NodeAtPath(new TreePath(path));
 				UpdateComboList((TNode)obj);
 			}
-			return base.StartEditing(evnt, widget, path, background_area, cell_area, flags);
+			
+			return Model.IterNChildren() > 0 ? base.StartEditing(evnt, widget, path, background_area, cell_area, flags) : null;
 		}
 
 		public void UpdateComboList(TNode node)

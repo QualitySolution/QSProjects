@@ -76,6 +76,12 @@ namespace Gamma.ColumnConfig
 			cellRenderer.Editable = on;
 			return this;
 		}
+		
+		public ComboRendererMapping<TNode, TItem> EditedEvent(EditedHandler handler)
+		{
+			cellRenderer.Edited += handler;
+			return this;
+		}
 
 		public ComboRendererMapping<TNode, TItem> HasEntry (bool on = true)
 		{
