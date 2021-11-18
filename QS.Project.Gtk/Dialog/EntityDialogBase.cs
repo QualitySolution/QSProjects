@@ -186,10 +186,12 @@ namespace QS.Dialog.Gtk
 
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
 		{
+			saveButton.Sensitive = false;
 			if (!this.HasChanges || Save ()) {
 				OnEntitySaved (true);
 				OnCloseTab (false, CloseSource.Save);
-			}
+			} else
+				saveButton.Sensitive = true;
 		}
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
@@ -232,16 +234,17 @@ namespace QS.Dialog.Gtk
 			OnButtonSaveClicked (this, EventArgs.Empty);
 		}
 
+		private Button saveButton, cancelButton;
 		//FIXME Возможно временный метод, в нем не было необходиости пока в MonoDevelop не появился баг, с удалением подписок с кнопок Save и Cancel
 		private void CheckButtonSubscription()
 		{
-			var saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonSave");
+			saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonSave");
 			if(saveButton != null)
 			{
 				saveButton.Clicked -= OnButtonSaveClicked;
 				saveButton.Clicked += OnButtonSaveClicked;
 			}
-			var cancelButton = GtkHelper.EnumerateAllChildren (this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonCancel");
+			cancelButton = GtkHelper.EnumerateAllChildren (this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonCancel");
 			if (cancelButton != null) {
 				cancelButton.Clicked -= OnButtonCancelClicked;
 				cancelButton.Clicked += OnButtonCancelClicked;
