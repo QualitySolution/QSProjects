@@ -55,7 +55,7 @@ namespace QSOrmProject.RepresentationModel
 				UpdateNodes();
 		}
 
-		public void Destroy()
+		public virtual void Destroy()
 		{
 			Dispose();
 			logger.Debug("{0} called Destroy()", this.GetType());
