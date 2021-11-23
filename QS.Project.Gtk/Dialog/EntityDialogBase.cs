@@ -190,7 +190,8 @@ namespace QS.Dialog.Gtk
 			if (!this.HasChanges || Save ()) {
 				OnEntitySaved (true);
 				OnCloseTab (false, CloseSource.Save);
-			} else
+			}
+			if(saveButton != null)
 				saveButton.Sensitive = true;
 		}
 
@@ -201,6 +202,7 @@ namespace QS.Dialog.Gtk
 
 		public override void Destroy ()
 		{
+			saveButton = null; //Чтобы проверять разрушен ли уже диалог из метода OnButtonSaveClicked
 			UoWGeneric.Dispose ();
 			base.Destroy ();
 		}
