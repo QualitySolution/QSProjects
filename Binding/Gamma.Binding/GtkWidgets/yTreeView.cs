@@ -273,19 +273,20 @@ namespace Gamma.GtkWidgets
 
 					if(cell.DataPropertyInfo.CanWrite && !String.IsNullOrWhiteSpace(args.NewText)) {
 						object newval = null;
-						if(cell.EditingValueConverter == null) {
-							try {
+						try {
+							if (cell.EditingValueConverter == null) {
 								if(cell.DataPropertyInfo.PropertyType == typeof(decimal)) {
 									string val = args.NewText.Replace('.', ',');
 									newval = Convert.ChangeType(val, cell.DataPropertyInfo.PropertyType, new CultureInfo("ru-RU"));
 								} else {
 									newval = Convert.ChangeType(args.NewText, cell.DataPropertyInfo.PropertyType);
 								}
-							} catch(FormatException ex) {
-								Console.WriteLine("'{0}' is not number", args.NewText);
-							}
-						} else
-							newval = cell.EditingValueConverter.ConvertBack(args.NewText, cell.DataPropertyInfo.PropertyType, null, null);
+							} else
+								newval = cell.EditingValueConverter.ConvertBack(args.NewText, cell.DataPropertyInfo.PropertyType, null, null);
+						}
+						catch (FormatException) {
+							Console.WriteLine("'{0}' is not number", args.NewText);
+						}
 
 						if(newval != null)
 							cell.DataPropertyInfo.SetValue(obj, newval, null);
