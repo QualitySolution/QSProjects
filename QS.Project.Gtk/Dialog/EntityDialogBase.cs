@@ -20,6 +20,8 @@ namespace QS.Dialog.Gtk
 	public abstract class EntityDialogBase<TEntity> : TdiTabBase, IEntityDialog<TEntity>, ITdiDialog, IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
+		protected bool IsDestroyed;
+
 		public IUnitOfWork UoW {
 			get {
 				return UoWGeneric;
@@ -190,7 +192,8 @@ namespace QS.Dialog.Gtk
 			if (!this.HasChanges || Save ()) {
 				OnEntitySaved (true);
 				OnCloseTab (false, CloseSource.Save);
-			} else
+			}
+			if(!IsDestroyed)
 				saveButton.Sensitive = true;
 		}
 
@@ -201,6 +204,7 @@ namespace QS.Dialog.Gtk
 
 		public override void Destroy ()
 		{
+			IsDestroyed = true;
 			UoWGeneric.Dispose ();
 			base.Destroy ();
 		}
