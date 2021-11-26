@@ -4,17 +4,20 @@ using System.Collections.Generic;
 
 namespace QS.Project.Journal
 {
-	public sealed class JournalEntityDocumentsConfig<TNode>
-		where TNode : JournalEntityNodeBase
+	public sealed class JournalEntityDocumentsConfig
 	{
 		private List<JournalCreateEntityDialogConfig> createEntityDialogConfigs;
-		private Func<TNode, ITdiTab> openEntityDialogFunction;
-		private Func<TNode, bool> nodeIdentificationFunction;
+		private Func<JournalEntityNodeBase, ITdiTab> openEntityDialogFunction;
+		private Func<JournalEntityNodeBase, bool> nodeIdentificationFunction;
 		public JournalParametersForDocument JournalParameters { get; }
 		private bool withoutCreation;
 
-
-		public JournalEntityDocumentsConfig(string createActionTitle, Func<ITdiTab> createDialogFunc, Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, JournalParametersForDocument journalParameters = null)
+		public JournalEntityDocumentsConfig(
+			string createActionTitle,
+			Func<ITdiTab> createDialogFunc,
+			Func<JournalEntityNodeBase, ITdiTab> openDialogFunc,
+			Func<JournalEntityNodeBase, bool> nodeIdentificationFunc,
+			JournalParametersForDocument journalParameters = null)
 		{
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
 			openEntityDialogFunction = openDialogFunc;
@@ -23,7 +26,10 @@ namespace QS.Project.Journal
 			createEntityDialogConfigs.Add(new JournalCreateEntityDialogConfig(createActionTitle, createDialogFunc));
 		}
 
-		public JournalEntityDocumentsConfig(Func<TNode, ITdiTab> openDialogFunc, Func<TNode, bool> nodeIdentificationFunc, JournalParametersForDocument journalParameters = null)
+		public JournalEntityDocumentsConfig(
+			Func<JournalEntityNodeBase, ITdiTab> openDialogFunc,
+			Func<JournalEntityNodeBase, bool> nodeIdentificationFunc,
+			JournalParametersForDocument journalParameters = null)
 		{
 			withoutCreation = true;
 			createEntityDialogConfigs = new List<JournalCreateEntityDialogConfig>();
@@ -40,12 +46,12 @@ namespace QS.Project.Journal
 			createEntityDialogConfigs.Add(new JournalCreateEntityDialogConfig(title, createDialogFunc));
 		}
 
-		public bool IsIdentified(TNode node)
+		public bool IsIdentified(JournalEntityNodeBase node)
 		{
 			return nodeIdentificationFunction.Invoke(node);
 		}
 
-		public Func<TNode, ITdiTab> GetOpenEntityDlgFunction()
+		public Func<JournalEntityNodeBase, ITdiTab> GetOpenEntityDlgFunction()
 		{
 			return openEntityDialogFunction;
 		}

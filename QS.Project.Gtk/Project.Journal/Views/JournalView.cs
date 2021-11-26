@@ -7,7 +7,7 @@ using Autofac;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.Project.Journal;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Search;
 using QS.Project.Search.GtkUI;
@@ -17,9 +17,8 @@ using QS.ViewModels;
 using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
-using QSWidgetLib;
 
-namespace QS.Journal.GtkUI
+namespace QS.Project.Journal.Views
 {
 	[WindowSize(900, 600)]
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
@@ -55,7 +54,6 @@ namespace QS.Journal.GtkUI
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
 			SetSeletionMode(ViewModel.SelectionMode);
-			ConfigureActions();
 
 			//FIXME Этот код только для водовоза
 			var filterProp = ViewModel.GetType().GetProperty("Filter");
@@ -79,6 +77,32 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
 			}
+			
+			if(ViewModel.JournalActions is JournalActionsViewModel actionsViewModel)
+			{
+				Widget actionsView;
+				
+				if(ViewModel.AutofacScope != null)
+				{
+					var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
+					actionsView = viewResolver.Resolve(actionsViewModel);
+				}
+				else
+				{
+					actionsView = DialogHelper.JournalActionsResolver.Resolve(actionsViewModel);
+				}
+
+				actionsView.Show();
+				hboxButtons.Add(actionsView);
+				Box.BoxChild documentButtonBox = (Box.BoxChild)hboxButtons[actionsView];
+				documentButtonBox.Expand = false;
+				documentButtonBox.Fill = false;
+				
+				tableview.RowActivated += (o, args) =>
+				{
+					ViewModel.JournalActions?.RowActivatedAction?.Invoke();
+				};
+			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
 			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
@@ -92,10 +116,8 @@ namespace QS.Journal.GtkUI
 
 			tableview.ItemsDataSource = ViewModel.Items;
 			ViewModel.Refresh();
-			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions += UpdateButtons;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -264,92 +286,9 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
-		private object[] GetSelectedItems()
+		private IList<object> GetSelectedItems()
 		{
-			return tableview.GetSelectedObjects();
-		}
-
-		List<System.Action> actionsSensitivity;
-		List<System.Action> actionsVisibility;
-
-		private void ConfigureActions()
-		{
-			if(actionsSensitivity == null) {
-				actionsSensitivity = new List<System.Action>();
-			} else {
-				actionsSensitivity.Clear();
-			}
-
-			if(actionsVisibility == null) {
-				actionsVisibility = new List<System.Action>();
-			} else {
-				actionsVisibility.Clear();
-			}
-
-			foreach(var action in ViewModel.NodeActions) {
-				Widget actionWidget;
-
-				if(action.ChildActions.Any()) {
-					MenuButton menuButton = new MenuButton();
-					menuButton.Label = action.Title;
-					Menu childActionButtons = new Menu();
-					foreach(var childAction in action.ChildActions) {
-						childActionButtons.Add(CreateMenuItemWidget(childAction));
-					}
-					menuButton.Menu = childActionButtons;
-					actionWidget = menuButton;
-				} else {
-					Button button = new Button();
-					button.Label = action.Title;
-
-					button.Clicked += (sender, e) => { action.ExecuteAction(GetSelectedItems()); };
-
-					actionsSensitivity.Add(() => {
-						button.Sensitive = action.GetSensitivity(GetSelectedItems());
-					});
-
-					actionsVisibility.Add(() => {
-						button.Visible = action.GetVisibility(GetSelectedItems());
-					});
-					actionWidget = button;
-				}
-
-				actionWidget.ShowAll();
-
-				hboxButtons.Add(actionWidget);
-				Box.BoxChild addDocumentButtonBox = (Box.BoxChild)hboxButtons[actionWidget];
-				addDocumentButtonBox.Expand = false;
-				addDocumentButtonBox.Fill = false;
-			}
-
-			tableview.RowActivated += (o, args) => {
-				ViewModel.RowActivatedAction?.ExecuteAction(GetSelectedItems());
-			};
-		}
-
-		private MenuItem CreateMenuItemWidget(IJournalAction action)
-		{
-			MenuItem menuItem = new MenuItem(action.Title);
-
-			menuItem.Activated += (sender, e) => {
-				action.ExecuteAction(GetSelectedItems());
-			};
-
-			actionsSensitivity.Add(() => {
-				menuItem.Sensitive = action.GetSensitivity(GetSelectedItems());
-			});
-
-			actionsVisibility.Add(() => {
-				menuItem.Visible = action.GetVisibility(GetSelectedItems());
-			});
-
-			if(action.ChildActions.Any()) {
-				foreach(var childAction in action.ChildActions) {
-					menuItem.Add(CreateMenuItemWidget(childAction));
-				}
-			}
-
-			return menuItem;
+			return tableview.GetSelectedObjects().ToList();
 		}
 
 		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
@@ -392,24 +331,11 @@ namespace QS.Journal.GtkUI
 
 		void Selection_Changed(object sender, EventArgs e)
 		{
-			UpdateButtons();
-		}
-
-		private void UpdateButtons()
-		{
-			if(actionsSensitivity != null) {
-				foreach(var item in actionsSensitivity) {
-					item.Invoke();
-				}
-			}
-			if(actionsVisibility != null) {
-				foreach(var item in actionsVisibility) {
-					item.Invoke();
-				}
-			}
+			ViewModel.SelectedItems = GetSelectedItems();
 		}
 
 		private bool isDestroyed = false;
+		
 		public override void Destroy()
 		{
 			isDestroyed = true;
@@ -427,20 +353,24 @@ namespace QS.Journal.GtkUI
 
 			ExecuteTypeJournalAction(args.Event.Key.ToString());
 		}
-
+		
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			var nodeActions = ViewModel.NodeActions.Where(n => !string.IsNullOrEmpty(n.HotKeys) &&
-				n.HotKeys.Replace(" ", string.Empty).ToLower()
-				.Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
-				.Contains(hotKey.ToLower()));
+			if(ViewModel.JournalActions != null && ViewModel.JournalActions.JournalActions.Any())
+			{
+				var nodeActions = 
+					ViewModel.JournalActions.JournalActions.Where(
+						n => !string.IsNullOrEmpty(n.HotKeys)
+						     && n.HotKeys.Replace(" ", string.Empty).ToLower()
+					    .Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
+					    .Contains(hotKey.ToLower()));
 
-			if (nodeActions.Count() > 1)
-				throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
+				if (nodeActions.Count() > 1)
+					throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
 
-			if (nodeActions.Count() == 1)
-				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
+				if (nodeActions.Count() == 1)
+					nodeActions.ElementAt(0).ExecuteAction();
+			}
 		}
-
 	}
 }

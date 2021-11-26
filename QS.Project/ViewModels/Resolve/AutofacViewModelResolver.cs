@@ -29,23 +29,23 @@ namespace QS.ViewModels.Resolve
 
 		private Type GetJournalViewModel(Type typeOfEntity)
 		{
-			//Здесь пока поддеживаем только журналы построенные на EntityJournalViewModelBase
+			//Здесь пока поддерживаем только журналы построенные на EntityJournalViewModelBase
 			var viewModels = container.ComponentRegistry.Registrations
 				.Where(x => x.Activator.LimitType.Name.EndsWith("ViewModel"))
 				.Select(x => x.Activator.LimitType)
 				.Where(x => x.GetCustomAttribute<DontUseAsDefaultViewModelAttribute>() == null)
-				.Where(x => ViewModelMatch(x, typeof(EntityJournalViewModelBase<,,>), 0, typeOfEntity))
+				.Where(x => ViewModelMatch(x, typeof(EntityJournalViewModelBase<,>), 0, typeOfEntity))
 				.ToList();
 			if (viewModels.Count == 0)
 				return null;
 			if (viewModels.Count > 1)
-				throw new InvalidOperationException($"Для типа сущьности {typeOfEntity} найдено более одного журнала: {String.Join(", ", viewModels.Select(x => x.FullName))}.");
+				throw new InvalidOperationException($"Для типа сущности {typeOfEntity} найдено более одного журнала: {String.Join(", ", viewModels.Select(x => x.FullName))}.");
 			return viewModels.First();
 		}
 
 		private Type GetDialogViewModel(Type typeOfEntity)
 		{
-			//Здесь пока поддеживаем только диалоги построенные на EntityDialogViewModelBase
+			//Здесь пока поддерживаем только диалоги построенные на EntityDialogViewModelBase
 			var viewModels = container.ComponentRegistry.Registrations
 				.Where(x => x.Activator.LimitType.Name.EndsWith("ViewModel"))
 				.Select(x => x.Activator.LimitType)
@@ -55,7 +55,7 @@ namespace QS.ViewModels.Resolve
 			if (viewModels.Count == 0)
 				return null;
 			if (viewModels.Count > 1)
-				throw new InvalidOperationException($"Для типа сущьности {typeOfEntity} найдено более одного диалога: {String.Join(", ", viewModels.Select(x => x.FullName))}.");
+				throw new InvalidOperationException($"Для типа сущности {typeOfEntity} найдено более одного диалога: {String.Join(", ", viewModels.Select(x => x.FullName))}.");
 			return viewModels.First();
 		}
 

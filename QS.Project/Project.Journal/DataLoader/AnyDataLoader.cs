@@ -55,7 +55,7 @@ namespace QS.Project.Journal.DataLoader
 			cts.Cancel();
 		}
 
-		public IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow)
+		public IEnumerable<object> GetNodes(int entityId)
 		{
 			throw new NotImplementedException();
 		}

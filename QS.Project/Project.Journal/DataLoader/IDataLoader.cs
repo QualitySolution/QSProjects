@@ -49,7 +49,7 @@ namespace QS.Project.Journal.DataLoader
 
 		void LoadData(bool nextPage);
 
-		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
+		IEnumerable<object> GetNodes(int entityId);
 
 		void CancelLoading();
 	}

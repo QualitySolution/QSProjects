@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Autofac;
 using NHibernate.Criterion;
@@ -10,6 +9,7 @@ using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Project.Search;
@@ -21,8 +21,22 @@ namespace QS.Project.Journal
 	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-
-		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
+		
+		private IList<object> selectedItems;
+		public IList<object> SelectedItems
+		{
+			get => selectedItems; 
+			set
+			{
+				if(SetField(ref selectedItems, value))
+				{
+					if(JournalActions != null)
+					{
+						JournalActions.SelectedItems = SelectedItems;
+					}
+				}
+			}
+		}
 
 		public virtual IJournalSearch Search { get; set; }
 
@@ -35,13 +49,22 @@ namespace QS.Project.Journal
 			set { }
 		}
 
-		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
-		protected virtual List<IJournalAction> NodeActionsList { get; set; }
+		#region Дочерние ViewModels
+		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
 
+		private JournalActionsViewModel journalActions;
+		public JournalActionsViewModel JournalActions {
+			get => journalActions;
+			protected set {
+				journalActions = value;
+				if(journalActions != null)
+					journalActions.MyJournal = this;
+			}
+		}
+
+		#endregion
 		public virtual IEnumerable<IJournalAction> PopupActions => PopupActionsList;
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
-
-		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
 		public void Refresh()
 		{
@@ -49,16 +72,18 @@ namespace QS.Project.Journal
 		}
 
 		private JournalSelectionMode selectionMode;
-		public virtual JournalSelectionMode SelectionMode {
+		public virtual JournalSelectionMode SelectionMode 
+		{
 			get => selectionMode;
-			set {
-				if(SetField(ref selectionMode, value, () => SelectionMode)) {
-					CreateNodeActions();
+			set 
+			{
+				if(SetField(ref selectionMode, value)) 
+				{
+					JournalActions.SelectionMode = SelectionMode;
 				}
 			}
 		}
 
-		public Action UpdateJournalActions;
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
@@ -78,9 +103,15 @@ namespace QS.Project.Journal
 
 		#endregion
 
-		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
+		protected JournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigation,
+			JournalActionsViewModel journalActionsViewModel = null
+		) : base(unitOfWorkFactory, interactiveService, navigation)
 		{
-			NodeActionsList = new List<IJournalAction>();
+			JournalActions = journalActionsViewModel;
+			SelectedItems = new List<object>();
 			PopupActionsList = new List<IJournalAction>();
 
 			//Поиск
@@ -89,37 +120,20 @@ namespace QS.Project.Journal
 			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
+			//FIXME Предусмотреть что она может быть пустой
+			JournalActions.OnItemsSelectedAction += OnItemsSelected;
 		}
 
-		protected virtual void OnItemsSelected(object[] selectedNodes)
+		protected virtual void OnItemsSelected()
 		{
-			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
+			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(SelectedItems));
 			Close(false, CloseSource.Self);
 		}
 
 		#region Configure actions
 
-		protected virtual void CreateNodeActions()
-		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
-		}
-
 		protected virtual void CreatePopupActions()
 		{
-		}
-
-		protected virtual void CreateDefaultSelectAction()
-		{
-			var selectAction = new JournalAction("Выбрать",
-				(selected) => selected.Any(),
-				(selected) => SelectionMode != JournalSelectionMode.None,
-				OnItemsSelected
-			);
-			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
-				RowActivatedAction = selectAction;
-			}
-			NodeActionsList.Add(selectAction);
 		}
 
 		#endregion Configure actions
@@ -138,6 +152,13 @@ namespace QS.Project.Journal
 		public override void Dispose()
 		{
 			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			JournalActions.OnItemsSelectedAction -= OnItemsSelected;
+
+			if(JournalActions is IDisposable disposableJournalActionsViewModel)
+			{
+				disposableJournalActionsViewModel.Dispose();
+			}
+			
 			base.Dispose();
 		}
 

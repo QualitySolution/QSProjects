@@ -3,32 +3,33 @@ using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Project.Journal.EntitySelector;
 using QS.Services;
 using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntitiesJournalViewModelBase<TNode> , IEntityAutocompleteSelector
+	public abstract class SingleEntityJournalViewModelBase<TEntity, TEntityTab , TNode> : EntitiesJournalViewModelBase<TNode>, IEntityAutocompleteSelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
 	{
-		protected readonly ICommonServices commonServices;
-
 		public event EventHandler ListUpdated;
 
 		public Type EntityType { get; }
 
-		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices,
-			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices)
+		protected SingleEntityJournalViewModelBase(
+			JournalActionsViewModel journalActionsViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices,
+			bool hideJournalForOpenDialog = false,
+			bool hideJournalForCreateDialog = false) : base(journalActionsViewModel, unitOfWorkFactory, commonServices)
 		{
-			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
-
 			EntityType = typeof(TEntity);
 			var config = RegisterEntity(ItemsSourceQueryFunction);
 			config.AddDocumentConfiguration("Добавить", CreateDialogFunction, OpenDialogFunction, (node) => node.EntityType == typeof(TEntity),
-				new JournalParametersForDocument { HideJournalForCreateDialog = hideJournalForCreateDialog, HideJournalForOpenDialog = hideJournalForOpenDialog})
+					new JournalParametersForDocument { HideJournalForCreateDialog = hideJournalForCreateDialog, HideJournalForOpenDialog = hideJournalForOpenDialog})
 				.FinishConfiguration();
 			FinishJournalConfiguration();
 
@@ -49,7 +50,7 @@ namespace QS.Project.Journal
 
 		protected abstract Func<TEntityTab> CreateDialogFunction { get; }
 
-		protected abstract Func<TNode, TEntityTab> OpenDialogFunction { get; }
+		protected abstract Func<JournalEntityNodeBase, TEntityTab> OpenDialogFunction { get; }
 
 		public void SearchValues(params string[] values)
 		{

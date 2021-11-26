@@ -2,12 +2,14 @@
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Filter;
+using QS.Project.Journal.Actions.ViewModels;
 using QS.Services;
 using QS.Tdi;
 
 namespace QS.Project.Journal
 {
-	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel> : SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode>
+	public abstract class FilterableSingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode, TFilterViewModel>
+		: SingleEntityJournalViewModelBase<TEntity, TEntityTab, TNode>
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TNode : JournalEntityNodeBase
 		where TEntityTab : class, ITdiTab
@@ -22,8 +24,19 @@ namespace QS.Project.Journal
 			}
 		}
 
-		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) 
-			: base(unitOfWorkFactory, commonServices, hideJournalForOpenDialog, hideJournalForCreateDialog)
+		protected FilterableSingleEntityJournalViewModelBase(
+			JournalActionsViewModel journalActionsViewModel,
+			TFilterViewModel filterViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices,
+			bool hideJournalForOpenDialog = false,
+			bool hideJournalForCreateDialog = false) 
+			: base(
+				journalActionsViewModel,
+				unitOfWorkFactory,
+				commonServices,
+				hideJournalForOpenDialog,
+				hideJournalForCreateDialog)
 		{
 			FilterViewModel = filterViewModel;
 		}
