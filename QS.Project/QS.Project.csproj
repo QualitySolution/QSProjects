@@ -320,6 +320,7 @@
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
+    <Compile Include="Deletion\ReplaceEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
