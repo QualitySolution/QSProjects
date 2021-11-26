@@ -6,9 +6,9 @@ using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
 using QS.DBScripts.Controllers;
+using QS.MachineConfig;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
-using QSMachineConfig;
 using QSSaaS;
 
 namespace QSProjectsLib

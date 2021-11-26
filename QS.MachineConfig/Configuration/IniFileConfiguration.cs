@@ -2,11 +2,11 @@
 using System.IO;
 using Nini.Config;
 
-namespace QS.Configuration
+namespace QS.MachineConfig.Configuration
 {
 	public class IniFileConfiguration : IChangeableConfiguration
 	{
-		private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 		private IniConfigSource configSource;
 
 		public readonly string IniFile;
@@ -23,7 +23,7 @@ namespace QS.Configuration
 				configSource.Reload();
 			}
 			else {
-				logger.Warn("Конфигурационный фаил {0} не найден. Создан новый.", iniFile);
+				_logger.Warn("Конфигурационный фаил {0} не найден. Создан новый.", iniFile);
 				configSource = new IniConfigSource();
 				configSource.Save(iniFile);
 			}

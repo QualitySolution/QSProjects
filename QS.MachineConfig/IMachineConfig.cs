@@ -1,7 +1,7 @@
 ﻿using System;
 using Nini.Config;
 
-namespace QSMachineConfig
+namespace QS.MachineConfig
 {
 	[Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
 	public interface IMachineConfig

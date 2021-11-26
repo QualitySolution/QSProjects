@@ -2,12 +2,12 @@
 using System.IO;
 using Nini.Config;
 
-namespace QSMachineConfig
+namespace QS.MachineConfig
 {
     [Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
     public class DefaultMachineConfig : IMachineConfig
     {
-        private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public IniConfigSource ConfigSource { get; set; }
         public string ConfigFileName { get; set; }
@@ -20,7 +20,7 @@ namespace QSMachineConfig
                 ConfigSource.Reload();
             }
             else {
-                logger.Warn("Конфигурационный фаил {0} не найден. Конфигурация не загружена.", FullConfigPath);
+                _logger.Warn("Конфигурационный фаил {0} не найден. Конфигурация не загружена.", FullConfigPath);
                 ConfigSource = new IniConfigSource();
                 ConfigSource.Save(FullConfigPath);
             }

@@ -55,14 +55,25 @@
   <ItemGroup>
     <Compile Include="ErrorReporting\HttpErrorReportSender.cs" />
     <Compile Include="ErrorReporting\IErrorReportSender.cs" />
+    <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\UoWFactoryModelBase.cs" />
     <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
     <Compile Include="Navigation\ITdiPage.cs" />
     <Compile Include="Print\SelectablePrintDocument.cs" />
-    <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
+    <Compile Include="ErrorReporting\IUnhandledExceptionHandler.cs" />
+    <Compile Include="Project.DB\CustomRestrictions.cs" />
     <Compile Include="Project.DB\CustomProjections.cs" />
+    <Compile Include="Project.DB\EntityMappingConfig\EntityMappingConfig.cs" />
+    <Compile Include="Project.DB\EntityMappingConfig\EntityMappingConfigProvider.cs" />
+    <Compile Include="Project.DB\EntityMappingConfig\IEntityMappingConfig.cs" />
+    <Compile Include="Project.DB\EntityMappingConfig\IEntityMappingConfigProvider.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
     <Compile Include="Project.DB\MySQL57ExtendedDialect.cs" />
+    <Compile Include="Project.DB\MySqlCommandExtensions.cs" />
+    <Compile Include="Project.DB\NhibernateSessionProviders\DefaultSessionProvider.cs" />
+    <Compile Include="Project.DB\NhibernateSessionProviders\ISessionProvider.cs" />
+    <Compile Include="Project.DB\NhibernateSessionProviders\SessionProvider.cs" />
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
@@ -144,8 +155,6 @@
     <Compile Include="DomainModel\NotifyChange\EntityChangeEvent.cs" />
     <Compile Include="DomainModel\NotifyChange\ListnerWeakLink.cs" />
     <Compile Include="DomainModel\NotifyChange\UowTracker.cs" />
-    <Compile Include="Project.DB\ISessionProvider.cs" />
-    <Compile Include="Project.DB\DefaultSessionProvider.cs" />
     <Compile Include="DomainModel\UoW\DefaultUnitOfWorkFactory.cs" />
     <Compile Include="DomainModel\UoW\IUnitOfWorkFactory.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Gtk;
 using QS.DBScripts.Controllers;
-using QSMachineConfig;
+using QS.MachineConfig;
 
 namespace QSProjectsLib
 {

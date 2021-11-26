@@ -1,7 +1,7 @@
 ﻿using System;
 using Nini.Config;
 
-namespace QSMachineConfig
+namespace QS.MachineConfig
 {
 	[Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
 	public static class MachineConfig
@@ -11,11 +11,7 @@ namespace QSMachineConfig
 		public static IniConfigSource ConfigSource;
 		public static string ConfigFileName;
 
-		public static string FullConfigPath{
-			get{
-				return System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), ConfigFileName);
-			}
-		}
+		public static string FullConfigPath => System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), ConfigFileName);
 
 		public static void ReloadConfigFile()
 		{

@@ -1,5 +1,4 @@
-﻿using System;
-namespace QS.Configuration
+﻿namespace QS.MachineConfig.Configuration
 {
 	/// <summary>
 	/// Интерфейс который в плане чтения конфигурации должен быть похожим на IConfiguration от MS
