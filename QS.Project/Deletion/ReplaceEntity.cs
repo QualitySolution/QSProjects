@@ -77,10 +77,13 @@ namespace QS.Deletion
 				Progress?.Add();
 				var collPropInfo = depend.ObjectClass.GetProperty(depend.CollectionName);
 				foreach(var item in GetLinkedEntities(uow, depend, fromE)) {
-					var coll = (collPropInfo as IList);
+					var coll = (collPropInfo.GetValue(item) as IList);
 					var replaced = coll.Cast<IDomainObject>().First(x => x.Id == fromE.Id);
-					var ix = coll.IndexOf(replaced);
-					collPropInfo.SetValue(item, toE, new object[] {ix});
+					var exist = coll.Cast<IDomainObject>().FirstOrDefault(x => x.Id == toE.Id);
+					//Это правило используется для колекций связий многие к многим. Объект на который заменяем уже может быть добавлен в коллекцию, добавлять его повторно не имеет смысла.
+					coll.Remove(replaced);
+					if(exist == null)
+						coll.Add(toE);
 					uow.TrySave(item);
 					replacedLinks++;
 				}
