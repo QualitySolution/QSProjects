@@ -322,8 +322,13 @@ namespace QS.Journal.GtkUI
 				addDocumentButtonBox.Fill = false;
 			}
 
-			tableview.RowActivated += (o, args) => {
-				ViewModel.RowActivatedAction?.ExecuteAction(GetSelectedItems());
+			tableview.RowActivated += (o, args) =>
+			{
+				var selectedItems = GetSelectedItems();
+				if(ViewModel.RowActivatedAction != null && ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
+				{
+					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+				}
 			};
 		}
 
