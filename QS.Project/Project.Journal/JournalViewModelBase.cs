@@ -74,7 +74,7 @@ namespace QS.Project.Journal
 
 		bool ISlideableViewModel.UseSlider => UseSlider ?? false;
 
-		public bool AlwaysNewPage { get; protected set; }
+		public bool AlwaysNewPage { get; protected set; } = true;
 
 		#endregion
 
