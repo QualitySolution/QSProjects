@@ -727,6 +727,38 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 		}
+		
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная от вкладки внутри слайдера, если обе они имеют параметр alwaysNewPage.(Реальный баг)")]
+		[Category("real case")]
+		public void OpenViewModel_AsSlaveOnSliderWithNewPageTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
+
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			parameters["alwaysNewPage"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
 
 		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная к вкладке с TDI слайдером.")]
 		public void OpenViewModelOnTdi_AsSlaveOnSliderTest()
