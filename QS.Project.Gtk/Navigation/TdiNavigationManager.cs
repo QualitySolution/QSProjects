@@ -242,20 +242,15 @@ namespace QS.Navigation
 				return;
 			}
 
-			var masterTab = (masterPage as ITdiPage)?.TdiTab;
+			pages.Add(page);
 
-			if (masterTab?.TabParent is TdiSliderTab && (page.ViewModel as ISlideableViewModel)?.AlwaysNewPage != true) {
-				var slider = masterTab.TabParent as TdiSliderTab;
-				slider.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab);
-				(masterPage as IPageInternal).AddChildPage(page);
-			}
-			else {
-				pages.Add(page);
-				if(masterTab == null)
-					tdiNotebook.AddTab((page as ITdiPage).TdiTab);
-				else
-					tdiNotebook.AddSlaveTab((masterPage as ITdiPage).TdiTab, (page as ITdiPage).TdiTab);
-			}
+			var masterTab = (masterPage as ITdiPage)?.TdiTab;
+			if(masterTab == null)
+				tdiNotebook.AddTab((page as ITdiPage).TdiTab);
+			else if (masterTab?.TabParent is TdiSliderTab slider)
+				slider.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab); 
+			else
+				tdiNotebook.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab);
 		}
 
 		protected override void OpenPage(IPage masterPage, IPage page)
