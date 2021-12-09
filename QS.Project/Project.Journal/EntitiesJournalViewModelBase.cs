@@ -338,7 +338,7 @@ namespace QS.Project.Journal
 			NodeActionsList.Add(deleteAction);
 		}
 
-		private void HideJournal(ITdiTabParent parenTab)
+		protected void HideJournal(ITdiTabParent parenTab)
 		{
 			if(TabParent is ITdiSliderTab slider) {
 				slider.IsHideJournal = true;
