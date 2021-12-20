@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 
 namespace Gamma.Binding.Converters
@@ -13,6 +13,9 @@ namespace Gamma.Binding.Converters
 			if(targetType == typeof(uint)) {
 				return value == null ? (uint)0 : System.Convert.ToUInt32(value);
 			}
+			if(targetType == typeof(decimal)) {
+				return value == null ? (decimal)0 : System.Convert.ToDecimal(value);
+			}
 			return null;
 		}
 
@@ -25,6 +28,10 @@ namespace Gamma.Binding.Converters
 			if(targetType == typeof(uint?)) {
 				var converted = System.Convert.ToUInt32(value);
 				return converted == 0 ? (uint?)null : converted;
+			}
+			if(targetType == typeof(decimal?)) {
+				var conerted = System.Convert.ToDecimal(value);
+				return conerted == 0 ? (decimal?)null : conerted;
 			}
 			return null;
 		}
