@@ -95,7 +95,6 @@
     <Compile Include="Connection.cs" />
     <Compile Include="WaitOperationDlg.cs" />
     <Compile Include="gtk-gui\QSProjectsLib.WaitOperationDlg.cs" />
-    <Compile Include="InformationHandbook.cs" />
     <Compile Include="Helpers\ComboWorks.cs" />
     <Compile Include="Helpers\CurrencyWorks.cs" />
     <Compile Include="Helpers\DateWorks.cs" />

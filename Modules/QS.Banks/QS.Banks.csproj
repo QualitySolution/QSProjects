@@ -53,6 +53,8 @@
     <Compile Include="HMap\CorAccountMap.cs" />
     <Compile Include="Domain\AccountOwnerBase.cs" />
     <Compile Include="ConfigureDeletionBanks.cs" />
+    <Compile Include="Repositories\AccountsRepository.cs" />
+    <Compile Include="Repositories\BankRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Domain\" />

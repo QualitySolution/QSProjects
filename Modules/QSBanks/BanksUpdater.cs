@@ -8,13 +8,13 @@ using System.Xml.Serialization;
 using Gtk;
 using ICSharpCode.SharpZipLib.Zip;
 using QS.Banks.Domain;
+using QS.Banks.Repositories;
 using QS.BaseParameters;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
 using QS.Utilities;
 using QSBanks.CBRSource;
-using QSBanks.Repositories;
 
 namespace QSBanks
 {

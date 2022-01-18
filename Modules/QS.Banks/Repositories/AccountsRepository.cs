@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using QS.Banks.Domain;
 using QS.DomainModel.UoW;
 
-namespace QSBanks.Repositories
+namespace QS.Banks.Repositories
 {
 	public static class AccountsRepository
 	{
