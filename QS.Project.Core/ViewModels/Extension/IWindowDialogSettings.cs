@@ -14,10 +14,17 @@ namespace QS.ViewModels.Extension
 		/// Окно должно быть модальным.
 		/// </summary>
 		bool IsModal { get; }
+
 		/// <summary>
 		/// Включает кнопки свернуть\развернуть у окна.
 		/// </summary>
 		bool EnableMinimizeMaximize { get; }
+
+		/// <summary>
+		/// Возможность изменять размеры окна
+		/// </summary>
+		bool Resizable { get; }
+
 		/// <summary>
 		/// Положение окна при открытии.
 		/// </summary>
