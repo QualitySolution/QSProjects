@@ -300,6 +300,8 @@ namespace QS.Navigation
 			gtkPage.GtkDialog.VBox.Add(gtkPage.GtkView);
 			if(windowSettings.EnableMinimizeMaximize)
 				gtkPage.GtkDialog.TypeHint = Gdk.WindowTypeHint.Normal;
+			if(!windowSettings.Resizable)
+				gtkPage.GtkDialog.Resizable = false;
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
 			MoveWindow(gtkPage.GtkDialog, windowSettings.WindowPosition);

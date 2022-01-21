@@ -9,6 +9,7 @@ namespace QS.Dialog.ViewModels
 		public ProgressWindowViewModel(INavigationManager navigation) : base(navigation)
 		{
 			IsModal = true;
+			Resizable = false;
 			WindowPosition = WindowGravity.Center;
 			Title = "Подождите...";
 		}
