@@ -106,7 +106,7 @@ namespace QS.Views.Control
 		{
 			isInternalTextSet = true;
 			entryObject.Text = text ?? String.Empty; //Тут если приходит null, то имеющееся текстовое значение не сбрасывается виджетом, поэтому null преобразуем в пустую строку.
-			entryObject.ModifyText(StateType.Normal, Gdk.Color.Zero);
+			entryObject.ModifyText(StateType.Normal);
 			isInternalTextSet = false;
 		}
 
@@ -177,7 +177,7 @@ namespace QS.Views.Control
 		protected void OnEntryObjectFocusOutEvent(object o, FocusOutEventArgs args)
 		{
 			if(string.IsNullOrWhiteSpace(entryObject.Text)) {
-				entryObject.ModifyText(StateType.Normal, Gdk.Color.Zero);
+				entryObject.ModifyText(StateType.Normal);
 				viewModel.CleanEntity();
 			}
 			else if(entryObject.Text != viewModel.EntityTitle)
