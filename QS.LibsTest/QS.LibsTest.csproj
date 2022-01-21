@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
+    <Compile Include="Utilities\Text\PersonHelperTests.cs" />
     <Compile Include="Utilities\DataRangeTest.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
