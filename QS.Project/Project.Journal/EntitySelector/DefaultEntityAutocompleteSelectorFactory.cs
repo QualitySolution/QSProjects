@@ -21,7 +21,7 @@ namespace QS.Project.Journal.EntitySelector
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
 			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
-			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
+			selectorViewModel.SelectionMode = multipleSelect ? JournalSelectionMode.Multiple : JournalSelectionMode.Single;
 			return selectorViewModel;
 		}
 	}

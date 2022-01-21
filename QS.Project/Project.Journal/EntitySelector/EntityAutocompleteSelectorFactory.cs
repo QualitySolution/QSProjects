@@ -17,7 +17,7 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntityAutocompleteSelector CreateAutocompleteSelector(bool multipleSelect = false)
 		{
 			var journal = selectorCtorFunc.Invoke();
-			journal.SelectionMode = multipleSelect ? JournalSelectionMode.Single : JournalSelectionMode.Multiple;
+			journal.SelectionMode = multipleSelect ? JournalSelectionMode.Multiple : JournalSelectionMode.Single;
 			return journal;
 		}
 
