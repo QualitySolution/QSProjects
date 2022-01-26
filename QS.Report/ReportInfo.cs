@@ -67,7 +67,7 @@ namespace QS.Report
 			var ReportName = splited.Last();
 			splited.RemoveAt(splited.Count - 1);
 			var parts = new List<string>();
-			parts.Add(System.IO.Directory.GetCurrentDirectory());
+			parts.Add(AppDomain.CurrentDomain.BaseDirectory);
 			parts.Add("Reports");
 			parts.AddRange(splited);
 			parts.Add(ReportName + ".rdl");
