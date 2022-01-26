@@ -81,7 +81,7 @@ namespace QS.Project.Journal
 		protected override void OnItemsSelected(params object[] selectedNodes)
 		{
 			OnEntitySelectedResult?.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
-			Close(false, CloseSource.Self);
+			base.OnItemsSelected(selectedNodes);
 		}
 
 		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
@@ -338,7 +338,7 @@ namespace QS.Project.Journal
 			NodeActionsList.Add(deleteAction);
 		}
 
-		private void HideJournal(ITdiTabParent parenTab)
+		protected void HideJournal(ITdiTabParent parenTab)
 		{
 			if(TabParent is ITdiSliderTab slider) {
 				slider.IsHideJournal = true;

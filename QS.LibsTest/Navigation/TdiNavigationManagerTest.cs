@@ -437,7 +437,7 @@ namespace QS.Test.Navigation
 		}
 
 		[Test(Description = "Проверка что событие о закрытии страницы приходит для вкладки открытой в слайдере, при закрытии слайдера из tdi. " +
-			"Реальный баг, навигатор не находит страцицу если в событии о закрытии вкладки прилетал слайдер, а не вкладка журнала.")]
+			"Реальный баг, навигатор не находит страницу если в событии о закрытии вкладки прилетал слайдер, а не вкладка журнала.")]
 		public void Page_PageClosedEvent_WhenTdiCloseSliderTest()
 		{
 			GtkInit.AtOnceInitGtk();
@@ -565,7 +565,7 @@ namespace QS.Test.Navigation
 			Assert.That(slider.ActiveDialog, Is.Not.Null);
 		}
 
-		[Test(Description = "Тест открытия вкладки журнала внутри слайдера, если мастер вкладка с UseSlider = true. Доп тест в случае если вторая вкладака тоже UseSlider = true.")]
+		[Test(Description = "Тест открытия вкладки журнала внутри слайдера, если мастер вкладка с UseSlider = true. Доп тест в случае если вторая вкладка тоже UseSlider = true.")]
 		public void OpenViewModel_ISlideableViewModel_InSlider2Test()
 		{
 			var builder = new ContainerBuilder();
@@ -662,7 +662,7 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 		}
 
-		[Test(Description = "Проверка что вкладка диалога не открывается внутри слайдера если у нее AlwaysNewPage = true. Второй тест на случай если вторая вкадка тоже UseSlider = true")]
+		[Test(Description = "Проверка что вкладка диалога не открывается внутри слайдера если у нее AlwaysNewPage = true. Второй тест на случай если вторая вкладка тоже UseSlider = true")]
 		public void OpenViewModel_ISlideableViewModel_DisableInDialogSliderTest2()
 		{
 			var builder = new ContainerBuilder();
@@ -698,7 +698,7 @@ namespace QS.Test.Navigation
 
 		#region Slave Mode
 
-		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкладке со слайдером.")]
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная к вкладке со слайдером.")]
 		public void OpenViewModel_AsSlaveOnSliderTest()
 		{
 			var builder = new ContainerBuilder();
@@ -727,8 +727,40 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 		}
+		
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная от вкладки внутри слайдера, если обе они имеют параметр alwaysNewPage.(Реальный баг)")]
+		[Category("real case")]
+		public void OpenViewModel_AsSlaveOnSliderWithNewPageTest()
+		{
+			var builder = new ContainerBuilder();
+			IContainer container = null;
+			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+			var resolver = Substitute.For<IGtkViewResolver>();
+			resolver.Resolve(Arg.Any<SlideableViewModel>()).ReturnsForAnyArgs((arg) => new EmptyDialogView());
+			builder.RegisterInstance<IGtkViewResolver>(resolver).As<IGtkViewResolver>();
+			builder.Register(x => Substitute.For<ITdiPageFactory>()).As<ITdiPageFactory>();
+			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+			builder.RegisterType<SlideableViewModel>().AsSelf();
+			container = builder.Build();
 
-		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке с TDI слайдером.")]
+			var notebook = new TdiNotebook();
+			var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+			var parameters = new Dictionary<string, object>();
+			parameters["useSlider"] = true;
+			parameters["alwaysNewPage"] = true;
+			var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+			var slidePage2 = navigation.OpenViewModelNamedArgs<SlideableViewModel>(slidePage.ViewModel, parameters, OpenPageOptions.IgnoreHash | OpenPageOptions.AsSlave);
+
+			Assert.That(slidePage.ViewModel, Is.Not.EqualTo(slidePage2.ViewModel));
+			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
+		}
+
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная к вкладке с TDI слайдером.")]
 		public void OpenViewModelOnTdi_AsSlaveOnSliderTest()
 		{
 			var builder = new ContainerBuilder();
@@ -757,7 +789,7 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs[0].TdiTab, Is.InstanceOf<TdiSliderTab>());
 		}
 
-		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к вкдадке диалога внури TDI слайдера.")]
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная к вкладке диалога внутри TDI слайдера.")]
 		[Category("real case")]
 		public void OpenViewModelOnTdi_AsSlaveOnDialogInSliderTest()
 		{
@@ -790,7 +822,7 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
 		}
 
-		[Test(Description = "Проверяем что новая ViewModel может открытся как подчиненая к WindowDialogViewModelBase отдельного окна.")]
+		[Test(Description = "Проверяем что новая ViewModel может открыться как подчиненная к WindowDialogViewModelBase отдельного окна.")]
 		public void OpenViewModel_AsSlaveOnWindowDialogTest()
 		{
 			var builder = new ContainerBuilder();

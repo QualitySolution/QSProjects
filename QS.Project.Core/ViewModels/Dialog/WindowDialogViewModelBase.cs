@@ -9,6 +9,7 @@ namespace QS.ViewModels.Dialog
 	{
 		public bool IsModal { get; protected set; } = true;
 		public bool EnableMinimizeMaximize { get; protected set; } = false;
+		public bool Resizable { get; protected set; } = true;
 		public WindowGravity WindowPosition { get; protected set; }
 
 		protected WindowDialogViewModelBase(INavigationManager navigation) : base(navigation)

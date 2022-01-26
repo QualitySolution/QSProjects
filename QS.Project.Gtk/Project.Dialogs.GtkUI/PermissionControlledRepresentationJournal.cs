@@ -18,8 +18,10 @@ namespace QS.Project.Dialogs.GtkUI
 		Logger logger = LogManager.GetCurrentClassLogger();
 
 		private IPermissionResult permissionResult;
+		private readonly bool _customEdit;
 
-		public PermissionControlledRepresentationJournal(IRepresentationModel representationModel, Buttons buttons = Buttons.All) : base(representationModel)
+		public PermissionControlledRepresentationJournal(
+			IRepresentationModel representationModel, Buttons buttons = Buttons.All, bool customEdit = false) : base(representationModel)
 		{
 			if(RepresentationModel.EntityType != null) {
 				UpdateUserEntityPermission();
@@ -31,6 +33,7 @@ namespace QS.Project.Dialogs.GtkUI
 			}
 
 			this.buttons = buttons;
+			_customEdit = customEdit;
 			ConfigureActionButtons();
 		}
 
@@ -49,7 +52,7 @@ namespace QS.Project.Dialogs.GtkUI
 				ActionButtons.Add(new PermissionControlledAddButton(this, RepresentationModel, permissionResult));
 			}
 			if(buttons.HasFlag(Buttons.Edit) || buttons.HasFlag(Buttons.All)) {
-				var editButton = new PermissionControlledEditButton(this, RepresentationModel, permissionResult);
+				var editButton = new PermissionControlledEditButton(this, RepresentationModel, permissionResult, _customEdit);
 				ActionButtons.Add(editButton);
 				DoubleClickAction = editButton;
 			}

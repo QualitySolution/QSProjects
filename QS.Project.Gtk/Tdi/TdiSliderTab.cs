@@ -4,6 +4,7 @@ using Gtk;
 using NLog;
 using QS.Navigation;
 using QS.Tdi.Gtk;
+using QS.ViewModels.Extension;
 
 namespace QS.Tdi
 {
@@ -319,7 +320,10 @@ namespace QS.Tdi
 
 			if(canSlided && afterTab == Journal) {
 				if (ActiveDialog != null)
-					CloseDialog(CloseSource.FromParentPage, true);
+				{
+					var askSave = (ActiveDialog as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
+					CloseDialog(CloseSource.FromParentPage, askSave);
+				}
 				ActiveDialog = tab;
 				return;
 			}
@@ -366,7 +370,9 @@ namespace QS.Tdi
 			}
 
 			if(afterTab == Journal && ActiveDialog != null) {
-				 CloseDialog(CloseSource.FromParentPage, true);
+				var askSave = (ActiveDialog as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
+				CloseDialog(CloseSource.FromParentPage, askSave);
+
 				if(ActiveDialog != null)
 					return null;
 			}

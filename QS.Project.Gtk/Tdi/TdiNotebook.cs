@@ -7,6 +7,7 @@ using NLog;
 using QS.Dialog.GtkUI;
 using QS.Utilities;
 using QS.Navigation;
+using QS.ViewModels.Extension;
 
 namespace QS.Tdi.Gtk
 {
@@ -426,7 +427,9 @@ namespace QS.Tdi.Gtk
 			if(dlg == null)
 				return true;
 
-			if(dlg.HasChanges) {
+			var askSave = (dlg as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
+
+			if(askSave && dlg.HasChanges) {
 				string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Question,

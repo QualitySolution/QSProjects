@@ -69,8 +69,6 @@ namespace QS.Project.Filter
 			}
 		}
 
-
-
 		/// <summary>
 		/// Для установки свойств фильтра без перезапуска фильтрации на каждом изменении
 		/// обновления журналов при каждом выставлении ограничения.
@@ -87,6 +85,6 @@ namespace QS.Project.Filter
 			Update();
 		}
 
-		public void Dispose() => UoW?.Dispose();
+		public virtual void Dispose() => UoW?.Dispose();
 	}
 }

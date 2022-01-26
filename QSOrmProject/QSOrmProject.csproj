@@ -124,7 +124,6 @@
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
     <Compile Include="DebugHelper\DebugLoadListener.cs" />
-    <Compile Include="Deletion\ReplaceEntity.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Users\UserSettingsManager.cs" />
     <Compile Include="yWidgets\yDatePeriodPicker.cs" />
@@ -187,7 +186,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
-    <Folder Include="Deletion\" />
     <Folder Include="DomainModel\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="UpdateNotification\" />

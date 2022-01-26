@@ -70,13 +70,11 @@
     <Compile Include="BankFilter.cs" />
     <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
     <Compile Include="ConfigureDeletion.cs" />
-    <Compile Include="Repositories\BankRepository.cs" />
     <Compile Include="BankTransferDocumentParser.cs" />
     <Compile Include="TransferDocument.cs" />
     <Compile Include="CBRSource\BIC.cs" />
     <Compile Include="CBRSource\CreditOrgInfo.cs" />
     <Compile Include="CBRSource\RegionsEnum.cs" />
-    <Compile Include="Repositories\AccountsRepository.cs" />
     <Compile Include="BanksUpdateWindow.cs" />
     <Compile Include="gtk-gui\QSBanks.BanksUpdateWindow.cs" />
   </ItemGroup>
@@ -139,7 +137,6 @@
   <ItemGroup>
     <Folder Include="Dialogs\" />
     <Folder Include="Representations\" />
-    <Folder Include="Repositories\" />
     <Folder Include="CBRSource\" />
   </ItemGroup>
   <ItemGroup>

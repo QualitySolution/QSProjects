@@ -16,17 +16,25 @@ namespace Gamma.Widgets
 		public BindingControler<EnumCheckList> Binding { get; private set; }
 
 		private Type enumType;
-		public Type EnumType {
-			get => enumType; set {
+		public Type EnumType
+		{
+			get => enumType;
+			set
+			{
 				enumType = value;
 				fieldsToHide.Clear();
 				FillWidgets();
 			}
 		}
 
+		public event EventHandler<CheckStateChangedEventArgs> CheckStateChanged;
+
+		public bool FillCheckButtons { get; set; } = true;
+		public bool ExpandCheckButtons { get; set; } = true;
+
 		private readonly List<Enum> fieldsToHide = new List<Enum>();
 
-		public void AddEnumToHideList(IEnumerable<Enum> items)
+		public void AddEnumToHideList(params Enum[] items)
 		{
 			foreach(var item in items) {
 				if(!fieldsToHide.Contains(item)) {
@@ -36,7 +44,7 @@ namespace Gamma.Widgets
 			UpdateVisibility();
 		}
 		
-		public void RemoveEnumFromHideList(IEnumerable<Enum> items)
+		public void RemoveEnumFromHideList(params Enum[] items)
 		{
 			foreach(var item in items) {
 				if(fieldsToHide.Contains(item)) {
@@ -73,20 +81,26 @@ namespace Gamma.Widgets
 		
 		public void SelectAll()
 		{
+			externalSet = true;
 			foreach(var check in Children.Cast<yCheckButton>()) {
 				if(!check.Active) {
 					check.Active = true;
 				}
 			}
+			externalSet = false;
+			Binding.FireChange(x => x.SelectedValuesList);
 		}
 		
 		public void UnselectAll()
 		{
+			externalSet = true;
 			foreach(var check in Children.Cast<yCheckButton>()) {
 				if(check.Active) {
 					check.Active = false;
 				}
 			}
+			externalSet = false;
+			Binding.FireChange(x => x.SelectedValuesList);
 		}
 		
 		/// <summary>
@@ -143,7 +157,7 @@ namespace Gamma.Widgets
 				check.Label = title;
 				check.Tag = item;
 				check.Toggled += Check_Toggled;
-				Add(check);
+                PackStart(check, ExpandCheckButtons, FillCheckButtons, 0);
 			}
 
 			ShowAll();
@@ -152,8 +166,24 @@ namespace Gamma.Widgets
 		void Check_Toggled(object sender, EventArgs e)
 		{
 			if(!externalSet)
+			{
+				var button = (yCheckButton)sender;
+				CheckStateChanged?.Invoke(sender, new CheckStateChangedEventArgs((Enum)button.Tag, button.Active));
 				Binding.FireChange(x => x.SelectedValuesList);
+			}
 		}
 
+	}
+
+	public class CheckStateChangedEventArgs : EventArgs
+	{
+		public Enum Item { get; }
+		public bool IsChecked { get; }
+
+		public CheckStateChangedEventArgs(Enum item, bool isChecked)
+		{
+			Item = item;
+			IsChecked = isChecked;
+		}
 	}
 }
