@@ -62,6 +62,22 @@ namespace QSReport
 			LoadReport(reportInfo);
 		}
 
+		public ReportViewDlg (IParametersWidget widget)
+		{
+			this.Build ();
+
+			parametersWidget = widget;
+
+			TabName = parametersWidget.Title;
+			reportviewer1.DefaultExportFileName = parametersWidget.Title;
+
+			panelParameters.Visible = true;
+
+			panelParameters.Panel = parametersWidget as Widget;
+
+			parametersWidget.LoadReport += ParametersWidget_LoadReport;
+		}
+
 		void LoadReport(ReportInfo info)
 		{
 			logger.Debug (String.Format ("Report Parameters[{0}]", info.GetParametersString ()));
@@ -79,7 +95,7 @@ namespace QSReport
 			if(info.Source != null)
 			{
 				reportviewer1.LoadReport(info.Source, info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes);
-			}	
+			}
 			else
 			{
 				if (multiplePrintOperation == null)
@@ -91,22 +107,10 @@ namespace QSReport
 					reportviewer1.LoadReport(info.GetReportUri(), info.GetParametersString(), info.ConnectionString, true, info.RestrictedOutputPresentationTypes, multiplePrintOperation.Run);
 				}
 			}
-}
-
-		public ReportViewDlg (IParametersWidget widget)
-		{
-			this.Build ();
-
-			parametersWidget = widget;
-
-			TabName = parametersWidget.Title;
-			reportviewer1.DefaultExportFileName = parametersWidget.Title;
-
-			panelParameters.Visible = true;
-
-			panelParameters.Panel = parametersWidget as Widget;
-
-			parametersWidget.LoadReport += ParametersWidget_LoadReport;
+			if(!string.IsNullOrWhiteSpace(info.Title))
+			{
+				reportviewer1.DefaultExportFileName = info.Title;
+			}
 		}
 
 		void ParametersWidget_LoadReport (object sender, LoadReportEventArgs e)
