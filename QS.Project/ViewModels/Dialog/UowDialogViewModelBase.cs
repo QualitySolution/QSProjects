@@ -23,7 +23,7 @@ namespace QS.ViewModels.Dialog
 		public virtual IUnitOfWork UoW {
 			get {
 				if(unitOfWork == null)
-					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot(uoWTitle);
+					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot(Title);
 
 				return unitOfWork;
 			}
