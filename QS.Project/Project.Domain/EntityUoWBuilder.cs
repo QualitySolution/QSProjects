@@ -9,7 +9,7 @@ namespace QS.Project.Domain
 		IUnitOfWork RootUoW { get; }
 		int EntityOpenId { get; }
 
-		IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory)
+		IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory, string UoWTitle = null)
 			where TEntity : class, IDomainObject, new();
 	}
 
@@ -26,19 +26,19 @@ namespace QS.Project.Domain
 		public int EntityOpenId { get; private set; }
 		public IUnitOfWork RootUoW { get; private set; }
 
-		public IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory) where TEntity : class, IDomainObject, new()
+		public IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory, string UoWTitle = null) where TEntity : class, IDomainObject, new()
 		{
 			if(IsNewEntity) {
 				if(RootUoW == null) {
-					return unitOfWorkFactory.CreateWithNewRoot<TEntity>();
+					return unitOfWorkFactory.CreateWithNewRoot<TEntity>(UoWTitle);
 				} else {
-					return unitOfWorkFactory.CreateWithNewChildRoot<TEntity>(RootUoW);
+					return unitOfWorkFactory.CreateWithNewChildRoot<TEntity>(RootUoW, UoWTitle);
 				}
 			} else {
 				if(RootUoW == null) {
-					return unitOfWorkFactory.CreateForRoot<TEntity>(EntityOpenId);
+					return unitOfWorkFactory.CreateForRoot<TEntity>(EntityOpenId, UoWTitle);
 				} else {
-					return unitOfWorkFactory.CreateForChildRoot<TEntity>(RootUoW.GetById<TEntity>(EntityOpenId), RootUoW);
+					return unitOfWorkFactory.CreateForChildRoot<TEntity>(RootUoW.GetById<TEntity>(EntityOpenId), RootUoW, UoWTitle);
 				}
 			}
 		}

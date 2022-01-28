@@ -23,7 +23,8 @@ namespace QS.ViewModels.Dialog
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
 			}
-			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory);
+			string actionTitle = $"Редактирование: {typeof(TEntity).GetSubjectNames().Genitive}";
+			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory, actionTitle);
 			base.Title = GetDialogNameByEntity();
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
