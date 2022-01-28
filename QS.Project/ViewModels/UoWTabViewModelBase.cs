@@ -21,7 +21,7 @@ namespace QS.ViewModels
 		public virtual IUnitOfWork UoW { 
 			get {
 				if(unitOfWork == null)
-					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot();
+					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot(Title);
 
 				return unitOfWork;
 			}
