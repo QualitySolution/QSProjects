@@ -11,10 +11,11 @@ namespace QS.ViewModels.Dialog
 	{
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		protected UowDialogViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(navigation)
+		protected UowDialogViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null, string UoWTitle = null) : base(navigation)
 		{
-			this.UnitOfWorkFactory = unitOfWorkFactory;
+			this.UnitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.validator = validator;
+			uoWTitle = UoWTitle;
 		}
 
 		private IUnitOfWork unitOfWork;
@@ -22,7 +23,7 @@ namespace QS.ViewModels.Dialog
 		public virtual IUnitOfWork UoW {
 			get {
 				if(unitOfWork == null)
-					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot();
+					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot(uoWTitle);
 
 				return unitOfWork;
 			}
@@ -62,6 +63,7 @@ namespace QS.ViewModels.Dialog
 		#region Валидация
 
 		private readonly IValidator validator;
+		private readonly string uoWTitle;
 		public readonly List<ValidationRequest> Validations = new List<ValidationRequest>();
 
 		protected virtual bool Validate()
