@@ -25,7 +25,7 @@ namespace QS.ViewModels.Dialog
 			}
 
 			string actionTitle = null;
-			if(typeof(TEntity).GetSubjectNames().Genitive != null)
+			if(typeof(TEntity).GetSubjectNames()?.Genitive != null)
 				actionTitle = $"Редактирование {typeof(TEntity).GetSubjectNames().Genitive}";
 
 			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory, actionTitle);
