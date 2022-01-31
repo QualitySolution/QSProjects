@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Gdk;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
@@ -359,40 +360,53 @@ namespace QS.Journal.GtkUI
 
 		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
-			if(args.Event.Button == 3 && ViewModel.PopupActions.Any()) {
-				var selected = GetSelectedItems();
-				Menu popupMenu = new Menu();
-				foreach(var popupAction in ViewModel.PopupActions) {
-					var item = new MenuItem(popupAction.Title);
-					item.Sensitive = popupAction.GetSensitivity(selected);
-					item.Visible = popupAction.GetVisibility(selected);
-					item.Activated += (sender, e) => { popupAction.ExecuteAction(selected); };
-					if(popupAction.ChildActions.Any()) {
-						foreach(var childAction in popupAction.ChildActions) {
-							item.Add(CreatePopupMenuItem(childAction));
-						}
-					}
-					popupMenu.Add(item);
-				}
-
-				if (popupMenu.Children.Length == 0)
-					return;
-				
-				popupMenu.Show();
-				popupMenu.Popup();
+			if(args.Event.Button != (uint)GtkMouseButton.Right || !ViewModel.PopupActions.Any())
+			{
+				return;
 			}
+
+			var popupMenu = new Menu();
+			foreach(var popupAction in ViewModel.PopupActions)
+			{
+				CreatePopupMenuActionsRecursively(popupMenu, popupAction, GetSelectedItems());
+			}
+
+			if(popupMenu.Children.Length == 0)
+			{
+				return;
+			}
+
+			popupMenu.Show();
+			popupMenu.Popup();
 		}
 
-		private MenuItem CreatePopupMenuItem(IJournalAction journalAction)
+		private static void CreatePopupMenuActionsRecursively(Menu menu, IJournalAction popupAction, object[] selected)
 		{
-			MenuItem menuItem = new MenuItem(journalAction.Title);
-			menuItem.Activated += (sender, e) => { journalAction.ExecuteAction(GetSelectedItems()); };
-			menuItem.Sensitive = journalAction.GetSensitivity(GetSelectedItems());
-			menuItem.Visible = journalAction.GetVisibility(GetSelectedItems());
-			foreach(var childAction in journalAction.ChildActions) {
-				menuItem.Add(CreatePopupMenuItem(childAction));
+			var item = new MenuItem(popupAction.Title);
+			item.Sensitive = popupAction.GetSensitivity(selected);
+			item.Visible = popupAction.GetVisibility(selected);
+
+			if(popupAction.ChildActions.Any())
+			{
+				var subMenu = new Menu();
+				foreach(var childAction in popupAction.ChildActions)
+				{
+					CreatePopupMenuActionsRecursively(subMenu, childAction, selected);
+				}
+				item.Submenu = subMenu;
 			}
-			return menuItem;
+			//Действия выполняются только для самых последних дочерних JournalActions
+			else
+			{
+				item.ButtonPressEvent += (o, args) =>
+				{
+					if(args.Event.Button == (uint)GtkMouseButton.Left)
+					{
+						popupAction.ExecuteAction(selected);
+					}
+				};
+			}
+			menu.Add(item);
 		}
 
 		void Selection_Changed(object sender, EventArgs e)
@@ -435,17 +449,36 @@ namespace QS.Journal.GtkUI
 
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			var nodeActions = ViewModel.NodeActions.Where(n => !string.IsNullOrEmpty(n.HotKeys) &&
-				n.HotKeys.Replace(" ", string.Empty).ToLower()
-				.Split(new[] { ',', ';'}, StringSplitOptions.RemoveEmptyEntries)
-				.Contains(hotKey.ToLower()));
+			var nodeActions = ViewModel.NodeActions
+				.Where(n => !string.IsNullOrWhiteSpace(n.HotKeys)
+					&& n.HotKeys
+						.Replace(" ", string.Empty).ToLower()
+						.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+						.Contains(hotKey.ToLower()))
+				.ToList();
 
-			if (nodeActions.Count() > 1)
+			if(nodeActions.Count > 1)
+			{
 				throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
+			}
 
-			if (nodeActions.Count() == 1)
-				nodeActions.ElementAt(0).ExecuteAction(GetSelectedItems());
+			if(nodeActions.Count == 1)
+			{
+				var selectedItems = GetSelectedItems();
+				var action = nodeActions.First();
+				if(action.GetSensitivity(selectedItems) && action.GetVisibility(selectedItems))
+				{
+					action.ExecuteAction.Invoke(selectedItems);
+				}
+			}
 		}
 
+	}
+
+	public enum GtkMouseButton
+	{
+		Left = 1,
+		Middle = 2,
+		Right = 3
 	}
 }
