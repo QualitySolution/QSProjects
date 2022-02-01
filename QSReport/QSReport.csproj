@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9C0363D4-EE69-45B8-BA45-BDA24CE35A06}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QS</RootNamespace>
+    <RootNamespace>QSReport</RootNamespace>
     <AssemblyName>QSReport</AssemblyName>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -48,15 +48,16 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultPrintOperation.cs" />
     <Compile Include="MultiplePrintOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="ReportPrinter.cs" />
     <Compile Include="ReportViewDlg.cs" />
     <Compile Include="gtk-gui\QSReport.ReportViewDlg.cs" />
     <Compile Include="IParametersWidget.cs" />
     <Compile Include="BatchRDLRenderer.cs" />
     <Compile Include="DocumentPrinter.cs" />
-    <Compile Include="ReportPrinter.cs" />
     <Compile Include="MultipleDocumentPrinter.cs" />
     <Compile Include="ReportIdentifierAttribute.cs" />
   </ItemGroup>
