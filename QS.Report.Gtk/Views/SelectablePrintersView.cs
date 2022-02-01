@@ -18,8 +18,8 @@ namespace QS.Report.Views
 		private void ConfigureDialog()
 		{
 			ytreeviewPrinters.CreateFluentColumnsConfig<SelectablePrintersViewModel.PrinterNode>()
-				.AddColumn("Название").AddTextRenderer(x => x.Printer.Name)
-				.AddColumn("Выбран").AddToggleRenderer(x => x.IsChecked).Editing()
+				.AddColumn("Название").HeaderAlignment(0.5f).AddTextRenderer(x => x.Printer.Name)
+				.AddColumn("Выбран").HeaderAlignment(0.5f).AddToggleRenderer(x => x.IsChecked).Editing()
 				.Finish();
 
 			ytreeviewPrinters.ItemsDataSource = _selectablePrintersViewModel.AllPrintersWithSelected;
