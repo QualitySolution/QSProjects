@@ -24,6 +24,11 @@ namespace QS.ViewModels.Extension
 		/// Возможность изменять размеры окна
 		/// </summary>
 		bool Resizable { get; }
+		
+		/// <summary>
+		/// Доступность кнопки закрыть
+		/// </summary>
+		bool Deletable { get; }
 
 		/// <summary>
 		/// Положение окна при открытии.
