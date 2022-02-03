@@ -104,6 +104,14 @@
       <Project>{3D3D6700-C625-46C5-9702-5F010A8DD035}</Project>
       <Name>QS.HistoryLog</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.HistoryLog.Desktop\QS.HistoryLog.Desktop.csproj">
+      <Project>{8730fbe6-065a-47ec-9c1b-70aa3503f140}</Project>
+      <Name>QS.HistoryLog.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">

@@ -1,89 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3D3D6700-C625-46C5-9702-5F010A8DD035}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>QS.HistoryLog</RootNamespace>
-    <AssemblyName>QS.HistoryLog</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HistoryMain.cs" />
-    <Compile Include="TrackerFactory.cs" />
-    <Compile Include="HibernateTracker.cs" />
-    <Compile Include="Domain\ChangedEntity.cs" />
-    <Compile Include="Domain\ChangeSet.cs" />
-    <Compile Include="Domain\FieldChange.cs" />
-    <Compile Include="HibernateMapping\ChangedEntityMap.cs" />
-    <Compile Include="HibernateMapping\ChangeSetMap.cs" />
-    <Compile Include="HibernateMapping\FieldChangeMap.cs" />
-    <Compile Include="Repositories\HistoryChangesRepository.cs" />
-    <Compile Include="HistoryAttributes.cs" />
-    <Compile Include="HistoryObjectDesc.cs" />
-    <Compile Include="IDiffFormatter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
-      <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
-      <Name>Gamma.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
-      <Name>QS.Utilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\" />
-    <Folder Include="HibernateMapping\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="NHibernate" Version="5.3.8" />
-    <PackageReference Include="NLog" Version="4.7.10" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+      <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties" />
+    </ItemGroup>
+
 </Project>

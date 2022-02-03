@@ -1,11 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using QS.DomainModel.Entity;
-using QS.DomainModel.UoW;
-using QS.Permissions;
-using QS.Project.Repositories;
 
 namespace QS.Project.Domain
 {

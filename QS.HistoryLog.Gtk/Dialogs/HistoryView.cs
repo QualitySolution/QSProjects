@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.GtkWidgets;
 using Gamma.Widgets;
-using NHibernate;
-using NHibernate.Criterion;
-using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Utilities;
 using QSOrmProject;
@@ -17,7 +15,6 @@ namespace QS.HistoryLog.Dialogs
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
 	public partial class HistoryView : QS.Dialog.Gtk.TdiTabBase
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		List<ChangedEntity> changedEntities;
 		bool canUpdate = false;
 		private int pageSize = 250;
@@ -25,13 +22,11 @@ namespace QS.HistoryLog.Dialogs
 		private bool takenAll = false;
 		private IDiffFormatter diffFormatter = new PangoDiffFormater();
 
-		IUnitOfWork UoW;
 
 		public HistoryView()
 		{
 			this.Build();
-
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			changedEntities = viewModel.ChangedEntities;
 
 			datacomboObject.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
 			datacomboObject.ItemsList = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList();
@@ -40,7 +35,7 @@ namespace QS.HistoryLog.Dialogs
 			ComboWorks.ComboFillReference(comboUsers, "users", ComboWorks.ListMode.WithAll, true, "name");
 			selectperiod.ActiveRadio = SelectPeriod.Period.Today;
 
-			datatreeChangesets.ColumnsConfig = Gamma.GtkWidgets.ColumnsConfigFactory.Create<ChangedEntity>()
+			datatreeChangesets.ColumnsConfig = ColumnsConfigFactory.Create<ChangedEntity>()
 				.AddColumn("Время").AddTextRenderer(x => x.ChangeTimeText)
 				.AddColumn("Пользователь").AddTextRenderer(x => x.ChangeSet.UserName)
 				.AddColumn("Действие").AddTextRenderer(x => x.OperationText)
@@ -60,7 +55,7 @@ namespace QS.HistoryLog.Dialogs
 				.Finish();
 
 			canUpdate = true;
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
@@ -69,7 +64,7 @@ namespace QS.HistoryLog.Dialogs
 				return;
 
 			var lastPos = datatreeChangesets.Vadjustment.Value;
-			UpdateJournal(true);
+			ViewModel.UpdateJournal(true);
 			QSMain.WaitRedraw();
 			datatreeChangesets.Vadjustment.Value = lastPos;
 		}
@@ -84,97 +79,19 @@ namespace QS.HistoryLog.Dialogs
 				datatreeChanges.ItemsDataSource = null;
 		}
 
-		void UpdateJournal(bool nextPage = false)
-		{
-			DateTime startTime = DateTime.Now;
-			if(!nextPage) {
-				takenRows = 0;
-				takenAll = false;
-			}
-
-			if(!canUpdate)
-				return;
-
-			logger.Info("Получаем журнал изменений{0}...", takenRows > 0 ? $"({takenRows}+)" : "");
-			ChangeSet changeSetAlias = null;
-
-			var query = UoW.Session.QueryOver<ChangedEntity>()
-				.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
-				.Fetch(SelectMode.Fetch, x => x.ChangeSet)
-				.Fetch(SelectMode.Fetch, x => x.ChangeSet.User);
-
-			if(!selectperiod.IsAllTime)
-				query.Where(ce => ce.ChangeTime >= selectperiod.DateBegin && ce.ChangeTime < selectperiod.DateEnd);
-
-			if(datacomboObject.SelectedItem is HistoryObjectDesc selectedClassType)
-				query.Where(ce => ce.EntityClassName == selectedClassType.ObjectName);
-
-			if(ComboWorks.GetActiveId(comboUsers) > 0)
-				query.Where(() => changeSetAlias.User.Id == ComboWorks.GetActiveId(comboUsers));
-
-			if(comboAction.SelectedItem is EntityChangeOperation)
-				query.Where(ce => ce.Operation == (EntityChangeOperation)comboAction.SelectedItem);
-
-			if(!string.IsNullOrWhiteSpace(entrySearchEntity.Text)) {
-				var pattern = $"%{entrySearchEntity.Text}%";
-				query.Where(ce => ce.EntityTitle.IsLike(pattern));
-			}
-
-			if(!string.IsNullOrWhiteSpace(entSearchId.Text)) {
-				if(int.TryParse(entSearchId.Text, out int id))
-					query.Where(ce => ce.EntityId == id);
-			}
-
-			if(!string.IsNullOrWhiteSpace(entrySearchValue.Text) || comboProperty.SelectedItem is HistoryFieldDesc) {
-				FieldChange fieldChangeAlias = null;
-				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
-
-				if(comboProperty.SelectedItem is HistoryFieldDesc selectedProperty)
-					query.Where(() => fieldChangeAlias.Path == selectedProperty.FieldName);
-
-				if(!string.IsNullOrWhiteSpace(entrySearchValue.Text)) {
-					var pattern = $"%{entrySearchValue.Text}%";
-					query.Where(
-						() => fieldChangeAlias.OldValue.IsLike(pattern) || fieldChangeAlias.NewValue.IsLike(pattern)
-					);
-				}
-			}
-
-			var taked = query.OrderBy(x => x.ChangeTime).Desc
-							 .Skip(takenRows)
-							 .Take(pageSize)
-							 .List();
-
-			if(takenRows > 0) {
-				changedEntities.AddRange(taked);
-				datatreeChangesets.YTreeModel.EmitModelChanged();
-			} else {
-				changedEntities = taked.ToList();
-				datatreeChangesets.ItemsDataSource = changedEntities;
-			}
-
-			if(taked.Count < pageSize)
-				takenAll = true;
-
-			takenRows = changedEntities.Count;
-
-			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
-			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", "Загружено изменение {0}{1} объектов.", takenAll ? "" : "+"));
-		}
-
 		protected void OnComboUsersChanged(object sender, EventArgs e)
 		{
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnButtonSearchClicked(object sender, EventArgs e)
 		{
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnSelectperiodDatesChanged(object sender, EventArgs e)
 		{
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		void PropertyComboFill()
@@ -191,12 +108,12 @@ namespace QS.HistoryLog.Dialogs
 		protected void OnDatacomboObjectItemSelected(object sender, ItemSelectedEventArgs e)
 		{
 			PropertyComboFill();
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnComboPropertyItemSelected(object sender, ItemSelectedEventArgs e)
 		{
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnEntrySearchValueActivated(object sender, EventArgs e)
@@ -206,18 +123,12 @@ namespace QS.HistoryLog.Dialogs
 
 		protected void OnComboActionChanged(object sender, EventArgs e)
 		{
-			UpdateJournal();
-		}
-
-		public override void Destroy()
-		{
-			UoW.Dispose();
-			base.Destroy();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnEntrySearchEntityActivated(object sender, EventArgs e)
 		{
-			UpdateJournal();
+			ViewModel.UpdateJournal();
 		}
 
 		protected void OnBtnFilterClicked(object sender, EventArgs e)
