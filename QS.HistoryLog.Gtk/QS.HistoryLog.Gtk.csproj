@@ -54,11 +54,11 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gtk-gui\QS.HistoryLog.Views.HistoryView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="SideBySideFullDiffBuilder.cs" />
-    <Compile Include="Dialogs\HistoryView.cs" />
-    <Compile Include="gtk-gui\QS.HistoryLog.Dialogs.HistoryView.cs" />
+    <Compile Include="Views\HistoryView.cs" />
     <Compile Include="PangoRender.cs" />
     <Compile Include="PangoDiffFormater.cs" />
   </ItemGroup>
@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Comparers\" />
-    <Folder Include="Dialogs\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />

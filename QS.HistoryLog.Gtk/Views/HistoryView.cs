@@ -4,16 +4,18 @@ using System.Linq;
 using Gamma.GtkWidgets;
 using Gamma.Widgets;
 using QS.HistoryLog.Domain;
+using QS.HistoryLog.ViewModels;
 using QS.Utilities;
+using QS.Views;
 using QSOrmProject;
 using QSProjectsLib;
 using QSWidgetLib;
 
-namespace QS.HistoryLog.Dialogs
+namespace QS.HistoryLog.Views
 {
 	[System.ComponentModel.DisplayName("Просмотр журнала изменений")]
 	[WidgetWindow(DefaultWidth = 852, DefaultHeight = 600)]
-	public partial class HistoryView : QS.Dialog.Gtk.TdiTabBase
+	public partial class HistoryView : ViewBase<HistoryViewModel>
 	{
 		List<ChangedEntity> changedEntities;
 		bool canUpdate = false;
@@ -23,7 +25,7 @@ namespace QS.HistoryLog.Dialogs
 		private IDiffFormatter diffFormatter = new PangoDiffFormater();
 
 
-		public HistoryView()
+		public HistoryView(HistoryViewModel viewModel): base(viewModel)
 		{
 			this.Build();
 			changedEntities = viewModel.ChangedEntities;
