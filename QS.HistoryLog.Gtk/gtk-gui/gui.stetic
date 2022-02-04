@@ -14,11 +14,7 @@
     <widget-library name="../../QS.HistoryLog/bin/Debug/QS.HistoryLog.dll" />
     <widget-library name="../bin/Debug/QS.HistoryLog.Gtk.dll" internal="true" />
   </import>
-<<<<<<< bc223df21185b8942ac9427210b6785182e260c2
-  <widget class="Gtk.Bin" id="QS.HistoryLog.Dialogs.HistoryView" design-size="532 587">
-=======
-  <widget class="Gtk.Bin" id="QS.HistoryLog.Views.HistoryView" design-size="564 587">
->>>>>>> Переименовал view
+  <widget class="Gtk.Bin" id="QS.HistoryLog.Views.HistoryView" design-size="532 587">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
