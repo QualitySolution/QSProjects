@@ -35,30 +35,14 @@
                     <property name="RowSpacing">6</property>
                     <property name="ColumnSpacing">6</property>
                     <child>
-                      <widget class="Gamma.GtkWidgets.yComboBox" id="ycombobox1">
+                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboAction">
                         <property name="MemberName" />
                         <property name="IsTextCombo">True</property>
                         <property name="Items" translatable="yes" />
-                      </widget>
-                      <packing>
-                        <property name="LeftAttach">1</property>
-                        <property name="RightAttach">2</property>
-                        <property name="AutoSize">True</property>
-                        <property name="XOptions">Fill</property>
-                        <property name="YOptions">Fill</property>
-                        <property name="XExpand">False</property>
-                        <property name="XFill">True</property>
-                        <property name="XShrink">False</property>
-                        <property name="YExpand">False</property>
-                        <property name="YFill">True</property>
-                        <property name="YShrink">False</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="Gamma.GtkWidgets.yComboBox" id="ycombobox2">
-                        <property name="MemberName" />
-                        <property name="IsTextCombo">True</property>
-                        <property name="Items" translatable="yes" />
+                        <property name="ShowSpecialStateAll">False</property>
+                        <property name="ShowSpecialStateNot">False</property>
+                        <property name="UseShortTitle">False</property>
+                        <property name="DefaultFirst">False</property>
                       </widget>
                       <packing>
                         <property name="TopAttach">2</property>
@@ -77,10 +61,40 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.GtkWidgets.yComboBox" id="ycombobox3">
+                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboObjects">
                         <property name="MemberName" />
-                        <property name="IsTextCombo">True</property>
+                        <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
+                        <property name="ShowSpecialStateAll">False</property>
+                        <property name="ShowSpecialStateNot">False</property>
+                        <property name="UseShortTitle">True</property>
+                        <property name="DefaultFirst">False</property>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
+                        <property name="LeftAttach">1</property>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboRecvisits">
+                        <property name="MemberName" />
+                        <property name="IsTextCombo">False</property>
+                        <property name="Items" translatable="yes" />
+                        <property name="ShowSpecialStateAll">False</property>
+                        <property name="ShowSpecialStateNot">False</property>
+                        <property name="UseShortTitle">True</property>
+                        <property name="DefaultFirst">False</property>
                       </widget>
                       <packing>
                         <property name="TopAttach">3</property>
@@ -99,18 +113,16 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.Widgets.yEnumComboBox" id="yenumcombobox1">
+                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboUsers">
                         <property name="MemberName" />
-                        <property name="IsTextCombo">True</property>
+                        <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
                         <property name="ShowSpecialStateAll">False</property>
                         <property name="ShowSpecialStateNot">False</property>
-                        <property name="UseShortTitle">False</property>
+                        <property name="UseShortTitle">True</property>
                         <property name="DefaultFirst">False</property>
                       </widget>
                       <packing>
-                        <property name="TopAttach">1</property>
-                        <property name="BottomAttach">2</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
                         <property name="AutoSize">True</property>
@@ -347,7 +359,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="Gamma.Widgets.yDatePeriodPicker" id="ydateperiodpicker2">
+                              <widget class="Gamma.Widgets.yDatePeriodPicker" id="ydateperiodpicker">
                                 <property name="MemberName" />
                                 <property name="Events">ButtonPressMask</property>
                                 <property name="StartDate">0</property>
@@ -384,13 +396,16 @@
                         <property name="RowSpacing">6</property>
                         <property name="ColumnSpacing">6</property>
                         <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentry1">
+                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryChanged">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
+                            <property name="Text" translatable="yes">d</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
                           </widget>
                           <packing>
+                            <property name="TopAttach">2</property>
+                            <property name="BottomAttach">3</property>
                             <property name="LeftAttach">1</property>
                             <property name="RightAttach">2</property>
                             <property name="AutoSize">True</property>
@@ -405,7 +420,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentry2">
+                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryId">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
                             <property name="IsEditable">True</property>
@@ -428,15 +443,13 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentry3">
+                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryName">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
                           </widget>
                           <packing>
-                            <property name="TopAttach">2</property>
-                            <property name="BottomAttach">3</property>
                             <property name="LeftAttach">1</property>
                             <property name="RightAttach">2</property>
                             <property name="AutoSize">True</property>
@@ -559,7 +572,7 @@
             <property name="CanFocus">True</property>
             <property name="ShadowType">In</property>
             <child>
-              <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeview2">
+              <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeChangesets">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
               </widget>
@@ -596,7 +609,7 @@
                 <property name="CanFocus">True</property>
                 <property name="ShadowType">In</property>
                 <child>
-                  <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeview1">
+                  <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeFieldChange">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                   </widget>

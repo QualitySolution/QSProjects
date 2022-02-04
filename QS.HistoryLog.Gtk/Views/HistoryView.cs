@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gamma.GtkWidgets;
-using Gamma.Widgets;
-using QS.HistoryLog.Domain;
+﻿using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
-using QS.Utilities;
-using QS.Views;
 using QS.Views.Dialog;
-using QSOrmProject;
-using QSProjectsLib;
-using QSWidgetLib;
 
 namespace QS.HistoryLog.Views
 {
@@ -19,6 +9,12 @@ namespace QS.HistoryLog.Views
 		public HistoryView(HistoryViewModel viewModel): base(viewModel)
 		{
 			this.Build();
+			ycomboUsers.Binding.AddBinding(viewModel, v => v.Users, w => w.Active).InitializeFromSource();
+			ycomboObjects.Binding.AddBinding(viewModel, v => v.ChangeObjects, w => w.Active).InitializeFromSource();
+			ycomboAction.ItemsEnum = typeof(EntityChangeOperation);
+			ycomboAction.Binding.AddBinding(viewModel, v => v.ChangeOperation, w => w.SelectedItem).InitializeFromSource();
+
+
 		}
 	}
 }
