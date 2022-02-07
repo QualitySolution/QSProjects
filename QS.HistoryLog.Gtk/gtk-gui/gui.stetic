@@ -12,7 +12,7 @@
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
     <widget-library name="../bin/Debug/QS.HistoryLog.Gtk.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QS.HistoryLog.Views.HistoryView" design-size="564 587">
+  <widget class="Gtk.Bin" id="QS.HistoryLog.Views.HistoryView" design-size="757 587">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -37,7 +37,7 @@
                     <child>
                       <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboAction">
                         <property name="MemberName" />
-                        <property name="IsTextCombo">True</property>
+                        <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
                         <property name="ShowSpecialStateAll">False</property>
                         <property name="ShowSpecialStateNot">False</property>
@@ -61,39 +61,11 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboObjects">
+                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboFields">
                         <property name="MemberName" />
                         <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
-                        <property name="ShowSpecialStateAll">False</property>
-                        <property name="ShowSpecialStateNot">False</property>
-                        <property name="UseShortTitle">True</property>
-                        <property name="DefaultFirst">False</property>
-                      </widget>
-                      <packing>
-                        <property name="TopAttach">1</property>
-                        <property name="BottomAttach">2</property>
-                        <property name="LeftAttach">1</property>
-                        <property name="RightAttach">2</property>
-                        <property name="AutoSize">True</property>
-                        <property name="XOptions">Fill</property>
-                        <property name="YOptions">Fill</property>
-                        <property name="XExpand">False</property>
-                        <property name="XFill">True</property>
-                        <property name="XShrink">False</property>
-                        <property name="YExpand">False</property>
-                        <property name="YFill">True</property>
-                        <property name="YShrink">False</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboRecvisits">
-                        <property name="MemberName" />
-                        <property name="IsTextCombo">False</property>
-                        <property name="Items" translatable="yes" />
-                        <property name="ShowSpecialStateAll">False</property>
-                        <property name="ShowSpecialStateNot">False</property>
-                        <property name="UseShortTitle">True</property>
+                        <property name="AddIfNotExist">False</property>
                         <property name="DefaultFirst">False</property>
                       </widget>
                       <packing>
@@ -113,13 +85,35 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboUsers">
+                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboObjects">
                         <property name="MemberName" />
                         <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
-                        <property name="ShowSpecialStateAll">False</property>
-                        <property name="ShowSpecialStateNot">False</property>
-                        <property name="UseShortTitle">True</property>
+                        <property name="AddIfNotExist">False</property>
+                        <property name="DefaultFirst">False</property>
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
+                        <property name="LeftAttach">1</property>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboUsers">
+                        <property name="MemberName" />
+                        <property name="IsTextCombo">False</property>
+                        <property name="Items" translatable="yes" />
+                        <property name="AddIfNotExist">False</property>
                         <property name="DefaultFirst">False</property>
                       </widget>
                       <packing>
@@ -254,37 +248,16 @@
                                 <property name="RowSpacing">6</property>
                                 <property name="ColumnSpacing">6</property>
                                 <child>
-                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yradiobutton1">
+                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yPeriodMonth">
                                     <property name="MemberName" />
                                     <property name="CanFocus">True</property>
-                                    <property name="Label" translatable="yes">Сегодня</property>
+                                    <property name="Label" translatable="yes">За месяц</property>
                                     <property name="Active">True</property>
                                     <property name="DrawIndicator">True</property>
                                     <property name="HasLabel">True</property>
                                     <property name="UseUnderline">True</property>
                                     <property name="Group">group1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="AutoSize">True</property>
-                                    <property name="XOptions">Fill</property>
-                                    <property name="YOptions">Fill</property>
-                                    <property name="XExpand">False</property>
-                                    <property name="XFill">True</property>
-                                    <property name="XShrink">False</property>
-                                    <property name="YExpand">False</property>
-                                    <property name="YFill">True</property>
-                                    <property name="YShrink">False</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yradiobutton2">
-                                    <property name="MemberName" />
-                                    <property name="CanFocus">True</property>
-                                    <property name="Label" translatable="yes">За месяц</property>
-                                    <property name="DrawIndicator">True</property>
-                                    <property name="HasLabel">True</property>
-                                    <property name="UseUnderline">True</property>
-                                    <property name="Group">group1</property>
+                                    <signal name="Toggled" handler="OnPeriodMonth" />
                                   </widget>
                                   <packing>
                                     <property name="LeftAttach">1</property>
@@ -301,31 +274,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yradiobutton3">
-                                    <property name="MemberName" />
-                                    <property name="CanFocus">True</property>
-                                    <property name="Label" translatable="yes">За неделю</property>
-                                    <property name="DrawIndicator">True</property>
-                                    <property name="HasLabel">True</property>
-                                    <property name="UseUnderline">True</property>
-                                    <property name="Group">group1</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="TopAttach">1</property>
-                                    <property name="BottomAttach">2</property>
-                                    <property name="AutoSize">True</property>
-                                    <property name="XOptions">Fill</property>
-                                    <property name="YOptions">Fill</property>
-                                    <property name="XExpand">False</property>
-                                    <property name="XFill">True</property>
-                                    <property name="XShrink">False</property>
-                                    <property name="YExpand">False</property>
-                                    <property name="YFill">True</property>
-                                    <property name="YShrink">False</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yradiobutton4">
+                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yPeriodThreeMonth">
                                     <property name="MemberName" />
                                     <property name="CanFocus">True</property>
                                     <property name="Label" translatable="yes">За 3 месяца</property>
@@ -333,12 +282,61 @@
                                     <property name="HasLabel">True</property>
                                     <property name="UseUnderline">True</property>
                                     <property name="Group">group1</property>
+                                    <signal name="Toggled" handler="OnPeriodThreeMonth" />
                                   </widget>
                                   <packing>
                                     <property name="TopAttach">1</property>
                                     <property name="BottomAttach">2</property>
                                     <property name="LeftAttach">1</property>
                                     <property name="RightAttach">2</property>
+                                    <property name="AutoSize">True</property>
+                                    <property name="XOptions">Fill</property>
+                                    <property name="YOptions">Fill</property>
+                                    <property name="XExpand">False</property>
+                                    <property name="XFill">True</property>
+                                    <property name="XShrink">False</property>
+                                    <property name="YExpand">False</property>
+                                    <property name="YFill">True</property>
+                                    <property name="YShrink">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yPeriodToday">
+                                    <property name="MemberName" />
+                                    <property name="CanFocus">True</property>
+                                    <property name="Label" translatable="yes">Сегодня</property>
+                                    <property name="DrawIndicator">True</property>
+                                    <property name="HasLabel">True</property>
+                                    <property name="UseUnderline">True</property>
+                                    <property name="Group">group1</property>
+                                    <signal name="Toggled" handler="OnPeriodToday" />
+                                  </widget>
+                                  <packing>
+                                    <property name="AutoSize">True</property>
+                                    <property name="XOptions">Fill</property>
+                                    <property name="YOptions">Fill</property>
+                                    <property name="XExpand">False</property>
+                                    <property name="XFill">True</property>
+                                    <property name="XShrink">False</property>
+                                    <property name="YExpand">False</property>
+                                    <property name="YFill">True</property>
+                                    <property name="YShrink">False</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="Gamma.GtkWidgets.yRadioButton" id="yPeriodWeek">
+                                    <property name="MemberName" />
+                                    <property name="CanFocus">True</property>
+                                    <property name="Label" translatable="yes">За неделю</property>
+                                    <property name="DrawIndicator">True</property>
+                                    <property name="HasLabel">True</property>
+                                    <property name="UseUnderline">True</property>
+                                    <property name="Group">group1</property>
+                                    <signal name="Toggled" handler="OnPeriodWeek" />
+                                  </widget>
+                                  <packing>
+                                    <property name="TopAttach">1</property>
+                                    <property name="BottomAttach">2</property>
                                     <property name="AutoSize">True</property>
                                     <property name="XOptions">Fill</property>
                                     <property name="YOptions">Fill</property>
@@ -359,11 +357,39 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="Gamma.Widgets.yDatePeriodPicker" id="ydateperiodpicker">
+                              <widget class="Gamma.GtkWidgets.yHBox" id="yhbox2">
                                 <property name="MemberName" />
-                                <property name="Events">ButtonPressMask</property>
-                                <property name="StartDate">0</property>
-                                <property name="EndDate">0</property>
+                                <property name="Spacing">6</property>
+                                <child>
+                                  <widget class="QS.Widgets.GtkUI.DatePicker" id="ydateStartperiodpicker">
+                                    <property name="MemberName" />
+                                    <property name="Events">ButtonPressMask</property>
+                                    <property name="WithTime">True</property>
+                                    <property name="HideCalendarButton">False</property>
+                                    <property name="Date">0</property>
+                                    <property name="IsEditable">True</property>
+                                    <property name="AutoSeparation">False</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">0</property>
+                                    <property name="AutoSize">True</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="QS.Widgets.GtkUI.DatePicker" id="ydateEndperiodpicker">
+                                    <property name="MemberName" />
+                                    <property name="Events">ButtonPressMask</property>
+                                    <property name="WithTime">True</property>
+                                    <property name="HideCalendarButton">False</property>
+                                    <property name="Date">0</property>
+                                    <property name="IsEditable">True</property>
+                                    <property name="AutoSeparation">False</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="Position">1</property>
+                                    <property name="AutoSize">True</property>
+                                  </packing>
+                                </child>
                               </widget>
                               <packing>
                                 <property name="Position">1</property>
@@ -399,7 +425,6 @@
                           <widget class="Gamma.GtkWidgets.yEntry" id="yentryChanged">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
-                            <property name="Text" translatable="yes">d</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
                           </widget>

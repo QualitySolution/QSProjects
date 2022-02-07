@@ -3,9 +3,10 @@ using QS.Navigation;
 using QS.HistoryLog.Domain;
 using QS.Validation;
 using QS.ViewModels.Dialog;
-using QS.DomainModel.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using QS.Project.Domain;
 
 namespace QS.HistoryLog.ViewModels
 {
@@ -18,39 +19,53 @@ namespace QS.HistoryLog.ViewModels
 			string UoWTitle = null) : base(unitOfWorkFactory, navigation, validator, UoWTitle)
 		{
 			Title = "Просмотр журнала изменений";
-			timeBegin = DateTime.Today;
-			
-		}
+			PeriodStartDate = DateTime.Today;
+			PeriodEndDate = DateTime.Today.AddDays(1).AddTicks(-1);
 
+		}
 		#region  Filter
+		private IList<UserBase> users;
+		public IList<UserBase> Users {
+			get => users ?? (users = UoW.Session.QueryOver<UserBase>().List());
 
-		private List<IDomainObject> users;
-		public List<IDomainObject> Users {
-			get => users;
+			set { SetField(ref users, value); }
 		}
-		private IDomainObject selectedUser;
-		public IDomainObject SelectedUser {
+		private UserBase selectedUser;
+		public UserBase SelectedUser {
 			get => selectedUser;
 			set { SetField(ref selectedUser, value); }
 		}
-		private List<IDomainObject> changeObjects;
-		public List<IDomainObject> ChangeObjects {
-			get => changeObjects;
+		private List<HistoryObjectDesc> changeObjects;
+		public List<HistoryObjectDesc> ChangeObjects {
+			get => changeObjects ?? (changeObjects = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList());
+			set { SetField(ref changeObjects, value); }
 		}
-		private EntityChangeOperation changeOperation;
-		public EntityChangeOperation ChangeOperation {
+		private HistoryObjectDesc selectedChangeObject;
+		public HistoryObjectDesc SelectedChangeObject {
+			get => selectedChangeObject;
+			set { SetField(ref selectedChangeObject, value);
+					OnPropertyChanged(nameof(HistoryField));
+			}
+		}
+		private EntityChangeOperation? changeOperation;
+		public EntityChangeOperation? ChangeOperation {
 			get => changeOperation;
-			set { SetField(ref changeOperation, value); }
+			set {SetField(ref changeOperation, value);}
 		}
-		private DateTime timeBegin;
-		public DateTime TimeBegin {
-			get => timeBegin;
-			set { SetField(ref timeBegin, value); }
+		public IEnumerable<HistoryFieldDesc> HistoryField {
+			get {
+				return SelectedChangeObject?.TracedProperties ?? new List<HistoryFieldDesc>();
+			}
 		}
-		private DateTime timeEnd;
-		public DateTime TimeEnd {
-			get => timeEnd;
-			set { SetField(ref timeEnd, value); }
+		private DateTime periodStartDate;
+		public DateTime PeriodStartDate {
+			get => periodStartDate;
+			set { SetField(ref periodStartDate, value); }
+		}
+		private DateTime periodEndDate;
+		public DateTime PeriodEndDate {
+			get => periodEndDate;
+			set { SetField(ref periodEndDate, value); }
 		}
 		private string searchByName;
 		public string SsearchByName {
@@ -67,10 +82,6 @@ namespace QS.HistoryLog.ViewModels
 			get => searchByChanged;
 			set { SetField(ref searchByChanged, value); }
 		}
-		#endregion
-
-		#region Date
-
 		#endregion
 	}
 }
