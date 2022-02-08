@@ -1,17 +1,26 @@
-﻿using QS.DomainModel.UoW;
-using QS.Navigation;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Bindings.Collections.Generic;
+using System.Linq;
+using NHibernate;
+using NHibernate.Criterion;
+using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
+using QS.Navigation;
+using QS.Project.Domain;
 using QS.Validation;
 using QS.ViewModels.Dialog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using QS.Project.Domain;
 
 namespace QS.HistoryLog.ViewModels
 {
 	public class HistoryViewModel : UowDialogViewModelBase
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		
+		private const int entityBatchSize = 100;
+		private int EntitiesTaken = 0;
+		private bool takenAll = false;
+
 		public HistoryViewModel(
 			IUnitOfWorkFactory unitOfWorkFactory,
 			INavigationManager navigation,
@@ -19,69 +28,165 @@ namespace QS.HistoryLog.ViewModels
 			string UoWTitle = null) : base(unitOfWorkFactory, navigation, validator, UoWTitle)
 		{
 			Title = "Просмотр журнала изменений";
-			PeriodStartDate = DateTime.Today;
-			PeriodEndDate = DateTime.Today.AddDays(1).AddTicks(-1);
-
+			changedEntities = new List<ChangedEntity>();
 		}
 		#region  Filter
 		private IList<UserBase> users;
 		public IList<UserBase> Users {
 			get => users ?? (users = UoW.Session.QueryOver<UserBase>().List());
-
-			set { SetField(ref users, value); }
+			set => SetField(ref users, value);
 		}
 		private UserBase selectedUser;
 		public UserBase SelectedUser {
 			get => selectedUser;
-			set { SetField(ref selectedUser, value); }
+			set => SetField(ref selectedUser, value);
 		}
-		private List<HistoryObjectDesc> changeObjects;
-		public List<HistoryObjectDesc> ChangeObjects {
-			get => changeObjects ?? (changeObjects = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList());
-			set { SetField(ref changeObjects, value); }
+		private List<HistoryObjectDesc> traceClasses;
+		public List<HistoryObjectDesc> TraceClasses {
+			get => traceClasses ?? (traceClasses = HistoryMain.TraceClasses.OrderBy(x => x.DisplayName)?.ToList());
+			set => SetField(ref traceClasses, value);
 		}
-		private HistoryObjectDesc selectedChangeObject;
-		public HistoryObjectDesc SelectedChangeObject {
-			get => selectedChangeObject;
-			set { SetField(ref selectedChangeObject, value);
-					OnPropertyChanged(nameof(HistoryField));
+		private HistoryObjectDesc selectedTraceClass;
+		public HistoryObjectDesc SelectedTraceClass {
+			get => selectedTraceClass;
+			set { SetField(ref selectedTraceClass, value);
+					OnPropertyChanged(nameof(TracedProperties));
 			}
 		}
-		private EntityChangeOperation? changeOperation;
-		public EntityChangeOperation? ChangeOperation {
-			get => changeOperation;
-			set {SetField(ref changeOperation, value);}
+		private EntityChangeOperation? operation;
+		public EntityChangeOperation? Operation {
+			get => operation;
+			set => SetField(ref operation, value);
 		}
-		public IEnumerable<HistoryFieldDesc> HistoryField {
+		public IEnumerable<HistoryFieldDesc> TracedProperties => SelectedTraceClass?.TracedProperties ?? new List<HistoryFieldDesc>();
+
+		private HistoryFieldDesc selectedTracedProperties;
+		public HistoryFieldDesc SelectedTracedProperties
+		{
+			get => selectedTracedProperties;
+			set => SetField(ref selectedTracedProperties, value);
+		}
+		private DateTime? periodStartDate;
+		public DateTime? PeriodStartDate {
 			get {
-				return SelectedChangeObject?.TracedProperties ?? new List<HistoryFieldDesc>();
+				if(periodStartDate == null)
+					periodStartDate = DateTime.Today;
+				return periodStartDate;
 			}
+			set => SetField(ref periodStartDate, value);
 		}
-		private DateTime periodStartDate;
-		public DateTime PeriodStartDate {
-			get => periodStartDate;
-			set { SetField(ref periodStartDate, value); }
+		private DateTime? periodEndDate;
+		public DateTime? PeriodEndDate {
+			get {
+				if(periodEndDate == null)
+					periodEndDate = DateTime.Today.AddDays(1).AddTicks(-1);
+				return periodEndDate;
+			}
+			set => SetField(ref periodEndDate, value);
 		}
-		private DateTime periodEndDate;
-		public DateTime PeriodEndDate {
-			get => periodEndDate;
-			set { SetField(ref periodEndDate, value); }
-		}
+
 		private string searchByName;
-		public string SsearchByName {
+		public string SearchByName {
 			get => searchByName;
-			set { SetField(ref searchByName, value); }
+			set => SetField(ref searchByName, value);
 		}
 		private string searchById;
 		public string SearchById {
 			get => searchById;
-			set { SetField(ref searchById, value); }
+			set => SetField(ref searchById, value);
 		}
 		private string searchByChanged;
 		public string SearchByChanged {
 			get => searchByChanged;
-			set { SetField(ref searchByChanged, value); }
+			set => SetField(ref searchByChanged, value);
 		}
+		#endregion
+		#region Query
+		public void UpdateChangedEntities(bool nextPage = false)
+		{
+			if(!nextPage) {
+				observableChangedEntities.Clear();
+				EntitiesTaken = 0;
+				takenAll = false;
+			}
+			logger.Info("Получаем журнал изменений{0}...", EntitiesTaken > 0 ? $"({EntitiesTaken}+)" : "");
+			ChangeSet changeSetAlias = null;
+
+			var query = UoW.Session.QueryOver<ChangedEntity>()
+				.JoinAlias(ce => ce.ChangeSet, () => changeSetAlias)
+				.Fetch(SelectMode.Fetch, x => x.ChangeSet)
+				.Fetch(SelectMode.Fetch, x => x.ChangeSet.User);
+
+			query.Where(ce => ce.ChangeTime >= PeriodStartDate && ce.ChangeTime < PeriodEndDate);
+			
+			if(SelectedUser != null)
+				query.Where(() => changeSetAlias.User == selectedUser);
+			if (SelectedTraceClass != null)
+				query.Where(ce => ce.EntityClassName == SelectedTraceClass.ObjectName);
+			if(Operation != null)
+				query.Where(ce => ce.Operation == Operation);
+			
+			if(SelectedTracedProperties != null || !string.IsNullOrWhiteSpace(searchByChanged)) {
+				FieldChange fieldChangeAlias = null;
+				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
+				
+				if(SelectedTracedProperties != null)
+				query.Where(() => fieldChangeAlias.Path == SelectedTracedProperties.FieldName);
+				
+				if (!string.IsNullOrWhiteSpace(searchByChanged)) {
+					var pattern = $"%{searchByChanged}%";
+					query.Where(
+						() => fieldChangeAlias.OldValue.IsLike(pattern) || fieldChangeAlias.NewValue.IsLike(pattern)
+					);
+				}
+			}
+			if(!string.IsNullOrWhiteSpace(searchById)) {
+				if(int.TryParse(searchById, out int id))
+					query.Where(ce => ce.EntityId == id);
+			}
+			if (!string.IsNullOrWhiteSpace(SearchByName)) {
+				var pattern = $"%{searchByName}%";
+				query.Where(ce => ce.EntityTitle.IsLike(pattern));
+			}
+
+			var taked = query
+				.OrderBy(x => x.ChangeTime).Desc
+				.Skip(EntitiesTaken)
+				.Take(entityBatchSize)
+				.List();
+			
+			//ChancgedEntities.AddRange(taked);
+			foreach (var item in taked)
+			{
+				ObservableChangedEntities.Add(item);
+			}
+		}
+		#endregion
+		#region  Properties
+		private List<ChangedEntity> changedEntities;
+		public List<ChangedEntity> ChangedEntities {
+			get => changedEntities;
+			set => SetField(ref changedEntities, value);
+		}
+		private ChangedEntity selectedEntity;
+		public ChangedEntity SelectedEntity {
+			get => selectedEntity;
+			set {
+				SetField(ref selectedEntity, value);
+				OnPropertyChanged(nameof(ChangesSelectedEntity));
+			}
+		}
+
+		private GenericObservableList<ChangedEntity> observableChangedEntities;
+		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
+		public virtual GenericObservableList<ChangedEntity> ObservableChangedEntities {
+			get {
+				if (observableChangedEntities == null)
+					observableChangedEntities = new GenericObservableList<ChangedEntity> (ChangedEntities);
+				return observableChangedEntities;
+			}
+		}
+		public IList<FieldChange> ChangesSelectedEntity => SelectedEntity == null ? new List<FieldChange>() : SelectedEntity.Changes;
 		#endregion
 	}
 }

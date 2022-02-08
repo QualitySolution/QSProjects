@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Data.Bindings.Collections;
+using System.Data.Bindings.Collections.Generic;
+using Gamma.GtkWidgets;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
@@ -8,9 +11,13 @@ namespace QS.HistoryLog.Views
 {
 	public partial class HistoryView : DialogViewBase<HistoryViewModel>
 	{
+		HistoryViewModel viewModel;
+
 		public HistoryView(HistoryViewModel viewModel): base(viewModel)
 		{
 			this.Build();
+			this.viewModel = viewModel;
+			yPeriodToday.Active = true;
 
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
 			ycomboUsers.Binding.AddSource(viewModel)
@@ -18,20 +25,21 @@ namespace QS.HistoryLog.Views
 				.AddBinding(v => v.SelectedUser, w => w.SelectedItem)
 				.InitializeFromSource();
 
-			ycomboObjects.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
-			ycomboObjects.Binding.AddSource(viewModel)
-				.AddBinding(v => v.ChangeObjects, w => w.ItemsList)
-				.AddBinding(v => v.SelectedChangeObject, w => w.SelectedItem)
+			ycomboEntities.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
+			ycomboEntities.Binding.AddSource(viewModel)
+				.AddBinding(v => v.TraceClasses, w => w.ItemsList)
+				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItem)
 				.InitializeFromSource();
 
 			ycomboAction.ItemsEnum = typeof(EntityChangeOperation);
 			ycomboAction.Binding.AddSource(viewModel)
-				.AddBinding(v => v.ChangeOperation, w => w.SelectedItemOrNull)
+				.AddBinding(v => v.Operation, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
 
 			ycomboFields.SetRenderTextFunc<HistoryFieldDesc>(x => x.DisplayName);
 			ycomboFields.Binding.AddSource(viewModel)
-				.AddBinding(v => v.HistoryField, w => w.ItemsList)
+				.AddBinding(v => v.TracedProperties, w => w.ItemsList)
+				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItem)
 				.InitializeFromSource();
 
 			ydateStartperiodpicker.Binding.AddSource(viewModel)
@@ -42,10 +50,8 @@ namespace QS.HistoryLog.Views
 				.AddBinding(v => v.PeriodEndDate, w => w.Date)
 				.InitializeFromSource();
 
-			yPeriodToday.Active = true;
-
 			yentryName.Binding.AddSource(viewModel)
-				.AddBinding(v => v.SsearchByName, w => w.Text)
+				.AddBinding(v => v.SearchByName, w => w.Text)
 				.InitializeFromSource();
 
 			yentryId.Binding.AddSource(viewModel)
@@ -55,8 +61,36 @@ namespace QS.HistoryLog.Views
 			yentryChanged.Binding.AddSource(viewModel)
 				.AddBinding(v => v.SearchByChanged, w => w.Text)
 				.InitializeFromSource();
-		}
 
+			ytreeChangesets.ColumnsConfig = ColumnsConfigFactory.Create<ChangedEntity>()
+				.AddColumn("Время").AddTextRenderer(x => x.ChangeTimeText)
+				.AddColumn("Пользователь").AddTextRenderer(x => x.ChangeSet.UserName)
+				.AddColumn("Действие").AddTextRenderer(x => x.OperationText)
+				.AddColumn("Тип объекта").AddTextRenderer(x => x.ObjectTitle)
+				.AddColumn("Код объекта").AddTextRenderer(x => x.EntityId.ToString())
+				.AddColumn("Имя объекта").AddTextRenderer(x => x.EntityTitle)
+				.AddColumn("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
+				.Finish();
+			// ytreeChangesets.Binding.AddSource(viewModel)
+			// 	 .AddFuncBinding(v => new GenericObservableList<ChangedEntity>(v.ChangedEntities), w => w.ItemsDataSource)
+			// 	 .InitializeFromSource();
+			ytreeChangesets.ItemsDataSource = this.viewModel.ObservableChangedEntities;	
+			ytreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
+
+			viewModel.UpdateChangedEntities();
+			ytreeFieldChange.Binding.AddSource(viewModel)
+				.AddBinding(v => v.ChangesSelectedEntity, w => w.ItemsDataSource)
+				.InitializeFromSource();
+
+			ytreeFieldChange.ColumnsConfig = ColumnsConfigFactory.Create<FieldChange>()
+				.AddColumn("Поле").AddTextRenderer(x => x.FieldTitle)
+				.AddColumn("Операция").AddTextRenderer(x => x.TypeText)
+				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
+				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
+				.Finish();
+				
+		}
+	
 		protected void OnPeriodToday(object o, EventArgs args)
 		{
 			if(yPeriodToday.Active) {
@@ -82,6 +116,30 @@ namespace QS.HistoryLog.Views
 				ydateEndperiodpicker.Date = ydateStartperiodpicker.Date.AddMonths(3).AddTicks(-1);
 			}
 
+		}
+		protected void OnBtnFilterClicked(object sender, EventArgs e)
+		{
+			yFilterbox.Visible = !yFilterbox.Visible;
+			yFilterbutton.Label = yFilterbox.Visible ? "Скрыть фильтр" : "Показать фильтр";
+		}
+		protected void OnDatacomboObjectItemSelected(object sender, EventArgs e)
+		{
+			ViewModel.UpdateChangedEntities();
+		}
+
+		void OnChangeSetSelectionChanged(object sender, EventArgs e)
+		{
+			ViewModel.SelectedEntity = (ChangedEntity)ytreeChangesets.GetSelectedObject();
+			ytreeFieldChange.ItemsDataSource =viewModel.ChangesSelectedEntity;
+		}
+
+		protected void OnUpdateChangedEntities(object sender, EventArgs e)
+		{
+			viewModel.UpdateChangedEntities();
+		}
+		protected void Vadjustment_ValueChanged(object sender, EventArgs e)
+		{
+			viewModel.UpdateChangedEntities(true);
 		}
 	}
 }

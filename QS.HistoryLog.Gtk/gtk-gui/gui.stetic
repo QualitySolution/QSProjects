@@ -24,7 +24,7 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <widget class="Gamma.GtkWidgets.yHBox" id="yhbox1">
+              <widget class="Gamma.GtkWidgets.yHBox" id="yFilterbox">
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
@@ -43,10 +43,36 @@
                         <property name="ShowSpecialStateNot">False</property>
                         <property name="UseShortTitle">False</property>
                         <property name="DefaultFirst">False</property>
+                        <signal name="EnumItemSelected" handler="OnUpdateChangedEntities" />
                       </widget>
                       <packing>
                         <property name="TopAttach">2</property>
                         <property name="BottomAttach">3</property>
+                        <property name="LeftAttach">1</property>
+                        <property name="RightAttach">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="XOptions">Fill</property>
+                        <property name="YOptions">Fill</property>
+                        <property name="XExpand">False</property>
+                        <property name="XFill">True</property>
+                        <property name="XShrink">False</property>
+                        <property name="YExpand">False</property>
+                        <property name="YFill">True</property>
+                        <property name="YShrink">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboEntities">
+                        <property name="MemberName" />
+                        <property name="IsTextCombo">False</property>
+                        <property name="Items" translatable="yes" />
+                        <property name="AddIfNotExist">False</property>
+                        <property name="DefaultFirst">False</property>
+                        <signal name="ItemSelected" handler="OnUpdateChangedEntities" />
+                      </widget>
+                      <packing>
+                        <property name="TopAttach">1</property>
+                        <property name="BottomAttach">2</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
                         <property name="AutoSize">True</property>
@@ -67,34 +93,11 @@
                         <property name="Items" translatable="yes" />
                         <property name="AddIfNotExist">False</property>
                         <property name="DefaultFirst">False</property>
+                        <signal name="ItemSelected" handler="OnUpdateChangedEntities" />
                       </widget>
                       <packing>
                         <property name="TopAttach">3</property>
                         <property name="BottomAttach">4</property>
-                        <property name="LeftAttach">1</property>
-                        <property name="RightAttach">2</property>
-                        <property name="AutoSize">True</property>
-                        <property name="XOptions">Fill</property>
-                        <property name="YOptions">Fill</property>
-                        <property name="XExpand">False</property>
-                        <property name="XFill">True</property>
-                        <property name="XShrink">False</property>
-                        <property name="YExpand">False</property>
-                        <property name="YFill">True</property>
-                        <property name="YShrink">False</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboObjects">
-                        <property name="MemberName" />
-                        <property name="IsTextCombo">False</property>
-                        <property name="Items" translatable="yes" />
-                        <property name="AddIfNotExist">False</property>
-                        <property name="DefaultFirst">False</property>
-                      </widget>
-                      <packing>
-                        <property name="TopAttach">1</property>
-                        <property name="BottomAttach">2</property>
                         <property name="LeftAttach">1</property>
                         <property name="RightAttach">2</property>
                         <property name="AutoSize">True</property>
@@ -115,6 +118,7 @@
                         <property name="Items" translatable="yes" />
                         <property name="AddIfNotExist">False</property>
                         <property name="DefaultFirst">False</property>
+                        <signal name="ItemSelected" handler="OnUpdateChangedEntities" />
                       </widget>
                       <packing>
                         <property name="LeftAttach">1</property>
@@ -369,6 +373,7 @@
                                     <property name="Date">0</property>
                                     <property name="IsEditable">True</property>
                                     <property name="AutoSeparation">False</property>
+                                    <signal name="DateChanged" handler="OnUpdateChangedEntities" />
                                   </widget>
                                   <packing>
                                     <property name="Position">0</property>
@@ -384,6 +389,7 @@
                                     <property name="Date">0</property>
                                     <property name="IsEditable">True</property>
                                     <property name="AutoSeparation">False</property>
+                                    <signal name="DateChanged" handler="OnUpdateChangedEntities" />
                                   </widget>
                                   <packing>
                                     <property name="Position">1</property>
@@ -427,6 +433,7 @@
                             <property name="CanFocus">True</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
+                            <signal name="Changed" handler="OnUpdateChangedEntities" />
                           </widget>
                           <packing>
                             <property name="TopAttach">2</property>
@@ -450,6 +457,7 @@
                             <property name="CanFocus">True</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
+                            <signal name="Changed" handler="OnUpdateChangedEntities" />
                           </widget>
                           <packing>
                             <property name="TopAttach">1</property>
@@ -473,6 +481,7 @@
                             <property name="CanFocus">True</property>
                             <property name="IsEditable">True</property>
                             <property name="InvisibleChar">•</property>
+                            <signal name="Changed" handler="OnUpdateChangedEntities" />
                           </widget>
                           <packing>
                             <property name="LeftAttach">1</property>
@@ -569,12 +578,13 @@
               </packing>
             </child>
             <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="ybutton2">
+              <widget class="Gamma.GtkWidgets.yButton" id="yFilterbutton">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">Фильтр</property>
+                <property name="Label" translatable="yes">Скрыть фильтр</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnBtnFilterClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -596,16 +606,18 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="ShadowType">In</property>
+            <property name="BorderWidth">3</property>
             <child>
               <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeChangesets">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
+                <signal name="ScrollAdjustmentsSet" handler="Vadjustment_ValueChanged" />
               </widget>
             </child>
           </widget>
           <packing>
             <property name="Position">1</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
           </packing>
         </child>
         <child>
@@ -613,7 +625,6 @@
             <property name="MemberName" />
             <property name="WidthRequest">0</property>
             <property name="HeightRequest">0</property>
-            <property name="Sensitive">False</property>
             <property name="Spacing">6</property>
             <child>
               <widget class="Gamma.GtkWidgets.yLabel" id="ylabel1">
@@ -629,15 +640,25 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.ScrolledWindow" id="scrolledwindow2">
+              <widget class="Gamma.GtkWidgets.yVBox" id="yPropertyvbox">
                 <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="ShadowType">In</property>
+                <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeFieldChange">
+                  <widget class="Gtk.ScrolledWindow" id="scrolledwindow2">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeFieldChange">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                      </widget>
+                    </child>
                   </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
                 </child>
               </widget>
               <packing>

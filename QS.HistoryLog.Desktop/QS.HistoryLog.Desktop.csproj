@@ -12,6 +12,7 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj" />
     <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj" />
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
