@@ -105,7 +105,7 @@ namespace QS.HistoryLog.ViewModels
 		public void UpdateChangedEntities(bool nextPage = false)
 		{
 			if(!nextPage) {
-				observableChangedEntities.Clear();
+				ChangedEntities.Clear();
 				EntitiesTaken = 0;
 				takenAll = false;
 			}
@@ -131,7 +131,7 @@ namespace QS.HistoryLog.ViewModels
 				query.JoinAlias(ce => ce.Changes, () => fieldChangeAlias);
 				
 				if(SelectedTracedProperties != null)
-				query.Where(() => fieldChangeAlias.Path == SelectedTracedProperties.FieldName);
+					query.Where(() => fieldChangeAlias.Path == SelectedTracedProperties.FieldName);
 				
 				if (!string.IsNullOrWhiteSpace(searchByChanged)) {
 					var pattern = $"%{searchByChanged}%";
@@ -155,11 +155,7 @@ namespace QS.HistoryLog.ViewModels
 				.Take(entityBatchSize)
 				.List();
 			
-			//ChancgedEntities.AddRange(taked);
-			foreach (var item in taked)
-			{
-				ObservableChangedEntities.Add(item);
-			}
+			ChangedEntities.AddRange(taked);
 		}
 		#endregion
 		#region  Properties
@@ -174,16 +170,6 @@ namespace QS.HistoryLog.ViewModels
 			set {
 				SetField(ref selectedEntity, value);
 				OnPropertyChanged(nameof(ChangesSelectedEntity));
-			}
-		}
-
-		private GenericObservableList<ChangedEntity> observableChangedEntities;
-		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
-		public virtual GenericObservableList<ChangedEntity> ObservableChangedEntities {
-			get {
-				if (observableChangedEntities == null)
-					observableChangedEntities = new GenericObservableList<ChangedEntity> (ChangedEntities);
-				return observableChangedEntities;
 			}
 		}
 		public IList<FieldChange> ChangesSelectedEntity => SelectedEntity == null ? new List<FieldChange>() : SelectedEntity.Changes;

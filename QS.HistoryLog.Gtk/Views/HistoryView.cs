@@ -6,6 +6,7 @@ using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
 using QS.Views.Dialog;
+using QS.Widgets.GtkUI;
 
 namespace QS.HistoryLog.Views
 {
@@ -70,11 +71,10 @@ namespace QS.HistoryLog.Views
 				.AddColumn("Код объекта").AddTextRenderer(x => x.EntityId.ToString())
 				.AddColumn("Имя объекта").AddTextRenderer(x => x.EntityTitle)
 				.AddColumn("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
-				.Finish();
-			// ytreeChangesets.Binding.AddSource(viewModel)
-			// 	 .AddFuncBinding(v => new GenericObservableList<ChangedEntity>(v.ChangedEntities), w => w.ItemsDataSource)
-			// 	 .InitializeFromSource();
-			ytreeChangesets.ItemsDataSource = this.viewModel.ObservableChangedEntities;	
+				.Finish(); 
+			 ytreeChangesets.Binding.AddSource(viewModel)
+			  	 .AddFuncBinding(v => v.ChangedEntities, w => w.ItemsDataSource)
+			  	 .InitializeFromSource();
 			ytreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 
 			viewModel.UpdateChangedEntities();
@@ -136,10 +136,12 @@ namespace QS.HistoryLog.Views
 		protected void OnUpdateChangedEntities(object sender, EventArgs e)
 		{
 			viewModel.UpdateChangedEntities();
+			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
 		}
 		protected void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
 			viewModel.UpdateChangedEntities(true);
+			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
 		}
 	}
 }
