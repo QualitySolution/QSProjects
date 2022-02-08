@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 
@@ -46,7 +47,7 @@ namespace QS.Updater.DB
 		/// <param name="source">Изначальная версия</param>
 		/// <param name="destination">Версия до которой обновится база</param>
 		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
-		public void AddUpdate(Version source, Version destination, string scriptResource)
+		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> excuteBefore = null)
 		{
 			if (source.Major == destination.Major && source.Minor == destination.Minor)
 				throw new ArgumentException($"У {nameof(source)} и {nameof(destination)} не должны быть равны первые две цифры версии X.Y");
@@ -56,6 +57,7 @@ namespace QS.Updater.DB
 				UpdateType = UpdateType.Update,
 				Source = source,
 				Destination = destination,
+				ExcuteBefore = excuteBefore,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
 			});
@@ -103,6 +105,12 @@ namespace QS.Updater.DB
 		public UpdateType UpdateType;
 		public Version Source;
 		public Version Destination;
+
+		/// <summary>
+		/// Программный метод, выполняющийся перед обновлением. Тут можно выполнить действия трудно выполнимые внутри SQL сприпта.
+		/// Пока поддеживается только в полном обновлении
+		/// </summary>
+		public Action<DbConnection> ExcuteBefore;
 
 		public string Resource;
 		public Assembly Assembly;

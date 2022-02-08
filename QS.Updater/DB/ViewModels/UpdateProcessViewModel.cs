@@ -205,6 +205,11 @@ namespace QS.Updater.DB.ViewModels
 			logger.Info(operationName);
 			CommandsLog += operationName + "\n";
 
+			if(updateScript.ExcuteBefore != null) {
+				CommandsLog += "Выполнение программный действий...\n";
+				updateScript.ExcuteBefore(SQLProvider.DbConnection);
+			}
+
 			string sql;
 			using (Stream stream = updateScript.Assembly.GetManifestResourceStream(updateScript.Resource)) {
 				if (stream == null)
