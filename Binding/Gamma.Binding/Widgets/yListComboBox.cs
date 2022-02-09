@@ -97,20 +97,67 @@ namespace Gamma.Widgets
 					SetActiveIter (iter);
 				notUserChanage = false;
 
-				Binding.FireChange (				
+				Binding.FireChange(
 					(w => w.Active),
 					(w => w.ActiveText),
-					(w => w.SelectedItem));
+					(w => w.SelectedItem),
+					(w => w.SelectedItemOrNull));
 				OnEnumItemSelected ();
 			}
 		}
+
+		public object SelectedItemOrNull {
+			get {
+				return selectedItem is SpecialComboState ? null : selectedItem;
+			}
+			set {
+				if(value == null) {
+					if(ShowSpecialStateNot)
+						SelectedItem = SpecialComboState.Not;
+					else if(ShowSpecialStateAll)
+						SelectedItem = SpecialComboState.All;
+					else
+						SelectedItem = SpecialComboState.None;
+				}
+				else
+					SelectedItem = value;
+			}
+		}
+
+		bool showSpecialStateAll;
+
+		[Browsable(true)]
+		public bool ShowSpecialStateAll {
+			get {
+				return showSpecialStateAll;
+			}
+			set {
+				showSpecialStateAll = value;
+				ResetLayout();
+			}
+		}
+
+		bool showSpecialStateNot;
+
+		[Browsable(true)]
+		public bool ShowSpecialStateNot {
+			get {
+				return showSpecialStateNot;
+			}
+			set {
+				showSpecialStateNot = value;
+				ResetLayout();
+			}
+		}
+
 
 		public yListComboBox ()
 		{
 			Binding = new BindingControler<yListComboBox> (this, new Expression<Func<yListComboBox, object>>[] {
 				(w => w.Active),
 				(w => w.ActiveText),
-				(w => w.SelectedItem)
+				(w => w.SelectedItem),
+				(w => w.SelectedItemOrNull)
 			});
 
 			comboListStore = new ListStore (typeof(string), typeof(object));
@@ -126,7 +173,14 @@ namespace Gamma.Widgets
 
 			if (ItemsList == null)
 				return;
-
+			//Fill special fields
+			if(ShowSpecialStateAll) {
+				comboListStore.AppendValues(typeof(SpecialComboState).GetField("All"));
+			}
+			if(ShowSpecialStateNot) {
+				comboListStore.AppendValues(typeof(SpecialComboState).GetField("Not"));
+			}
+			
 			foreach (var item in ItemsList) {
 				if (item == null)
 					continue;
@@ -138,7 +192,6 @@ namespace Gamma.Widgets
 					WrapValueIfNeed (item)
 				);
 			}
-
 			if (DefaultFirst && comboListStore.IterNChildren() > 0)
 				Active = 0;
 		}

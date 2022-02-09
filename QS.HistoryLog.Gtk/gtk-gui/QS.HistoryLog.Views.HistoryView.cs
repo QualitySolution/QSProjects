@@ -52,6 +52,8 @@ namespace QS.HistoryLog.Views
 
 		private global::QS.Widgets.GtkUI.DatePicker ydateEndperiodpicker;
 
+		private global::Gamma.GtkWidgets.yHBox yhbox1;
+
 		private global::Gamma.GtkWidgets.yTable ytable2;
 
 		private global::Gamma.GtkWidgets.yEntry yentryChanged;
@@ -66,9 +68,11 @@ namespace QS.HistoryLog.Views
 
 		private global::Gamma.GtkWidgets.yLabel ylabel5;
 
+		private global::Gamma.GtkWidgets.yButton ybutton1;
+
 		private global::Gamma.GtkWidgets.yButton yFilterbutton;
 
-		private global::Gtk.ScrolledWindow scrolledwindow1;
+		private global::Gtk.ScrolledWindow yscrolledwindow;
 
 		private global::Gamma.GtkWidgets.yTreeView ytreeChangesets;
 
@@ -110,7 +114,7 @@ namespace QS.HistoryLog.Views
 			// Container child ytable1.Gtk.Table+TableChild
 			this.ycomboAction = new global::Gamma.Widgets.yEnumComboBox();
 			this.ycomboAction.Name = "ycomboAction";
-			this.ycomboAction.ShowSpecialStateAll = false;
+			this.ycomboAction.ShowSpecialStateAll = true;
 			this.ycomboAction.ShowSpecialStateNot = false;
 			this.ycomboAction.UseShortTitle = false;
 			this.ycomboAction.DefaultFirst = false;
@@ -125,7 +129,7 @@ namespace QS.HistoryLog.Views
 			// Container child ytable1.Gtk.Table+TableChild
 			this.ycomboEntities = new global::Gamma.Widgets.yListComboBox();
 			this.ycomboEntities.Name = "ycomboEntities";
-			this.ycomboEntities.AddIfNotExist = false;
+			this.ycomboEntities.AddIfNotExist = true;
 			this.ycomboEntities.DefaultFirst = false;
 			this.ytable1.Add(this.ycomboEntities);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ycomboEntities]));
@@ -339,6 +343,12 @@ namespace QS.HistoryLog.Views
 			w20.Expand = false;
 			w20.Fill = false;
 			// Container child yvbox4.Gtk.Box+BoxChild
+			this.yhbox1 = new global::Gamma.GtkWidgets.yHBox();
+			this.yhbox1.WidthRequest = 0;
+			this.yhbox1.HeightRequest = 0;
+			this.yhbox1.Name = "yhbox1";
+			this.yhbox1.Spacing = 6;
+			// Container child yhbox1.Gtk.Box+BoxChild
 			this.ytable2 = new global::Gamma.GtkWidgets.yTable();
 			this.ytable2.Name = "ytable2";
 			this.ytable2.NRows = ((uint)(3));
@@ -416,19 +426,37 @@ namespace QS.HistoryLog.Views
 			w26.BottomAttach = ((uint)(3));
 			w26.XOptions = ((global::Gtk.AttachOptions)(4));
 			w26.YOptions = ((global::Gtk.AttachOptions)(4));
-			this.yvbox4.Add(this.ytable2);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.yvbox4[this.ytable2]));
-			w27.Position = 1;
+			this.yhbox1.Add(this.ytable2);
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.ytable2]));
+			w27.Position = 0;
 			w27.Expand = false;
 			w27.Fill = false;
+			// Container child yhbox1.Gtk.Box+BoxChild
+			this.ybutton1 = new global::Gamma.GtkWidgets.yButton();
+			this.ybutton1.CanFocus = true;
+			this.ybutton1.Name = "ybutton1";
+			this.ybutton1.UseUnderline = true;
+			global::Gtk.Image w28 = new global::Gtk.Image();
+			w28.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-find", global::Gtk.IconSize.Menu);
+			this.ybutton1.Image = w28;
+			this.yhbox1.Add(this.ybutton1);
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.ybutton1]));
+			w29.Position = 1;
+			w29.Expand = false;
+			w29.Fill = false;
+			this.yvbox4.Add(this.yhbox1);
+			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.yvbox4[this.yhbox1]));
+			w30.Position = 1;
+			w30.Expand = false;
+			w30.Fill = false;
 			this.yFilterbox.Add(this.yvbox4);
-			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.yFilterbox[this.yvbox4]));
-			w28.Position = 1;
-			w28.Expand = false;
-			w28.Fill = false;
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.yFilterbox[this.yvbox4]));
+			w31.Position = 1;
+			w31.Expand = false;
+			w31.Fill = false;
 			this.yvbox3.Add(this.yFilterbox);
-			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.yvbox3[this.yFilterbox]));
-			w29.Position = 0;
+			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.yvbox3[this.yFilterbox]));
+			w32.Position = 0;
 			// Container child yvbox3.Gtk.Box+BoxChild
 			this.yFilterbutton = new global::Gamma.GtkWidgets.yButton();
 			this.yFilterbutton.CanFocus = true;
@@ -436,29 +464,29 @@ namespace QS.HistoryLog.Views
 			this.yFilterbutton.UseUnderline = true;
 			this.yFilterbutton.Label = global::Mono.Unix.Catalog.GetString("Скрыть фильтр");
 			this.yvbox3.Add(this.yFilterbutton);
-			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.yvbox3[this.yFilterbutton]));
-			w30.Position = 1;
-			w30.Expand = false;
-			w30.Fill = false;
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.yvbox3[this.yFilterbutton]));
+			w33.Position = 1;
+			w33.Expand = false;
+			w33.Fill = false;
 			this.yvbox1.Add(this.yvbox3);
-			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yvbox3]));
-			w31.Position = 0;
-			w31.Expand = false;
-			w31.Fill = false;
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yvbox3]));
+			w34.Position = 0;
+			w34.Expand = false;
+			w34.Fill = false;
 			// Container child yvbox1.Gtk.Box+BoxChild
-			this.scrolledwindow1 = new global::Gtk.ScrolledWindow();
-			this.scrolledwindow1.CanFocus = true;
-			this.scrolledwindow1.Name = "scrolledwindow1";
-			this.scrolledwindow1.ShadowType = ((global::Gtk.ShadowType)(1));
-			this.scrolledwindow1.BorderWidth = ((uint)(3));
-			// Container child scrolledwindow1.Gtk.Container+ContainerChild
+			this.yscrolledwindow = new global::Gtk.ScrolledWindow();
+			this.yscrolledwindow.CanFocus = true;
+			this.yscrolledwindow.Name = "yscrolledwindow";
+			this.yscrolledwindow.ShadowType = ((global::Gtk.ShadowType)(1));
+			this.yscrolledwindow.BorderWidth = ((uint)(3));
+			// Container child yscrolledwindow.Gtk.Container+ContainerChild
 			this.ytreeChangesets = new global::Gamma.GtkWidgets.yTreeView();
 			this.ytreeChangesets.CanFocus = true;
 			this.ytreeChangesets.Name = "ytreeChangesets";
-			this.scrolledwindow1.Add(this.ytreeChangesets);
-			this.yvbox1.Add(this.scrolledwindow1);
-			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.scrolledwindow1]));
-			w33.Position = 1;
+			this.yscrolledwindow.Add(this.ytreeChangesets);
+			this.yvbox1.Add(this.yscrolledwindow);
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yscrolledwindow]));
+			w36.Position = 1;
 			// Container child yvbox1.Gtk.Box+BoxChild
 			this.yvbox2 = new global::Gamma.GtkWidgets.yVBox();
 			this.yvbox2.WidthRequest = 0;
@@ -471,10 +499,10 @@ namespace QS.HistoryLog.Views
 			this.ylabel1.Xalign = 0F;
 			this.ylabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Детали изменений:");
 			this.yvbox2.Add(this.ylabel1);
-			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.yvbox2[this.ylabel1]));
-			w34.Position = 0;
-			w34.Expand = false;
-			w34.Fill = false;
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.yvbox2[this.ylabel1]));
+			w37.Position = 0;
+			w37.Expand = false;
+			w37.Fill = false;
 			// Container child yvbox2.Gtk.Box+BoxChild
 			this.yPropertyvbox = new global::Gamma.GtkWidgets.yVBox();
 			this.yPropertyvbox.Name = "yPropertyvbox";
@@ -490,14 +518,14 @@ namespace QS.HistoryLog.Views
 			this.ytreeFieldChange.Name = "ytreeFieldChange";
 			this.scrolledwindow2.Add(this.ytreeFieldChange);
 			this.yPropertyvbox.Add(this.scrolledwindow2);
-			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.yPropertyvbox[this.scrolledwindow2]));
-			w36.Position = 0;
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.yPropertyvbox[this.scrolledwindow2]));
+			w39.Position = 0;
 			this.yvbox2.Add(this.yPropertyvbox);
-			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.yvbox2[this.yPropertyvbox]));
-			w37.Position = 1;
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.yvbox2[this.yPropertyvbox]));
+			w40.Position = 1;
 			this.yvbox1.Add(this.yvbox2);
-			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yvbox2]));
-			w38.Position = 2;
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yvbox2]));
+			w41.Position = 2;
 			this.Add(this.yvbox1);
 			if ((this.Child != null))
 			{
@@ -514,11 +542,8 @@ namespace QS.HistoryLog.Views
 			this.yPeriodMonth.Toggled += new global::System.EventHandler(this.OnPeriodMonth);
 			this.ydateStartperiodpicker.DateChanged += new global::System.EventHandler(this.OnUpdateChangedEntities);
 			this.ydateEndperiodpicker.DateChanged += new global::System.EventHandler(this.OnUpdateChangedEntities);
-			this.yentryName.Changed += new global::System.EventHandler(this.OnUpdateChangedEntities);
-			this.yentryId.Changed += new global::System.EventHandler(this.OnUpdateChangedEntities);
-			this.yentryChanged.Changed += new global::System.EventHandler(this.OnUpdateChangedEntities);
+			this.ybutton1.Clicked += new global::System.EventHandler(this.OnUpdateChangedEntities);
 			this.yFilterbutton.Clicked += new global::System.EventHandler(this.OnBtnFilterClicked);
-			this.ytreeChangesets.ScrollAdjustmentsSet += new global::Gtk.ScrollAdjustmentsSetHandler(this.Vadjustment_ValueChanged);
 		}
 	}
 }

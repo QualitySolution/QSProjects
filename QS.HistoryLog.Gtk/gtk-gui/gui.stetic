@@ -39,7 +39,7 @@
                         <property name="MemberName" />
                         <property name="IsTextCombo">False</property>
                         <property name="Items" translatable="yes" />
-                        <property name="ShowSpecialStateAll">False</property>
+                        <property name="ShowSpecialStateAll">True</property>
                         <property name="ShowSpecialStateNot">False</property>
                         <property name="UseShortTitle">False</property>
                         <property name="DefaultFirst">False</property>
@@ -112,13 +112,14 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.Widgets.yListComboBox" id="ycomboUsers">
+                      <widget class="Gamma.Widgets.yEnumComboBox" id="ycomboUsers">
                         <property name="MemberName" />
-                        <property name="IsTextCombo">False</property>
+                        <property name="IsTextCombo">True</property>
                         <property name="Items" translatable="yes" />
-                        <property name="AddIfNotExist">False</property>
+                        <property name="ShowSpecialStateAll">True</property>
+                        <property name="ShowSpecialStateNot">False</property>
+                        <property name="UseShortTitle">False</property>
                         <property name="DefaultFirst">False</property>
-                        <signal name="ItemSelected" handler="OnUpdateChangedEntities" />
                       </widget>
                       <packing>
                         <property name="LeftAttach">1</property>
@@ -421,138 +422,166 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gamma.GtkWidgets.yTable" id="ytable2">
+                      <widget class="Gamma.GtkWidgets.yHBox" id="yhbox1">
                         <property name="MemberName" />
-                        <property name="NRows">3</property>
-                        <property name="NColumns">2</property>
-                        <property name="RowSpacing">6</property>
-                        <property name="ColumnSpacing">6</property>
+                        <property name="WidthRequest">0</property>
+                        <property name="HeightRequest">0</property>
+                        <property name="Spacing">6</property>
                         <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryChanged">
+                          <widget class="Gamma.GtkWidgets.yTable" id="ytable2">
+                            <property name="MemberName" />
+                            <property name="NRows">3</property>
+                            <property name="NColumns">2</property>
+                            <property name="RowSpacing">6</property>
+                            <property name="ColumnSpacing">6</property>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yEntry" id="yentryChanged">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="IsEditable">True</property>
+                                <property name="InvisibleChar">•</property>
+                              </widget>
+                              <packing>
+                                <property name="TopAttach">2</property>
+                                <property name="BottomAttach">3</property>
+                                <property name="LeftAttach">1</property>
+                                <property name="RightAttach">2</property>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yEntry" id="yentryId">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="IsEditable">True</property>
+                                <property name="InvisibleChar">•</property>
+                              </widget>
+                              <packing>
+                                <property name="TopAttach">1</property>
+                                <property name="BottomAttach">2</property>
+                                <property name="LeftAttach">1</property>
+                                <property name="RightAttach">2</property>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yEntry" id="yentryName">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="IsEditable">True</property>
+                                <property name="InvisibleChar">•</property>
+                              </widget>
+                              <packing>
+                                <property name="LeftAttach">1</property>
+                                <property name="RightAttach">2</property>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yLabel" id="ylabel3">
+                                <property name="MemberName" />
+                                <property name="Xalign">1</property>
+                                <property name="LabelProp" translatable="yes">Поиск в имени объекта:</property>
+                              </widget>
+                              <packing>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yLabel" id="ylabel4">
+                                <property name="MemberName" />
+                                <property name="Xalign">1</property>
+                                <property name="LabelProp" translatable="yes">Поиск по коду объекта:</property>
+                              </widget>
+                              <packing>
+                                <property name="TopAttach">1</property>
+                                <property name="BottomAttach">2</property>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gamma.GtkWidgets.yLabel" id="ylabel5">
+                                <property name="MemberName" />
+                                <property name="Xalign">1</property>
+                                <property name="LabelProp" translatable="yes">Поиск в изменениях:</property>
+                              </widget>
+                              <packing>
+                                <property name="TopAttach">2</property>
+                                <property name="BottomAttach">3</property>
+                                <property name="AutoSize">True</property>
+                                <property name="XOptions">Fill</property>
+                                <property name="YOptions">Fill</property>
+                                <property name="XExpand">False</property>
+                                <property name="XFill">True</property>
+                                <property name="XShrink">False</property>
+                                <property name="YExpand">False</property>
+                                <property name="YFill">True</property>
+                                <property name="YShrink">False</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="Position">0</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gamma.GtkWidgets.yButton" id="ybutton1">
                             <property name="MemberName" />
                             <property name="CanFocus">True</property>
-                            <property name="IsEditable">True</property>
-                            <property name="InvisibleChar">•</property>
-                            <signal name="Changed" handler="OnUpdateChangedEntities" />
+                            <property name="Type">TextAndIcon</property>
+                            <property name="Icon">stock:gtk-find Menu</property>
+                            <property name="Label" translatable="yes" />
+                            <property name="UseUnderline">True</property>
+                            <signal name="Clicked" handler="OnUpdateChangedEntities" />
                           </widget>
                           <packing>
-                            <property name="TopAttach">2</property>
-                            <property name="BottomAttach">3</property>
-                            <property name="LeftAttach">1</property>
-                            <property name="RightAttach">2</property>
+                            <property name="Position">1</property>
                             <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryId">
-                            <property name="MemberName" />
-                            <property name="CanFocus">True</property>
-                            <property name="IsEditable">True</property>
-                            <property name="InvisibleChar">•</property>
-                            <signal name="Changed" handler="OnUpdateChangedEntities" />
-                          </widget>
-                          <packing>
-                            <property name="TopAttach">1</property>
-                            <property name="BottomAttach">2</property>
-                            <property name="LeftAttach">1</property>
-                            <property name="RightAttach">2</property>
-                            <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="Gamma.GtkWidgets.yEntry" id="yentryName">
-                            <property name="MemberName" />
-                            <property name="CanFocus">True</property>
-                            <property name="IsEditable">True</property>
-                            <property name="InvisibleChar">•</property>
-                            <signal name="Changed" handler="OnUpdateChangedEntities" />
-                          </widget>
-                          <packing>
-                            <property name="LeftAttach">1</property>
-                            <property name="RightAttach">2</property>
-                            <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="Gamma.GtkWidgets.yLabel" id="ylabel3">
-                            <property name="MemberName" />
-                            <property name="Xalign">1</property>
-                            <property name="LabelProp" translatable="yes">Поиск в имени объекта:</property>
-                          </widget>
-                          <packing>
-                            <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="Gamma.GtkWidgets.yLabel" id="ylabel4">
-                            <property name="MemberName" />
-                            <property name="Xalign">1</property>
-                            <property name="LabelProp" translatable="yes">Поиск по коду объекта:</property>
-                          </widget>
-                          <packing>
-                            <property name="TopAttach">1</property>
-                            <property name="BottomAttach">2</property>
-                            <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="Gamma.GtkWidgets.yLabel" id="ylabel5">
-                            <property name="MemberName" />
-                            <property name="Xalign">1</property>
-                            <property name="LabelProp" translatable="yes">Поиск в изменениях:</property>
-                          </widget>
-                          <packing>
-                            <property name="TopAttach">2</property>
-                            <property name="BottomAttach">3</property>
-                            <property name="AutoSize">True</property>
-                            <property name="XOptions">Fill</property>
-                            <property name="YOptions">Fill</property>
-                            <property name="XExpand">False</property>
-                            <property name="XFill">True</property>
-                            <property name="XShrink">False</property>
-                            <property name="YExpand">False</property>
-                            <property name="YFill">True</property>
-                            <property name="YShrink">False</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
                           </packing>
                         </child>
                       </widget>
@@ -602,7 +631,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.ScrolledWindow" id="scrolledwindow1">
+          <widget class="Gtk.ScrolledWindow" id="yscrolledwindow">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="ShadowType">In</property>
@@ -611,7 +640,6 @@
               <widget class="Gamma.GtkWidgets.yTreeView" id="ytreeChangesets">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
-                <signal name="ScrollAdjustmentsSet" handler="Vadjustment_ValueChanged" />
               </widget>
             </child>
           </widget>

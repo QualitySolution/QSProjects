@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data.Bindings.Collections;
 using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
@@ -23,14 +24,16 @@ namespace QS.HistoryLog.Views
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
 			ycomboUsers.Binding.AddSource(viewModel)
 				.AddBinding(v => v.Users, w => w.ItemsList)
-				.AddBinding(v => v.SelectedUser, w => w.SelectedItem)
+				.AddBinding(v => v.SelectedUser, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
+			ycomboUsers.ShowSpecialStateAll = true;
 
 			ycomboEntities.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
 			ycomboEntities.Binding.AddSource(viewModel)
 				.AddBinding(v => v.TraceClasses, w => w.ItemsList)
-				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItem)
+				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
+			ycomboEntities.ShowSpecialStateAll = true;
 
 			ycomboAction.ItemsEnum = typeof(EntityChangeOperation);
 			ycomboAction.Binding.AddSource(viewModel)
@@ -40,8 +43,9 @@ namespace QS.HistoryLog.Views
 			ycomboFields.SetRenderTextFunc<HistoryFieldDesc>(x => x.DisplayName);
 			ycomboFields.Binding.AddSource(viewModel)
 				.AddBinding(v => v.TracedProperties, w => w.ItemsList)
-				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItem)
+				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
+			ycomboFields.ShowSpecialStateAll = true;
 
 			ydateStartperiodpicker.Binding.AddSource(viewModel)
 				.AddBinding(v => v.PeriodStartDate, w => w.Date)
@@ -75,7 +79,9 @@ namespace QS.HistoryLog.Views
 			 ytreeChangesets.Binding.AddSource(viewModel)
 			  	 .AddFuncBinding(v => v.ChangedEntities, w => w.ItemsDataSource)
 			  	 .InitializeFromSource();
+
 			ytreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
+			yscrolledwindow.Vadjustment.ValueChanged += OnScroll;
 
 			viewModel.UpdateChangedEntities();
 			ytreeFieldChange.Binding.AddSource(viewModel)
@@ -85,8 +91,8 @@ namespace QS.HistoryLog.Views
 			ytreeFieldChange.ColumnsConfig = ColumnsConfigFactory.Create<FieldChange>()
 				.AddColumn("Поле").AddTextRenderer(x => x.FieldTitle)
 				.AddColumn("Операция").AddTextRenderer(x => x.TypeText)
-				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
-				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
+				.AddColumn("Новое значение").AddTextRenderer(x => x.NewValueText, useMarkup: true)
+				.AddColumn("Старое значение").AddTextRenderer(x => x.OldValue, useMarkup: true)
 				.Finish();
 				
 		}
@@ -138,10 +144,15 @@ namespace QS.HistoryLog.Views
 			viewModel.UpdateChangedEntities();
 			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
 		}
-		protected void Vadjustment_ValueChanged(object sender, EventArgs e)
+		protected void OnScroll(object sender, EventArgs e)
 		{
+			if(ytreeChangesets.Vadjustment.Value + ytreeChangesets.Vadjustment.PageSize < ytreeChangesets.Vadjustment.Upper)
+				return;
+
+			var lastPos = ytreeChangesets.Vadjustment.Value;
 			viewModel.UpdateChangedEntities(true);
 			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
+			ytreeChangesets.Vadjustment.Value = lastPos;
 		}
 	}
 }

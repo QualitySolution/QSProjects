@@ -8,6 +8,7 @@ using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Navigation;
 using QS.Project.Domain;
+using QS.Utilities;
 using QS.Validation;
 using QS.ViewModels.Dialog;
 
@@ -19,7 +20,6 @@ namespace QS.HistoryLog.ViewModels
 		
 		private const int entityBatchSize = 100;
 		private int EntitiesTaken = 0;
-		private bool takenAll = false;
 
 		public HistoryViewModel(
 			IUnitOfWorkFactory unitOfWorkFactory,
@@ -104,10 +104,10 @@ namespace QS.HistoryLog.ViewModels
 		#region Query
 		public void UpdateChangedEntities(bool nextPage = false)
 		{
+			DateTime startTime = DateTime.Now;
 			if(!nextPage) {
 				ChangedEntities.Clear();
 				EntitiesTaken = 0;
-				takenAll = false;
 			}
 			logger.Info("Получаем журнал изменений{0}...", EntitiesTaken > 0 ? $"({EntitiesTaken}+)" : "");
 			ChangeSet changeSetAlias = null;
@@ -156,6 +156,9 @@ namespace QS.HistoryLog.ViewModels
 				.List();
 			
 			ChangedEntities.AddRange(taked);
+
+			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
+			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0}{1} объект.", "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", ""));
 		}
 		#endregion
 		#region  Properties
