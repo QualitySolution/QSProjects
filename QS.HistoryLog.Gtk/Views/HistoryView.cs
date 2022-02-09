@@ -26,14 +26,12 @@ namespace QS.HistoryLog.Views
 				.AddBinding(v => v.Users, w => w.ItemsList)
 				.AddBinding(v => v.SelectedUser, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
-			ycomboUsers.ShowSpecialStateAll = true;
 
 			ycomboEntities.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
 			ycomboEntities.Binding.AddSource(viewModel)
 				.AddBinding(v => v.TraceClasses, w => w.ItemsList)
 				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
-			ycomboEntities.ShowSpecialStateAll = true;
 
 			ycomboAction.ItemsEnum = typeof(EntityChangeOperation);
 			ycomboAction.Binding.AddSource(viewModel)
@@ -45,7 +43,6 @@ namespace QS.HistoryLog.Views
 				.AddBinding(v => v.TracedProperties, w => w.ItemsList)
 				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItemOrNull)
 				.InitializeFromSource();
-			ycomboFields.ShowSpecialStateAll = true;
 
 			ydateStartperiodpicker.Binding.AddSource(viewModel)
 				.AddBinding(v => v.PeriodStartDate, w => w.Date)
@@ -107,19 +104,22 @@ namespace QS.HistoryLog.Views
 		protected void OnPeriodWeek(object o, EventArgs args)
 		{
 			if(yPeriodWeek.Active) {
-				ydateEndperiodpicker.Date = ydateStartperiodpicker.Date.AddDays(7).AddTicks(-1);
+				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddDays(-8).AddTicks(1);
 			}
 		}
 		protected void OnPeriodMonth(object o, EventArgs args)
 		{
 			if(yPeriodMonth.Active) {
-				ydateEndperiodpicker.Date = ydateStartperiodpicker.Date.AddMonths(1).AddTicks(-1);
+				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddMonths(-1).AddDays(-1).AddTicks(1);
 			}
 		}
 		protected void OnPeriodThreeMonth(object o, EventArgs args)
 		{
 			if(yPeriodThreeMonth.Active) {
-				ydateEndperiodpicker.Date = ydateStartperiodpicker.Date.AddMonths(3).AddTicks(-1);
+				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddMonths(-3).AddDays(-1).AddTicks(1);
 			}
 
 		}

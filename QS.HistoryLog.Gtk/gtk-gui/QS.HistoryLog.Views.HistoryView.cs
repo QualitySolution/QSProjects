@@ -14,11 +14,11 @@ namespace QS.HistoryLog.Views
 
 		private global::Gamma.Widgets.yEnumComboBox ycomboAction;
 
-		private global::Gamma.Widgets.yListComboBox ycomboEntities;
+		private global::QS.Widgets.GtkUI.SpecialListComboBox ycomboEntities;
 
-		private global::Gamma.Widgets.yListComboBox ycomboFields;
+		private global::QS.Widgets.GtkUI.SpecialListComboBox ycomboFields;
 
-		private global::Gamma.Widgets.yListComboBox ycomboUsers;
+		private global::QS.Widgets.GtkUI.SpecialListComboBox ycomboUsers;
 
 		private global::Gamma.GtkWidgets.yLabel ylabel6;
 
@@ -127,10 +127,12 @@ namespace QS.HistoryLog.Views
 			w1.XOptions = ((global::Gtk.AttachOptions)(4));
 			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.ycomboEntities = new global::Gamma.Widgets.yListComboBox();
+			this.ycomboEntities = new global::QS.Widgets.GtkUI.SpecialListComboBox();
 			this.ycomboEntities.Name = "ycomboEntities";
-			this.ycomboEntities.AddIfNotExist = true;
+			this.ycomboEntities.AddIfNotExist = false;
 			this.ycomboEntities.DefaultFirst = false;
+			this.ycomboEntities.ShowSpecialStateAll = true;
+			this.ycomboEntities.ShowSpecialStateNot = false;
 			this.ytable1.Add(this.ycomboEntities);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ycomboEntities]));
 			w2.TopAttach = ((uint)(1));
@@ -140,10 +142,12 @@ namespace QS.HistoryLog.Views
 			w2.XOptions = ((global::Gtk.AttachOptions)(4));
 			w2.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.ycomboFields = new global::Gamma.Widgets.yListComboBox();
+			this.ycomboFields = new global::QS.Widgets.GtkUI.SpecialListComboBox();
 			this.ycomboFields.Name = "ycomboFields";
 			this.ycomboFields.AddIfNotExist = false;
 			this.ycomboFields.DefaultFirst = false;
+			this.ycomboFields.ShowSpecialStateAll = true;
+			this.ycomboFields.ShowSpecialStateNot = false;
 			this.ytable1.Add(this.ycomboFields);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ycomboFields]));
 			w3.TopAttach = ((uint)(3));
@@ -153,10 +157,12 @@ namespace QS.HistoryLog.Views
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.ycomboUsers = new global::Gamma.Widgets.yListComboBox();
+			this.ycomboUsers = new global::QS.Widgets.GtkUI.SpecialListComboBox();
 			this.ycomboUsers.Name = "ycomboUsers";
 			this.ycomboUsers.AddIfNotExist = false;
 			this.ycomboUsers.DefaultFirst = false;
+			this.ycomboUsers.ShowSpecialStateAll = true;
+			this.ycomboUsers.ShowSpecialStateNot = false;
 			this.ytable1.Add(this.ycomboUsers);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ycomboUsers]));
 			w4.LeftAttach = ((uint)(1));
@@ -284,7 +290,7 @@ namespace QS.HistoryLog.Views
 			this.yPeriodWeek = new global::Gamma.GtkWidgets.yRadioButton();
 			this.yPeriodWeek.CanFocus = true;
 			this.yPeriodWeek.Name = "yPeriodWeek";
-			this.yPeriodWeek.Label = global::Mono.Unix.Catalog.GetString("За неделю");
+			this.yPeriodWeek.Label = global::Mono.Unix.Catalog.GetString("За 7 дней");
 			this.yPeriodWeek.DrawIndicator = true;
 			this.yPeriodWeek.UseUnderline = true;
 			this.yPeriodWeek.Group = this.yPeriodMonth.Group;
