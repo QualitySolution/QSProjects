@@ -101,7 +101,7 @@ namespace Gamma.Widgets
 					(w => w.Active),
 					(w => w.ActiveText),
 					(w => w.SelectedItem));
-					OnEnumItemSelected ();
+				OnEnumItemSelected ();
 			}
 		}
 

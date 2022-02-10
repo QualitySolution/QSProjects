@@ -24,13 +24,13 @@ namespace QS.HistoryLog.Views
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
 			ycomboUsers.Binding.AddSource(viewModel)
 				.AddBinding(v => v.Users, w => w.ItemsList)
-				.AddBinding(v => v.SelectedUser, w => w.SelectedItemOrNull)
+				.AddBinding(v => v.SelectedUser, w => w.SelectedItem)
 				.InitializeFromSource();
 
 			ycomboEntities.SetRenderTextFunc<HistoryObjectDesc>(x => x.DisplayName);
 			ycomboEntities.Binding.AddSource(viewModel)
 				.AddBinding(v => v.TraceClasses, w => w.ItemsList)
-				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItemOrNull)
+				.AddBinding(v => v.SelectedTraceClass, w => w.SelectedItem)
 				.InitializeFromSource();
 
 			ycomboAction.ItemsEnum = typeof(EntityChangeOperation);
@@ -41,7 +41,7 @@ namespace QS.HistoryLog.Views
 			ycomboFields.SetRenderTextFunc<HistoryFieldDesc>(x => x.DisplayName);
 			ycomboFields.Binding.AddSource(viewModel)
 				.AddBinding(v => v.TracedProperties, w => w.ItemsList)
-				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItemOrNull)
+				.AddBinding(v => v.SelectedTracedProperties, w => w.SelectedItem)
 				.InitializeFromSource();
 
 			ydateStartperiodpicker.Binding.AddSource(viewModel)
