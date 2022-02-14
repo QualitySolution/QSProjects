@@ -232,6 +232,8 @@
     <Compile Include="gtk-gui\QS.ChangePassword.Views.ChangePasswordView.cs" />
     <Compile Include="Dialog\Views\ProgressWindowView.cs" />
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
+    <Compile Include="Widgets.GtkUI\VehicleRegistrationNumberEntry.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.VehicleRegistrationNumberEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />
