@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gdk;
 using Gtk;
+using QS.Dialog.GtkUI;
 using QS.Helpers;
 using QS.Print;
 using Window = Gtk.Window;
