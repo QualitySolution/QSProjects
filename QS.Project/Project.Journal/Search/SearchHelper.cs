@@ -61,6 +61,10 @@ namespace QS.Project.Journal.Search
 							disjunctionCriterion.Add(restriction);
 						}
 					}
+					else if(typeOfPropery == typeof(Guid) || typeOfPropery == typeof(Guid?)) {
+						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
+						disjunctionCriterion.Add(likeRestriction);
+					}
 					else if (typeOfPropery == typeof(string)){
 						var likeRestriction = Restrictions.Like(Projections.Cast(NHibernateUtil.String, Projections.Property(alias)), sv, MatchMode.Anywhere);
 						disjunctionCriterion.Add(likeRestriction);

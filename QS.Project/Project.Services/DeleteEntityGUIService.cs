@@ -31,17 +31,33 @@ namespace QS.Project.Services
 		{
 			var deletion = new DeleteCore(configuration, uow);
 			deletion.BeforeDeletion = beforeDeletion;
+
 			#region Подготовка удаления
+
+			IPage<PrepareDeletionViewModel> preparePage = null;
+
 			using(var cancellation = new CancellationTokenSource()) {
-				var preparePage = navigation.OpenViewModel<PrepareDeletionViewModel, DeleteCore, CancellationTokenSource>(null, deletion, cancellation);
-				deletion.PrepareDeletion(clazz, id, cancellation.Token);
-				if(cancellation.IsCancellationRequested) {
-					deletion.Close();
-					return deletion;
+				try
+				{
+					preparePage = navigation.OpenViewModel<PrepareDeletionViewModel, DeleteCore, CancellationTokenSource>(null, deletion, cancellation);
+					deletion.PrepareDeletion(clazz, id, cancellation.Token);
+					if(cancellation.IsCancellationRequested)
+					{
+						deletion.Close();
+						return deletion;
+					}
 				}
-				navigation.ForceClosePage(preparePage, CloseSource.External);
+				finally
+				{
+					if(preparePage != null)
+					{
+						navigation.ForceClosePage(preparePage, CloseSource.External);
+					}
+				}
 			}
+
 			#endregion
+
 			#region Диалог удаления
 			if(deletion.TotalLinks > 0) {
 				var deletionPage = navigation.OpenViewModel<DeletionViewModel, DeleteCore>(null, deletion);

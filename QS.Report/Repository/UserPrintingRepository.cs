@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace QS.Report.Repository
 {
-	public class UserPrintingRepository
+	public class UserPrintingRepository : IUserPrintingRepository
 	{
 		public IList<UserSelectedPrinter> GetUserSelectedPrinters(IUnitOfWork uow, int userId) =>
 			uow.Session.QueryOver<UserSelectedPrinter>().Where(x => x.User.Id == userId).List();

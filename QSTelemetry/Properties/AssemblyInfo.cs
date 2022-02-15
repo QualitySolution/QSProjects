@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Quality Solution")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Quality Solution 2021")]
+[assembly: AssemblyCopyright("Quality Solution 2022")]
 [assembly: AssemblyTrademark("Quality Solution")]
 [assembly: AssemblyCulture("")]
 

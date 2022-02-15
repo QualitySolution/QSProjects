@@ -53,7 +53,19 @@ namespace QS.Utilities.Text
 			var parts = fullname.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			surname = parts.Length > 0 ? parts[0] : null;
 			name = parts.Length > 1 ? parts[1] : null;
-			patronymicName = parts.Length > 2 ? parts[2] : null;
+
+            if(parts.Length > 3)
+            {
+				patronymicName = $"{parts[2]} {parts[3]}";
+			}
+			else if(parts.Length > 2)
+            {
+				patronymicName = parts[2];
+			}
+			else
+            {
+				patronymicName = null;
+			}
 		}
 	}
 }
