@@ -19,7 +19,7 @@ namespace QS.HistoryLog.HibernateMapping
 			Map(x => x.NewValue).Column("new_value");
 			Map(x => x.NewId).Column("new_id");
 
-			References(x => x.Entity).Column("chaged_entity_id");
+			References(x => x.Entity).Column("changed_entity_id");
 		}
 	}
 }
