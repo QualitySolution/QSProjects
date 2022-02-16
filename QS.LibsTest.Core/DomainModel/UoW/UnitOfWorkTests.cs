@@ -1,10 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using QS.DomainModel.UoW;
-using QS.Project.Domain;
 using QS.Testing.DB;
-using QS.Test.TestDomain;
-using NHibernate;
 
 namespace QS.Test.DomainModel.UoW
 {
@@ -15,7 +12,7 @@ namespace QS.Test.DomainModel.UoW
 		public void OpenTransactionMustThrowObjectDisposedExceptionWhenSessionIsClose()
 		{
 			//arrange
-			InitialiseNHibernate(typeof(BusinessObjectTestEntity).Assembly);
+			InitialiseNHibernate();
 
 			var uow = UnitOfWorkFactory.CreateWithoutRoot();
 			UnitOfWorkBase uowBaseClass = (UnitOfWorkBase)uow;

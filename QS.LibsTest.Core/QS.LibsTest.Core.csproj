@@ -10,12 +10,17 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+        <PackageReference Include="Mono.Data.Sqlite.Core" Version="1.0.61.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="NUnit" Version="3.13.1" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
         <PackageReference Include="coverlet.collector" Version="3.0.2" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\QS.Testing\QS.Testing.csproj" />
       <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />
     </ItemGroup>
 

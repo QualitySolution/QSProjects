@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Config;
@@ -9,6 +10,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
 
+[assembly:InternalsVisibleTo("QS.LibsTest.Core")]
 namespace QS.DomainModel.UoW
 {
 	public abstract class UnitOfWorkBase : IUnitOfWorkTracked

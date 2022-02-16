@@ -66,7 +66,6 @@
     <Compile Include="Utilities\DataRangeTest.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
-    <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="Utilities\PhoneFormatterTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
@@ -126,7 +125,6 @@
     <Compile Include="TestApp\ViewModels\EmptyDialogViewModel.cs" />
     <Compile Include="TestApp\Views\SlideableView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
-    <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
     <Compile Include="ViewModels\Resove\AutofacViewModelResolverTest.cs" />
     <Compile Include="TestApp\ViewModels\EntityDialogViewModel.cs" />
     <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
@@ -145,7 +143,6 @@
     <Folder Include="DomainModel\" />
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="TestDomain\" />
-    <Folder Include="DomainModel\UoW\" />
     <Folder Include="DomainModel\NotifyChange\" />
     <Folder Include="TestNamespace\" />
     <Folder Include="TestNamespace\ViewModels\" />
@@ -184,6 +181,10 @@
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
       <Name>QS.Project.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
