@@ -52,27 +52,5 @@ namespace QS.DomainModel.UoW
 		{
 			return unitOfWorkFactory.CreateWithNewRoot<TEntity>(entity, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
-
-		/// <summary>
-		/// Создаем дочерний Unit of Work не использующий коммит при сохранении Root 
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		/// <typeparam name="TChildRootEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TChildRootEntity> CreateForChildRoot<TChildRootEntity>(TChildRootEntity childRoot, IUnitOfWork parentUoW, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
-			where TChildRootEntity : class, IDomainObject, new()
-		{
-			return unitOfWorkFactory.CreateForChildRoot<TChildRootEntity>(childRoot, parentUoW, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-		}
-
-		/// <summary>
-		/// Создаем дочерний Unit of Work с новым экземляром сущности, не использующий коммит при сохранении Root
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		/// <typeparam name="TChildRootEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TChildRootEntity> CreateWithNewChildRoot<TChildRootEntity>(IUnitOfWork parentUoW, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
-			where TChildRootEntity : class, IDomainObject, new()
-		{
-			return unitOfWorkFactory.CreateWithNewChildRoot<TChildRootEntity>(parentUoW, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-		}
 	}
 }
