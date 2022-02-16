@@ -72,6 +72,10 @@
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
       <Name>Gamma.Binding</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>

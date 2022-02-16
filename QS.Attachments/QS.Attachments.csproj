@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+      <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
       <ProjectReference Include="..\QS.Project\QS.Project.csproj" />
     </ItemGroup>
 
