@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -87,10 +87,6 @@
     <Compile Include="Tdi\ITDICloseControlTab.cs" />
     <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
     <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
-    <Compile Include="Deletion\Operations.cs" />
-    <Compile Include="Deletion\EntityDTO.cs" />
-    <Compile Include="Deletion\IDeleteCore.cs" />
-    <Compile Include="Deletion\InternalHelper.cs" />
     <Compile Include="Tdi\TabHashHelper.cs" />
     <Compile Include="Project.Domain\EntityUserPermission.cs" />
     <Compile Include="Project.HibernateMapping\EntityUserPermissionMap.cs" />
@@ -253,22 +249,7 @@
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
-    <Compile Include="Deletion\DeleteConfig.cs" />
     <Compile Include="Project.Services\DeleteEntityGUIService.cs" />
-    <Compile Include="Deletion\Configuration\DeleteConfiguration.cs" />
-    <Compile Include="Deletion\Configuration\ClearDependenceInfo.cs" />
-    <Compile Include="Deletion\Configuration\DeleteDependenceInfo.cs" />
-    <Compile Include="Deletion\Configuration\DeleteInfo.cs" />
-    <Compile Include="Deletion\Configuration\DeleteInfoHibernate.cs" />
-    <Compile Include="Deletion\Configuration\IDeleteInfo.cs" />
-    <Compile Include="Deletion\Configuration\IDeleteInfoHibernate.cs" />
-    <Compile Include="Deletion\Configuration\RemoveFromDependenceInfo.cs" />
-    <Compile Include="Deletion\Configuration\IHibernateDeleteRule.cs" />
-    <Compile Include="Deletion\ViewModels\PrepareDeletionViewModel.cs" />
-    <Compile Include="Deletion\ViewModels\DeletionProcessViewModel.cs" />
-    <Compile Include="Deletion\ViewModels\DeletionViewModel.cs" />
-    <Compile Include="Deletion\DeleteCore.cs" />
-    <Compile Include="Deletion\DeletionAutofacModule.cs" />
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
@@ -336,8 +317,6 @@
     <Folder Include="ViewModels\Control\EEVM\" />
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Control\ESVM\" />
-    <Folder Include="Deletion\Configuration\" />
-    <Folder Include="Deletion\ViewModels\" />
     <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
@@ -352,6 +331,10 @@
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>

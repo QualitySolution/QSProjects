@@ -21,6 +21,7 @@ namespace QS.Deletion
 
 		private bool isOwnerUow;
 		IUnitOfWork uow;
+		private readonly DbConnection connection;
 
 		IUnitOfWork IDeleteCore.UoW {
 			get {
@@ -36,15 +37,16 @@ namespace QS.Deletion
 
 		public DbTransaction SqlTransaction {
 			get {if(sqlTransaction == null)
-					sqlTransaction = Connection.ConnectionDB.BeginTransaction ();
+					sqlTransaction = connection?.BeginTransaction ();
 				return sqlTransaction;
 			}
 		}
 
-		public DeleteCore(DeleteConfiguration configuration, IUnitOfWork uow = null)
+		public DeleteCore(DeleteConfiguration configuration, IUnitOfWork uow = null, DbConnection connection = null)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.uow = uow;
+			this.connection = connection;
 		}
 
 		#region Свойства описывающие текущее состояние
@@ -456,4 +458,3 @@ namespace QS.Deletion
 		#endregion
 	}
 }
-
