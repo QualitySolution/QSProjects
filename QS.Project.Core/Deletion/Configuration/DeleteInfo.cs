@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using QS.DomainModel.Entity;
@@ -46,32 +46,6 @@ namespace QS.Deletion.Configuration
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
-		}
-
-		/// <summary>
-		/// Метод автоматически заполняет поля ObjectsName и ObjectName из атрибута AppellativeAttribute
-		/// в классе. И заполняет TableName из настроек NhiberNate.
-		/// </summary>
-		/// <returns>The from meta info.</returns>
-		public DeleteInfo FillFromMetaInfo()
-		{
-			if (ObjectClass == null)
-				throw new NullReferenceException ("ObjectClass должен быть заполнен.");
-			var attArray = ObjectClass.GetCustomAttributes (typeof(AppellativeAttribute), false);
-			if(attArray.Length > 0)
-			{
-				if (String.IsNullOrEmpty (ObjectsName))
-					ObjectsName = (attArray [0] as AppellativeAttribute).NominativePlural;
-			}
-
-			if (String.IsNullOrEmpty (TableName)) {
-				var maping = OrmConfig.NhConfig.GetClassMapping (ObjectClass);
-				if (maping != null) {
-					TableName = maping.Table.Name;
-				}
-			}
-
-			return this;
 		}
 
 		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
