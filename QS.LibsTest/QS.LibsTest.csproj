@@ -101,13 +101,6 @@
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
     <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
-    <Compile Include="Deletion\DeleteIntegratedTest.cs" />
-    <Compile Include="TestApp\Domain\Linked\DependDeleteItem.cs" />
-    <Compile Include="TestApp\Domain\Linked\AlsoDeleteItem.cs" />
-    <Compile Include="TestApp\Domain\Linked\RootDeleteItem.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\MainItemMap.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem2Map.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem1Map.cs" />
     <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="TestApp\Views\ModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
@@ -167,8 +160,6 @@
     <Folder Include="Utilities\Text\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Dialog\" />
-    <Folder Include="TestApp\Domain\Linked\" />
-    <Folder Include="TestApp\HibernateMapping\Linked\" />
     <Folder Include="ViewModels\Resove\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="Serial\" />
