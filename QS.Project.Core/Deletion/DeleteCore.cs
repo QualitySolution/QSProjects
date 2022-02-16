@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using NHibernate;
 using QS.Deletion.Configuration;
@@ -9,6 +10,8 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
 
+
+[assembly:InternalsVisibleTo("QS.Project.Desktop")]
 namespace QS.Deletion
 {
 	public class DeleteCore : PropertyChangedBase, IDeleteCore
