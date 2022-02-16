@@ -112,17 +112,7 @@
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
-    <Compile Include="DomainModel\NotifyChange\AppLevelChangeListener.cs" />
-    <Compile Include="DomainModel\NotifyChange\IEntityChangeWatcher.cs" />
-    <Compile Include="DomainModel\NotifyChange\NotifyConfiguration.cs" />
-    <Compile Include="DomainModel\NotifyChange\EntityChangeEvent.cs" />
-    <Compile Include="DomainModel\NotifyChange\ListnerWeakLink.cs" />
-    <Compile Include="DomainModel\NotifyChange\UowTracker.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
-    <Compile Include="DomainModel\NotifyChange\Conditions\IConditions.cs" />
-    <Compile Include="DomainModel\NotifyChange\Conditions\SelectionConditions.cs" />
-    <Compile Include="DomainModel\NotifyChange\Conditions\SingleEntityCondition.cs" />
-    <Compile Include="DomainModel\NotifyChange\Conditions\ICondition.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
     <Compile Include="Project.Journal\JournalNodeBase.cs" />
     <Compile Include="Project.Journal\IJournalAction.cs" />
@@ -285,9 +275,7 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
     <Folder Include="Tools\" />
-    <Folder Include="DomainModel\NotifyChange\" />
     <Folder Include="Project.Journal\" />
-    <Folder Include="DomainModel\NotifyChange\Conditions\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
