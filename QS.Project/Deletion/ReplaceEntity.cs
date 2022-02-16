@@ -10,7 +10,7 @@ using QS.DomainModel.UoW;
 namespace QS.Deletion
 {
 	/// <summary>
-	/// Класс позволяет заменять ссылки в базе с одной сущьности на другую.
+	/// Класс позволяет заменять ссылки в базе с одной сущности на другую.
 	/// Поиск зависимых объектов осуществляется на основании конфигурации удаления.
 	/// </summary>
 	public class ReplaceEntity
@@ -36,16 +36,16 @@ namespace QS.Deletion
 			if(toE == null)
 				throw new ArgumentNullException(nameof(toE));
 			if(fromE.Id == 0)
-				throw new ArgumentException("Сущьность должна уже иметь ID", nameof(fromE));
+				throw new ArgumentException("Сущность должна уже иметь ID", nameof(fromE));
 			if(toE.Id == 0)
-				throw new ArgumentException("Сущьность должна уже иметь ID", nameof(toE));
+				throw new ArgumentException("Сущность должна уже иметь ID", nameof(toE));
 
 			var delConfig = configuration.GetDeleteInfo<TEntity>();
 			if(delConfig == null)
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 
 			if( !(delConfig is IDeleteInfoHibernate))
-				throw new NotSupportedException($"Поддерживаются только конфигурации удаляения Hibernate.");
+				throw new NotSupportedException($"Поддерживаются только конфигурации удаления Hibernate.");
 
 			Progress?.Start(delConfig.DeleteItems.Count + delConfig.ClearItems.Count + delConfig.RemoveFromItems.Count);
 
@@ -80,7 +80,7 @@ namespace QS.Deletion
 					var coll = (collPropInfo.GetValue(item) as IList);
 					var replaced = coll.Cast<IDomainObject>().First(x => x.Id == fromE.Id);
 					var exist = coll.Cast<IDomainObject>().FirstOrDefault(x => x.Id == toE.Id);
-					//Это правило используется для колекций связий многие к многим. Объект на который заменяем уже может быть добавлен в коллекцию, добавлять его повторно не имеет смысла.
+					//Это правило используется для коллекций со связью многие к многим. Объект на который заменяем уже может быть добавлен в коллекцию, добавлять его повторно не имеет смысла.
 					coll.Remove(replaced);
 					if(exist == null)
 						coll.Add(toE);
@@ -109,7 +109,7 @@ namespace QS.Deletion
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 
 			if(!(delConfig is IDeleteInfoHibernate))
-				throw new NotSupportedException($"Поддерживаются только конфигурации удаляения Hibernate.");
+				throw new NotSupportedException($"Поддерживаются только конфигурации удаления Hibernate.");
 			
 			Progress?.Start(delConfig.DeleteItems.Count + delConfig.ClearItems.Count + delConfig.RemoveFromItems.Count);
 
