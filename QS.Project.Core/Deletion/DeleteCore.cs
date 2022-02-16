@@ -10,8 +10,9 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
 
-
 [assembly:InternalsVisibleTo("QS.Project.Desktop")]
+[assembly:InternalsVisibleTo("QS.Project.Gtk")]
+[assembly:InternalsVisibleTo("QSOrmProject")]
 namespace QS.Deletion
 {
 	public class DeleteCore : PropertyChangedBase, IDeleteCore

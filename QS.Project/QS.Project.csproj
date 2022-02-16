@@ -106,7 +106,6 @@
     <Compile Include="RepresentationModel\IJournalFilter.cs" />
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
     <Compile Include="DomainModel\Config\IEntityConfig.cs" />
-    <Compile Include="Deletion\DeleteHelper.cs" />
     <Compile Include="Project.DB\DBValueReader.cs" />
     <Compile Include="Project.DB\IMySQLProvider.cs" />
     <Compile Include="Project.DB\MySQLProvider.cs" />
@@ -221,7 +220,6 @@
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
-    <Compile Include="Project.Services\IDeleteEntityService.cs" />
     <Compile Include="Navigation\PageBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
@@ -247,7 +245,6 @@
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
     <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
-    <Compile Include="Project.Services\DeleteEntityGUIService.cs" />
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
@@ -271,7 +268,6 @@
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
-    <Compile Include="Deletion\ReplaceEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
@@ -284,7 +280,6 @@
     <Folder Include="Dialog\" />
     <Folder Include="Tdi\" />
     <Folder Include="Project.Dialogs\" />
-    <Folder Include="Deletion\" />
     <Folder Include="DomainModel\Entity\EntityPermissions\" />
     <Folder Include="Permissions\" />
     <Folder Include="RepresentationModel\" />

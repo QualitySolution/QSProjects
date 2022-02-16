@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using QS.Navigation;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
+[assembly:InternalsVisibleTo("QS.Project.Gtk")]
 namespace QS.Deletion.ViewModels
 {
 	public class DeletionProcessViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
