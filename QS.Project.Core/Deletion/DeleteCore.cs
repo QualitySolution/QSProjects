@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
+using NHibernate;
 using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -441,7 +442,7 @@ namespace QS.Deletion
 			if(IsHibernateMode)
 			{
 				var cmd = uow.Session.Connection.CreateCommand();
-				uow.Session.Transaction.Enlist(cmd);
+				uow.Session.GetCurrentTransaction().Enlist(cmd);
 				cmd.CommandText = sql;
 				InternalHelper.AddParameterWithId (cmd, id);
 				cmd.ExecuteNonQuery();
