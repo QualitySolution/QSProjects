@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using QS.DomainModel.Entity;
@@ -50,12 +50,12 @@ namespace QS.Deletion.Configuration
 
 		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
 		{
-			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
+			return GetEntitiesList(core.UoW.Session.Connection, depend.WhereStatment, masterEntity.Id);
 		}
 
 		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, ClearDependenceInfo depend, EntityDTO masterEntity)
 		{
-			return GetEntitiesList(depend.WhereStatment, masterEntity.Id);
+			return GetEntitiesList(core.UoW.Session.Connection, depend.WhereStatment, masterEntity.Id);
 		}
 
 		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, RemoveFromDependenceInfo depend, EntityDTO masterEntity)
@@ -65,13 +65,13 @@ namespace QS.Deletion.Configuration
 
 		EntityDTO IDeleteInfo.GetSelfEntity(IDeleteCore core, uint id)
 		{
-			return GetEntitiesList(String.Format("WHERE {0}.id = @id", TableName), id)[0];
+			return GetEntitiesList(core.UoW.Session.Connection, String.Format("WHERE {0}.id = @id", TableName), id)[0];
 		}
 
-		private IList<EntityDTO> GetEntitiesList(string whereStatment, uint forId)
+		private IList<EntityDTO> GetEntitiesList(DbConnection connection, string whereStatment, uint forId)
 		{
 			string sql = PreparedSqlSelect + whereStatment;
-			DbCommand cmd = Connection.ConnectionDB.CreateCommand ();
+			DbCommand cmd = connection.CreateCommand ();
 			var resultList = new List<EntityDTO> ();
 			cmd.CommandText = sql;
 			logger.Debug ("Запрос объектов по SQL={0}", cmd.CommandText);
