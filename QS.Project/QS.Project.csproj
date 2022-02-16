@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -218,7 +218,6 @@
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\AbortCreatingPageException.cs" />
     <Compile Include="Navigation\IViewModelsPageFactory.cs" />
-    <Compile Include="Project.Domain\EntityUoWBuilder.cs" />
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
@@ -239,7 +238,6 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
     <Compile Include="Navigation\NavigationManagerBase.cs" />
-    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
@@ -276,15 +274,11 @@
     <Compile Include="Deletion\ReplaceEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DomainModel\Tracking" />
-    <Folder Include="DomainModel\UoW" />
     <Folder Include="Project.Domain\" />
     <Folder Include="Project.HibernateMapping\" />
     <Folder Include="DomainModel\" />
     <Folder Include="Project.Repositories\" />
     <Folder Include="DomainModel\Entity\" />
-    <Folder Include="DomainModel\UoW\" />
-    <Folder Include="DomainModel\Tracking\" />
     <Folder Include="Project.DB\" />
     <Folder Include="Print\" />
     <Folder Include="Dialog\" />
@@ -315,7 +309,6 @@
     <Folder Include="Navigation\" />
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
-    <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Control\ESVM\" />
     <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
