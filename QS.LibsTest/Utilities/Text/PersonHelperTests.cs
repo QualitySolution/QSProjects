@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QS.Utilities.Text.Tests
+namespace QS.Test.Utilities.Text
 {
     [TestFixture(TestOf = typeof(PersonHelper))]
     public class PersonHelperTests
