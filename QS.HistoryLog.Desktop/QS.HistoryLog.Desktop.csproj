@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj" />
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
