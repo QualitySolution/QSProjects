@@ -7,7 +7,7 @@ namespace QS.Test.DomainModel.Entity
 	[TestFixture()]
 	public class BusinessObjectIntegratedTests : InMemoryDBTestFixtureBase
 	{
-		[Test(Description = "Проверяем что механизм заполения поля Uow при загрузке объекта с интерфейсом IBusinessObject, в принцепе работает.")]
+		[Test(Description = "Проверяем что механизм заполнения поля Uow при загрузке объекта с интерфейсом IBusinessObject работает.")]
 		public void IBusinessObjectFillUowPropertyTest()
 		{
 			InitialiseNHibernate(typeof(BusinessObjectTestEntity).Assembly);
