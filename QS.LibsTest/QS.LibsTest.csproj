@@ -64,7 +64,6 @@
     <Compile Include="Tdi\TabHashHelperTest.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
-    <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
@@ -130,7 +129,6 @@
     <Folder Include="DomainModel\" />
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="TestDomain\" />
-    <Folder Include="DomainModel\NotifyChange\" />
     <Folder Include="TestNamespace\" />
     <Folder Include="TestNamespace\ViewModels\" />
     <Folder Include="TestNamespace\Views\" />
