@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using QS.Utilities.Numeric;
-using QS.Widgets.GtkUI;
+
 namespace QS.Test.Utilities
 {
-	[TestFixture(TestOf = typeof(PhoneEntry))]
+	[TestFixture(TestOf = typeof(PhoneFormatter))]
 	public class PhoneFormatterTest
 	{
 		#region RussiaOnlyHyphenated

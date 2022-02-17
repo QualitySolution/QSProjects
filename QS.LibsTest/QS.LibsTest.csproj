@@ -62,12 +62,9 @@
   <ItemGroup>
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
-    <Compile Include="Utilities\Text\PersonHelperTests.cs" />
-    <Compile Include="Utilities\DataRangeTest.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
     <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
-    <Compile Include="Utilities\PhoneFormatterTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
@@ -100,7 +97,6 @@
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolverTest.cs" />
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
-    <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
     <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="TestApp\Views\ModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
@@ -123,7 +119,6 @@
     <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
-    <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
     <Compile Include="BaseParameters\ParametersServiceTest.cs" />
     <Compile Include="Serial\SerialNumberEncoderTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
@@ -132,7 +127,6 @@
   <ItemGroup>
     <Folder Include="Banks\" />
     <Folder Include="Tdi\" />
-    <Folder Include="Utilities\" />
     <Folder Include="DomainModel\" />
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="TestDomain\" />
@@ -157,7 +151,6 @@
     <Folder Include="Navigation\" />
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
-    <Folder Include="Utilities\Text\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Resove\" />
