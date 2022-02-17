@@ -169,7 +169,6 @@
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
     <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
-    <Compile Include="Validation\ServiceContainerExtensions.cs" />
     <Compile Include="Validation\ValidationContextExtensions.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />

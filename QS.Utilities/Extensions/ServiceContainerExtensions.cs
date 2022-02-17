@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Design;
 
-namespace QS.Validation
+namespace QS.Utilities.Extensions
 {
 	public static class ServiceContainerExtensions
 	{
