@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data.Bindings.Collections;
 using System.Data.Bindings.Collections.Generic;
+using System.Linq;
 using Gamma.GtkWidgets;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
@@ -14,6 +15,7 @@ namespace QS.HistoryLog.Views
 	public partial class HistoryView : DialogViewBase<HistoryViewModel>
 	{
 		HistoryViewModel viewModel;
+		private IDiffFormatter diffFormatter = new PangoDiffFormater();
 
 		public HistoryView(HistoryViewModel viewModel): base(viewModel)
 		{
@@ -88,8 +90,8 @@ namespace QS.HistoryLog.Views
 			ytreeFieldChange.ColumnsConfig = ColumnsConfigFactory.Create<FieldChange>()
 				.AddColumn("Поле").AddTextRenderer(x => x.FieldTitle)
 				.AddColumn("Операция").AddTextRenderer(x => x.TypeText)
-				.AddColumn("Новое значение").AddTextRenderer(x => x.NewValueText, useMarkup: true)
-				.AddColumn("Старое значение").AddTextRenderer(x => x.OldValue, useMarkup: true)
+				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
+				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
 				.Finish();
 				
 		}
@@ -136,6 +138,11 @@ namespace QS.HistoryLog.Views
 		void OnChangeSetSelectionChanged(object sender, EventArgs e)
 		{
 			ViewModel.SelectedEntity = (ChangedEntity)ytreeChangesets.GetSelectedObject();
+			if(ViewModel.SelectedEntity != null)
+				foreach (var fieldChange in ViewModel.SelectedEntity.Changes)
+				{
+					fieldChange.DiffFormatter = diffFormatter;
+				}
 			ytreeFieldChange.ItemsDataSource =viewModel.ChangesSelectedEntity;
 		}
 
