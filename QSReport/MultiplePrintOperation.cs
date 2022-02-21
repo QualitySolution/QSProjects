@@ -9,7 +9,6 @@ using QS.Report.Views;
 using QS.Services;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using NLog;
 
 namespace QS.Report
@@ -17,10 +16,11 @@ namespace QS.Report
 	public class MultiplePrintOperation
 	{
 		private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-		private Pages _pages;
 		private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 		private readonly IUserPrintingRepository _userPrintingRepository;
 		private readonly ICommonServices _commonServices;
+
+		private bool _isPrintingInProgress;
 
 		public MultiplePrintOperation(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices,
 			IUserPrintingRepository userPrintingRepository)
@@ -32,32 +32,62 @@ namespace QS.Report
 
 		public void Run(Pages pages)
 		{
-			_pages = pages;
-
-			var selectablePrintersViewModel =
-				new SelectablePrintersViewModel(null, _unitOfWorkFactory, _commonServices, _userPrintingRepository);
-			var selectablePrintersView = new SelectablePrintersView(selectablePrintersViewModel);
-			selectablePrintersView.WindowPosition = WindowPosition.CenterAlways;
-			selectablePrintersView.ShowAll();
-			var response = selectablePrintersView.Run();
-
-			if(response == (int)ResponseType.Ok)
+			if(_isPrintingInProgress)
 			{
-				var selectedPrinters = selectablePrintersViewModel.AllPrintersWithSelected
-					.Where(x => x.IsChecked)
-					.Select(x => x.Printer.Name);
+				return;
+			}
 
-				foreach(var printer in selectedPrinters)
+			try
+			{
+				_isPrintingInProgress = true;
+
+				var selectablePrintersViewModel =
+					new SelectablePrintersViewModel(null, _unitOfWorkFactory, _commonServices, _userPrintingRepository);
+				var selectablePrintersView = new SelectablePrintersView(selectablePrintersViewModel);
+				selectablePrintersView.WindowPosition = WindowPosition.CenterAlways;
+				selectablePrintersView.ShowAll();
+				var response = selectablePrintersView.Run();
+
+				if(response == (int)ResponseType.Ok)
 				{
-					Task.Run(() => Print(printer, selectablePrintersViewModel.UserPrintSettings, selectablePrintersViewModel.IsWindowsOs));
+					var selectedPrinters = selectablePrintersViewModel.AllPrintersWithSelected
+						.Where(x => x.IsChecked)
+						.Select(x => x.Printer.Name);
+
+					selectablePrintersView.Destroy();
+					foreach(var printer in selectedPrinters)
+					{
+						Print(printer, selectablePrintersViewModel.UserPrintSettings, pages, selectablePrintersViewModel.IsWindowsOs);
+					}
+				}
+				else
+				{
+					selectablePrintersView.Destroy();
+				}
+			}
+			finally
+			{
+				_isPrintingInProgress = false;
+			}
+		}
+
+		private static void Print(string printer, UserPrintSettings userPrintSettings, Pages pages, bool isWindowsOs)
+		{
+			void HandlePrintBeginPrint(object o, BeginPrintArgs args)
+			{
+				var printing = (PrintOperation)o;
+				printing.NPages = pages.Count;
+			}
+
+			void HandlePrintDrawPage(object o, DrawPageArgs args)
+			{
+				using(Cairo.Context g = args.Context.CairoContext)
+				{
+					var render = new RenderCairo(g);
+					render.RunPage(pages[args.PageNr]);
 				}
 			}
 
-			selectablePrintersView.Destroy();
-		}
-
-		private void Print(string printer, UserPrintSettings userPrintSettings, bool isWindowsOs)
-		{
 			PrintOperation printOperation = null;
 			PrintOperationResult result;
 
@@ -100,22 +130,7 @@ namespace QS.Report
 			}
 		}
 
-		private void HandlePrintBeginPrint(object o, BeginPrintArgs args)
-		{
-			var printing = (PrintOperation)o;
-			printing.NPages = _pages.Count;
-		}
-
-		private void HandlePrintDrawPage(object o, DrawPageArgs args)
-		{
-			using(Cairo.Context g = args.Context.CairoContext)
-			{
-				RenderCairo render = new RenderCairo(g);
-				render.RunPage(_pages[args.PageNr]);
-			}
-		}
-
-		private void ShowPrinterQueue(string printerName)
+		private static void ShowPrinterQueue(string printerName)
 		{
 			System.Diagnostics.Process process = new System.Diagnostics.Process();
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
