@@ -24,28 +24,23 @@ namespace QSBanks
 			}
 		}
 
-		IParentReference<Account> parentReference;
+		public void SetAccountOwner(IUnitOfWork uow, IAccountOwner accountOwner)
+        {
+			UoW = uow;
+			this.accountOwner = accountOwner;
+			UpdateAccounts();
+		}
 
-		public IParentReference<Account> ParentReference {
-			set {
-				parentReference = value;
-				if (parentReference != null) {
-					UoW = parentReference.ParentUoW;
-					datatreeviewAccounts.ColumnsConfig = Gamma.ColumnConfig.FluentColumnsConfig<Account>.Create ()
-						.AddColumn ("Основной").AddToggleRenderer(node => node.IsDefault).Editing().Radio()
-						.AddColumn ("Псевдоним").SetDataProperty (node => node.Name)
-						.AddColumn ("В банке").AddTextRenderer (a => a.InBank != null ? a.InBank.Name : "нет")
-						.AddColumn ("Номер").AddTextRenderer (a => a.Number)
-						.RowCells ().AddSetter<CellRendererText> ((c, a) => c.Foreground = a.Inactive ? "grey" : "black")
-						.Finish ();
-					if (!(parentReference.ParentObject is IAccountOwner)) {
-						throw new ArgumentException (String.Format ("Родительский объект в parentReference должен реализовывать интерфейс {0}", typeof(IAccountOwner)));
-					}
-					accountOwner = (IAccountOwner)parentReference.ParentObject;
-					datatreeviewAccounts.ItemsDataSource = accountOwner.ObservableAccounts;
-				}
-			}
-			get { return parentReference; }
+		private void UpdateAccounts()
+        {
+			datatreeviewAccounts.ColumnsConfig = Gamma.ColumnConfig.FluentColumnsConfig<Account>.Create()
+				.AddColumn("Основной").AddToggleRenderer(node => node.IsDefault).Editing().Radio()
+				.AddColumn("Псевдоним").SetDataProperty(node => node.Name)
+				.AddColumn("В банке").AddTextRenderer(a => a.InBank != null ? a.InBank.Name : "нет")
+				.AddColumn("Номер").AddTextRenderer(a => a.Number)
+				.RowCells().AddSetter<CellRendererText>((c, a) => c.Foreground = a.Inactive ? "grey" : "black")
+				.Finish();
+			datatreeviewAccounts.ItemsDataSource = accountOwner.ObservableAccounts;
 		}
 
 		public AccountsView ()
@@ -82,8 +77,12 @@ namespace QSBanks
 			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
-				
-			AccountDlg dlg = new AccountDlg (ParentReference);
+			Account newAccount = new Account();
+			AccountDlg dlg = new AccountDlg (UoW, newAccount);
+			dlg.AccountSaved += (s, savedAccount) =>
+			{
+				accountOwner.ObservableAccounts.Add(savedAccount);
+			};
 			mytab.TabParent.AddSlaveTab (mytab, dlg);
 		}
 
@@ -92,8 +91,12 @@ namespace QSBanks
 			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
-
-			AccountDlg dlg = new AccountDlg (ParentReference, datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+			Account selectedAccount = datatreeviewAccounts.GetSelectedObjects()[0] as Account;
+            if(selectedAccount == null)
+            {
+				return;
+            }
+			AccountDlg dlg = new AccountDlg(UoW, selectedAccount);
 			mytab.TabParent.AddSlaveTab (mytab, dlg);
 		}
 
@@ -110,7 +113,7 @@ namespace QSBanks
 			ITdiTab mytab = DialogHelper.FindParentTab (this);
 			if (mytab == null)
 				return;
-			
+
 			if (OrmMain.DeleteObject (typeof(Account), (datatreeviewAccounts.GetSelectedObjects () [0] as Account).Id))
 				accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}

@@ -73,14 +73,19 @@ namespace QS.Banks.Domain
 				}
 			}
 		}
-		
+
 		public virtual string Title => "Счет: " + Name;
 
 		/// <summary>
 		/// Ссылка на владельца счета. Необходима для возможности установки счета по умолчанию.
 		/// </summary>
 		public virtual IAccountOwner Owner { get; set; }
-		
+
+		public Account CreateCopy()
+        {
+			return (Account)this.MemberwiseClone();
+        }
+
 		#endregion
 
 		#region IValidatableObject implementation
