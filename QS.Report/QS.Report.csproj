@@ -41,9 +41,11 @@
     <Compile Include="Domain\UserSelectedPrinter.cs" />
     <Compile Include="HibernateMapping\UserPrintSettingsMap.cs" />
     <Compile Include="HibernateMapping\UserSelectedPrinterMap.cs" />
+    <Compile Include="IReportPrinter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportInfo.cs" />
     <Compile Include="IPrintableRDLDocument.cs" />
+    <Compile Include="Repository\IUserPrintingRepository.cs" />
     <Compile Include="Repository\UserPrintingRepository.cs" />
     <Compile Include="ViewModels\RdlViewerViewModel.cs" />
     <Compile Include="RDLReportsHashGenerator.cs" />

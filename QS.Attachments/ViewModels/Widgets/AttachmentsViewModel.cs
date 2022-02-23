@@ -8,6 +8,7 @@ using QS.Attachments.Factories;
 using QS.Commands;
 using QS.Project.Repositories;
 using QS.Project.Services;
+using QS.Project.Services.FileDialog;
 using QS.ViewModels;
 
 namespace QS.Attachments.ViewModels.Widgets
@@ -17,7 +18,7 @@ namespace QS.Attachments.ViewModels.Widgets
 		private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 		private const int _maxFileNameLength = 45;
 		private readonly IAttachmentFactory _attachmentFactory;
-		private readonly IFilePickerService _filePickerService;
+		private readonly IFileDialogService _fileDialogService;
 		private readonly IScanDialogService _scanDialogService;
 		private readonly int _currentUserId;
 		private Attachment _selectedAttachment;
@@ -27,16 +28,16 @@ namespace QS.Attachments.ViewModels.Widgets
 		private DelegateCommand _saveCommand;
 		private DelegateCommand _deleteCommand;
 		private DelegateCommand _scanCommand;
-		
+
 		public AttachmentsViewModel(
 			IAttachmentFactory attachmentFactory,
-			IFilePickerService filePickerService,
+			IFileDialogService fileDialogService,
 			IScanDialogService scanDialogService,
 			int currentUserId,
 			IList<Attachment> attachments)
 		{
 			_attachmentFactory = attachmentFactory ?? throw new ArgumentNullException(nameof(attachmentFactory));
-			_filePickerService = filePickerService ?? throw new ArgumentNullException(nameof(filePickerService));
+			_fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
 			_scanDialogService = scanDialogService ?? throw new ArgumentNullException(nameof(scanDialogService));
 			_currentUserId = currentUserId;
 			Attachments = attachments;
@@ -67,11 +68,17 @@ namespace QS.Attachments.ViewModels.Widgets
 		public DelegateCommand AddCommand => _addCommand ?? (_addCommand = new DelegateCommand(
 				() =>
 				{
-					if(_filePickerService.OpenAttachFilePicker(out string filePath))
+					var dialogSettings = new DialogSettings();
+					dialogSettings.SelectMultiple = false;
+					dialogSettings.Title = "Открыть";
+					dialogSettings.FileFilters.Add(new DialogFileFilter("Все файлы (*.*)", "*.*"));
+
+					var result = _fileDialogService.RunOpenFileDialog(dialogSettings);
+					if (result.Successful)
 					{
 						_logger.Info("Чтение файла...");
-						byte[] file = File.ReadAllBytes(filePath);
-						var attachment = _attachmentFactory.CreateNewAttachment(GetValidFileName(filePath), file);
+						byte[] file = File.ReadAllBytes(result.Path);
+						var attachment = _attachmentFactory.CreateNewAttachment(GetValidFileName(result.Path), file);
 						Attachments.Add(attachment);
 						_logger.Info("Ok");
 					}
@@ -106,10 +113,14 @@ namespace QS.Attachments.ViewModels.Widgets
 		public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(
 				() =>
 				{
-					if(_filePickerService.OpenSaveFilePicker(SelectedAttachment.FileName, out string filePath))
+					var dialogSettings = new DialogSettings();
+					dialogSettings.Title = "Сохранить";
+					dialogSettings.FileName = SelectedAttachment.FileName;
+					var result = _fileDialogService.RunSaveFileDialog(dialogSettings);
+					if (result.Successful)
 					{
 						_logger.Info("Сохраняем файл на диск...");
-						File.WriteAllBytes(filePath, SelectedAttachment.ByteFile);
+						File.WriteAllBytes(result.Path, SelectedAttachment.ByteFile);
 						_logger.Info("Ок");
 					}
 				}

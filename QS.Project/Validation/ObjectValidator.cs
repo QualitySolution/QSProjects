@@ -27,13 +27,13 @@ namespace QS.Validation
 		}
 
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
-		public bool Validate(object validatableObject, ValidationContext validationContext = null)
+		public bool Validate(object validatableObject, ValidationContext validationContext = null, bool showValidationResults = true)
 		{
-			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)});
+			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)}, showValidationResults);
 		}
 
 		/// <returns>Возвращает <see langword="true"/> если объекты корректны.</returns>
-		public bool Validate(IEnumerable<ValidationRequest> requests)
+		public bool Validate(IEnumerable<ValidationRequest> requests, bool showValidationResults = true)
 		{
 			results.Clear();
 
@@ -44,7 +44,7 @@ namespace QS.Validation
 				isValid &= isItemValid;
 			}
 
-			if(!isValid && validationViewFactory != null) {
+			if(!isValid && showValidationResults && validationViewFactory != null) {
 				IValidationView view = validationViewFactory.CreateValidationView(results);
 				if(view == null) {
 					throw new InvalidOperationException("Невозможно создать представление результатов валидации");

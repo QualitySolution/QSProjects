@@ -72,6 +72,8 @@ namespace QS.Navigation
 				gtkPage.GtkDialog.TypeHint = Gdk.WindowTypeHint.Normal;
 			if(windowSettings != null && !windowSettings.Resizable)
 				gtkPage.GtkDialog.Resizable = false;
+			if(windowSettings != null && !windowSettings.Deletable)
+				gtkPage.GtkDialog.Deletable = false;
 			gtkPage.GtkView.Show();
 			gtkPage.GtkDialog.Show();
 			gtkPage.GtkDialog.DeleteEvent += GtkDialog_DeleteEvent;
