@@ -28,6 +28,8 @@ namespace QS.Widgets.GtkUI
 
 		private bool entryChangedByUser;
 
+		private Func<object, string> _objectDisplayFunc;
+
 		public BindingControler<EntityViewModelEntry> Binding { get; private set; }
 		public bool CanEditReference { get; set; } = true;
 		private ListStore completionListStore;
@@ -193,7 +195,11 @@ namespace QS.Widgets.GtkUI
 				return;
 			}
 
-			InternalSetEntryText(DomainHelper.GetTitle(Subject));
+			var title = _objectDisplayFunc == null
+				? DomainHelper.GetTitle(Subject)
+				: _objectDisplayFunc(Subject);
+
+			InternalSetEntryText(title);
 		}
 
 		private void InternalSetEntryText(string text)
@@ -455,6 +461,12 @@ namespace QS.Widgets.GtkUI
 			
 			base.OnDestroyed();
 			_isDisposed = true;
+		}
+
+		public void SetObjectDisplayFunc<TObject>(Expression<Func<TObject, string>> expDisplayFunc) where TObject : class
+		{
+			var compiledDisplayFunc = expDisplayFunc.Compile();
+			_objectDisplayFunc = (obj) => compiledDisplayFunc(obj as TObject);
 		}
 	}
 }
