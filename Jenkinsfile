@@ -33,7 +33,7 @@ node {
     stage('Test net4.x'){
        try {
             def PACKAGES_LOCATION = "${JENKINS_HOME}/.nuget/packages"
-            sh "xvfb-run mono ${PACKAGES_LOCATION}/nunit.consolerunner/3.15.0/tools/nunit3-console.exe QSProjects/QS.LibsTest/bin/Debug/QS.LibsTest.dll"
+            sh "xvfb-run mono ${PACKAGES_LOCATION}/nunit.consolerunner/3.12.0/tools/nunit3-console.exe QSProjects/QS.LibsTest/bin/Debug/QS.LibsTest.dll"
        } catch (e) {}
        finally{
            nunit testResultsPattern: 'TestResult.xml'
