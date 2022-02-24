@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using NLog;
 
@@ -51,7 +52,7 @@ namespace QS.BaseParameters
 			string sql;
 			if (All.ContainsKey (name))
 			{
-				if(All[name] == value.ToString())
+				if(All[name] == ConvertToString(value))
 					return;
 
 				sql = "UPDATE base_parameters SET str_value = @str_value WHERE name = @name";
@@ -68,11 +69,11 @@ namespace QS.BaseParameters
 			cmd.Parameters.Add (paramName);
 			DbParameter paramValue = cmd.CreateParameter ();
 			paramValue.ParameterName = "@str_value";
-			paramValue.Value = value.ToString();
+			paramValue.Value = ConvertToString(value);
 			cmd.Parameters.Add (paramValue);
 			cmd.ExecuteNonQuery ();
 
-			All [name] = value.ToString();
+			All [name] = ConvertToString(value);
 			logger.Debug ("Ок");
 		}
 
@@ -178,9 +179,19 @@ namespace QS.BaseParameters
 
 			TypeConverter typeConverter = TypeDescriptor.GetConverter(type);
 			if (typeConverter == null)
-				throw new NotSupportedException($"Конвертация значения в {type} не поддеживается.");
+				throw new NotSupportedException($"Конвертация значения в {type} не поддерживается.");
 
-			return typeConverter.ConvertFromString(value);
+			return typeConverter.ConvertFromInvariantString(value);
+		}
+		
+		private string ConvertToString(object value)
+		{
+			if (value is string) {
+				return (string)value;
+			}
+
+			TypeConverter typeConverter = TypeDescriptor.GetConverter(value.GetType());
+			return typeConverter.ConvertToInvariantString(value);
 		}
 
 		#endregion
