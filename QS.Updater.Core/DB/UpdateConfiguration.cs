@@ -26,7 +26,8 @@ namespace QS.Updater.DB
 		/// <param name="source">Изначальная версия</param>
 		/// <param name="destination">Версия до которой обновится база</param>
 		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
-		public void AddMicroUpdate(Version source, Version destination, string scriptResource)
+		/// <param name="excuteBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
+		public void AddMicroUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> excuteBefore = null)
 		{
 			if (source == destination)
 				throw new ArgumentException($"{nameof(source)} и {nameof(destination)} не должны быть равны");
@@ -35,6 +36,7 @@ namespace QS.Updater.DB
 				UpdateType = UpdateType.MicroUpdate,
 				Source = source,
 				Destination = destination,
+				ExcuteBefore = excuteBefore,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
 			});
@@ -47,6 +49,7 @@ namespace QS.Updater.DB
 		/// <param name="source">Изначальная версия</param>
 		/// <param name="destination">Версия до которой обновится база</param>
 		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
+		/// <param name="excuteBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
 		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> excuteBefore = null)
 		{
 			if (source.Major == destination.Major && source.Minor == destination.Minor)

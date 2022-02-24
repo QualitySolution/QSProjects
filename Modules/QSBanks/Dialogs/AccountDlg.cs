@@ -5,55 +5,56 @@ using Gtk;
 using NHibernate.Criterion;
 using NLog;
 using QS.Banks.Domain;
+using QS.Dialog.Gtk;
+using QS.DomainModel.UoW;
 using QS.Validation;
-using QSOrmProject;
 
 namespace QSBanks
 {
-	public partial class AccountDlg : QS.Dialog.Gtk.EntityDialogBase<Account>
+	public partial class AccountDlg : TdiTabBase
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 
-		public IParentReference<Account> ParentReference { set; get; }
+        private readonly IUnitOfWork uow;
+        private Account resultAccount = null;
+		private Account entity = null;
 
-		public AccountDlg (IParentReference<Account> parentReference)
+		public event EventHandler<Account> AccountSaved;
+
+		public AccountDlg (IUnitOfWork uow, Account account)
 		{
-			this.Build ();
-			ParentReference = parentReference;
-			UoWGeneric = ParentReference.CreateUoWForNewItem ();
-			ConfigureDlg ();
+			this.Build();
+            this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
+            resultAccount = account;
+			entity = account.CreateCopy();
+			ConfigureDlg();
+
+            buttonSave.Clicked += ButtonSave_Clicked;
+            buttonCancel.Clicked += ButtonCancel_Clicked;
 		}
 
-		public AccountDlg (IParentReference<Account> parentReference, Account sub)
-		{
-			this.Build ();
-			ParentReference = parentReference;
-			UoWGeneric = ParentReference.CreateUoWForItem (sub);
-			ConfigureDlg ();
-		}
-
-		private void ConfigureDlg ()
+        private void ConfigureDlg ()
 		{
 			dataentryrefBank.SubjectType = typeof(Bank);
 			dataentryNumber.ValidationMode = QSWidgetLib.ValidationType.numeric;
-			dataentryNumber.Binding.AddBinding(Entity, e => e.Number, w => w.Text).InitializeFromSource();
-			dataentryrefBank.ItemsCriteria = UoW.Session.CreateCriteria<Bank> ()
+			dataentryNumber.Binding.AddBinding(entity, e => e.Number, w => w.Text).InitializeFromSource();
+			dataentryrefBank.ItemsCriteria = uow.Session.CreateCriteria<Bank> ()
 				.Add (Restrictions.Eq ("Deleted", false));
-			ycomboboxCorAccount.Binding.AddBinding(Entity, e => e.BankCorAccount, w => w.SelectedItem).InitializeFromSource();
+			ycomboboxCorAccount.Binding.AddBinding(entity, e => e.BankCorAccount, w => w.SelectedItem).InitializeFromSource();
 			ycomboboxCorAccount.RenderTextFunc = (x) => x is CorAccount ? (x as CorAccount).CorAccountNumber : "";
-			ycomboboxCorAccount.ItemsList = Entity.InBank?.ObservableCorAccounts;
-			ycomboboxCorAccount.SelectedItem = Entity.BankCorAccount;
-			dataentryrefBank.Binding.AddBinding(Entity, e => e.InBank, w => w.Subject).InitializeFromSource();
-			Entity.PropertyChanged += OnAccountPropertyChanged;
+			ycomboboxCorAccount.ItemsList = entity.InBank?.ObservableCorAccounts;
+			ycomboboxCorAccount.SelectedItem = entity.BankCorAccount;
+			dataentryrefBank.Binding.AddBinding(entity, e => e.InBank, w => w.Subject).InitializeFromSource();
+			entity.PropertyChanged += OnAccountPropertyChanged;
 
-			dataentryName.Binding.AddBinding(Entity, e => e.Name, w => w.Text).InitializeFromSource();
-			Entity.PropertyChanged += Entity_PropertyChanged;
+			dataentryName.Binding.AddBinding(entity, e => e.Name, w => w.Text).InitializeFromSource();
+			entity.PropertyChanged += Entity_PropertyChanged;
 			UpdateBankInfo();
 		}
 
 		void Entity_PropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			if(e.PropertyName ==  Entity.GetPropertyName(x => x.InBank))
+			if(e.PropertyName == entity.GetPropertyName(x => x.InBank))
 			{
 				UpdateBankInfo();
 			}
@@ -61,36 +62,61 @@ namespace QSBanks
 
 		void UpdateBankInfo()
 		{
-			if(Entity.InBank == null)
+			if(entity.InBank == null)
 				datalabelBik.Text = datalabelRegion.Text = datalabelCity.Text = String.Empty;
 			else
 			{
-				datalabelBik.Text = Entity.InBank.Bik;
-				datalabelRegion.Text = Entity.InBank.RegionText;
-				datalabelCity.Text = Entity.InBank.City;
-				ycomboboxCorAccount.ItemsList = Entity.InBank.ObservableCorAccounts;
-				Entity.BankCorAccount = Entity.InBank.DefaultCorAccount;
-				ycomboboxCorAccount.SelectedItem = Entity.BankCorAccount;
+				datalabelBik.Text = entity.InBank.Bik;
+				datalabelRegion.Text = entity.InBank.RegionText;
+				datalabelCity.Text = entity.InBank.City;
+				ycomboboxCorAccount.ItemsList = entity.InBank.ObservableCorAccounts;
+				entity.BankCorAccount = entity.InBank.DefaultCorAccount;
+				ycomboboxCorAccount.SelectedItem = entity.BankCorAccount;
 			}
 		}
 
 		void OnAccountPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == PropertyUtil.GetName<Account> (a => a.InBank)) {
-				labelInactive.Markup = Entity.Inactive ? "<span foreground=\"red\">Данный счет находится в более не существующем банке.</span>" : "";
-				labelInactive.Visible = Entity.Inactive;
+				labelInactive.Markup = entity.Inactive ? "<span foreground=\"red\">Данный счет находится в более не существующем банке.</span>" : "";
+				labelInactive.Visible = entity.Inactive;
 			}
 		}
 
-		public override bool Save ()
+		private void ButtonSave_Clicked(object sender, EventArgs e)
 		{
-			var valid = new QSValidator<Account> (Entity);
+            if(Save())
+            {
+				OnCloseTab(false, QS.Navigation.CloseSource.Save);
+            }
+		}
+
+		public bool Save()
+		{
+			var valid = new QSValidator<Account> (entity);
 			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
 				return false;
 			logger.Info ("Сохраняем счет организации...");
-			UoWGeneric.Save ();
+			SetToResultAccount();
+			AccountSaved?.Invoke(this, resultAccount);
 			logger.Info ("Ok");
 			return true;
+		}
+
+		private void SetToResultAccount()
+        {
+			resultAccount.Name = entity.Name;
+			resultAccount.Number = entity.Number;
+			resultAccount.InBank = entity.InBank;
+			resultAccount.BankCorAccount = entity.BankCorAccount;
+			resultAccount.Code1c = entity.Code1c;
+			resultAccount.IsDefault = entity.IsDefault;
+			resultAccount.Inactive = entity.Inactive;
+		}
+
+		private void ButtonCancel_Clicked(object sender, EventArgs e)
+		{
+			OnCloseTab(false, QS.Navigation.CloseSource.Cancel);
 		}
 	}
 }

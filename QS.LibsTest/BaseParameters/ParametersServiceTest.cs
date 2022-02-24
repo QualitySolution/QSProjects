@@ -72,7 +72,7 @@ namespace QS.Test.BaseParameters
 		{
 			using (var connection = new SqliteConnection(connectionString)) {
 				MakeTable(connection);
-				connection.Execute(sqlInsert, new { name = "PI", str_value = "3,14159265359" });
+				connection.Execute(sqlInsert, new { name = "PI", str_value = "3.14159265359" });
 				dynamic parameters = new ParametersService(connection);
 				Assert.That(parameters.PI(typeof(double)), Is.EqualTo(3.14159265359d));
 			}
@@ -83,7 +83,7 @@ namespace QS.Test.BaseParameters
 		{
 			using (var connection = new SqliteConnection(connectionString)) {
 				MakeTable(connection);
-				connection.Execute(sqlInsert, new { name = "USD", str_value = "76,76" });
+				connection.Execute(sqlInsert, new { name = "USD", str_value = "76.76" });
 				dynamic parameters = new ParametersService(connection);
 				Assert.That(parameters.USD(typeof(decimal)), Is.EqualTo(76.76m));
 			}
@@ -165,7 +165,7 @@ namespace QS.Test.BaseParameters
 				parameters.VodkaPrice = 2.87m;
 				Assert.That(parameters.VodkaPrice(typeof(decimal)), Is.EqualTo(2.87m));
 				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "VodkaPrice" });
-				Assert.That(inDB, Is.EqualTo("2,87"));
+				Assert.That(inDB, Is.EqualTo("2.87"));
 			}
 		}
 
