@@ -46,7 +46,7 @@
     <Compile Include="TelemetryStatistic.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="NLog" Version="4.7.14" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
