@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <Company>Quality Solution</Company>
+        <ProjectGuid>{3D3D6700-C625-46C5-9702-5F010A8DD035}</ProjectGuid>
     </PropertyGroup>
 
     <ItemGroup>
