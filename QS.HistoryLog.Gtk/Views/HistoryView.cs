@@ -1,14 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Data.Bindings.Collections;
-using System.Data.Bindings.Collections.Generic;
-using System.Linq;
 using Gamma.GtkWidgets;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
 using QS.Views.Dialog;
-using QS.Widgets.GtkUI;
 
 namespace QS.HistoryLog.Views
 {
@@ -93,7 +88,6 @@ namespace QS.HistoryLog.Views
 				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
 				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
 				.Finish();
-				
 		}
 	
 		protected void OnPeriodToday(object o, EventArgs args)
@@ -123,7 +117,6 @@ namespace QS.HistoryLog.Views
 				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddMonths(-3).AddDays(-1).AddTicks(1);
 			}
-
 		}
 		protected void OnBtnFilterClicked(object sender, EventArgs e)
 		{
@@ -134,7 +127,6 @@ namespace QS.HistoryLog.Views
 		{
 			ViewModel.UpdateChangedEntities();
 		}
-
 		void OnChangeSetSelectionChanged(object sender, EventArgs e)
 		{
 			ViewModel.SelectedEntity = (ChangedEntity)ytreeChangesets.GetSelectedObject();
@@ -145,7 +137,6 @@ namespace QS.HistoryLog.Views
 				}
 			ytreeFieldChange.ItemsDataSource =viewModel.ChangesSelectedEntity;
 		}
-
 		protected void OnUpdateChangedEntities(object sender, EventArgs e)
 		{
 			viewModel.UpdateChangedEntities();

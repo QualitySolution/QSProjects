@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
+using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Navigation;
@@ -46,11 +47,10 @@ namespace QS.HistoryLog.ViewModels
 			set => SetField(ref traceClasses, value);
 		}
 		private HistoryObjectDesc selectedTraceClass;
+		[PropertyChangedAlso(nameof(TracedProperties))]
 		public HistoryObjectDesc SelectedTraceClass {
 			get => selectedTraceClass;
-			set { SetField(ref selectedTraceClass, value);
-					OnPropertyChanged(nameof(TracedProperties));
-			}
+			set => SetField(ref selectedTraceClass, value);
 		}
 		private EntityChangeOperation? operation;
 		public EntityChangeOperation? Operation {
@@ -157,7 +157,7 @@ namespace QS.HistoryLog.ViewModels
 			ChangedEntities.AddRange(taked);
 
 			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
-			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0}{1} объект.", "Загружено изменение {0}{1} объекта.", "Загружено изменение {0}{1} объектов.", ""));
+			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0} объект.", "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов."));
 		}
 		#endregion
 		#region  Properties

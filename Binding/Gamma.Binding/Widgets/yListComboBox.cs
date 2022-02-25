@@ -104,9 +104,7 @@ namespace Gamma.Widgets
 				OnEnumItemSelected ();
 			}
 		}
-
 		
-
 		public yListComboBox ()
 		{
 			Binding = new BindingControler<yListComboBox> (this, new Expression<Func<yListComboBox, object>>[] {
@@ -190,6 +188,5 @@ namespace Gamma.Widgets
 			}
 		}
 	}
-
 }
 
