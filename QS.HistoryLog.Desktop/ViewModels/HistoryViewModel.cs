@@ -18,7 +18,7 @@ namespace QS.HistoryLog.ViewModels
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		
-		private const int entityBatchSize = 100;
+		private const int entityBatchSize = 300;
 		private int EntitiesTaken = 0;
 
 		public HistoryViewModel(
@@ -153,9 +153,14 @@ namespace QS.HistoryLog.ViewModels
 				.Skip(EntitiesTaken)
 				.Take(entityBatchSize)
 				.List();
-			
-			ChangedEntities.AddRange(taked);
+			if (EntitiesTaken > 0)
+				ChangedEntities.AddRange(taked);
+			else
+				ChangedEntities = taked.ToList();
 
+			EntitiesTaken = ChangedEntities.Count;
+
+			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
 			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
 			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0} объект.", "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов."));
 		}

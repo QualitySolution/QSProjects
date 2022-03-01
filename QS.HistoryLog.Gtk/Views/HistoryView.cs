@@ -122,10 +122,7 @@ namespace QS.HistoryLog.Views
 		{
 			yFilterbox.Visible = !yFilterbox.Visible;
 			yFilterbutton.Label = yFilterbox.Visible ? "Скрыть фильтр" : "Показать фильтр";
-		}
-		protected void OnDatacomboObjectItemSelected(object sender, EventArgs e)
-		{
-			ViewModel.UpdateChangedEntities();
+			ytreeChangesets.YTreeModel.EmitModelChanged();
 		}
 		void OnChangeSetSelectionChanged(object sender, EventArgs e)
 		{
@@ -141,6 +138,7 @@ namespace QS.HistoryLog.Views
 		{
 			viewModel.UpdateChangedEntities();
 			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
+			ytreeChangesets.YTreeModel.EmitModelChanged();
 		}
 		protected void OnScroll(object sender, EventArgs e)
 		{
