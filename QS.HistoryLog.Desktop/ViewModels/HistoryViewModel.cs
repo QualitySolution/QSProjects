@@ -161,7 +161,6 @@ namespace QS.HistoryLog.ViewModels
 			EntitiesTaken = ChangedEntities.Count;
 
 			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
-			logger.Debug("Время запроса {0}", DateTime.Now - startTime);
 			logger.Info(NumberToTextRus.FormatCase(changedEntities.Count, "Загружено изменение {0} объект.", "Загружено изменение {0} объекта.", "Загружено изменение {0} объектов."));
 		}
 		#endregion
