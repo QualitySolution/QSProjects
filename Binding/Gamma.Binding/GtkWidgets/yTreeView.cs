@@ -289,9 +289,58 @@ namespace Gamma.GtkWidgets
 						}
 
 						if(newval != null)
+						{
+							if(cell is CellRendererSpin spin && spin.Adjustment != null)
+							{
+								CheckAdjustment(ref newval, spin.Adjustment);
+							}
 							cell.DataPropertyInfo.SetValue(obj, newval, null);
+						}
 					}
 				}
+			}
+		}
+
+		private static void CheckAdjustment(ref object newval, Adjustment spinAdjustment)
+		{
+			switch(newval)
+			{
+				case int intVal:
+					var intUpper = (int)spinAdjustment.Upper;
+					var intLower = (int)spinAdjustment.Lower;
+					if(intVal > intUpper) { newval = intUpper; }
+					if(intVal < intLower) { newval = intLower; }
+					break;
+				case short shortVal:
+					var shortUpper = (short)spinAdjustment.Upper;
+					var shortLower = (short)spinAdjustment.Lower;
+					if(shortVal > shortUpper) { newval = shortUpper; }
+					if(shortVal < shortLower) { newval = shortLower; }
+					break;
+				case long longVal:
+					var longUpper = (long)spinAdjustment.Upper;
+					var longLower = (long)spinAdjustment.Lower;
+					if(longVal > longUpper) { newval = longUpper; }
+					if(longVal < longLower) { newval = longLower; }
+					break;
+				case float floatVal:
+					var floatUpper = (float)spinAdjustment.Upper;
+					var floatLower = (float)spinAdjustment.Lower;
+					if(floatVal > floatUpper) { newval = floatUpper; }
+					if(floatVal < floatLower) { newval = floatLower; }
+					break;
+				case double doubleVal:
+					var doubleUpper = spinAdjustment.Upper;
+					var doubleLower = spinAdjustment.Lower;
+					if(doubleVal > doubleUpper) { newval = doubleUpper; }
+					if(doubleVal < doubleLower) { newval = doubleLower; }
+					break;
+				case decimal decimalVal:
+					var decimalUpper = (decimal)spinAdjustment.Upper;
+					var decimalLower = (decimal)spinAdjustment.Lower;
+					if(decimalVal > decimalUpper) { newval = decimalUpper; }
+					if(decimalVal < decimalLower) { newval = decimalLower; }
+					break;
 			}
 		}
 
