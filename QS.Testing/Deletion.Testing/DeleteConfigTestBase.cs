@@ -74,6 +74,44 @@ namespace QS.Deletion.Testing
 			public string ReasonForIgnoring;
 		}
 		#endregion
+		
+		#region Игнорирование Коллекнций
+
+		/// <summary>
+		/// Игнорируем в тестах перечисленные коолекции
+		/// </summary>
+		public static List<IgnoredCollectionProperty> IgnoreCollections = new List<IgnoredCollectionProperty>();
+
+		/// <summary>
+		/// Добавляем коллекцию класса игнорируемую в тестах.
+		/// </summary>
+		public static void AddIgnoredCollection(Type type, string name, string reason)
+		{
+			var prop = new IgnoredCollectionProperty {
+				ParentClass = type,
+				PropertyName = name,
+				ReasonForIgnoring = reason
+			};
+
+			if (IgnoreCollections.Any(x => x.ParentClass == type && x.PropertyName == name))
+				throw new InvalidOperationException($"Коллекнция {type.Name}.{name} уже добавлена в игнорирование");
+
+			IgnoreCollections.Add(prop);
+		}
+
+		public static void AddIgnoredCollection<T>(Expression<Func<T, object>> propertyRefExpr, string reason)
+		{
+			var name = PropertyUtil.GetName<T>(propertyRefExpr);
+			AddIgnoredCollection(typeof(T), name, reason);
+		}
+
+		public class IgnoredCollectionProperty
+		{
+			public Type ParentClass;
+			public string PropertyName;
+			public string ReasonForIgnoring;
+		}
+		#endregion
 
 		#endregion
 
@@ -285,6 +323,11 @@ namespace QS.Deletion.Testing
 		//FIXME Лучше в будущем разделить тест на разные. Сейчас было лень переписывать код.
 		public virtual void NHMappedCollectionsAllInOneTest(PersistentClass mapping, Property prop)
 		{
+			var ignored =
+				IgnoreCollections.FirstOrDefault(x => x.ParentClass == mapping.MappedClass && x.PropertyName == prop.Name); 
+			if(ignored != null)
+				Assert.Ignore(ignored.ReasonForIgnoring);
+			
 			var collectionMap = (prop.Value as Bag);
 			Type collectionItemType = null;
 			if (collectionMap.Element is OneToMany)
