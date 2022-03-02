@@ -72,8 +72,8 @@
     <EmbeddedResource Include="Icons\internet-news-reader.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.90" />
-    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="NLog" Version="4.7.14" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
