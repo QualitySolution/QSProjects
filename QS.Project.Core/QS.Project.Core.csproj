@@ -12,7 +12,7 @@
       <PackageReference Include="Autofac" Version="6.3.0" />
       <PackageReference Include="FluentNHibernate" Version="3.1.0" />
       <PackageReference Include="NHibernate" Version="5.3.11" />
-      <PackageReference Include="NLog" Version="4.7.10" />
+      <PackageReference Include="NLog" Version="4.7.14" />
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 
