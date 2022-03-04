@@ -62,13 +62,8 @@
   <ItemGroup>
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
-    <Compile Include="Utilities\Text\PersonHelperTests.cs" />
-    <Compile Include="Utilities\DataRangeTest.cs" />
     <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
     <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
-    <Compile Include="DomainModel\UoW\UnitOfWorkFactoryTest.cs" />
-    <Compile Include="DomainModel\NotifyChange\NotifyChangeIntegratedTest.cs" />
-    <Compile Include="Utilities\PhoneFormatterTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
@@ -101,14 +96,6 @@
     <Compile Include="Views\Resolve\ClassNamesBaseGtkViewResolverTest.cs" />
     <Compile Include="TestNamespace\ViewModels\ZeroLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\Views\ZeroLevelTestView.cs" />
-    <Compile Include="Utilities\Text\NaturalStringComparerTest.cs" />
-    <Compile Include="Deletion\DeleteIntegratedTest.cs" />
-    <Compile Include="TestApp\Domain\Linked\DependDeleteItem.cs" />
-    <Compile Include="TestApp\Domain\Linked\AlsoDeleteItem.cs" />
-    <Compile Include="TestApp\Domain\Linked\RootDeleteItem.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\MainItemMap.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem2Map.cs" />
-    <Compile Include="TestApp\HibernateMapping\Linked\ChildItem1Map.cs" />
     <Compile Include="TestApp\ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="TestApp\Views\ModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.ModalDialogView.cs" />
@@ -126,13 +113,11 @@
     <Compile Include="TestApp\ViewModels\EmptyDialogViewModel.cs" />
     <Compile Include="TestApp\Views\SlideableView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.SlideableView.cs" />
-    <Compile Include="DomainModel\UoW\UnitOfWorkTests.cs" />
     <Compile Include="ViewModels\Resove\AutofacViewModelResolverTest.cs" />
     <Compile Include="TestApp\ViewModels\EntityDialogViewModel.cs" />
     <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
-    <Compile Include="Utilities\Text\StringManipulationHelperTest.cs" />
     <Compile Include="BaseParameters\ParametersServiceTest.cs" />
     <Compile Include="Serial\SerialNumberEncoderTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
@@ -141,12 +126,9 @@
   <ItemGroup>
     <Folder Include="Banks\" />
     <Folder Include="Tdi\" />
-    <Folder Include="Utilities\" />
     <Folder Include="DomainModel\" />
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="TestDomain\" />
-    <Folder Include="DomainModel\UoW\" />
-    <Folder Include="DomainModel\NotifyChange\" />
     <Folder Include="TestNamespace\" />
     <Folder Include="TestNamespace\ViewModels\" />
     <Folder Include="TestNamespace\Views\" />
@@ -167,11 +149,8 @@
     <Folder Include="Navigation\" />
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
-    <Folder Include="Utilities\Text\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Dialog\" />
-    <Folder Include="TestApp\Domain\Linked\" />
-    <Folder Include="TestApp\HibernateMapping\Linked\" />
     <Folder Include="ViewModels\Resove\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="Serial\" />
@@ -184,6 +163,10 @@
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
       <Name>QS.Project.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>

@@ -3,6 +3,7 @@ using System.Data.Common;
 
 namespace QS.Project.DB
 {
+	[Obsolete("Надо избавляться от статических классов в коде. Их невозможно тестировать. Этот класс под удаление. Не используйте его!")]
 	public static class Connection
 	{
 		internal static Func<string> GetConnectionString;
@@ -16,6 +17,5 @@ namespace QS.Project.DB
 		{
 			ChangeDbConnectionStringAction(newConnectionString);
 		}
-
 	}
 }

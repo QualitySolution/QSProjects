@@ -126,8 +126,8 @@ namespace QS.Project.Journal
 
 		public void UpdateOnChanges(params Type[] entityTypes)
 		{
-			NotifyConfiguration.Instance.UnsubscribeAll(this);
-			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnEntitiesUpdated, entityTypes);
+			NotifyConfiguration.Instance?.UnsubscribeAll(this);
+			NotifyConfiguration.Instance?.BatchSubscribeOnEntity(OnEntitiesUpdated, entityTypes);
 		}
 
 		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
@@ -137,7 +137,7 @@ namespace QS.Project.Journal
 
 		public override void Dispose()
 		{
-			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			NotifyConfiguration.Instance?.UnsubscribeAll(this);
 			base.Dispose();
 		}
 

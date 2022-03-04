@@ -1,91 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NUnit.3.13.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>QS</RootNamespace>
-    <AssemblyName>QS.Testing</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Deletion.Testing\DeleteConfigTestBase.cs" />
-    <Compile Include="Testing.DB\InMemoryDBGlobalConfigTestFixtureBase.cs" />
-    <Compile Include="Testing.DB\MonoSqliteConfiguration.cs" />
-    <Compile Include="Testing.DB\MonoSqliteDriver.cs" />
-    <Compile Include="Testing.DB\InMemoryDBTestSessionProvider.cs" />
-    <Compile Include="Testing.DB\InMemoryDBTestFixtureBase.cs" />
-    <Compile Include="ViewModels\EntityViewModelsTestsBase.cs" />
-    <Compile Include="Testing.Gui\GuiDispatcherForTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Deletion.Testing\" />
-    <Folder Include="Testing.DB\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Testing.Gui\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
-      <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
-      <Name>Gamma.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
-      <Name>QS.Project.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="NHibernate" Version="5.3.11" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <DotNetNamingPolicy ResourceNamePolicy="FileFormatDefault" DirectoryNamespaceAssociation="PrefixedHierarchical" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Company>Quality Solution</Company>
+        <ProjectGuid>{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj" />
+      <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+      <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NUnit" Version="3.13.1" />
+    </ItemGroup>
+
 </Project>

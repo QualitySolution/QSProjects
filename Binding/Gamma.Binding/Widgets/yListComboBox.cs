@@ -97,14 +97,14 @@ namespace Gamma.Widgets
 					SetActiveIter (iter);
 				notUserChanage = false;
 
-				Binding.FireChange (				
+				Binding.FireChange(
 					(w => w.Active),
 					(w => w.ActiveText),
 					(w => w.SelectedItem));
 				OnEnumItemSelected ();
 			}
 		}
-
+		
 		public yListComboBox ()
 		{
 			Binding = new BindingControler<yListComboBox> (this, new Expression<Func<yListComboBox, object>>[] {
@@ -138,7 +138,6 @@ namespace Gamma.Widgets
 					WrapValueIfNeed (item)
 				);
 			}
-
 			if (DefaultFirst && comboListStore.IterNChildren() > 0)
 				Active = 0;
 		}
@@ -189,6 +188,5 @@ namespace Gamma.Widgets
 			}
 		}
 	}
-
 }
 
