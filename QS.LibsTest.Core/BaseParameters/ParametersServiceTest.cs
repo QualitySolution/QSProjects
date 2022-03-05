@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dapper;
 using Mono.Data.Sqlite;
 using NUnit.Framework;

@@ -118,7 +118,6 @@
     <Compile Include="TestApp\ViewModels\DialogWithEntityUoWBuilderViewModel.cs" />
     <Compile Include="TestApp\Views\DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
-    <Compile Include="BaseParameters\ParametersServiceTest.cs" />
     <Compile Include="Serial\SerialNumberEncoderTest.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\NumberName123987TestView.cs" />
@@ -152,7 +151,6 @@
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Resove\" />
-    <Folder Include="BaseParameters\" />
     <Folder Include="Serial\" />
   </ItemGroup>
   <ItemGroup>
