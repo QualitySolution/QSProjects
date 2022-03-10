@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Dynamic;
-using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 
 namespace QS.BaseParameters
@@ -12,14 +12,12 @@ namespace QS.BaseParameters
 	public class ParametersService : DynamicObject
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-
-		public Dictionary<string, string> All = new Dictionary<string, string>();
+		
 		private readonly DbConnection connection;
 
 		public ParametersService (DbConnection connection)
 		{
 			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
-			ReloadParameters();
 		}
 
 		/// <summary>
@@ -29,6 +27,18 @@ namespace QS.BaseParameters
 		{
 		}
 
+		private Dictionary<string, string> all;
+		public Dictionary<string, string> All {
+			get {
+				if (all == null) {
+					all = new Dictionary<string, string>();
+					if(connection != null)
+						ReloadParameters();
+				}
+				return all;
+			}
+		}
+		
 		#region Загрузка
 
 		public void ReloadParameters()
@@ -39,6 +49,19 @@ namespace QS.BaseParameters
 			cmd.CommandText = sql;
 			using (DbDataReader rdr = cmd.ExecuteReader()) {
 				while (rdr.Read()) {
+					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+				}
+			}
+		}
+		
+		public async Task ReloadParametersAsync()
+		{
+			All.Clear();
+			string sql = "SELECT * FROM base_parameters";
+			DbCommand cmd = connection.CreateCommand();
+			cmd.CommandText = sql;
+			using (DbDataReader rdr = await cmd.ExecuteReaderAsync()) {
+				while (await rdr.ReadAsync()) {
 					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
