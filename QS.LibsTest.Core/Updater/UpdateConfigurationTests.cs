@@ -12,59 +12,59 @@ namespace QS.Test.Updater
 		public void OldConfigTest()
 		{
 			var config = new UpdateConfiguration();
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(1, 0),
 				new Version(1, 0, 4),
 				"workwear.Updates.1.0.4.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(1, 0, 4),
 				new Version(1, 0, 5),
 				"workwear.Updates.1.0.5.sql");
 			config.AddUpdate(
-				new Version(1, 0),
+				new Version(1, 0, 5),
 				new Version(1, 1),
 				"workwear.Updates.Update to 1.1.sql");
 			config.AddUpdate(
 				new Version(1, 1),
 				new Version(1, 2),
 				"workwear.Updates.Update to 1.2.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(1, 2),
 				new Version(1, 2, 1),
 				"workwear.Updates.1.2.1.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(1, 2, 1),
 				new Version(1, 2, 2),
 				"workwear.Updates.1.2.2.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(1, 2, 2),
 				new Version(1, 2, 4),
 				"workwear.Updates.1.2.4.sql");
 			config.AddUpdate(
-				new Version(1, 2),
+				new Version(1, 2, 4),
 				new Version(2, 0),
 				"workwear.Updates.2.0.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(2, 0),
 				new Version(2, 0, 2),
 				"workwear.Updates.2.0.2.sql");
 			config.AddUpdate(
-				new Version(2, 0),
+				new Version(2, 0, 2),
 				new Version(2, 1),
 				"workwear.Updates.2.1.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(2, 1),
 				new Version(2, 1, 1),
 				"workwear.Updates.2.1.1.sql");
 			config.AddUpdate(
-				new Version(2, 1),
+				new Version(2, 1, 1),
 				new Version(2, 2),
 				"workwear.Updates.2.2.sql");
 			config.AddUpdate(
 				new Version(2, 2),
 				new Version(2, 3),
 				"workwear.Updates.2.3.sql");
-			config.AddMicroUpdate(
+			config.AddUpdate(
 				new Version(2, 3),
 				new Version(2, 3, 3),
 				"workwear.Updates.2.3.3.sql");

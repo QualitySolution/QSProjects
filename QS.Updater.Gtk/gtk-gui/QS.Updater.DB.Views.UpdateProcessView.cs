@@ -6,7 +6,7 @@ namespace QS.Updater.DB.Views
 	{
 		private global::Gtk.VBox dialog1_VBox;
 
-		private global::Gtk.Label label1;
+		private global::Gtk.Label labelDescription;
 
 		private global::Gamma.GtkWidgets.yCheckButton checkCreateBackup;
 
@@ -45,14 +45,14 @@ namespace QS.Updater.DB.Views
 			this.dialog1_VBox.Name = "dialog1_VBox";
 			this.dialog1_VBox.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.label1 = new global::Gtk.Label();
-			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("После обновления базы, предыдущие версии программы не будут работать. Во избежани" +
+			this.labelDescription = new global::Gtk.Label();
+			this.labelDescription.Name = "labelDescription";
+			this.labelDescription.LabelProp = global::Mono.Unix.Catalog.GetString("После обновления базы, предыдущие версии программы не будут работать. Во избежани" +
 					"и порчи данных, убедитесь что в момент обновления никто не использует базу в раб" +
 					"оте.");
-			this.label1.Wrap = true;
-			this.dialog1_VBox.Add(this.label1);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox[this.label1]));
+			this.labelDescription.Wrap = true;
+			this.dialog1_VBox.Add(this.labelDescription);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox[this.labelDescription]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;
@@ -153,7 +153,7 @@ namespace QS.Updater.DB.Views
 			this.buttonCancel.Label = "gtk-cancel";
 			this.hbox2.Add(this.buttonCancel);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonCancel]));
-			w12.Position = 1;
+			w12.Position = 0;
 			// Container child hbox2.Gtk.Box+BoxChild
 			this.buttonExecute = new global::Gamma.GtkWidgets.yButton();
 			this.buttonExecute.CanFocus = true;
@@ -163,7 +163,7 @@ namespace QS.Updater.DB.Views
 			this.buttonExecute.Label = "gtk-execute";
 			this.hbox2.Add(this.buttonExecute);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonExecute]));
-			w13.Position = 2;
+			w13.Position = 1;
 			this.dialog1_VBox.Add(this.hbox2);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox[this.hbox2]));
 			w14.Position = 6;

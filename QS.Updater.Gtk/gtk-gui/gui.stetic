@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
+    <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
-    <widget-library name="../../../GammaBinding/GammaBinding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QSUpdater.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QS.Updater.NewVersionDialog" design-size="548 389">
@@ -128,7 +128,7 @@
         <property name="MemberName" />
         <property name="BorderWidth">2</property>
         <child>
-          <widget class="Gtk.Label" id="label1">
+          <widget class="Gtk.Label" id="labelDescription">
             <property name="MemberName" />
             <property name="LabelProp" translatable="yes">После обновления базы, предыдущие версии программы не будут работать. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.</property>
             <property name="Wrap">True</property>
@@ -263,9 +263,6 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <placeholder />
-            </child>
-            <child>
               <widget class="Gtk.Button" id="buttonCancel">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
@@ -276,7 +273,7 @@
                 <property name="label">gtk-cancel</property>
               </widget>
               <packing>
-                <property name="Position">1</property>
+                <property name="Position">0</property>
                 <property name="AutoSize">False</property>
               </packing>
             </child>
@@ -291,7 +288,7 @@
                 <property name="label">gtk-execute</property>
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">1</property>
                 <property name="AutoSize">False</property>
               </packing>
             </child>

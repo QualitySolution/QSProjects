@@ -24,7 +24,6 @@ namespace QS.Updater.DB.ViewModels
 
 		private readonly UpdateConfiguration configuration;
 		IMySQLProvider SQLProvider;
-		private readonly IApplicationInfo applicationInfo;
 		private readonly dynamic parametersService;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
@@ -44,7 +43,6 @@ namespace QS.Updater.DB.ViewModels
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			SQLProvider = mySQLProvider;
-			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
@@ -60,9 +58,14 @@ namespace QS.Updater.DB.ViewModels
 			//FIXME Здесь проверка micro_updates оставлена для совместимости и возможности корректного обновления со старых версий программ. Удаление сделает невозможным начать обновление с установленного микроапдейта.
 			dbVersion = this.parametersService.micro_updates != null ? this.parametersService.micro_updates(typeof(Version)) : this.parametersService.version(typeof(Version));
 			hops = configuration.GetHopsToLast(dbVersion).ToArray();
+			var targetVersion = hops.Last().Destination;
 			Title = String.Format("Обновление: {0} → {1}",
 						dbVersion.VersionToShortString(),
-						hops.Last().Destination.VersionToShortString());
+						targetVersion.VersionToShortString());
+			if(hops.All(x => x.Destination.Major == dbVersion.Major && x.Destination.Minor == dbVersion.Minor))
+				Description = $"Будут выполнены незначительные изменения в базе. Все версии программы {targetVersion.Major}.{targetVersion.Minor}.x смогут продолжить работать с базой без обновления.";
+			else
+				Description = $"После обновления базы, версии программы ниже {targetVersion.Major}.{targetVersion.Minor} не будут работать. Во избежании порчи данных, убедитесь что в момент обновления никто не использует базу в работе.";
 		}
 
 		#region Свойства для View
@@ -94,6 +97,8 @@ namespace QS.Updater.DB.ViewModels
 			get => buttonExcuteSensitive;
 			set => SetField(ref buttonExcuteSensitive, value);
 		}
+
+		public string Description { get; set; }
 
 		#endregion
 		#region Действия View
@@ -200,14 +205,13 @@ namespace QS.Updater.DB.ViewModels
 		#region Обновление
 		void RunOneUpdate(UpdateHop updateScript)
 		{
-			var operationName = (updateScript.UpdateType == UpdateType.MicroUpdate ? "Микро-обновление" : "Обновление")
-				+ $" базы до " + updateScript.Destination.VersionToShortString();
+			var operationName = "Обновление базы до " + updateScript.Destination.VersionToShortString();
 			logger.Info(operationName);
 			CommandsLog += operationName + "\n";
 
-			if(updateScript.ExcuteBefore != null) {
+			if(updateScript.ExecuteBefore != null) {
 				CommandsLog += "Выполнение программный действий...\n";
-				updateScript.ExcuteBefore(SQLProvider.DbConnection);
+				updateScript.ExecuteBefore(SQLProvider.DbConnection);
 			}
 
 			string sql;
