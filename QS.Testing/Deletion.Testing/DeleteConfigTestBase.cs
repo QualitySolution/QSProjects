@@ -19,9 +19,9 @@ namespace QS.Deletion.Testing
 		#region Игнорирование классов
 
 		/// <summary>
-		/// Игнорируем в тестах отсутствие правил удаления для класов.
+		/// Игнорируем в тестах отсутствие правил удаления для классов.
 		/// </summary>
-		internal static Dictionary<Type, string> IgnoreMissingClass = new Dictionary<Type, string>();
+		internal static readonly Dictionary<Type, string> IgnoreMissingClass = new Dictionary<Type, string>();
 
 		/// <summary>
 		/// Добавляем класса в игнорируемые в тестах отсутствие правил.
@@ -40,10 +40,10 @@ namespace QS.Deletion.Testing
 		#region Игнорирование свойств
 
 		/// <summary>
-		/// Игнорируем в тестах отсутствие зависимостей для перечисленных свойств каласов
+		/// Игнорируем в тестах отсутствие зависимостей для перечисленных свойств классов
 		/// </summary>
 		/// <remarks>Внимание, игнорирование реализовано не для всех тестов!</remarks>
-		public static Dictionary<Type, List<IgnoredProperty>> IgnoreProperties = new Dictionary<Type, List<IgnoredProperty>>();
+		public static readonly Dictionary<Type, List<IgnoredProperty>> IgnoreProperties = new Dictionary<Type, List<IgnoredProperty>>();
 
 		/// <summary>
 		/// Добавляем свойство класса игнорируемое в тестах отсутствие зависимостей
@@ -78,9 +78,9 @@ namespace QS.Deletion.Testing
 		#region Игнорирование Коллекнций
 
 		/// <summary>
-		/// Игнорируем в тестах перечисленные коолекции
+		/// Игнорируем в тестах перечисленные коллекции
 		/// </summary>
-		public static List<IgnoredCollectionProperty> IgnoreCollections = new List<IgnoredCollectionProperty>();
+		public static readonly List<IgnoredCollectionProperty> IgnoreCollections = new List<IgnoredCollectionProperty>();
 
 		/// <summary>
 		/// Добавляем коллекцию класса игнорируемую в тестах.
@@ -94,7 +94,7 @@ namespace QS.Deletion.Testing
 			};
 
 			if (IgnoreCollections.Any(x => x.ParentClass == type && x.PropertyName == name))
-				throw new InvalidOperationException($"Коллекнция {type.Name}.{name} уже добавлена в игнорирование");
+				throw new InvalidOperationException($"Коллекция {type.Name}.{name} уже добавлена в игнорирование");
 
 			IgnoreCollections.Add(prop);
 		}
@@ -190,7 +190,7 @@ namespace QS.Deletion.Testing
 		/// Тест наличия правил удаления для классов добавленных в Nhibernate.
 		/// Чтобы исключить класс из проверки добавьте его в коллекцию IgnoreMissingClass
 		/// </summary>
-		public virtual void DeleteRuleExisitForNHMappedClasssTest(NHibernate.Mapping.PersistentClass mapping)
+		public virtual void DeleteRuleExistForNhMappedClassTest(NHibernate.Mapping.PersistentClass mapping)
 		{
 			if(IgnoreMissingClass.ContainsKey(mapping.MappedClass)) {
 				Assert.Ignore(IgnoreMissingClass[mapping.MappedClass]);
@@ -218,10 +218,10 @@ namespace QS.Deletion.Testing
 		}
 
 		/// <summary>
-		/// Тест наличия правил удаления для ссылок на другие сущьности в класе.
+		/// Тест наличия правил удаления для ссылок на другие сущности в классе.
 		/// Чтобы исключить класс из проверки добавьте его в коллекцию IgnoreMissingClass
 		/// </summary>
-		public virtual void DeleteRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop)
+		public virtual void DeleteRuleExistForNhMappedEntityRelationTest(PersistentClass mapping, Property prop)
 		{
 			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
 				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
@@ -250,9 +250,9 @@ namespace QS.Deletion.Testing
 		}
 
 		/// <summary>
-		/// Тест наличия зависимости для ссылок на другие сущьности в класе.
+		/// Тест наличия зависимости для ссылок на другие сущности в классе.
 		/// </summary>
-		public virtual void DependenceRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
+		public virtual void DependenceRuleExistForNhMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
 		{
 			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
 				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
@@ -284,16 +284,16 @@ namespace QS.Deletion.Testing
 		}
 
 		/// <summary>
-		/// Тест наличия каскадной зависимости для ссылок на другие сущьности в класе.
+		/// Тест наличия каскадной зависимости для ссылок на другие сущности в классе.
 		/// </summary>
-		public virtual void CascadeDependenceRuleExisitForNHMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
+		public virtual void CascadeDependenceRuleExistForNhMappedEntityRelationTest(PersistentClass mapping, Property prop, IDeleteRule related)
 		{
 			if(IgnoreProperties.ContainsKey(mapping.MappedClass) && IgnoreProperties[mapping.MappedClass].Any(x => x.PropertyName == prop.Name))
 				Assert.Ignore(IgnoreProperties[mapping.MappedClass].First(x => x.PropertyName == prop.Name).ReasonForIgnoring);
 
 			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
 			Assert.That(info.DeleteItems.Any(x => x.ParentPropertyName == prop.Name && x.IsCascade),
-					"Cвойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
+					"Свойство {0}.{1} не имеет каскадного правила удаления, хотя класс {2} помечен как требующий каскадного удаления.",
 					info.ObjectClass.Name,
 					prop.Name,
 					related.ObjectClass.Name);
@@ -345,7 +345,7 @@ namespace QS.Deletion.Testing
 
 			var info = DeleteConfig.GetDeleteRule(mapping.MappedClass);
 			Assert.That(info, Is.Not.Null,
-					"Коллекция {0}.{1} объектов {2} замаплена в ненастроенном классе.",
+					"Коллекция {0}.{1} объектов {2} замаплена в не настроенном классе.",
 					mapping.MappedClass.Name,
 					prop.Name,
 					collectionItemType.Name);
@@ -389,7 +389,7 @@ namespace QS.Deletion.Testing
 				Console.WriteLine("AllDeleteRules");
 				foreach(var info in DeleteConfig.ClassDeleteRules) {
 					yield return new TestCaseData(info)
-							.SetDescription("Проверка правил удаления на наличие Name или Tilte")
+							.SetDescription("Проверка правил удаления на наличие Name или Title")
 							.SetArgDisplayNames(new[] { info.ObjectClass.Name });
 				}
 			}
@@ -411,7 +411,7 @@ namespace QS.Deletion.Testing
 				Assert.Pass("В классе переопределено свойство ToString");
 			}
 
-			Assert.Fail($"В классе {info.ObjectClass}, нет свойств Title или Name. Что не позволяет при удалении красиво вывести пользователю информациию об удаляемом объекте.");
+			Assert.Fail($"В классе {info.ObjectClass}, нет свойств Title или Name. Что не позволяет при удалении красиво вывести пользователю информацию об удаляемом объекте.");
 		}
 
 		public virtual void DeleteRules_ExistAppellativeAttribute_Test(IDeleteRule info)
