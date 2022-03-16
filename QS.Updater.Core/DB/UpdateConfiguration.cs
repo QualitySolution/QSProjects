@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Reflection;
+using QS.Utilities.Text;
 
 namespace QS.Updater.DB
 {
@@ -71,5 +72,7 @@ namespace QS.Updater.DB
 
 		public string Resource;
 		public Assembly Assembly;
+
+		public string Title => $"{Source.VersionToShortString()}→{Destination.VersionToShortString()}";
 	}
 }

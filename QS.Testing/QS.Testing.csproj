@@ -11,6 +11,7 @@
       <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj" />
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
       <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+      <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
