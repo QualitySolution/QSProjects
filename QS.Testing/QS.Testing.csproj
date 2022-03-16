@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj" />
+      <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj" />
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
       <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
     </ItemGroup>
