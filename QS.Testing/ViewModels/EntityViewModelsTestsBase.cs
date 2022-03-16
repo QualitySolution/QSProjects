@@ -28,7 +28,7 @@ namespace QS.ViewModels
 			}
 		}
 
-		public virtual void ViewModelForValidateblyEntityHasValidatorDependenceTest(Type type)
+		public virtual void ViewModelForValidatableEntityHasValidatorDependenceTest(Type type)
 		{
 			var entityDialogBase = GetEntityDialogViewModelBase(type);
 			var entityType = entityDialogBase.GenericTypeArguments.First();
