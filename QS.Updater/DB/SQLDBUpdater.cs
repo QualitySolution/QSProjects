@@ -24,71 +24,30 @@ namespace QS.Updater.DB
 		private readonly INavigationManager navigation;
 		private readonly IGuiDispatcher gui;
 		private readonly dynamic parametersService;
-		private readonly DbConnection connection;
 		private readonly MySqlConnectionStringBuilder connectionStringBuilder;
 		private readonly IUserService userService;
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 		private readonly IInteractiveMessage interactiveMessage;
 
-		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, IApplicationInfo applicationInfo, DbConnection connection, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IUnitOfWorkFactory unitOfWorkFactory, IInteractiveMessage interactiveMessage)
+		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IUnitOfWorkFactory unitOfWorkFactory, IInteractiveMessage interactiveMessage)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
-			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
 			this.connectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
 			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 		}
 
+		public bool HasUpdates => configuration.GetHopsToLast(CurrentDBVersion).Any();
+		
 		#region Private
 
 		//FIXME Здесь проверка micro_updates оставлена для совместимости и возможности корректного обновления со старых версий программ. Удаление сделает невозможным начать обновление с установленного микроапдейта.
 		private Version CurrentDBVersion => parametersService.micro_updates != null ? parametersService.micro_updates(typeof(Version)) : parametersService.version(typeof(Version));
-
-		public bool HasUpdates => configuration.GetHopsToLast(CurrentDBVersion).Any();
-
-		#endregion
-		private void RunMicroUpdateOnly()
-		{
-			var currentDB = CurrentDBVersion;
-			var beforeUpdates = currentDB;
-			var hops = configuration.GetHopsToLast(currentDB).ToList();
-			logger.Info("Начинаем микро обновление(текущая версия:{0})", VersionHelper.VersionToShortString(currentDB));
-
-			foreach(var update in hops) {
-				logger.Info("Обновляемся до {0}", VersionHelper.VersionToShortString(update.Destination));
-				var trans = connection.BeginTransaction();
-				try {
-					string sql;
-					using(Stream stream = update.Assembly.GetManifestResourceStream(update.Resource)) {
-						if(stream == null)
-							throw new InvalidOperationException(String.Format("Ресурс {0} указанный в обновлениях не найден.", update.Resource));
-						StreamReader reader = new StreamReader(stream);
-						sql = reader.ReadToEnd();
-					}
-
-					var cmd = connection.CreateCommand();
-					cmd.CommandText = sql;
-					cmd.Transaction = trans;
-					cmd.ExecuteNonQuery();
-					trans.Commit();
-					currentDB = update.Destination;
-				}
-				catch(Exception ex) {
-					trans.Rollback();
-					throw ex;
-				}
-				parametersService.version = VersionHelper.VersionToShortString(currentDB);
-			}
-				
-			interactiveMessage.ShowMessage(ImportanceLevel.Info, String.Format("Выполнено микро обновление базы {0} -> {1}.",
-				VersionHelper.VersionToShortString(beforeUpdates),
-				VersionHelper.VersionToShortString(currentDB)));
-		}
-
+		
 		private void RunUpdateDB()
 		{
 			//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
@@ -108,7 +67,8 @@ namespace QS.Updater.DB
 				Environment.Exit(1);
 			}
 		}
-
+		#endregion
+		
 		public void UpdateDB()
 		{
 			var hops = configuration.GetHopsToLast(CurrentDBVersion).ToList();
@@ -121,11 +81,8 @@ namespace QS.Updater.DB
 				if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser(uow).IsAdmin)
 					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);
 			}
-
-			if(hops.All(x => x.UpdateType == UpdateType.MicroUpdate))
-				RunMicroUpdateOnly();
-			else
-				RunUpdateDB();
+			
+			RunUpdateDB();
 		}
 
 		private void NotAdminErrorAndExit(Version from, Version to)
@@ -133,7 +90,7 @@ namespace QS.Updater.DB
 			interactiveMessage.ShowMessage(ImportanceLevel.Error,
 				String.Format(
 					"Для работы текущей версии программы необходимо провести обновление базы ({0} -> {1}), " +
-					"но у вас нет для этого прав. Зайдите в программу под администратором.",
+					"но у вас нет для этого прав. Зайдите в программу с правами администратора.",
 				  	VersionHelper.VersionToShortString(from),
 				  	VersionHelper.VersionToShortString(to)
 				));

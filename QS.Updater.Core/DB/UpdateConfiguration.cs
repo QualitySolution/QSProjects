@@ -8,9 +8,7 @@ namespace QS.Updater.DB
 {
 	public class UpdateConfiguration
 	{
-		public IEnumerable<UpdateHop> MicroUpdates => Hops.Where(x => x.UpdateType == UpdateType.MicroUpdate);
-
-		public IEnumerable<UpdateHop> Updates => Hops.Where(x => x.UpdateType == UpdateType.Update);
+		public IEnumerable<UpdateHop> Updates => Hops;
 
 		private List<UpdateHop> Hops = new List<UpdateHop>();
 
@@ -19,48 +17,20 @@ namespace QS.Updater.DB
 		}
 
 		#region Конфигурирование
+		
 		/// <summary>
-		/// Метод добавит скрипт микрообновление.
-		/// Микрообновление - обновляет базу, но при этом оставляет совместимосость с предыдущими версиями приложения.
+		/// Метод добавляет скрипт обновления с версии source на версию destination
 		/// </summary>
 		/// <param name="source">Изначальная версия</param>
 		/// <param name="destination">Версия до которой обновится база</param>
-		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
-		/// <param name="excuteBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
-		public void AddMicroUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> excuteBefore = null)
+		/// <param name="scriptResource">Имя ресурса скрипта, ассамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
+		/// <param name="executeBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
+		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> executeBefore = null)
 		{
-			if (source == destination)
-				throw new ArgumentException($"{nameof(source)} и {nameof(destination)} не должны быть равны");
-
 			Hops.Add(new UpdateHop {
-				UpdateType = UpdateType.MicroUpdate,
 				Source = source,
 				Destination = destination,
-				ExcuteBefore = excuteBefore,
-				Resource = scriptResource,
-				Assembly = Assembly.GetCallingAssembly()
-			});
-		}
-
-		/// <summary>
-		/// Метод добавит скрипт добавит обновление.
-		/// Полное обновление базы данных на следующую версию, с нарушением совместимости. Обычно это следующая ветка релиза.
-		/// </summary>
-		/// <param name="source">Изначальная версия</param>
-		/// <param name="destination">Версия до которой обновится база</param>
-		/// <param name="scriptResource">Имя ресурса скрипта, асамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
-		/// <param name="excuteBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
-		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> excuteBefore = null)
-		{
-			if (source.Major == destination.Major && source.Minor == destination.Minor)
-				throw new ArgumentException($"У {nameof(source)} и {nameof(destination)} не должны быть равны первые две цифры версии X.Y");
-
-
-			Hops.Add(new UpdateHop {
-				UpdateType = UpdateType.Update,
-				Source = source,
-				Destination = destination,
-				ExcuteBefore = excuteBefore,
+				ExecuteBefore = executeBefore,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
 			});
@@ -73,14 +43,6 @@ namespace QS.Updater.DB
 		{
 			var last = fromVersion;
 			while(true) {
-				while(true) {
-					var nextMicro = GetNextMicroUpdate(last);
-					if (nextMicro != null) {
-						last = nextMicro.Destination;
-						yield return nextMicro;
-					}
-					else break;
-				}
 				var next = GetNextUpdate(last);
 				if (next != null) {
 					last = next.Destination;
@@ -90,38 +52,24 @@ namespace QS.Updater.DB
 			}
 		}
 
-		private UpdateHop GetNextMicroUpdate(Version version)
-		{
-			return MicroUpdates.FirstOrDefault(x => x.Source == version);
-		}
-
 		private UpdateHop GetNextUpdate(Version version)
 		{
-			return Updates.FirstOrDefault(x => x.Source.Major == version.Major && x.Source.Minor == version.Minor);
+			return Updates.FirstOrDefault(x => x.Source == version);
 		}
-
 		#endregion
 	}
 
 	public class UpdateHop
 	{
-		public UpdateType UpdateType;
 		public Version Source;
 		public Version Destination;
 
 		/// <summary>
-		/// Программный метод, выполняющийся перед обновлением. Тут можно выполнить действия трудно выполнимые внутри SQL сприпта.
-		/// Пока поддеживается только в полном обновлении
+		/// Программный метод, выполняющийся перед обновлением. Тут можно выполнить действия трудно выполнимые внутри SQL скрипта.
 		/// </summary>
-		public Action<DbConnection> ExcuteBefore;
+		public Action<DbConnection> ExecuteBefore;
 
 		public string Resource;
 		public Assembly Assembly;
-	}
-
-	public enum UpdateType
-	{
-		Update,
-		MicroUpdate
 	}
 }

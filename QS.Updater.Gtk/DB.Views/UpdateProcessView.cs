@@ -9,12 +9,11 @@ namespace QS.Updater.DB.Views
 {
 	public partial class UpdateProcessView : DialogViewBase<UpdateProcessViewModel>
 	{
-		static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
-
 		public UpdateProcessView(UpdateProcessViewModel viewModel) : base(viewModel)
 		{
 			this.Build();
 
+			labelDescription.LabelProp = ViewModel.Description;
 			entryFileName.Binding.AddBinding(viewModel, v => v.FileName, w => w.Text).InitializeFromSource();
 			viewModel.OperationProgress = progressbarOperation;
 			viewModel.TotalProgress = progressbarTotal;
