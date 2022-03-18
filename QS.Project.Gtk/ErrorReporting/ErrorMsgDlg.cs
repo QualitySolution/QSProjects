@@ -40,7 +40,7 @@ namespace QS.ErrorReporting
 			this.databaseInfo = dataBaseInfo;
 
 			AppExceptions.Add (exception);
-			OnExeptionTextUpdate ();
+			OnExceptionTextUpdate ();
 			buttonSendReport.Sensitive = false;
 
 			entryEmail.Text = user?.Email;
@@ -54,10 +54,10 @@ namespace QS.ErrorReporting
 		public void AddAnotherException(Exception exception)
 		{
 			AppExceptions.Add (exception);
-			OnExeptionTextUpdate ();
+			OnExceptionTextUpdate ();
 		}
 
-		public void OnExeptionTextUpdate()
+		public void OnExceptionTextUpdate()
 		{
 			textviewError.Buffer.Text = AppExceptionText;
 		}
@@ -93,37 +93,43 @@ namespace QS.ErrorReporting
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
 			string log = GetLog();
-			SendReport(log, ErrorReportType.User);
+			SendReport(log, ReportType.User);
 		}
 
-		private void SendReport(string logContent, ErrorReportType reportType)
+		private void SendReport(string logContent, ReportType reportType)
 		{
-			var svc = ReportWorker.GetReportService();
-			if(svc == null) {
-				MessageDialogHelper.RunErrorDialog("Не удалось установить соединение с сервером Quality Solution.");
-				return;
-			}
+			using (var reportingService = new ErrorReportingService())
+			{
+				var result = reportingService.SubmitErrorReport(
+					new SubmitErrorRequest {
+						App = new AppInfo{ 
+							ProductCode = application.ProductCode,
+							ProductName = application.ProductName ?? String.Empty,
+							Modification= application.Modification ?? String.Empty,
+							Version = application.Version.ToString(),
+						},
+						Db = new DatabaseInfo {
+							Name = databaseInfo?.Name ?? String.Empty,
+						},
+						User = new UserInfo {
+							Email = entryEmail.Text,
+							Name = user?.Name ?? String.Empty,
+						},
+						Report = new ErrorInfo {
+							StackTrace = AppExceptionText,
+							UserDescription = textviewDescription.Buffer.Text,
+							Log = logContent,
+						},
+						ReportType = reportType
+					});
 
-			var result = svc.SubmitErrorReport(
-				new ErrorReport {
-					Product = application.ProductName,
-					Edition = application.Modification,
-					Version = application.Version.ToString(),
-					DBName = databaseInfo?.Name ?? String.Empty,
-					StackTrace = AppExceptionText,
-					Description = textviewDescription.Buffer.Text,
-					Email = entryEmail.Text,
-					UserName = user?.Name,
-					LogFile = logContent,
-					ReportType = reportType
-				});
-
-			if(result) {
-				this.Respond(ResponseType.Ok);
-				reportSent = true;
-			} else {
-				MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
-				"Проверьте ваше интернет соединение и повторите попытку. Если отправка неудастся возможно имеются проблемы на стороне сервера.");
+				if(result) {
+					this.Respond(ResponseType.Ok);
+					reportSent = true;
+				} else {
+					MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
+					"Проверьте ваше интернет соединение и повторите попытку. Если отправка не удастся возможно имеются проблемы на стороне сервера.");
+				}
 			}
 		}
 
@@ -174,7 +180,7 @@ namespace QS.ErrorReporting
 				string log = errorReportingSettings.LogRowCount != null
 						? GetShortLog(errorReportingSettings.LogRowCount.Value)
 						: GetLog();
-				SendReport(log, ErrorReportType.Automatic);
+				SendReport(log, ReportType.Automatic);
 			}
 
 			base.OnDestroyed();

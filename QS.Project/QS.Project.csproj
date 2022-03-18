@@ -53,8 +53,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorReporting\HttpErrorReportSender.cs" />
-    <Compile Include="ErrorReporting\IErrorReportSender.cs" />
     <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
     <Compile Include="Navigation\ITdiPage.cs" />
     <Compile Include="Print\SelectablePrintDocument.cs" />
@@ -252,11 +250,9 @@
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting\ErrorReport.cs" />
     <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\ReportWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
