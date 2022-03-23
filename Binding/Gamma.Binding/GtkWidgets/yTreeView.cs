@@ -290,7 +290,8 @@ namespace Gamma.GtkWidgets
 
 						if(newval != null)
 						{
-							if(cell is CellRendererSpin spin && spin.Adjustment != null)
+							var spinBtn = Children.FirstOrDefault();
+							if(spinBtn is SpinButton spin && spin.Adjustment != null)
 							{
 								CheckAdjustment(ref newval, spin.Adjustment);
 							}
