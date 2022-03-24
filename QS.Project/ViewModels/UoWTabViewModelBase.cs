@@ -11,9 +11,12 @@ namespace QS.ViewModels
 	{
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		protected UoWTabViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(interactiveService, navigation)
+		protected UoWTabViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			IInteractiveService interactiveService,
+			INavigationManager navigation) : base(interactiveService, navigation)
 		{
-			this.UnitOfWorkFactory = unitOfWorkFactory;
+			UnitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 		}
 
 		private IUnitOfWork unitOfWork;

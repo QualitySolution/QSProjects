@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Filter;
 using QS.Services;
 using QS.Tdi;
@@ -22,8 +23,14 @@ namespace QS.Project.Journal
 			}
 		}
 
-		protected FilterableSingleEntityJournalViewModelBase(TFilterViewModel filterViewModel, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) 
-			: base(unitOfWorkFactory, commonServices, hideJournalForOpenDialog, hideJournalForCreateDialog)
+		protected FilterableSingleEntityJournalViewModelBase(
+			TFilterViewModel filterViewModel,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices,
+			INavigationManager navigationManager = null,
+			bool hideJournalForOpenDialog = false,
+			bool hideJournalForCreateDialog = false) 
+			: base(unitOfWorkFactory, commonServices, navigationManager, hideJournalForOpenDialog, hideJournalForCreateDialog)
 		{
 			FilterViewModel = filterViewModel;
 		}
