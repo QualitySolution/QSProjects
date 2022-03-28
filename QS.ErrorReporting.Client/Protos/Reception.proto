@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package QS.ErrorReporting;
+
+service Reception {
+    rpc SubmitError (SubmitErrorRequest) returns (SubmitErrorResponse);
+}
+
+message SubmitErrorRequest{
+    UserInfo user = 1;
+    AppInfo app = 2;
+    DatabaseInfo db = 3;
+    ErrorInfo report = 4;
+    ReportType report_type = 5;
+}
+
+message UserInfo{
+    string name = 1;
+    string email = 2;
+}
+
+message AppInfo{
+    uint32 product_code = 1;
+    string product_name = 2;
+    string modification = 3;
+    string version = 4;
+}
+
+message DatabaseInfo{
+    string name = 1;
+}
+
+message ErrorInfo{
+    string stack_trace = 1;
+    string user_description = 2;
+    string log = 3;
+}
+
+enum ReportType{
+    REPORT_TYPE_USER = 0;
+    REPORT_TYPE_AUTOMATIC = 1;
+}
+
+message SubmitErrorResponse{}
