@@ -187,10 +187,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets\" />
-    <Folder Include="DomainModel\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="UpdateNotification\" />
-    <Folder Include="ParentReference\" />
     <Folder Include="yWidgets\" />
     <Folder Include="WithoutTDI\" />
     <Folder Include="DomainMapping\" />
