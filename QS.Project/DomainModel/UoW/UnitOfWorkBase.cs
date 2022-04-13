@@ -69,8 +69,9 @@ namespace QS.DomainModel.UoW
 				IsNew = false;
 				GlobalUowEventsTracker.OnPostCommit(this);
 
-			} catch(Exception ex) {
-				logger.Error(ex, "Исключение в момент комита.");
+			} catch(Exception ex)
+			{
+				logger.Error(ex, $"Исключение при комите UoW:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
 				if(transaction.IsActive)
 					transaction.Rollback();
 				throw;
