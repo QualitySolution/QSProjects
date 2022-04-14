@@ -14,17 +14,19 @@ namespace QS.Views.Dialog
 		{
 		}
 
+		private Button saveButton, cancelButton;
+		
 		/// <summary>
 		/// Метод можно вызывать в конструкторе вьюшки для автоматической подписки на кнопки buttonSave и buttonCancel
 		/// </summary>
 		protected void CommonButtonSubscription()
 		{
-			var saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button>().FirstOrDefault(x => x.Name == "buttonSave");
+			saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button>().FirstOrDefault(x => x.Name == "buttonSave");
 			if(saveButton != null) {
 				saveButton.Clicked -= OnButtonSaveClicked;
 				saveButton.Clicked += OnButtonSaveClicked;
 			}
-			var cancelButton = GtkHelper.EnumerateAllChildren(this).OfType<Button>().FirstOrDefault(x => x.Name == "buttonCancel");
+			cancelButton = GtkHelper.EnumerateAllChildren(this).OfType<Button>().FirstOrDefault(x => x.Name == "buttonCancel");
 			if(cancelButton != null) {
 				cancelButton.Clicked -= OnButtonCancelClicked;
 				cancelButton.Clicked += OnButtonCancelClicked;
@@ -33,7 +35,9 @@ namespace QS.Views.Dialog
 
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
-			ViewModel.SaveAndClose();
+			saveButton.Sensitive = false;
+			if(!ViewModel.SaveAndClose())
+				saveButton.Sensitive = true;
 		}
 
 		protected void OnButtonCancelClicked(object sender, EventArgs e)
