@@ -99,8 +99,6 @@ namespace QSOrmProject
 				IOrmObjectMapping map = ClassMappingList.Find(m => m.ObjectClass == entityClassGroup.Key);
 				if (map != null)
 					map.RaiseObjectUpdated(entityClassGroup.Select(x => x.Entity).ToArray());
-				else
-					logger.Warn("В ClassMapingList класс {0} объекта не найден. Поэтому событие обновления не вызвано.", entityClassGroup.Key);
 			}
 		}
 
