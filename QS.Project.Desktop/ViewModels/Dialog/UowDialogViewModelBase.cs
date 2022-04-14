@@ -49,10 +49,13 @@ namespace QS.ViewModels.Dialog
 			return true;
 		}
 
-		public virtual void SaveAndClose()
+		public bool SaveAndClose()
 		{
-			if(Save())
+			if (Save()) {
 				Close(false, CloseSource.Save);
+				return true;
+			}
+			return false;
 		}
 
 		public virtual void Dispose()
