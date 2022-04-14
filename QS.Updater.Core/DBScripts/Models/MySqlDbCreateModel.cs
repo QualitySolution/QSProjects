@@ -24,6 +24,11 @@ namespace QS.DBScripts.Models
 			uint port = 3306;
 			string[] uriSplit = server.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
+			if (uriSplit.Length == 0) {
+				controller.WasError("Имя сервера не корректно.");
+				return false;
+			}
+			
 			host = uriSplit[0];
 			if (uriSplit.Length > 1) {
 				uint.TryParse(uriSplit[1], out port);

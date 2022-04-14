@@ -11,6 +11,8 @@ namespace QS.Navigation
 {
 	public abstract class NavigationManagerBase
 	{
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
+		
 		protected readonly IPageHashGenerator hashGenerator;
 		protected readonly IInteractiveMessage interactiveMessage;
 
@@ -150,28 +152,34 @@ namespace QS.Navigation
 
 			if(options.HasFlag(OpenPageOptions.AsSlave)) {
 				if(masterPage == null)
-					throw new InvalidOperationException($"Отсутствует главная страница для добавляемой подчиненой страницы.");
+					throw new InvalidOperationException($"Отсутствует главная страница для добавляемой подчиненной страницы.");
 
 				if(hash != null)
 					openPage = masterPage.SlavePagesAll.Select(x => x.SlavePage).FirstOrDefault(x => x.PageHash == hash);
-				if(openPage != null)
+				if (openPage != null) {
+					logger.Debug($"Вкладка '{openPage.ViewModel.Title}' уже открыта, просто переключаемся...");
 					SwitchOn(openPage);
+				}
 				else {
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
 					(masterPage as IPageInternal).AddSlavePage(openPage);
+					logger.Debug($"Открываем подчиненную вкладку '{openPage.ViewModel.Title}' для основной '{masterPage.ViewModel.Title}'.");
 					OpenSlavePage(masterPage, openPage);
 				}
 			} else {
 				if(hash != null)
 					openPage = IndependentPages.FirstOrDefault(x => x.PageHash == hash);
-				if(openPage != null)
+				if (openPage != null) {
+					logger.Debug($"Вкладка '{openPage.ViewModel.Title}' уже открыта, просто переключаемся...");
 					SwitchOn(openPage);
+				}
 				else {
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
+					logger.Debug($"Открываем вкладку '{openPage.ViewModel.Title}'.");
 					OpenPage(masterPage, openPage);
 				}
 			}
