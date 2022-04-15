@@ -157,7 +157,7 @@ namespace QS.Navigation
 				if(hash != null)
 					openPage = masterPage.SlavePagesAll.Select(x => x.SlavePage).FirstOrDefault(x => x.PageHash == hash);
 				if (openPage != null) {
-					logger.Debug($"Вкладка '{openPage.ViewModel.Title}' уже открыта, просто переключаемся...");
+					logger.Debug($"Вкладка '{openPage.Title}' уже открыта, просто переключаемся...");
 					SwitchOn(openPage);
 				}
 				else {
@@ -165,21 +165,21 @@ namespace QS.Navigation
 					if (openPage == null)
 						return null;
 					(masterPage as IPageInternal).AddSlavePage(openPage);
-					logger.Debug($"Открываем подчиненную вкладку '{openPage.ViewModel.Title}' для основной '{masterPage.ViewModel.Title}'.");
+					logger.Debug($"Открываем подчиненную вкладку '{openPage.Title}' для основной '{masterPage.Title}'.");
 					OpenSlavePage(masterPage, openPage);
 				}
 			} else {
 				if(hash != null)
 					openPage = IndependentPages.FirstOrDefault(x => x.PageHash == hash);
 				if (openPage != null) {
-					logger.Debug($"Вкладка '{openPage.ViewModel.Title}' уже открыта, просто переключаемся...");
+					logger.Debug($"Вкладка '{openPage.Title}' уже открыта, просто переключаемся...");
 					SwitchOn(openPage);
 				}
 				else {
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
-					logger.Debug($"Открываем вкладку '{openPage.ViewModel.Title}'.");
+					logger.Debug($"Открываем вкладку '{openPage.Title}'.");
 					OpenPage(masterPage, openPage);
 				}
 			}
