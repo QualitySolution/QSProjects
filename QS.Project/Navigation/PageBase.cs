@@ -14,6 +14,7 @@ namespace QS.Navigation
 		public event EventHandler<PageClosedEventArgs> PageClosed;
 
 		public string PageHash { get; protected set; }
+		public abstract string Title { get; }
 
 		/// <summary>
 		/// Для хранения пользовательской информации как в WinForms
