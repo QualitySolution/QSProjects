@@ -11,6 +11,11 @@ namespace QS.Navigation
 		/// Хеш = null, значит страница не должна проверятся на дубликат.
 		/// </summary>
 		string PageHash { get; }
+		
+		/// <summary>
+		/// Название страницы видимое пользователю
+		/// </summary>
+		string Title { get; }
 
 		DialogViewModelBase ViewModel { get; }
 

@@ -13,6 +13,7 @@ namespace QS.Navigation
 			TdiTab = tab;
 		}
 
+		public override string Title => ViewModel?.Title;
 		public TViewModel ViewModel { get; private set; }
 
 		public ITdiTab TdiTab { get; private set; }

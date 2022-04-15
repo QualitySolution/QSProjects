@@ -6,6 +6,7 @@ namespace QS.Navigation
 	public class GtkWindowPage<TViewModel> : PageBase, IPage<TViewModel>, IGtkWindowPage
 		where TViewModel : DialogViewModelBase
 	{
+		public override string Title => ViewModel?.Title;
 		public TViewModel ViewModel { get; private set; }
 
 		DialogViewModelBase IPage.ViewModel => ViewModel;

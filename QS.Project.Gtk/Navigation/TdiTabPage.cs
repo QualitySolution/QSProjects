@@ -16,5 +16,6 @@ namespace QS.Navigation
 		}
 
 		public ITdiTab TdiTab { get; protected set; }
+		public override string Title => TdiTab?.TabName;
 	}
 }
