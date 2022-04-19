@@ -8,14 +8,24 @@ namespace QS.Osrm
 		/// <summary>
 		/// Общая длина в метрах (целое число)
 		/// </summary>
-		[JsonProperty("distance")]
-		public int TotalDistance { get; set; }
+		public int TotalDistance => (int)TotalDistanceDouble;
 
 		/// <summary>
 		/// Общее время в секундах (целое число)
 		/// </summary>
+		public int TotalTimeSeconds => (int)TotalTimeSecondsDouble;
+
+		/// <summary>
+		/// Общая длина в метрах
+		/// </summary>
+		[JsonProperty("distance")]
+		public double TotalDistanceDouble { get; set; }
+
+		/// <summary>
+		/// Общее время в секундах
+		/// </summary>
 		[JsonProperty("duration")]
-		public int TotalTimeSeconds { get; set; }
+		public double TotalTimeSecondsDouble { get; set; }
 
 		/// <summary>
 		/// Геометрия маршрута в polyline
@@ -37,7 +47,7 @@ namespace QS.Osrm
 		/// </summary>
 		public TimeSpan TotalTime{
 			get{
-				return  TimeSpan.FromSeconds(TotalTimeSeconds);
+				return  TimeSpan.FromSeconds((double)TotalTimeSeconds);
 			}
 		}
 
