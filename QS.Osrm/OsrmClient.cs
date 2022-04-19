@@ -61,11 +61,11 @@ namespace QS.Osrm
 				{
 					logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
 					logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
-					logger.Debug("Полный ответ: {0}", response.Content);
+					logger.Debug($"Полный ответ: {response.Content}");
 				}
 				else
 				{
-					logger.Debug("Полный ответ за {1} сек.: {0}", response.Content, (DateTime.Now - startTime).TotalSeconds);
+					logger.Debug($"Полный ответ за {(DateTime.Now - startTime).TotalSeconds} сек.: {response.Content}");
 				}
 				return response.Data;
 			}
