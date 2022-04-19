@@ -37,38 +37,37 @@ namespace QS.Osrm
 
 			DateTime startTime = DateTime.Now;
 
-			using (var client = new RestClient(ServerUrl))
-            {
-				client.UseNewtonsoftJson();
-				var request = new RestRequest("/route/v1/car/{points}", Method.Get);
+			var client = new RestClient(ServerUrl);
+			client.UseNewtonsoftJson();
 
-				var points = String.Join(";", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Longitude, point.Latitude)));
+			var request = new RestRequest("/route/v1/car/{points}", Method.GET);
 
-				request.AddUrlSegment("points", points);
+			var points = String.Join(";", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Longitude, point.Latitude)));
 
-				if (alt) // По умолчанию выключено
-					request.AddQueryParameter("alternatives", "true");
+			request.AddUrlSegment("points", points);
 
-				if (geometry != GeometryOverview.Simplified) // По умолчанию включено simplified
-					request.AddQueryParameter("overview", geometry.ToString().ToLower());
+			if (alt) // По умолчанию выключено
+				request.AddQueryParameter("alternatives", "true");
 
-				var response = await client.ExecuteAsync<RouteResponse>(request);
-				if (response.Data == null)
-				{
-					logger.Error("Ошибка в обработке запроса к osrm status={0} message={1}", response.ResponseStatus, response.ErrorMessage);
-				}
-				else if (response.Data.Code != "Ok")
-				{
-					logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
-					logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
-					logger.Debug($"Полный ответ: {response.Content}");
-				}
-				else
-				{
-					logger.Debug($"Полный ответ за {(DateTime.Now - startTime).TotalSeconds} сек.: {response.Content}");
-				}
-				return response.Data;
+			if (geometry != GeometryOverview.Simplified) // По умолчанию включено simplified
+				request.AddQueryParameter("overview", geometry.ToString().ToLower());
+
+			var response = await client.ExecuteAsync<RouteResponse>(request);
+			if (response.Data == null)
+			{
+				logger.Error("Ошибка в обработке запроса к osrm status={0} message={1}", response.ResponseStatus, response.ErrorMessage);
 			}
+			else if (response.Data.Code != "Ok")
+			{
+				logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
+				logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
+				logger.Debug($"Полный ответ: {response.Content}");
+			}
+			else
+			{
+				logger.Debug($"Полный ответ за {(DateTime.Now - startTime).TotalSeconds} сек.: {response.Content}");
+			}
+			return response.Data;
 		}
 	}
 }
