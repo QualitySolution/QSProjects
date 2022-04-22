@@ -29,7 +29,7 @@ namespace QS.Test.Utilities
 			Assert.That(result, Is.EqualTo("+7-812-309-80-89"));
 		}
 
-		[Test(Description = "Проверяем что обрезаем лишнии цифры в номере.")]
+		[Test(Description = "Проверяем что обрезаем лишении цифры в номере.")]
 		public void RussiaOnlyHyphenated_RemoveExtraDigitsTest()
 		{
 			var phoneFormatter = new PhoneFormatter(PhoneFormat.RussiaOnlyHyphenated);

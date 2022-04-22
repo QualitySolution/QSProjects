@@ -69,7 +69,7 @@ namespace QS.Test.Utilities
 			Assert.That(mainRange.GetTotalExcludedDays, Is.EqualTo(15));
 		}
 
-		[Test(Description = "Проверяем расчет количества дней в ситуации когда дипазоны косаются боками, между ними нет дней.")]
+		[Test(Description = "Проверяем расчет количества дней в ситуации когда диапазоны касаются боками, между ними нет дней.")]
 		public void GetTotalExcludedDays_ExcludeSideTouchDaysTest()
 		{
 			var mainRange = new DateRange(new DateTime(2019, 1, 1), new DateTime(2019, 5, 5));
