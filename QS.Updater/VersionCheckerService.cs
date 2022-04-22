@@ -2,6 +2,7 @@
 using Autofac;
 using QS.Dialog;
 using QS.Project.Versioning;
+using QS.Updater.DB;
 
 namespace QS.Updater
 {

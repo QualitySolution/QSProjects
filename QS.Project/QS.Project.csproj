@@ -105,7 +105,6 @@
     <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
     <Compile Include="DomainModel\Config\IEntityConfig.cs" />
     <Compile Include="Project.DB\DBValueReader.cs" />
-    <Compile Include="Project.DB\IMySQLProvider.cs" />
     <Compile Include="Project.DB\MySQLProvider.cs" />
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
@@ -129,7 +128,6 @@
     <Compile Include="Project.Services\CommonServices.cs" />
     <Compile Include="Project.Services\ICommonServices.cs" />
     <Compile Include="Project.Services\IPermissionService.cs" />
-    <Compile Include="Project.Services\IUserService.cs" />
     <Compile Include="Project.Services\PermissionService.cs" />
     <Compile Include="Project.Services\UserService.cs" />
     <Compile Include="Project.Journal\SingleEntityJournalViewModelBase.cs" />
@@ -169,7 +167,6 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
-    <Compile Include="Project.Versioning\IApplicationInfo.cs" />
     <Compile Include="Validation\IValidationView.cs" />
     <Compile Include="Validation\IValidationViewFactory.cs" />
     <Compile Include="Validation\ObjectValidator.cs" />
@@ -231,7 +228,6 @@
     <Compile Include="Navigation\ISlideableViewModel.cs" />
     <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
     <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
-    <Compile Include="Project.Versioning\IDataBaseInfo.cs" />
     <Compile Include="Project.DB\NhDataBaseInfo.cs" />
     <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
@@ -240,13 +236,9 @@
     <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
-    <Compile Include="Project.Versioning\AssemblyAttributes.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
-    <Compile Include="Project.Versioning\ApplicationVersionInfo.cs" />
     <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
-    <Compile Include="Project.Versioning\Product\IProductService.cs" />
-    <Compile Include="Project.Versioning\Product\ProductEdition.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
     <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
@@ -292,7 +284,6 @@
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="BaseParameters\ViewModels\" />
-    <Folder Include="Project.Versioning\Product\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">

@@ -60,16 +60,11 @@
     <Compile Include="DTO\Result.cs" />
     <Compile Include="IUpdaterUI.cs" />
     <Compile Include="ISkipVersionState.cs" />
-    <Compile Include="IDBUpdater.cs" />
-    <Compile Include="DB\ViewModels\UpdateProcessViewModel.cs" />
     <Compile Include="VersionCheckerService.cs" />
-    <Compile Include="DB\SQLDBUpdater.cs" />
     <Compile Include="DTO\VersionRequests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DTO\" />
-    <Folder Include="DB\" />
-    <Folder Include="DB\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj">
