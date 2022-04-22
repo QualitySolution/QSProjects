@@ -74,6 +74,13 @@ namespace QS.Updater.DB
 				return;
 			}
 
+			if (parametersService.UpdateInProgress(typeof(bool?)) ?? false) {
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, "Предыдущее обновления базы данных не было завершено. " +
+				                                                      "База данных поломана. Восстановите базу данных из резервной копии и попробуйте снова. " +
+				                                                      "Если проблема повторяется, напишите в тех поддержку: support@qsolution.ru");
+				Environment.Exit(1);
+			}
+			
 			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
 				if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser(uow).IsAdmin)
 					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);

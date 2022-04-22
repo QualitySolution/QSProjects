@@ -119,13 +119,15 @@ namespace QS.Updater.DB.ViewModels
 						dbVersion.VersionToShortString(),
 						hops.Last().Destination.VersionToShortString()
 					));
+				parametersService.UpdateInProgress = true;
 				foreach (var hop in hops) {
 					if(cancellation.IsCancellationRequested)
 						return;
 					RunOneUpdate(hop);
 					TotalProgress.Add();
 				}
-
+				parametersService.UpdateInProgress = null;
+				
 				TotalProgress.Close();
 				logger.Info("Обновление до версии завершено.");
 				Success = true;
