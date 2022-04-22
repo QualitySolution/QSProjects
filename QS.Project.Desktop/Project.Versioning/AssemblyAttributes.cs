@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace QS.Project.Versioning
 {
@@ -66,11 +66,11 @@ namespace QS.Project.Versioning
 	/// Атрибут позволяющий добавлять совместимые на уровне базы данных модификации. Можно указывать несколько.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-	public class AssemblyСompatibleModificationAttribute : Attribute
+	public class AssemblyCompatibleModificationAttribute : Attribute
 	{
 		public string Name;
-		public AssemblyСompatibleModificationAttribute(string name) { Name = name; }
-		public AssemblyСompatibleModificationAttribute() { }
+		public AssemblyCompatibleModificationAttribute(string name) { Name = name; }
+		public AssemblyCompatibleModificationAttribute() { }
 	}
 
 	/// <summary>

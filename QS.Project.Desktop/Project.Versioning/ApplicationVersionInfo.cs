@@ -14,7 +14,7 @@ namespace QS.Project.Versioning
 		public bool ModificationIsHidden => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.HideFromUser ?? true;
 		public string[] СompatibleModifications {
 			get {
-				var modificationAttributes = Assembly.GetCustomAttributes<AssemblyСompatibleModificationAttribute>();
+				var modificationAttributes = Assembly.GetCustomAttributes<AssemblyCompatibleModificationAttribute>();
 				var list = modificationAttributes.Select(x => x.Name).ToList();
 				if (!String.IsNullOrWhiteSpace(Modification) && !list.Contains(Modification))
 					list.Add(Modification);
