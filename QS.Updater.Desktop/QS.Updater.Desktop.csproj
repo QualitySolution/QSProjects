@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>QS</RootNamespace>
+        <Company>Quality Solution</Company>
+        <ProjectGuid>{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="DBScripts" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+      <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />
+    </ItemGroup>
+
+</Project>

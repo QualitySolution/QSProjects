@@ -93,6 +93,10 @@
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj">
+      <Project>{9ed68a8a-25ee-4b6a-a483-a386bfc2f12b}</Project>
+      <Name>QS.Updater.Desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
       <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
       <Name>QS.Updater</Name>
