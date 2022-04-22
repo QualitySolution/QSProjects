@@ -18,7 +18,7 @@ namespace QS.Banks.Domain
 		}
 
 		GenericObservableList<Account> observableAccounts;
-		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
+		//FIXME Костыль пока не разберемся как научить hibernate работать с обновляемыми списками.
 		public virtual GenericObservableList<Account> ObservableAccounts {
 			get {
 				if(observableAccounts == null) {

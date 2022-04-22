@@ -63,8 +63,8 @@ namespace QSOrmProject
 		}
 
 		/// <summary>
-		/// Используется для cложной обработки строки отображения сущьности. На вход передается объект сущьности на выходе должна получится строка.
-		/// Если ObjectDisplayFunc == null, сущьность отображается через функцию DomainHelper.GetObjectTilte, то есть по свойствам Title или Name.
+		/// Используется для сложной обработки строки отображения сущности. На вход передается объект сущности на выходе должна получится строка.
+		/// Если ObjectDisplayFunc == null, сущность отображается через функцию DomainHelper.GetObjectTitle, то есть по свойствам Title или Name.
 		/// Для установки используете метод SetObjectDisplayFunc
 		/// </summary>
 		public Func<object, string> ObjectDisplayFunc { get; private set; }
@@ -77,7 +77,7 @@ namespace QSOrmProject
 
 		public event EventHandler<EntryReferenceBeforeChangeEventArgs> BeforeChangeByUser;
 
-		[Browsable (false)] //FIXME Пока не работает корректно установка заначения по умолчанию нужно разбираться.
+		[Browsable (false)] //FIXME Пока не работает корректно установка значения по умолчанию нужно разбираться.
 		[DefaultValue (true)]
 		public bool CanEditReference {
 			get {

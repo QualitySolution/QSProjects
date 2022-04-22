@@ -14,7 +14,7 @@ namespace QS.Validation
 
 		/// <param name="requests">Список валидируемых объектов и контекстов</param>
 		/// <param name="showValidationResults">Указывает, нужно ли показывать сообщение с результатами валидации (Только если объект не прошёл валидацию)</param>
-		/// <returns>Возвращает <see langword="true"/> если объекты корректены.</returns>
+		/// <returns>Возвращает <see langword="true"/> если объекты корректные.</returns>
 		bool Validate(IEnumerable<ValidationRequest> requests, bool showValidationResults = true);
 
 		/// <summary>

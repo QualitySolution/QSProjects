@@ -53,7 +53,7 @@ namespace QSCustomFields
 							field.ColumnName});
 
 						if(schema.Rows.Count < 1)
-							throw new ApplicationException(String.Format ("Клонка {0}, не найдена в таблице {1}", field.ColumnName, table.DBName));
+							throw new ApplicationException(String.Format ("Колонка {0}, не найдена в таблице {1}", field.ColumnName, table.DBName));
 						//Debug Только для дебага.
 						foreach (System.Data.DataRow row in schema.Rows)
 						{

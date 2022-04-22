@@ -239,7 +239,7 @@ namespace QS.Dialog.Gtk
 		}
 
 		private Button saveButton, cancelButton;
-		//FIXME Возможно временный метод, в нем не было необходиости пока в MonoDevelop не появился баг, с удалением подписок с кнопок Save и Cancel
+		//FIXME Возможно временный метод, в нем не было необходимости пока в MonoDevelop не появился баг, с удалением подписок с кнопок Save и Cancel
 		private void CheckButtonSubscription()
 		{
 			saveButton = GtkHelper.EnumerateAllChildren(this).OfType<Button> ().FirstOrDefault (x => x.Name == "buttonSave");

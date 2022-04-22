@@ -102,7 +102,7 @@ namespace QS.Deletion
 			if(fromE == null)
 				throw new ArgumentNullException(nameof(fromE));
 			if(fromE.Id == 0)
-				throw new ArgumentException("Сущьность должна уже иметь ID", nameof(fromE));
+				throw new ArgumentException("Сущность должна уже иметь ID", nameof(fromE));
 
 			var delConfig = configuration.GetDeleteInfo<TEntity>();
 			if(delConfig == null)

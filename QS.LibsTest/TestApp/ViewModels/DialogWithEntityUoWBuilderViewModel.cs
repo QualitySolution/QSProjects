@@ -6,7 +6,7 @@ using QS.ViewModels.Dialog;
 namespace QS.Test.TestApp.ViewModels
 {
 	/// <summary>
-	/// Диалог с наличием в конструкторе IEntityUoWBuilder, что позволяет генератору хешей сгенерировать для тестов неши с Id сущьности.
+	/// Диалог с наличием в конструкторе IEntityUoWBuilder, что позволяет генератору хешей сгенерировать для тестов хеши с Id сущности.
 	/// </summary>
 	public class DialogWithEntityUoWBuilderViewModel : DialogViewModelBase
 	{

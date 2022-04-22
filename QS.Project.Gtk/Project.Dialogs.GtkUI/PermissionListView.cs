@@ -133,7 +133,7 @@ namespace QS.Project.Dialogs
 				hBox.SetChildPacking(widget, false, true, 0, PackType.Start);
 			}
 
-			hBox.Data.Add("permission", node); //Для свзяки виджета и права
+			hBox.Data.Add("permission", node); //Для связки виджета и права
 			hBox.ShowAll();
 
 			vboxPermissions.Add(hBox);

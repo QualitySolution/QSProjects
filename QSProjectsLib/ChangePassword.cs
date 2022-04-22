@@ -80,7 +80,7 @@ namespace QSProjectsLib
 					cmd.ExecuteNonQuery ();
 					logger.Info ("Пароль изменен. Ok");
 
-					//Заменяем пароль с текущей строке одключения, для того чтобы при переподключении не было ошибок 
+					//Заменяем пароль с текущей строке подключения, для того чтобы при переподключении не было ошибок 
 					//и чтобы при смене пароля еще раз был текущий пароль.
 					QSMain.ConnectionString = reg.Replace(QSMain.ConnectionString, $"password={entryPassword.Text};");
 

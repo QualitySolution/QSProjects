@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("QS.Project.Gtk")]
 [assembly: InternalsVisibleTo("QS.LibsTest")]
-[assembly: InternalsVisibleTo("QSOrmProject")]//FIXME Временная ссылка пока польностью не перейдем на QS.Project
+[assembly: InternalsVisibleTo("QSOrmProject")]//FIXME Временная ссылка пока полностью не перейдем на QS.Project
 
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,

@@ -50,7 +50,7 @@ namespace QS.Banks.Domain
 		}
 
 		GenericObservableList<CorAccount> observableCorAccounts;
-		//FIXME Кослыль пока не разберемся как научить hibernate работать с обновляемыми списками.
+		//FIXME Костыль пока не разберемся как научить hibernate работать с обновляемыми списками.
 		public virtual GenericObservableList<CorAccount> ObservableCorAccounts {
 			get {
 				if(observableCorAccounts == null) {
@@ -62,7 +62,7 @@ namespace QS.Banks.Domain
 
 		CorAccount defaultCorAccount;
 
-		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер кореспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
+		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер корреспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
 		[Display (Name = "К/С")]
 		public virtual CorAccount DefaultCorAccount {
 			get { return defaultCorAccount; }

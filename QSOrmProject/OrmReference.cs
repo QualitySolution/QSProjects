@@ -307,7 +307,7 @@ namespace QSOrmProject
 				fullList.Count, delayfilter.TotalSeconds, delayfilter.TotalMilliseconds / fullList.Count);
 			ytreeviewRef.ItemsDataSource = viewList;
 			var loadDelay = DateTime.Now.Subtract(searchStarted) - delayfilter;
-			logger.Debug("Загрузка таблицы {0} милисекунд.", loadDelay.TotalMilliseconds);
+			logger.Debug("Загрузка таблицы {0} миллисекунд.", loadDelay.TotalMilliseconds);
 			UpdateSum();
 		}
 
@@ -465,7 +465,7 @@ namespace QSOrmProject
 			System.Reflection.ConstructorInfo ci = filterClass.GetConstructor(paramTypes);
 			if (ci == null) {
 				InvalidOperationException ex = new InvalidOperationException(
-												   String.Format("Конструктор в класе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString(paramTypes)));
+												   String.Format("Конструктор в классе фильтра {0} c параметрами({1}) не найден.", filterClass.ToString(), NHibernate.Util.CollectionPrinter.ToString(paramTypes)));
 				logger.Error(ex);
 				throw ex;
 			}

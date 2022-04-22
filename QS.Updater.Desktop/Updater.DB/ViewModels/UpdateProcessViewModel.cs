@@ -134,13 +134,13 @@ namespace QS.Updater.DB.ViewModels
 			catch (MySqlException ex) when (ex.Number == 1142) {
 				logger.Error(ex, "Нет прав на доступ к таблицам базы данных, в момент выполнения обновления.");
 				ButtonExcuteSensitive = false;
-				interactive.ShowMessage(ImportanceLevel.Error, "У вас нет прав на выполение команд обновления базы на уровне MySQL\\MariaDB сервера. Получите права на изменение структуры таблиц базы данных или выполните обновление от пользователя root.");
+				interactive.ShowMessage(ImportanceLevel.Error, "У вас нет прав на выполнение команд обновления базы на уровне MySQL\\MariaDB сервера. Получите права на изменение структуры таблиц базы данных или выполните обновление от пользователя root.");
 			}
 		}
 
 		public void Cancel()
 		{
-			if(interactive.Question("Остановка процеса обновления на середине приведет к неработоспособному состоянию базы данны. Действительно хотите остановить?", "Остановка операции"))
+			if(interactive.Question("Остановка процесса обновления на середине приведет к неработоспособному состоянию базы данных. Действительно хотите остановить?", "Остановка операции"))
 				Close(false, CloseSource.Cancel);
 		}
 
@@ -170,7 +170,7 @@ namespace QS.Updater.DB.ViewModels
 		{
 			using(MySqlCommand cmd = SQLProvider.DbConnection.CreateCommand()) {
 				using(MySqlBackup mb = new MySqlBackup(cmd)) {
-					var dir = System.IO.Path.GetDirectoryName(FileName);
+					var dir = Path.GetDirectoryName(FileName);
 
 					if(!Directory.Exists(dir))
 						Directory.CreateDirectory(dir);

@@ -4,7 +4,7 @@ using QS.DomainModel.UoW;
 namespace QS.Dialog
 {
 	/// <summary>
-	/// Диалог редактирования сущьности
+	/// Диалог редактирования сущности
 	/// </summary>
 	public interface IEntityDialog : ISingleUoWDialog
 	{

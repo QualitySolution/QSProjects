@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Data.Common;
-using System.IO;
 using System.Linq;
 using Autofac;
 using MySql.Data.MySqlClient;
 using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Navigation;
-using QS.Project.Versioning;
 using QS.Services;
 using QS.Updater.DB.ViewModels;
 using QS.Utilities.Text;

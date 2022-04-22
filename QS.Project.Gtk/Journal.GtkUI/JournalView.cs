@@ -127,7 +127,7 @@ namespace QS.Journal.GtkUI
 			foreach(var spinner in whishList) {
 				var allChars = String.Join("", spinner.Frames);
 				var layout = labelTotalRow.CreatePangoLayout(allChars);
-				//К сожалению этот способ определения неподдерживаемых символов на винде для нецветных спинеров все равно возваращает 0, даже если символ не поддежривается.
+				//К сожалению этот способ определения не поддерживаемых символов на винде для нецветных спинеров все равно возвращает 0, даже если символ не поддерживается.
 				if(layout.UnknownGlyphsCount == 0) {
 					CountingTextSpinner = new TextSpinner(spinner);
 					break;

@@ -25,7 +25,7 @@ namespace QS.Updater
 		/// Запускает процесс обновления в отдельном потоке.
 		/// </summary>
 		/// <param name="flags">Флаги апдейтера</param>
-		/// <param name="container">Контейнер Autofac нужен для содания скопа</param>
+		/// <param name="container">Контейнер Autofac нужен для создания скопа</param>
 		public void StartCheckUpdateThread (UpdaterFlags flags, IContainer container)
 		{
 			//Важно здесь создаем новый скоп, так как общий снаружи может закрыться.

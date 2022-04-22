@@ -32,7 +32,7 @@ namespace QS.HistoryLog.Domain
 			UserLogin = login ?? user?.Login;
 			ActionName = actionName;
 
-			//При сохранении в базу обрезаем длинну действия до размера колонки.
+			//При сохранении в базу обрезаем длину действия до размера колонки.
 			if(ActionName != null && ActionName.Length > 100)
 				ActionName = ActionName.Substring(0, 97) + "...";
 		}

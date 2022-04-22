@@ -99,7 +99,7 @@ namespace QS.ViewModels
 		public UserBase CurrentUser { get; set; }
 		protected ICommonServices CommonServices { get; }
 
-		[Obsolete("[Только для Водовоза]Этот конструктор реализован для совместимости со старыми вызовами, используйте констуруктор который принимает IUnitOfWorkFactory в качестве внешней зависимости.")]
+		[Obsolete("[Только для Водовоза]Этот конструктор реализован для совместимости со старыми вызовами, используйте конструктор который принимает IUnitOfWorkFactory в качестве внешней зависимости.")]
 		protected EntityTabViewModelBase(IEntityUoWBuilder ctorParam, ICommonServices commonServices) 
 			: this(ctorParam, QS.DomainModel.UoW.UnitOfWorkFactory.GetDefaultFactory, commonServices)
 		{ }

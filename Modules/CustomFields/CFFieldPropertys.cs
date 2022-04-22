@@ -175,7 +175,7 @@ namespace QSCustomFields
 				sql = String.Format ("ALTER TABLE {0} ADD COLUMN {1} DECIMAL({2},{3}) NULL DEFAULT NULL", TableName, entryDBName.Text, spinSize.Text, spinDigits.Text);
 				break;
 			default:
-				throw new ApplicationException(String.Format ("Не поддеживается создание колонки типа {0}", ((FieldDataTypes)comboDataType.Active).ToString ()));
+				throw new ApplicationException(String.Format ("Не поддерживается создание колонки типа {0}", ((FieldDataTypes)comboDataType.Active).ToString ()));
 			}
 			MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB, trans);
 			cmd.ExecuteNonQuery ();
@@ -192,7 +192,7 @@ namespace QSCustomFields
 				sql = String.Format("ALTER TABLE {0} CHANGE COLUMN {1} {2} DECIMAL({3},{4}) NULL DEFAULT NULL", TableName, OriginalFieldName, entryDBName.Text, spinSize.Text, spinDigits.Text);
 				break;
 			default:
-				throw new ApplicationException(String.Format ("Не поддеживается изменение колонки для типа {0}", ((FieldDataTypes)comboDataType.Active).ToString ()));
+				throw new ApplicationException(String.Format ("Не поддерживается изменение колонки для типа {0}", ((FieldDataTypes)comboDataType.Active).ToString ()));
 			}
 			MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB, trans);
 			cmd.ExecuteNonQuery ();

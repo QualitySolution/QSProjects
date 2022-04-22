@@ -26,7 +26,7 @@ namespace QS.Tdi
 			if (getHashMethod == null)
 			{
 				var argsText = String.Join(", ", argsTypes.Select((t, i) => $"{t.Name} arg{i + 1}"));
-				throw new InvalidCastException($"Для работы метода OpenTab у класа {tabClass.Name} должен быть статический метод {GenerateTabHashMethodName}({argsText})");
+				throw new InvalidCastException($"Для работы метода OpenTab у класса {tabClass.Name} должен быть статический метод {GenerateTabHashMethodName}({argsText})");
 			}
 
 			return (string)getHashMethod.Invoke(null, argsValues);

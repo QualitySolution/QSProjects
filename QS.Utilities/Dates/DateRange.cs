@@ -64,7 +64,7 @@ namespace QS.Utilities.Dates
 
 		private DateTime FindExcludeEnd(DateRange range)
 		{
-			//К концу дипазона добавлен день, для того чтобы склеивать случаи когда 5 числа заканчивается предыдущий, а 6-го начинается следующий.
+			//К концу диапазона добавлен день, для того чтобы склеивать случаи когда 5 числа заканчивается предыдущий, а 6-го начинается следующий.
 			var next = ExcludedRanges.Where(r => r.Begin <= range.End.AddDays(1) && r.End > range.End).OrderBy(r => r.End).LastOrDefault();
 			if (next == null)
 				return range.End;
@@ -90,7 +90,7 @@ namespace QS.Utilities.Dates
 
 				days = days - interval.Days;
 			}
-			throw new ArgumentOutOfRangeException(nameof(days), "Количество дней для заполнения привысило общее количество дней в интревалах.");
+			throw new ArgumentOutOfRangeException(nameof(days), "Количество дней для заполнения превысило общее количество дней в интервалах.");
 		}
 	}
 }

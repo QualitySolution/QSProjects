@@ -14,7 +14,7 @@ namespace QS.Test.Views.Resolve
 	[TestFixture(TestOf = typeof(ClassNamesBaseGtkViewResolver))]
 	public class ClassNamesBaseGtkViewResolverTest
 	{
-		[Test(Description = "Проверяем коректность работы резольвера на тестовом классе")]
+		[Test(Description = "Проверяем корректность работы резольвера на тестовом классе")]
 		public void CanResolveOneLevelViewTest()
 		{
 			var navigation = Substitute.For<INavigationManager>();
@@ -26,7 +26,7 @@ namespace QS.Test.Views.Resolve
 			Assert.That(view, Is.InstanceOf<OneLevelTestView>());
 		}
 
-		[Test(Description = "Проверяем коректность работы резольвера на тестовом классе")]
+		[Test(Description = "Проверяем корректность работы резольвера на тестовом классе")]
 		public void CanResolveTwoLevelViewTest()
 		{
 			var navigation = Substitute.For<INavigationManager>();
@@ -38,7 +38,7 @@ namespace QS.Test.Views.Resolve
 			Assert.That(view, Is.InstanceOf<SecondTestClassView>());
 		}
 
-		[Test(Description = "Проверяем коректность работы резольвера на тестовом классе")]
+		[Test(Description = "Проверяем корректность работы резольвера на тестовом классе")]
 		public void CanResolveZeroLevelViewTest()
 		{
 			var navigation = Substitute.For<INavigationManager>();

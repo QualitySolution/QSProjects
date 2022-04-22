@@ -13,7 +13,7 @@ namespace QS.Project.Search.GtkUI
 		#region Настройка
 		/// <summary>
 		/// Задержка в передачи запроса на поиск во view model.
-		/// Измеряется в милсекундах.
+		/// Измеряется в миллисекундах.
 		/// </summary>
 		public static uint QueryDelay = 0;
 		#endregion

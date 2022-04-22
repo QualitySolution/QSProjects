@@ -9,7 +9,7 @@ namespace QS.Dialog.Gtk
 {
 	public static class DialogHelper
 	{
-		[Obsolete("Оставлено только для ВОДОВОЗА. В других проектах не используется так как откзывается от антипатерна ServiceLocation.")]
+		[Obsolete("Оставлено только для ВОДОВОЗА. В других проектах не используется так как отказываемся от антипатерна ServiceLocation.")]
 		public static IFilterWidgetResolver FilterWidgetResolver { get; set; }
 
 		public static IEntityDialog FindParentEntityDialog(Widget child)

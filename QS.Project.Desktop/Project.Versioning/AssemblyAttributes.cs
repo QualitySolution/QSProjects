@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace QS.Project.Versioning
 {
@@ -14,7 +14,7 @@ namespace QS.Project.Versioning
 	}
 
 	/// <summary>
-	/// Атрибут для указания контактной информации о поддежке программы
+	/// Атрибут для указания контактной информации о поддержке программы
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)]
 	public class AssemblySupportAttribute : Attribute 

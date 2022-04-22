@@ -58,7 +58,7 @@ namespace QS.Test.Banks
 				}
 			};
 
-			var source2 = new object[] { bank2, bankSpr2, false, "Банки отличаются отсутсвием счета в банке из справоника" };
+			var source2 = new object[] { bank2, bankSpr2, false, "Банки отличаются отсутствием счета в банке из справочника" };
 			return new object[] { source1, source2 };
 		}
 		static BankRegion CreateNewRegion()

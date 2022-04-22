@@ -46,7 +46,7 @@ namespace QS.Test.Project.Journal
 			.TransformUsing(Transformers.AliasToBean<DocumentJournalNode<Document2>>());
 		}
 
-		[Test(Description = "Проверяем что действительно корекнто объединяем 2 запроса. В нужном порядке.")]
+		[Test(Description = "Проверяем что действительно корректно объединяем 2 запроса. В нужном порядке.")]
 		public void CorrectUnionTwoQueryCase()
 		{
 			InitialiseNHibernate(typeof(Document1).Assembly);
@@ -107,7 +107,7 @@ namespace QS.Test.Project.Journal
 				if (treadException != null)
 					throw treadException;
 				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
-				//Предпологаем что загрузили всего 2 строки, в журнале у нас размер страницы 2.
+				//Предполагаем что загрузили всего 2 строки, в журнале у нас размер страницы 2.
 				var result = (IList<DocumentJournalNode>)dataLoader.Items;
 				Assert.That(result.Count, Is.GreaterThanOrEqualTo(2));
 				Assert.That(result[0].Date, Is.EqualTo(new DateTime(2019, 1, 1)));
@@ -118,7 +118,7 @@ namespace QS.Test.Project.Journal
 				dataLoader.LoadData(true);
 				oSignalEvent.WaitOne();
 				oSignalEvent.Reset();
-				//Предпологаем что загрузили еще минимум 2 строки.
+				//Предполагаем что загрузили еще минимум 2 строки.
 				Assert.That(itemsListUpdatedRised, Is.EqualTo(true));
 				result = (IList<DocumentJournalNode>)dataLoader.Items;
 				Assert.That(result.Count, Is.GreaterThanOrEqualTo(4));

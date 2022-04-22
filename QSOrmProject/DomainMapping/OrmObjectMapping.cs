@@ -91,7 +91,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedEventArgs> objectUpdated;
 
-		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
 		public event EventHandler<OrmObjectUpdatedEventArgs> ObjectUpdated {
 			add {
 				lock(eventSetLock) {
@@ -110,7 +110,7 @@ namespace QSOrmProject.DomainMapping
 
 		event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> objectUpdatedGeneric;
 
-		[Obsolete("Используйте новый механизм уведомлений об изменениях сущьностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
+		[Obsolete("Используйте новый механизм уведомлений об изменениях сущностей QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.{Подписка}.")]
 		public event EventHandler<OrmObjectUpdatedGenericEventArgs<TEntity>> ObjectUpdatedGeneric {
 			add {
 				lock(eventSetLock) {
@@ -148,7 +148,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем диалог по умолчанию, для открытия сущьности
+		/// Указываем диалог по умолчанию, для открытия сущности
 		/// </summary>
 		public OrmObjectMapping<TEntity> Dialog<TDialog>()
 		{
@@ -157,7 +157,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем диалог по умолчанию, для открытия сущьности
+		/// Указываем диалог по умолчанию, для открытия сущности
 		/// </summary>
 		public OrmObjectMapping<TEntity> Dialog(Type dialogClass)
 		{
@@ -166,7 +166,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем журнал по умолчанию, для выбора сущьностей.
+		/// Указываем журнал по умолчанию, для выбора сущностей.
 		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter<TFilter>()
 		{
@@ -175,7 +175,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Указываем журнал по умолчанию, для выбора сущьностей.
+		/// Указываем журнал по умолчанию, для выбора сущностей.
 		/// </summary>
 		public OrmObjectMapping<TEntity> JournalFilter(Type filterClass)
 		{
@@ -184,7 +184,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Устанавливаем необходимые права для редактирования сущьности.
+		/// Устанавливаем необходимые права для редактирования сущности.
 		/// </summary>
 		public OrmObjectMapping<TEntity> EditPermision(string permisionName)
 		{
@@ -193,7 +193,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Добавляем в контекстное меню, которое будет отображаться в журнале сущьностей.
+		/// Добавляем в контекстное меню, которое будет отображаться в журнале сущностей.
 		/// </summary>
 		public OrmObjectMapping<TEntity> PopupMenu(Func<TEntity[], Gtk.Menu> getMenuFunc)
 		{
@@ -202,7 +202,7 @@ namespace QSOrmProject.DomainMapping
 		}
 
 		/// <summary>
-		/// Устанавливаем будет ли использоваться слайдер для журналов сущьности.
+		/// Устанавливаем будет ли использоваться слайдер для журналов сущности.
 		/// </summary>
 		public OrmObjectMapping<TEntity> UseSlider(bool? useSlider)
 		{
@@ -222,4 +222,3 @@ namespace QSOrmProject.DomainMapping
 		#endregion
 	}
 }
-

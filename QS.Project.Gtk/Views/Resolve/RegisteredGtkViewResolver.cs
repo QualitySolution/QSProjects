@@ -19,7 +19,7 @@ namespace QS.Views.Resolve
 		#region Fluent
 
 		/// <summary>
-		/// Регистрируем соответсвие между ViewModel и View.
+		/// Регистрируем соответствие между ViewModel и View.
 		/// </summary>
 		/// <returns>The view.</returns>
 		/// <typeparam name="TViewModel">Тип ViewModel, может быть интерфейсом или базовым классом, для регистрации одного View ко многим реализациям ViewModel</typeparam>

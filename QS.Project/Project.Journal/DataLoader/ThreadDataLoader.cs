@@ -63,7 +63,7 @@ namespace QS.Project.Journal.DataLoader
 		#region Добавляем множенственны параметры
 
 		/// <summary>
-		/// Добавляем порядок сортировки всей коллекции. Эта настройка нужна только для загрузки с нескольких источников. Для загрузки из одного источкника достаточно будет сортировки в самом запросе.
+		/// Добавляем порядок сортировки всей коллекции. Эта настройка нужна только для загрузки с нескольких источников. Для загрузки из одного источника достаточно будет сортировки в самом запросе.
 		/// Внимание! Чтобы слияние запросов проходило корректно, необходимо чтобы в каждом из запросов элементы были отсортированы в том же порядке.
 		/// Можно вызывать несколько раз, для последовательной сортировки, сначала по одному значению потом по второму.
 		/// </summary>
@@ -268,7 +268,7 @@ namespace QS.Project.Journal.DataLoader
 			var filtredLoaders = MakeOrderedEnumerable(loaders.Where(l => l.NextUnreadedNode() != null));
 			while (loaders.Any(l => l.NextUnreadedNode() != null)) {
 				if (loaders.Any(l => (l as IQueryLoader<TNode>).HasUnloadedItems && l.NextUnreadedNode() == null))
-					break; //Уперлись в неподгруженный хвост. Пока хватит, ждем следующей страницы.
+					break; //Уперлись в недогруженный хвост. Пока хватит, ждем следующей страницы.
 				var taked = filtredLoaders.First();
 				readedNodes.Add(taked.TakeNextUnreadedNode());
 			}
@@ -337,11 +337,11 @@ namespace QS.Project.Journal.DataLoader
 				return;
 
 			if(TotalCount.HasValue)
-				return; //Незачем пресчитывать.
+				return; //Незачем пересчитывать.
 
 			var runLoaders = AvailableQueryLoaders.ToArray();
 
-			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которы мы могли бы посчитать строки.
+			if(runLoaders.Length == 0) //Нет загрузчиков с помощь которых мы могли бы посчитать строки.
 				return;
 
 			if(cts.IsCancellationRequested)

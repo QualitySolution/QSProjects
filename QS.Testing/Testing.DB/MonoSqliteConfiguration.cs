@@ -5,7 +5,7 @@ namespace FluentNHibernate.Cfg.Db
 {
 	/// <summary>
 	/// Класс взять отсюда https://github.com/MrSpiffy/MonoSqliteConfiguration
-	/// Требуется для работы SQLite на линуксе. Если понадобится еще где-то за пределами тестов можно перенести вдругое место.
+	/// Требуется для работы SQLite на линуксе. Если понадобится еще где-то за пределами тестов можно перенести в другое место.
 	/// </summary>
 	 public class MonoSqliteConfiguration : PersistenceConfiguration<MonoSqliteConfiguration>
     {

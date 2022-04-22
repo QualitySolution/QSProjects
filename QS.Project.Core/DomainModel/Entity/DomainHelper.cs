@@ -45,10 +45,10 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
-		/// Метод возвращает <c>Id</c> не типизированого объекта.
+		/// Метод возвращает <c>Id</c> не типизированного объекта.
 		/// Если класс реализует <c>IDomainObject</c>, используется интерфейс для ускорения.
-		/// Иначе ищется свойство <c>Id</c>, у каласа и возвращается значение.
-		/// Если свойство <c>Id</c> не найдено вызовется эксепшен ArgumentException
+		/// Иначе ищется свойство <c>Id</c>, у класса и возвращается значение.
+		/// Если свойство <c>Id</c> не найдено вызовется исключение ArgumentException
 		/// </summary>
 		public static int GetId(this object value)
 		{
@@ -85,7 +85,7 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
-		/// Метод расширения для <c>IDomainObject</c> позволяющий сравнивнить экземпляр с другим объектом доменной модели по <c>Id</c> и типу.
+		/// Метод расширения для <c>IDomainObject</c> позволяющий сравнить экземпляр с другим объектом доменной модели по <c>Id</c> и типу.
 		/// То есть могут быть загружены из разных сессий.
 		/// </summary>
 		/// <returns><c>true</c>, если объекты одинаковые, иначе <c>false</c>.</returns>
@@ -114,18 +114,18 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
-		/// Метод возвращает все наименования тип сущьности указанные через атрибут <c>AppellativeAttribute</c>
+		/// Метод возвращает все наименования тип сущности указанные через атрибут <c>AppellativeAttribute</c>
 		/// </summary>
-		/// <param name="subject">Экземпляр сущьности</param>
+		/// <param name="subject">Экземпляр сущности</param>
 		public static AppellativeAttribute GetSubjectNames(this object subject)
 		{
 			return GetSubjectNames (subject.GetType ());
 		}
 
 		/// <summary>
-		/// Метод возвращает все наименования тип сущьности указанные через атрибут <c>AppellativeAttribute</c>
+		/// Метод возвращает все наименования тип сущности указанные через атрибут <c>AppellativeAttribute</c>
 		/// </summary>
-		/// <param name="subjectType">Тип сущьности</param>
+		/// <param name="subjectType">Тип сущности</param>
 		public static AppellativeAttribute GetSubjectNames(this Type subjectType)
 		{
 			object[] att = subjectType.GetCustomAttributes (typeof(AppellativeAttribute), true);
@@ -216,15 +216,15 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
-		/// Метод перегружает из базы внутренню коллекцию объектов в родительском объекте. Например строки заказа, не трогая сам заказ.
-		/// Пример использования: order.ReloadChildCollection(x => x.Items, x.Order, Uow.Sesion);
+		/// Метод перегружает из базы внутреннюю коллекцию объектов в родительском объекте. Например строки заказа, не трогая сам заказ.
+		/// Пример использования: order.ReloadChildCollection(x => x.Items, x.Order, Uow.Session);
 		/// </summary>
 		/// <param name="entity">Объект в котором находится перегружаемая коллекция</param>
 		/// <param name="listSelector">Лямбда указывающая на свойство объекта содержащее коллекцию дочерних объектов.</param>
 		/// <param name="parentPropertySelector">Лямбда указывающая на свойство дочернего объекта, которое ссылается на родителя.</param>
 		/// <param name="session">Session - этим все сказано ;)</param>
-		/// <typeparam name="TEntity">Тип родительской сущьности</typeparam>
-		/// <typeparam name="TChildEntity">Тип дочерней сущьности</typeparam>
+		/// <typeparam name="TEntity">Тип родительской сущности</typeparam>
+		/// <typeparam name="TChildEntity">Тип дочерней сущности</typeparam>
 		public static void ReloadChildCollection<TEntity, TChildEntity>(this TEntity entity, Expression<Func<TEntity, IList<TChildEntity>>> listSelector, Expression<Func<TChildEntity, TEntity>> parentPropertySelector, ISession session)
 			where TEntity : class, IDomainObject
 			where TChildEntity : class, IDomainObject

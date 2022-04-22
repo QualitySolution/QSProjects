@@ -297,7 +297,7 @@
         <child>
           <widget class="Gtk.Button" id="buttonClear">
             <property name="MemberName" />
-            <property name="Tooltip" translatable="yes">Очистить поисковую фаразу</property>
+            <property name="Tooltip" translatable="yes">Очистить поисковую фразу</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
             <property name="Icon">stock:gtk-clear Menu</property>

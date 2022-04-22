@@ -60,7 +60,7 @@ namespace QS.Osrm
 			else if (response.Data.Code != "Ok")
 			{
 				logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
-				logger.Debug("Запрошен машрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
+				logger.Debug("Запрошен маршрут: {0}", String.Join(" -> ", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude))));
 				logger.Debug($"Полный ответ: {response.Content}");
 			}
 			else

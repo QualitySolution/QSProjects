@@ -7,7 +7,7 @@ using QS.RepresentationModel.GtkUI;
 namespace QSOrmProject.RepresentationModel
 {
 	/// <summary>
-	/// Базовый клас презентационной модели без конкретной сущности с подпиской на обновления любых сущностей указанных в конструкторе.
+	/// Базовый класс презентационной модели без конкретной сущности с подпиской на обновления любых сущностей указанных в конструкторе.
 	/// </summary>
 	public abstract class RepresentationModelWithoutEntityBase<TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
@@ -30,12 +30,12 @@ namespace QSOrmProject.RepresentationModel
 		/// <summary>
 		/// Запрос у модели о необходимости обновления списка если объект изменился.
 		/// </summary>
-		/// <returns><c>true</c>, если небходимо обновлять список.</returns>
+		/// <returns><c>true</c>, если необходимо обновлять список.</returns>
 		/// <param name="updatedSubject">Обновившийся объект</param>
 		protected abstract bool NeedUpdateFunc (object updatedSubject);
 
 		/// <summary>
-		/// Создает новый базовый клас и подписывается на обновления указанных типов, при этом конструкторе необходима реализация NeedUpdateFunc (object updatedSubject);
+		/// Создает новый базовый класс и подписывается на обновления указанных типов, при этом конструкторе необходима реализация NeedUpdateFunc (object updatedSubject);
 		/// </summary>
 		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
 		{

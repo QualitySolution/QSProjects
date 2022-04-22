@@ -12,7 +12,7 @@ namespace QS.Test.ViewModels.Resove
 	[TestFixture(TestOf = typeof(AutofacViewModelResolver))]
 	public class AutofacViewModelResolverTest
 	{
-		[Test(Description = "Можем найти классс журнала.")]
+		[Test(Description = "Можем найти класс журнала.")]
 		public void ResolveJournalTest()
 		{
 			var builder = new ContainerBuilder();
@@ -27,7 +27,7 @@ namespace QS.Test.ViewModels.Resove
 			Assert.That(result, Is.EqualTo(typeof(FullQuerySetEntityJournalViewModel)));
 		}
 
-		[Test(Description = "Можем найти классс диалога.")]
+		[Test(Description = "Можем найти класс диалога.")]
 		public void ResolveEntityDialogTest()
 		{
 			var builder = new ContainerBuilder();

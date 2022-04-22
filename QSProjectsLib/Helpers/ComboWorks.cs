@@ -10,7 +10,7 @@ namespace QSProjectsLib
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		public enum ListMode {OnlyItems, WithAll, WithNo}
 
-		[Obsolete("Используейте метод с перечислением ListMode.")]
+		[Obsolete("Используете метод с перечислением ListMode.")]
 		public static void ComboFillUniversal(ComboBox combo, string SqlSelect, string DisplayString, System.Data.IDataParameter[] Parameters, int KeyField, int listmode, bool WithDBValues = false)
 		{
 			ComboFillUniversal (combo, SqlSelect, DisplayString, Parameters, KeyField, (ListMode) listmode, WithDBValues);
@@ -82,7 +82,7 @@ namespace QSProjectsLib
 
 		}
 
-		[Obsolete("Используейте метод с перечислением ListMode.")]
+		[Obsolete("Используете метод с перечислением ListMode.")]
 		public static void ComboFillReference(ComboBox combo, string TableRef, int listmode, bool SetDefault = true)
 		{
 			ComboFillReference (combo, TableRef, (ListMode) listmode, SetDefault);

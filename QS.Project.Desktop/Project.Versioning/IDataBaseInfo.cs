@@ -10,7 +10,7 @@ namespace QS.Project.Versioning
 		string Name { get; }
 
 		/// <summary>
-		/// Возвращаяет <see langword="true"/> если подключены к демонстрационной базе данных.
+		/// Возвращает <see langword="true"/> если подключены к демонстрационной базе данных.
 		/// </summary>
 		bool IsDemo { get; }
 

@@ -215,7 +215,7 @@ namespace QSDocTemplates
 
 			if(tableFields.Count > 0)
 			{
-				//Удаляем уже заполненые строки.
+				//Удаляем уже заполненные строки.
 				var toDelete = new List<odtFieldSet>();
 				foreach(var table in tableFields.GroupBy(x => x.TableNode))
 				{

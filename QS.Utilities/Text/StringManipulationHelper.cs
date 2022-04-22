@@ -4,7 +4,7 @@ namespace QS.Utilities.Text
 	public static class StringManipulationHelper
 	{
 		/// <summary>
-		/// Заменяем первое вохждение найденной строки.
+		/// Заменяем первое вхождение найденной строки.
 		/// </summary>
 		public static string ReplaceFirstOccurrence(this string Source, string Find, string Replace)
 		{
@@ -16,7 +16,7 @@ namespace QS.Utilities.Text
 		}
 
 		/// <summary>
-		/// Заменяем последнее вохждение найденной строки.
+		/// Заменяем последнее вхождение найденной строки.
 		/// </summary>
 		public static string ReplaceLastOccurrence(this string Source, string Find, string Replace)
 		{

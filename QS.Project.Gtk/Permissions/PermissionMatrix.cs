@@ -183,7 +183,7 @@ namespace QS.Permissions
 		}
 
 		/// <summary>
-		/// Получаем все объекты для которых есть хотябы одно из разрешений.
+		/// Получаем все объекты для которых есть хотя бы одно из разрешений.
 		/// </summary>
 		public IEnumerable<TPerEntity> AnyPermissions()
 		{

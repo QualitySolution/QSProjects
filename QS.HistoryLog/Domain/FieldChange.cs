@@ -64,7 +64,7 @@ namespace QS.HistoryLog.Domain
 
 
 		public virtual string FieldTitle {
-			get { return HistoryMain.ResolveFieldTilte(Entity.EntityClassName, Path); }
+			get { return HistoryMain.ResolveFieldTitle(Entity.EntityClassName, Path); }
 		}
 
 		public virtual string TypeText {
@@ -219,11 +219,11 @@ namespace QS.HistoryLog.Domain
 
 			change = new FieldChange();
 			if(valueOld != null) {
-				change.OldValue = HistoryMain.GetObjectTilte(valueOld);
+				change.OldValue = HistoryMain.GetObjectTitle(valueOld);
 				change.OldId = DomainHelper.GetId(valueOld);
 			}
 			if(valueNew != null) {
-				change.NewValue = HistoryMain.GetObjectTilte(valueNew);
+				change.NewValue = HistoryMain.GetObjectTitle(valueNew);
 				change.NewId = DomainHelper.GetId(valueNew);
 			}
 			return true;

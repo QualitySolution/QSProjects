@@ -16,7 +16,7 @@ namespace QS.Project.Services.FileDialog
 		public virtual List<DialogFileFilter> FileFilters { get; } = new List<DialogFileFilter>();
 
 		/// <summary>
-		/// Определение дополнительных путей на панеле быстрого доступа
+		/// Определение дополнительных путей на панели быстрого доступа
 		/// </summary>
 		public virtual List<string> CustomDirectories { get; } = new List<string>();
     }

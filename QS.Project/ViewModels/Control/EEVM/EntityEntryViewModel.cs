@@ -125,7 +125,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		/// <summary>
-		/// Открывает диалог выбора сущьности
+		/// Открывает диалог выбора сущности
 		/// </summary>
 		public void OpenSelectDialog()
 		{

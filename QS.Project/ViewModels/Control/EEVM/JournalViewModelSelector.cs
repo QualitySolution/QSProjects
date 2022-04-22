@@ -21,7 +21,7 @@ namespace QS.ViewModels.Control.EEVM
 		/// <summary>
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
-		[Obsolete("Констуктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
+		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
 		public JournalViewModelSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
@@ -50,7 +50,7 @@ namespace QS.ViewModels.Control.EEVM
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if (!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;
-			//Сначала навсякий случай отписываемся от события, вдруг это повторное открытие не не
+			//Сначала на всякий случай отписываемся от события, вдруг это повторное открытие не не
 			page.ViewModel.OnSelectResult -= ViewModel_OnSelectResult;
 			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;
 		}

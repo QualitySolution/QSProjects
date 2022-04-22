@@ -75,7 +75,7 @@ namespace QSProjectsLib
 			Factory
 		};
 
-		//Внутриннии
+		//Внутренние
 		internal static bool WaitResultIsOk;
 
 		private static DbConnection _ConnectionDB;
@@ -134,7 +134,7 @@ namespace QSProjectsLib
 		/// Регистрируем правила Nlog для строки состояния
 		/// </summary>
 		/// <param name="methodName">Имя статического метода который будет вызываться при появлении сообщения.</param>
-		/// <param name="className">Имя класа в котором находится метод.</param>
+		/// <param name="className">Имя класса в котором находится метод.</param>
 		public static void MakeNewStatusTargetForNlog (string methodName, string className)
 		{
 			NLog.Config.LoggingConfiguration config = LogManager.Configuration;
@@ -310,7 +310,7 @@ namespace QSProjectsLib
 				               connectionDB.ConnectionTimeout,
 				               "Идет проверка соединения с базой данных.");
 			if (timeout && ConnectionDB.State == System.Data.ConnectionState.Open) {
-				ConnectionDB.Close (); //На линуксе есть случаи когда состояние соедиения не корректное.
+				ConnectionDB.Close (); //На линуксе есть случаи когда состояние соединения не корректное.
 			}
 			if (connectionDB.State != System.Data.ConnectionState.Open) {
 				logger.Warn ("Соединение с сервером разорвано, пробуем пересоединится...");
@@ -439,7 +439,7 @@ namespace QSProjectsLib
 
 		static DateTime lastRedraw;
 		/// <summary>
-		/// Главный цикл приложения будет вызываться не чаще чем время указанное в парамерах.
+		/// Главный цикл приложения будет вызываться не чаще чем время указанное в параметрах.
 		/// </summary>
 		/// <param name="milliseconds">Milliseconds.</param>
 		public static void WaitRedraw(int milliseconds )
@@ -503,7 +503,7 @@ namespace QSProjectsLib
 				{
 					if(i + 1 >= args.Length)
 					{
-						logger.Error("После аргумента {0} должно быть указано название соедиения. А его нет.", args[i]);
+						logger.Error("После аргумента {0} должно быть указано название соединения. А его нет.", args[i]);
 						return;
 					}
 

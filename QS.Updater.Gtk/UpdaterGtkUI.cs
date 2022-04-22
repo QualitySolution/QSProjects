@@ -134,7 +134,7 @@ namespace QS.Updater
 				logger.Debug("Скачиваем из {0} в {1}", result.FileLink, tempPath);
 
 				webClient.DownloadFileAsync(new Uri(result.FileLink), tempPath);
-				// Ждем окончания загрузки файла не возвращая управление, иначе в процессе скачивания продолжется работа, а это не надо во всех случаях
+				// Ждем окончания загрузки файла не возвращая управление, иначе в процессе скачивания продолжается работа, а это не надо во всех случаях
 				while (!loadingComplete)
 				{
 					if (Gtk.Application.EventsPending())

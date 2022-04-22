@@ -442,7 +442,7 @@ namespace QS.Deletion
 
 		void IDeleteCore.ExecuteSql (String sql, uint id)
 		{
-			logger.Debug ("Выполение SQL={0}", sql);
+			logger.Debug ("Выполнение SQL={0}", sql);
 			if(IsHibernateMode)
 			{
 				var cmd = uow.Session.Connection.CreateCommand();

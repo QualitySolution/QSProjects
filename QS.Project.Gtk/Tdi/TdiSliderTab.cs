@@ -342,7 +342,7 @@ namespace QS.Tdi
 
 		public bool CheckClosingSlaveTabs(ITdiTab tab)
 		{
-			//FIXME Если появятся подчиненые вкладки у журналов, нужно переделать проверку, что бы при закрыти диалога не требовалось зарывать подчиненные вкладки журнала.
+			//FIXME Если появятся подчиненные вкладки у журналов, нужно переделать проверку, что бы при закрытии диалога не требовалось зарывать подчиненные вкладки журнала.
 			if(tab == Journal || tab == ActiveDialog)
 				return TabParent.CheckClosingSlaveTabs(this as ITdiTab);
 			else

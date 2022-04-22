@@ -57,7 +57,7 @@ namespace QS.Test.Navigation
 			Assert.That(firstPage, Is.EqualTo(secondPage));
 		}
 
-		[Test(Description = "[НА ЭТО ПОВЕДЕНИЕ рассчитывает JournalViewModelSelector] Проверка что действительно не открываем повторно вкладку с тем же хешем для подчиненой вкладке с той же главной.")]
+		[Test(Description = "[НА ЭТО ПОВЕДЕНИЕ рассчитывает JournalViewModelSelector] Проверка что действительно не открываем повторно вкладку с тем же хешем для подчиненной вкладке с той же главной.")]
 		public void OpenViewModel_DontCreateNewViewModelAsSlave()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
@@ -95,7 +95,7 @@ namespace QS.Test.Navigation
 			Assert.That(firstPage, Is.EqualTo(secondPage));
 		}
 
-		[Test(Description = "[НА ЭТО ПОВЕДЕНИЕ рассчитывает JournalViewModelSelector] Проверка что действительно не открываем повторно вкладку с тем же хешем для подчиненой вкладке с той же главной TdiTab в режиме совместимости.")]
+		[Test(Description = "[НА ЭТО ПОВЕДЕНИЕ рассчитывает JournalViewModelSelector] Проверка что действительно не открываем повторно вкладку с тем же хешем для подчиненной вкладке с той же главной TdiTab в режиме совместимости.")]
 		public void OpenViewModel_DontCreateNewViewModelAsSlave_TdiMixedMaster()
 		{
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
@@ -131,7 +131,7 @@ namespace QS.Test.Navigation
 			Assert.That(firstPage, Is.EqualTo(secondPage));
 		}
 
-		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую.")]
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненных вкладок с тем же хешем, что новую открываемую как независимую.")]
 		public void OpenViewModel_NotSwitchOnSlaveWithSameHashTest()
 		{
 			var builder = new ContainerBuilder();
@@ -160,7 +160,7 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(3));
 		}
 
-		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненных вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
 		public void OpenViewModel_NotSwitchOnSlaveWithSameHash_OnNavigationWithTdiTest()
 		{
 			var builder = new ContainerBuilder();
@@ -187,7 +187,7 @@ namespace QS.Test.Navigation
 			Assert.That(notebook.Tabs.Count, Is.EqualTo(3));
 		}
 
-		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненых вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
+		[Test(Description = "Проверяем что не перескакиваем на одну из подчиненных вкладок с тем же хешем, что новую открываемую как независимую. При открытии из вкладки Tdi.")]
 		public void OpenViewModel_NotSwitchOnSlaveWithSameHash_OnTdiTest()
 		{
 			var builder = new ContainerBuilder();
@@ -318,7 +318,7 @@ namespace QS.Test.Navigation
 			Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
 			Assert.That(pageJournal.ChildPages.Count(), Is.EqualTo(1));
 
-			//Открываем другой элемент журнала, так как это в слайдере старая должна закрытся.
+			//Открываем другой элемент журнала, так как это в слайдере старая должна закрыться.
 			var pageAnother = navigation.OpenViewModel<DialogWithEntityUoWBuilderViewModel, IEntityUoWBuilder>(pageJournal.ViewModel, entityBuilder2);
 			Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
 			Assert.That(pageJournal.ChildPages.Count(), Is.EqualTo(1));

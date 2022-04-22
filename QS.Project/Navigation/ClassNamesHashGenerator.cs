@@ -47,7 +47,7 @@ namespace QS.Navigation
 			if (hash == null)
 				hash = NameHash(typeViewModel) + ParametersHash(typeViewModel, ctorValues);
 
-			//Если в сгенерированом хеше есть ~ значит мы не хотим проверку по хешу, поэтому возвращаем null
+			//Если в сгенерированном хеше есть ~ значит мы не хотим проверку по хешу, поэтому возвращаем null
 			return hash.Contains("~") ? null : hash;
 		}
 

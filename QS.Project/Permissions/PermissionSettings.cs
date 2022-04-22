@@ -35,9 +35,9 @@ namespace QS.Permissions
 		}
 
 		/// <summary>
-		/// Однократное нахождение всех типов помеченных аттрибутом <see cref="EntityPermissionAttribute"/>
+		/// Однократное нахождение всех типов помеченных атрибутом <see cref="EntityPermissionAttribute"/>
 		/// </summary>
-		/// <param name="entitiesFinder">объект который ищет необходиые типы с настройками под конкретный проект</param>
+		/// <param name="entitiesFinder">объект который ищет необходимые типы с настройками под конкретный проект</param>
 		public static void ConfigureEntityPermissionFinder(IEntitiesWithPermissionFinder entitiesFinder)
 		{
 			permissionsEntityTypes = entitiesFinder.FindTypes();
@@ -46,7 +46,7 @@ namespace QS.Permissions
 		private static IEnumerable<Type> permissionsEntityTypes;
 
 		/// <summary>
-		/// Список типов помеченных аттрибутом <see cref="EntityPermissionAttribute"/>
+		/// Список типов помеченных атрибутом <see cref="EntityPermissionAttribute"/>
 		/// </summary>
 		/// <value>The permissions entity types.</value>
 		public static IEnumerable<Type> PermissionsEntityTypes {

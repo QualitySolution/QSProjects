@@ -11,7 +11,7 @@ namespace QSOrmProject
 		/// Выводим диалог "Перед созданием {0}, необходимо сохранить {1}. Сохранить?"
 		/// </summary>
 		/// <param name="savingEntity">Для класса должен быть указан Родительский падеж(Genitive).</param>
-		/// <param name="creatingEntity">Для класса должн быть указан Винительный падеж(Accusative).</param>
+		/// <param name="creatingEntity">Для класса должен быть указан Винительный падеж(Accusative).</param>
 		public static bool SaveBeforeCreateSlaveEntity(Type savingEntity, Type creatingEntity)
 		{
 			string  savingName = "НЕ УКАЗАНО", creatingName = "НЕ УКАЗАНО";
@@ -73,7 +73,7 @@ namespace QSOrmProject
 
 		/// <summary>
 		/// Выводит вопрос "Перед печатью {0}, необходимо сохранить изменения в {1}. Сохранить?"
-		/// Диалог использует название сущьности в предложном падеже (Prepositional)
+		/// Диалог использует название сущности в предложном падеже (Prepositional)
 		/// </summary>
 		[Obsolete("Используйте не статический класс CommonMessages не зависящий от UI")]
 		public static bool SaveBeforePrint(Type savingEntity, string whatPrint)

@@ -31,7 +31,7 @@ namespace QS.DomainModel.NotifyChange.Conditions
 
 		/// <summary>
 		/// Уведомить только если условие <paramref name="predicate"/> истинно.
-		/// Можно добавлять несколько условий объединеных через "И" вызывая повторно AndWhere()
+		/// Можно добавлять несколько условий объединенных через "И" вызывая повторно AndWhere()
 		/// </summary>
 		/// <param name="predicate">Условие отбора</param>
 		public SingleEntityCondition<TEntity> AndWhere(Func<TEntity, bool> predicate)

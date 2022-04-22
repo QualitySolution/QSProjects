@@ -32,7 +32,7 @@ namespace QS.HistoryLog
 					.FirstOrDefault();
 		}
 
-		public static string ResolveFieldTilte(string clazz, string fieldName)
+		public static string ResolveFieldTitle(string clazz, string fieldName)
 		{
 			var type = FineEntityClass(clazz);
 			if(type != null) {
@@ -41,7 +41,7 @@ namespace QS.HistoryLog
 			return fieldName;
 		}
 
-		internal static string GetObjectTilte(object value)
+		internal static string GetObjectTitle(object value)
 		{
 			return value == null ? null : String.Format ("[{0}]", DomainHelper.GetTitle(value));
 		}

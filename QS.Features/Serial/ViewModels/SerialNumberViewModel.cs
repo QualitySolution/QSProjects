@@ -50,7 +50,7 @@ namespace QS.Serial.ViewModels
 		public string ResultText { 
 			get{
 				if (SerialNumberEncoder.IsNotSupport)
-					return "Формат серийного номера не поддерживается этой верией программы.\n" +
+					return "Формат серийного номера не поддерживается этой версией программы.\n" +
 					"Если вы уверены что серийный номер правильный, попробуйте обновить программу.";
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";

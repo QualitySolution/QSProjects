@@ -62,7 +62,7 @@ namespace QSBanks
 						data = reader.ReadLine ();
 					}
 
-					//Читаем рассчетные счета
+					//Читаем расчетные счета
 					i = -1;
 					while (!data.StartsWith ("СекцияДокумент")) {
 						if (!String.IsNullOrWhiteSpace (data)) {

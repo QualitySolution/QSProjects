@@ -204,7 +204,7 @@ namespace QSOrmProject
 			return result;
 		}
 
-		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
+		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(string table, int id)
 		{
 			var info = DeleteConfig.Main.GetDeleteInfo(table);
@@ -214,7 +214,7 @@ namespace QSOrmProject
 			return DeleteObject(info.ObjectClass, id);
 		}
 
-		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
+		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			try {
@@ -247,7 +247,7 @@ namespace QSOrmProject
 			}
 		}
 
-		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
+		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject<TEntity>(int id, IUnitOfWork uow = null)
 		{
 			return DeleteObject(typeof(TEntity), id, uow);
@@ -257,10 +257,10 @@ namespace QSOrmProject
 		/// Удаляем объект вместе с зависимостями с отображением пользователю диалога показывающего что еще будет удалено.
 		/// </summary>
 		/// <returns><c>true</c>, if object was deleted, <c>false</c> otherwise.</returns>
-		/// <param name="subject">Удяляемый объект</param>
-		/// <param name="uow">UnitOfWork в котором нужно выполнить удаление. Если не передать будет созданн новый UnitOfWork.</param>
+		/// <param name="subject">Удаляемый объект</param>
+		/// <param name="uow">UnitOfWork в котором нужно выполнить удаление. Если не передать будет создан новый UnitOfWork.</param>
 		/// <param name="beforeDeletion">Метод который нужно выполнить перед удалением, если пользователь подтвердит удаление.</param>
-		[Obsolete("Используйте сервис удаления напряму. Например DeleteEntityGUIService.")]
+		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(object subject, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			if (!(subject is IDomainObject))
@@ -304,7 +304,7 @@ namespace QSOrmProject
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
 
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должне отдельно включать.
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
 
 			EnableLegacyDeletion();

@@ -42,7 +42,7 @@ namespace QS.ErrorReporting
 		{
 			var nhEx = ExceptionHelper.FindExceptionTypeInInner<NHibernate.AssertionFailure>(exception);
 			if(nhEx != null && nhEx.Message.Contains("don't flush the Session after an exception occurs")) {
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, "В этом диалоге ранее произошла ошибка, в следстивии ее программа не может " +
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, "В этом диалоге ранее произошла ошибка, в следствии ее программа не может " +
 					"сохранить данные. Закройте этот диалог и продолжайте работу в новом.");
 				return true;
 			}

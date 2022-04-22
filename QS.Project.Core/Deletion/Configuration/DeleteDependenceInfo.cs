@@ -92,7 +92,7 @@ namespace QS.Deletion.Configuration
 		}
 
 		/// <summary>
-		/// Создает класс описания удаления на основе свойства колекции в родителе. 
+		/// Создает класс описания удаления на основе свойства коллекции в родителе. 
 		/// </summary>
 		/// <param name="propName">Имя </param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>

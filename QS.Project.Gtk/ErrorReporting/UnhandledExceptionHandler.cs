@@ -19,10 +19,10 @@ namespace QS.ErrorReporting
 	/// <summary>
 	/// Класс помогает сформировать отправку отчета о падении программы.
 	/// Для работы необходимо предварительно сконфигурировать модуль
-	/// GtkGuiDispatcher.GuiThread - указать поток Gui, нужно для корректной обработки эксепшенов в других потоках.
+	/// GtkGuiDispatcher.GuiThread - указать поток Gui, нужно для корректной обработки исключений в других потоках.
 	/// ApplicationInfo - Передать класс возвращающий информация о программе
 	/// InteractiveMessage - Класс позволяющий обработчикам выдать сообщение пользователю.
-	/// Опционально:
+	/// Не обязательно:
 	/// User - Текущий пользователь
 	/// RequestEmail = true - требовать ввод E-mail
 	/// RequestDescription = true - требовать ввода описания
@@ -40,7 +40,7 @@ namespace QS.ErrorReporting
 		public static IErrorReportingSettings ErrorReportingSettings;
 
 		/// <summary>
-		/// В список можно добавить собственные обработчики ошибкок. Внимание! Порядок добавления обрабочиков важен,
+		/// В список можно добавить собственные обработчики ошибок. Внимание! Порядок добавления обработчиков важен,
 		/// так как если ошибку обработает первый обработчик ко второму она уже не попадет.
 		/// </summary>
 		public static readonly List<CustomErrorHandler> CustomErrorHandlers = new List<CustomErrorHandler>();

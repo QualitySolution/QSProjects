@@ -31,7 +31,7 @@ namespace QS.Utilities
 
 		static DateTime lastRedraw;
 		/// <summary>
-		/// Главный цикл приложения будет вызываться не чаще чем время указанное в парамерах.
+		/// Главный цикл приложения будет вызываться не чаще чем время указанное в параметрах.
 		/// </summary>
 		/// <param name="milliseconds">Milliseconds.</param>
 		public static void WaitRedraw(int milliseconds)

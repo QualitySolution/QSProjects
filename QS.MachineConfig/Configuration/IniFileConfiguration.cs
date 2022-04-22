@@ -23,7 +23,7 @@ namespace QS.Configuration
 				configSource.Reload();
 			}
 			else {
-				logger.Warn("Конфигурационный фаил {0} не найден. Создан новый.", iniFile);
+				logger.Warn("Конфигурационный файл {0} не найден. Создан новый.", iniFile);
 				configSource = new IniConfigSource();
 				configSource.Save(iniFile);
 			}
@@ -33,7 +33,7 @@ namespace QS.Configuration
 
 		/// <summary>
 		/// Получаем или устанавливаем элемент. В ключе секцию указываем через ":"
-		/// Например "Секция:параметер"
+		/// Например "Секция:параметр"
 		/// </summary>
 		/// <value>The item.</value>
 		public string this[string key] {

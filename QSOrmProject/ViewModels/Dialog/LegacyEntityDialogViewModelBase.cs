@@ -15,7 +15,7 @@ namespace QS.ViewModels.Dialog
 		public ITdiTab TdiTab { get; private set; }
 
 		/// <summary>
-		/// Внимание!!! Чтобы аргумент ITdiTab myTab заполнялся автоматически в наследуещем классе в конструкторе необходимо указывать такое же имя аргумента "myTab"
+		/// Внимание!!! Чтобы аргумент ITdiTab myTab заполнялся автоматически в наследующем классе в конструкторе необходимо указывать такое же имя аргумента "myTab"
 		/// </summary>
 		/// <param name="myTab">Tdi вкладка в которую будет помещена View от создаваемой ViewModel.</param>
 		public LegacyEntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ITdiTab myTab, ITdiCompatibilityNavigation navigation, IValidator validator = null) : base(uowBuilder, unitOfWorkFactory, navigation, validator)

@@ -19,7 +19,7 @@ namespace QS.ViewModels.Control.EEVM
 			this.masterViewModel = masterViewModel;
 		}
 
-		[Obsolete("Констуктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
+		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
 		public EntityViewModelOpener(INavigationManager navigationManager, Func<ITdiTab> getParrentTab)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));

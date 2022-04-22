@@ -7,7 +7,7 @@ namespace QS.Helpers
 	{
 		/// <summary>
 		/// Функция загружает изображение из файла любого формата поддерживаемого PixBuf
-		/// и возвращает массив байт файла в формете JPG.
+		/// и возвращает массив байт файла в формате JPG.
 		/// </summary>
 		/// <returns>The image to jpg bytes.</returns>
 		/// <param name="filename">Filename.</param>

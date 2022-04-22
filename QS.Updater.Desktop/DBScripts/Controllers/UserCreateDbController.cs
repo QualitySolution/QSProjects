@@ -59,7 +59,7 @@ namespace QS.DBScripts.Controllers
 
 		public bool NeedDropDatabaseIfExists(string dbname)
 		{
-			return interactive.Question($"База с именем `{dbname}` уже существует на сервере. Удалить существующую базу перед соданием новой?");
+			return interactive.Question($"База с именем `{dbname}` уже существует на сервере. Удалить существующую базу перед созданием новой?");
 		}
 
 		#region Свойства процесса

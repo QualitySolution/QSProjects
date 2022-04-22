@@ -463,7 +463,7 @@ namespace QS.Tdi.Gtk
 			if(info!= null && info.SlaveTabs.Count > 0)
 			{
 				logger.Warn($"У {tab.TabName} открыта подчиненная вкладка {info.SlaveTabs[0].TabName}");
-				string Message = "Сначала надо закрыть подчиненую вкладку.";
+				string Message = "Сначала надо закрыть подчиненную вкладку.";
 				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
 									   MessageType.Warning,
 									   ButtonsType.Ok,

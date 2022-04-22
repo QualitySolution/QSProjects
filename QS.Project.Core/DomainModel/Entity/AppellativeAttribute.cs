@@ -10,7 +10,7 @@ namespace QS.DomainModel.Entity
 		public string Nominative { get; set; }
 
 		/// <summary>
-		/// Именительный падеж (Кто? Что?) можественное число.
+		/// Именительный падеж (Кто? Что?) множественное число.
 		/// </summary>
 		public string NominativePlural { get; set; }
 
@@ -25,7 +25,7 @@ namespace QS.DomainModel.Entity
 		public string Genitive { get; set; }
 
 		/// <summary>
-		/// Родительный падеж (Кого? Чего?) можественное число.
+		/// Родительный падеж (Кого? Чего?) множественное число.
 		/// </summary>
 		public string GenitivePlural { get; set; }
 
@@ -35,7 +35,7 @@ namespace QS.DomainModel.Entity
 		public string Accusative { get; set; }
 
 		/// <summary>
-		/// Винительный падеж (Кого? Что?) можественное число.
+		/// Винительный падеж (Кого? Что?) множественное число.
 		/// </summary>
 		public string AccusativePlural { get; set; }
 
@@ -45,7 +45,7 @@ namespace QS.DomainModel.Entity
 		public string Prepositional { get; set; }
 
 		/// <summary>
-		/// Предложный падеж (О ком? О чём?) можественное число.
+		/// Предложный падеж (О ком? О чём?) множественное число.
 		/// </summary>
 		public string PrepositionalPlural { get; set; }
 
@@ -70,5 +70,4 @@ namespace QS.DomainModel.Entity
 		/// </summary>
 		Neuter
 	}
-
 }

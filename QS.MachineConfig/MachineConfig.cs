@@ -3,7 +3,7 @@ using Nini.Config;
 
 namespace QSMachineConfig
 {
-	[Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацие от конкретной реализации и библиотеки Nini.")]
+	[Obsolete("Переходите на интерфейс IChangeableConfiguration который абстрагирует работу с конфигурацией от конкретной реализации и библиотеки Nini.")]
 	public static class MachineConfig
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
@@ -26,7 +26,7 @@ namespace QSMachineConfig
 			}
 			else
 			{
-				logger.Warn ("Конфигурационный фаил {0} не найден. Конфигурация не загружена.", FullConfigPath);
+				logger.Warn ("Конфигурационный файл {0} не найден. Конфигурация не загружена.", FullConfigPath);
 				ConfigSource = new IniConfigSource ();
 				ConfigSource.Save (FullConfigPath);
 			}

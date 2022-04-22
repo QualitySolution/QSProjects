@@ -13,7 +13,7 @@ namespace QS.Banks.Domain
 
 		string corAccountNumber;
 
-		[StringLength(25, MinimumLength = 20, ErrorMessage = "Номер кореспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
+		[StringLength(25, MinimumLength = 20, ErrorMessage = "Номер корреспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]
 		[Display(Name = "К/С")]
 		public virtual string CorAccountNumber {
 			get { return corAccountNumber; }

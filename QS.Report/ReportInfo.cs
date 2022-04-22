@@ -23,12 +23,12 @@ namespace QS.Report
 		public string Title { get; set; }
 
 		/// <summary>
-		/// Словать с параметрами отчета
+		/// Словарь с параметрами отчета
 		/// </summary>
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
 		/// <summary>
-		/// Если заначение true тип DateTime будет передаваться в отчет вместе со временем.
+		/// Если значение true тип DateTime будет передаваться в отчет вместе со временем.
 		/// Если значение false то время будет обрезаться, в строковом представлении при передачи в отчет.
 		/// </summary>
 		public bool ParameterDatesWithTime { get; set; } = true;
@@ -39,7 +39,7 @@ namespace QS.Report
 		public OutputPresentationType[] RestrictedOutputPresentationTypes { get; set; }
 
 		/// <summary>
-		/// Указывается надо ли передвать серверу в ConnectionString параметр Allow User Variables=True
+		/// Указывается надо ли передавать серверу в ConnectionString параметр Allow User Variables=True
 		/// </summary>
 		public bool UseUserVariables { get; set; } = false;
 

@@ -83,7 +83,7 @@ namespace QS.Project.Dialogs.GtkUI
 				if (selectedUser.Id == UserRepository.GetCurrentUserId()) {
 					MessageDialog md = new MessageDialog(this, DialogFlags.DestroyWithParent,
 										   MessageType.Warning, ButtonsType.Close,
-										   "Был удален пользователь, под которым Вы подключились к базе данных, чтобы недопустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
+										   "Был удален пользователь, под которым Вы подключились к базе данных, чтобы не допустить некорректных операций программа закроется. Зайдите в программу от имени другого пользователя.");
 					md.Run();
 					md.Destroy();
 					Environment.Exit(0);
