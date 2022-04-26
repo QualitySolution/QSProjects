@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32407.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSProjectsLib", "QSProjectsLib\QSProjectsLib.csproj", "{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}"
 EndProject
@@ -109,7 +109,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Osrm", "QS.Osrm\QS.Osrm.csproj", "{026A01A3-332F-40ED-B028-EBBC3C0BBB6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A237F1B-ECC4-493E-B3B9-9FFF349F5DE0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -267,17 +272,27 @@ Global
 		{921488F1-F4FC-4438-920E-86E57442B253}.Release|x86.Build.0 = Release|x86
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|x64.Build.0 = Debug|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Debug|x86.Build.0 = Debug|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C97E91F4-B310-44E2-9B6C-96775395722D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C97E91F4-B310-44E2-9B6C-96775395722D}.Release|x64.Build.0 = Release|Any CPU
 		{C97E91F4-B310-44E2-9B6C-96775395722D}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|x64.Build.0 = Debug|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Debug|x86.Build.0 = Debug|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|x64.Build.0 = Release|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9F4197F-52D2-49F0-8DAF-E2884733CF2D}.Release|x86.Build.0 = Release|Any CPU
 		{9C9ECACA-0DEB-4517-8CF1-02C3D3EB128E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C9ECACA-0DEB-4517-8CF1-02C3D3EB128E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C9ECACA-0DEB-4517-8CF1-02C3D3EB128E}.Debug|x64.ActiveCfg = Debug|x64
