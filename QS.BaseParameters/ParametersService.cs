@@ -43,26 +43,26 @@ namespace QS.BaseParameters
 
 		public void ReloadParameters()
 		{
-			All.Clear();
+			all = new Dictionary<string, string>();
 			string sql = "SELECT * FROM base_parameters";
 			DbCommand cmd = connection.CreateCommand();
 			cmd.CommandText = sql;
 			using (DbDataReader rdr = cmd.ExecuteReader()) {
 				while (rdr.Read()) {
-					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+					all.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
 		}
 		
 		public async Task ReloadParametersAsync()
 		{
-			All.Clear();
+			all = new Dictionary<string, string>();
 			string sql = "SELECT * FROM base_parameters";
 			DbCommand cmd = connection.CreateCommand();
 			cmd.CommandText = sql;
 			using (DbDataReader rdr = await cmd.ExecuteReaderAsync()) {
 				while (await rdr.ReadAsync()) {
-					All.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
+					all.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
 		}
