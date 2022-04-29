@@ -25,7 +25,7 @@ max_line_length = 140
 
 # Language keywords vs BCL types preferences
 dotnet_style_predefined_type_for_locals_parameters_members = true
-dotnet_style_predefined_type_for_member_access = true
+dotnet_style_predefined_type_for_member_access = false
 
 # Modifier preferences
 dotnet_style_require_accessibility_modifiers = for_non_interface_members
@@ -33,7 +33,8 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members
 #### C# Coding Conventions ####
 
 # Code-block preferences
-csharp_prefer_braces = true:warning
+csharp_prefer_braces = when_multiline
+csharp_prefer_simple_using_statement = false
 
 #### C# Formatting Rules ####
 
@@ -41,18 +42,35 @@ csharp_prefer_braces = true:warning
 csharp_new_line_before_catch = true
 csharp_new_line_before_else = true
 csharp_new_line_before_finally = true
-csharp_new_line_before_open_brace = all
+csharp_new_line_before_open_brace = none
 
 # Space preferences
 csharp_space_after_keywords_in_control_flow_statements = false
 csharp_space_between_method_declaration_name_and_open_parenthesis = false
-csharp_space_between_parentheses = false
+csharp_space_between_parentheses = false #Если вы пропустите это правило или используете значение, отличное от control_flow_statements, expressionsили type_casts, параметр не применяется.
+csharp_space_after_cast = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_after_comma = true
+csharp_space_before_comma = false
+csharp_space_after_dot = false
+csharp_space_before_dot = false
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_around_declaration_statements = false
+csharp_space_before_open_square_brackets = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_square_brackets = false
 
 # Naming rules
 
 dotnet_naming_rule.private_or_internal_field_should_be__privatefieldstyle.severity = warning
 dotnet_naming_rule.private_or_internal_field_should_be__privatefieldstyle.symbols = private_or_internal_field
-dotnet_naming_rule.private_or_internal_field_should_be__privatefieldstyle.style = _privatefieldstyle
+dotnet_naming_rule.private_or_internal_field_should_be__privatefieldstyle.style = camel_case
 
 # Symbol specifications
 
@@ -62,7 +80,7 @@ dotnet_naming_symbols.private_or_internal_field.required_modifiers =
 
 # Naming styles
 
-dotnet_naming_style._privatefieldstyle.required_prefix = _
+dotnet_naming_style._privatefieldstyle.required_prefix = 
 dotnet_naming_style._privatefieldstyle.required_suffix = 
 dotnet_naming_style._privatefieldstyle.word_separator = 
 dotnet_naming_style._privatefieldstyle.capitalization = camel_case
