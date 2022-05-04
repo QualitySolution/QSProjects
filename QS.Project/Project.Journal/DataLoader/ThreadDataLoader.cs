@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,13 +119,16 @@ namespace QS.Project.Journal.DataLoader
 
 		public bool FirstPage { get; private set; } = true;
 
-		bool loadInProgress;
-		public bool LoadInProgress { 
-			get => loadInProgress;
-			private set {
-				loadInProgress = value;
+		int loadInProgress;
+		public bool LoadInProgress => loadInProgress == 1;
+
+		bool SetLoadInProgress(bool value) {
+			int newValue = value ? 1 : 0;
+			bool isSet = Interlocked.Exchange(ref loadInProgress, newValue) != newValue;
+			if(isSet)
 				OnLoadingStateChange(value ? LoadingState.InProgress : LoadingState.Idle);
-			} }
+			return isSet;
+		}
 
 		public bool TotalCountingInProgress { get; private set; }
 
@@ -155,8 +158,6 @@ namespace QS.Project.Journal.DataLoader
 		private readonly object publishedNodesLock = new object();
 
 		private int reloadRequested = 0;
-		private Task[] RunningTasks = new Task[] { };
-		private DateTime startLoading;
 
 		private CancellationTokenSource cts;
 		public void CancelLoading()
@@ -164,25 +165,22 @@ namespace QS.Project.Journal.DataLoader
 			cts.Cancel();
 		}
 
-		public void LoadData(bool nextPage)
-		{
+		public void LoadData(bool nextPage) {
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
-
-			Console.WriteLine($"LoadData({nextPage})");
-			if (LoadInProgress) {
+			
+			if (!SetLoadInProgress(true)) {
 				if (!nextPage)
 					Interlocked.Exchange(ref reloadRequested, 1);
 				return;
 			}
-
-			LoadInProgress = true;
+			
 			LoadDataInternal(nextPage);
 		}
 
 		private void LoadDataInternal(bool nextPage)
 		{
-			startLoading = DateTime.Now;
+			DateTime startLoading = DateTime.Now;
 
 			FirstPage = !nextPage;
 			if (!nextPage) {
@@ -197,20 +195,20 @@ namespace QS.Project.Journal.DataLoader
 			var runLoaders = AvailableQueryLoaders.Where(x => x.HasUnloadedItems).ToArray();
 
 			if(runLoaders.Length == 0) { //Нет загрузчиков с помощь которых мы могли бы прочитать данные.
-				LoadInProgress = false;
+				SetLoadInProgress(false);
 				return;
 			}
 
 			logger.Info("Запрос данных...");
-			RunningTasks = new Task[runLoaders.Length];
+			var runningTasks = new Task[runLoaders.Length];
 
 			for (int i = 0; i < runLoaders.Length; i++) {
 				var loader = runLoaders[i];
-				RunningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize), cts.Token)
+				runningTasks[i] = Task.Factory.StartNew(() => loader.LoadPage(GetPageSize), cts.Token)
 					.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
 			}
 
-			Task.Factory.ContinueWhenAll(RunningTasks, (tasks) => {
+			Task.Factory.ContinueWhenAll(runningTasks, (tasks) => {
 				if(ShowLateResults || reloadRequested == 0) {
 					if(AvailableQueryLoaders.Count() == 1)
 						ReadOneLoader();
@@ -224,15 +222,15 @@ namespace QS.Project.Journal.DataLoader
 					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 				}
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
-				if(1 == Interlocked.Exchange(ref reloadRequested, 0)) {
+				if(1 == Interlocked.Exchange(ref reloadRequested, 0))
 					LoadDataInternal(false);
-				}
+				else 
+					SetLoadInProgress(false);
 			}, cts.Token)
 			.ContinueWith((tsk) => {
-				LoadInProgress = false;
-				if(tsk.IsFaulted)
-					OnLoadError(tsk.Exception);
-			});
+				SetLoadInProgress(false);
+				OnLoadError(tsk.Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
 		#endregion
@@ -326,9 +324,7 @@ namespace QS.Project.Journal.DataLoader
 		#endregion
 
 		#region Получение общего количества
-
-		private Task[] CountingTasks = new Task[] { };
-		private DateTime startCounting;
+		
 		private readonly object totalCountLock = new object();
 
 		public void GetTotalCount()
@@ -347,15 +343,15 @@ namespace QS.Project.Journal.DataLoader
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
 
-			startCounting = DateTime.Now;
+			DateTime startCounting = DateTime.Now;
 			TotalCountingInProgress = true;
 			logger.Info("Запрос общего количества строк...");
 
-			CountingTasks = new Task[runLoaders.Length];
+			var countingTasks = new Task[runLoaders.Length];
 
 			for(int i = 0; i < runLoaders.Length; i++) {
 				var loader = runLoaders[i];
-				CountingTasks[i] = Task.Factory.StartNew(() => {
+				countingTasks[i] = Task.Factory.StartNew(() => {
 					var countRows = loader.GetTotalItemsCount();
 					Console.WriteLine(countRows);
 					lock(totalCountLock) {
@@ -370,7 +366,7 @@ namespace QS.Project.Journal.DataLoader
 				.ContinueWith((tsk) => OnLoadError(tsk.Exception), TaskContinuationOptions.OnlyOnFaulted);
 			}
 
-			Task.Factory.ContinueWhenAll(CountingTasks, (tasks) => {
+			Task.Factory.ContinueWhenAll(countingTasks, (tasks) => {
 				logger.Info($"{(DateTime.Now - startCounting).TotalSeconds} сек.");
 				TotalCountingInProgress = false;
 			});
