@@ -36,8 +36,14 @@ namespace QS.Views.Dialog
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
 			saveButton.Sensitive = false;
-			if(!ViewModel.SaveAndClose())
-				saveButton.Sensitive = true;
+			bool isClosed = false;
+			try {
+				isClosed = ViewModel.SaveAndClose();
+			} finally
+			{
+				if(!isClosed)
+					saveButton.Sensitive = true;
+			}
 		}
 
 		protected void OnButtonCancelClicked(object sender, EventArgs e)
