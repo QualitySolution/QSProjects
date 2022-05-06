@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
 using QS.DBScripts.Controllers;
+using QS.Dialog;
+using QS.Dialog.GtkUI;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSMachineConfig;
@@ -276,6 +279,11 @@ namespace QSProjectsLib
 				ConnectionError = "Строка соединения: " + conStrBuilder.GetConnectionString(ShowPassInException) + "\nИсключение: " + ex.ToString();
 				logger.Warn(ex);
 				QSMain.connectionDB.Close();
+			}
+			catch (AggregateException exception) when(exception.InnerException is SocketException) {
+				logger.Error(exception);
+				var interactive = new GtkMessageDialogsInteractive();
+				interactive.ShowMessage(ImportanceLevel.Error, exception.InnerException.Message, "Ошибка соединения");
 			}
 		}
 
