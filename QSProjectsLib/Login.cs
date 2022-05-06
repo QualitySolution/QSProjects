@@ -250,8 +250,8 @@ namespace QSProjectsLib
 				cmd.Parameters.AddWithValue("@login", entryUser.Text);
 				using (MySqlDataReader rdr = cmd.ExecuteReader()) {
 					if (rdr.Read() && DBWorks.GetBoolean(rdr, "deactivated", false) == true) {
-						labelLoginInfo.Text = "Пользователь деактивирован.";
-						ConnectionError = "Пользователь под которым вы пытаетесь войти, деактивирован в настройках базы.";
+						labelLoginInfo.Text = "Пользователь отключен.";
+						ConnectionError = "Пользователь под которым вы пытаетесь войти отключен.";
 						QSMain.connectionDB.Close();
 						return;
 					}
