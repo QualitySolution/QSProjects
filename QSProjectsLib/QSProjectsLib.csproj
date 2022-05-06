@@ -139,6 +139,10 @@
       <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
       <Name>QS.Project.Desktop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3c0f3944-cbd5-4bd6-83d4-cf33ad6fc68c}</Project>
+      <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QSSaaS\QSSaaS.csproj">
       <Project>{4B502FE5-D419-4B5C-9276-0A25EF2F508A}</Project>
       <Name>QSSaaS</Name>

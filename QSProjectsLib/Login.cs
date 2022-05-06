@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
 using Nini.Config;
 using QS.DBScripts.Controllers;
+using QS.Dialog;
+using QS.Dialog.GtkUI;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSMachineConfig;
@@ -243,23 +246,15 @@ namespace QSProjectsLib
 
 				QSMain.connectionDB.Open();
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
-				try {
-					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					cmd.Parameters.AddWithValue("@login", entryUser.Text);
-					using (MySqlDataReader rdr = cmd.ExecuteReader()) {
-						if (rdr.Read() && DBWorks.GetBoolean(rdr, "deactivated", false) == true) {
-							labelLoginInfo.Text = "Пользователь деактивирован.";
-							ConnectionError = "Пользователь под которым вы пытаетесь войти, деактивирован в настройках базы.";
-							QSMain.connectionDB.Close();
-							return;
-						}
+				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
+				cmd.Parameters.AddWithValue("@login", entryUser.Text);
+				using (MySqlDataReader rdr = cmd.ExecuteReader()) {
+					if (rdr.Read() && DBWorks.GetBoolean(rdr, "deactivated", false) == true) {
+						labelLoginInfo.Text = "Пользователь отключен.";
+						ConnectionError = "Пользователь под которым вы пытаетесь войти отключен.";
+						QSMain.connectionDB.Close();
+						return;
 					}
-				}
-				catch (MySqlException myEx) {
-					if (myEx.Number == 1054)
-						logger.Warn(myEx, "Возможно не установлен микро-обновление, пропускаем проверку отключен ли пользователь.");
-					else
-						throw myEx;
 				}
 
 				labelLoginInfo.Text = ConnectionError = String.Empty;
@@ -285,7 +280,11 @@ namespace QSProjectsLib
 				logger.Warn(ex);
 				QSMain.connectionDB.Close();
 			}
-
+			catch (AggregateException exception) when(exception.InnerException is SocketException) {
+				logger.Error(exception);
+				var interactive = new GtkMessageDialogsInteractive();
+				interactive.ShowMessage(ImportanceLevel.Error, exception.InnerException.Message, "Ошибка соединения");
+			}
 		}
 
 		protected virtual void OnEntryPasswordActivated(object sender, System.EventArgs e)
