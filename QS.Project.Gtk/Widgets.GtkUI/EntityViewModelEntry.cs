@@ -358,7 +358,7 @@ namespace QS.Widgets.GtkUI
 				return;
 
 			Gtk.Application.Invoke((senderObject, eventArgs) => {
-				if(autoCompleteSelector?.Items == null)
+				if(autoCompleteSelector?.Items == null || _isDisposed)
 					return;
 
 				foreach(var item in autoCompleteSelector.Items) {
@@ -406,7 +406,11 @@ namespace QS.Widgets.GtkUI
 								return;
 							}
 						}
-						Application.Invoke((s, arg) => {
+						Application.Invoke((s, arg) =>
+						{
+							if(_isDisposed) {
+								return;
+							}
 							FillAutocomplete();
 						});
 					} catch(Exception ex) {
@@ -455,7 +459,6 @@ namespace QS.Widgets.GtkUI
 				if(entryObject.Completion != null)
 				{
 					entryObject.Completion.MatchSelected -= Completion_MatchSelected;
-					entryObject.Completion = null;
 				}
 			}
 			
