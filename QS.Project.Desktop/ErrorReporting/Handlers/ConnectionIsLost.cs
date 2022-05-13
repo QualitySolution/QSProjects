@@ -7,10 +7,12 @@ namespace QS.ErrorReporting.Handlers {
 	public class ConnectionIsLost : IErrorHandler {
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IErrorReporter errorReporter;
+		private readonly IErrorReportingSettings settings;
 
-		public ConnectionIsLost(IInteractiveMessage interactiveMessage, IErrorReporter errorReporter) {
+		public ConnectionIsLost(IInteractiveMessage interactiveMessage, IErrorReporter errorReporter = null, IErrorReportingSettings settings = null) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.errorReporter = errorReporter;
+			this.settings = settings;
 		}
 
 		public bool Take(Exception exception) {
@@ -20,7 +22,8 @@ namespace QS.ErrorReporting.Handlers {
 					sEx.Message + "\n\nУбедитесь что сеть или интернет работают и повторите попытку. Если соединение восстановить " +
 					"не удасться, обратитесь к вашему системному администратору.",
 					"Ошибка сети");
-				errorReporter?.SendReport(exception, ErrorType.Known);
+				if(settings?.SendAutomatically ?? false)
+					errorReporter?.SendReport(exception, ErrorType.Known);
 				return true;
 			}
 
@@ -30,7 +33,8 @@ namespace QS.ErrorReporting.Handlers {
 					timeoutException.Message + "\n\nУбедитесь что сеть или интернет работают и повторите попытку. Если соединение восстановить " +
 					"не удасться, обратитесь к вашему системному администратору.",
 					"Время ожидания истекло");
-				errorReporter?.SendReport(exception, ErrorType.Known);
+				if(settings?.SendAutomatically ?? false)
+					errorReporter?.SendReport(exception, ErrorType.Known);
 				return true;
 			}
 
