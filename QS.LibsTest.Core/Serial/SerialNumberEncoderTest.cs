@@ -26,5 +26,24 @@ namespace QS.Test.Serial
 			encoder.Number = sn;
 			Assert.That(encoder.IsValid, Is.EqualTo(isValid));
 		}
+		
+		[Test(Description = "Тест набора серийных номеров версии 1")]
+		[TestCase("WPDi-ZMra-QnAe-jS", true, 1)]//Тестовый Однопользовательская
+		[TestCase("WPDi-j6j5-65VB-HK", true, 2)]//Тестовый Профессиональная 2 пользователя
+		[TestCase("Vw9k-kiEi-4LP7-23", true, 3)]//Тестовый Предприятие 1 пользователь
+		[TestCase("WPDi-j6j5-88VB-HK", false, 0)]//Ошибочный.
+		[TestCase("Vw9k-kiEi-5LP7-22", false, 0)]//Ошибочный.
+		public void EncoderV2_WorkwearTest(string sn, bool isValid, byte edition)
+		{
+			var appInfo = Substitute.For<IApplicationInfo>();
+			appInfo.ProductCode.Returns<byte>(2);
+			var encoder = new SerialNumberEncoder(appInfo);
+			encoder.Number = sn;
+			Assert.That(encoder.IsValid, Is.EqualTo(isValid));
+			if(isValid) {
+				Assert.That(encoder.ProductId, Is.EqualTo(2));
+				Assert.That(encoder.EditionId, Is.EqualTo(edition));
+			}
+		}
 	}
 }
