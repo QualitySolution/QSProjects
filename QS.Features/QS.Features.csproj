@@ -1,102 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>QS</RootNamespace>
-    <AssemblyName>QS.Features</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serial\Encoding\ArrayHelpers.cs" />
-    <Compile Include="Serial\Encoding\Base58Encoding.cs" />
-    <Compile Include="Serial\Encoding\SerialCommon.cs" />
-    <Compile Include="Serial\Encoding\SerialNumberEncoder.cs" />
-    <Compile Include="Serial\ViewModels\SerialNumberViewModel.cs" />
-    <Compile Include="Features\FeaturesAutofacModule.cs" />
-    <Compile Include="Serial\ISerialNumberService.cs" />
-    <Compile Include="Serial\SerialNumberService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serial\" />
-    <Folder Include="Serial\Encoding\" />
-    <Folder Include="Serial\ViewModels\" />
-    <Folder Include="Features\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj">
-      <Project>{a869ec36-67d2-4a36-95e9-0b1e7350928f}</Project>
-      <Name>QS.BaseParameters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
-      <Name>QS.Project.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
-      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
-      <Name>QS.Project.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-    <PackageReference Include="NLog" Version="4.7.14" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<ProjectGuid>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</ProjectGuid>
+		<RootNamespace>QS</RootNamespace>
+		<Company>Quality Solution</Company>
+    </PropertyGroup>
+
+    <ItemGroup>
+		<PackageReference Include="Autofac" Version="6.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
+      <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+    </ItemGroup>
+
 </Project>
