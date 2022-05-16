@@ -7,10 +7,11 @@ using QS.Services;
 using QS.Test.GtkUI;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
+using QS.Views.GtkUI;
 
 namespace QS.Test.Views.GtkUI
 {
-	[TestFixture()]
+	[TestFixture(TestOf = typeof(EntityTabViewBase<,>))]
 	public class EntityTabViewBaseTest
 	{
 		[Test(Description = "Проверяем что автоматическая подписка на события нажатия кнопок Save и Cancel работает.")]

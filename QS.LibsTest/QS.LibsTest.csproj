@@ -62,8 +62,6 @@
   <ItemGroup>
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
-    <Compile Include="DomainModel\Entity\BusinessObjectIntegratedTests.cs" />
-    <Compile Include="TestDomain\BusinessObjectTestEntity.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\OneLevelTestViewModel.cs" />
     <Compile Include="TestNamespace\ViewModels\Two.Level\SecondTestClassViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\OneLevelTestView.cs" />
@@ -79,7 +77,6 @@
     <Compile Include="Project.Journal\ThreadDataLoaderTest.cs" />
     <Compile Include="TestApp\Domain\Document1.cs" />
     <Compile Include="TestApp\Domain\Document2.cs" />
-    <Compile Include="TestApp\HibernateMapping\BusinessObjectTestEntityMap.cs" />
     <Compile Include="TestApp\HibernateMapping\SimpleEntityMap.cs" />
     <Compile Include="TestApp\HibernateMapping\Document1Map.cs" />
     <Compile Include="TestApp\HibernateMapping\Document2Map.cs" />
@@ -105,8 +102,6 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseDialogView.cs" />
     <Compile Include="TestApp\Views\OnCloseModalDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.OnCloseModalDialogView.cs" />
-    <Compile Include="ViewModels\Dialog\EntityDialogViewModelBaseTest.cs" />
-    <Compile Include="TestApp\Domain\ValidatedEntity.cs" />
     <Compile Include="TestApp\ViewModels\SlideableViewModel.cs" />
     <Compile Include="TestApp\Views\EmptyDialogView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.EmptyDialogView.cs" />
@@ -124,9 +119,6 @@
   <ItemGroup>
     <Folder Include="Banks\" />
     <Folder Include="Tdi\" />
-    <Folder Include="DomainModel\" />
-    <Folder Include="DomainModel\Entity\" />
-    <Folder Include="TestDomain\" />
     <Folder Include="TestNamespace\" />
     <Folder Include="TestNamespace\ViewModels\" />
     <Folder Include="TestNamespace\Views\" />
@@ -148,7 +140,6 @@
     <Folder Include="TestApp\Dialogs\" />
     <Folder Include="Views\Resolve\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="ViewModels\Dialog\" />
     <Folder Include="ViewModels\Resove\" />
   </ItemGroup>
   <ItemGroup>

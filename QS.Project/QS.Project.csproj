@@ -72,7 +72,6 @@
     <Compile Include="Project.Services\FileDialog\IDialogResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
-    <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
     <Compile Include="Project.DB\Connection.cs" />
     <Compile Include="Print\IPrintableDocument.cs" />
     <Compile Include="Dialog\IEntityDialog.cs" />

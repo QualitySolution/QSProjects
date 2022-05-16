@@ -1,7 +1,7 @@
 ﻿using FluentNHibernate.Mapping;
-using QS.Test.TestDomain;
+using QS.Test.TestApp.Domain.Entity;
 
-namespace QS.Test.TestDomainMapping.TestDomain
+namespace QS.Test.TestApp.HibernateMapping.Entity
 {
 	public class BusinessObjectTestEntityMap : ClassMap<BusinessObjectTestEntity>
 	{

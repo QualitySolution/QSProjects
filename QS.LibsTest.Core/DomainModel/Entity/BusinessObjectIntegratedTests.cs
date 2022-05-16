@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using QS.Test.TestDomain;
+using NUnit.Framework;
+using QS.Test.TestApp.Domain.Entity;
 using QS.Testing.DB;
 
 namespace QS.Test.DomainModel.Entity

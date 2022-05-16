@@ -1,7 +1,6 @@
-﻿using System;
-using QS.DomainModel.Entity;
+﻿using QS.DomainModel.Entity;
 
-namespace QS.Test.TestDomain
+namespace QS.Test.TestApp.Domain.Entity
 {
 	public class BusinessObjectTestEntity : BusinessObjectBase<BusinessObjectTestEntity>, IDomainObject
 	{
