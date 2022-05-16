@@ -33,6 +33,9 @@ namespace QS.Test.Serial
 		[TestCase("Vw9k-kiEi-4LP7-23", true, 3)]//Тестовый Предприятие 1 пользователь
 		[TestCase("WPDi-j6j5-88VB-HK", false, 0)]//Ошибочный.
 		[TestCase("Vw9k-kiEi-5LP7-22", false, 0)]//Ошибочный.
+		[TestCase("WPDi", false, 0)]//Ошибочный (набиваем покрытие:) )
+		[TestCase("Aw9k-kiEi-5LP7-2222-1111-3333-5555-WW", false, 0)]//Ошибочный (набиваем покрытие:) )
+		[TestCase("Vw9k-kiEi-5LP7-Андр-ей", false, 0)]//Ошибочный (набиваем покрытие:) )
 		public void EncoderV2_WorkwearTest(string sn, bool isValid, byte edition)
 		{
 			var appInfo = Substitute.For<IApplicationInfo>();
