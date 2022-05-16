@@ -9,9 +9,9 @@ namespace QS.ViewModels.Resolve
 {
 	public class AutofacViewModelResolver : IViewModelResolver
 	{
-		private readonly IContainer container;
+		private readonly ILifetimeScope container;
 
-		public AutofacViewModelResolver(IContainer container)
+		public AutofacViewModelResolver(ILifetimeScope container)
 		{
 			this.container = container;
 		}

@@ -8,9 +8,9 @@ namespace QS.Navigation
 {
 	public class AutofacTdiPageFactory : ITdiPageFactory
 	{
-		readonly IContainer Container;
+		readonly ILifetimeScope Container;
 
-		public AutofacTdiPageFactory(IContainer container)
+		public AutofacTdiPageFactory(ILifetimeScope container)
 		{
 			Container = container;
 		}

@@ -241,10 +241,6 @@
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
-    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

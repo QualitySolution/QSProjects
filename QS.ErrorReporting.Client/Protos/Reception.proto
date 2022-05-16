@@ -39,6 +39,7 @@ message ErrorInfo{
 enum ReportType{
     REPORT_TYPE_USER = 0;
     REPORT_TYPE_AUTOMATIC = 1;
+	REPORT_TYPE_KNOWN = 2;
 }
 
 message SubmitErrorResponse{}

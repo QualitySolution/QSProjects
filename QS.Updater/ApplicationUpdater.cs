@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Autofac;
 using QS.BaseParameters;
@@ -26,7 +26,7 @@ namespace QS.Updater
 		/// </summary>
 		/// <param name="flags">Флаги апдейтера</param>
 		/// <param name="container">Контейнер Autofac нужен для создания скопа</param>
-		public void StartCheckUpdateThread (UpdaterFlags flags, IContainer container)
+		public void StartCheckUpdateThread (UpdaterFlags flags, ILifetimeScope container)
 		{
 			//Важно здесь создаем новый скоп, так как общий снаружи может закрыться.
 			var threadScope = container.BeginLifetimeScope();

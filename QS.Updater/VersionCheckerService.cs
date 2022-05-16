@@ -8,9 +8,9 @@ namespace QS.Updater
 {
 	public class VersionCheckerService
 	{
-		private readonly IContainer container;
+		private readonly ILifetimeScope container;
 
-		public VersionCheckerService(IContainer container)
+		public VersionCheckerService(ILifetimeScope container)
 		{
 			this.container = container ?? throw new ArgumentNullException(nameof(container));
 		}

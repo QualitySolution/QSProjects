@@ -10,9 +10,9 @@ namespace QS.Navigation
 {
 	public class AutofacViewModelsTdiPageFactory : IViewModelsPageFactory
 	{
-		readonly IContainer Container;
+		readonly ILifetimeScope Container;
 
-		public AutofacViewModelsTdiPageFactory(IContainer container)
+		public AutofacViewModelsTdiPageFactory(ILifetimeScope container)
 		{
 			Container = container;
 		}
