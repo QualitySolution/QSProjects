@@ -25,7 +25,6 @@ node {
    }
    stage('Build Net4.x') {
         sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'
-        recordIssues enabledForFailure: true, tool: msBuild()
         fileOperations([fileDeleteOperation(excludes: '', includes: 'QS.Libs_linux.zip')])
         zip zipFile: 'QS.Libs_linux.zip', archive: false, dir: 'QSProjects/QS.LibsTest/bin/Debug'
         archiveArtifacts artifacts: 'QS.Libs_linux.zip', onlyIfSuccessful: true
