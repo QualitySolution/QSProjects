@@ -304,17 +304,17 @@ namespace QS.Journal.GtkUI
 					button.Label = action.Title;
 
 					button.Clicked += (sender, e) => { action.ExecuteAction(GetSelectedItems()); };
-
-					actionsSensitivity.Add(() => {
-						button.Sensitive = action.GetSensitivity(GetSelectedItems());
-					});
-
-					actionsVisibility.Add(() => {
-						button.Visible = action.GetVisibility(GetSelectedItems());
-					});
 					actionWidget = button;
 				}
+				
+				actionsSensitivity.Add(() => {
+					actionWidget.Sensitive = action.GetSensitivity(GetSelectedItems());
+				});
 
+				actionsVisibility.Add(() => {
+					actionWidget.Visible = action.GetVisibility(GetSelectedItems());
+				});
+				
 				actionWidget.ShowAll();
 
 				hboxButtons.Add(actionWidget);
