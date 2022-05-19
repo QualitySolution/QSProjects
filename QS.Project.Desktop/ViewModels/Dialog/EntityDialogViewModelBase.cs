@@ -29,6 +29,11 @@ namespace QS.ViewModels.Dialog
 				actionTitle = $"Редактирование {typeof(TEntity).GetSubjectNames().Genitive}";
 
 			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory, actionTitle);
+			if (Entity == null) {
+				AppellativeAttribute names = DomainHelper.GetSubjectNames(typeof(TEntity));
+				throw new AbortCreatingPageException($"Загрузить [{names.Nominative}:{uowBuilder.EntityOpenId}] не удалось. " +
+				                                     $"Возможно другой пользователь удалил этот объект.", "Ошибка открытия диалога");
+			}
 			base.Title = GetDialogNameByEntity();
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
