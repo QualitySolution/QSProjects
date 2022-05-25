@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.15" />
-    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.15.0" />
+    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="107.3.0" />
   </ItemGroup>
 
 </Project>
