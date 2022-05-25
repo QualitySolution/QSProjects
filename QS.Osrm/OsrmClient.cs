@@ -40,7 +40,7 @@ namespace QS.Osrm
 			var client = new RestClient(ServerUrl);
 			client.UseNewtonsoftJson();
 
-			var request = new RestRequest("/route/v1/car/{points}", Method.Get);
+			var request = new RestRequest("/route/v1/car/{points}", Method.GET);
 
 			var points = String.Join(";", routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Longitude, point.Latitude)));
 
