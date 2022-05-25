@@ -87,7 +87,7 @@ namespace QS.ViewModels.Dialog
 		}
 
 		private void ExternalDelete(EntityChangeEvent changeEvent) {
-			if(((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
+			if(changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
 				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
 		}
 		#endregion
