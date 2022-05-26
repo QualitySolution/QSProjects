@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using RestSharp;
@@ -104,7 +105,7 @@ namespace QS.Osrm
 
         private string ConvertPointsToString(List<PointOnEarth> routePOIs, string separator = ";")
         {
-            return String.Join(separator, routePOIs.Select(point => $"{point.Longitude},{point.Latitude}"));
-        }
+            return String.Join(separator, routePOIs.Select(point => String.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Longitude, point.Latitude)));
+		}
     }
 }
