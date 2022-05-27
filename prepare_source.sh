@@ -45,7 +45,7 @@ dotnet test QSProjects.dotnet.sln
 ;;&
     *6*)
 msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln    
-mono ~/.nuget/packages/nunit.consolerunner/3.12.0/tools/nunit3-console.exe QS.LibsTest/bin/Debug/QS.LibsTest.dll
+mono ~/.nuget/packages/nunit.consolerunner/3.15.0/tools/nunit3-console.exe QS.LibsTest/bin/Debug/QS.LibsTest.dll --framework=mono-4.0
 ;;&
 esac
 
