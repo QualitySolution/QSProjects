@@ -351,7 +351,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)
 		{
-			EditConnection dlg = new EditConnection(Connections, GetDBCreator?.Invoke());
+			EditConnection dlg = new EditConnection(Connections, SelectedConnection, GetDBCreator?.Invoke());
 			dlg.EditingDone += (se, ev) => UpdateFromGConf();
 			dlg.Run();
 			dlg.Destroy();
