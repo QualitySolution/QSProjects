@@ -235,8 +235,6 @@ namespace QSProjectsLib
 			conStrBuilder.Database = BaseName;
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = entryPassword.Text;
-			//FIXME Необходимо в будущем реализовать подключение через SSL, нужно сделать в виде настройки в подключении. Сейчас отключено, так как нет возможности проверить.
-			conStrBuilder.SslMode = MySqlSslMode.None;
 
 			connStr = conStrBuilder.GetConnectionString(true);
 
