@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
@@ -39,6 +40,8 @@ namespace QS.ViewModels.Dialog
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
 
 			Validations.Add(new ValidationRequest(Entity));
+			
+			NotifyConfiguration.Instance.SingleSubscribeOnEntity<TEntity>(ExternalDelete);
 		}
 
 		#region Создание имени диалога
@@ -88,6 +91,10 @@ namespace QS.ViewModels.Dialog
 			return Entity.ToString();
 		}
 
+		private void ExternalDelete(EntityChangeEvent changeEvent) {
+			if(changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
+				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
+		}
 		#endregion
 	}
 }

@@ -23,11 +23,11 @@ namespace QSProjectsLib
 				EditingDone(null, EventArgs.Empty);
 		}
 
-		public EditConnection(List<Connection> Connections, IDBCreator dbCreator = null)
+		public EditConnection(List<Connection> connections, string selectedConnectionName, IDBCreator dbCreator = null)
 		{
 			this.Build();
 			this.Title = "Настройка соединений";
-			connections = Connections;
+			this.connections = connections;
 			this.dbCreator = dbCreator;
 
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
@@ -47,11 +47,13 @@ namespace QSProjectsLib
 			treeConnections.AppendColumn(connectionColumn);
 
 			//Filling in info
-			for(int i = 0; i < Connections.Count; i++)
-				connectionsListStore.AppendValues(Connections[i].ConnectionName, Connections[i]);
-
-			//Selecting first node and filling in its information
-			var conn = Connections[0];
+			for(int i = 0; i < connections.Count; i++)
+				connectionsListStore.AppendValues(connections[i].ConnectionName, connections[i]);
+			
+			int selectionIndex = connections.FindIndex(x => x.ConnectionName == selectedConnectionName);
+			if (selectionIndex < 0)
+				selectionIndex = 0;
+			var conn = connections[selectionIndex];
 			entryName.Text = conn.ConnectionName;
 			entryBase.Text = conn.BaseName;
 			if(conn.Type == ConnectionType.MySQL) {
@@ -65,8 +67,8 @@ namespace QSProjectsLib
 			}
 
 			buttonCreateBase.Sensitive = dbCreator != null;
-
-			treeConnections.Model.GetIterFirst(out currentIter);
+			
+			treeConnections.Model.GetIter(out currentIter, new TreePath(selectionIndex.ToString()));
 			treeConnections.Selection.SelectIter(currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
 
