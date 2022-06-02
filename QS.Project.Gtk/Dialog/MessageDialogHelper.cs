@@ -40,6 +40,25 @@ namespace QS.Dialog.GtkUI
 			md.Destroy();
 			return result;
 		}
+		
+		public static int RunQuestionYesNoCancelDialog(string question, string title = null)
+		{
+			MessageDialog md = new MessageDialog(null,
+				DialogFlags.Modal,
+				MessageType.Question,
+				ButtonsType.None,
+				question);
+
+			md.AddButton("Да", ResponseType.Yes);
+			md.AddButton("Нет", ResponseType.No);
+			md.AddButton("Отмена", ResponseType.Cancel);
+			md.SetPosition(WindowPosition.Center);
+			md.Title = title;
+			md.ShowAll();
+			int result = md.Run();
+			md.Destroy();
+			return result;
+		}
 
 		public static void RunWarningDialog(string warning, string title = null)
 		{
