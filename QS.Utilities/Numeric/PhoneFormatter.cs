@@ -9,7 +9,8 @@ namespace QS.Utilities.Numeric
 		public readonly PhoneFormat Format;
 
 		#region Настройки форматов
-		private int MaxStringLength;
+
+		public int MaxStringLength { get; }
 		private string Starttext;
 		private SeparatorPosition[] SeparatorPositions;
 
