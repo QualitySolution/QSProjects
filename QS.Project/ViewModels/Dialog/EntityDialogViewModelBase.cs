@@ -85,11 +85,17 @@ namespace QS.ViewModels.Dialog
 			}
 			return Entity.ToString();
 		}
+		#endregion
 
 		private void ExternalDelete(EntityChangeEvent changeEvent) {
 			if(changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
 				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
 		}
-		#endregion
+
+		public override void Dispose()
+		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			base.Dispose();
+		}
 	}
 }
