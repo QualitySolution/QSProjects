@@ -28,7 +28,7 @@ namespace QS.Widgets
 							Adjustment.Value,
 							Adjustment.Upper
 						   );
-			GtkHelper.WaitRedraw();
+			GtkHelper.WaitRedraw(50);
 		}
 
 		public void Close()
