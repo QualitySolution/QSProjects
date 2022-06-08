@@ -8,6 +8,7 @@ namespace QS.Project.HibernateMapping
 	{
 		public UserBaseMap()
 		{
+			Schema("Vodovoz_honeybee");
 			Table("users");
 
 			Id(x => x.Id).Column("id").GeneratedBy.Native();

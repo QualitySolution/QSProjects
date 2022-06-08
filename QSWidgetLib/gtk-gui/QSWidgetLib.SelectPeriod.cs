@@ -8,6 +8,8 @@ namespace QSWidgetLib
 
 		private global::Gtk.Label label1;
 
+		private global::Gtk.CheckButton chkEarlyCustomDate;
+
 		private global::Gtk.Table RadiosTable;
 
 		private global::Gtk.HBox hbox1;
@@ -39,14 +41,27 @@ namespace QSWidgetLib
 			w1.Expand = false;
 			w1.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
+			this.chkEarlyCustomDate = new global::Gtk.CheckButton();
+			this.chkEarlyCustomDate.Sensitive = false;
+			this.chkEarlyCustomDate.CanFocus = true;
+			this.chkEarlyCustomDate.Name = "chkEarlyCustomDate";
+			this.chkEarlyCustomDate.Label = global::Mono.Unix.Catalog.GetString("ранний период");
+			this.chkEarlyCustomDate.DrawIndicator = true;
+			this.chkEarlyCustomDate.UseUnderline = true;
+			this.vboxMain.Add(this.chkEarlyCustomDate);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.chkEarlyCustomDate]));
+			w2.Position = 1;
+			w2.Expand = false;
+			w2.Fill = false;
+			// Container child vboxMain.Gtk.Box+BoxChild
 			this.RadiosTable = new global::Gtk.Table(((uint)(1)), ((uint)(2)), false);
 			this.RadiosTable.Name = "RadiosTable";
 			this.RadiosTable.RowSpacing = ((uint)(6));
 			this.RadiosTable.ColumnSpacing = ((uint)(6));
 			this.vboxMain.Add(this.RadiosTable);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.RadiosTable]));
-			w2.Position = 1;
-			w2.Expand = false;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.RadiosTable]));
+			w3.Position = 2;
+			w3.Expand = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
@@ -60,17 +75,17 @@ namespace QSWidgetLib
 			this.StartDate.IsEditable = true;
 			this.StartDate.AutoSeparation = true;
 			this.hbox1.Add(this.StartDate);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.StartDate]));
-			w3.Position = 0;
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.StartDate]));
+			w4.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.label2 = new global::Gtk.Label();
 			this.label2.Name = "label2";
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("-");
 			this.hbox1.Add(this.label2);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.label2]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.label2]));
+			w5.Position = 1;
+			w5.Expand = false;
+			w5.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.EndDate = new global::QSWidgetLib.DatePicker();
 			this.EndDate.Events = ((global::Gdk.EventMask)(256));
@@ -80,18 +95,19 @@ namespace QSWidgetLib
 			this.EndDate.IsEditable = true;
 			this.EndDate.AutoSeparation = true;
 			this.hbox1.Add(this.EndDate);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.EndDate]));
-			w5.Position = 2;
-			this.vboxMain.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.EndDate]));
 			w6.Position = 2;
-			w6.Expand = false;
-			w6.Fill = false;
+			this.vboxMain.Add(this.hbox1);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
+			w7.Position = 3;
+			w7.Expand = false;
+			w7.Fill = false;
 			this.Add(this.vboxMain);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
+			this.chkEarlyCustomDate.Hide();
 			this.Hide();
 			this.StartDate.DateChanged += new global::System.EventHandler(this.OnStartDateDateChanged);
 			this.EndDate.DateChanged += new global::System.EventHandler(this.OnEndDateDateChanged);

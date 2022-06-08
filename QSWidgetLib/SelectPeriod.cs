@@ -13,9 +13,11 @@ namespace QSWidgetLib
 		private Dictionary<Period, RadioButton> RadioButtons;
 		private RadioModeType _RadioMode;
 		private bool IsRadioChange;
+		private int customPeriodInDays;
 		public event EventHandler DatesChanged;
+		public event Action<bool> EarlyCustomDateToggled;
 
-		public enum Period { None, Today, Week, Month, ThreeMonth, SixMonth, Year, AllTime, CurWeek, CurMonth, CurQuarter, CurYear };
+		public enum Period { None, Today, Week, Month, ThreeMonth, SixMonth, Year, AllTime, CurWeek, CurMonth, CurQuarter, CurYear, CustomPeriod };
 
 		public RadioModeType RadioMode {
 			get => _RadioMode;
@@ -133,6 +135,16 @@ namespace QSWidgetLib
 			}
 		}
 
+		public bool ShowCustomPeriod {
+			get => ShowRadio[Period.CustomPeriod];
+			set {
+				if(ShowRadio.ContainsKey(Period.CustomPeriod)) {
+					ShowRadio[Period.CustomPeriod] = value;
+					OnRepackRadios();
+				}
+			}
+		}
+
 		public bool WithTime {
 			get => EndDate.WithTime || StartDate.WithTime;
 			set => EndDate.WithTime = StartDate.WithTime = value;
@@ -185,6 +197,39 @@ namespace QSWidgetLib
 			_RadioMode = RadioModeType.DoubleColumn;
 			OnRepackRadios();
 			ActiveRadio = Period.AllTime;
+			chkEarlyCustomDate.Toggled += OnChkEarlyCustomDateToggled;
+		}
+
+		void OnChkEarlyCustomDateToggled(object sender, EventArgs e) {
+			var radBtnToday = RadioButtons[Period.Today];
+
+			if(chkEarlyCustomDate.Active) {
+				radBtnToday.Label = "Последний день";
+			}
+			else {
+				radBtnToday.Label = "Сегодня";
+			}
+
+			if(ActiveRadio != Period.None) {
+				RadioButtons[ActiveRadio].Click();
+			}
+
+			EarlyCustomDateToggled?.Invoke(chkEarlyCustomDate.Active);
+		}
+
+		public void AddCustomPeriodInDays(int periodInDays, string chkEarlyCustomDateName = null) {
+			chkEarlyCustomDate.Visible = true;
+			chkEarlyCustomDate.Sensitive = true;
+			customPeriodInDays = periodInDays;
+
+			if(!string.IsNullOrEmpty(chkEarlyCustomDateName)) {
+				chkEarlyCustomDate.Label = chkEarlyCustomDateName;
+			}
+
+			var RadioToday = RadioButtons[Period.Today];
+			RadioButtons.Add(Period.CustomPeriod, new RadioButton(RadioToday, $"{customPeriodInDays} дн."));
+			RadioButtons[Period.CustomPeriod].Clicked += OnRadioCustomPeriodClicked;
+			ShowRadio.Add(Period.CustomPeriod, false);
 		}
 
 		public Period ActiveRadio {
@@ -201,14 +246,20 @@ namespace QSWidgetLib
 			}
 		}
 
-		protected void OnRadioTodayClicked(object sender, EventArgs e)
-		{
-			if((sender as RadioButton).Active) {
-				IsRadioChange = true;
+		protected void OnRadioTodayClicked(object sender, EventArgs e) {
+			if((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
 				StartDate.Date = DateTime.Today.Date;
 				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
-				EndRadioChange();
 			}
+			EndRadioChange();
 		}
 
 		protected void OnRadioWeekClicked(object sender, EventArgs e)
@@ -216,8 +267,15 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active == false)
 				return;
 			IsRadioChange = true;
-			StartDate.Date = DateTime.Today.AddDays(-7);
-			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays - 7);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddDays(-7);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
@@ -226,8 +284,15 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active == false)
 				return;
 			IsRadioChange = true;
-			StartDate.Date = DateTime.Today.AddMonths(-1);
-			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays).AddMonths(-1);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddMonths(-1);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
@@ -236,8 +301,15 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active == false)
 				return;
 			IsRadioChange = true;
-			StartDate.Date = DateTime.Today.AddMonths(-3);
-			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays).AddMonths(-3);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddMonths(-3);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
@@ -246,8 +318,15 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active == false)
 				return;
 			IsRadioChange = true;
-			StartDate.Date = DateTime.Today.AddMonths(-6);
-			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays).AddMonths(-6);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddMonths(-6);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
@@ -256,8 +335,15 @@ namespace QSWidgetLib
 			if((sender as RadioButton).Active == false)
 				return;
 			IsRadioChange = true;
-			StartDate.Date = DateTime.Today.AddYears(-1);
-			EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays).AddYears(-1);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddYears(-1);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
@@ -318,6 +404,21 @@ namespace QSWidgetLib
 			IsRadioChange = true;
 			StartDate.Date = new DateTime(DateTime.Today.Year, 1, 1);
 			EndDate.Date = new DateTime(DateTime.Today.Year, 12, 31);
+			EndRadioChange();
+		}
+
+		protected void OnRadioCustomPeriodClicked(object sender, EventArgs e) {
+			if((sender as RadioButton).Active == false)
+				return;
+			IsRadioChange = true;
+			if(chkEarlyCustomDate.Active) {
+				StartDate.Date = DateTime.Today.AddDays(- 2 * customPeriodInDays + 1);
+				EndDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1).AddTicks(-1);
+			}
+			else {
+				StartDate.Date = DateTime.Today.AddDays(-customPeriodInDays + 1);
+				EndDate.Date = DateTime.Today.AddDays(1).AddTicks(-1);
+			}
 			EndRadioChange();
 		}
 
