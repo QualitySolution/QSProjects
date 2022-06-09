@@ -8,6 +8,8 @@ using QS.Dialog.GtkUI;
 using QS.Utilities;
 using QS.Navigation;
 using QS.ViewModels.Extension;
+using System.Threading.Tasks;
+using GLib;
 
 namespace QS.Tdi.Gtk
 {
@@ -129,9 +131,9 @@ namespace QS.Tdi.Gtk
 			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tab.TabName) : tab.TabName;
 			box.Add(nameLable);
 			Image closeImage = new Image(Stock.Close, IconSize.Menu);
-			Button closeButton = new Button(closeImage);
+			CloseButton closeButton = new CloseButton(closeImage);
 			closeButton.Relief = ReliefStyle.None;
-			closeButton.Clicked += OnCloseButtonClicked;
+			closeButton.OnClose += OnCloseButtonClicked;
 			closeButton.ModifierStyle.Xthickness = 0;
 			closeButton.ModifierStyle.Ythickness = 0;
 			box.Add(closeButton);
@@ -406,10 +408,8 @@ namespace QS.Tdi.Gtk
 				logger.Warn("Не найден вкладка соответствующая кнопке закрыть.");
 				return;
 			}
-
 			AskToCloseTab(tab.Tab, CloseSource.ClosePage);
 		}
-
 
 		/// <returns><c>true</c>, если можно закрывать вкладку, если закрытие вкладки отменено то <c>false</c></returns>
 		private bool SaveIfNeed(ITdiTab tab)
@@ -617,6 +617,108 @@ namespace QS.Tdi.Gtk
 		public TabSwitchedEventArgs(ITdiTab tab)
 		{
 			this.tab = tab;
+		}
+	}
+
+	public class CloseButton : Button
+	{
+		private int countdownMs = 50;
+		private bool inClosing = false;
+		private bool eventRaised;
+
+		public event EventHandler OnClose;
+
+		public CloseButton() 
+		{
+			base.WidgetEvent += CloseButton_WidgetEvent;
+		}
+
+		protected CloseButton(GType gtype) : base(gtype) 
+		{
+			base.WidgetEvent += CloseButton_WidgetEvent;
+		}
+
+		public CloseButton(IntPtr raw) : base(raw) 
+		{
+			base.WidgetEvent += CloseButton_WidgetEvent;
+		}
+
+		public CloseButton(string stock_id) : base(stock_id) 
+		{
+			base.WidgetEvent += CloseButton_WidgetEvent;
+		}
+
+		public CloseButton(Widget widget) : base(widget) 
+		{
+			base.WidgetEvent += CloseButton_WidgetEvent;
+		}
+
+		private void CloseButton_WidgetEvent(object o, WidgetEventArgs args) 
+		{
+			if(!(args.Event is Gdk.EventButton)) 
+			{
+				return;
+			}
+
+			var buttonEvent = (args.Event as Gdk.EventButton);
+			if(buttonEvent == null) 
+			{
+				return;
+			}
+
+			if(buttonEvent.Type == Gdk.EventType.ButtonRelease) 
+			{
+				NewEventRaised();
+				if(inClosing) {
+					return;
+				}
+				Sensitive = false;
+				StartClose();
+			}
+
+			if(buttonEvent.Type == Gdk.EventType.ButtonPress) 
+			{
+				NewEventRaised();
+			}
+		}
+
+		private void NewEventRaised() 
+		{
+			eventRaised = true;
+		}
+
+		/// <summary>
+		/// Если при нажатии кнопки закрытия произошло несколько нажатий одновременно,
+		/// то все эти события никак не получается остановить, и если после первого события
+		/// происходит destroy виджета, то на следующих событиях приложение падает.
+		/// Повторяется гарантированно. И полностью устранить это не получиться, потому что
+		/// падение не зависит от действий в событии, падает просто по факту вызова события самого виджета.
+		/// Поэтому создана пауза ожидающая вызова всех повторяющихся событий, а чтобы повторные события 
+		/// не повторяли действия, создан флаг <see cref="inClosing"/> устраняющие повторение действия.
+		/// </summary>
+		private void StartClose() 
+		{
+			inClosing = true;
+			Task.Delay(countdownMs).ContinueWith(t => InvokeCountdown(t));
+		}
+
+		private void InvokeCountdown(Task task) 
+		{
+			if(eventRaised) {
+				task.ContinueWith(async (t) => {
+					eventRaised = false;
+					await Task.Delay(countdownMs);
+					InvokeCountdown(t);
+				});
+			}
+			else {
+				task.ContinueWith(t => InvokeClose());
+			}
+		}
+
+		private void InvokeClose() 
+		{
+			Application.Invoke((s, arg) => OnClose?.Invoke(this, EventArgs.Empty));
 		}
 	}
 }
