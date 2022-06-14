@@ -36,7 +36,6 @@ namespace QS.NewsFeed.ViewModels
 			reader.LoadFeedAsync()
 				.ContinueWith(tsk => {
 					Feed = tsk.Result;
-					OnPropertyChanged(nameof(Feed));
 					OnPropertyChanged(nameof(UnreadNewsCount));
 					reader.SaveFirstRead();
 				});
