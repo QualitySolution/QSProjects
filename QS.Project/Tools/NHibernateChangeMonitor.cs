@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using NHibernate;
+using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
@@ -9,76 +9,62 @@ namespace QS.Tools {
 	/// <summary>
 	/// Сервис для отслеживания изменений полей при сохранении сущностей
 	/// </summary>
-	public class NHibernateChangeMonitor : IChangeMonitor, IDisposable
+	public class NHibernateChangeMonitor<TDomainObject> : IChangeMonitor<TDomainObject>, IDisposable
+	where TDomainObject : class, IDomainObject 
 	{
-		public IIChangeConfiguration<TDomainObject> SubscribeAllChange<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject 
+		public IIChangeConfiguration<TDomainObject> SubscribeAllChange(
+			Func<TDomainObject, bool> criteria) 
 		{
-			Session = unitOfWork.Session;
 			Criteria = o => criteria((TDomainObject)o);
-			SubscribeToCreate<TDomainObject>();
-			SubscribeToDelete<TDomainObject>();
-			SubscribeToUpdates<TDomainObject>();
-
+			SubscribeToCreate();
+			SubscribeToDelete();
+			SubscribeToUpdates();
 			return new ChangeConfiguration<TDomainObject>(SetTargetField);
 		}
 		
-		public IIChangeConfiguration<TDomainObject> SubscribeToDelete<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject 
+		public IIChangeConfiguration<TDomainObject> SubscribeToDelete(
+			Func<TDomainObject, bool> criteria) 
 		{
-			Session = unitOfWork.Session;
 			Criteria = o => criteria((TDomainObject)o);
-			SubscribeToDelete<TDomainObject>();
-			
+			SubscribeToDelete();
 			return new ChangeConfiguration<TDomainObject>(SetTargetField);
 		}
 
-		public IIChangeConfiguration<TDomainObject> SubscribeToUpdates<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject 
+		public IIChangeConfiguration<TDomainObject> SubscribeToUpdates(
+			Func<TDomainObject, bool> criteria) 
 		{
-			Session = unitOfWork.Session;
 			Criteria = o => criteria((TDomainObject)o);
-			SubscribeToUpdates<TDomainObject>();
-			
+			SubscribeToUpdates();
 			return new ChangeConfiguration<TDomainObject>(SetTargetField);
 		}
 		
-		public IIChangeConfiguration<TDomainObject> SubscribeToCreate<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject 
+		public IIChangeConfiguration<TDomainObject> SubscribeToCreate(
+			Func<TDomainObject, bool> criteria) 
 		{
-			Session = unitOfWork.Session;
 			Criteria = o => criteria((TDomainObject)o);
-			SubscribeToCreate<TDomainObject>();
-			
+			SubscribeToCreate();
 			return new ChangeConfiguration<TDomainObject>(SetTargetField);
 		}
 
-		private void SubscribeToDelete<TDomainObject>() 
-			where TDomainObject : class, IDomainObject {
+		public void SetTargetUnitOfWorks(IUnitOfWork unitOfWork) {
+			TargetUnitOfWorks.Add(unitOfWork);
+		}
+
+		private void SubscribeToDelete() {
 			NotifyConfiguration.Instance.BatchSubscribe(Delete)
 				.IfEntity<TDomainObject>()
 				.AndWhere(Criteria)
 				.AndChangeType(TypeOfChangeEvent.Delete);
 		}
 
-		private void SubscribeToUpdates<TDomainObject>() 
-			where TDomainObject : class, IDomainObject {
+		private void SubscribeToUpdates()  {
 			NotifyConfiguration.Instance.BatchSubscribe(Update)
 				.IfEntity<TDomainObject>()
 				.AndWhere(Criteria)
 				.AndChangeType(TypeOfChangeEvent.Update);
 		}
 		
-		private void SubscribeToCreate<TDomainObject>() 
-			where TDomainObject : class, IDomainObject {
+		private void SubscribeToCreate()  {
 			NotifyConfiguration.Instance.BatchSubscribe(Insert)
 				.IfEntity<TDomainObject>()
 				.AndWhere(Criteria)
@@ -97,7 +83,7 @@ namespace QS.Tools {
 		public HashSet<int> IdsDeletedEntities { get; } = new HashSet<int>();
 		public HashSet<int> IdsUpdateEntities { get; } = new HashSet<int>();
 		public HashSet<int> IdsCreateEntities { get; } = new HashSet<int>();
-		private ISession Session { get; set; }
+		private List<IUnitOfWork> TargetUnitOfWorks { get; } = new List<IUnitOfWork>();
 		private Func<IDomainObject, bool> Criteria { get; set; }
 
 		private void Delete(EntityChangeEvent[] changeEvents) 
@@ -111,13 +97,19 @@ namespace QS.Tools {
 
 		private void SaveIds(EntityChangeEvent[] changeEvents, HashSet<int> ids) {
 			foreach(var changeEvent in changeEvents)
-				if(changeEvent.Session == Session)
-					ids.Add(targetField is null ? 
-						changeEvent.Entity.GetId() 
+				if(TargetUnitOfWorks.Any()) {
+					if(TargetUnitOfWorks.Any(x => x.Session == changeEvent.Session))
+						ids.Add(targetField is null
+							? changeEvent.Entity.GetId()
+							: targetField(changeEvent.Entity).GetId());
+				}
+				else
+					ids.Add(targetField is null
+						? changeEvent.Entity.GetId()
 						: targetField(changeEvent.Entity).GetId());
 		}
 		
-		private void SetTargetField<TDomainObject, TTarget>(Func<TDomainObject, TTarget> field) 
+		private void SetTargetField<TTarget>(Func<TDomainObject, TTarget> field) 
 			where TTarget : IDomainObject
 			=> targetField = o => field((TDomainObject)o);
 

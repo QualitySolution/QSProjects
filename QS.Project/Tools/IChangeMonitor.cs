@@ -4,27 +4,18 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 
 namespace QS.Tools {
-	public interface IChangeMonitor
+	public interface IChangeMonitor<TDomainObject> 
+		where TDomainObject : IDomainObject
 	{
-		IIChangeConfiguration<TDomainObject> SubscribeAllChange<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject;
+		IIChangeConfiguration<TDomainObject> SubscribeAllChange(Func<TDomainObject, bool> criteria);
 
-		IIChangeConfiguration<TDomainObject> SubscribeToDelete<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject;
+		IIChangeConfiguration<TDomainObject> SubscribeToDelete(Func<TDomainObject, bool> criteria);
 
-		IIChangeConfiguration<TDomainObject> SubscribeToUpdates<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject;
+		IIChangeConfiguration<TDomainObject> SubscribeToUpdates(Func<TDomainObject, bool> criteria);
 
-		IIChangeConfiguration<TDomainObject> SubscribeToCreate<TDomainObject>(
-			Func<TDomainObject, bool> criteria, 
-			IUnitOfWork unitOfWork) 
-			where TDomainObject : class, IDomainObject;
+		IIChangeConfiguration<TDomainObject> SubscribeToCreate(Func<TDomainObject, bool> criteria);
+
+		void SetTargetUnitOfWorks(IUnitOfWork unitOfWork);
 		
 		HashSet<int> EntityIds { get; }
 		HashSet<int> IdsDeletedEntities { get; }
@@ -34,7 +25,6 @@ namespace QS.Tools {
 
 	// ReSharper disable once TypeParameterCanBeVariant
 	public interface IIChangeConfiguration<TDomainObject> {
-		void TargetField<TTarget>(Func<TDomainObject, TTarget> targetField)
-			where TTarget : IDomainObject;
+		void TargetField<TTarget>(Func<TDomainObject, TTarget> targetField) where TTarget : IDomainObject;
 	}
 }
