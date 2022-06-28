@@ -15,7 +15,7 @@ namespace QS.Tools {
 
 		IIChangeConfiguration<TDomainObject> SubscribeToCreate(Func<TDomainObject, bool> criteria);
 
-		void SetTargetUnitOfWorks(IUnitOfWork unitOfWork);
+		void AddSetTargetUnitOfWorks(IUnitOfWork unitOfWork);
 		
 		HashSet<int> EntityIds { get; }
 		HashSet<int> IdsDeletedEntities { get; }

@@ -46,7 +46,7 @@ namespace QS.Tools {
 			return new ChangeConfiguration<TDomainObject>(SetTargetField);
 		}
 
-		public void SetTargetUnitOfWorks(IUnitOfWork unitOfWork) {
+		public void AddSetTargetUnitOfWorks(IUnitOfWork unitOfWork) {
 			TargetUnitOfWorks.Add(unitOfWork);
 		}
 
