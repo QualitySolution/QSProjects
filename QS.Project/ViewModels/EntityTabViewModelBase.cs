@@ -132,8 +132,9 @@ namespace QS.ViewModels
 			}
 		}
 
-		protected virtual void BeforeSave()
+		protected virtual bool BeforeSave()
 		{
+			return true;
 		}
 
 		public override bool Save(bool close)
@@ -141,7 +142,10 @@ namespace QS.ViewModels
 			if(!Validate()) {
 				return false;
 			}
-			BeforeSave();
+            if(!BeforeSave())
+            {
+				return false;
+            }
 			bool result = base.Save(close);
 			AfterSave();
 			return result;
