@@ -78,10 +78,10 @@ namespace QS.Project.Journal
 			Refresh();
 		}
 
-		protected override void OnItemsSelected(params object[] selectedNodes)
+		protected override void OnItemsSelected(object[] selectedNodes, bool closeJournal = true)
 		{
 			OnEntitySelectedResult?.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
-			base.OnItemsSelected(selectedNodes);
+			base.OnItemsSelected(selectedNodes, closeJournal);
 		}
 
 		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
