@@ -107,6 +107,7 @@
     <Compile Include="Project.DB\MySQLProvider.cs" />
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
+    <Compile Include="Tools\IChangeMonitor.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Project.Journal\JournalAction.cs" />
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
     <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
+    <Compile Include="Tools\NHibernateChangeMonitor.cs" />
     <Compile Include="Tools\PerformanceHelper.cs" />
     <Compile Include="Validation\PasswordValidation\DefaultPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
