@@ -11,6 +11,7 @@ using NLog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.Navigation;
 using QS.Project.Dialogs.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
@@ -46,7 +47,9 @@ namespace QS.Widgets.GtkUI
 			});
 		}
 
-		private bool sensitive = true;
+        public bool CanOpenWithoutTabParent { get; set; }
+
+        private bool sensitive = true;
 		[Browsable(false)]
 		public new bool Sensitive {
 			get { return sensitive; }
@@ -241,7 +244,18 @@ namespace QS.Widgets.GtkUI
 			entitySelector = entitySelectorFactory.CreateSelector();
 			entitySelector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
 			entitySelector.TabClosed += EntitySelector_TabClosed;
-			MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
+            if(MyTab.TabParent != null)
+            {
+				MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
+			}
+            else if(CanOpenWithoutTabParent)
+            {
+				TDIMain.MainNotebook.AddTab(entitySelector);
+            }
+            else
+            {
+				throw new InvalidOperationException($"Родительский диалог не был правильно открыт как вкладка, либо в виджете не установлено свойство {nameof(CanOpenWithoutTabParent)}");
+            }
 		}
 
 		void EntitySelector_TabClosed(object sender, EventArgs e)
@@ -441,7 +455,13 @@ namespace QS.Widgets.GtkUI
 			logger.Debug("EntityViewModelEntry OnDestroyed() called.");
 			//Отписываемся от событий.
 			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
-			if(subject is INotifyPropertyChanged) {
+
+            if(entitySelector != null)
+            {
+				entitySelector.OnEntitySelectedResult -= JournalViewModel_OnEntitySelectedResult;
+			}
+
+			if (subject is INotifyPropertyChanged) {
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
