@@ -10,7 +10,6 @@ namespace QSProjectsLib
 	{
 		ListStore connectionsListStore = new ListStore(typeof(string), typeof(Connection));
 		List<string> sectionsToDelete = new List<string>();
-		List<Connection> connections;
 		private readonly IDBCreator dbCreator;
 		TreeIter currentIter;
 		string lastEdited;
@@ -27,7 +26,6 @@ namespace QSProjectsLib
 		{
 			this.Build();
 			this.Title = "Настройка соединений";
-			this.connections = connections;
 			this.dbCreator = dbCreator;
 
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
@@ -202,7 +200,7 @@ namespace QSProjectsLib
 				if (String.IsNullOrWhiteSpace (connection.IniName)) {
 					int i = 0;
 					for (;; i++) {
-						if (connections.Find (m => m.IniName == ("Login" + i)) == null)
+						if (!ListStoreWorks.SearchListStore<Connection>((ListStore)treeConnections.Model, m => m.IniName == ("Login" + i), 1, out TreeIter tempIter))
 							break;
 					}
 					connection.IniName = "Login" + i;
