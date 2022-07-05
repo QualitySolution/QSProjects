@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -65,15 +65,15 @@ namespace QS.Tdi.Gtk
 			_tabs = new List<TdiTabInfo>();
 			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
-			WidgetEvent += TdiNotebook_WidgetEvent;
 		}
 
-		private void TdiNotebook_WidgetEvent(object o, WidgetEventArgs args) {
+		protected override bool OnWidgetEvent(Gdk.Event evnt)
+		{
 			//Блокируем событие клика если нет вкладок, из-за того что приложение
 			//крашиться если происходит множество кликов закрытия в очень короткий промежуток времени.
-			if(args.Event.Type == Gdk.EventType.ButtonRelease && NPages == 0) {
-				args.RetVal = true;
-			}
+			if (evnt.Type == Gdk.EventType.ButtonRelease && NPages == 0)
+				return true;
+			return base.OnWidgetEvent(evnt);
 		}
 
 		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
