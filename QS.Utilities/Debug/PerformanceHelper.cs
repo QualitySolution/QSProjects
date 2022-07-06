@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QS.Tools
+namespace QS.Utilities.Debug
 {
 	public class PerformanceHelper
 	{
