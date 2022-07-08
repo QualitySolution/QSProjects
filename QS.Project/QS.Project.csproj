@@ -238,6 +238,7 @@
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
     <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
+    <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
   </ItemGroup>
   <ItemGroup>
