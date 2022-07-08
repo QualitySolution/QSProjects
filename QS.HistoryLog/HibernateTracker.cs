@@ -125,7 +125,17 @@ namespace QS.HistoryLog
 						+ " (" + userUoW.ActionTitle.CallerLineNumber + ")",
 				userId,
 				dbLogin);
-			changeSet.AddChangeEntities(changes);
+			
+			//NHibernate очень часто при удалении множества объектов, имеющих ссылки друг на друга, сначала очищает у объекта поля со ссылками
+			//на другой удаляемый объект, а потом его удалят тот в котором очищались ссылки. Что достаточно бестолково, можно было просто удалить.
+			//из-за таких действий история изменений для пользователя выглядит странно. Код ниже удаляет бестолковые записи об изменениях. 
+			var hashOfDeleted = new HashSet<string>(
+				changes.Where(x => x.Operation == EntityChangeOperation.Delete)
+					.Select(x => x.EntityHash)
+				);
+			var toSave = changes.Where(x => x.Operation == EntityChangeOperation.Delete || !hashOfDeleted.Contains(x.EntityHash));	
+
+			changeSet.AddChangeEntities(toSave);
 			
 			Save(changeSet);
 			logger.Debug(NumberToTextRus.FormatCase(changes.Sum(x => x.Changes.Count), "Зарегистрировано {0} изменение ",

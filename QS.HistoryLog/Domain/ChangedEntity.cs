@@ -37,7 +37,7 @@ namespace QS.HistoryLog.Domain
 
 		public virtual string OperationText => Operation.GetEnumTitle();
 
-
+		public virtual string EntityHash => $"{EntityClassName}_{EntityId}";
 		#endregion
 
 		public ChangedEntity() { }
