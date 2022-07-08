@@ -1608,7 +1608,6 @@
         <child>
           <widget class="Gtk.Button" id="buttonClearDate">
             <property name="MemberName" />
-            <property name="Visible">False</property>
             <property name="CanFocus">True</property>
             <property name="Type">TextAndIcon</property>
             <property name="Icon">stock:gtk-clear Menu</property>
