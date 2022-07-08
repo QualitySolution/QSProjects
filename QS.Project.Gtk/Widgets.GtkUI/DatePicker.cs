@@ -115,7 +115,8 @@ namespace QS.Widgets.GtkUI
 		public bool IsEditable{
 			get { return entryDate.IsEditable;}
 			set { entryDate.IsEditable = value;
-				buttonEditDate.Sensitive = value;}
+				buttonEditDate.Sensitive = value;
+				buttonClearDate.Sensitive = value;}
 		}
 
 		private bool _AutoSeparation = true;
@@ -194,7 +195,6 @@ namespace QS.Widgets.GtkUI
 
 
 		[Browsable(true)]
-		[DefaultValue(false)]
 		public bool ButtonClearDateVisibve 
 		{
 			get => buttonClearDate.Visible;
