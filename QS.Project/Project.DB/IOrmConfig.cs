@@ -18,6 +18,5 @@ namespace QS.Project.DB
         ISession OpenSession(IInterceptor interceptor = null);
         PersistentClass FindMappingByFullClassName(string clazz);
         PersistentClass FindMappingByShortClassName(string clazz);
-        string GetDBTableName(Type objectClass);
     }
 }
