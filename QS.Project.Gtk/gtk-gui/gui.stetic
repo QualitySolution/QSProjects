@@ -1578,7 +1578,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.DatePicker" design-size="144 35">
+  <widget class="Gtk.Bin" id="QS.Widgets.GtkUI.DatePicker" design-size="234 35">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -1606,6 +1606,24 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.Button" id="buttonClearDate">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextAndIcon</property>
+            <property name="Icon">stock:gtk-clear Menu</property>
+            <property name="Label" translatable="yes" />
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonClearDateClicked" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.Button" id="buttonEditDate">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
@@ -1616,7 +1634,7 @@
             <signal name="Clicked" handler="OnButtonEditDateClicked" />
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

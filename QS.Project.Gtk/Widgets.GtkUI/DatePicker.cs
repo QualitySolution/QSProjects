@@ -192,6 +192,15 @@ namespace QS.Widgets.GtkUI
 			DateOrNull = null;
 		}
 
+
+		[Browsable(true)]
+		[DefaultValue(false)]
+		public bool ButtonClearDateVisibve 
+		{
+			get => buttonClearDate.Visible;
+			set => buttonClearDate.Visible = value;
+		}
+
 		protected void OnEntryDateFocusInEvent (object o, FocusInEventArgs args)
 		{
 			entryDate.SelectRegion(0,10);
@@ -262,6 +271,11 @@ namespace QS.Widgets.GtkUI
 
 		public new void ModifyBase(StateType state, Gdk.Color color){
 			entryDate.ModifyBase(state, color);
+		}
+
+		protected void OnButtonClearDateClicked(object sender, EventArgs e) 
+		{
+			this.Clear();
 		}
 	}
 }
