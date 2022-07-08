@@ -195,10 +195,9 @@ namespace QS.Widgets.GtkUI
 
 
 		[Browsable(true)]
-		public bool ButtonClearDateVisibve 
-		{
-			get => buttonClearDate.Visible;
-			set => buttonClearDate.Visible = value;
+		public bool HideButtonClearDate {
+			get =>  !buttonClearDate.Visible;
+			set => buttonClearDate.Visible = !value;
 		}
 
 		protected void OnEntryDateFocusInEvent (object o, FocusInEventArgs args)
