@@ -148,6 +148,9 @@ namespace QS.HistoryLog.Views
 			if(ytreeChangesets.Vadjustment.Value + ytreeChangesets.Vadjustment.PageSize < ytreeChangesets.Vadjustment.Upper)
 				return;
 
+			if(!viewModel.HasUnloaded)
+				return;
+			
 			var lastPos = ytreeChangesets.Vadjustment.Value;
 			viewModel.UpdateChangedEntities(true);
 			Application.Invoke(delegate(object o, EventArgs args) {

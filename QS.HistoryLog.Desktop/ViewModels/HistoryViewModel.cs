@@ -102,6 +102,7 @@ namespace QS.HistoryLog.ViewModels
 		#endregion
 		#region Query
 		public bool DontRefresh = false;
+		public bool HasUnloaded = true;
 		public void UpdateChangedEntities(bool nextPage = false)
 		{
 			if(DontRefresh)
@@ -110,6 +111,7 @@ namespace QS.HistoryLog.ViewModels
 			if(!nextPage) {
 				ChangedEntities.Clear();
 				EntitiesTaken = 0;
+				HasUnloaded = true;
 			}
 			logger.Info("Получаем журнал изменений{0}...", EntitiesTaken > 0 ? $"({EntitiesTaken}+)" : "");
 			ChangeSet changeSetAlias = null;
@@ -156,6 +158,10 @@ namespace QS.HistoryLog.ViewModels
 				.Skip(EntitiesTaken)
 				.Take(entityBatchSize)
 				.List();
+			
+			if(taked.Count < entityBatchSize)
+				HasUnloaded = false;
+			
 			if (EntitiesTaken > 0)
 				ChangedEntities.AddRange(taked);
 			else
