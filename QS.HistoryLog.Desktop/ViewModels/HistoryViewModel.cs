@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
@@ -101,8 +101,11 @@ namespace QS.HistoryLog.ViewModels
 		}
 		#endregion
 		#region Query
+		public bool DontRefresh = false;
 		public void UpdateChangedEntities(bool nextPage = false)
 		{
+			if(DontRefresh)
+				return;
 			DateTime startTime = DateTime.Now;
 			if(!nextPage) {
 				ChangedEntities.Clear();
