@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using Gamma.GtkWidgets;
+using Gtk;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
@@ -149,8 +150,10 @@ namespace QS.HistoryLog.Views
 
 			var lastPos = ytreeChangesets.Vadjustment.Value;
 			viewModel.UpdateChangedEntities(true);
-			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
-			ytreeChangesets.Vadjustment.Value = lastPos;
+			Application.Invoke(delegate(object o, EventArgs args) {
+				ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
+				ytreeChangesets.Vadjustment.Value = lastPos;
+			} );
 		}
 	}
 }
