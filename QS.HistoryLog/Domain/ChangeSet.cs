@@ -10,6 +10,10 @@ namespace QS.HistoryLog.Domain
 
 		public virtual int Id { get; set; }
 
+		/// <summary>
+		/// Поле используется только для сохранения, так как в этот момент не нужен полный класс достаточно id.
+		/// </summary>
+		public virtual int UserId{ get; set; }
 		public virtual UserBase User { get; set; }
 
 		public virtual string UserLogin { get; set; }
@@ -26,10 +30,10 @@ namespace QS.HistoryLog.Domain
 		{
 		}
 
-		public ChangeSet(string actionName, UserBase user = null, string login = null)
+		public ChangeSet(string actionName, int userId, string login)
 		{
-			User = user;
-			UserLogin = login ?? user?.Login;
+			UserId = userId;
+			UserLogin = login;
 			ActionName = actionName;
 
 			//При сохранении в базу обрезаем длину действия до размера колонки.
@@ -37,7 +41,7 @@ namespace QS.HistoryLog.Domain
 				ActionName = ActionName.Substring(0, 97) + "...";
 		}
 
-		public virtual void AddChange(params ChangedEntity[] changes)
+		public virtual void AddChangeEntities(IEnumerable<ChangedEntity> changes)
 		{
 			foreach(var entity in changes)
 			{

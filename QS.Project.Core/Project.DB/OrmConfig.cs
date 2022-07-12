@@ -69,11 +69,6 @@ namespace QS.Project.DB
 			Sessions = fluenConfig.BuildSessionFactory();
 		}
 
-		public static String GetDBTableName(Type objectClass)
-		{
-			return nhConfig.GetClassMapping(objectClass).RootTable.Name;
-		}
-
 		public static NHibernate.Mapping.PersistentClass FindMappingByShortClassName(string clazz)
 		{
 			return NhConfig.ClassMappings

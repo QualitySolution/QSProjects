@@ -17,7 +17,7 @@ namespace QS.HistoryLog.HibernateMapping
 
 			References(x => x.User).Column("user_id").Not.LazyLoad();
 
-			HasMany(x => x.Entities).Cascade.AllDeleteOrphan().Inverse().LazyLoad().KeyColumn("changeset_id");
+			HasMany(x => x.Entities).Inverse().LazyLoad().KeyColumn("changeset_id");
 		}
 	}
 }

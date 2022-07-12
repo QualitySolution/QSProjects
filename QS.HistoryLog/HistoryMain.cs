@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MySql.Data.MySqlClient;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
@@ -11,9 +12,9 @@ namespace QS.HistoryLog
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public static void Enable()
+		public static void Enable(MySqlConnectionStringBuilder connectionFactory)
 		{
-			SingleUowEventsTracker.RegisterSingleUowListnerFactory(new TrackerFactory());
+			SingleUowEventsTracker.RegisterSingleUowListnerFactory(new TrackerFactory(connectionFactory));
 		}
 
 		public static IEnumerable<HistoryObjectDesc> TraceClasses {

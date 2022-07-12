@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MySqlConnector;
 using NHibernate.Event;
 using NHibernate.Proxy;
 using QS.DomainModel.Entity;
@@ -14,16 +15,24 @@ using QS.Utilities;
 
 namespace QS.HistoryLog
 {
-	public class HibernateTracker : ISingleUowEventListener, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostDeleteEventListener, IUowPostCommitEventListener
-	{
+	public class HibernateTracker : ISingleUowEventListener, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostDeleteEventListener, IUowPostCommitEventListener {
+		/// <summary>
+		/// Используется для записи журнала изменений.
+		/// </summary>
+		private readonly string connectionString;
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private static ReadOnlyCollection<char> DIRECTORY_SEPARATORS = new ReadOnlyCollection<char>(new List<char>() { '\\', '/' });
 
 		readonly List<ChangedEntity> changes = new List<ChangedEntity>();
 
-		public HibernateTracker()
-		{
+		public HibernateTracker(string connectionString) {
+			this.connectionString = connectionString;
+			if(!connectionString.Contains("Allow User Variables")) {
+				if(!this.connectionString.EndsWith(";"))
+					this.connectionString += ";";
+				this.connectionString += "Allow User Variables=true;";
+			}
 		}
 
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
@@ -102,27 +111,97 @@ namespace QS.HistoryLog
 			if(changes.Count == 0)
 				return;
 
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot())
-			{
-				var user = UserRepository.GetCurrentUser(uow);
+			var userId = UserRepository.GetCurrentUserId();
+			var start = DateTime.Now;
 
-				var conStr = userUoW.Session.Connection.ConnectionString;
-				var reg = new Regex("user id=(.+?)(;|$)");
-				var match = reg.Match(conStr);
-				string dbLogin = match.Success ? match.Groups[1].Value : null;
+			var conStr = userUoW.Session.Connection.ConnectionString;
+			var reg = new Regex("user id=(.+?)(;|$)");
+			var match = reg.Match(conStr);
+			string dbLogin = match.Success ? match.Groups[1].Value : null;
 
-				var changeset = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
-						?? userUoW.ActionTitle?.CallerMemberName + " - " 
-							+ userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOfAny(DIRECTORY_SEPARATORS.ToArray()) + 1)
-							+ " (" + userUoW.ActionTitle.CallerLineNumber + ")",
-					user,
-					dbLogin);
-				changeset.AddChange(changes.ToArray());
-				uow.Save(changeset);
-				uow.Commit();
-				logger.Debug(NumberToTextRus.FormatCase(changes.Count, "Зарегистрировано изменение {0} объекта.", "Зарегистрировано изменение {0} объектов.", "Зарегистрировано изменение {0} объектов."));
+			var changeSet = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
+					?? userUoW.ActionTitle?.CallerMemberName + " - " 
+						+ userUoW.ActionTitle.CallerFilePath.Substring(userUoW.ActionTitle.CallerFilePath.LastIndexOfAny(DIRECTORY_SEPARATORS.ToArray()) + 1)
+						+ " (" + userUoW.ActionTitle.CallerLineNumber + ")",
+				userId,
+				dbLogin);
+			
+			//NHibernate очень часто при удалении множества объектов, имеющих ссылки друг на друга, сначала очищает у объекта поля со ссылками
+			//на другой удаляемый объект, а потом его удалят тот в котором очищались ссылки. Что достаточно бестолково, можно было просто удалить.
+			//из-за таких действий история изменений для пользователя выглядит странно. Код ниже удаляет бестолковые записи об изменениях. 
+			var hashOfDeleted = new HashSet<string>(
+				changes.Where(x => x.Operation == EntityChangeOperation.Delete)
+					.Select(x => x.EntityHash)
+				);
+			var toSave = changes.Where(x => x.Operation == EntityChangeOperation.Delete || !hashOfDeleted.Contains(x.EntityHash));	
 
-				Reset();
+			changeSet.AddChangeEntities(toSave);
+			
+			Save(changeSet);
+			logger.Debug(NumberToTextRus.FormatCase(changes.Sum(x => x.Changes.Count), "Зарегистрировано {0} изменение ",
+				             "Зарегистрировано {0} изменения ", "Зарегистрировано {0} изменений ")
+			             + NumberToTextRus.FormatCase(changes.Count, "в {0} объекте ", "в {0} объектах ", "в {0} объектах ")
+			             + $"за {(DateTime.Now-start).TotalSeconds} сек.");
+			Reset();
+		}
+
+		private void Save(ChangeSet changeSet) {
+			using(var connection = new MySqlConnection(connectionString)) {
+				connection.Open();
+				var transaction = connection.BeginTransaction();
+				using(var batch = new MySqlBatch(connection, transaction))
+				{
+					var sqlInsertChangeSet =
+						"INSERT INTO history_changeset (user_login, action_name, user_id) " +
+						"VALUES (@UserLogin, @ActionName, @UserId);";
+					batch.BatchCommands.Add(new MySqlBatchCommand(sqlInsertChangeSet) {
+						Parameters = {
+							new MySqlParameter("@UserLogin", changeSet.UserLogin),
+							new MySqlParameter("@ActionName", changeSet.ActionName),
+							new MySqlParameter("@UserId", changeSet.UserId),
+						}
+					});
+					
+					batch.BatchCommands.Add(new MySqlBatchCommand("SET @ChangeSetId = LAST_INSERT_ID();"));
+					
+					var sqlInsertEntity =
+						"INSERT INTO history_changed_entities (datetime, operation, entity_class, entity_id, entity_title, changeset_id) " +
+						"VALUES (@ChangeTime, @OperationDbName, @EntityClassName, @EntityId, @EntityTitle, @ChangeSetId);";
+					
+					var sqlSetChangedEntityId = "SET @ChangedEntityId = LAST_INSERT_ID();";
+					
+					var sqlInsertChange = 
+						"INSERT INTO history_changes (type, field_name, old_value, old_id, new_value, new_id, changed_entity_id) " +
+					    "VALUES (@TypeOfChange, @Path, @OldValue, @OldId, @NewValue, @NewId, @ChangedEntityId);";
+
+					foreach(var entity in changeSet.Entities) {
+						batch.BatchCommands.Add(new MySqlBatchCommand(sqlInsertEntity) {
+							Parameters = {
+								new MySqlParameter("@ChangeTime", entity.ChangeTime),
+								new MySqlParameter("@OperationDbName", entity.Operation.ToString()),
+								new MySqlParameter("@EntityClassName", entity.EntityClassName),
+								new MySqlParameter("@EntityId", entity.EntityId),
+								new MySqlParameter("@EntityTitle", entity.EntityTitle),
+							}
+						});
+						batch.BatchCommands.Add(new MySqlBatchCommand(sqlSetChangedEntityId));
+						foreach(var change in entity.Changes) {
+							batch.BatchCommands.Add(new MySqlBatchCommand(sqlInsertChange) {
+									Parameters = {
+										new MySqlParameter("@TypeOfChange", change.Type.ToString()),
+										new MySqlParameter("@Path", change.Path),
+										new MySqlParameter("@OldValue", change.OldValue),
+										new MySqlParameter("@OldId", change.OldId),
+										new MySqlParameter("@NewValue", change.NewValue),
+										new MySqlParameter("@NewId", change.NewId),
+									}
+								}
+							);
+						}
+					}
+					batch.ExecuteNonQuery();
+				};
+				transaction.Commit();
 			}
 		}
 

@@ -15,4 +15,8 @@
       <Folder Include="Properties" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MySqlConnector" Version="2.1.10" />
+    </ItemGroup>
+
 </Project>

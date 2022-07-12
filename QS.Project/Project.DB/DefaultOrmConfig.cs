@@ -70,11 +70,6 @@ namespace QS.Project.DB
             SessionFactory = fluenConfig.BuildSessionFactory();
         }
 
-        public string GetDBTableName(Type objectClass)
-        {
-            return nhConfig.GetClassMapping(objectClass).RootTable.Name;
-        }
-
         public PersistentClass FindMappingByShortClassName(string clazz)
         {
             return NhConfig.ClassMappings

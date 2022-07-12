@@ -1,5 +1,6 @@
 ﻿using System;
 using Gamma.GtkWidgets;
+using Gtk;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
@@ -16,6 +17,7 @@ namespace QS.HistoryLog.Views
 		{
 			this.Build();
 			this.viewModel = viewModel;
+			viewModel.DontRefresh = true;
 			yPeriodToday.Active = true;
 
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
@@ -77,6 +79,7 @@ namespace QS.HistoryLog.Views
 			ytreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 			yscrolledwindow.Vadjustment.ValueChanged += OnScroll;
 
+			viewModel.DontRefresh = false;
 			viewModel.UpdateChangedEntities();
 			ytreeFieldChange.Binding.AddSource(viewModel)
 				.AddBinding(v => v.ChangesSelectedEntity, w => w.ItemsDataSource)
@@ -145,10 +148,15 @@ namespace QS.HistoryLog.Views
 			if(ytreeChangesets.Vadjustment.Value + ytreeChangesets.Vadjustment.PageSize < ytreeChangesets.Vadjustment.Upper)
 				return;
 
+			if(!viewModel.HasUnloaded)
+				return;
+			
 			var lastPos = ytreeChangesets.Vadjustment.Value;
 			viewModel.UpdateChangedEntities(true);
-			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
-			ytreeChangesets.Vadjustment.Value = lastPos;
+			Application.Invoke(delegate(object o, EventArgs args) {
+				ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
+				ytreeChangesets.Vadjustment.Value = lastPos;
+			} );
 		}
 	}
 }

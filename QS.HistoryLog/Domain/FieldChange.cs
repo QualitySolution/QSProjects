@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -366,12 +366,5 @@ namespace QS.HistoryLog.Domain
 		Removed,
 		[Display(Name = "Без изменений")]
 		Unchanged
-	}
-
-	public class FieldChangeTypeStringType : NHibernate.Type.EnumStringType
-	{
-		public FieldChangeTypeStringType() : base(typeof(FieldChangeType))
-		{
-		}
 	}
 }

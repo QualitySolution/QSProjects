@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
@@ -37,7 +37,7 @@ namespace QS.HistoryLog.Domain
 
 		public virtual string OperationText => Operation.GetEnumTitle();
 
-
+		public virtual string EntityHash => $"{EntityClassName}_{EntityId}";
 		#endregion
 
 		public ChangedEntity() { }
@@ -74,10 +74,5 @@ namespace QS.HistoryLog.Domain
 		Change,
 		[Display(Name = "Удаление")]
 		Delete
-	}
-
-	public class EntityChangeOperationStringType : NHibernate.Type.EnumStringType
-	{
-		public EntityChangeOperationStringType() : base(typeof(EntityChangeOperation)) { }
 	}
 }
