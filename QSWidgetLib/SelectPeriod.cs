@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Gtk;
 
@@ -210,11 +210,11 @@ namespace QSWidgetLib
 				radBtnToday.Label = "Сегодня";
 			}
 
+			EarlyCustomDateToggled?.Invoke(chkEarlyCustomDate.Active);
+
 			if(ActiveRadio != Period.None) {
 				RadioButtons[ActiveRadio].Click();
 			}
-
-			EarlyCustomDateToggled?.Invoke(chkEarlyCustomDate.Active);
 		}
 
 		public void AddCustomPeriodInDays(int periodInDays, string chkEarlyCustomDateName = null) {

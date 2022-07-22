@@ -1,5 +1,4 @@
-﻿using System;
-using FluentNHibernate.Mapping;
+﻿using FluentNHibernate.Mapping;
 using QS.Project.Domain;
 
 namespace QS.Project.HibernateMapping
@@ -8,7 +7,6 @@ namespace QS.Project.HibernateMapping
 	{
 		public UserBaseMap()
 		{
-			Schema("Vodovoz_honeybee");
 			Table("users");
 
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
