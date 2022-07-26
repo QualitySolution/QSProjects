@@ -39,6 +39,8 @@ namespace QSProjectsLib
 		public string DemoMessage;
 		private string server;
 		private const bool ShowPassInException = false;
+		private const int EnglishLocaleId = 1033;
+		private const uint KLF_SETFORPROCESS = 0x00000100;
 
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -62,6 +64,7 @@ namespace QSProjectsLib
 		public Login()
 		{
 			this.Build();
+			SetKeyboardLayout(EnglishLocaleId);
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection>();
 			DefaultServer = "localhost";
@@ -374,6 +377,13 @@ namespace QSProjectsLib
 			labelKeyboardLayoutInfo.Visible = keyboardLayout != 1033; // не английская раскладка
 			labelCapslockInfo.Visible = NativeMethods.GetKeyState(capsLock) != 0;
 		}
+
+		private void SetKeyboardLayout(int localeId) 
+		{
+			var pwszKlid = localeId.ToString("x8");
+			var hkl = NativeMethods.LoadKeyboardLayout(pwszKlid, KLF_SETFORPROCESS);
+			NativeMethods.ActivateKeyboardLayout(hkl, KLF_SETFORPROCESS);
+		}
 	}
 	
 	internal class NativeMethods
@@ -386,5 +396,9 @@ namespace QSProjectsLib
 		internal static extern IntPtr GetForegroundWindow();
 		[DllImport("user32.dll")]
 		internal static extern short GetKeyState(int keyCode);
+		[DllImport("user32.dll")]
+		internal static extern uint LoadKeyboardLayout(string pwszKLID, uint Flags);
+		[DllImport("user32.dll")]
+		internal static extern uint ActivateKeyboardLayout(uint hkl, uint Flags);
 	}
 }
