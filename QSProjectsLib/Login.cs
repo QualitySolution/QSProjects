@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -374,7 +374,7 @@ namespace QSProjectsLib
 			IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
 			uint process = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
 			int keyboardLayout = NativeMethods.GetKeyboardLayout(process).ToInt32() & 0xFFFF;
-			labelKeyboardLayoutInfo.Visible = keyboardLayout != 1033; // не английская раскладка
+			labelKeyboardLayoutInfo.Visible = keyboardLayout != EnglishLocaleId;
 			labelCapslockInfo.Visible = NativeMethods.GetKeyState(capsLock) != 0;
 		}
 
