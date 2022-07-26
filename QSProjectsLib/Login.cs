@@ -64,7 +64,12 @@ namespace QSProjectsLib
 		public Login()
 		{
 			this.Build();
-			SetKeyboardLayout(EnglishLocaleId);
+
+			if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				SetKeyboardLayout(EnglishLocaleId);
+			}
+
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection>();
 			DefaultServer = "localhost";
