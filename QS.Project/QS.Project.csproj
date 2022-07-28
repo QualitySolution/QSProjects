@@ -64,6 +64,10 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
@@ -281,6 +285,10 @@
     <Folder Include="BaseParameters\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
+      <Project>{3BD9FCFB-DD96-4EB1-A565-6B5E506479C8}</Project>
+      <Name>Gamma.Binding.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
       <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
       <Name>Gamma.Utilities</Name>

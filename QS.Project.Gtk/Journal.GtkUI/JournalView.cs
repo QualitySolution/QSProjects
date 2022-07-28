@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Gamma.Binding;
 using Gdk;
 using Gtk;
 using NLog;
@@ -91,7 +92,8 @@ namespace QS.Journal.GtkUI
 			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel);
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
-			tableview.ItemsDataSource = ViewModel.Items;
+			SetItemsSource();
+
 			ViewModel.Refresh();
 			UpdateButtons();
 			SetTotalLableText();
@@ -162,7 +164,8 @@ namespace QS.Journal.GtkUI
 					
 				labelFooter.Markup = ViewModel.FooterInfo;
 				tableview.SearchHighlightTexts = ViewModel.Search.SearchValues;
-				tableview.ItemsDataSource = ViewModel.DataLoader.Items;
+
+				SetItemsSource();
 
 				if(!ViewModel.DataLoader.FirstPage) {
 					GtkHelper.WaitRedraw();
@@ -170,6 +173,15 @@ namespace QS.Journal.GtkUI
 						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
 				}
 			});
+		}
+
+		private void SetItemsSource() {
+			if(tableview.ColumnsConfig.TreeModelFunc != null) {
+				tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke();
+			}
+			else {
+				tableview.ItemsDataSource = ViewModel.Items;
+			}
 		}
 
 		private LoadingState loadingState;
@@ -326,17 +338,30 @@ namespace QS.Journal.GtkUI
 			tableview.RowActivated += (o, args) =>
 			{
 				var selectedItems = GetSelectedItems();
-				if(ViewModel.RowActivatedAction != null && ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
+				if(ViewModel.RowActivatedAction != null)
 				{
-					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+					if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems)) {
+						ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+					}
+				}
+				else {
+					ExpandCollapseOnRowActivated(args);
 				}
 			};
+		}
+
+		private void ExpandCollapseOnRowActivated(RowActivatedArgs args) {
+			if(tableview.GetRowExpanded(args.Path)) {
+				tableview.CollapseRow(args.Path);
+			}
+			else {
+				tableview.ExpandRow(args.Path, false);
+			}
 		}
 
 		private MenuItem CreateMenuItemWidget(IJournalAction action)
 		{
 			MenuItem menuItem = new MenuItem(action.Title);
-
 			menuItem.Activated += (sender, e) => {
 				action.ExecuteAction(GetSelectedItems());
 			};

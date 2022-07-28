@@ -27,17 +27,23 @@ namespace QS.Project.Journal.DataLoader
 			LoadedItems = new List<TNode>();
 		}
 
+		protected DynamicQueryLoader(IUnitOfWorkFactory unitOfWorkFactory) {
+			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
+			HasUnloadedItems = true;
+			LoadedItems = new List<TNode>();
+		}
+
 		#region IQueryLoader implementation
 
-		public bool HasUnloadedItems { get; private set; }
+		public virtual bool HasUnloadedItems { get; protected set; }
 
-		public int? TotalItemsCount { get; private set; }
+		public virtual int? TotalItemsCount { get; protected set; }
 
-		public int LoadedItemsCount => LoadedItems.Count;
+		public virtual int LoadedItemsCount => LoadedItems.Count;
 
-		public List<TNode> LoadedItems { get; private set; }
+		public virtual List<TNode> LoadedItems { get; protected set; }
 
-		public int GetTotalItemsCount()
+		public virtual int GetTotalItemsCount()
 		{
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
 				var query = queryFunc.Invoke(uow, true);
@@ -48,7 +54,7 @@ namespace QS.Project.Journal.DataLoader
 			}
 		}
 
-		public void LoadPage(int? pageSize = null)
+		public virtual void LoadPage(int? pageSize = null)
 		{
 			//Не подгружаем следующую страницу если из предыдущих данных еще не прочитана целая страница.
 			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
@@ -79,7 +85,7 @@ namespace QS.Project.Journal.DataLoader
 			}
 		}
 
-		public void Reset()
+		public virtual void Reset()
 		{
 			LoadedItems.Clear();
 			ReadedItemsCount = 0;
@@ -90,30 +96,30 @@ namespace QS.Project.Journal.DataLoader
 
 		#region PieceReader
 
-		public int ReadedItemsCount { get; set; }
+		public virtual int ReadedItemsCount { get; protected set; }
 
-		public TNode NextUnreadedNode()
+		public virtual TNode NextUnreadedNode()
 		{
 			if (ReadedItemsCount >= LoadedItems.Count)
 				return null;
 			return LoadedItems[ReadedItemsCount];
 		}
 
-		public TNode TakeNextUnreadedNode()
+		public virtual TNode TakeNextUnreadedNode()
 		{
 			var item = NextUnreadedNode();
 			ReadedItemsCount++;
 			return item;
 		}
 
-		public IList<TNode> TakeAllUnreadedNodes()
+		public virtual IList<TNode> TakeAllUnreadedNodes()
 		{
 			var readedCount = ReadedItemsCount;
 			ReadedItemsCount = LoadedItems.Count;
 			return LoadedItems.Skip(readedCount).ToList();
 		}
 
-		public TNode GetNode(int entityId, IUnitOfWork uow)
+		public virtual TNode GetNode(int entityId, IUnitOfWork uow)
 		{
 			var query = (queryFunc.Invoke(uow, false) as IQueryOver<TRoot, TRoot>);
 			return query.Where(x => x.Id == entityId)
@@ -124,7 +130,7 @@ namespace QS.Project.Journal.DataLoader
 
 		#region IEntityQueryLoader
 
-		public Type EntityType => typeof(TRoot);
+		public virtual Type EntityType => typeof(TRoot);
 
 		#endregion
 	}

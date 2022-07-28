@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Gamma.Binding.Core.LevelTreeConfig;
+using Gtk;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Gamma.Binding;
-using Gtk;
 
-namespace Gamma.Binding
-{
+namespace Gamma.Binding {
 	public class LevelTreeModel<TRootNode> : GLib.Object, TreeModelImplementor, IyTreeModel
 	{
 		TreeModel adapter;

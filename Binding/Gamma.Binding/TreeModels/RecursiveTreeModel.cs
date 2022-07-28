@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Gamma.Binding;
+using Gamma.Binding.Core.RecursiveTreeConfig;
 using Gamma.Utilities;
 using Gtk;
 
@@ -37,6 +39,14 @@ namespace Gamma.Binding
 
 			adapter = new TreeModelAdapter (this);
 			sourceList = list;
+		}
+
+		public RecursiveTreeModel(IEnumerable<TNode> source, IRecursiveConfig recursiveConfig) {
+			parentProperty = recursiveConfig.ParentProperty;
+			childsCollectionProperty = recursiveConfig.ChildsCollectionProperty;
+
+			adapter = new TreeModelAdapter(this);
+			sourceList = source.Where(x => parentProperty.GetValue(x) == null).ToList();
 		}
 
 		protected IList<TNode> SourceList {

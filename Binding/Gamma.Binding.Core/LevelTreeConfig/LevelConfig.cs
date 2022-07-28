@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Collections;
 
-namespace Gamma.Binding
+namespace Gamma.Binding.Core.LevelTreeConfig
 {
 	public class LevelConfig<TNode, TParentNode, TChildNode>: ILevelLinkUp<TNode, TParentNode>, ILevelLinkDown<TNode, TChildNode>, ILevelConfig
 		where TNode: class
@@ -134,45 +134,6 @@ namespace Gamma.Binding
 
 		#endregion
 
-	}
-
-	public static class LevelConfigFactory{
-		public static LevelConfig<TNextNode, TypeNotNeed, TNextChildNode> FirstLevel<TNextNode, TNextChildNode>(Expression<Func<TNextNode, IList<TNextChildNode>>> childsCollectionPropertyExpr)
-			where TNextChildNode: class
-			where TNextNode: class
-		{
-			return new LevelConfig<TNextNode, TypeNotNeed, TNextChildNode>(null, null, childsCollectionPropertyExpr);
-		}
-	}
-
-	public interface ILevelLinkUp<TNode, TUp>
-	{
-		
-	}
-
-	public interface ILevelLinkDown<TNode, TDown>
-	{
-		IList<TDown> GetChilds(TNode node);
-	}
-
-	public interface ILevelConfig
-	{
-		ILevelConfig LevelUp { get;}
-
-		Type NodeType { get;}
-
-		bool IsFirstLevel { get;}
-		bool IsLastLevel { get; }
-
-		object GetParent(object node);
-		IList GetChilds(object node);
-		int IndexOnParent(object node);
-		IList MyList(object node);
-	}
-
-	public class TypeNotNeed
-	{
-		
 	}
 }
 

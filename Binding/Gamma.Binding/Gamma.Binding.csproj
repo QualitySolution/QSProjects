@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -100,7 +100,6 @@
     <Compile Include="TreeModels\ColumnConfig\SearchHighlightAttribute.cs" />
     <Compile Include="Binding.Core\Helpers\FetchPropertyInfoFromExpression.cs" />
     <Compile Include="TreeModels\LevelTreeModel.cs" />
-    <Compile Include="TreeModels\LevelConfig.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="GtkWidgets\yFileChooserButton.cs" />
     <Compile Include="GtkWidgets\yColorButton.cs" />
@@ -186,6 +185,10 @@
     <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
+      <Project>{3bd9fcfb-dd96-4eb1-a565-6b5e506479c8}</Project>
+      <Name>Gamma.Binding.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gamma.Utilities.Gtk\Gamma.Utilities.Gtk.csproj">
       <Project>{5735d438-792e-40ce-bafd-25814c8879bc}</Project>

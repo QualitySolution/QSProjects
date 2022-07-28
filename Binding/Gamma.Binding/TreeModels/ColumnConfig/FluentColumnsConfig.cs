@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gamma.Binding;
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
@@ -19,6 +21,8 @@ namespace Gamma.ColumnConfig
 			get { return Columns.OfType<IColumnMapping> ();	}
 		}
 
+		public Func<IyTreeModel> TreeModelFunc { get; private set; }
+
 		public FluentColumnsConfig ()
 		{
 		}
@@ -31,6 +35,11 @@ namespace Gamma.ColumnConfig
 		public static FluentColumnsConfig<TNode> Create()
 		{
 			return new FluentColumnsConfig<TNode> ();
+		}
+
+		public FluentColumnsConfig<TNode> SetTreeModel(Func<IyTreeModel> treeModel) {
+			TreeModelFunc = treeModel;
+			return this;
 		}
 
 		public ColumnMapping<TNode> AddColumn(string title)

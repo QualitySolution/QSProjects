@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,6 +110,9 @@ namespace QS.Project.Journal.DataLoader
 		public IList Items {
 			get {
 				lock(publishedNodesLock) {
+					if(publishedNodes == null) {
+						return new List<object>();
+					}
 					return publishedNodes;
 				}
 			}
