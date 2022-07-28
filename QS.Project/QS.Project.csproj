@@ -64,6 +64,10 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalQueryLoader.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
