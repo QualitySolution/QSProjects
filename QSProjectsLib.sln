@@ -116,6 +116,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamma.Binding.Core", "Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj", "{EF24C742-AC2C-477A-A632-F9920A0E1CC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -725,6 +727,18 @@ Global
 		{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}.Release|x64.Build.0 = Release|Any CPU
 		{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}.Release|x86.ActiveCfg = Release|Any CPU
 		{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}.Release|x86.Build.0 = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x64.Build.0 = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -747,6 +761,7 @@ Global
 		{5735D438-792E-40CE-BAFD-25814C8879BC} = {F824D668-A3CB-41E1-A561-58C7148F1A27}
 		{1BF2A638-420D-456C-96A7-36873A0FB894} = {F824D668-A3CB-41E1-A561-58C7148F1A27}
 		{190CEA0D-EA23-4C91-8030-203A5AFED7B7} = {F824D668-A3CB-41E1-A561-58C7148F1A27}
+		{EF24C742-AC2C-477A-A632-F9920A0E1CC7} = {F824D668-A3CB-41E1-A561-58C7148F1A27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22B3D59F-8926-427B-A969-D30BBFA18756}
