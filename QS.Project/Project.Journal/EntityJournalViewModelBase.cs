@@ -39,7 +39,7 @@ namespace QS.Project.Journal
 
 			var dataLoader = new ThreadDataLoader<TNode>(unitOfWorkFactory);
 			dataLoader.CurrentPermissionService = currentPermissionService;
-			dataLoader.AddQuery<TEntity>(ItemsQuery);
+			dataLoader.AddQuery<TEntity>(ItemsQuery, ItemsCountFunction);
 			DataLoader = dataLoader;
 
 			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
@@ -96,6 +96,11 @@ namespace QS.Project.Journal
 		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
 		/// </summary>
 		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);
+
+		/// <summary>
+		/// Кастомная функция подсчёта кол-ва элементов
+		/// </summary>
+		protected virtual Func<IUnitOfWork, int> ItemsCountFunction { get; }
 
 		#region Видимость предопределенных действий
 

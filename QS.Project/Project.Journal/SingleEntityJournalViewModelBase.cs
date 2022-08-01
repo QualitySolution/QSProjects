@@ -26,7 +26,7 @@ namespace QS.Project.Journal
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			EntityType = typeof(TEntity);
-			var config = RegisterEntity(ItemsSourceQueryFunction);
+			var config = RegisterEntity(ItemsSourceQueryFunction, ItemsCountFunction);
 			config.AddDocumentConfiguration("Добавить", CreateDialogFunction, OpenDialogFunction, (node) => node.EntityType == typeof(TEntity),
 				new JournalParametersForDocument { HideJournalForCreateDialog = hideJournalForCreateDialog, HideJournalForOpenDialog = hideJournalForOpenDialog})
 				.FinishConfiguration();
@@ -46,6 +46,11 @@ namespace QS.Project.Journal
 		/// </summary>
 		/// <value>The items source query function.</value>
 		protected abstract Func<IUnitOfWork, IQueryOver<TEntity>> ItemsSourceQueryFunction { get; }
+		
+		/// <summary>
+		/// Кастомная функция подсчёта кол-ва элементов
+		/// </summary>
+		protected virtual Func<IUnitOfWork, int> ItemsCountFunction { get; }
 
 		protected abstract Func<TEntityTab> CreateDialogFunction { get; }
 

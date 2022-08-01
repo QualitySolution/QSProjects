@@ -80,11 +80,16 @@ namespace QS.Project.Journal.DataLoader
 		/// в определенных обстоятельствах, например из-за параметров фильтра, некоторые запросы не имеет смысл выполнять.
 		/// </summary>
 		/// <param name="queryFunc">Функция формирования запроса.</param>
+		/// <param name="itemsCountFunction">Кастомная функция подсчёта кол-ва элементов</param>
 		/// <typeparam name="TRoot">Тип корня запроса</typeparam>
-		public void AddQuery<TRoot>(Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc)
+		public void AddQuery<TRoot>(Func<IUnitOfWork, IQueryOver<TRoot>> queryFunc, Func<IUnitOfWork, int> itemsCountFunction = null)
 			where TRoot : class , IDomainObject
 		{
-			QueryLoaders.Add(new DynamicQueryLoader<TRoot, TNode>((uow, isCounting) => queryFunc(uow), unitOfWorkFactory));
+			QueryLoaders.Add(new DynamicQueryLoader<TRoot, TNode>(
+				(uow, isCounting) => queryFunc(uow),
+				unitOfWorkFactory,
+				itemsCountFunction
+			));
 		}
 
 		/// <summary>
