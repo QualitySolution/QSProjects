@@ -14,15 +14,18 @@ namespace QS.Project.Journal.DataLoader
 	{
 		private readonly Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc;
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
+		private readonly Func<IUnitOfWork, int> _itemsCountFunction;
 
 		/// <param name="queryFunc">Функция получения запроса, имеет параметры: 
 		/// uow - для которого создается запрос 
 		/// isCounting - указание является ли запрос подсчетом количества строк </param>
 		/// <param name="unitOfWorkFactory">Unit of work factory.</param>
-		public DynamicQueryLoader(Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc, IUnitOfWorkFactory unitOfWorkFactory)
+		/// <param name="itemsCountFunction">Кастомная функция подсчёта кол-ва элементов</param>
+		public DynamicQueryLoader(Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc, IUnitOfWorkFactory unitOfWorkFactory, Func<IUnitOfWork, int> itemsCountFunction = null)
 		{
 			this.queryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
 			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
+			_itemsCountFunction = itemsCountFunction;
 			HasUnloadedItems = true;
 			LoadedItems = new List<TNode>();
 		}
@@ -46,6 +49,11 @@ namespace QS.Project.Journal.DataLoader
 		public virtual int GetTotalItemsCount()
 		{
 			using (var uow = unitOfWorkFactory.CreateWithoutRoot()) {
+				if(_itemsCountFunction != null)
+				{
+					return _itemsCountFunction.Invoke(uow);
+				}
+
 				var query = queryFunc.Invoke(uow, true);
 				if(query == null)
 					return 0;
