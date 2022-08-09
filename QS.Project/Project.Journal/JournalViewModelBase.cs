@@ -91,10 +91,13 @@ namespace QS.Project.Journal
 			UseSlider = false;
 		}
 
-		protected virtual void OnItemsSelected(object[] selectedNodes)
+		protected virtual void OnItemsSelected(object[] selectedNodes, bool closeJournal = true)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
-			Close(false, CloseSource.Self);
+            if(closeJournal)
+            {
+				Close(false, CloseSource.Self);
+			}
 		}
 
 		#region Configure actions
@@ -114,7 +117,7 @@ namespace QS.Project.Journal
 			var selectAction = new JournalAction("Выбрать",
 				(selected) => selected.Any(),
 				(selected) => SelectionMode != JournalSelectionMode.None,
-				OnItemsSelected
+				(selected) => OnItemsSelected(selected)
 			);
 			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
 				RowActivatedAction = selectAction;

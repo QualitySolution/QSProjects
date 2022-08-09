@@ -78,10 +78,10 @@ namespace QS.Project.Journal
 			Refresh();
 		}
 
-		protected override void OnItemsSelected(params object[] selectedNodes)
+		protected override void OnItemsSelected(object[] selectedNodes, bool closeJournal = true)
 		{
 			OnEntitySelectedResult?.Invoke(this, new JournalSelectedNodesEventArgs(selectedNodes.Cast<JournalEntityNodeBase>().ToArray()));
-			base.OnItemsSelected(selectedNodes);
+			base.OnItemsSelected(selectedNodes, closeJournal);
 		}
 
 		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
@@ -103,14 +103,14 @@ namespace QS.Project.Journal
 				OnItemsSelected(new object[] { node });
 		}
 
-		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction)
+		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction, Func<IUnitOfWork, int> itemsCountFunction = null)
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		{
 			if(queryFunction == null) {
 				throw new ArgumentNullException(nameof(queryFunction));
 			}
 
-			CreateLoader(queryFunction);
+			CreateLoader(queryFunction, itemsCountFunction);
 
 			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
 			configurator.OnConfigurationFinished += (sender, e) => {
@@ -148,7 +148,7 @@ namespace QS.Project.Journal
 		#region Entity load configuration
 
 		[Obsolete("Метод оставлен для совместимости со старым подходом к настройке. Желательно для новых журналов настраивать DataLoader напрямую.")]
-		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc)
+		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc, Func<IUnitOfWork, int> itemsCountFunction = null)
 			where TEntity : class, IDomainObject
 		{
 			if (DataLoader == null)
@@ -162,7 +162,7 @@ namespace QS.Project.Journal
 			if(commonServices.PermissionService != null && commonServices.UserService != null)
 				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
 
-			threadLoader.AddQuery<TEntity>(queryFunc);
+			threadLoader.AddQuery<TEntity>(queryFunc, itemsCountFunction);
 		}
 
 
