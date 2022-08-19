@@ -91,6 +91,14 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		/// <summary>
+		/// If you enable editing don't forget add Adjustment
+		/// </summary>
+		public NumberRendererMapping<TNode> Editing(Func<TNode, bool> editingFunc) {
+			cellRenderer.LambdaSetters.Add((c, n) => c.Editable = editingFunc(n));
+			return this;
+		}
+
 		public NumberRendererMapping<TNode> Editing (Adjustment adjustment)
 		{
 			cellRenderer.Adjustment = adjustment;
