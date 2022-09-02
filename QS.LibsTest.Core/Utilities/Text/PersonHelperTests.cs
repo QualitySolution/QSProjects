@@ -37,6 +37,9 @@ namespace QS.Test.Utilities.Text
         [TestCase("Мичина ЕС", "Мичина", "Е", "С")]
         [TestCase("Мильгунов   А.И.", "Мильгунов", "А", "И")]
         [TestCase("Кузнецов А.  А.", "Кузнецов", "А", "А")]
+        //Реальные пример по Водоканалу Краснодара
+        [TestCase("Вершаловская.Е.В.", "Вершаловская", "Е", "В")]
+        [TestCase("Науменко Н.А", "Науменко", "Н", "А")]
         public void SplitNameWithInitialsTest(string nameWithInitials, string lastNameReference, string firstNameReference, string patronymicReference)
         {
 	        //Arrange, Act
