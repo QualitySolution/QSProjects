@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
+using Gamma.Binding.Core;
+using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gdk;
 using Gtk;
@@ -15,8 +17,8 @@ namespace Gamma.ColumnConfig
 		#region Propeties
 
 		public TreeViewColumn TreeViewColumn { get; private set;}
-
-		public string Title { get{ return TreeViewColumn.Title;	}}
+		public BindingControler<TreeViewColumn> BindingController { get; private set; }
+		public string Title => TreeViewColumn.Title;
 
 		public string DataPropertyName { get; set;}
 
@@ -40,6 +42,7 @@ namespace Gamma.ColumnConfig
 		public ColumnMapping (FluentColumnsConfig<TNode> parentConfig, string title)
 		{
 			TreeViewColumn = new TreeViewColumn();
+			BindingController = new BindingControler<TreeViewColumn>(TreeViewColumn);
 			this.myConfig = parentConfig;
 			TreeViewColumn.Title = title;
 		}
@@ -89,6 +92,11 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
+		public ColumnMapping<TNode> Binding(Action<BindingControler<TreeViewColumn>> makeBinding) {
+			makeBinding(BindingController);
+			return this;
+		}
+		
 		public ColumnMapping<TNode> HeaderAlignment (float x)
 		{
 			TreeViewColumn.Alignment = x;
