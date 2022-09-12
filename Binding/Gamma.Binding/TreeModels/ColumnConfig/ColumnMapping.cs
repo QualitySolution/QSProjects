@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
 using Gamma.Binding.Core;
-using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gdk;
 using Gtk;
@@ -48,47 +47,9 @@ namespace Gamma.ColumnConfig
 		}
 
 		#region FluentConfig
-
-		/// <summary>
-		/// Set only if it simple column mapping, else using sets from Render.
-		/// </summary>
-		/// <param name="propertyRefExpr">Property Name expr.</param>
-		/// <typeparam name="TVMNode">Node type</typeparam>
-		[Obsolete("Используете вызов Add{*}Renderer напрямую.")]
-		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, object>> propertyRefExpr)
-		{
-			DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
-			Type properyType = typeof(TNode).GetProperty (DataPropertyName).PropertyType;
-			if(TypeUtil.IsNumeric(properyType))
-			{
-				AddNumericRenderer (propertyRefExpr);
-			}
-			else 
-			{
-				throw new NotSupportedException (String.Format ("Type {0} is not supported.", properyType));
-			}
-			return this;
-		}
-
-		[Obsolete("Используете вызов AddTextRenderer напрямую.")]
-		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, string>> propertyRefExpr)
-		{
-			//DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
-			AddTextRenderer (propertyRefExpr);
-			return this;
-		}
-
 		public ColumnMapping<TNode> SetTag(object tag)
 		{
 			this.tag = tag;
-			return this;
-		}
-
-		[Obsolete("Используете вызов AddToggleRenderer напрямую.")]
-		public ColumnMapping<TNode> SetDataProperty (Expression<Func<TNode, bool>> propertyRefExpr)
-		{
-			//DataPropertyName = PropertyUtil.GetName (propertyRefExpr);
-			AddToggleRenderer (propertyRefExpr);
 			return this;
 		}
 
