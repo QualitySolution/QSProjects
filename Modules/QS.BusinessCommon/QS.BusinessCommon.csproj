@@ -1,69 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <ProjectGuid>{F22749B2-E35B-455D-BD8D-081373B16FC7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>QS.BusinessCommon</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\MeasurementUnits.cs" />
-    <Compile Include="HibernateMapping\MeasurementUnitsMap.cs" />
-    <Compile Include="Repository\MeasurementUnitsRepository.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\" />
-    <Folder Include="HibernateMapping\" />
-    <Folder Include="Repository\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
-      <Name>QS.Project.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="NHibernate" Version="5.3.12" />
-    <PackageReference Include="NLog" Version="5.0.0" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<ProjectGuid>{F22749B2-E35B-455D-BD8D-081373B16FC7}</ProjectGuid>
+		<RootNamespace>QS.BusinessCommon</RootNamespace>
+		<Company>Quality Solution</Company>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj" />
+    </ItemGroup>
+
 </Project>
