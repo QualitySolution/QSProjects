@@ -36,7 +36,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorUtil.cs" />
-    <Compile Include="GtkAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gamma.Utilities\Gamma.Utilities.csproj">

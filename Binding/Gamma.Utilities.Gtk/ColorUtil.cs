@@ -15,7 +15,7 @@ namespace Gamma.Utilities
 
 		public static string GetEnumColor(this Enum aEnum)
 		{
-			var att = aEnum.GetAttribute<GtkColorAttribute>();
+			var att = aEnum.GetAttribute<ColorNameAttribute>();
 			return att != null ? att.ColorString : null;
 		}
 	}

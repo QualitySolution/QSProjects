@@ -3,11 +3,11 @@
 namespace Gamma.Utilities
 {
 	[AttributeUsage (AttributeTargets.Property | AttributeTargets.Field)]
-	public class GtkColorAttribute : Attribute
+	public class ColorNameAttribute : Attribute
 	{
 		public string ColorString;
 
-		public GtkColorAttribute (string color)
+		public ColorNameAttribute (string color)
 		{
 			ColorString = color;
 		}
