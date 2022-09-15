@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QSReport
+namespace QS.Report
 {
 	[AttributeUsage(AttributeTargets.Field)]
 	public class ReportIdentifierAttribute : Attribute

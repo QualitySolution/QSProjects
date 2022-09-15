@@ -59,7 +59,6 @@
     <Compile Include="BatchRDLRenderer.cs" />
     <Compile Include="DocumentPrinter.cs" />
     <Compile Include="MultipleDocumentPrinter.cs" />
-    <Compile Include="ReportIdentifierAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<ProjectGuid>{3E194A95-AC31-43D0-B93D-64164402A6DD}</ProjectGuid>
+		<RootNamespace>QS.report</RootNamespace>
+		<Company>Quality Solution</Company>
+    </PropertyGroup>
+
+</Project>
