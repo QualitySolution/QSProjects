@@ -15,6 +15,8 @@ namespace QS.Cloud.Client
         private readonly string sessionId;
 
         private readonly Metadata headers;
+
+        public bool CanConnect => !String.IsNullOrEmpty(sessionId);
         
         public CloudClientService(string sessionId)
         {
