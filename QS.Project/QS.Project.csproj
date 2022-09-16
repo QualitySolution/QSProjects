@@ -170,9 +170,6 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
-    <Compile Include="Validation\IValidationView.cs" />
-    <Compile Include="Validation\IValidationViewFactory.cs" />
-    <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
     <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
