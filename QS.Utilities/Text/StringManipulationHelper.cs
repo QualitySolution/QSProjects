@@ -28,7 +28,7 @@ namespace QS.Utilities.Text
 		}
 
 		public static string EllipsizeMiddle(string input, int maxLength) {
-			if(input.Length > maxLength) {
+			if(input?.Length > maxLength) {
 				return input.Substring(0, maxLength/2) + "…" + input.Substring(input.Length - (maxLength/2 - 1));
 			}
 

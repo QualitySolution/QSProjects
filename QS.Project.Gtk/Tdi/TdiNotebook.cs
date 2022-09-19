@@ -144,7 +144,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			var tabName = StringManipulationHelper.EllipsizeMiddle(tab.TabName, MaxTabNameLenght);
-			if(tab.TabName.Length > MaxTabNameLenght)
+			if(tab.TabName?.Length > MaxTabNameLenght)
 				nameLable.TooltipText = tab.TabName;
 			
 			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tabName) : tabName;
