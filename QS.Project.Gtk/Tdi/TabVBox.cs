@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Gtk;
+using QS.Tdi.Gtk;
+using QS.Utilities.Text;
 
 namespace QS.Tdi
 {
@@ -43,7 +46,8 @@ namespace QS.Tdi
 
 		void OnPathUpdated (object sender, EventArgs e)
 		{
-			titleLabel.Markup = String.Format ("<b>{0}</b>", String.Join (" <span color='blue'>➤</span> ", (tab as ITdiTabWithPath).PathNames));
+			titleLabel.Markup = String.Format ("<b>{0}</b>", String.Join (" <span color='blue'>➤</span> ", 
+				(tab as ITdiTabWithPath).PathNames.Select(x => StringManipulationHelper.EllipsizeMiddle(x, TdiNotebook.MaxTabNameLenght))));
 		}
 
 		void Tab_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
