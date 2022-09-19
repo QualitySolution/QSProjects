@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHibernate.Engine;
 using QS.DomainModel.UoW;
 using QS.Utilities;
 
@@ -10,7 +11,7 @@ namespace QS.DomainModel.Tracking
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		internal static readonly Dictionary<int, UowLink> RegisteredUoWs = new Dictionary<int, UowLink>();
+		internal static readonly Dictionary<Guid, UowLink> RegisteredUoWs = new Dictionary<Guid, UowLink>();
 
 		public static event EventHandler<UowRegistereEventArgs> UowRegistered;
 
@@ -20,8 +21,10 @@ namespace QS.DomainModel.Tracking
 			lock (RegisteredUoWs)
 			{
 				var uowLink = new UowLink(uow);
-				RegisteredUoWs.Add(uow.Session.GetHashCode(), uowLink);
-				logger.Debug($"Зарегистрирован новый UnitOfWork. {ActiveUowCountText()}. Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})");
+				var sessionId = (uow.Session as ISessionImplementor).SessionId;
+				RegisteredUoWs.Add(sessionId, uowLink);
+				logger.Debug($"Зарегистрирован новый UnitOfWork. {ActiveUowCountText()}." +
+					$" Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})\nSessionId {sessionId}");
 				UowRegistered?.Invoke(null, new UowRegistereEventArgs(uow));
 			}
 		}
@@ -37,8 +40,9 @@ namespace QS.DomainModel.Tracking
 			lock (RegisteredUoWs)
 			{
 				var createdString = $"{uow.ActionTitle.CallerMemberName} ({uow.ActionTitle.CallerFilePath}:{uow.ActionTitle.CallerLineNumber})";
-				RegisteredUoWs.Remove(uow.Session.GetHashCode());
-				logger.Debug("UnitOfWork, созданный в {0}, завершил работу.\n{1}", createdString, ActiveUowCountText());
+				var sessionId = (uow.Session as ISessionImplementor).SessionId;
+				RegisteredUoWs.Remove(sessionId);
+				logger.Debug($"UnitOfWork, созданный в {createdString}, завершил работу. SessionId {sessionId}\n{ActiveUowCountText()}");
 			}
 		}
 
@@ -47,20 +51,19 @@ namespace QS.DomainModel.Tracking
 			return NumberToTextRus.FormatCase(RegisteredUoWs.Count, "Сейчас {0} активный UnitOfWork.", "Сейчас {0} активных UnitOfWork.", "Сейчас {0} активных UnitOfWork.");
 		}
 
-		public static IUnitOfWorkTracked GetUnitOfWorkTracked(NHibernate.ISession session)
+		public static IUnitOfWorkTracked GetUnitOfWorkTracked(ISessionImplementor session)
 		{
 			lock (RegisteredUoWs)
 			{
-				int hashCode = session.GetHashCode();
-				if (RegisteredUoWs.ContainsKey(hashCode))
+				if(RegisteredUoWs.ContainsKey(session.SessionId))
 				{
-					return RegisteredUoWs[hashCode].UnitOfWork;
+					return RegisteredUoWs[session.SessionId].UnitOfWork;
 				}
 			}
 			return null;
 		}
 
-		public static IUnitOfWork GetUnitOfWork(NHibernate.ISession session)
+		public static IUnitOfWork GetUnitOfWork(ISessionImplementor session)
 		{
 			return GetUnitOfWorkTracked(session) as IUnitOfWork;
 		}
@@ -78,7 +81,9 @@ namespace QS.DomainModel.Tracking
 				{
 					if (pair.Value.UnitOfWork == null)
 					{
-						logger.Warn($"UnitOfWork созданный в {pair.Value.Title.CallerMemberName}({pair.Value.Title.CallerFilePath}:{pair.Value.Title.CallerLineNumber}) не был закрыт корректно и удален сборщиком мусора так как на него потеряны все ссылки.");
+						logger.Warn($"UnitOfWork созданный в {pair.Value.Title.CallerMemberName}({pair.Value.Title.CallerFilePath}:{pair.Value.Title.CallerLineNumber})" +
+							$" не был закрыт корректно и удален сборщиком мусора так как на него потеряны все ссылки." +
+							$"\n SessionId {pair.Key}");
 						RegisteredUoWs.Remove(pair.Key);
 					}
 				}
