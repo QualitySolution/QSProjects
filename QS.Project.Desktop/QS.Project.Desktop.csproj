@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj" />
       <ProjectReference Include="..\QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj" />
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     </ItemGroup>
