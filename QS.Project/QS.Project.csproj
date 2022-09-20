@@ -139,7 +139,6 @@
     <Compile Include="ViewModels\EntityTabViewModelBase.cs" />
     <Compile Include="ViewModels\DialogTabViewModelBase.cs" />
     <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
-    <Compile Include="ViewModels\WidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
     <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
     <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
