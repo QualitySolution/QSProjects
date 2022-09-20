@@ -158,9 +158,6 @@
     <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\Search\SearchHelper.cs" />
-    <Compile Include="Commands\DelegateCommand.cs" />
-    <Compile Include="Commands\DelegateCommandGeneric.cs" />
-    <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Services\FileDialog\IFileDialogService.cs" />
