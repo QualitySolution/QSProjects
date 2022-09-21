@@ -140,7 +140,6 @@
     <Compile Include="ViewModels\EntityTabViewModelBase.cs" />
     <Compile Include="ViewModels\DialogTabViewModelBase.cs" />
     <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
-    <Compile Include="ViewModels\WidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
     <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
     <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
@@ -159,9 +158,6 @@
     <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
     <Compile Include="Project.Journal\Search\SearchHelper.cs" />
-    <Compile Include="Commands\DelegateCommand.cs" />
-    <Compile Include="Commands\DelegateCommandGeneric.cs" />
-    <Compile Include="Commands\PropertySubscribedCommandBase.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Services\FileDialog\IFileDialogService.cs" />
