@@ -23,6 +23,7 @@ namespace QS.ErrorReporting
 		#region Зависимости 
 		IApplicationInfo applicationInfo;
 		IDataBaseInfo dataBaseInfo;
+		ILogService logService;
 		UserBase user;
 		IErrorReportingSettings errorReportingSettings;
 		#endregion
@@ -50,6 +51,7 @@ namespace QS.ErrorReporting
 		public void UpdateDependencies(ILifetimeScope container) {
 			applicationInfo = container.Resolve<IApplicationInfo>();
 			errorReportingSettings = container.Resolve<IErrorReportingSettings>();
+			logService = container.Resolve<ILogService>();
 			
 			customErrorHandlers = container.Resolve<IEnumerable<IErrorHandler>>();
 			dataBaseInfo = container.ResolveOptional<IDataBaseInfo>();
@@ -107,7 +109,7 @@ namespace QS.ErrorReporting
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, applicationInfo, user, errorReportingSettings, dataBaseInfo);
+				currentCrashDlg = new ErrorMsgDlg(exception, applicationInfo, user, errorReportingSettings, logService, dataBaseInfo);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;
