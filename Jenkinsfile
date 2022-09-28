@@ -18,10 +18,14 @@ node {
    }
    stage('Test dotnet')
    {
-   	  sh 'rm -rf QSProjects/QS.LibsTest.Core/TestResults'
+   	sh 'rm -rf QSProjects/QS.LibsTest.Core/TestResults'
+      try {  
    	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
+      } catch (e) {}
+      finally{
    	  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
    	  mstest testResultsFile:"**/*.trx", keepLongStdio: true
+      }
    }
    stage('Build Net4.x') {
         sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'
