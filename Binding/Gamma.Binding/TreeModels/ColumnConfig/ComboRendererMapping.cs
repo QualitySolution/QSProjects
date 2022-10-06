@@ -49,6 +49,12 @@ namespace Gamma.ColumnConfig
 			this.tag = tag;
 			return this;
 		}
+		
+		public ComboRendererMapping<TNode, TItem> WrapWidth(int width)
+        {
+        	cellRenderer.WrapWidth = width;
+        	return this;
+        }
 
 		public ComboRendererMapping<TNode, TItem> AddSetter(Action<NodeCellRendererCombo<TNode, TItem>, TNode> setter)
 		{
