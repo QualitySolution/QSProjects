@@ -16,6 +16,7 @@ namespace QS.Serial.Encoding
 		#region Версия 2
 		public byte ProductId { get; private set; }
 		public byte EditionId { get; private set; }
+		public ushort ClientId { get; private set; }
 		#endregion
 
 		#endregion
@@ -80,6 +81,7 @@ namespace QS.Serial.Encoding
 						IsAnotherProduct = DecodedProduct != forProduct;
 						break;
 					case 2:
+						ClientId = BitConverter.ToUInt16(summaryArray, 1);
 						ProductId = summaryArray[8];
 						EditionId = summaryArray[9];
 						IsAnotherProduct = ProductId != applicationInfo?.ProductCode;
