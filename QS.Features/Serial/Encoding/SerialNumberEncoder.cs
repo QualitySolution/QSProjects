@@ -36,7 +36,7 @@ namespace QS.Serial.Encoding
 			this.applicationInfo = applicationInfo;
 		}
 
-		[PropertyChangedAlso("ComponentsText")]
+		[PropertyChangedAlso(nameof(ComponentsText))]
 		public virtual string Number {
 			get {return number;}
 			set { 
@@ -88,13 +88,15 @@ namespace QS.Serial.Encoding
 						break;
 				}
 				IsValid = !IsAnotherProduct && !IsNotSupport;
+				OnPropertyChanged();
 			}
 		}
 
 		private void Clear()
 		{
 			DecodedProduct = String.Empty;
-			CodeVersion = default(byte);
+			CodeVersion = default;
+			ClientId = default;
 			IsValid = IsNotSupport = IsAnotherProduct = false;
 		}
 
@@ -102,12 +104,23 @@ namespace QS.Serial.Encoding
 			get{
 				if(IsNotSupport)
 					return "Версия формата не поддерживается.";
-				else 
-					return String.Format("Версия кодирования: {0}\n" +
-						"Продукт: {1}",
-						CodeVersion,
-						DecodedProduct
-					);
+				else
+					switch(CodeVersion) {
+						case 1:
+							return String.Format("Версия кодирования: {0}\n" +
+							                     "Продукт: {1}",
+								CodeVersion,
+								DecodedProduct
+							);
+						case 2:
+							return $"Версия кодирования: {CodeVersion}\n" +
+							       $"Id клиента: {ClientId}\n" +
+							       $"Продукт: {ProductId}\n" +
+							       $"Редакция: {EditionId}";
+						default:
+							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");
+					}
+					
 			}
 		}
 	}
