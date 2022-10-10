@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using Gtk;
 using QS.Dialog;
+using QS.DomainModel.UoW;
+using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
 
