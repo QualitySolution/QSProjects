@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using QS.BaseParameters;
-using QS.Project.Versioning;
 
 namespace QS.Project.DB
 {
