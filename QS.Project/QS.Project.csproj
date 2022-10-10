@@ -260,7 +260,6 @@
     <Folder Include="Project.Search\" />
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
-    <Folder Include="Commands\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="Project.Versioning\" />
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
