@@ -1,6 +1,5 @@
 ﻿using System;
-namespace QS.Project.Versioning
-{
+namespace QS.Project.DB {
 	public interface IDataBaseInfo
 	{
 		/// <summary>

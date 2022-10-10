@@ -5,6 +5,7 @@ using GLib;
 using Gtk;
 using QS.Dialog;
 using QS.DomainModel.UoW;
+using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
 using QS.Services;
