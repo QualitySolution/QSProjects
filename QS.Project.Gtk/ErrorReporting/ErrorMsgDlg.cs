@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,7 +6,6 @@ using Gtk;
 using NLog;
 using NLog.Targets;
 using QS.Dialog.GtkUI;
-using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
 
