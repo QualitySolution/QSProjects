@@ -33,7 +33,7 @@ namespace QS.ErrorReporting {
 							Name = databaseInfo?.Name ?? String.Empty,
 						},
 						User = new UserInfo {
-							Email = user?.Email,
+							Email = user?.Email ?? String.Empty,
 							Name = user?.Name ?? String.Empty,
 						},
 						Report = new ErrorInfo {
