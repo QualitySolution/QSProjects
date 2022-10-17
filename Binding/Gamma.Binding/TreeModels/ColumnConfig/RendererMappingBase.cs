@@ -46,7 +46,6 @@ namespace Gamma.ColumnConfig
 		}
 
 		#region Renderers
-
 		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true, bool useMarkup = false)
 		{
 			return myColumn.AddTextRenderer (dataProperty, expand, useMarkup);
@@ -55,6 +54,17 @@ namespace Gamma.ColumnConfig
 		public TextRendererMapping<TNode> AddTextRenderer()
 		{
 			return myColumn.AddTextRenderer ();
+		}
+		
+		
+		/// <summary>
+		/// Добавляет рендер текстовой ячейки используемый только для отображения.
+		/// Если нет необходимости редактировать значение, то рендеру не нужно знать свойство для мапинга, в этом случае он на вход можно передать сложную лямбду.  
+		/// </summary>
+		/// <param name="getTextFunc">Функция получения значения для отображения</param>
+		public ReadOnlyTextRendererMapping<TNode> AddReadOnlyTextRenderer(Func<TNode, string> getTextFunc, bool expand = true, bool useMarkup = false)
+		{
+			return myColumn.AddReadOnlyTextRenderer(getTextFunc, expand, useMarkup);
 		}
 
 		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)

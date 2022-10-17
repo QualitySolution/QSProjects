@@ -142,6 +142,19 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
+		
+		/// <summary>
+		/// Добавляет рендер текстовой ячейки используемой только для отображения.
+		/// Если нет необходимости редактировать значение, то рендеру не нужно знать свойство для мапинга, в этом случае он на вход можно передать сложную лямбду.  
+		/// </summary>
+		/// <param name="getTextFunc">Функция получения значения для отображения</param>
+		public ReadOnlyTextRendererMapping<TNode> AddReadOnlyTextRenderer(Func<TNode, string> getTextFunc, bool expand = true, bool useMarkup = false)
+		{
+			var render = new ReadOnlyTextRendererMapping<TNode>(this, getTextFunc, useMarkup);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
 
 		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
 		{

@@ -54,6 +54,7 @@
     <Compile Include="TreeModels\ColumnConfig\IColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\IRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\NumberRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ReadOnlyTextRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\RendererMappingBase.cs" />
     <Compile Include="TreeModels\ColumnConfig\RowMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\TextRendererMapping.cs" />
