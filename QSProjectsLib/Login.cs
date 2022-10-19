@@ -223,7 +223,7 @@ namespace QSProjectsLib
 					Session.SessionId = result.SessionID;
 					Session.Account = Selected.AccountLogin;
 					Session.SaasBaseName = BaseName; // Сохраняем имя базы на сервере SAAS
-					Session.SQLBaseName = BaseName = result.BaseName; //Переписываем на реальное для подключения.
+					BaseName = result.BaseName; //Переписываем на реальное для подключения.
 				}
 				catch (Exception ex) {
 					labelLoginInfo.Text = "Ошибка соединения с сервисом.";
