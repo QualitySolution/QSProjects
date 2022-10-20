@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using MySql.Data.MySqlClient;
 using NHibernate.Exceptions;
@@ -39,11 +40,9 @@ namespace QS.ErrorReporting.Handlers {
 				return true;
 			}
 			
-			var mysqlException = exception.FindExceptionTypeInInner<MySqlException>();
-			if(mysqlException?.Number == 1042) {
-				var message = mysqlException.Message;
-				if(mysqlException.InnerException != null)
-					message += "\n" + mysqlException.InnerException.Message;
+			var mysqlExceptions = exception.FindAllExceptionTypeInInner<MySqlException>().ToArray();
+			if(mysqlExceptions.Any(e => e.Number == 1042)) {
+				var message = String.Join("\n", mysqlExceptions.Select(e => e.Message));
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, 
 					message + "\n\nУбедитесь что сеть или интернет работают и повторите попытку. Если соединение восстановить " +
 					"не удасться, обратитесь к вашему системному администратору.",
