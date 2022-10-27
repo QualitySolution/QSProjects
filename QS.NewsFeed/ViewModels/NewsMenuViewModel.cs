@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -49,7 +50,15 @@ namespace QS.NewsFeed.ViewModels
 		public void OpenNews(SyndicationItem item)
 		{
 			foreach (var link in item.Links) {
-				System.Diagnostics.Process.Start(link.Uri.AbsoluteUri);
+				//Здесь пробуем исправить ошибку 34641 на нашем багтрекере.
+				//Предположил что проблема в этом https://github.com/dotnet/runtime/issues/28005
+				//Но проверить действительно ли это так негде.
+				ProcessStartInfo psi = new ProcessStartInfo
+				{
+					FileName = link.Uri.AbsoluteUri,
+					UseShellExecute = true
+				};
+				Process.Start (psi);
 			}
 			reader.AddReadItem(item);
 			ReadStatusChanged?.Invoke(this, new ReadStatusChangedEventArgs(item));
