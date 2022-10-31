@@ -40,6 +40,8 @@ namespace QS.ViewModels.Widgets {
 			selectedRightItems = Enumerable.Empty<LeftRightListItemViewModel>();
 		}
 
+		public bool SelectOnDoubleClick { get; set; } = true; 
+
 		public virtual string LeftLabel {
 			get => leftLabel;
 			set => SetField(ref leftLabel, value);
