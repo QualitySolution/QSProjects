@@ -33,7 +33,7 @@ namespace QS.Widgets.GtkUI
 			UoW = uow;
 			this.user = user;
 
-			var permissionExtensionStore = PermissionExtensionSingletonStore.GetInstance();
+			var permissionExtensionStore = PermissionExtensionSingletonStore.GetInstance(new[] { "QS", "Vodovoz" });
 			permissionlistview.ViewModel = new PermissionListViewModel(permissionExtensionStore);
 			model = new EntityUserPermissionModel(UoW, user, permissionlistview.ViewModel);
 
