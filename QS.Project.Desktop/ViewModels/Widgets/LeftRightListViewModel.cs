@@ -40,7 +40,9 @@ namespace QS.ViewModels.Widgets {
 			selectedRightItems = Enumerable.Empty<LeftRightListItemViewModel>();
 		}
 
-		public bool SelectOnDoubleClick { get; set; } = true; 
+		public bool SelectOnDoubleClick { get; set; } = true;
+
+		public int RightItemsMaximum { get; set; }
 
 		public virtual string LeftLabel {
 			get => leftLabel;
@@ -94,7 +96,7 @@ namespace QS.ViewModels.Widgets {
 			}
 		}
 
-		public virtual bool CanMoveRight => SelectedLeftItems.Any();
+		public virtual bool CanMoveRight => SelectedLeftItems.Any() && RightItemsMaximum > 0 && RightItems.Count < RightItemsMaximum;
 
 		protected virtual void MoveRight() {
 			foreach(var leftItem in SelectedLeftItems) {
