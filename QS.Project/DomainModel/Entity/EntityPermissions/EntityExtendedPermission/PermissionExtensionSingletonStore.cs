@@ -10,8 +10,9 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 
 		private static PermissionExtensionSingletonStore instance;
 
-		public static PermissionExtensionSingletonStore GetInstance()
-		{
+		public static IEnumerable<string> AssembliesFilter { get; set; }
+
+		public static PermissionExtensionSingletonStore GetInstance() {
 			if(instance == null)
 				instance = new PermissionExtensionSingletonStore();
 			return instance;
@@ -36,7 +37,12 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 			Type parent = typeof(IPermissionExtension);
 			IEnumerable<Type> types = new List<Type>();
 
-			foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+			var currenDomainAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			var assemblies = AssembliesFilter == null
+				? currenDomainAssemblies
+				: currenDomainAssemblies.Where(c => AssembliesFilter.Any(f => c.FullName.StartsWith(f)));
+
+			foreach(var assembly in assemblies) {
 				var list = assembly.GetTypes().Where(x => parent.IsAssignableFrom(x) && !x.IsAbstract);
 				if(list?.FirstOrDefault() != null)
 					types = types.Concat(list);
