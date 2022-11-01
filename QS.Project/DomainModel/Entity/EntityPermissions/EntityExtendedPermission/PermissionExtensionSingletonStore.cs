@@ -12,8 +12,7 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 
 		public static IEnumerable<string> AssembliesFilter { get; set; }
 
-		public static PermissionExtensionSingletonStore GetInstance(IEnumerable<string> assembliesFilter = null) {
-			AssembliesFilter = assembliesFilter;
+		public static PermissionExtensionSingletonStore GetInstance() {
 			if(instance == null)
 				instance = new PermissionExtensionSingletonStore();
 			return instance;
