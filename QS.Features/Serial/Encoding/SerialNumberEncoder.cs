@@ -101,7 +101,9 @@ namespace QS.Serial.Encoding
 		}
 
 		public string ComponentsText{
-			get{
+			get {
+				if(String.IsNullOrWhiteSpace(Number))
+					return "Серийный номер не указан";
 				if(IsNotSupport)
 					return "Версия формата не поддерживается.";
 				else
