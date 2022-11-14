@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Gtk;
 using QS.DBScripts.Controllers;
 using QSMachineConfig;
@@ -304,7 +305,15 @@ namespace QSProjectsLib
 
 		protected void OnButtonHelpClicked(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Login.CreateDBHelpUrl);
+			//Здесь пробуем исправить ошибку 34316 на нашем багтрекере.
+			//Предположил что проблема в этом https://github.com/dotnet/runtime/issues/28005
+			//Но проверить действительно ли это так негде.
+			ProcessStartInfo psi = new ProcessStartInfo
+			{
+				FileName = Login.CreateDBHelpUrl,
+				UseShellExecute = true
+			};
+			Process.Start (psi);
 		}
 
 		protected void OnEntryServerChanged(object sender, EventArgs e)
