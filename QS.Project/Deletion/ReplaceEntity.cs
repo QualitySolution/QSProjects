@@ -39,6 +39,8 @@ namespace QS.Deletion
 				throw new ArgumentException("Сущность должна уже иметь ID", nameof(fromE));
 			if(toE.Id == 0)
 				throw new ArgumentException("Сущность должна уже иметь ID", nameof(toE));
+			if(toE.Id == fromE.Id)
+				throw new ArgumentException("Исходная и целевая сущности должны иметь разные ID", nameof(toE));
 
 			var delConfig = configuration.GetDeleteInfo<TEntity>();
 			if(delConfig == null)
