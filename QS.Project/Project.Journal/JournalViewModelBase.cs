@@ -26,6 +26,8 @@ namespace QS.Project.Journal
 
 		public virtual IJournalSearch Search { get; set; }
 
+		public virtual bool SearchEnabled { get; set; } = true;
+		
 		public IDataLoader DataLoader { get; protected set; }
 
 		public IList Items => DataLoader.Items;

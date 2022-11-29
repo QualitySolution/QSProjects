@@ -82,12 +82,14 @@ namespace QS.Journal.GtkUI
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
 			}
 
-			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
-			//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
-			if(searchView == null)
-				searchView = new SearchView((SearchViewModel)ViewModel.Search);
-			hboxSearch.Add(searchView);
-			searchView.Show();
+			if(ViewModel.SearchEnabled) {
+				Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
+				//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
+				if(searchView == null)
+					searchView = new SearchView((SearchViewModel)ViewModel.Search);
+				hboxSearch.Add(searchView);
+				searchView.Show();
+			}
 
 			tableview.ColumnsConfig = TreeViewColumnsConfigFactory.Resolve(ViewModel);
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
