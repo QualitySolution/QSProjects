@@ -26,8 +26,6 @@ namespace QS.Widgets.GtkUI
 			Sensitive = false;
 		}
 
-		EntityUserPermissionModel model;
-
 		public void ConfigureDlg(IUnitOfWork uow, UserBase user)
 		{
 			UoW = uow;
@@ -35,29 +33,31 @@ namespace QS.Widgets.GtkUI
 
 			var permissionExtensionStore = PermissionExtensionSingletonStore.GetInstance();
 			permissionlistview.ViewModel = new PermissionListViewModel(permissionExtensionStore);
-			model = new EntityUserPermissionModel(UoW, user, permissionlistview.ViewModel);
+			Model = new EntityUserPermissionModel(UoW, user, permissionlistview.ViewModel);
 
 			ytreeviewEntitiesList.ColumnsConfig = ColumnsConfigFactory.Create<TypeOfEntity>()
 				.AddColumn("Документ").AddTextRenderer(x => x.CustomName)
 				.Finish();
 
-			ytreeviewEntitiesList.ItemsDataSource = model.ObservableTypeOfEntitiesList;
+			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
 			searchDocuments.TextChanged += SearchDocumentsOnTextChanged;
 
 			Sensitive = true;
 		}
+		
+		public EntityUserPermissionModel Model { get; set; }
 
 		private void SearchDocumentsOnTextChanged(object sender, EventArgs e)
 		{
 			ytreeviewEntitiesList.ItemsDataSource = null;
-			model.SearchTypes(searchDocuments.Text);
-			ytreeviewEntitiesList.ItemsDataSource = model.ObservableTypeOfEntitiesList;
+			Model.SearchTypes(searchDocuments.Text);
+			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
 		}
 
 		private void AddPermission()
 		{
 			var selected = ytreeviewEntitiesList.GetSelectedObject() as TypeOfEntity;
-			model.AddPermission(selected);
+			Model.AddPermission(selected);
 		}
 
 		private void OnButtonAddClicked(object sender, EventArgs e)
@@ -72,19 +72,20 @@ namespace QS.Widgets.GtkUI
 
 		public void Save()
 		{
-			if(model == null) {
+			if(Model == null) {
 				return;
 			}
-			model.Save();
+			Model.Save();
 		}
 
 		public void UpdateData(IList<UserPermissionNode> newUserPermissions) {
-			model.UpdateData(newUserPermissions);
-			ytreeviewEntitiesList.ItemsDataSource = model.ObservableTypeOfEntitiesList;
+			Model.UpdateData(newUserPermissions);
+			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
+			permissionlistview.Redraw();
 		}
 	}
 
-	internal sealed class EntityUserPermissionModel {
+	public sealed class EntityUserPermissionModel {
 		private readonly IUnitOfWork _uow;
 		private readonly UserBase _user;
 		private readonly IList<UserPermissionNode> _deletePermissionList = new List<UserPermissionNode>();

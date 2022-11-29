@@ -15,7 +15,6 @@ namespace QS.Widgets
 	{
 		public BindingControler<NullableCheckButton> Binding { get; private set; }
 
-
 		private RenderMode renderMode = RenderMode.Symbol;
 		public RenderMode RenderMode { get => renderMode; set { renderMode = value; ConfigureValue(); } }
 
@@ -122,7 +121,7 @@ namespace QS.Widgets
 
 		protected override void OnClicked()
 		{
-			Active = Active == null ? false : (Active.Value ? null : (bool?)true);
+			Active = Active == null ? true : (Active.Value ? (bool?)false : null);
 			base.OnClicked();
 		}
 	}
