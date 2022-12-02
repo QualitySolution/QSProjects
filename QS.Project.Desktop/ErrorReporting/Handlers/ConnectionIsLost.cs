@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.Sockets;
 using MySql.Data.MySqlClient;
-using NHibernate.Exceptions;
 using QS.Dialog;
 
 namespace QS.ErrorReporting.Handlers {

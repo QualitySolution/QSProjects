@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MySql.Data.MySqlClient;
-using QS.Dialog;
 
 namespace QS.ErrorReporting.Handlers {
 	/// <summary>
