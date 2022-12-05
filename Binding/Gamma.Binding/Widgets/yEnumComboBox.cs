@@ -32,6 +32,14 @@ namespace Gamma.Widgets
 			fieldsToHide.AddRange(items);
 			ResetLayout();
 		}
+		
+		public void AddEnumerableToHideList<T>(IEnumerable<T> items)
+		{
+			foreach(var item in items) {
+				fieldsToHide.Add(item);
+			}
+			ResetLayout();
+		}
 
 		public void RemoveEnumFromHideList(params object[] items)
 		{
