@@ -44,7 +44,7 @@ namespace QS.Project.Journal
 		/// Выполняемое действие при вызове.
 		/// </summary>
 		/// <value>Объекты - в данном случае это Node-ы журнала</value>
-		public Action<object[]> ExecuteAction { get; }
+		public Action<object[]> ExecuteAction { get; set; }
 
         public bool GetSensitivity(object[] selectedNodes)
 		{

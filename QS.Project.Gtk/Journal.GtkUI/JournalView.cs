@@ -299,6 +299,8 @@ namespace QS.Journal.GtkUI
 					}
 					menuButton.Menu = childActionButtons;
 					actionWidget = menuButton;
+					if (action.ExecuteAction == null)
+						action.ExecuteAction = items => menuButton.Press();
 				} else {
 					Button button = new Button();
 					button.Label = action.Title;
