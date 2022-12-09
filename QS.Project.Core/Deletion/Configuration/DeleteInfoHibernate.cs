@@ -254,6 +254,8 @@ namespace QS.Deletion.Configuration
 		EntityDTO IDeleteInfo.GetSelfEntity(IDeleteCore core, uint id)
 		{
 			var item = core.UoW.GetById<TEntity> ((int)id);
+			if (item == null)
+				return null;
 			return new EntityDTO{
 				Id = (uint)item.Id,
 				ClassType = ObjectClass,
