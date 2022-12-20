@@ -247,43 +247,7 @@
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Project.Domain\" />
-    <Folder Include="Project.HibernateMapping\" />
-    <Folder Include="DomainModel\" />
-    <Folder Include="Project.Repositories\" />
-    <Folder Include="DomainModel\Entity\" />
-    <Folder Include="Project.DB\" />
-    <Folder Include="Print\" />
-    <Folder Include="Dialog\" />
-    <Folder Include="Tdi\" />
-    <Folder Include="Project.Dialogs\" />
-    <Folder Include="DomainModel\Entity\EntityPermissions\" />
-    <Folder Include="Permissions\" />
-    <Folder Include="RepresentationModel\" />
-    <Folder Include="DomainModel\Config\" />
-    <Folder Include="Tools\" />
-    <Folder Include="Project.Journal\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Project.Services\" />
-    <Folder Include="Project.Filter\" />
-    <Folder Include="Project.Search\" />
-    <Folder Include="Project.Journal\Search\" />
-    <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="Commands\" />
-    <Folder Include="DomainModel\Entity\PresetPermissions\" />
-    <Folder Include="Project.Versioning\" />
-    <Folder Include="..\QS.Project.Core\ErrorReporting\" />
-    <Folder Include="Validation\" />
-    <Folder Include="Project.Services\Interactive\" />
-    <Folder Include="Project.Journal\DataLoader\" />
-    <Folder Include="Navigation\" />
-    <Folder Include="ViewModels\Control\" />
-    <Folder Include="ViewModels\Control\EEVM\" />
-    <Folder Include="ViewModels\Control\ESVM\" />
-    <Folder Include="ViewModels\Resolve\" />
-    <Folder Include="Project.ViewModels\" />
-    <Folder Include="BaseParameters\" />
-    <Folder Include="BaseParameters\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
@@ -320,7 +284,7 @@
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.19.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
     <PackageReference Include="Iesi.Collections" Version="4.0.4" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.16" />

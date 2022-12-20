@@ -239,37 +239,7 @@
     <Compile Include="Widgets.GtkUI\VehicleRegistrationNumberEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.VehicleRegistrationNumberEntry.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Widgets.GtkUI\" />
-    <Folder Include="Dialog\" />
-    <Folder Include="Tdi\" />
-    <Folder Include="Utilities\" />
-    <Folder Include="Project.Dialogs.GtkUI\" />
-    <Folder Include="RepresentationModel.GtkUI\" />
-    <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
-    <Folder Include="Print\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
-    <Folder Include="Permissions\" />
-    <Folder Include="Icons\" />
-    <Folder Include="Project.Search.GtkUI\" />
-    <Folder Include="Journal.GtkUI\" />
-    <Folder Include="Views.GtkUI\" />
-    <Folder Include="ErrorReporting\" />
-    <Folder Include="Project.Services.GtkUI\" />
-    <Folder Include="Validation\" />
-    <Folder Include="Navigation\" />
-    <Folder Include="Views\" />
-    <Folder Include="Views\Control\" />
-    <Folder Include="Widgets\" />
-    <Folder Include="Views\Resolve\" />
-    <Folder Include="Views\Dialog\" />
-    <Folder Include="Deletion.Views\" />
-    <Folder Include="Project.Views\" />
-    <Folder Include="BaseParameters.Views\" />
-    <Folder Include="ChangePassword.Views\" />
-    <Folder Include="Dialog\Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
@@ -325,7 +295,7 @@
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
-    <PackageReference Include="Google.Protobuf" Version="3.19.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
     <PackageReference Include="Iesi.Collections" Version="4.0.4" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.16" />
