@@ -41,11 +41,10 @@ namespace QSOrmProject.RepresentationModel
 			ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 		}
 
-		List<TNode> filtredItemsList;
+		protected List<TNode> filtredItemsList;
+		protected IList<TNode> itemsList;
 
-		IList<TNode> itemsList;
-
-		public IList ItemsList => filtredItemsList ?? itemsList as IList;
+		public virtual IList ItemsList => filtredItemsList ?? itemsList as IList;
 
 		protected void SetItemsSource (IList<TNode> list)
 		{
@@ -142,9 +141,9 @@ namespace QSOrmProject.RepresentationModel
 			set => SearchStrings = new string[] { value };
 		}
 
-		private PropertyInfo[] searchPropCache;
+		protected PropertyInfo[] searchPropCache;
 
-		protected PropertyInfo[] SearchPropCache {
+		protected virtual PropertyInfo[] SearchPropCache {
 			get {
 				if (searchPropCache != null)
 					return searchPropCache;
@@ -185,7 +184,7 @@ namespace QSOrmProject.RepresentationModel
 
 		Thread searchThread; 
 
-		void RefilterList()
+		protected virtual void RefilterList()
 		{
 			var filtredParam = String.Join(", ", SearchStrings.Select(x => String.Format("<{0}>", x)));
 			logger.Info("Фильтрация таблицы по {0}...", filtredParam);
