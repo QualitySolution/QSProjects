@@ -12,7 +12,7 @@ namespace QSOrmProject.RepresentationModel
 	/// </summary>
 	public abstract class RepresentationModelEntityBase<TEntity, TNode> : RepresentationModelBase<TNode>, IRepresentationModel, QS.RepresentationModel.GtkUI.IRepresentationModel
 	{
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public Type ObjectType => typeof(TEntity);
 
