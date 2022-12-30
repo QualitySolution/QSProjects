@@ -78,14 +78,14 @@ namespace QSReport
 			return r;
 		}
 
-		public void DrawPage(object o, DrawPageArgs args){
-			var g = args.Context.CairoContext;
-			int pageNumber, reportNumber;
-			CalculateDocPage(args.PageNr, out reportNumber, out pageNumber);
+		public void DrawPage(object o, DrawPageArgs args) {
+			using(var g = args.Context.CairoContext) {
+				CalculateDocPage(args.PageNr, out var reportNumber, out var pageNumber);
 
-			RenderCairo render = new RenderCairo(g);
-
-			render.RunPage(reportPages[reportNumber][pageNumber]);
+				using(var render = new RenderCairo(g)) {
+					render.RunPage(reportPages[reportNumber][pageNumber]);
+				}
+			}
 		}
 
 		public void RequestPageSetup (object o, RequestPageSetupArgs args)
