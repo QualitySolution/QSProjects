@@ -53,8 +53,8 @@ namespace QSReport
 		private void HandlePrintDrawPage(object o, DrawPageArgs args)
 		{
 			using(var context = args.Context.CairoContext)
+			using(var render = new RenderCairo(context))
 			{
-				var render = new RenderCairo(context);
 				render.RunPage(_pages[args.PageNr]);
 			}
 		}
