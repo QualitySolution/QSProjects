@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("QS.Osm")]
-[assembly: AssemblyCopyright("Quality Solution 2022")]
+[assembly: AssemblyCopyright("Quality Solution 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
