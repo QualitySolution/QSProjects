@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gtk;
 
@@ -12,7 +13,14 @@ namespace Gamma.GtkWidgets
 
 		public yToggleButton()
 		{
-			Binding = new BindingControler<yToggleButton>(this);
+			Binding = new BindingControler<yToggleButton>(this, new Expression<Func<yToggleButton, object>>[] {
+				(w => w.Active)
+			});
+		}
+
+		protected override void OnToggled() {
+			Binding.FireChange(w => w.Active);
+			base.OnToggled();
 		}
 	}
 }
