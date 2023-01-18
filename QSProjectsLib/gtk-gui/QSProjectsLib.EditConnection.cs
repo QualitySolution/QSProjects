@@ -82,11 +82,10 @@ namespace QSProjectsLib
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
+			this.GtkScrolledWindow.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
 			this.treeConnections = new global::Gtk.TreeView();
-			this.treeConnections.WidthRequest = 150;
-			this.treeConnections.HeightRequest = 300;
 			this.treeConnections.CanFocus = true;
 			this.treeConnections.Name = "treeConnections";
 			this.GtkScrolledWindow.Add(this.treeConnections);
