@@ -20,5 +20,21 @@ namespace QS.Project.Services.Interactive
 				}
 			}
 		}
+		
+		public string Question(string[] buttons, string message, string title = null)
+		{
+			Console.WriteLine(message);
+			for(int i = 0; i < buttons.Length; i++) {
+				Console.WriteLine($@"{i+1} - {buttons[i]}");
+			}
+			Console.Write("Введите номер ответа: ");
+			string answer = Console.ReadLine();
+			if(Int32.TryParse(answer, out int number)) {
+				if(number > 0 && buttons.Length >= number) {
+					return buttons[number + 1];
+				}
+			}
+			return null;
+		}
 	}
 }

@@ -18,5 +18,10 @@ namespace QS.Project.Services.Interactive
 		{
 			return interactiveQuestion.Question(message, title);
 		}
+		
+		public string Question(string[] buttons, string message, string title = null)
+		{
+			return interactiveQuestion.Question(buttons, message, title);
+		}
 	}
 }
