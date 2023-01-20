@@ -10,6 +10,7 @@ namespace Gamma.Binding
 		object NodeAtPath(TreePath aPath);
 		object NodeFromIter (TreeIter iter);
 		TreeIter IterFromNode (object node);
+		TreePath PathFromNode(object aNode);
 
 		event EventHandler RenewAdapter;
 
