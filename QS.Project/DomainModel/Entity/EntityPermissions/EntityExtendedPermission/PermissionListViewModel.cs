@@ -3,6 +3,7 @@ using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using QS.Commands;
 using QS.DomainModel.UoW;
+using QS.Project.Domain;
 using QS.ViewModels;
 
 namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
@@ -10,7 +11,7 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 	public class PermissionListViewModel: WidgetViewModelBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
+		private TypeOfEntity _selectedAvailableEntity;
 		private IPermissionNodeFactory permissionNodeFactory;
 		public virtual IPermissionNodeFactory PermissionNodeFactory {
 			get => permissionNodeFactory;
@@ -23,7 +24,13 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 			CreateCommands();
 		}
 
+		public TypeOfEntity SelectedAvailableEntity {
+			get => _selectedAvailableEntity;
+			set => SetField(ref _selectedAvailableEntity, value);
+		}
+
 		public IPermissionExtensionStore PermissionExtensionStore { get; set; }
+		public Action<(string, string)> ExportAction { get; set; }
 
 		private bool readOnly = false;
 		public virtual bool ReadOnly {
@@ -50,6 +57,8 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 
 		public DelegateCommand AddItemCommand { get; private set; }
 		public DelegateCommand<IPermissionNode> DeleteItemCommand { get; private set; }
+		public DelegateCommand ExportFromAvailablePermissionsCommand { get; private set; }
+		public DelegateCommand<(string PermissionName, string PermissionTitle)> ExportFromCurrentPermissionsCommand { get; private set; }
 
 		private void CreateCommands()
 		{
@@ -71,6 +80,20 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 					PermissionsList.Remove(permissionNode);
 				},
 				(permissionNode) => { return !ReadOnly; }
+			);
+			
+			ExportFromAvailablePermissionsCommand = new DelegateCommand(
+				() => {
+					ExportAction?.Invoke((SelectedAvailableEntity.Type, SelectedAvailableEntity.Name));
+				},
+				() => !ReadOnly && SelectedAvailableEntity != null
+			);
+			
+			ExportFromCurrentPermissionsCommand = new DelegateCommand<(string PermissionName, string PermissionTitle)>(
+				permission => {
+					ExportAction?.Invoke((permission.PermissionName, permission.PermissionTitle));
+				},
+				permission => !ReadOnly && !string.IsNullOrWhiteSpace(permission.PermissionName)
 			);
 		}
 
