@@ -4,6 +4,7 @@ using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
+using QS.Journal.GtkUI;
 using QS.Project.Repositories;
 using QS.Widgets;
 
@@ -20,6 +21,8 @@ namespace QS.Project.Dialogs
 		private IList<HBox> hBoxList;
 
 		private PermissionListViewModel viewModel;
+		private yLabel _selectedCurrentPermission;
+		private Menu _availableEntitiesPopupMenu;
 
 		public PermissionListViewModel ViewModel {
 			get { return viewModel; }
@@ -48,14 +51,16 @@ namespace QS.Project.Dialogs
 
 			viewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) => {
 				if(e.PropertyName == nameof(viewModel.PermissionsList))
-					ConfidureList();
+					ConfigureList();
 			};
 
 			if(viewModel.PermissionsList != null)
-				ConfidureList();
+				ConfigureList();
+
+			CreatePopupMenu();
 		}
 
-		private void ConfidureList()
+		private void ConfigureList()
 		{
 			viewModel.PermissionsList.ElementAdded += (object aList, int[] aIdx) => aIdx.ToList().ForEach(x => AddRow(viewModel.PermissionsList[x]));
 			viewModel.PermissionsList.ElementRemoved += (aList, aIdx, aObject) => DeleteRow(aObject);
@@ -86,6 +91,9 @@ namespace QS.Project.Dialogs
 			documentLabel.LineWrapMode = Pango.WrapMode.WordChar;
 			documentLabel.WidthRequest = ylabelDocument.WidthRequest - deleteButton.WidthRequest;
 			documentLabel.Binding.AddBinding(node.TypeOfEntity, e => e.CustomName, w => w.Text).InitializeFromSource();
+			documentLabel.Name = node.TypeOfEntity.Type;
+			documentLabel.Selectable = true;
+			documentLabel.ButtonReleaseEvent += DocumentLabelButtonReleaseEvent;
 
 			hBox.Add(documentLabel);
 			hBox.SetChildPacking(documentLabel, false, true, 0, PackType.Start);
@@ -138,7 +146,27 @@ namespace QS.Project.Dialogs
 
 			vboxPermissions.Add(hBox);
 			hBoxList.Add(hBox);
+		}
+		
+		private void CreatePopupMenu() {
+			_availableEntitiesPopupMenu = new Menu();
+			var availablePresetPermissionItem = new MenuItem("Выгрузить в Эксель");
+			availablePresetPermissionItem.Activated += (sender, eventArgs) =>
+				viewModel.ExportFromCurrentPermissionsCommand.Execute((_selectedCurrentPermission?.Name, _selectedCurrentPermission?.Text));
+			availablePresetPermissionItem.Visible = true;
 
+			_availableEntitiesPopupMenu.Add(availablePresetPermissionItem);
+			_availableEntitiesPopupMenu.Show();
+		}
+
+		private void DocumentLabelButtonReleaseEvent(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Middle)
+			{
+				return;
+			}
+
+			_selectedCurrentPermission = o as yLabel;
+			_availableEntitiesPopupMenu?.Popup();
 		}
 
 		public void Redraw()
