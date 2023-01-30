@@ -7,6 +7,7 @@ using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.DomainModel.UoW;
 using QS.EntityRepositories;
+using QS.Journal.GtkUI;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 
@@ -15,6 +16,7 @@ namespace QS.Widgets.GtkUI
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class UserEntityPermissionWidget : Bin, IUserPermissionTab
 	{
+		private Menu _availableEntitiesPopupMenu;
 		public IUnitOfWork UoW { get; set; }
 		public string Title => "На документы";
 
@@ -40,11 +42,38 @@ namespace QS.Widgets.GtkUI
 				.Finish();
 
 			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
+			ytreeviewEntitiesList.Binding
+				.AddBinding(Model.PermissionListViewModel, vm => vm.SelectedAvailableEntity, w => w.SelectedRow)
+				.InitializeFromSource();
+			
+			ytreeviewEntitiesList.ButtonReleaseEvent += YtreeviewEntitiesListOnButtonReleaseEvent;
 			searchDocuments.TextChanged += SearchDocumentsOnTextChanged;
+
+			CreatePopupMenu();
 
 			Sensitive = true;
 		}
-		
+
+		private void CreatePopupMenu() {
+			_availableEntitiesPopupMenu = new Menu();
+			var availablePresetPermissionItem = new MenuItem("Выгрузить в Эксель");
+			availablePresetPermissionItem.Activated +=
+				(sender, eventArgs) => Model.PermissionListViewModel.ExportFromAvailablePermissionsCommand.Execute();
+			availablePresetPermissionItem.Visible = true;
+
+			_availableEntitiesPopupMenu.Add(availablePresetPermissionItem);
+			_availableEntitiesPopupMenu.Show();
+		}
+
+		private void YtreeviewEntitiesListOnButtonReleaseEvent(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Right)
+			{
+				return;
+			}
+			
+			_availableEntitiesPopupMenu.Popup();
+		}
+
 		public EntityUserPermissionModel Model { get; set; }
 
 		private void SearchDocumentsOnTextChanged(object sender, EventArgs e)
