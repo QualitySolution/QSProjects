@@ -11,6 +11,10 @@ namespace QS.Dialog {
 		private readonly INavigationManager navigator;
 		private IPage<ProgressWindowViewModel> activeProgressPage;
 
+		#region Настройка
+		public string Title { get; set; }
+		#endregion
+
 		protected IProgressBarDisplayable Progress => activeProgressPage.ViewModel.Progress;
 
 		public ModalProgressCreator(INavigationManager navigator) {
@@ -23,6 +27,8 @@ namespace QS.Dialog {
 				throw new InvalidOperationException("Прежде чем запускать новый прогресс необходимо остановить старый, вызвав Close().");
 
 			activeProgressPage = navigator.OpenViewModel<ProgressWindowViewModel>(null);
+			if(!String.IsNullOrEmpty(Title))
+				activeProgressPage.ViewModel.Title = Title;
 			Progress.Start(maxValue, minValue, text, startValue);
 		}
 
