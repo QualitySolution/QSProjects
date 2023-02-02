@@ -10,6 +10,7 @@ namespace QS.Dialog.ViewModels
 		{
 			IsModal = true;
 			Resizable = false;
+			Deletable = false;
 			WindowPosition = WindowGravity.Center;
 			Title = "Подождите...";
 		}
