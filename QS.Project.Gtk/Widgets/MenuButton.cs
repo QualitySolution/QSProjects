@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Gtk;
+using Gamma.Binding.Core;
 
 namespace QS.Widgets
 {
@@ -50,7 +51,7 @@ namespace QS.Widgets
 				hbox.ReorderChild(Image, 0);
 			}
 		}
-
+		
 		public virtual float LabelXAlign {
 			get { return titleLabel == null ? 0f : titleLabel.Xalign; }
 			set {
@@ -59,9 +60,13 @@ namespace QS.Widgets
 				}
 			}
 		}
+		
+		public virtual BindingControler<MenuButton> Binding { get; private set; }
 
-		public MenuButton()
-		{
+		public MenuButton() {
+			
+			Binding = new BindingControler<MenuButton>(this);
+			
 			hbox = new HBox();
 
 			Image = new Image();
