@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.UoW;
@@ -9,10 +9,17 @@ namespace QS.ViewModels.Dialog
 {
 	public abstract class UowDialogViewModelBase : DialogViewModelBase, IDisposable
 	{
+		protected UnitOfWorkProvider UnitOfWorkProvider { get; }
 		protected readonly IUnitOfWorkFactory UnitOfWorkFactory;
 
-		protected UowDialogViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null, string UoWTitle = null) : base(navigation)
+		protected UowDialogViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			INavigationManager navigation,
+			IValidator validator = null,
+			string UoWTitle = null,
+			UnitOfWorkProvider unitOfWorkProvider = null) : base(navigation)
 		{
+			UnitOfWorkProvider = unitOfWorkProvider;
 			this.UnitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.validator = validator;
 			uoWTitle = UoWTitle;
@@ -22,8 +29,11 @@ namespace QS.ViewModels.Dialog
 
 		public virtual IUnitOfWork UoW {
 			get {
-				if(unitOfWork == null)
+				if(unitOfWork == null) {
 					unitOfWork = UnitOfWorkFactory.CreateWithoutRoot(uoWTitle);
+					if(UnitOfWorkProvider != null)
+						UnitOfWorkProvider.UoW = unitOfWork;
+				}
 
 				return unitOfWork;
 			}

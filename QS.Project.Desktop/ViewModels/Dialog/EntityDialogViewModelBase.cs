@@ -19,7 +19,12 @@ namespace QS.ViewModels.Dialog
 
 		public TEntity Entity => UoWGeneric.Root;
 
-		public EntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(unitOfWorkFactory, navigation, validator)
+		public EntityDialogViewModelBase(
+			IEntityUoWBuilder uowBuilder,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			INavigationManager navigation,
+			IValidator validator = null,
+			UnitOfWorkProvider unitOfWorkProvider = null) : base(unitOfWorkFactory, navigation, validator, unitOfWorkProvider: unitOfWorkProvider)
 		{
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
@@ -35,6 +40,8 @@ namespace QS.ViewModels.Dialog
 				throw new AbortCreatingPageException($"Загрузить [{names.Nominative}:{uowBuilder.EntityOpenId}] не удалось. " +
 				                                     $"Возможно другой пользователь удалил этот объект.", "Ошибка открытия диалога");
 			}
+			if(unitOfWorkProvider != null)
+				unitOfWorkProvider.UoW = UoW;
 			base.Title = GetDialogNameByEntity();
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
