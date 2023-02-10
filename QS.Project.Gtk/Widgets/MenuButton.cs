@@ -61,7 +61,7 @@ namespace QS.Widgets
 			}
 		}
 		
-		public virtual BindingControler<MenuButton> Binding { get; private set; }
+		public BindingControler<MenuButton> Binding { get; private set; }
 
 		public MenuButton() {
 			
