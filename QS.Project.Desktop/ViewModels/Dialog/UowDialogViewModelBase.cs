@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.UoW;
@@ -27,7 +27,6 @@ namespace QS.ViewModels.Dialog
 
 				return unitOfWork;
 			}
-			set => unitOfWork = value;
 		}
 
 		private bool manualChange = false;
