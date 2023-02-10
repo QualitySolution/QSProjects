@@ -172,6 +172,34 @@ namespace QS.Project.DB
 		}
 
 		#endregion
+
+		#region String functions
+		
+		public static IProjection Lower<T>(Expression<Func<T, object>> expressionProperty) {
+			return Lower(Projections.Property(expressionProperty));
+		}
+		
+		public static IProjection Lower(Expression<Func<object>> expressionProperty) {
+			return Lower(Projections.Property(expressionProperty));
+		}
+		
+		public static IProjection Lower(IProjection projection) {
+			return Projections.SqlFunction("LOWER", NHibernateUtil.String, projection);
+		}
+		
+		public static IProjection Upper<T>(Expression<Func<T, object>> expressionProperty) {
+			return Upper(Projections.Property(expressionProperty));
+		}
+		
+		public static IProjection Upper(Expression<Func<object>> expressionProperty) {
+			return Upper(Projections.Property(expressionProperty));
+		}
+		
+		public static IProjection Upper(IProjection projection) {
+			return Projections.SqlFunction("UPPER", NHibernateUtil.String, projection);
+		}
+
+		#endregion
 	}
 
 	public enum OrderByDirection
