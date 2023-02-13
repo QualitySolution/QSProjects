@@ -1,4 +1,6 @@
 ﻿using System;
+using Gtk;
+
 namespace QSWidgetLib
 {
 	[System.ComponentModel.ToolboxItem(true)]
@@ -39,6 +41,11 @@ namespace QSWidgetLib
 			get {
 				return Ownership != null ? String.Format("{0} \"{1}\"", Ownership, OwnName) : OwnName;
 			}
+		}
+
+		public Entry EntryName {
+			get => entryName;
+			set => entryName = value;
 		}
 
 		protected void OnNameChanged()
