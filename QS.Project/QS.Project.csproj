@@ -193,14 +193,10 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
-    <Compile Include="Navigation\IPageInternal.cs" />
-    <Compile Include="Navigation\IPageHashGenerator.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
-    <Compile Include="Navigation\IViewModelsPageFactory.cs" />
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
     <Compile Include="Navigation\IAutofacScopeHolder.cs" />
-    <Compile Include="Navigation\PageBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
@@ -215,7 +211,6 @@
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
-    <Compile Include="Navigation\NavigationManagerBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
@@ -228,7 +223,6 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
-    <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
