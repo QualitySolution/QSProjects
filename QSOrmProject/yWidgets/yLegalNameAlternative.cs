@@ -16,7 +16,8 @@ namespace QSOrmProject
 			Binding = new BindingControler<yLegalNameAlternative>(this, new string[]{
 				this.GetPropertyName (w => w.OwnName),
 				this.GetPropertyName (w => w.Ownership),
-				this.GetPropertyName (w => w.FullName)
+				this.GetPropertyName (w => w.FullName),
+				this.GetPropertyName (w => w.EntryName)
 			});
 			NameChanged += DataLegalName_NameChanged;
 			OwnershipChanged += DataLegalName_OwnershipChanged;
