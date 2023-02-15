@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
+	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 

@@ -48,9 +48,6 @@ namespace QS.Navigation
 			}
 
 			var viewmodel = scope.Resolve<TViewModel>(args);
-			if (viewmodel is IAutofacScopeHolder)
-				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-
 			if (viewmodel is ITdiTab tdiTab)
 				tab = tdiTab;
 			else {
