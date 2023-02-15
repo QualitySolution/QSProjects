@@ -214,7 +214,7 @@
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
     <PackageReference Include="MySql.Data" Version="8.0.29" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NHibernate" Version="5.3.12" />
     <PackageReference Include="NLog" Version="5.0.0" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
