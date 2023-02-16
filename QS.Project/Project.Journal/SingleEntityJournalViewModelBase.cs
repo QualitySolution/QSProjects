@@ -3,6 +3,7 @@ using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Navigation;
 using QS.Project.Journal.EntitySelector;
 using QS.Services;
 using QS.Tdi;
@@ -21,7 +22,7 @@ namespace QS.Project.Journal
 		public Type EntityType { get; }
 
 		protected SingleEntityJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices,
-			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false) : base(unitOfWorkFactory, commonServices)
+			bool hideJournalForOpenDialog = false, bool hideJournalForCreateDialog = false, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices, navigation)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
