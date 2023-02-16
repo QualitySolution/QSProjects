@@ -24,6 +24,7 @@ node {
       } catch (e) {}
       finally{
    	  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
+   	  publishCoverage adapters: [coberturaAdapter(mergeToOneReport: true, path: '**/TestResults/**/coverage.cobertura.xml')], checksName: '', sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
    	  mstest testResultsFile:"**/*.trx", keepLongStdio: true
       }
    }
