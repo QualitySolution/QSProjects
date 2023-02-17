@@ -13,10 +13,10 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase 
 	{
-		private readonly INavigationManager navigationManager;
+		protected readonly INavigationManager navigationManager;
 		private readonly IUnitOfWork uow;
-		readonly Func<ITdiTab> getParrentTab;
-		readonly DialogViewModelBase parrentViewModel;
+		protected readonly Func<ITdiTab> getParrentTab;
+		protected readonly DialogViewModelBase parrentViewModel;
 
 		/// <summary>
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
@@ -40,7 +40,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public event EventHandler<EntitySelectedEventArgs> EntitySelected;
 
-		public void OpenSelector(string dialogTitle = null)
+		public virtual void OpenSelector(string dialogTitle = null)
 		{
 			IPage<TJournalViewModel> page;
 			if(parrentViewModel != null)
@@ -55,10 +55,36 @@ namespace QS.ViewModels.Control.EEVM
 			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;
 		}
 
-		void ViewModel_OnSelectResult(object sender, JournalSelectedEventArgs e)
+		protected void ViewModel_OnSelectResult(object sender, JournalSelectedEventArgs e)
 		{
 			EntitySelected?.Invoke(this, new EntitySelectedEventArgs(e.SelectedObjects.First()));
 		}
 
+	}
+
+	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
+		where TEntity : IDomainObject
+		where TJournalViewModel : JournalViewModelBase
+		where TJournalFilterViewModel : IJournalFilterViewModel {
+		private Action<TJournalFilterViewModel>[] filterParams;
+
+		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager, params Action<TJournalFilterViewModel>[] filterParams)
+			:base (parrentViewModel, unitOfWork, navigationManager){
+			this.filterParams = filterParams;
+		}
+
+		public override void OpenSelector(string dialogTitle = null) {
+			IPage<TJournalViewModel> page;
+			if(parrentViewModel != null)
+				page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>[]>(parrentViewModel, filterParams, OpenPageOptions.AsSlave);
+			else
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel, Action<TJournalFilterViewModel>[]>(getParrentTab(), filterParams, OpenPageOptions.AsSlave);
+			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
+			if(!String.IsNullOrEmpty(dialogTitle))
+				page.ViewModel.TabName = dialogTitle;
+			//Сначала на всякий случай отписываемся от события, вдруг это повторное открытие не не
+			page.ViewModel.OnSelectResult -= ViewModel_OnSelectResult;
+			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;
+		}
 	}
 }
