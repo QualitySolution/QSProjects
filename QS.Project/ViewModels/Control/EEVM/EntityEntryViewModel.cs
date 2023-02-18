@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using QS.DomainModel.Entity;
 
@@ -109,7 +109,9 @@ namespace QS.ViewModels.Control.EEVM
 		public virtual bool SensitiveSelectButton => IsEditable && EntitySelector != null;
 		public virtual bool SensitiveCleanButton => IsEditable && Entity != null;
 		public virtual bool SensitiveAutoCompleteEntry => IsEditable && AutocompleteSelector != null;
-		public virtual bool SensitiveViewButton => DlgOpener != null && Entity != null;
+		public virtual bool SensitiveViewButton => CanViewEntity && DlgOpener != null && Entity != null;
+
+		public bool CanViewEntity { get; set; } = true;
 		#endregion
 
 		#region Выбор сущьности основным способом
