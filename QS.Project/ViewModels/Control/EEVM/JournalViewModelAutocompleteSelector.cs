@@ -65,16 +65,16 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : class, IDomainObject
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : IJournalFilterViewModel {
-		private Action<TJournalFilterViewModel>[] filterParams;
+		private Action<TJournalFilterViewModel> filterParams;
 
-		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope, params Action<TJournalFilterViewModel>[] filterParams):base(unitOfWork, lifetimeScope) {
+		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope, Action<TJournalFilterViewModel> filterParams):base(unitOfWork, lifetimeScope) {
 			this.filterParams = filterParams;
 		}
 
 		public override TJournalViewModel JournalViewModel {
 			get {
 				if(journalViewModel == null) {
-					journalViewModel = autofacScope.Resolve<TJournalViewModel>(new TypedParameter(typeof(Action<TJournalFilterViewModel>[]), this.filterParams));
+					journalViewModel = autofacScope.Resolve<TJournalViewModel>(new TypedParameter(typeof(Action<TJournalFilterViewModel>), this.filterParams));
 					journalViewModel.DataLoader.ItemsListUpdated += DataLoader_ItemsListUpdated;
 				}
 				return journalViewModel;

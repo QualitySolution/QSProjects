@@ -66,9 +66,9 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : IJournalFilterViewModel {
-		private Action<TJournalFilterViewModel>[] filterParams;
+		private Action<TJournalFilterViewModel> filterParams;
 
-		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager, params Action<TJournalFilterViewModel>[] filterParams)
+		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
 			:base (parrentViewModel, unitOfWork, navigationManager){
 			this.filterParams = filterParams;
 		}
@@ -76,9 +76,9 @@ namespace QS.ViewModels.Control.EEVM
 		public override void OpenSelector(string dialogTitle = null) {
 			IPage<TJournalViewModel> page;
 			if(parrentViewModel != null)
-				page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>[]>(parrentViewModel, filterParams, OpenPageOptions.AsSlave);
+				page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>>(parrentViewModel, filterParams, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel, Action<TJournalFilterViewModel>[]>(getParrentTab(), filterParams, OpenPageOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel, Action<TJournalFilterViewModel>>(getParrentTab(), filterParams, OpenPageOptions.AsSlave);
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if(!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;
