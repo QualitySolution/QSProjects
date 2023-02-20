@@ -45,7 +45,7 @@ namespace QS.ViewModels.Control.EEVM
 			return this;
 		}
 
-		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(params Action<TJournalFilterViewModel>[] filterParams)
+		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
 			where TJournalViewModel : JournalViewModelBase
 			where TJournalFilterViewModel : IJournalFilterViewModel 
 		{
