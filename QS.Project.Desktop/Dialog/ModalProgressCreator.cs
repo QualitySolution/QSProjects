@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Dialog.ViewModels;
 using QS.Navigation;
 
@@ -45,6 +45,8 @@ namespace QS.Dialog {
 		}
 
 		public double Value => Progress.Value;
+		public bool IsStarted => activeProgressPage != null;
+
 		public void Close() {
 			Progress.Close();
 			navigator.ForceClosePage(activeProgressPage, CloseSource.External);
