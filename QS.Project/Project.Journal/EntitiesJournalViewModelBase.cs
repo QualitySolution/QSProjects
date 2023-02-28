@@ -84,7 +84,7 @@ namespace QS.Project.Journal
 			base.OnItemsSelected(selectedNodes, closeJournal);
 		}
 
-		void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
+		protected void Tab_EntitySaved(object sender, EntitySavedEventArgs e)
 		{
 			if(e?.Entity == null)
 				return;
