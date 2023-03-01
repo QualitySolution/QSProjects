@@ -379,8 +379,10 @@ namespace QS.Journal.GtkUI
 			});
 
 			if(action.ChildActions.Any()) {
+				var subMenu = new Menu();
+				menuItem.Submenu = subMenu;
 				foreach(var childAction in action.ChildActions) {
-					menuItem.Add(CreateMenuItemWidget(childAction));
+					subMenu.Add(CreateMenuItemWidget(childAction));
 				}
 			}
 
