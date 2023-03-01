@@ -6,7 +6,7 @@ namespace Gamma.ColumnConfig
 {
 	public interface IColumnMapping
 	{
-		TreeViewColumn TreeViewColumn { get; }
+		TreeViewColumn TreeViewColumn { get; set; }
 
 		string Title { get;}
 

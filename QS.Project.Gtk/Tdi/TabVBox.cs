@@ -9,27 +9,22 @@ namespace QS.Tdi
 	public class TabVBox : VBox
 	{
 		public Widget TabWidget { get; }
-		ITdiTab tab;
 		Label titleLabel;
 
-		public ITdiTab Tab {
-			get {
-				return tab;
-			}
-		}
+		public ITdiTab Tab { get; }
 
-		public TabVBox (ITdiTab tabWidget, ITDIWidgetResolver widgetResolver)
+		public TabVBox(ITdiTab tabWidget, ITDIWidgetResolver widgetResolver)
 		{
-			tab = tabWidget;
+			Tab = tabWidget;
 			titleLabel = new Label ();
-			if(tab is ITdiTabWithPath)
+			if(Tab is ITdiTabWithPath tdiTabWithPath)
 			{
-				(tab as ITdiTabWithPath).PathChanged += OnPathUpdated;
-				OnPathUpdated (null, EventArgs.Empty);
+				tdiTabWithPath.PathChanged += OnPathUpdated;
+				OnPathUpdated(null, EventArgs.Empty);
 			}
 			else
 			{
-				tab.TabNameChanged += Tab_TabNameChanged;
+				Tab.TabNameChanged += Tab_TabNameChanged;
 				Tab_TabNameChanged (null, null);
 			}
 
@@ -46,18 +41,25 @@ namespace QS.Tdi
 
 		void OnPathUpdated (object sender, EventArgs e)
 		{
-			titleLabel.Markup = String.Format ("<b>{0}</b>", String.Join (" <span color='blue'>➤</span> ", 
-				(tab as ITdiTabWithPath).PathNames.Select(x => StringManipulationHelper.EllipsizeMiddle(x, TdiNotebook.MaxTabNameLenght))));
+			titleLabel.Markup = String.Format ("<b>{0}</b>", String.Join (" <span color='blue'>➤</span> ", (Tab as ITdiTabWithPath).PathNames));
 		}
 
 		void Tab_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
 		{
-			titleLabel.Markup = String.Format ("<b>{0}</b>", tab.TabName);
+			titleLabel.Markup = String.Format ("<b>{0}</b>", Tab.TabName);
 		}
 
 		public override void Destroy()
 		{
 			TabWidget.Destroy();
+			if(Tab is ITdiTabWithPath tdiTabWithPath)
+			{
+				tdiTabWithPath.PathChanged -= OnPathUpdated;
+			}
+			else
+			{
+				Tab.TabNameChanged -= Tab_TabNameChanged;
+			}
 			base.Destroy();
 		}
 	}

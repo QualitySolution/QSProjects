@@ -286,7 +286,7 @@ namespace QS.Journal.GtkUI
 
 		List<System.Action> actionsSensitivity;
 		List<System.Action> actionsVisibility;
-
+		Widget actionWidget;
 		private void ConfigureActions()
 		{
 			if(actionsSensitivity == null) {
@@ -300,10 +300,8 @@ namespace QS.Journal.GtkUI
 			} else {
 				actionsVisibility.Clear();
 			}
-
+			
 			foreach(var action in ViewModel.NodeActions) {
-				Widget actionWidget;
-
 				if(action.ChildActions.Any()) {
 					MenuButton menuButton = new MenuButton();
 					menuButton.Label = action.Title;
@@ -319,18 +317,18 @@ namespace QS.Journal.GtkUI
 					Button button = new Button();
 					button.Label = action.Title;
 
-					button.Clicked += (sender, e) => { action.ExecuteAction(GetSelectedItems()); };
+					button.Clicked += OnActionButtonClicked;
+
+					actionsSensitivity.Add(() => {
+						button.Sensitive = action.GetSensitivity(GetSelectedItems());
+					});
+
+					actionsVisibility.Add(() => {
+						button.Visible = action.GetVisibility(GetSelectedItems());
+					});
 					actionWidget = button;
 				}
-				
-				actionsSensitivity.Add(() => {
-					actionWidget.Sensitive = action.GetSensitivity(GetSelectedItems());
-				});
 
-				actionsVisibility.Add(() => {
-					actionWidget.Visible = action.GetVisibility(GetSelectedItems());
-				});
-				
 				actionWidget.ShowAll();
 
 				hboxButtons.Add(actionWidget);
@@ -339,19 +337,41 @@ namespace QS.Journal.GtkUI
 				addDocumentButtonBox.Fill = false;
 			}
 
-			tableview.RowActivated += (o, args) =>
+			tableview.RowActivated += OnTableViewRowActivated;
+		}
+
+		private void OnTableViewRowActivated(object o, RowActivatedArgs args)
+		{
+			var selectedItems = GetSelectedItems();
+			if(ViewModel.RowActivatedAction != null)
 			{
-				var selectedItems = GetSelectedItems();
-				if(ViewModel.RowActivatedAction != null)
+				if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
 				{
-					if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems)) {
-						ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
-					}
+					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
 				}
-				else {
-					ExpandCollapseOnRowActivated(args);
+			}
+			else
+			{
+				ExpandCollapseOnRowActivated(args);
+			}
+		}
+
+		private void OnActionButtonClicked(object sender, EventArgs e) {
+			if(sender is Button button) {
+				var action = ViewModel.NodeActions.SingleOrDefault(x => x.Title == button.Label);
+				action?.ExecuteAction(GetSelectedItems());
+			}
+			else if(sender is MenuButton menuButton) {
+				foreach(MenuItem menuItem in menuButton.Menu.Children) {
+					var action = ViewModel.NodeActions
+						.SelectMany(x => x.ChildActions)
+						.FirstOrDefault(x => x.Title == menuItem.Name);
+
+					action?.ExecuteAction(GetSelectedItems());
 				}
-			};
+
+			}
+
 		}
 
 		private void ExpandCollapseOnRowActivated(RowActivatedArgs args) {
@@ -366,9 +386,10 @@ namespace QS.Journal.GtkUI
 		private MenuItem CreateMenuItemWidget(IJournalAction action)
 		{
 			MenuItem menuItem = new MenuItem(action.Title);
-			menuItem.Activated += (sender, e) => {
+			menuItem.Name = action.Title;
+			menuItem.Activated += OnActionButtonClicked;/*(sender, e) => {
 				action.ExecuteAction(GetSelectedItems());
-			};
+			};*/
 
 			actionsSensitivity.Add(() => {
 				menuItem.Sensitive = action.GetSensitivity(GetSelectedItems());
@@ -464,7 +485,46 @@ namespace QS.Journal.GtkUI
 		{
 			isDestroyed = true;
 			ViewModel.DataLoader.CancelLoading();
+			//ViewModel.JournalFilter.PropertyChanged -= JournalFilter_PropertyChanged;
 			FilterView?.Destroy();
+			tableview.ButtonReleaseEvent -= Tableview_ButtonReleaseEvent;
+			tableview.Selection.Changed -= Selection_Changed;
+			tableview.RowActivated -= OnTableViewRowActivated;
+			tableview?.Destroy();
+			/*ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.TotalCountChanged -= DataLoader_TotalCountChanged;
+			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+			ViewModel.UpdateJournalActions -= UpdateButtons;*/
+
+			foreach(var item in hboxButtons.Children) {
+				if(item is MenuButton menuButton) {
+					foreach(MenuItem menuItem in menuButton.Menu.Children) {
+						menuItem.Activated -= OnActionButtonClicked;
+					}
+				}
+				else if(item is Button button) {
+					button.Clicked -= OnActionButtonClicked;
+				}
+			}
+
+			//actionsSensitivity?.Clear();
+			//actionsVisibility?.Clear();
+			
+			/*
+			ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.TotalCountChanged -= DataLoader_TotalCountChanged;
+			if(ThrowExceptionOnDataLoad)
+				ViewModel.DataLoader.LoadError -= DataLoader_LoadError;
+			//checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
+			//buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
+			GtkScrolledWindow.Vadjustment.ValueChanged -= Vadjustment_ValueChanged;
+			
+			
+			//ViewModel.JournalFilter.PropertyChanged -= JournalFilter_PropertyChanged;
+			*/
+
 			base.Destroy();
 		}
 

@@ -15,7 +15,7 @@ namespace Gamma.ColumnConfig
 
 		#region Propeties
 
-		public TreeViewColumn TreeViewColumn { get; private set;}
+		public TreeViewColumn TreeViewColumn { get; set;}
 		public BindingControler<TreeViewColumn> BindingController { get; private set; }
 		public string Title => TreeViewColumn.Title;
 
