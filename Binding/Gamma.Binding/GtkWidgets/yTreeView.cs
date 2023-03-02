@@ -507,41 +507,8 @@ namespace Gamma.GtkWidgets
 		#endregion
 
 		public override void Destroy() {
-			/*if(YTreeModel != null) {
-				YTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
-			}
-			Selection.Changed -= Selection_Changed;
-
-			Selection.Dispose();*/
-
 			if(ColumnsConfig != null) {
 				foreach(var col in ColumnsConfig.ConfiguredColumns) {
-					foreach(var render in col.ConfiguredRenderers) {
-						//var celRender = render.GetRenderer();
-						//celRender.ClearLambdaSetters();
-
-						/*switch(celRender) {
-							case CellRendererSpin cellRendererSpin:
-								cellRendererSpin.EditingStarted -= OnNumbericNodeCellEditingStarted;
-								cellRendererSpin.Edited -= NumericNodeCellEdited;
-								break;
-							case CellRendererCombo combo:
-								combo.Edited -= ComboNodeCellEdited;
-								(combo as INodeCellRendererCombo).MyTreeView = null;
-								break;
-							case CellRendererText text:
-								text.Edited -= TextNodeCellEdited;
-								break;
-							case CellRendererToggle toggle:
-								toggle.Toggled -= OnToggledCell;
-								break;
-						}
-
-						if(celRender is INodeCellRendererCanGoNextCell canNextCell && (canNextCell.IsEnterToNextCell || col.IsEnterToNextCell)) {
-							canNextCell.EditingStarted -= CanNextCell_EditingStarted;
-						}*/
-					}
-
 					col.TreeViewColumn = null;
 				}
 			}

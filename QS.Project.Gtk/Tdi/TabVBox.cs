@@ -41,12 +41,14 @@ namespace QS.Tdi
 
 		void OnPathUpdated (object sender, EventArgs e)
 		{
-			titleLabel.Markup = String.Format ("<b>{0}</b>", String.Join (" <span color='blue'>➤</span> ", (Tab as ITdiTabWithPath).PathNames));
+			titleLabel.Markup = String.Format("<b>{0}</b>",
+				String.Join(" <span color='blue'>➤</span> ",
+					(Tab as ITdiTabWithPath).PathNames.Select(x => StringManipulationHelper.EllipsizeMiddle(x, TdiNotebook.MaxTabNameLenght))));
 		}
 
 		void Tab_TabNameChanged (object sender, TdiTabNameChangedEventArgs e)
 		{
-			titleLabel.Markup = String.Format ("<b>{0}</b>", Tab.TabName);
+			titleLabel.Markup = $"<b>{Tab.TabName}</b>";
 		}
 
 		public override void Destroy()
