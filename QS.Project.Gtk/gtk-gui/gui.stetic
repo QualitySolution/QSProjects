@@ -1844,7 +1844,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Journal.GtkUI.JournalView" design-size="472 257">
+  <widget class="Gtk.Bin" id="QS.Journal.GtkUI.JournalView" design-size="472 444">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -1936,6 +1936,7 @@
         <child>
           <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
             <property name="MemberName" />
+            <property name="HeightRequest">300</property>
             <property name="ShadowType">In</property>
             <child>
               <widget class="Gamma.GtkWidgets.yTreeView" id="tableview">
