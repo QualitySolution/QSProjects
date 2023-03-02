@@ -6,7 +6,7 @@ namespace Gamma.ColumnConfig
 {
 	public interface IColumnMapping
 	{
-		TreeViewColumn TreeViewColumn { get; set; }
+		TreeViewColumn TreeViewColumn { get; }
 
 		string Title { get;}
 
@@ -19,5 +19,7 @@ namespace Gamma.ColumnConfig
 		bool HasToolTip { get; }
 
 		string GetTooltipText(object node);
+
+		void ClearProperties();
 	}
 }

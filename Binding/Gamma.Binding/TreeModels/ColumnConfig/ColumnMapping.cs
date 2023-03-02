@@ -15,7 +15,7 @@ namespace Gamma.ColumnConfig
 
 		#region Propeties
 
-		public TreeViewColumn TreeViewColumn { get; set;}
+		public TreeViewColumn TreeViewColumn { get; private set;}
 		public BindingControler<TreeViewColumn> BindingController { get; private set; }
 		public string Title => TreeViewColumn.Title;
 
@@ -223,6 +223,11 @@ namespace Gamma.ColumnConfig
 		public string GetTooltipText(object node) => cellTooltipTextFunc((TNode)node);
 
 		#endregion
+
+		public void ClearProperties() {
+			TreeViewColumn = null;
+			BindingController = null;
+		}
 	}
 }
 

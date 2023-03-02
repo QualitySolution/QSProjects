@@ -509,7 +509,7 @@ namespace Gamma.GtkWidgets
 		public override void Destroy() {
 			if(ColumnsConfig != null) {
 				foreach(var col in ColumnsConfig.ConfiguredColumns) {
-					col.TreeViewColumn = null;
+					col.ClearProperties();
 				}
 			}
 
