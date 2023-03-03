@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Data.Bindings;
 using System.Runtime.InteropServices;
-using Gamma.Binding;
 using Gtk;
 
 namespace Gamma.Binding
@@ -237,14 +236,14 @@ namespace Gamma.Binding
 				gch = GCHandle.Alloc (node);
 				node_hash [node] = gch;
 			}
-			TreeIter result = TreeIter.Zero;
-			result.UserData = (IntPtr) gch;
+			var result = TreeIter.Zero;
+			result.UserData = GCHandle.ToIntPtr(gch);
 			return result;
 		}
 
 		public object NodeFromIter (TreeIter iter)
 		{
-			GCHandle gch = (GCHandle) iter.UserData;
+			var gch = GCHandle.FromIntPtr(iter.UserData);
 			return gch.Target;
 		}
 
@@ -268,6 +267,17 @@ namespace Gamma.Binding
 			} else {
 				cachedEnumerator = null;
 				return false;
+			}
+		}
+
+		public override void Dispose() {
+			sourceList.ElementChanged -= SourceList_ElementChanged;
+			sourceList.ElementAdded -= SourceList_ElementAdded;
+			sourceList.ElementRemoved -= SourceList_ElementRemoved;
+			sourceList.ListChanged -= SourceList_ListChanged;
+
+			foreach(GCHandle item in node_hash.Values) {
+				item.Free();
 			}
 		}
 	}

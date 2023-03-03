@@ -268,7 +268,10 @@ namespace Gamma.Widgets
 				ChangedByUser(this, EventArgs.Empty);
 			}
 		}
+
+		public override void Destroy() {
+			comboListStore?.Dispose();
+			base.Destroy();
+		}
 	}
-
 }
-
