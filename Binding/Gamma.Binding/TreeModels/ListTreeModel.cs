@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using Gamma.Binding;
 using Gtk;
 
 namespace Gamma.Binding
@@ -195,7 +196,7 @@ namespace Gamma.Binding
 				node_hash [node] = gch;
 			}
 			TreeIter result = TreeIter.Zero;
-			result.UserData = GCHandle.ToIntPtr(gch);
+			result.UserData = (IntPtr) gch;
 			return result;
 		}
 
@@ -206,7 +207,7 @@ namespace Gamma.Binding
 				Console.Write("Zero iter");
 				return null;
 			}
-			var gch = GCHandle.FromIntPtr(iter.UserData);
+			GCHandle gch = (GCHandle) iter.UserData;
 			return gch.Target;
 		}
 
@@ -233,11 +234,7 @@ namespace Gamma.Binding
 			}
 		}
 
-		public override void Dispose() {
-			foreach(GCHandle item in node_hash.Values) {
-				item.Free();
-			}
-		}
+
 	}
 }
 

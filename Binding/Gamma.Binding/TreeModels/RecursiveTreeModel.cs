@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Gamma.Binding;
 using Gamma.Binding.Core.RecursiveTreeConfig;
 using Gamma.Utilities;
 using Gtk;
@@ -251,14 +252,14 @@ namespace Gamma.Binding
 				gch = GCHandle.Alloc (node);
 				node_hash [node] = gch;
 			}
-			var result = TreeIter.Zero;
-			result.UserData = GCHandle.ToIntPtr(gch);
+			TreeIter result = TreeIter.Zero;
+			result.UserData = (IntPtr) gch;
 			return result;
 		}
 
 		public object NodeFromIter (TreeIter iter)
 		{
-			var gch = GCHandle.FromIntPtr(iter.UserData);
+			GCHandle gch = (GCHandle) iter.UserData;
 			return gch.Target;
 		}
 
@@ -295,7 +296,7 @@ namespace Gamma.Binding
 			} while (true);
 		}
 		
-		#region Privates
+	#region Privates
 
 		private bool GetCacheNext (ref TreeIter iter)
 		{
@@ -327,13 +328,8 @@ namespace Gamma.Binding
 				return childs[aPath.Indices[level]];
 		}
 
-		#endregion
+	#endregion
 
-		public override void Dispose() {
-			foreach(GCHandle item in node_hash.Values) {
-				item.Free();
-			}
-		}
 	}
 }
 
