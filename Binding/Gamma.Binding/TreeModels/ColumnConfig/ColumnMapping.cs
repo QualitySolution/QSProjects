@@ -223,6 +223,11 @@ namespace Gamma.ColumnConfig
 		public string GetTooltipText(object node) => cellTooltipTextFunc((TNode)node);
 
 		#endregion
+
+		public void ClearProperties() {
+			TreeViewColumn = null;
+			BindingController = null;
+		}
 	}
 }
 
