@@ -318,7 +318,7 @@ namespace QS.Journal.GtkUI
 					var button = new Button();
 					button.Label = action.Title;
 
-					button.ButtonPressEvent += OnJournalActionPressed;
+					button.Clicked += OnJournalActionClicked;
 					_widgetsWithJournalActions.Add(button, action);
 
 					System.Action sensitivityAction = () => button.Sensitive = action.GetSensitivity(GetSelectedItems());
@@ -371,10 +371,18 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
+		private void OnJournalActionClicked(object sender, EventArgs e) {
+			ExecuteActionForWidget(sender);
+		}
+
 		private void OnJournalActionPressed(object sender, ButtonPressEventArgs e) {
 			if(e.Event.Button != (uint)GtkMouseButton.Left) return;
-			if(_widgetsWithJournalActions.ContainsKey(sender)) {
-				_widgetsWithJournalActions[sender].ExecuteAction(GetSelectedItems());
+			ExecuteActionForWidget(sender);
+		}
+
+		private void ExecuteActionForWidget(object widget) {
+			if(_widgetsWithJournalActions.ContainsKey(widget)) {
+				_widgetsWithJournalActions[widget].ExecuteAction(GetSelectedItems());
 			}
 		}
 
@@ -496,7 +504,10 @@ namespace QS.Journal.GtkUI
 			tableview?.Destroy();
 
 			foreach(var keyPair in _widgetsWithJournalActions) {
-				if(keyPair.Key is Widget widget) {
+				if(keyPair.Key is Button button) {
+					button.Clicked -= OnJournalActionClicked;
+				}
+				else if(keyPair.Key is Widget widget) {
 					widget.ButtonPressEvent -= OnJournalActionPressed;
 				}
 			}
