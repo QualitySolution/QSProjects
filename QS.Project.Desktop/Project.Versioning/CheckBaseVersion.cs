@@ -49,12 +49,12 @@ namespace QS.Project.Versioning
 			if(ApplicationInfo.CompatibleModifications.Length > 0) {
 				if(String.IsNullOrWhiteSpace(parametersService.edition)) {
 					TextMessage = "Редакция базы не указана!";
-					ResultFlags |= CheckBaseResult.UnsupportEdition;
+					ResultFlags |= CheckBaseResult.UnsupportedEdition;
 					return true;
 				}
 
 				if(!ApplicationInfo.CompatibleModifications.Contains((string)parametersService.edition)) {
-					ResultFlags |= CheckBaseResult.UnsupportEdition;
+					ResultFlags |= CheckBaseResult.UnsupportedEdition;
 					TextMessage = "Редакция базы данных не поддерживается.\n";
 					TextMessage += "Поддерживаемые редакции: " + String.Join(" ,", ApplicationInfo.CompatibleModifications) 
 						+ "\nРедакция базы данных: " + parametersService.edition;
@@ -91,7 +91,7 @@ namespace QS.Project.Versioning
 	{
 		Ok = 0x0,
 		IncorrectProduct = 0x1,
-		UnsupportEdition = 0x2,
+		UnsupportedEdition = 0x2,
 		IncorrectVersion = 0x4,
 		BaseVersionLess = 0x8,
 		BaseVersionGreater = 0x16

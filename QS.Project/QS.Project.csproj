@@ -226,7 +226,6 @@
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
-    <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
@@ -255,7 +254,6 @@
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
-    <Folder Include="Project.Versioning\" />
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
