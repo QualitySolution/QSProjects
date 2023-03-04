@@ -116,6 +116,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamma.Binding.Core", "Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj", "{EF24C742-AC2C-477A-A632-F9920A0E1CC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -725,6 +727,18 @@ Global
 		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x64.Build.0 = Release|Any CPU
 		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF24C742-AC2C-477A-A632-F9920A0E1CC7}.Release|x86.Build.0 = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|x64.Build.0 = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|x86.Build.0 = Debug|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|x64.ActiveCfg = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|x64.Build.0 = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|x86.ActiveCfg = Release|Any CPU
+		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

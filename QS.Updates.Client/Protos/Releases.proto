@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package QS.Updates;
+
+service Releases {
+  rpc CheckForUpdates (CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
+}
+
+message CheckForUpdatesRequest{
+  int32 product_code = 1;
+  string version = 2;
+  string modification = 3;
+  string serial_number = 4;
+}
+
+message CheckForUpdatesResponse{
+  repeated VersionInfo releases = 1;
+}
+
+message VersionInfo{
+  string version = 1;
+  google.protobuf.Timestamp date = 2;
+  string changes = 3;
+  string news_link = 4;
+  string installer_link = 5;
+  DatabaseUpdate database_update = 6;
+}
+
+enum DatabaseUpdate{
+	DATABASE_UPDATE_NONE = 0;
+	DATABASE_UPDATE_REQUIRED = 1;
+	DATABASE_UPDATE_BREAKING_CHANGE = 2;
+}
