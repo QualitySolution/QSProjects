@@ -46,17 +46,17 @@ namespace QS.Project.Versioning
 				return true;
 			}
 
-			if(ApplicationInfo.СompatibleModifications.Length > 0) {
+			if(ApplicationInfo.CompatibleModifications.Length > 0) {
 				if(String.IsNullOrWhiteSpace(parametersService.edition)) {
 					TextMessage = "Редакция базы не указана!";
 					ResultFlags |= CheckBaseResult.UnsupportEdition;
 					return true;
 				}
 
-				if(!ApplicationInfo.СompatibleModifications.Contains((string)parametersService.edition)) {
+				if(!ApplicationInfo.CompatibleModifications.Contains((string)parametersService.edition)) {
 					ResultFlags |= CheckBaseResult.UnsupportEdition;
 					TextMessage = "Редакция базы данных не поддерживается.\n";
-					TextMessage += "Поддерживаемые редакции: " + String.Join(" ,", ApplicationInfo.СompatibleModifications) 
+					TextMessage += "Поддерживаемые редакции: " + String.Join(" ,", ApplicationInfo.CompatibleModifications) 
 						+ "\nРедакция базы данных: " + parametersService.edition;
 					return true;
 				}
