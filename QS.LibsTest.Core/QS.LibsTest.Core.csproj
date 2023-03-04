@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
+      <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
       <ProjectReference Include="..\QS.Features\QS.Features.csproj" />
       <ProjectReference Include="..\QS.Testing\QS.Testing.csproj" />
       <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />

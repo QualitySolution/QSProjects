@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Project.Core", "QS.Project.Core\QS.Project.Core.csproj", "{95006783-8E17-4492-95A2-A98964733E7B}"
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Report.Core", "QS.Report.Core\QS.Report.Core.csproj", "{3E194A95-AC31-43D0-B93D-64164402A6DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Configuration", "QS.Configuration\QS.Configuration.csproj", "{5D124360-C8FB-4779-958B-0DA5D6B90C29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,6 +102,10 @@ Global
 		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08451B0A-4E72-4B12-B422-B36E9047DCAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D124360-C8FB-4779-958B-0DA5D6B90C29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D124360-C8FB-4779-958B-0DA5D6B90C29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D124360-C8FB-4779-958B-0DA5D6B90C29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D124360-C8FB-4779-958B-0DA5D6B90C29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1BF2A638-420D-456C-96A7-36873A0FB894} = {E1ECF467-0AD6-4EEB-9C0D-2F793E6DA01D}
