@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RdlCri", "..\My-FyiReportin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSSaaS", "QSSaaS\QSSaaS.csproj", "{4B502FE5-D419-4B5C-9276-0A25EF2F508A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Gtk", "QS.Updater.Gtk\QS.Updater.Gtk.csproj", "{6D755374-6EAF-44B6-8C6C-6FE5E5AB3432}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.DB.Gtk", "QS.Updater.DB.Gtk\QS.Updater.DB.Gtk.csproj", "{6D755374-6EAF-44B6-8C6C-6FE5E5AB3432}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Gtk", "QS.HistoryLog.Gtk\QS.HistoryLog.Gtk.csproj", "{1C3B49FC-372C-46F7-995F-EEB44474E2DE}"
 EndProject
@@ -107,7 +107,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Osrm", "QS.Osrm\QS.Osrm.csproj", "{026A01A3-332F-40ED-B028-EBBC3C0BBB6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.DB", "QS.Updater.DB\QS.Updater.DB.csproj", "{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A237F1B-ECC4-493E-B3B9-9FFF349F5DE0}"
 	ProjectSection(SolutionItems) = preProject
