@@ -97,10 +97,6 @@
       <Project>{9ed68a8a-25ee-4b6a-a483-a386bfc2f12b}</Project>
       <Name>QS.Updater.DB</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
-      <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
-      <Name>QS.Updater</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
