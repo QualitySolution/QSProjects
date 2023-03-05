@@ -1,3 +1,6 @@
+properties([parameters([
+	booleanParam(defaultValue: false, description: 'Старый плагин отображения покрытия', name: 'OldCoverage')
+])])
 node {
    stage('QS.Libs') {
       checkout([
@@ -23,8 +26,12 @@ node {
    	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
       } catch (e) {}
       finally{
-   	  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
-   	  publishCoverage adapters: [coberturaAdapter(mergeToOneReport: true, path: '**/TestResults/**/coverage.cobertura.xml')], checksName: '', sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+   	  if (params.OldCoverage) {
+   	    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
+   	  }
+   	  else {
+   	    publishCoverage adapters: [coberturaAdapter(mergeToOneReport: true, path: '**/TestResults/**/coverage.cobertura.xml')], checksName: '', sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+   	  }
    	  mstest testResultsFile:"**/*.trx", keepLongStdio: true
       }
    }
