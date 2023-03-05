@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>QS.Updater.App</RootNamespace>
+		<Company>Quality Solution</Company>
+		<ProjectGuid>{45929A9F-7D94-4E85-9332-6CB7B2D5A03A}</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
+      <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj" />
+      <ProjectReference Include="..\QS.Updates.Client\QS.Updates.Client.csproj" />
+    </ItemGroup>
+
+</Project>

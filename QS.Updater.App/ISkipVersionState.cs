@@ -3,7 +3,7 @@ namespace QS.Updater
 {
 	public interface ISkipVersionState
 	{
-		bool IsSkipedVersion(string version);
-		void SaveSkipVersion(string version);
+		bool IsSkippedVersion(Version version);
+		void SaveSkipVersion(Version version);
 	}
 }
