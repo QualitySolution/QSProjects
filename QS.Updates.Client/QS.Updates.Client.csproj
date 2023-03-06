@@ -4,6 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>QS.Updates</RootNamespace>
 		<ProjectGuid>{08451B0A-4E72-4B12-B422-B36E9047DCAF}</ProjectGuid>
+		<Company>Quality Solution</Company>
 		<Nullable>enable</Nullable>
 		<LangVersion>8</LangVersion>
     </PropertyGroup>
