@@ -16,10 +16,10 @@ message CheckForUpdatesRequest{
 }
 
 message CheckForUpdatesResponse{
-  repeated VersionInfo releases = 1;
+  repeated ReleaseInfo releases = 1;
 }
 
-message VersionInfo{
+message ReleaseInfo{
   string version = 1;
   google.protobuf.Timestamp date = 2;
   string changes = 3;

@@ -28,7 +28,7 @@ namespace QS.Updates
         
         #region Запросы
         
-        public VersionInfo[] CheckForUpdates(int productCode, string version, string modification = "", string serial = "")
+        public ReleaseInfo[] CheckForUpdates(int productCode, string version, string modification = "", string serial = "")
         {
             try
             {
@@ -44,7 +44,7 @@ namespace QS.Updates
             } catch (Exception e)
             {
                 logger.Error(e, "Ошибка при отправке отчета об ошибке");
-                return Array.Empty<VersionInfo>();
+                return Array.Empty<ReleaseInfo>();
             }
         }
         
