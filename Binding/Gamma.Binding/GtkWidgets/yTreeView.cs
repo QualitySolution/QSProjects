@@ -102,12 +102,9 @@ namespace Gamma.GtkWidgets
 			set {
 				if(yTreeModel == value)
 					return;
-				IDisposable toDispose = null;
+				IDisposable toDispose = yTreeModel as IDisposable;
 				if(yTreeModel != null) {
 					yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
-					if(yTreeModel is IDisposable disposable) {
-						toDispose = disposable;
-					}
 				}
 
 				yTreeModel = value;
