@@ -5,7 +5,6 @@ namespace QS.Project.DB {
 		/// <summary>
 		/// Возвращает реальное имя базы данных на сервере.
 		/// </summary>
-		/// <value>The name.</value>
 		string Name { get; }
 
 		/// <summary>
@@ -17,5 +16,10 @@ namespace QS.Project.DB {
 		/// Возвращает GUID базы
 		/// </summary>
 		Guid? BaseGuid { get; }
+
+		/// <summary>
+		/// Возвращает версию схемы базы
+		/// </summary>
+		Version Version { get; }
 	}
 }
