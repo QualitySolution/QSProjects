@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -102,10 +102,11 @@ namespace Gamma.GtkWidgets
 			set {
 				if(yTreeModel == value)
 					return;
+				IDisposable toDispose = null;
 				if(yTreeModel != null) {
 					yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
-					if(yTreeModel is IDisposable model) {
-						model.Dispose();
+					if(yTreeModel is IDisposable disposable) {
+						toDispose = disposable;
 					}
 				}
 
@@ -113,6 +114,7 @@ namespace Gamma.GtkWidgets
 				if(yTreeModel != null)
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
+				toDispose?.Dispose();
 			}
 		}
 
@@ -518,11 +520,10 @@ namespace Gamma.GtkWidgets
 				}
 			}
 
+			base.Destroy();
 			if(YTreeModel is IDisposable model) {
 				model.Dispose();
 			}
-
-			base.Destroy();
 		}
 	}
 }
