@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<ProjectGuid>{EF24C742-AC2C-477A-A632-F9920A0E1CC7}</ProjectGuid>
+	<RootNamespace>Gamma.Binding.Core</RootNamespace>
+	<Company>Quality Solution</Company>
   </PropertyGroup>
 
   <ItemGroup>
