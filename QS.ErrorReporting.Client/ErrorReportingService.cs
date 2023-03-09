@@ -14,7 +14,7 @@ namespace QS.ErrorReporting
         {
         }
         
-        private Channel channel;
+        private Channel? channel;
         private Channel Channel {
             get {
                 if(channel == null || channel.State == ChannelState.Shutdown)
