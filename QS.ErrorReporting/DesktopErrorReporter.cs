@@ -3,14 +3,14 @@ using QS.Project.DB;
 using QS.Project.Versioning;
 
 namespace QS.ErrorReporting {
-	public class ErrorReporter : IErrorReporter {
+	public class DesktopErrorReporter : IErrorReporter {
 		private readonly IApplicationInfo application;
 		private readonly IDataBaseInfo? databaseInfo;
 		private readonly IUserInfo? user;
 		private readonly ILogService? logService;
 		private readonly IErrorReportingSettings? settings;
 
-		public ErrorReporter(IApplicationInfo application, IDataBaseInfo? databaseInfo = null, IUserInfo? user = null, ILogService? logService = null, IErrorReportingSettings? settings = null) {
+		public DesktopErrorReporter(IApplicationInfo application, IDataBaseInfo? databaseInfo = null, IUserInfo? user = null, ILogService? logService = null, IErrorReportingSettings? settings = null) {
 			this.application = application ?? throw new ArgumentNullException(nameof(application));
 			this.databaseInfo = databaseInfo;
 			this.user = user;
