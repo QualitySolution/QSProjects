@@ -12,6 +12,6 @@ namespace QS.Project.Versioning
 		string[] CompatibleModifications { get; }
 		Version Version { get; }
 		bool IsBeta { get;  }
-		DateTime BuildDate { get; }
+		DateTime? BuildDate { get; }
 	}
 }

@@ -1,16 +1,16 @@
 ﻿using System;
-using QS.Project.Domain;
+using QS.Project.DB;
 using QS.Project.Versioning;
 
 namespace QS.ErrorReporting {
-	public class DesktopErrorReporter : IErrorReporter {
+	public class ErrorReporter : IErrorReporter {
 		private readonly IApplicationInfo application;
-		private readonly DatabaseInfo databaseInfo;
-		private readonly UserBase user;
-		private readonly ILogService logService;
-		private readonly IErrorReportingSettings settings;
+		private readonly IDataBaseInfo? databaseInfo;
+		private readonly IUserInfo? user;
+		private readonly ILogService? logService;
+		private readonly IErrorReportingSettings? settings;
 
-		public DesktopErrorReporter(IApplicationInfo application, DatabaseInfo databaseInfo = null, UserBase user = null, ILogService logService = null, IErrorReportingSettings settings = null) {
+		public ErrorReporter(IApplicationInfo application, IDataBaseInfo? databaseInfo = null, IUserInfo? user = null, ILogService? logService = null, IErrorReportingSettings? settings = null) {
 			this.application = application ?? throw new ArgumentNullException(nameof(application));
 			this.databaseInfo = databaseInfo;
 			this.user = user;

@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj" />
+      <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
       <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
     </ItemGroup>
 </Project>
