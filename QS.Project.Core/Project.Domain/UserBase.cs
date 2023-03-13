@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.Project.DB;
 
 namespace QS.Project.Domain
 {
 	[Appellative(Gender = GrammaticalGender.Masculine,
 	NominativePlural = "пользователи",
 	Nominative = "пользователь")]
-	public class UserBase : PropertyChangedBase, IDomainObject
+	public class UserBase : PropertyChangedBase, IDomainObject, IUserInfo
 	{
 		#region Свойства
 

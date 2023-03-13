@@ -283,6 +283,14 @@
       <Project>{baba2cb7-6efe-4b1b-9324-74cbcbacf257}</Project>
       <Name>QS.ErrorReporting.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj">
+      <Project>{7baff136-4379-4d1d-a554-7dc340caf7a2}</Project>
+      <Name>QS.ErrorReporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj">
+      <Project>{e95be5dc-a197-4657-87dc-a2d677eadb76}</Project>
+      <Name>QS.Project.Abstract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>

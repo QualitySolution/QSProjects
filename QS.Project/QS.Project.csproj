@@ -226,7 +226,6 @@
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
-    <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
@@ -255,7 +254,6 @@
     <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
-    <Folder Include="Project.Versioning\" />
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
@@ -281,6 +279,10 @@
     <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj">
       <Project>{a869ec36-67d2-4a36-95e9-0b1e7350928f}</Project>
       <Name>QS.BaseParameters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj">
+      <Project>{e95be5dc-a197-4657-87dc-a2d677eadb76}</Project>
+      <Name>QS.Project.Abstract</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>

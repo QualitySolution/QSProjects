@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace QSProjectsLib
 {
@@ -67,44 +65,6 @@ namespace QSProjectsLib
 			{ "МКУК", "Муниципальное казенное учреждение культуры" }
 		};
 
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
-		public static string PersonNameWithInitials (string lastname, string name, string patronymicName)
-		{
-			string result = String.Empty;
-			if (!String.IsNullOrWhiteSpace (lastname))
-				result += String.Format ("{0} ", lastname);
-			if (!String.IsNullOrWhiteSpace (name))
-				result += String.Format ("{0}.", name [0]);
-			if (!String.IsNullOrWhiteSpace (patronymicName))
-				result += String.Format ("{0}.", patronymicName [0]);
-			return result;
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
-		public static string PersonNameWithInitials (string fioInOneString)
-		{
-			var parts = fioInOneString.Split(new [] {' '}, StringSplitOptions.RemoveEmptyEntries);
-			return PersonNameWithInitials(
-				parts.Length > 0 ? parts[0] : null,
-				parts.Length > 1 ? parts[1] : null,
-				parts.Length > 2 ? parts[2] : null
-			);
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.PersonHelper.")]
-		public static string PersonFullName (string surname, string name, string patronymicName)
-		{
-			var parts = new List<string>();
-
-			if (!String.IsNullOrWhiteSpace(surname))
-				parts.Add(surname);
-			if (!String.IsNullOrWhiteSpace (name))
-				parts.Add(name);
-			if (!String.IsNullOrWhiteSpace (patronymicName))
-				parts.Add(patronymicName);
-			return String.Join(" ", parts);
-		}
-
 		public static string BytesToIECUnitsString (ulong bytes)
 		{
 			if (bytes < (ulong)PowTwo.Pow10)
@@ -121,56 +81,6 @@ namespace QSProjectsLib
 				return String.Format ("{0:N1} ПиБ", (double)bytes / (ulong)PowTwo.Pow50);
 			else
 				return String.Format ("{0:N1} ЭиБ", (double)bytes / (ulong)PowTwo.Pow60);
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.TitleHelper.")]
-		public static string StringToPascalCase (string input)
-		{
-			if (input == null)
-				return "";
-
-			TextInfo textInfo = new CultureInfo ("en-US", false).TextInfo;
-			string result = textInfo.ToTitleCase (input.Trim ()).Replace (" ", "");
-
-			return result;
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.TitleHelper.")]
-		public static string StringToTitleCase (string input)
-		{
-			if (String.IsNullOrWhiteSpace (input))
-				return "";
-
-			TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
-
-			string result = input.Trim ();
-			result = textInfo.ToUpper (result [0]) + result.Substring (1);
-
-			return result;
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.VersionHelper.")]
-		public static string VersionToShortString (Version version)
-		{
-			return version.ToString (version.Revision <= 0 ? (version.Build <= 0 ? 2 : 3) : 4);
-		}
-
-		[Obsolete("Используйте аналогичный функционал из QS.Utilities.Text.VersionHelper.")]
-		public static string VersionToShortString (string version)
-		{
-			var ver = Version.Parse (version);
-			return ver.ToString (ver.Revision == 0 ? (ver.Build == 0 ? 2 : 3) : 4);
-		}
-
-		public static string EllipsizeEnd(string text, int length, bool wholeWord = false) {
-			if (text.Length <= length) return text;
-			length -= 3;
-			int pos = wholeWord ? text.IndexOf(" ", length) : length;
-			if (pos == -1)
-				pos = length;
-			if (pos >= 0)
-				return text.Substring(0, pos) + "...";
-			return text;
 		}
 	}
 }

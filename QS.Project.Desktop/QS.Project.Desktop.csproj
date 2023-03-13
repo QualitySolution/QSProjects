@@ -4,11 +4,15 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>QS</RootNamespace>
         <ProjectGuid>{5EF2A7DA-3886-4809-95DF-880BD783A211}</ProjectGuid>
+		<Company>Quality Solution</Company>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj" />
+      <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj" />
+      <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj" />
+      <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     </ItemGroup>
 

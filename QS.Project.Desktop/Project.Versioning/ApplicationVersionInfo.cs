@@ -26,7 +26,7 @@ namespace QS.Project.Versioning
 
 		public bool IsBeta => Assembly.GetCustomAttribute<AssemblyBetaBuildAttribute>() != null;
 
-		public DateTime BuildDate => System.IO.File.GetLastWriteTime(Assembly.Location);
+		public DateTime? BuildDate => System.IO.File.GetLastWriteTime(Assembly.Location);
 
 		public byte ProductCode => Assembly.GetCustomAttribute<AssemblyProductCodeAttribute>()?.Number ?? 0;
 
