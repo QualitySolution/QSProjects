@@ -111,25 +111,27 @@ namespace QS.Updater.App.ViewModels {
 
 			bool loadingComplete = false;
 			progressCreator.UserCanCancel = true;
-			progressCreator.Start(100, text :"Новая версия скачивается, подождите...");
+			progressCreator.Start(100, text :"Новая версия скачивается...");
 
 			WebClient webClient = new WebClient();
 			progressCreator.Canceled += (sender, args) => webClient.CancelAsync();
 			
 			webClient.DownloadProgressChanged += (sender, e) => guiDispatcher.RunInGuiTread(delegate {
-				progressCreator.Update(e.ProgressPercentage);
+				if(progressCreator.IsStarted)
+					progressCreator.Update(e.ProgressPercentage);
 			});
 			
 			webClient.DownloadFileCompleted += (sender, e) => guiDispatcher.RunInGuiTread(delegate {
 				loadingComplete = true;
+				if(e.Cancelled)
+					return;
+				
 				progressCreator.Close();
-				if (e.Error != null)
-				{
+				if (e.Error != null) {
 					logger.Error(e.Error, "Не удалось скачать файл обновления.");
 					interactive.ShowMessage(ImportanceLevel.Error, "Не удалось скачать файл.");
-				}
-				else if (!e.Cancelled)
-				{
+				} 
+				else {
 					logger.Info("Скачивание обновления завершено. Запускаем установку...");
 					Process File = new Process();
 					File.StartInfo.FileName = tempPath;

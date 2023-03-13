@@ -58,8 +58,8 @@ namespace QS.Updater.App {
 			if(!releases.Any() && manualRun) {
 				
 				interactive.ShowMessage(ImportanceLevel.Info, $"<b>Ваша версия программного продукта: {applicationInfo.Version.VersionToShortString()}</b>\n" +
-				                                              "На данный момент это самая последняя версия.\n" +
-				                                              "Обновление не требуется.");
+				                                              "На данный момент это самая последняя версия.");
+				logger.Info("Нет новых версий программы.");
 				return;
 			}
 
@@ -76,6 +76,7 @@ namespace QS.Updater.App {
 					gui.WaitInMainLoop(() => isClosed);
 				}
 			}
+			logger.Info("Ок");
 		}
 	}
 }
