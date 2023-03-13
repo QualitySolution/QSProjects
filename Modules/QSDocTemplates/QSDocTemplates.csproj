@@ -76,10 +76,6 @@
       <Project>{6a9581b0-7278-4f8d-b5ea-8c60bddc55d8}</Project>
       <Name>QS.DocTemplates</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\QSOrmProject\QSOrmProject.csproj">
-      <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
-      <Name>QSOrmProject</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QSProjectsLib\QSProjectsLib.csproj">
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
