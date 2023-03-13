@@ -27,6 +27,8 @@ namespace QS.Dialog {
 		public bool UserCanCancel { get; set; } = false;
 
 		public CancellationToken CancellationToken => activeProgressPage.ViewModel.CancellationTokenSource.Token;
+
+		public event EventHandler Canceled;
 		#endregion
 
 		protected IProgressBarDisplayable Progress => activeProgressPage.ViewModel.Progress;
@@ -43,7 +45,15 @@ namespace QS.Dialog {
 			activeProgressPage = navigator.OpenViewModelNamedArgs<ProgressWindowViewModel>(null, new Dictionary<string, object> {{"userCanCancel", UserCanCancel}});
 			if(!String.IsNullOrEmpty(Title))
 				activeProgressPage.ViewModel.Title = Title;
+			activeProgressPage.PageClosed += ActiveProgressPageOnPageClosed;
 			Progress.Start(maxValue, minValue, text, startValue);
+		}
+
+		private void ActiveProgressPageOnPageClosed(object sender, PageClosedEventArgs e) {
+			if(e.CloseSource == CloseSource.ClosePage || e.CloseSource == CloseSource.Cancel)
+				Canceled?.Invoke(this, EventArgs.Empty);
+			activeProgressPage.PageClosed -= ActiveProgressPageOnPageClosed;
+			activeProgressPage = null;
 		}
 
 		public void Update(double curValue) {
@@ -64,7 +74,6 @@ namespace QS.Dialog {
 		public void Close() {
 			Progress.Close();
 			navigator.ForceClosePage(activeProgressPage, CloseSource.External);
-			activeProgressPage = null;
 		}
 		#endregion
 	}
