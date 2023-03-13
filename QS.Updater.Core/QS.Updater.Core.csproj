@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="App" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     </ItemGroup>
 
