@@ -35,14 +35,10 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="NewVersionDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="UpdaterGtkUI.cs" />
     <Compile Include="DB.Views\UpdateProcessView.cs" />
-    <Compile Include="gtk-gui\QS.Updater.NewVersionDialog.cs" />
-    <Compile Include="SkipVersionStateIniConfig.cs" />
     <Compile Include="gtk-gui\QS.Updater.DB.Views.UpdateProcessView.cs" />
-    <Compile Include="UpdaterAutofacModule.cs" />
+    <Compile Include="UpdaterDBAutofacModule.cs" />
     <Compile Include="DBScripts.Views\AdminLoginView.cs" />
     <Compile Include="gtk-gui\QS.DBScripts.Views.AdminLoginView.cs" />
   </ItemGroup>
@@ -50,9 +46,6 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Nini">
-      <HintPath>..\lib\Nini.dll</HintPath>
-    </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Data" />
@@ -101,13 +94,13 @@
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj">
+      <Project>{c776ee5a-1795-439b-bb7d-9ab1b20eeac4}</Project>
+      <Name>QS.Updater.Desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.MachineConfig\QS.MachineConfig.csproj">
-      <Project>{769710D2-BF98-4120-9E07-67BD740CFA1D}</Project>
-      <Name>QS.MachineConfig</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
       <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>

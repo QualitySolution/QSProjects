@@ -15,6 +15,7 @@
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
       <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />
+      <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj" />
     </ItemGroup>
 
     <ItemGroup>
