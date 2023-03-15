@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -111,6 +111,27 @@ namespace QS.Project.Journal
 			}
 
 			CreateLoader(queryFunction, itemsCountFunction);
+
+			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
+			configurator.OnConfigurationFinished += (sender, e) => {
+				var config = e.Config;
+				if(EntityConfigs.ContainsKey(config.EntityType)) {
+					throw new InvalidOperationException($"Конфигурация для сущности ({config.EntityType.Name}) уже была добавлена.");
+				}
+				EntityConfigs.Add(config.EntityType, config);
+			};
+			return configurator;
+		}
+
+		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(IEnumerable<Func<IUnitOfWork, IQueryOver<TEntity>>> queryFunctions, Func<IUnitOfWork, int> itemsCountFunction = null)
+			where TEntity : class, IDomainObject, INotifyPropertyChanged, new() {
+			if(!queryFunctions.Any()) {
+				throw new ArgumentException("Нельзя зарегистрировать сущность без функций запросов", nameof(queryFunctions));
+			}
+
+			foreach(var queryFunction in queryFunctions) {
+				CreateLoader(queryFunction, itemsCountFunction);
+			}
 
 			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
 			configurator.OnConfigurationFinished += (sender, e) => {
