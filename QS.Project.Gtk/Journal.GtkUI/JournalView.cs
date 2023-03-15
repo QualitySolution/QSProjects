@@ -488,7 +488,7 @@ namespace QS.Journal.GtkUI
 					item.Invoke();
 				}
 			}
-			if(actionsVisibility != null && actionsSensitivity.ContainsKey(actionsType)) {
+			if(actionsVisibility != null && actionsVisibility.ContainsKey(actionsType)) {
 				foreach(var item in actionsVisibility[actionsType]) {
 					item.Invoke();
 				}
