@@ -21,7 +21,7 @@ namespace QS.Testing.Testing.Navigation {
 		public IPage<TViewModel> FindPage<TViewModel>() where TViewModel : DialogViewModelBase
 			=> pages.OfType<IPage<TViewModel>>().FirstOrDefault();
 
-		public IPage CurrentPage => throw new NotImplementedException();
+		public IPage CurrentPage => TopLevelPages.LastOrDefault(); //Пока не реализовано переключение. Это самый простой вариант.
 
 		public override void SwitchOn(IPage page) {
 			throw new NotImplementedException();
