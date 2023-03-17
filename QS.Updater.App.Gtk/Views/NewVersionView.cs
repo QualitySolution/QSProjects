@@ -2,10 +2,8 @@ using System;
 using System.Reflection;
 using Gdk;
 using Gtk;
-using NHibernate.Dialect;
 using QS.Updater.App.ViewModels;
 using QS.Updates;
-using QS.Utilities.Debug;
 using QS.Views.Dialog;
 
 namespace QS.Updater.App.Views {
