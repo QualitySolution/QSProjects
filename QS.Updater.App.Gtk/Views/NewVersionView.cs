@@ -50,6 +50,8 @@ namespace QS.Updater.App.Views {
 
 				if(!String.IsNullOrEmpty(release.NewsLink)) {
 					var newsLabel = new Label{Markup = $"<b><a href=\"{release.NewsLink}\" title=\"Перейти на сайт компании\">Прочитать новость</a></b>"};
+					newsLabel.AddEvents ((int)EventMask.ButtonPressMask);
+					newsLabel.ButtonPressEvent += (o, args) => System.Diagnostics.Process.Start(release.NewsLink);
 					tableReleases.Attach(newsLabel, 3, 4, baseRow + 1, baseRow + 2, AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
 				}
 
