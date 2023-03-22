@@ -5,7 +5,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Report.ViewModels
 {
-	public class RdlViewerViewModel : DialogViewModelBase
+	public class RdlViewerViewModel : DialogViewModelBase, IDisposable
 	{
 		public ReportParametersViewModelBase ReportParametersViewModel { get; private set; }
 		public ILifetimeScope AutofacScope { get; }
@@ -41,6 +41,11 @@ namespace QS.Report.ViewModels
 		public void RiseReportPrinted()
 		{
 			ReportPrinted?.Invoke(this, EventArgs.Empty);
+		}
+
+		public void Dispose() {
+			if(ReportParametersViewModel is IDisposable disposable)
+				disposable.Dispose();
 		}
 	}
 }
