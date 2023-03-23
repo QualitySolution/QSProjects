@@ -58,9 +58,6 @@ namespace QSProjectsLib
 			}
 		}
 
-		[Obsolete("Устаревшее поле, для установки демо сервер статическое поле Login.ApplicationDemoServer")]
-		public string DemoServer { get => ApplicationDemoServer; set => ApplicationDemoServer = value; }
-
 		public Login()
 		{
 			this.Build();
