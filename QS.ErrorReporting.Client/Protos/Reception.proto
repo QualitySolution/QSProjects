@@ -21,7 +21,8 @@ message UserInfo{
 
 message AppInfo{
     uint32 product_code = 1;
-    string product_name = 2;
+	reserved 2;
+	reserved "product_name";
     string modification = 3;
     string version = 4;
 }

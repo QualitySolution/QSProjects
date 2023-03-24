@@ -25,7 +25,6 @@ namespace QS.ErrorReporting {
 					new SubmitErrorRequest {
 						App = new AppInfo{ 
 							ProductCode = application.ProductCode,
-							ProductName = application.ProductName ?? String.Empty,
 							Modification= application.Modification ?? String.Empty,
 							Version = application.Version.ToString(),
 						},
