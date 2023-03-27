@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Binding\Converters\ArrayToEnumerableConverter.cs" />
     <Compile Include="GtkWidgets\yMenuItem.cs" />
+    <Compile Include="GtkWidgets\ySpinButtonCurrencyFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererCombo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererSpin.cs" />
