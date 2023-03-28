@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
@@ -18,8 +18,6 @@ namespace Gamma.ColumnConfig
 		public TreeViewColumn TreeViewColumn { get; private set;}
 		public BindingControler<TreeViewColumn> BindingController { get; private set; }
 		public string Title => TreeViewColumn.Title;
-
-		public string DataPropertyName { get; set;}
 
 		public bool IsEnterToNextCell { get; set;}
 

@@ -5,7 +5,6 @@ namespace Gamma.ColumnConfig
 {
 	public class ReadOnlyTextRendererMapping<TNode> : RendererMappingBase<NodeCellRendererText<TNode>, TNode>
 	{
-		public string DataPropertyName { get; set;}
 		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
 
 		public ReadOnlyTextRendererMapping (ColumnMapping<TNode> column, Func<TNode, string> getTextFunc, bool useMarkup = false)
