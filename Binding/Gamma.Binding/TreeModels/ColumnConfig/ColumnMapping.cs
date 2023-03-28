@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
@@ -128,6 +128,14 @@ namespace Gamma.ColumnConfig
 		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
 		{
 			var render = new ComboRendererMapping<TNode, TItem> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+		
+		public DateRendererMapping<TNode> AddDateRenderer(Expression<Func<TNode, DateTime?>> dataProperty, bool expand = true)
+		{
+			var render = new DateRendererMapping<TNode> (this, dataProperty);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;

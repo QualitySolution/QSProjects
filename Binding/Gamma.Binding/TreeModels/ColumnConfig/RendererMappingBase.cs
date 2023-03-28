@@ -51,6 +51,11 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddComboRenderer (dataProperty, expand);
 		}
 		
+		public DateRendererMapping<TNode> AddDateRenderer(Expression<Func<TNode, DateTime?>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddDateRenderer (dataProperty, expand);
+		}
+		
 		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
 			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
