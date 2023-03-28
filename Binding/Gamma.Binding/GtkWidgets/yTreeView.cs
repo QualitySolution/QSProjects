@@ -175,10 +175,7 @@ namespace Gamma.GtkWidgets
 					} else if(cell is CellRendererCombo) {
 						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
 						(cell as INodeCellRendererCombo).MyTreeView = this;
-					} else if(cell is CellRendererText) {
-						(cell as CellRendererText).Edited += TextNodeCellEdited;
-					}
-					if(cell is CellRendererToggle) {
+					} else if(cell is CellRendererToggle) {
 						(cell as CellRendererToggle).Toggled += OnToggledCell;
 					}
 
@@ -186,6 +183,9 @@ namespace Gamma.GtkWidgets
 					if(canNextCell != null && (canNextCell.IsEnterToNextCell || col.IsEnterToNextCell)) {
 						canNextCell.EditingStarted += CanNextCell_EditingStarted;
 					}
+
+					if(cell is ISelfGetNodeRenderer selfGetNodeRenderer)
+						selfGetNodeRenderer.GetNodeFunc = path => YTreeModel.NodeAtPath(new TreePath(path));
 
 					tvc.PackStart(cell, render.IsExpand);
 					tvc.SetCellDataFunc(cell, NodeRenderColumnFunc);
@@ -369,26 +369,6 @@ namespace Gamma.GtkWidgets
 								break;
 							}
 						}
-					}
-				}
-			}
-		}
-
-		private void TextNodeCellEdited(object o, Gtk.EditedArgs args)
-		{
-			Gtk.TreeIter iter;
-
-			INodeCellRenderer cell = o as INodeCellRenderer;
-			CellRendererText cellText = o as CellRendererText;
-
-			if(cell != null) {
-				// Resolve path as it was passed in the arguments
-				Gtk.TreePath tp = new Gtk.TreePath(args.Path);
-				// Change value in the original object
-				if(YTreeModel.Adapter.GetIter(out iter, tp)) {
-					object obj = YTreeModel.NodeFromIter(iter);
-					if(cell.DataPropertyInfo != null && cell.DataPropertyInfo.CanWrite) {
-						cell.DataPropertyInfo.SetValue(obj, args.NewText, null);
 					}
 				}
 			}
