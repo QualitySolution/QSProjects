@@ -29,7 +29,6 @@ namespace Gamma.GtkWidgets
 				if(columnsConfig == value)
 					return;
 				columnsConfig = value;
-				VerifyNodeTypes();
 				ReconfigureColumns();
 			}
 		}
@@ -89,7 +88,6 @@ namespace Gamma.GtkWidgets
 					YTreeModel = new ListTreeModel(list);
 				}
 				itemsDataSource = value;
-				VerifyNodeTypes();
 			}
 		}
 
@@ -122,26 +120,6 @@ namespace Gamma.GtkWidgets
 												+ $" {typeof(TNode)} != {ColumnsConfig.GetType().GetGenericArguments().First()}");
 
 			ItemsDataSource = list;
-		}
-
-		void VerifyNodeTypes()
-		{
-			if(itemsDataSource == null || columnsConfig == null)
-				return;
-			if(!itemsDataSource.GetType().IsGenericType)
-				return;
-
-			var dataSourceType = itemsDataSource.GetType().GetGenericArguments()[0];
-			if(dataSourceType is System.Object)
-				return;
-			var columnsConfigType = columnsConfig.GetType().GetGenericArguments()[0];
-			if(dataSourceType != columnsConfigType && !dataSourceType.IsSubclassOf(columnsConfigType)) {
-				throw new ArgumentException(String.Format(
-						"Data source element type '{0}' does not match columns configuration type '{1}'.",
-						dataSourceType,
-						columnsConfigType
-					));
-			}
 		}
 
 		void YTreeModel_RenewAdapter(object sender, EventArgs e)
