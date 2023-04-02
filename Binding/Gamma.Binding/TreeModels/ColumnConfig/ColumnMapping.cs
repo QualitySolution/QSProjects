@@ -16,7 +16,7 @@ namespace Gamma.ColumnConfig
 
 		public TreeViewColumn TreeViewColumn { get; private set;}
 
-		public string Title { get{ return TreeViewColumn.Title;	}}
+		public string Title => TreeViewColumn.Title;
 
 		public string DataPropertyName { get; set;}
 
@@ -241,6 +241,10 @@ namespace Gamma.ColumnConfig
 		public string GetTooltipText(object node) => cellTooltipTextFunc((TNode)node);
 
 		#endregion
+
+		public void ClearProperties() {
+			TreeViewColumn = null;
+		}
 	}
 }
 
