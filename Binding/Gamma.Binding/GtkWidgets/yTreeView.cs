@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -85,7 +85,7 @@ namespace Gamma.GtkWidgets
 					else
 						YTreeModel = new ObservableListTreeModel(value as IObservableList);
 				}
-				else { 
+				else {
 					YTreeModel = new ListTreeModel(list);
 				}
 				itemsDataSource = value;
@@ -102,12 +102,16 @@ namespace Gamma.GtkWidgets
 			set {
 				if(yTreeModel == value)
 					return;
-				if(yTreeModel != null)
+				IDisposable toDispose = yTreeModel as IDisposable;
+				if(yTreeModel != null) {
 					yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
+				}
+
 				yTreeModel = value;
 				if(yTreeModel != null)
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
+				toDispose?.Dispose();
 			}
 		}
 
@@ -505,6 +509,19 @@ namespace Gamma.GtkWidgets
 		}
 
 		#endregion
+
+		public override void Destroy() {
+			if(ColumnsConfig != null) {
+				foreach(var col in ColumnsConfig.ConfiguredColumns) {
+					col.ClearProperties();
+				}
+			}
+
+			base.Destroy();
+			if(YTreeModel is IDisposable model) {
+				model.Dispose();
+			}
+		}
 	}
 }
 
