@@ -237,14 +237,14 @@ namespace Gamma.Binding {
 				gch = GCHandle.Alloc (node);
 				node_hash [node] = gch;
 			}
-			var result = TreeIter.Zero;
-			result.UserData = GCHandle.ToIntPtr(gch);
+			TreeIter result = TreeIter.Zero;
+			result.UserData = (IntPtr) gch;
 			return result;
 		}
 
 		public object NodeFromIter (TreeIter iter)
 		{
-			var gch = GCHandle.FromIntPtr(iter.UserData);
+			GCHandle gch = (GCHandle) iter.UserData;
 			return gch.Target;
 		}
 
@@ -341,13 +341,8 @@ namespace Gamma.Binding {
 			return foundLevelConfig;
 		}
 
-		#endregion
+	#endregion
 
-		public override void Dispose() {
-			foreach(GCHandle item in node_hash.Values) {
-				item.Free();
-			}
-		}
 	}
 }
 

@@ -339,15 +339,10 @@ namespace QSOrmProject
 				ChangedByUser (this, EventArgs.Empty);
 		}
 
-		private void fillAutocomplete() {
-			logger.Info("Запрос данных для автодополнения...");
-
-			if(completionListStore is null) {
-				completionListStore = new ListStore(typeof(string), typeof(object));
-			}
-			else {
-				completionListStore.Clear();
-			}
+		private void fillAutocomplete ()
+		{
+			logger.Info ("Запрос данных для автодополнения...");
+			completionListStore = new ListStore (typeof(string), typeof(object));
 
 			IUnitOfWork localUoW;
 
@@ -410,7 +405,6 @@ namespace QSOrmProject
 			if (subject is INotifyPropertyChanged) {
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}
-			completionListStore?.Dispose();
 			base.OnDestroyed();
 		}
 	}

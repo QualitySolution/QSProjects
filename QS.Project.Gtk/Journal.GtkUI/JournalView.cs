@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Gamma.Binding;
+using Gdk;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
@@ -25,7 +27,6 @@ namespace QS.Journal.GtkUI
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-		private Menu _popupMenu;
 
 		#region Глобальные настройки
 
@@ -96,10 +97,10 @@ namespace QS.Journal.GtkUI
 			SetItemsSource();
 
 			ViewModel.Refresh();
-			UpdateButtonActions();
+			UpdateButtons();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions += UpdateButtonActions;
+			ViewModel.UpdateJournalActions += UpdateButtons;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -283,26 +284,26 @@ namespace QS.Journal.GtkUI
 			return tableview.GetSelectedObjects();
 		}
 
-		private Dictionary<JournalActionsType, List<System.Action>> actionsSensitivity;
-		private Dictionary<JournalActionsType, List<System.Action>> actionsVisibility;
-		Widget actionWidget;
-		private Dictionary<object, IJournalAction> _widgetsWithJournalActions = new Dictionary<object, IJournalAction>();
+		List<System.Action> actionsSensitivity;
+		List<System.Action> actionsVisibility;
 
 		private void ConfigureActions()
 		{
 			if(actionsSensitivity == null) {
-				actionsSensitivity = new Dictionary<JournalActionsType, List<System.Action>>();
+				actionsSensitivity = new List<System.Action>();
 			} else {
 				actionsSensitivity.Clear();
 			}
 
 			if(actionsVisibility == null) {
-				actionsVisibility = new Dictionary<JournalActionsType, List<System.Action>>();
+				actionsVisibility = new List<System.Action>();
 			} else {
 				actionsVisibility.Clear();
 			}
-			
+
 			foreach(var action in ViewModel.NodeActions) {
+				Widget actionWidget;
+
 				if(action.ChildActions.Any()) {
 					MenuButton menuButton = new MenuButton();
 					menuButton.Label = action.Title;
@@ -313,18 +314,18 @@ namespace QS.Journal.GtkUI
 					menuButton.Menu = childActionButtons;
 					actionWidget = menuButton;
 				} else {
-					var button = new Button();
+					Button button = new Button();
 					button.Label = action.Title;
 
-					button.Clicked += OnJournalActionClicked;
-					_widgetsWithJournalActions.Add(button, action);
+					button.Clicked += (sender, e) => { action.ExecuteAction(GetSelectedItems()); };
 
-					System.Action sensitivityAction = () => button.Sensitive = action.GetSensitivity(GetSelectedItems());
-					System.Action visibilityAction = () => button.Visible = action.GetVisibility(GetSelectedItems());
+					actionsSensitivity.Add(() => {
+						button.Sensitive = action.GetSensitivity(GetSelectedItems());
+					});
 
-					AddActionToDictionary(actionsSensitivity, JournalActionsType.ButtonActions, sensitivityAction);
-					AddActionToDictionary(actionsVisibility, JournalActionsType.ButtonActions, visibilityAction);
-
+					actionsVisibility.Add(() => {
+						button.Visible = action.GetVisibility(GetSelectedItems());
+					});
 					actionWidget = button;
 				}
 
@@ -336,52 +337,19 @@ namespace QS.Journal.GtkUI
 				addDocumentButtonBox.Fill = false;
 			}
 
-			tableview.RowActivated += OnTableViewRowActivated;
-		}
-
-		private void AddActionToDictionary(
-			Dictionary<JournalActionsType, List<System.Action>> dictionary,
-			JournalActionsType actionsType,
-			System.Action action)
-		{
-			if(dictionary.ContainsKey(actionsType)) {
-				dictionary[actionsType].Add(action);
-			}
-			else {
-				dictionary.Add(actionsType, new List<System.Action>());
-				dictionary[actionsType].Add(action);
-			}
-		}
-
-		private void OnTableViewRowActivated(object o, RowActivatedArgs args)
-		{
-			var selectedItems = GetSelectedItems();
-			if(ViewModel.RowActivatedAction != null)
+			tableview.RowActivated += (o, args) =>
 			{
-				if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
+				var selectedItems = GetSelectedItems();
+				if(ViewModel.RowActivatedAction != null)
 				{
-					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+					if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems)) {
+						ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+					}
 				}
-			}
-			else
-			{
-				ExpandCollapseOnRowActivated(args);
-			}
-		}
-
-		private void OnJournalActionClicked(object sender, EventArgs e) {
-			ExecuteActionForWidget(sender);
-		}
-
-		private void OnJournalActionPressed(object sender, ButtonPressEventArgs e) {
-			if(e.Event.Button != (uint)GtkMouseButton.Left) return;
-			ExecuteActionForWidget(sender);
-		}
-
-		private void ExecuteActionForWidget(object widget) {
-			if(_widgetsWithJournalActions.ContainsKey(widget)) {
-				_widgetsWithJournalActions[widget].ExecuteAction(GetSelectedItems());
-			}
+				else {
+					ExpandCollapseOnRowActivated(args);
+				}
+			};
 		}
 
 		private void ExpandCollapseOnRowActivated(RowActivatedArgs args) {
@@ -395,24 +363,23 @@ namespace QS.Journal.GtkUI
 
 		private MenuItem CreateMenuItemWidget(IJournalAction action)
 		{
-			var menuItem = new MenuItem(action.Title);
+			MenuItem menuItem = new MenuItem(action.Title);
+			menuItem.Activated += (sender, e) => {
+				action.ExecuteAction(GetSelectedItems());
+			};
 
-			System.Action sensitivityAction = () => menuItem.Sensitive = action.GetSensitivity(GetSelectedItems());
-			System.Action visibilityAction = () => menuItem.Visible = action.GetVisibility(GetSelectedItems());
-			
-			AddActionToDictionary(actionsSensitivity, JournalActionsType.ButtonActions, sensitivityAction);
-			AddActionToDictionary(actionsVisibility, JournalActionsType.ButtonActions, visibilityAction);
+			actionsSensitivity.Add(() => {
+				menuItem.Sensitive = action.GetSensitivity(GetSelectedItems());
+			});
+
+			actionsVisibility.Add(() => {
+				menuItem.Visible = action.GetVisibility(GetSelectedItems());
+			});
 
 			if(action.ChildActions.Any()) {
-				var subMenu = new Menu();
-				menuItem.Submenu = subMenu;
 				foreach(var childAction in action.ChildActions) {
-					subMenu.Add(CreateMenuItemWidget(childAction));
+					menuItem.Add(CreateMenuItemWidget(childAction));
 				}
-			}
-			else {
-				menuItem.ButtonPressEvent += OnJournalActionPressed;
-				_widgetsWithJournalActions.Add(menuItem, action);
 			}
 
 			return menuItem;
@@ -425,69 +392,64 @@ namespace QS.Journal.GtkUI
 				return;
 			}
 
-			if(_popupMenu is null) {
-				_popupMenu = new Menu();
-				
-				foreach(var popupAction in ViewModel.PopupActions)
-				{
-					CreatePopupMenuActionsRecursively(_popupMenu, popupAction);
-					_popupMenu.Show();
-				}
+			var popupMenu = new Menu();
+			foreach(var popupAction in ViewModel.PopupActions)
+			{
+				CreatePopupMenuActionsRecursively(popupMenu, popupAction, GetSelectedItems());
 			}
 
-			if(_popupMenu.Children.Length == 0)
+			if(popupMenu.Children.Length == 0)
 			{
 				return;
 			}
 
-			UpdateActions(JournalActionsType.PopupActions);
-			_popupMenu.Popup();
+			popupMenu.Show();
+			popupMenu.Popup();
 		}
 
-		private void CreatePopupMenuActionsRecursively(Menu menu, IJournalAction popupAction)
+		private static void CreatePopupMenuActionsRecursively(Menu menu, IJournalAction popupAction, object[] selected)
 		{
 			var item = new MenuItem(popupAction.Title);
+			item.Sensitive = popupAction.GetSensitivity(selected);
+			item.Visible = popupAction.GetVisibility(selected);
 
-			System.Action sensitivityAction = () => item.Sensitive = popupAction.GetSensitivity(GetSelectedItems());
-			System.Action visibilityAction = () => item.Visible = popupAction.GetVisibility(GetSelectedItems());
-
-			AddActionToDictionary(actionsSensitivity, JournalActionsType.PopupActions, sensitivityAction);
-			AddActionToDictionary(actionsVisibility, JournalActionsType.PopupActions, visibilityAction);
-			
-			if(popupAction.ChildActions.Any()) {
+			if(popupAction.ChildActions.Any())
+			{
 				var subMenu = new Menu();
 				foreach(var childAction in popupAction.ChildActions)
 				{
-					CreatePopupMenuActionsRecursively(subMenu, childAction);
+					CreatePopupMenuActionsRecursively(subMenu, childAction, selected);
 				}
 				item.Submenu = subMenu;
 			}
 			//Действия выполняются только для самых последних дочерних JournalActions
-			else {
-				item.ButtonPressEvent += OnJournalActionPressed;
-				_widgetsWithJournalActions.Add(item, popupAction);
+			else
+			{
+				item.ButtonPressEvent += (o, args) =>
+				{
+					if(args.Event.Button == (uint)GtkMouseButton.Left)
+					{
+						popupAction.ExecuteAction(selected);
+					}
+				};
 			}
 			menu.Add(item);
 		}
 
 		void Selection_Changed(object sender, EventArgs e)
 		{
-			UpdateButtonActions();
+			UpdateButtons();
 		}
 
-		private void UpdateButtonActions() {
-			UpdateActions(JournalActionsType.ButtonActions);
-		}
-
-		private void UpdateActions(JournalActionsType actionsType)
+		private void UpdateButtons()
 		{
-			if(actionsSensitivity != null && actionsSensitivity.ContainsKey(actionsType)) {
-				foreach(var item in actionsSensitivity[actionsType]) {
+			if(actionsSensitivity != null) {
+				foreach(var item in actionsSensitivity) {
 					item.Invoke();
 				}
 			}
-			if(actionsVisibility != null && actionsSensitivity.ContainsKey(actionsType)) {
-				foreach(var item in actionsVisibility[actionsType]) {
+			if(actionsVisibility != null) {
+				foreach(var item in actionsVisibility) {
 					item.Invoke();
 				}
 			}
@@ -499,19 +461,6 @@ namespace QS.Journal.GtkUI
 			isDestroyed = true;
 			ViewModel.DataLoader.CancelLoading();
 			FilterView?.Destroy();
-			tableview?.Destroy();
-
-			foreach(var keyPair in _widgetsWithJournalActions) {
-				if(keyPair.Key is Button button) {
-					button.Clicked -= OnJournalActionClicked;
-				}
-				else if(keyPair.Key is Widget widget) {
-					widget.ButtonPressEvent -= OnJournalActionPressed;
-				}
-			}
-			
-			_widgetsWithJournalActions.Clear();
-
 			base.Destroy();
 		}
 
@@ -558,10 +507,5 @@ namespace QS.Journal.GtkUI
 		Left = 1,
 		Middle = 2,
 		Right = 3
-	}
-
-	public enum JournalActionsType {
-		ButtonActions,
-		PopupActions
 	}
 }

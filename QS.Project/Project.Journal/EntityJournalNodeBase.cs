@@ -5,7 +5,7 @@ namespace QS.Project.Journal
 {
 	public class JournalEntityNodeBase : JournalNodeBase
 	{
-		public Type EntityType { get; set; }
+		public Type EntityType { get; }
 
 		public virtual int Id { get; set; }
 
@@ -13,8 +13,6 @@ namespace QS.Project.Journal
 		{
 			EntityType = entityType;
 		}
-
-		protected JournalEntityNodeBase() { }
 	}
 
 	public class JournalEntityNodeBase<TEntity> : JournalEntityNodeBase

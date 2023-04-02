@@ -99,15 +99,7 @@
         <property name="ValueAsInt" />
       </itemgroup>
     </itemgroups>
-  </object>		
-  <object type="Gamma.GtkWidgets.ySpinButtonCurrencyFormat" palette-category="Gamma Gtk" init-properties="Lower Upper StepIncrement" allow-children="false" icon="spinbutton.png" base-type="Gtk.SpinButton">
-    <itemgroups>
-      <itemgroup label="ySpinButton Properties">
-        <property name="ValueAsDecimal" />
-        <property name="ValueAsInt" />
-      </itemgroup>
-    </itemgroups>
-  </object>
+  </object>	
   <object type="Gamma.GtkWidgets.yTable" palette-category="Gamma Gtk" allow-children="true" icon="Gamma.icons.table.png" base-type="Gtk.Table">
     <itemgroups />
     <signals />

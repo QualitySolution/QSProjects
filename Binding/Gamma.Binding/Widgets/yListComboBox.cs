@@ -122,7 +122,7 @@ namespace Gamma.Widgets
 
 		protected virtual void ResetLayout ()
 		{
-			comboListStore.Clear();
+			Model = comboListStore = new ListStore (typeof(string), typeof(object));
 
 			if (ItemsList == null)
 				return;
@@ -186,11 +186,6 @@ namespace Gamma.Widgets
 			{
 				Value = value;
 			}
-		}
-
-		public override void Destroy() {
-			comboListStore?.Dispose();
-			base.Destroy();
 		}
 	}
 }
