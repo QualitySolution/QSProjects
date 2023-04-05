@@ -32,7 +32,10 @@ namespace Gamma.GtkWidgets
 			get => textColor;
 			set {
 				textColor = value;
-				ModifyText(StateType.Normal, ColorUtil.Create(value));
+				if(String.IsNullOrEmpty(value))
+					ModifyText(StateType.Normal);
+				else 
+					ModifyText(StateType.Normal, ColorUtil.Create(value));
 			}
 		}
 
