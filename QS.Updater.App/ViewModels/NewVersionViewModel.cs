@@ -35,6 +35,7 @@ namespace QS.Updater.App.ViewModels {
 			IInteractiveMessage interactive,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
+			WindowPosition = WindowGravity.None;
 			this.Releases = releases ?? throw new ArgumentNullException(nameof(releases));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.skipVersionState = skipVersionState ?? throw new ArgumentNullException(nameof(skipVersionState));
