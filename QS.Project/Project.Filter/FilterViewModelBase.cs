@@ -14,6 +14,7 @@ namespace QS.Project.Filter
 		where TFilter : FilterViewModelBase<TFilter>
 	{
 		public bool HidenByDefault { get; set; }
+		public bool DisposeOnDestroy { get; set; } = true;
 
 		public event EventHandler OnFiltered;
 
