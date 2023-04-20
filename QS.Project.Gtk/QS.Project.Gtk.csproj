@@ -238,6 +238,8 @@
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
     <Compile Include="Widgets.GtkUI\VehicleRegistrationNumberEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.VehicleRegistrationNumberEntry.cs" />
+    <Compile Include="Widgets.GtkUI\SimpleSelectionDatePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -266,7 +268,7 @@
       <Name>QS.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
+      <Project>{BD514659-1394-4BBA-94C5-1BEE5C72C7D6}</Project>
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
