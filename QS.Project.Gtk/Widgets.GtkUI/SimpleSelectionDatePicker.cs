@@ -20,8 +20,7 @@ namespace QS.Widgets.GtkUI
 		public event EventHandler DateChangedByUser;
 		protected Gtk.Dialog editDate;
 
-		public SimpleSelectionDatePicker() 
-		{
+		public SimpleSelectionDatePicker() {
 			this.Build();
 
 			Binding = new BindingControler<SimpleSelectionDatePicker>(this, new Expression<Func<SimpleSelectionDatePicker, object>>[] {
@@ -33,40 +32,28 @@ namespace QS.Widgets.GtkUI
 		}
 
 		bool withTime;
-		[Browsable(true)]
+		//[Browsable(true)]
 		[DefaultValue(false)]
 		public bool WithTime {
-			get {
-				return withTime;
-			}
+			get => withTime;
 			set {
 				withTime = value;
 				entryDate.MaxLength = entryDate.WidthChars = WithTime ? 16 : 10;
 			}
 		}
 
-		public bool HideCalendarButton 
-		{
+		public bool HideCalendarButton {
 			get => !buttonEditDate.Visible;
 			set => buttonEditDate.Visible = !value;
 		}
 
-		public string DateText 
-		{
-			get 
-			{
-				return entryDate.Text;
-			}
+		public string DateText {
+			get => entryDate.Text;
 		}
 
-		public DateTime? DateOrNull 
-		{
-			get 
-			{
-				return date;
-			}
-			set 
-			{
+		public DateTime? DateOrNull {
+			get => date;
+			set {
 				if(date == value)
 					return;
 				date = value;
@@ -76,10 +63,8 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		protected virtual void OnDateChanged() 
-		{
-			Binding.FireChange(new Expression<Func<SimpleSelectionDatePicker, object>>[] 
-			{
+		protected virtual void OnDateChanged() {
+			Binding.FireChange(new Expression<Func<SimpleSelectionDatePicker, object>>[] {
 				(w => w.Date),
 				(w => w.DateOrNull),
 				(w => w.DateText),
@@ -88,42 +73,31 @@ namespace QS.Widgets.GtkUI
 			DateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		protected virtual void OnDateChangedByUser() 
-		{
+		protected virtual void OnDateChangedByUser() {
 			DateChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
 
-		public DateTime Date 
-		{
-			get 
-			{
-				return date.GetValueOrDefault();
-			}
-			set 
-			{
-				if(value == default(DateTime))
+		public DateTime Date {
+			get => date.GetValueOrDefault();
+			set {
+				if(value == default(DateTime)) {
 					DateOrNull = null;
+				}
 				else {
 					DateOrNull = value;
 				}
 			}
 		}
 
-		public bool IsEmpty 
-		{
-			get 
-			{
-				return !date.HasValue;
-			}
+		public bool IsEmpty {
+			get => !date.HasValue;
 
 		}
 
 		[DefaultValue(true)]
-		public bool IsEditable 
-		{
-			get { return entryDate.IsEditable; }
-			set 
-			{
+		public bool IsEditable {
+			get => entryDate.IsEditable;
+			set {
 				entryDate.IsEditable = value;
 				buttonEditDate.Sensitive = value;
 			}
@@ -131,52 +105,88 @@ namespace QS.Widgets.GtkUI
 
 		private bool _AutoSeparation = true;
 		[DefaultValue(true)]
-		public bool AutoSeparation 
-		{
-			get { return _AutoSeparation; }
-			set { _AutoSeparation = value; }
+		public bool AutoSeparation {
+			get => _AutoSeparation;
+			set => _AutoSeparation = value;
 		}
 
-		protected void OnButtonEditDateClicked(object sender, EventArgs e) 
-		{
+		protected void OnButtonEditDateClicked(object sender, EventArgs e) {
 			Window parentWin = (Window)this.Toplevel;
 			editDate = new Gtk.Dialog(
-				WithTime ? "Укажите дату и время" : "Укажите дату",
+				"Укажите дату",
 				parentWin,
 				DialogFlags.DestroyWithParent
-			) 
-				{
-			Modal = true
-				};
+			) {
+				HeightRequest = 260,
+				WidthRequest = 200,
+				Modal = true
+			};		
+
+			editDate.VBox.Add(GetButtonsVbox());
+
+			editDate.AddButton("Отмена", ResponseType.Cancel);
+			//editDate.AddButton("Ok", ResponseType.Ok);
+
+			editDate.ShowAll();
+			int response = editDate.Run();
+			
+			editDate.Destroy();
+		}
+
+		private VBox GetButtonsVbox() {
+			int buttonsHeight = 150;
+			int buttonsWidth = 30;
+
+			Button todayButton = new Button() { HeightRequest = buttonsHeight, WidthRequest = buttonsWidth };
+			todayButton.Label = $"Сегодня {DateTime.Now: dd.MM.yyyy}";
+			todayButton.Clicked += (s, ev) => {
+				SetTodayDate();
+			};
+
+			Button tommorowButton = new Button() { HeightRequest = buttonsHeight, WidthRequest = buttonsWidth };
+			tommorowButton.Label = $"Завтра {DateTime.Now + TimeSpan.FromDays(1): dd.MM.yyyy}";
+			tommorowButton.Clicked += (s, ev) => {
+				SetTommorowDate();
+			};
+
+			Button otherDateButton = new Button() { HeightRequest = buttonsHeight, WidthRequest = buttonsWidth };
+			otherDateButton.Label = $"Другая дата";
+			otherDateButton.Clicked += (s, ev) => {
+				SetOtherDate();
+			};
+
+			VBox vboxButtons = new VBox();
+			vboxButtons.Add(todayButton);
+			vboxButtons.Add(tommorowButton);
+			vboxButtons.Add(otherDateButton);
+
+			return vboxButtons;
+		}
+
+		private void SetTodayDate() {
+			editDate.Destroy();
+			DateOrNull = DateTime.Now.Date;
+		}
+
+		private void SetTommorowDate() {
+			editDate.Destroy();
+			DateOrNull = DateTime.Now.Date + TimeSpan.FromDays(1);
+		}
+
+		protected void SetOtherDate() {
+			editDate.Destroy();
+
+			Window parentWin = (Window)this.Toplevel;
+			editDate = new Gtk.Dialog(
+				"Укажите дату",
+				parentWin,
+				DialogFlags.DestroyWithParent) {
+				Modal = true
+			};
+
 			editDate.AddButton("Отмена", ResponseType.Cancel);
 			editDate.AddButton("Ok", ResponseType.Ok);
-			TimeEntry timeEntry = null;
-			if(WithTime) {
-				Label timeLabel = new Label("Время:");
-				timeEntry = new TimeEntry {
-					DateTime = date ?? DateTime.Today,
-					AutocompleteStep = 5
-				};
-				HScale timeScale = new HScale(0, 1439, 5) {
-					DrawValue = false,
-					Value = Date.Subtract(Date.Date).TotalMinutes
-				};
-				timeScale.Adjustment.PageIncrement = 60;
-				timeScale.ValueChanged += (o, args) => {
-					if(!timeEntry.HasFocus)
-						timeEntry.Time = TimeSpan.FromMinutes(timeScale.Value);
-				};
-				timeEntry.Changed += (s, ea) => timeScale.Value = timeEntry.Time.TotalMinutes;
-				VBox timeCtrlBox = new VBox {
-					timeEntry,
-					timeScale
-				};
-				HBox timeBox = new HBox {
-					timeLabel,
-					timeCtrlBox
-				};
-				editDate.VBox.Add(timeBox);
-			}
+
 			Calendar SelectDate = new Calendar();
 			SelectDate.DisplayOptions = CalendarDisplayOptions.ShowHeading |
 				CalendarDisplayOptions.ShowDayNames |
@@ -188,13 +198,17 @@ namespace QS.Widgets.GtkUI
 				var desc = new FontDescription { AbsoluteSize = CalendarFontSize.Value * 1000 };
 				SelectDate.ModifyFont(desc);
 			}
+
 			editDate.VBox.Add(SelectDate);
 			editDate.ShowAll();
+
 			int response = editDate.Run();
+
 			if(response == (int)ResponseType.Ok) {
-				DateOrNull = WithTime ? SelectDate.GetDate() + timeEntry.Time : SelectDate.GetDate();
+				DateOrNull = SelectDate.GetDate();
 				OnDateChangedByUser();
 			}
+
 			SelectDate.Destroy();
 			editDate.Destroy();
 		}
@@ -226,7 +240,7 @@ namespace QS.Widgets.GtkUI
 
 		void EntrySetDateTime(DateTime? date) {
 			if(date.HasValue)
-				entryDate.Text = WithTime ? date.Value.ToString("g") : date.Value.ToShortDateString();
+				entryDate.Text = date.Value.ToShortDateString();
 			else
 				entryDate.Text = String.Empty;
 		}
@@ -244,8 +258,9 @@ namespace QS.Widgets.GtkUI
 		}
 
 		protected void OnEntryDateTextInserted(object o, TextInsertedArgs args) {
-			if(!_AutoSeparation)
+			if(!_AutoSeparation) {
 				return;
+			}
 			if(args.Length == 1 &&
 			   (args.Position == 3 || args.Position == 6) &&
 			   args.Text != System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator &&
@@ -257,13 +272,11 @@ namespace QS.Widgets.GtkUI
 			}
 		}
 
-		protected void OnEntryDateActivated(object sender, EventArgs e) 
-		{
+		protected void OnEntryDateActivated(object sender, EventArgs e) {
 			this.ChildFocus(DirectionType.TabForward);
 		}
 
-		public new void ModifyBase(StateType state, Gdk.Color color) 
-		{
+		public new void ModifyBase(StateType state, Gdk.Color color) {
 			entryDate.ModifyBase(state, color);
 		}
 	}
