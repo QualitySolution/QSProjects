@@ -27,6 +27,7 @@ namespace QS.Widgets.GtkUI
 			this.entTimeRange.IsEditable = false;
 			this.entTimeRange.MaxLength = 23;
 			this.entTimeRange.InvisibleChar = '●';
+			this.entTimeRange.Xalign = 0.5F;
 			this.hbox1.Add(this.entTimeRange);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.entTimeRange]));
 			w1.Position = 0;
