@@ -31,17 +31,6 @@ namespace QS.Widgets.GtkUI
 			});
 		}
 
-		bool withTime;
-		//[Browsable(true)]
-		[DefaultValue(false)]
-		public bool WithTime {
-			get => withTime;
-			set {
-				withTime = value;
-				entryDate.MaxLength = entryDate.WidthChars = WithTime ? 16 : 10;
-			}
-		}
-
 		public bool HideCalendarButton {
 			get => !buttonEditDate.Visible;
 			set => buttonEditDate.Visible = !value;
