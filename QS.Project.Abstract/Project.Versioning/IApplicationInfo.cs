@@ -6,7 +6,7 @@ namespace QS.Project.Versioning
 		byte ProductCode { get; }
 		string ProductName { get; }
 		string ProductTitle { get; }
-		string Modification { get; }
+		string? Modification { get; }
 		string ModificationTitle { get; }
 		bool ModificationIsHidden { get; }
 		string[] CompatibleModifications { get; }
