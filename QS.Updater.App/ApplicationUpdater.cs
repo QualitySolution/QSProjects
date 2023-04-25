@@ -41,13 +41,15 @@ namespace QS.Updater.App {
 		public void CheckUpdate(bool manualRun) {
 			logger.Info("Запрашиваем информацию о новых версиях с сервера");
 			string serial = parametersService?.Dynamic.serial_number ?? String.Empty;
+			ReleaseChannel.TryParse(parametersService?.Dynamic.UpdateChannel, out ReleaseChannel channel);
 			ReleaseInfo[] releases = Array.Empty<ReleaseInfo>();
 			try {
 				 releases = releasesService.CheckForUpdates(
 					applicationInfo.ProductCode,
 					applicationInfo.Version.VersionToShortString(),
 					applicationInfo.Modification ?? String.Empty,
-					serial
+					serial,
+					channel
 					);
 			}
 			catch(Exception ex) {

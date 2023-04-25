@@ -13,6 +13,7 @@ message CheckForUpdatesRequest{
   string version = 2;
   string modification = 3;
   string serial_number = 4;
+  ReleaseChannel channel = 5;
 }
 
 message CheckForUpdatesResponse{
@@ -32,4 +33,9 @@ enum DatabaseUpdate{
 	DATABASE_UPDATE_NONE = 0;
 	DATABASE_UPDATE_REQUIRED = 1;
 	DATABASE_UPDATE_BREAKING_CHANGE = 2;
+}
+
+enum ReleaseChannel{
+  RELEASE_CHANNEL_CURRENT = 0;
+  RELEASE_CHANNEL_STABLE = 1;
 }
