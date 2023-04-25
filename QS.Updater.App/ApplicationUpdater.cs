@@ -19,6 +19,7 @@ namespace QS.Updater.App {
 		private readonly IInteractiveMessage interactive;
 		private readonly IGuiDispatcher gui;
 		private readonly ISkipVersionState skipVersionState;
+		private readonly IUpdateChannelService channelService;
 		private readonly ParametersService parametersService;
 
 		public ApplicationUpdater(
@@ -28,6 +29,7 @@ namespace QS.Updater.App {
 			IInteractiveMessage interactive,
 			IGuiDispatcher gui,
 			ISkipVersionState skipVersionState = null,
+			IUpdateChannelService channelService = null,
 			ParametersService parametersService = null) {
 			this.releasesService = releasesService ?? throw new ArgumentNullException(nameof(releasesService));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
@@ -35,13 +37,14 @@ namespace QS.Updater.App {
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
 			this.skipVersionState = skipVersionState;
+			this.channelService = channelService;
 			this.parametersService = parametersService;
 		}
 
 		public void CheckUpdate(bool manualRun) {
 			logger.Info("Запрашиваем информацию о новых версиях с сервера");
 			string serial = parametersService?.Dynamic.serial_number ?? String.Empty;
-			ReleaseChannel.TryParse(parametersService?.Dynamic.UpdateChannel, out ReleaseChannel channel);
+			ReleaseChannel.TryParse(channelService?.CurrentChannel.ToString(), out ReleaseChannel channel);
 			ReleaseInfo[] releases = Array.Empty<ReleaseInfo>();
 			try {
 				 releases = releasesService.CheckForUpdates(
