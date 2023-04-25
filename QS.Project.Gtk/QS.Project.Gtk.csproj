@@ -238,6 +238,8 @@
     <Compile Include="gtk-gui\QS.Dialog.Views.ProgressWindowView.cs" />
     <Compile Include="Widgets.GtkUI\VehicleRegistrationNumberEntry.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.VehicleRegistrationNumberEntry.cs" />
+    <Compile Include="Widgets.GtkUI\SimpleSelectionDatePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
