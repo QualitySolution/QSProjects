@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Gamma.Utilities;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
@@ -16,7 +17,7 @@ namespace QS.Updater.App {
 		private readonly ReleasesService releasesService;
 		private readonly IApplicationInfo applicationInfo;
 		private readonly INavigationManager navigation;
-		private readonly IInteractiveMessage interactive;
+		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher gui;
 		private readonly ISkipVersionState skipVersionState;
 		private readonly IUpdateChannelService channelService;
@@ -26,7 +27,7 @@ namespace QS.Updater.App {
 			ReleasesService releasesService,
 			IApplicationInfo applicationInfo,
 			INavigationManager navigation,
-			IInteractiveMessage interactive,
+			IInteractiveService interactive,
 			IGuiDispatcher gui,
 			ISkipVersionState skipVersionState = null,
 			IUpdateChannelService channelService = null,
@@ -42,9 +43,13 @@ namespace QS.Updater.App {
 		}
 
 		public void CheckUpdate(bool manualRun) {
+			ReleaseChannel.TryParse(channelService?.CurrentChannel.ToString(), out ReleaseChannel channel);
+			CheckUpdate(manualRun, channel);
+		}
+
+		private void CheckUpdate(bool manualRun, ReleaseChannel channel) {
 			logger.Info("Запрашиваем информацию о новых версиях с сервера");
 			string serial = parametersService?.Dynamic.serial_number ?? String.Empty;
-			ReleaseChannel.TryParse(channelService?.CurrentChannel.ToString(), out ReleaseChannel channel);
 			ReleaseInfo[] releases = Array.Empty<ReleaseInfo>();
 			try {
 				 releases = releasesService.CheckForUpdates(
@@ -82,6 +87,24 @@ namespace QS.Updater.App {
 				}
 			}
 			logger.Info("Ок");
+		}
+
+		public void TryAnotherChannel() {
+			if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
+				return;
+			var cancelText = "Не надо";
+
+			var buttons = channelService.AvailableChannels
+				.Where(x => x != channelService.CurrentChannel)
+				.Select(x => x.GetEnumTitle())
+				.Union(new[] { cancelText }).ToArray();
+			var answer = interactive.Question(buttons,
+				"В используемом канале нет новых версий. При этом у вас более новая версия БД. Хотите проверить обновления в другом канале?");
+			if(answer == cancelText || String.IsNullOrEmpty(answer))
+				return;
+			var channel = channelService.AvailableChannels.First(x => x.GetEnumTitle() == answer);
+			ReleaseChannel.TryParse(channel.ToString(), out ReleaseChannel releaseChannel);
+			CheckUpdate(false, releaseChannel);
 		}
 	}
 }

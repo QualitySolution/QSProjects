@@ -25,6 +25,11 @@ namespace QS.Updater
 			}
 			
 			checkBaseVersion.Check();
+			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
+				applicationUpdater.TryAnotherChannel();
+				checkBaseVersion.Check();
+			}
+			
 			if(dbUpdater != null && (checkBaseVersion.ResultFlags == CheckBaseResult.Ok || checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess)) {
 				if(dbUpdater.HasUpdates) {
 					dbUpdater.UpdateDB();
