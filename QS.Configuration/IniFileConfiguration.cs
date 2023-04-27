@@ -44,10 +44,14 @@ namespace QS.Configuration
 					}
 				}
 				else {
-					if(config.Sections.ContainsSection(section) && config[section].ContainsKey(parameter)) {
-						config[section].RemoveKey(parameter);
-						if(config[section].Count == 0) {
+					if(config.Sections.ContainsSection(section)){
+						if(String.IsNullOrWhiteSpace(parameter))
 							config.Sections.RemoveSection(section);
+						else if(config[section].ContainsKey(parameter)) {
+							config[section].RemoveKey(parameter);
+							if(config[section].Count == 0) {
+								config.Sections.RemoveSection(section);
+							}
 						}
 						parser.WriteFile(IniFile, config);
 					}

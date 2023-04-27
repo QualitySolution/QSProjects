@@ -62,7 +62,7 @@ CardTypes = EF_MIFARE");
 			Assert.That(config["CardReader:NotExist"], Is.Null.Or.Empty);
 		}
 		
-		[Test(Description = "Проверяем что правильно читаем файл.")]
+		[Test(Description = "Проверяем что можем удалять ключи из файла.")]
 		public void DeleteValue() {
 			File.WriteAllText(tempIniFile, @"[OracleConnection]
 DataSource = (DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = tor.nlmk)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = tor.nlmk)))
@@ -97,6 +97,41 @@ Type = 0
 Account = 
 DataBase = workwear_osmbt_copy
 UserLogin = andrey
+[CardReader]
+Address = 0000001:1
+CardTypes = EF_MIFARE
+")); 
+		}
+		
+		[Test(Description = "Проверяем что можем удалить целиком секцию из файла.")]
+		public void DeleteSection() {
+			File.WriteAllText(tempIniFile, @"[OracleConnection]
+DataSource = (DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = tor.nlmk)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = tor.nlmk)))
+User = GANKOV_AV
+Password = gankov_av
+[Login10]
+ConnectionName = Мой ноутбук
+Server = 192.168.50.50
+Type = 0
+Account = 
+DataBase = workwear_osmbt_copy
+UserLogin = andrey
+[AppUpdater]
+SkipVersion = 2.6.1.0
+[CardReader]
+Address = 0000001:1
+CardTypes = EF_MIFARE");
+			
+			var config = new IniFileConfiguration(tempIniFile);
+			//Удаляем секцию
+			config["Login10:"] = null;
+			//Убираем видновый окончания чтобы сравнивать, так же новый движок добавляет разделительную пустую строку между секциями, тоже ее убираем.
+			Assert.That(File.ReadAllText(tempIniFile).Replace("\r","").Replace("\n\n", "\n"), Is.EqualTo(@"[OracleConnection]
+DataSource = (DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = tor.nlmk)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = tor.nlmk)))
+User = GANKOV_AV
+Password = gankov_av
+[AppUpdater]
+SkipVersion = 2.6.1.0
 [CardReader]
 Address = 0000001:1
 CardTypes = EF_MIFARE
