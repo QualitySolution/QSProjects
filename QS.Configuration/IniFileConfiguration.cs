@@ -45,15 +45,17 @@ namespace QS.Configuration
 				}
 				else {
 					if(config.Sections.ContainsSection(section)){
-						if(String.IsNullOrWhiteSpace(parameter))
+						if(String.IsNullOrWhiteSpace(parameter)) {
 							config.Sections.RemoveSection(section);
+							parser.WriteFile(IniFile, config);
+						}
 						else if(config[section].ContainsKey(parameter)) {
 							config[section].RemoveKey(parameter);
 							if(config[section].Count == 0) {
 								config.Sections.RemoveSection(section);
 							}
+							parser.WriteFile(IniFile, config);
 						}
-						parser.WriteFile(IniFile, config);
 					}
 				}
 			}
