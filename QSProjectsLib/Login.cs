@@ -127,6 +127,7 @@ namespace QSProjectsLib
 				logger.Warn("Конфигурационный файл не содержит соединений. Создаем новые.");
 				CreateDefaultConnections();
 			}
+			Connections.Sort((a, b) => String.Compare(a.ConnectionName, b.ConnectionName, StringComparison.CurrentCulture));
 			
 			SelectedConnection = OverwriteDefaultConnection 
 			                     ?? configuration["Default:ConnectionName"] 
