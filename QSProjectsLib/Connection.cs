@@ -36,6 +36,19 @@ namespace QSProjectsLib
 			AccountLogin = configuration[$"{section}:Account"];
 		}
 		#endregion
+		
+		public bool IsDemo {
+			get {
+				switch(Type) {
+					case ConnectionType.MySQL:
+						return Login.ApplicationDemoServer != null && Server == Login.ApplicationDemoServer;
+					case ConnectionType.SaaS:
+						return Login.ApplicationDemoAccount != null && AccountLogin == Login.ApplicationDemoAccount;
+					default:
+						return false;
+				}
+			}
+		}
 
 		public void Save(IChangeableConfiguration configuration) {
 			var section = IniName;

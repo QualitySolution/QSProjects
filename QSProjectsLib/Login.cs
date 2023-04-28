@@ -21,6 +21,7 @@ namespace QSProjectsLib
 
 		#region LoginSettings
 		public static string ApplicationDemoServer;
+		public static string ApplicationDemoAccount;
 		public static string CreateDBHelpTooltip;
 		public static string CreateDBHelpUrl;
 		public static string OverwriteDefaultConnection;
@@ -48,6 +49,8 @@ namespace QSProjectsLib
 
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		public Connection ConnectedTo { get; private set; } 
+		
 		public Gdk.Pixbuf Logo {
 			set { imageLogo.Pixbuf = value; }
 		}
@@ -122,7 +125,7 @@ namespace QSProjectsLib
 
 			if (Connections.Count == 0) {
 				logger.Warn("Конфигурационный файл не содержит соединений. Создаем новые.");
-				CreateDefaultConnection();
+				CreateDefaultConnections();
 			}
 			
 			SelectedConnection = OverwriteDefaultConnection 
@@ -133,7 +136,7 @@ namespace QSProjectsLib
 			UpdateCombo();
 		}
 
-		protected void CreateDefaultConnection() {
+		protected void CreateDefaultConnections() {
 			if(MakeDefaultConnections == null)
 				return;
 			
@@ -161,7 +164,7 @@ namespace QSProjectsLib
 		{
 			if (comboboxConnections.Active == -1)
 				return;
-			Connection Selected = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText);
+			Connection Selected = ConnectedTo = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText);
 			string connStr, host;
 			uint port = 3306;
 			string[] uriSplit = new string[2];
@@ -311,9 +314,7 @@ namespace QSProjectsLib
 			BaseName = Selected?.BaseName;
 			SelectedConnection = Selected?.ConnectionName;
 			entryPassword.GrabFocus();
-			if (ApplicationDemoServer == null)
-				return;
-			buttonDemo.Visible = server?.ToLower() == ApplicationDemoServer;
+			buttonDemo.Visible = Selected?.IsDemo ?? false;
 		}
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)
