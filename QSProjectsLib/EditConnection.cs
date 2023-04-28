@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Gtk;
 using QS.Configuration;
 using QS.DBScripts.Controllers;
@@ -51,28 +52,25 @@ namespace QSProjectsLib
 			for(int i = 0; i < connections.Count; i++)
 				connectionsListStore.AppendValues(connections[i].ConnectionName, connections[i]);
 			
-			int selectionIndex = connections.FindIndex(x => x.ConnectionName == selectedConnectionName);
-			if (selectionIndex < 0)
-				selectionIndex = 0;
-			var conn = connections[selectionIndex];
-			entryName.Text = conn.ConnectionName;
-			entryBase.Text = conn.BaseName;
-			if(conn.Type == ConnectionType.MySQL) {
+			var conn = connections.FirstOrDefault(x => x.ConnectionName == selectedConnectionName) ?? connections.FirstOrDefault();
+			
+			entryName.Text = conn?.ConnectionName;
+			entryBase.Text = conn?.BaseName;
+			if(conn?.Type == ConnectionType.MySQL) {
 				comboConnectionType.Active = 0;
 				entryLogin.Text = String.Empty;
-				entryServer.Text = conn.Server;
+				entryServer.Text = conn?.Server;
 			} else {
 				comboConnectionType.Active = 1;
 				entryServer.Text = String.Empty;
-				entryLogin.Text = conn.AccountLogin;
+				entryLogin.Text = conn?.AccountLogin;
 			}
 
-			buttonCreateBase.Sensitive = dbCreator != null;
-			
-			treeConnections.Model.GetIter(out currentIter, new TreePath(selectionIndex.ToString()));
+			ListStoreWorks.SearchListStore(connectionsListStore, conn, 1, out currentIter);
 			treeConnections.Selection.SelectIter(currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
 
+			buttonCreateBase.Sensitive = dbCreator != null;
 			buttonHelp.Visible = !String.IsNullOrEmpty(Login.CreateDBHelpUrl);
 			buttonHelp.TooltipText = Login.CreateDBHelpTooltip;
 		}
