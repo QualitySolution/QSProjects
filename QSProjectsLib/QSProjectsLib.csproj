@@ -111,9 +111,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QS.MachineConfig\QS.MachineConfig.csproj">
-      <Project>{769710d2-bf98-4120-9e07-67bd740cfa1d}</Project>
-      <Name>QS.MachineConfig</Name>
+    <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj">
+      <Project>{5d124360-c8fb-4779-958b-0da5d6b90c29}</Project>
+      <Name>QS.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>

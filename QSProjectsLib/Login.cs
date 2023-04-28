@@ -1,23 +1,24 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using Gtk;
 using MySql.Data.MySqlClient;
-using Nini.Config;
+using QS.Configuration;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
-using QSMachineConfig;
 using QSSaaS;
 
 namespace QSProjectsLib
 {
 	public partial class Login : Dialog
 	{
+		private readonly IChangeableConfiguration configuration;
+
 		#region LoginSettings
 		public static string ApplicationDemoServer;
 		public static string CreateDBHelpTooltip;
@@ -58,8 +59,9 @@ namespace QSProjectsLib
 			}
 		}
 
-		public Login()
+		public Login(IChangeableConfiguration configuration)
 		{
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.Build();
 
 			if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -109,47 +111,24 @@ namespace QSProjectsLib
 		{
 			BaseName = DefaultBase = ProjectName;
 			DefaultConnection = "По умолчанию";
-			MachineConfig.ConfigFileName = ProjectName + ".ini";
 		}
 
 		public void UpdateFromGConf()
 		{
-			IConfig Config;
 			Connections.Clear();
 
-			MachineConfig.ReloadConfigFile();
-			System.Collections.IEnumerator en = MachineConfig.ConfigSource.Configs.GetEnumerator();
-			while (en.MoveNext()) {
-				Config = (IConfig)en.Current;
-				if (Regex.IsMatch(Config.Name, @"Login[0-9]*")) {
-					String type = Config.Get("Type", ((int)ConnectionType.MySQL).ToString());
-					Connections.Add(new Connection((ConnectionType)int.Parse(type),
-						Config.Get("ConnectionName", DefaultConnection),
-						Config.Get("DataBase", BaseName),
-						Config.Get("Server", DefaultServer),
-						Config.Get("UserLogin", String.Empty),
-						Config.Name,
-						Config.Get("Account", String.Empty)));
-				}
-				else if (Config.Name == "Default") {
-					SelectedConnection = Config.Get("ConnectionName", String.Empty);
-				}
+			foreach(var i in Enumerable.Range(-1, 100)) {
+				var section = "Login" + (i >= 0 ? i.ToString() : String.Empty);
+				if(configuration[$"{section}:ConnectionName"] != null)
+					Connections.Add(new Connection(configuration, section));
 			}
+
 			if (Connections.Count == 0) {
-				logger.Warn("Конфигурационный файл не содержит соединений. Создаем новое.");
+				logger.Warn("Конфигурационный файл не содержит соединений. Создаем новые.");
 				CreateDefaultConnection();
 			}
-
-			if (MachineConfig.ConfigSource.Configs["Default"] == null) {     //Создаем раздел по-умолчанию, чтобы он гарантировано был
-				MachineConfig.ConfigSource.AddConfig("Default");
-				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", String.Empty);
-				MachineConfig.ConfigSource.Save();
-			}
-
-			if(!String.IsNullOrWhiteSpace(OverwriteDefaultConnection))
-			{
-				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", OverwriteDefaultConnection);
-			}
+			
+			SelectedConnection = OverwriteDefaultConnection ?? configuration["Default:ConnectionName"];
 
 			entryPassword.GrabFocus();
 			UpdateCombo();
@@ -262,9 +241,8 @@ namespace QSProjectsLib
 
 				labelLoginInfo.Text = ConnectionError = String.Empty;
 				String ini = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText).IniName;
-				MachineConfig.ConfigSource.Configs[ini].Set("UserLogin", entryUser.Text);
-				MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", comboboxConnections.ActiveText);
-				MachineConfig.ConfigSource.Save();
+				configuration[$"{ini}:UserLogin"] = entryUser.Text;
+				configuration["Default:ConnectionName"] = comboboxConnections.ActiveText;
 				QSMain.ConnectionString = connStr;
 				QSMain.ConnectionStringBuilder = conStrBuilder;
 				QSMain.User = new UserInfo(entryUser.Text.ToLower());
@@ -315,23 +293,16 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues(c.ConnectionName);
-			SelectedConnection = (String)MachineConfig.ConfigSource.Configs["Default"].Get("ConnectionName", String.Empty);
-			if (SelectedConnection != String.Empty) {
-				if (Connections.Find(m => m.ConnectionName == SelectedConnection) == null) {
-					MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", String.Empty);
-					MachineConfig.ConfigSource.Save();
-					SelectedConnection = String.Empty;
-				}
-				else {
-					TreeIter tempIter;
-					store.GetIterFirst(out tempIter);
-					do {
-						if ((string)store.GetValue(tempIter, 0) == SelectedConnection) {
-							comboboxConnections.SetActiveIter(tempIter);
-							break;
-						}
-					} while (store.IterNext(ref tempIter));
-				}
+			SelectedConnection = configuration["Default:ConnectionName"];
+			
+			if (Connections.Any(m => m.ConnectionName == SelectedConnection)) {
+				store.GetIterFirst(out TreeIter tempIter);
+				do {
+					if ((string)store.GetValue(tempIter, 0) == SelectedConnection) {
+						comboboxConnections.SetActiveIter(tempIter);
+						break;
+					}
+				} while (store.IterNext(ref tempIter));
 			}
 			else
 				comboboxConnections.Active = 0;
@@ -354,7 +325,7 @@ namespace QSProjectsLib
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)
 		{
-			EditConnection dlg = new EditConnection(Connections, SelectedConnection, GetDBCreator?.Invoke());
+			EditConnection dlg = new EditConnection(configuration, Connections, SelectedConnection, GetDBCreator?.Invoke());
 			dlg.EditingDone += (se, ev) => UpdateFromGConf();
 			dlg.Run();
 			dlg.Destroy();

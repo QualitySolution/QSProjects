@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Gtk;
+using QS.Configuration;
 using QS.DBScripts.Controllers;
-using QSMachineConfig;
 
 namespace QSProjectsLib
 {
@@ -11,6 +11,7 @@ namespace QSProjectsLib
 	{
 		ListStore connectionsListStore = new ListStore(typeof(string), typeof(Connection));
 		List<string> sectionsToDelete = new List<string>();
+		private readonly IChangeableConfiguration configuration;
 		private readonly IDBCreator dbCreator;
 		TreeIter currentIter;
 		string lastEdited;
@@ -23,11 +24,12 @@ namespace QSProjectsLib
 				EditingDone(null, EventArgs.Empty);
 		}
 
-		public EditConnection(List<Connection> connections, string selectedConnectionName, IDBCreator dbCreator = null)
+		public EditConnection(IChangeableConfiguration configuration, List<Connection> connections, string selectedConnectionName, IDBCreator dbCreator = null)
 		{
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.dbCreator = dbCreator;
 			this.Build();
 			this.Title = "Настройка соединений";
-			this.dbCreator = dbCreator;
 
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
 			entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
@@ -183,12 +185,8 @@ namespace QSProjectsLib
 
 		protected void Delete ()
 		{
-			foreach (string section in sectionsToDelete) {
-				var config = MachineConfig.ConfigSource.Configs [section];
-				if (config != null)
-					MachineConfig.ConfigSource.Configs.Remove (config);
-			}
-			MachineConfig.ConfigSource.Save ();
+			foreach (string section in sectionsToDelete)
+				configuration[$"{section}:"] = null;
 		}
 
 		protected void Save ()
@@ -206,21 +204,10 @@ namespace QSProjectsLib
 					}
 					connection.IniName = "Login" + i;
 				}
-				var section = connection.IniName;
-				if (MachineConfig.ConfigSource.Configs [section] == null)
-					MachineConfig.ConfigSource.Configs.Add (section);
-				MachineConfig.ConfigSource.Configs [section].Set ("ConnectionName", connection.ConnectionName);
-				MachineConfig.ConfigSource.Configs [section].Set ("Server", connection.Server);
-				MachineConfig.ConfigSource.Configs [section].Set ("Type", ((int)connection.Type).ToString ());
-				MachineConfig.ConfigSource.Configs [section].Set ("Account", connection.AccountLogin);
-				MachineConfig.ConfigSource.Configs [section].Set ("DataBase", connection.BaseName);
+				connection.Save(configuration);
 			} while (treeConnections.Model.IterNext (ref iter));
 
-			if (MachineConfig.ConfigSource.Configs ["Default"] == null)
-				MachineConfig.ConfigSource.AddConfig ("Default");
-			MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", lastEdited);
-			
-			MachineConfig.ConfigSource.Save ();	
+			configuration["Default:ConnectionName"] = lastEdited;
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
