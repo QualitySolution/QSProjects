@@ -195,7 +195,7 @@ namespace QSProjectsLib
 			do {
 				var connection = (Connection)treeConnections.Model.GetValue (iter, 1);
 				if (String.IsNullOrWhiteSpace (connection.IniName)) {
-					int i = 0;
+					int i = 1;
 					for (;; i++) {
 						if (!ListStoreWorks.SearchListStore<Connection>((ListStore)treeConnections.Model, m => m.IniName == ("Login" + i), 1, out TreeIter tempIter))
 							break;
