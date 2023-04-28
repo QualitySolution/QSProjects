@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -24,6 +24,12 @@ namespace QSProjectsLib
 		public static string CreateDBHelpTooltip;
 		public static string CreateDBHelpUrl;
 		public static string OverwriteDefaultConnection;
+		
+		/// <summary>
+		/// Функция будет вызвана для получения списка соединений по умолчанию. Вызывается если конфигурационный файл новый или не содержит настроенных соединений.
+		/// Ini секция будет перезаполнена.
+		/// </summary>
+		public static Func<IEnumerable<Connection>> MakeDefaultConnections;
 		#endregion
 		#region Расширения
 		public Func<IDBCreator> GetDBCreator;
@@ -33,10 +39,7 @@ namespace QSProjectsLib
 		String connectionError;
 		public string SelectedConnection;
 		public string BaseName;
-		public string DefaultLogin;
-		public string DefaultServer;
 		public static string DefaultBase;
-		public string DefaultConnection;
 		public string DemoMessage;
 		private string server;
 		private const bool ShowPassInException = false;
@@ -71,10 +74,10 @@ namespace QSProjectsLib
 
 			SelectedConnection = String.Empty;
 			Connections = new List<Connection>();
-			DefaultServer = "localhost";
 			var appInfo = new ApplicationVersionInfo();
 			string ver = appInfo.Version.VersionToShortString();
 			string app = appInfo.ProductTitle;
+			BaseName = DefaultBase = appInfo.ProductName.ToLower();
 
 			//Редакции
 			if (!appInfo.ModificationIsHidden)
@@ -107,12 +110,6 @@ namespace QSProjectsLib
 			}
 		}
 
-		public void SetDefaultNames(string ProjectName)
-		{
-			BaseName = DefaultBase = ProjectName;
-			DefaultConnection = "По умолчанию";
-		}
-
 		public void UpdateFromGConf()
 		{
 			Connections.Clear();
@@ -128,29 +125,25 @@ namespace QSProjectsLib
 				CreateDefaultConnection();
 			}
 			
-			SelectedConnection = OverwriteDefaultConnection ?? configuration["Default:ConnectionName"];
+			SelectedConnection = OverwriteDefaultConnection 
+			                     ?? configuration["Default:ConnectionName"] 
+			                     ?? Connections.FirstOrDefault()?.ConnectionName;
 
 			entryPassword.GrabFocus();
 			UpdateCombo();
 		}
 
-		protected void CreateDefaultConnection()
-		{
-			IConfig config = MachineConfig.ConfigSource.AddConfig("Login0");
-			config.Set("UserLogin", DefaultLogin);
-			config.Set("Server", DefaultServer);
-			config.Set("ConnectionName", DefaultConnection);
-			if (MachineConfig.ConfigSource.Configs["Default"] == null)
-				MachineConfig.ConfigSource.AddConfig("Default");
-			MachineConfig.ConfigSource.Configs["Default"].Set("ConnectionName", DefaultConnection);
-
-			MachineConfig.SaveConfigFile();
-
-			Connections.Add(new Connection(ConnectionType.MySQL, DefaultConnection, BaseName, DefaultServer, DefaultLogin, "Login0", ""));
-
-			server = config.Get("Server");
-			entryUser.Text = config.Get("UserLogin");
-			SelectedConnection = DefaultConnection;
+		protected void CreateDefaultConnection() {
+			if(MakeDefaultConnections == null)
+				return;
+			
+			int i = 0;
+			foreach(var con in MakeDefaultConnections()) {
+				i++;
+				con.IniName = "Login" + i;
+				con.Save(configuration);
+				Connections.Add(con);
+			}
 		}
 
 		protected virtual void OnButtonErrorInfoClicked(object sender, System.EventArgs e)
@@ -313,14 +306,14 @@ namespace QSProjectsLib
 		protected void OnComboboxConnectionsChanged(object sender, EventArgs e)
 		{
 			Connection Selected = Connections.Find(m => m.ConnectionName == comboboxConnections.ActiveText);
-			server = Selected.Server;
-			entryUser.Text = Selected.UserName;
-			BaseName = Selected.BaseName;
-			SelectedConnection = Selected.ConnectionName;
+			server = Selected?.Server;
+			entryUser.Text = Selected?.UserName;
+			BaseName = Selected?.BaseName;
+			SelectedConnection = Selected?.ConnectionName;
 			entryPassword.GrabFocus();
 			if (ApplicationDemoServer == null)
 				return;
-			buttonDemo.Visible = server.ToLower() == ApplicationDemoServer;
+			buttonDemo.Visible = server?.ToLower() == ApplicationDemoServer;
 		}
 
 		protected void OnButtonEditConnectionClicked(object sender, EventArgs e)

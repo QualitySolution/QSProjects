@@ -15,7 +15,7 @@ namespace QSProjectsLib
 		public ConnectionType Type;
 
 		#region Конструкторы
-		public Connection(ConnectionType type, string name, string baseName, string server, string user, string ini, string account)
+		public Connection(ConnectionType type, string name, string baseName, string server = null, string user = null, string ini = null, string account = null)
 		{
 			ConnectionName = name;
 			BaseName = baseName;
@@ -44,6 +44,7 @@ namespace QSProjectsLib
 			configuration[$"{section}:Type"] = ((int)Type).ToString ();
 			configuration[$"{section}:Account"] = AccountLogin;
 			configuration[$"{section}:DataBase"] = BaseName;
+			configuration[$"{section}:UserLogin"] = UserName;
 		}
 	}
 }
