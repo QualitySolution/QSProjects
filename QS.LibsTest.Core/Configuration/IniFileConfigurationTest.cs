@@ -137,5 +137,53 @@ Address = 0000001:1
 CardTypes = EF_MIFARE
 ")); 
 		}
+		
+		[Test(Description = "Проверяем что не создаем пустых секций при проверке значения.")]
+		[Category("real case")]
+		public void DontMakeEmptySections() {
+			File.WriteAllText(tempIniFile, @"[OracleConnection]
+DataSource = (DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = tor.nlmk)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = tor.nlmk)))
+User = GANKOV_AV
+Password = gankov_av
+[Login10]
+ConnectionName = Мой ноутбук
+Server = 192.168.50.50
+Type = 0
+Account = 
+DataBase = workwear_osmbt_copy
+UserLogin = andrey
+[AppUpdater]
+SkipVersion = 2.6.1.0
+[CardReader]
+Address = 0000001:1
+CardTypes = EF_MIFARE");
+			
+			var config = new IniFileConfiguration(tempIniFile);
+			//Читаем несуществующее поле.
+			Assert.That(config["Login50:ConnectionName"], Is.Null);
+			//Для того чтобы записался конфиг
+			config["Login11:ConnectionName"] = "Тест";
+			
+			//Ниже не должно создаться секции Login50 мы только проверяли наличие в ней поля.
+			Assert.That(File.ReadAllText(tempIniFile).Replace("\r","").Replace("\n\n", "\n"), Is.EqualTo(@"[OracleConnection]
+DataSource = (DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = tor.nlmk)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = tor.nlmk)))
+User = GANKOV_AV
+Password = gankov_av
+[Login10]
+ConnectionName = Мой ноутбук
+Server = 192.168.50.50
+Type = 0
+Account = 
+DataBase = workwear_osmbt_copy
+UserLogin = andrey
+[AppUpdater]
+SkipVersion = 2.6.1.0
+[CardReader]
+Address = 0000001:1
+CardTypes = EF_MIFARE
+[Login11]
+ConnectionName = Тест
+")); 
+		}
 	}
 }

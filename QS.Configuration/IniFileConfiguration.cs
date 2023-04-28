@@ -33,6 +33,8 @@ namespace QS.Configuration
 		public string this[string key] {
 			get {
 				ParseKey(key, out string section, out string parameter);
+				if(!config.Sections.ContainsSection(section))
+					return null;
 				return config[section][parameter];
 			}
 			set {
