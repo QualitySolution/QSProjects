@@ -183,7 +183,7 @@ namespace QSProjectsLib
 
 		protected void Delete ()
 		{
-			foreach (string section in sectionsToDelete)
+			foreach (string section in sectionsToDelete.Where(x => !String.IsNullOrEmpty(x)))
 				configuration[$"{section}:"] = null;
 		}
 
