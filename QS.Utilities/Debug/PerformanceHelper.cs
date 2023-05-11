@@ -1,30 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 
 namespace QS.Utilities.Debug
 {
 	public class PerformanceHelper
 	{
+		private readonly Logger logger;
 		List<TimePoint> pointsList = new List<TimePoint>();
 		List<TimePoint> currentPointsList;
 		List<TimePoint> currentGroupLevels = new List<TimePoint>();
 
-		public PerformanceHelper()
+		/// <summary>
+		/// Создает новый помощник замера производительности.
+		/// </summary>
+		/// <param name="nameFirstPoint">Название стартовой точки. По умолчанию 'Старт'.</param>
+		/// <param name="logger">Логер, если указан при добавлении каждой точки название будет записываться в лог.</param>
+		public PerformanceHelper(string nameFirstPoint = "Старт", NLog.Logger logger = null)
 		{
-			currentPointsList = pointsList;
-			CheckPoint("Старт");
-		}
-
-		public PerformanceHelper(string nameFirstPoint)
-		{
+			this.logger = logger;
 			currentPointsList = pointsList;
 			CheckPoint(nameFirstPoint);
 		}
 
-		public void CheckPoint(string name = null)
-		{
-			currentPointsList.Add( new TimePoint(name ?? currentPointsList.Count.ToString()));
+		public void CheckPoint(string name = null) {
+			var point = new TimePoint(name ?? currentPointsList.Count.ToString());
+			currentPointsList.Add(point);
+			logger?.Debug("Time point: " + point.Name);
 		}
 
 		public void StartGroup(string name)
@@ -38,6 +41,7 @@ namespace QS.Utilities.Debug
 			currentPointsList.Add(group);
 			currentGroupLevels.Add(group);
 			currentPointsList = group.InternalPoints;
+			logger?.Debug("Start time group: " + group.Name);
 		}
 
 		public void EndGroup()
@@ -49,6 +53,7 @@ namespace QS.Utilities.Debug
 				currentPointsList = currentGroupLevels.Last().InternalPoints;
 			else
 				currentPointsList = pointsList;
+			logger?.Debug("End time group: " + group.Name);
 		}
 
 		public void CheckPoint(NLog.Logger logger, string name = null)
