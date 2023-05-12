@@ -64,6 +64,7 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalChunkLinqLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
