@@ -28,7 +28,7 @@ namespace QSProjectsLib
 
 		public Connection(IChangeableConfiguration configuration, string section) {
 			IniName = section;
-			Type = (ConnectionType)int.Parse(configuration[$"{section}:Type"]);
+			Type = (ConnectionType)int.Parse(configuration[$"{section}:Type"] ?? "0");
 			ConnectionName = configuration[$"{section}:ConnectionName"];
 			Server = configuration[$"{section}:Server"];
 			BaseName = configuration[$"{section}:DataBase"];
