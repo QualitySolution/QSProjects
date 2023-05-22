@@ -35,8 +35,8 @@ namespace QSBusinessCommon
 
 		public override bool Save ()
 		{
-			var valid = new QSValidator<MeasurementUnits> (UoWGeneric.Root);
-			if (valid.RunDlgIfNotValid ((Gtk.Window)this.Toplevel))
+			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			if (!validator.Validate(Entity))
 				return false;
 
 			logger.Info ("Сохраняем единицы измерения...");

@@ -1,6 +1,4 @@
-﻿using System;
-using Gtk;
-using QS.Journal.GtkUI;
+﻿using Gtk;
 
 namespace QS.Tdi
 {

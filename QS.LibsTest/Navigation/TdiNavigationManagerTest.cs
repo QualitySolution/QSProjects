@@ -12,7 +12,6 @@ using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Test.GtkUI;
 using QS.Test.TestApp.Dialogs;
-using QS.Test.TestApp.JournalViewModels;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;

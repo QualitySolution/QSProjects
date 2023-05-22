@@ -163,7 +163,6 @@
     <Compile Include="ErrorReporting\ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
     <Compile Include="Validation\GtkValidationViewFactory.cs" />
-    <Compile Include="Validation\QSValidator.cs" />
     <Compile Include="Validation\ResultItem.cs" />
     <Compile Include="Validation\ResultsListDlg.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
