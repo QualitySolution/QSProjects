@@ -93,8 +93,8 @@ namespace QSBanks
 
 		public bool Save()
 		{
-			var valid = new QSValidator<Account> (entity);
-			if (valid.RunDlgIfNotValid ((Window)this.Toplevel))
+			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			if (!validator.Validate(entity))
 				return false;
 			logger.Info ("Сохраняем счет организации...");
 			SetToResultAccount();

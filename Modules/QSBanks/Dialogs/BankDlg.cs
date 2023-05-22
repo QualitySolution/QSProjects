@@ -44,8 +44,8 @@ namespace QSBanks
 
 		public override bool Save ()
 		{ //FIXME Если функция не понадобится в других проектах возможно ее нужно удалить. 
-			var valid = new QSValidator<Bank> (UoWGeneric.Root);
-			if (valid.RunDlgIfNotValid ((Gtk.Window)this.Toplevel))
+			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			if (!validator.Validate(Entity))
 				return false;
 
 			logger.Info ("Сохраняем банк...");
