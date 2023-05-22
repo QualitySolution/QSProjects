@@ -5,6 +5,7 @@ using System.Threading;
 using Gtk;
 using MySql.Data.MySqlClient;
 using NLog;
+using QS.Utilities.Text;
 
 namespace QSProjectsLib
 {
@@ -471,7 +472,7 @@ namespace QSProjectsLib
 			if (StatusBarLabel == null)
 				return;
 			
-			StatusBarLabel.LabelProp = message;
+			StatusBarLabel.LabelProp = message.EllipsizeMiddle(160);
 			if (!waitRedraw)
 				return;		
 			statusBarRedrawHandled = false;

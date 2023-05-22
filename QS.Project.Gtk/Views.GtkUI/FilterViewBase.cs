@@ -19,7 +19,9 @@ namespace QS.Views.GtkUI
 
 		public override void Destroy()
 		{
-			ViewModel?.Dispose();
+			if(ViewModel != null && ViewModel.DisposeOnDestroy) {
+				ViewModel.Dispose();
+			}
 			base.Destroy();
 		}
 	}

@@ -8,7 +8,6 @@ namespace Gamma.ColumnConfig
 {
 	public class PixbufRendererMapping<TNode> : RendererMappingBase<NodeCellRendererPixbuf<TNode>, TNode>
 	{
-		public string DataPropertyName { get; set;}
 		private NodeCellRendererPixbuf<TNode> cellRenderer = new NodeCellRendererPixbuf<TNode> ();
 
 		public PixbufRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, Pixbuf>> getDataExp)

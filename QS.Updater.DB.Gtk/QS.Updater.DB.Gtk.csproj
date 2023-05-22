@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{6D755374-6EAF-44B6-8C6C-6FE5E5AB3432}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>QS.Updater</RootNamespace>
+    <AssemblyName>QSUpdater</AssemblyName>
+    <ReleaseVersion>1.0</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="DB.Views\UpdateProcessView.cs" />
+    <Compile Include="gtk-gui\QS.Updater.DB.Views.UpdateProcessView.cs" />
+    <Compile Include="UpdaterDBAutofacModule.cs" />
+    <Compile Include="DBScripts.Views\AdminLoginView.cs" />
+    <Compile Include="gtk-gui\QS.DBScripts.Views.AdminLoginView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="mscorlib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
+      <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
+      <Name>Gamma.Binding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
+      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
+      <Name>QS.Project.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
+      <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
+      <Name>QS.Project.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.DB\QS.Updater.DB.csproj">
+      <Project>{9ed68a8a-25ee-4b6a-a483-a386bfc2f12b}</Project>
+      <Name>QS.Updater.DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj">
+      <Project>{c776ee5a-1795-439b-bb7d-9ab1b20eeac4}</Project>
+      <Name>QS.Updater.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj">
+      <Project>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</Project>
+      <Name>QS.Updater.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="NLog" Version="5.1.2" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DBScripts.Views" />
+  </ItemGroup>
+</Project>

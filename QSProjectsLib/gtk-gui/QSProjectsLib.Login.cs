@@ -297,8 +297,6 @@ namespace QSProjectsLib
 			this.buttonErrorInfo.Hide();
 			this.Show();
 			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);
-			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);
-			this.entryUser.Activated += new global::System.EventHandler (this.OnEntryActivated);
 			this.entryPassword.Activated += new global::System.EventHandler (this.OnEntryPasswordActivated);
 			this.comboboxConnections.Changed += new global::System.EventHandler (this.OnComboboxConnectionsChanged);
 			this.buttonEditConnection.Clicked += new global::System.EventHandler (this.OnButtonEditConnectionClicked);

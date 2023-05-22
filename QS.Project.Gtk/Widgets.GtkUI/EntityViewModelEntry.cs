@@ -11,7 +11,6 @@ using NLog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
-using QS.Navigation;
 using QS.Project.Dialogs.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
@@ -334,7 +333,7 @@ namespace QS.Widgets.GtkUI
 		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
 			var title = (string)tree_model.GetValue(iter, 0);
-			string pattern = String.Format("{0}", Regex.Escape(entryObject.Text));
+			var pattern = $"{Regex.Escape(entryObject.Text)}";
 			(cell as CellRendererText).Markup =
 				Regex.Replace(title, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 		}
@@ -357,12 +356,19 @@ namespace QS.Widgets.GtkUI
 			}
 			
 			logger.Info("Запрос данных для автодополнения...");
+
+			completionListStore?.Dispose();
 			completionListStore = new ListStore(typeof(string), typeof(object));
+
 			if(entitySelectorAutocompleteFactory == null) {
 				return;
 			}
-			autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector();
-			autoCompleteSelector.ListUpdated += OnListUpdated;
+
+			if(autoCompleteSelector is null) {
+				autoCompleteSelector = entitySelectorAutocompleteFactory.CreateAutocompleteSelector();
+				autoCompleteSelector.ListUpdated += OnListUpdated;
+			}
+
 			autoCompleteSelector.SearchValues(entryObject.Text);
 		}
 
@@ -376,23 +382,19 @@ namespace QS.Widgets.GtkUI
 					return;
 
 				foreach(var item in autoCompleteSelector.Items) {
-					if(item is JournalNodeBase) {
-						completionListStore.AppendValues(
-							(item as JournalNodeBase).Title,
-							item
-						);
-					} else if(item is INodeWithEntryFastSelect) {
-						completionListStore.AppendValues(
-							(item as INodeWithEntryFastSelect).EntityTitle,
-							item
-						);
+					switch(item)
+					{
+						case JournalNodeBase nodeBase:
+							completionListStore.AppendValues(nodeBase.Title, item);
+							break;
+						case INodeWithEntryFastSelect nodeWithEntryFastSelect:
+							completionListStore.AppendValues(nodeWithEntryFastSelect.EntityTitle, item);
+							break;
 					}
 				}
 				entryObject.Completion.Model = completionListStore;
 				entryObject.Completion.PopupCompletion = true;
 				logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
-
-				autoCompleteSelector.Dispose();
 			});
 		}
 
@@ -469,6 +471,7 @@ namespace QS.Widgets.GtkUI
 			if(autoCompleteSelector != null)
 			{
 				autoCompleteSelector.ListUpdated -= OnListUpdated;
+				autoCompleteSelector.Dispose();
 			}
 			
 			if(entryObject != null)
@@ -481,6 +484,8 @@ namespace QS.Widgets.GtkUI
 					entryObject.Completion.MatchSelected -= Completion_MatchSelected;
 				}
 			}
+			
+			completionListStore?.Dispose();
 			
 			base.OnDestroyed();
 			_isDisposed = true;

@@ -19,8 +19,6 @@ namespace Gamma.ColumnConfig
 		public BindingControler<TreeViewColumn> BindingController { get; private set; }
 		public string Title => TreeViewColumn.Title;
 
-		public string DataPropertyName { get; set;}
-
 		public bool IsEnterToNextCell { get; set;}
 
 		public object tag { get; set; }
@@ -127,38 +125,25 @@ namespace Gamma.ColumnConfig
 		#endregion
 
 		#region Renderers
-
-		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true, bool useMarkup = false)
+		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
 		{
-			var render = new TextRendererMapping<TNode> (this, dataProperty, useMarkup);
+			var render = new ComboRendererMapping<TNode, TItem> (this, dataProperty);
 			render.IsExpand = expand;
-			Renderers.Add (render);
-			return render;
-		}
-
-		public TextRendererMapping<TNode> AddTextRenderer()
-		{
-			var render = new TextRendererMapping<TNode> (this);
 			Renderers.Add (render);
 			return render;
 		}
 		
-		/// <summary>
-		/// Добавляет рендер текстовой ячейки используемой только для отображения.
-		/// Если нет необходимости редактировать значение, то рендеру не нужно знать свойство для мапинга, в этом случае он на вход можно передать сложную лямбду.  
-		/// </summary>
-		/// <param name="getTextFunc">Функция получения значения для отображения</param>
-		public ReadOnlyTextRendererMapping<TNode> AddReadOnlyTextRenderer(Func<TNode, string> getTextFunc, bool expand = true, bool useMarkup = false)
+		public DateRendererMapping<TNode> AddDateRenderer(Expression<Func<TNode, DateTime?>> dataProperty, bool expand = true)
 		{
-			var render = new ReadOnlyTextRendererMapping<TNode>(this, getTextFunc, useMarkup);
+			var render = new DateRendererMapping<TNode> (this, dataProperty);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
 		}
-
-		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
+		
+		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
-			var render = new ProgressRendererMapping<TNode> (this, dataProperty);
+			var render = new EnumRendererMapping<TNode, TItem> (this, dataProperty, excludeItems);
 			render.IsExpand = expand;
 			Renderers.Add (render);
 			return render;
@@ -179,31 +164,7 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
-
-		public ToggleRendererMapping<TNode> AddToggleRenderer(Expression<Func<TNode, bool>> dataProperty, bool expand = true)
-		{
-			var render = new ToggleRendererMapping<TNode> (this, dataProperty);
-			render.IsExpand = expand;
-			Renderers.Add (render);
-			return render;
-		}
-
-		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
-		{
-			var render = new EnumRendererMapping<TNode, TItem> (this, dataProperty, excludeItems);
-			render.IsExpand = expand;
-			Renderers.Add (render);
-			return render;
-		}
-
-		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
-		{
-			var render = new ComboRendererMapping<TNode, TItem> (this, dataProperty);
-			render.IsExpand = expand;
-			Renderers.Add (render);
-			return render;
-		}
-
+		
 		public PixbufRendererMapping<TNode> AddPixbufRenderer(Expression<Func<TNode, Pixbuf>> dataProperty, bool expand = true)
 		{
 			var render = new PixbufRendererMapping<TNode> (this, dataProperty);
@@ -211,7 +172,50 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
+		
+		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
+		{
+			var render = new ProgressRendererMapping<TNode> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+		
+		/// <summary>
+		/// Добавляет рендер текстовой ячейки используемой только для отображения.
+		/// Если нет необходимости редактировать значение, то рендеру не нужно знать свойство для мапинга, в этом случае ему на вход можно передать сложную лямбду.  
+		/// </summary>
+		/// <param name="getTextFunc">Функция получения значения для отображения</param>
+		public ReadOnlyTextRendererMapping<TNode> AddReadOnlyTextRenderer(Func<TNode, string> getTextFunc, bool expand = true, bool useMarkup = false)
+		{
+			var render = new ReadOnlyTextRendererMapping<TNode>(this, getTextFunc, useMarkup);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
 
+		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true, bool useMarkup = false)
+		{
+			var render = new TextRendererMapping<TNode> (this, dataProperty, useMarkup);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
+
+		public TextRendererMapping<TNode> AddTextRenderer()
+		{
+			var render = new TextRendererMapping<TNode> (this);
+			Renderers.Add (render);
+			return render;
+		}
+		
+		public ToggleRendererMapping<TNode> AddToggleRenderer(Expression<Func<TNode, bool>> dataProperty, bool expand = true)
+		{
+			var render = new ToggleRendererMapping<TNode> (this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add (render);
+			return render;
+		}
 		#endregion
 
 		#region ToolTip
@@ -223,6 +227,11 @@ namespace Gamma.ColumnConfig
 		public string GetTooltipText(object node) => cellTooltipTextFunc((TNode)node);
 
 		#endregion
+
+		public void ClearProperties() {
+			TreeViewColumn = null;
+			BindingController = null;
+		}
 	}
 }
 

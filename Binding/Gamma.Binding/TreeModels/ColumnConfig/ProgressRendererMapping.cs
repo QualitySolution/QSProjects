@@ -8,12 +8,10 @@ namespace Gamma.ColumnConfig
 	public class ProgressRendererMapping<TNode> : RendererMappingBase<NodeCellRendererProgress<TNode>, TNode>
 	{
 		List<Action<NodeCellRendererProgress<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererProgress<TNode>, TNode>>();
-		public string DataPropertyName { get; set;}
 
 		public ProgressRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, int>> getdataExp)
 			: base(column)
 		{
-			//DataPropertyName = PropertyUtil.GetName<TNode> (dataProperty);
 			var getter = getdataExp.Compile();
 			LambdaSetters.Add ((c, n) => c.Value = getter (n));
 		}
@@ -29,7 +27,6 @@ namespace Gamma.ColumnConfig
 		public override INodeCellRenderer GetRenderer ()
 		{
 			var cell = new NodeCellRendererProgress<TNode> ();
-			//cell.DataPropertyName = DataPropertyName;
 			cell.LambdaSetters = LambdaSetters;
 			return cell;
 		}

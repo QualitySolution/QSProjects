@@ -11,7 +11,7 @@ namespace QS.ViewModels.Control.EEVM
 		where TJournalViewModel : JournalViewModelBase
 	{
 		private readonly IUnitOfWork uow;
-		private readonly ILifetimeScope autofacScope;
+		protected readonly ILifetimeScope autofacScope;
 
 		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope)
 		{
@@ -19,11 +19,11 @@ namespace QS.ViewModels.Control.EEVM
 			this.autofacScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
 		}
 
-		TJournalViewModel journalViewModel;
+		protected TJournalViewModel journalViewModel;
 
 		public event EventHandler<AutocompleteUpdatedEventArgs> AutocompleteLoaded;
 
-		public TJournalViewModel JournalViewModel {
+		public virtual TJournalViewModel JournalViewModel {
 			get {
 				if (journalViewModel == null) {
 					journalViewModel = autofacScope.Resolve<TJournalViewModel>();
@@ -47,7 +47,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region Внутреннее
 
-		void DataLoader_ItemsListUpdated(object sender, EventArgs e)
+		protected void DataLoader_ItemsListUpdated(object sender, EventArgs e)
 		{
 			AutocompleteLoaded?.Invoke(this, new AutocompleteUpdatedEventArgs(journalViewModel.Items));
 		}
@@ -58,6 +58,27 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			if (journalViewModel != null)
 				journalViewModel.Dispose();
+		}
+	}
+
+	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>
+		where TEntity : class, IDomainObject
+		where TJournalViewModel : JournalViewModelBase
+		where TJournalFilterViewModel : IJournalFilterViewModel {
+		private Action<TJournalFilterViewModel> filterParams;
+
+		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope, Action<TJournalFilterViewModel> filterParams):base(unitOfWork, lifetimeScope) {
+			this.filterParams = filterParams;
+		}
+
+		public override TJournalViewModel JournalViewModel {
+			get {
+				if(journalViewModel == null) {
+					journalViewModel = autofacScope.Resolve<TJournalViewModel>(new TypedParameter(typeof(Action<TJournalFilterViewModel>), this.filterParams));
+					journalViewModel.DataLoader.ItemsListUpdated += DataLoader_ItemsListUpdated;
+				}
+				return journalViewModel;
+			}
 		}
 	}
 }

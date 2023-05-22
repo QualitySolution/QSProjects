@@ -7,23 +7,17 @@ using System.Text.RegularExpressions;
 
 namespace Gamma.GtkWidgets.Cells
 {
-	public class NodeCellRendererText<TNode> : CellRendererText, INodeCellRendererHighlighter
+	public class NodeCellRendererText<TNode> : CellRendererText, INodeCellRendererHighlighter, ISelfGetNodeRenderer
 	{
 		public List<Action<NodeCellRendererText<TNode>, TNode>> LambdaSetters = new List<Action<NodeCellRendererText<TNode>, TNode>>();
-
-		public string DataPropertyName { get{ return DataPropertyInfo.Name;
-			}}
 
 		public bool SearchHighlight { get; set;}
 
 		public PropertyInfo DataPropertyInfo { get; set;}
 
 		public IValueConverter EditingValueConverter { get; set;}
-
-		public NodeCellRendererText ()
-		{
-		}
-
+		
+		public Func<string, object> GetNodeFunc { set; private get; }
 		public void RenderNode(object node)
 		{
 			if(node is TNode)
@@ -45,6 +39,13 @@ namespace Gamma.GtkWidgets.Cells
 					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 				}
 				Markup = resultMarkup;
+			}
+		}
+
+		protected override void OnEdited(string path, string new_text) {
+			var node = GetNodeFunc(path);
+			if(DataPropertyInfo != null && DataPropertyInfo.CanWrite) {
+				DataPropertyInfo.SetValue(node, new_text, null);
 			}
 		}
 	}

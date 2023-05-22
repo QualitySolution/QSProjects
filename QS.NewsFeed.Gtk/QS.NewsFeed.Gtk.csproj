@@ -34,14 +34,8 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,17 +61,13 @@
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="NLog" Version="5.1.2" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -13,6 +13,7 @@ namespace QS.Widgets
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public double Value => Adjustment.Value;
+		public bool IsStarted => Visible;
 
 		public void Add(double addValue = 1, string text = null)
 		{

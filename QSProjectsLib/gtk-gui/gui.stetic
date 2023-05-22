@@ -169,8 +169,6 @@
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">●</property>
                     <signal name="Activated" handler="OnEntryActivated" />
-                    <signal name="Activated" handler="OnEntryActivated" />
-                    <signal name="Activated" handler="OnEntryActivated" />
                   </widget>
                   <packing>
                     <property name="TopAttach">1</property>

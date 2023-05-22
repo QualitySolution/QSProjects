@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
@@ -100,7 +100,13 @@ namespace QS.DBScripts.Models
 					var commands = myscript.Execute();
 					logger.Debug("Выполнено {0} SQL-команд.", commands);
 
-				} catch (MySqlException ex)
+				}
+				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.
+					logger.Error(ex, "Ошибка подключения к серверу.");
+					controller.WasError("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.");
+					return false;
+				}
+				catch (MySqlException ex)
 				{
 					logger.Info("Строка соединения: {0}", connStr);
 					logger.Error(ex, "Ошибка подключения к серверу.");

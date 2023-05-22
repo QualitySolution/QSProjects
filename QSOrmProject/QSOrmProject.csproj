@@ -46,26 +46,11 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml" />
     <Reference Include="mscorlib">
       <HintPath>..\..\..\..\..\usr\lib\mono\4.5-api\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,10 +153,6 @@
       <Project>{A6C1914F-7732-49F5-BABA-8BBBA521FAAB}</Project>
       <Name>QSProjectsLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Project\QS.Project.csproj">
       <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
       <Name>QS.Project</Name>
@@ -204,24 +185,24 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Autofac" Version="7.0.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.21.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
-    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.16" />
-    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.29" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="NHibernate" Version="5.3.12" />
-    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.5" />
+    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NHibernate" Version="5.4.1" />
+    <PackageReference Include="NLog" Version="5.1.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />

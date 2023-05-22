@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>QS.Configuration</RootNamespace>
+		<Company>Quality Solution</Company>
+		<ProjectGuid>{5D124360-C8FB-4779-958B-0DA5D6B90C29}</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+      <PackageReference Include="NLog" Version="5.1.2" />
+    </ItemGroup>
+
+</Project>

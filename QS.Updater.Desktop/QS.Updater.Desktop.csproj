@@ -2,23 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <RootNamespace>QS</RootNamespace>
-        <Company>Quality Solution</Company>
-        <ProjectGuid>{9ED68A8A-25EE-4B6A-A483-A386BFC2F12B}</ProjectGuid>
+		<RootNamespace>QS.Updater</RootNamespace>
+		<Company>Quality Solution</Company>
+		<ProjectGuid>{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}</ProjectGuid>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DBScripts" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
-      <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MySqlBackup.NET" Version="2.3.6.1" />
     </ItemGroup>
 
 </Project>

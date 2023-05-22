@@ -19,5 +19,7 @@ namespace Gamma.ColumnConfig
 		bool HasToolTip { get; }
 
 		string GetTooltipText(object node);
+
+		void ClearProperties();
 	}
 }

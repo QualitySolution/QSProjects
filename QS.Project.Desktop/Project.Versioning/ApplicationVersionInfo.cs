@@ -12,7 +12,7 @@ namespace QS.Project.Versioning
 		public string Modification => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.Name;
 		public string ModificationTitle => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.Title;
 		public bool ModificationIsHidden => Assembly.GetCustomAttribute<AssemblyModificationAttribute>()?.HideFromUser ?? true;
-		public string[] СompatibleModifications {
+		public string[] CompatibleModifications {
 			get {
 				var modificationAttributes = Assembly.GetCustomAttributes<AssemblyCompatibleModificationAttribute>();
 				var list = modificationAttributes.Select(x => x.Name).ToList();
@@ -26,7 +26,7 @@ namespace QS.Project.Versioning
 
 		public bool IsBeta => Assembly.GetCustomAttribute<AssemblyBetaBuildAttribute>() != null;
 
-		public DateTime BuildDate => System.IO.File.GetLastWriteTime(Assembly.Location);
+		public DateTime? BuildDate => System.IO.File.GetLastWriteTime(Assembly.Location);
 
 		public byte ProductCode => Assembly.GetCustomAttribute<AssemblyProductCodeAttribute>()?.Number ?? 0;
 

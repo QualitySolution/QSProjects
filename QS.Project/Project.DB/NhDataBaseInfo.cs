@@ -5,15 +5,17 @@ namespace QS.Project.DB
 {
 	public class NhDataBaseInfo : IDataBaseInfo
 	{
-		public NhDataBaseInfo(ParametersService baseParameters = null)
+		public NhDataBaseInfo(ParametersService baseParameters = null, bool isDemo = false)
 		{
-			if(baseParameters != null)
+			if(baseParameters != null) {
 				BaseGuid = baseParameters.Dynamic.BaseGuid(typeof(Guid));
+				Version = baseParameters.Dynamic.version(typeof(Version));
+			}
 
 			//Наверно фиговый способ получить имя базы. Но ничего лучше не придумал.
 			var session = OrmConfig.OpenSession();
 			Name = session.Connection.Database;
-			IsDemo = session.Connection.DataSource == "demo.qsolution.ru";
+			IsDemo = isDemo;
 			session.Close();
 		}
 
@@ -22,5 +24,7 @@ namespace QS.Project.DB
 		public bool IsDemo { get; private set; }
 
 		public Guid? BaseGuid { get; }
+
+		public Version Version { get; }
 	}
 }

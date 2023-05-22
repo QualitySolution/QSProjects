@@ -32,26 +32,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Data" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\QS.HistoryLog.Views.HistoryView.cs" />
@@ -76,21 +64,9 @@
       <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
       <Name>QS.Project.Desktop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
       <Name>QSWidgetLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
-      <Name>QS.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
@@ -122,12 +98,12 @@
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
     <PackageReference Include="DiffPlex" Version="1.7.1" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.3" />
+    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.0" />
     <PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
-    <PackageReference Include="NHibernate" Version="5.3.12" />
-    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="NHibernate" Version="5.4.1" />
+    <PackageReference Include="NLog" Version="5.1.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="System.AppContext" Version="4.3.0" />

@@ -30,8 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
     </Reference>
@@ -39,8 +37,6 @@
       <Package>glib-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Data.Sqlite" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
     </Reference>
@@ -49,10 +45,7 @@
     </Reference>
     <Reference Include="Mono.Posix" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.config">
@@ -171,18 +164,6 @@
       <Project>{301F793C-130B-44EB-A45D-60D5F040B0AD}</Project>
       <Name>QS.Banks</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.Updater\QS.Updater.csproj">
-      <Project>{0F2A9FD4-6FC1-4912-9C8A-72028305A37E}</Project>
-      <Name>QS.Updater</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Features\QS.Features.csproj">
-      <Project>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</Project>
-      <Name>QS.Features</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
-      <Name>QS.Utilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -191,21 +172,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="Autofac" Version="6.4.0" />
+    <PackageReference Include="Autofac" Version="7.0.0" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
     <PackageReference Include="Mono.Data.Sqlite" Version="1.0.61" />
-    <PackageReference Include="NHibernate" Version="5.3.12" />
-    <PackageReference Include="NSubstitute" Version="4.3.0" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="NUnit.ConsoleRunner" Version="3.15.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="NHibernate" Version="5.4.1" />
+    <PackageReference Include="NSubstitute" Version="5.0.0" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit.ConsoleRunner" Version="3.16.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />

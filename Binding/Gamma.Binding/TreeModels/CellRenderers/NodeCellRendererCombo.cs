@@ -11,12 +11,6 @@ namespace Gamma.GtkWidgets.Cells
 	{
 		public List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>> LambdaSetters = new List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>>();
 
-		public string DataPropertyName {
-			get {
-				return DataPropertyInfo.Name;
-			}
-		}
-
 		public PropertyInfo DataPropertyInfo { get; set; }
 
 		public IValueConverter EditingValueConverter { get; set; }
