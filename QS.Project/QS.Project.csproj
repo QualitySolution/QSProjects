@@ -182,7 +182,6 @@
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
-    <Compile Include="Navigation\IAutofacScopeHolder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />

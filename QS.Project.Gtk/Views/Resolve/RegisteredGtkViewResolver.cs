@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using Gtk;
 using QS.ViewModels;
-using QS.ViewModels.Dialog;
 
 namespace QS.Views.Resolve
 {
 	public class RegisteredGtkViewResolver : IGtkViewResolver
 	{
 		List<ResolveRule> registeredViews = new List<ResolveRule>();
+		private readonly IGtkViewFactory viewFactory;
 		readonly IGtkViewResolver nextResolver;
 
-		public RegisteredGtkViewResolver(IGtkViewResolver nextResolver)
-		{
+		public RegisteredGtkViewResolver(IGtkViewFactory viewFactory, IGtkViewResolver nextResolver) {
+			this.viewFactory = viewFactory;
 			this.nextResolver = nextResolver;
 		}
 
@@ -25,7 +25,7 @@ namespace QS.Views.Resolve
 		/// <typeparam name="TViewModel">Тип ViewModel, может быть интерфейсом или базовым классом, для регистрации одного View ко многим реализациям ViewModel</typeparam>
 		/// <typeparam name="TView">Тип View</typeparam>
 		public RegisteredGtkViewResolver RegisterView<TViewModel, TView>()
-			where TViewModel : DialogViewModelBase
+			where TViewModel : ViewModelBase
 			where TView : Widget
 		{
 			registeredViews.Add(new ResolveRule(typeof(TViewModel), typeof(TView)));
@@ -38,7 +38,7 @@ namespace QS.Views.Resolve
 		{
 			foreach(var rule in registeredViews) {
 				if(rule.IsMath(viewModel))
-					return rule.CreateView(viewModel);
+					return viewFactory.Create(rule.ViewType, viewModel);
 			}
 
 			return nextResolver.Resolve(viewModel);
@@ -48,7 +48,7 @@ namespace QS.Views.Resolve
 	internal class ResolveRule
 	{
 		readonly Type ViewModelType;
-		readonly Type ViewType;
+		public readonly Type ViewType;
 
 		public ResolveRule(Type viewModel, Type view)
 		{
@@ -59,11 +59,6 @@ namespace QS.Views.Resolve
 		public bool IsMath(ViewModelBase viewModel)
 		{
 			return ViewModelType.IsAssignableFrom(viewModel.GetType());
-		}
-
-		public Widget CreateView(ViewModelBase viewModel)
-		{
-			return (Widget)Activator.CreateInstance(ViewType, viewModel);
 		}
 	}
 }

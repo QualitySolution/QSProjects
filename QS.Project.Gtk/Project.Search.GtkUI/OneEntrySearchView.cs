@@ -5,7 +5,6 @@ using NLog;
 
 namespace QS.Project.Search.GtkUI
 {
-	[System.ComponentModel.ToolboxItem(true)]
 	public partial class OneEntrySearchView : Gtk.Bin
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();

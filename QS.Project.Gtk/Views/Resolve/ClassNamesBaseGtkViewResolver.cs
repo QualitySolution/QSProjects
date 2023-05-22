@@ -19,14 +19,17 @@ namespace QS.Views.Resolve
 	/// </summary>
 	public class ClassNamesBaseGtkViewResolver : IGtkViewResolver
 	{
+		private readonly IGtkViewFactory viewFactory;
 		Assembly[] lookupAssemblies;
 
-		public ClassNamesBaseGtkViewResolver(params Type[] typesInlookupAssemblies) : this(typesInlookupAssemblies.Select(Assembly.GetAssembly).ToArray())
-		{}
+		public ClassNamesBaseGtkViewResolver(IGtkViewFactory viewFactory, params Type[] typesInLookupAssemblies) : this(viewFactory, typesInLookupAssemblies.Select(Assembly.GetAssembly).ToArray()) {
+			
+		}
 
-		public ClassNamesBaseGtkViewResolver(params Assembly[] lookupAssemblies)
+		public ClassNamesBaseGtkViewResolver(IGtkViewFactory viewFactory, params Assembly[] lookupAssemblies)
 		{
 			this.lookupAssemblies = lookupAssemblies;
+			this.viewFactory = viewFactory;
 		}
 
 		public Widget Resolve(ViewModelBase viewModel)
@@ -41,11 +44,7 @@ namespace QS.Views.Resolve
 			foreach(var assambly in lookupAssemblies) {
 				Type viewClass = assambly.GetType(expectedViewName);
 				if(viewClass != null) {
-					var construstorWithResolver = viewClass.GetConstructor(new[] { viewModel.GetType(), typeof(IGtkViewResolver) });
-					if(construstorWithResolver != null) {
-						return (Widget)construstorWithResolver.Invoke(new object[] { viewModel, this });
-					}
-					return (Widget)Activator.CreateInstance(viewClass, viewModel);
+					return viewFactory.Create(viewClass, viewModel);
 				}
 			}
 

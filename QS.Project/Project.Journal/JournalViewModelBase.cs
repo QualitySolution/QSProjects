@@ -18,7 +18,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
+	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -69,8 +69,6 @@ namespace QS.Project.Journal
 		/// </summary>
 		public virtual bool? UseSlider { get; protected set; }
 		#endregion
-
-		public ILifetimeScope AutofacScope { get; set; }
 
 		#region ISlideableViewModel
 
