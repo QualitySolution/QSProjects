@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace QS.Validation {
@@ -14,6 +14,8 @@ namespace QS.Validation {
 				var exception = new ArgumentNullException(nameof(instance));
 
 				_logger.LogError(exception, "Unable to create new {ValidatorClass} for null instance of argument: {Argument}", nameof(QSValidator<T>), nameof(instance));
+
+				throw exception;
 			}
 
 			return new QSValidator<T>(instance);
