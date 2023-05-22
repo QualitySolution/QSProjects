@@ -20,7 +20,9 @@ namespace QS.Test.Views.Resolve
 			var navigation = Substitute.For<INavigationManager>();
 			var tab = new OneLevelTestViewModel(navigation);
 
-			var resolver = new ClassNamesBaseGtkViewResolver(typeof(OneLevelTestView));
+			IGtkViewResolver resolver =null;
+			var factory = new GtkViewFactory(() => resolver);
+			resolver = new ClassNamesBaseGtkViewResolver(factory, typeof(OneLevelTestView));
 			var view = resolver.Resolve(tab);
 
 			Assert.That(view, Is.InstanceOf<OneLevelTestView>());
@@ -32,7 +34,9 @@ namespace QS.Test.Views.Resolve
 			var navigation = Substitute.For<INavigationManager>();
 			var tab = new SecondTestClassViewModel(navigation);
 
-			var resolver = new ClassNamesBaseGtkViewResolver(typeof(OneLevelTestView));
+			IGtkViewResolver resolver =null;
+			var factory = new GtkViewFactory(() => resolver);
+			resolver = new ClassNamesBaseGtkViewResolver(factory, typeof(OneLevelTestView));
 			var view = resolver.Resolve(tab);
 
 			Assert.That(view, Is.InstanceOf<SecondTestClassView>());
@@ -44,7 +48,9 @@ namespace QS.Test.Views.Resolve
 			var navigation = Substitute.For<INavigationManager>();
 			var tab = new ZeroLevelTestViewModel(navigation);
 
-			var resolver = new ClassNamesBaseGtkViewResolver(typeof(OneLevelTestView));
+			IGtkViewResolver resolver =null;
+			var factory = new GtkViewFactory(() => resolver);
+			resolver = new ClassNamesBaseGtkViewResolver(factory, typeof(OneLevelTestView));
 			var view = resolver.Resolve(tab);
 
 			Assert.That(view, Is.InstanceOf<ZeroLevelTestView>());
@@ -57,7 +63,9 @@ namespace QS.Test.Views.Resolve
 			var navigation = Substitute.For<INavigationManager>();
 			var tab = new NumberName123987TestViewModel(navigation);
 
-			var resolver = new ClassNamesBaseGtkViewResolver(typeof(OneLevelTestView));
+			IGtkViewResolver resolver =null;
+			var factory = new GtkViewFactory(() => resolver);
+			resolver = new ClassNamesBaseGtkViewResolver(factory, typeof(OneLevelTestView));
 			var view = resolver.Resolve(tab);
 
 			Assert.That(view, Is.InstanceOf<NumberName123987TestView>());
