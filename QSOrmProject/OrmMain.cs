@@ -227,8 +227,9 @@ namespace QSOrmProject
 				builder.Register(x => DeleteConfig.Main).AsSelf();
 				builder.RegisterType<GtkMessageDialogsInteractive>().As<IInteractiveMessage>();
 				builder.RegisterType<GtkQuestionDialogsInteractive>().As<IInteractiveQuestion>();
+				builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 				builder.RegisterModule(new DeletionAutofacModule());
-				builder.Register(ctx => new ClassNamesBaseGtkViewResolver(Assembly.GetAssembly(typeof(DeletionView)))).As<IGtkViewResolver>();
+				builder.Register(ctx => new ClassNamesBaseGtkViewResolver(ctx.Resolve<IGtkViewFactory>(), Assembly.GetAssembly(typeof(DeletionView)))).As<IGtkViewResolver>();
 				container = builder.Build();
 
 				var deleteSerive = container.Resolve<DeleteEntityGUIService>();

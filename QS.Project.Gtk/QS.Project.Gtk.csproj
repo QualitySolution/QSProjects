@@ -58,6 +58,7 @@
     <Compile Include="Dialog\FileDialog\DialogResult.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Resolve\GtkViewFactory.cs" />
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
     <Compile Include="Dialog\DialogHelper.cs" />
     <Compile Include="Dialog\EntityDialogBase.cs" />
@@ -149,7 +150,6 @@
     <Compile Include="Views.GtkUI\ITabView.cs" />
     <Compile Include="Journal.GtkUI\JournalView.cs" />
     <Compile Include="gtk-gui\QS.Journal.GtkUI.JournalView.cs" />
-    <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
     <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
     <Compile Include="Dialog\SingleUoWWidgetBase.cs" />

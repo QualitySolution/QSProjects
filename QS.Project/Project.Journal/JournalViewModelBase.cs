@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,8 +69,6 @@ namespace QS.Project.Journal
 		/// </summary>
 		public virtual bool? UseSlider { get; protected set; }
 		#endregion
-
-		public ILifetimeScope AutofacScope { get; set; }
 
 		#region ISlideableViewModel
 
