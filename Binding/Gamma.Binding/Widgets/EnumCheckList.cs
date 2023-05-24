@@ -79,6 +79,14 @@ namespace Gamma.Widgets
 			Binding.FireChange(x => x.SelectedValuesList);
 		}
 		
+		public void OnlySelectAt(int index)
+		{
+			var chkButtons = Children.Cast<yCheckButton>().ToArray();
+			for(var i = 0; i < chkButtons.Length; i++) {
+				chkButtons[i].Active = index == i;
+			}
+		}
+		
 		public void SelectAll()
 		{
 			externalSet = true;
