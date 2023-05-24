@@ -26,11 +26,14 @@ namespace QS.Updater.DB
 		/// <param name="destination">Версия до которой обновится база</param>
 		/// <param name="scriptResource">Имя ресурса скрипта, ассамблея ресурса будет подставлена та которая вызовет эту функцию.</param>
 		/// <param name="executeBefore">Функция которая должна быть вызвана перед применением скрипта.</param>
-		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> executeBefore = null)
+		/// <param name="onTesting">Указывает что скрипт еще в разработке и не должен пока использоваться в приложении для обновления базы,
+		/// а доступен только в SQL теста.</param>
+		public void AddUpdate(Version source, Version destination, string scriptResource, Action<DbConnection> executeBefore = null, bool onTesting = false)
 		{
 			Hops.Add(new UpdateHop {
 				Source = source,
 				Destination = destination,
+				OnTesting = onTesting,
 				ExecuteBefore = executeBefore,
 				Resource = scriptResource,
 				Assembly = Assembly.GetCallingAssembly()
@@ -40,11 +43,10 @@ namespace QS.Updater.DB
 
 		#region Использование
 
-		public IEnumerable<UpdateHop> GetHopsToLast(Version fromVersion)
-		{
+		public IEnumerable<UpdateHop> GetHopsToLast(Version fromVersion, bool skipTesting = true) {
 			var last = fromVersion;
 			while(true) {
-				var next = GetNextUpdate(last);
+				var next = GetNextUpdate(last, skipTesting);
 				if (next != null) {
 					last = next.Destination;
 					yield return next;
@@ -53,9 +55,8 @@ namespace QS.Updater.DB
 			}
 		}
 
-		private UpdateHop GetNextUpdate(Version version)
-		{
-			return Updates.FirstOrDefault(x => x.Source == version);
+		private UpdateHop GetNextUpdate(Version version, bool skipTesting) {
+			return Updates.FirstOrDefault(x => x.Source == version && (!skipTesting || !x.OnTesting));
 		}
 		#endregion
 	}
@@ -64,6 +65,7 @@ namespace QS.Updater.DB
 	{
 		public Version Source;
 		public Version Destination;
+		public bool OnTesting;
 
 		/// <summary>
 		/// Программный метод, выполняющийся перед обновлением. Тут можно выполнить действия трудно выполнимые внутри SQL скрипта.

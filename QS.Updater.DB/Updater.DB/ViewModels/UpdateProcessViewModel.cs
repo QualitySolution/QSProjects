@@ -212,7 +212,7 @@ namespace QS.Updater.DB.ViewModels
 			CommandsLog += operationName + "\n";
 
 			if(updateScript.ExecuteBefore != null) {
-				CommandsLog += "Выполнение программный действий...\n";
+				CommandsLog += "Выполнение программных действий...\n";
 				updateScript.ExecuteBefore(SQLProvider.DbConnection);
 			}
 
