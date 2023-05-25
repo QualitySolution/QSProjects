@@ -173,16 +173,9 @@ namespace QS.ViewModels
 		{
 		}
 
-		protected virtual void BeforeValidation()
-		{
+		protected virtual bool BeforeValidation() => true;
 
-		}
-
-		protected bool Validate()
-		{
-			BeforeValidation();
-			return CommonServices.ValidationService.Validate(Entity, ValidationContext);
-		}
+		protected bool Validate() => BeforeValidation() && CommonServices.ValidationService.Validate(Entity, ValidationContext);
 
 		void Subject_NamePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{

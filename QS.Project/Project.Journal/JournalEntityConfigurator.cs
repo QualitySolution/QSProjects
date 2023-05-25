@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace QS.Project.Journal
 {
 	public sealed class JournalEntityConfigurator<TEntity, TNode>
-		where TEntity : class, INotifyPropertyChanged, IDomainObject, new()
+		where TEntity : class, INotifyPropertyChanged, IDomainObject
 		where TNode : JournalEntityNodeBase
 	{
 		private List<JournalEntityDocumentsConfig<TNode>> documentConfigs;

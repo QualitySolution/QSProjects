@@ -102,9 +102,9 @@ namespace QS.Project.Journal
 			if(AskQuestion("Выбрать созданный объект и вернуться к предыдущему диалогу?"))
 				OnItemsSelected(new object[] { node });
 		}
-
+		
 		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunction, Func<IUnitOfWork, int> itemsCountFunction = null)
-		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
+		where TEntity : class, IDomainObject, INotifyPropertyChanged
 		{
 			if(queryFunction == null) {
 				throw new ArgumentNullException(nameof(queryFunction));
@@ -122,9 +122,9 @@ namespace QS.Project.Journal
 			};
 			return configurator;
 		}
-
+		
 		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(IEnumerable<Func<IUnitOfWork, IQueryOver<TEntity>>> queryFunctions, Func<IUnitOfWork, int> itemsCountFunction = null)
-			where TEntity : class, IDomainObject, INotifyPropertyChanged, new() {
+			where TEntity : class, IDomainObject, INotifyPropertyChanged {
 			if(!queryFunctions.Any()) {
 				throw new ArgumentException("Нельзя зарегистрировать сущность без функций запросов", nameof(queryFunctions));
 			}
