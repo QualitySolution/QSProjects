@@ -35,6 +35,7 @@ namespace QS.ViewModels.Control.EEVM
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
 		public event EventHandler<AutocompleteUpdatedEventArgs> AutoCompleteListUpdated;
+		public event EventHandler<BeforeChangeEventArgs> BeforeChangeByUser;
 
 		#endregion
 
@@ -131,6 +132,9 @@ namespace QS.ViewModels.Control.EEVM
 		/// </summary>
 		public void OpenSelectDialog()
 		{
+			if(!OnBeforeUserChanged()) {
+				return;
+			}
 			entitySelector?.OpenSelector();
 		}
 
@@ -205,6 +209,16 @@ namespace QS.ViewModels.Control.EEVM
 			OnPropertyChanged(nameof(EntityTitle));
 		}
 
+		bool OnBeforeUserChanged() {
+			if(BeforeChangeByUser == null) return true;
+			
+			var args = new BeforeChangeEventArgs {
+				CanChange = true
+			};
+			BeforeChangeByUser(this, args);
+			return args.CanChange;
+		}
+
 		#endregion
 
 		#region Команды View
@@ -258,5 +272,10 @@ namespace QS.ViewModels.Control.EEVM
 			if(EntityAdapter is IDisposable ead)
 				ead.Dispose();
 		}
+	}
+
+	public class BeforeChangeEventArgs : EventArgs
+	{
+		public bool CanChange { get; set; }
 	}
 }
