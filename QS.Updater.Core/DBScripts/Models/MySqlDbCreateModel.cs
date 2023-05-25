@@ -87,13 +87,13 @@ namespace QS.DBScripts.Models
 						cmd.ExecuteNonQuery();
 					}
 
-					controller.Progress.Add(text: $"Создаем базу <{dbname}>");
+					controller.Progress.Add(text: $"Создаем базу {dbname}");
 					cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbname);
 					cmd.ExecuteNonQuery();
 					cmd.CommandText = String.Format("USE `{0}` ;", dbname);
 					cmd.ExecuteNonQuery();
 
-					controller.Progress.Add(text: $"Создаем таблицы в <{dbname}>");
+					controller.Progress.Add(text: $"Создаем таблицы в {dbname}");
 
 					var myscript = new MySqlScript(connectionDB, sqlScript);
 					myscript.StatementExecuted += Myscript_StatementExecuted;
