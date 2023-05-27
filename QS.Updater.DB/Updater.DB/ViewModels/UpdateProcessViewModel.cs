@@ -50,7 +50,7 @@ namespace QS.Updater.DB.ViewModels
 			FileName = System.IO.Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
 				"Резервные копии",
-				String.Format("{0}{1:yyMMdd-HHmm}.sql", applicationInfo.ProductName, DateTime.Now)
+				String.Format("{0}-{1:yyMMdd-HHmm}.sql", mySQLProvider.DbConnection.Database, DateTime.Now)
 			);
 
 			IsModal = true;
