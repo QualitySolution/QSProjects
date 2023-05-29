@@ -55,6 +55,7 @@
     <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
+    <Compile Include="Project.Journal\JournalNodeBase.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
@@ -101,7 +102,7 @@
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
-    <Compile Include="Project.Journal\JournalNodeBase.cs" />
+    <Compile Include="Project.Journal\IJournalNode.cs" />
     <Compile Include="Project.Journal\IJournalAction.cs" />
     <Compile Include="Project.Journal\JournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalAction.cs" />

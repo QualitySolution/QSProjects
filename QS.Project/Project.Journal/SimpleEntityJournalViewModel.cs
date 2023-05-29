@@ -122,7 +122,7 @@ namespace QS.Project.Journal
 
 			return query.SelectList(list => list
 					.Select(x => x.Id).WithAlias(() => resultAlias.Id)
-					.Select(titleExp).WithAlias(() => resultAlias.Title)
+					.Select(titleExp).WithAlias(() => resultAlias.DisplayName)
 				)
 				.TransformUsing(Transformers.AliasToBean<CommonJournalNode<TEntity>>());
 		};
@@ -158,8 +158,14 @@ namespace QS.Project.Journal
 
 	public class CommonJournalNode : JournalEntityNodeBase
 	{
+
+
 		protected CommonJournalNode(Type entityType) : base(entityType)
 		{
 		}
+
+		public string DisplayName { get; set ; }
+
+		public override string Title => DisplayName;
 	}
 }
