@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Project.Journal;
@@ -27,6 +27,7 @@ namespace QS.Test.TestApp.JournalViewModels
 		{
 		}
 
+		public override string Title { get; }
 		public DateTime Date { get; set; }
 	}
 }

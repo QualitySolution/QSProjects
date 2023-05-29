@@ -388,7 +388,7 @@ namespace QS.Widgets.GtkUI
 				foreach(var item in autoCompleteSelector.Items) {
 					switch(item)
 					{
-						case JournalNodeBase nodeBase:
+						case IJournalNode nodeBase:
 							completionListStore.AppendValues(nodeBase.Title, item);
 							break;
 						case INodeWithEntryFastSelect nodeWithEntryFastSelect:
