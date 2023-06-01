@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QS.Dialog.Gtk;
 using QS.Tdi;
 using System;

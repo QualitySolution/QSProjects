@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
-using System.Collections.ObjectModel;
 using QS.EntityRepositories;
 using System;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;

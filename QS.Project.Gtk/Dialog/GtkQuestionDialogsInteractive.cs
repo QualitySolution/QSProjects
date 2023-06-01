@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Gtk;
+﻿using Gtk;
 
 namespace QS.Dialog.GtkUI
 {

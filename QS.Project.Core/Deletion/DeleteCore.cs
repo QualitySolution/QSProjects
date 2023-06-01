@@ -8,7 +8,6 @@ using NHibernate;
 using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Project.DB;
 
 [assembly:InternalsVisibleTo("QS.Project.Desktop")]
 [assembly:InternalsVisibleTo("QS.Project.Gtk")]

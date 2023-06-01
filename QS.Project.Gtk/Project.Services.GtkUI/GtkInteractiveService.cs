@@ -1,7 +1,5 @@
-﻿using System;
-using QS.Dialog;
+﻿using QS.Dialog;
 using QS.Dialog.GtkUI;
-using QS.Services;
 
 namespace QS.Project.Services.GtkUI
 {

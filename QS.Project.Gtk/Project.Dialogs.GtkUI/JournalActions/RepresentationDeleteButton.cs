@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using Gtk;
+﻿using System.Linq;
 using QS.Deletion;
-using QS.Dialog.Gtk;
-using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.RepresentationModel.GtkUI;
 

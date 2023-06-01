@@ -1,5 +1,4 @@
 ﻿using NHibernate;
-using NHibernate.Event;
 using QS.DomainModel.UoW;
 
 namespace QS.DomainModel.Tracking

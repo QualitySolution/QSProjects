@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Mime;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;

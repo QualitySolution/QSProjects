@@ -1,6 +1,4 @@
-﻿using System;
-using QS.Tdi;
-using QS.ViewModels;
+﻿using QS.Tdi;
 
 namespace QS.Navigation
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using QS.DomainModel.Entity;
-using NHibernate.Criterion;
+﻿using NHibernate.Criterion;
 using QS.RepresentationModel;
 
 namespace QS.Tools

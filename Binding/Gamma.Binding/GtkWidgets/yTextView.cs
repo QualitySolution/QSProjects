@@ -1,7 +1,6 @@
 ﻿using System;
 using Gtk;
 using Gamma.Binding.Core;
-using Gamma.Utilities;
 using System.Linq.Expressions;
 
 namespace Gamma.GtkWidgets

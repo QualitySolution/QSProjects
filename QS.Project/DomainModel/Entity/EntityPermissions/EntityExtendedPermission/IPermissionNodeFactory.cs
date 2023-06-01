@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using QS.Project.Domain;
-
-namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
+﻿namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 {
 	public interface IPermissionNodeFactory
 	{

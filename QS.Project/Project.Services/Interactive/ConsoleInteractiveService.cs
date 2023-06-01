@@ -1,6 +1,5 @@
-﻿using System;
-using QS.Dialog;
-using QS.Services;
+﻿using QS.Dialog;
+
 namespace QS.Project.Services.Interactive
 {
 	public class ConsoleInteractiveService : IInteractiveService

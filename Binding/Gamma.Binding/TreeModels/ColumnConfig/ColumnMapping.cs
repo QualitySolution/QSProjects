@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
 using Gamma.Binding.Core;
-using Gamma.Utilities;
 using Gdk;
 using Gtk;
 

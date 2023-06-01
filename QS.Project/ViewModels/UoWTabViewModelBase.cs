@@ -2,8 +2,6 @@ using System;
 using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Navigation;
-using QS.Services;
-using QS.Tdi;
 
 namespace QS.ViewModels
 {
