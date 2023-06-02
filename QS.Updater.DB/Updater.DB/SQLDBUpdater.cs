@@ -23,10 +23,9 @@ namespace QS.Updater.DB
 		private readonly dynamic parametersService;
 		private readonly MySqlConnectionStringBuilder connectionStringBuilder;
 		private readonly IUserService userService;
-		private readonly IUnitOfWorkFactory unitOfWorkFactory;
 		private readonly IInteractiveMessage interactiveMessage;
 
-		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IUnitOfWorkFactory unitOfWorkFactory, IInteractiveMessage interactiveMessage)
+		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IInteractiveMessage interactiveMessage)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
@@ -34,7 +33,6 @@ namespace QS.Updater.DB
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.connectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
 			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
-			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 		}
 
@@ -81,11 +79,9 @@ namespace QS.Updater.DB
 				Environment.Exit(1);
 			}
 			
-			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-				if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser(uow).IsAdmin)
-					NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);
-			}
-			
+			if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser().IsAdmin)
+				NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);
+
 			RunUpdateDB();
 		}
 

@@ -124,7 +124,7 @@ namespace QS.ViewModels
 
 			ValidationContext = new ValidationContext(Entity);
 			Entity.PropertyChanged += Entity_PropertyChanged;
-			CurrentUser = UserService.GetCurrentUser(UoW);
+			CurrentUser = UserService.GetCurrentUser();
 			PermissionResult = CommonServices.PermissionService.ValidateUserPermission(typeof(TEntity), UserService.CurrentUserId);
 
 			if(!PermissionResult.CanRead) {

@@ -7,21 +7,15 @@ namespace QS.Services
 {
 	public class UserService : IUserService
 	{
-		public UserService()
+		private readonly UserBase currentUser;
+
+		public UserService(UserBase currentUser)
 		{
-			 CurrentUserId = UserRepository.GetCurrentUserId();
+			this.currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
 		}
 
-		public UserService(int currentUserId)
-		{
-			CurrentUserId = currentUserId;
-		}
+		public int CurrentUserId => currentUser.Id;
 
-		public int CurrentUserId { get; }
-
-		public UserBase GetCurrentUser(IUnitOfWork uow)
-		{
-			return uow.GetById<UserBase>(CurrentUserId);
-		}
+		public UserBase GetCurrentUser() => currentUser;
 	}
 }

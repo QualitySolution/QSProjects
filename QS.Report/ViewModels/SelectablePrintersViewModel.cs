@@ -26,7 +26,7 @@ namespace QS.Report.ViewModels
 		{
 			_uow = (unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory))).CreateWithoutRoot();
 
-			_user = commonServices.UserService.GetCurrentUser(_uow);
+			_user = commonServices.UserService.GetCurrentUser();
 
 			_savedUserPrinterList = userPrintingRepository.GetUserSelectedPrinters(_uow, _user.Id);
 
