@@ -58,14 +58,7 @@ namespace QS.ErrorReporting
 			dataBaseInfo = container.ResolveOptional<IDataBaseInfo>();
 			
 			var userService = container.ResolveOptional<IUserService>();
-			var uowFactory = container.ResolveOptional<IUnitOfWorkFactory>();
-			if(uowFactory != null && userService != null) {
-				using(var uow = uowFactory.CreateWithoutRoot()) {
-					user = userService.GetCurrentUser(uow);
-				}
-			}
-			else
-				user = null;
+			user = userService?.GetCurrentUser();
 		}
 
 		private void OnExceptionManagerOnUnhandledException(UnhandledExceptionArgs a) {

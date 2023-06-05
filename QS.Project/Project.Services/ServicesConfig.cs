@@ -18,12 +18,7 @@ namespace QS.Project.Services
 		
 		public static IValidator ValidationService { get; set; }
 		public static IInteractiveService InteractiveService { get; set; }
-
-		private static IUserService userService;
-		public static IUserService UserService {
-			get => userService ?? (userService = new UserService());
-			set => userService = value;
-		}
+		public static IUserService UserService { get; set; }
 
 		static ServicesConfig()
 		{
