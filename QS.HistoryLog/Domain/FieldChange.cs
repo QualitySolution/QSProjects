@@ -5,6 +5,7 @@ using System.Reflection;
 using Gamma.Utilities;
 using NHibernate.Event;
 using QS.DomainModel.Entity;
+using QS.DomainModel.Tracking;
 using QS.Project.DB;
 
 namespace QS.HistoryLog.Domain
@@ -117,17 +118,17 @@ namespace QS.HistoryLog.Domain
 
 		#region Статические методы
 
-		public static FieldChange CheckChange(int i, PostUpdateEvent ue)
+		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostUpdateEvent ue)
 		{
-			return CreateChange(ue.State[i], ue.OldState[i], ue.Persister, i);
+			return CreateChange(uow, ue.State[i], ue.OldState[i], ue.Persister, i);
 		}
 
-		public static FieldChange CheckChange(int i, PostInsertEvent ie)
+		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostInsertEvent ie)
 		{
-			return CreateChange(ie.State[i], null, ie.Persister, i);
+			return CreateChange(uow, ie.State[i], null, ie.Persister, i);
 		}
 
-		private static FieldChange CreateChange(object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i)
+		private static FieldChange CreateChange(IUnitOfWorkTracked uow, object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i)
 		{
 			if(valueOld == null && valueNew == null)
 				return null;
@@ -139,9 +140,32 @@ namespace QS.HistoryLog.Domain
 			if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
 				return null;
 
+			var historyIdentifierAttributeInfo = propInfo.GetCustomAttribute<HistoryIdentifierAttribute>();
+
 			FieldChange change = null;
 
 			#region Обработка в зависимости от типа данных
+
+			if(historyIdentifierAttributeInfo != null) {
+				if(valueOld != null) {
+					IDomainObject oldEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueOld);
+					valueOld = $"[{valueOld}][\"{oldEntity.GetTitle()}\"]";
+				}
+
+				if(valueNew != null) {
+					IDomainObject newEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueNew);
+					valueNew = $"[{valueNew}][\"{newEntity.GetTitle()}\"]";
+				}
+
+				if(!StringCompare(ref change, (string)valueOld, (string)valueNew)) {
+					return null;
+				}
+				else {
+					change.Path = propName;
+					change.UpdateType();
+					return change;
+				}
+			}
 
 			if(propType is NHibernate.Type.StringType && !StringCompare(ref change, (string)valueOld, (string)valueNew))
 				return null;
