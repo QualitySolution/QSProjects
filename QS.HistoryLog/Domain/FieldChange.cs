@@ -147,24 +147,7 @@ namespace QS.HistoryLog.Domain
 			#region Обработка в зависимости от типа данных
 
 			if(historyIdentifierAttributeInfo != null) {
-				if(valueOld != null) {
-					IDomainObject oldEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueOld);
-					valueOld = $"[{valueOld}][\"{oldEntity.GetTitle()}\"]";
-				}
-
-				if(valueNew != null) {
-					IDomainObject newEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueNew);
-					valueNew = $"[{valueNew}][\"{newEntity.GetTitle()}\"]";
-				}
-
-				if(!StringCompare(ref change, (string)valueOld, (string)valueNew)) {
-					return null;
-				}
-				else {
-					change.Path = propName;
-					change.UpdateType();
-					return change;
-				}
+				return RefIdCompare(uow, ref valueNew, ref valueOld, propName, historyIdentifierAttributeInfo, ref change);
 			}
 
 			if(propType is NHibernate.Type.StringType && !StringCompare(ref change, (string)valueOld, (string)valueNew))
@@ -216,6 +199,31 @@ namespace QS.HistoryLog.Domain
 
 			logger.Warn("Трекер не умеет сравнивать изменения в полях типа {0}. Поле {1} пропущено.", propType, propName);
 			return null;
+		}
+
+		private static FieldChange RefIdCompare(IUnitOfWorkTracked uow, ref object valueNew, ref object valueOld, string propName, HistoryIdentifierAttribute historyIdentifierAttributeInfo, ref FieldChange change) {
+			if(valueOld == valueNew) {
+				return null;
+			}
+
+			if(valueOld != null) {
+				IDomainObject oldEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueOld);
+				valueOld = $"[{valueOld}][\"{oldEntity.GetTitle()}\"]";
+			}
+
+			if(valueNew != null) {
+				IDomainObject newEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueNew);
+				valueNew = $"[{valueNew}][\"{newEntity.GetTitle()}\"]";
+			}
+
+			if(!StringCompare(ref change, (string)valueOld, (string)valueNew)) {
+				return null;
+			}
+			else {
+				change.Path = propName;
+				change.UpdateType();
+				return change;
+			}
 		}
 
 		#endregion
@@ -354,7 +362,7 @@ namespace QS.HistoryLog.Domain
 
 			var enumType = property.Type.ReturnedClass;
 			var enumValues = enumType.GetFields();
-
+			 
 			return enumValues.FirstOrDefault(f => f.Name == value)?.GetEnumTitle();
 		}
 
