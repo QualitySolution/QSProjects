@@ -53,7 +53,7 @@ namespace QS.HistoryLog
 				return;
 
 			var fields = Enumerable.Range(0, insertEvent.State.Length)
-								   .Select(i => FieldChange.CheckChange(i, insertEvent))
+								   .Select(i => FieldChange.CheckChange(uow, i, insertEvent))
 								   .Where(x => x != null)
 								   .ToList();
 
@@ -74,7 +74,7 @@ namespace QS.HistoryLog
 				return;
 
 			var fields = Enumerable.Range(0, updateEvent.State.Length)
-								   .Select(i => FieldChange.CheckChange(i, updateEvent))
+								   .Select(i => FieldChange.CheckChange(uow, i, updateEvent))
 								   .Where(x => x != null)
 								   .ToList();
 

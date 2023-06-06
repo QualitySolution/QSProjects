@@ -29,4 +29,9 @@ namespace QS.HistoryLog
 	{
 	}
 
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
+					AllowMultiple = false, Inherited = true)]
+	public class HistoryIdentifierAttribute : Attribute {
+		public Type TargetType { get; set; }
+	}
 }
