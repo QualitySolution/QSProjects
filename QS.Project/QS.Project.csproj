@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,6 +58,7 @@
     <Compile Include="Print\SelectablePrintDocument.cs" />
     <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
     <Compile Include="Project.DB\CustomProjections.cs" />
+    <Compile Include="Project.DB\CustomRestrictions.cs" />
     <Compile Include="Project.DB\IOrmConfig.cs" />
     <Compile Include="Project.DB\DefaultOrmConfig.cs" />
     <Compile Include="Project.DB\MySQL57ExtendedDialect.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
+    <Compile Include="Project.Journal\JournalNodeBase.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
@@ -116,7 +118,7 @@
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
-    <Compile Include="Project.Journal\JournalNodeBase.cs" />
+    <Compile Include="Project.Journal\IJournalNode.cs" />
     <Compile Include="Project.Journal\IJournalAction.cs" />
     <Compile Include="Project.Journal\JournalViewModelBase.cs" />
     <Compile Include="Project.Journal\JournalAction.cs" />

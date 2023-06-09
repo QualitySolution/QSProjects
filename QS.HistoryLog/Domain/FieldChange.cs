@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
+using FluentNHibernate.Utils;
 using NHibernate.Event;
 using NHibernate.Type;
+using NHibernate.Util;
 using QS.DomainModel.Entity;
+using QS.DomainModel.Tracking;
 using QS.Project.DB;
 
 namespace QS.HistoryLog.Domain
@@ -180,15 +185,15 @@ namespace QS.HistoryLog.Domain
 
 		#region Статические методы
 
-		public static FieldChange CheckChange(int i, PostUpdateEvent ue) {
-			return CreateChange(ue.State[i], ue.OldState[i], ue.Persister, i);
+		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostUpdateEvent ue) {
+			return CreateChange(uow, ue.State[i], ue.OldState[i], ue.Persister, i);
 		}
 
-		public static FieldChange CheckChange(int i, PostInsertEvent ie) {
-			return CreateChange(ie.State[i], null, ie.Persister, i);
+		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostInsertEvent ie) {
+			return CreateChange(uow, ie.State[i], null, ie.Persister, i);
 		}
 
-		private static FieldChange CreateChange(object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i) {
+		private static FieldChange CreateChange(IUnitOfWorkTracked uow, object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i) {
 			if(valueOld == null && valueNew == null)
 				return null;
 
@@ -199,7 +204,13 @@ namespace QS.HistoryLog.Domain
 			if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
 				return null;
 
+			var historyIdentifierAttributeInfo = propInfo.GetCustomAttribute<HistoryIdentifierAttribute>();
+
 			FieldChange change = null;
+
+			if(historyIdentifierAttributeInfo != null) {
+				return RefIdCompare(uow, ref valueNew, ref valueOld, propName, historyIdentifierAttributeInfo, ref change);
+			}
 
 			#region Обработка в зависимости от типа данных
 
@@ -252,6 +263,31 @@ namespace QS.HistoryLog.Domain
 
 			logger.Warn("Трекер не умеет сравнивать изменения в полях типа {0}. Поле {1} пропущено.", propType, propName);
 			return null;
+		}
+
+		private static FieldChange RefIdCompare(IUnitOfWorkTracked uow, ref object valueNew, ref object valueOld, string propName, HistoryIdentifierAttribute historyIdentifierAttributeInfo, ref FieldChange change) {
+			if(valueOld == valueNew) {
+				return null;
+			}
+
+			if(valueOld != null) {
+				IDomainObject oldEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueOld);
+				valueOld = $"[{valueOld}][\"{oldEntity.GetTitle()}\"]";
+			}
+
+			if(valueNew != null) {
+				IDomainObject newEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueNew);
+				valueNew = $"[{valueNew}][\"{newEntity.GetTitle()}\"]";
+			}
+
+			if(!StringCompare(ref change, (string)valueOld, (string)valueNew)) {
+				return null;
+			}
+			else {
+				change.Path = propName;
+				change.UpdateType();
+				return change;
+			}
 		}
 
 		#endregion
