@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,10 +65,15 @@ namespace QS.DomainModel.Entity
 		{
 			if(selectorExpression == null)
 				throw new ArgumentNullException("selectorExpression");
-			MemberExpression body = selectorExpression.Body as MemberExpression;
-			if(body == null)
-				throw new ArgumentException("The body must be a member expression");
-			return body.Member.Name;
+
+			if(selectorExpression.Body is MemberExpression body)
+				return body.Member.Name;
+
+			if(selectorExpression.Body is UnaryExpression unary
+				&& unary.Operand is MemberExpression unaryBody)
+					return unaryBody.Member.Name;
+
+			throw new ArgumentException("Selector must provide MemberExpression");
 		}
 	}
 }
