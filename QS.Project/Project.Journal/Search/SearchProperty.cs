@@ -7,15 +7,15 @@ namespace QS.Project.Journal.Search {
 	public class SearchProperty {
 		//Класс создается только через фабричные методы, так как в обычном конструкторе нельзя получить нельзя использовать дженерики, без создания еще одного класса.
 		#region Фабрика
-		public static SearchProperty Create<TEntity>(Expression<Func<TEntity, object>> alias) {
-			return new SearchProperty(Projections.Property(alias), GetTypeOfProperty(alias.Body));
+		public static SearchProperty Create<TEntity>(Expression<Func<TEntity, object>> alias, MatchMode likeMatchMode) {
+			return new SearchProperty(Projections.Property(alias), GetTypeOfProperty(alias.Body), likeMatchMode);
 		}
 
-		public static SearchProperty Create(Expression<Func<object>> alias) {
+		public static SearchProperty Create(Expression<Func<object>> alias, MatchMode likeMatchMode) {
 			//Пока IProjection умеем сравнивать только как строки. В идеале научиться вытягивать из них типы.
 			if(alias.Body.Type == typeof(IProjection)) 
-				return new SearchProperty((IProjection)alias.Compile().Invoke(), typeof(string));
-			return new SearchProperty(Projections.Property(alias), GetTypeOfProperty(alias.Body));
+				return new SearchProperty((IProjection)alias.Compile().Invoke(), typeof(string), likeMatchMode);
+			return new SearchProperty(Projections.Property(alias), GetTypeOfProperty(alias.Body), likeMatchMode);
 		}
 
 		private static Type GetTypeOfProperty(System.Linq.Expressions.Expression body) {
@@ -27,13 +27,15 @@ namespace QS.Project.Journal.Search {
 		}
 		#endregion
 
-		private SearchProperty(IProjection projection, Type typeOfProperty) {
+		private SearchProperty(IProjection projection, Type typeOfProperty, MatchMode likeMatchMode) {
 			this.projection = projection ?? throw new ArgumentNullException(nameof(projection));
 			this.typeOfProperty = typeOfProperty ?? throw new ArgumentNullException(nameof(typeOfProperty));
+			this.likeMatchMode = likeMatchMode;
 		}
 		
 		readonly IProjection projection;
 		readonly Type typeOfProperty;
+		private readonly MatchMode likeMatchMode;
 		
 		public ICriterion GetCriterion(string searchValue)
 		{
@@ -53,10 +55,10 @@ namespace QS.Project.Journal.Search {
 				}
 			}
 			else if(typeOfProperty == typeof(Guid) || typeOfProperty == typeof(Guid?)) {
-				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, MatchMode.Anywhere);
+				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, likeMatchMode);
 			}
 			else if (typeOfProperty == typeof(string)){
-				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, MatchMode.Anywhere);
+				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, likeMatchMode);
 			}
 			else 
 				throw new NotSupportedException($"Тип {typeOfProperty} не поддерживается");

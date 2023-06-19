@@ -12,13 +12,19 @@ namespace QS.Project.Journal.Search {
 		public SearchCriterion(IJournalSearch journalSearch) {
 			this.journalSearch = journalSearch ?? throw new ArgumentNullException(nameof(journalSearch));
 		}
+		
+		protected MatchMode LikeMatchMode { get; set; } = MatchMode.Anywhere;
 
 		#region Fluent
-
 		public SearchCriterion By(params Expression<Func<object>>[] aliases) {
 			foreach(var alias in aliases) {
-				searchProperties.Add(SearchProperty.Create(alias));				
+				searchProperties.Add(SearchProperty.Create(alias, LikeMatchMode));			
 			}
+			return this;
+		}
+		
+		public SearchCriterion WithLikeMode(MatchMode matchMode) {
+			LikeMatchMode = matchMode;
 			return this;
 		}
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using NHibernate.Criterion;
 
 namespace QS.Project.Journal.Search {
 	public class SearchCriterionGeneric<TEntity> : SearchCriterion {
@@ -9,10 +10,20 @@ namespace QS.Project.Journal.Search {
 
 		#region Fluent
 
-		public SearchCriterion By<TEntity>(params Expression<Func<TEntity, object>>[] aliases) {
+		public SearchCriterionGeneric<TEntity> By(params Expression<Func<TEntity, object>>[] aliases) {
 			foreach(var alias in aliases) {
-				searchProperties.Add(SearchProperty.Create<TEntity>(alias));
+				searchProperties.Add(SearchProperty.Create<TEntity>(alias, LikeMatchMode));
 			}
+			return this;
+		}
+
+		public new SearchCriterionGeneric<TEntity> By(params Expression<Func<object>>[] aliases) {
+			base.By(aliases);
+			return this;
+		}
+		
+		public new SearchCriterionGeneric<TEntity> WithLikeMode(MatchMode matchMode) {
+			base.WithLikeMode(matchMode);
 			return this;
 		}
 
