@@ -56,6 +56,9 @@
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
     <Compile Include="Project.Journal\JournalNodeBase.cs" />
+    <Compile Include="Project.Journal\Search\SearchCriterion.cs" />
+    <Compile Include="Project.Journal\Search\SearchCriterionGeneric.cs" />
+    <Compile Include="Project.Journal\Search\SearchProperty.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
@@ -144,7 +147,6 @@
     <Compile Include="Project.Journal\SimpleEntityJournalViewModel.cs" />
     <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
-    <Compile Include="Project.Journal\Search\SearchHelper.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Services\FileDialog\IFileDialogService.cs" />
@@ -238,7 +240,6 @@
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
     <Folder Include="Project.Search\" />
-    <Folder Include="Project.Journal\Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
