@@ -47,7 +47,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
 			where TJournalViewModel : JournalViewModelBase
-			where TJournalFilterViewModel : IJournalFilterViewModel 
+			where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel>
 		{
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.DialogViewModel, parameters.UnitOfWork, parameters.NavigationManager, filterParams);
 			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.UnitOfWork, parameters.AutofacScope, filterParams);

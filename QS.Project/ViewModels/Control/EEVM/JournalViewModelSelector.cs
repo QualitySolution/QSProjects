@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -65,20 +65,25 @@ namespace QS.ViewModels.Control.EEVM
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
-		where TJournalFilterViewModel : IJournalFilterViewModel {
-		private Action<TJournalFilterViewModel> filterParams;
+		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
+		private readonly Action<TJournalFilterViewModel> filterParams;
 
 		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
 			:base (parrentViewModel, unitOfWork, navigationManager){
-			this.filterParams = filterParams;
+			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
 		public override void OpenSelector(string dialogTitle = null) {
 			IPage<TJournalViewModel> page;
 			if(parrentViewModel != null)
-				page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>>(parrentViewModel, filterParams, OpenPageOptions.AsSlave);
+				page = navigationManager.OpenViewModel<TJournalViewModel>(parrentViewModel, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel, Action<TJournalFilterViewModel>>(getParrentTab(), filterParams, OpenPageOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(getParrentTab(), OpenPageOptions.AsSlave);
+			if(page.ViewModel.JournalFilter is JournalFilterViewModelBase<TJournalFilterViewModel> filter)
+				filter.SetAndRefilterAtOnce(filterParams);
+			else 
+				throw new InvalidCastException($"Для установки параметров фильтр журнала {page.ViewModel.JournalFilter.GetType()} должен является типом {typeof(JournalFilterViewModelBase<TJournalFilterViewModel>)}"); 
+			
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if(!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;

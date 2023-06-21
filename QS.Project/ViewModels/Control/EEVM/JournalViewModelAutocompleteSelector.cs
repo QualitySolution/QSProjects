@@ -64,17 +64,21 @@ namespace QS.ViewModels.Control.EEVM
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>
 		where TEntity : class, IDomainObject
 		where TJournalViewModel : JournalViewModelBase
-		where TJournalFilterViewModel : IJournalFilterViewModel {
-		private Action<TJournalFilterViewModel> filterParams;
+		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
+		private readonly Action<TJournalFilterViewModel> filterParams;
 
 		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope, Action<TJournalFilterViewModel> filterParams):base(unitOfWork, lifetimeScope) {
-			this.filterParams = filterParams;
+			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
 		public override TJournalViewModel JournalViewModel {
 			get {
 				if(journalViewModel == null) {
-					journalViewModel = autofacScope.Resolve<TJournalViewModel>(new TypedParameter(typeof(Action<TJournalFilterViewModel>), this.filterParams));
+					journalViewModel = autofacScope.Resolve<TJournalViewModel>();
+					if(journalViewModel.JournalFilter is JournalFilterViewModelBase<TJournalFilterViewModel> filter)
+						filter.SetAndRefilterAtOnce(filterParams);
+					else 
+						throw new InvalidCastException($"Для установки параметров, фильтр {journalViewModel.JournalFilter.GetType()} должен является типом {typeof(JournalFilterViewModelBase<TJournalFilterViewModel>)}");
 					journalViewModel.DataLoader.ItemsListUpdated += DataLoader_ItemsListUpdated;
 				}
 				return journalViewModel;
