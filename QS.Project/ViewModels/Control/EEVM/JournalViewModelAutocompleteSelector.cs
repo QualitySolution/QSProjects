@@ -10,12 +10,10 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : class, IDomainObject
 		where TJournalViewModel : JournalViewModelBase
 	{
-		private readonly IUnitOfWork uow;
 		protected readonly ILifetimeScope autofacScope;
 
-		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope)
+		public JournalViewModelAutocompleteSelector(ILifetimeScope lifetimeScope)
 		{
-			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			this.autofacScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
 		}
 
@@ -40,10 +38,7 @@ namespace QS.ViewModels.Control.EEVM
 			JournalViewModel.Search.Update();
 		}
 
-		public string GetTitle(object node)
-		{
-			return DomainHelper.GetTitle(node);
-		}
+		public string GetTitle(object node) => node.GetTitle();
 
 		#region Внутреннее
 
@@ -67,7 +62,7 @@ namespace QS.ViewModels.Control.EEVM
 		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
 		private readonly Action<TJournalFilterViewModel> filterParams;
 
-		public JournalViewModelAutocompleteSelector(IUnitOfWork unitOfWork, ILifetimeScope lifetimeScope, Action<TJournalFilterViewModel> filterParams):base(unitOfWork, lifetimeScope) {
+		public JournalViewModelAutocompleteSelector(ILifetimeScope lifetimeScope, Action<TJournalFilterViewModel> filterParams):base(lifetimeScope) {
 			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
