@@ -3,7 +3,6 @@ using System.Linq;
 using Autofac;
 using MySql.Data.MySqlClient;
 using QS.Dialog;
-using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Services;
 using QS.Updater.DB.ViewModels;
@@ -25,15 +24,15 @@ namespace QS.Updater.DB
 		private readonly IUserService userService;
 		private readonly IInteractiveMessage interactiveMessage;
 
-		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, MySqlConnectionStringBuilder connectionStringBuilder, IUserService userService, IInteractiveMessage interactiveMessage)
+		public SQLDBUpdater(UpdateConfiguration configuration, INavigationManager navigation, IGuiDispatcher gui, BaseParameters.ParametersService parametersService, MySqlConnectionStringBuilder connectionStringBuilder, IInteractiveMessage interactiveMessage, IUserService userService = null)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.connectionStringBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
-			this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
+			this.userService = userService;
 		}
 
 		public bool HasUpdates => configuration.GetHopsToLast(CurrentDBVersion).Any();
@@ -79,7 +78,7 @@ namespace QS.Updater.DB
 				Environment.Exit(1);
 			}
 			
-			if(connectionStringBuilder.UserID != "root" && !userService.GetCurrentUser().IsAdmin)
+			if(connectionStringBuilder.UserID != "root" && !(userService?.GetCurrentUser().IsAdmin ?? false))
 				NotAdminErrorAndExit(CurrentDBVersion, hops.Last().Destination);
 
 			RunUpdateDB();
