@@ -70,6 +70,11 @@ namespace QS.ViewModels.Control.EEVM
 			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
+		public JournalViewModelSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
+			: base(getParrentTab, unitOfWork, navigationManager) {
+			this.filterParams = filterParams;
+		}
+
 		public override void OpenSelector(string dialogTitle = null) {
 			IPage<TJournalViewModel> page;
 			if(ParentViewModel != null)
