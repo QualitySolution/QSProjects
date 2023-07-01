@@ -3,10 +3,8 @@ using System.ComponentModel;
 using System.Reflection;
 using QS.Dialog;
 using QS.Navigation;
-using QS.Services;
 using QS.Tdi;
 using QS.ViewModels.Dialog;
-using QS.ViewModels.Extension;
 
 namespace QS.ViewModels
 {

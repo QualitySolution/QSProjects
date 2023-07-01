@@ -14,26 +14,23 @@ namespace QS.ViewModels.Control.EEVM
 		where TJournalViewModel : JournalViewModelBase 
 	{
 		protected readonly INavigationManager navigationManager;
-		private readonly IUnitOfWork uow;
-		protected readonly Func<ITdiTab> getParrentTab;
-		protected readonly DialogViewModelBase parrentViewModel;
+		protected readonly Func<ITdiTab> GetParentTab;
+		protected readonly DialogViewModelBase ParentViewModel;
 
 		/// <summary>
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
 		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public JournalViewModelSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager)
+		public JournalViewModelSelector(Func<ITdiTab> getParentTab, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
-			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-			this.getParrentTab = getParrentTab ?? throw new ArgumentNullException(nameof(getParrentTab)); ;
+			this.GetParentTab = getParentTab ?? throw new ArgumentNullException(nameof(getParentTab));
 		}
 
-		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager)
+		public JournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
-			this.uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-			this.parrentViewModel = parrentViewModel ?? throw new ArgumentNullException(nameof(parrentViewModel)); ;
+			this.ParentViewModel = parentViewModel ?? throw new ArgumentNullException(nameof(parentViewModel));
 		}
 
 		public Type EntityType => typeof(TEntity);
@@ -43,10 +40,10 @@ namespace QS.ViewModels.Control.EEVM
 		public virtual void OpenSelector(string dialogTitle = null)
 		{
 			IPage<TJournalViewModel> page;
-			if(parrentViewModel != null)
-				page = navigationManager.OpenViewModel<TJournalViewModel>(parrentViewModel, OpenPageOptions.AsSlave);
+			if(ParentViewModel != null)
+				page = navigationManager.OpenViewModel<TJournalViewModel>(ParentViewModel, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(getParrentTab(), OpenPageOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(GetParentTab(), OpenPageOptions.AsSlave);
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if (!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;
@@ -65,25 +62,25 @@ namespace QS.ViewModels.Control.EEVM
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
-		where TJournalFilterViewModel : IJournalFilterViewModel {
-		private Action<TJournalFilterViewModel> filterParams;
+		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
+		private readonly Action<TJournalFilterViewModel> filterParams;
 
-		public JournalViewModelSelector(DialogViewModelBase parrentViewModel, IUnitOfWork unitOfWork, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
-			:base (parrentViewModel, unitOfWork, navigationManager){
-			this.filterParams = filterParams;
-		}
-
-		public JournalViewModelSelector(Func<ITdiTab> getParrentTab, IUnitOfWork unitOfWork, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
-			: base(getParrentTab, unitOfWork, navigationManager) {
-			this.filterParams = filterParams;
+		public JournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
+			:base (parentViewModel, navigationManager){
+			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
 		public override void OpenSelector(string dialogTitle = null) {
 			IPage<TJournalViewModel> page;
-			if(parrentViewModel != null)
-				page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>>(parrentViewModel, filterParams, OpenPageOptions.AsSlave);
+			if(ParentViewModel != null)
+				page = navigationManager.OpenViewModel<TJournalViewModel>(ParentViewModel, OpenPageOptions.AsSlave);
 			else
-				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel, Action<TJournalFilterViewModel>>(getParrentTab(), filterParams, OpenPageOptions.AsSlave);
+				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(GetParentTab(), OpenPageOptions.AsSlave);
+			if(page.ViewModel.JournalFilter is JournalFilterViewModelBase<TJournalFilterViewModel> filter)
+				filter.SetAndRefilterAtOnce(filterParams);
+			else 
+				throw new InvalidCastException($"Для установки параметров, фильтр {page.ViewModel.JournalFilter.GetType()} должен является типом {typeof(JournalFilterViewModelBase<TJournalFilterViewModel>)}"); 
+			
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if(!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;

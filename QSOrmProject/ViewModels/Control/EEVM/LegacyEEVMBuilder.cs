@@ -75,7 +75,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null)
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
 			else
 				base.UseViewModelJournal<TJournalViewModel>();
 			return this;
@@ -85,8 +85,8 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null) {
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
-				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.UnitOfWork, parameters.AutofacScope);
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
+				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.AutofacScope);
 			}
 			else
 				base.UseViewModelJournalAndAutocompleter<TJournalViewModel>();
@@ -125,10 +125,10 @@ namespace QS.ViewModels.Control.EEVM
 				var journalViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.Journal);
 				if(journalViewModelType != null) {
 					var entitySelectorType = typeof(JournalViewModelSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
-					EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, legacyParameters.GetDialogTab, parameters.UnitOfWork, parameters.NavigationManager);
+					EntitySelector = (IEntitySelector)Activator.CreateInstance(entitySelectorType, legacyParameters.GetDialogTab, parameters.NavigationManager);
 
 					var entityAutocompleteSelectorType = typeof(JournalViewModelAutocompleteSelector<,>).MakeGenericType(typeof(TEntity), journalViewModelType);
-					EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>)Activator.CreateInstance(entityAutocompleteSelectorType, parameters.UnitOfWork, parameters.AutofacScope);
+					EntityAutocompleteSelector = (IEntityAutocompleteSelector<TEntity>)Activator.CreateInstance(entityAutocompleteSelectorType, parameters.AutofacScope);
 				}
 
 				var dialogViewModelType = resolver.GetTypeOfViewModel(typeof(TEntity), TypeOfViewModel.EditDialog);

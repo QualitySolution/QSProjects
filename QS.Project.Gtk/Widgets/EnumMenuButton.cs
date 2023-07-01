@@ -35,7 +35,7 @@ namespace QS.Widgets
 			}
 		}
 
-		public BindingControler<EnumMenuButton> Binding { get; private set; }
+		public new BindingControler<EnumMenuButton> Binding { get; private set; }
 
 		public EnumMenuButton() : base()
 		{

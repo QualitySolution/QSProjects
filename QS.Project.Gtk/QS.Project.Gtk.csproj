@@ -37,16 +37,9 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>glib-sharp-2.0</Package>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
     </Reference>
@@ -56,22 +49,16 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="Mono.Cairo" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dialog\FileDialog\DialogResult.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Resolve\GtkViewFactory.cs" />
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />
     <Compile Include="Dialog\DialogHelper.cs" />
     <Compile Include="Dialog\EntityDialogBase.cs" />
@@ -163,7 +150,6 @@
     <Compile Include="Views.GtkUI\ITabView.cs" />
     <Compile Include="Journal.GtkUI\JournalView.cs" />
     <Compile Include="gtk-gui\QS.Journal.GtkUI.JournalView.cs" />
-    <Compile Include="Journal.GtkUI\JournalViewFactory.cs" />
     <Compile Include="Journal.GtkUI\TreeViewColumnsConfigFactory.cs" />
     <Compile Include="Views.GtkUI\FilterViewBase.cs" />
     <Compile Include="Dialog\SingleUoWWidgetBase.cs" />
@@ -177,7 +163,6 @@
     <Compile Include="ErrorReporting\ErrorMsgDlg.cs" />
     <Compile Include="Views.GtkUI\EntityTabViewBase.cs" />
     <Compile Include="Validation\GtkValidationViewFactory.cs" />
-    <Compile Include="Validation\QSValidator.cs" />
     <Compile Include="Validation\ResultItem.cs" />
     <Compile Include="Validation\ResultsListDlg.cs" />
     <Compile Include="Project.Services.GtkUI\GtkInteractiveService.cs" />
@@ -241,7 +226,37 @@
     <Compile Include="Widgets.GtkUI\SimpleSelectionDatePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Widgets.GtkUI\" />
+    <Folder Include="Dialog\" />
+    <Folder Include="Tdi\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Project.Dialogs.GtkUI\" />
+    <Folder Include="RepresentationModel.GtkUI\" />
+    <Folder Include="Project.Dialogs.GtkUI\JournalActions\" />
+    <Folder Include="Print\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Project.Dialogs.GtkUI\ServiceDlg\" />
+    <Folder Include="Permissions\" />
+    <Folder Include="Icons\" />
+    <Folder Include="Project.Search.GtkUI\" />
+    <Folder Include="Journal.GtkUI\" />
+    <Folder Include="Views.GtkUI\" />
+    <Folder Include="ErrorReporting\" />
+    <Folder Include="Project.Services.GtkUI\" />
+    <Folder Include="Validation\" />
+    <Folder Include="Navigation\" />
+    <Folder Include="Views\" />
+    <Folder Include="Views\Control\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Views\Resolve\" />
+    <Folder Include="Views\Dialog\" />
+    <Folder Include="Deletion.Views\" />
+    <Folder Include="Project.Views\" />
+    <Folder Include="BaseParameters.Views\" />
+    <Folder Include="ChangePassword.Views\" />
+    <Folder Include="Dialog\Views\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
@@ -254,6 +269,14 @@
     <ProjectReference Include="..\QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj">
       <Project>{baba2cb7-6efe-4b1b-9324-74cbcbacf257}</Project>
       <Name>QS.ErrorReporting.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj">
+      <Project>{7baff136-4379-4d1d-a554-7dc340caf7a2}</Project>
+      <Name>QS.ErrorReporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj">
+      <Project>{e95be5dc-a197-4657-87dc-a2d677eadb76}</Project>
+      <Name>QS.Project.Abstract</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
@@ -295,24 +318,24 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Autofac" Version="7.0.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
-    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
-    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.16" />
-    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.28" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NHibernate" Version="5.3.11" />
-    <PackageReference Include="NLog" Version="4.7.14" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.5" />
+    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NHibernate" Version="5.4.1" />
+    <PackageReference Include="NLog" Version="5.1.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-    <PackageReference Include="SSH.NET" Version="2020.0.1" />
+    <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />

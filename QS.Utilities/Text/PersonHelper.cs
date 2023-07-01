@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace QS.Utilities.Text
 {
@@ -66,6 +67,20 @@ namespace QS.Utilities.Text
             {
 				patronymicName = null;
 			}
+		}
+		
+		/// <summary>
+		/// Метод разбирает фамилию с инициалами на части.
+		/// </summary>
+		/// <param name="splitNameWithInitials">Входящая строка ФИО</param>
+		/// <param name="surname">Фамилия</param>
+		/// <param name="name">Первая буква имени</param>
+		/// <param name="patronymicName">Первая буква отчества</param>
+		public static void SplitNameWithInitials(this string nameWithInitials, out string surname, out string name, out string patronymicName) {
+			var result = Regex.Match(nameWithInitials, @"([^ \.]+)[ \.]+(.)\.? *(.)\.?");
+			surname = (result.Groups.Count > 1) ? result.Groups[1].Value : null;
+			name = (result.Groups.Count > 2) ? result.Groups[2].Value : null;
+			patronymicName = (result.Groups.Count > 3) ? result.Groups[3].Value : null;
 		}
 	}
 }

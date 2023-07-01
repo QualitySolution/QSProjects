@@ -30,5 +30,28 @@ namespace QS.Test.Utilities.Text
 				Assert.That(patronymic, Is.EqualTo(patronymicReference));
             });
         }
+        
+        [Test]
+        [TestCase("Тонких П. Н.", "Тонких", "П", "Н")]
+        [TestCase("Бут Д.А.", "Бут", "Д", "А")]
+        [TestCase("Мичина ЕС", "Мичина", "Е", "С")]
+        [TestCase("Мильгунов   А.И.", "Мильгунов", "А", "И")]
+        [TestCase("Кузнецов А.  А.", "Кузнецов", "А", "А")]
+        //Реальные пример по Водоканалу Краснодара
+        [TestCase("Вершаловская.Е.В.", "Вершаловская", "Е", "В")]
+        [TestCase("Науменко Н.А", "Науменко", "Н", "А")]
+        public void SplitNameWithInitialsTest(string nameWithInitials, string lastNameReference, string firstNameReference, string patronymicReference)
+        {
+	        //Arrange, Act
+	        PersonHelper.SplitNameWithInitials(nameWithInitials, out string lastName, out string firstName, out string patronymic );
+
+	        //Assert
+	        Assert.Multiple(() =>
+	        {
+		        Assert.That(lastName, Is.EqualTo(lastNameReference));
+		        Assert.That(firstName, Is.EqualTo(firstNameReference));
+		        Assert.That(patronymic, Is.EqualTo(patronymicReference));
+	        });
+        }
     }
 }

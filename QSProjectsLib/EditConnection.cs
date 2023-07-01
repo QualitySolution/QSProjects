@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Gtk;
+using QS.Configuration;
 using QS.DBScripts.Controllers;
-using QSMachineConfig;
 
 namespace QSProjectsLib
 {
@@ -10,7 +12,7 @@ namespace QSProjectsLib
 	{
 		ListStore connectionsListStore = new ListStore(typeof(string), typeof(Connection));
 		List<string> sectionsToDelete = new List<string>();
-		List<Connection> connections;
+		private readonly IChangeableConfiguration configuration;
 		private readonly IDBCreator dbCreator;
 		TreeIter currentIter;
 		string lastEdited;
@@ -23,12 +25,12 @@ namespace QSProjectsLib
 				EditingDone(null, EventArgs.Empty);
 		}
 
-		public EditConnection(List<Connection> Connections, IDBCreator dbCreator = null)
+		public EditConnection(IChangeableConfiguration configuration, List<Connection> connections, string selectedConnectionName, IDBCreator dbCreator = null)
 		{
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.dbCreator = dbCreator;
 			this.Build();
 			this.Title = "Настройка соединений";
-			connections = Connections;
-			this.dbCreator = dbCreator;
 
 			labelInfo.ModifyFg(StateType.Normal, new Gdk.Color(255, 0, 0));
 			entryLogin.Visible = labelLogin.Visible = labelTitle.Visible = false;
@@ -47,29 +49,28 @@ namespace QSProjectsLib
 			treeConnections.AppendColumn(connectionColumn);
 
 			//Filling in info
-			for(int i = 0; i < Connections.Count; i++)
-				connectionsListStore.AppendValues(Connections[i].ConnectionName, Connections[i]);
-
-			//Selecting first node and filling in its information
-			var conn = Connections[0];
-			entryName.Text = conn.ConnectionName;
-			entryBase.Text = conn.BaseName;
-			if(conn.Type == ConnectionType.MySQL) {
+			for(int i = 0; i < connections.Count; i++)
+				connectionsListStore.AppendValues(connections[i].ConnectionName, connections[i]);
+			
+			var conn = connections.FirstOrDefault(x => x.ConnectionName == selectedConnectionName) ?? connections.FirstOrDefault();
+			
+			entryName.Text = conn?.ConnectionName;
+			entryBase.Text = conn?.BaseName;
+			if(conn?.Type == ConnectionType.MySQL) {
 				comboConnectionType.Active = 0;
 				entryLogin.Text = String.Empty;
-				entryServer.Text = conn.Server;
+				entryServer.Text = conn?.Server;
 			} else {
 				comboConnectionType.Active = 1;
 				entryServer.Text = String.Empty;
-				entryLogin.Text = conn.AccountLogin;
+				entryLogin.Text = conn?.AccountLogin;
 			}
 
-			buttonCreateBase.Sensitive = dbCreator != null;
-
-			treeConnections.Model.GetIterFirst(out currentIter);
+			ListStoreWorks.SearchListStore(connectionsListStore, conn, 1, out currentIter);
 			treeConnections.Selection.SelectIter(currentIter);
 			treeConnections.Selection.Changed += HandleChanged;
 
+			buttonCreateBase.Sensitive = dbCreator != null;
 			buttonHelp.Visible = !String.IsNullOrEmpty(Login.CreateDBHelpUrl);
 			buttonHelp.TooltipText = Login.CreateDBHelpTooltip;
 		}
@@ -182,12 +183,8 @@ namespace QSProjectsLib
 
 		protected void Delete ()
 		{
-			foreach (string section in sectionsToDelete) {
-				var config = MachineConfig.ConfigSource.Configs [section];
-				if (config != null)
-					MachineConfig.ConfigSource.Configs.Remove (config);
-			}
-			MachineConfig.ConfigSource.Save ();
+			foreach (string section in sectionsToDelete.Where(x => !String.IsNullOrEmpty(x)))
+				configuration[$"{section}:"] = null;
 		}
 
 		protected void Save ()
@@ -198,28 +195,17 @@ namespace QSProjectsLib
 			do {
 				var connection = (Connection)treeConnections.Model.GetValue (iter, 1);
 				if (String.IsNullOrWhiteSpace (connection.IniName)) {
-					int i = 0;
+					int i = 1;
 					for (;; i++) {
-						if (connections.Find (m => m.IniName == ("Login" + i)) == null)
+						if (!ListStoreWorks.SearchListStore<Connection>((ListStore)treeConnections.Model, m => m.IniName == ("Login" + i), 1, out TreeIter tempIter))
 							break;
 					}
 					connection.IniName = "Login" + i;
 				}
-				var section = connection.IniName;
-				if (MachineConfig.ConfigSource.Configs [section] == null)
-					MachineConfig.ConfigSource.Configs.Add (section);
-				MachineConfig.ConfigSource.Configs [section].Set ("ConnectionName", connection.ConnectionName);
-				MachineConfig.ConfigSource.Configs [section].Set ("Server", connection.Server);
-				MachineConfig.ConfigSource.Configs [section].Set ("Type", ((int)connection.Type).ToString ());
-				MachineConfig.ConfigSource.Configs [section].Set ("Account", connection.AccountLogin);
-				MachineConfig.ConfigSource.Configs [section].Set ("DataBase", connection.BaseName);
+				connection.Save(configuration);
 			} while (treeConnections.Model.IterNext (ref iter));
 
-			if (MachineConfig.ConfigSource.Configs ["Default"] == null)
-				MachineConfig.ConfigSource.AddConfig ("Default");
-			MachineConfig.ConfigSource.Configs ["Default"].Set ("ConnectionName", lastEdited);
-			
-			MachineConfig.ConfigSource.Save ();	
+			configuration["Default:ConnectionName"] = lastEdited;
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
@@ -304,7 +290,15 @@ namespace QSProjectsLib
 
 		protected void OnButtonHelpClicked(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start(Login.CreateDBHelpUrl);
+			//Здесь пробуем исправить ошибку 34316 на нашем багтрекере.
+			//Предположил что проблема в этом https://github.com/dotnet/runtime/issues/28005
+			//Но проверить действительно ли это так негде.
+			ProcessStartInfo psi = new ProcessStartInfo
+			{
+				FileName = Login.CreateDBHelpUrl,
+				UseShellExecute = true
+			};
+			Process.Start (psi);
 		}
 
 		protected void OnEntryServerChanged(object sender, EventArgs e)

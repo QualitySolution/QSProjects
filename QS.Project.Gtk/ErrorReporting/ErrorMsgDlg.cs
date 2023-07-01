@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
 using NLog;
-using NLog.Targets;
 using QS.Dialog.GtkUI;
 using QS.Project.DB;
 using QS.Project.Domain;
@@ -17,6 +16,7 @@ namespace QS.ErrorReporting
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		IApplicationInfo application;
 		UserBase user;
+		private readonly ILogService logService;
 		List<Exception> AppExceptions = new List<Exception> ();
 		bool reportSent;
 
@@ -30,12 +30,13 @@ namespace QS.ErrorReporting
 
 		private IDataBaseInfo databaseInfo { get; }
 
-		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings, IDataBaseInfo dataBaseInfo = null)
+		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings, ILogService logService, IDataBaseInfo dataBaseInfo = null)
 		{
 			this.Build ();
 
 			this.application = application;
 			this.user = user;
+			this.logService = logService ?? throw new ArgumentNullException(nameof(logService));
 
 			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
 			this.databaseInfo = dataBaseInfo;
@@ -93,7 +94,7 @@ namespace QS.ErrorReporting
 
 		protected void OnButtonSendReportClicked (object sender, EventArgs e)
 		{
-			string log = GetLog();
+			string log = logService.GetLog();
 			SendReport(log, ReportType.User);
 		}
 
@@ -105,7 +106,6 @@ namespace QS.ErrorReporting
 					new SubmitErrorRequest {
 						App = new AppInfo{ 
 							ProductCode = application.ProductCode,
-							ProductName = application.ProductName ?? String.Empty,
 							Modification= application.Modification ?? String.Empty,
 							Version = application.Version.ToString(),
 						},
@@ -134,53 +134,10 @@ namespace QS.ErrorReporting
 			}
 		}
 
-		private string GetLogFilePath()
-		{
-			var fileTarget = LogManager.Configuration.AllTargets.FirstOrDefault(t => t is FileTarget) as FileTarget;
-			return fileTarget == null ? string.Empty : fileTarget.FileName.Render(new LogEventInfo { Level = LogLevel.Debug });
-		}
-
-		private string GetShortLog(int rowCount)
-		{
-			string logFileName = GetLogFilePath();
-			string logContent = String.Empty;
-
-			if(String.IsNullOrWhiteSpace(logFileName))
-				return String.Empty;
-
-			try {
-				string[] logs = System.IO.File.ReadAllLines(logFileName);
-				if(logs.Length < rowCount)
-					rowCount = logs.Length;
-				logContent = string.Join(Environment.NewLine, logs.Skip(logs.Length - rowCount));
-			} catch(Exception ex) {
-				logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
-			}
-
-			return logContent;
-		}
-
-		private string GetLog()
-		{
-			string logFileName = GetLogFilePath();
-			string logContent = String.Empty;
-			if(!String.IsNullOrWhiteSpace(logFileName)) {
-				try {
-					logContent = System.IO.File.ReadAllText(logFileName);
-				} catch(Exception ex) {
-					logger.Error(ex, "Не смогли прочитать лог файл {0}, для отправки.");
-				}
-			}
-
-			return logContent;
-		}
-
 		protected override void OnDestroyed()
 		{
 			if(errorReportingSettings.SendAutomatically && !reportSent) {
-				string log = errorReportingSettings.LogRowCount != null
-						? GetShortLog(errorReportingSettings.LogRowCount.Value)
-						: GetLog();
+				string log = logService.GetLog(errorReportingSettings.LogRowCount);
 				SendReport(log, ReportType.Automatic);
 			}
 

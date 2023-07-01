@@ -8,7 +8,6 @@ namespace Gamma.ColumnConfig
 {
 	public class PixbufRendererMapping<TNode> : RendererMappingBase<NodeCellRendererPixbuf<TNode>, TNode>
 	{
-		public string DataPropertyName { get; set;}
 		private NodeCellRendererPixbuf<TNode> cellRenderer = new NodeCellRendererPixbuf<TNode> ();
 
 		public PixbufRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, Pixbuf>> getDataExp)
@@ -34,7 +33,7 @@ namespace Gamma.ColumnConfig
 
 		protected override void SetSetterSilent (Action<NodeCellRendererPixbuf<TNode>, TNode> commonSet)
 		{
-			AddSetter (commonSet);
+			cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion

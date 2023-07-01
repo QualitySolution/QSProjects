@@ -1,71 +1,77 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Threading;
+using Autofac;
+using GLib;
 using Gtk;
 using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
+using QS.Services;
+using Thread = System.Threading.Thread;
 
 namespace QS.ErrorReporting
 {
 	/// <summary>
-	/// Делегат для перехвата и отдельной обработки некоторых ошибок.
-	/// Метод должен возвращать true, если ошибку он обработал сам 
-	/// и ее больше не надо передавать вниз по списку зарегистрированных обработчиков,
-	/// вплоть до стандартного диалога отправки отчета об ошибке.
-	/// </summary>
-	public delegate bool CustomErrorHandler(Exception exception, IApplicationInfo application, UserBase user, IInteractiveMessage interactiveMessage);
-
-	/// <summary>
-	/// Класс помогает сформировать отправку отчета о падении программы.
-	/// Для работы необходимо предварительно сконфигурировать модуль
+	/// Класс помогает перехватывать не обработанные исключения и сформировать отправку отчета о падении программы.
 	/// GtkGuiDispatcher.GuiThread - указать поток Gui, нужно для корректной обработки исключений в других потоках.
-	/// ApplicationInfo - Передать класс возвращающий информация о программе
-	/// InteractiveMessage - Класс позволяющий обработчикам выдать сообщение пользователю.
-	/// Не обязательно:
-	/// User - Текущий пользователь
-	/// RequestEmail = true - требовать ввод E-mail
-	/// RequestDescription = true - требовать ввода описания
 	/// </summary>
-	public static class UnhandledExceptionHandler
+	public class UnhandledExceptionHandler : IDisposable
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		#region Внешние настройки модуля
-
-		public static IApplicationInfo ApplicationInfo;
-		public static IDataBaseInfo DataBaseInfo;
-		public static IInteractiveMessage InteractiveMessage;
-		public static UserBase User;
-		public static IErrorReportingSettings ErrorReportingSettings;
+		#region Зависимости 
+		IApplicationInfo applicationInfo;
+		IDataBaseInfo dataBaseInfo;
+		ILogService logService;
+		UserBase user;
+		IErrorReportingSettings errorReportingSettings;
+		#endregion
+		
+		/// <summary>
+		/// Через контейнер будут получатся все дополнительные обработчики исключений IErrorHandler.
+		/// Внимание! Порядок добавления обработчиков важен, так как если ошибку обработает первый обработчик ко второму она уже не попадет.
+		/// </summary>
+		IEnumerable<IErrorHandler> customErrorHandlers;
+		
+		private ErrorMsgDlg currentCrashDlg;
 
 		/// <summary>
-		/// В список можно добавить собственные обработчики ошибок. Внимание! Порядок добавления обработчиков важен,
-		/// так как если ошибку обработает первый обработчик ко второму она уже не попадет.
+		/// Подписываемся на необработанные исключений
 		/// </summary>
-		public static readonly List<CustomErrorHandler> CustomErrorHandlers = new List<CustomErrorHandler>();
-
-		#endregion
-
-		private static ErrorMsgDlg currentCrashDlg;
-
-		public static void SubscribeToUnhadledExceptions(IErrorReportingSettings errorReportingSettings)
-		{
-			ErrorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
-
-			AppDomain.CurrentDomain.UnhandledException += delegate (object sender, UnhandledExceptionEventArgs e) {
-				logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
-				ErrorMessage((Exception)e.ExceptionObject);
-			};
-			GLib.ExceptionManager.UnhandledException += delegate (GLib.UnhandledExceptionArgs a) {
-				logger.Fatal((Exception)a.ExceptionObject, "Поймано необработаное исключение в GTK.");
-				ErrorMessage((Exception)a.ExceptionObject);
-			};
+		public void SubscribeToUnhandledExceptions() {
+			AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainOnUnhandledException;
+			GLib.ExceptionManager.UnhandledException += OnExceptionManagerOnUnhandledException;
 		}
 
-		public static void ErrorMessage(Exception ex)
+		/// <summary>
+		/// Получаем из контейнера все необходимые для работы зависимости. Чтобы в момент аварии не к чему лишнему не обращаться, не лезть в базу и т.п.
+		/// Контейнер не сохраняется. Метод можно вызывать повторно для переключения зависимостей на другой контейнер.
+		/// </summary>
+		public void UpdateDependencies(ILifetimeScope container) {
+			applicationInfo = container.Resolve<IApplicationInfo>();
+			errorReportingSettings = container.Resolve<IErrorReportingSettings>();
+			logService = container.Resolve<ILogService>();
+			
+			customErrorHandlers = container.Resolve<IEnumerable<IErrorHandler>>();
+			dataBaseInfo = container.ResolveOptional<IDataBaseInfo>();
+			
+			var userService = container.ResolveOptional<IUserService>();
+			user = userService?.GetCurrentUser();
+		}
+
+		private void OnExceptionManagerOnUnhandledException(UnhandledExceptionArgs a) {
+			logger.Fatal((Exception)a.ExceptionObject, "Поймано необработаное исключение в GTK.");
+			ErrorMessage((Exception)a.ExceptionObject);
+		}
+
+		private void OnCurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			logger.Fatal((Exception)e.ExceptionObject, "Поймано необработаное исключение в Application Domain.");
+			ErrorMessage((Exception)e.ExceptionObject);
+		}
+
+		private void ErrorMessage(Exception ex)
 		{
 			if(GtkGuiDispatcher.GuiThread == Thread.CurrentThread) {
 				RealErrorMessage(ex);
@@ -78,11 +84,11 @@ namespace QS.ErrorReporting
 			}
 		}
 
-		private static void RealErrorMessage(Exception exception)
+		private void RealErrorMessage(Exception exception)
 		{
-			foreach(var handler in CustomErrorHandlers) {
+			foreach(var handler in customErrorHandlers) {
 				try {
-					if(handler(exception, ApplicationInfo, User, InteractiveMessage)) {
+					if(handler.Take(exception)) {
 						return;
 					}
 				}
@@ -97,12 +103,17 @@ namespace QS.ErrorReporting
 			}
 			else {
 				logger.Debug("Создание окна отправки отчета о падении.");
-				currentCrashDlg = new ErrorMsgDlg(exception, ApplicationInfo, User, ErrorReportingSettings, DataBaseInfo);
+				currentCrashDlg = new ErrorMsgDlg(exception, applicationInfo, user, errorReportingSettings, logService, dataBaseInfo);
 				currentCrashDlg.Run();
 				currentCrashDlg.Destroy();
 				currentCrashDlg = null;
 				logger.Debug("Окно отправки отчета, уничтожено.");
 			}
+		}
+
+		public void Dispose() {
+			AppDomain.CurrentDomain.UnhandledException -= OnCurrentDomainOnUnhandledException;
+			GLib.ExceptionManager.UnhandledException -= OnExceptionManagerOnUnhandledException;
 		}
 	}
 }

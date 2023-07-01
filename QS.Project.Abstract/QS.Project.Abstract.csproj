@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<ProjectGuid>{E95BE5DC-A197-4657-87DC-A2D677EADB76}</ProjectGuid>
+		<RootNamespace>QS</RootNamespace>
+		<Company>Quality Solution</Company>
+		<LangVersion>8</LangVersion>
+		<Nullable>enable</Nullable>
+    </PropertyGroup>
+
+</Project>

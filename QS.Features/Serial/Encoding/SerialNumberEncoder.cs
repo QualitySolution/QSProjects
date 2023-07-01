@@ -16,6 +16,7 @@ namespace QS.Serial.Encoding
 		#region Версия 2
 		public byte ProductId { get; private set; }
 		public byte EditionId { get; private set; }
+		public ushort ClientId { get; private set; }
 		#endregion
 
 		#endregion
@@ -35,7 +36,7 @@ namespace QS.Serial.Encoding
 			this.applicationInfo = applicationInfo;
 		}
 
-		[PropertyChangedAlso("ComponentsText")]
+		[PropertyChangedAlso(nameof(ComponentsText))]
 		public virtual string Number {
 			get {return number;}
 			set { 
@@ -80,32 +81,48 @@ namespace QS.Serial.Encoding
 						IsAnotherProduct = DecodedProduct != forProduct;
 						break;
 					case 2:
+						ClientId = BitConverter.ToUInt16(summaryArray, 1);
 						ProductId = summaryArray[8];
 						EditionId = summaryArray[9];
 						IsAnotherProduct = ProductId != applicationInfo?.ProductCode;
 						break;
 				}
 				IsValid = !IsAnotherProduct && !IsNotSupport;
+				OnPropertyChanged();
 			}
 		}
 
 		private void Clear()
 		{
 			DecodedProduct = String.Empty;
-			CodeVersion = default(byte);
+			CodeVersion = default;
+			ClientId = default;
 			IsValid = IsNotSupport = IsAnotherProduct = false;
 		}
 
 		public string ComponentsText{
-			get{
+			get {
+				if(String.IsNullOrWhiteSpace(Number))
+					return "Серийный номер не указан";
 				if(IsNotSupport)
 					return "Версия формата не поддерживается.";
-				else 
-					return String.Format("Версия кодирования: {0}\n" +
-						"Продукт: {1}",
-						CodeVersion,
-						DecodedProduct
-					);
+				else
+					switch(CodeVersion) {
+						case 1:
+							return String.Format("Версия кодирования: {0}\n" +
+							                     "Продукт: {1}",
+								CodeVersion,
+								DecodedProduct
+							);
+						case 2:
+							return $"Версия кодирования: {CodeVersion}\n" +
+							       $"Id клиента: {ClientId}\n" +
+							       $"Продукт: {ProductId}\n" +
+							       $"Редакция: {EditionId}";
+						default:
+							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");
+					}
+					
 			}
 		}
 	}

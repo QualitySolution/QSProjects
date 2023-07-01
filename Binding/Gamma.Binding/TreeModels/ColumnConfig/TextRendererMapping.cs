@@ -8,7 +8,6 @@ namespace Gamma.ColumnConfig
 {
 	public class TextRendererMapping<TNode> : RendererMappingBase<NodeCellRendererText<TNode>, TNode>
 	{
-		public string DataPropertyName { get; set;}
 		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
 
 		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> getDataExp, bool useMarkup = false)
@@ -50,7 +49,7 @@ namespace Gamma.ColumnConfig
 
 		protected override void SetSetterSilent (Action<NodeCellRendererText<TNode>, TNode> commonSet)
 		{
-			AddSetter (commonSet);
+			cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using Gamma.GtkWidgets;
+using Gtk;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;
@@ -16,6 +17,7 @@ namespace QS.HistoryLog.Views
 		{
 			this.Build();
 			this.viewModel = viewModel;
+			viewModel.DontRefresh = true;
 			yPeriodToday.Active = true;
 
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
@@ -62,12 +64,12 @@ namespace QS.HistoryLog.Views
 				.InitializeFromSource();
 
 			ytreeChangesets.ColumnsConfig = ColumnsConfigFactory.Create<ChangedEntity>()
-				.AddColumn("Время").AddTextRenderer(x => x.ChangeTimeText)
-				.AddColumn("Пользователь").AddTextRenderer(x => x.ChangeSet.UserName)
+				.AddColumn("Время").Resizable().AddTextRenderer(x => x.ChangeTimeText)
+				.AddColumn("Пользователь").Resizable().AddTextRenderer(x => x.ChangeSet.UserName)
 				.AddColumn("Действие").AddTextRenderer(x => x.OperationText)
-				.AddColumn("Тип объекта").AddTextRenderer(x => x.ObjectTitle)
+				.AddColumn("Тип объекта").Resizable().AddTextRenderer(x => x.ObjectTitle)
 				.AddColumn("Код объекта").AddTextRenderer(x => x.EntityId.ToString())
-				.AddColumn("Имя объекта").AddTextRenderer(x => x.EntityTitle)
+				.AddColumn("Имя объекта").Resizable().AddTextRenderer(x => x.EntityTitle).WrapWidth(800)
 				.AddColumn("Откуда изменялось").AddTextRenderer(x => x.ChangeSet.ActionName)
 				.Finish(); 
 			 ytreeChangesets.Binding.AddSource(viewModel)
@@ -77,15 +79,16 @@ namespace QS.HistoryLog.Views
 			ytreeChangesets.Selection.Changed += OnChangeSetSelectionChanged;
 			yscrolledwindow.Vadjustment.ValueChanged += OnScroll;
 
+			viewModel.DontRefresh = false;
 			viewModel.UpdateChangedEntities();
 			ytreeFieldChange.Binding.AddSource(viewModel)
 				.AddBinding(v => v.ChangesSelectedEntity, w => w.ItemsDataSource)
 				.InitializeFromSource();
 
 			ytreeFieldChange.ColumnsConfig = ColumnsConfigFactory.Create<FieldChange>()
-				.AddColumn("Поле").AddTextRenderer(x => x.FieldTitle)
+				.AddColumn("Поле").Resizable().AddTextRenderer(x => x.FieldTitle)
 				.AddColumn("Операция").AddTextRenderer(x => x.TypeText)
-				.AddColumn("Новое значение").AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true)
+				.AddColumn("Новое значение").Resizable().AddTextRenderer(x => x.NewFormatedDiffText, useMarkup: true).WrapWidth(800)
 				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
 				.Finish();
 		}
@@ -145,10 +148,15 @@ namespace QS.HistoryLog.Views
 			if(ytreeChangesets.Vadjustment.Value + ytreeChangesets.Vadjustment.PageSize < ytreeChangesets.Vadjustment.Upper)
 				return;
 
+			if(!viewModel.HasUnloaded)
+				return;
+			
 			var lastPos = ytreeChangesets.Vadjustment.Value;
 			viewModel.UpdateChangedEntities(true);
-			ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
-			ytreeChangesets.Vadjustment.Value = lastPos;
+			Application.Invoke(delegate(object o, EventArgs args) {
+				ytreeChangesets.ItemsDataSource = viewModel.ChangedEntities;
+				ytreeChangesets.Vadjustment.Value = lastPos;
+			} );
 		}
 	}
 }

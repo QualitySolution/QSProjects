@@ -8,9 +8,9 @@ namespace QS.Navigation
 {
 	public class AutofacTdiPageFactory : ITdiPageFactory
 	{
-		readonly IContainer Container;
+		readonly ILifetimeScope Container;
 
-		public AutofacTdiPageFactory(IContainer container)
+		public AutofacTdiPageFactory(ILifetimeScope container)
 		{
 			Container = container;
 		}
@@ -19,8 +19,6 @@ namespace QS.Navigation
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var tab = scope.Resolve<TTdiTab>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
-			if(tab is IAutofacScopeHolder)
-				(tab as IAutofacScopeHolder).AutofacScope = scope;
 			var page = new TdiTabPage(tab, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;
@@ -30,8 +28,6 @@ namespace QS.Navigation
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var tab = scope.Resolve<TTdiTab>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
-			if(tab is IAutofacScopeHolder)
-				(tab as IAutofacScopeHolder).AutofacScope = scope;
 			var page = new TdiTabPage(tab, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;

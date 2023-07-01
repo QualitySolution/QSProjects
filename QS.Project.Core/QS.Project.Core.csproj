@@ -9,16 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="6.3.0" />
+      <PackageReference Include="Autofac" Version="7.0.0" />
       <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-      <PackageReference Include="MySql.Data" Version="8.0.28" />
-      <PackageReference Include="NHibernate" Version="5.3.11" />
-      <PackageReference Include="NLog" Version="4.7.14" />
+      <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+      <PackageReference Include="NHibernate" Version="5.4.1" />
+      <PackageReference Include="NLog" Version="5.1.2" />
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj" />
+      <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
       <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
     </ItemGroup>
 </Project>

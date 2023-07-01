@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using QS.DomainModel.Entity;
-using QS.Project.DB;
 
 namespace QS.Deletion.Configuration
 {

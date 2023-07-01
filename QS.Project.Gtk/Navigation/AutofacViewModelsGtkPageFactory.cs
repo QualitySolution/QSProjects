@@ -21,8 +21,6 @@ namespace QS.Navigation
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
-			if(viewmodel is IAutofacScopeHolder)
-				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
 			var page = new GtkWindowPage<TViewModel>(viewmodel, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;
@@ -32,8 +30,6 @@ namespace QS.Navigation
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
-			if(viewmodel is IAutofacScopeHolder)
-				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
 			var page = new GtkWindowPage<TViewModel>(viewmodel, hash);
 			page.PageClosed += (sender, e) => scope.Dispose();
 			return page;

@@ -46,6 +46,50 @@ namespace Gamma.ColumnConfig
 		}
 
 		#region Renderers
+		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddComboRenderer (dataProperty, expand);
+		}
+		
+		public DateRendererMapping<TNode> AddDateRenderer(Expression<Func<TNode, DateTime?>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddDateRenderer (dataProperty, expand);
+		}
+		
+		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
+		{
+			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
+		}
+		
+		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddNumericRenderer (dataProperty, expand);
+		}
+		
+		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, IValueConverter converter, bool expand = true)
+		{
+			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
+		}
+		
+		public PixbufRendererMapping<TNode> AddPixbufRenderer (Expression<Func<TNode, Gdk.Pixbuf>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddPixbufRenderer (dataProperty, expand);
+		}
+		
+		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
+		{
+			return myColumn.AddProgressRenderer (dataProperty, expand);
+		}
+
+		/// <summary>
+		/// Добавляет рендер текстовой ячейки используемый только для отображения.
+		/// Если нет необходимости редактировать значение, то рендеру не нужно знать свойство для мапинга, в этом случае ему на вход можно передать сложную лямбду.  
+		/// </summary>
+		/// <param name="getTextFunc">Функция получения значения для отображения</param>
+		public ReadOnlyTextRendererMapping<TNode> AddReadOnlyTextRenderer(Func<TNode, string> getTextFunc, bool expand = true, bool useMarkup = false)
+		{
+			return myColumn.AddReadOnlyTextRenderer(getTextFunc, expand, useMarkup);
+		}
 
 		public TextRendererMapping<TNode> AddTextRenderer(Expression<Func<TNode, string>> dataProperty, bool expand = true, bool useMarkup = false)
 		{
@@ -57,41 +101,10 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddTextRenderer ();
 		}
 
-		public ProgressRendererMapping<TNode> AddProgressRenderer(Expression<Func<TNode, int>> dataProperty, bool expand = true)
-		{
-			return myColumn.AddProgressRenderer (dataProperty, expand);
-		}
-
-		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, bool expand = true)
-		{
-			return myColumn.AddNumericRenderer (dataProperty, expand);
-		}
-
-		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, IValueConverter converter, bool expand = true)
-		{
-			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
-		}
-
-		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
-		{
-			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
-		}
-
-		public ComboRendererMapping<TNode, TItem> AddComboRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true)
-		{
-			return myColumn.AddComboRenderer (dataProperty, expand);
-		}
-
 		public ToggleRendererMapping<TNode> AddToggleRenderer(Expression<Func<TNode, bool>> dataProperty, bool expand = true)
 		{
 			return myColumn.AddToggleRenderer (dataProperty, expand);
 		}
-
-		public PixbufRendererMapping<TNode> AddPixbufRenderer (Expression<Func<TNode, Gdk.Pixbuf>> dataProperty, bool expand = true)
-		{
-			return myColumn.AddPixbufRenderer (dataProperty, expand);
-		}
-
 		#endregion
 	}
 }

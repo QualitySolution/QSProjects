@@ -1,7 +1,5 @@
-﻿using System;
-using QS.Dialog;
+﻿using QS.Dialog;
 using QS.Dialog.GtkUI;
-using QS.Services;
 
 namespace QS.Project.Services.GtkUI
 {
@@ -19,6 +17,11 @@ namespace QS.Project.Services.GtkUI
 		public bool Question(string message, string title = null)
 		{
 			return interactiveQuestion.Question(message, title);
+		}
+		
+		public string Question(string[] buttons, string message, string title = null)
+		{
+			return interactiveQuestion.Question(buttons, message, title);
 		}
 	}
 }

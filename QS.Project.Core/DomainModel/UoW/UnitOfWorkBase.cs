@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -73,7 +73,7 @@ namespace QS.DomainModel.UoW
 
 			} catch(Exception ex)
 			{
-				logger.Error(ex, $"Исключение при комите UoW:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
+				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
 				if(transaction.IsActive)
 					transaction.Rollback();
 				throw;

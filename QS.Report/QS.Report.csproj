@@ -33,8 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\UserPrintSettings.cs" />
@@ -49,6 +47,7 @@
     <Compile Include="Repository\UserPrintingRepository.cs" />
     <Compile Include="ViewModels\RdlViewerViewModel.cs" />
     <Compile Include="RDLReportsHashGenerator.cs" />
+    <Compile Include="ViewModels\ReportParametersUowViewModelBase.cs" />
     <Compile Include="ViewModels\ReportParametersViewModelBase.cs" />
     <Compile Include="ViewModels\SelectablePrintersViewModel.cs" />
   </ItemGroup>
@@ -74,10 +73,10 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Autofac" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />

@@ -35,7 +35,7 @@ namespace QSBanks
         {
 			datatreeviewAccounts.ColumnsConfig = Gamma.ColumnConfig.FluentColumnsConfig<Account>.Create()
 				.AddColumn("Основной").AddToggleRenderer(node => node.IsDefault).Editing().Radio()
-				.AddColumn("Псевдоним").SetDataProperty(node => node.Name)
+				.AddColumn("Псевдоним").AddTextRenderer(node => node.Name)
 				.AddColumn("В банке").AddTextRenderer(a => a.InBank != null ? a.InBank.Name : "нет")
 				.AddColumn("Номер").AddTextRenderer(a => a.Number)
 				.RowCells().AddSetter<CellRendererText>((c, a) => c.Foreground = a.Inactive ? "grey" : "black")

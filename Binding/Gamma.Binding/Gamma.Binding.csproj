@@ -42,19 +42,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\Converters\ArrayToEnumerableConverter.cs" />
+    <Compile Include="GtkWidgets\yMenuItem.cs" />
     <Compile Include="GtkWidgets\ySpinButtonCurrencyFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererCombo.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererDate.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererSpin.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererText.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererToggle.cs" />
     <Compile Include="TreeModels\CellRenderers\INodeCellRenderer.cs" />
     <Compile Include="TreeModels\ColumnConfig\ColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\ComboRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\DateRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\EnumRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\IColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\IRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\NumberRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ReadOnlyTextRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\RendererMappingBase.cs" />
     <Compile Include="TreeModels\ColumnConfig\RowMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\TextRendererMapping.cs" />

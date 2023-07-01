@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Autofac;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Search;
-using QS.Project.Search.GtkUI;
 using QS.Utilities;
 using QS.Utilities.Text;
 using QS.ViewModels;
@@ -24,6 +21,7 @@ namespace QS.Journal.GtkUI
 	[WindowSize(900, 600)]
 	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
+		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private Menu _popupMenu;
 
@@ -35,8 +33,9 @@ namespace QS.Journal.GtkUI
 
 		#endregion
 
-		public JournalView(JournalViewModelBase viewModel) : base(viewModel)
+		public JournalView(JournalViewModelBase viewModel, IGtkViewResolver viewResolver = null) : base(viewModel)
 		{
+			this.viewResolver = viewResolver;
 			this.Build();
 			ConfigureJournal();
 			CreateTextSpinner();
@@ -70,7 +69,9 @@ namespace QS.Journal.GtkUI
 			}
 
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
-				var viewResolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
+				if(viewResolver == null)
+					throw new ArgumentException(
+						"Для использования фильтра в журнале, view журнала должна была получить IGtkViewResolver для создания view", nameof(viewResolver));
 				FilterView = viewResolver.Resolve(filterViewModel);
 				if(FilterView == null)
 					throw new InvalidOperationException($"Не найдена View для {filterViewModel.GetType()}");
@@ -82,10 +83,10 @@ namespace QS.Journal.GtkUI
 			}
 
 			if(ViewModel.SearchEnabled) {
-				Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
-				//FIXME В будущем надо бы наверно полностью отказаться от создания SearchView здесь в ручную.
-				if(searchView == null)
-					searchView = new SearchView((SearchViewModel)ViewModel.Search);
+				if(viewResolver == null)
+					throw new ArgumentException(
+						"Для использования поиска в журнале, view журнала должна была получить IGtkViewResolver для создания view", nameof(viewResolver));
+				Widget searchView = viewResolver?.Resolve((ViewModelBase)ViewModel.Search);
 				hboxSearch.Add(searchView);
 				searchView.Show();
 			}
@@ -312,6 +313,8 @@ namespace QS.Journal.GtkUI
 					}
 					menuButton.Menu = childActionButtons;
 					actionWidget = menuButton;
+					if (action.ExecuteAction == null)
+						action.ExecuteAction = items => menuButton.Press();
 				} else {
 					var button = new Button();
 					button.Label = action.Title;
@@ -486,7 +489,7 @@ namespace QS.Journal.GtkUI
 					item.Invoke();
 				}
 			}
-			if(actionsVisibility != null && actionsSensitivity.ContainsKey(actionsType)) {
+			if(actionsVisibility != null && actionsVisibility.ContainsKey(actionsType)) {
 				foreach(var item in actionsVisibility[actionsType]) {
 					item.Invoke();
 				}

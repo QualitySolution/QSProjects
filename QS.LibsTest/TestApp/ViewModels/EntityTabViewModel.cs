@@ -1,6 +1,4 @@
-﻿using System;
-using NSubstitute;
-using QS.DomainModel.UoW;
+﻿using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Services;
 using QS.Test.TestApp.Domain;

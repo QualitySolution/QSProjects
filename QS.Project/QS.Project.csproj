@@ -30,27 +30,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
@@ -71,6 +56,9 @@
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
     <Compile Include="Project.Journal\JournalNodeBase.cs" />
+    <Compile Include="Project.Journal\Search\SearchCriterion.cs" />
+    <Compile Include="Project.Journal\Search\SearchCriterionGeneric.cs" />
+    <Compile Include="Project.Journal\Search\SearchProperty.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
@@ -79,7 +67,6 @@
     <Compile Include="Project.Services\FileDialog\IDialogResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
-    <Compile Include="DomainModel\Entity\BusinessObjectBase.cs" />
     <Compile Include="Project.DB\Connection.cs" />
     <Compile Include="Print\IPrintableDocument.cs" />
     <Compile Include="Dialog\IEntityDialog.cs" />
@@ -97,7 +84,6 @@
     <Compile Include="Project.HibernateMapping\EntityUserPermissionMap.cs" />
     <Compile Include="Project.Repositories\UserPermissionRepository.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermissionValidator.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermissionAttribute.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\IEntityPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermission.cs" />
     <Compile Include="Permissions\PermissionSettings.cs" />
@@ -115,6 +101,7 @@
     <Compile Include="Project.DB\MySQLProvider.cs" />
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
+    <Compile Include="Tools\IChangeMonitor.cs" />
     <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
@@ -124,7 +111,7 @@
     <Compile Include="Project.Journal\JournalAction.cs" />
     <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
     <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
-    <Compile Include="Tools\PerformanceHelper.cs" />
+    <Compile Include="Tools\NHibernateChangeMonitor.cs" />
     <Compile Include="Validation\PasswordValidation\DefaultPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
     <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
@@ -160,7 +147,6 @@
     <Compile Include="Project.Journal\SimpleEntityJournalViewModel.cs" />
     <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
-    <Compile Include="Project.Journal\Search\SearchHelper.cs" />
     <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
     <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
     <Compile Include="Project.Services\FileDialog\IFileDialogService.cs" />
@@ -170,9 +156,6 @@
     <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
     <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
-    <Compile Include="Validation\IValidationView.cs" />
-    <Compile Include="Validation\IValidationViewFactory.cs" />
-    <Compile Include="Validation\ObjectValidator.cs" />
     <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
     <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
     <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
@@ -200,15 +183,9 @@
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
     <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
     <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
-    <Compile Include="Navigation\IPageInternal.cs" />
-    <Compile Include="Navigation\IPageHashGenerator.cs" />
     <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
-    <Compile Include="Navigation\AbortCreatingPageException.cs" />
-    <Compile Include="Navigation\IViewModelsPageFactory.cs" />
     <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
     <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
-    <Compile Include="Navigation\IAutofacScopeHolder.cs" />
-    <Compile Include="Navigation\PageBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
@@ -223,7 +200,6 @@
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
     <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
-    <Compile Include="Navigation\NavigationManagerBase.cs" />
     <Compile Include="Dialog\CommonMessages.cs" />
     <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
     <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
@@ -236,21 +212,48 @@
     <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
     <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
-    <Compile Include="Navigation\ViewModelOpenedEventArgs.cs" />
     <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
     <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
     <Compile Include="Project.ViewModels\AboutViewModel.cs" />
-    <Compile Include="Project.Versioning\CheckBaseVersion.cs" />
     <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
-    <Compile Include="ErrorReporting\CommonErrorHandlers.cs" />
-    <Compile Include="ErrorReporting\ErrorReportingSettings.cs" />
-    <Compile Include="ErrorReporting\ExceptionHelper.cs" />
-    <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <Folder Include="Project.Domain\" />
+    <Folder Include="Project.HibernateMapping\" />
+    <Folder Include="DomainModel\" />
+    <Folder Include="Project.Repositories\" />
+    <Folder Include="DomainModel\Entity\" />
+    <Folder Include="Project.DB\" />
+    <Folder Include="Print\" />
+    <Folder Include="Dialog\" />
+    <Folder Include="Tdi\" />
+    <Folder Include="Project.Dialogs\" />
+    <Folder Include="DomainModel\Entity\EntityPermissions\" />
+    <Folder Include="Permissions\" />
+    <Folder Include="RepresentationModel\" />
+    <Folder Include="DomainModel\Config\" />
+    <Folder Include="Tools\" />
+    <Folder Include="Project.Journal\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Project.Services\" />
+    <Folder Include="Project.Filter\" />
+    <Folder Include="Project.Search\" />
+    <Folder Include="Project.Journal\EntitySelector\" />
+    <Folder Include="DomainModel\Entity\PresetPermissions\" />
+    <Folder Include="..\QS.Project.Core\ErrorReporting\" />
+    <Folder Include="Validation\" />
+    <Folder Include="Project.Services\Interactive\" />
+    <Folder Include="Project.Journal\DataLoader\" />
+    <Folder Include="Navigation\" />
+    <Folder Include="ViewModels\Control\" />
+    <Folder Include="ViewModels\Control\EEVM\" />
+    <Folder Include="ViewModels\Control\ESVM\" />
+    <Folder Include="ViewModels\Resolve\" />
+    <Folder Include="Project.ViewModels\" />
+    <Folder Include="BaseParameters\" />
+    <Folder Include="BaseParameters\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
@@ -264,6 +267,10 @@
     <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj">
       <Project>{a869ec36-67d2-4a36-95e9-0b1e7350928f}</Project>
       <Name>QS.BaseParameters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj">
+      <Project>{e95be5dc-a197-4657-87dc-a2d677eadb76}</Project>
+      <Name>QS.Project.Abstract</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
@@ -284,26 +291,24 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Autofac" Version="7.0.0" />
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.21.7" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.4" />
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
-    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.2.16" />
-    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.28" />
-    <PackageReference Include="NHibernate" Version="5.3.11" />
-    <PackageReference Include="NLog" Version="4.7.14" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.5" />
+    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+    <PackageReference Include="NHibernate" Version="5.4.1" />
+    <PackageReference Include="NLog" Version="5.1.2" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-    <PackageReference Include="SSH.NET" Version="2020.0.1" />
+    <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />

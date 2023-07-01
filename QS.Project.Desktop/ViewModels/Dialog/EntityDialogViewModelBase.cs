@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
@@ -18,7 +19,12 @@ namespace QS.ViewModels.Dialog
 
 		public TEntity Entity => UoWGeneric.Root;
 
-		public EntityDialogViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(unitOfWorkFactory, navigation, validator)
+		public EntityDialogViewModelBase(
+			IEntityUoWBuilder uowBuilder,
+			IUnitOfWorkFactory unitOfWorkFactory,
+			INavigationManager navigation,
+			IValidator validator = null,
+			UnitOfWorkProvider unitOfWorkProvider = null) : base(unitOfWorkFactory, navigation, validator, unitOfWorkProvider: unitOfWorkProvider)
 		{
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
@@ -29,11 +35,20 @@ namespace QS.ViewModels.Dialog
 				actionTitle = $"Редактирование {typeof(TEntity).GetSubjectNames().Genitive}";
 
 			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory, actionTitle);
+			if (Entity == null) {
+				AppellativeAttribute names = DomainHelper.GetSubjectNames(typeof(TEntity));
+				throw new AbortCreatingPageException($"Загрузить [{names.Nominative}:{uowBuilder.EntityOpenId}] не удалось. " +
+				                                     $"Возможно другой пользователь удалил этот объект.", "Ошибка открытия диалога");
+			}
+			if(unitOfWorkProvider != null)
+				unitOfWorkProvider.UoW = UoW;
 			base.Title = GetDialogNameByEntity();
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
 
 			Validations.Add(new ValidationRequest(Entity));
+			
+			NotifyConfiguration.Instance.SingleSubscribeOnEntity<TEntity>(ExternalDelete);
 		}
 
 		#region Создание имени диалога
@@ -82,7 +97,17 @@ namespace QS.ViewModels.Dialog
 			}
 			return Entity.ToString();
 		}
-
 		#endregion
+
+		private void ExternalDelete(EntityChangeEvent changeEvent) {
+			if(changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
+				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
+		}
+
+		public override void Dispose()
+		{
+			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			base.Dispose();
+		}
 	}
 }

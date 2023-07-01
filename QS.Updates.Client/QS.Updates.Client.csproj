@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>QS.Updates</RootNamespace>
+		<ProjectGuid>{08451B0A-4E72-4B12-B422-B36E9047DCAF}</ProjectGuid>
+		<Company>Quality Solution</Company>
+		<Nullable>enable</Nullable>
+		<LangVersion>8</LangVersion>
+    </PropertyGroup>
+
+
+	<ItemGroup>
+		<Protobuf Include="Protos\Releases.proto" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+	  <PackageReference Include="Grpc.Core" Version="2.46.6" />
+	  <PackageReference Include="Grpc.Tools" Version="2.52.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="NLog" Version="5.1.2" />
+	</ItemGroup>
+</Project>

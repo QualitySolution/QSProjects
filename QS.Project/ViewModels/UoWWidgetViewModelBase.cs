@@ -1,6 +1,4 @@
-﻿using System;
-using QS.DomainModel.UoW;
-using QS.Services;
+﻿using QS.DomainModel.UoW;
 
 namespace QS.ViewModels
 {

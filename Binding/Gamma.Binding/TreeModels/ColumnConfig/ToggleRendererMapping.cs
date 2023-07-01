@@ -34,7 +34,7 @@ namespace Gamma.ColumnConfig
 
 		protected override void SetSetterSilent (Action<NodeCellRendererToggle<TNode>, TNode> commonSet)
 		{
-			AddSetter (commonSet);
+			cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion

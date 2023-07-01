@@ -10,9 +10,6 @@ namespace Gamma.GtkWidgets.Cells
 	{
 		public List<Action<NodeCellRendererProgress<TNode>, TNode>> LambdaSetters;
 
-		public string DataPropertyName { get{ return DataPropertyInfo.Name;
-			}}
-
 		public PropertyInfo DataPropertyInfo { get; set;}
 
 		public IValueConverter EditingValueConverter { get; set;}

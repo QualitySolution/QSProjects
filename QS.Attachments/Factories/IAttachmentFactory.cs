@@ -1,5 +1,4 @@
 ﻿using QS.Attachments.Domain;
-using QS.Attachments.ViewModels.Widgets;
 
 namespace QS.Attachments.Factories
 {

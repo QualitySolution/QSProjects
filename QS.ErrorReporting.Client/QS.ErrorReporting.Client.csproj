@@ -5,16 +5,18 @@
         <Company>Quality Solution</Company>
         <ProjectGuid>{BABA2CB7-6EFE-4B1B-9324-74CBCBACF257}</ProjectGuid>
         <RootNamespace>QS.ErrorReporting</RootNamespace>
+        <LangVersion>8</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Google.Protobuf" Version="3.21.7" />
-      <PackageReference Include="Grpc.Core" Version="2.44.0" />
-      <PackageReference Include="Grpc.Tools" Version="2.44.0">
+      <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+      <PackageReference Include="Grpc.Core" Version="2.46.6" />
+      <PackageReference Include="Grpc.Tools" Version="2.52.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="NLog" Version="4.7.14" />
+      <PackageReference Include="NLog" Version="5.1.2" />
     </ItemGroup>
 
     <ItemGroup>

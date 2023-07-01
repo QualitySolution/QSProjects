@@ -1,6 +1,4 @@
 ﻿using QS.Banks;
-using QS.Banks.Domain;
-using QS.Deletion;
 
 namespace QSBanks
 {

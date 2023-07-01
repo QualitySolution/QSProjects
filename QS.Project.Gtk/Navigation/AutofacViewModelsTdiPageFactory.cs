@@ -10,9 +10,9 @@ namespace QS.Navigation
 {
 	public class AutofacViewModelsTdiPageFactory : IViewModelsPageFactory
 	{
-		readonly IContainer Container;
+		readonly ILifetimeScope Container;
 
-		public AutofacViewModelsTdiPageFactory(IContainer container)
+		public AutofacViewModelsTdiPageFactory(ILifetimeScope container)
 		{
 			Container = container;
 		}
@@ -48,9 +48,6 @@ namespace QS.Navigation
 			}
 
 			var viewmodel = scope.Resolve<TViewModel>(args);
-			if (viewmodel is IAutofacScopeHolder)
-				(viewmodel as IAutofacScopeHolder).AutofacScope = scope;
-
 			if (viewmodel is ITdiTab tdiTab)
 				tab = tdiTab;
 			else {

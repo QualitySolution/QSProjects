@@ -12,13 +12,11 @@ namespace QSSaaS
 		public static String ServiceAddress = "http://saas.qsolution.ru:2048/";
 		public static String SaaSService = ServiceAddress + "SaaS";
 		public static String UpdaterService = ServiceAddress + "Updater";
-		public static String ControlPanel = ServiceAddress + "ControlPanel";
 		//Параметры сессии
 		public static String SessionId = String.Empty;
 		public static bool IsSaasConnection = false;
 		public static string Account = String.Empty;
 		public static string SaasBaseName = String.Empty;
-		public static string SQLBaseName = String.Empty;
 
 		private static TimerCallback callback;
 		private static Timer timer;

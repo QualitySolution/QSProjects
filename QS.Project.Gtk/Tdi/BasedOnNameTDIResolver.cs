@@ -17,20 +17,15 @@ namespace QS.Tdi
 	/// </summary>
 	public class BasedOnNameTDIResolver : DefaultTDIWidgetResolver
 	{
-		ClassNamesBaseGtkViewResolver gtkViewResolver;
+		IGtkViewResolver gtkViewResolver;
 
-		public BasedOnNameTDIResolver(params Assembly[] lookupAssemblies)
-		{
-			this.gtkViewResolver = new ClassNamesBaseGtkViewResolver(lookupAssemblies);
+		public BasedOnNameTDIResolver(IGtkViewResolver gtkViewResolver) {
+			if(gtkViewResolver != null) this.gtkViewResolver = gtkViewResolver;
 		}
 
 		public override Widget Resolve(ITdiTab tab)
 		{
-			var widget = base.Resolve(tab);
-			if(widget != null)
-				return widget;
-
-			return gtkViewResolver.Resolve((DialogViewModelBase)tab);
+			return base.Resolve(tab) ?? gtkViewResolver.Resolve((DialogViewModelBase)tab);
 		}
 	}
 }

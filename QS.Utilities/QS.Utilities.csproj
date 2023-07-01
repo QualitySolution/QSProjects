@@ -7,6 +7,7 @@
         <ProjectGuid>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="NLog" Version="5.1.2" />
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 </Project>

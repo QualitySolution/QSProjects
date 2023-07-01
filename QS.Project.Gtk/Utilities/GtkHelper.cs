@@ -56,5 +56,18 @@ namespace QS.Utilities
 					return GetParentWindow(widget.Parent);
 			}
 		}
+		
+		/// <summary>
+		/// Метод расширения упрощает добавление страницы в Notebook, автоматически создавая Label и показывая добавленную страницу.
+		/// </summary>
+		/// <param name="tabWidget">Виджет добавляемой вкладки</param>
+		/// <param name="tabName">Имя вкладки</param>
+		/// <returns></returns>
+		public static int AppendPage(this Notebook notebook, Widget tabWidget, string tabName)
+		{
+			var num = notebook.AppendPage(tabWidget, new Label(tabName));
+			tabWidget.Show();
+			return notebook.Page;
+		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Gtk;
 using Gamma.Binding.Core;
+using Gamma.Utilities;
 
 namespace Gamma.GtkWidgets
 {
@@ -13,6 +14,19 @@ namespace Gamma.GtkWidgets
 		public yLabel ()
 		{
 			Binding = new BindingControler<yLabel> (this);
+		}
+
+		private string foregroundColor;
+		public string ForegroundColor {
+			get => foregroundColor;
+			set {
+				foregroundColor = value;
+				if(String.IsNullOrEmpty(value))
+					ModifyFg(StateType.Normal);
+				else {
+					ModifyFg(StateType.Normal, ColorUtil.Create(value));
+				}
+			}
 		}
 	}
 }

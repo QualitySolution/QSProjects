@@ -7,16 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="App" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MySql.Data" Version="8.0.28" />
-      <PackageReference Include="NLog" Version="4.7.14" />
+      <PackageReference Include="MySql.Data" Version="8.0.32.1" />
+      <PackageReference Include="NLog" Version="5.1.2" />
     </ItemGroup>
     <ProjectExtensions>
       <MonoDevelop>

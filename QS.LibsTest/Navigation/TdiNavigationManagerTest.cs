@@ -12,7 +12,6 @@ using QS.Tdi;
 using QS.Tdi.Gtk;
 using QS.Test.GtkUI;
 using QS.Test.TestApp.Dialogs;
-using QS.Test.TestApp.JournalViewModels;
 using QS.Test.TestApp.ViewModels;
 using QS.Test.TestApp.Views;
 using QS.ViewModels;
@@ -166,9 +165,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(SlideableView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(SlideableView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
 			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
@@ -193,9 +193,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(SlideableView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(),typeof(SlideableView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
 			builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
@@ -257,10 +258,8 @@ namespace QS.Test.Navigation
 		{
 			GtkInit.AtOnceInitGtk();
 			var hashGenerator = new ClassNamesHashGenerator(null);
-
-			var commonService = Substitute.For<ICommonServices>();
+			
 			var interactiveMessage = Substitute.For<IInteractiveMessage>();
-			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
 			var tabPageFactory = Substitute.For<ITdiPageFactory>();
 
@@ -289,9 +288,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
@@ -337,9 +337,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
@@ -861,9 +862,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
@@ -892,9 +894,10 @@ namespace QS.Test.Navigation
 			var builder = new ContainerBuilder();
 			IContainer container = null;
 			builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+			builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
 			builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
 			builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
-			builder.Register(x => new ClassNamesBaseGtkViewResolver(typeof(ModalDialogView))).As<IGtkViewResolver>();
+			builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
 			builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
 			builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
 			builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();

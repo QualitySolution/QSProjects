@@ -39,13 +39,15 @@ namespace QS.Deletion
 				throw new ArgumentException("Сущность должна уже иметь ID", nameof(fromE));
 			if(toE.Id == 0)
 				throw new ArgumentException("Сущность должна уже иметь ID", nameof(toE));
+			if(toE.Id == fromE.Id)
+				throw new ArgumentException("Исходная и целевая сущности должны иметь разные ID", nameof(toE));
 
 			var delConfig = configuration.GetDeleteInfo<TEntity>();
 			if(delConfig == null)
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 
 			if( !(delConfig is IDeleteInfoHibernate))
-				throw new NotSupportedException($"Поддерживаются только конфигурации удаления Hibernate.");
+				throw new NotSupportedException($"Поддерживаются только конфигурации удаления NHibernate.");
 
 			Progress?.Start(delConfig.DeleteItems.Count + delConfig.ClearItems.Count + delConfig.RemoveFromItems.Count);
 
@@ -109,7 +111,7 @@ namespace QS.Deletion
 				throw new InvalidOperationException($"Конфигурация удаления для типа {typeof(TEntity)} не найдена.");
 
 			if(!(delConfig is IDeleteInfoHibernate))
-				throw new NotSupportedException($"Поддерживаются только конфигурации удаления Hibernate.");
+				throw new NotSupportedException($"Поддерживаются только конфигурации удаления NHibernate.");
 			
 			Progress?.Start(delConfig.DeleteItems.Count + delConfig.ClearItems.Count + delConfig.RemoveFromItems.Count);
 

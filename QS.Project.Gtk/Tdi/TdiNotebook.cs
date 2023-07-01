@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
-using QS.Utilities;
 using QS.Navigation;
+using QS.Utilities.Text;
+using QS.Utilities;
 using QS.ViewModels.Extension;
 
 namespace QS.Tdi.Gtk
@@ -55,6 +56,7 @@ namespace QS.Tdi.Gtk
 		public string[] Colors { get; set; }
         public string Markup;
         public bool AllowToReorderTabs { get; set; } = true;
+        public static int MaxTabNameLenght = 100;
 
 		#region Внешние зависимости
 		public ITDIWidgetResolver WidgetResolver { get; set; } = new DefaultTDIWidgetResolver();
@@ -76,6 +78,15 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
+		protected override bool OnWidgetEvent(Gdk.Event evnt)
+		{
+			//Блокируем событие клика если нет вкладок, из-за того что приложение
+			//крашиться если происходит множество кликов закрытия в очень короткий промежуток времени.
+			if (evnt.Type == Gdk.EventType.ButtonRelease && NPages == 0)
+				return true;
+			return base.OnWidgetEvent(evnt);
+		}
+
 		void OnTabNameChanged(object sender, TdiTabNameChangedEventArgs e)
 		{
 			ITdiTab tab = sender as ITdiTab;
@@ -85,11 +96,16 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 			TdiTabInfo masterTabInfo = _tabs.Find(i => i.SlaveTabs.Contains(tab));
+			var newName = StringManipulationHelper.EllipsizeMiddle(e.NewName, MaxTabNameLenght);
 			if(masterTabInfo != null) {
-				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, masterTabInfo.Color, e.NewName) : ">" + e.NewName;
-				info.TabNameLabel.TooltipText = String.Format("Открыто из {0}", masterTabInfo.TdiTab.TabName);
-			} else
-				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, info.Color, e.NewName) : e.NewName;
+				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, masterTabInfo.Color, newName) : ">" + newName;
+				info.TabNameLabel.TooltipText =  e.NewName?.Length > MaxTabNameLenght ? e.NewName + "\n" : String.Empty 
+					+ String.Format("Открыто из {0}", masterTabInfo.TdiTab.TabName);
+			}
+			else {
+				info.TabNameLabel.Markup = _useTabColors ? String.Format(Markup, info.Color, newName) : newName;
+				info.TabNameLabel.TooltipText = e.NewName?.Length > MaxTabNameLenght ? e.NewName + "\n" : null;
+			}
 		}
 
 		public ITdiTab FindTab(string hashName, string masterHashName = null)
@@ -135,7 +151,12 @@ namespace QS.Tdi.Gtk
 			{// открыли не подчиненную вкладку - поменяли цвет
 			    SwitchCurrentColor();
 			}
-			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tab.TabName) : tab.TabName;
+
+			var tabName = StringManipulationHelper.EllipsizeMiddle(tab.TabName, MaxTabNameLenght);
+			if(tab.TabName?.Length > MaxTabNameLenght)
+				nameLable.TooltipText = tab.TabName;
+			
+			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tabName) : tabName;
 			box.Add(nameLable);
 			Image closeImage = new Image(Stock.Close, IconSize.Menu);
 			Button closeButton = new Button(closeImage);
@@ -557,6 +578,7 @@ namespace QS.Tdi.Gtk
 
 		#endregion
 
+		#region Helpers
 		private TabVBox GetTabBoxForTab(ITdiTab tab)
 		{
 			return this.Children.SingleOrDefault(w => {
@@ -570,6 +592,7 @@ namespace QS.Tdi.Gtk
 				return false;
 			}) as TabVBox;
 		}
+		#endregion
 	}
 
 	public class TdiTabInfo

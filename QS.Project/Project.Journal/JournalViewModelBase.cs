@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Autofac;
 using NHibernate.Criterion;
 using NLog;
 using QS.Dialog;
@@ -18,7 +17,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, IAutofacScopeHolder, ISlideableViewModel
+	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, ISlideableViewModel
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -70,8 +69,6 @@ namespace QS.Project.Journal
 		public virtual bool? UseSlider { get; protected set; }
 		#endregion
 
-		public ILifetimeScope AutofacScope { get; set; }
-
 		#region ISlideableViewModel
 
 		bool ISlideableViewModel.UseSlider => UseSlider ?? false;
@@ -88,7 +85,6 @@ namespace QS.Project.Journal
 			//Поиск
 			Search = new SearchViewModel();
 			Search.OnSearch += Search_OnSearch;
-			searchHelper = new SearchHelper(Search);
 
 			UseSlider = false;
 		}
@@ -147,24 +143,23 @@ namespace QS.Project.Journal
 		}
 
 		#region Поиск
-
 		void Search_OnSearch(object sender, EventArgs e)
 		{
 			Refresh();
 		}
+		
+		protected SearchCriterion MakeSearchCriterion() => new SearchCriterion(Search);
+		protected SearchCriterionGeneric<TEntity> MakeSearchCriterion<TEntity>() => new SearchCriterionGeneric<TEntity>(Search);
+		
+		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr) =>
+			MakeSearchCriterion()
+				.By(aliasPropertiesExpr)
+				.Finish();
 
-		private readonly SearchHelper searchHelper;
-
-		protected ICriterion GetSearchCriterion(params Expression<Func<object>>[] aliasPropertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(aliasPropertiesExpr);
-		}
-
-		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr)
-		{
-			return searchHelper.GetSearchCriterion(propertiesExpr);
-		}
-
+		protected ICriterion GetSearchCriterion<TRootEntity>(params Expression<Func<TRootEntity, object>>[] propertiesExpr) =>
+			MakeSearchCriterion<TRootEntity>()
+				.By(propertiesExpr)
+				.Finish();
 		#endregion
 	}
 }

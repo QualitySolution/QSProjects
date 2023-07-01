@@ -37,7 +37,7 @@ namespace Gamma.ColumnConfig
 
 		protected override void SetSetterSilent (Action<NodeCellRendererCombo<TNode, TItem>, TNode> commonSet)
 		{
-			AddSetter (commonSet);
+			cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -49,6 +49,12 @@ namespace Gamma.ColumnConfig
 			this.tag = tag;
 			return this;
 		}
+		
+		public ComboRendererMapping<TNode, TItem> WrapWidth(int width)
+        {
+        	cellRenderer.WrapWidth = width;
+        	return this;
+        }
 
 		public ComboRendererMapping<TNode, TItem> AddSetter(Action<NodeCellRendererCombo<TNode, TItem>, TNode> setter)
 		{

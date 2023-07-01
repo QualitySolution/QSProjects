@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -46,9 +46,9 @@ namespace QS.Widgets.GtkUI
 			});
 		}
 
-		public bool CanOpenWithoutTabParent { get; set; }
+        public bool CanOpenWithoutTabParent { get; set; }
 
-		private bool sensitive = true;
+        private bool sensitive = true;
 		[Browsable(false)]
 		public new bool Sensitive {
 			get { return sensitive; }
@@ -243,18 +243,18 @@ namespace QS.Widgets.GtkUI
 			entitySelector = entitySelectorFactory.CreateSelector();
 			entitySelector.OnEntitySelectedResult += JournalViewModel_OnEntitySelectedResult;
 			entitySelector.TabClosed += EntitySelector_TabClosed;
-			if(MyTab.TabParent != null)
-			{
+            if(MyTab.TabParent != null)
+            {
 				MyTab.TabParent.AddSlaveTab(MyTab, entitySelector);
 			}
-			else if(CanOpenWithoutTabParent)
-			{
+            else if(CanOpenWithoutTabParent)
+            {
 				TDIMain.MainNotebook.AddTab(entitySelector);
-			}
-			else
-			{
+            }
+            else
+            {
 				throw new InvalidOperationException($"Родительский диалог не был правильно открыт как вкладка, либо в виджете не установлено свойство {nameof(CanOpenWithoutTabParent)}");
-			}
+            }
 		}
 
 		void EntitySelector_TabClosed(object sender, EventArgs e)
@@ -267,10 +267,6 @@ namespace QS.Widgets.GtkUI
 			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
 				var entityTab = localSelector?.GetTabToOpen(SubjectType, SubjectId);
 				if(entityTab != null) {
-					if(CanOpenWithoutTabParent && MyTab.TabParent is null) {
-						TDIMain.MainNotebook.AddTab(entityTab);
-						return;
-					}
 					MyTab.TabParent.AddTab(entityTab, MyTab);
 					return;
 				}
@@ -462,8 +458,8 @@ namespace QS.Widgets.GtkUI
 			//Отписываемся от событий.
 			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 
-			if(entitySelector != null)
-			{
+            if(entitySelector != null)
+            {
 				entitySelector.OnEntitySelectedResult -= JournalViewModel_OnEntitySelectedResult;
 			}
 

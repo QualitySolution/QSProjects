@@ -7,7 +7,6 @@ using QS.Attachments.Domain;
 using QS.Attachments.Factories;
 using QS.Commands;
 using QS.Project.Repositories;
-using QS.Project.Services;
 using QS.Project.Services.FileDialog;
 using QS.ViewModels;
 

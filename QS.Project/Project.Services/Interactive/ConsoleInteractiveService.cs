@@ -1,6 +1,5 @@
-﻿using System;
-using QS.Dialog;
-using QS.Services;
+﻿using QS.Dialog;
+
 namespace QS.Project.Services.Interactive
 {
 	public class ConsoleInteractiveService : IInteractiveService
@@ -17,6 +16,11 @@ namespace QS.Project.Services.Interactive
 		public bool Question(string message, string title = null)
 		{
 			return interactiveQuestion.Question(message, title);
+		}
+		
+		public string Question(string[] buttons, string message, string title = null)
+		{
+			return interactiveQuestion.Question(buttons, message, title);
 		}
 	}
 }

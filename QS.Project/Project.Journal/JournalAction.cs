@@ -7,13 +7,13 @@ namespace QS.Project.Journal
 	{
 		/// <summary>
 		/// Инициализирует новый объект класса JournalAction
-		/// во всех делегатах objetc[] - это Node-ы(=строки) журнала
+		/// во всех делегатах object[] - это Node-ы(=строки) журнала
 		/// </summary>
 		/// <param name="title">Название действия.</param>
-		/// <param name="sensitiveFunc">Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
+		/// <param name="sensitiveFunc">Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие,к примеру,как объект выпадающего меню), при выделенных Node-ах.</param>
 		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
-		/// <param name="hotKeys">Горячая клавиша выполнения действия JornalAction. Записывается в виде строки: Insert, Delete, Tab</param>
+		/// <param name="hotKeys">Горячая клавиша выполнения действия JournalAction. Записывается в виде строки: Insert, Delete, Tab</param>
 		public JournalAction(string title, Func<object[], bool> sensitiveFunc, Func<object[], bool> visibleFunc,
 			Action<object[]> executeAction = null, string hotKeys = null)
 		{
@@ -27,7 +27,7 @@ namespace QS.Project.Journal
 
 		public string Title { get; }
 		/// <summary>
-		/// Функция проверки sensetive(отклика кнопки на нажатие), при выделенных Node-ах.
+		/// Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.
 		/// </summary>
 		private readonly Func<object[], bool> sensitiveFunc;
 		/// <summary>
@@ -44,7 +44,7 @@ namespace QS.Project.Journal
 		/// Выполняемое действие при вызове.
 		/// </summary>
 		/// <value>Объекты - в данном случае это Node-ы журнала</value>
-		public Action<object[]> ExecuteAction { get; }
+		public Action<object[]> ExecuteAction { get; set; }
 
         public bool GetSensitivity(object[] selectedNodes)
 		{

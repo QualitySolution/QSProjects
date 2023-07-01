@@ -8,7 +8,6 @@ using NHibernate;
 using QS.Deletion.Configuration;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Project.DB;
 
 [assembly:InternalsVisibleTo("QS.Project.Desktop")]
 [assembly:InternalsVisibleTo("QS.Project.Gtk")]
@@ -141,6 +140,11 @@ namespace QS.Deletion
 				throw new InvalidOperationException (String.Format ("Удаление для класса {0} не настроено в DeleteConfig", objectClass));
 				
 			RootEntity = info.GetSelfEntity(this, (uint)id);
+			if (RootEntity == null) {
+				logger.Warn($"Попытка удалить объект {objectClass.Name}:{id}, который отсутствует в базе. Ничего не делаем.");
+				DeletionExecuted = false;
+				return;
+			}
 			RootOperation = info.CreateDeleteOperation(RootEntity);
 
 			AddItemToDelete(RootEntity);
