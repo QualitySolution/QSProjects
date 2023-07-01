@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -62,11 +62,28 @@ namespace QS.ViewModels.Control.EEVM
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
-		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
+		where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> 
+	{
 		private readonly Action<TJournalFilterViewModel> filterParams;
 
-		public JournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager, Action<TJournalFilterViewModel> filterParams)
-			:base (parentViewModel, navigationManager){
+		public JournalViewModelSelector(
+			DialogViewModelBase parentViewModel, 
+			INavigationManager navigationManager, 
+			Action<TJournalFilterViewModel> filterParams
+			):base (parentViewModel, navigationManager)
+		{
+			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
+		}
+
+		/// <summary>
+		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
+		/// </summary>
+		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
+		public JournalViewModelSelector(
+			Func<ITdiTab> getParentTab,
+			INavigationManager navigationManager,
+			Action<TJournalFilterViewModel> filterParams
+			) : base(getParentTab, navigationManager) {
 			this.filterParams = filterParams ?? throw new ArgumentNullException(nameof(filterParams));
 		}
 
