@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -75,141 +75,6 @@ namespace QS.HistoryLog.Domain
 
 			DiffFormatter.SideBySideDiff(OldValueText, NewValueText, out oldFormatedDiffText, out newFormatedDiffText);
 			isDiffMade = true;
-		}
-
-		private void UpdateType()
-		{
-			if(OldId.HasValue || NewId.HasValue) {
-				if(OldId.HasValue && NewId.HasValue)
-					Type = FieldChangeType.Changed;
-				else if(OldId.HasValue)
-					Type = FieldChangeType.Removed;
-				else if(NewId.HasValue)
-					Type = FieldChangeType.Added;
-				else
-					Type = FieldChangeType.Unchanged;
-			} else {
-				if(!String.IsNullOrWhiteSpace(OldValue) && !String.IsNullOrWhiteSpace(NewValue))
-					Type = FieldChangeType.Changed;
-				else if(String.IsNullOrWhiteSpace(OldValue))
-					Type = FieldChangeType.Added;
-				else if(String.IsNullOrWhiteSpace(NewValue))
-					Type = FieldChangeType.Removed;
-				else
-					Type = FieldChangeType.Unchanged;
-			}
-		}
-
-		#endregion
-
-		#region Статические методы
-
-		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostUpdateEvent ue)
-		{
-			return CreateChange(uow, ue.State[i], ue.OldState[i], ue.Persister, i);
-		}
-
-		public static FieldChange CheckChange(IUnitOfWorkTracked uow, int i, PostInsertEvent ie)
-		{
-			return CreateChange(uow, ie.State[i], null, ie.Persister, i);
-		}
-
-		private static FieldChange CreateChange(IUnitOfWorkTracked uow, object valueNew, object valueOld, NHibernate.Persister.Entity.IEntityPersister persister, int i)
-		{
-			if(valueOld == null && valueNew == null)
-				return null;
-
-			NHibernate.Type.IType propType = persister.PropertyTypes[i];
-			string propName = persister.PropertyNames[i];
-
-			var propInfo = persister.MappedClass.GetProperty(propName);
-			if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
-				return null;
-
-			var historyIdentifierAttributeInfo = propInfo.GetCustomAttribute<HistoryIdentifierAttribute>();
-
-			FieldChange change = null;
-
-			#region Обработка в зависимости от типа данных
-
-			if(historyIdentifierAttributeInfo != null) {
-				return RefIdCompare(uow, ref valueNew, ref valueOld, propName, historyIdentifierAttributeInfo, ref change);
-			}
-
-			if(propType is NHibernate.Type.StringType && !StringCompare(ref change, (string)valueOld, (string)valueNew))
-				return null;
-
-			var link = propType as NHibernate.Type.ManyToOneType;
-			if(link != null) {
-				if(!EntityCompare(ref change, valueOld, valueNew))
-					return null;
-			}
-
-			if((propType is NHibernate.Type.DateTimeType || propType is NHibernate.Type.TimestampType) && !DateTimeCompare(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.DecimalType && !DecimalCompare(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.BooleanType && !BooleanCompare(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.Int16Type && !IntCompare<Int16>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.Int32Type && !IntCompare<Int32>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.Int64Type && !IntCompare<Int64>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.UInt16Type && !IntCompare<UInt16>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.UInt32Type && !IntCompare<UInt32>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.UInt64Type && !IntCompare<UInt64>(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			if(propType is NHibernate.Type.EnumStringType && !EnumCompare(ref change, propInfo, valueOld, valueNew))
-				return null;
-
-			#endregion
-
-			if(change != null) {
-				change.Path = propName;
-				change.UpdateType();
-				return change;
-			}
-
-			logger.Warn("Трекер не умеет сравнивать изменения в полях типа {0}. Поле {1} пропущено.", propType, propName);
-			return null;
-		}
-
-		private static FieldChange RefIdCompare(IUnitOfWorkTracked uow, ref object valueNew, ref object valueOld, string propName, HistoryIdentifierAttribute historyIdentifierAttributeInfo, ref FieldChange change) {
-			if(valueOld == valueNew) {
-				return null;
-			}
-
-			if(valueOld != null) {
-				IDomainObject oldEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueOld);
-				valueOld = $"[{valueOld}][\"{oldEntity.GetTitle()}\"]";
-			}
-
-			if(valueNew != null) {
-				IDomainObject newEntity = (IDomainObject)uow.Session.Get(historyIdentifierAttributeInfo.TargetType, valueNew);
-				valueNew = $"[{valueNew}][\"{newEntity.GetTitle()}\"]";
-			}
-
-			if(!StringCompare(ref change, (string)valueOld, (string)valueNew)) {
-				return null;
-			}
-			else {
-				change.Path = propName;
-				change.UpdateType();
-				return change;
-			}
 		}
 
 		#endregion
@@ -401,7 +266,14 @@ namespace QS.HistoryLog.Domain
 			return null;
 		}
 
-		private static FieldChange RefIdCompare(IUnitOfWorkTracked uow, ref object valueNew, ref object valueOld, string propName, HistoryIdentifierAttribute historyIdentifierAttributeInfo, ref FieldChange change) {
+		private static FieldChange RefIdCompare(
+			IUnitOfWorkTracked uow,
+			ref object valueNew,
+			ref object valueOld,
+			string propName,
+			HistoryIdentifierAttribute historyIdentifierAttributeInfo,
+			ref FieldChange change)
+		{
 			if(valueOld == valueNew) {
 				return null;
 			}
@@ -442,48 +314,6 @@ namespace QS.HistoryLog.Domain
 			return value;
 		}
 
-		static string EnumDisplay(string value, NHibernate.Mapping.Property property)
-		{
-			if(String.IsNullOrWhiteSpace(value))
-				return null;
-
-			var enumType = property.Type.ReturnedClass;
-			var enumValues = enumType.GetFields();
-			 
-			return enumValues.FirstOrDefault(f => f.Name == value)?.GetEnumTitle();
-		}
-
-		static string BooleanDisplay(string value)
-		{
-			if(value == "True")
-				return "Да";
-			else if(value == "False")
-				return "Нет";
-			else
-				return null;
-		}
-
-		NHibernate.Mapping.Property GetPropertyOrNull(NHibernate.Mapping.PersistentClass classMapping, string propertyName)
-		{
-			try {
-				return classMapping?.GetProperty(propertyName);
-			} catch(NHibernate.MappingException) {
-				return null;
-			}
-		}
-
 		#endregion
-	}
-
-	public enum FieldChangeType
-	{
-		[Display(Name = "Добавлено")]
-		Added,
-		[Display(Name = "Изменено")]
-		Changed,
-		[Display(Name = "Очищено")]
-		Removed,
-		[Display(Name = "Без изменений")]
-		Unchanged
 	}
 }

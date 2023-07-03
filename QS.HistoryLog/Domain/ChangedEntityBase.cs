@@ -32,6 +32,8 @@ namespace QS.HistoryLog.Domain
 		public virtual string ChangeTimeText => ChangeTime.ToString("G");
 
 		public virtual string OperationText => Operation.GetEnumTitle();
+		
+		public virtual string EntityHash => $"{EntityClassName}_{EntityId}";
 
 		#endregion
 	}
@@ -44,6 +46,4 @@ namespace QS.HistoryLog.Domain
 		[Display(Name = "Удаление")]
 		Delete
 	}
-
-	public class EntityChangeOperationStringType : EnumStringType<EntityChangeOperation> { }
 }

@@ -111,6 +111,4 @@ namespace QS.HistoryLog.Domain
 		[Display(Name = "Без изменений")]
 		Unchanged
 	}
-
-	public class FieldChangeTypeStringType : EnumStringType<FieldChangeType> { }
 }
