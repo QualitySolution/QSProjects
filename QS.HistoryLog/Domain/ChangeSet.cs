@@ -4,21 +4,15 @@ using QS.Project.Domain;
 
 namespace QS.HistoryLog.Domain
 {
-	public class ChangeSet : IDomainObject
+	public class ChangeSet : ChangeSetBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-		public virtual int Id { get; set; }
 
 		/// <summary>
 		/// Поле используется только для сохранения, так как в этот момент не нужен полный класс достаточно id.
 		/// </summary>
 		public virtual int UserId{ get; set; }
 		public virtual UserBase User { get; set; }
-
-		public virtual string UserLogin { get; set; }
-
-		public virtual string ActionName { get; set; }
 
 		public virtual IList<ChangedEntity> Entities { get; set; } = new List<ChangedEntity>();
 
