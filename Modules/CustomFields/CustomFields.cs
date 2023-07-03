@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NLog;
 using Gtk;
 using QSProjectsLib;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace QSCustomFields
 {

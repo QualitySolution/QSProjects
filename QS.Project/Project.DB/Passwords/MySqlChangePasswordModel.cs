@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Security;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using NLog;
 using QS.Project.Repositories;
 using QS.Utilities.Text;

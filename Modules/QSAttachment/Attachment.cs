@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Gtk;
 using NLog;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QSProjectsLib;
 using Gdk;
 using System.IO;

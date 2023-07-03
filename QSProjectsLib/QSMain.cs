@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
 using Gtk;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using NLog;
 using QS.Utilities.Text;
 
