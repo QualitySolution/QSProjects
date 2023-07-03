@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Gtk;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.Configuration;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
@@ -217,7 +217,7 @@ namespace QSProjectsLib
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = entryPassword.Text;
 
-			connStr = conStrBuilder.GetConnectionString(true);
+			connStr = conStrBuilder.ConnectionString;
 
 			QSMain.connectionDB = new MySqlConnection(connStr);
 			try {
