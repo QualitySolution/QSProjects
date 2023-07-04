@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using QS.DomainModel.UoW;
 using QS.ViewModels;
@@ -65,5 +65,9 @@ namespace QS.Project.Journal
 		}
 
 		public void Dispose() => UoW?.Dispose();
+
+		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) {
+			SetAndRefilterAtOnce(configuration);
+		}
 	}
 }
