@@ -1,9 +1,9 @@
-﻿using System;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.DomainModel.Tracking;
+using QS.Project.DB;
+using System;
 
-namespace QS.HistoryLog
-{
+namespace QS.HistoryLog {
 	public class TrackerFactory : ISingleUowEventsListnerFactory
 	{
 		private readonly MySqlConnectionStringBuilder connectionStringBuilder;

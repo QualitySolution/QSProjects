@@ -9,8 +9,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+	</ItemGroup>
 
-    <ItemGroup>
+	<ItemGroup>
       <PackageReference Include="MySqlBackup.NET" Version="2.3.6.1" />
       <PackageReference Include="MySqlBackup.NET.MySqlConnector" Version="2.3.8" />
     </ItemGroup>

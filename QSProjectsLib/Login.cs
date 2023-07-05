@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -9,6 +9,7 @@ using QS.Configuration;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
+using QS.Project.DB;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSSaaS;
