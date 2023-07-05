@@ -1,4 +1,4 @@
-﻿using MySqlConnector;
+using MySqlConnector;
 using QS.DBScripts.Controllers;
 using System;
 using System.Linq;
@@ -127,9 +127,9 @@ namespace QS.DBScripts.Models {
 
 		private void ExecuteQuery(MySqlConnection connection, string sqlQuery) {
 			using(var command = new MySqlCommand(sqlQuery, connection)) {
+				logger.Debug("SQL Command = {0}", command.CommandText);
 				command.ExecuteNonQuery();
 				controller.Progress.Add();
-				logger.Debug("SQL Command = {0}", command.CommandText);
 			}
 		}
 	}
