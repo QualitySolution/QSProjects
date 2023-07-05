@@ -4,6 +4,7 @@ using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
+using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
@@ -144,6 +145,7 @@ namespace QS.Navigation
 
 		protected IPage OpenViewModelInternal(IPage masterPage, OpenPageOptions options, Func<string> makeHash, Func<string, IPage> makePage)
 		{
+			DateTime start = DateTime.Now;
 			string hash = null;
 			if(!options.HasFlag(OpenPageOptions.IgnoreHash))
 				hash = makeHash();
@@ -184,6 +186,7 @@ namespace QS.Navigation
 				}
 			}
 			ViewModelOpened?.Invoke(this, new ViewModelOpenedEventArgs(openPage));
+			logger.Info($"Вкладка «{openPage.Title?.EllipsizeMiddle(50)}» открыта за {(DateTime.Now - start).TotalSeconds} сек.");
 			return openPage;
 		}
 
