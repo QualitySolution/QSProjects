@@ -136,7 +136,7 @@ namespace QSProjectsLib
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
 			this.comboConnectionType = global::Gtk.ComboBox.NewText();
-			this.comboConnectionType.AppendText(global::Mono.Unix.Catalog.GetString("Сервер MySQL"));
+			this.comboConnectionType.AppendText(global::Mono.Unix.Catalog.GetString("Сервер MariaDB или MySQL"));
 			this.comboConnectionType.AppendText(global::Mono.Unix.Catalog.GetString("Облако Quality Solution"));
 			this.comboConnectionType.Name = "comboConnectionType";
 			this.comboConnectionType.Active = 0;
