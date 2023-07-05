@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -146,6 +146,7 @@ namespace QS.Navigation
 		protected IPage OpenViewModelInternal(IPage masterPage, OpenPageOptions options, Func<string> makeHash, Func<string, IPage> makePage)
 		{
 			DateTime start = DateTime.Now;
+			logger.Info("Открываем...");
 			string hash = null;
 			if(!options.HasFlag(OpenPageOptions.IgnoreHash))
 				hash = makeHash();
