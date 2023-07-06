@@ -28,6 +28,7 @@ namespace QS.Test.Navigation
 		[Test(Description = "Проверка что действительно не открываем повторно вкладку с тем же хешем.")]
 		public void OpenViewModel_DontCreateNewViewModel()
 		{
+			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
 			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
@@ -41,7 +42,7 @@ namespace QS.Test.Navigation
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(viewModel).Returns(tabWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -220,6 +221,7 @@ namespace QS.Test.Navigation
 		[Test(Description = "Проверяем что страницы удаляются при закрытии.")]
 		public void ForceClosePage_RemovePagesWhenClosedTest()
 		{
+			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
 			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs((string)null);
 
@@ -235,7 +237,7 @@ namespace QS.Test.Navigation
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(viewModel1).ReturnsForAnyArgs(tabWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -361,6 +363,7 @@ namespace QS.Test.Navigation
 		[Test(Description = "Проверка что событие о закрытии страницы приходит внешним подписчикам.")]
 		public void Page_PageClosedEvent_RisedTest()
 		{
+			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
 			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
@@ -376,7 +379,7 @@ namespace QS.Test.Navigation
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(viewModel).Returns(tabWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -418,7 +421,7 @@ namespace QS.Test.Navigation
 			resolver.Resolve(Arg.Any<TdiSliderTab>()).Returns(x => x[0]);
 			resolver.Resolve(journalViewModel).Returns(tabJournalWidget);
 			resolver.Resolve(viewModel).Returns(tabWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -462,7 +465,7 @@ namespace QS.Test.Navigation
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(Arg.Any<TdiSliderTab>()).Returns(x => x[0]);
 			resolver.Resolve(journalViewModel).Returns(tabJournalWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -483,6 +486,7 @@ namespace QS.Test.Navigation
 		[Test(Description = "Проверка что можем найти страницу передав DialogViewModelBase.(Реальный баг)")]
 		public void FindPage_ByDialogViewModelBaseTest()
 		{
+			GtkInit.AtOnceInitGtk();
 			var hashGenerator = Substitute.For<IPageHashGenerator>();
 			hashGenerator.GetHash<EntityTabViewModel>(null, new System.Type[] { }, new object[] { }).ReturnsForAnyArgs("hash_1");
 
@@ -496,7 +500,7 @@ namespace QS.Test.Navigation
 			var tabWidget = Substitute.For<Gtk.Widget>();
 			var resolver = Substitute.For<ITDIWidgetResolver>();
 			resolver.Resolve(viewModel).Returns(tabWidget);
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			var tdiNotebook = new TdiNotebook();
 			tdiNotebook.WidgetResolver = resolver;
 
 			var pageFactory = Substitute.For<IViewModelsPageFactory>();
@@ -515,7 +519,8 @@ namespace QS.Test.Navigation
 		[Test(Description = "Тест остановки создания вкладки.")]
 		public void OpenViewModel_AbortingVMCreationTest()
 		{
-			var tdiNotebook = Substitute.For<TdiNotebook>();
+			GtkInit.AtOnceInitGtk();
+			var tdiNotebook = new TdiNotebook();
 			var hashGenerator = new ClassNamesHashGenerator(null);
 			var interactive = Substitute.For<IInteractiveMessage>();
 
