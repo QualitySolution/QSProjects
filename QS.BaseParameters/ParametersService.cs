@@ -9,15 +9,53 @@ using NLog;
 
 namespace QS.BaseParameters
 {
-	public class ParametersService : DynamicObject
-	{
+	public class ParametersService : DynamicObject {
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		
-		private readonly DbConnection connection;
 
-		public ParametersService (DbConnection connection)
+		#region Управление соединением
+
+		private readonly DbConnection externalConnection;
+		private DbConnection ownedConnection;
+		private readonly Func<DbConnection> connectionFactory;
+		
+		private DbConnection connection {
+			get {
+				if(externalConnection != null)
+					return externalConnection;
+				if(ownedConnection == null)
+					ownedConnection = connectionFactory();
+				return ownedConnection;
+			}
+		}
+		
+		private void CloseConnectionIfNeeded()
 		{
-			this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			if(externalConnection != null)
+				return;
+			if(ownedConnection != null) {
+				ownedConnection.Close();
+				ownedConnection = null;
+			}
+		}
+		#endregion
+		
+		/// <summary>
+		/// Данный конструктор получает внешнее соединение с базой, которым не управляет.
+		/// Соединение с базой должен открывать и закрывать внешний владелец.
+		/// </summary>
+		/// <param name="externalConnection"></param>
+		public ParametersService (DbConnection externalConnection) {
+			this.externalConnection = externalConnection;
+		}
+
+		/// <summary>
+		/// Конструктор получает фабрику для создания соединения с базой.
+		/// Сервис при необходимости создает новое соединение через фабрику, сервис рассчитывает что соединение при создании будет уже открыто.
+		/// Сервис не держит соединение открытым, а открывает и закрывает его при необходимости.
+		/// </summary>
+		public ParametersService (Func<DbConnection> connectionFactory)
+		{
+			this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
 		}
 
 		/// <summary>
@@ -52,6 +90,7 @@ namespace QS.BaseParameters
 					all.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
+			CloseConnectionIfNeeded();
 		}
 		
 		public async Task ReloadParametersAsync()
@@ -65,6 +104,7 @@ namespace QS.BaseParameters
 					all.Add(rdr["name"].ToString(), rdr["str_value"].ToString());
 				}
 			}
+			CloseConnectionIfNeeded();
 		}
 
 		#endregion
@@ -95,6 +135,7 @@ namespace QS.BaseParameters
 			paramValue.Value = ConvertToString(value);
 			cmd.Parameters.Add (paramValue);
 			cmd.ExecuteNonQuery ();
+			CloseConnectionIfNeeded();
 
 			All [name] = ConvertToString(value);
 			logger.Debug ("Ок");
@@ -109,19 +150,23 @@ namespace QS.BaseParameters
 			else
 				throw new ArgumentException ("Нет указанного параметра базы", name);
 			try {
-				DbCommand cmd = connection.CreateCommand ();
+				DbCommand cmd = connection.CreateCommand();
 				cmd.CommandText = sql;
-				DbParameter paramName = cmd.CreateParameter ();
+				DbParameter paramName = cmd.CreateParameter();
 				paramName.ParameterName = "@name";
 				paramName.Value = name;
-				cmd.Parameters.Add (paramName);
-				cmd.ExecuteNonQuery ();
+				cmd.Parameters.Add(paramName);
+				cmd.ExecuteNonQuery();
 
-				All.Remove (name);
-				logger.Debug ("Ок");
-			} catch (Exception ex) {
-				logger.Error (ex, "Ошибка удаления параметра");
+				All.Remove(name);
+				logger.Debug("Ок");
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка удаления параметра");
 				throw ex;
+			}
+			finally {
+				CloseConnectionIfNeeded();
 			}
 		}
 		#endregion
