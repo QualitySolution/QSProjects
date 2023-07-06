@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
@@ -10,7 +10,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Filter
 {
-	public abstract class FilterViewModelBase<TFilter> : WidgetViewModelBase, IDisposable, IJournalFilter, ISingleUoWDialog
+	public abstract class FilterViewModelBase<TFilter> : WidgetViewModelBase, IDisposable, IJournalFilter, ISingleUoWDialog, IJournalFilterViewModel
 		where TFilter : FilterViewModelBase<TFilter>
 	{
 		public bool HidenByDefault { get; set; }
@@ -21,6 +21,7 @@ namespace QS.Project.Filter
 		private bool canNotify = true;
 
 		public virtual IUnitOfWork UoW { get; protected set; }
+		public virtual bool IsShow { get; set; }
 
 		protected FilterViewModelBase()
 		{
@@ -87,5 +88,9 @@ namespace QS.Project.Filter
 		}
 
 		public virtual void Dispose() => UoW?.Dispose();
+
+		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) {
+			SetAndRefilterAtOnce(configuration);
+		}
 	}
 }

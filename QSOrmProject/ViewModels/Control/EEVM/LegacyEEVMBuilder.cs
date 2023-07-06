@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autofac;
 using NHibernate;
 using NHibernate.Criterion;
@@ -90,6 +90,18 @@ namespace QS.ViewModels.Control.EEVM
 			}
 			else
 				base.UseViewModelJournalAndAutocompleter<TJournalViewModel>();
+			return this;
+		}
+
+		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
+				where TJournalViewModel : JournalViewModelBase
+				where TJournalFilterViewModel : JournalFilterViewModelBase<TJournalFilterViewModel> {
+			if(parameters.DialogViewModel == null) {
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filterParams);
+				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filterParams);
+			}
+			else
+				base.UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(filterParams);
 			return this;
 		}
 

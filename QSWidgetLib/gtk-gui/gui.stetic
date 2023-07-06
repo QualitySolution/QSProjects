@@ -54,7 +54,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QSWidgetLib.SelectPeriod" design-size="294 76">
+  <widget class="Gtk.Bin" id="QSWidgetLib.SelectPeriod" design-size="294 100">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -75,6 +75,24 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.CheckButton" id="chkEarlyCustomDate">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="Sensitive">False</property>
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">ранний период</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.Table" id="RadiosTable">
             <property name="MemberName" />
             <property name="NColumns">2</property>
@@ -88,7 +106,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="AutoSize">False</property>
             <property name="Expand">False</property>
           </packing>
@@ -141,7 +159,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">2</property>
+            <property name="Position">3</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

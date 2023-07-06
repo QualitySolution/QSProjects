@@ -6,7 +6,7 @@ namespace QS.Report
 {
 	public interface IPrintableRDLDocument : IPrintableDocument
 	{
-		ReportInfo GetReportInfo();
+		ReportInfo GetReportInfo(string connectionString = null);
 		Dictionary<object, object> Parameters { get; set; }
 	}
 }

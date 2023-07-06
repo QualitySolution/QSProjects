@@ -18,6 +18,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		private Func<IUnitOfWork, IQueryOver<TRoot>> mainQueryFunc;
 		private LevelingModel<TNode> levelingModel;
 		private RecursiveModel<TNode> recursiveModel;
+		private Func<IUnitOfWork, int> countFunction;
 
 		/// <summary>
 		/// true - рекурсивная модель, false - уровневая, null - не инициализирована
@@ -133,8 +134,16 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 
 		#region DynamicQueryLoader override
 
+		public void SetCountFunction(Func<IUnitOfWork, int> countFunction) {
+			this.countFunction = countFunction;
+		}
+
 		public override int GetTotalItemsCount() {
 			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
+				if(countFunction != null) {
+					return countFunction(uow);
+				}
+
 				var query = mainQueryFunc.Invoke(uow);
 				if(query == null)
 					return 0;

@@ -58,6 +58,11 @@ namespace QS.Widgets.GtkUI {
 				.AddFuncBinding(vm => vm.RightItems, w => w.ItemsDataSource)
 				.AddBinding(vm => vm.SelectedRightItems, w => w.SelectedRows, new ArrayToEnumerableConverter<LeftRightListItemViewModel>())
 				.InitializeFromSource();
+
+			if(ViewModel.SelectOnDoubleClick) {
+				ytreeviewRight.RowActivated += (s ,e) => ViewModel.MoveLeftCommand.Execute();
+				ytreeviewLeft.RowActivated += (s ,e) => ViewModel.MoveRightCommand.Execute();
+			}
 		}
 	}
 }

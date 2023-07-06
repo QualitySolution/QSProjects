@@ -1,5 +1,4 @@
-﻿using System;
-using FluentNHibernate.Mapping;
+﻿using FluentNHibernate.Mapping;
 using QS.Project.Domain;
 
 namespace QS.Project.HibernateMapping
