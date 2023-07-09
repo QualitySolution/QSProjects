@@ -13,6 +13,7 @@
       <PackageReference Include="FluentNHibernate" Version="3.1.0" />
       <PackageReference Include="MySqlConnector" Version="2.2.6" />
       <PackageReference Include="NHibernate" Version="5.4.1" />
+      <PackageReference Include="NHibernate.Driver.MySqlConnector" Version="2.0.4" />
       <PackageReference Include="NLog" Version="5.1.2" />
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
