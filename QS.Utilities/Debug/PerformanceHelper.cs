@@ -85,7 +85,8 @@ namespace QS.Utilities.Debug
 			text += $"\nИтого {(lastTime - currentPointsList.First().Time).TotalSeconds} секунд.";
 			logger.Debug(text);
 		}
-			
+		
+		public TimeSpan TotalTime => currentPointsList.Last().Time - currentPointsList.First().Time;
 
 		public class TimePoint{
 			public string Name { get; set;}
