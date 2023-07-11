@@ -27,7 +27,6 @@ namespace Gamma.Binding.Core.Helpers
 			if(m.Member.MemberType == System.Reflection.MemberTypes.Property && m.Expression.NodeType == ExpressionType.Parameter)
 			{
 				FoundProperies.Add (m.Member.Name);
-				Console.WriteLine (m.Member.Name);
 			}
 				
 			return base.VisitMemberAccess (m);
