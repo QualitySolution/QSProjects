@@ -171,9 +171,5 @@ namespace QS.DomainModel.NotifyChange
 		}
 
 		#endregion
-
-		#region Внутриннее
-
-		#endregion
 	}
 }
