@@ -37,8 +37,10 @@ namespace QS.Dialog {
 			this.navigator = navigator ?? throw new ArgumentNullException(nameof(navigator));
 		}
 		
+		protected ModalProgressCreator() {}
+		
 		#region IProgressBarDisplayable
-		public void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0) {
+		public virtual void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0) {
 			if(activeProgressPage != null)
 				throw new InvalidOperationException("Прежде чем запускать новый прогресс необходимо остановить старый, вызвав Close().");
 
@@ -56,22 +58,22 @@ namespace QS.Dialog {
 			activeProgressPage = null;
 		}
 
-		public void Update(double curValue) {
+		public virtual void Update(double curValue) {
 			Progress.Update(curValue);
 		}
 
-		public void Update(string curText) {
+		public virtual void Update(string curText) {
 			Progress.Update(curText);
 		}
 
-		public void Add(double addValue = 1, string text = null) {
+		public virtual void Add(double addValue = 1, string text = null) {
 			Progress.Add(addValue, text);
 		}
 
 		public double Value => Progress.Value;
-		public bool IsStarted => activeProgressPage != null;
+		public virtual bool IsStarted => activeProgressPage != null;
 
-		public void Close() {
+		public virtual void Close() {
 			Progress.Close();
 			navigator.ForceClosePage(activeProgressPage, CloseSource.External);
 		}
