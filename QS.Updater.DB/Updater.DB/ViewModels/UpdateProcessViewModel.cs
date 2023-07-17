@@ -1,4 +1,10 @@
-﻿using MySqlConnector;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using MySqlConnector;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
@@ -7,14 +13,9 @@ using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace QS.Updater.DB.ViewModels {
+namespace QS.Updater.DB.ViewModels
+{
 	public class UpdateProcessViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
 	{
 		static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -223,29 +224,26 @@ namespace QS.Updater.DB.ViewModels {
 				sql = reader.ReadToEnd();
 			}
 
-			var queries = sql.Split(';');
-			int predictedCount = queries.Count();
-			int executedQueries = 0;
+			int predictedCount = Regex.Matches(sql, ";").Count;
 
 			logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
 
 			OperationProgress.Start(text: operationName, maxValue: predictedCount);
 
-			var tasks = queries.Select(query => ExecuteQuery(SQLProvider.DbConnection, query));
-			guiDispatcher.WaitInMainLoop(() => tasks.All(task => task.Status != TaskStatus.Running), 50);
-
-			logger.Debug("Выполнено {0} SQL-команд.", executedQueries);
+			var script = new MySqlScript(SQLProvider.DbConnection, sql);
+			script.StatementExecuted += Script_StatementExecuted;
+			var commands = script.ExecuteAsync(cancellation.Token);
+			guiDispatcher.WaitInMainLoop(() => commands.Status != System.Threading.Tasks.TaskStatus.Running, 50);
+			logger.Debug("Выполнено {0} SQL-команд.", commands.Result);
 			parametersService.ReloadParameters();
 			parametersService.version = updateScript.Destination.VersionToShortString();
 		}
 
-		private async Task ExecuteQuery(MySqlConnection connection, string sqlQuery) {
-			using(var command = new MySqlCommand(sqlQuery, connection)) {
-				await command.ExecuteNonQueryAsync();
-				OperationProgress.Add();
-				CommandsLog += command.CommandText + "\n";
-				logger.Debug(command.CommandText);
-			}
+		void Script_StatementExecuted(object sender, MySqlScriptEventArgs args)
+		{
+			OperationProgress.Add();
+			CommandsLog += args.StatementText + "\n";
+			logger.Debug(args.StatementText);
 		}
 		#endregion
 		#endregion

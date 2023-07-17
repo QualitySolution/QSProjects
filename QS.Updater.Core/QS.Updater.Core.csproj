@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MySqlBackup.NET.MySqlConnector" Version="2.3.8" />
       <PackageReference Include="NLog" Version="5.1.2" />
     </ItemGroup>
     <ProjectExtensions>

@@ -1,9 +1,10 @@
+using System;
+using System.Text.RegularExpressions;
 using MySqlConnector;
 using QS.DBScripts.Controllers;
-using System;
-using System.Linq;
 
-namespace QS.DBScripts.Models {
+namespace QS.DBScripts.Models
+{
 	public class MySqlDbCreateModel
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -41,12 +42,71 @@ namespace QS.DBScripts.Models {
 			connStr = conStrBuilder.ConnectionString;
 
 			using (var connectionDB = new MySqlConnection(connStr)) {
-				try {
+				try
+				{
 					logger.Info("Connecting to MySQL...");
 					connectionDB.Open();
 
+					logger.Info("Проверяем существует ли уже база.");
+
+					var sql = "SHOW DATABASES;";
+					var cmd = new MySqlCommand(sql, connectionDB);
+					bool needDropBase = false;
+					using (var rdr = cmd.ExecuteReader())
+					{
+						while (rdr.Read())
+						{
+							if (rdr[0].ToString() == dbname)
+							{
+								if (controller.NeedDropDatabaseIfExists(dbname))
+								{
+									needDropBase = true;
+									break;
+								} else
+									return false;
+							}
+						}
+					}
+
+					logger.Info("Создаем новую базу.");
+
+					controller.Progress.Start(text: "Получаем скрипт создания базы");
+
+					string sqlScript = script.GetSqlScript();
+					int predictedCount = Regex.Matches(sqlScript, ";").Count;
+
+					logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
+					controller.Progress.Start(maxValue: predictedCount + (needDropBase ? 2 : 1));
+
+					if (needDropBase)
+					{
+						logger.Info("Удаляем существующую базу {0}.", dbname);
+						controller.Progress.Add(text: $"Удаляем существующую базу {dbname}");
+						cmd.CommandText = String.Format("DROP DATABASE `{0}`", dbname);
+						cmd.ExecuteNonQuery();
+					}
+
+					controller.Progress.Add(text: $"Создаем базу {dbname}");
+					cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbname);
+					cmd.ExecuteNonQuery();
+					cmd.CommandText = String.Format("USE `{0}` ;", dbname);
+					cmd.ExecuteNonQuery();
+
+					controller.Progress.Add(text: $"Создаем таблицы в {dbname}");
+
+					var myscript = new MySqlScript(connectionDB, sqlScript);
+					myscript.StatementExecuted += Myscript_StatementExecuted;
+					var commands = myscript.Execute();
+					logger.Debug("Выполнено {0} SQL-команд.", commands);
+
 				}
-				catch (MySqlException ex) {
+				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.
+					logger.Error(ex, "Ошибка подключения к серверу.");
+					controller.WasError("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.");
+					return false;
+				}
+				catch (MySqlException ex)
+				{
 					logger.Info("Строка соединения: {0}", connStr);
 					logger.Error(ex, "Ошибка подключения к серверу.");
 					if (ex.Number == 1045 || ex.Number == 0)
@@ -55,82 +115,19 @@ namespace QS.DBScripts.Models {
 						controller.WasError("Не удалось подключиться к серверу БД.");
 					else
 						controller.WasError("Ошибка соединения с базой данных.");
-					
+
 					return false;
+				} finally {
+					controller.Progress.Close();
 				}
-
-				logger.Info("Проверяем существует ли уже база.");
-
-				var sql = "SHOW DATABASES;";
-				var cmd = new MySqlCommand(sql, connectionDB);
-				bool needDropBase = false;
-				using (var rdr = cmd.ExecuteReader()) {
-					while (rdr.Read()) {
-						if (rdr[0].ToString() == dbname) {
-							if (controller.NeedDropDatabaseIfExists(dbname)) {
-								needDropBase = true;
-								break;
-							}
-							else
-								return false;
-						}
-					}
-				}
-
-				logger.Info("Создаем новую базу.");
-
-				controller.Progress.Start(text: "Получаем скрипт создания базы");
-
-				string sqlScript = script.GetSqlScript();
-				var tableQueries = sqlScript.Split(';');
-				int predictedCount = tableQueries.Count() + 2;
-				if(needDropBase) {
-					predictedCount++;
-				}
-
-				logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
-				int executedQueriesCount = 0;
-				controller.Progress.Start(maxValue: predictedCount);
-
-				if (needDropBase) {
-					logger.Info("Удаляем существующую базу {0}.", dbname);
-					controller.Progress.Add(text: $"Удаляем существующую базу {dbname}");
-					string dropDbQuery = String.Format("DROP DATABASE `{0}`", dbname);
-					ExecuteQuery(connectionDB, dropDbQuery);
-					executedQueriesCount++;
-				}
-
-				controller.Progress.Add(text: $"Создаем базу <{dbname}>");
-				string createDbQuery = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbname);
-				ExecuteQuery(connectionDB, createDbQuery);
-				executedQueriesCount++;
-
-				string useDbQuery = String.Format("USE `{0}` ;", dbname);
-				ExecuteQuery(connectionDB, useDbQuery);
-				executedQueriesCount++;
-
-				controller.Progress.Add(text: $"Создаем таблицы в <{dbname}>");
-				foreach(var tableQuery in tableQueries) {
-					if(string.IsNullOrWhiteSpace(tableQuery)) {
-						continue;
-					}
-					ExecuteQuery(connectionDB, tableQuery);
-					executedQueriesCount++;
-				}
-
-				logger.Debug("Выполнено {0} SQL-команд.", executedQueriesCount);
 			}
-
-			controller.Progress.Close();
 			return true;
 		}
 
-		private void ExecuteQuery(MySqlConnection connection, string sqlQuery) {
-			using(var command = new MySqlCommand(sqlQuery, connection)) {
-				logger.Debug("SQL Command = {0}", command.CommandText);
-				command.ExecuteNonQuery();
-				controller.Progress.Add();
-			}
+		void Myscript_StatementExecuted(object sender, MySqlScriptEventArgs args)
+		{
+			controller.Progress.Add();
+			logger.Debug("SQL Command = {0}", args.StatementText);
 		}
 	}
 }
