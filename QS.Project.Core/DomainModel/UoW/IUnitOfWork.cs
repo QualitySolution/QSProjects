@@ -47,6 +47,15 @@ namespace QS.DomainModel.UoW
 		NHibernate.IQueryOver<T, T> Query<T>(Expression<Func<T>> alias) where T : class;
 
 		T GetById<T>(int id) where T : IDomainObject;
+		
+		/// <summary>
+		/// Получить тот же объект только для сессии этого Uow.
+		/// Немного упрощает код, когда необходимо полученный извне объект перегрузить в текущей сессии.
+		/// Если объект null, вернется null.
+		/// </summary>
+		/// <param name="origin">Исходный объект</param>
+		/// <returns>Объект загруженный по id для этой сессии.</returns>
+		T GetInSession<T>(T origin) where T : class, IDomainObject;
 
 		IList<T> GetById<T>(int[] ids) where T : class, IDomainObject;
 
