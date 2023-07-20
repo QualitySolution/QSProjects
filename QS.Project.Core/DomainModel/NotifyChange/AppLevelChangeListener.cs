@@ -1,70 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHibernate.Event;
 using QS.DomainModel.NotifyChange.Conditions;
 using QS.DomainModel.Tracking;
+using QS.Utilities;
 
 namespace QS.DomainModel.NotifyChange
 {
-	public class AppLevelChangeListener : ISingleUowEventsListnerFactory, IEntityChangeWatcher, IUowPostInsertEventListener, IUowPostUpdateEventListener, IUowPostDeleteEventListener
+	public class AppLevelChangeListener : ISingleUowEventsListnerFactory, IEntityChangeWatcher
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-		private readonly List<SubscriberWeakLink> SingleEventSubscribers = new List<SubscriberWeakLink>();
+		
 		private readonly List<SubscriberWeakLink> BatchEventSubscribers = new List<SubscriberWeakLink>();
 
 		internal AppLevelChangeListener()
 		{
 		}
-
-		#region Обработка уведомлений NHibernate
-
-		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
-		{
-			var change = new EntityChangeEvent(insertEvent);
-			foreach (var subscriber in GetSingleSubscribers(change))
-			{
-				subscriber.Invoke(change);
-			}
-		}
-
-		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent)
-		{
-			var change = new EntityChangeEvent(updateEvent);
-			foreach (var subscriber in GetSingleSubscribers(change))
-			{
-				subscriber.Invoke(change);
-			}
-		}
-
-		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
-		{
-			var change = new EntityChangeEvent(deleteEvent);
-			foreach (var subscriber in GetSingleSubscribers(change))
-			{
-				subscriber.Invoke(change);
-			}
-		}
-
-		private void RemoveSingleSubscriber(SubscriberWeakLink subscriber)
-		{
-			lock (SingleEventSubscribers)
-			{
-				SingleEventSubscribers.Remove(subscriber);
-			}
-		}
-
-		private SubscriberWeakLink[] GetSingleSubscribers(EntityChangeEvent entityChange)
-		{
-			lock (SingleEventSubscribers)
-			{
-				SingleEventSubscribers.RemoveAll(s => !s.IsAlive);
-				return SingleEventSubscribers.Where(x => x.IsSuitable(entityChange)).ToArray();
-			}
-		}
-
-		#endregion
 
 		#region Подписки
 
@@ -125,15 +76,6 @@ namespace QS.DomainModel.NotifyChange
 			}
 		}
 
-		public void SingleSubscribeOnEntity<TEntity>(SingleEntityChangeEventMethod subscriber)
-		{
-			lock (SingleEventSubscribers)
-			{
-				SingleEventSubscribers.Add(new SubscriberWeakLink( typeof(TEntity) , subscriber));
-				logger.Debug($"Добавлена Single-подписка на изменение {typeof(TEntity)}. Всего {SingleEventSubscribers.Count}");
-			}
-		}
-
 		public SelectionConditions BatchSubscribe(BatchEntityChangeHandler subscriber)
 		{
 			lock(BatchEventSubscribers) {
@@ -155,19 +97,8 @@ namespace QS.DomainModel.NotifyChange
 
 		public void UnsubscribeAll(object owner)
 		{
-			var singleCount = SingleEventSubscribers.RemoveAll(s => s.Owner == owner);
-			var manyCount = BatchEventSubscribers.RemoveAll(s => s.Owner == owner);
-			logger.Debug($"{owner} отписался от уведомлениий Single={singleCount} Many={manyCount}");
-		}
-
-		public void Unsubscribe(SingleEntityChangeEventMethod subscriber)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Unsubscribe(BatchEntityChangeHandler subscriber)
-		{
-			throw new NotImplementedException();
+			var count = BatchEventSubscribers.RemoveAll(s => s.Owner == owner);
+			logger.Debug($"{owner} отписался от {count} " + NumberToTextRus.Case(count, "уведомления.", "уведомлений.", "уведомлений."));
 		}
 
 		#endregion

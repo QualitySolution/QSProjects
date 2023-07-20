@@ -5,20 +5,12 @@ using QS.DomainModel.NotifyChange.Conditions;
 
 namespace QS.DomainModel.NotifyChange
 {
-	public delegate void SingleEntityChangeEventMethod(EntityChangeEvent changeEvent);
 	public delegate void BatchEntityChangeHandler(EntityChangeEvent[] changeEvents);
-
-	public enum NotifyMode
-	{
-		Single,
-		Batch
-	}
 
 	public class SubscriberWeakLink
 	{
 		WeakReference targetReference;
 		MethodInfo method;
-		NotifyMode mode;
 		readonly SelectionConditions conditions;
 
 		internal object Owner => targetReference.Target;
@@ -26,15 +18,6 @@ namespace QS.DomainModel.NotifyChange
 		internal Type[] EntityTypes { get; private set; }
 
 		#region Конструкторы
-
-		internal SubscriberWeakLink(Type entityClass, SingleEntityChangeEventMethod handler)
-		{
-			targetReference = new WeakReference(handler.Target);
-			method = handler.Method;
-			mode = NotifyMode.Single;
-
-			EntityTypes = new[] { entityClass };
-		}
 
 		internal SubscriberWeakLink(Type[] entityClasses, BatchEntityChangeHandler handler)
 		{
@@ -58,7 +41,6 @@ namespace QS.DomainModel.NotifyChange
 		{
 			targetReference = new WeakReference(handler.Target);
 			method = handler.Method;
-			mode = NotifyMode.Batch;
 		}
 
 		#endregion
@@ -70,21 +52,7 @@ namespace QS.DomainModel.NotifyChange
 		{
 			if (!IsAlive) return false;
 
-			if (mode != NotifyMode.Batch)
-				throw new InvalidOperationException("Переданный метод должен реализовать режим Batch");
-
 			method.Invoke(targetReference.Target, new object[] {changeEvents });
-			return true;
-		}
-
-		internal bool Invoke(EntityChangeEvent changeEvent)
-		{
-			if (!IsAlive) return false;
-
-			if (mode != NotifyMode.Single)
-				throw new InvalidOperationException("Переданный метод должен реализовать режим Single");
-
-			method.Invoke(targetReference.Target, new object[] { changeEvent });
 			return true;
 		}
 
@@ -102,9 +70,5 @@ namespace QS.DomainModel.NotifyChange
 		{
 			return $"{method.DeclaringType}.{method.Name}";
 		}
-
-		#region FluentFilter
-
-		#endregion
 	}
 }

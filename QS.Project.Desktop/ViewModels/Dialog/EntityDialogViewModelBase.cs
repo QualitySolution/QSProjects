@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
@@ -48,7 +49,7 @@ namespace QS.ViewModels.Dialog
 
 			Validations.Add(new ValidationRequest(Entity));
 			
-			NotifyConfiguration.Instance.SingleSubscribeOnEntity<TEntity>(ExternalDelete);
+			NotifyConfiguration.Instance?.BatchSubscribeOnEntity<TEntity>(ExternalDelete);
 		}
 
 		#region Создание имени диалога
@@ -99,14 +100,14 @@ namespace QS.ViewModels.Dialog
 		}
 		#endregion
 
-		private void ExternalDelete(EntityChangeEvent changeEvent) {
-			if(changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id) 
+		private void ExternalDelete(EntityChangeEvent[] changeEvents) {
+			if(changeEvents.Any(changeEvent => changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id))
 				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
 		}
 
 		public override void Dispose()
 		{
-			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			NotifyConfiguration.Instance?.UnsubscribeAll(this);
 			base.Dispose();
 		}
 	}
