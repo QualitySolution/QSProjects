@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -20,6 +20,7 @@ namespace QS.Project.Journal
 			set {
 				filterViewModel = value;
 				Filter = filterViewModel;
+				JournalFilter = filterViewModel;
 			}
 		}
 
