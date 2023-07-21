@@ -309,13 +309,13 @@ namespace QS.Tdi
 		/// <param name="tab">Основная вкладка.</param>
 		/// <param name="afterTab">Дочерняя вкладка.</param>
 		/// <param name="canSlided">Если true, то открываются в одной вкладке.</param>
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true)
+		public ITdiTab AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
 					tab.TabName
 				);
-				return;
+				return null;
 			}
 
 			if(canSlided && afterTab == Journal) {
@@ -325,13 +325,13 @@ namespace QS.Tdi
 					CloseDialog(CloseSource.FromParentPage, askSave);
 				}
 				ActiveDialog = tab;
-				return;
+				return ActiveDialog;
 			}
 
 			if(afterTab == null || afterTab == Journal || afterTab == ActiveDialog)
-				TabParent.AddTab(tab, this as ITdiTab);
+				return TabParent.AddTab(tab, this as ITdiTab);
 			else
-				TabParent.AddTab(tab, afterTab);
+				return TabParent.AddTab(tab, afterTab);
 		}
 
 		public bool FailInitialize {

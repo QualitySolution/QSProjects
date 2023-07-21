@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -121,13 +121,13 @@ namespace QS.Tdi.Gtk
 
 		#region Открытие вкладки
 
-		public void AddTab(ITdiTab tab, int after = -1)
+		public ITdiTab AddTab(ITdiTab tab, int after = -1)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
 					tab.TabName
 				);
-				return;
+				return null;
 			}
 			HBox box = new HBox();
 			Label nameLable = new Label();
@@ -173,6 +173,8 @@ namespace QS.Tdi.Gtk
 				//то открыть окно "контрагенты"
 				((ITdiTabAddedNotifier)tab).OnTabAdded();
 			}
+
+			return Tabs[inserted].TdiTab;
 		}
 
         protected override void OnPageReordered(Widget p0, uint p1)
@@ -256,16 +258,16 @@ namespace QS.Tdi.Gtk
 			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
 		}
 
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		public ITdiTab AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			if(afterTab == null)
-				AddTab(tab);
+				return AddTab(tab);
 			else {
 				var tabBox = GetTabBoxForTab(afterTab);
 				if(tabBox == null) {
-					AddTab(tab);
+					return AddTab(tab);
 				} else {
-					AddTab(tab, this.PageNum(tabBox));
+					return AddTab(tab, this.PageNum(tabBox));
 				}
 			}
 		}
@@ -284,9 +286,9 @@ namespace QS.Tdi.Gtk
 
 			if(tab == null) {
 				if(afterTab == null)
-					AddTab(newTabFunc());
+					return AddTab(newTabFunc());
 				else
-					AddTab(newTabFunc(), afterTab);
+					return AddTab(newTabFunc(), afterTab);
 			} else {
 				logger.Debug("Вкладка c хешом {0} уже открыта, переключаемся...", hashName);
 				SwitchOnTab(tab);

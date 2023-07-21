@@ -73,9 +73,10 @@ namespace QSOrmProject
 			RunDlg (slaveTab);
 		}
 
-		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		public ITdiTab AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
 		{
 			RunDlg (tab);
+			return null;
 		}
 
 		void RunDlg(ITdiTab dlg)

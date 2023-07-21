@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Navigation;
 
 namespace QS.Tdi
@@ -18,7 +18,7 @@ namespace QS.Tdi
         /// <param name="tab">Вкладка, которую надо открыть.</param>
         /// <param name="afterTab">После какой вкладки добавлять. Обычно после выбранной - в этом случае аргумент "this".</param>
         /// <param name="canSlided">Может ли вкладка открыться рядом с журналом. "True" и открывается из журнала - появляется справа, "false" - открывается в отдельной вкладке.</param>
-		void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true);
+		ITdiTab AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true);
 
 		/// <summary>
 		/// Выполняем проверку есть ли у вкладки подчиненные, если есть выводится сообщение пользователю с переключение на незакрытую подчинённую вкладку.
