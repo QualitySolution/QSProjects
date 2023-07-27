@@ -11,22 +11,22 @@ namespace QS.DomainModel.NotifyChange
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly List<EntityChangeEvent> entityChanges = new List<EntityChangeEvent>();
-		private readonly List<SubscriberWeakLink> ManyEventSubscribers;
+		private readonly List<SubscriberWeakLink> eventSubscribers;
 
 		public UowTracker(List<SubscriberWeakLink> subscriberWeakLinks)
 		{
-			ManyEventSubscribers = subscriberWeakLinks;
+			eventSubscribers = subscriberWeakLinks;
 		}
 
 		public void OnPostCommit(IUnitOfWorkTracked uow)
 		{
 			SubscriberWeakLink[] subscribers;
-			lock (ManyEventSubscribers) {
-				int counts = ManyEventSubscribers.Count;
-				ManyEventSubscribers.RemoveAll(s => !s.IsAlive);
-				subscribers = ManyEventSubscribers.ToArray();
-				if(ManyEventSubscribers.Count != counts)
-					logger.Debug($"Очищено {counts - ManyEventSubscribers.Count} протухших подписчиков. Осталось {ManyEventSubscribers.Count} подписчиков.");
+			lock (eventSubscribers) {
+				int counts = eventSubscribers.Count;
+				eventSubscribers.RemoveAll(s => !s.IsAlive);
+				subscribers = eventSubscribers.ToArray();
+				if(eventSubscribers.Count != counts)
+					logger.Debug($"Очищено {counts - eventSubscribers.Count} протухших подписчиков. Осталось {eventSubscribers.Count} подписчиков.");
 			}
 			foreach (var subscriber in subscribers)
 			{

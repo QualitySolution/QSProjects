@@ -95,7 +95,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
 				where TJournalViewModel : JournalViewModelBase
-				where TJournalFilterViewModel : IJournalFilterViewModel {
+				where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(parameters.DialogViewModel == null) {
 				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filterParams);
 				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filterParams);

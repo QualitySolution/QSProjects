@@ -3,7 +3,6 @@ namespace QS.DomainModel.NotifyChange
 {
 	public interface IEntityChangeWatcher
 	{
-		void SingleSubscribeOnEntity<TEntity>(SingleEntityChangeEventMethod subscriber);
 		void BatchSubscribeOnAll(BatchEntityChangeHandler subscriber);
 		void BatchSubscribeOnEntity(BatchEntityChangeHandler subscriber, params Type[] entityClasses);
 		void BatchSubscribeOnEntity<TEntity>(BatchEntityChangeHandler subscriber);
@@ -14,7 +13,5 @@ namespace QS.DomainModel.NotifyChange
 		Conditions.SelectionConditions BatchSubscribe(BatchEntityChangeHandler subscriber);
 
 		void UnsubscribeAll(object owner);
-		void Unsubscribe(SingleEntityChangeEventMethod subscriber);
-		void Unsubscribe(BatchEntityChangeHandler subscriber);
 	}
 }

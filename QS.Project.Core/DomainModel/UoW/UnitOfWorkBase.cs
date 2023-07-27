@@ -122,6 +122,12 @@ namespace QS.DomainModel.UoW
 			return Session.Get<T>(id);
 		}
 
+		public T GetInSession<T>(T origin) where T : class, IDomainObject {
+			if(origin == null)
+				return null;
+			return Session.Get<T>(origin.Id);
+		}
+
 		public IList<T> GetById<T>(IEnumerable<int> ids) where T : class, IDomainObject
 		{
 			return GetById<T>(ids.ToArray());

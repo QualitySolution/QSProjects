@@ -11,6 +11,9 @@ namespace QS.Widgets
 	public class ProgressWidget : ProgressBar, IProgressBarDisplayable
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		//Используется чтобы отслеживать настоящее количество шагов(вызовов Add).
+		//Так как Adjustment.Value не дает значению выйти за указанные границы.
+		private double checkValue;
 
 		public double Value => Adjustment.Value;
 		public bool IsStarted => Visible;
@@ -24,11 +27,9 @@ namespace QS.Widgets
 				Text = text;
 
 			Adjustment.Value += addValue;
-			if(Adjustment.Value > Adjustment.Upper)
-				logger.Warn("Значение ({0}) прогресс больше максимального ({1})",
-							Adjustment.Value,
-							Adjustment.Upper
-						   );
+			checkValue += addValue;
+			if(checkValue > Adjustment.Upper)
+				logger.Warn($"Значение прогресса {checkValue} больше максимального {Adjustment.Upper}");
 			GtkHelper.WaitRedraw(50);
 		}
 
@@ -36,12 +37,15 @@ namespace QS.Widgets
 		{
 			Text = null;
 			Visible = false;
+			if(Convert.ToInt64(checkValue) != Convert.ToInt64(Adjustment.Upper))
+				logger.Warn($"Прогресс остановлен на шаге {checkValue} из {Adjustment.Upper}");
 			GtkHelper.WaitRedraw();
 		}
 
 		public void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0)
 		{
 			Adjustment = new Adjustment(startValue, minValue, maxValue, 1, 1, 1);
+			checkValue = startValue;
 			Text = text;
 			Visible = true;
 			GtkHelper.WaitRedraw();
@@ -58,6 +62,7 @@ namespace QS.Widgets
 			if(Adjustment == null)
 				return;
 			Adjustment.Value = value;
+			checkValue = value;
 			GtkHelper.WaitRedraw();
 		}
 	}

@@ -7,7 +7,7 @@ namespace QS.Utilities.Debug
 {
 	public class PerformanceHelper
 	{
-		private readonly Logger logger;
+		protected readonly Logger logger;
 		List<TimePoint> pointsList = new List<TimePoint>();
 		List<TimePoint> currentPointsList;
 		List<TimePoint> currentGroupLevels = new List<TimePoint>();
@@ -15,39 +15,42 @@ namespace QS.Utilities.Debug
 		/// <summary>
 		/// Создает новый помощник замера производительности.
 		/// </summary>
-		/// <param name="nameFirstPoint">Название стартовой точки. По умолчанию 'Старт'.</param>
+		/// <param name="nameFirstInterval">Название первого интервала. По умолчанию 'Старт'.</param>
 		/// <param name="logger">Логер, если указан при добавлении каждой точки название будет записываться в лог.</param>
-		public PerformanceHelper(string nameFirstPoint = "Старт", NLog.Logger logger = null)
+		public PerformanceHelper(string nameFirstInterval = "Старт", NLog.Logger logger = null)
 		{
 			this.logger = logger;
 			currentPointsList = pointsList;
-			CheckPoint(nameFirstPoint);
+			CheckPoint(nameFirstInterval);
 		}
 
-		public void CheckPoint(string name = null) {
+		/// <summary>
+		/// Начинаем новый интервал.
+		/// </summary>
+		/// <param name="name">Название интервала времени</param>
+		public virtual void CheckPoint(string name = null) {
 			var point = new TimePoint(name ?? currentPointsList.Count.ToString());
 			currentPointsList.Add(point);
 			logger?.Debug("Time point: " + point.Name);
 		}
 
-		public void StartGroup(string name)
-		{
-			var group = new TimePoint()
-			{
-				Name = name,
-				GroupStartTime = DateTime.Now,
-				InternalPoints = new List<TimePoint>()
-			};
+		/// <summary>
+		/// Начинаем новую группу.
+		/// </summary>
+		/// <param name="name">Название группы</param>
+		public virtual void StartGroup(string name) {
+			var group = new TimePoint(name);
+			group.InternalPoints = new List<TimePoint>();
 			currentPointsList.Add(group);
 			currentGroupLevels.Add(group);
 			currentPointsList = group.InternalPoints;
 			logger?.Debug("Start time group: " + group.Name);
 		}
 
-		public void EndGroup()
+		public virtual void EndGroup()
 		{
+			CheckPoint("Конец группы");
 			var group = currentGroupLevels.Last();
-			group.Time = DateTime.Now;
 			currentGroupLevels.Remove(group);
 			if (currentGroupLevels.Count > 0)
 				currentPointsList = currentGroupLevels.Last().InternalPoints;
@@ -63,7 +66,7 @@ namespace QS.Utilities.Debug
 			if (currentPointsList.Count > 1)
 				lastTime = currentPointsList[currentPointsList.Count - 2].Time;
 			else
-				lastTime = currentGroupLevels.Last().GroupStartTime.Value;
+				lastTime = currentGroupLevels.Last().Time;
 			logger.Debug("Замер производительности [{0}] +{1} секунд.", currentPointsList.Last().Name, 
 						(currentPointsList.Last().Time - lastTime).TotalSeconds);
 		}
@@ -71,18 +74,14 @@ namespace QS.Utilities.Debug
 		public void PrintAllPoints(NLog.Logger logger)
 		{
 			string text = "Результаты замера производительности";
-			DateTime lastTime = new DateTime();
-			foreach(var point in currentPointsList)
-			{
-				if (lastTime == default(DateTime))
-					text += $"\nНачало в {point.Time:hh:mm:ss}";
-				else
-				{
-					text += point.GetText(0, lastTime);
-				}
-				lastTime = point.Time;
+			TimePoint startPoint = currentPointsList.First();
+			TimePoint lastPoint = startPoint;
+			text += $"\nНачало в {lastPoint.Time:hh:mm:ss}";
+			foreach(var point in currentPointsList.Skip(1)) {
+				text += lastPoint.GetText(0, point.Time);
+				lastPoint = point;
 			}
-			text += $"\nИтого {(lastTime - currentPointsList.First().Time).TotalSeconds} секунд.";
+			text += $"\nИтого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.";
 			logger.Debug(text);
 		}
 		
@@ -91,12 +90,8 @@ namespace QS.Utilities.Debug
 		public class TimePoint{
 			public string Name { get; set;}
 			public DateTime Time { get; set;}
-
-			public DateTime? GroupStartTime { get; set;}
+			
 			public List<TimePoint> InternalPoints;
-
-			public TimePoint()
-			{}
 
 			public TimePoint(string name) : this(name, DateTime.Now) 
 			{}
@@ -107,25 +102,18 @@ namespace QS.Utilities.Debug
 				Time = time;
 			}
 
-			public string GetText(int level, DateTime lastTime)
+			public string GetText(int level, DateTime endTime)
 			{
 				var levelstext =  new string(' ', level * 2);
-				if(GroupStartTime == null)
-				{
-					return $"\n{levelstext}[{Name}] +{(Time - lastTime).TotalSeconds:N6} секунд.";
-				}
-				else
-				{
-
-					var text = $"\n{levelstext}({Name} - {(Time - GroupStartTime.Value).TotalSeconds:N6} сек.) +{(Time - lastTime).TotalSeconds:N6} секунд.";
-					var internalLast = GroupStartTime.Value;
-					foreach(var point in InternalPoints)
-					{
-						text += point.GetText(level + 1, internalLast);
-						internalLast = point.Time;
+				var text = $"\n{levelstext}[{Name}] +{(endTime - Time).TotalSeconds:N6} секунд.";
+				if(InternalPoints != null) {
+					var lastPoint = InternalPoints.First();
+					foreach(var point in InternalPoints.Skip(1)) {
+						text += lastPoint.GetText(level + 1, point.Time);
+						lastPoint = point;
 					}
-					return text;
 				}
+				return text;
 			}
 		}
 

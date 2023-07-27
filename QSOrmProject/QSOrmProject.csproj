@@ -101,13 +101,9 @@
     <Compile Include="EventArgs.cs" />
     <Compile Include="RepresentationModel\RepresentationFilterBase.cs" />
     <Compile Include="yWidgets\yValidatedEntry.cs" />
-    <Compile Include="Helpers\GtkMenuHelper.cs" />
     <Compile Include="Widgets\DisableSpinButton.cs" />
     <Compile Include="gtk-gui\QSOrmProject.DisableSpinButton.cs" />
     <Compile Include="yWidgets\yTimeEntry.cs" />
-    <Compile Include="DebugHelper\DebugLoadListener.cs" />
-    <Compile Include="Domain\User.cs" />
-    <Compile Include="Users\UserSettingsManager.cs" />
     <Compile Include="yWidgets\yDatePeriodPicker.cs" />
     <Compile Include="Permissions\PermissionMatrixView.cs" />
     <Compile Include="gtk-gui\QSOrmProject.Permissions.PermissionMatrixView.cs" />
@@ -173,10 +169,6 @@
     <Folder Include="yWidgets\" />
     <Folder Include="WithoutTDI\" />
     <Folder Include="DomainMapping\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="DebugHelper\" />
-    <Folder Include="Domain\" />
-    <Folder Include="Users\" />
     <Folder Include="Permissions\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Control\" />

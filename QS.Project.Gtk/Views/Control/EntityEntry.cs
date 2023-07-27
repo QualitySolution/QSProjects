@@ -169,6 +169,10 @@ namespace QS.Views.Control
 				completionListStore.AppendValues(item);
 			}
 
+			if(entryObject?.Completion is null) {
+				return;
+			}
+
 			entryObject.Completion.Model = completionListStore;
 			entryObject.Completion.PopupCompletion = true;
 			logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
@@ -220,6 +224,7 @@ namespace QS.Views.Control
 
 		public override void Destroy()
 		{
+			viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;
 			GLib.Source.Remove(timerId);
 			base.Destroy();
 		}

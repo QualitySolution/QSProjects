@@ -23,7 +23,6 @@ namespace Gamma.Binding.Core.Helpers
 				var info = m.Member as PropertyInfo;
 				if(info != null)
 					FoundProperies.Add (info);
-				Console.WriteLine (m.Member.Name);
 			}
 				
 			return base.VisitMemberAccess (m);

@@ -60,7 +60,7 @@ namespace QS.ViewModels.Control.EEVM {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
-		where TJournalFilterViewModel : IJournalFilterViewModel
+		where TJournalFilterViewModel : class, IJournalFilterViewModel
 	{
 		private readonly Action<TJournalFilterViewModel> filterParams;
 

@@ -70,7 +70,7 @@ namespace QS.BaseParameters
 			get {
 				if (all == null) {
 					all = new Dictionary<string, string>();
-					if(connection != null)
+					if(externalConnection != null || connectionFactory != null)
 						ReloadParameters();
 				}
 				return all;
