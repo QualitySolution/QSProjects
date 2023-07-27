@@ -6,7 +6,7 @@ using QS.ViewModels;
 namespace QS.Project.Journal
 {
 	public abstract class JournalFilterViewModelBase<TFilter> : ViewModelBase, IDisposable, IJournalFilterViewModel
-		where TFilter : JournalFilterViewModelBase<TFilter>
+		where TFilter : JournalFilterViewModelBase<TFilter>, IJournalFilterViewModel
 	{
 		private bool canNotify = true;
 
@@ -66,8 +66,8 @@ namespace QS.Project.Journal
 
 		public void Dispose() => UoW?.Dispose();
 
-		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) {
-			SetAndRefilterAtOnce(configuration);
+		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) where TJournalFilterViewModel : class, IJournalFilterViewModel {
+			SetAndRefilterAtOnce(new Action<TFilter>[] {f => configuration(f as TJournalFilterViewModel)});
 		}
 	}
 }
