@@ -76,6 +76,12 @@ namespace Gamma.ColumnConfig
 			cellRenderer.Xalign = alignment;
 			return this;
 		}
+		
+		public EnumRendererMapping<TNode, TItem> YAlign(float alignment)
+		{
+			cellRenderer.Yalign = alignment;
+			return this;
+		}
 
 		/// <summary>
 		/// Hides values from combobox by condition from function.

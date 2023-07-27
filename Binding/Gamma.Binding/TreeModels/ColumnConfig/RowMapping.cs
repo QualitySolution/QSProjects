@@ -25,9 +25,20 @@ namespace Gamma.ColumnConfig
 
 		public RowMapping<TNode> XAlign(float align)
 		{
-			foreach(var cell in myConfig.ConfiguredColumns
-			        .SelectMany(c => c.ConfiguredRenderers)) {
-				(cell.GetRenderer() as CellRenderer).Xalign = align;
+			foreach(CellRenderer cell in myConfig.ConfiguredColumns
+			        .SelectMany(c => c.ConfiguredRenderers)
+			        .Select(cell => cell.GetRenderer())) {
+				cell.Xalign = align;
+			}
+			return this;
+		}
+		
+		public RowMapping<TNode> YAlign(float align)
+		{
+			foreach(CellRenderer cell in myConfig.ConfiguredColumns
+				        .SelectMany(c => c.ConfiguredRenderers)
+				        .Select(cell => cell.GetRenderer())) {
+				cell.Yalign = align;
 			}
 			return this;
 		}
