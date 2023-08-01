@@ -38,6 +38,7 @@ namespace QS.DBScripts.Models
 			conStrBuilder.Port = port;
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = password;
+			conStrBuilder.AllowUserVariables = true;
 
 			connStr = conStrBuilder.ConnectionString;
 
