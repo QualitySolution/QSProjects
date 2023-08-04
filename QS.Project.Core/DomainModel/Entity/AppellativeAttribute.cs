@@ -1,7 +1,7 @@
 ﻿using System;
 namespace QS.DomainModel.Entity
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Enum)]
 	public class AppellativeAttribute : Attribute
 	{
 		/// <summary>
