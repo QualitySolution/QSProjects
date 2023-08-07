@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
@@ -65,7 +64,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.LibsTest", "QS.LibsTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Banks", "Modules\QS.Banks\QS.Banks.csproj", "{301F793C-130B-44EB-A45D-60D5F040B0AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.BusinessCommon", "Modules\QS.BusinessCommon\QS.BusinessCommon.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.BusinessCommon", "Modules\QS.BusinessCommon\QS.BusinessCommon.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Report.Gtk", "QS.Report.Gtk\QS.Report.Gtk.csproj", "{42708CEE-08D8-43D5-AFE0-9992EB46E9F9}"
 EndProject
@@ -77,7 +76,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.NewsFeed", "QS.NewsFeed\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.NewsFeed.Gtk", "QS.NewsFeed.Gtk\QS.NewsFeed.Gtk.csproj", "{76858A6F-44D1-44E0-B9F3-B80B1B96AD25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Features", "QS.Features\QS.Features.csproj", "{8984DB2F-4849-4F5B-915C-CE69537E93A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Features", "QS.Features\QS.Features.csproj", "{8984DB2F-4849-4F5B-915C-CE69537E93A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Features.Gtk", "QS.Features.Gtk\QS.Features.Gtk.csproj", "{13970AEE-1019-4962-A8C7-899D350E0F10}"
 EndProject
@@ -112,19 +111,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamma.Binding.Core", "Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj", "{EF24C742-AC2C-477A-A632-F9920A0E1CC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.App", "QS.Updater.App\QS.Updater.App.csproj", "{45929A9F-7D94-4E85-9332-6CB7B2D5A03A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.App", "QS.Updater.App\QS.Updater.App.csproj", "{45929A9F-7D94-4E85-9332-6CB7B2D5A03A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Configuration", "QS.Configuration\QS.Configuration.csproj", "{5D124360-C8FB-4779-958B-0DA5D6B90C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Configuration", "QS.Configuration\QS.Configuration.csproj", "{5D124360-C8FB-4779-958B-0DA5D6B90C29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.App.Gtk", "QS.Updater.App.Gtk\QS.Updater.App.Gtk.csproj", "{0166BDB5-6DB1-4C07-96BB-0FB5AB8AC077}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Project.Abstract", "QS.Project.Abstract\QS.Project.Abstract.csproj", "{E95BE5DC-A197-4657-87DC-A2D677EADB76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Abstract", "QS.Project.Abstract\QS.Project.Abstract.csproj", "{E95BE5DC-A197-4657-87DC-A2D677EADB76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting", "QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting", "QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", "QS.Extensions.Observable\QS.Extensions.Observable.csproj", "{2A0710B2-B71B-4959-88DA-0940100E172A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -795,6 +796,18 @@ Global
 		{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}.Release|x64.Build.0 = Release|Any CPU
 		{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}.Release|x86.Build.0 = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|x64.Build.0 = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|x64.ActiveCfg = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|x64.Build.0 = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
