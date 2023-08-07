@@ -1,6 +1,6 @@
-﻿using System;
-using System.Data.Bindings;
+using System;
 using Gtk;
+using QS.Extensions.Observable.Collections.List;
 
 namespace Gamma.Binding
 {
