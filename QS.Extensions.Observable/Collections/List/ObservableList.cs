@@ -2,8 +2,10 @@ using NHibernate.Collection;
 using NHibernate.Engine;
 using NHibernate.Persister.Collection;
 using NHibernate.UserTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -15,8 +17,10 @@ namespace QS.Extensions.Observable.Collections.List
 	/// changed.
 	/// </summary>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public class ObservableList<T> : List<T>, IObservableList<T>, IObservableList, IUserCollectionType
-	{
+	public class ObservableList<T> : List<T>, IObservableList<T>, IObservableList, IUserCollectionType, IReadOnlyCollection<T>, IReadOnlyList<T> {
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public new T this[int index] { 
 			get { return base[index]; } 
 			set {
@@ -75,6 +79,7 @@ namespace QS.Extensions.Observable.Collections.List
 		protected void OnItemAdded(T item) {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count - 1);
 			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -85,6 +90,7 @@ namespace QS.Extensions.Observable.Collections.List
 		protected void OnCollectionReset() {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -96,6 +102,7 @@ namespace QS.Extensions.Observable.Collections.List
 		protected void OnItemInserted(int index, T item) {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
 			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -107,6 +114,7 @@ namespace QS.Extensions.Observable.Collections.List
 		protected void OnItemRemoved(T item, int index) {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
 			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>

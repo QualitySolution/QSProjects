@@ -1,7 +1,8 @@
-﻿using NHibernate.UserTypes;
+using NHibernate.UserTypes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace QS.Extensions.Observable.Collections.List {
 	/// <summary>
@@ -16,7 +17,8 @@ namespace QS.Extensions.Observable.Collections.List {
 	/// collection has been persisted.
 	/// </remarks>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public interface IObservableList<T> : IList<T>, INotifyCollectionChanged, INotifyCollectionElementChanged { }
+	public interface IObservableList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
 
-	public interface IObservableList : IList, INotifyCollectionChanged, INotifyCollectionElementChanged { }
+
+	public interface IObservableList : IList, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
 }
