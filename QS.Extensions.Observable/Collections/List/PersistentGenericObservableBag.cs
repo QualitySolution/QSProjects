@@ -1,16 +1,20 @@
 using NHibernate.Collection.Generic;
 using NHibernate.Engine;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace QS.Extensions.Observable.Collections.List {
+
 	/// <summary>
 	/// Represents a persistent wrapper for a generic bag collection that fires events when the
 	/// collection's contents have changed.
 	/// </summary>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public class PersistentGenericObservableBag<T> : PersistentGenericBag<T>, IObservableList<T> 
-	{
+	public class PersistentGenericObservableBag<T> : PersistentGenericBag<T>, IObservableList<T>, IObservableList, IReadOnlyCollection<T>, IReadOnlyList<T> {
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public PersistentGenericObservableBag(ISessionImplementor session, ObservableList<T> list) : base(session, list) {
 			SubscribesAll();
 		}
@@ -74,10 +78,9 @@ namespace QS.Extensions.Observable.Collections.List {
 		/// </summary>
 		/// <param name="item">Item added to the collection.</param>
 		protected void OnItemAdded(T item) {
-			if(CollectionChanged != null) {
-				CollectionChanged(this, new NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Add, item, Count - 1));
-			}
+			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count - 1);
+			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -86,10 +89,9 @@ namespace QS.Extensions.Observable.Collections.List {
 		/// entirely replaced.
 		/// </summary>
 		protected void OnCollectionReset() {
-			if(CollectionChanged != null) {
-				CollectionChanged(this, new NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Reset));
-			}
+			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -99,10 +101,9 @@ namespace QS.Extensions.Observable.Collections.List {
 		/// <param name="index">Index the item has been inserted at.</param>
 		/// <param name="item">Item inserted into the collection.</param>
 		protected void OnItemInserted(int index, T item) {
-			if(CollectionChanged != null) {
-				CollectionChanged(this, new NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Add, item, index));
-			}
+			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
@@ -112,10 +113,9 @@ namespace QS.Extensions.Observable.Collections.List {
 		/// <param name="item">Item removed from the collection.</param>
 		/// <param name="index">Index the item has been removed from.</param>
 		protected void OnItemRemoved(T item, int index) {
-			if(CollectionChanged != null) {
-				CollectionChanged(this, new NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Remove, item, index));
-			}
+			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+			CollectionChanged?.Invoke(this, args);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
 		}
 
 		/// <summary>
