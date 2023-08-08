@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Bindings;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,6 +10,7 @@ using Gamma.Binding.Core;
 using Gamma.ColumnConfig;
 using Gamma.GtkWidgets.Cells;
 using Gtk;
+using QS.Extensions.Observable.Collections.List;
 
 namespace Gamma.GtkWidgets
 {

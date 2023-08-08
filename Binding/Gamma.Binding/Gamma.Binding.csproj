@@ -192,6 +192,10 @@
       <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
       <Name>System.Data.Bindings</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QS.Extensions.Observable\QS.Extensions.Observable.csproj">
+      <Project>{2a0710b2-b71b-4959-88da-0940100e172a}</Project>
+      <Name>QS.Extensions.Observable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
       <Project>{3bd9fcfb-dd96-4eb1-a565-6b5e506479c8}</Project>
       <Name>Gamma.Binding.Core</Name>

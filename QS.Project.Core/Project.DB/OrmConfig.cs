@@ -1,7 +1,10 @@
-﻿using System;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using FluentNHibernate.Cfg;
+using FluentNHibernate.Conventions;
 using NHibernate;
 using NHibernate.Cfg;
 using QS.DomainModel.Tracking;
@@ -40,6 +43,8 @@ namespace QS.Project.DB
 			}
 		}
 
+		public static IEnumerable<IConvention> Conventions { get; set; }
+
 		/// <summary>
 		/// Настройка Nhibernate только с Fluent конфигураций.
 		/// </summary>
@@ -49,6 +54,9 @@ namespace QS.Project.DB
 			fluenConfig = Fluently.Configure().Database(database);
 
 			fluenConfig.Mappings(m => {
+				if(Conventions != null && Conventions.Any()) {
+					m.FluentMappings.Conventions.Add(Conventions.ToArray());
+				}
 				foreach(var ass in assemblies) {
 					m.FluentMappings.AddFromAssembly(ass);
 				}
