@@ -66,6 +66,7 @@
     <Compile Include="TreeModels\ColumnConfig\IColumnsConfig.cs" />
     <Compile Include="TreeModels\ColumnConfig\FluentColumnsConfig.cs" />
     <Compile Include="TreeModels\ColumnsConfigFactory.cs" />
+    <Compile Include="TreeModels\ITreeModelProvider.cs" />
     <Compile Include="TreeModels\IyTreeModel.cs" />
     <Compile Include="TreeModels\ObservableListTreeModel.cs" />
     <Compile Include="TreeModels\ObservableListReorderableTreeModel.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="GtkWidgets\yTreeView.cs" />
     <Compile Include="GtkWidgets\yLabel.cs" />
     <Compile Include="GtkWidgets\yTextView.cs" />
+    <Compile Include="TreeModels\TreeModelProvider.cs" />
     <Compile Include="Widgets\yEnumComboBox.cs" />
     <Compile Include="Widgets\Additions\Enums.cs" />
     <Compile Include="GtkHelpers\ListStoreHelper.cs" />
@@ -188,10 +190,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\QS.Extensions.Observable\QS.Extensions.Observable.csproj">
       <Project>{2a0710b2-b71b-4959-88da-0940100e172a}</Project>
       <Name>QS.Extensions.Observable</Name>

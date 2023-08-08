@@ -1,23 +1,27 @@
+using Gamma.Binding;
+using Gamma.Binding.Core;
+using Gamma.ColumnConfig;
+using Gamma.GtkWidgets.Cells;
+using Gamma.TreeModels;
+using Gtk;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using Gamma.Binding;
-using Gamma.Binding.Core;
-using Gamma.ColumnConfig;
-using Gamma.GtkWidgets.Cells;
-using Gtk;
-using QS.Extensions.Observable.Collections.List;
 
-namespace Gamma.GtkWidgets
-{
+namespace Gamma.GtkWidgets {
 	[ToolboxItem(true)]
 	[Category("Gamma Gtk")]
 	public class yTreeView : TreeView
 	{
+		[Obsolete("Добавлено для обратной совместимости на момент перехода " +
+			"от System.Data.Bindings.IObservableList " +
+			"к QS.Extensions.Observable.Collections.List.IObservableList," +
+			"чтобы можно было подменить провайдер модели с поддержкой старой реализации")]
+		public static ITreeModelProvider TreeModelProvider { get; set; } = new TreeModelProvider();
+
 		public BindingControler<yTreeView> Binding { get; private set; }
 
 		IColumnsConfig columnsConfig;
@@ -71,22 +75,9 @@ namespace Gamma.GtkWidgets
 					Model = null;
 					return;
 				}
-				var list = (value as IList);
-				if(list == null)
-					throw new NotSupportedException(String.Format(
-						"Type '{0}' is not supported. Data source must implement IList.",
-						value.GetType()
-					));
 
-				if(value is IObservableList) {
-					if(Reorderable)
-						YTreeModel = new ObservableListReorderableTreeModel(value as IObservableList);
-					else
-						YTreeModel = new ObservableListTreeModel(value as IObservableList);
-				}
-				else {
-					YTreeModel = new ListTreeModel(list);
-				}
+				YTreeModel = TreeModelProvider.GetTreeModel(value, Reorderable);
+
 				itemsDataSource = value;
 			}
 		}
