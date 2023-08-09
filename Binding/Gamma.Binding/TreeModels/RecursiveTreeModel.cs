@@ -112,6 +112,9 @@ namespace Gamma.Binding
 
 		public bool IterNext (ref TreeIter iter)
 		{
+			if(iter.UserData == IntPtr.Zero)
+				return false;
+
 			object node = NodeFromIter (iter);
 			if ((node == null) || (sourceList == null) || (sourceList.Count == 0))
 				return (false);
