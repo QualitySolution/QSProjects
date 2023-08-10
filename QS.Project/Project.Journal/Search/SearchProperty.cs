@@ -66,6 +66,9 @@ namespace QS.Project.Journal.Search {
 			else if(typeOfProperty == typeof(DateTime) || typeOfProperty == typeof(DateTime?)) {
 				return Restrictions.Like(Projections.Cast(NHibernateUtil.DateTime, projection), searchValue, likeMatchMode);
 			}
+			else if (typeOfProperty.IsEnum){
+				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, likeMatchMode);
+			}
 			else 
 				throw new NotSupportedException($"Тип {typeOfProperty} не поддерживается");
 
