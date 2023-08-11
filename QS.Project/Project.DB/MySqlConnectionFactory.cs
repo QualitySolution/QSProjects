@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.Common;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace QS.Project.DB
 {

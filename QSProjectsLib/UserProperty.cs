@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Gtk;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using NLog;
 using QSProjectsLib.Permissions;
 using QSSaaS;

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;

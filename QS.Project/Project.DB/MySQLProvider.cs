@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading;
-using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using NLog;
 using QS.Dialog;
-using QS.Project.Dialogs;
 using QS.Project.Services;
+using System;
+using System.Threading;
 
-namespace QS.Project.DB
-{
+namespace QS.Project.DB {
 	public class MySQLProvider : IMySQLProvider
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -18,7 +16,7 @@ namespace QS.Project.DB
 		public MySqlConnection DbConnection { get; private set; }
 
 		public MySQLProvider(MySqlConnectionStringBuilder connectionStringBuilder, IRunOperationService runOperationService, IInteractiveQuestion question)
-			: this(connectionStringBuilder.GetConnectionString(true), runOperationService, question)
+			: this(connectionStringBuilder.ConnectionString, runOperationService, question)
 		{
 		}
 

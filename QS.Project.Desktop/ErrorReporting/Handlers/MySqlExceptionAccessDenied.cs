@@ -1,5 +1,5 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.Dialog;
 
 namespace QS.ErrorReporting.Handlers {

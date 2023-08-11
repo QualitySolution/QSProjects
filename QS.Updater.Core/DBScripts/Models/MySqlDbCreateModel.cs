@@ -1,6 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.DBScripts.Controllers;
 
 namespace QS.DBScripts.Models
@@ -38,8 +38,9 @@ namespace QS.DBScripts.Models
 			conStrBuilder.Port = port;
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = password;
+			conStrBuilder.AllowUserVariables = true;
 
-			connStr = conStrBuilder.GetConnectionString(true);
+			connStr = conStrBuilder.ConnectionString;
 
 			using (var connectionDB = new MySqlConnection(connStr)) {
 				try
