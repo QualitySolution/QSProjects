@@ -9,26 +9,22 @@ using System.Linq;
 
 namespace QS.Project.Journal.DataLoader.Hierarchy {
 
-	public class HierarchicalQueryLoader<TRoot, TNode> : DynamicQueryLoader<TRoot, TNode>
+	public class HierarchicalQueryLoader<TRoot, TNode> : QueryLoader<TRoot, TNode>
 		where TRoot : class, IDomainObject
 		where TNode : class, IHierarchicalNode<TNode> {
 
-		private readonly IUnitOfWorkFactory unitOfWorkFactory;
-
-		private Func<IUnitOfWork, IQueryOver<TRoot>> mainQueryFunc;
-		private LevelingModel<TNode> levelingModel;
-		private RecursiveModel<TNode> recursiveModel;
-		private Func<IUnitOfWork, int> countFunction;
+		private Func<IUnitOfWork, IQueryOver<TRoot>> _mainQueryFunc;
+		private LevelingModel<TNode> _levelingModel;
+		private RecursiveModel<TNode> _recursiveModel;
 
 		/// <summary>
 		/// true - рекурсивная модель, false - уровневая, null - не инициализирована
 		/// </summary>
-		private bool? isRecursive;
+		private bool? _isRecursive;
 
-		public HierarchicalQueryLoader(IUnitOfWorkFactory unitOfWorkFactory) : base(unitOfWorkFactory) {
-			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
-			HasUnloadedItems = true;
-			LoadedItems = new List<TNode>();
+		public HierarchicalQueryLoader(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			Func<IUnitOfWork, int> itemsCountFunction = null) : base(unitOfWorkFactory, itemsCountFunction) {
 			TreeConfig = new RecursiveConfig<TNode>(x => x.Parent, x => x.Children);
 		}
 
@@ -43,13 +39,13 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		/// <param name="firstLevelQueryFunc">Функция для получения данных для первого уровня. На первый уровень действуют все правила DynamicQueryLoader</param>
 		/// <exception cref="InvalidOperationException"></exception>
 		public LevelingModel<TNode> SetLevelingModel(Func<IUnitOfWork, IQueryOver<TRoot>> firstLevelQueryFunc) {
-			if(isRecursive == true) {
+			if(_isRecursive == true) {
 				throw new InvalidOperationException("Невозможно настроить уровневую модель, так как уже была настроена рекурсивная модель.");
 			}
-			mainQueryFunc = firstLevelQueryFunc;
-			isRecursive = false;
-			levelingModel = new LevelingModel<TNode>();
-			return levelingModel;
+			_mainQueryFunc = firstLevelQueryFunc;
+			_isRecursive = false;
+			_levelingModel = new LevelingModel<TNode>();
+			return _levelingModel;
 		}
 
 		/// <summary>
@@ -61,17 +57,17 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		/// <param name="firstLevelQueryFunc">Функция для получения данных для первого уровня. На первый уровень действуют все правила DynamicQueryLoader</param>
 		/// <exception cref="InvalidOperationException"></exception>
 		public RecursiveModel<TNode> SetRecursiveModel(Func<IUnitOfWork, IQueryOver<TRoot>> firstLevelQueryFunc) {
-			if(isRecursive == false) {
+			if(_isRecursive == false) {
 				throw new InvalidOperationException("Невозможно настроить рекурсивную модель, так как уже была настроена уровневая модель.");
 			}
-			mainQueryFunc = firstLevelQueryFunc;
-			isRecursive = true;
-			recursiveModel = new RecursiveModel<TNode>();
-			return recursiveModel;
+			_mainQueryFunc = firstLevelQueryFunc;
+			_isRecursive = true;
+			_recursiveModel = new RecursiveModel<TNode>();
+			return _recursiveModel;
 		}
 
 		private void LoadChildren(IEnumerable<TNode> parentNodes) {
-			if(!isRecursive.HasValue) {
+			if(!_isRecursive.HasValue) {
 				throw new InvalidOperationException($"Не настроена иерархическая модель. Необходимо вызвать метод {nameof(SetLevelingModel)} или {nameof(SetRecursiveModel)}");
 			}
 
@@ -81,7 +77,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 				}
 			}
 
-			if(isRecursive.Value) {
+			if(_isRecursive.Value) {
 				LoadRecursiveChildren(parentNodes);
 			}
 			else {
@@ -90,7 +86,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		}
 
 		private void LoadRecursiveChildren(IEnumerable<TNode> parentNodes) {
-			var children = recursiveModel.RecursiveSourceFunc.Invoke(parentNodes);
+			var children = _recursiveModel.RecursiveSourceFunc.Invoke(parentNodes);
 			if(!parentNodes.Any() || !children.Any()) {
 				return;
 			}
@@ -113,7 +109,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		}
 
 		private void LoadLevelingChildren(IEnumerable<TNode> parentNodes) {
-			foreach(var levelFunc in levelingModel.LevelingFunctions) {
+			foreach(var levelFunc in _levelingModel.LevelingFunctions) {
 				var children = levelFunc.Invoke(parentNodes);
 				var parentDic = parentNodes.ToDictionary(x => x.Id);
 				foreach(var child in children) {
@@ -134,17 +130,13 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 
 		#region DynamicQueryLoader override
 
-		public void SetCountFunction(Func<IUnitOfWork, int> countFunction) {
-			this.countFunction = countFunction;
-		}
-
 		public override int GetTotalItemsCount() {
-			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-				if(countFunction != null) {
-					return countFunction(uow);
+			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				if(ItemsCountFunction != null) {
+					return ItemsCountFunction(uow);
 				}
 
-				var query = mainQueryFunc.Invoke(uow);
+				var query = _mainQueryFunc.Invoke(uow);
 				if(query == null)
 					return 0;
 
@@ -152,13 +144,17 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 			}
 		}
 
+		public override TNode GetNode(int entityId, IUnitOfWork uow) {
+			throw new NotImplementedException();
+		}
+
 		public override void LoadPage(int? pageSize = null) {
 			//Не подгружаем следующую страницу если из предыдущих данных еще не прочитана целая страница.
 			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
 				return;
 
-			using(var uow = unitOfWorkFactory.CreateWithoutRoot()) {
-				var workQuery = mainQueryFunc.Invoke(uow);
+			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				var workQuery = _mainQueryFunc.Invoke(uow);
 				if(workQuery == null) {
 					HasUnloadedItems = false;
 					return;

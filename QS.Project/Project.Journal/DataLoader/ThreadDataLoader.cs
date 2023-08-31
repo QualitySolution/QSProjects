@@ -92,6 +92,18 @@ namespace QS.Project.Journal.DataLoader
 			));
 		}
 
+		public void AddQuery<TRoot>(
+			Func<IUnitOfWork, int?, int?, IQueryOver<TRoot>> listFunc,
+			Func<IUnitOfWork, int> itemsCountFunction = null)
+			where TRoot : class , IDomainObject
+		{
+			QueryLoaders.Add(new QueryLoaderWithLimits<TRoot, TNode>(
+				(uow, skipCount, takeCount, isCounting) => listFunc(uow, skipCount, takeCount),
+				unitOfWorkFactory,
+				itemsCountFunction
+			));
+		}
+
 		/// <summary>
 		/// Добавляем функцию получения запроса для загрузчика.
 		/// Если функция возвращает null запрос не будет выполнятся. Это поведение используется в ситуации с несколькими запросами,

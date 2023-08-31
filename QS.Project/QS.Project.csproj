@@ -50,11 +50,13 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\QueryLoaderWithLimits.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalChunkLinqLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalQueryLoader.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
     <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
+    <Compile Include="Project.Journal\DataLoader\QueryLoader.cs" />
     <Compile Include="Project.Journal\JournalNodeBase.cs" />
     <Compile Include="Project.Journal\Search\SearchCriterion.cs" />
     <Compile Include="Project.Journal\Search\SearchCriterionGeneric.cs" />
