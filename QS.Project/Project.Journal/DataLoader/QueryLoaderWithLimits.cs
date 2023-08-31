@@ -6,23 +6,25 @@ using QS.DomainModel.UoW;
 
 namespace QS.Project.Journal.DataLoader
 {
-	public class DynamicQueryLoader<TRoot, TNode> : QueryLoader<TRoot, TNode>
+	public class QueryLoaderWithLimits<TRoot, TNode> : QueryLoader<TRoot, TNode>
 		where TRoot : class, IDomainObject
 		where TNode : class
 	{
-		protected Func<IUnitOfWork, bool, IQueryOver<TRoot>> QueryFunc;
-		
+		private readonly Func<IUnitOfWork, int?, int?, bool, IQueryOver<TRoot>> _queryFunc;
+
 		/// <param name="queryFunc">Функция получения запроса, имеет параметры: 
-		/// uow - для которого создается запрос 
+		/// uow - для которого создается запрос
+		/// int? skipCount количество элементов которое пропускаем
+		/// int? takeCount количество элементов к выборке
 		/// isCounting - указание является ли запрос подсчетом количества строк </param>
 		/// <param name="unitOfWorkFactory">Unit of work factory.</param>
 		/// <param name="itemsCountFunction">Кастомная функция подсчёта кол-ва элементов</param>
-		public DynamicQueryLoader(
-			Func<IUnitOfWork, bool, IQueryOver<TRoot>> queryFunc,
+		public QueryLoaderWithLimits(
+			Func<IUnitOfWork, int?, int?, bool, IQueryOver<TRoot>> queryFunc,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			Func<IUnitOfWork, int> itemsCountFunction = null) : base(unitOfWorkFactory, itemsCountFunction)
 		{
-			QueryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
+			_queryFunc = queryFunc ?? throw new ArgumentNullException(nameof(queryFunc));
 		}
 
 		#region IQueryLoader implementation
@@ -35,7 +37,7 @@ namespace QS.Project.Journal.DataLoader
 					return ItemsCountFunction.Invoke(uow);
 				}
 
-				var query = QueryFunc.Invoke(uow, true);
+				var query = _queryFunc.Invoke(uow, null, null, true);
 				if(query == null)
 					return 0;
 
@@ -50,21 +52,21 @@ namespace QS.Project.Journal.DataLoader
 				return;
 
 			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
-				var workQuery = QueryFunc.Invoke(uow, false);
+				var workQuery = _queryFunc.Invoke(uow, LoadedItemsCount, pageSize, false);
 				if(workQuery == null) {
 					HasUnloadedItems = false;
 					return;
 				}
 
 				CheckUowSession(workQuery, uow);
+				var resultItems = workQuery.List<TNode>();
 			
 				if (pageSize.HasValue) {
-					var resultItems = workQuery.Skip(LoadedItemsCount).Take(pageSize.Value).List<TNode>();
 					HasUnloadedItems = resultItems.Count == pageSize;
 					LoadedItems.AddRange(resultItems);
 				}
 				else {
-					LoadedItems = workQuery.List<TNode>().ToList();
+					LoadedItems = resultItems.ToList();
 					HasUnloadedItems = false;
 				}
 			}
@@ -76,7 +78,7 @@ namespace QS.Project.Journal.DataLoader
 
 		public override TNode GetNode(int entityId, IUnitOfWork uow)
 		{
-			var query = QueryFunc.Invoke(uow, false) as IQueryOver<TRoot, TRoot>;
+			var query = _queryFunc.Invoke(uow, null, null, false) as IQueryOver<TRoot, TRoot>;
 			return query.Where(x => x.Id == entityId)
 						.Take(1).List<TNode>().FirstOrDefault();
 		}
