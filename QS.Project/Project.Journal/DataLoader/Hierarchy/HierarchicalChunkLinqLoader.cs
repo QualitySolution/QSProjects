@@ -6,19 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace QS.Project.Journal.DataLoader.Hierarchy {
-	public class HierarchicalChunkLinqLoader<TRoot, TNode> : DynamicQueryLoader<TRoot, TNode>
+	public class HierarchicalChunkLinqLoader<TRoot, TNode> : QueryLoader<TRoot, TNode>
 		where TRoot : class, IDomainObject
 		where TNode : class, IHierarchicalNode<TNode> {
-		private readonly IUnitOfWorkFactory _unitOfWorkFactory;
 		private RecursiveModel<TNode> _recursiveModel;
 		private bool? _isRecursive;
 		private Func<IUnitOfWork, int?, IQueryable<TNode>> _mainQueryFunc;
 
 		public HierarchicalChunkLinqLoader(IUnitOfWorkFactory unitOfWorkFactory)
 			: base(unitOfWorkFactory) {
-			HasUnloadedItems = true;
-			_unitOfWorkFactory = unitOfWorkFactory;
-			LoadedItems = new List<TNode>();
 			TreeConfig = new RecursiveConfig<TNode>(x => x.Parent, x => x.Children);
 		}
 
@@ -35,14 +31,25 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		}
 
 		public override int GetTotalItemsCount() {
-			return _mainQueryFunc(_unitOfWorkFactory.CreateWithoutRoot(), null).Count();
+			return _mainQueryFunc(UnitOfWorkFactory.CreateWithoutRoot(), null).Count();
+		}
+
+		public override TNode GetNode(int entityId, IUnitOfWork uow) {
+			throw new NotImplementedException();
 		}
 
 		public virtual void LoadChunk(int? parentId = null) {
 			LoadedItems.Clear();
-			var items = _mainQueryFunc(_unitOfWorkFactory.CreateWithoutRoot(), parentId).ToList();
+			var items = _mainQueryFunc(UnitOfWorkFactory.CreateWithoutRoot(), parentId).ToList();
 			ReorganizeChilds(items);
 			LoadedItems.AddRange(items);
+		}
+		
+		public override void LoadPage(int? pageSize = null) {
+			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
+				return;
+
+			LoadChunk();
 		}
 
 		private void ReorganizeChilds(IList<TNode> items, TNode parent = null) {
@@ -54,13 +61,6 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 					ReorganizeChilds(item.Children, item);
 				}
 			}
-		}
-
-		public override void LoadPage(int? pageSize = null) {
-			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
-				return;
-
-			LoadChunk();
 		}
 	}
 }
