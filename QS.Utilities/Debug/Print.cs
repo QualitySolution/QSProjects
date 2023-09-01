@@ -39,7 +39,10 @@ namespace QS.Utilities.Debug
 			foreach (PropertyInfo property in properties)
 			{
 				object propValue = property.GetValue(obj, null);
-				if (property.PropertyType.Assembly == objType.Assembly)
+				if(propValue is Enum) {
+					builder.AppendLine (String.Format ("{0}{1}: {2}", indentString, property.Name, propValue));
+				}
+				else if (property.PropertyType.Assembly == objType.Assembly)
 				{
 					builder.AppendLine (String.Format ("{0}{1}:", indentString, property.Name));
 					PrintProperties(builder, propValue, indent + 2);
