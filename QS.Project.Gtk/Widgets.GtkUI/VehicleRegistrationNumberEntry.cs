@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
@@ -24,7 +24,7 @@ namespace QS.Widgets.GtkUI
 		{
 			Build();
 
-			_colorBlack = Rc.GetStyle(entryNumber).Foreground(StateType.Normal);
+			_colorBlack = Rc.GetStyle(entryNumber).Text(StateType.Normal);
 
 			Binding = new BindingControler<VehicleRegistrationNumberEntry>(this,
 				new Expression<Func<VehicleRegistrationNumberEntry, object>>[] { w => w.Number });
