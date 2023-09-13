@@ -61,7 +61,7 @@ namespace QS.Project.Journal.Search {
 				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, likeMatchMode);
 			}
 			else if(typeOfProperty == typeof(TimeSpan) || typeOfProperty == typeof(TimeSpan?)) {
-				return Restrictions.Like(Projections.Cast(NHibernateUtil.DateTime, projection), searchValue, likeMatchMode);
+				return Restrictions.Like(Projections.Cast(NHibernateUtil.Time, projection), searchValue, likeMatchMode);
 			}
 			else if(typeOfProperty == typeof(DateTime) || typeOfProperty == typeof(DateTime?)) {
 				return Restrictions.Like(Projections.Cast(NHibernateUtil.DateTime, projection), searchValue, likeMatchMode);
