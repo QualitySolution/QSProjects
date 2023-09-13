@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
@@ -16,13 +16,16 @@ namespace QS.Widgets.GtkUI
 		private string _number;
 		private Country _country;
 
-		private static readonly Color _colorBlack = new Color(0, 0, 0);
+		private readonly Color _colorBlack;
 		private static readonly Color _colorRed = new Color(255, 0, 0);
 		private static readonly Color _colorDarkRed = new Color(210, 0, 0);
 
 		public VehicleRegistrationNumberEntry()
 		{
 			Build();
+
+			_colorBlack = Rc.GetStyle(entryNumber).Text(StateType.Normal);
+
 			Binding = new BindingControler<VehicleRegistrationNumberEntry>(this,
 				new Expression<Func<VehicleRegistrationNumberEntry, object>>[] { w => w.Number });
 
