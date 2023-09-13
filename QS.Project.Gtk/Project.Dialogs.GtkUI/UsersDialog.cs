@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
+using Gdk;
 using Gtk;
 using QS.Deletion;
 using QS.Dialog;
@@ -20,6 +21,8 @@ namespace QS.Project.Dialogs.GtkUI
 		UsersModel usersModel;
 		MySQLUserRepository mySQLUserRepository;
         private readonly IInteractiveService interactiveService;
+		private readonly Color _blueColor = new Color(0, 0, 255);
+		private readonly Color _tealColor = new Color(0, 128, 128);
 
         public UsersDialog(IInteractiveService interactiveService)
         {
@@ -47,18 +50,18 @@ namespace QS.Project.Dialogs.GtkUI
 					.AddSetter<CellRendererText>(
 						(c, n) => {
 							if(n.IsAdmin && n.Deactivated) {
-								c.Foreground = "teal";
+								c.ForegroundGdk = _tealColor;
 								return;
 							}
 							if(n.IsAdmin && !n.Deactivated) {
-								c.Foreground = "blue";
+								c.ForegroundGdk = _blueColor;
 								return;
 							}
 							if(!n.IsAdmin && n.Deactivated) {
-								c.Foreground = "gray";
+								c.ForegroundGdk = Rc.GetStyle(treeviewUsers).Text(StateType.Insensitive);
 								return;
 							}
-							c.Foreground = "black";
+							c.ForegroundGdk = Rc.GetStyle(treeviewUsers).Text(StateType.Normal);
 						}
 					)
 				.Finish();
