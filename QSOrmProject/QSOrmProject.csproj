@@ -45,7 +45,6 @@
       <Package>glib-sharp-2.0</Package>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="mscorlib">
