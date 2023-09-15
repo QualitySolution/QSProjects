@@ -60,10 +60,6 @@
       <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
       <Name>QS.Project.Desktop</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
-      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
-      <Name>QSWidgetLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
