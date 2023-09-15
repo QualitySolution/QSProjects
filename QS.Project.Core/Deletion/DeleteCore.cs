@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -144,6 +144,10 @@ namespace QS.Deletion
 				logger.Warn($"Попытка удалить объект {objectClass.Name}:{id}, который отсутствует в базе. Ничего не делаем.");
 				DeletionExecuted = false;
 				return;
+			}
+
+			if(isOwnerUow) {
+				uow.ActionTitle.UserActionTitle = $"Удаление {RootEntity.Title}";
 			}
 			RootOperation = info.CreateDeleteOperation(RootEntity);
 
