@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.HistoryLog.Domain;
@@ -18,6 +19,7 @@ namespace QS.HistoryLog.Views
 			this.Build();
 			this.viewModel = viewModel;
 			viewModel.DontRefresh = true;
+			unselectedPeriodButton = new RadioButton(yPeriodToday);
 			yPeriodToday.Active = true;
 
 			ycomboUsers.SetRenderTextFunc<UserBase>(x => x.Name);
@@ -81,6 +83,7 @@ namespace QS.HistoryLog.Views
 
 			viewModel.DontRefresh = false;
 			viewModel.UpdateChangedEntities();
+			this.viewModel.PropertyChanged += ViewModelOnPropertyChanged;
 			ytreeFieldChange.Binding.AddSource(viewModel)
 				.AddBinding(v => v.ChangesSelectedEntity, w => w.ItemsDataSource)
 				.InitializeFromSource();
@@ -92,33 +95,51 @@ namespace QS.HistoryLog.Views
 				.AddColumn("Старое значение").AddTextRenderer(x => x.OldFormatedDiffText, useMarkup: true)
 				.Finish();
 		}
-	
+
+		private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e) {
+			if(e.PropertyName == nameof(ViewModel.PeriodStartDate) || e.PropertyName == nameof(ViewModel.PeriodEndDate)) {
+				if(periodUpdating)
+					return;
+				unselectedPeriodButton.Active = true;
+			}
+		}
+
+		bool periodUpdating = false;
+		readonly RadioButton unselectedPeriodButton;
 		protected void OnPeriodToday(object o, EventArgs args)
 		{
 			if(yPeriodToday.Active) {
+				periodUpdating = true;
+				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				ydateStartperiodpicker.Date = DateTime.Today;
-				ydateEndperiodpicker.Date = ydateStartperiodpicker.Date.AddDays(1).AddTicks(-1);
+				periodUpdating = false;
 			}
 		}
 		protected void OnPeriodWeek(object o, EventArgs args)
 		{
 			if(yPeriodWeek.Active) {
+				periodUpdating = true;
 				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddDays(-8).AddTicks(1);
+				periodUpdating = false;
 			}
 		}
 		protected void OnPeriodMonth(object o, EventArgs args)
 		{
 			if(yPeriodMonth.Active) {
+				periodUpdating = true;
 				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddMonths(-1).AddDays(-1).AddTicks(1);
+				periodUpdating = false;
 			}
 		}
 		protected void OnPeriodThreeMonth(object o, EventArgs args)
 		{
 			if(yPeriodThreeMonth.Active) {
+				periodUpdating = true;
 				ydateEndperiodpicker.Date = DateTime.Today.AddDays(1).AddTicks(-1);
 				ydateStartperiodpicker.Date = ydateEndperiodpicker.Date.AddMonths(-3).AddDays(-1).AddTicks(1);
+				periodUpdating = false;
 			}
 		}
 		protected void OnBtnFilterClicked(object sender, EventArgs e)
