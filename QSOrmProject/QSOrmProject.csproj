@@ -65,7 +65,6 @@
     <Compile Include="BindingsConverters.cs" />
     <Compile Include="gtk-gui\QSOrmProject.OneWidgetDialog.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="ObjectCloner.cs" />
     <Compile Include="CommonDialogs.cs" />
     <Compile Include="Properties\DialogWorksAttributes.cs" />
     <Compile Include="RepresentationModel\IRepresentationModel.cs" />

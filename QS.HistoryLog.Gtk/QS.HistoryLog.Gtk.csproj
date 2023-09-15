@@ -52,10 +52,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="Comparers\DomainObjectComparer.cs" />
-    <None Include="ObjectCloner.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
       <Name>Gamma.Binding</Name>
@@ -91,7 +87,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Comparers\" />
     <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
