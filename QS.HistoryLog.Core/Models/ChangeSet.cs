@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using QS.DomainModel.Entity;
 using QS.Project.Domain;
 
-namespace QS.HistoryLog.Domain
-{
+namespace QS.HistoryLog.Core.Models {
 	public class ChangeSet : ChangeSetBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

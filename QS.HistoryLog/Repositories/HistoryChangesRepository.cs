@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +7,7 @@ using NHibernate.Persister.Entity;
 using NHibernate.Util;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.HistoryLog.Domain;
+using QS.HistoryLog.Core.Models;
 
 namespace QS.HistoryLog.Repositories
 {

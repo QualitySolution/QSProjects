@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
+using QS.HistoryLog.Core.Attributes;
 using QS.Project.DB;
 using QS.Utilities.Text;
 
-namespace QS.HistoryLog
+namespace QS.HistoryLog.Core
 {
 	public class HistoryObjectDesc
 	{

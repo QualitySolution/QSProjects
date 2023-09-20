@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -9,10 +9,10 @@ using NHibernate.Type;
 using NHibernate.Util;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
+using QS.HistoryLog.Core.Attributes;
 using QS.Project.DB;
 
-namespace QS.HistoryLog.Domain
-{
+namespace QS.HistoryLog.Core.Models {
 	public class FieldChange : FieldChangeBase
 	{
 		#region Конфигурация
@@ -57,7 +57,7 @@ namespace QS.HistoryLog.Domain
 		}
 
 		public virtual string FieldTitle {
-			get { return HistoryMain.ResolveFieldTitle(Entity.EntityClassName, Path); }
+			get { return HistoryDomainHelper.ResolveFieldTitle(Entity.EntityClassName, Path); }
 		}
 
 		#endregion

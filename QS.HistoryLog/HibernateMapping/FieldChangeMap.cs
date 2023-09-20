@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using FluentNHibernate.Mapping;
-using QS.HistoryLog.Domain;
+using QS.HistoryLog.Core.Models;
 
 namespace QS.HistoryLog.HibernateMapping
 {

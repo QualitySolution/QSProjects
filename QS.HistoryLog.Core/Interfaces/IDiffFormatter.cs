@@ -1,5 +1,5 @@
 ﻿using System;
-namespace QS.HistoryLog
+namespace QS.HistoryLog.Core
 {
 	public interface IDiffFormatter
 	{

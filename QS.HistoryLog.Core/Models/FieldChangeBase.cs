@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Gamma.Utilities;
@@ -6,8 +6,7 @@ using NHibernate.Mapping;
 using NHibernate.Type;
 using QS.DomainModel.Entity;
 
-namespace QS.HistoryLog.Domain
-{
+namespace QS.HistoryLog.Core.Models {
 	public abstract class FieldChangeBase : IDomainObject
 	{
 		#region Конфигурация
@@ -41,7 +40,9 @@ namespace QS.HistoryLog.Domain
 
 		#region Внутренние методы
 
-		protected static string GetObjectTitle(object value) => HistoryMain.GetObjectTitle(value);
+		protected static string GetObjectTitle(object value) {
+			return value == null ? null : String.Format("[{0}]", DomainHelper.GetTitle(value));
+		}
 
 		protected void UpdateType() {
 			if(OldId.HasValue || NewId.HasValue) {

@@ -1,7 +1,6 @@
-﻿using QS.DomainModel.Entity;
+using QS.DomainModel.Entity;
 
-namespace QS.HistoryLog.Domain
-{
+namespace QS.HistoryLog.Core.Models {
 	public class ChangeSetBase : IDomainObject
 	{
 		public virtual int Id { get; set; }

@@ -6,7 +6,7 @@ using NHibernate.Proxy;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
 
-namespace QS.HistoryLog.Domain
+namespace QS.HistoryLog.Core.Models
 {
 	public class ChangedEntity : ChangedEntityBase
 	{
