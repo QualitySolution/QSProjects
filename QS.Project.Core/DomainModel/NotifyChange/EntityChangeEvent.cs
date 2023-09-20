@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Gamma.Utilities;
 using NHibernate.Event;
 
+[assembly:InternalsVisibleTo("QS.LibsTest.Core")]
 namespace QS.DomainModel.NotifyChange
 {
 	public class EntityChangeEvent
@@ -33,6 +35,7 @@ namespace QS.DomainModel.NotifyChange
 			EntityClass = InsertEvent.Persister.MappedClass;
 			Entity = InsertEvent.Entity;
 			Session = InsertEvent.Session;
+			EventType = TypeOfChangeEvent.Insert;
 		}
 
 		public EntityChangeEvent(PostUpdateEvent updateEvent)
@@ -43,6 +46,7 @@ namespace QS.DomainModel.NotifyChange
 			EntityClass = UpdateEvent.Persister.MappedClass;
 			Entity = UpdateEvent.Entity;
 			Session = UpdateEvent.Session;
+			EventType = TypeOfChangeEvent.Update;
 		}
 
 		public EntityChangeEvent(PostDeleteEvent deleteEvent)
@@ -53,8 +57,19 @@ namespace QS.DomainModel.NotifyChange
 			EntityClass = DeleteEvent.Persister.MappedClass;
 			Entity = DeleteEvent.Entity;
 			Session = DeleteEvent.Session;
+			EventType = TypeOfChangeEvent.Delete;
 		}
 
+		/// <summary>
+		/// Используется только для тестов
+		/// </summary>
+		internal EntityChangeEvent(TypeOfChangeEvent typeOfChange, Type entityClass = null, object entity = null, IEventSource session = null)
+		{
+			EventType = typeOfChange;
+			EntityClass = entityClass;
+			Entity = entity;
+			Session = session;
+		}
 		#endregion 
 
 		public IEventSource Session { get; }
@@ -66,13 +81,7 @@ namespace QS.DomainModel.NotifyChange
 			return Entity as TEntity;
 		}
 
-		public TypeOfChangeEvent EventType {
-			get {
-				if(InsertEvent != null) return TypeOfChangeEvent.Insert;
-				if(UpdateEvent != null) return TypeOfChangeEvent.Update;
-				return TypeOfChangeEvent.Delete;
-			}
-		}
+		public TypeOfChangeEvent EventType { get; }
 
 		public AbstractPostDatabaseOperationEvent PostDatabaseOperationEvent => 
 			(UpdateEvent as AbstractPostDatabaseOperationEvent)

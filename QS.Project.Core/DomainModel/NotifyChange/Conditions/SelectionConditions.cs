@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using QS.DomainModel.UoW;
@@ -10,6 +9,7 @@ namespace QS.DomainModel.NotifyChange.Conditions
 	{
 		private readonly List<ICondition> conditions = new List<ICondition>();
 		private readonly List<ISession> excludedSessions = new List<ISession>();
+		private readonly List<ISession> onlyForSessions = new List<ISession>();
 
 		#region Fluent
 
@@ -30,12 +30,25 @@ namespace QS.DomainModel.NotifyChange.Conditions
 		/// Например мы можем захотеть не получать уведомления на изменения сделанные в своей сессии.
 		/// Обратите внимание, метод можно вызвать несколько раз. Каждый раз список исключений будет расширятся.
 		/// </summary>
-		/// <returns>The uow.</returns>
 		/// <param name="unitOfWorks">Список UnitOfWorks</param>
 		public SelectionConditions ExcludeUow(params IUnitOfWork[] unitOfWorks)
 		{
 			foreach(var uow in unitOfWorks) {
 				excludedSessions.Add(uow.Session);
+			}
+			return this;
+		}
+		
+		/// <summary>
+		/// Метод ограничит получение уведомлений только из указанных UOW.
+		/// Вы можете захотеть получать уведомления только из своей сессии.
+		/// Обратите внимание, вы можете вызывать метод несколько раз, добавляя в список новые uow.
+		/// </summary>
+		/// <param name="unitOfWorks">Список UnitOfWorks</param>
+		public SelectionConditions OnlyForUow(params IUnitOfWork[] unitOfWorks)
+		{
+			foreach(var uow in unitOfWorks) {
+				onlyForSessions.Add(uow.Session);
 			}
 			return this;
 		}
@@ -48,7 +61,9 @@ namespace QS.DomainModel.NotifyChange.Conditions
 		{
 			if(excludedSessions.Contains(changeEvent.Session))
 				return false;
-			return conditions.Any(x => x.IsSuitable(changeEvent));
+			if(onlyForSessions.Any() && !onlyForSessions.Contains(changeEvent.Session))
+				return false;
+			return !conditions.Any() || conditions.Any(x => x.IsSuitable(changeEvent));
 		}
 
 		#endregion
