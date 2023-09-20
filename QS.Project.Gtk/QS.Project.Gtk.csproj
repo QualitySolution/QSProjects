@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -116,14 +116,11 @@
     <Compile Include="RepresentationModel.GtkUI\RepresentationModelBase.cs" />
     <Compile Include="RepresentationModel.GtkUI\IRepresentationFilter.cs" />
     <Compile Include="RepresentationModel.GtkUI\RepresentationAttributies.cs" />
-    <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModel.cs" />
-    <Compile Include="RepresentationModel.GtkUI\EntityCommonRepresentationModelConstructor.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledAddButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledEditButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\PermissionControlledDeleteButton.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionControlledRepresentationJournal.cs" />
     <Compile Include="RepresentationModel.GtkUI\CompletionColumn.cs" />
-    <Compile Include="Dialog\QueryFilterWidgetBase.cs" />
     <Compile Include="Tdi\ITDIWidgetResolver.cs" />
     <Compile Include="Tdi\DefaultTDIWidgetResolver.cs" />
     <Compile Include="Dialog\IMustBeDestroyed.cs" />

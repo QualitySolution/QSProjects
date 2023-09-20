@@ -103,7 +103,6 @@
     <Compile Include="Project.DB\MySQLProvider.cs" />
     <Compile Include="Project.Dialogs\IRunOperationView.cs" />
     <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
-    <Compile Include="Tools\IQueryFilter.cs" />
     <Compile Include="Project.Journal\IJournalFilter.cs" />
     <Compile Include="Project.Journal\IJournalSearch.cs" />
     <Compile Include="Project.Journal\IJournalNode.cs" />
@@ -234,7 +233,6 @@
     <Folder Include="Permissions\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
-    <Folder Include="Tools\" />
     <Folder Include="Project.Journal\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Project.Services\" />
