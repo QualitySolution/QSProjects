@@ -4,6 +4,7 @@ using NUnit.Framework;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.NotifyChange.Conditions;
 using QS.DomainModel.UoW;
+using QS.Test.TestApp.Domain;
 
 namespace QS.Test.DomainModel.NotifyChange {
 	[TestFixture(TestOf = typeof(SelectionConditions))]
@@ -49,6 +50,38 @@ namespace QS.Test.DomainModel.NotifyChange {
 			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Insert, session: session1)), Is.True);
 			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Update, session: session2)), Is.False);
 			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Delete, session: session3)), Is.True);
+		}
+		
+		[Test(Description = "Проверяем что можем подписаться на события нескольких типов одновременно.")]
+		public void AndChangeTypeTest()
+		{
+			var conditions = new SelectionConditions();
+			
+			conditions
+				.IfEntity<SimpleEntity>()
+				.AndChangeType(TypeOfChangeEvent.Insert)
+				.AndChangeType(TypeOfChangeEvent.Delete);
+			
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Insert, entityClass: typeof(SimpleEntity))), Is.True);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Update, entityClass: typeof(SimpleEntity))), Is.False);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Delete, entityClass: typeof(SimpleEntity))), Is.True);
+		}
+		
+		[Test(Description = "Проверяем что можем подписаться на события конкретного класса.")]
+		public void IfEntityTest()
+		{
+			var conditions = new SelectionConditions();
+			
+			conditions
+				.IfEntity<SimpleEntity>();
+			
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Insert, entityClass: typeof(SimpleEntity))), Is.True);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Update, entityClass: typeof(SimpleEntity))), Is.True);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Delete, entityClass: typeof(SimpleEntity))), Is.True);
+			
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Insert, entityClass: typeof(ValidatedEntity))), Is.False);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Update, entityClass: typeof(ValidatedEntity))), Is.False);
+			Assert.That(conditions.IsSuitable(new EntityChangeEvent(TypeOfChangeEvent.Delete, entityClass: typeof(ValidatedEntity))), Is.False);
 		}
 	}
 }

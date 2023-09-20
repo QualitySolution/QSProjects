@@ -16,14 +16,15 @@ namespace QS.DomainModel.NotifyChange.Conditions
 
 		#region Fluent Conditions
 
-		TypeOfChangeEvent? typeOfChange;
+		List<TypeOfChangeEvent> typesOfChange = new List<TypeOfChangeEvent>();
 
 		/// <summary>
 		/// Уведомить только если тип изменения соответствует <paramref name="typeOfChange"/>.
+		/// Можно вызывать несколько раз для добавления разных типов изменений.
 		/// </summary>
 		public SingleEntityCondition<TEntity> AndChangeType(TypeOfChangeEvent typeOfChange)
 		{
-			this.typeOfChange = typeOfChange;
+			typesOfChange.Add(typeOfChange);
 			return this;
 		}
 
@@ -55,7 +56,7 @@ namespace QS.DomainModel.NotifyChange.Conditions
 			if (changeEvent.EntityClass != typeof(TEntity))
 				return false;
 
-			if (typeOfChange.HasValue && typeOfChange.Value != changeEvent.EventType)
+			if (typesOfChange.Any() && !typesOfChange.Contains(changeEvent.EventType))
 				return false;
 
 			if(whereRistrictions.Any(matchFunc => matchFunc(changeEvent.GetEntity<TEntity>()) == false))
