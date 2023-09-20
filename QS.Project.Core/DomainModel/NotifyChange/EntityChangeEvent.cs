@@ -123,7 +123,9 @@ namespace QS.DomainModel.NotifyChange
 					throw new NotImplementedException();
 			}
 		}
-
+		
+		//Здесь используется конвертация в dynamic, для того чтобы корректно сравнивать значимые типы. Так как находясь в object они сравниваются некорректно.
+		public bool IsDiff(string propertyName) => (dynamic)GetOldValue(propertyName) != (dynamic)GetNewValue(propertyName);
 		#endregion
 	}
 
