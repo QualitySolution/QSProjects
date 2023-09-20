@@ -51,6 +51,13 @@ namespace QS.Widgets
 			GtkHelper.WaitRedraw();
 		}
 
+		public void UpdateMax(double maxValue) {
+			if(Adjustment == null)
+				return;
+			Adjustment.Upper = maxValue;
+			GtkHelper.WaitRedraw();
+		}
+
 		public void Update(string text)
 		{
 			Text = text;
