@@ -1,11 +1,10 @@
 using QS.DomainModel.Entity;
-using QS.HistoryLog.Core.Attributes;
 using QS.Project.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QS.HistoryLog.Core {
+namespace QS.HistoryLog {
 	public class HistoryDomainHelper {
 
 		internal static string GetObjectTitle(object value) {

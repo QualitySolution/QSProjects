@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QS.HistoryLog.Core.Attributes {
+namespace QS.HistoryLog {
 
 	/// <summary>
 	/// При установки этого атрибута на свойство изменение этого свойства не будет фиксироваться в истории изменений объекта

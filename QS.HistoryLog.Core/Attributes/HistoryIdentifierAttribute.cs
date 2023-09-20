@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QS.HistoryLog.Core.Attributes {
+namespace QS.HistoryLog {
 
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
 					AllowMultiple = false, Inherited = true)]

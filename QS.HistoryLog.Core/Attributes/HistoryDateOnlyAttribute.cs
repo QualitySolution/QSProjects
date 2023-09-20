@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QS.HistoryLog.Core.Attributes {
+namespace QS.HistoryLog {
 
 	/// <summary>
 	/// Для поле типа DateTime в журнал изменений пишем только дату, без времени.

@@ -9,8 +9,6 @@ using NHibernate.Proxy;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
-using QS.HistoryLog.Core.Attributes;
-using QS.HistoryLog.Core.Models;
 using QS.Project.Repositories;
 using QS.Utilities;
 

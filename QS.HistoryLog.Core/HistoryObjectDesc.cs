@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
-using QS.HistoryLog.Core.Attributes;
 using QS.Project.DB;
 using QS.Utilities.Text;
 
-namespace QS.HistoryLog.Core
+namespace QS.HistoryLog
 {
 	public class HistoryObjectDesc
 	{

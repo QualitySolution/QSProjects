@@ -6,7 +6,7 @@ using NHibernate.Mapping;
 using NHibernate.Type;
 using QS.DomainModel.Entity;
 
-namespace QS.HistoryLog.Core.Models {
+namespace QS.HistoryLog {
 	public abstract class FieldChangeBase : IDomainObject
 	{
 		#region Конфигурация

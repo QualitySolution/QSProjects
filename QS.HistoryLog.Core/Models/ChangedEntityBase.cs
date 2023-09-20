@@ -5,7 +5,7 @@ using NHibernate.Type;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
 
-namespace QS.HistoryLog.Core.Models {
+namespace QS.HistoryLog {
 	public abstract class ChangedEntityBase : IDomainObject
 	{
 		#region Свойства

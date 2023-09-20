@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using QS.DomainModel.Entity;
 using QS.Project.Domain;
 
-namespace QS.HistoryLog.Core.Models {
+namespace QS.HistoryLog {
 	public class ChangeSet : ChangeSetBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

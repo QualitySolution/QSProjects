@@ -9,10 +9,9 @@ using NHibernate.Type;
 using NHibernate.Util;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
-using QS.HistoryLog.Core.Attributes;
 using QS.Project.DB;
 
-namespace QS.HistoryLog.Core.Models {
+namespace QS.HistoryLog {
 	public class FieldChange : FieldChangeBase
 	{
 		#region Конфигурация

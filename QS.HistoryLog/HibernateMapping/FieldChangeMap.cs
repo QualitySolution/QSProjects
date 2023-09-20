@@ -1,6 +1,5 @@
 using System;
 using FluentNHibernate.Mapping;
-using QS.HistoryLog.Core.Models;
 
 namespace QS.HistoryLog.HibernateMapping
 {
