@@ -57,17 +57,6 @@ namespace QS.Journal.GtkUI
 			SetSeletionMode(ViewModel.SelectionMode);
 			ConfigureActions();
 
-			//FIXME Этот код только для водовоза
-			var filterProp = ViewModel.GetType().GetProperty("Filter");
-			if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.GetValue(ViewModel) is IJournalFilter filter) {
-				Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
-				FilterView = filterWidget;
-				hboxFilter.Add(filterWidget);
-				filterWidget.Show();
-				checkShowFilter.Visible = true;
-				checkShowFilter.Active = hboxFilter.Visible = !filter.HidenByDefault;
-			}
-
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
 				if(viewResolver == null)
 					throw new ArgumentException(
@@ -80,6 +69,18 @@ namespace QS.Journal.GtkUI
 				checkShowFilter.Visible = true;
 				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
+			}
+			else {
+				//FIXME Этот код только для водовоза
+				var filterProp = ViewModel.GetType().GetProperty("Filter");
+				if(DialogHelper.FilterWidgetResolver != null && filterProp != null && filterProp.GetValue(ViewModel) is IJournalFilter filter) {
+					Widget filterWidget = DialogHelper.FilterWidgetResolver.Resolve(filter);
+					FilterView = filterWidget;
+					hboxFilter.Add(filterWidget);
+					filterWidget.Show();
+					checkShowFilter.Visible = true;
+					checkShowFilter.Active = hboxFilter.Visible = !filter.HidenByDefault;
+				}
 			}
 
 			if(ViewModel.SearchEnabled) {

@@ -16,6 +16,7 @@ namespace Gamma.GtkWidgets {
 	[Category("Gamma Gtk")]
 	public class yTreeView : TreeView
 	{
+		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		[Obsolete("Добавлено для обратной совместимости на момент перехода " +
 			"от System.Data.Bindings.IObservableList " +
 			"к QS.Extensions.Observable.Collections.List.IObservableList," +
@@ -257,8 +258,11 @@ namespace Gamma.GtkWidgets {
 							} else
 								newval = cell.EditingValueConverter.ConvertBack(args.NewText, cell.DataPropertyInfo.PropertyType, null, null);
 						}
-						catch (FormatException) {
-							Console.WriteLine("'{0}' is not number", args.NewText);
+						catch (FormatException ex) {
+							logger.Warn(ex,"'{0}' is not number", args.NewText);
+						}
+						catch (OverflowException ex) {
+							logger.Warn(ex,"'{0}' is out of range", args.NewText);
 						}
 
 						if(newval != null)

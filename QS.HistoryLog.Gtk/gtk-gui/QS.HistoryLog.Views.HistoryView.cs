@@ -56,11 +56,11 @@ namespace QS.HistoryLog.Views
 
 		private global::Gamma.GtkWidgets.yButton ybutton1;
 
-		private global::Gamma.GtkWidgets.yEntry yentryChanged;
+		private global::Gamma.Widgets.CleanableEntry yentryChanged;
 
-		private global::Gamma.GtkWidgets.yEntry yentryId;
+		private global::Gamma.Widgets.CleanableEntry yentryId;
 
-		private global::Gamma.GtkWidgets.yEntry yentryName;
+		private global::Gamma.Widgets.CleanableEntry yentryName;
 
 		private global::Gamma.GtkWidgets.yLabel ylabel3;
 
@@ -317,6 +317,7 @@ namespace QS.HistoryLog.Views
 			this.ydateStartperiodpicker.Date = new global::System.DateTime(0);
 			this.ydateStartperiodpicker.IsEditable = true;
 			this.ydateStartperiodpicker.AutoSeparation = false;
+			this.ydateStartperiodpicker.HideButtonClearDate = false;
 			this.yhbox2.Add(this.ydateStartperiodpicker);
 			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.yhbox2[this.ydateStartperiodpicker]));
 			w16.Position = 0;
@@ -329,6 +330,7 @@ namespace QS.HistoryLog.Views
 			this.ydateEndperiodpicker.Date = new global::System.DateTime(0);
 			this.ydateEndperiodpicker.IsEditable = true;
 			this.ydateEndperiodpicker.AutoSeparation = false;
+			this.ydateEndperiodpicker.HideButtonClearDate = false;
 			this.yhbox2.Add(this.ydateEndperiodpicker);
 			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.yhbox2[this.ydateEndperiodpicker]));
 			w17.Position = 1;
@@ -375,11 +377,9 @@ namespace QS.HistoryLog.Views
 			w23.XOptions = ((global::Gtk.AttachOptions)(4));
 			w23.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable2.Gtk.Table+TableChild
-			this.yentryChanged = new global::Gamma.GtkWidgets.yEntry();
+			this.yentryChanged = new global::Gamma.Widgets.CleanableEntry();
 			this.yentryChanged.CanFocus = true;
 			this.yentryChanged.Name = "yentryChanged";
-			this.yentryChanged.IsEditable = true;
-			this.yentryChanged.InvisibleChar = '•';
 			this.ytable2.Add(this.yentryChanged);
 			global::Gtk.Table.TableChild w24 = ((global::Gtk.Table.TableChild)(this.ytable2[this.yentryChanged]));
 			w24.TopAttach = ((uint)(2));
@@ -388,11 +388,9 @@ namespace QS.HistoryLog.Views
 			w24.RightAttach = ((uint)(2));
 			w24.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable2.Gtk.Table+TableChild
-			this.yentryId = new global::Gamma.GtkWidgets.yEntry();
+			this.yentryId = new global::Gamma.Widgets.CleanableEntry();
 			this.yentryId.CanFocus = true;
 			this.yentryId.Name = "yentryId";
-			this.yentryId.IsEditable = true;
-			this.yentryId.InvisibleChar = '•';
 			this.ytable2.Add(this.yentryId);
 			global::Gtk.Table.TableChild w25 = ((global::Gtk.Table.TableChild)(this.ytable2[this.yentryId]));
 			w25.TopAttach = ((uint)(1));
@@ -401,11 +399,9 @@ namespace QS.HistoryLog.Views
 			w25.RightAttach = ((uint)(2));
 			w25.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable2.Gtk.Table+TableChild
-			this.yentryName = new global::Gamma.GtkWidgets.yEntry();
+			this.yentryName = new global::Gamma.Widgets.CleanableEntry();
 			this.yentryName.CanFocus = true;
 			this.yentryName.Name = "yentryName";
-			this.yentryName.IsEditable = true;
-			this.yentryName.InvisibleChar = '•';
 			this.ytable2.Add(this.yentryName);
 			global::Gtk.Table.TableChild w26 = ((global::Gtk.Table.TableChild)(this.ytable2[this.yentryName]));
 			w26.LeftAttach = ((uint)(1));
@@ -445,8 +441,6 @@ namespace QS.HistoryLog.Views
 			this.yFilterbox.Add(this.ytable2);
 			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.yFilterbox[this.ytable2]));
 			w30.Position = 2;
-			w30.Expand = false;
-			w30.Fill = false;
 			this.yvbox3.Add(this.yFilterbox);
 			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.yvbox3[this.yFilterbox]));
 			w31.Position = 0;

@@ -91,11 +91,14 @@ namespace QS.ViewModels.Control.EEVM {
 				page = navigationManager.OpenViewModel<TJournalViewModel>(ParentViewModel, OpenPageOptions.AsSlave);
 			else
 				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(GetParentTab(), OpenPageOptions.AsSlave);
-			if(page.ViewModel.JournalFilter is IJournalFilterViewModel filter)
-				filter.SetAndRefilterAtOnce(filterParams);
-			else 
-				throw new InvalidCastException($"Для установки параметров, фильтр {page.ViewModel.JournalFilter.GetType()} должен является типом {typeof(IJournalFilterViewModel)}"); 
-			
+
+			if(page.ViewModel.JournalFilter != null) {
+				if(page.ViewModel.JournalFilter is IJournalFilterViewModel filter)
+					filter.SetAndRefilterAtOnce(filterParams);
+				else
+					throw new InvalidCastException($"Для установки параметров, фильтр {page.ViewModel.JournalFilter.GetType()} должен является типом {typeof(IJournalFilterViewModel)}");
+			}
+
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if(!String.IsNullOrEmpty(dialogTitle))
 				page.ViewModel.TabName = dialogTitle;

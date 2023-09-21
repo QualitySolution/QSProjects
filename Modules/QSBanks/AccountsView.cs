@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Gtk;
 using QS.DomainModel.UoW;
 using QSOrmProject;
@@ -38,7 +38,9 @@ namespace QSBanks
 				.AddColumn("Псевдоним").AddTextRenderer(node => node.Name)
 				.AddColumn("В банке").AddTextRenderer(a => a.InBank != null ? a.InBank.Name : "нет")
 				.AddColumn("Номер").AddTextRenderer(a => a.Number)
-				.RowCells().AddSetter<CellRendererText>((c, a) => c.Foreground = a.Inactive ? "grey" : "black")
+				.RowCells().AddSetter<CellRendererText>((c, a) => c.ForegroundGdk = a.Inactive
+					? Rc.GetStyle(datatreeviewAccounts).Text(StateType.Insensitive)
+					: Rc.GetStyle(datatreeviewAccounts).Text(StateType.Normal))
 				.Finish();
 			datatreeviewAccounts.ItemsDataSource = accountOwner.ObservableAccounts;
 		}

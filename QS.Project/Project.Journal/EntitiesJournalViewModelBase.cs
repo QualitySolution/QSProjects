@@ -123,6 +123,28 @@ namespace QS.Project.Journal
 			return configurator;
 		}
 		
+		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(
+			Func<IUnitOfWork, int?, int?, IQueryOver<TEntity>> queryFunction,
+			Func<IUnitOfWork, int> itemsCountFunction = null)
+			where TEntity : class, IDomainObject, INotifyPropertyChanged
+		{
+			if(queryFunction == null) {
+				throw new ArgumentNullException(nameof(queryFunction));
+			}
+
+			CreateLoader(queryFunction, itemsCountFunction);
+
+			var configurator = new JournalEntityConfigurator<TEntity, TNode>();
+			configurator.OnConfigurationFinished += (sender, e) => {
+				var config = e.Config;
+				if(EntityConfigs.ContainsKey(config.EntityType)) {
+					throw new InvalidOperationException($"Конфигурация для сущности ({config.EntityType.Name}) уже была добавлена.");
+				}
+				EntityConfigs.Add(config.EntityType, config);
+			};
+			return configurator;
+		}
+		
 		protected JournalEntityConfigurator<TEntity, TNode> RegisterEntity<TEntity>(IEnumerable<Func<IUnitOfWork, IQueryOver<TEntity>>> queryFunctions, Func<IUnitOfWork, int> itemsCountFunction = null)
 			where TEntity : class, IDomainObject, INotifyPropertyChanged {
 			if(!queryFunctions.Any()) {
@@ -172,20 +194,35 @@ namespace QS.Project.Journal
 		private void CreateLoader<TEntity>(Func<IUnitOfWork, IQueryOver<TEntity>> queryFunc, Func<IUnitOfWork, int> itemsCountFunction = null)
 			where TEntity : class, IDomainObject
 		{
-			if (DataLoader == null)
-				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
-
-			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
-			if (threadLoader == null)
-				throw new InvalidCastException($"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
-			threadLoader.ShowLateResults = false;
-			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не переписывать все старые журналы в водовозе. Надеюсь этот метод целиком в будущем удалим.
-			if(commonServices.PermissionService != null && commonServices.UserService != null)
-				threadLoader.CurrentPermissionService = new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
-
+			var threadLoader = InitializeThreadDataLoader<TEntity>();
+			threadLoader.AddQuery<TEntity>(queryFunc, itemsCountFunction);
+		}
+		
+		private void CreateLoader<TEntity>(
+			Func<IUnitOfWork, int?, int?, IQueryOver<TEntity>> queryFunc,
+			Func<IUnitOfWork, int> itemsCountFunction = null)
+			where TEntity : class, IDomainObject
+		{
+			var threadLoader = InitializeThreadDataLoader<TEntity>();
 			threadLoader.AddQuery<TEntity>(queryFunc, itemsCountFunction);
 		}
 
+		private ThreadDataLoader<TNode> InitializeThreadDataLoader<TEntity>() where TEntity : class, IDomainObject
+		{
+			if(DataLoader == null)
+				DataLoader = new ThreadDataLoader<TNode>(UnitOfWorkFactory);
+
+			var threadLoader = DataLoader as ThreadDataLoader<TNode>;
+			if(threadLoader == null)
+				throw new InvalidCastException(
+					$"Метод поддерживает только загрузчик по умолчанию {nameof(ThreadDataLoader<TNode>)}, для всех остальных случаев настраивайте DataLoader напрямую.");
+			threadLoader.ShowLateResults = false;
+			//HACK Здесь добавляем адаптер для совместимости со старой настройкой. Не берите с этого места пример. Так делать не надо. Так сделано только чтобы не переписывать все старые журналы в водовозе. Надеюсь этот метод целиком в будущем удалим.
+			if(commonServices.PermissionService != null && commonServices.UserService != null)
+				threadLoader.CurrentPermissionService =
+					new CurrentPermissionServiceAdapter(commonServices.PermissionService, commonServices.UserService);
+			return threadLoader;
+		}
 
 		#endregion Entity load configuration
 

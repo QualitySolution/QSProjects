@@ -132,6 +132,10 @@
     <itemgroups />
     <signals />
   </object>
+  <object type="Gamma.Widgets.CleanableEntry" palette-category="Gamma Widgets" allow-children="false" icon="entry.png" base-type="Gtk.Bin">
+	<itemgroups />
+	<signals />
+  </object>	
   <object type="Gamma.Widgets.SidePanels.HideHorizontalSeparator" palette-category="Gamma Widgets" allow-children="false" icon="Gamma.icons.hseparator.png" base-type="Gtk.Bin">
     <itemgroups />
     <signals />

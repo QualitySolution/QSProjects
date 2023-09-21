@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Autofac;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.Dialog;
 using QS.Navigation;
 using QS.Services;

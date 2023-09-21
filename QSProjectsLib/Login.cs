@@ -1,14 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Gtk;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.Configuration;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
+using QS.Project.DB;
 using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QSSaaS;
@@ -217,7 +218,7 @@ namespace QSProjectsLib
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = entryPassword.Text;
 
-			connStr = conStrBuilder.GetConnectionString(true);
+			connStr = conStrBuilder.ConnectionString;
 
 			QSMain.connectionDB = new MySqlConnection(connStr);
 			try {

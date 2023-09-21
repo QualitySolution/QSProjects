@@ -3,12 +3,12 @@ using System.Data;
 using System.Data.Common;
 using System.Globalization;
 using System.Linq;
-using NHibernate.Driver;
+using NHibernate.Driver.MySqlConnector;
 using NLog;
 
 namespace QS.Project.DB
 {
-	public class LoggedMySqlClientDriver : MySqlDataDriver
+	public class LoggedMySqlClientDriver : MySqlConnectorDriver 
 	{
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 		private readonly DbType[] typesWithQuotes = { DbType.Date, DbType.DateTime, DbType.String };

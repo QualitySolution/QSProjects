@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Sockets;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using QS.Dialog;
 
 namespace QS.ErrorReporting.Handlers {

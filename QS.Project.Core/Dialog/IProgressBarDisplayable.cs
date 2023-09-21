@@ -9,6 +9,7 @@ namespace QS.Dialog
 		void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0);
 
 		void Update(double curValue);
+		void UpdateMax(double maxValue);
 
 		void Update(string curText);
 

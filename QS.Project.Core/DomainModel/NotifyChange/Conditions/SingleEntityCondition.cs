@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Gamma.Utilities;
 
 namespace QS.DomainModel.NotifyChange.Conditions
 {
@@ -16,18 +18,20 @@ namespace QS.DomainModel.NotifyChange.Conditions
 
 		#region Fluent Conditions
 
-		TypeOfChangeEvent? typeOfChange;
+		List<TypeOfChangeEvent> typesOfChange = new List<TypeOfChangeEvent>();
+		private List<string> changeProperties = new List<string>();
 
 		/// <summary>
 		/// Уведомить только если тип изменения соответствует <paramref name="typeOfChange"/>.
+		/// Можно вызывать несколько раз для добавления разных типов изменений.
 		/// </summary>
 		public SingleEntityCondition<TEntity> AndChangeType(TypeOfChangeEvent typeOfChange)
 		{
-			this.typeOfChange = typeOfChange;
+			typesOfChange.Add(typeOfChange);
 			return this;
 		}
 
-		List<Func<TEntity, bool>> whereRistrictions = new List<Func<TEntity, bool>>();
+		readonly List<Func<TEntity, bool>> whereRestrictions = new List<Func<TEntity, bool>>();
 
 		/// <summary>
 		/// Уведомить только если условие <paramref name="predicate"/> истинно.
@@ -36,7 +40,7 @@ namespace QS.DomainModel.NotifyChange.Conditions
 		/// <param name="predicate">Условие отбора</param>
 		public SingleEntityCondition<TEntity> AndWhere(Func<TEntity, bool> predicate)
 		{
-			whereRistrictions.Add(predicate);
+			whereRestrictions.Add(predicate);
 			return this;
 		}
 
@@ -45,6 +49,16 @@ namespace QS.DomainModel.NotifyChange.Conditions
 		/// </summary>
 		public SelectionConditions Or => myConditionsGroup;
 
+		/// <summary>
+		/// И если были изменения любого из свойств объекта.
+		/// </summary>
+		/// <param name="properties"></param>
+		/// <returns></returns>
+		public SingleEntityCondition<TEntity> AndDiffAnyOfProperties(params Expression<Func<TEntity, object>>[] properties) {
+			foreach(var prop in properties)
+				changeProperties.Add(PropertyUtil.GetName(prop));
+			return this;
+		}
 		#endregion
 
 		/// <summary>
@@ -55,10 +69,13 @@ namespace QS.DomainModel.NotifyChange.Conditions
 			if (changeEvent.EntityClass != typeof(TEntity))
 				return false;
 
-			if (typeOfChange.HasValue && typeOfChange.Value != changeEvent.EventType)
+			if (typesOfChange.Any() && !typesOfChange.Contains(changeEvent.EventType))
 				return false;
 
-			if(whereRistrictions.Any(matchFunc => matchFunc(changeEvent.GetEntity<TEntity>()) == false))
+			if(whereRestrictions.Any(matchFunc => matchFunc(changeEvent.GetEntity<TEntity>()) == false))
+				return false;
+
+			if(changeProperties.Any() && changeProperties.All(p => !changeEvent.IsDiff(p)))
 				return false;
 
 			return true;
