@@ -2,10 +2,8 @@ using NHibernate.Collection;
 using NHibernate.Engine;
 using NHibernate.Persister.Collection;
 using NHibernate.UserTypes;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -19,6 +17,9 @@ namespace QS.Extensions.Observable.Collections.List
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
 	public class ObservableList<T> : List<T>, IObservableList<T>, IObservableList, IUserCollectionType, IReadOnlyCollection<T>, IReadOnlyList<T> {
 
+		/// <summary>
+		/// Вызывается при изменении свойства Count
+		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public new T this[int index] { 
@@ -68,7 +69,10 @@ namespace QS.Extensions.Observable.Collections.List
 		}
 
 		#region INotifyCollectionChanged Members
-
+		/// <summary>
+		/// Вызывается при изменении коллекции: добавление, удаление, замена элементов.
+		/// Не вызывается при изменении свойств элементов коллекции.
+		/// </summary>
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
 		/// <summary>
@@ -177,6 +181,9 @@ namespace QS.Extensions.Observable.Collections.List
 
 		#region PropertyOfElementChanged
 
+		/// <summary>
+		///	Вызывается при изменении свойства элемента коллекции.
+		/// </summary>
 		public event PropertyChangedEventHandler PropertyOfElementChanged;
 
 		private void SubscribeElementChanged(T element) {
