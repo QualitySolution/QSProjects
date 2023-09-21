@@ -16,6 +16,11 @@ namespace QS.Extensions.Observable.Collections.List
 	/// </summary>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
 	public class ObservableList<T> : List<T>, IObservableList<T>, IObservableList, IUserCollectionType, IReadOnlyCollection<T>, IReadOnlyList<T> {
+		#region Конструкторы
+		public ObservableList() { }
+		public ObservableList(IEnumerable<T> collection) : base(collection) { }
+		public ObservableList(int capacity) : base(capacity) { }
+		#endregion
 
 		/// <summary>
 		/// Вызывается при изменении свойства Count
