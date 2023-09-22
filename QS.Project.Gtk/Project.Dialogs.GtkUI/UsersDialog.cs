@@ -1,5 +1,4 @@
 using System;
-using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
 using Gdk;
 using Gtk;
@@ -8,6 +7,7 @@ using QS.Dialog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Extensions.Observable.Collections.List;
 using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
@@ -133,11 +133,11 @@ namespace QS.Project.Dialogs.GtkUI
 	{
 		public event EventHandler UsersUpdated;
 
-		GenericObservableList<UserBase> observableUsers;
-		public virtual GenericObservableList<UserBase> ObservableUsers {
+		ObservableList<UserBase> observableUsers;
+		public virtual ObservableList<UserBase> ObservableUsers {
 			get {
 				if (observableUsers == null)
-					ObservableUsers = new GenericObservableList<UserBase>();
+					ObservableUsers = new ObservableList<UserBase>();
 				return observableUsers;
 			}
 			set => SetField(ref observableUsers, value, () => ObservableUsers);
@@ -147,7 +147,7 @@ namespace QS.Project.Dialogs.GtkUI
 		{
 			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
 				var users = UserRepository.GetUsers(uow, showDeactivated);
-				ObservableUsers = new GenericObservableList<UserBase>(users);
+				ObservableUsers = new ObservableList<UserBase>(users);
 				UsersUpdated?.Invoke(this, EventArgs.Empty);
 			}
 		}

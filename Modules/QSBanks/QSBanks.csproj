@@ -66,8 +66,6 @@
     <Compile Include="BankFilter.cs" />
     <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
     <Compile Include="ConfigureDeletion.cs" />
-    <Compile Include="BankTransferDocumentParser.cs" />
-    <Compile Include="TransferDocument.cs" />
     <Compile Include="CBRSource\BIC.cs" />
     <Compile Include="CBRSource\CreditOrgInfo.cs" />
     <Compile Include="CBRSource\RegionsEnum.cs" />
@@ -93,6 +91,10 @@
       <Project>{a869ec36-67d2-4a36-95e9-0b1e7350928f}</Project>
       <Name>QS.BaseParameters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QS.Extensions.Observable\QS.Extensions.Observable.csproj">
+      <Project>{2a0710b2-b71b-4959-88da-0940100e172a}</Project>
+      <Name>QS.Extensions.Observable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj">
       <Project>{c01ae5a4-3cff-4c7b-884d-45b07acde761}</Project>
       <Name>QS.Project.Core</Name>
@@ -104,10 +106,6 @@
     <ProjectReference Include="..\..\QSOrmProject\QSOrmProject.csproj">
       <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
       <Name>QSOrmProject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj">
-      <Project>{54F958F5-7E58-4C89-9A04-8835E63B97C3}</Project>
-      <Name>System.Data.Bindings</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\QSWidgetLib\QSWidgetLib.csproj">
       <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>

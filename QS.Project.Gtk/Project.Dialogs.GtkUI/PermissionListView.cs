@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Gamma.GtkWidgets;
@@ -62,9 +63,21 @@ namespace QS.Project.Dialogs
 
 		private void ConfigureList()
 		{
-			viewModel.PermissionsList.ElementAdded += (object aList, int[] aIdx) => aIdx.ToList().ForEach(x => AddRow(viewModel.PermissionsList[x]));
-			viewModel.PermissionsList.ElementRemoved += (aList, aIdx, aObject) => DeleteRow(aObject);
+			ViewModel.PermissionsList.CollectionChanged += PermissionsListOnCollectionChanged;
 			Redraw();
+		}
+
+		private void PermissionsListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+			if(e.Action == NotifyCollectionChangedAction.Add) {
+				foreach(IPermissionNode permission in e.NewItems) {
+					AddRow(permission);
+				}
+			}
+			if(e.Action == NotifyCollectionChangedAction.Remove) {
+				foreach(IPermissionNode permission in e.OldItems) {
+					DeleteRow(permission);
+				}
+			}
 		}
 
 		private void DrawNewRow(IPermissionNode node)

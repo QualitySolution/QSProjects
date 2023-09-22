@@ -1,8 +1,8 @@
 ﻿using QS.Commands;
 using System;
 using System.Collections.Generic;
-using System.Data.Bindings.Collections.Generic;
 using System.Linq;
+using QS.Extensions.Observable.Collections.List;
 
 namespace QS.ViewModels.Widgets {
 	public sealed class LeftRightListViewModel<TItem> : LeftRightListViewModel {
@@ -10,7 +10,7 @@ namespace QS.ViewModels.Widgets {
 			LeftItems.Clear();
 			RightItems.Clear();
 			var itemViewModel = items.Select(x => new LeftRightListItemViewModel<TItem>(x, displayFunc)).Cast<LeftRightListItemViewModel>().ToList();
-			LeftItems = new GenericObservableList<LeftRightListItemViewModel>(itemViewModel);
+			LeftItems = new ObservableList<LeftRightListItemViewModel>(itemViewModel);
 			foreach(var leftItem in LeftItems) {
 				leftItem.LeftIndex = LeftItems.IndexOf(leftItem);
 			}
@@ -24,8 +24,8 @@ namespace QS.ViewModels.Widgets {
 	public abstract class LeftRightListViewModel : WidgetViewModelBase {
 		private string leftLabel;
 		private string rightLabel;
-		private GenericObservableList<LeftRightListItemViewModel> leftItems;
-		private GenericObservableList<LeftRightListItemViewModel> rightItems;
+		private IObservableList<LeftRightListItemViewModel> leftItems;
+		private IObservableList<LeftRightListItemViewModel> rightItems;
 		private IEnumerable<LeftRightListItemViewModel> selectedLeftItems;
 		private IEnumerable<LeftRightListItemViewModel> selectedRightItems;
 		private DelegateCommand moveRightCommand;
@@ -34,8 +34,8 @@ namespace QS.ViewModels.Widgets {
 		private DelegateCommand moveDownCommand;
 
 		public LeftRightListViewModel() {
-			LeftItems = new GenericObservableList<LeftRightListItemViewModel>();
-			RightItems = new GenericObservableList<LeftRightListItemViewModel>();
+			LeftItems = new ObservableList<LeftRightListItemViewModel>();
+			RightItems = new ObservableList<LeftRightListItemViewModel>();
 			selectedLeftItems = Enumerable.Empty<LeftRightListItemViewModel>();
 			selectedRightItems = Enumerable.Empty<LeftRightListItemViewModel>();
 		}
@@ -54,12 +54,12 @@ namespace QS.ViewModels.Widgets {
 			set => SetField(ref rightLabel, value);
 		}
 
-		public virtual GenericObservableList<LeftRightListItemViewModel> LeftItems {
+		public virtual IObservableList<LeftRightListItemViewModel> LeftItems {
 			get => leftItems;
 			set => SetField(ref leftItems, value);
 		}
 
-		public virtual GenericObservableList<LeftRightListItemViewModel> RightItems {
+		public virtual IObservableList<LeftRightListItemViewModel> RightItems {
 			get => rightItems;
 			set => SetField(ref rightItems, value);
 		}

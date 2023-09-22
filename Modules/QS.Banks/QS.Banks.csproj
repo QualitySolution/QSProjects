@@ -24,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj" />
     <ProjectReference Include="..\..\QS.Project\QS.Project.csproj" />
-    <ProjectReference Include="..\..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />

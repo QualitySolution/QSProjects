@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using QS.Banks.Domain;
+using QS.Extensions.Observable.Collections.List;
 using QSBanks;
 using QSBanks.CBRSource;
 
@@ -78,9 +79,9 @@ namespace QS.Test.Banks
 				Region = region
 			};
 		}
-		static List<CorAccount> CreateNewCorAccounts(Bank bank, params string[] accounts)
+		static ObservableList<CorAccount> CreateNewCorAccounts(Bank bank, params string[] accounts)
 		{
-			var accs = new List<CorAccount>();
+			var accs = new ObservableList<CorAccount>();
 			foreach(var acc in accounts) {
 				accs.Add(new CorAccount { CorAccountNumber = acc, InBank = bank });
 			}

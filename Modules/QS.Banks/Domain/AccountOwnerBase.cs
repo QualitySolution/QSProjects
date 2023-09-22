@@ -1,40 +1,29 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Bindings.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using QS.DomainModel.Entity;
+using QS.Extensions.Observable.Collections.List;
 
 namespace QS.Banks.Domain
 {
 	public abstract class AccountOwnerBase : PropertyChangedBase, IAccountOwner
 	{
-		IList<Account> accounts;
+		IObservableList<Account> accounts = new ObservableList<Account>();
 
-		public virtual IList<Account> Accounts {
+		public virtual IObservableList<Account> Accounts {
 			get { return accounts; }
 			set {
 				SetField(ref accounts, value, () => Accounts);
 			}
 		}
-
-		GenericObservableList<Account> observableAccounts;
-		//FIXME Костыль пока не разберемся как научить hibernate работать с обновляемыми списками.
-		public virtual GenericObservableList<Account> ObservableAccounts {
-			get {
-				if(observableAccounts == null) {
-					observableAccounts = new GenericObservableList<Account>(Accounts);
-				}
-				return observableAccounts;
-			}
-		}
+		public virtual IObservableList<Account> ObservableAccounts => Accounts;
 
 		[Display(Name = "Основной счет")]
 		public virtual Account DefaultAccount {
 			get{
-				return ObservableAccounts.FirstOrDefault(x => x.IsDefault);
+				return Accounts.FirstOrDefault(x => x.IsDefault);
 			}
 			set{
-				Account oldDefAccount = ObservableAccounts.FirstOrDefault(x => x.IsDefault);
+				Account oldDefAccount = Accounts.FirstOrDefault(x => x.IsDefault);
 				if(oldDefAccount != null && value != null && oldDefAccount.Id != value.Id) {
 					oldDefAccount.IsDefault = false;
 				}
@@ -42,14 +31,9 @@ namespace QS.Banks.Domain
 			}
 		}
 
-		public AccountOwnerBase()
-		{
-			accounts = new List<Account>();
-		}
-
 		public virtual void AddAccount(Account account)
 		{
-			ObservableAccounts.Add(account);
+			Accounts.Add(account);
 			account.Owner = this;
 			if(DefaultAccount == null)
 				account.IsDefault = true;
@@ -71,9 +55,9 @@ namespace QS.Banks.Domain
 	{
 		Account DefaultAccount { get; set; }
 
-		IList<Account> Accounts { get;}
+		IObservableList<Account> Accounts { get;}
 
-		GenericObservableList<Account> ObservableAccounts { get;}
+		IObservableList<Account> ObservableAccounts { get;}
 	}
 }
 
