@@ -1,3 +1,4 @@
+using System;
 using NHibernate.Collection.Generic;
 using NHibernate.Engine;
 using System.Collections.Generic;
@@ -81,6 +82,7 @@ namespace QS.Extensions.Observable.Collections.List {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count - 1);
 			CollectionChanged?.Invoke(this, args);
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+			ContentChanged?.Invoke(this, args);
 		}
 
 		/// <summary>
@@ -92,6 +94,7 @@ namespace QS.Extensions.Observable.Collections.List {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 			CollectionChanged?.Invoke(this, args);
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+			ContentChanged?.Invoke(this, args);
 		}
 
 		/// <summary>
@@ -104,6 +107,7 @@ namespace QS.Extensions.Observable.Collections.List {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
 			CollectionChanged?.Invoke(this, args);
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+			ContentChanged?.Invoke(this, args);
 		}
 
 		/// <summary>
@@ -116,6 +120,7 @@ namespace QS.Extensions.Observable.Collections.List {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
 			CollectionChanged?.Invoke(this, args);
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+			ContentChanged?.Invoke(this, args);
 		}
 
 		/// <summary>
@@ -128,6 +133,7 @@ namespace QS.Extensions.Observable.Collections.List {
 		protected void OnItemReplaced(T newItem, T oldItem, int index) {
 			var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem, index);
 			CollectionChanged?.Invoke(this, args);
+			ContentChanged?.Invoke(this, args);
 		}
 
 		#endregion
@@ -135,6 +141,7 @@ namespace QS.Extensions.Observable.Collections.List {
 		#region PropertyOfElementChanged
 
 		public event PropertyChangedEventHandler PropertyOfElementChanged;
+		public event EventHandler ContentChanged;
 
 		private void SubscribeElementChanged(T element) {
 			if(element is INotifyPropertyChanged notifiedElement) {
@@ -162,6 +169,7 @@ namespace QS.Extensions.Observable.Collections.List {
 
 		private void NotifiedElement_PropertyChanged(object sender, PropertyChangedEventArgs e) {
 			PropertyOfElementChanged?.Invoke(sender, e);
+			ContentChanged?.Invoke(sender, e);
 		}
 
 		#endregion
