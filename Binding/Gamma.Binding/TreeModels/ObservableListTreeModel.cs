@@ -3,6 +3,7 @@ using QS.Extensions.Observable.Collections.List;
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Gamma.Binding {
@@ -19,6 +20,7 @@ namespace Gamma.Binding {
 			adapter = new TreeModelAdapter (this);
 			sourceList = list;
 			sourceList.CollectionChanged += SourceList_CollectionChanged;
+			sourceList.PropertyOfElementChanged += SourceList_PropertyOfElementChanged;
 		}
 
 		private void SourceList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -38,6 +40,10 @@ namespace Gamma.Binding {
 				case NotifyCollectionChangedAction.Move:
 					throw new NotSupportedException("Перемещение элементов внутри коллекции не поддерживается");
 			}
+		}
+		
+		private void SourceList_PropertyOfElementChanged(object sender, PropertyChangedEventArgs e) {
+			Adapter.EmitRowChanged(PathFromIndex(sourceList.IndexOf(sender)), IterFromNode(sender));
 		}
 
 		void AddElements (IList items, int index)
@@ -95,18 +101,11 @@ namespace Gamma.Binding {
 				RenewAdapter(this, EventArgs.Empty);
 		}
 
-		protected IObservableList SourceList {
-			get {
-				return sourceList;
-			}
-		}
+		protected IObservableList SourceList => sourceList;
 
 		#region IyTreeModel implementation
 
-		public TreeModel Adapter {
-			get { return adapter;
-			}
-		}
+		public TreeModel Adapter => adapter;
 
 		#endregion
 
