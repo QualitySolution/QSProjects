@@ -19,8 +19,12 @@ namespace QS.Extensions.Observable.Collections.List
 	public class ObservableList<T> : List<T>, IObservableList<T>, IObservableList, IUserCollectionType, IReadOnlyCollection<T>, IReadOnlyList<T> {
 		#region Конструкторы
 		public ObservableList() { }
-		public ObservableList(IEnumerable<T> collection) : base(collection) { }
 		public ObservableList(int capacity) : base(capacity) { }
+
+		public ObservableList(IEnumerable<T> collection) : base(collection) {
+			foreach(var item in collection)
+				SubscribeElementChanged(item);
+		}
 		#endregion
 
 		/// <summary>
