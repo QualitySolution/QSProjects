@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NLog;
 using QS.Dialog;
+using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
@@ -49,7 +50,21 @@ namespace QS.Project.Journal
 			DataLoader.LoadData(false);
 		}
 
+		private JournalSelectionMode? tableSelectionMode;
+		/// <summary>
+		/// Устанавливает режим выбора для таблицы журнала.
+		/// Используется для возможности переключения режима выбора строк в таблице, при обычном режиме журнала, без выбора.
+		/// </summary>
+		public virtual JournalSelectionMode TableSelectionMode {
+			get => tableSelectionMode ?? SelectionMode;
+			set => SetField(ref tableSelectionMode, value);
+		}
+		
 		private JournalSelectionMode selectionMode;
+		/// <summary>
+		/// Устанавливает режим выбора для журнала. В режиме отличном от None, в журнале появляется кнопка «Выбрать».
+		/// </summary>
+		[PropertyChangedAlso(nameof(TableSelectionMode))]
 		public virtual JournalSelectionMode SelectionMode {
 			get => selectionMode;
 			set {

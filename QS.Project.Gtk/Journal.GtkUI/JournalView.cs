@@ -54,7 +54,7 @@ namespace QS.Journal.GtkUI
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
-			SetSeletionMode(ViewModel.SelectionMode);
+			SetSelectionMode(ViewModel.TableSelectionMode);
 			ConfigureActions();
 
 			if(ViewModel.JournalFilter is ViewModelBase filterViewModel) {
@@ -108,8 +108,8 @@ namespace QS.Journal.GtkUI
 		{
 			if(e.PropertyName == nameof(ViewModel.FooterInfo))
 				Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
-			if(e.PropertyName == nameof(ViewModel.SelectionMode))
-				SetSeletionMode(ViewModel.SelectionMode);
+			if(e.PropertyName == nameof(ViewModel.TableSelectionMode))
+				SetSelectionMode(ViewModel.TableSelectionMode);
 		}
 
 		void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -132,7 +132,7 @@ namespace QS.Journal.GtkUI
 			foreach(var spinner in whishList) {
 				var allChars = String.Join("", spinner.Frames);
 				var layout = labelTotalRow.CreatePangoLayout(allChars);
-				//К сожалению этот способ определения не поддерживаемых символов на винде для нецветных спинеров все равно возвращает 0, даже если символ не поддерживается.
+				//К сожалению этот способ определения не поддерживаемых символов на винде для не цветных спинеров все равно возвращает 0, даже если символ не поддерживается.
 				if(layout.UnknownGlyphsCount == 0) {
 					CountingTextSpinner = new TextSpinner(spinner);
 					break;
@@ -141,7 +141,7 @@ namespace QS.Journal.GtkUI
 			}
 		}
 
-		void SetSeletionMode(JournalSelectionMode mode)
+		void SetSelectionMode(JournalSelectionMode mode)
 		{
 			switch(mode) {
 				case JournalSelectionMode.None:
