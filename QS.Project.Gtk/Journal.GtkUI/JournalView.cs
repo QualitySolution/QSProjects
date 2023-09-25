@@ -323,14 +323,14 @@ namespace QS.Journal.GtkUI
 					button.Clicked += OnJournalActionClicked;
 					_widgetsWithJournalActions.Add(button, action);
 
-					System.Action sensitivityAction = () => button.Sensitive = action.GetSensitivity(GetSelectedItems());
-					System.Action visibilityAction = () => button.Visible = action.GetVisibility(GetSelectedItems());
-
-					AddActionToDictionary(actionsSensitivity, JournalActionsType.ButtonActions, sensitivityAction);
-					AddActionToDictionary(actionsVisibility, JournalActionsType.ButtonActions, visibilityAction);
-
 					actionWidget = button;
 				}
+				
+				System.Action sensitivityAction = () => actionWidget.Sensitive = action.GetSensitivity(GetSelectedItems());
+				System.Action visibilityAction = () => actionWidget.Visible = action.GetVisibility(GetSelectedItems());
+
+				AddActionToDictionary(actionsSensitivity, JournalActionsType.ButtonActions, sensitivityAction);
+				AddActionToDictionary(actionsVisibility, JournalActionsType.ButtonActions, visibilityAction);
 
 				actionWidget.ShowAll();
 
