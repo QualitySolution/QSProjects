@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using Gtk;
+using QS.Extensions.Observable.Collections.List;
 using QS.Print;
 
 namespace QSReport
 {
 	public class MultipleDocumentPrinter
 	{
-		public GenericObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new GenericObservableList<SelectablePrintDocument>();
+		public ObservableList<SelectablePrintDocument> PrintableDocuments { get; set; } = new ObservableList<SelectablePrintDocument>();
 		public event EventHandler DocumentsPrinted;
 		public event EventHandler PrintingCanceled;
 		public PrintSettings PrinterSettings { get; set; }

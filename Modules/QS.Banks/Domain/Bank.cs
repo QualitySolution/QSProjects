@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
+using QS.Extensions.Observable.Collections.List;
 using QS.Project.Dialogs;
 
 namespace QS.Banks.Domain
@@ -40,26 +40,17 @@ namespace QS.Banks.Domain
 			set { SetField (ref bik, value, () => Bik); }
 		}
 
-		IList<CorAccount> corAccounts = new List<CorAccount>();
+		IObservableList<CorAccount> corAccounts = new ObservableList<CorAccount>();
 
-		public virtual IList<CorAccount> CorAccounts {
+		public virtual IObservableList<CorAccount> CorAccounts {
 			get { return corAccounts; }
 			set {
 				SetField(ref corAccounts, value, () => CorAccounts);
 			}
 		}
-
-		GenericObservableList<CorAccount> observableCorAccounts;
-		//FIXME Костыль пока не разберемся как научить hibernate работать с обновляемыми списками.
-		public virtual GenericObservableList<CorAccount> ObservableCorAccounts {
-			get {
-				if(observableCorAccounts == null) {
-					observableCorAccounts = new GenericObservableList<CorAccount>(CorAccounts);
-				}
-				return observableCorAccounts;
-			}
-		}
-
+		
+		public virtual IObservableList<CorAccount> ObservableCorAccounts => CorAccounts;
+		
 		CorAccount defaultCorAccount;
 
 		[StringLength (25, MinimumLength = 20, ErrorMessage = "Номер корреспондентского счета должен содержать 20 цифр и не превышать 25-ти.")]

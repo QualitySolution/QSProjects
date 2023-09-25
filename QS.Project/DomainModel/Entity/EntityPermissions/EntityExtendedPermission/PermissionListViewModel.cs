@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Data.Bindings.Collections.Generic;
 using System.Linq;
 using QS.Commands;
 using QS.DomainModel.UoW;
+using QS.Extensions.Observable.Collections.List;
 using QS.Project.Domain;
 using QS.ViewModels;
 
@@ -38,8 +38,8 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 			set => SetField(ref readOnly, value, () => ReadOnly);
 		}
 
-		private GenericObservableList<IPermissionNode> permissionsList;
-		public virtual GenericObservableList<IPermissionNode> PermissionsList {
+		private IObservableList<IPermissionNode> permissionsList;
+		public virtual IObservableList<IPermissionNode> PermissionsList {
 			get => permissionsList;
 			set { SetField(ref permissionsList, value, () => PermissionsList);}
 		}
@@ -69,7 +69,7 @@ namespace QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission
 						return;
 					}
 					if(PermissionsList == null)
-						PermissionsList = new GenericObservableList<IPermissionNode>();
+						PermissionsList = new ObservableList<IPermissionNode>();
 					PermissionsList.Add(permissionNode);
 				},
 				() => { return !ReadOnly && PermissionNodeFactory != null; }

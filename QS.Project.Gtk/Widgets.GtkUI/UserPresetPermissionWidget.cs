@@ -5,9 +5,9 @@ using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Permissions;
-using System.Data.Bindings.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
+using QS.Extensions.Observable.Collections.List;
 
 namespace QS.Widgets.GtkUI
 {
@@ -96,8 +96,8 @@ namespace QS.Widgets.GtkUI
 		private IList<PresetUserPermission> originalPermissionList;
 		private IList<PresetUserPermissionSource> originalPermissionsSourceList;
 
-		public GenericObservableList<PresetUserPermission> ObservablePermissionsList { get; private set; }
-		public GenericObservableList<PresetUserPermissionSource> ObservablePermissionsSourceList { get; private set; }
+		public ObservableList<PresetUserPermission> ObservablePermissionsList { get; private set; }
+		public ObservableList<PresetUserPermissionSource> ObservablePermissionsSourceList { get; private set; }
 
 		public PresetUserPermissionModel(IUnitOfWork uow, UserBase user)
 		{
@@ -105,7 +105,7 @@ namespace QS.Widgets.GtkUI
 			this.uow = uow;
 
 			originalPermissionList = UserPermissionRepository.GetUserAllPresetPermissions(uow, user.Id);
-			ObservablePermissionsList = new GenericObservableList<PresetUserPermission>(originalPermissionList.ToList());
+			ObservablePermissionsList = new ObservableList<PresetUserPermission>(originalPermissionList.ToList());
 
 			originalPermissionsSourceList = PermissionsSettings.PresetPermissions.Values.ToList();
 
@@ -115,7 +115,7 @@ namespace QS.Widgets.GtkUI
 					originalPermissionsSourceList.Remove(item.PermissionSource);
 				}
 			}
-			ObservablePermissionsSourceList = new GenericObservableList<PresetUserPermissionSource>(originalPermissionsSourceList);
+			ObservablePermissionsSourceList = new ObservableList<PresetUserPermissionSource>(originalPermissionsSourceList);
 		}
 
 		public void AddPermission(PresetUserPermissionSource permissionSource)

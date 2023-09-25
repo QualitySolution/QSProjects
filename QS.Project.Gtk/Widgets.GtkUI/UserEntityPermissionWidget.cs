@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Bindings.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.DomainModel.UoW;
 using QS.EntityRepositories;
+using QS.Extensions.Observable.Collections.List;
 using QS.Journal.GtkUI;
 using QS.Project.Domain;
 using QS.Project.Repositories;
@@ -122,7 +123,7 @@ namespace QS.Widgets.GtkUI
 		private List<TypeOfEntity> _originalTypeOfEntityList;
 		public PermissionListViewModel PermissionListViewModel { get; set; }
 
-		public GenericObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
+		public IObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
 
 		public EntityUserPermissionModel(IUnitOfWork uow, UserBase user, PermissionListViewModel permissionListViewModel) {
 			_user = user;
@@ -132,8 +133,8 @@ namespace QS.Widgets.GtkUI
 			_permissionList = UserPermissionSingletonRepository.GetInstance()
 				.GetUserAllEntityPermissions(_uow, _user.Id, PermissionListViewModel.PermissionExtensionStore).ToList();
 			PermissionListViewModel.PermissionsList =
-				new GenericObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
-			PermissionListViewModel.PermissionsList.ElementRemoved += OnPermissionsListElementRemoved;
+				new ObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
+			PermissionListViewModel.PermissionsList.CollectionChanged += OnPermissionsListElementRemoved;
 
 			_originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(_uow).ToList();
 			//убираем типы уже загруженные в права
@@ -144,11 +145,15 @@ namespace QS.Widgets.GtkUI
 			}
 
 			SortTypeOfEntityList();
-			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(_originalTypeOfEntityList);
+			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
 		}
 
-		private void OnPermissionsListElementRemoved(object aList, int[] aIdx, object aObject) {
-			DeletePermission(aObject as UserPermissionNode);
+		private void OnPermissionsListElementRemoved(object aList, NotifyCollectionChangedEventArgs args) {
+			if(args.Action == NotifyCollectionChangedAction.Remove) {
+				foreach(UserPermissionNode item in args.OldItems) {
+					DeletePermission(item);					
+				}
+			}
 		}
 
 		public void SearchTypes(string searchString) {
@@ -163,7 +168,7 @@ namespace QS.Widgets.GtkUI
 			SortTypeOfEntityList();
 
 			ObservableTypeOfEntitiesList = null;
-			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(_originalTypeOfEntityList);
+			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
 
 			if(searchString != "") {
 				for(int i = 0; i < ObservableTypeOfEntitiesList.Count; i++) {
@@ -242,12 +247,12 @@ namespace QS.Widgets.GtkUI
 		}
 
 		public void UpdateData(IList<UserPermissionNode> newUserPermissions) {
-			PermissionListViewModel.PermissionsList.ElementRemoved -= OnPermissionsListElementRemoved;
+			PermissionListViewModel.PermissionsList.CollectionChanged -= OnPermissionsListElementRemoved;
 			
 			_permissionList = newUserPermissions;
 			PermissionListViewModel.PermissionsList =
-				new GenericObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
-			PermissionListViewModel.PermissionsList.ElementRemoved += OnPermissionsListElementRemoved;
+				new ObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
+			PermissionListViewModel.PermissionsList.CollectionChanged += OnPermissionsListElementRemoved;
 			
 			//убираем типы уже загруженные в права
 			foreach(var item in _permissionList) {
@@ -257,7 +262,7 @@ namespace QS.Widgets.GtkUI
 			}
 
 			SortTypeOfEntityList();
-			ObservableTypeOfEntitiesList = new GenericObservableList<TypeOfEntity>(_originalTypeOfEntityList);
+			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
 		}
 
 		private void SortTypeOfEntityList()
