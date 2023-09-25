@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 
@@ -24,6 +24,7 @@ namespace QS.Deletion.Configuration
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
 		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
+		public List<UpdateDependenceInfo> UpdateItems { get; set;}
 
 		public bool HasDependences
 		{
@@ -39,11 +40,13 @@ namespace QS.Deletion.Configuration
 			}
 		}
 
+
 		public DeleteInfo()
 		{
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
+			UpdateItems = new List<UpdateDependenceInfo>();
 		}
 
 		IList<EntityDTO> IDeleteInfo.GetDependEntities(IDeleteCore core, DeleteDependenceInfo depend, EntityDTO masterEntity)
@@ -122,6 +125,10 @@ namespace QS.Deletion.Configuration
 		public Operation CreateRemoveFromOperation(EntityDTO masterEntity, RemoveFromDependenceInfo depend, IList<EntityDTO> dependEntities)
 		{
 			throw new NotSupportedException ();
+		}
+
+		public Operation CreateUpdateOperation(EntityDTO entityDTO, UpdateDependenceInfo updateDependenceInfo) {
+			throw new NotImplementedException();
 		}
 	}
 }
