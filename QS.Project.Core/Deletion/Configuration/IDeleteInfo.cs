@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace QS.Deletion.Configuration
@@ -18,6 +18,7 @@ namespace QS.Deletion.Configuration
 		Operation CreateRemoveFromOperation (EntityDTO masterEntity, RemoveFromDependenceInfo depend, IList<EntityDTO> dependEntities);
 		Operation CreateDeleteOperation (EntityDTO entity);
 		Operation CreateClearOperation(EntityDTO masterEntity, ClearDependenceInfo depend, IList<EntityDTO> dependEntities);
+		Operation CreateUpdateOperation(EntityDTO entityDTO, UpdateDependenceInfo updateDependenceInfo);
 	}
 
 	public interface IDeleteRule
@@ -27,5 +28,6 @@ namespace QS.Deletion.Configuration
 		List<DeleteDependenceInfo> DeleteItems { get; }
 		List<ClearDependenceInfo> ClearItems { get; }
 		List<RemoveFromDependenceInfo> RemoveFromItems { get; }
+		List<UpdateDependenceInfo> UpdateItems { get; }
 	}
 }

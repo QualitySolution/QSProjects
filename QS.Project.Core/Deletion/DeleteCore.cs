@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -262,6 +262,9 @@ namespace QS.Deletion
 			if (currentDeletion.RemoveFromItems.Count > 0) 
 				FillRemoveFromItemsOperation(currentDeletion, parentOperation, masterEntity, cancellation);
 
+			if(currentDeletion.UpdateItems.Count > 0)
+				FillUpdateOperation(currentDeletion, parentOperation, masterEntity, cancellation);
+
 			if (cancellation.IsCancellationRequested)
 				return;
 
@@ -384,6 +387,13 @@ namespace QS.Deletion
 					AddItemToRemoveFrom(row);
 					masterEntity.PullsUp.Add(row);
 				}
+			}
+		}
+
+		private void FillUpdateOperation(IDeleteInfo currentDeletion, Operation parentOperation, EntityDTO masterEntity, CancellationToken cancellationToken) {
+			foreach(var updateOperation in currentDeletion.UpdateItems) {
+				var childOperation = configuration.GetDeleteInfo(updateOperation).CreateUpdateOperation(masterEntity, updateOperation);
+				parentOperation.ChildBeforeOperations.Add(childOperation);
 			}
 		}
 
