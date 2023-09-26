@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NHibernate.Type;
 using QS.DomainModel.Entity;
 
 namespace QS.Deletion
@@ -169,4 +170,21 @@ namespace QS.Deletion
 		}
 	}
 
+	class UpdateOperation : Operation, IHibernateOperation {
+		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		public Type UpdateInClassType { get; set; }
+		public object UpdatingEntity { get; set; }
+		public string PropertyName { get; set; }
+		public object PropertyValue { get; set; }
+		internal override void Execute(IDeleteCore core, CancellationToken cancellation) {
+			if(cancellation.IsCancellationRequested)
+				return;
+
+			var propertyCache = UpdateInClassType.GetProperty(PropertyName);
+
+			core.AddExcuteOperation(String.Format("Обновляем значение в {0} свойства {1} на {2}", DomainHelper.GetSubjectNames(UpdateInClassType)?.Accusative, PropertyName, PropertyValue));
+			propertyCache.SetValue(UpdatingEntity, PropertyValue, null);
+			core.UoW.TrySave(UpdatingEntity);
+		}
+	}
 }

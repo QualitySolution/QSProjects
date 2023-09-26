@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +60,7 @@ namespace QS.Deletion.Configuration
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
 		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
+		public List<UpdateDependenceInfo> UpdateItems { get; set; }
 
 		#endregion
 
@@ -68,6 +69,7 @@ namespace QS.Deletion.Configuration
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
+			UpdateItems = new List<UpdateDependenceInfo>();
 
 			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass);
 			if (hmap == null)
@@ -126,6 +128,13 @@ namespace QS.Deletion.Configuration
 		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
 			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			return this;
+		}
+
+		public DeleteInfoHibernate<TEntity> AddUpdateInfo<TDependence, TValue>(Expression<Func<TEntity, TDependence>> refSelector, Expression<Func<TDependence, TValue>> propertySelector, TValue value) {
+			string dependencePropertyName = PropertyUtil.GetName(refSelector);
+			string propertyName = PropertyUtil.GetName(propertySelector);
+			UpdateItems.Add(UpdateDependenceInfo.Create<TDependence>(dependencePropertyName, propertyName, value));
 			return this;
 		}
 
@@ -251,6 +260,15 @@ namespace QS.Deletion.Configuration
 			};
 		}
 
+		public Operation CreateUpdateOperation(EntityDTO entityDTO, UpdateDependenceInfo updateDependenceInfo) {
+			return new UpdateOperation {
+				UpdatingEntity = entityDTO.Entity.GetPropertyValue(updateDependenceInfo.DependencePropertyName),
+				PropertyName = updateDependenceInfo.UpdatablePropertyName,
+				UpdateInClassType = updateDependenceInfo.ObjectClass,
+				PropertyValue = updateDependenceInfo.Value
+			};
+		}
+
 		EntityDTO IDeleteInfo.GetSelfEntity(IDeleteCore core, uint id)
 		{
 			var item = core.UoW.GetById<TEntity> ((int)id);
@@ -296,4 +314,3 @@ namespace QS.Deletion.Configuration
 		#endregion
 	}
 }
-

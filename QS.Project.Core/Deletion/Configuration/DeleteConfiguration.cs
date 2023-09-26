@@ -70,6 +70,10 @@ namespace QS.Deletion.Configuration
 				return ClassInfos.OfType<DeleteInfo>().First(i => i.TableName == deleteDependence.TableName);
 		}
 
+		internal IDeleteInfo GetDeleteInfo(UpdateDependenceInfo updateDependenceInfo) {
+				return ClassInfos.Find(i => i.ObjectClass == updateDependenceInfo.ObjectClass);
+		}
+
 
 		#endregion
 
