@@ -287,7 +287,6 @@ namespace QS.Journal.GtkUI
 
 		private Dictionary<JournalActionsType, List<System.Action>> actionsSensitivity;
 		private Dictionary<JournalActionsType, List<System.Action>> actionsVisibility;
-		Widget actionWidget;
 		private Dictionary<object, IJournalAction> _widgetsWithJournalActions = new Dictionary<object, IJournalAction>();
 
 		private void ConfigureActions()
@@ -305,6 +304,9 @@ namespace QS.Journal.GtkUI
 			}
 			
 			foreach(var action in ViewModel.NodeActions) {
+				Widget actionWidget;
+				var actionForClosure = action;
+				
 				if(action.ChildActions.Any()) {
 					MenuButton menuButton = new MenuButton();
 					menuButton.Label = action.Title;
@@ -326,8 +328,8 @@ namespace QS.Journal.GtkUI
 					actionWidget = button;
 				}
 				
-				System.Action sensitivityAction = () => actionWidget.Sensitive = action.GetSensitivity(GetSelectedItems());
-				System.Action visibilityAction = () => actionWidget.Visible = action.GetVisibility(GetSelectedItems());
+				System.Action sensitivityAction = () => actionWidget.Sensitive = actionForClosure.GetSensitivity(GetSelectedItems());
+				System.Action visibilityAction = () => actionWidget.Visible = actionForClosure.GetVisibility(GetSelectedItems());
 
 				AddActionToDictionary(actionsSensitivity, JournalActionsType.ButtonActions, sensitivityAction);
 				AddActionToDictionary(actionsVisibility, JournalActionsType.ButtonActions, visibilityAction);
