@@ -10,6 +10,7 @@ using QS.Utilities.Text;
 using QS.Utilities;
 using QS.ViewModels.Extension;
 using QS.Journal.GtkUI;
+using QS.Views.GtkUI;
 
 namespace QS.Tdi.Gtk
 {
@@ -26,6 +27,7 @@ namespace QS.Tdi.Gtk
 		public bool DefaultUseSlider = true;
 
 		private List<TdiTabInfo> _tabs;
+
 		private Menu _tabTitlePopUpMenu;
 		private MenuItem _closeMenuItem;
 		private MenuItem _closeOtherMenuItem;
@@ -151,17 +153,19 @@ namespace QS.Tdi.Gtk
 				|| o != _closeRightMenuItem)
 				return;
 
+			var tabs = GetRealTabs();
+
 			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
 
 			if(currentTab != null) {
-				var currentTabIndex = Tabs.IndexOf(currentTab);
+				var currentTabIndex = tabs.IndexOf(currentTab.TdiTab);
 
-				var tabsToClose = Tabs.Skip(currentTabIndex + 1).ToList();
+				var tabsToClose = tabs.Skip(currentTabIndex + 1).ToList();
 
 				while(tabsToClose.Count > 0) {
 					var firstTab = tabsToClose.First();
 
-					if(!AskToCloseTab(firstTab.TdiTab)) {
+					if(!AskToCloseTab(firstTab)) {
 						return;
 					}
 
@@ -179,27 +183,29 @@ namespace QS.Tdi.Gtk
 
 			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
 
+			var tabs = GetRealTabs();
+
 			var excludedNearTabs = GetParentAndHigher(currentTab.TdiTab);
 			excludedNearTabs.Add(currentTab.TdiTab);
 
 			if(currentTab != null) {
-				var currentTabIndex = Tabs.IndexOf(currentTab);
+				var currentTabIndex = tabs.IndexOf(currentTab.TdiTab);
 
-				var tabsToClose = Tabs
+				var tabsToClose = tabs
 					.Take(currentTabIndex)
-					.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+					.Where(x => !excludedNearTabs.Contains(x))
 					.ToList();
 
 				while(tabsToClose.Count > 0) {
 					var firstTab = tabsToClose.First();
 
-					if(!AskToCloseTabWithSlaves(firstTab.TdiTab)) {
+					if(!AskToCloseTabWithSlaves(firstTab)) {
 						return;
 					}
 
-					tabsToClose = Tabs
+					tabsToClose = GetRealTabs()
 						.Take(currentTabIndex)
-						.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+						.Where(x => !excludedNearTabs.Contains(x))
 						.ToList();
 				}
 
@@ -274,6 +280,14 @@ namespace QS.Tdi.Gtk
 
 		public ITdiTab CurrentTab => CurrentPage >= 0 ? Tabs[CurrentPage].TdiTab : null;
 
+		public IList<ITdiTab> GetRealTabs() =>
+			Children
+				.Select(x => (x as Container).Children
+					.Skip(1)
+					.First())
+				.Select(x => x is ITdiTab tdi ? tdi : x is ITabView tw ? tw.Tab : null)
+				.ToList();
+
 		#region Открытие вкладки
 
 		public void AddTab(ITdiTab tab, int after = -1)
@@ -285,10 +299,11 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 			HBox box = new HBox();
-			EventBox eventBox = new EventBox();
-			eventBox.ButtonReleaseEvent += OnTitleEventBoxButtonReleased;
-
 			Label nameLabel = new Label();
+			EventBox eventBox = new EventBox();
+			eventBox.ModifyBg(StateType.Normal, Rc.GetStyle(this).Background(StateType.Normal));
+			eventBox.ButtonReleaseEvent += OnTitleEventBoxButtonReleased;
+			
 			if (after == -1 && _useTabColors)
 			{// открыли не подчиненную вкладку - поменяли цвет
 			    SwitchCurrentColor();
