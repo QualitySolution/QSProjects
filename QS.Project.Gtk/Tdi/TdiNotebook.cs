@@ -301,7 +301,6 @@ namespace QS.Tdi.Gtk
 			HBox box = new HBox();
 			Label nameLabel = new Label();
 			EventBox eventBox = new EventBox();
-			eventBox.ModifyBg(StateType.Normal, Rc.GetStyle(this).Background(StateType.Normal));
 			eventBox.ButtonReleaseEvent += OnTitleEventBoxButtonReleased;
 			
 			if (after == -1 && _useTabColors)
@@ -357,9 +356,9 @@ namespace QS.Tdi.Gtk
 		private void OnTitleEventBoxButtonReleased(object o, ButtonReleaseEventArgs args) {
 			_tabTitleEventBoxClickedOn = (o as EventBox);
 
-			if(args.Event.Button == (uint)GtkMouseButton.Middle) {
-				var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
 
+			if(args.Event.Button == (uint)GtkMouseButton.Middle) {
 				AskToCloseTab(currentTab.TdiTab);
 
 				return;
@@ -367,6 +366,16 @@ namespace QS.Tdi.Gtk
 
 			if(args.Event.Button != (uint)GtkMouseButton.Right)
 				return;
+
+			var tabs = GetRealTabs();
+
+			var indexOfCurrentTab = tabs.IndexOf(currentTab.TdiTab);
+
+			_closeOtherMenuItem.Visible = tabs.Count > 1;
+
+			_closeRightMenuItem.Visible = indexOfCurrentTab + 1 != tabs.Count;
+
+			_closeLeftMenuItem.Visible = indexOfCurrentTab != 0;
 
 			_tabTitlePopUpMenu.Popup();
 		}
