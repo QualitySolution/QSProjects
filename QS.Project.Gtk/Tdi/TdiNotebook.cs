@@ -9,6 +9,7 @@ using QS.Navigation;
 using QS.Utilities.Text;
 using QS.Utilities;
 using QS.ViewModels.Extension;
+using QS.Journal.GtkUI;
 
 namespace QS.Tdi.Gtk
 {
@@ -23,7 +24,14 @@ namespace QS.Tdi.Gtk
 
 		public ReadOnlyCollection<TdiTabInfo> Tabs;
 		public bool DefaultUseSlider = true;
+
 		private List<TdiTabInfo> _tabs;
+		private Menu _tabTitlePopUpMenu;
+		private MenuItem _closeMenuItem;
+		private MenuItem _closeOtherMenuItem;
+		private MenuItem _closeRightMenuItem;
+		private MenuItem _closeLeftMenuItem;
+		private EventBox _tabTitleEventBoxClickedOn = null;
 
         private int _currentColor;
         private bool _useTabColors;
@@ -68,6 +76,137 @@ namespace QS.Tdi.Gtk
 			Tabs = new ReadOnlyCollection<TdiTabInfo>(_tabs);
 			this.ShowTabs = true;
 			WidgetEvent += TdiNotebook_WidgetEvent;
+
+			_tabTitlePopUpMenu = new Menu();
+
+			_closeMenuItem = new MenuItem("Закрыть");
+			_closeMenuItem.ButtonReleaseEvent += OnCloseMenuItemButtonReleased;
+
+			_closeOtherMenuItem = new MenuItem("Закрыть остальные");
+			_closeOtherMenuItem.ButtonReleaseEvent += OnCloseOtherMenuItemButtonReleased;
+
+			_closeRightMenuItem = new MenuItem("Закрыть вкладки справа");
+			_closeRightMenuItem.ButtonReleaseEvent += OnCloseRightMenuItemButtonReleased;
+
+			_closeLeftMenuItem = new MenuItem("Закрыть вкладки слева");
+			_closeLeftMenuItem.ButtonReleaseEvent += OnCloseLeftMenuItemButtonReleased;
+
+			_tabTitlePopUpMenu.Add(_closeMenuItem);
+			_tabTitlePopUpMenu.Add(_closeOtherMenuItem);
+			_tabTitlePopUpMenu.Add(_closeRightMenuItem);
+			_tabTitlePopUpMenu.Add(_closeLeftMenuItem);
+
+			_tabTitlePopUpMenu.ShowAll();
+		}
+
+		private void OnCloseMenuItemButtonReleased(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Left
+				|| _tabTitleEventBoxClickedOn is null
+				|| o != _closeMenuItem)
+				return;
+
+			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+
+			if(currentTab != null) {
+				AskToCloseTab(currentTab.TdiTab);
+			}
+
+			_tabTitleEventBoxClickedOn = null;
+		}
+
+		private void OnCloseOtherMenuItemButtonReleased(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Left
+				|| o != _closeOtherMenuItem)
+				return;
+
+			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+
+			var excludedNearTabs = GetParentAndHigher(currentTab.TdiTab);
+
+			excludedNearTabs.Add(currentTab.TdiTab);
+
+			if(currentTab != null) {
+				var tabsToClose = Tabs
+					.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+					.ToList();
+
+				while(tabsToClose.Count > 0) {
+					var firstTab = tabsToClose.First();
+
+					if(!AskToCloseTabWithSlaves(firstTab.TdiTab)) {
+						return;
+					}
+
+					tabsToClose = Tabs
+						.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+						.ToList();
+				}
+			}
+
+			_tabTitleEventBoxClickedOn = null;
+		}
+
+		private void OnCloseRightMenuItemButtonReleased(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Left
+				|| o != _closeRightMenuItem)
+				return;
+
+			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+
+			if(currentTab != null) {
+				var currentTabIndex = Tabs.IndexOf(currentTab);
+
+				var tabsToClose = Tabs.Skip(currentTabIndex + 1).ToList();
+
+				while(tabsToClose.Count > 0) {
+					var firstTab = tabsToClose.First();
+
+					if(!AskToCloseTab(firstTab.TdiTab)) {
+						return;
+					}
+
+					tabsToClose.RemoveAt(0);
+				}
+			}
+
+			_tabTitleEventBoxClickedOn = null;
+		}
+
+		private void OnCloseLeftMenuItemButtonReleased(object o, ButtonReleaseEventArgs args) {
+			if(args.Event.Button != (uint)GtkMouseButton.Left
+				|| o != _closeLeftMenuItem)
+				return;
+
+			var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+
+			var excludedNearTabs = GetParentAndHigher(currentTab.TdiTab);
+			excludedNearTabs.Add(currentTab.TdiTab);
+
+			if(currentTab != null) {
+				var currentTabIndex = Tabs.IndexOf(currentTab);
+
+				var tabsToClose = Tabs
+					.Take(currentTabIndex)
+					.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+					.ToList();
+
+				while(tabsToClose.Count > 0) {
+					var firstTab = tabsToClose.First();
+
+					if(!AskToCloseTabWithSlaves(firstTab.TdiTab)) {
+						return;
+					}
+
+					tabsToClose = Tabs
+						.Take(currentTabIndex)
+						.Where(x => !excludedNearTabs.Contains(x.TdiTab))
+						.ToList();
+				}
+
+				currentTabIndex = Tabs.IndexOf(currentTab);
+			}
+
+			_tabTitleEventBoxClickedOn = null;
 		}
 
 		private void TdiNotebook_WidgetEvent(object o, WidgetEventArgs args) {
@@ -146,7 +285,10 @@ namespace QS.Tdi.Gtk
 				return;
 			}
 			HBox box = new HBox();
-			Label nameLable = new Label();
+			EventBox eventBox = new EventBox();
+			eventBox.ButtonReleaseEvent += OnTitleEventBoxButtonReleased;
+
+			Label nameLabel = new Label();
 			if (after == -1 && _useTabColors)
 			{// открыли не подчиненную вкладку - поменяли цвет
 			    SwitchCurrentColor();
@@ -154,10 +296,11 @@ namespace QS.Tdi.Gtk
 
 			var tabName = StringManipulationHelper.EllipsizeMiddle(tab.TabName, MaxTabNameLenght);
 			if(tab.TabName?.Length > MaxTabNameLenght)
-				nameLable.TooltipText = tab.TabName;
+				nameLabel.TooltipText = tab.TabName;
 			
-			nameLable.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tabName) : tabName;
-			box.Add(nameLable);
+			nameLabel.Markup = _useTabColors ? String.Format(Markup, Colors[_currentColor], tabName) : tabName;
+			eventBox.Add(nameLabel);
+			box.Add(eventBox);
 			Image closeImage = new Image(Stock.Close, IconSize.Menu);
 			Button closeButton = new Button(closeImage);
 			closeButton.Relief = ReliefStyle.None;
@@ -172,7 +315,7 @@ namespace QS.Tdi.Gtk
 				tab = slider;
 			}
 			tab.TabNameChanged += OnTabNameChanged;
-			_tabs.Add(new TdiTabInfo(tab, nameLable) { Color = _useTabColors ? Colors[_currentColor] : null });
+			_tabs.Add(new TdiTabInfo(tab, nameLabel) { Color = _useTabColors ? Colors[_currentColor] : null });
 			var vbox = new TabVBox(tab, WidgetResolver);
 			int inserted;
 			if(after >= 0)
@@ -196,7 +339,24 @@ namespace QS.Tdi.Gtk
 			}
 		}
 
-        protected override void OnPageReordered(Widget p0, uint p1)
+		private void OnTitleEventBoxButtonReleased(object o, ButtonReleaseEventArgs args) {
+			_tabTitleEventBoxClickedOn = (o as EventBox);
+
+			if(args.Event.Button == (uint)GtkMouseButton.Middle) {
+				var currentTab = Tabs.FirstOrDefault(x => x.TabNameLabel.Parent == _tabTitleEventBoxClickedOn);
+
+				AskToCloseTab(currentTab.TdiTab);
+
+				return;
+			}
+
+			if(args.Event.Button != (uint)GtkMouseButton.Right)
+				return;
+
+			_tabTitlePopUpMenu.Popup();
+		}
+
+		protected override void OnPageReordered(Widget p0, uint p1)
         {
 			var tab = ((TabVBox)p0).Tab;
 
@@ -257,7 +417,36 @@ namespace QS.Tdi.Gtk
 			return _tabs.Find(t => t.TdiTab == tab).SlaveTabs;
 		}
 
-        public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		private ITdiTab GetParent(ITdiTab tab) {
+			return _tabs
+				.Where(t => t.SlaveTabs.Contains(tab))
+				.Select(x => x.TdiTab)
+				.FirstOrDefault();
+		}
+
+		private IList<ITdiTab> GetParentAndHigher(ITdiTab tab) {
+
+			var result = new List<ITdiTab>();
+
+			var currentParent = GetParent(tab);
+
+			if(currentParent is null)
+				return result;
+
+			result.Add(currentParent);
+
+			var higherParent = GetParent(currentParent);
+
+			while (higherParent != null) {
+				result.Add(higherParent);
+				result.AddRange(GetSlaveTabs(higherParent).Where(x => !result.Contains(x)));
+				higherParent = GetParent(higherParent);
+			}
+
+			return result;
+		}
+
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.TdiTab == masterTab);
 			if(info == null)
@@ -371,6 +560,21 @@ namespace QS.Tdi.Gtk
 		}
 
 		#region Закрытие вкладки
+
+		public bool AskToCloseTabWithSlaves(ITdiTab tab, CloseSource source = CloseSource.External) {
+			var slaves = GetSlaveTabs(tab).ToList();
+
+			if(slaves.Count > 0) {
+				while(slaves.Count > 0) {
+					if(!AskToCloseTabWithSlaves(slaves.First())){
+						return false;
+					}
+					slaves = GetSlaveTabs(tab).ToList();
+				}
+			}
+
+			return AskToCloseTab(tab);
+		}
 
 		public bool AskToCloseTab(ITdiTab tab, CloseSource source = CloseSource.External)
 		{
