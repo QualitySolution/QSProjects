@@ -301,6 +301,8 @@ namespace QS.Tdi.Gtk
 			HBox box = new HBox();
 			Label nameLabel = new Label();
 			EventBox eventBox = new EventBox();
+			eventBox.Visible = true;
+			eventBox.VisibleWindow = false;
 			eventBox.ButtonReleaseEvent += OnTitleEventBoxButtonReleased;
 			
 			if (after == -1 && _useTabColors)
