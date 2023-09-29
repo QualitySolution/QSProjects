@@ -203,7 +203,11 @@ namespace QS.Tdi.Gtk
 						return;
 					}
 
-					tabsToClose = GetRealTabs()
+					tabs = GetRealTabs();
+
+					currentTabIndex = tabs.IndexOf(currentTab.TdiTab);
+
+					tabsToClose = tabs
 						.Take(currentTabIndex)
 						.Where(x => !excludedNearTabs.Contains(x))
 						.ToList();
