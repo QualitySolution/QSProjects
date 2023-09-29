@@ -291,8 +291,10 @@ namespace QSProjectsLib
 			comboboxConnections.Model = store;
 			foreach (Connection c in Connections)
 				store.AppendValues(c.ConnectionName);
-			SelectedConnection = configuration["Default:ConnectionName"];
-			
+			SelectedConnection = OverwriteDefaultConnection
+								 ?? configuration["Default:ConnectionName"]
+								 ?? Connections.FirstOrDefault()?.ConnectionName;
+
 			if (Connections.Any(m => m.ConnectionName == SelectedConnection)) {
 				store.GetIterFirst(out TreeIter tempIter);
 				do {
