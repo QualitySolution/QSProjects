@@ -97,8 +97,12 @@ namespace QS.DomainModel.UoW
 			UowWatcher.UnregisterUow(this);
 		}
 
+		private bool disposed;
 		public void Dispose()
 		{
+			if(disposed)
+				return;
+			disposed = true;
 			DisposeUoW();
 		}
 
