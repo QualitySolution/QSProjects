@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace Gamma.Binding.Core
 	{
 		BindingControler<TTarget> myControler;
 		internal readonly List<IBindingBridgeInternal> Bridges = new List<IBindingBridgeInternal> ();
+		private object _locker = new object();
 		List<string> delayedUpdateProperties = new List<string>();
 
 		public BindingSourceBase (BindingControler<TTarget> controler)
@@ -88,14 +89,28 @@ namespace Gamma.Binding.Core
 				if(!delayedUpdateProperties.Contains (e.PropertyName))
 					delayedUpdateProperties.Add (e.PropertyName);
 			} else {
-				PropertyUpdated (e.PropertyName);
+				if(myControler.IsThreadSafeBinding) {
+					Gtk.Application.Invoke((s, args) => PropertyUpdated(e.PropertyName));
+				}
+				else {
+					PropertyUpdated(e.PropertyName);
+				}
 			}
 		}
 
 		protected void PropertyUpdated(string propertyName)
 		{
-			foreach (var bridge in Bridges.FindAll (b => b.Mode != BridgeMode.BackwardFromTarget)) {
-				bridge.SourcePropertyUpdated (propertyName, DataSourceObject);
+			if(myControler.IsThreadSafeBinding) {
+				lock(_locker) {
+					foreach (var bridge in Bridges.FindAll(b => b.Mode != BridgeMode.BackwardFromTarget)) {
+						bridge.SourcePropertyUpdated(propertyName, DataSourceObject);
+					}
+				}
+			}
+			else {
+				foreach (var bridge in Bridges.FindAll(b => b.Mode != BridgeMode.BackwardFromTarget)) {
+					bridge.SourcePropertyUpdated(propertyName, DataSourceObject);
+				}
 			}
 		}
 

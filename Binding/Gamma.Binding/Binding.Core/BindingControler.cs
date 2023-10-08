@@ -8,8 +8,8 @@ using Gamma.Binding.Core.Helpers;
 
 namespace Gamma.Binding.Core
 {
-	public class BindingControler<TWidget> : IBindingControlerInternal
-	{
+	public class BindingControler<TWidget> : IBindingControlerInternal {
+		private readonly object _locker = new object();
 		TWidget widget;
 		string[] backwardProperties = new string[0];
 		List<PropertyInfo[]> delayFiredChains = new List<PropertyInfo[]> ();
@@ -55,6 +55,7 @@ namespace Gamma.Binding.Core
 		}
 
 		internal bool IsTargetBatchUpdate { get; set;}
+		internal bool IsThreadSafeBinding { get; set; }
 
 		internal void FinishTargetUpdateBatch()
 		{
@@ -102,14 +103,30 @@ namespace Gamma.Binding.Core
 			bool anyseted = false;
 			if (!BackwardProperties.Contains (property))
 				throw new InvalidOperationException (String.Format ("Property {0} is not set as backward.", property));
+			
+			if(IsThreadSafeBinding) {
+				lock(_locker) {
+					anyseted = UpdateAllSources(property, value, false);
+				}
+			}
+			else {
+				anyseted = UpdateAllSources(property, value, false);
+			}
+			
+			return anyseted;
+		}
+
+		private bool UpdateAllSources(string property, object value, bool anyseted)
+		{
 			foreach(var source in Sources)
 			{
-				foreach(var bridge in source.GetBackwardBridges (property))
+				foreach(var bridge in source.GetBackwardBridges(property))
 				{
-					if (source.SetValueToSource (bridge, value))
+					if(source.SetValueToSource(bridge, value))
 						anyseted = true;
 				}
 			}
+
 			return anyseted;
 		}
 
@@ -203,6 +220,12 @@ namespace Gamma.Binding.Core
 				Sources.Add (bSource);
 			}
 			return bSource;
+		}
+		
+		public BindingControler<TWidget> ThreadSafeBinding()
+		{
+			IsThreadSafeBinding = true;
+			return this;
 		}
 
 		public void InitializeFromSource()
