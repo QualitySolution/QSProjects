@@ -355,6 +355,11 @@ namespace QSProjectsLib
 			var hkl = NativeMethods.LoadKeyboardLayout(pwszKlid, KLF_SETFORPROCESS);
 			NativeMethods.ActivateKeyboardLayout(hkl, KLF_SETFORPROCESS);
 		}
+
+		protected override void OnDestroyed() {
+			imageLogo.Dispose();
+			(comboboxConnections.Model as ListStore).Dispose();
+		}
 	}
 	
 	internal class NativeMethods
