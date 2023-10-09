@@ -11,6 +11,7 @@ using NLog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.Extensions;
 using QS.Project.Dialogs.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
@@ -486,7 +487,14 @@ namespace QS.Widgets.GtkUI
 			}
 			
 			completionListStore?.Dispose();
-			
+
+			var viewImage = buttonViewEntity.Image as Image;
+			viewImage.DisposeImagePixbuf();
+			var selectImage = buttonSelectEntity.Image as Image;
+			selectImage.DisposeImagePixbuf();
+			var clearImage = buttonClear.Image as Image;
+			clearImage.DisposeImagePixbuf();
+
 			base.OnDestroyed();
 			_isDisposed = true;
 		}

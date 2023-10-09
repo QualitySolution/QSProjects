@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gtk;
 using Pango;
+using QS.Extensions;
 
 namespace QS.Widgets.GtkUI
 {
@@ -275,6 +276,14 @@ namespace QS.Widgets.GtkUI
 		protected void OnButtonClearDateClicked(object sender, EventArgs e) 
 		{
 			this.Clear();
+		}
+
+		protected override void OnDestroyed() {
+			var clearImage = buttonClearDate.Image as Image;
+			clearImage.DisposeImagePixbuf();
+			var editImage = buttonEditDate.Image as Image;
+			editImage.DisposeImagePixbuf();
+			base.OnDestroyed();
 		}
 	}
 }

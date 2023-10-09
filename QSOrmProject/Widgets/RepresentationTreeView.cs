@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Gamma.GtkWidgets;
 using QS.DomainModel.Entity;
@@ -80,6 +80,7 @@ namespace QSOrmProject
 			{
 				RepresentationModel.Destroy();
 			}
+			base.Destroy();
 			base.OnDestroyed();
 		}
 	}

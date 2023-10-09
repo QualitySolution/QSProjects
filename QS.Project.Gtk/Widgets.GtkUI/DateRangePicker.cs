@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Gamma.Binding.Core;
 using Gtk;
 using Pango;
+using QS.Extensions;
 
 namespace QS.Widgets.GtkUI
 {
@@ -396,6 +397,12 @@ namespace QS.Widgets.GtkUI
 			}
 			else
 				entryDate.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
+		}
+
+		protected override void OnDestroyed() {
+			var image = buttonPickDatePeriod.Image as Image;
+			image.DisposeImagePixbuf();
+			base.OnDestroyed();
 		}
 	}
 }

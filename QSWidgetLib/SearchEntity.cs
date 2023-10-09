@@ -1,9 +1,10 @@
 ﻿using System;
+using Gtk;
 
 namespace QSWidgetLib
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class SearchEntity : Gtk.Bin
+	public partial class SearchEntity : Bin
 	{
 		public event EventHandler TextChanged;
 
@@ -30,6 +31,13 @@ namespace QSWidgetLib
 		{
 			if (TextChanged != null)
 				TextChanged(this, EventArgs.Empty);
+		}
+
+		protected override void OnDestroyed() {
+			var clearImage = buttonClear.Image as Image;
+			clearImage.Pixbuf.Dispose();
+			clearImage.Pixbuf = null;
+			base.OnDestroyed();
 		}
 	}
 }
