@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace QS.DomainModel.Entity
 {
 	public abstract class PropertyChangedBase : INotifyPropertyChanged
 	{
+		private object _lock = new object();
+
 		public virtual void FirePropertyChanged ()
 		{
 			OnPropertyChanged(null);
@@ -39,8 +42,66 @@ namespace QS.DomainModel.Entity
 				if (EqualityComparer<T>.Default.Equals (field, value))
 					return false;
 			}
-			field = value;
+
+			lock(_lock) {
+				field = value;
+			}
 			OnPropertyChanged (propertyName);
+			return true;
+		}
+
+		protected bool SetField(ref int field, int value, [CallerMemberName] string propertyName = "") {
+			if(NHibernate.NHibernateUtil.IsInitialized(value)) {
+				if(EqualityComparer<int>.Default.Equals(field, value))
+					return false;
+			}
+
+			Interlocked.Exchange(ref field, value);
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		protected bool SetField(ref float field, float value, [CallerMemberName] string propertyName = "") {
+			if(NHibernate.NHibernateUtil.IsInitialized(value)) {
+				if(EqualityComparer<float>.Default.Equals(field, value))
+					return false;
+			}
+
+			Interlocked.Exchange(ref field, value);
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		protected bool SetField(ref double field, double value, [CallerMemberName] string propertyName = "") {
+			if(NHibernate.NHibernateUtil.IsInitialized(value)) {
+				if(EqualityComparer<double>.Default.Equals(field, value))
+					return false;
+			}
+
+			Interlocked.Exchange(ref field, value);
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		protected bool SetField(ref long field, long value, [CallerMemberName] string propertyName = "") {
+			if(NHibernate.NHibernateUtil.IsInitialized(value)) {
+				if(EqualityComparer<long>.Default.Equals(field, value))
+					return false;
+			}
+
+			Interlocked.Exchange(ref field, value);
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		protected bool SetField(ref object field, object value, [CallerMemberName] string propertyName = "")
+		{
+			if(NHibernate.NHibernateUtil.IsInitialized(value)) {
+				if(EqualityComparer<object>.Default.Equals(field, value))
+					return false;
+			}
+			Interlocked.Exchange(ref field, value);
+			OnPropertyChanged(propertyName);
 			return true;
 		}
 
@@ -56,7 +117,9 @@ namespace QS.DomainModel.Entity
 				if(EqualityComparer<T>.Default.Equals (field, value))
 					return false;
 			}
-			field = value;
+			lock(_lock) {
+				field = value;
+			}
 			OnPropertyChanged (selectorExpression);
 			return true;
 		}
