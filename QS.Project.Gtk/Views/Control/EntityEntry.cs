@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +16,9 @@ namespace QS.Views.Control
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		private readonly string _normalEntryToolTipMarkup;
+		private readonly string _dangerEntryToolTipMarkup = "Введён текст для поиска, но не выбрана сущность из справочника или выпадающего списка.";
+
 		#region Настройка
 		/// <summary>
 		/// Задержка в передачи запроса на поиск во view model.
@@ -31,6 +34,7 @@ namespace QS.Views.Control
 			this.Build();
 			Binding = new BindingControler<EntityEntry>(this);
 			ConfigureEntryComplition();
+			_normalEntryToolTipMarkup = entryObject.TooltipMarkup;
 		}
 
 		#region Свойства виджета
@@ -182,11 +186,13 @@ namespace QS.Views.Control
 		{
 			if(string.IsNullOrWhiteSpace(entryObject.Text)) {
 				entryObject.ModifyText(StateType.Normal);
+				entryObject.TooltipMarkup = _normalEntryToolTipMarkup;
 				viewModel.CleanEntity();
 			}
-			else if(entryObject.Text != viewModel.EntityTitle)
+			else if(entryObject.Text != viewModel.EntityTitle) {
 				entryObject.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
-
+				entryObject.TooltipMarkup = _dangerEntryToolTipMarkup;
+			}
 		}
 
 		protected void OnEntryObjectChanged(object sender, EventArgs e)
