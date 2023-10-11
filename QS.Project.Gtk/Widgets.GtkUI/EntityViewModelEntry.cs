@@ -6,21 +6,17 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Gamma.Binding.Core;
-using Gdk;
 using Gtk;
 using NLog;
-using Pango;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.Extensions;
 using QS.Project.Dialogs.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
 using QS.RepresentationModel.GtkUI;
 using QS.Tdi;
-using Color = Gdk.Color;
-using Window = Gtk.Window;
-using WindowType = Gtk.WindowType;
 
 namespace QS.Widgets.GtkUI
 {
@@ -528,7 +524,7 @@ namespace QS.Widgets.GtkUI
 		}
 
 		private void SetDangerStyle() {
-			entryObject.ModifyText(StateType.Normal, new Color(255, 0, 0));
+			entryObject.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
 			entryObject.TooltipMarkup = _dangerEntryToolTipMarkup;
 		}
 	}
