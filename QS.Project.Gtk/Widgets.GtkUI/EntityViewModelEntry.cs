@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -34,7 +34,8 @@ namespace QS.Widgets.GtkUI
 		public BindingControler<EntityViewModelEntry> Binding { get; private set; }
 		public bool CanEditReference { get; set; } = true;
 		private ListStore completionListStore;
-
+		private readonly string _normalEntryToolTipMarkup;
+		private readonly string _dangerEntryToolTipMarkup = "Введён текст для поиска, но не выбрана сущность из справочника или выпадающего списка.";
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
@@ -45,6 +46,8 @@ namespace QS.Widgets.GtkUI
 			Binding = new BindingControler<EntityViewModelEntry>(this, new Expression<Func<EntityViewModelEntry, object>>[] {
 				(w => w.Subject)
 			});
+
+			_normalEntryToolTipMarkup = entryObject.TooltipMarkup;
 		}
 
         public bool CanOpenWithoutTabParent { get; set; }
@@ -220,6 +223,7 @@ namespace QS.Widgets.GtkUI
 		protected void OnButtonClearClicked(object sender, EventArgs e)
 		{
 			ClearSubject();
+			SetNormalStyle();
 		}
 
 		private void ClearSubject()
@@ -298,6 +302,7 @@ namespace QS.Widgets.GtkUI
 			if(Changed != null)
 				Changed(this, EventArgs.Empty);
 
+			SetNormalStyle();
 		}
 
 		protected virtual void OnChangedByUser()
@@ -405,6 +410,13 @@ namespace QS.Widgets.GtkUI
 				Subject = null;
 				OnChangedByUser();
 			}
+
+			if(string.IsNullOrWhiteSpace(entryObject.Text) || entryObject.Text == Subject.GetTitle()) {
+				SetNormalStyle();
+			}
+			else {
+				SetDangerStyle();
+			}
 		}
 
 		DateTime lastChangedTime = DateTime.Now;
@@ -503,6 +515,16 @@ namespace QS.Widgets.GtkUI
 		{
 			var compiledDisplayFunc = expDisplayFunc.Compile();
 			_objectDisplayFunc = (obj) => compiledDisplayFunc(obj as TObject);
+		}
+
+		private void SetNormalStyle() {
+			entryObject.ModifyText(StateType.Normal);
+			entryObject.TooltipMarkup = _normalEntryToolTipMarkup;
+		}
+
+		private void SetDangerStyle() {
+			entryObject.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
+			entryObject.TooltipMarkup = _dangerEntryToolTipMarkup;
 		}
 	}
 }
