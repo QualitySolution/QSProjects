@@ -16,13 +16,13 @@ namespace QS.Navigation
 {
 	public class TdiNavigationManager : NavigationManagerBase, INavigationManager, ITdiCompatibilityNavigation
 	{
-		readonly TdiNotebook tdiNotebook;
-		readonly IGtkViewResolver viewResolver;
+		protected readonly TdiNotebook tdiNotebook;
+		protected readonly IGtkViewResolver viewResolver;
 
 		protected readonly IViewModelsPageFactory viewModelsFactory;
 		protected readonly AutofacViewModelsGtkPageFactory viewModelsGtkWindowsFactory;
 		//Только для режима смешанного использования Tdi и ViewModel 
-		readonly ITdiPageFactory tdiPageFactory;
+		protected readonly ITdiPageFactory tdiPageFactory;
 
 		public TdiNavigationManager(
 			TdiNotebook tdiNotebook,
@@ -205,7 +205,7 @@ namespace QS.Navigation
 
 		public IPage CurrentPage => FindOrCreatePage(tdiNotebook.CurrentTab);
 
-		private IPage FindPage(ITdiTab tab)
+		public virtual IPage FindPage(ITdiTab tab)
 		{
 			return AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
 		}
