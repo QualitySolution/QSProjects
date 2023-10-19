@@ -78,7 +78,7 @@ namespace QS.Navigation
 
 		#region Поиск
 
-		public IPage FindPage(DialogViewModelBase viewModel)
+		public virtual IPage FindPage(DialogViewModelBase viewModel)
 		{
 			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
 		}
