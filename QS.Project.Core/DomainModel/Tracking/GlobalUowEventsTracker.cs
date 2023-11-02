@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NHibernate.Event;
+ using NHibernate;
+ using NHibernate.Event;
 
 namespace QS.DomainModel.Tracking
 {
@@ -181,13 +182,16 @@ namespace QS.DomainModel.Tracking
 		}
 
 		private object lastPostUpdateEntity;
+		private ITransaction lastPostUpdateTransaction;
 
 		public void OnPostUpdate(PostUpdateEvent @event)
-		{
+		{ 
 			//Из-за бага\фичи в Nh, приходят по 2 одинаковых события.
-			if(lastPostUpdateEntity == @event.Entity)
+			var currentTransaction = @event.Session.GetCurrentTransaction();
+			if(lastPostUpdateEntity == @event.Entity && lastPostUpdateTransaction == currentTransaction)
 				return;
 			lastPostUpdateEntity = @event.Entity;
+			lastPostUpdateTransaction = currentTransaction;
 
 			IUnitOfWorkTracked uow = GetUnitOfWork(@event.Session);
 			if (uow == null)
@@ -237,7 +241,7 @@ namespace QS.DomainModel.Tracking
 		/// <summary>
 		/// Вызывается только из Uow
 		/// </summary>
-		internal static void OnPostCommit(IUnitOfWorkTracked uow)
+		public static void OnPostCommit(IUnitOfWorkTracked uow)
 		{
 			lock (PostCommitListeners)
 			{
