@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -174,6 +174,10 @@ namespace QS.Journal.GtkUI
 					GtkHelper.WaitRedraw();
 					if(GtkScrolledWindow?.Vadjustment != null)
 						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+				}
+
+				if(ViewModel.ExpandAfterReloading) {
+					tableview.ExpandAll();
 				}
 			});
 		}
