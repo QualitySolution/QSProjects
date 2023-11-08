@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace QS.Utilities.Debug
 {
-	public class PerformanceHelper
-	{
+	public class PerformanceHelper {
 		protected readonly Logger logger;
 		List<TimePoint> pointsList = new List<TimePoint>();
 		List<TimePoint> currentPointsList;
@@ -17,8 +18,7 @@ namespace QS.Utilities.Debug
 		/// </summary>
 		/// <param name="nameFirstInterval">Название первого интервала. По умолчанию 'Старт'.</param>
 		/// <param name="logger">Логер, если указан при добавлении каждой точки название будет записываться в лог.</param>
-		public PerformanceHelper(string nameFirstInterval = "Старт", NLog.Logger logger = null)
-		{
+		public PerformanceHelper(string nameFirstInterval = "Старт", NLog.Logger logger = null) {
 			this.logger = logger;
 			currentPointsList = pointsList;
 			CheckPoint(nameFirstInterval);
@@ -47,42 +47,52 @@ namespace QS.Utilities.Debug
 			logger?.Debug("Start time group: " + group.Name);
 		}
 
-		public virtual void EndGroup()
-		{
+		public virtual void EndGroup() {
 			CheckPoint("Конец группы");
 			var group = currentGroupLevels.Last();
 			currentGroupLevels.Remove(group);
-			if (currentGroupLevels.Count > 0)
+			if(currentGroupLevels.Count > 0)
 				currentPointsList = currentGroupLevels.Last().InternalPoints;
 			else
 				currentPointsList = pointsList;
 			logger?.Debug("End time group: " + group.Name);
 		}
 
-		public void CheckPoint(NLog.Logger logger, string name = null)
-		{
+		public void CheckPoint(NLog.Logger logger, string name = null) {
 			CheckPoint(name);
 			DateTime lastTime;
-			if (currentPointsList.Count > 1)
+			if(currentPointsList.Count > 1)
 				lastTime = currentPointsList[currentPointsList.Count - 2].Time;
 			else
 				lastTime = currentGroupLevels.Last().Time;
-			logger.Debug("Замер производительности [{0}] +{1} секунд.", currentPointsList.Last().Name, 
+			logger.Debug("Замер производительности [{0}] +{1} секунд.", currentPointsList.Last().Name,
 						(currentPointsList.Last().Time - lastTime).TotalSeconds);
 		}
 
-		public void PrintAllPoints(NLog.Logger logger)
-		{
-			string text = "Результаты замера производительности";
+		public void PrintAllPoints(NLog.Logger logger) {
+			logger.Debug(PrepareAllPointsToPrint());
+		}
+
+		public void PrintAllPoints<T>(ILogger<T> logger) {
+
+			logger.LogDebug(PrepareAllPointsToPrint());
+		}
+
+		private string PrepareAllPointsToPrint() {
 			TimePoint startPoint = currentPointsList.First();
 			TimePoint lastPoint = startPoint;
-			text += $"\nНачало в {lastPoint.Time:hh:mm:ss}";
+
+			var sb = new StringBuilder("Результаты замера производительности");
+			sb.AppendLine($"Начало в {lastPoint.Time:hh:mm:ss}");
+
 			foreach(var point in currentPointsList.Skip(1)) {
-				text += lastPoint.GetText(0, point.Time);
+				sb.Append(lastPoint.GetText(0, point.Time));
 				lastPoint = point;
 			}
-			text += $"\nИтого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.";
-			logger.Debug(text);
+
+			sb.AppendLine($"Итого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.");
+
+			return sb.ToString();
 		}
 		
 		public TimeSpan TotalTime => currentPointsList.Last().Time - currentPointsList.First().Time;
