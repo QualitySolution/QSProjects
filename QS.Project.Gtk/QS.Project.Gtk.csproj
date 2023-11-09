@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Dialog\FileDialog\DialogResult.cs" />
     <Compile Include="Extensions\GtkImageExtensions.cs" />
+    <Compile Include="Extensions\HboxExtensions.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Resolve\GtkViewFactory.cs" />
