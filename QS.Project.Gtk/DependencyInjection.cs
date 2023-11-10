@@ -6,7 +6,7 @@ using System;
 namespace QS.Project.GtkSharp {
 	public static class DependencyInjection 
 	{
-		public static IServiceCollection AddDesktopServices(IServiceCollection services) {
+		public static IServiceCollection AddDesktopServices(this IServiceCollection services) {
 			StaticRegistrations.AddStaticRegistrations();
 
 			services
