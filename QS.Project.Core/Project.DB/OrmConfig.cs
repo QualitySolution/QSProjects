@@ -8,6 +8,7 @@ using FluentNHibernate.Conventions;
 using NHibernate;
 using NHibernate.Cfg;
 using QS.DomainModel.Tracking;
+using QS.Project.Core;
 
 namespace QS.Project.DB
 {
@@ -62,7 +63,7 @@ namespace QS.Project.DB
 				}
 			});
 
-			var trackerListener = new GlobalUowEventsTracker();
+			var trackerListener = new GlobalUowEventsTracker(StaticRegistrations.ThreadDispatcher);
 			fluenConfig.ExposeConfiguration(cfg => {
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
 				cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
