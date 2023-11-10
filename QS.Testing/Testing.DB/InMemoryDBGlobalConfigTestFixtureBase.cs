@@ -1,5 +1,7 @@
-﻿using QS.DomainModel.UoW;
+using QS.Dialog;
+using QS.DomainModel.UoW;
 using QS.Project.DB;
+using QS.Testing.Gui;
 
 namespace QS.Testing.DB
 {
@@ -22,7 +24,7 @@ namespace QS.Testing.DB
 		public void InitialiseUowFactory()
 		{
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(OrmConfig.NhConfig);
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider, new ServerThreadDispatcher());
 		}
 
 		public void NewSessionWithSameDB()

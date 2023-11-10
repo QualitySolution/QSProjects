@@ -1,4 +1,5 @@
-﻿using QS.DomainModel.Entity;
+using QS.Dialog;
+using QS.DomainModel.Entity;
 using QS.Project.DB;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher, UnitOfWorkTitle title) 
+			: base(sessionProvider, mainThreadDispatcher)
 		{
 			IsNew = true;
             ActionTitle = title;
@@ -28,7 +30,8 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher, TRootEntity root, UnitOfWorkTitle title) 
+			: base(sessionProvider, mainThreadDispatcher)
 		{
 			IsNew = true;
 			Root = root;
@@ -37,7 +40,8 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher, int id, UnitOfWorkTitle title) 
+			: base(sessionProvider, mainThreadDispatcher)
 		{
 			IsNew = false;
             ActionTitle = title;

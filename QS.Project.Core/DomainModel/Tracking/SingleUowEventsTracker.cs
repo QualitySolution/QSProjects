@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using NHibernate.Event;
+using QS.Dialog;
 
 namespace QS.DomainModel.Tracking
 {
@@ -42,16 +44,17 @@ namespace QS.DomainModel.Tracking
 
 		#endregion
 
-
 		private readonly HashSet<IUowPreLoadEventListener> PreLoadListeners = new HashSet<IUowPreLoadEventListener>();
 		private readonly HashSet<IUowPostLoadEventListener> PostLoadListeners = new HashSet<IUowPostLoadEventListener>();
 		private readonly HashSet<IUowPostInsertEventListener> PostInsertListeners = new HashSet<IUowPostInsertEventListener>();
 		private readonly HashSet<IUowPostUpdateEventListener> PostUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
 		private readonly HashSet<IUowPostDeleteEventListener> PostDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
 		private readonly HashSet<IUowPostCommitEventListener> PostCommitListeners = new HashSet<IUowPostCommitEventListener>();
+		private readonly IMainThreadDispatcher threadDispatcher;
 
-		public SingleUowEventsTracker()
+		public SingleUowEventsTracker(IMainThreadDispatcher threadDispatcher)
 		{
+			this.threadDispatcher = threadDispatcher ?? throw new ArgumentNullException(nameof(threadDispatcher));
 		}
 
 		public void RegisterListener(object listener)
@@ -99,37 +102,46 @@ namespace QS.DomainModel.Tracking
 		public void OnPreLoad(IUnitOfWorkTracked uow, PreLoadEvent loadEvent)
 		{
 			foreach(var listner in PreLoadListeners)
-				listner.OnPreLoad(uow, loadEvent);
+				SafeInvoke(() => listner.OnPreLoad(uow, loadEvent));
 		}
 
 		public void OnPostLoad(IUnitOfWorkTracked uow, PostLoadEvent loadEvent)
 		{
 			foreach(var listner in PostLoadListeners)
-				listner.OnPostLoad(uow, loadEvent);
+				SafeInvoke(() => listner.OnPostLoad(uow, loadEvent));
 		}
 
 		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
 			foreach(var listner in PostInsertListeners)
-				listner.OnPostInsert(uow, insertEvent);
+				SafeInvoke(() => listner.OnPostInsert(uow, insertEvent));
 		}
 
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent) 
 		{
 			foreach(var listner in PostUpdateListeners)
-				listner.OnPostUpdate(uow, updateEvent);
+				SafeInvoke(() => listner.OnPostUpdate(uow, updateEvent));
 		}
 
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
 		{
 			foreach(var listner in PostDeleteListeners)
-				listner.OnPostDelete(uow, deleteEvent);
+				SafeInvoke(() => listner.OnPostDelete(uow, deleteEvent));
 		}
 
 		public void OnPostCommit(IUnitOfWorkTracked uow)
 		{
 			foreach (var listner in PostCommitListeners)
-				listner.OnPostCommit(uow);
+				SafeInvoke(() => listner.OnPostCommit(uow));
+		}
+
+		private void SafeInvoke(Action action) {
+			if(threadDispatcher.MainThread == Thread.CurrentThread) {
+				action.Invoke();
+			}
+			else {
+				threadDispatcher.RunInMainTread(action);
+			}
 		}
 	}
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Runtime.CompilerServices;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
 
@@ -10,7 +12,22 @@ namespace QS.DomainModel.UoW
 	// это будет полезно как минимум для запуска параллельных тестов.
 	public static class UnitOfWorkFactory
 	{
-		private static readonly IUnitOfWorkFactory unitOfWorkFactory = new DefaultUnitOfWorkFactory(new DefaultSessionProvider());
+		public static IMainThreadDispatcher MainThreadDispatcher { get; set; }
+
+		private static readonly IUnitOfWorkFactory unitOfWorkFactory;
+
+		static UnitOfWorkFactory() {
+			if(MainThreadDispatcher == null) {
+				throw new InvalidOperationException($"\nНе настроен {nameof(MainThreadDispatcher)}! " +
+					$"\nДля настройки необходимо при инициализации приложения указать соответствующий диспетчер, например:" +
+					$"\nДля десктопного Gtk приложения: QS.Project.GtkSharp.DependencyInjection.AddDesktopServices() " +
+					$"или QS.Project.GtkSharp.StaticRegistrations.AddStaticRegistrations()" +
+					$"\nДля серверного приложения: QS.Project.Core.DependencyInjection.AddCoreServerServices() " +
+					$"или QS.Project.Core.StaticRegistrations.AddServerStaticRegistrations()" +
+					$"\nИли ручная регистрация IMainThreadDispatcher в UnitOfWorkFactory");
+			}
+			unitOfWorkFactory = new DefaultUnitOfWorkFactory(new DefaultSessionProvider(), MainThreadDispatcher);
+		}
 
 		public static IUnitOfWorkFactory GetDefaultFactory => unitOfWorkFactory;
 

@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 using NHibernate.Cfg;
+using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
 
@@ -31,7 +32,7 @@ namespace QS.Testing.DB
 			OrmConfig.ConfigureOrm(db_config, assemblies);
 			configuration = OrmConfig.NhConfig;
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration);
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider, new ServerThreadDispatcher());
 		}
 
 		/// <summary>

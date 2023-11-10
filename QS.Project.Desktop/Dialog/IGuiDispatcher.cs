@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Threading;
 
 namespace QS.Dialog
 {
-	public interface IGuiDispatcher
+	public interface IGuiDispatcher : IMainThreadDispatcher
 	{
 		/// <summary>
 		/// Позволяет получить главный поток в котором должна происходить работа с GUI
