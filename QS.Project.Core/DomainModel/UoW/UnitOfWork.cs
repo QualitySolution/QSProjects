@@ -43,7 +43,7 @@ namespace QS.DomainModel.UoW
 			Root = GetById<TRootEntity>(id);
 		}
 
-		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
+		public override void Save(object entity, bool orUpdate = true)
 		{
 			base.Save (entity, orUpdate);
 

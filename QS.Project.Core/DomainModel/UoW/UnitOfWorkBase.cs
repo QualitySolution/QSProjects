@@ -148,19 +148,7 @@ namespace QS.DomainModel.UoW
 			return Session.Get(clazz, id);
 		}
 
-		public virtual void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
-		{
-			OpenTransaction();
-
-			if(orUpdate)
-				Session.SaveOrUpdate(entity);
-			else
-				Session.Save(entity);
-
-			RaiseSessionScopeEntitySaved(new object[] { entity });
-		}
-
-		public virtual void TrySave(object entity, bool orUpdate = true)
+		public virtual void Save(object entity, bool orUpdate = true)
 		{
 			OpenTransaction();
 
@@ -177,13 +165,7 @@ namespace QS.DomainModel.UoW
 			Delete(Session.Load<T>(id));
 		}
 
-		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
-		{
-			OpenTransaction();
-			Session.Delete(entity);
-		}
-
-		public void TryDelete(object entity)
+		public void Delete(object entity)
 		{
 			OpenTransaction();
 			Session.Delete(entity);
