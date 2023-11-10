@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
  using NHibernate;
  using NHibernate.Event;
+using QS.Dialog;
 
 namespace QS.DomainModel.Tracking
 {
@@ -11,14 +12,22 @@ namespace QS.DomainModel.Tracking
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		#region Register
-
 		private static readonly HashSet<IUowPreLoadEventListener> PreLoadListeners = new HashSet<IUowPreLoadEventListener>();
 		private static readonly HashSet<IUowPostLoadEventListener> PostLoadListeners = new HashSet<IUowPostLoadEventListener>();
 		private static readonly HashSet<IUowPostInsertEventListener> PostInsertListeners = new HashSet<IUowPostInsertEventListener>();
 		private static readonly HashSet<IUowPostUpdateEventListener> PostUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
 		private static readonly HashSet<IUowPostDeleteEventListener> PostDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
 		private static readonly HashSet<IUowPostCommitEventListener> PostCommitListeners = new HashSet<IUowPostCommitEventListener>();
+		private readonly IMainThreadDispatcher threadDispatcher;
+
+
+		public GlobalUowEventsTracker(IMainThreadDispatcher threadDispatcher) {
+			this.threadDispatcher = threadDispatcher ?? throw new ArgumentNullException(nameof(threadDispatcher));
+		}
+
+		#region Register
+
+
 
 		public static void RegisterGlobalListener(object listener)
 		{
@@ -120,7 +129,7 @@ namespace QS.DomainModel.Tracking
 			{
 				foreach (var listner in PreLoadListeners)
 				{
-					listner.OnPreLoad(uow, @event);
+					SafeInvoke(() => listner.OnPreLoad(uow, @event));
 				}
 			}
 
@@ -147,7 +156,7 @@ namespace QS.DomainModel.Tracking
 			{
 				foreach (var listner in PostLoadListeners)
 				{
-					listner.OnPostLoad(uow, @event);
+					SafeInvoke(() => listner.OnPostLoad(uow, @event));
 				}
 			}
 
@@ -174,7 +183,7 @@ namespace QS.DomainModel.Tracking
 			{
 				foreach (var listner in PostInsertListeners)
 				{
-					listner.OnPostInsert(uow, @event);
+					SafeInvoke(() => listner.OnPostInsert(uow, @event));
 				}
 			}
 
@@ -204,7 +213,7 @@ namespace QS.DomainModel.Tracking
 			{
 				foreach (var listner in PostUpdateListeners)
 				{
-					listner.OnPostUpdate(uow, @event);
+					SafeInvoke(() => listner.OnPostUpdate(uow, @event));
 				}
 			}
 
@@ -231,7 +240,7 @@ namespace QS.DomainModel.Tracking
 			{
 				foreach (var listner in PostDeleteListeners)
 				{
-					listner.OnPostDelete(uow, @event);
+					SafeInvoke(() => listner.OnPostDelete(uow, @event));
 				}
 			}
 
@@ -256,8 +265,13 @@ namespace QS.DomainModel.Tracking
 
 		#endregion
 
-		public GlobalUowEventsTracker()
-		{
+		private void SafeInvoke(Action action) {
+			if(threadDispatcher.MainThread == Thread.CurrentThread) {
+				action.Invoke();
+			}
+			else {
+				threadDispatcher.RunInMainTread(action);
+			}
 		}
 
 		private IUnitOfWorkTracked GetUnitOfWork(IEventSource session)
@@ -265,24 +279,25 @@ namespace QS.DomainModel.Tracking
 			return UowWatcher.GetUnitOfWork(session) as IUnitOfWorkTracked;
 		}
 
-		public Task OnPostInsertAsync(PostInsertEvent @event, CancellationToken cancellationToken)
+		
+		public async Task OnPostInsertAsync(PostInsertEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostInsert(@event));
 		}
 
-		public Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
+		public async Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostUpdate(@event));
 		}
 
-		public Task OnPostDeleteAsync(PostDeleteEvent @event, CancellationToken cancellationToken)
+		public async Task OnPostDeleteAsync(PostDeleteEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostDelete(@event));
 		}
 
-		public Task OnPreLoadAsync(PreLoadEvent @event, CancellationToken cancellationToken)
+		public async Task OnPreLoadAsync(PreLoadEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPreLoad(@event));
 		}
 	}
 }

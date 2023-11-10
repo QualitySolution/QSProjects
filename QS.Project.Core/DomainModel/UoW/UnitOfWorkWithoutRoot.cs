@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
+using QS.Dialog;
 using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
@@ -10,7 +11,8 @@ namespace QS.DomainModel.UoW
 
 		public bool HasChanges => Session.IsDirtyNoFlush();
 
-		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWorkWithoutRoot(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher, UnitOfWorkTitle title) 
+			: base(sessionProvider, mainThreadDispatcher)
 		{
 			IsNew = false;
             ActionTitle = title;

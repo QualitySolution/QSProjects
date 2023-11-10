@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
+using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
 
@@ -6,11 +7,13 @@ namespace QS.DomainModel.UoW
 {
 	public class DefaultUnitOfWorkFactory : IUnitOfWorkFactory
 	{
-		private readonly ISessionProvider SessionProvider;
+		private readonly ISessionProvider sessionProvider;
+		private readonly IMainThreadDispatcher mainThreadDispatcher;
 
-		public DefaultUnitOfWorkFactory(ISessionProvider sessionProvider)
+		public DefaultUnitOfWorkFactory(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher)
 		{
-			SessionProvider = sessionProvider;
+			this.sessionProvider = sessionProvider;
+			this.mainThreadDispatcher = mainThreadDispatcher;
 		}
 
 		/// <summary>
@@ -20,7 +23,7 @@ namespace QS.DomainModel.UoW
 		public IUnitOfWork CreateWithoutRoot(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0)
 		{
             var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-            return new UnitOfWorkWithoutRoot(SessionProvider, title);
+            return new UnitOfWorkWithoutRoot(sessionProvider, mainThreadDispatcher, title);
 		}
 
 		/// <summary>
@@ -31,7 +34,7 @@ namespace QS.DomainModel.UoW
 		public IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
             var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-            var uow = new UnitOfWork<TEntity>(SessionProvider, id, title);
+            var uow = new UnitOfWork<TEntity>(sessionProvider, mainThreadDispatcher, id, title);
 			return uow;
 		}
 
@@ -43,7 +46,7 @@ namespace QS.DomainModel.UoW
 		public IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
             var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-            var uow = new UnitOfWork<TEntity>(SessionProvider, title);
+            var uow = new UnitOfWork<TEntity>(sessionProvider, mainThreadDispatcher, title);
 			return uow;
 		}
 
@@ -55,7 +58,7 @@ namespace QS.DomainModel.UoW
 		public IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
 		{
             var title = new UnitOfWorkTitle(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-            var uow = new UnitOfWork<TEntity>(SessionProvider, entity, title);
+            var uow = new UnitOfWork<TEntity>(sessionProvider, mainThreadDispatcher, entity, title);
 			return uow;
 		}
 	}

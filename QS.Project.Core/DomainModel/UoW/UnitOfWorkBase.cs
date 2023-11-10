@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NHibernate;
 using NHibernate.Criterion;
+using QS.Dialog;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
@@ -23,9 +24,11 @@ namespace QS.DomainModel.UoW
 			BusinessObjectPreparer.Init();
 		}
 
-		protected UnitOfWorkBase(ISessionProvider sessionProvider)
+		protected UnitOfWorkBase(ISessionProvider sessionProvider, IMainThreadDispatcher mainThreadDispatcher)
 		{
-			this.SessionProvider = sessionProvider;
+			if(mainThreadDispatcher is null) throw new ArgumentNullException(nameof(mainThreadDispatcher));
+			this.SessionProvider = sessionProvider ?? throw new ArgumentNullException(nameof(sessionProvider));
+			EventsTracker = new SingleUowEventsTracker(mainThreadDispatcher);
 		}
 
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
@@ -36,7 +39,7 @@ namespace QS.DomainModel.UoW
 
 		protected ISessionProvider SessionProvider;
 
-		public SingleUowEventsTracker EventsTracker { get; } = new SingleUowEventsTracker();
+		public SingleUowEventsTracker EventsTracker { get; } 
 
 		public bool IsNew { get; protected set; }
 
