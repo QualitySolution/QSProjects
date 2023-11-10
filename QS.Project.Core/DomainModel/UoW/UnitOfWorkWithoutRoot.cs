@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using QS.Project.DB;
 
 namespace QS.DomainModel.UoW
@@ -17,6 +18,10 @@ namespace QS.DomainModel.UoW
 
 		public void Save()
 		{
+			throw new InvalidOperationException ("В этой реализации UoW отсутствует Root, для завершения транзакции используйте метод Commit()");
+		}
+
+		public Task SaveAsync() {
 			throw new InvalidOperationException ("В этой реализации UoW отсутствует Root, для завершения транзакции используйте метод Commit()");
 		}
 	}
