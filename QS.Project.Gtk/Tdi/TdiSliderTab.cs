@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gtk;
 using NLog;
@@ -259,14 +259,23 @@ namespace QS.Tdi
 
 			if (ActiveDialog is ITdiDialog dlg) {
 				if (AskSave && dlg.HasChanges) {
-					string Message = "Объект изменён. Сохранить изменения перед закрытием?";
-					MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
-										   MessageType.Question,
-										   ButtonsType.YesNo,
-										   Message);
-					md.AddButton("Отмена", ResponseType.Cancel);
-					int result = md.Run();
-					md.Destroy();
+					int result;
+
+					if(dlg.HasCustomCancellationConfirmationDialog
+						&& dlg.CustomCancellationConfirmationDialogFunc != null) {
+						result = dlg.CustomCancellationConfirmationDialogFunc.Invoke();
+					}
+					else {
+						string Message = "Объект изменён. Сохранить изменения перед закрытием?";
+						MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
+											   MessageType.Question,
+											   ButtonsType.YesNo,
+											   Message);
+						md.AddButton("Отмена", ResponseType.Cancel);
+						result = md.Run();
+						md.Destroy();
+
+					}
 					if (result == (int)ResponseType.Cancel || result == (int)ResponseType.DeleteEvent)
 						return false;
 					if (result == (int)ResponseType.Yes) {

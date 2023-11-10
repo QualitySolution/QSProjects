@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using QS.Dialog;
@@ -155,6 +155,10 @@ namespace QSOrmProject
 				OnCloseTab (false, CloseSource.Save);
 			}
 		}
+
+		public virtual bool HasCustomCancellationConfirmationDialog { get; private set; }
+
+		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
 
 		protected void OnButtonCancelClicked (object sender, EventArgs e)
 		{
