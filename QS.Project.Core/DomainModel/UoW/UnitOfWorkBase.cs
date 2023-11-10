@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Config;
@@ -70,14 +71,39 @@ namespace QS.DomainModel.UoW
 
 				IsNew = false;
 				GlobalUowEventsTracker.OnPostCommit(this);
-
-			} catch(Exception ex)
+			} 
+			catch(Exception ex)
 			{
 				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
 				if(transaction.IsActive)
 					transaction.Rollback();
 				throw;
-			} finally {
+			} 
+			finally {
+				transaction.Dispose();
+				transaction = null;
+			}
+		}
+
+		public async Task CommitAsync() {
+			if(transaction == null || !transaction.IsActive) {
+				logger.Warn("Попытка комита закрытой транзацкии.");
+				return;
+			}
+
+			try {
+				await transaction.CommitAsync();
+
+				IsNew = false;
+				GlobalUowEventsTracker.OnPostCommit(this);
+			}
+			catch(Exception ex) {
+				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
+				if(transaction.IsActive)
+					await transaction.RollbackAsync();
+				throw;
+			}
+			finally {
 				transaction.Dispose();
 				transaction = null;
 			}
@@ -160,6 +186,17 @@ namespace QS.DomainModel.UoW
 			RaiseSessionScopeEntitySaved(new object[] { entity });
 		}
 
+		public virtual async Task SaveAsync(object entity, bool orUpdate = true) {
+			OpenTransaction();
+
+			if(orUpdate)
+				await Session.SaveOrUpdateAsync(entity);
+			else
+				await Session.SaveAsync(entity);
+
+			RaiseSessionScopeEntitySaved(new object[] { entity });
+		}
+
 		public void Delete<T>(int id) where T : IDomainObject
 		{
 			Delete(Session.Load<T>(id));
@@ -169,6 +206,11 @@ namespace QS.DomainModel.UoW
 		{
 			OpenTransaction();
 			Session.Delete(entity);
+		}
+
+		public async Task DeleteAsync(object entity) {
+			OpenTransaction();
+			await Session.DeleteAsync(entity);
 		}
 
 		internal virtual void OpenTransaction()
