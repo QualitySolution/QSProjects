@@ -55,6 +55,7 @@
     <Reference Include="mscorlib" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DependencyInjection.cs" />
     <Compile Include="Dialog\FileDialog\DialogResult.cs" />
     <Compile Include="Extensions\GtkImageExtensions.cs" />
     <Compile Include="Extensions\HboxExtensions.cs" />
