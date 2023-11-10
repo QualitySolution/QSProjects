@@ -10,8 +10,8 @@ namespace QS.Project.Core {
 		/// Метод регистрации основных зависимостей Core модуля,
 		/// которые должны использоваться для всех приложений использующих данный модуль
 		/// </summary>
-		public static IServiceCollection AddCoreServices(IServiceCollection services) {
-			// Тут регистрируем все необходимые зависимости зависимости
+		public static IServiceCollection AddCoreServices(this IServiceCollection services) {
+			// Тут регистрируем все необходимые зависимости модуля
 
 			return services;
 		}
@@ -21,7 +21,7 @@ namespace QS.Project.Core {
 		/// Метод регистрации серверных зависимостей определенных в модуле Core
 		/// которые должны использоваться для всех серверных приложений использующих данный модуль
 		/// </summary>
-		public static IServiceCollection AddCoreServerServices(IServiceCollection services) {
+		public static IServiceCollection AddCoreServerServices(this IServiceCollection services) {
 			StaticRegistrations.AddServerStaticRegistrations();
 
 			services
