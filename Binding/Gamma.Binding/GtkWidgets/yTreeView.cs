@@ -47,11 +47,11 @@ namespace Gamma.GtkWidgets {
 
 		public string[] SearchHighlightTexts {
 			get => searchHighlightTexts; 
-			set {
-				if(searchHighlightTexts != null && searchHighlightTexts.Any(x => String.IsNullOrEmpty(x)))
-					throw new ArgumentException("Строки поиска не должны содержать пустые значения. Это затрудняет разбор и замедляет подсветку значений.", nameof(SearchHighlightTexts));
-				searchHighlightTexts = value;
-			}
+			set =>
+				searchHighlightTexts = value?.Where(x => !String.IsNullOrEmpty(x))
+					.Distinct()
+					.OrderByDescending(x => x.Length)
+					.ToArray();
 		}
 
 		public string SearchHighlightText {
