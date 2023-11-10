@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Tdi;
@@ -19,6 +19,10 @@ namespace QS.Dialog.Gtk
 			get { return manualChange || UoW.HasChanges; }
 			set { manualChange = value; }
 		}
+
+		public virtual bool HasCustomCancellationConfirmationDialog { get; private set; }
+
+		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
