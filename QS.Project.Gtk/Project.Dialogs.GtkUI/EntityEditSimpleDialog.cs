@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
@@ -114,7 +114,7 @@ namespace QS.Project.Dialogs.GtkUI
 						editDialog.Destroy ();
 						return list [0];
 					}
-					uow.TrySave (tempObject);
+					uow.Save (tempObject);
 					uow.Commit ();
 				}
 				else
@@ -125,7 +125,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 						if (questionResult)
 						{
-							uow.TrySave(tempObject);
+							uow.Save(tempObject);
 							uow.Commit();
 						}
 					}

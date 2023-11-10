@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using NHibernate.Criterion;
@@ -60,7 +60,7 @@ namespace QS.Deletion
 				foreach(var item in GetLinkedEntities(uow, depend, fromE))
 				{
 					propInfo.SetValue(item, toE, null);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}
@@ -70,7 +70,7 @@ namespace QS.Deletion
 				var propInfo = depend.ObjectClass.GetProperty(depend.PropertyName);
 				foreach(var item in GetLinkedEntities(uow, depend, fromE)) {
 					propInfo.SetValue(item, toE, null);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}
@@ -86,7 +86,7 @@ namespace QS.Deletion
 					coll.Remove(replaced);
 					if(exist == null)
 						coll.Add(toE);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}
