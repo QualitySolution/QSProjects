@@ -209,7 +209,7 @@ namespace QS.Dialog.Gtk
 		public override void Destroy ()
 		{
 			IsDestroyed = true;
-			UoWGeneric.Dispose ();
+			UoWGeneric?.Dispose();
 			base.Destroy ();
 		}
 
