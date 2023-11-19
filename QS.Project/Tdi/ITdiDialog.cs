@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.DomainModel.Entity;
 
 namespace QS.Tdi
@@ -6,6 +6,8 @@ namespace QS.Tdi
 	public interface ITdiDialog : ITdiTab
 	{
 		bool HasChanges { get; }
+		bool HasCustomCancellationConfirmationDialog { get; }
+		Func<int> CustomCancellationConfirmationDialogFunc { get; }
 		bool Save();
 		void SaveAndClose();
 		event EventHandler<EntitySavedEventArgs> EntitySaved;

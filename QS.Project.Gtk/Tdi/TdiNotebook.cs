@@ -694,13 +694,22 @@ namespace QS.Tdi.Gtk
 			var askSave = (dlg as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
 
 			if(askSave && dlg.HasChanges) {
-				string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
-				MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
-									   MessageType.Question,
-									   ButtonsType.YesNo,
-									   Message);
-				int result = md.Run();
-				md.Destroy();
+				int result;
+
+				if(dlg.HasCustomCancellationConfirmationDialog 
+					&& dlg.CustomCancellationConfirmationDialogFunc != null) {
+					result = dlg.CustomCancellationConfirmationDialogFunc.Invoke();
+				}
+				else {
+					string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
+					MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
+										   MessageType.Question,
+										   ButtonsType.YesNo,
+										   Message);
+					result = md.Run();
+					md.Destroy();
+				}
+				
 				if(result == (int)ResponseType.Yes) {
 					if(!dlg.Save()) {
 						logger.Info("Вкладка не сохранена. Отмена закрытия...");

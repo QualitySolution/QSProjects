@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using Gtk;
@@ -69,6 +69,10 @@ namespace QS.Dialog.Gtk
 			get { return manualChange || UoWGeneric.HasChanges; }
 			set { manualChange = value; }
 		}
+
+		public virtual bool HasCustomCancellationConfirmationDialog { get; private set; }
+
+		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
 
 		public object EntityObject {
 			get { return UoWGeneric.Root; }

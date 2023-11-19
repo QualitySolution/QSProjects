@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Tdi;
 
 namespace QSOrmProject
@@ -24,6 +24,10 @@ namespace QSOrmProject
 				throw new NotImplementedException ();
 			}
 		}
+
+		public bool HasCustomCancellationConfirmationDialog => throw new NotImplementedException();
+
+		public Func<int> CustomCancellationConfirmationDialogFunc => throw new NotImplementedException();
 	}
 }
 

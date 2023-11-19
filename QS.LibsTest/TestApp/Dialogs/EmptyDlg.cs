@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Dialog.Gtk;
 using QS.Tdi;
 
@@ -12,6 +12,10 @@ namespace QS.Test.TestApp.Dialogs
 		}
 
 		public bool HasChanges => false;
+
+		public bool HasCustomCancellationConfirmationDialog => false;
+
+		public Func<int> CustomCancellationConfirmationDialogFunc { get; }
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 

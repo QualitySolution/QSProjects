@@ -21,6 +21,10 @@ namespace QS.ViewModels
 			set { manualChange = value; }
 		}
 
+		public virtual bool HasCustomCancellationConfirmationDialog { get; private set; }
+
+		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
+
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
 
 		public void SaveAndClose()
