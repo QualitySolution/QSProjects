@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace QS.DomainModel.Entity
 					var attributes = propertyInfo.GetCustomAttributes(typeof(PropertyChangedAlsoAttribute), true);
 					foreach(PropertyChangedAlsoAttribute attribute in attributes)
 						foreach(string propName in attribute.PropertiesNames)
-							OnPropertyChanged(propName);
+							PropertyChanged(this, new PropertyChangedEventArgs(propName));
 				}
 			}
 		}
