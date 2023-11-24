@@ -87,6 +87,20 @@ namespace QS.Project.Filter
 			Update();
 		}
 
+		/// <summary>
+		/// Для установки свойств фильтра без запуска фильтрации
+		/// </summary>
+		/// <param name="setters">Лямбды ограничений</param>
+		public void ConfigureWithoutFiltering(params Action<TFilter>[] setters)
+		{
+			canNotify = false;
+			var filter = this as TFilter;
+			foreach(var item in setters) {
+				item(filter);
+			}
+			canNotify = true;
+		}
+
 		public virtual void Dispose() => UoW?.Dispose();
 
 		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) where TJournalFilterViewModel : class, IJournalFilterViewModel {
