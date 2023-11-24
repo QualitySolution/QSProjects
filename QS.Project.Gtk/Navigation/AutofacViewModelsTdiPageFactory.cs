@@ -17,19 +17,34 @@ namespace QS.Navigation
 			Container = container;
 		}
 
-		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(
+			DialogViewModelBase master,
+			IDictionary<string, object> ctorArgs,
+			string hash,
+			Action<ContainerBuilder> addingRegistrations,
+			Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
 		{
 			var parameters = ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value));
-			return MakePage<TViewModel>(parameters, hash, addingRegistrations);
+			return MakePage<TViewModel>(parameters, hash, addingRegistrations, configureViewModel);
 		}
 
-		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(
+			DialogViewModelBase master,
+			Type[] ctorTypes,
+			object[] ctorValues,
+			string hash,
+			Action<ContainerBuilder> addingRegistrations,
+			Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
 		{
 			var parameters = ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val));
-			return MakePage<TViewModel>(parameters, hash, addingRegistrations);
+			return MakePage<TViewModel>(parameters, hash, addingRegistrations, configureViewModel);
 		}
 
-		private IPage<TViewModel> MakePage<TViewModel>(IEnumerable<Autofac.Core.Parameter> parameters, string hash, Action<ContainerBuilder> addingRegistrations) where TViewModel : DialogViewModelBase
+		private IPage<TViewModel> MakePage<TViewModel>(
+			IEnumerable<Autofac.Core.Parameter> parameters,
+			string hash,
+			Action<ContainerBuilder> addingRegistrations,
+			Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			ViewModelTdiTab viewModelTab = null;
@@ -48,6 +63,8 @@ namespace QS.Navigation
 			}
 
 			var viewmodel = scope.Resolve<TViewModel>(args);
+			configureViewModel?.Invoke(viewmodel);
+
 			if (viewmodel is ITdiTab tdiTab)
 				tab = tdiTab;
 			else {
