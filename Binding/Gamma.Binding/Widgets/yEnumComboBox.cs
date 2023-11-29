@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 using Gtk;
@@ -134,7 +134,12 @@ namespace Gamma.Widgets
 
 		public object SelectedItemOrNull {
 			get {
-				return selectedItem is SpecialComboState ? null : selectedItem;
+				if(SelectedItemStrictTyped) {
+					return selectedItem is SpecialComboState ? null : selectedItem;
+				}
+				else {
+					return selectedItem;
+				}
 			}
 			set {
 				if(value == null) {
@@ -204,6 +209,12 @@ namespace Gamma.Widgets
 			AddAttribute(text, "text", (int)comboDataColumns.Title);
 			Model = comboListStore;
 		}
+
+		/// <summary>
+		/// При установке этого значения в true SelectedItem будет возвращать только значения из списка.
+		/// Служебные значения enum-а SpecialComboState будут преобразовываться в null.
+		/// </summary>
+		public bool SelectedItemStrictTyped = true;
 
 		void ResetLayout()
 		{
