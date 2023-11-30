@@ -226,10 +226,8 @@ namespace QS.Navigation
 
 		public IPage CurrentPage => FindOrCreatePage(tdiNotebook.CurrentTab);
 
-		public virtual IPage FindPage(ITdiTab tab)
-		{
-			return AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
-		}
+		public virtual IPage FindPage(ITdiTab tab) =>
+			tab is null ? null : AllPages.OfType<ITdiPage>().FirstOrDefault(x => x.TdiTab == tab);
 
 		private IPage FindOrCreatePage(ITdiTab tab)
 		{
