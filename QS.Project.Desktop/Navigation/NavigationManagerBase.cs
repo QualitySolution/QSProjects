@@ -78,10 +78,8 @@ namespace QS.Navigation
 
 		#region Поиск
 
-		public virtual IPage FindPage(DialogViewModelBase viewModel)
-		{
-			return AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
-		}
+		public virtual IPage FindPage(DialogViewModelBase viewModel) =>
+			viewModel is null ? null : AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
 
 		//Внимание здесь специально параметр viewModel не является типом приведения результата TViewModel, так как если 
 		//бы viewModel была типом TViewModel, то в вызове можно было бы не указывать Generic тип, а это бы приводило к 
