@@ -105,6 +105,18 @@ namespace QS.ViewModels.Control.EEVM
 			return this;
 		}
 
+		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(TJournalFilterViewModel filter)
+				where TJournalViewModel : JournalViewModelBase
+				where TJournalFilterViewModel : class, IJournalFilterViewModel {
+			if(parameters.DialogViewModel == null) {
+				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filter);
+				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filter);
+			}
+			else
+				base.UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(filter);
+			return this;
+		}
+
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelDialog<TEntityViewModel>()
 			where TEntityViewModel : DialogViewModelBase
 		{
