@@ -31,6 +31,7 @@ namespace Gamma.GtkWidgets {
 			this.command = command;
 			this.commandArgument = commandArgument;
 			command.CanExecuteChanged += CommandCanExecuteChanged;
+			Sensitive = command.CanExecute(commandArgument);
 		}
 
 		protected override void OnActivated() {
