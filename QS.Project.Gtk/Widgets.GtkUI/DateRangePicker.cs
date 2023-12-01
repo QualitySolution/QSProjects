@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -403,6 +403,15 @@ namespace QS.Widgets.GtkUI
 			var image = buttonPickDatePeriod.Image as Image;
 			image.DisposeImagePixbuf();
 			base.OnDestroyed();
+		}
+
+		protected void OnButtonClearDateClicked(object sender, EventArgs e) {
+			Clear();
+		}
+
+		public void Clear() {
+			StartDateOrNull = null;
+			EndDateOrNull = null;
 		}
 	}
 }
