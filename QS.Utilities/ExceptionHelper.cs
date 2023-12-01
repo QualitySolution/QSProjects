@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QS.ErrorReporting
-{
+namespace QS.Utilities {
 	public static class ExceptionHelper
 	{
 		/// <summary>
