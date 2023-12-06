@@ -139,7 +139,7 @@ namespace QS.Widgets.GtkUI
 		}
 	}
 
-	class PrintableImage : IPrintableImage
+	public class PrintableImage : IPrintableImage
 	{
 		public PrinterType PrintType => PrinterType.Image;
 
