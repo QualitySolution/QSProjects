@@ -237,6 +237,7 @@ namespace Gamma.Binding
 			foreach(GCHandle item in node_hash.Values) {
 				item.Free();
 			}
+			node_hash.Clear();
 		}
 	}
 }

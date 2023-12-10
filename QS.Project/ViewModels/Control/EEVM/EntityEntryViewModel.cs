@@ -4,7 +4,7 @@ using QS.DomainModel.Entity;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public class EntityEntryViewModel<TEntity> : PropertyChangedBase, IEntityEntryViewModel, IDisposable
+	public class EntityEntryViewModel<TEntity> : PropertyChangedBase, IEntityEntryViewModel
 		where TEntity : class
 	{
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -49,8 +49,7 @@ namespace QS.ViewModels.Control.EEVM
 				if(entity == value)
 					return;
 
-				if(entity is INotifyPropertyChanged notifyPropertyOldEntity)
-					notifyPropertyOldEntity.PropertyChanged -= Entity_PropertyChanged;
+				UnsubscribeEntity();
 
 				entity = value;
 
@@ -79,7 +78,8 @@ namespace QS.ViewModels.Control.EEVM
 
 		private IEntityAdapter<TEntity> entityAdapter;
 		public IEntityAdapter<TEntity> EntityAdapter {
-			get => entityAdapter; set {
+			get => entityAdapter;
+			set {
 				entityAdapter = value;
 				entityAdapter.EntityEntryViewModel = this;
 			}
@@ -105,6 +105,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		#region Свойства для использования во View
 
+		public bool DisposeViewModel { get; set; } = true;
 		public string EntityTitle => Entity == null ? null : DomainHelper.GetTitle(Entity);
 
 		public virtual bool SensitiveSelectButton => IsEditable && EntitySelector != null;
@@ -238,8 +239,7 @@ namespace QS.ViewModels.Control.EEVM
 		public IPropertyBinder<TEntity> EntityBinder {
 			get => entityBinder;
 			set {
-				if(EntityBinder != null)
-					EntityBinder.Changed -= EntityBinder_Changed;
+				UnsubscribeBinder();
 				entityBinder = value;
 				if(EntityBinder != null) {
 					Entity = entityBinder.PropertyValue;
@@ -255,11 +255,8 @@ namespace QS.ViewModels.Control.EEVM
 
 		#endregion
 
-		public void Dispose()
-		{
-			if(entity is INotifyPropertyChanged notifyPropertyChanged) {
-				notifyPropertyChanged.PropertyChanged -= Entity_PropertyChanged;
-			}
+		public void Dispose() {
+			UnsubscribeAll();
 
 			if(EntitySelector is IDisposable esd)
 				esd.Dispose();
@@ -271,6 +268,43 @@ namespace QS.ViewModels.Control.EEVM
 				dod.Dispose();
 			if(EntityAdapter is IDisposable ead)
 				ead.Dispose();
+
+			entitySelector = null;
+			autocompleteSelector = null;
+			entityBinder = null;
+			dlgOpener = null;
+			entityAdapter = null;
+		}
+		
+		private void UnsubscribeAll() {
+			UnsubscribeEntity();
+			UnsubscribeBinder();
+			UnsubscribeEntitySelector();
+			UnsubscribeAutoCompleteSelector();
+		}
+
+		private void UnsubscribeAutoCompleteSelector()
+		{
+			if(AutocompleteSelector != null)
+				AutocompleteSelector.AutocompleteLoaded -= AutocompleteSelector_AutocompleteLoaded;
+		}
+
+		private void UnsubscribeBinder()
+		{
+			if(EntityBinder != null)
+				EntityBinder.Changed -= EntityBinder_Changed;
+		}
+		
+		private void UnsubscribeEntity()
+		{
+			if(entity is INotifyPropertyChanged notifyPropertyOldEntity)
+				notifyPropertyOldEntity.PropertyChanged -= Entity_PropertyChanged;
+		}
+		
+		private void UnsubscribeEntitySelector()
+		{
+			if(entitySelector != null)
+				entitySelector.EntitySelected += EntitySelector_EntitySelected;
 		}
 	}
 

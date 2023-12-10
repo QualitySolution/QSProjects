@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using Gtk;
 using Gamma.Binding.Core;
@@ -13,6 +13,7 @@ namespace Gamma.Widgets
 	public class yListComboBox : ComboBox
 	{
 		ListStore comboListStore;
+		private bool _destroyed;
 
 		bool notUserChanage = false;
 
@@ -188,9 +189,18 @@ namespace Gamma.Widgets
 			}
 		}
 
-		public override void Destroy() {
-			comboListStore?.Dispose();
-			base.Destroy();
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			Model = null;
+			comboListStore.Clear();
+			comboListStore.Dispose();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }
