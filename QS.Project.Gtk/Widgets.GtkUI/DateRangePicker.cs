@@ -402,6 +402,7 @@ namespace QS.Widgets.GtkUI
 		protected override void OnDestroyed() {
 			var image = buttonPickDatePeriod.Image as Image;
 			image.DisposeImagePixbuf();
+			Binding.CleanSources();
 			base.OnDestroyed();
 		}
 

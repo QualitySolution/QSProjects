@@ -314,13 +314,8 @@ namespace QS.Widgets.GtkUI
 
 		void UpdateSensitive()
 		{
-			bool canOpen;
-			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
-				canOpen = localSelector?.CanOpen(SubjectType) ?? false;
-			}
-
 			buttonSelectEntity.Sensitive = entryObject.Sensitive = sensitive && IsEditable;
-			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null && canOpen;
+			buttonViewEntity.Sensitive = sensitive && CanEditReference && subject != null;
 			buttonClear.Sensitive = sensitive && (subject != null || string.IsNullOrWhiteSpace(entryObject.Text));
 		}
 
@@ -499,6 +494,10 @@ namespace QS.Widgets.GtkUI
 				}
 			}
 			
+			Binding.CleanSources();
+			entitySelectorFactory?.Dispose();
+			entitySelectorFactory = null;
+			entitySelectorAutocompleteFactory = null;
 			completionListStore?.Dispose();
 
 			var viewImage = buttonViewEntity.Image as Image;

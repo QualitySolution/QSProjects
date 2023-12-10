@@ -66,7 +66,10 @@ namespace QS.Project.Journal
 		public event EventHandler ListUpdated;
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
-		protected EntitiesJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
+		protected EntitiesJournalViewModelBase(
+			IUnitOfWorkFactory unitOfWorkFactory,
+			ICommonServices commonServices,
+			INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 			UseSlider = true;

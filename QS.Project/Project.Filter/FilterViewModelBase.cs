@@ -101,7 +101,10 @@ namespace QS.Project.Filter
 			canNotify = true;
 		}
 
-		public virtual void Dispose() => UoW?.Dispose();
+		public virtual void Dispose() {
+			PropertyChanged -= FilterViewModelBase_PropertyChanged;
+			UoW?.Dispose();
+		} 
 
 		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			SetAndRefilterAtOnce(new Action<TFilter>[] {f => configuration(f as TJournalFilterViewModel)});
