@@ -33,6 +33,7 @@ namespace QS.Widgets.GtkUI
 
 		public BindingControler<EntityViewModelEntry> Binding { get; private set; }
 		public bool CanEditReference { get; set; } = true;
+		public bool CanDisposeEntitySelectorFactory { get; set; } = true;
 		private ListStore completionListStore;
 		private readonly string _normalEntryToolTipMarkup;
 		private readonly string _dangerEntryToolTipMarkup = "Введён текст для поиска, но не выбрана сущность из справочника или выпадающего списка.";
@@ -494,7 +495,9 @@ namespace QS.Widgets.GtkUI
 			}
 			
 			Binding.CleanSources();
-			entitySelectorFactory?.Dispose();
+			if(CanDisposeEntitySelectorFactory) {
+				entitySelectorFactory?.Dispose();
+			}
 			entitySelectorFactory = null;
 			entitySelectorAutocompleteFactory = null;
 			completionListStore?.Dispose();
