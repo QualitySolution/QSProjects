@@ -8,7 +8,7 @@ namespace QS.ViewModels.Control
 	public class PropertyBinder<TBindedEntity, TProperty> : IPropertyBinder<TProperty>
 		where TBindedEntity : class, INotifyPropertyChanged
 	{
-		readonly TBindedEntity bindedEntity;
+		TBindedEntity bindedEntity;
 		readonly PropertyInfo propertyInfo;
 
 		public PropertyBinder(TBindedEntity bindedEntity, Expression<Func<TBindedEntity, TProperty>> bindedProperty)
@@ -31,5 +31,12 @@ namespace QS.ViewModels.Control
 				Changed?.Invoke(this, EventArgs.Empty);
 		}
 
+		public void Dispose() {
+			if(bindedEntity is null) {
+				return;
+			}
+			bindedEntity.PropertyChanged -= BindedEntity_PropertyChanged;
+			bindedEntity = null;
+		}
 	}
 }
