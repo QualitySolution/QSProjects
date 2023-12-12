@@ -22,7 +22,7 @@ namespace Gamma.Widgets
 			Item
 		}
 
-		public BindingControler<yEnumComboBox> Binding { get; set; }
+		public BindingControler<yEnumComboBox> Binding { get; private set; }
 
 		#region HideItems
 		List<object> fieldsToHide = new List<object>();
