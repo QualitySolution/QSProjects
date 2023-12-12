@@ -304,7 +304,7 @@ namespace QS.ViewModels.Control.EEVM
 		private void UnsubscribeEntitySelector()
 		{
 			if(entitySelector != null)
-				entitySelector.EntitySelected += EntitySelector_EntitySelected;
+				entitySelector.EntitySelected -= EntitySelector_EntitySelected;
 		}
 	}
 
