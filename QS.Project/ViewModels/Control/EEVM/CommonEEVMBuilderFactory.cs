@@ -40,6 +40,14 @@ namespace QS.ViewModels.Control.EEVM
 			var binder = new PropertyBinder<TBindedEntity, TPropertyEntity>(BindedEntity, sourceProperty);
 			return new CommonEEVMBuilder<TPropertyEntity>(this, binder);
 		}
+
+		public void Dispose() {
+			BindedEntity = null;
+			DialogViewModel = null;
+			UnitOfWork = null;
+			NavigationManager = null;
+			AutofacScope = null;
+		}
 	}
 
 	/// <summary>

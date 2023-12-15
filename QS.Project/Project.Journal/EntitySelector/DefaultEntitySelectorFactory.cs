@@ -42,5 +42,9 @@ namespace QS.Project.Journal.EntitySelector
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}
+
+		public void Dispose() {
+			// TODO release managed resources here
+		}
 	}
 }
