@@ -179,12 +179,12 @@ namespace QS.Navigation
 			DateTime start = DateTime.Now;
 			logger.Info("Открываем...");
 			string hash = null;
-			if(!options.HasFlag(OpenPageOptions.IgnoreHash))
+			if(!options.HasFlag(OpenPageOptions.IgnoreHash) && !options.HasFlag(OpenPageOptions.AsSlaveIgnoreHash))
 				hash = makeHash();
 
 			IPage openPage = null;
 
-			if(options.HasFlag(OpenPageOptions.AsSlave)) {
+			if(options.HasFlag(OpenPageOptions.AsSlave) || options.HasFlag(OpenPageOptions.AsSlaveIgnoreHash)) {
 				if(masterPage == null)
 					throw new InvalidOperationException($"Отсутствует главная страница для добавляемой подчиненной страницы.");
 
