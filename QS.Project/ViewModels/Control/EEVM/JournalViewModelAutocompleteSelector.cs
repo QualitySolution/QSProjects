@@ -10,7 +10,7 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : class, IDomainObject
 		where TJournalViewModel : JournalViewModelBase
 	{
-		protected readonly ILifetimeScope autofacScope;
+		protected ILifetimeScope autofacScope;
 
 		public JournalViewModelAutocompleteSelector(ILifetimeScope lifetimeScope)
 		{
@@ -51,8 +51,13 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void Dispose()
 		{
-			if (journalViewModel != null)
+			if(journalViewModel != null) {
+				journalViewModel.DataLoader.ItemsListUpdated -= DataLoader_ItemsListUpdated;
 				journalViewModel.Dispose();
+				journalViewModel = null;
+			}
+
+			autofacScope = null;
 		}
 	}
 

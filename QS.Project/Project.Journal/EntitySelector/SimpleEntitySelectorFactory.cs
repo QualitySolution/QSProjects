@@ -9,7 +9,7 @@ namespace QS.Project.Journal.EntitySelector
 		where TEntity : class, IDomainObject, INotifyPropertyChanged, new()
 		where TEntityTab : class, ITdiTab
 	{
-		private readonly Func<SimpleEntityJournalViewModel<TEntity, TEntityTab>> journalFunc;
+		private Func<SimpleEntityJournalViewModel<TEntity, TEntityTab>> journalFunc;
 
 		public SimpleEntitySelectorFactory(Func<SimpleEntityJournalViewModel<TEntity, TEntityTab>> journalFunc)
 		{
@@ -26,6 +26,10 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
 			return CreateAutocompleteSelector(multipleSelect);
+		}
+		
+		public void Dispose() {
+			journalFunc = null;
 		}
 	}
 }

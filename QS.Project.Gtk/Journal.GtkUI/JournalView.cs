@@ -192,11 +192,15 @@ namespace QS.Journal.GtkUI
 		}
 
 		private LoadingState loadingState;
+		private uint _showProgressTimer;
+		private uint _pulseProgressTimer;
 
 		void DataLoader_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
 		{
-			if(loadingState != LoadingState.InProgress && e.LoadingState == LoadingState.InProgress)
-				GLib.Timeout.Add(ShowProgressbarDelay, new GLib.TimeoutHandler(StartLoadProgress));
+			if(loadingState != LoadingState.InProgress && e.LoadingState == LoadingState.InProgress) {
+				_showProgressTimer = GLib.Timeout.Add(ShowProgressbarDelay, new GLib.TimeoutHandler(StartLoadProgress));
+			}
+
 			loadingState = e.LoadingState;
 		}
 
@@ -205,7 +209,7 @@ namespace QS.Journal.GtkUI
 			progressbarLoading.Visible = loadingState == LoadingState.InProgress;
 
 			if(loadingState == LoadingState.InProgress) {
-				GLib.Timeout.Add(ProgressPulseTime, new GLib.TimeoutHandler(PulseProgress));
+				_pulseProgressTimer = GLib.Timeout.Add(ProgressPulseTime, new GLib.TimeoutHandler(PulseProgress));
 			} 
 			return false;
 		}
@@ -505,6 +509,19 @@ namespace QS.Journal.GtkUI
 		public override void Destroy()
 		{
 			isDestroyed = true;
+			
+			ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
+			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.TotalCountChanged -= DataLoader_TotalCountChanged;
+			if(ThrowExceptionOnDataLoad)
+				ViewModel.DataLoader.LoadError -= DataLoader_LoadError;
+			
+			GLib.Source.Remove(_showProgressTimer);
+			GLib.Source.Remove(_pulseProgressTimer);
+			
+			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+			ViewModel.UpdateJournalActions -= UpdateButtonActions;
+			
 			ViewModel.DataLoader.CancelLoading();
 			FilterView?.Destroy();
 			tableview?.Destroy();

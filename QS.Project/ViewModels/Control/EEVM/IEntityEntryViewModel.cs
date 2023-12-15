@@ -4,8 +4,8 @@ using System.ComponentModel;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public interface IEntityEntryViewModel : INotifyPropertyChanged
-	{
+	public interface IEntityEntryViewModel : INotifyPropertyChanged, IDisposable {
+		bool DisposeViewModel { get; set; }
 		#region Выбранная сущьность
 		string EntityTitle { get; }
 		object Entity { get; set; }

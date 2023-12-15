@@ -12,9 +12,9 @@ namespace Gamma.Widgets
 {
 	[ToolboxItem(true)]
 	[Category("Gamma Widgets")]
-	public class yEnumComboBox : ComboBox
-	{
+	public class yEnumComboBox : ComboBox {
 		ListStore comboListStore;
+		private bool _destroyed;
 
 		enum comboDataColumns
 		{
@@ -280,9 +280,18 @@ namespace Gamma.Widgets
 			}
 		}
 
-		public override void Destroy() {
-			comboListStore?.Dispose();
-			base.Destroy();
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			Model = null;
+			comboListStore.Clear();
+			comboListStore.Dispose();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

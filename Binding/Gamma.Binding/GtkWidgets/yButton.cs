@@ -50,5 +50,10 @@ namespace Gamma.GtkWidgets
 			command.CanExecuteChanged -= CommandCanExecuteChanged;
 			base.Destroy();
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }

@@ -8,6 +8,8 @@ namespace QS.Widgets.GtkUI
 
 		private global::Gtk.Entry entryDate;
 
+		private global::Gtk.Button buttonClearDate;
+
 		private global::Gtk.Button buttonPickDatePeriod;
 
 		protected virtual void Build()
@@ -31,18 +33,31 @@ namespace QS.Widgets.GtkUI
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.entryDate]));
 			w1.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
+			this.buttonClearDate = new global::Gtk.Button();
+			this.buttonClearDate.CanFocus = true;
+			this.buttonClearDate.Name = "buttonClearDate";
+			this.buttonClearDate.UseUnderline = true;
+			global::Gtk.Image w2 = new global::Gtk.Image();
+			w2.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-clear", global::Gtk.IconSize.Menu);
+			this.buttonClearDate.Image = w2;
+			this.hbox1.Add(this.buttonClearDate);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonClearDate]));
+			w3.Position = 1;
+			w3.Expand = false;
+			w3.Fill = false;
+			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonPickDatePeriod = new global::Gtk.Button();
 			this.buttonPickDatePeriod.CanFocus = true;
 			this.buttonPickDatePeriod.Name = "buttonPickDatePeriod";
 			this.buttonPickDatePeriod.UseUnderline = true;
-			global::Gtk.Image w2 = new global::Gtk.Image();
-			w2.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.DateRange.png");
-			this.buttonPickDatePeriod.Image = w2;
+			global::Gtk.Image w4 = new global::Gtk.Image();
+			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.DateRange.png");
+			this.buttonPickDatePeriod.Image = w4;
 			this.hbox1.Add(this.buttonPickDatePeriod);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonPickDatePeriod]));
-			w3.Position = 1;
-			w3.Expand = false;
-			w3.Fill = false;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonPickDatePeriod]));
+			w5.Position = 2;
+			w5.Expand = false;
+			w5.Fill = false;
 			this.Add(this.hbox1);
 			if ((this.Child != null))
 			{
@@ -51,6 +66,7 @@ namespace QS.Widgets.GtkUI
 			this.Hide();
 			this.entryDate.FocusOutEvent += new global::Gtk.FocusOutEventHandler(this.OnEntryDateFocusOutEvent);
 			this.entryDate.Changed += new global::System.EventHandler(this.OnEntryDateChanged);
+			this.buttonClearDate.Clicked += new global::System.EventHandler(this.OnButtonClearDateClicked);
 			this.buttonPickDatePeriod.Clicked += new global::System.EventHandler(this.OnButtonPickDatePeriodClicked);
 		}
 	}

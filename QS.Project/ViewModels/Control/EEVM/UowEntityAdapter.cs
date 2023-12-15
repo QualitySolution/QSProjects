@@ -13,7 +13,6 @@ namespace QS.ViewModels.Control.EEVM
 		public UowEntityAdapter(IUnitOfWork uow)
 		{
 			this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
-
 			DomainModel.NotifyChange.NotifyConfiguration.Instance?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
 		}
 
@@ -27,6 +26,10 @@ namespace QS.ViewModels.Control.EEVM
 
 		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
 		{
+			if(EntityEntryViewModel is null) {
+				return;
+			}
+			
 			var foundUpdatedObject = changeEvents.FirstOrDefault(e => DomainHelper.EqualDomainObjects(e.Entity, EntityEntryViewModel.Entity));
 			if(foundUpdatedObject != null && uow.Session.IsOpen && uow.Session.Contains(EntityEntryViewModel.Entity)) {
 				if(foundUpdatedObject.EventType == DomainModel.NotifyChange.TypeOfChangeEvent.Delete)
@@ -39,6 +42,7 @@ namespace QS.ViewModels.Control.EEVM
 		public void Dispose()
 		{
 			DomainModel.NotifyChange.NotifyConfiguration.Instance?.UnsubscribeAll(this);
+			EntityEntryViewModel = null;
 		}
 	}
 }

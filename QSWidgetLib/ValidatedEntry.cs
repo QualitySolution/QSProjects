@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 
 namespace QSWidgetLib
@@ -28,8 +28,7 @@ namespace QSWidgetLib
 						this.Changed += RegexValidate;
 						break;
 					case ValidationType.email:
-						regex = new Regex(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
-							@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
+						regex = new Regex(@"^[a-zA-Z0-9]+([\._-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9]+([\.-]?[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,10})+$");
 						this.Changed += RemoveInvalidSymbols;
 						this.Changed += RegexValidate;
 						break;

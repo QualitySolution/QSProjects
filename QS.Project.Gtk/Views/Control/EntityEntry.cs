@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Gamma.Binding.Core;
 using Gdk;
 using Gtk;
+using QS.Extensions;
 using QS.ViewModels.Control.EEVM;
 
 namespace QS.Views.Control
@@ -227,12 +228,30 @@ namespace QS.Views.Control
 		}
 
 		#endregion
-
-		public override void Destroy()
+		
+		protected override void OnDestroyed()
 		{
-			viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;
+			if(viewModel != null) {
+				ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+				viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;
+
+				if(viewModel.DisposeViewModel) {
+					viewModel.Dispose();
+					viewModel = null;
+				}
+			}
+
+			Binding.CleanSources();
+			var viewImage = buttonViewEntity.Image as Gtk.Image;
+			viewImage.DisposeImagePixbuf();
+			var selectImage = buttonSelectEntity.Image as Gtk.Image;
+			selectImage.DisposeImagePixbuf();
+			var clearImage = buttonClear.Image as Gtk.Image;
+			clearImage.DisposeImagePixbuf();
+
 			GLib.Source.Remove(timerId);
-			base.Destroy();
+			
+			base.OnDestroyed();
 		}
 	}
 }

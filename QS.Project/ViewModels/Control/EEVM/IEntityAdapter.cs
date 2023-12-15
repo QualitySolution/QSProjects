@@ -1,5 +1,4 @@
-﻿using System;
-namespace QS.ViewModels.Control.EEVM
+﻿namespace QS.ViewModels.Control.EEVM
 {
 	public interface IEntityAdapter<TEntity>
 		where TEntity : class
