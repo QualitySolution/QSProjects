@@ -74,6 +74,7 @@ namespace QS.Navigation
 	{
 		None = 0,
 		AsSlave = 1,
-		IgnoreHash = 2
+		IgnoreHash = 2,
+		AsSlaveIgnoreHash = 3
 	}
 }
