@@ -22,6 +22,20 @@ namespace Gamma.ColumnConfig
 			
 		}
 
+		#region FluentConfig
+
+		/// <summary>
+		/// Добавляет функци
+		/// </summary>
+		/// <param name="textFunc"></param>
+		/// <returns></returns>
+		public ProgressRendererMapping<TNode> Text(Func<TNode, string> textFunc){
+			LambdaSetters.Add ((c, n) => c.Text = textFunc(n));
+			return this;
+		}
+
+		#endregion
+
 		#region implemented abstract members of RendererMappingBase
 
 		public override INodeCellRenderer GetRenderer ()
