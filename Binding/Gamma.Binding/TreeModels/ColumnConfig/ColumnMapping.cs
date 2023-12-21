@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.Binding;
@@ -139,7 +139,14 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
-		
+
+		public TimeRendererMapping<TNode> AddTimeRenderer(Expression<Func<TNode, TimeSpan?>> dataProperty, bool expand = true) {
+			var render = new TimeRendererMapping<TNode>(this, dataProperty);
+			render.IsExpand = expand;
+			Renderers.Add(render);
+			return render;
+		}
+
 		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
 			var render = new EnumRendererMapping<TNode, TItem> (this, dataProperty, excludeItems);
