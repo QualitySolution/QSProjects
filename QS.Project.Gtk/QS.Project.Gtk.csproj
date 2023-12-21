@@ -227,6 +227,8 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.VehicleRegistrationNumberEntry.cs" />
     <Compile Include="Widgets.GtkUI\SimpleSelectionDatePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
+    <Compile Include="Widgets.GtkUI\TimePicker.cs" />
+    <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets.GtkUI\" />

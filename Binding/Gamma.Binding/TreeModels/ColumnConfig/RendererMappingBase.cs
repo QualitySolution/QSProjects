@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Binding;
@@ -55,7 +55,11 @@ namespace Gamma.ColumnConfig
 		{
 			return myColumn.AddDateRenderer (dataProperty, expand);
 		}
-		
+
+		public TimeRendererMapping<TNode> AddTimeRenderer(Expression<Func<TNode, TimeSpan?>> dataProperty, bool expand = true) {
+			return myColumn.AddTimeRenderer(dataProperty, expand);
+		}
+
 		public EnumRendererMapping<TNode, TItem> AddEnumRenderer<TItem>(Expression<Func<TNode, TItem>> dataProperty, bool expand = true, Enum [] excludeItems = null) where TItem : struct, IConvertible
 		{
 			return myColumn.AddEnumRenderer (dataProperty, expand, excludeItems);
