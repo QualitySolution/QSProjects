@@ -113,10 +113,8 @@ namespace QS.HistoryLog
 
 			var userId = UserRepository.GetCurrentUserId();
 			var start = DateTime.Now;
-
-			var conStr = userUoW.Session.Connection.ConnectionString;
 			var reg = new Regex("user id=(.+?)(;|$)");
-			var match = reg.Match(conStr);
+			var match = reg.Match(connectionString);
 			string dbLogin = match.Success ? match.Groups[1].Value : null;
 
 			var changeSet = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
