@@ -47,12 +47,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererCombo.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererDate.cs" />
+    <Compile Include="TreeModels\CellRenderers\NodeCellRendererTime.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererSpin.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererText.cs" />
     <Compile Include="TreeModels\CellRenderers\NodeCellRendererToggle.cs" />
     <Compile Include="TreeModels\CellRenderers\INodeCellRenderer.cs" />
     <Compile Include="TreeModels\ColumnConfig\ColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\ComboRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\TimeRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\DateRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\EnumRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\IColumnMapping.cs" />
