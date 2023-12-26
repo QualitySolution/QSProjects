@@ -1,8 +1,7 @@
-﻿using QS.DomainModel.UoW;
+using QS.DomainModel.UoW;
 using QS.Project.DB;
 
-namespace QS.Testing.DB
-{
+namespace QS.Testing.DB {
 	/// <summary>
 	/// Базовый класс для тестирования работы с базой.
 	/// *Внимание* на при создании нового UoW, создается новая чистая база данных в памяти
@@ -22,7 +21,7 @@ namespace QS.Testing.DB
 		public void InitialiseUowFactory()
 		{
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(OrmConfig.NhConfig);
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(inMemoryDBTestSessionProvider);
 		}
 
 		public void NewSessionWithSameDB()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -240,7 +240,7 @@ namespace QS.Widgets.GtkUI
 			}
 
 			foreach(var item in _deletePermissionList) {
-				_uow.Delete<EntityUserPermission>(item.EntityPermission as EntityUserPermission);
+				_uow.Delete(item.EntityPermission);
 				foreach(var extendedPermission in item.EntityPermissionExtended)
 					_uow.Delete(extendedPermission);
 			}

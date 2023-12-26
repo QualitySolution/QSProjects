@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
 using NHibernate.Criterion;
 using QS.Deletion.Configuration;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using System;
+using System.Collections;
+using System.Linq;
 
-namespace QS.Deletion
-{
+namespace QS.Deletion {
 	/// <summary>
 	/// Класс позволяет заменять ссылки в базе с одной сущности на другую.
 	/// Поиск зависимых объектов осуществляется на основании конфигурации удаления.
@@ -60,7 +59,7 @@ namespace QS.Deletion
 				foreach(var item in GetLinkedEntities(uow, depend, fromE))
 				{
 					propInfo.SetValue(item, toE, null);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}
@@ -70,7 +69,7 @@ namespace QS.Deletion
 				var propInfo = depend.ObjectClass.GetProperty(depend.PropertyName);
 				foreach(var item in GetLinkedEntities(uow, depend, fromE)) {
 					propInfo.SetValue(item, toE, null);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}
@@ -86,7 +85,7 @@ namespace QS.Deletion
 					coll.Remove(replaced);
 					if(exist == null)
 						coll.Add(toE);
-					uow.TrySave(item);
+					uow.Save(item);
 					replacedLinks++;
 				}
 			}

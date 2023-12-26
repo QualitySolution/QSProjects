@@ -1,9 +1,8 @@
-﻿using System;
 using NHibernate;
+using System;
 
-namespace QS.Project.DB
-{
-    public class ConfiguredSessionFactorySessionProvider : ISessionProvider
+namespace QS.Project.DB {
+	public class ConfiguredSessionFactorySessionProvider : ISessionProvider
     {
         public ConfiguredSessionFactorySessionProvider(ISessionFactory sessionFactory)
         {

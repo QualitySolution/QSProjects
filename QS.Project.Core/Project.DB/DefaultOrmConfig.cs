@@ -1,23 +1,30 @@
-﻿using System;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection;
+using Autofac;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using FluentNHibernate.Conventions;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
 using QS.DomainModel.Tracking;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
+using System.Reflection;
 
-namespace QS.Project.DB
-{
-    public class DefaultOrmConfig : IOrmConfig
+namespace QS.Project.DB {
+	public class DefaultOrmConfig : IOrmConfig
     {
         private FluentConfiguration fluenConfig;
+		private Configuration nhConfig;
+		private readonly ILifetimeScope scope;
+
+		public DefaultOrmConfig(ILifetimeScope scope) {
+			this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
+		}
 
         public ISessionFactory SessionFactory { get; private set; }
 
-        private Configuration nhConfig;
         public Configuration NhConfig {
             get {
                 if(nhConfig == null && fluenConfig != null)
@@ -49,20 +56,28 @@ namespace QS.Project.DB
         {
             fluenConfig = Fluently.Configure().Database(database);
 
-            fluenConfig.Mappings(m => {
-                foreach(var ass in assemblies) {
+			var conventions = scope.ResolveOptional<IEnumerable<IConvention>>();
+
+			fluenConfig.Mappings(m => {
+				if(conventions != null && conventions.Any()) {
+					m.FluentMappings.Conventions.Add(conventions.ToArray());
+				}
+				foreach(var ass in assemblies) {
                     m.FluentMappings.AddFromAssembly(ass);
                 }
             });
 
-            var trackerListener = new GlobalUowEventsTracker();
-            fluenConfig.ExposeConfiguration(cfg => {
-                cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, new[] { trackerListener });
-                cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, new[] { trackerListener });
-                cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, new[] { trackerListener });
-                cfg.AppendListeners(NHibernate.Event.ListenerType.PostUpdate, new[] { trackerListener });
-                cfg.AppendListeners(NHibernate.Event.ListenerType.PostInsert, new[] { trackerListener });
-            });
+			var tracker = scope.ResolveOptional<GlobalUowEventsTracker>();
+			if(tracker != null) {
+				var listeners = new[] { tracker };
+				fluenConfig.ExposeConfiguration(cfg => {
+					cfg.AppendListeners(NHibernate.Event.ListenerType.PostLoad, listeners);
+					cfg.AppendListeners(NHibernate.Event.ListenerType.PreLoad, listeners);
+					cfg.AppendListeners(NHibernate.Event.ListenerType.PostDelete, listeners);
+					cfg.AppendListeners(NHibernate.Event.ListenerType.PostUpdate, listeners);
+					cfg.AppendListeners(NHibernate.Event.ListenerType.PostInsert, listeners);
+				});
+			}
 
             if(exposeConfiguration != null)
                 fluenConfig.ExposeConfiguration(exposeConfiguration);
