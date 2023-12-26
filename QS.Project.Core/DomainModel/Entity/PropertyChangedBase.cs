@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +28,11 @@ namespace QS.DomainModel.Entity
 							PropertyChanged(this, new PropertyChangedEventArgs(propName));
 				}
 			}
+		}
+
+		protected virtual void RaisePropertyChanged(PropertyChangedEventArgs args) 
+		{
+			PropertyChanged?.Invoke (this, args);
 		}
 
 		/// <summary>
