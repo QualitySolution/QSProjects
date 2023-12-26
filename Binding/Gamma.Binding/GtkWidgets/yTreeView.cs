@@ -139,7 +139,7 @@ namespace Gamma.GtkWidgets {
 
 				foreach(var render in col.ConfiguredRenderers) {
 					var cell = render.GetRenderer() as CellRenderer;
-					if(cell is CellRendererSpin rendererSpin && !render.Custom) {
+					if(cell is CellRendererSpin rendererSpin && render is ICustomRendererMapping rendererMap && !rendererMap.Custom) {
 						rendererSpin.EditingStarted += OnNumbericNodeCellEditingStarted;
 						rendererSpin.Edited += NumericNodeCellEdited;
 					} else if(cell is CellRendererCombo rendererCombo) {

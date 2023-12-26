@@ -163,29 +163,10 @@ namespace Gamma.ColumnConfig
 			return render;
 		}
 		
-		public CustomNumberRendererMapping<TNode> AddCustomNumericRenderer(
-			Expression<Func<TNode, object>> dataProperty,
-			EditedHandler editedHandler,
-			bool expand = true)
+		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, EditedHandler editedHandler, bool expand = true)
 		{
-			var render = new CustomNumberRendererMapping<TNode> (this, dataProperty, editedHandler) {
-				IsExpand = expand
-			};
-			
-			Renderers.Add(render);
-			return render;
-		}
-		
-		public CustomNumberRendererMapping<TNode> AddCustomNumericRenderer(
-			Expression<Func<TNode, object>> dataProperty,
-			EditedHandler editedHandler,
-			IValueConverter converter,
-			bool expand = true)
-		{
-			var render = new CustomNumberRendererMapping<TNode> (this, dataProperty, editedHandler, converter) {
-				IsExpand = expand
-			};
-			
+			var render = new NumberRendererMapping<TNode> (this, dataProperty, editedHandler);
+			render.IsExpand = expand;
 			Renderers.Add(render);
 			return render;
 		}

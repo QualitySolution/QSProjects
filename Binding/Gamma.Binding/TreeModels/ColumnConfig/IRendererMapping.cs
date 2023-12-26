@@ -8,7 +8,6 @@ namespace Gamma.ColumnConfig
 		INodeCellRenderer GetRenderer();
 		object tag { get; }
 		bool IsExpand { get;}
-		bool Custom { get; }
 	}
 
 	public interface IRendererMappingGeneric<TNode> : IRendererMapping

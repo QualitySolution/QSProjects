@@ -13,8 +13,6 @@ namespace Gamma.ColumnConfig
 
 		public object tag { get; set; }
 
-		public bool Custom { get; protected set; }
-
 		protected RendererMappingBase (ColumnMapping<TNode> parentColumn)
 		{
 			myColumn = parentColumn;

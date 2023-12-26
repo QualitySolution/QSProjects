@@ -54,7 +54,7 @@
     <Compile Include="TreeModels\CellRenderers\INodeCellRenderer.cs" />
     <Compile Include="TreeModels\ColumnConfig\ColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\ComboRendererMapping.cs" />
-    <Compile Include="TreeModels\ColumnConfig\CustomNumberRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ICustomRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\TimeRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\DateRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\EnumRendererMapping.cs" />
