@@ -162,6 +162,33 @@ namespace Gamma.ColumnConfig
 			Renderers.Add (render);
 			return render;
 		}
+		
+		public CustomNumberRendererMapping<TNode> AddCustomNumericRenderer(
+			Expression<Func<TNode, object>> dataProperty,
+			EditedHandler editedHandler,
+			bool expand = true)
+		{
+			var render = new CustomNumberRendererMapping<TNode> (this, dataProperty, editedHandler) {
+				IsExpand = expand
+			};
+			
+			Renderers.Add(render);
+			return render;
+		}
+		
+		public CustomNumberRendererMapping<TNode> AddCustomNumericRenderer(
+			Expression<Func<TNode, object>> dataProperty,
+			EditedHandler editedHandler,
+			IValueConverter converter,
+			bool expand = true)
+		{
+			var render = new CustomNumberRendererMapping<TNode> (this, dataProperty, editedHandler, converter) {
+				IsExpand = expand
+			};
+			
+			Renderers.Add(render);
+			return render;
+		}
 
 		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, IValueConverter converter, bool expand = true)
 		{

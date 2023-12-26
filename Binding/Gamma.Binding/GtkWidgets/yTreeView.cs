@@ -139,14 +139,14 @@ namespace Gamma.GtkWidgets {
 
 				foreach(var render in col.ConfiguredRenderers) {
 					var cell = render.GetRenderer() as CellRenderer;
-					if(cell is CellRendererSpin) {
-						(cell as CellRendererSpin).EditingStarted += OnNumbericNodeCellEditingStarted;
-						(cell as CellRendererSpin).Edited += NumericNodeCellEdited;
-					} else if(cell is CellRendererCombo) {
-						(cell as CellRendererCombo).Edited += ComboNodeCellEdited;
+					if(cell is CellRendererSpin rendererSpin && !render.Custom) {
+						rendererSpin.EditingStarted += OnNumbericNodeCellEditingStarted;
+						rendererSpin.Edited += NumericNodeCellEdited;
+					} else if(cell is CellRendererCombo rendererCombo) {
+						rendererCombo.Edited += ComboNodeCellEdited;
 						(cell as INodeCellRendererCombo).MyTreeView = this;
-					} else if(cell is CellRendererToggle) {
-						(cell as CellRendererToggle).Toggled += OnToggledCell;
+					} else if(cell is CellRendererToggle rendererToggle) {
+						rendererToggle.Toggled += OnToggledCell;
 					}
 
 					var canNextCell = cell as INodeCellRendererCanGoNextCell;
