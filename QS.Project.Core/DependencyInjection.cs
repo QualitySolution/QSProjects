@@ -28,7 +28,7 @@ namespace QS.Project.Core {
 		/// событий в БД, что подойдет для приложений без GUI
 		/// <para><b>ВАЖНО: Взаимоисключающий с другими методами Add*UoW(services)</b></para>
 		/// </summary>
-		public static IServiceCollection AddDefaultTrackedUoW(this IServiceCollection services) {
+		public static IServiceCollection AddTrackedUoW(this IServiceCollection services) {
 			services
 				.AddSingleton<ITrackerActionInvoker, DefaultTrackerActionInvoker>()
 				.AddSingleton<GlobalUowEventsTracker>()
