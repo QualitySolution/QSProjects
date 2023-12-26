@@ -4,6 +4,7 @@ using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
+using QS.Utilities;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
