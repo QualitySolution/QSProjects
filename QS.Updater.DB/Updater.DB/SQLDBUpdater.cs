@@ -46,6 +46,8 @@ namespace QS.Updater.DB
 		{
 			//Увеличиваем время выполнения одной команды до 4 минут. При больших базах процесс обновления может вылетать по таймауту.
 			connectionStringBuilder.ConnectionTimeout = 240;
+			//Так как есть скрипты обновления использующие пользовательские переменные.
+			connectionStringBuilder.AllowUserVariables = true;
 
 			var page = navigation.OpenViewModel<UpdateProcessViewModel>(null, addingRegistrations: c => 
 				c.Register(cxt => connectionStringBuilder));
