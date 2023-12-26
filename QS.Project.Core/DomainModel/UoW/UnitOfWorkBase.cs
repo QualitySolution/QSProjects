@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
-[assembly:InternalsVisibleTo("QS.LibsTest.Core")]
-namespace QS.DomainModel.UoW
-{
+[assembly: InternalsVisibleTo("QS.LibsTest.Core")]
+namespace QS.DomainModel.UoW {
 	public abstract class UnitOfWorkBase : IUnitOfWorkTracked
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -22,9 +22,10 @@ namespace QS.DomainModel.UoW
 			BusinessObjectPreparer.Init();
 		}
 
-		protected UnitOfWorkBase(ISessionProvider sessionProvider)
+		protected UnitOfWorkBase(ISessionProvider sessionProvider, SingleUowEventsTracker eventsTracker = null)
 		{
-			this.SessionProvider = sessionProvider;
+			this.SessionProvider = sessionProvider ?? throw new ArgumentNullException(nameof(sessionProvider));
+			EventsTracker = eventsTracker;
 		}
 
 		public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
@@ -35,7 +36,7 @@ namespace QS.DomainModel.UoW
 
 		protected ISessionProvider SessionProvider;
 
-		public SingleUowEventsTracker EventsTracker { get; } = new SingleUowEventsTracker();
+		public SingleUowEventsTracker EventsTracker { get; } 
 
 		public bool IsNew { get; protected set; }
 
@@ -70,14 +71,39 @@ namespace QS.DomainModel.UoW
 
 				IsNew = false;
 				GlobalUowEventsTracker.OnPostCommit(this);
-
-			} catch(Exception ex)
+			} 
+			catch(Exception ex)
 			{
 				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
 				if(transaction.IsActive)
 					transaction.Rollback();
 				throw;
-			} finally {
+			} 
+			finally {
+				transaction.Dispose();
+				transaction = null;
+			}
+		}
+
+		public async Task CommitAsync() {
+			if(transaction == null || !transaction.IsActive) {
+				logger.Warn("Попытка комита закрытой транзацкии.");
+				return;
+			}
+
+			try {
+				await transaction.CommitAsync();
+
+				IsNew = false;
+				GlobalUowEventsTracker.OnPostCommit(this);
+			}
+			catch(Exception ex) {
+				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
+				if(transaction.IsActive)
+					await transaction.RollbackAsync();
+				throw;
+			}
+			finally {
 				transaction.Dispose();
 				transaction = null;
 			}
@@ -144,7 +170,7 @@ namespace QS.DomainModel.UoW
 			return Session.Get(clazz, id);
 		}
 
-		public virtual void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject
+		public virtual void Save(object entity, bool orUpdate = true)
 		{
 			OpenTransaction();
 
@@ -156,14 +182,13 @@ namespace QS.DomainModel.UoW
 			RaiseSessionScopeEntitySaved(new object[] { entity });
 		}
 
-		public virtual void TrySave(object entity, bool orUpdate = true)
-		{
+		public virtual async Task SaveAsync(object entity, bool orUpdate = true) {
 			OpenTransaction();
 
 			if(orUpdate)
-				Session.SaveOrUpdate(entity);
+				await Session.SaveOrUpdateAsync(entity);
 			else
-				Session.Save(entity);
+				await Session.SaveAsync(entity);
 
 			RaiseSessionScopeEntitySaved(new object[] { entity });
 		}
@@ -173,16 +198,15 @@ namespace QS.DomainModel.UoW
 			Delete(Session.Load<T>(id));
 		}
 
-		public void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject
+		public void Delete(object entity)
 		{
 			OpenTransaction();
 			Session.Delete(entity);
 		}
 
-		public void TryDelete(object entity)
-		{
+		public async Task DeleteAsync(object entity) {
 			OpenTransaction();
-			Session.Delete(entity);
+			await Session.DeleteAsync(entity);
 		}
 
 		internal virtual void OpenTransaction()

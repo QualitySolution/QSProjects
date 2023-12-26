@@ -1,7 +1,6 @@
-﻿using NHibernate;
+using NHibernate;
 
-namespace QS.Project.DB
-{
+namespace QS.Project.DB {
 	public class DefaultSessionProvider : ISessionProvider
 	{
 		public DefaultSessionProvider()
@@ -10,7 +9,7 @@ namespace QS.Project.DB
 
 		public virtual ISession OpenSession()
 		{
-			ISession session = OrmConfig.Sessions.OpenSession();
+			ISession session = OrmConfig.Config.SessionFactory.OpenSession();
 			session.FlushMode = FlushMode.Commit;
 			return session;
 		}

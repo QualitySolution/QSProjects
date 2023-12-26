@@ -1,10 +1,9 @@
-﻿using System.Reflection;
 using NHibernate.Cfg;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
+using System.Reflection;
 
-namespace QS.Testing.DB
-{
+namespace QS.Testing.DB {
 	/// <summary>
 	/// Базовый класс для тестирования работы с базой.
 	/// *Внимание* на при создании нового UoW, создается новая чистая база данных в памяти
@@ -31,7 +30,7 @@ namespace QS.Testing.DB
 			OrmConfig.ConfigureOrm(db_config, assemblies);
 			configuration = OrmConfig.NhConfig;
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration);
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(inMemoryDBTestSessionProvider);
 		}
 
 		/// <summary>

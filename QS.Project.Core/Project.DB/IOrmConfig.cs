@@ -1,14 +1,13 @@
-﻿using System;
-using System.Data.Common;
-using System.Reflection;
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
+using System;
+using System.Data.Common;
+using System.Reflection;
 
-namespace QS.Project.DB
-{
-    public interface IOrmConfig
+namespace QS.Project.DB {
+	public interface IOrmConfig
     {
         Configuration NhConfig { get; set; }
         ISessionFactory SessionFactory { get; }
