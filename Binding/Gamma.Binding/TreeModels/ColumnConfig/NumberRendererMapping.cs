@@ -7,9 +7,10 @@ using Gamma.Binding;
 
 namespace Gamma.ColumnConfig
 {
-	public class NumberRendererMapping<TNode> : RendererMappingBase<NodeCellRendererSpin<TNode>, TNode>
+	public class NumberRendererMapping<TNode> : RendererMappingBase<NodeCellRendererSpin<TNode>, TNode>, ICustomRendererMapping
 	{
 		private NodeCellRendererSpin<TNode> cellRenderer = new NodeCellRendererSpin<TNode>();
+		
 
 		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> getDataExp)
 			: base(column)
@@ -29,12 +30,25 @@ namespace Gamma.ColumnConfig
 				c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}",
 			                            c.EditingValueConverter.Convert (getter (n), typeof(double), null, null)));
 		}
+		
+		public NumberRendererMapping(
+			ColumnMapping<TNode> column,
+			Expression<Func<TNode, object>> getDataExp,
+			EditedHandler editedHandler) : base(column)
+		{
+			var getter = getDataExp.Compile();
+			cellRenderer.Edited += editedHandler;
+			Custom = true;
+			cellRenderer.LambdaSetters.Add((c, n) => c.Text = String.Format ("{0:" + $"F{c.Digits}" + "}", getter (n)));
+		}
 
 		public NumberRendererMapping (ColumnMapping<TNode> column)
 			: base(column)
 		{
 
 		}
+		
+		public bool Custom { get; }
 
 		#region implemented abstract members of RendererMappingBase
 

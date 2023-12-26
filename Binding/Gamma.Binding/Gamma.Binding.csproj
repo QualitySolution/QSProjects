@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -54,6 +54,7 @@
     <Compile Include="TreeModels\CellRenderers\INodeCellRenderer.cs" />
     <Compile Include="TreeModels\ColumnConfig\ColumnMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\ComboRendererMapping.cs" />
+    <Compile Include="TreeModels\ColumnConfig\ICustomRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\TimeRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\DateRendererMapping.cs" />
     <Compile Include="TreeModels\ColumnConfig\EnumRendererMapping.cs" />
