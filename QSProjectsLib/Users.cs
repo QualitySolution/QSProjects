@@ -138,12 +138,11 @@ namespace QSProjectsLib
 					}
 				} else {
 					logger.Info("Удаляем пользователя MySQL...");
-					string sql;
-					sql = "DROP USER @login, @login @'localhost'";
+					var login = MySqlHelper.EscapeString(loginname);
+					string sql = $"DROP USER '{login}', '{login}'@'localhost';";
 					try {
 						QSMain.CheckConnectionAlive ();
 						MySqlCommand cmd = new MySqlCommand (sql, QSMain.connectionDB);
-						cmd.Parameters.AddWithValue ("@login", loginname);
 						cmd.ExecuteNonQuery ();
 						logger.Info ("Пользователь удалён. Ok");
 

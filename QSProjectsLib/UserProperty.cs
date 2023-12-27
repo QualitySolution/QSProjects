@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Gtk;
 using MySqlConnector;
 using NLog;
@@ -313,12 +312,12 @@ namespace QSProjectsLib
 					}
 				}
 				//Создание пользователя.
-				sql = "CREATE USER @login IDENTIFIED BY @password";
+				var login = MySqlHelper.EscapeString(entryLogin.Text);
+				var password = MySqlHelper.EscapeString(entryPassword.Text);
+				sql = $"CREATE USER '{login}' IDENTIFIED BY '{password}';";
 				cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", entryLogin.Text);
-				cmd.Parameters.AddWithValue("@password", entryPassword.Text);
 				cmd.ExecuteNonQuery();
-				cmd.CommandText = "CREATE USER @login @'localhost' IDENTIFIED BY @password";
+				cmd.CommandText = $"CREATE USER '{login}'@'localhost' IDENTIFIED BY '{password}';";
 				cmd.ExecuteNonQuery();
 
 				logger.Info("Ok");
@@ -362,10 +361,10 @@ namespace QSProjectsLib
 				}
 
 				//Переименование пользователя.
-				sql = "RENAME USER @old_login TO @new_login, @old_login @'localhost' TO @new_login @'localhost'";
+				var oldLogin = MySqlHelper.EscapeString(OriginLogin);
+				var newLogin = MySqlHelper.EscapeString(entryLogin.Text);
+				sql = $"RENAME USER '{oldLogin}' TO '{newLogin}', '{oldLogin}'@'localhost' TO '{newLogin}'@'localhost';";
 				cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@old_login", OriginLogin);
-				cmd.Parameters.AddWithValue("@new_login", entryLogin.Text);
 				cmd.ExecuteNonQuery();
 				logger.Info("Ok");
 				return true;
@@ -393,18 +392,16 @@ namespace QSProjectsLib
 					MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
 					var version = (string)cmd.ExecuteScalar();
 					logger.Debug("Server version: " + version);
+					var loginEsc = MySqlHelper.EscapeString(entryLogin.Text);
+					var passwordEsc = MySqlHelper.EscapeString(entryPassword.Text);
 					if(!version.EndsWith("-MariaDB") && Version.Parse(version) >= new Version(8, 0, 13)) {
-						cmd.CommandText = "ALTER USER @login IDENTIFIED BY @password;";
-						cmd.Parameters.AddWithValue("@login", entryLogin.Text);
-						cmd.Parameters.AddWithValue("@password", entryPassword.Text);
+						cmd.CommandText = $"ALTER USER '{loginEsc}' IDENTIFIED BY '{passwordEsc}';";
 						cmd.ExecuteNonQuery();
 					}
 					else {
-						cmd.CommandText = "SET PASSWORD FOR @login = PASSWORD(@password)";
-						cmd.Parameters.AddWithValue("@login", entryLogin.Text);
-						cmd.Parameters.AddWithValue("@password", entryPassword.Text);
+						cmd.CommandText = $"SET PASSWORD FOR '{loginEsc}' = PASSWORD('{passwordEsc}');";
 						cmd.ExecuteNonQuery();
-						cmd.CommandText = "SET PASSWORD FOR @login @'localhost' = PASSWORD(@password)";
+						cmd.CommandText = $"SET PASSWORD FOR '{loginEsc}'@'localhost' = PASSWORD('{passwordEsc}');";
 						cmd.ExecuteNonQuery();
 					}
 
@@ -421,40 +418,38 @@ namespace QSProjectsLib
 			logger.Info("Устанавливаем права...");
 			try {
 				string privileges;
+				var loginEsc = MySqlHelper.EscapeString(entryLogin.Text);
 				if(checkAdmin.Active)
 					privileges = "ALL";
 				else
 					privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, SHOW VIEW";
-				string sql = $"GRANT {privileges} ON `{QSMain.connectionDB.Database}`.* TO @login, @login @'localhost'";
+				string sql = $"GRANT {privileges} ON `{QSMain.connectionDB.Database}`.* TO '{loginEsc}', '{loginEsc}'@'localhost'";
 				QSMain.CheckConnectionAlive();
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", entryLogin.Text);
 				cmd.ExecuteNonQuery();
 				if(checkAdmin.Active) {
-					cmd.CommandText = "GRANT CREATE USER, GRANT OPTION ON *.* TO @login, @login @'localhost'";
+					cmd.CommandText = $"GRANT CREATE USER, GRANT OPTION ON *.* TO '{loginEsc}', '{loginEsc}'@'localhost'";
 				} else {
-					cmd.CommandText = "REVOKE CREATE USER, GRANT OPTION ON *.* FROM @login, @login @'localhost'";
+					cmd.CommandText = $"REVOKE CREATE USER, GRANT OPTION ON *.* FROM '{loginEsc}', '{loginEsc}'@'localhost'";
 				}
 				cmd.ExecuteNonQuery();
 				bool GrantMake = false;
 				if(checkAdmin.Active) {
-					sql = "GRANT SELECT, UPDATE ON mysql.* TO @login, @login @'localhost'";
+					sql = $"GRANT SELECT, UPDATE ON mysql.* TO '{loginEsc}', '{loginEsc}'@'localhost'";
 					GrantMake = true;
 				} else {
-					sql = "SHOW GRANTS FOR @login";
+					sql = $"SHOW GRANTS FOR '{loginEsc}'";
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					cmd.Parameters.AddWithValue("@login", entryLogin.Text);
 					using(MySqlDataReader rdr = cmd.ExecuteReader()) {
 						while(rdr.Read()) {
 							if(rdr[0].ToString().IndexOf("mysql") > 0)
 								GrantMake = true;
 						}
 					}
-					sql = "REVOKE SELECT, UPDATE ON mysql.* FROM @login, @login @'localhost'";
+					sql = $"REVOKE SELECT, UPDATE ON mysql.* FROM '{loginEsc}', '{loginEsc}'@'localhost'";
 				}
 				if(GrantMake) {
 					cmd = new MySqlCommand(sql, QSMain.connectionDB);
-					cmd.Parameters.AddWithValue("@login", entryLogin.Text);
 					cmd.ExecuteNonQuery();
 				}
 				logger.Info("Права установлены. Ok");
