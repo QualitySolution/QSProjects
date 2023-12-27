@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MySqlConnector;
@@ -355,57 +355,7 @@ namespace QS.Project.Repositories
 				throw ex;
 			}
 		}
-
-		private void UpdateUserPresetPermissions(int userId, Dictionary<string, bool> userPresetPermissions)
-		{
-			logger.Info("Загрузка прав пользователя №{0}...", userId);
-
-			if(userId == 0) {
-				logger.Warn("Попытка обновить права неизвестного пользователя");
-				return;
-			}
-
-			var activeUserPermissions = LoadUserPermissions(userId);
-
-
-			var insertingPermissions = userPresetPermissions.Where(x => x.Value).Where(x => !activeUserPermissions.Contains(x.Key)).Select(x => x.Key);
-			string insertingPermissionsParam = "";
-			foreach(var item in insertingPermissions) {
-				insertingPermissionsParam += $"(\"{item}\", {userId}),"; 
-			}
-			insertingPermissionsParam = insertingPermissionsParam.Trim(',');
-
-			var deletingPermissions = userPresetPermissions.Where(x => !x.Value).Where(x => activeUserPermissions.Contains(x.Key)).Select(x => x.Key);
-			var deletingPermissionsParam = string.Join("\", \"", deletingPermissions).Trim(',', ' ', '"');
-
-			string insertSql = "INSERT INTO permission_preset_user (permission_name, user_id) VALUES " + insertingPermissionsParam + ";";
-			string deleteSql = "DELETE FROM permission_preset_user WHERE user_id = @id AND permission_name IN (" + deletingPermissionsParam + ");";
-
-			try {
-				mysqlProvider.CheckConnectionAlive();
-				MySqlCommand cmd = new MySqlCommand(deleteSql, mysqlProvider.DbConnection);
-
-				cmd.Parameters.AddWithValue("@id", userId);
-
-				var result = cmd.ExecuteNonQuery();
-				logger.Info($"Удалено {result} прав для пользователя {userId}");
-			} catch(Exception ex) {
-				return;
-			}
-
-			try {
-				mysqlProvider.CheckConnectionAlive();
-				MySqlCommand cmd = new MySqlCommand(insertSql, mysqlProvider.DbConnection);
-
-				cmd.Parameters.AddWithValue("@id", userId);
-
-				var result = cmd.ExecuteNonQuery();
-				logger.Info($"Добавлено {result} прав для пользователя {userId}");
-			} catch(Exception ex) {
-				return;
-			}
-		}
-
+		
 		public void UpdateUser(UserBase user, string password, string extraFieldsForUpdate, Dictionary<string, string> permissionsValues)
 		{
 			var originUser = GetUser(user.Id);
