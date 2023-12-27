@@ -37,7 +37,7 @@ namespace QS.Widgets
 		{
 			Text = null;
 			Visible = false;
-			if(Convert.ToInt64(checkValue) != Convert.ToInt64(Adjustment.Upper))
+			if(Adjustment != null && Convert.ToInt64(checkValue) != Convert.ToInt64(Adjustment.Upper))
 				logger.Warn($"Прогресс остановлен на шаге {checkValue} из {Adjustment.Upper}");
 			GtkHelper.WaitRedraw();
 		}
