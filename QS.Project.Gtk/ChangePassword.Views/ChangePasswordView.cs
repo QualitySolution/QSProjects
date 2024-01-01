@@ -1,85 +1,76 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Gtk;
 using QS.Navigation;
 using QS.Utilities.Text;
 using QS.ViewModels;
 using Key = Gdk.Key;
+using QS.Views.Dialog;
 
 namespace QS.ChangePassword.Views
 {
-    public partial class ChangePasswordView : Gtk.Dialog
+    public partial class ChangePasswordView : DialogViewBase<ChangePasswordViewModel>
     {
-        public ChangePasswordView(ChangePasswordViewModel viewModel)
+		private readonly Image _showCurrentPasswordIcon;
+		private readonly Image _showNewPasswordIcon;
+		private readonly Image _hideCurrentPasswordIcon;
+		private readonly Image _hideNewPasswordIcon;
+
+		public ChangePasswordView(ChangePasswordViewModel viewModel) : base(viewModel)
         {
-            this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             Build();
-            Title = "Смена пароля";
 
             var eyePix = Gdk.Pixbuf.LoadFromResource("QS.Icons.Eye.png");
             var crossedEyePix = Gdk.Pixbuf.LoadFromResource("QS.Icons.CrossedEye.png");
 
-            eyeIcon = new Image { Pixbuf = eyePix };
-            eyeIcon2 = new Image { Pixbuf = eyePix };
-            crossedEyeIcon = new Image { Pixbuf = crossedEyePix };
-            crossedEyeIcon2 = new Image { Pixbuf = crossedEyePix };
+			_showCurrentPasswordIcon = new Image { Pixbuf = eyePix };
+            _showNewPasswordIcon = new Image { Pixbuf = eyePix };
+			_hideCurrentPasswordIcon = new Image { Pixbuf = crossedEyePix };
+			_hideNewPasswordIcon = new Image { Pixbuf = crossedEyePix };
 
             Configure();
         }
 
-        private readonly ChangePasswordViewModel viewModel;
-
-        private readonly Image eyeIcon;
-        private readonly Image crossedEyeIcon;
-
-        private readonly Image eyeIcon2;
-        private readonly Image crossedEyeIcon2;
-
-        private void Configure()
+		private void Configure()
         {
-            buttonOK.CanFocus = false;
-            buttonOK.Clicked += (sender, args) => {
-                if(viewModel.Save()) {
-                   Respond(ResponseType.Ok);
-                }
-            };
-            buttonOK.Sensitive = viewModel.CanSave;
+			btnSave.CanFocus = false;
+			btnSave.Clicked += (sender, e) => ViewModel.Save();
+			btnSave.Binding
+				.AddBinding(ViewModel, vm => vm.CanSave, w => w.Sensitive)
+				.InitializeFromSource();
 
-            buttonCancel.CanFocus = false;
-            buttonCancel.Clicked += (sender, args) => viewModel.Close(false, CloseSource.Cancel);
+            btnCancel.CanFocus = false;
+			btnCancel.Clicked += (sender, e) => ViewModel.Close(false, CloseSource.Cancel);
 
-            yentryOldPassword.Changed += (sender, args) => viewModel.OldPassword = yentryOldPassword.Text?.ToSecureString();
-            yentryNewPassword.Changed += (sender, args) => viewModel.NewPassword = yentryNewPassword.Text?.ToSecureString();
-            yentryNewPasswordConfirm.Changed +=
-                (sender, args) => viewModel.NewPasswordConfirm = yentryNewPasswordConfirm.Text?.ToSecureString();
+            entryCurrentPassword.Changed += (sender, e) => ViewModel.OldPassword = entryCurrentPassword.Text?.ToSecureString();
+            entryNewPassword.Changed += (sender, e) => ViewModel.NewPassword = entryNewPassword.Text?.ToSecureString();
+			entryConfirmNewPassword.Changed +=
+                (sender, args) => ViewModel.NewPasswordConfirm = entryConfirmNewPassword.Text?.ToSecureString();
 
-            ytoggleShowOldPassword.CanFocus = false;
-            ytoggleShowOldPassword.Toggled += (sender, args) => {
-                var active = ytoggleShowOldPassword.Active;
-                yentryOldPassword.Visibility = active;
-                ytoggleShowOldPassword.Image = active ? crossedEyeIcon : eyeIcon;
+            ytoggleShowCurrentPassword.CanFocus = false;
+			ytoggleShowCurrentPassword.Toggled += (sender, args) => {
+                var active = ytoggleShowCurrentPassword.Active;
+                entryCurrentPassword.Visibility = active;
+				ytoggleShowCurrentPassword.Image = active ? _hideCurrentPasswordIcon : _showCurrentPasswordIcon;
             };
 
             ytoggleShowPassword.CanFocus = false;
             ytoggleShowPassword.Toggled += (sender, args) => {
                 var active = ytoggleShowPassword.Active;
-                yentryNewPassword.Visibility = active;
-                ytoggleShowPassword.Image = active ? crossedEyeIcon2 : eyeIcon2;
+                entryNewPassword.Visibility = active;
+                ytoggleShowPassword.Image = active ? _hideNewPasswordIcon : _showNewPasswordIcon;
             };
 
-            viewModel.PropertyChanged += (sender, args) => {
+            ViewModel.PropertyChanged += (sender, args) => {
                 switch(args.PropertyName) {
-                    case nameof(viewModel.ValidationStatus):
+                    case nameof(ViewModel.ValidationStatus):
                         UpdateValidationStatus();
-                        break;
-                    case nameof(viewModel.CanSave):
-                        buttonOK.Sensitive = viewModel.CanSave;
-                        break;
+						break;
                 }
             };
+
             KeyReleaseEvent += (o, args) => {
-                if(args.Event.Key == Key.Return && viewModel.CanSave) {
-                    buttonOK.Click();
+                if(args.Event.Key == Key.Return && ViewModel.CanSave) {
+                    btnSave.Click();
                 }
             };
 
@@ -89,15 +80,15 @@ namespace QS.ChangePassword.Views
 
         private void InitializeValidationLabels()
         {
-            for(int i = 0; i < viewModel.MaxMessages; i++) {
+            for(int i = 0; i < ViewModel.MaxMessages; i++) {
                 vboxValidationResult.Add(new Label { UseMarkup = true });
             }
         }
 
         private void UpdateValidationStatus()
         {
-            var colorName = viewModel.CanSave ? "green" : "red";
-            var messages = viewModel.ValidationStatus.Split('\n');
+            var colorName = ViewModel.CanSave ? "green" : "red";
+            var messages = ViewModel.ValidationStatus.Split('\n');
             var labels = vboxValidationResult.Children.OfType<Label>().ToArray();
             for(int i = 0; i < labels.Length; i++) {
                 labels[i].Markup = messages.Length > i ? $"<span foreground=\"{colorName}\">{messages[i]}</span>" : "";

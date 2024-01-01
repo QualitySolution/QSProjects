@@ -8,41 +8,39 @@ namespace QS.ChangePassword.Views
 
 		private global::Gamma.GtkWidgets.yTable ytable1;
 
+		private global::Gamma.GtkWidgets.yEntry entryConfirmNewPassword;
+
+		private global::Gamma.GtkWidgets.yEntry entryCurrentPassword;
+
+		private global::Gamma.GtkWidgets.yEntry entryNewPassword;
+
+		private global::Gamma.GtkWidgets.yLabel lblConfirmNewPassword;
+
+		private global::Gamma.GtkWidgets.yLabel lblCurrentPassword;
+
+		private global::Gamma.GtkWidgets.yLabel lblNewPassword;
+
 		private global::Gtk.VBox vboxValidationResult;
-
-		private global::Gamma.GtkWidgets.yEntry yentryNewPassword;
-
-		private global::Gamma.GtkWidgets.yEntry yentryNewPasswordConfirm;
-
-		private global::Gamma.GtkWidgets.yEntry yentryOldPassword;
 
 		private global::Gamma.GtkWidgets.yLabel ylabel1;
 
-		private global::Gamma.GtkWidgets.yLabel ylabel2;
-
-		private global::Gamma.GtkWidgets.yLabel ylabel3;
-
-		private global::Gamma.GtkWidgets.yLabel ylabel4;
-
-		private global::Gamma.GtkWidgets.yToggleButton ytoggleShowOldPassword;
+		private global::Gamma.GtkWidgets.yToggleButton ytoggleShowCurrentPassword;
 
 		private global::Gamma.GtkWidgets.yToggleButton ytoggleShowPassword;
 
-		private global::Gtk.Button buttonCancel;
+		private global::Gamma.GtkWidgets.yHBox hboxActionBtns;
 
-		private global::Gtk.Button buttonOK;
+		private global::Gamma.GtkWidgets.yButton btnCancel;
+
+		private global::Gamma.GtkWidgets.yButton btnSave;
 
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
 			// Widget QS.ChangePassword.Views.ChangePasswordView
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "QS.ChangePassword.Views.ChangePasswordView";
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
-			// Internal child QS.ChangePassword.Views.ChangePasswordView.VBox
-			global::Gtk.VBox w1 = this.VBox;
-			w1.Name = "dialog1_VBox";
-			w1.BorderWidth = ((uint)(2));
-			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			// Container child QS.ChangePassword.Views.ChangePasswordView.Gtk.Container+ContainerChild
 			this.yvbox1 = new global::Gamma.GtkWidgets.yVBox();
 			this.yvbox1.Name = "yvbox1";
 			this.yvbox1.Spacing = 6;
@@ -54,22 +52,43 @@ namespace QS.ChangePassword.Views
 			this.ytable1.RowSpacing = ((uint)(6));
 			this.ytable1.ColumnSpacing = ((uint)(6));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.vboxValidationResult = new global::Gtk.VBox();
-			this.vboxValidationResult.Name = "vboxValidationResult";
-			this.ytable1.Add(this.vboxValidationResult);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.ytable1[this.vboxValidationResult]));
-			w2.TopAttach = ((uint)(4));
-			w2.BottomAttach = ((uint)(5));
-			w2.RightAttach = ((uint)(3));
+			this.entryConfirmNewPassword = new global::Gamma.GtkWidgets.yEntry();
+			this.entryConfirmNewPassword.CanFocus = true;
+			this.entryConfirmNewPassword.Name = "entryConfirmNewPassword";
+			this.entryConfirmNewPassword.IsEditable = true;
+			this.entryConfirmNewPassword.Visibility = false;
+			this.entryConfirmNewPassword.InvisibleChar = '●';
+			this.ytable1.Add(this.entryConfirmNewPassword);
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.ytable1[this.entryConfirmNewPassword]));
+			w1.TopAttach = ((uint)(3));
+			w1.BottomAttach = ((uint)(4));
+			w1.LeftAttach = ((uint)(1));
+			w1.RightAttach = ((uint)(2));
+			w1.XOptions = ((global::Gtk.AttachOptions)(4));
+			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.yentryNewPassword = new global::Gamma.GtkWidgets.yEntry();
-			this.yentryNewPassword.CanFocus = true;
-			this.yentryNewPassword.Name = "yentryNewPassword";
-			this.yentryNewPassword.IsEditable = true;
-			this.yentryNewPassword.Visibility = false;
-			this.yentryNewPassword.InvisibleChar = '●';
-			this.ytable1.Add(this.yentryNewPassword);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.ytable1[this.yentryNewPassword]));
+			this.entryCurrentPassword = new global::Gamma.GtkWidgets.yEntry();
+			this.entryCurrentPassword.CanFocus = true;
+			this.entryCurrentPassword.Name = "entryCurrentPassword";
+			this.entryCurrentPassword.IsEditable = true;
+			this.entryCurrentPassword.Visibility = false;
+			this.entryCurrentPassword.InvisibleChar = '●';
+			this.ytable1.Add(this.entryCurrentPassword);
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.ytable1[this.entryCurrentPassword]));
+			w2.TopAttach = ((uint)(1));
+			w2.BottomAttach = ((uint)(2));
+			w2.LeftAttach = ((uint)(1));
+			w2.RightAttach = ((uint)(2));
+			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child ytable1.Gtk.Table+TableChild
+			this.entryNewPassword = new global::Gamma.GtkWidgets.yEntry();
+			this.entryNewPassword.CanFocus = true;
+			this.entryNewPassword.Name = "entryNewPassword";
+			this.entryNewPassword.IsEditable = true;
+			this.entryNewPassword.Visibility = false;
+			this.entryNewPassword.InvisibleChar = '●';
+			this.ytable1.Add(this.entryNewPassword);
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.ytable1[this.entryNewPassword]));
 			w3.TopAttach = ((uint)(2));
 			w3.BottomAttach = ((uint)(3));
 			w3.LeftAttach = ((uint)(1));
@@ -77,156 +96,131 @@ namespace QS.ChangePassword.Views
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.yentryNewPasswordConfirm = new global::Gamma.GtkWidgets.yEntry();
-			this.yentryNewPasswordConfirm.CanFocus = true;
-			this.yentryNewPasswordConfirm.Name = "yentryNewPasswordConfirm";
-			this.yentryNewPasswordConfirm.IsEditable = true;
-			this.yentryNewPasswordConfirm.Visibility = false;
-			this.yentryNewPasswordConfirm.InvisibleChar = '●';
-			this.ytable1.Add(this.yentryNewPasswordConfirm);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.ytable1[this.yentryNewPasswordConfirm]));
+			this.lblConfirmNewPassword = new global::Gamma.GtkWidgets.yLabel();
+			this.lblConfirmNewPassword.Name = "lblConfirmNewPassword";
+			this.lblConfirmNewPassword.Xalign = 1F;
+			this.lblConfirmNewPassword.LabelProp = global::Mono.Unix.Catalog.GetString("Ещё раз:");
+			this.ytable1.Add(this.lblConfirmNewPassword);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.ytable1[this.lblConfirmNewPassword]));
 			w4.TopAttach = ((uint)(3));
 			w4.BottomAttach = ((uint)(4));
-			w4.LeftAttach = ((uint)(1));
-			w4.RightAttach = ((uint)(2));
 			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.yentryOldPassword = new global::Gamma.GtkWidgets.yEntry();
-			this.yentryOldPassword.CanFocus = true;
-			this.yentryOldPassword.Name = "yentryOldPassword";
-			this.yentryOldPassword.IsEditable = true;
-			this.yentryOldPassword.Visibility = false;
-			this.yentryOldPassword.InvisibleChar = '●';
-			this.ytable1.Add(this.yentryOldPassword);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.ytable1[this.yentryOldPassword]));
+			this.lblCurrentPassword = new global::Gamma.GtkWidgets.yLabel();
+			this.lblCurrentPassword.Name = "lblCurrentPassword";
+			this.lblCurrentPassword.Xalign = 1F;
+			this.lblCurrentPassword.LabelProp = global::Mono.Unix.Catalog.GetString("Текущий пароль:");
+			this.ytable1.Add(this.lblCurrentPassword);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.ytable1[this.lblCurrentPassword]));
 			w5.TopAttach = ((uint)(1));
 			w5.BottomAttach = ((uint)(2));
-			w5.LeftAttach = ((uint)(1));
-			w5.RightAttach = ((uint)(2));
+			w5.XOptions = ((global::Gtk.AttachOptions)(4));
 			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child ytable1.Gtk.Table+TableChild
+			this.lblNewPassword = new global::Gamma.GtkWidgets.yLabel();
+			this.lblNewPassword.Name = "lblNewPassword";
+			this.lblNewPassword.Xalign = 1F;
+			this.lblNewPassword.LabelProp = global::Mono.Unix.Catalog.GetString("Новый пароль:");
+			this.ytable1.Add(this.lblNewPassword);
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.ytable1[this.lblNewPassword]));
+			w6.TopAttach = ((uint)(2));
+			w6.BottomAttach = ((uint)(3));
+			w6.XOptions = ((global::Gtk.AttachOptions)(4));
+			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child ytable1.Gtk.Table+TableChild
+			this.vboxValidationResult = new global::Gtk.VBox();
+			this.vboxValidationResult.Name = "vboxValidationResult";
+			this.ytable1.Add(this.vboxValidationResult);
+			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.ytable1[this.vboxValidationResult]));
+			w7.TopAttach = ((uint)(4));
+			w7.BottomAttach = ((uint)(5));
+			w7.RightAttach = ((uint)(3));
 			// Container child ytable1.Gtk.Table+TableChild
 			this.ylabel1 = new global::Gamma.GtkWidgets.yLabel();
 			this.ylabel1.Name = "ylabel1";
 			this.ylabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Пароль не должен содержать русских букв");
 			this.ytable1.Add(this.ylabel1);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ylabel1]));
-			w6.RightAttach = ((uint)(3));
-			w6.XOptions = ((global::Gtk.AttachOptions)(4));
-			w6.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child ytable1.Gtk.Table+TableChild
-			this.ylabel2 = new global::Gamma.GtkWidgets.yLabel();
-			this.ylabel2.Name = "ylabel2";
-			this.ylabel2.Xalign = 1F;
-			this.ylabel2.LabelProp = global::Mono.Unix.Catalog.GetString("Текущий пароль:");
-			this.ytable1.Add(this.ylabel2);
-			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ylabel2]));
-			w7.TopAttach = ((uint)(1));
-			w7.BottomAttach = ((uint)(2));
-			w7.XOptions = ((global::Gtk.AttachOptions)(4));
-			w7.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child ytable1.Gtk.Table+TableChild
-			this.ylabel3 = new global::Gamma.GtkWidgets.yLabel();
-			this.ylabel3.Name = "ylabel3";
-			this.ylabel3.Xalign = 1F;
-			this.ylabel3.LabelProp = global::Mono.Unix.Catalog.GetString("Новый пароль:");
-			this.ytable1.Add(this.ylabel3);
-			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ylabel3]));
-			w8.TopAttach = ((uint)(2));
-			w8.BottomAttach = ((uint)(3));
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ylabel1]));
+			w8.RightAttach = ((uint)(3));
 			w8.XOptions = ((global::Gtk.AttachOptions)(4));
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child ytable1.Gtk.Table+TableChild
-			this.ylabel4 = new global::Gamma.GtkWidgets.yLabel();
-			this.ylabel4.Name = "ylabel4";
-			this.ylabel4.Xalign = 1F;
-			this.ylabel4.LabelProp = global::Mono.Unix.Catalog.GetString("Ещё раз:");
-			this.ytable1.Add(this.ylabel4);
-			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ylabel4]));
-			w9.TopAttach = ((uint)(3));
-			w9.BottomAttach = ((uint)(4));
-			w9.XOptions = ((global::Gtk.AttachOptions)(4));
-			w9.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child ytable1.Gtk.Table+TableChild
-			this.ytoggleShowOldPassword = new global::Gamma.GtkWidgets.yToggleButton();
-			this.ytoggleShowOldPassword.CanFocus = true;
-			this.ytoggleShowOldPassword.Name = "ytoggleShowOldPassword";
-			this.ytoggleShowOldPassword.UseUnderline = true;
-			global::Gtk.Image w10 = new global::Gtk.Image();
-			w10.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Eye.png");
-			this.ytoggleShowOldPassword.Image = w10;
-			this.ytable1.Add(this.ytoggleShowOldPassword);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ytoggleShowOldPassword]));
-			w11.TopAttach = ((uint)(1));
-			w11.BottomAttach = ((uint)(2));
-			w11.LeftAttach = ((uint)(2));
-			w11.RightAttach = ((uint)(3));
-			w11.XOptions = ((global::Gtk.AttachOptions)(0));
-			w11.YOptions = ((global::Gtk.AttachOptions)(0));
+			this.ytoggleShowCurrentPassword = new global::Gamma.GtkWidgets.yToggleButton();
+			this.ytoggleShowCurrentPassword.CanFocus = true;
+			this.ytoggleShowCurrentPassword.Name = "ytoggleShowCurrentPassword";
+			this.ytoggleShowCurrentPassword.UseUnderline = true;
+			global::Gtk.Image w9 = new global::Gtk.Image();
+			w9.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Eye.png");
+			this.ytoggleShowCurrentPassword.Image = w9;
+			this.ytable1.Add(this.ytoggleShowCurrentPassword);
+			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ytoggleShowCurrentPassword]));
+			w10.TopAttach = ((uint)(1));
+			w10.BottomAttach = ((uint)(2));
+			w10.LeftAttach = ((uint)(2));
+			w10.RightAttach = ((uint)(3));
+			w10.XOptions = ((global::Gtk.AttachOptions)(0));
+			w10.YOptions = ((global::Gtk.AttachOptions)(0));
 			// Container child ytable1.Gtk.Table+TableChild
 			this.ytoggleShowPassword = new global::Gamma.GtkWidgets.yToggleButton();
 			this.ytoggleShowPassword.CanFocus = true;
 			this.ytoggleShowPassword.Name = "ytoggleShowPassword";
 			this.ytoggleShowPassword.UseUnderline = true;
-			global::Gtk.Image w12 = new global::Gtk.Image();
-			w12.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Eye.png");
-			this.ytoggleShowPassword.Image = w12;
+			global::Gtk.Image w11 = new global::Gtk.Image();
+			w11.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Eye.png");
+			this.ytoggleShowPassword.Image = w11;
 			this.ytable1.Add(this.ytoggleShowPassword);
-			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ytoggleShowPassword]));
-			w13.TopAttach = ((uint)(2));
-			w13.BottomAttach = ((uint)(3));
-			w13.LeftAttach = ((uint)(2));
-			w13.RightAttach = ((uint)(3));
-			w13.XOptions = ((global::Gtk.AttachOptions)(0));
-			w13.YOptions = ((global::Gtk.AttachOptions)(0));
+			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.ytable1[this.ytoggleShowPassword]));
+			w12.TopAttach = ((uint)(2));
+			w12.BottomAttach = ((uint)(3));
+			w12.LeftAttach = ((uint)(2));
+			w12.RightAttach = ((uint)(3));
+			w12.XOptions = ((global::Gtk.AttachOptions)(0));
+			w12.YOptions = ((global::Gtk.AttachOptions)(0));
 			this.yvbox1.Add(this.ytable1);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.ytable1]));
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.ytable1]));
+			w13.Position = 0;
+			w13.Expand = false;
+			w13.Fill = false;
+			// Container child yvbox1.Gtk.Box+BoxChild
+			this.hboxActionBtns = new global::Gamma.GtkWidgets.yHBox();
+			this.hboxActionBtns.Name = "hboxActionBtns";
+			this.hboxActionBtns.Spacing = 6;
+			// Container child hboxActionBtns.Gtk.Box+BoxChild
+			this.btnCancel = new global::Gamma.GtkWidgets.yButton();
+			this.btnCancel.CanFocus = true;
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.UseUnderline = true;
+			this.btnCancel.Label = global::Mono.Unix.Catalog.GetString("Отмена");
+			this.hboxActionBtns.Add(this.btnCancel);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hboxActionBtns[this.btnCancel]));
+			w14.PackType = ((global::Gtk.PackType)(1));
 			w14.Position = 0;
 			w14.Expand = false;
 			w14.Fill = false;
-			w1.Add(this.yvbox1);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(w1[this.yvbox1]));
-			w15.Position = 0;
+			// Container child hboxActionBtns.Gtk.Box+BoxChild
+			this.btnSave = new global::Gamma.GtkWidgets.yButton();
+			this.btnSave.CanFocus = true;
+			this.btnSave.Name = "btnSave";
+			this.btnSave.UseUnderline = true;
+			this.btnSave.Label = global::Mono.Unix.Catalog.GetString("Сохранить");
+			this.hboxActionBtns.Add(this.btnSave);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hboxActionBtns[this.btnSave]));
+			w15.PackType = ((global::Gtk.PackType)(1));
+			w15.Position = 1;
 			w15.Expand = false;
 			w15.Fill = false;
-			// Internal child QS.ChangePassword.Views.ChangePasswordView.ActionArea
-			global::Gtk.HButtonBox w16 = this.ActionArea;
-			w16.Name = "actionArea";
-			w16.Spacing = 6;
-			w16.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
-			// Container child actionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancel = new global::Gtk.Button();
-			this.buttonCancel.CanFocus = true;
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("Отмена");
-			global::Gtk.Image w17 = new global::Gtk.Image();
-			w17.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-close", global::Gtk.IconSize.Menu);
-			this.buttonCancel.Image = w17;
-			this.AddActionWidget(this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w18 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w16[this.buttonCancel]));
-			w18.Expand = false;
-			w18.Fill = false;
-			// Container child actionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOK = new global::Gtk.Button();
-			this.buttonOK.CanFocus = true;
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.UseUnderline = true;
-			this.buttonOK.Label = global::Mono.Unix.Catalog.GetString("_OK");
-			global::Gtk.Image w19 = new global::Gtk.Image();
-			w19.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-ok", global::Gtk.IconSize.Menu);
-			this.buttonOK.Image = w19;
-			w16.Add(this.buttonOK);
-			global::Gtk.ButtonBox.ButtonBoxChild w20 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w16[this.buttonOK]));
-			w20.Position = 1;
-			w20.Expand = false;
-			w20.Fill = false;
+			this.yvbox1.Add(this.hboxActionBtns);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.hboxActionBtns]));
+			w16.PackType = ((global::Gtk.PackType)(1));
+			w16.Position = 1;
+			w16.Expand = false;
+			w16.Fill = false;
+			this.Add(this.yvbox1);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 508;
-			this.DefaultHeight = 223;
 			this.Show();
 		}
 	}

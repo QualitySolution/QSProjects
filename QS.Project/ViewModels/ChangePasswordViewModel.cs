@@ -10,7 +10,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels
 {
-    public class ChangePasswordViewModel : DialogViewModelBase
+    public class ChangePasswordViewModel : WindowDialogViewModelBase
     {
         public ChangePasswordViewModel(
             IChangePasswordModel changePasswordModel,
@@ -20,7 +20,9 @@ namespace QS.ViewModels
         {
             this.changePasswordModel = changePasswordModel ?? throw new ArgumentNullException(nameof(changePasswordModel));
             this.passwordValidator = passwordValidator ?? throw new ArgumentNullException(nameof(passwordValidator));
-            OnPasswordUpdated();
+
+			Title = "Смена пароля";
+			OnPasswordUpdated();
         }
 
         private readonly IChangePasswordModel changePasswordModel;
