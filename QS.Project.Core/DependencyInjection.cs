@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using NHibernate;
 using QS.Dialog;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
@@ -16,7 +17,8 @@ namespace QS.Project.Core {
 		public static IServiceCollection AddCore(this IServiceCollection services) {
 			services
 				.AddSingleton<IOrmConfig, DefaultOrmConfig>()
-				.AddSingleton<ISessionProvider, DefaultSessionProvider>()
+				.AddSingleton<ISessionFactory>((ctx) => ctx.GetRequiredService<IOrmConfig>().SessionFactory)
+				.AddSingleton<ISessionProvider, ConfiguredSessionFactorySessionProvider>()
 				;
 
 			return services;
