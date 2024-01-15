@@ -30,26 +30,7 @@ namespace QS.Project.DB {
 			return Config.OpenSession(connection);
 		}
 
-		public static Configuration NhConfig {
-			get {
-				CheckConfig();
-				return Config.NhConfig;
-			}
-			set {
-				CheckConfig();
-				Config.NhConfig = value;
-			}
-		}
-
-		/// <summary>
-		/// Настройка Nhibernate только с Fluent конфигураций.
-		/// </summary>
-		/// <param name="assemblies">Assemblies.</param>
-		public static void ConfigureOrm(FluentNHibernate.Cfg.Db.IPersistenceConfigurer database, System.Reflection.Assembly[] assemblies, Action<Configuration> exposeConfiguration = null)
-		{
-			CheckConfig();
-			Config.ConfigureOrm(database, assemblies, exposeConfiguration);
-		}
+		public static Configuration NhConfig => Config.Configuration;
 
 		public static NHibernate.Mapping.PersistentClass FindMappingByShortClassName(string clazz)
 		{

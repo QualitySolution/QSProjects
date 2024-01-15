@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Services;
@@ -9,6 +9,7 @@ namespace QS.Project.Journal.EntitySelector
 		where TJournalViewModel : JournalViewModelBase, IEntityAutocompleteSelector
 		where TJournalFilterViewModel : class, IJournalFilter
 		where TEntity : class, IDomainObject
+	{
 	{
 		private readonly ICommonServices commonServices;
 
