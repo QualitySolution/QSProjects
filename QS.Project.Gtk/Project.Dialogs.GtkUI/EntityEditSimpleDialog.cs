@@ -1,4 +1,3 @@
-﻿using System;
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
@@ -8,9 +7,9 @@ using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Utilities.Text;
+using System;
 
-namespace QS.Project.Dialogs.GtkUI
-{
+namespace QS.Project.Dialogs.GtkUI {
 	public static class EntityEditSimpleDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -114,7 +113,7 @@ namespace QS.Project.Dialogs.GtkUI
 						editDialog.Destroy ();
 						return list [0];
 					}
-					uow.TrySave (tempObject);
+					uow.Save (tempObject);
 					uow.Commit ();
 				}
 				else
@@ -125,7 +124,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 						if (questionResult)
 						{
-							uow.TrySave(tempObject);
+							uow.Save(tempObject);
 							uow.Commit();
 						}
 					}
