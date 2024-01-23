@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -156,7 +156,7 @@ namespace QSOrmProject
 				
 				return (ITdiDialog)ctor.Invoke(new object[] {
 						EntityUoWBuilder.ForOpen(parameters.FirstOrDefault().GetId()),
-						UnitOfWorkFactory.GetDefaultFactory,
+						ServicesConfig.UnitOfWorkFactory,
 						ServicesConfig.CommonServices
 					});
 			}
@@ -195,7 +195,7 @@ namespace QSOrmProject
 		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
 		{
 			var result = new List<DeletionObject>();
-			var delete = new DeleteCore(DeleteConfig.Main, uow);
+			var delete = new DeleteCore(DeleteConfig.Main, ServicesConfig.UnitOfWorkFactory, uow);
 			delete.PrepareDeletion(objectClass, id, new System.Threading.CancellationTokenSource().Token);
 
 			foreach(var item in delete.DeletedItems) {

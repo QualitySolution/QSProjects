@@ -1,6 +1,7 @@
-﻿using Gamma.Binding.Converters;
+using Gamma.Binding.Converters;
 using QS.BusinessCommon.Domain;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Validation;
 
 namespace QSBusinessCommon
@@ -12,14 +13,14 @@ namespace QSBusinessCommon
 		public MeasurementUnitsDlg ()
 		{
 			this.Build ();
-			UoWGeneric = UnitOfWorkFactory.CreateWithNewRoot<MeasurementUnits>();
+			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateWithNewRoot<MeasurementUnits>();
 			ConfigureDlg ();
 		}
 
 		public MeasurementUnitsDlg (int id)
 		{
 			this.Build ();
-			UoWGeneric = UnitOfWorkFactory.CreateForRoot<MeasurementUnits> (id);
+			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<MeasurementUnits> (id);
 			ConfigureDlg ();
 		}
 
@@ -35,7 +36,7 @@ namespace QSBusinessCommon
 
 		public override bool Save ()
 		{
-			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			var validator = ServicesConfig.ValidationService;
 			if (!validator.Validate(Entity))
 				return false;
 

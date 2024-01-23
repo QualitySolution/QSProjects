@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Gamma.ColumnConfig;
@@ -9,6 +9,7 @@ using QS.DomainModel.UoW;
 using QS.Tools;
 using System.Linq;
 using System.Reflection;
+using QS.Project.Services;
 
 namespace QS.RepresentationModel.GtkUI
 {
@@ -54,7 +55,7 @@ namespace QS.RepresentationModel.GtkUI
 			if(UoW != null) {
 				SetItemsSource(GetItems(UoW));
 			} else {
-				using(var localUoW = UnitOfWorkFactory.CreateWithoutRoot()) {
+				using(var localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 					SetItemsSource(GetItems(localUoW));
 				}
 			}

@@ -6,6 +6,7 @@ using NLog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Utilities.Text;
 using System;
 
@@ -63,7 +64,7 @@ namespace QS.Project.Dialogs.GtkUI {
 					dialogTitle = $"Редактирование {names.Genitive}";
 				}
 			}
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
 			{
 				//Создаем объект редактирования
 				object tempObject = id.HasValue ? uow.GetById(objectType, id.Value) : Activator.CreateInstance(objectType);

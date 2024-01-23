@@ -218,42 +218,7 @@
     <Compile Include="Project.DB\IConnectionFactory.cs" />
     <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Project.Domain\" />
-    <Folder Include="Project.HibernateMapping\" />
-    <Folder Include="DomainModel\" />
-    <Folder Include="Project.Repositories\" />
-    <Folder Include="DomainModel\Entity\" />
-    <Folder Include="Project.DB\" />
-    <Folder Include="Print\" />
-    <Folder Include="Dialog\" />
-    <Folder Include="Tdi\" />
-    <Folder Include="Project.Dialogs\" />
-    <Folder Include="DomainModel\Entity\EntityPermissions\" />
-    <Folder Include="Permissions\" />
-    <Folder Include="RepresentationModel\" />
-    <Folder Include="DomainModel\Config\" />
-    <Folder Include="Tools\" />
-    <Folder Include="Project.Journal\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Project.Services\" />
-    <Folder Include="Project.Filter\" />
-    <Folder Include="Project.Search\" />
-    <Folder Include="Project.Journal\EntitySelector\" />
-    <Folder Include="DomainModel\Entity\PresetPermissions\" />
-    <Folder Include="..\QS.Project.Core\ErrorReporting\" />
-    <Folder Include="Validation\" />
-    <Folder Include="Project.Services\Interactive\" />
-    <Folder Include="Project.Journal\DataLoader\" />
-    <Folder Include="Navigation\" />
-    <Folder Include="ViewModels\Control\" />
-    <Folder Include="ViewModels\Control\EEVM\" />
-    <Folder Include="ViewModels\Control\ESVM\" />
-    <Folder Include="ViewModels\Resolve\" />
-    <Folder Include="Project.ViewModels\" />
-    <Folder Include="BaseParameters\" />
-    <Folder Include="BaseParameters\ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
       <Project>{3BD9FCFB-DD96-4EB1-A565-6B5E506479C8}</Project>

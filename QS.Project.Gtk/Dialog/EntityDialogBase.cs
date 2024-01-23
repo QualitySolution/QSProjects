@@ -170,7 +170,7 @@ namespace QS.Dialog.Gtk
 
 			Type entityType = typeof(TEntity);
 			int? currUserId;
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				currUserId = UserRepository.GetCurrentUser(uow)?.Id;
 			}
 			if(!currUserId.HasValue)

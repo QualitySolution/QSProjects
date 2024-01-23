@@ -21,35 +21,5 @@ namespace QS.DomainModel.UoW {
 		{
 			return GetDefaultFactory.CreateWithoutRoot(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
 		}
-
-		/// <summary>
-		/// Создаем Unit of Work загружая сущность по id.
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
-		{
-			return GetDefaultFactory.CreateForRoot<TEntity>(id, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-		}
-
-		/// <summary>
-		/// Создаем Unit of Work с новым экземпляром сущности
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
-		{
-			return GetDefaultFactory.CreateWithNewRoot<TEntity>(userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-		}
-
-		/// <summary>
-		/// Создаем Unit of Work с новым экземпляром сущности переданным в виде аргумента
-		/// </summary>
-		/// <returns>UnitOfWork.</returns>
-		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
-		public static IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new()
-		{
-			return GetDefaultFactory.CreateWithNewRoot<TEntity>(entity, userActionTitle, callerMemberName, callerFilePath, callerLineNumber);
-		}
 	}
 }

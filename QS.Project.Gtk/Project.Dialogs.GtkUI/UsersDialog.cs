@@ -12,6 +12,7 @@ using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Project.Services;
 using QS.Project.Services.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -145,7 +146,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public void UpdateUsers(bool showDeactivated)
 		{
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				var users = UserRepository.GetUsers(uow, showDeactivated);
 				ObservableUsers = new GenericObservableList<UserBase>(users);
 				UsersUpdated?.Invoke(this, EventArgs.Empty);

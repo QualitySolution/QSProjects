@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using QS.Services;
 using QS.Permissions;
 using QS.Project.Services.Interactive;
 using QS.Validation;
 using QS.Dialog;
+using QS.DomainModel.UoW;
 
 namespace QS.Project.Services
 {
@@ -19,6 +20,7 @@ namespace QS.Project.Services
 		public static IValidator ValidationService { get; set; }
 		public static IInteractiveService InteractiveService { get; set; }
 		public static IUserService UserService { get; set; }
+		public static IUnitOfWorkFactory UnitOfWorkFactory{ get; set; }
 
 		static ServicesConfig()
 		{
