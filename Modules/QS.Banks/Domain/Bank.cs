@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Bindings.Collections.Generic;
@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
-using QS.Project.Dialogs;
 
 namespace QS.Banks.Domain
 {
@@ -14,7 +13,6 @@ namespace QS.Banks.Domain
 		Gender = GrammaticalGender.Masculine,
 		Nominative = "банк",
 		NominativePlural = "банки")]
-	[DefaultReferenceButtonMode(ReferenceButtonMode.CanEdit | ReferenceButtonMode.TreatEditAsOpen)]
 	[EntityPermission]
 	public class Bank: PropertyChangedBase, IValidatableObject, IDomainObject
 	{
