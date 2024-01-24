@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj" />
-    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj" />
 	<ProjectReference Include="..\..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
   </ItemGroup>
   <ItemGroup>

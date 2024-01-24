@@ -1,223 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>QS</RootNamespace>
-    <AssemblyName>QS.Project</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="mscorlib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Navigation\ITdiCompatibilityNavigation.cs" />
-    <Compile Include="Navigation\ITdiPage.cs" />
-    <Compile Include="Print\SelectablePrintDocument.cs" />
-    <Compile Include="Project.DB\ConfiguredSessionFactorySessionProvider.cs" />
-    <Compile Include="Project.DB\CustomProjections.cs" />
-    <Compile Include="Project.DB\CustomRestrictions.cs" />
-    <Compile Include="Project.DB\IOrmConfig.cs" />
-    <Compile Include="Project.DB\DefaultOrmConfig.cs" />
-    <Compile Include="Project.DB\MySQL57ExtendedDialect.cs" />
-    <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
-    <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
-    <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
-    <Compile Include="Project.Journal\DataLoader\QueryLoaderWithLimits.cs" />
-    <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalChunkLinqLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\Hierarchy\HierarchicalQueryLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\Hierarchy\IHierarchicalNode.cs" />
-    <Compile Include="Project.Journal\DataLoader\Hierarchy\LevelingModel.cs" />
-    <Compile Include="Project.Journal\DataLoader\Hierarchy\RecursiveModel.cs" />
-    <Compile Include="Project.Journal\DataLoader\QueryLoader.cs" />
-    <Compile Include="Project.Journal\JournalNodeBase.cs" />
-    <Compile Include="Project.Journal\Search\SearchCriterion.cs" />
-    <Compile Include="Project.Journal\Search\SearchCriterionGeneric.cs" />
-    <Compile Include="Project.Journal\Search\SearchProperty.cs" />
-    <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
-    <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
-    <Compile Include="Project.Services\FileDialog\DialogFileFilter.cs" />
-    <Compile Include="Project.Services\FileDialog\DialogPlatformType.cs" />
-    <Compile Include="Project.Services\FileDialog\DialogSettings.cs" />
-    <Compile Include="Project.Services\FileDialog\IDialogResult.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DomainModel\Entity\DomainTreeNodeBase.cs" />
-    <Compile Include="Project.DB\Connection.cs" />
-    <Compile Include="Print\IPrintableDocument.cs" />
-    <Compile Include="Dialog\IEntityDialog.cs" />
-    <Compile Include="Tdi\ITdiDialog.cs" />
-    <Compile Include="Tdi\ITdiTab.cs" />
-    <Compile Include="Tdi\ITdiTabParent.cs" />
-    <Compile Include="Tdi\ITdiTabWithPath.cs" />
-    <Compile Include="Tdi\ITdiJournal.cs" />
-    <Compile Include="Tdi\ITdiTabAddedNotifier.cs" />
-    <Compile Include="Tdi\ITDICloseControlTab.cs" />
-    <Compile Include="DomainModel\Entity\DefaultJournalModeAttribute.cs" />
-    <Compile Include="Project.Dialogs\ReferenceButtonMode.cs" />
-    <Compile Include="Tdi\TabHashHelper.cs" />
-    <Compile Include="Project.Domain\EntityUserPermission.cs" />
-    <Compile Include="Project.HibernateMapping\EntityUserPermissionMap.cs" />
-    <Compile Include="Project.Repositories\UserPermissionRepository.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermissionValidator.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\IEntityPermissionValidator.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityPermission.cs" />
-    <Compile Include="Permissions\PermissionSettings.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntitiesWithPermissionFinder.cs" />
-    <Compile Include="Project.Domain\TypeOfEntity.cs" />
-    <Compile Include="Project.Repositories\TypeOfEntityRepository.cs" />
-    <Compile Include="Project.HibernateMapping\TypeOfEntityMap.cs" />
-    <Compile Include="Project.Domain\PresetUserPermission.cs" />
-    <Compile Include="Project.HibernateMapping\PresetUserPermissionMap.cs" />
-    <Compile Include="Project.Dialogs\JournalSelectMode.cs" />
-    <Compile Include="RepresentationModel\IJournalFilter.cs" />
-    <Compile Include="DomainModel\Config\DomainConfiguration.cs" />
-    <Compile Include="DomainModel\Config\IEntityConfig.cs" />
-    <Compile Include="Project.DB\DBValueReader.cs" />
-    <Compile Include="Project.DB\MySQLProvider.cs" />
-    <Compile Include="Project.Dialogs\IRunOperationView.cs" />
-    <Compile Include="Project.Repositories\MySQLUserRepository.cs" />
-    <Compile Include="Project.Journal\IJournalFilter.cs" />
-    <Compile Include="Project.Journal\IJournalSearch.cs" />
-    <Compile Include="Project.Journal\IJournalNode.cs" />
-    <Compile Include="Project.Journal\IJournalAction.cs" />
-    <Compile Include="Project.Journal\JournalViewModelBase.cs" />
-    <Compile Include="Project.Journal\JournalAction.cs" />
-    <Compile Include="Project.Journal\EntityJournalNodeBase.cs" />
-    <Compile Include="Project.Journal\EntitiesJournalViewModelBase.cs" />
-    <Compile Include="Validation\PasswordValidation\DefaultPasswordValidationSettings.cs" />
-    <Compile Include="Validation\PasswordValidation\IPasswordValidationSettings.cs" />
-    <Compile Include="Validation\PasswordValidation\IPasswordValidator.cs" />
-    <Compile Include="Validation\PasswordValidation\PasswordValidator.cs" />
-    <Compile Include="Validation\ValidationContextExtensions.cs" />
-    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
-    <Compile Include="ViewModels\TabViewModelBase.cs" />
-    <Compile Include="Project.Services\CommonServices.cs" />
-    <Compile Include="Project.Services\ICommonServices.cs" />
-    <Compile Include="Project.Services\IPermissionService.cs" />
-    <Compile Include="Project.Services\PermissionService.cs" />
-    <Compile Include="Project.Services\UserService.cs" />
-    <Compile Include="Project.Journal\SingleEntityJournalViewModelBase.cs" />
-    <Compile Include="Project.Journal\JournalEntityConfig.cs" />
-    <Compile Include="Project.Filter\FilterViewModelBase.cs" />
-    <Compile Include="ViewModels\EntityTabViewModelBase.cs" />
-    <Compile Include="ViewModels\DialogTabViewModelBase.cs" />
-    <Compile Include="ViewModels\UoWWidgetViewModelBase.cs" />
-    <Compile Include="Project.Journal\JournalEntityConfigurator.cs" />
-    <Compile Include="Project.Journal\JournalEntityDocumentsConfig.cs" />
-    <Compile Include="Project.Journal\JournalCreateEntityDialogConfig.cs" />
-    <Compile Include="Project.Search\SearchViewModel.cs" />
-    <Compile Include="Project.Journal\JournalSelectedEventArgs.cs" />
-    <Compile Include="Project.Journal\JournalSelectedNodesEventArgs.cs" />
-    <Compile Include="Project.Journal\JournalSelectMode.cs" />
-    <Compile Include="Project.Journal\EntitySelector\IEntitySelector.cs" />
-    <Compile Include="Project.Journal\EntitySelector\IEntitySelectorFactory.cs" />
-    <Compile Include="Project.Journal\EntitySelector\DefaultEntitySelectorFactory.cs" />
-    <Compile Include="Project.Journal\FilterableSingleEntityJournalViewModelBase.cs" />
-    <Compile Include="Project.Journal\EntitySelector\IEntityAutocompleteSelectorFactory.cs" />
-    <Compile Include="Project.Journal\EntitySelector\DefaultEntityAutocompleteSelectorFactory.cs" />
-    <Compile Include="Project.Journal\EntitySelector\IEntityAutocompleteSelector.cs" />
-    <Compile Include="Project.Journal\SimpleEntityJournalViewModel.cs" />
-    <Compile Include="Project.Journal\SimpleEntityJournalViewModelBase.cs" />
-    <Compile Include="Project.Journal\EntitySelector\SimpleEntitySelectorFactory.cs" />
-    <Compile Include="ViewModels\EntityWidgetViewModelBase.cs" />
-    <Compile Include="Project.Journal\MultipleEntityJournalViewModelBase.cs" />
-    <Compile Include="Project.Services\FileDialog\IFileDialogService.cs" />
-    <Compile Include="Tdi\ITdiSliderTab.cs" />
-    <Compile Include="Project.Journal\FilterableMultipleEntityJournalViewModelBase.cs" />
-    <Compile Include="Project.Journal\EntitySelector\EntityAutocompleteSelectorFactory.cs" />
-    <Compile Include="Project.Journal\JournalParametersForDocument.cs" />
-    <Compile Include="DomainModel\Entity\PresetPermissions\IPresetPermissionValidator.cs" />
-    <Compile Include="DomainModel\Entity\PresetPermissions\PresetPermissionValidator.cs" />
-    <Compile Include="EntityRepositories\IUserPermissionRepository.cs" />
-    <Compile Include="EntityRepositories\UserPermissionRepository.cs" />
-    <Compile Include="Project.Services\Interactive\ConsoleInteractiveService.cs" />
-    <Compile Include="Project.Services\Interactive\ConsoleInteractiveMessage.cs" />
-    <Compile Include="Project.Services\Interactive\ConsoleInteractiveQuestion.cs" />
-    <Compile Include="Permissions\DefaultAllowedPermissionService.cs" />
-    <Compile Include="Project.Services\ServicesConfig.cs" />
-    <Compile Include="Project.Services\IRunOperationService.cs" />
-    <Compile Include="Project.Journal\DataLoader\IDataLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\ThreadDataLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\IQueryLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\DynamicQueryLoader.cs" />
-    <Compile Include="Project.Journal\DataLoader\SortRule.cs" />
-    <Compile Include="Project.Services\CurrentPermissionServiceAdapter.cs" />
-    <Compile Include="ViewModels\UoWTabViewModelBase.cs" />
-    <Compile Include="Project.Domain\EntityPermissionBase.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityPermissionExtendedBase.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\EntityUserPermissionExtended.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IEntityExtendedPermissionValidator.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionExtension.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionExtensionStore.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionNode.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\IPermissionNodeFactory.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionListViewModel.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\UserPermissionNode.cs" />
-    <Compile Include="Project.HibernateMapping\EntityPermissionExtendedBaseMap.cs" />
-    <Compile Include="DomainModel\Entity\EntityPermissions\EntityExtendedPermission\PermissionExtensionSingletonStore.cs" />
-    <Compile Include="Project.Journal\EntityJournalViewModelBase.cs" />
-    <Compile Include="Navigation\ClassNamesHashGenerator.cs" />
-    <Compile Include="Navigation\IExtraPageHashGenerator.cs" />
-    <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilder.cs" />
-    <Compile Include="ViewModels\Control\EEVM\CommonEEVMBuilderFactory.cs" />
-    <Compile Include="ViewModels\Control\EEVM\EntityEntryViewModel.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEntityEntryViewModel.cs" />
-    <Compile Include="ViewModels\Control\EEVM\MagicEEVMBuilderFactory.cs" />
-    <Compile Include="ViewModels\Control\PropertyBinder.cs" />
-    <Compile Include="ViewModels\Control\IPropertyBinder.cs" />
-    <Compile Include="ViewModels\Control\EEVM\EntityViewModelOpener.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEntityDlgOpener.cs" />
-    <Compile Include="ViewModels\Control\EEVM\EntitySelectedEventArgs.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEntitySelector.cs" />
-    <Compile Include="ViewModels\Control\EEVM\JournalViewModelSelector.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEntityAutocompleteSelector.cs" />
-    <Compile Include="ViewModels\Control\EEVM\JournalViewModelAutocompleteSelector.cs" />
-    <Compile Include="Dialog\CommonMessages.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEEVMBuilderParameters.cs" />
-    <Compile Include="ViewModels\Control\ESVM\EntitySearchViewModel.cs" />
-    <Compile Include="ViewModels\Control\ESVM\IEntitySearchViewModel.cs" />
-    <Compile Include="Navigation\ISlideableViewModel.cs" />
-    <Compile Include="Project.Journal\JournalFilterViewModelBase.cs" />
-    <Compile Include="Project.Journal\IJournalFilterViewModel.cs" />
-    <Compile Include="Project.DB\NhDataBaseInfo.cs" />
-    <Compile Include="Project.Journal\DataLoader\AnyDataLoader.cs" />
-    <Compile Include="ViewModels\Control\EEVM\IEntityAdapter.cs" />
-    <Compile Include="ViewModels\Control\EEVM\UowEntityAdapter.cs" />
-    <Compile Include="ViewModels\Control\EEVM\FuncEntityAdapter.cs" />
-    <Compile Include="ViewModels\Resolve\IViewModelResolver.cs" />
-    <Compile Include="ViewModels\Resolve\AutofacViewModelResolver.cs" />
-    <Compile Include="Project.ViewModels\AboutViewModel.cs" />
-    <Compile Include="BaseParameters\ViewModels\BaseParametersViewModel.cs" />
-    <Compile Include="Project.DB\IConnectionFactory.cs" />
-    <Compile Include="Project.DB\MySqlConnectionFactory.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
     <Folder Include="Project.HibernateMapping\" />
@@ -254,50 +51,25 @@
     <Folder Include="BaseParameters\ViewModels\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj">
-      <Project>{3BD9FCFB-DD96-4EB1-A565-6B5E506479C8}</Project>
-      <Name>Gamma.Binding.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj">
-      <Project>{1bf2a638-420d-456c-96a7-36873a0fb894}</Project>
-      <Name>Gamma.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj">
-      <Project>{a869ec36-67d2-4a36-95e9-0b1e7350928f}</Project>
-      <Name>QS.BaseParameters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj">
-      <Project>{2a0710b2-b71b-4959-88da-0940100e172a}</Project>
-      <Name>QS.Extensions.Observable</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj">
-      <Project>{e95be5dc-a197-4657-87dc-a2d677eadb76}</Project>
-      <Name>QS.Project.Abstract</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj">
-      <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
-      <Name>QS.Project.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
-      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
-      <Name>QS.Project.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
-      <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
-      <Name>QS.Utilities</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Binding\Gamma.Binding.Core\Gamma.Binding.Core.csproj" />
+    <ProjectReference Include="..\Binding\Gamma.Utilities\Gamma.Utilities.csproj" />
+    <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
+    <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
+    <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
     <PackageReference Include="Autofac" Version="7.0.0" />
-    <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="FluentNHibernate" Version="3.1.0" />
     <PackageReference Include="Google.Protobuf" Version="3.22.1" />
     <PackageReference Include="Iesi.Collections" Version="4.0.5" />
     <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
     <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.5" />
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="MySqlConnector">
       <Version>2.2.6</Version>
     </PackageReference>
@@ -306,14 +78,15 @@
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
