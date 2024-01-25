@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using NHibernate;
@@ -18,6 +18,10 @@ namespace QS.Test.Project.Journal
 	[TestFixture()]
 	public class ThreadDataLoaderTest : InMemoryDBTestFixtureBase
 	{
+		public ThreadDataLoaderTest(InMemoryDBTestSessionProvider sessionProvider) : base(sessionProvider) {
+
+		}
+
 		IQueryOver<Document1> GetDocument1Query(IUnitOfWork u)
 		{
 			DocumentJournalNode resultAlias = null;

@@ -13,25 +13,28 @@ namespace QS.Testing.DB {
 	public abstract class InMemoryDBGlobalConfigTestFixtureBase
 	{
 		protected IUnitOfWorkFactory UnitOfWorkFactory;
-		protected InMemoryDBTestSessionProvider inMemoryDBTestSessionProvider;
+		private readonly InMemoryDBTestSessionProvider provider;
+
+		public InMemoryDBGlobalConfigTestFixtureBase(InMemoryDBTestSessionProvider provider) {
+			this.provider = provider ?? throw new System.ArgumentNullException(nameof(provider));
+		}
 
 		/// <summary>
 		/// Инициализация только фабрики uow без инициализации Nh
 		/// </summary>
 		public void InitialiseUowFactory()
 		{
-			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(OrmConfig.NhConfig);
-			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(provider);
 		}
 
 		public void NewSessionWithSameDB()
 		{
-			inMemoryDBTestSessionProvider.UseSameDB = true;
+			provider.UseSameDB = true;
 		}
 
 		public void NewSessionWithNewDB()
 		{
-			inMemoryDBTestSessionProvider.UseSameDB = false;
+			provider.UseSameDB = false;
 		}
 	}
 }
