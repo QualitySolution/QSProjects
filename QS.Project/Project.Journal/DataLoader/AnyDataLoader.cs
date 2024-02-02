@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -44,6 +44,8 @@ namespace QS.Project.Journal.DataLoader
 
 		public uint? TotalCount => (uint?)Items?.Count;
 
+		public bool UsePreviousPageSize => false;
+
 		public event EventHandler ItemsListUpdated;
 		public event EventHandler TotalCountChanged;
 		public event EventHandler<LoadingStateChangedEventArgs> LoadingStateChanged;
@@ -71,7 +73,7 @@ namespace QS.Project.Journal.DataLoader
 		#region Загрузка данных
 		private int reloadRequested = 0;
 
-		public void LoadData(bool nextPage)
+		public void LoadData(bool nextPage, bool usePreviousPageSize = false)
 		{
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
