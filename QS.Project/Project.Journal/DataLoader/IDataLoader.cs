@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QS.DomainModel.UoW;
@@ -47,11 +47,13 @@ namespace QS.Project.Journal.DataLoader
 
 		void GetTotalCount();
 
-		void LoadData(bool nextPage);
+		void LoadData(bool nextPage, bool usePreviousPageSize = false);
 
 		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
 
 		void CancelLoading();
+
+		bool UsePreviousPageSize { get; }
 	}
 
 	/// <summary>

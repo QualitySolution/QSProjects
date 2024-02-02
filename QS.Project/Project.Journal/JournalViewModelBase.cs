@@ -46,9 +46,9 @@ namespace QS.Project.Journal
 
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
-		public void Refresh()
+		public void Refresh(bool usePreviouspageSize = false)
 		{
-			DataLoader.LoadData(false);
+			DataLoader.LoadData(false, usePreviouspageSize);
 		}
 
 		private JournalSelectionMode selectionMode;
@@ -135,7 +135,7 @@ namespace QS.Project.Journal
 
 		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
 		{
-			Refresh();
+			Refresh(true);
 		}
 
 		public override void Dispose()
