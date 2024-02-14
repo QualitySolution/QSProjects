@@ -24,6 +24,7 @@ namespace QS.Journal.GtkUI
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private Menu _popupMenu;
+		private bool isRedrawInProgress;
 
 		#region Глобальные настройки
 
@@ -170,10 +171,13 @@ namespace QS.Journal.GtkUI
 
 				SetItemsSource();
 
-				if(!ViewModel.DataLoader.FirstPage) {
+				if(!ViewModel.DataLoader.FirstPage || ViewModel.DataLoader.UsePreviousPageSize) {
+					isRedrawInProgress = true;
 					GtkHelper.WaitRedraw();
-					if(GtkScrolledWindow?.Vadjustment != null)
+					if(GtkScrolledWindow?.Vadjustment != null) {
 						GtkScrolledWindow.Vadjustment.Value = lastScrollPosition;
+					}
+					isRedrawInProgress = false;
 				}
 
 				if(ViewModel.ExpandAfterReloading) {
@@ -279,7 +283,7 @@ namespace QS.Journal.GtkUI
 
 		void Vadjustment_ValueChanged(object sender, EventArgs e)
 		{
-			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper)
+			if(!ViewModel.DataLoader.DynamicLoadingEnabled || GtkScrolledWindow.Vadjustment.Value + GtkScrolledWindow.Vadjustment.PageSize < GtkScrolledWindow.Vadjustment.Upper ||  isRedrawInProgress)
 				return;
 
 			if(ViewModel.DataLoader.HasUnloadedItems) {
@@ -373,6 +377,7 @@ namespace QS.Journal.GtkUI
 				if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
 				{
 					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
+					lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
 				}
 			}
 			else
@@ -392,6 +397,7 @@ namespace QS.Journal.GtkUI
 
 		private void ExecuteActionForWidget(object widget) {
 			if(_widgetsWithJournalActions.ContainsKey(widget)) {
+				lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
 				_widgetsWithJournalActions[widget].ExecuteAction(GetSelectedItems());
 			}
 		}
@@ -506,6 +512,7 @@ namespace QS.Journal.GtkUI
 		}
 
 		private bool isDestroyed = false;
+
 		public override void Destroy()
 		{
 			isDestroyed = true;

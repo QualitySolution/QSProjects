@@ -71,7 +71,7 @@ namespace QSBanks
 		void OnSelectionChanged (object sender, EventArgs e)
 		{
 			bool selected = datatreeviewAccounts.Selection.CountSelectedRows () > 0;
-			buttonEdit.Sensitive = buttonDelete.Sensitive = selected;
+			buttonEdit.Sensitive = buttonDelete.Sensitive = selected && CanEdit;
 		}
 
 		protected void OnButtonAddClicked (object sender, EventArgs e)
