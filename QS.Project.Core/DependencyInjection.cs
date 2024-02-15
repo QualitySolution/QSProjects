@@ -12,6 +12,9 @@ using QS.Dialog;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
+using QS.Project.Domain;
+using QS.Project.Repositories;
+using QS.Services;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -30,6 +33,7 @@ namespace QS.Project.Core {
 				.AddSessionFactory()
 				.AddSingleton<ISessionProvider, DefaultSessionProvider>()
 				.AddSingleton<IOrmConfig, DefaultOrmConfig>()
+				.AddUserService()
 				;
 			return services;
 		}
@@ -57,7 +61,10 @@ namespace QS.Project.Core {
 		/// </summary>
 		public static IServiceCollection AddNotTrackedUoW(this IServiceCollection services) {
 			services
-				.AddSingleton<IUnitOfWorkFactory, NotTrackedUnitOfWorkFactory>()
+				.AddSingleton<IUnitOfWorkFactory>(sp => {
+					var uowFactory = new NotTrackedUnitOfWorkFactory(sp.GetRequiredService<ISessionProvider>());
+					return uowFactory;
+				})
 				;
 
 			return services;
@@ -208,6 +215,26 @@ namespace QS.Project.Core {
 			services.AddSingleton<IDataBaseInfo>((provider) => {
 				var connectionStringBuilder = provider.GetRequiredService<MySqlConnectionStringBuilder>();
 				return new DataBaseInfo(connectionStringBuilder.Database);
+			});
+			return services;
+		}
+
+		public static IServiceCollection AddUserService(this IServiceCollection services) {
+			services.AddSingleton<IUserService>((provider) => {
+				var uowFactory = provider.GetRequiredService<IUnitOfWorkFactory>();
+				var connectionSettings = provider.GetRequiredService<IDatabaseConnectionSettings>();
+				using(var uow = uowFactory.CreateWithoutRoot()) {
+					var serviceUser = uow.Session.Query<UserBase>()
+						.Where(u => u.Login == connectionSettings.UserName)
+						.FirstOrDefault();
+
+					if(serviceUser is null) {
+						throw new InvalidOperationException("Service user not found");
+					}
+
+					UserRepository.GetCurrentUserId = () => serviceUser.Id;
+					return new UserService(serviceUser);
+				}
 			});
 			return services;
 		}

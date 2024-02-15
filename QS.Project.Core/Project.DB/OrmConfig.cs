@@ -1,3 +1,4 @@
+using Autofac;
 using NHibernate;
 using NHibernate.Cfg;
 using System;
@@ -7,7 +8,8 @@ namespace QS.Project.DB {
 	[Obsolete("Вместо него необходимо использовать IOrmConfig из контейнера")]
 	public static class OrmConfig
 	{
-		public static IOrmConfig Config { get; set; }
+		public static ILifetimeScope Scope { private get; set; }
+		public static IOrmConfig Config => Scope.Resolve<IOrmConfig>();
 
 		private static void CheckConfig() 
 		{

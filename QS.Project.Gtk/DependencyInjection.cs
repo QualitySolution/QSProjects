@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
+using QS.Dialog.GtkUI;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
+using QS.Project.Services.GtkUI;
+using QS.Validation;
 
 namespace QS.Project.GtkSharp {
 	public static class DependencyInjection 
@@ -25,6 +28,24 @@ namespace QS.Project.GtkSharp {
 				.AddSingleton<GlobalUowEventsTracker>()
 				.AddTransient<SingleUowEventsTracker>()
 				.AddSingleton<IUnitOfWorkFactory, TrackedUnitOfWorkFactory>()
+				;
+			return services;
+		}
+
+		public static IServiceCollection AddObjectValidatorWithGui(this IServiceCollection services) {
+			services.AddSingleton(sp => {
+				var validator = new ObjectValidator(new GtkValidationViewFactory());
+				validator.ServiceProvider = sp;
+				return validator;
+			});
+			return services;
+		}
+
+		public static IServiceCollection AddGuiInteracive(this IServiceCollection services) {
+			services
+				.AddSingleton<IInteractiveMessage, GtkMessageDialogsInteractive>()
+				.AddSingleton<IInteractiveQuestion, GtkQuestionDialogsInteractive>()
+				.AddSingleton<IInteractiveService, GtkInteractiveService>()
 				;
 			return services;
 		}
