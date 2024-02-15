@@ -32,7 +32,7 @@ namespace QS.Validation
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		public bool Validate(object validatableObject, ValidationContext validationContext = null, bool showValidationResults = true)
 		{
-			if(ServiceProvider != null) {
+			if(ServiceProvider != null && validationContext != null) {
 				validationContext.InitializeServiceProvider((type) => ServiceProvider.GetRequiredService(type));
 			}
 			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)}, showValidationResults);
