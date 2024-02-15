@@ -1,10 +1,7 @@
-﻿using System;
-using QS.DomainModel.UoW;
 using QS.Project.Domain;
-using QS.Project.Repositories;
+using System;
 
-namespace QS.Services
-{
+namespace QS.Services {
 	public class UserService : IUserService
 	{
 		private readonly UserBase currentUser;
