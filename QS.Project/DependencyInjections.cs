@@ -8,7 +8,7 @@ using QS.Project.Services.Interactive;
 using QS.Validation;
 using System;
 
-namespace QS {
+namespace QS.Project {
 	public static class DependencyInjections {
 
 		public static IServiceCollection AddConsoleInteracive(this IServiceCollection services) {

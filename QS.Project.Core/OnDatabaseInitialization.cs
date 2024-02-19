@@ -6,6 +6,5 @@ namespace QS.Project.Core {
 	/// инициализации подключения базы данных в контейнере зависимостей.
 	/// </summary>
 	[Obsolete("Хак для вызова инициализации устаревшей статики в контейнере")]
-	public class OnDatabaseInitialization {
-	}
+	public class OnDatabaseInitialization {}
 }

@@ -1,4 +1,6 @@
+using Autofac;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MySqlConnector;
 using QS.Project.Core;
 using System;
