@@ -155,7 +155,7 @@ namespace QS.Project.Core {
 		public static IServiceCollection AddNHibernateConfiguration(this IServiceCollection services) {
 			services.AddSingleton<Configuration>((provider) => {
 				var sqlConfiguration = provider.GetRequiredService<MySQLConfiguration>();
-				var assembliesProvider = provider.GetRequiredService<IMappingAssembliesProvider>();
+				var assembliesProvider = provider.GetService<IMappingAssembliesProvider>();
 				var configurationExposer = provider.GetService<IDatabaseConfigurationExposer>();
 				var conventions = provider.GetServices<IConvention>();
 
@@ -164,9 +164,12 @@ namespace QS.Project.Core {
 					if(conventions != null && conventions.Any()) {
 						m.FluentMappings.Conventions.Add(conventions.ToArray());
 					}
-					foreach(var assembly in assembliesProvider.GetMappingAssemblies()) {
-						m.FluentMappings.AddFromAssembly(assembly);
+					if(assembliesProvider != null) {
+						foreach(var assembly in assembliesProvider.GetMappingAssemblies()) {
+							m.FluentMappings.AddFromAssembly(assembly);
+						}
 					}
+					
 				});
 
 				var tracker = provider.GetService<GlobalUowEventsTracker>();
