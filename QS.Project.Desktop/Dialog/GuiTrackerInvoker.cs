@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 
 namespace QS.Dialog {
@@ -9,8 +9,8 @@ namespace QS.Dialog {
 			_guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 		}
 
-		public void Invoke(Action action) {
-			if(_guiDispatcher.GuiThread == Thread.CurrentThread) {
+		public void Invoke(Action action, bool runInInvokedThread = false) {
+			if(_guiDispatcher.GuiThread == Thread.CurrentThread || runInInvokedThread) {
 				action.Invoke();
 			}
 			else {

@@ -125,7 +125,10 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PreLoadListeners)
 				{
-					invoker.Invoke(() => listner.OnPreLoad(uow, @event));
+					var runInInvokedThread = listner is IRunEventInInvokedThread;
+					invoker.Invoke(() => {
+						listner.OnPreLoad(uow, @event);
+					}, runInInvokedThread);
 				}
 			}
 
@@ -152,7 +155,8 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostLoadListeners)
 				{
-					invoker.Invoke(() => listner.OnPostLoad(uow, @event));
+					var runInInvokedThread = listner is IRunEventInInvokedThread;
+					invoker.Invoke(() => listner.OnPostLoad(uow, @event), runInInvokedThread);
 				}
 			}
 
@@ -179,7 +183,8 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostInsertListeners)
 				{
-					invoker.Invoke(() => listner.OnPostInsert(uow, @event));
+					var runInInvokedThread = listner is IRunEventInInvokedThread;
+					invoker.Invoke(() => listner.OnPostInsert(uow, @event), runInInvokedThread);
 				}
 			}
 
@@ -209,7 +214,8 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostUpdateListeners)
 				{
-					invoker.Invoke(() => listner.OnPostUpdate(uow, @event));
+					var runInInvokedThread = listner is IRunEventInInvokedThread;
+					invoker.Invoke(() => listner.OnPostUpdate(uow, @event), runInInvokedThread);
 				}
 			}
 
@@ -236,7 +242,8 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostDeleteListeners)
 				{
-					invoker.Invoke(() => listner.OnPostDelete(uow, @event));
+					var runInInvokedThread = listner is IRunEventInInvokedThread;
+					invoker.Invoke(() => listner.OnPostDelete(uow, @event), runInInvokedThread);
 				}
 			}
 

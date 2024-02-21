@@ -1,4 +1,4 @@
-﻿using NHibernate.Event;
+using NHibernate.Event;
 
 namespace QS.DomainModel.Tracking
 {
@@ -6,6 +6,8 @@ namespace QS.DomainModel.Tracking
 	{
 
 	}
+
+	public interface IRunEventInInvokedThread { }
 
 	public interface IUowPreLoadEventListener
 	{

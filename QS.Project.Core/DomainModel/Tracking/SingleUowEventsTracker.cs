@@ -100,35 +100,40 @@ namespace QS.DomainModel.Tracking {
 		public void OnPreLoad(IUnitOfWorkTracked uow, PreLoadEvent loadEvent)
 		{
 			foreach(var listner in preLoadListeners) {
-				invoker.Invoke(() => listner.OnPreLoad(uow, loadEvent));
+				var runInInvokedThread = listner is IRunEventInInvokedThread;
+				invoker.Invoke(() => listner.OnPreLoad(uow, loadEvent), runInInvokedThread);
 			}
 		}
 
 		public void OnPostLoad(IUnitOfWorkTracked uow, PostLoadEvent loadEvent)
 		{
 			foreach(var listner in postLoadListeners) {
-				invoker.Invoke(() => listner.OnPostLoad(uow, loadEvent));
+				var runInInvokedThread = listner is IRunEventInInvokedThread;
+				invoker.Invoke(() => listner.OnPostLoad(uow, loadEvent), runInInvokedThread);
 			}
 		}
 
 		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
 			foreach(var listner in postInsertListeners) {
-				invoker.Invoke(() => listner.OnPostInsert(uow, insertEvent));
+				var runInInvokedThread = listner is IRunEventInInvokedThread;
+				invoker.Invoke(() => listner.OnPostInsert(uow, insertEvent), runInInvokedThread);
 			}
 		}
 
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent) 
 		{
 			foreach(var listner in postUpdateListeners) {
-				invoker.Invoke(() => listner.OnPostUpdate(uow, updateEvent));
+				var runInInvokedThread = listner is IRunEventInInvokedThread;
+				invoker.Invoke(() => listner.OnPostUpdate(uow, updateEvent), runInInvokedThread);
 			}
 		}
 
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
 		{
 			foreach(var listner in postDeleteListeners) {
-				invoker.Invoke(() => listner.OnPostDelete(uow, deleteEvent));
+				var runInInvokedThread = listner is IRunEventInInvokedThread;
+				invoker.Invoke(() => listner.OnPostDelete(uow, deleteEvent), runInInvokedThread);
 			}
 		}
 
