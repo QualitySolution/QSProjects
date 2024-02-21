@@ -21,7 +21,7 @@ namespace QS.Project {
 		}
 
 		public static IServiceCollection AddObjectValidator(this IServiceCollection services) {
-			services.AddSingleton(sp => {
+			services.AddSingleton<IValidator>(sp => {
 				var validator = new ObjectValidator();
 				validator.ServiceProvider = sp;
 				return validator;

@@ -33,7 +33,7 @@ namespace QS.Project.GtkSharp {
 		}
 
 		public static IServiceCollection AddObjectValidatorWithGui(this IServiceCollection services) {
-			services.AddSingleton(sp => {
+			services.AddSingleton<IValidator>(sp => {
 				var validator = new ObjectValidator(new GtkValidationViewFactory());
 				validator.ServiceProvider = sp;
 				return validator;
