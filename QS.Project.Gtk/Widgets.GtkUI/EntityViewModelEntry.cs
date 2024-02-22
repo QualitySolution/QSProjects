@@ -272,8 +272,12 @@ namespace QS.Widgets.GtkUI
 		{
 			using (var localSelector = entitySelectorFactory?.CreateSelector()) {
 				var entityTab = localSelector?.GetTabToOpen(SubjectType, SubjectId);
-				if(entityTab != null) {
+				var openTab = TDIMain.MainNotebook.Tabs.FirstOrDefault(x => x.TdiTab == entityTab);
+				if(entityTab != null && openTab is null) {
 					MyTab.TabParent.AddTab(entityTab, MyTab);
+					return;
+				}
+				if(entityTab != null) {
 					return;
 				}
 			}
