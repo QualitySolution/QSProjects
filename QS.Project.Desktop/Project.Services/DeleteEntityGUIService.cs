@@ -24,12 +24,12 @@ namespace QS.Project.Services
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
 
-		public DeleteCore DeleteEntity<TEntity>(int id, IUnitOfWork uow = null, Action beforeDeletion = null)
+		public DeleteCore DeleteEntity<TEntity>(int id, IUnitOfWork uow = null, Action beforeDeletion = null, bool forceDelete = false)
 		{
-			return DeleteEntity(typeof(TEntity), id, uow, beforeDeletion);
+			return DeleteEntity(typeof(TEntity), id, uow, beforeDeletion, forceDelete);
 		}
 
-		public DeleteCore DeleteEntity(Type clazz, int id, IUnitOfWork uow = null, Action beforeDeletion = null)
+		public DeleteCore DeleteEntity(Type clazz, int id, IUnitOfWork uow = null, Action beforeDeletion = null, bool forceDelete = false)
 		{
 			var deletion = new DeleteCore(configuration, uowFactory, uow);
 			deletion.BeforeDeletion = beforeDeletion;
@@ -61,7 +61,8 @@ namespace QS.Project.Services
 			#endregion
 
 			#region Диалог удаления
-			if(deletion.TotalLinks > 0) {
+			
+			if(deletion.TotalLinks > 0 && !forceDelete) {
 				var deletionPage = navigation.OpenViewModel<DeletionViewModel, DeleteCore>(null, deletion);
 				deletionPage.ViewModel.DeletionAccepted = () => RunDeletion(deletion);
 				deletionPage.PageClosed += delegate (object sender, PageClosedEventArgs e) {
@@ -69,7 +70,7 @@ namespace QS.Project.Services
 						deletion.Close();
 				};
 			}
-			else if(interactive.Question($"Удалить {deletion.RootEntity.Title}?"))
+			else if(forceDelete || interactive.Question($"Удалить {deletion.RootEntity.Title}?"))
 				RunDeletion(deletion);
 			else {
 				deletion.Close();
