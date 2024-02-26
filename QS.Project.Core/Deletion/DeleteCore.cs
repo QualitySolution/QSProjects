@@ -189,9 +189,9 @@ namespace QS.Deletion
 
 			AddExcuteOperation("Завершение транзакции");
 			if(sqlTransaction != null)
-				sqlTransaction.Commit ();
-			if(uow != null)
-				uow.Commit ();
+				sqlTransaction.Commit();
+			if(uow != null && isOwnerUow)
+				uow.Commit();
 			DeletionExecuted = true;
 			return;
 		}
