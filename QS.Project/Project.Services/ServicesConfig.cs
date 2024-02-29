@@ -11,7 +11,7 @@ namespace QS.Project.Services {
 		"Вместо этого нужно использовать получение зависимостей из контейнера зависимостей.")]
 	public static class ServicesConfig
 	{
-		public static ILifetimeScope Scope { private get; set; }
+		public static ILifetimeScope Scope { get; set; }
 
 		public static ICommonServices CommonServices => new CommonServices(
 			ValidationService,

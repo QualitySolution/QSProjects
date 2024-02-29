@@ -218,21 +218,8 @@ namespace QSOrmProject
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			try {
-				//Здесь так все криво, просто чтобы сделать независимую реализация чисто для совместимости со старым кодом.
-				var builder = new ContainerBuilder();
-				IContainer container = null;
-				builder.Register((ctx) => new AutofacViewModelsGtkPageFactory(container)).As<IViewModelsPageFactory>();
-				builder.RegisterType<GtkWindowsNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
-				builder.RegisterType<DeleteEntityGUIService>().AsSelf();
-				builder.Register(x => DeleteConfig.Main).AsSelf();
-				builder.RegisterType<GtkMessageDialogsInteractive>().As<IInteractiveMessage>();
-				builder.RegisterType<GtkQuestionDialogsInteractive>().As<IInteractiveQuestion>();
-				builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
-				builder.RegisterModule(new DeletionAutofacModule());
-				builder.Register(ctx => new ClassNamesBaseGtkViewResolver(ctx.Resolve<IGtkViewFactory>(), Assembly.GetAssembly(typeof(DeletionView)))).As<IGtkViewResolver>();
-				container = builder.Build();
+				var deleteSerive = ServicesConfig.Scope.Resolve<DeleteEntityGUIService>();
 
-				var deleteSerive = container.Resolve<DeleteEntityGUIService>();
 				var deletion = deleteSerive.DeleteEntity(objectClass, id, uow, beforeDeletion);
 
 				while (deletion.DeletionExecuted == null) {
