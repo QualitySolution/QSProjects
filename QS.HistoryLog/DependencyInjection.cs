@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MySqlConnector;
 using QS.Project.Core;
 using System;
-using QS.Services;
 
 namespace QS.HistoryLog {
 	public static class DependencyInjection 
@@ -13,7 +12,6 @@ namespace QS.HistoryLog {
 		public static IServiceCollection AddStaticHistoryTracker(this IServiceCollection services) {
 			services.AddSingleton<OnDatabaseInitialization>((provider) => {
 				var connectionStringBuilder = provider.GetRequiredService<MySqlConnectionStringBuilder>();
-				provider.GetRequiredService<IUserService>();
 				HistoryMain.Enable(connectionStringBuilder);
 				return new OnDatabaseInitialization();
 			});
