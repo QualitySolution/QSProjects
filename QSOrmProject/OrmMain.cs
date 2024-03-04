@@ -292,7 +292,8 @@ namespace QSOrmProject
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
 
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
+			var trackerActionInvoker = ServicesConfig.Scope.Resolve<ITrackerActionInvoker>();
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(trackerActionInvoker); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
 
 			EnableLegacyDeletion();
