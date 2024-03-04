@@ -17,11 +17,6 @@ namespace QS.DomainModel.Tracking {
 		private static readonly HashSet<IUowPostUpdateEventListener> PostUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
 		private static readonly HashSet<IUowPostDeleteEventListener> PostDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
 		private static readonly HashSet<IUowPostCommitEventListener> PostCommitListeners = new HashSet<IUowPostCommitEventListener>();
-		private readonly ITrackerActionInvoker invoker;
-
-		public GlobalUowEventsTracker(ITrackerActionInvoker invoker) {
-			this.invoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
-		}
 
 		#region Register
 
@@ -125,10 +120,7 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PreLoadListeners)
 				{
-					var runInInvokedThread = listner is IRunEventInInvokedThread;
-					invoker.Invoke(() => {
-						listner.OnPreLoad(uow, @event);
-					}, runInInvokedThread);
+					listner.OnPreLoad(uow, @event);
 				}
 			}
 
@@ -155,8 +147,7 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostLoadListeners)
 				{
-					var runInInvokedThread = listner is IRunEventInInvokedThread;
-					invoker.Invoke(() => listner.OnPostLoad(uow, @event), runInInvokedThread);
+					listner.OnPostLoad(uow, @event);
 				}
 			}
 
@@ -183,8 +174,7 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostInsertListeners)
 				{
-					var runInInvokedThread = listner is IRunEventInInvokedThread;
-					invoker.Invoke(() => listner.OnPostInsert(uow, @event), runInInvokedThread);
+					listner.OnPostInsert(uow, @event);
 				}
 			}
 
@@ -214,8 +204,7 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostUpdateListeners)
 				{
-					var runInInvokedThread = listner is IRunEventInInvokedThread;
-					invoker.Invoke(() => listner.OnPostUpdate(uow, @event), runInInvokedThread);
+					listner.OnPostUpdate(uow, @event);
 				}
 			}
 
@@ -242,8 +231,7 @@ namespace QS.DomainModel.Tracking {
 			{
 				foreach (var listner in PostDeleteListeners)
 				{
-					var runInInvokedThread = listner is IRunEventInInvokedThread;
-					invoker.Invoke(() => listner.OnPostDelete(uow, @event), runInInvokedThread);
+					listner.OnPostDelete(uow, @event);
 				}
 			}
 

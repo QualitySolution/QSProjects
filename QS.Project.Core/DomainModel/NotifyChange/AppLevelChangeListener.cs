@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using QS.Dialog;
 using QS.DomainModel.NotifyChange.Conditions;
 using QS.DomainModel.Tracking;
 using QS.Utilities;
@@ -12,9 +13,11 @@ namespace QS.DomainModel.NotifyChange
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		
 		private readonly List<SubscriberWeakLink> BatchEventSubscribers = new List<SubscriberWeakLink>();
+		private readonly ITrackerActionInvoker trackerActionInvoker;
 
-		internal AppLevelChangeListener()
+		internal AppLevelChangeListener(ITrackerActionInvoker trackerActionInvoker)
 		{
+			this.trackerActionInvoker = trackerActionInvoker ?? throw new ArgumentNullException(nameof(trackerActionInvoker));
 		}
 
 		#region Подписки
@@ -90,7 +93,7 @@ namespace QS.DomainModel.NotifyChange
 
 		public ISingleUowEventListener CreateListnerForNewUow(IUnitOfWorkTracked uow)
 		{
-			return new UowTracker(BatchEventSubscribers);
+			return new UowTracker(trackerActionInvoker, BatchEventSubscribers);
 		}
 
 		#region Отписка
