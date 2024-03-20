@@ -30,6 +30,7 @@ namespace QS.Project.Core {
 		/// <returns></returns>
 		public static IServiceCollection AddCore(this IServiceCollection services) {
 			services
+				.AddMappingAssemblies(Assembly.GetExecutingAssembly())
 				.AddSessionFactory()
 				.AddSingleton<ISessionProvider, DefaultSessionProvider>()
 				.AddSingleton<IOrmConfig, DefaultOrmConfig>()
@@ -155,7 +156,7 @@ namespace QS.Project.Core {
 		public static IServiceCollection AddNHibernateConfiguration(this IServiceCollection services) {
 			services.AddSingleton<Configuration>((provider) => {
 				var sqlConfiguration = provider.GetRequiredService<MySQLConfiguration>();
-				var assembliesProvider = provider.GetService<IMappingAssembliesProvider>();
+				var assembliesProviders = provider.GetServices<IMappingAssembliesProvider>();
 				var configurationExposer = provider.GetService<IDatabaseConfigurationExposer>();
 				var conventions = provider.GetServices<IConvention>();
 
@@ -164,8 +165,9 @@ namespace QS.Project.Core {
 					if(conventions != null && conventions.Any()) {
 						m.FluentMappings.Conventions.Add(conventions.ToArray());
 					}
-					if(assembliesProvider != null) {
-						foreach(var assembly in assembliesProvider.GetMappingAssemblies()) {
+					if(assembliesProviders != null) {
+						var mappingAssemblies = assembliesProviders.SelectMany(x => x.GetMappingAssemblies()).Distinct();
+						foreach(var assembly in mappingAssemblies) {
 							m.FluentMappings.AddFromAssembly(assembly);
 						}
 					}
