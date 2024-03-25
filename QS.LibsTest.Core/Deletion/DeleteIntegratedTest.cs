@@ -60,6 +60,7 @@ namespace QS.Test.Deletion
 
 				deletion.RunDeletion(cancellation);
 				Assert.That(deletion.DeletionExecuted, Is.EqualTo(true));
+				uow.Commit();
 
 				var dependDeleteItems = uow.GetAll<DependDeleteItem>().ToList();
 				Assert.That(dependDeleteItems.Count, Is.EqualTo(0));
