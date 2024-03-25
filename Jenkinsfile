@@ -23,8 +23,9 @@ node {
    	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
       } catch (e) {}
       finally{
-   	  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, zoomCoverageChart: false
-   	  mstest testResultsFile:"**/*.trx", keepLongStdio: true
+   	  discoverGitReferenceBuild()
+        recordCoverage ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
+        mstest testResultsFile:"**/*.trx", keepLongStdio: true
       }
    }
    stage('Build Net4.x') {
