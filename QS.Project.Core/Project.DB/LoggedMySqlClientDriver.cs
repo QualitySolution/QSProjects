@@ -40,7 +40,7 @@ namespace QS.Project.DB
 					parameterValue = parameter.Value.ToString();
 				}
 				parameterValue = typesWithQuotes.Contains(parameter.DbType) ? "'" + parameterValue + "'" : parameterValue;
-				parametersText += $"SET @{parameter.ParameterName.TrimStart('?')} = {parameterValue};{Environment.NewLine}";
+				parametersText += $"SET {parameter.ParameterName.TrimStart('?')} = {parameterValue};{Environment.NewLine}";
 			}
 			return $"{parametersText}{dbCommand.CommandText.Replace("?p", "@p")};";
 		}
