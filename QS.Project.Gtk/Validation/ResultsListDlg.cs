@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace QS.Validation
 {
 	public partial class ResultsListDlg : Gtk.Dialog, IValidationView
 	{
-		public ResultsListDlg (List<ValidationResult> list )
+		public ResultsListDlg (ICollection<ValidationResult> list)
 		{
 			this.Build ();
 

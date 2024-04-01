@@ -8,7 +8,7 @@ namespace QS.Validation
 	public class ObjectValidator : IValidator
 	{
 		private readonly IValidationViewFactory validationViewFactory;
-		private readonly List<ValidationResult> results = new List<ValidationResult>();
+		private readonly HashSet<ValidationResult> results = new HashSet<ValidationResult>();
 
 		public IEnumerable<ValidationResult> Results => results;
 
