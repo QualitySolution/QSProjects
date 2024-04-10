@@ -13,6 +13,7 @@ namespace Gamma.GtkWidgets
 		public yButton()
 		{
 			Binding = new BindingControler<yButton>(this);
+			Clicked += (sender, args) => GrabFocus();
 		}
 
 		protected override void OnDestroyed() {
