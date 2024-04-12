@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Sockets;
 using MySqlConnector;
 using QS.Dialog;
-using QS.Utilities;
+using QS.Utilities.Debug;
 
 namespace QS.ErrorReporting.Handlers {
 	public class ConnectionIsLost : IErrorHandler {
