@@ -2,6 +2,7 @@ using System;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
+using QS.Utilities.Debug;
 using QS.Utilities.Text;
 
 namespace QS.ErrorReporting.Handlers {

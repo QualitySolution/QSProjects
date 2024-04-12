@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using MySqlConnector;
 using QS.Dialog;
+using QS.Utilities.Debug;
 
 namespace QS.ErrorReporting.Handlers {
 	public class MySqlException1366IncorrectStringValue : IErrorHandler {

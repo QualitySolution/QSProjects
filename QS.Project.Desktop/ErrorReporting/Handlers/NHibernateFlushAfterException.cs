@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using QS.Dialog;
+using QS.Utilities.Debug;
 
 namespace QS.ErrorReporting.Handlers {
 	public class NHibernateFlushAfterException : IErrorHandler {

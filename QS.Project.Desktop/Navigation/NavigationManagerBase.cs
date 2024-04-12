@@ -4,12 +4,12 @@ using System.Linq;
 using Autofac;
 using QS.Dialog;
 using QS.ErrorReporting;
+using QS.Utilities.Debug;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
-namespace QS.Navigation
-{
+namespace QS.Navigation {
 	public abstract class NavigationManagerBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
