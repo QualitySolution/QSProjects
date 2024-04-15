@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -156,7 +156,7 @@ namespace QSOrmProject
 				
 				return (ITdiDialog)ctor.Invoke(new object[] {
 						EntityUoWBuilder.ForOpen(parameters.FirstOrDefault().GetId()),
-						UnitOfWorkFactory.GetDefaultFactory,
+						ServicesConfig.UnitOfWorkFactory,
 						ServicesConfig.CommonServices
 					});
 			}
@@ -195,7 +195,7 @@ namespace QSOrmProject
 		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
 		{
 			var result = new List<DeletionObject>();
-			var delete = new DeleteCore(DeleteConfig.Main, uow);
+			var delete = new DeleteCore(DeleteConfig.Main, ServicesConfig.UnitOfWorkFactory, uow);
 			delete.PrepareDeletion(objectClass, id, new System.Threading.CancellationTokenSource().Token);
 
 			foreach(var item in delete.DeletedItems) {
@@ -218,21 +218,8 @@ namespace QSOrmProject
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			try {
-				//Здесь так все криво, просто чтобы сделать независимую реализация чисто для совместимости со старым кодом.
-				var builder = new ContainerBuilder();
-				IContainer container = null;
-				builder.Register((ctx) => new AutofacViewModelsGtkPageFactory(container)).As<IViewModelsPageFactory>();
-				builder.RegisterType<GtkWindowsNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
-				builder.RegisterType<DeleteEntityGUIService>().AsSelf();
-				builder.Register(x => DeleteConfig.Main).AsSelf();
-				builder.RegisterType<GtkMessageDialogsInteractive>().As<IInteractiveMessage>();
-				builder.RegisterType<GtkQuestionDialogsInteractive>().As<IInteractiveQuestion>();
-				builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
-				builder.RegisterModule(new DeletionAutofacModule());
-				builder.Register(ctx => new ClassNamesBaseGtkViewResolver(ctx.Resolve<IGtkViewFactory>(), Assembly.GetAssembly(typeof(DeletionView)))).As<IGtkViewResolver>();
-				container = builder.Build();
+				var deleteSerive = ServicesConfig.Scope.Resolve<DeleteEntityGUIService>();
 
-				var deleteSerive = container.Resolve<DeleteEntityGUIService>();
 				var deletion = deleteSerive.DeleteEntity(objectClass, id, uow, beforeDeletion);
 
 				while (deletion.DeletionExecuted == null) {
@@ -305,7 +292,8 @@ namespace QSOrmProject
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
 
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
+			var trackerActionInvoker = ServicesConfig.Scope.Resolve<ITrackerActionInvoker>();
+			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(trackerActionInvoker); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
 
 			EnableLegacyDeletion();

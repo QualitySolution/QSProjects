@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gamma.Utilities;
 using Newtonsoft.Json;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 
 namespace QSOrmProject.Permissions
 {
@@ -55,7 +56,7 @@ namespace QSOrmProject.Permissions
 	   			.ToArray();
 			PermissionCount = PermissionNames.Length;
 
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				var entities = uow.GetAll<TPerEntity>();
 				columnNames = entities.Select(x => DomainHelper.GetTitle(x)).ToArray();
 				Entities = entities.ToArray();

@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 using NHibernate.Event;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 
 namespace QS.DomainModel.Entity
 {
-	public class BusinessObjectPreparer : IUowPreLoadEventListener, IUowPostInsertEventListener
-	{
+	public class BusinessObjectPreparer : IUowPreLoadEventListener, IUowPostInsertEventListener, IRunEventInInvokedThread {
 		private static BusinessObjectPreparer instance;
 
 		public static void Init()

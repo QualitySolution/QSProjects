@@ -1,4 +1,5 @@
 using System;
+using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
 using Gdk;
 using Gtk;
@@ -12,6 +13,7 @@ using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Project.Services;
 using QS.Project.Services.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
@@ -30,7 +32,7 @@ namespace QS.Project.Dialogs.GtkUI
             this.Build();
 			usersModel = new UsersModel();
 			usersModel.UsersUpdated += UsersModel_UsersUpdated;
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), interactiveService);
 			ConfigureDlg();
 		}
 
@@ -145,7 +147,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public void UpdateUsers(bool showDeactivated)
 		{
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				var users = UserRepository.GetUsers(uow, showDeactivated);
 				ObservableUsers = new ObservableList<UserBase>(users);
 				UsersUpdated?.Invoke(this, EventArgs.Empty);

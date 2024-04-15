@@ -1,4 +1,3 @@
-﻿using System;
 using Gamma.GtkWidgets;
 using Gamma.Utilities;
 using Gtk;
@@ -7,10 +6,11 @@ using NLog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Utilities.Text;
+using System;
 
-namespace QS.Project.Dialogs.GtkUI
-{
+namespace QS.Project.Dialogs.GtkUI {
 	public static class EntityEditSimpleDialog
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -64,7 +64,7 @@ namespace QS.Project.Dialogs.GtkUI
 					dialogTitle = $"Редактирование {names.Genitive}";
 				}
 			}
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
 			{
 				//Создаем объект редактирования
 				object tempObject = id.HasValue ? uow.GetById(objectType, id.Value) : Activator.CreateInstance(objectType);
@@ -114,7 +114,7 @@ namespace QS.Project.Dialogs.GtkUI
 						editDialog.Destroy ();
 						return list [0];
 					}
-					uow.TrySave (tempObject);
+					uow.Save (tempObject);
 					uow.Commit ();
 				}
 				else
@@ -125,7 +125,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 						if (questionResult)
 						{
-							uow.TrySave(tempObject);
+							uow.Save(tempObject);
 							uow.Commit();
 						}
 					}

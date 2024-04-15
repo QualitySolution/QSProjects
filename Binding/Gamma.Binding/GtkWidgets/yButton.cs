@@ -56,5 +56,42 @@ namespace Gamma.GtkWidgets
 			Binding.CleanSources();
 			base.OnDestroyed();
 		}
+
+		public void BindCommand(ICommand command, Func<object> commandArgument = null)
+		{
+			if(this.command != null) {
+				throw new InvalidOperationException("Биндинг можно настроить только для одной команды");
+			}
+
+			this.command = command;
+			this.commandArgument = commandArgument;
+			command.CanExecuteChanged += CommandCanExecuteChanged;
+			Sensitive = command.CanExecute(commandArgument);
+		}
+
+		protected override void OnClicked() 
+		{
+			base.OnClicked();
+
+			if(command != null) {
+				command.Execute(commandArgument);
+			}
+		}
+
+		private void CommandCanExecuteChanged(object sender, EventArgs e) 
+		{
+			Sensitive = command.CanExecute(commandArgument);
+		}
+
+		public override void Destroy() 
+		{
+			command.CanExecuteChanged -= CommandCanExecuteChanged;
+			base.Destroy();
+		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
