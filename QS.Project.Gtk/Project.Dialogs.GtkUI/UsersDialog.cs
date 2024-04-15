@@ -1,5 +1,3 @@
-using System;
-using System.Data.Bindings.Collections.Generic;
 using Gamma.GtkWidgets;
 using Gdk;
 using Gtk;
@@ -7,17 +5,15 @@ using QS.Deletion;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity;
-using QS.DomainModel.UoW;
 using QS.Extensions.Observable.Collections.List;
 using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services;
-using QS.Project.Services.GtkUI;
+using System;
 
-namespace QS.Project.Dialogs.GtkUI
-{
+namespace QS.Project.Dialogs.GtkUI {
 	public partial class UsersDialog : Gtk.Dialog
 	{
 		UsersModel usersModel;
