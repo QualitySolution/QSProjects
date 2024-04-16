@@ -5,7 +5,7 @@ using QS.DomainModel.UoW;
 
 namespace QS.DomainModel.Entity
 {
-	public class BusinessObjectPreparer : IUowPreLoadEventListener, IUowPostInsertEventListener, IRunEventInInvokedThread {
+	public class BusinessObjectPreparer : IUowPreLoadEventListener, IUowPostInsertEventListener {
 		private static BusinessObjectPreparer instance;
 
 		public static void Init()

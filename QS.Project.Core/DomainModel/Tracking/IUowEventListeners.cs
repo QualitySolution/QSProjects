@@ -7,8 +7,6 @@ namespace QS.DomainModel.Tracking
 
 	}
 
-	public interface IRunEventInInvokedThread { }
-
 	public interface IUowPreLoadEventListener
 	{
 		void OnPreLoad(IUnitOfWorkTracked uow, PreLoadEvent loadEvent);
