@@ -42,7 +42,7 @@ namespace QSBanks
 					? Rc.GetStyle(datatreeviewAccounts).Text(StateType.Insensitive)
 					: Rc.GetStyle(datatreeviewAccounts).Text(StateType.Normal))
 				.Finish();
-			datatreeviewAccounts.ItemsDataSource = accountOwner.ObservableAccounts;
+			datatreeviewAccounts.ItemsDataSource = accountOwner.Accounts;
 		}
 
 		public AccountsView ()
@@ -83,7 +83,7 @@ namespace QSBanks
 			AccountDlg dlg = new AccountDlg (UoW, newAccount);
 			dlg.AccountSaved += (s, savedAccount) =>
 			{
-				accountOwner.ObservableAccounts.Add(savedAccount);
+				accountOwner.Accounts.Add(savedAccount);
 			};
 			mytab.TabParent.AddSlaveTab (mytab, dlg);
 		}
@@ -117,7 +117,7 @@ namespace QSBanks
 				return;
 
 			if (OrmMain.DeleteObject (typeof(Account), (datatreeviewAccounts.GetSelectedObjects () [0] as Account).Id))
-				accountOwner.ObservableAccounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
+				accountOwner.Accounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
 	}
 }
