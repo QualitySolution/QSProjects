@@ -15,9 +15,6 @@ namespace QS.Test.Project.Journal
 	[TestFixture()]
 	public class EntityJournalViewModelBaseTest : InMemoryDBTestFixtureBase
 	{
-		public EntityJournalViewModelBaseTest(InMemoryDBTestSessionProvider sessionProvider) : base(sessionProvider) {
-		}
-
 		[Test(Description = "Тест корректного получения данных из журнала при установке запроса целиком.")]
 		public void ItemsQuery_FullSetTest()
 		{

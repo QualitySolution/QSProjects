@@ -1,14 +1,7 @@
 using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Cfg;
-using FluentNHibernate.Conventions;
-using Microsoft.Extensions.DependencyInjection;
-using NHibernate.Cfg;
-using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
-using QS.Project.DB;
-using System.Linq;
 using System.Reflection;
-using NHibernate.Event;
 
 namespace QS.Testing.DB {
 	/// <summary>
@@ -20,14 +13,8 @@ namespace QS.Testing.DB {
 	/// </summary>
 	public abstract class InMemoryDBTestFixtureBase
 	{
-		protected Configuration configuration;
 		protected IUnitOfWorkFactory UnitOfWorkFactory;
 		protected InMemoryDBTestSessionProvider inMemoryDBTestSessionProvider;
-		private readonly InMemoryDBTestSessionProvider sessionProvider;
-
-		public InMemoryDBTestFixtureBase(InMemoryDBTestSessionProvider sessionProvider) {
-			this.sessionProvider = sessionProvider ?? throw new System.ArgumentNullException(nameof(sessionProvider));
-		}
 
 		/// <summary>
 		/// Полная инициализация всего необходимого для тестирования в Nh
@@ -45,7 +32,7 @@ namespace QS.Testing.DB {
 			var configuration = fluentConfig.BuildConfiguration();
 			var sessionFactory = configuration.BuildSessionFactory();
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration, sessionFactory);
-			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(sessionProvider);
+			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(inMemoryDBTestSessionProvider);
 		}
 
 		/// <summary>
