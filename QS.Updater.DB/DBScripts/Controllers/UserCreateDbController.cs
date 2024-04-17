@@ -52,7 +52,7 @@ namespace QS.DBScripts.Controllers
 		}
 
 		#region Взаимодействие с моделью
-		public void WasError(string text)
+		public void WasError(string text, string lastSqlCommand)
 		{
 			interactive.ShowMessage(ImportanceLevel.Error, text);
 		}

@@ -7,7 +7,7 @@ namespace QS.DBScripts.Controllers
 	{
 		IProgressBarDisplayable Progress { get; }
 
-		void WasError(String text);
+		void WasError(String text, String lastExecutedStatement);
 
 		bool NeedDropDatabaseIfExists(string dbname);
 	}
