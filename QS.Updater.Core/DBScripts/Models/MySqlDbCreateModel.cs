@@ -24,7 +24,7 @@ namespace QS.DBScripts.Models
 			string[] uriSplit = server.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
 			if (uriSplit.Length == 0) {
-				controller.WasError("Имя сервера не корректно.");
+				controller.WasError("Имя сервера не корректно.", null);
 				return false;
 			}
 			
@@ -103,7 +103,7 @@ namespace QS.DBScripts.Models
 				}
 				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.
 					logger.Error(ex, "Ошибка подключения к серверу.");
-					controller.WasError("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.");
+					controller.WasError("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.", lastExecutedStatement);
 					return false;
 				}
 				catch (MySqlException ex)
@@ -111,11 +111,11 @@ namespace QS.DBScripts.Models
 					logger.Info("Строка соединения: {0}", connStr);
 					logger.Error(ex, "Ошибка подключения к серверу.");
 					if (ex.Number == 1045 || ex.Number == 0)
-						controller.WasError("Доступ запрещен.\nПроверьте логин и пароль.");
+						controller.WasError("Доступ запрещен.\nПроверьте логин и пароль.", lastExecutedStatement);
 					else if (ex.Number == 1042)
-						controller.WasError("Не удалось подключиться к серверу БД.");
+						controller.WasError("Не удалось подключиться к серверу БД.", lastExecutedStatement);
 					else
-						controller.WasError("Ошибка соединения с базой данных.");
+						controller.WasError(ex.Message, lastExecutedStatement);
 
 					return false;
 				} finally {
@@ -125,10 +125,12 @@ namespace QS.DBScripts.Models
 			return true;
 		}
 
+		private string lastExecutedStatement;
 		void Myscript_StatementExecuted(object sender, MySqlScriptEventArgs args)
 		{
 			controller.Progress.Add();
 			logger.Debug("SQL Command = {0}", args.StatementText);
+			lastExecutedStatement = $"[{args.Line}:{args.Position}]{args.StatementText}";
 		}
 	}
 }
