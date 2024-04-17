@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Gtk.DataBindings\System.Data.Bindings\System.Data.Bindings.csproj" />
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj" />
       <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
