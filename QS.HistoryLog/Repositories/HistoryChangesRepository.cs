@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -91,7 +91,7 @@ namespace QS.HistoryLog.Repositories
 				+ $"JOIN {hcsPersister.TableName} AS {changeSetAlias} ON {changeSetAlias}.{hcsPersister.KeyColumnNames.First()} = {changedEntityAlias}.{changeSetColumn} "
 				+ $"LEFT JOIN {hcPersister.TableName} AS {fieldChangeAlias} ON {changedEntityAlias}.{hcePersister.KeyColumnNames.First()} = {fieldChangeAlias}.{changedEntityColumn} "
 				+ $"WHERE {changedEntityAlias}.{changeTimeColumn} BETWEEN '{dateFrom:yyyy-MM-dd}' AND '{dateTo:yyyy-MM-dd HH:mm:ss}';";
-			uow.Session.CreateSQLQuery(query).SetTimeout(180).ExecuteUpdate();
+			uow.Session.CreateSQLQuery(query).SetTimeout(360).ExecuteUpdate();
 		}
 	}
 }
