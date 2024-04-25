@@ -62,6 +62,8 @@ namespace QS.Project.Journal.DataLoader
 
 		public int PageSize { get; set; } = 100;
 
+		public int? ItemsCountToNextLoad { get;  set; }
+
 		#region Добавляем множенственны параметры
 
 		/// <summary>
@@ -156,12 +158,10 @@ namespace QS.Project.Journal.DataLoader
 
 		public uint? TotalCount { get; private set; }
 
-		public bool UsePreviousPageSize { get; private set; }
-
 		#endregion
 
 		#region Внутренние хелперы
-		protected int? GetPageSize => DynamicLoadingEnabled ? (UsePreviousPageSize ? numberOfPreviousNodesRead : PageSize) : (int?)null;
+		protected int? GetPageSize => DynamicLoadingEnabled ? (ItemsCountToNextLoad ?? PageSize) : (int?)null;
 
 		protected IEnumerable<IQueryLoader<TNode>> AvailableQueryLoaders {
 			get { //Если сервис прав доступен, проверяем права. Все загрузчики запросов для которых у нас нет права чтения.
@@ -189,7 +189,7 @@ namespace QS.Project.Journal.DataLoader
 			cts.Cancel();
 		}
 
-		public void LoadData(bool nextPage, bool usePreviousPageSize = false) {
+		public void LoadData(bool nextPage) {
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
 			
@@ -199,22 +199,22 @@ namespace QS.Project.Journal.DataLoader
 				return;
 			}
 			
-			LoadDataInternal(nextPage, usePreviousPageSize);
+			LoadDataInternal(nextPage);
 		}
 
-		private void LoadDataInternal(bool nextPage, bool usePreviousPageSize = false, int? customNumberOfNodesToRead = null)
+		private void LoadDataInternal(bool nextPage)
 		{
-			UsePreviousPageSize = usePreviousPageSize;
-
 			DateTime startLoading = DateTime.Now;
 
 			FirstPage = !nextPage;
-			if (!nextPage) {
-				numberOfPreviousNodesRead = customNumberOfNodesToRead ?? readedNodes.Count;
+			if(nextPage) {
+				ItemsCountToNextLoad = null;
+			}
+			else {
 				readedNodes.Clear();
 				TotalCount = null;
 				TotalCountChanged?.Invoke(this, EventArgs.Empty);
-				foreach (var item in QueryLoaders) {
+				foreach(var item in QueryLoaders) {
 					item.Reset();
 				}
 			}
@@ -250,7 +250,7 @@ namespace QS.Project.Journal.DataLoader
 				}
 				logger.Info($"{(DateTime.Now - startLoading).TotalSeconds} сек.");
 				if(1 == Interlocked.Exchange(ref reloadRequested, 0))
-					LoadDataInternal(false, usePreviousPageSize, numberOfPreviousNodesRead);
+					LoadDataInternal(false);
 				else 
 					SetLoadInProgress(false);
 			}, cts.Token)
@@ -294,7 +294,7 @@ namespace QS.Project.Journal.DataLoader
 			while (loaders.Any(l => l.NextUnreadedNode() != null)) {
 				if (loaders.Any(l => (l as IQueryLoader<TNode>).HasUnloadedItems && l.NextUnreadedNode() == null))
 					break; //Уперлись в недогруженный хвост. Пока хватит, ждем следующей страницы.
-				if(UsePreviousPageSize && numberOfPreviousNodesRead <= readedNodes.Count) {
+				if(ItemsCountToNextLoad.HasValue && ItemsCountToNextLoad <= readedNodes.Count) {
 					break;
 				}
 				var taked = filtredLoaders.First();
