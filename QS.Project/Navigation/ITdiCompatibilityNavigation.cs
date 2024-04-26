@@ -37,16 +37,66 @@ namespace QS.Navigation
 			Action<TViewModel> configureViewModel = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
 
-		ITdiPage OpenTdiTabOnTdi<TTab>(ITdiTab masterTab, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTabOnTdi<TTab, TCtorArg1>(ITdiTab masterTab, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTabOnTdi<TTab, TCtorArg1, TCtorArg2>(ITdiTab masterTab, TCtorArg1 arg1, TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTabOnTdi<TTab>(ITdiTab masterTab, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTabOnTdiNamedArgs<TTab>(ITdiTab masterTab, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabOnTdi<TTab>(
+			ITdiTab masterTab,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabOnTdi<TTab, TCtorArg1>(
+			ITdiTab masterTab,
+			TCtorArg1 arg1,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabOnTdi<TTab, TCtorArg1, TCtorArg2>(
+			ITdiTab masterTab,
+			TCtorArg1 arg1,
+			TCtorArg2 arg2,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabOnTdi<TTab>(
+			ITdiTab masterTab,
+			Type[] ctorTypes,
+			object[] ctorValues,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabOnTdiNamedArgs<TTab>(
+			ITdiTab masterTab,
+			IDictionary<string, object> ctorArgs,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 
-		ITdiPage OpenTdiTab<TTab>(DialogViewModelBase master, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTab<TTab, TCtorArg1>(DialogViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTab<TTab, TCtorArg1, TCtorArg2>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTab<TTab>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
-		ITdiPage OpenTdiTabNamedArgs<TTab>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab>(
+			DialogViewModelBase master,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab, TCtorArg1>(
+			DialogViewModelBase master, TCtorArg1 arg1,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab, TCtorArg1, TCtorArg2>(
+			DialogViewModelBase master,
+			TCtorArg1 arg1,
+			TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTab<TTab>(
+			DialogViewModelBase master,
+			Type[] ctorTypes,
+			object[] ctorValues,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
+		ITdiPage OpenTdiTabNamedArgs<TTab>(
+			DialogViewModelBase master,
+			IDictionary<string, object> ctorArgs,
+			OpenPageOptions options = OpenPageOptions.None,
+			Action<TTab> configureTab = null,
+			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 	}
 }

@@ -74,7 +74,7 @@ namespace QS.ViewModels.Dialog
 
 		#region Валидация
 
-		private readonly IValidator validator;
+		protected readonly IValidator validator;
 		private readonly string uoWTitle;
 		public readonly List<ValidationRequest> Validations = new List<ValidationRequest>();
 
