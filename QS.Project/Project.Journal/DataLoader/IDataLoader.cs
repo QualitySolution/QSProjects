@@ -33,7 +33,8 @@ namespace QS.Project.Journal.DataLoader
 
 		bool DynamicLoadingEnabled { get; set; }
 
-		int PageSize { set; }
+		int PageSize { get; set; }
+		int? ItemsCountForNextLoad { get; set; }
 
 		bool HasUnloadedItems { get; }
 
@@ -47,13 +48,11 @@ namespace QS.Project.Journal.DataLoader
 
 		void GetTotalCount();
 
-		void LoadData(bool nextPage, bool usePreviousPageSize = false);
+		void LoadData(bool nextPage);
 
 		IEnumerable<object> GetNodes(int entityId, IUnitOfWork uow);
 
 		void CancelLoading();
-
-		bool UsePreviousPageSize { get; }
 	}
 
 	/// <summary>
