@@ -171,7 +171,7 @@ namespace QS.Journal.GtkUI
 
 				SetItemsSource();
 
-				if(!ViewModel.DataLoader.FirstPage || ViewModel.DataLoader.UsePreviousPageSize) {
+				if(!ViewModel.DataLoader.FirstPage || ViewModel.DataLoader.ItemsCountForNextLoad != null) {
 					isRedrawInProgress = true;
 					GtkHelper.WaitRedraw();
 					if(GtkScrolledWindow?.Vadjustment != null) {
