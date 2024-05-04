@@ -171,6 +171,7 @@ namespace QSProjectsLib
 			uint port = 3306;
 			string[] uriSplit = new string[2];
 			string login = entryUser.Text;
+			string userName = entryUser.Text.ToLower();
 
 			labelLoginInfo.Text = "Соединяемся....";
 			QSMain.WaitRedraw();
@@ -193,6 +194,8 @@ namespace QSProjectsLib
 					}
 					uriSplit = result.Server.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 					login = result.Login;
+					if (userName.Contains("\\"))
+						userName = userName.Substring(userName.IndexOf("\\") + 1);
 					Session.IsSaasConnection = true;
 					Session.SessionId = result.SessionID;
 					Session.Account = Selected.AccountLogin;
@@ -227,7 +230,7 @@ namespace QSProjectsLib
 				QSMain.connectionDB.Open();
 				string sql = "SELECT deactivated FROM users WHERE login = @login";
 				MySqlCommand cmd = new MySqlCommand(sql, QSMain.connectionDB);
-				cmd.Parameters.AddWithValue("@login", entryUser.Text);
+				cmd.Parameters.AddWithValue("@login", userName);
 				using (MySqlDataReader rdr = cmd.ExecuteReader()) {
 					if (rdr.Read() && DBWorks.GetBoolean(rdr, "deactivated", false) == true) {
 						labelLoginInfo.Text = "Пользователь отключен.";
@@ -243,7 +246,7 @@ namespace QSProjectsLib
 				configuration["Default:ConnectionName"] = comboboxConnections.ActiveText;
 				QSMain.ConnectionString = connStr;
 				QSMain.ConnectionStringBuilder = conStrBuilder;
-				QSMain.User = new UserInfo(entryUser.Text.ToLower());
+				QSMain.User = new UserInfo(userName);
 				this.Respond(ResponseType.Ok);
 			}
 			catch (MySqlException ex) {
