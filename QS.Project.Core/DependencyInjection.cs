@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ListenerType = NHibernate.Event.ListenerType;
+using ConfigurationErrorsException = System.Configuration.ConfigurationErrorsException;
 
 namespace QS.Project.Core {
 	public static class DependencyInjection 
@@ -99,6 +100,11 @@ namespace QS.Project.Core {
 			services.AddSingleton<IDatabaseConnectionSettings>((provider) => {
 				var settings = new DatabaseConnectionSettings();
 				var section = provider.GetRequiredService<IConfiguration>().GetSection(resultSettingName);
+
+				if(section.Value is null) {
+					throw new ConfigurationErrorsException($"Missing DatabaseConfiguration, check {resultSettingName} is exists in configuration");
+				}
+
 				section.Bind(settings);
 				return settings;
 			});
