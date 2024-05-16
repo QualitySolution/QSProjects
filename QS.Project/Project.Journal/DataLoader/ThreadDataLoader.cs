@@ -62,7 +62,7 @@ namespace QS.Project.Journal.DataLoader
 
 		public int PageSize { get; set; } = 100;
 
-		public int? ItemsCountForNextLoad { get;  set; }
+		public int? ItemsCountForNextLoad { get; set; }
 
 		#region Добавляем множенственны параметры
 
