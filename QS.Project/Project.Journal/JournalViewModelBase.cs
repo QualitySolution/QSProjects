@@ -66,6 +66,7 @@ namespace QS.Project.Journal
 		}
 
 		public Action UpdateJournalActions;
+
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 
 		#region ITDIJournal implementation
@@ -145,7 +146,10 @@ namespace QS.Project.Journal
 
 			DataLoader.ItemsCountForNextLoad = DataLoader.Items.Count + changesDelta;
 
-			var needResetItemsCountForNextLoad = DataLoader.PageSize >= DataLoader.ItemsCountForNextLoad;
+			var dataLoaderType = DataLoader.GetType();
+			var isThreadDataLoader = dataLoaderType.IsGenericType && dataLoaderType.GetGenericTypeDefinition() == typeof(ThreadDataLoader<>);
+
+			var needResetItemsCountForNextLoad = isThreadDataLoader	&& !DataLoader.FirstPage && DataLoader.PageSize >= DataLoader.ItemsCountForNextLoad;
 
 			Refresh(needResetItemsCountForNextLoad);
 		}

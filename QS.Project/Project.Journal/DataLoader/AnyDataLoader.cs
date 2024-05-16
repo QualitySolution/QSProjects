@@ -26,7 +26,7 @@ namespace QS.Project.Journal.DataLoader
 		public PostLoadProcessing PostLoadProcessingFunc { set => throw new NotImplementedException(); }
 		public bool DynamicLoadingEnabled { get; set; } = true;
 		public int PageSize { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public int? ItemsCountForNextLoad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public int? ItemsCountForNextLoad { get; set; }
 
 		public bool HasUnloadedItems => false;
 
