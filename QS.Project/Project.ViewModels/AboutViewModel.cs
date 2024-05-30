@@ -42,8 +42,8 @@ namespace QS.Project.ViewModels
 
 				var text = new List<string>();
 
-				if(productService?.EditionName != null)
-					text.Add(productService?.EditionName);
+				if(productService?.CurrentEditionName != null)
+					text.Add(productService?.CurrentEditionName);
 
 				if (ApplicationInfo.IsBeta)
 					text.Add(String.Format("Бета от {0:g}", ApplicationInfo.BuildDate));
