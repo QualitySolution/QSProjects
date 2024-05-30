@@ -54,9 +54,11 @@ namespace QS.Serial.ViewModels
 					"Если вы уверены что серийный номер правильный, попробуйте обновить программу.";
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";
+				if(SerialNumberEncoder.IsExpired)
+					return "Срок действия серийного номера истек";
 				if(SerialNumberEncoder.IsValid) {
 					var productService = autofacScope.Resolve<IProductService>(new TypedParameter(typeof(ISerialNumberService), new SerialNumberService(SerialNumber)));
-					return productService?.EditionName;
+					return productService?.GetEditionName(SerialNumberEncoder.EditionId);
 				}
 				return null;
 			} 
