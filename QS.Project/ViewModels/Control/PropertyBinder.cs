@@ -20,7 +20,9 @@ namespace QS.ViewModels.Control
 
 		public TProperty PropertyValue {
 			get => (TProperty)propertyInfo.GetValue(bindedEntity);
-			set => propertyInfo.SetValue(bindedEntity, value);
+			set { if(!object.ReferenceEquals(PropertyValue, value) )
+				propertyInfo.SetValue(bindedEntity, value);
+			}
 		}
 
 		public event EventHandler Changed;
