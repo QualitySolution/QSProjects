@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using QS.DomainModel.Entity;
 using QS.Extensions.Observable.Collections.List;
@@ -56,8 +56,6 @@ namespace QS.Banks.Domain
 		Account DefaultAccount { get; set; }
 
 		IObservableList<Account> Accounts { get;}
-
-		IObservableList<Account> ObservableAccounts { get;}
 	}
 }
 

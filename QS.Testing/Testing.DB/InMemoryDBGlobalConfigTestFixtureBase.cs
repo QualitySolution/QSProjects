@@ -1,8 +1,7 @@
-﻿using QS.DomainModel.UoW;
+using QS.DomainModel.UoW;
 using QS.Project.DB;
 
-namespace QS.Testing.DB
-{
+namespace QS.Testing.DB {
 	/// <summary>
 	/// Базовый класс для тестирования работы с базой.
 	/// *Внимание* на при создании нового UoW, создается новая чистая база данных в памяти
@@ -14,25 +13,28 @@ namespace QS.Testing.DB
 	public abstract class InMemoryDBGlobalConfigTestFixtureBase
 	{
 		protected IUnitOfWorkFactory UnitOfWorkFactory;
-		protected InMemoryDBTestSessionProvider inMemoryDBTestSessionProvider;
+		private readonly InMemoryDBTestSessionProvider provider;
+
+		public InMemoryDBGlobalConfigTestFixtureBase(InMemoryDBTestSessionProvider provider) {
+			this.provider = provider ?? throw new System.ArgumentNullException(nameof(provider));
+		}
 
 		/// <summary>
 		/// Инициализация только фабрики uow без инициализации Nh
 		/// </summary>
 		public void InitialiseUowFactory()
 		{
-			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(OrmConfig.NhConfig);
-			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(provider);
 		}
 
 		public void NewSessionWithSameDB()
 		{
-			inMemoryDBTestSessionProvider.UseSameDB = true;
+			provider.UseSameDB = true;
 		}
 
 		public void NewSessionWithNewDB()
 		{
-			inMemoryDBTestSessionProvider.UseSameDB = false;
+			provider.UseSameDB = false;
 		}
 	}
 }

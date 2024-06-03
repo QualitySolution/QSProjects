@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
+using QS.Project.Services;
 using QS.Utilities.Text;
 using QS.Validation;
 
@@ -14,14 +15,14 @@ namespace QS.Project.Dialogs.GtkUI
 		public TypeOfEntityDlg()
 		{
 			this.Build();
-			UoWGeneric = UnitOfWorkFactory.CreateWithNewRoot<TypeOfEntity>();
+			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateWithNewRoot<TypeOfEntity>();
 			ConfigureDlg();
 		}
 
 		public TypeOfEntityDlg(int id)
 		{
 			this.Build();
-			UoWGeneric = UnitOfWorkFactory.CreateForRoot<TypeOfEntity>(id);
+			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<TypeOfEntity>(id);
 			ConfigureDlg();
 		}
 
@@ -63,7 +64,7 @@ namespace QS.Project.Dialogs.GtkUI
 
 		public override bool Save()
 		{
-			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			var validator = ServicesConfig.ValidationService;
 			if (!validator.Validate(Entity))
 				return false;
 

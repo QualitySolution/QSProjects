@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using MySqlConnector;
 using NHibernate.Event;
 using NHibernate.Proxy;
@@ -19,7 +18,7 @@ namespace QS.HistoryLog
 		/// <summary>
 		/// Используется для записи журнала изменений.
 		/// </summary>
-		private readonly string connectionString;
+		private readonly MySqlConnectionStringBuilder _connectionStringBuilder;
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		//На случай, если изменений много, а размер передаваемого пакета данных не велик
 		private const int _maxChangedEntitiesSaveInOneBatch = 10000;
@@ -28,13 +27,12 @@ namespace QS.HistoryLog
 
 		readonly List<ChangedEntity> changes = new List<ChangedEntity>();
 
-		public HibernateTracker(string connectionString) {
-			this.connectionString = connectionString;
-			if(!connectionString.Contains("Allow User Variables")) {
-				if(!this.connectionString.EndsWith(";"))
-					this.connectionString += ";";
-				this.connectionString += "Allow User Variables=true;";
+		public HibernateTracker(MySqlConnectionStringBuilder connectionStringBuilder) {
+			if(!connectionStringBuilder.AllowUserVariables) {
+				connectionStringBuilder.AllowUserVariables = true;
 			}
+			
+			_connectionStringBuilder = connectionStringBuilder;
 		}
 
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
@@ -115,9 +113,7 @@ namespace QS.HistoryLog
 
 			var userId = UserRepository.GetCurrentUserId();
 			var start = DateTime.Now;
-			var reg = new Regex("user id=(.+?)(;|$)");
-			var match = reg.Match(connectionString);
-			string dbLogin = match.Success ? match.Groups[1].Value : null;
+			var dbLogin = _connectionStringBuilder.UserID;
 
 			var changeSet = new ChangeSet(userUoW.ActionTitle?.UserActionTitle 
 					?? userUoW.ActionTitle?.CallerMemberName + " - " 
@@ -146,7 +142,7 @@ namespace QS.HistoryLog
 		}
 
 		private void Save(ChangeSet changeSet) {
-			using(var connection = new MySqlConnection(connectionString)) {
+			using(var connection = new MySqlConnection(_connectionStringBuilder.ConnectionString)) {
 				connection.Open();
 				var transaction = connection.BeginTransaction();
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
+using QS.Project.Services;
 using QS.Tdi;
 using QS.Utilities;
 using QS.Utilities.Text;
@@ -69,7 +70,7 @@ namespace QSOrmProject
 		public override IUnitOfWork UoW {
 			get {
 				if (uow == null) {
-					uow = UnitOfWorkFactory.CreateWithoutRoot();
+					uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 					isOwnerUow = true;
 				}
 				return uow;
@@ -193,7 +194,7 @@ namespace QSOrmProject
 		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || permissionResult.CanDelete;
 
 		public OrmReference(System.Type objType)
-			: this(objType, UnitOfWorkFactory.CreateWithoutRoot())
+			: this(objType, ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot())
 		{
 			isOwnerUow = true;
 		}
@@ -204,7 +205,7 @@ namespace QSOrmProject
 		}
 
 		public OrmReference(QueryOver query)
-			: this(UnitOfWorkFactory.CreateWithoutRoot(), query) {
+			: this(ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot(), query) {
 			isOwnerUow = true;
 		}
 
