@@ -95,7 +95,7 @@ namespace QS.Serial.Encoding
 						}
 						break;
 				}
-				IsValid = !IsAnotherProduct && !IsNotSupport && !IsExpired;
+				IsValid = !IsAnotherProduct && !IsNotSupport;
 				OnPropertyChanged();
 			}
 		}
@@ -133,7 +133,8 @@ namespace QS.Serial.Encoding
 							return $"Версия кодирования: {CodeVersion}\n" +
 							       $"Id клиента: {ClientId}\n" +
 							       $"Продукт: {ProductId}\n" +
-							       $"Редакция: {EditionId}";
+							       $"Редакция: {EditionId}\n" +
+							       $"Дата окончания: {ExpiryDate?.ToString("d") ?? "Нет"}";
 						default:
 							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");
 					}
