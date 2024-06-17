@@ -9,7 +9,7 @@
     <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QS.Updater.App.Gtk.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QS.Updater.App.Views.NewVersionView" design-size="1059 600">
+  <widget class="Gtk.Bin" id="QS.Updater.App.Views.NewVersionView" design-size="1047 597">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -126,20 +126,20 @@
           <widget class="Gamma.GtkWidgets.yLabel" id="labelDBUpdateInfo">
             <property name="MemberName" />
             <property name="LabelProp" translatable="yes">ylabel2</property>
+            <property name="Wrap">True</property>
           </widget>
           <packing>
             <property name="Position">3</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
-            <property name="Fill">False</property>
           </packing>
         </child>
         <child>
-          <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+          <widget class="Gtk.HBox" id="hbox5">
             <property name="MemberName" />
-            <property name="Size">3</property>
+            <property name="Spacing">6</property>
             <child>
-              <widget class="Gtk.Button" id="buttonSkip">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonSkip">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
@@ -148,14 +148,13 @@
                 <signal name="Clicked" handler="OnButtonSkipClicked" />
               </widget>
               <packing>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="buttonCancel">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonCancel">
                 <property name="MemberName" />
-                <property name="CanDefault">True</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Напомнить позже</property>
@@ -164,14 +163,12 @@
               </widget>
               <packing>
                 <property name="Position">1</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="buttonOk">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonOk">
                 <property name="MemberName" />
-                <property name="CanDefault">True</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Скачать и установить</property>
@@ -180,8 +177,7 @@
               </widget>
               <packing>
                 <property name="Position">2</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
           </widget>

@@ -1,5 +1,6 @@
 ﻿using System;
 using QS.Dialog;
+using QS.Project.Services;
 using QS.Project.Versioning;
 
 namespace QS.Updater
@@ -8,24 +9,28 @@ namespace QS.Updater
 	{
 		private readonly CheckBaseVersion checkBaseVersion;
 		private readonly IInteractiveMessage interactive;
+		private readonly IApplicationQuitService quitService;
 		private readonly IAppUpdater applicationUpdater;
 		private readonly IDBUpdater dbUpdater;
 
-		public VersionCheckerService(CheckBaseVersion checkBaseVersion, IInteractiveMessage interactive, IAppUpdater applicationUpdater = null, IDBUpdater dbUpdater = null) {
+		public VersionCheckerService(CheckBaseVersion checkBaseVersion, IInteractiveMessage interactive, IApplicationQuitService quitService, IAppUpdater applicationUpdater = null, IDBUpdater dbUpdater = null) {
 			this.checkBaseVersion = checkBaseVersion ?? throw new ArgumentNullException(nameof(checkBaseVersion));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
+			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.applicationUpdater = applicationUpdater;
 			this.dbUpdater = dbUpdater;
 		}
 
-		public void RunUpdate()
+		public UpdateInfo? RunUpdate() 
 		{
-			if(applicationUpdater != null) {
-				applicationUpdater.CheckUpdate(false);
+			UpdateInfo? updateInfo = null;
+			if (applicationUpdater != null)
+			{
+				updateInfo = applicationUpdater.CheckUpdate(false);
 			}
-			
+
 			checkBaseVersion.Check();
-			if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
+			if(applicationUpdater != null && checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
 				applicationUpdater.TryAnotherChannel();
 				checkBaseVersion.Check();
 			}
@@ -37,10 +42,12 @@ namespace QS.Updater
 				}
 			}
 
-			if(checkBaseVersion.ResultFlags != CheckBaseResult.Ok) {
-				interactive.ShowMessage(ImportanceLevel.Warning, checkBaseVersion.TextMessage);
-				Environment.Exit(0);
+			if (checkBaseVersion.ResultFlags != CheckBaseResult.Ok) 
+			{
+				updateInfo = new UpdateInfo("", checkBaseVersion.TextMessage, UpdateStatus.Error, ImportanceLevel.Warning);
 			}
+
+			return updateInfo;
 		}
 	}
 }
