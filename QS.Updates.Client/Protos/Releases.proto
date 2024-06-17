@@ -5,28 +5,30 @@ import "google/protobuf/timestamp.proto";
 package QS.Updates;
 
 service Releases {
-  rpc CheckForUpdates (CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
+	rpc CheckForUpdates (CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
 }
 
 message CheckForUpdatesRequest{
-  int32 product_code = 1;
-  string version = 2;
-  string modification = 3;
-  string serial_number = 4;
-  ReleaseChannel channel = 5;
+	int32 product_code = 1;
+	string version = 2;
+	string modification = 3;
+	string serial_number = 4;
+	ReleaseChannel channel = 5;
 }
 
 message CheckForUpdatesResponse{
-  repeated ReleaseInfo releases = 1;
+	repeated ReleaseInfo releases = 1;
+	string title = 2;
+	string message = 3;
 }
 
 message ReleaseInfo{
-  string version = 1;
-  google.protobuf.Timestamp date = 2;
-  string changes = 3;
-  string news_link = 4;
-  string installer_link = 5;
-  DatabaseUpdate database_update = 6;
+	string version = 1;
+	google.protobuf.Timestamp date = 2;
+	string changes = 3;
+	string news_link = 4;
+	string installer_link = 5;
+	DatabaseUpdate database_update = 6;
 }
 
 enum DatabaseUpdate{
@@ -36,6 +38,6 @@ enum DatabaseUpdate{
 }
 
 enum ReleaseChannel{
-  RELEASE_CHANNEL_CURRENT = 0;
-  RELEASE_CHANNEL_STABLE = 1;
+	RELEASE_CHANNEL_CURRENT = 0;
+	RELEASE_CHANNEL_STABLE = 1;
 }

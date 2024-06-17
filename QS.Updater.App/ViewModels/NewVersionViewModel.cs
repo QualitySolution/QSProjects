@@ -8,6 +8,7 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.DB;
+using QS.Project.Services;
 using QS.Project.Versioning;
 using QS.Updates;
 using QS.Utilities.Text;
@@ -22,6 +23,7 @@ namespace QS.Updater.App.ViewModels {
 		private readonly ModalProgressCreator progressCreator;
 		private readonly IGuiDispatcher guiDispatcher;
 		private readonly IInteractiveMessage interactive;
+		private readonly IApplicationQuitService quitService;
 		private readonly IDataBaseInfo dataBaseInfo;
 
 		public NewVersionViewModel(
@@ -32,6 +34,7 @@ namespace QS.Updater.App.ViewModels {
 			ModalProgressCreator progressCreator,
 			IGuiDispatcher guiDispatcher,
 			IInteractiveMessage interactive,
+			IApplicationQuitService quitService,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -41,6 +44,7 @@ namespace QS.Updater.App.ViewModels {
 			this.progressCreator = progressCreator ?? throw new ArgumentNullException(nameof(progressCreator));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
+			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
 				throw new ArgumentException("Коллекция должна быть не пустая.", nameof(this.Releases));
@@ -85,6 +89,15 @@ namespace QS.Updater.App.ViewModels {
 
 		public bool VisibleDbInfo => WillDbChange.Any();
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
+		public bool CanSkipVersion 
+		{
+			get 
+			{
+				Version selectedVersion = Version.Parse(SelectedRelease.Version);
+				return applicationInfo.Version.Major >= selectedVersion.Major && applicationInfo.Version.Minor >= selectedVersion.Minor;
+			}
+		}
+
 		#endregion
 
 		#region Helpers
@@ -97,12 +110,13 @@ namespace QS.Updater.App.ViewModels {
 
 		#region Действия
 		public void SkipVersion() {
+			if (!CanSkipVersion) return;
 			skipVersionState.SaveSkipVersion(Version.Parse(Releases.First().Version));
 			Close(false, CloseSource.Cancel);
 		}
 
 		public void Later() {
-			Close(false, CloseSource.Cancel);
+			Close(false, CloseSource.Self);
 		}
 
 		public void Install() {
@@ -138,7 +152,7 @@ namespace QS.Updater.App.ViewModels {
 					try
 					{
 						File.Start();
-						Environment.Exit(0);
+						quitService.Quit();
 					}
 					catch (Exception ex)
 					{

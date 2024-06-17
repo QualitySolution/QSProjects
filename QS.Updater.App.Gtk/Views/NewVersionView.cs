@@ -22,6 +22,8 @@ namespace QS.Updater.App.Views {
 			comboSelectInstaller.ItemsList = ViewModel.CanSelectedReleases;
 			comboSelectInstaller.Binding.AddBinding(ViewModel, v => v.SelectedRelease, w => w.SelectedItem).InitializeFromSource();
 
+			buttonSkip.Binding.AddBinding(ViewModel, vm => vm.CanSkipVersion, w => w.Sensitive).InitializeFromSource();
+
 			for(uint i = 0; i < ViewModel.Releases.Length; i++) {
 				uint baseRow = i * 4;
 				var release = ViewModel.Releases[i];

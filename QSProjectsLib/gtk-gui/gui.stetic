@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
+    <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
     <widget-library name="../bin/Debug/QSProjectsLib.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="QSProjectsLib.Login" design-size="355 358">
