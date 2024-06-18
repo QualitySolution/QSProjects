@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using QS.DomainModel.Entity;
 
 namespace QS.DomainModel.UoW
@@ -16,6 +17,7 @@ namespace QS.DomainModel.UoW
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
+		[Obsolete("IUnitOfWorkGeneric будет удален в будущем, используйте обычный IUnitOfWork")]
 		IUnitOfWorkGeneric<TEntity> CreateForRoot<TEntity>(int id, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new();
 
 		/// <summary>
@@ -23,6 +25,7 @@ namespace QS.DomainModel.UoW
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
+		[Obsolete("IUnitOfWorkGeneric будет удален в будущем, используйте обычный IUnitOfWork")]
 		IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new();
 
 		/// <summary>
@@ -30,6 +33,7 @@ namespace QS.DomainModel.UoW
 		/// </summary>
 		/// <returns>UnitOfWork.</returns>
 		/// <typeparam name="TEntity">Тип объекта доменной модели, должен реализовывать интерфейс IDomainObject.</typeparam>
+		[Obsolete("IUnitOfWorkGeneric будет удален в будущем, используйте обычный IUnitOfWork")]
 		IUnitOfWorkGeneric<TEntity> CreateWithNewRoot<TEntity>(TEntity entity, string userActionTitle = null, [CallerMemberName]string callerMemberName = null, [CallerFilePath]string callerFilePath = null, [CallerLineNumber]int callerLineNumber = 0) where TEntity : class, IDomainObject, new();
 	}
 }

@@ -13,8 +13,10 @@ namespace QS.DomainModel.UoW
 
 		NHibernate.ISession Session{ get;}
 
+		[Obsolete("Не используйте это свойство, оно будет удалено в будущем.")]
 		object RootObject{ get;}
 
+		[Obsolete("Не используйте это свойство, оно будет удалено в будущем.")]
 		bool IsNew { get;}
 
 		bool IsAlive { get;}
