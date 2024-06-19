@@ -295,6 +295,10 @@ namespace QSOrmProject
 
 		#endregion
 
+		public static void Init() 
+		{
+		}
+		
 		static OrmMain()
 		{
 			//FIXME Временные пробросы на этап перехода на QS.Project
