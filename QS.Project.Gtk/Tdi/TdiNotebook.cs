@@ -681,37 +681,40 @@ namespace QS.Tdi.Gtk
 			if(CheckClosingSlaveTabs(tab))
 				return false;
 
-			ITdiDialog dlg;
+			IHasChanges hasChanges;
+			ICustomCancellationConfirmation customCancellationConfirmation;
+			ISaveable saveable;
 
-			if(tab is ITdiDialog)
-				dlg = tab as ITdiDialog;
-			else
-				dlg = (tab as TdiSliderTab)?.ActiveDialog as ITdiDialog;
+			if(tab is ViewModelTdiTab viewModelTdiTab) {
+				hasChanges = viewModelTdiTab.ViewModel as IHasChanges;
+				customCancellationConfirmation = viewModelTdiTab.ViewModel as ICustomCancellationConfirmation;
+				saveable = viewModelTdiTab.ViewModel as ISaveable;
+			}
+			else {
+				if(tab is TdiSliderTab sliderTab)
+					tab = sliderTab.ActiveDialog;
 
-			if(dlg == null)
-				return true;
+				hasChanges = tab as IHasChanges;
+				customCancellationConfirmation = tab as ICustomCancellationConfirmation;
+				saveable = tab as ISaveable;
+			}
 
-			var askSave = (dlg as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
+			var askSave = (tab as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
 
-			if(askSave && dlg.HasChanges) {
+			if(saveable != null && askSave && hasChanges != null && hasChanges.HasChanges) {
 				int result;
 
-				if(dlg.HasCustomCancellationConfirmationDialog 
-					&& dlg.CustomCancellationConfirmationDialogFunc != null) {
-					result = dlg.CustomCancellationConfirmationDialogFunc.Invoke();
+				if(customCancellationConfirmation != null
+					&& customCancellationConfirmation.HasCustomCancellationConfirmationDialog
+					&& customCancellationConfirmation.CustomCancellationConfirmationDialogFunc != null) {
+					result = customCancellationConfirmation.CustomCancellationConfirmationDialogFunc.Invoke();
 				}
 				else {
-					string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
-					MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
-										   MessageType.Question,
-										   ButtonsType.YesNo,
-										   Message);
-					result = md.Run();
-					md.Destroy();
+					result = GetAskSaveDialogResult();
 				}
-				
+
 				if(result == (int)ResponseType.Yes) {
-					if(!dlg.Save()) {
+					if(!saveable.Save()) {
 						logger.Info("Вкладка не сохранена. Отмена закрытия...");
 						return false;
 					}
@@ -725,6 +728,18 @@ namespace QS.Tdi.Gtk
 					return false;
 			}
 			return true;
+		}
+
+		private int GetAskSaveDialogResult() {
+			int result;
+			string Message = "На вкладке есть изменения. Сохранить изменения перед закрытием?";
+			MessageDialog md = new MessageDialog((Window)this.Toplevel, DialogFlags.Modal,
+								   MessageType.Question,
+								   ButtonsType.YesNo,
+								   Message);
+			result = md.Run();
+			md.Destroy();
+			return result;
 		}
 
 		public bool CheckClosingSlaveTabs(ITdiTab tab)
