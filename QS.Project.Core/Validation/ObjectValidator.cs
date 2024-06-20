@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,9 +27,14 @@ namespace QS.Validation
 		{
 		}
 
+		public IServiceProvider ServiceProvider { get; set; }
+
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		public bool Validate(object validatableObject, ValidationContext validationContext = null, bool showValidationResults = true)
 		{
+			if(ServiceProvider != null && validationContext != null) {
+				validationContext.InitializeServiceProvider((type) => ServiceProvider.GetRequiredService(type));
+			}
 			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)}, showValidationResults);
 		}
 

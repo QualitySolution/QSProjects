@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -45,7 +45,7 @@ namespace QS.Project.Dialogs.GtkUI
 			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), interactiveService);
 
 			User = mySQLUserRepository.GetUser(userId);
 
@@ -57,7 +57,7 @@ namespace QS.Project.Dialogs.GtkUI
 			this.interactiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
             this.Build();
 
-			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), new GtkInteractiveService());
+			mySQLUserRepository = new MySQLUserRepository(new MySQLProvider(new GtkRunOperationService(), new GtkQuestionDialogsInteractive()), interactiveService);
 
 			User = new UserBase();
 

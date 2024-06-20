@@ -1,17 +1,15 @@
-﻿using System;
+using NHibernate;
+using NHibernate.Event;
+using QS.Dialog;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
- using NHibernate;
- using NHibernate.Event;
 
-namespace QS.DomainModel.Tracking
-{
+namespace QS.DomainModel.Tracking {
 	public class GlobalUowEventsTracker: IPostLoadEventListener, IPreLoadEventListener, IPostDeleteEventListener, IPostUpdateEventListener, IPostInsertEventListener
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-		#region Register
 
 		private static readonly HashSet<IUowPreLoadEventListener> PreLoadListeners = new HashSet<IUowPreLoadEventListener>();
 		private static readonly HashSet<IUowPostLoadEventListener> PostLoadListeners = new HashSet<IUowPostLoadEventListener>();
@@ -19,6 +17,8 @@ namespace QS.DomainModel.Tracking
 		private static readonly HashSet<IUowPostUpdateEventListener> PostUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
 		private static readonly HashSet<IUowPostDeleteEventListener> PostDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
 		private static readonly HashSet<IUowPostCommitEventListener> PostCommitListeners = new HashSet<IUowPostCommitEventListener>();
+
+		#region Register
 
 		public static void RegisterGlobalListener(object listener)
 		{
@@ -124,7 +124,7 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPreLoad(uow, @event);
+			uow.EventsTracker?.OnPreLoad(uow, @event);
 		}
 
 		private object lastPostLoadEntity;
@@ -151,7 +151,7 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPostLoad(uow, @event);
+			uow.EventsTracker?.OnPostLoad(uow, @event);
 		}
 
 		private object lastPostInsertEntity;
@@ -178,7 +178,7 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPostInsert(uow, @event);
+			uow.EventsTracker?.OnPostInsert(uow, @event);
 		}
 
 		private object lastPostUpdateEntity;
@@ -208,7 +208,7 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPostUpdate(uow, @event);
+			uow.EventsTracker?.OnPostUpdate(uow, @event);
 		}
 
 		private object lastPostDeleteEntity;
@@ -235,7 +235,7 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPostDelete(uow, @event);
+			uow.EventsTracker?.OnPostDelete(uow, @event);
 		}
 
 		/// <summary>
@@ -251,38 +251,35 @@ namespace QS.DomainModel.Tracking
 				}
 			}
 
-			uow.EventsTracker.OnPostCommit(uow);
+			uow.EventsTracker?.OnPostCommit(uow);
 		}
 
 		#endregion
-
-		public GlobalUowEventsTracker()
-		{
-		}
 
 		private IUnitOfWorkTracked GetUnitOfWork(IEventSource session)
 		{
 			return UowWatcher.GetUnitOfWork(session) as IUnitOfWorkTracked;
 		}
 
-		public Task OnPostInsertAsync(PostInsertEvent @event, CancellationToken cancellationToken)
+		
+		public async Task OnPostInsertAsync(PostInsertEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostInsert(@event));
 		}
 
-		public Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
+		public async Task OnPostUpdateAsync(PostUpdateEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostUpdate(@event));
 		}
 
-		public Task OnPostDeleteAsync(PostDeleteEvent @event, CancellationToken cancellationToken)
+		public async Task OnPostDeleteAsync(PostDeleteEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPostDelete(@event));
 		}
 
-		public Task OnPreLoadAsync(PreLoadEvent @event, CancellationToken cancellationToken)
+		public async Task OnPreLoadAsync(PreLoadEvent @event, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			await Task.Run(() => OnPreLoad(@event));
 		}
 	}
 }

@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
 using NHibernate.Event;
+using System.Collections.Generic;
 
-namespace QS.DomainModel.Tracking
-{
+namespace QS.DomainModel.Tracking {
 	public class SingleUowEventsTracker
 	{
 		#region Static
 
-		private static readonly HashSet<ISingleUowEventsListnerFactory> SingleUowListnerFactories = new HashSet<ISingleUowEventsListnerFactory>();
+		private static readonly HashSet<ISingleUowEventsListnerFactory> singleUowListnerFactories = new HashSet<ISingleUowEventsListnerFactory>();
 
 		public static void RegisterSingleUowListnerFactory(ISingleUowEventsListnerFactory factory)
 		{
-			lock (SingleUowListnerFactories)
+			lock (singleUowListnerFactories)
 			{
-				SingleUowListnerFactories.Add(factory);
+				singleUowListnerFactories.Add(factory);
 			}
 		}
 
 		public static void UnregisterSingleUowListnerFactory(ISingleUowEventsListnerFactory factory)
 		{
-			lock (SingleUowListnerFactories)
+			lock (singleUowListnerFactories)
 			{
-				SingleUowListnerFactories.Remove(factory);
+				singleUowListnerFactories.Remove(factory);
 			}
 		}
 
@@ -33,103 +31,104 @@ namespace QS.DomainModel.Tracking
 
 		static void UowWatcher_UowRegistered(object sender, UowRegistereEventArgs e)
 		{
-			foreach (var factory in SingleUowListnerFactories)
+			foreach (var factory in singleUowListnerFactories)
 			{
 				var listner = factory.CreateListnerForNewUow(e.UoW);
-				e.UoW.EventsTracker.RegisterListener(listner);
+				e.UoW.EventsTracker?.RegisterListener(listner);
 			}
 		}
 
 		#endregion
 
-
-		private readonly HashSet<IUowPreLoadEventListener> PreLoadListeners = new HashSet<IUowPreLoadEventListener>();
-		private readonly HashSet<IUowPostLoadEventListener> PostLoadListeners = new HashSet<IUowPostLoadEventListener>();
-		private readonly HashSet<IUowPostInsertEventListener> PostInsertListeners = new HashSet<IUowPostInsertEventListener>();
-		private readonly HashSet<IUowPostUpdateEventListener> PostUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
-		private readonly HashSet<IUowPostDeleteEventListener> PostDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
-		private readonly HashSet<IUowPostCommitEventListener> PostCommitListeners = new HashSet<IUowPostCommitEventListener>();
-
-		public SingleUowEventsTracker()
-		{
-		}
+		private readonly HashSet<IUowPreLoadEventListener> preLoadListeners = new HashSet<IUowPreLoadEventListener>();
+		private readonly HashSet<IUowPostLoadEventListener> postLoadListeners = new HashSet<IUowPostLoadEventListener>();
+		private readonly HashSet<IUowPostInsertEventListener> postInsertListeners = new HashSet<IUowPostInsertEventListener>();
+		private readonly HashSet<IUowPostUpdateEventListener> postUpdateListeners = new HashSet<IUowPostUpdateEventListener>();
+		private readonly HashSet<IUowPostDeleteEventListener> postDeleteListeners = new HashSet<IUowPostDeleteEventListener>();
+		private readonly HashSet<IUowPostCommitEventListener> postCommitListeners = new HashSet<IUowPostCommitEventListener>();
 
 		public void RegisterListener(object listener)
 		{
 			if(listener is IUowPreLoadEventListener)
-				PreLoadListeners.Add(listener as IUowPreLoadEventListener);
+				preLoadListeners.Add(listener as IUowPreLoadEventListener);
 
 			if(listener is IUowPostLoadEventListener)
-				PostLoadListeners.Add(listener as IUowPostLoadEventListener);
+				postLoadListeners.Add(listener as IUowPostLoadEventListener);
 
 			if(listener is IUowPostInsertEventListener)
-				PostInsertListeners.Add(listener as IUowPostInsertEventListener);
+				postInsertListeners.Add(listener as IUowPostInsertEventListener);
 
 			if(listener is IUowPostUpdateEventListener)
-				PostUpdateListeners.Add(listener as IUowPostUpdateEventListener);
+				postUpdateListeners.Add(listener as IUowPostUpdateEventListener);
 
 			if(listener is IUowPostDeleteEventListener)
-				PostDeleteListeners.Add(listener as IUowPostDeleteEventListener);
+				postDeleteListeners.Add(listener as IUowPostDeleteEventListener);
 
 			if (listener is IUowPostCommitEventListener)
-				PostCommitListeners.Add(listener as IUowPostCommitEventListener);
+				postCommitListeners.Add(listener as IUowPostCommitEventListener);
 		}
 
 		public void UnregisterListener(object listener)
 		{
 			if(listener is IUowPreLoadEventListener)
-				PreLoadListeners.Remove(listener as IUowPreLoadEventListener);
+				preLoadListeners.Remove(listener as IUowPreLoadEventListener);
 
 			if(listener is IUowPostLoadEventListener)
-				PostLoadListeners.Remove(listener as IUowPostLoadEventListener);
+				postLoadListeners.Remove(listener as IUowPostLoadEventListener);
 
 			if(listener is IUowPostInsertEventListener)
-				PostInsertListeners.Remove(listener as IUowPostInsertEventListener);
+				postInsertListeners.Remove(listener as IUowPostInsertEventListener);
 
 			if(listener is IUowPostUpdateEventListener)
-				PostUpdateListeners.Remove(listener as IUowPostUpdateEventListener);
+				postUpdateListeners.Remove(listener as IUowPostUpdateEventListener);
 
 			if(listener is IUowPostDeleteEventListener)
-				PostDeleteListeners.Remove(listener as IUowPostDeleteEventListener);
+				postDeleteListeners.Remove(listener as IUowPostDeleteEventListener);
 
 			if (listener is IUowPostCommitEventListener)
-				PostCommitListeners.Remove(listener as IUowPostCommitEventListener);
+				postCommitListeners.Remove(listener as IUowPostCommitEventListener);
 		}
 
 		public void OnPreLoad(IUnitOfWorkTracked uow, PreLoadEvent loadEvent)
 		{
-			foreach(var listner in PreLoadListeners)
+			foreach(var listner in preLoadListeners) {
 				listner.OnPreLoad(uow, loadEvent);
+			}
 		}
 
 		public void OnPostLoad(IUnitOfWorkTracked uow, PostLoadEvent loadEvent)
 		{
-			foreach(var listner in PostLoadListeners)
+			foreach(var listner in postLoadListeners) {
 				listner.OnPostLoad(uow, loadEvent);
+			}
 		}
 
 		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
-			foreach(var listner in PostInsertListeners)
+			foreach(var listner in postInsertListeners) {
 				listner.OnPostInsert(uow, insertEvent);
+			}
 		}
 
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent) 
 		{
-			foreach(var listner in PostUpdateListeners)
+			foreach(var listner in postUpdateListeners) {
 				listner.OnPostUpdate(uow, updateEvent);
+			}
 		}
 
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
 		{
-			foreach(var listner in PostDeleteListeners)
+			foreach(var listner in postDeleteListeners) {
 				listner.OnPostDelete(uow, deleteEvent);
+			}
 		}
 
 		public void OnPostCommit(IUnitOfWorkTracked uow)
 		{
-			foreach (var listner in PostCommitListeners)
+			foreach (var listner in postCommitListeners) {
 				listner.OnPostCommit(uow);
+			}
 		}
 	}
 }

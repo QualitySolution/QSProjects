@@ -1,12 +1,12 @@
-﻿using System;
+using QS.DomainModel.Config;
+using QS.DomainModel.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using QS.DomainModel.Config;
-using QS.DomainModel.Entity;
+using System.Threading.Tasks;
 
-namespace QS.DomainModel.UoW
-{
+namespace QS.DomainModel.UoW {
 	public interface IUnitOfWork : IDisposable 
 	{
 		UnitOfWorkTitle ActionTitle { get; }
@@ -23,25 +23,38 @@ namespace QS.DomainModel.UoW
 
 		bool HasChanges { get;}
 
+		void Save();
+		Task SaveAsync();
+
+		/// <summary>
+		/// Сохранение сущности.
+		/// </summary>
 		/// <param name="orUpdate">
 		/// По умолчанию установлен в true это значит то будет вызываться метод SaveOrUpdate вместо Save.
 		/// Этот параметр нужен тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
 		/// делает SELECT что бы проверить нет ли уже объекта для обновления. Что при большом количестве объектов приводит к задержкам сохранения.
 		/// </param>
-		void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : IDomainObject;
-		void Save();
+		void Save(object entity, bool orUpdate = true);
 
 		/// <summary>
-		/// Пытаемся сохранить сущность в виде объекта, без указания типа сущности.
-		/// По возможности используйте дженерик метод Save().
+		/// Сохранение сущности.
 		/// </summary>
-		void TrySave(object entity, bool orUpdate = true);
+		/// <param name="orUpdate">
+		/// По умолчанию установлен в true это значит то будет вызываться метод SaveOrUpdate вместо Save.
+		/// Этот параметр нужен тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
+		/// делает SELECT что бы проверить нет ли уже объекта для обновления. Что при большом количестве объектов приводит к задержкам сохранения.
+		/// </param>
+		Task SaveAsync(object entity, bool orUpdate = true);
 
 		/// <summary>
-		/// Пытаемся удалить сущность в виде объекта, неизвестного типа.
-		/// По возможности используйте дженерик метод Delete().
+		/// Удаление сущности.
 		/// </summary>
-		void TryDelete(object entity);
+		void Delete(object entity);
+
+		/// <summary>
+		/// Удаление сущности.
+		/// </summary>
+		Task DeleteAsync(object entity);
 
 		IQueryable<T> GetAll<T> () where T : IDomainObject;
 
@@ -66,8 +79,7 @@ namespace QS.DomainModel.UoW
 		object GetById(Type clazz, int id);
 
 		void Commit();
-
-		void Delete<TEntity>(TEntity entity) where TEntity : IDomainObject;
+		Task CommitAsync();
 
 		/// <summary>
 		/// Уведомляет о сохранении сущности в пределах текущей сессии.
