@@ -3,7 +3,9 @@ using Autofac;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
+using QS.Navigation;
 using QS.Project.Journal;
+using QS.Tdi;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Resolve;
 
@@ -66,8 +68,13 @@ namespace QS.ViewModels.Control.EEVM
 			return this;
 		}
 
-		#endregion
+		public LegacyEEVMBuilder<TEntity> UseTdiDialog<TTdiTab>()
+			where TTdiTab : ITdiTab{
+			EntityDlgOpener = new LegacyDlgOpener<TTdiTab>(legacyParameters.NavigationManager as ITdiCompatibilityNavigation, legacyParameters.DialogViewModel);
+			return this;
+		}
 
+		#endregion
 
 		#region Перехват вызовов для работы без диалогов ParentViewModel
 
