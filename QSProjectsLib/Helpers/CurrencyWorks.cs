@@ -4,6 +4,7 @@ using Gtk;
 
 namespace QSProjectsLib
 {
+	[Obsolete("Используете вместо этого метод из QS.Utilities")]
 	public static class CurrencyWorks
 	{
 		public static string CurrencyShortName = "₽";
