@@ -10,6 +10,7 @@ using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
 using QS.RepresentationModel.GtkUI;
 using QS.Tdi;
+using QS.ViewModels.Control.EEVM;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using IEntitySelector = QS.Project.Journal.EntitySelector.IEntitySelector;
 
 namespace QS.Widgets.GtkUI {
 	[ToolboxItem(true)]
@@ -39,6 +41,7 @@ namespace QS.Widgets.GtkUI {
 
 		public event EventHandler Changed;
 		public event EventHandler ChangedByUser;
+		public event EventHandler<BeforeChangeEventArgs> BeforeChangeByUser;
 
 		public EntityViewModelEntry()
 		{
@@ -218,6 +221,10 @@ namespace QS.Widgets.GtkUI {
 
 		protected void OnButtonSelectEntityClicked(object sender, EventArgs e)
 		{
+			if(!OnBeforeUserChanged()) {
+				return;
+			}
+
 			OpenSelectDialog();
 		}
 
@@ -225,6 +232,16 @@ namespace QS.Widgets.GtkUI {
 		{
 			ClearSubject();
 			SetNormalStyle();
+		}
+
+		private bool OnBeforeUserChanged() {
+			if(BeforeChangeByUser == null) return true;
+
+			var args = new BeforeChangeEventArgs {
+				CanChange = true
+			};
+			BeforeChangeByUser(this, args);
+			return args.CanChange;
 		}
 
 		private void ClearSubject()
