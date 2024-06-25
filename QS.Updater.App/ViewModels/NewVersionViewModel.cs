@@ -23,7 +23,6 @@ namespace QS.Updater.App.ViewModels {
 		private readonly ModalProgressCreator progressCreator;
 		private readonly IGuiDispatcher guiDispatcher;
 		private readonly IInteractiveMessage interactive;
-		private readonly IApplicationQuitService quitService;
 		private readonly IDataBaseInfo dataBaseInfo;
 
 		public NewVersionViewModel(
@@ -34,7 +33,6 @@ namespace QS.Updater.App.ViewModels {
 			ModalProgressCreator progressCreator,
 			IGuiDispatcher guiDispatcher,
 			IInteractiveMessage interactive,
-			IApplicationQuitService quitService,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -44,7 +42,6 @@ namespace QS.Updater.App.ViewModels {
 			this.progressCreator = progressCreator ?? throw new ArgumentNullException(nameof(progressCreator));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
-			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
 				throw new ArgumentException("Коллекция должна быть не пустая.", nameof(this.Releases));
@@ -152,7 +149,7 @@ namespace QS.Updater.App.ViewModels {
 					try
 					{
 						File.Start();
-						quitService.Quit();
+						Close(false, CloseSource.AppQuit);
 					}
 					catch (Exception ex)
 					{
