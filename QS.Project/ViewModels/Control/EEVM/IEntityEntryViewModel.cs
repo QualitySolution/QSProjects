@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 
@@ -15,6 +15,7 @@ namespace QS.ViewModels.Control.EEVM
 		#region События для внешних подписчиков
 		event EventHandler Changed;
 		event EventHandler ChangedByUser;
+		event EventHandler<BeforeChangeEventArgs> BeforeChangeByUser;
 		#endregion
 
 		#region Настройки виджета
