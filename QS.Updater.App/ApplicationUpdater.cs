@@ -4,6 +4,7 @@ using Gamma.Utilities;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
+using QS.Project.Services;
 using QS.Project.Versioning;
 using QS.Updater.App.ViewModels;
 using QS.Updates;
@@ -19,6 +20,7 @@ namespace QS.Updater.App {
 		private readonly INavigationManager navigation;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher gui;
+		private readonly IApplicationQuitService quitService;
 		private readonly ISkipVersionState skipVersionState;
 		private readonly IUpdateChannelService channelService;
 		private readonly ParametersService parametersService;
@@ -29,6 +31,7 @@ namespace QS.Updater.App {
 			INavigationManager navigation,
 			IInteractiveService interactive,
 			IGuiDispatcher gui,
+			IApplicationQuitService quitService,
 			ISkipVersionState skipVersionState = null,
 			IUpdateChannelService channelService = null,
 			ParametersService parametersService = null) {
@@ -37,6 +40,7 @@ namespace QS.Updater.App {
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
+			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.skipVersionState = skipVersionState;
 			this.channelService = channelService;
 			this.parametersService = parametersService;
@@ -94,6 +98,7 @@ namespace QS.Updater.App {
 				var page = navigation.OpenViewModel<NewVersionViewModel, ReleaseInfo[]>(null, response.Releases.ToArray());
 				var isClosed = false;
 				string title = string.Empty;
+				string message = string.Empty;
 				UpdateStatus status = UpdateStatus.Error;
 				page.PageClosed += (sender, e) => 
 				{
@@ -103,6 +108,13 @@ namespace QS.Updater.App {
 						title = "Обновление пропущено";
 						status = UpdateStatus.Skip;
 					}
+					else if (e.CloseSource == CloseSource.AppQuit) 
+					{
+						title = "Установка обновления";
+						message = "Приложение будет закрыто";
+						status = UpdateStatus.Ok;
+						quitService.Quit();
+					}
 					else 
 					{
 						title = "Обновление отложено";
@@ -111,7 +123,7 @@ namespace QS.Updater.App {
 				};
 				
 				gui.WaitInMainLoop(() => isClosed);
-				return new UpdateInfo(title, string.Empty, status, ImportanceLevel.Info);
+				return new UpdateInfo(title, message, status, ImportanceLevel.Info);
 			}
 			
 			logger.Info("Ок");
