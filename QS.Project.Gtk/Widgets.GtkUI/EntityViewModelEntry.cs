@@ -230,6 +230,10 @@ namespace QS.Widgets.GtkUI {
 
 		protected void OnButtonClearClicked(object sender, EventArgs e)
 		{
+			if(!OnBeforeUserChanged()) {
+				return;
+			}
+
 			ClearSubject();
 			SetNormalStyle();
 		}
