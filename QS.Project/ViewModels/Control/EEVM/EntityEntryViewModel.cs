@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using QS.DomainModel.Entity;
 
@@ -226,6 +226,10 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void CleanEntity()
 		{
+			if(!OnBeforeUserChanged()) {
+				return;
+			}
+
 			Entity = null;
 			ChangedByUser?.Invoke(this, EventArgs.Empty);
 		}
