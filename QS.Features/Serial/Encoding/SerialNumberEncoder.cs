@@ -17,6 +17,8 @@ namespace QS.Serial.Encoding
 		public byte ProductId { get; private set; }
 		public byte EditionId { get; private set; }
 		public ushort ClientId { get; private set; }
+
+		public DateTime? ExpiryDate { get; private set; }
 		#endregion
 
 		#endregion
@@ -25,6 +27,8 @@ namespace QS.Serial.Encoding
 		public bool IsNotSupport { get; private set;}
 
 		public bool IsAnotherProduct { get; private set; }
+
+		public bool IsExpired { get; private set; }
 
 		private string number;
 		private readonly string forProduct;
@@ -85,19 +89,30 @@ namespace QS.Serial.Encoding
 						ProductId = summaryArray[8];
 						EditionId = summaryArray[9];
 						IsAnotherProduct = ProductId != applicationInfo?.ProductCode;
+						if(summaryArray.Length >= 12) {
+							ExpiryDate = GetDateFromBinary(summaryArray, 10);
+							IsExpired = ExpiryDate < DateTime.Now;
+						}
 						break;
 				}
-				IsValid = !IsAnotherProduct && !IsNotSupport;
+				IsValid = !IsAnotherProduct && !IsNotSupport && !IsExpired;
 				OnPropertyChanged();
 			}
 		}
 
+		private DateTime GetDateFromBinary(byte[] array, int start)
+		{
+			var days = BitConverter.ToUInt16(array, start);
+			return new DateTime(2008, 7, 28).AddDays(days);
+		}
+		
 		private void Clear()
 		{
 			DecodedProduct = String.Empty;
 			CodeVersion = default;
 			ClientId = default;
-			IsValid = IsNotSupport = IsAnotherProduct = false;
+			ExpiryDate = default;
+			IsValid = IsNotSupport = IsAnotherProduct = IsExpired = false;
 		}
 
 		public string ComponentsText{
@@ -118,7 +133,8 @@ namespace QS.Serial.Encoding
 							return $"Версия кодирования: {CodeVersion}\n" +
 							       $"Id клиента: {ClientId}\n" +
 							       $"Продукт: {ProductId}\n" +
-							       $"Редакция: {EditionId}";
+							       $"Редакция: {EditionId}\n" +
+							       $"Дата окончания: {ExpiryDate?.ToString("d") ?? "Нет"}";
 						default:
 							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");
 					}

@@ -8,6 +8,7 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.DB;
+using QS.Project.Services;
 using QS.Project.Versioning;
 using QS.Updates;
 using QS.Utilities.Text;
@@ -85,6 +86,15 @@ namespace QS.Updater.App.ViewModels {
 
 		public bool VisibleDbInfo => WillDbChange.Any();
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
+		public bool CanSkipVersion 
+		{
+			get 
+			{
+				Version selectedVersion = Version.Parse(SelectedRelease.Version);
+				return applicationInfo.Version.Major >= selectedVersion.Major && applicationInfo.Version.Minor >= selectedVersion.Minor;
+			}
+		}
+
 		#endregion
 
 		#region Helpers
@@ -97,12 +107,13 @@ namespace QS.Updater.App.ViewModels {
 
 		#region Действия
 		public void SkipVersion() {
+			if (!CanSkipVersion) return;
 			skipVersionState.SaveSkipVersion(Version.Parse(Releases.First().Version));
 			Close(false, CloseSource.Cancel);
 		}
 
 		public void Later() {
-			Close(false, CloseSource.Cancel);
+			Close(false, CloseSource.Self);
 		}
 
 		public void Install() {
@@ -138,7 +149,7 @@ namespace QS.Updater.App.ViewModels {
 					try
 					{
 						File.Start();
-						Environment.Exit(0);
+						Close(false, CloseSource.AppQuit);
 					}
 					catch (Exception ex)
 					{

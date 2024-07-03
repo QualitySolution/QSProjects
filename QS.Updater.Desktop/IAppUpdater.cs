@@ -1,6 +1,6 @@
 ﻿namespace QS.Updater {
 	public interface IAppUpdater {
-		void CheckUpdate(bool manualRun);
+		UpdateInfo CheckUpdate(bool manualRun);
 		void TryAnotherChannel();
 	}
 }

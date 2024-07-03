@@ -3,14 +3,8 @@ using QS.DomainModel.Entity;
 
 namespace QS.Tdi
 {
-	public interface ITdiDialog : ITdiTab
+	public interface ITdiDialog : ITdiTab, IHasChanges, ICustomCancellationConfirmation, ISaveable
 	{
-		bool HasChanges { get; }
-		bool HasCustomCancellationConfirmationDialog { get; }
-		Func<int> CustomCancellationConfirmationDialogFunc { get; }
-		bool Save();
-		void SaveAndClose();
-		event EventHandler<EntitySavedEventArgs> EntitySaved;
 	}
 
 	public class EntitySavedEventArgs : EventArgs

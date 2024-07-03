@@ -20,13 +20,13 @@ namespace QS.Updater.App.Views
 
 		private global::Gamma.GtkWidgets.yLabel labelDBUpdateInfo;
 
-		private global::Gtk.HButtonBox dialog1_ActionArea;
+		private global::Gtk.HBox hbox5;
 
-		private global::Gtk.Button buttonSkip;
+		private global::Gamma.GtkWidgets.yButton buttonSkip;
 
-		private global::Gtk.Button buttonCancel;
+		private global::Gamma.GtkWidgets.yButton buttonCancel;
 
-		private global::Gtk.Button buttonOk;
+		private global::Gamma.GtkWidgets.yButton buttonOk;
 
 		protected virtual void Build()
 		{
@@ -100,50 +100,44 @@ namespace QS.Updater.App.Views
 			this.labelDBUpdateInfo = new global::Gamma.GtkWidgets.yLabel();
 			this.labelDBUpdateInfo.Name = "labelDBUpdateInfo";
 			this.labelDBUpdateInfo.LabelProp = global::Mono.Unix.Catalog.GetString("ylabel2");
+			this.labelDBUpdateInfo.Wrap = true;
 			this.vbox2.Add(this.labelDBUpdateInfo);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelDBUpdateInfo]));
 			w9.Position = 3;
 			w9.Expand = false;
-			w9.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.dialog1_ActionArea = new global::Gtk.HButtonBox();
-			this.dialog1_ActionArea.Name = "dialog1_ActionArea";
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonSkip = new global::Gtk.Button();
+			this.hbox5 = new global::Gtk.HBox();
+			this.hbox5.Name = "hbox5";
+			this.hbox5.Spacing = 6;
+			// Container child hbox5.Gtk.Box+BoxChild
+			this.buttonSkip = new global::Gamma.GtkWidgets.yButton();
 			this.buttonSkip.CanFocus = true;
 			this.buttonSkip.Name = "buttonSkip";
 			this.buttonSkip.UseUnderline = true;
 			this.buttonSkip.Label = global::Mono.Unix.Catalog.GetString("Пропустить обновление");
-			this.dialog1_ActionArea.Add(this.buttonSkip);
-			global::Gtk.ButtonBox.ButtonBoxChild w10 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea[this.buttonSkip]));
-			w10.Expand = false;
-			w10.Fill = false;
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonCancel = new global::Gtk.Button();
-			this.buttonCancel.CanDefault = true;
+			this.hbox5.Add(this.buttonSkip);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonSkip]));
+			w10.Position = 0;
+			// Container child hbox5.Gtk.Box+BoxChild
+			this.buttonCancel = new global::Gamma.GtkWidgets.yButton();
 			this.buttonCancel.CanFocus = true;
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("Напомнить позже");
-			this.dialog1_ActionArea.Add(this.buttonCancel);
-			global::Gtk.ButtonBox.ButtonBoxChild w11 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea[this.buttonCancel]));
+			this.hbox5.Add(this.buttonCancel);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonCancel]));
 			w11.Position = 1;
-			w11.Expand = false;
-			w11.Fill = false;
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.buttonOk = new global::Gtk.Button();
-			this.buttonOk.CanDefault = true;
+			// Container child hbox5.Gtk.Box+BoxChild
+			this.buttonOk = new global::Gamma.GtkWidgets.yButton();
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString("Скачать и установить");
-			this.dialog1_ActionArea.Add(this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w12 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.dialog1_ActionArea[this.buttonOk]));
+			this.hbox5.Add(this.buttonOk);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonOk]));
 			w12.Position = 2;
-			w12.Expand = false;
-			w12.Fill = false;
-			this.vbox2.Add(this.dialog1_ActionArea);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.dialog1_ActionArea]));
+			this.vbox2.Add(this.hbox5);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox5]));
 			w13.Position = 4;
 			w13.Expand = false;
 			w13.Fill = false;

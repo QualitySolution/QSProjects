@@ -1,50 +1,55 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Project.Core", "QS.Project.Core\QS.Project.Core.csproj", "{95006783-8E17-4492-95A2-A98964733E7B}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Core", "QS.Project.Core\QS.Project.Core.csproj", "{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Cloud.Client", "QS.Cloud.Client\QS.Cloud.Client.csproj", "{07719CDB-8555-461F-94BB-59DD2B1D01E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Cloud.Client", "QS.Cloud.Client\QS.Cloud.Client.csproj", "{07719CDB-8555-461F-94BB-59DD2B1D01E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Core", "QS.Updater.Core\QS.Updater.Core.csproj", "{495BEA95-C407-4F71-A464-F806D3B3D472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Core", "QS.Updater.Core\QS.Updater.Core.csproj", "{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.LibsTest.Core", "QS.LibsTest.Core\QS.LibsTest.Core.csproj", "{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.LibsTest.Core", "QS.LibsTest.Core\QS.LibsTest.Core.csproj", "{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Project.Desktop", "QS.Project.Desktop\QS.Project.Desktop.csproj", "{25C9F269-6E0E-4497-989C-F0FBD1EE1200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Desktop", "QS.Project.Desktop\QS.Project.Desktop.csproj", "{5EF2A7DA-3886-4809-95DF-880BD783A211}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Testing", "QS.Testing\QS.Testing.csproj", "{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Testing", "QS.Testing\QS.Testing.csproj", "{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Binding", "Binding", "{E1ECF467-0AD6-4EEB-9C0D-2F793E6DA01D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gamma.Utilities", "Binding\Gamma.Utilities\Gamma.Utilities.csproj", "{1BF2A638-420D-456C-96A7-36873A0FB894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gamma.Utilities", "Binding\Gamma.Utilities\Gamma.Utilities.csproj", "{1BF2A638-420D-456C-96A7-36873A0FB894}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Utilities", "QS.Utilities\QS.Utilities.csproj", "{E2228A2B-4883-4DD8-8A05-23501F7B8A33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Utilities", "QS.Utilities\QS.Utilities.csproj", "{E2228A2B-4883-4DD8-8A05-23501F7B8A33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.BaseParameters", "QS.BaseParameters\QS.BaseParameters.csproj", "{A869EC36-67D2-4A36-95E9-0B1E7350928F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.BaseParameters", "QS.BaseParameters\QS.BaseParameters.csproj", "{A869EC36-67D2-4A36-95E9-0B1E7350928F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting.Client", "QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj", "{BABA2CB7-6EFE-4B1B-9324-74CBCBACF257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting.Client", "QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj", "{BABA2CB7-6EFE-4B1B-9324-74CBCBACF257}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Features", "QS.Features\QS.Features.csproj", "{8984DB2F-4849-4F5B-915C-CE69537E93A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Features", "QS.Features\QS.Features.csproj", "{8984DB2F-4849-4F5B-915C-CE69537E93A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog", "QS.HistoryLog\QS.HistoryLog.csproj", "{3D3D6700-C625-46C5-9702-5F010A8DD035}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.HistoryLog", "QS.HistoryLog\QS.HistoryLog.csproj", "{3D3D6700-C625-46C5-9702-5F010A8DD035}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7FE3C597-F9E0-43BE-BF73-142234C00C19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.BusinessCommon", "Modules\QS.BusinessCommon\QS.BusinessCommon.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.BusinessCommon", "Modules\QS.BusinessCommon\QS.BusinessCommon.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Report.Core", "QS.Report.Core\QS.Report.Core.csproj", "{3E194A95-AC31-43D0-B93D-64164402A6DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Report.Core", "QS.Report.Core\QS.Report.Core.csproj", "{3E194A95-AC31-43D0-B93D-64164402A6DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updates.Client", "QS.Updates.Client\QS.Updates.Client.csproj", "{08451B0A-4E72-4B12-B422-B36E9047DCAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.App", "QS.Updater.App\QS.Updater.App.csproj", "{45929A9F-7D94-4E85-9332-6CB7B2D5A03A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.App", "QS.Updater.App\QS.Updater.App.csproj", "{45929A9F-7D94-4E85-9332-6CB7B2D5A03A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Configuration", "QS.Configuration\QS.Configuration.csproj", "{5D124360-C8FB-4779-958B-0DA5D6B90C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Configuration", "QS.Configuration\QS.Configuration.csproj", "{5D124360-C8FB-4779-958B-0DA5D6B90C29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Desktop", "QS.Updater.Desktop\QS.Updater.Desktop.csproj", "{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Project.Abstract", "QS.Project.Abstract\QS.Project.Abstract.csproj", "{E95BE5DC-A197-4657-87DC-A2D677EADB76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Abstract", "QS.Project.Abstract\QS.Project.Abstract.csproj", "{E95BE5DC-A197-4657-87DC-A2D677EADB76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting", "QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting", "QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Extensions.Observable", "QS.Extensions.Observable\QS.Extensions.Observable.csproj", "{2A0710B2-B71B-4959-88DA-0940100E172A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", "QS.Extensions.Observable\QS.Extensions.Observable.csproj", "{2A0710B2-B71B-4959-88DA-0940100E172A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Testing.Desktop", "QS.Testing.Desktop\QS.Testing.Desktop.csproj", "{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,26 +57,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{95006783-8E17-4492-95A2-A98964733E7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95006783-8E17-4492-95A2-A98964733E7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95006783-8E17-4492-95A2-A98964733E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95006783-8E17-4492-95A2-A98964733E7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07719CDB-8555-461F-94BB-59DD2B1D01E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07719CDB-8555-461F-94BB-59DD2B1D01E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07719CDB-8555-461F-94BB-59DD2B1D01E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07719CDB-8555-461F-94BB-59DD2B1D01E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{495BEA95-C407-4F71-A464-F806D3B3D472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{495BEA95-C407-4F71-A464-F806D3B3D472}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{495BEA95-C407-4F71-A464-F806D3B3D472}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{495BEA95-C407-4F71-A464-F806D3B3D472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB5B38E7-9FDE-488B-8717-F43E97C73EAF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25C9F269-6E0E-4497-989C-F0FBD1EE1200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25C9F269-6E0E-4497-989C-F0FBD1EE1200}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25C9F269-6E0E-4497-989C-F0FBD1EE1200}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25C9F269-6E0E-4497-989C-F0FBD1EE1200}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF2A7DA-3886-4809-95DF-880BD783A211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF2A7DA-3886-4809-95DF-880BD783A211}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF2A7DA-3886-4809-95DF-880BD783A211}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF2A7DA-3886-4809-95DF-880BD783A211}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA8E8ACF-ECB0-4617-9E09-D1BE93992D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -136,9 +141,19 @@ Global
 		{2A0710B2-B71B-4959-88DA-0940100E172A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A0710B2-B71B-4959-88DA-0940100E172A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1BF2A638-420D-456C-96A7-36873A0FB894} = {E1ECF467-0AD6-4EEB-9C0D-2F793E6DA01D}
 		{F22749B2-E35B-455D-BD8D-081373B16FC7} = {7FE3C597-F9E0-43BE-BF73-142234C00C19}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {792B93A0-80D0-4760-8A1B-7BB268913668}
 	EndGlobalSection
 EndGlobal

@@ -28,25 +28,17 @@ namespace QS.Updates
         
         #region Запросы
         
-        public ReleaseInfo[] CheckForUpdates(int productCode, string version, string modification = "", string serial = "", ReleaseChannel releaseChannel = ReleaseChannel.Current)
+        public CheckForUpdatesResponse CheckForUpdates(int productCode, string version, string modification = "", string serial = "", ReleaseChannel releaseChannel = ReleaseChannel.Current)
         {
-            try
-            {
-                var client = new Releases.ReleasesClient(Channel);
-                var request = new CheckForUpdatesRequest() {
-	                Channel = releaseChannel,
-					ProductCode = productCode,
-					Version = version,
-					Modification = modification,
-					SerialNumber = serial
-                };
-                var response = client.CheckForUpdates(request);
-                return response.Releases.ToArray();
-            } catch (Exception e)
-            {
-                logger.Error(e, "Ошибка при отправке отчета об ошибке");
-                return Array.Empty<ReleaseInfo>();
-            }
+            var client = new Releases.ReleasesClient(Channel);
+            var request = new CheckForUpdatesRequest() {
+                Channel = releaseChannel,
+				ProductCode = productCode,
+				Version = version,
+				Modification = modification,
+				SerialNumber = serial
+            };
+            return client.CheckForUpdates(request);
         }
         
         #endregion

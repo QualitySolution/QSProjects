@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<Company>Quality Solution</Company>
+	<ProjectGuid>{3F4F3462-4B81-4622-A9B9-A5CEF5C8FC6F}</ProjectGuid>
+	<RootNamespace>QS</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QS.HistoryLog\QS.HistoryLog.csproj" />
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -25,7 +25,8 @@ namespace QS.Project.Journal.DataLoader
 
 		public PostLoadProcessing PostLoadProcessingFunc { set => throw new NotImplementedException(); }
 		public bool DynamicLoadingEnabled { get; set; } = true;
-		public int PageSize { set => throw new NotImplementedException(); }
+		public int PageSize { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public int? ItemsCountForNextLoad { get; set; }
 
 		public bool HasUnloadedItems => false;
 
@@ -43,8 +44,6 @@ namespace QS.Project.Journal.DataLoader
 		public bool TotalCountingInProgress { get; private set; }
 
 		public uint? TotalCount => (uint?)Items?.Count;
-
-		public bool UsePreviousPageSize => false;
 
 		public event EventHandler ItemsListUpdated;
 		public event EventHandler TotalCountChanged;
@@ -73,7 +72,7 @@ namespace QS.Project.Journal.DataLoader
 		#region Загрузка данных
 		private int reloadRequested = 0;
 
-		public void LoadData(bool nextPage, bool usePreviousPageSize = false)
+		public void LoadData(bool nextPage)
 		{
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
