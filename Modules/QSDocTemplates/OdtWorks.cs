@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -186,7 +186,7 @@ namespace QSDocTemplates
 
 			foreach (XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:user-field-decls/text:user-field-decl", nsMgr)) {
 				string fieldName = node.Attributes ["text:name"].Value;
-				var field = DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
+				var field = DocParser.FieldsList.FirstOrDefault(f => fieldName == f.Name) ?? DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
 				if (field == null) {
 					logger.Warn ("Поле {0} не найдено, поэтому пропущено.", fieldName);
 					continue;
