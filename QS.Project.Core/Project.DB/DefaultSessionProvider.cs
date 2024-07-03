@@ -1,16 +1,18 @@
-﻿using NHibernate;
+using NHibernate;
 
-namespace QS.Project.DB
-{
+namespace QS.Project.DB {
 	public class DefaultSessionProvider : ISessionProvider
 	{
-		public DefaultSessionProvider()
+		private readonly ISessionFactory sessionFactory;
+
+		public DefaultSessionProvider(ISessionFactory sessionFactory)
 		{
+			this.sessionFactory = sessionFactory ?? throw new System.ArgumentNullException(nameof(sessionFactory));
 		}
 
 		public virtual ISession OpenSession()
 		{
-			ISession session = OrmConfig.Sessions.OpenSession();
+			ISession session = sessionFactory.OpenSession();
 			session.FlushMode = FlushMode.Commit;
 			return session;
 		}

@@ -1,13 +1,15 @@
-﻿using QS.Dialog;
-using QS.Dialog.GtkUI;
+using QS.Dialog;
 
-namespace QS.Project.Services.GtkUI
-{
+namespace QS.Project.Services.GtkUI {
 	public class GtkInteractiveService : IInteractiveService
 	{
-		private IInteractiveMessage interactiveMessage = new GtkMessageDialogsInteractive();
+		private IInteractiveMessage interactiveMessage;
+		private IInteractiveQuestion interactiveQuestion;
 
-		private IInteractiveQuestion interactiveQuestion = new GtkQuestionDialogsInteractive();
+		public GtkInteractiveService(IInteractiveMessage interactiveMessage, IInteractiveQuestion interactiveQuestion) {
+			this.interactiveMessage = interactiveMessage ?? throw new System.ArgumentNullException(nameof(interactiveMessage));
+			this.interactiveQuestion = interactiveQuestion ?? throw new System.ArgumentNullException(nameof(interactiveQuestion));
+		}
 
 		public void ShowMessage(ImportanceLevel level, string message, string title = null)
 		{

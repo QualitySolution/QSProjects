@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NLog;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.Entity.EntityPermissions;
@@ -68,7 +68,7 @@ namespace QS.Project.Dialogs.GtkUI
 			permissionResult = new PermissionResult(EntityPermission.AllAllowed);
 
 			UserBase user;
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				user = UserRepository.GetCurrentUser(uow);
 			}
 			if(user == null) {

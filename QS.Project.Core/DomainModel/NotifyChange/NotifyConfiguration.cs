@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using QS.Dialog;
 using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
@@ -15,12 +16,12 @@ namespace QS.DomainModel.NotifyChange
 		/// <summary>
 		/// Вызываем инициализацию механизма подписки на обновления.
 		/// </summary>
-		public static void Enable()
+		public static void Enable(ITrackerActionInvoker trackerActionInvoker)
 		{
 			if (Instance != null)
 				return;
 
-			var listner = new AppLevelChangeListener();
+			var listner = new AppLevelChangeListener(trackerActionInvoker);
 			GlobalUowEventsTracker.RegisterGlobalListener(listner);
 			SingleUowEventsTracker.RegisterSingleUowListnerFactory(listner);
 
