@@ -1,18 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Security.Principal;
-using FluentNHibernate.Utils;
 using NHibernate.Event;
 using NHibernate.Type;
-using NHibernate.Util;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
+using QS.Utilities.Extensions;
+using System;
+using System.Reflection;
 
-namespace QS.HistoryLog.Domain
-{
+namespace QS.HistoryLog.Domain {
 	public class FieldChange : FieldChangeBase
 	{
 		#region Конфигурация
@@ -201,7 +196,8 @@ namespace QS.HistoryLog.Domain
 			IType propType = persister.PropertyTypes[i];
 			string propName = persister.PropertyNames[i];
 
-			var propInfo = persister.MappedClass.GetProperty(propName);
+			PropertyInfo propInfo = persister.MappedClass.GetPropertyInfo(propName);
+
 			if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
 				return null;
 
