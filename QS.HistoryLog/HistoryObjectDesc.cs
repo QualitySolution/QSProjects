@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 using QS.Project.DB;
+using QS.Utilities.Extensions;
 using QS.Utilities.Text;
 
 namespace QS.HistoryLog
@@ -19,7 +20,7 @@ namespace QS.HistoryLog
 
 				foreach(var propertyMap in persistent.PropertyIterator)
 				{
-					var propInfo = persistent.MappedClass.GetProperty(propertyMap.Name);
+					var propInfo = persistent.MappedClass.GetPropertyInfo(propertyMap.Name);
 					if(propInfo.GetCustomAttributes(typeof(IgnoreHistoryTraceAttribute), true).Length > 0)
 						continue;
 
