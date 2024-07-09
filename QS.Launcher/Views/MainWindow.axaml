@@ -1,0 +1,14 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:QS.Launcher.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:QS.Launcher.Views"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
+		Width="450" Height="450"
+		MinWidth="300" MinHeight="300"
+        x:Class="QS.Launcher.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="QS.Launcher">
+        <views:MainView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+</Window>

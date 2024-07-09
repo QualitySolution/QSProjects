@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:QS.Launcher.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="450"
+			 x:Class="QS.Launcher.Views.MainView"
+			 x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+	<vm:MainViewModel />
+  </Design.DataContext>
+
+	<Grid VerticalAlignment="Stretch" Margin="20" RowDefinitions="200, Auto, Auto, Auto, Auto" ColumnDefinitions="*, *">
+		<Image Source="/Assets/avalonia-logo.ico" Grid.ColumnSpan="2"/>
+		<TextBox Margin="5" Grid.Row="1" Watermark=""/>
+		<TextBox Margin="5" Grid.Row="1" Grid.Column="1"/>
+		
+		<ComboBox ItemsSource="{Binding ConnectionTypes}" Margin="5" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<Image Source="{Binding IconPath}"/>
+						<Label Content="{Binding Title}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+		
+		<TextBox Margin="5" Grid.ColumnSpan="2" Grid.Row="3"/>
+		
+		<Button Margin="5" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"/>
+	</Grid>
+</UserControl>
