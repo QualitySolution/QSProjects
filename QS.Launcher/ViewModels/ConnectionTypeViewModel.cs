@@ -1,3 +1,4 @@
+using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,5 @@ public class ConnectionTypeViewModel
 {
 	public string Title { get; set; }
 
-	public string IconPath { get; set; }
+	public Bitmap Icon { get; set; }
 }

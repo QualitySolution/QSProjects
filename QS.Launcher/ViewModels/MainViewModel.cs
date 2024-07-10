@@ -1,13 +1,22 @@
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace QS.Launcher.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-	public string Greeting => "Welcome to Avalonia!";
+	private Bitmap companyImage;
+	public Bitmap CompanyImage
+	{
+		get => companyImage;
+		set => this.RaiseAndSetIfChanged(ref companyImage, value);
+	}
 
-	public List<ConnectionTypeViewModel> ConnectionTypes { get; } = new();
+	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
 
 	public string password;
 	public string Password
@@ -18,10 +27,12 @@ public class MainViewModel : ViewModelBase
 
 	public MainViewModel()
 	{
-		ConnectionTypes = new List<ConnectionTypeViewModel>
-		{
-			new() { Title = "QS Cloud", IconPath = "Assets/avalonia-logo.ico" },
-			new() { Title = "MariaDB", IconPath = "Assets/avalonia-logo.ico" }
-		};
+		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/avalonia-logo.ico")));
+
+		ConnectionTypes =
+		[
+			new() { Title = "QS Cloud", Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")) },
+			new() { Title = "MariaDB", Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")) }
+		];
 	}
 }
