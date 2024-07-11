@@ -12,8 +12,11 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="QS.Launcher">
 	<ScrollViewer>
-		<TransitioningContentControl>
-			<views:MainView IsVisible="True" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+		<TransitioningContentControl Content="{Binding SelectedPage}">
+			
+			<TransitioningContentControl.PageTransition>
+				<PageSlide Orientation="Horizontal"/>
+			</TransitioningContentControl.PageTransition>
 		</TransitioningContentControl>
 	</ScrollViewer>
 </Window>

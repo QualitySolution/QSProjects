@@ -4,10 +4,11 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class LoginViewModel : ViewModelBase
 {
 	private Bitmap companyImage;
 	public Bitmap CompanyImage
@@ -15,6 +16,9 @@ public class MainViewModel : ViewModelBase
 		get => companyImage;
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
+
+	private ICommand nextPageCommand;
+	public ICommand NextPageCommand { get; init; }
 
 	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
 
@@ -25,7 +29,7 @@ public class MainViewModel : ViewModelBase
 		set => this.RaiseAndSetIfChanged(ref password, value);
 	}
 
-	public MainViewModel()
+	public LoginViewModel()
 	{
 		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/avalonia-logo.ico")));
 

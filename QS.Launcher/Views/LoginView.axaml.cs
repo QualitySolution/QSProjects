@@ -5,14 +5,17 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using System;
 using System.Threading.Tasks;
+using QS.Launcher.ViewModels;
 
 namespace QS.Launcher.Views;
 
-public partial class MainView : UserControl
+public partial class LoginView : UserControl
 {
-    public MainView()
+    public LoginView()
     {
         InitializeComponent();
+
+		DataContext = new LoginViewModel();
     }
 
 	private void ShowCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

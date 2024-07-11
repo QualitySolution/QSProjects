@@ -49,4 +49,13 @@
   <ItemGroup>
     <Folder Include="Views\Controls\Helpers\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\LoginView.axaml.cs">
+      <DependentUpon>LoginView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DataBasesView.axaml.cs">
+      <DependentUpon>DataBasesView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

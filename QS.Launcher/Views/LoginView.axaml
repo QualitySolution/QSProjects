@@ -4,10 +4,10 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:QS.Launcher.ViewModels"
 			 mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
-			 x:Class="QS.Launcher.Views.MainView"
-			 x:DataType="vm:MainViewModel">
+			 x:Class="QS.Launcher.Views.LoginView"
+			 x:DataType="vm:LoginViewModel">
   <Design.DataContext>
-	<vm:MainViewModel />
+	<vm:LoginViewModel />
   </Design.DataContext>
 
 	<ScrollViewer>
