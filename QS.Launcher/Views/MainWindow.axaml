@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:QS.Launcher.Views"
         mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
+		WindowStartupLocation="CenterScreen"
 		Width="450" Height="650"
 		MinWidth="300" MinHeight="300"
         x:Class="QS.Launcher.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="QS.Launcher">
 	<ScrollViewer>
-        <views:MainView IsVisible="True" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+		<TransitioningContentControl>
+			<views:MainView IsVisible="True" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+		</TransitioningContentControl>
 	</ScrollViewer>
 </Window>

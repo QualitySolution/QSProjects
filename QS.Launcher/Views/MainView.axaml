@@ -22,10 +22,7 @@
 				<Button Content="+" FontWeight="SemiBold" Margin="5,0,0,0" Grid.Column="1" Click="ShowCreationView"/>
 			</Grid>
 
-			<Border x:Name="createConnection" Margin="0,3,0,3" Padding="0,3,0,3" BorderThickness="0,1,0,1" BorderBrush="LightGray" IsVisible="True" Grid.Row="3" Grid.ColumnSpan="2">
-				<Border.RenderTransform>
-					<TranslateTransform Y="-200"/>
-				</Border.RenderTransform>
+			<Border IsEnabled="False" Classes="invisible" x:Name="createConnection" Margin="0,3,0,3" Padding="0,3,0,3" BorderThickness="0,1,0,1" BorderBrush="LightGray" Grid.Row="3" Grid.ColumnSpan="2">
 				<StackPanel>
 					<ComboBox ItemsSource="{Binding ConnectionTypes}" Margin="5" HorizontalAlignment="Stretch">
 						<ComboBox.ItemTemplate>
@@ -38,36 +35,35 @@
 						</ComboBox.ItemTemplate>
 					</ComboBox>
 					
-					<TextBox Margin="5" Watermark="ger"/>
-					<TextBox Margin="5" Watermark="Nig"/>
+					<TextBox Margin="5" Watermark="Nigger"/>
+					<TextBox Margin="5" Watermark="Niggers"/>
 
 					<Grid ColumnDefinitions="*, *">
 						<Button Content="Добавить" HorizontalAlignment="Stretch" Margin="5" HorizontalContentAlignment="Center"/>
 						<Button Content="Отмена" Click="HideCreationView" HorizontalAlignment="Stretch" Margin="5" HorizontalContentAlignment="Center" Grid.Column="1"/>
 					</Grid>
 				</StackPanel>
-
+				
 				<Border.Styles>
-					<Style Selector="Inactive">
+					<Style Selector="Border.invisible">
 						<Setter Property="Opacity" Value="0"/>
-						<Setter Property="RenderTransform">
-							<Setter.Value>
-								<TranslateTransform Y="-180"/>
-							</Setter.Value>
-						</Setter>
+						<Setter Property="RenderTransform" Value="translateY(-180px)"/>
 					</Style>
 				</Border.Styles>
-
-				<Border.Transitions>
-					<Transitions>
-						<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.4"/>
-					</Transitions>
-				</Border.Transitions>
 			</Border>
-				
-			<TextBox Margin="5" Watermark="Пароль" Grid.ColumnSpan="2" Grid.Row="4"/>
+
+			<ItemsControl Classes="up" x:Name="loginContainer" Grid.ColumnSpan="2" Grid.Row="4">
+				<TextBox Margin="5" Watermark="Пароль"/>
 			
-			<Button Content="Войти" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="5" Grid.Row="5" HorizontalContentAlignment="Center"/>
+				<Button Content="Войти" HorizontalAlignment="Stretch" Margin="5" HorizontalContentAlignment="Center"/>
+
+				<ItemsControl.Styles>
+					<Style Selector="ItemsControl.up">
+						<Setter Property="RenderTransform" Value="translateY(-180px)"/>
+					</Style>
+				</ItemsControl.Styles>
+			</ItemsControl>
+			
 		</Grid>
 	</ScrollViewer>
 </UserControl>

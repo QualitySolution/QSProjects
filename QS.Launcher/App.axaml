@@ -6,5 +6,16 @@
 
     <Application.Styles>
         <FluentTheme />
+
+		<Style Selector=":is(Control)">
+			<Setter Property="Transitions">
+				<Setter.Value>
+					<Transitions>
+						<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+						<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+					</Transitions>
+				</Setter.Value>
+			</Setter>
+		</Style>
     </Application.Styles>
 </Application>
