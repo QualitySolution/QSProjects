@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels;
 
-public class LoginViewModel : ViewModelBase
+public class LoginViewModel : PageViewModel
 {
 	private Bitmap companyImage;
 	public Bitmap CompanyImage
@@ -16,9 +16,6 @@ public class LoginViewModel : ViewModelBase
 		get => companyImage;
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
-
-	private ICommand nextPageCommand;
-	public ICommand NextPageCommand { get; init; }
 
 	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
 
@@ -29,7 +26,7 @@ public class LoginViewModel : ViewModelBase
 		set => this.RaiseAndSetIfChanged(ref password, value);
 	}
 
-	public LoginViewModel()
+	public LoginViewModel(ICommand nextCommand, ICommand previousCommand) : base(nextCommand, previousCommand)
 	{
 		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/avalonia-logo.ico")));
 

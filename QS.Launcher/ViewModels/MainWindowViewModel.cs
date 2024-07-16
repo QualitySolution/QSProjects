@@ -1,16 +1,14 @@
 using Avalonia.Controls;
 using QS.Launcher.Views;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels; 
 public class MainWindowViewModel : ViewModelBase
 {
-	public List<UserControl> Pages { get; set; }
+	public ObservableCollection<UserControl> Pages { get; set; }
 
 	private UserControl selectedPage;
 	public UserControl SelectedPage
@@ -19,17 +17,25 @@ public class MainWindowViewModel : ViewModelBase
 		set => this.RaiseAndSetIfChanged(ref selectedPage, value);
 	}
 
-	public MainWindowViewModel()
+	private readonly ICommand nextPageCommand;
+	private readonly ICommand previousPageCommand;
+
+	public MainWindowViewModel(Carousel carousel)
 	{
+		nextPageCommand = ReactiveCommand.Create(NextPage);
+		previousPageCommand = ReactiveCommand.Create(PreviousPage);
+
+		var lw = new LoginView(nextPageCommand, previousPageCommand);
+		var dbw = new DataBasesView(nextPageCommand, previousPageCommand);
+
 		Pages =
 		[
-			new LoginView(),
-			new DataBasesView()
+			lw, dbw
 		];
 
 		SelectedPage = Pages[0];
 	}
-
+	
 	public void ChangePage(int index)
 	{
 		SelectedPage = Pages[index];
@@ -37,11 +43,11 @@ public class MainWindowViewModel : ViewModelBase
 
 	public void NextPage()
 	{
-		SelectedPage = Pages[(Pages.IndexOf(SelectedPage) + 1) % Pages.Count];
+		ChangePage((Pages.IndexOf(SelectedPage) + 1) % Pages.Count);
 	}
 
 	public void PreviousPage()
 	{
-		SelectedPage = Pages[(Pages.IndexOf(SelectedPage) - 1 + Pages.Count) % Pages.Count];
+		ChangePage((Pages.IndexOf(SelectedPage) - 1 + Pages.Count) % Pages.Count);
 	}
 }

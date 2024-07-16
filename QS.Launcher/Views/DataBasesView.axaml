@@ -5,6 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
              x:Class="QS.Launcher.Views.DataBasesView">
 	<Grid>
-		<Button Content="Назад" HorizontalAlignment="Center"/>
+		<Button Content="Назад" Command="{Binding PreviousPageCommand}" HorizontalAlignment="Center"/>
 	</Grid>
 </UserControl>

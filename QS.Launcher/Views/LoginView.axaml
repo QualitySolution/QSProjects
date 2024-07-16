@@ -6,9 +6,6 @@
 			 mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
 			 x:Class="QS.Launcher.Views.LoginView"
 			 x:DataType="vm:LoginViewModel">
-  <Design.DataContext>
-	<vm:LoginViewModel />
-  </Design.DataContext>
 
 	<ScrollViewer>
 		<Grid VerticalAlignment="Stretch" Margin="20" RowDefinitions="200, Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="*, *">
@@ -55,7 +52,7 @@
 			<ItemsControl Classes="up" x:Name="loginContainer" Grid.ColumnSpan="2" Grid.Row="4">
 				<TextBox Margin="5" Watermark="Пароль"/>
 			
-				<Button Content="Войти" HorizontalAlignment="Stretch" Margin="5" HorizontalContentAlignment="Center"/>
+				<Button Content="Войти" Command="{Binding NextPageCommand}" HorizontalAlignment="Stretch" Margin="5" HorizontalContentAlignment="Center"/>
 
 				<ItemsControl.Styles>
 					<Style Selector="ItemsControl.up">

@@ -1,28 +1,26 @@
-using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Threading;
 using System;
 using System.Threading.Tasks;
 using QS.Launcher.ViewModels;
+using System.Windows.Input;
+using Avalonia.VisualTree;
 
 namespace QS.Launcher.Views;
 
 public partial class LoginView : UserControl
 {
-    public LoginView()
+    public LoginView(ICommand? nextPageCommand, ICommand? backPageCommand)
     {
         InitializeComponent();
 
-		DataContext = new LoginViewModel();
+		DataContext = new LoginViewModel(nextPageCommand, backPageCommand);
     }
 
 	private void ShowCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		createConnection.Classes.Remove("invisible");
 		createConnection.IsEnabled = true;
-
+		
 		loginContainer.Classes.Remove("up");
 	}
 

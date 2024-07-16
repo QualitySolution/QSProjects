@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher", "QS.Launcher\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher.Desktop", "QS.Launcher.Desktop\QS.Launcher.Desktop.csproj", "{37206BD4-2A21-4EB9-A854-FCBF6F31A69C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.DbManagement", "QS.DbManagement\QS.DbManagement.csproj", "{BED14F93-0B8F-49DE-B503-2CB3398389A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,10 @@ Global
 		{37206BD4-2A21-4EB9-A854-FCBF6F31A69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37206BD4-2A21-4EB9-A854-FCBF6F31A69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37206BD4-2A21-4EB9-A854-FCBF6F31A69C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BED14F93-0B8F-49DE-B503-2CB3398389A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED14F93-0B8F-49DE-B503-2CB3398389A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED14F93-0B8F-49DE-B503-2CB3398389A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED14F93-0B8F-49DE-B503-2CB3398389A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

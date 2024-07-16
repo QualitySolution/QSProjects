@@ -12,11 +12,10 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="QS.Launcher">
 	<ScrollViewer>
-		<TransitioningContentControl Content="{Binding SelectedPage}">
-			
-			<TransitioningContentControl.PageTransition>
-				<PageSlide Orientation="Horizontal"/>
-			</TransitioningContentControl.PageTransition>
-		</TransitioningContentControl>
+		<Carousel x:Name="carousel" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
+			<Carousel.PageTransition>
+				<PageSlide Orientation="Horizontal" Duration="0:0:0.25" SlideInEasing="SineEaseInOut" SlideOutEasing="SineEaseInOut"/>
+			</Carousel.PageTransition>
+		</Carousel>
 	</ScrollViewer>
 </Window>
