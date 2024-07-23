@@ -13,7 +13,7 @@ namespace QSReport
 		protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 
 		private ReportInfo reportInfo;
-		private IParametersWidget parametersWidget;
+		public IParametersWidget ParametersWidget { get; }
 
 		public event EventHandler ReportPrinted;
 
@@ -21,8 +21,8 @@ namespace QSReport
 		{
 			if (reportInfo != null)
 				return GenerateHashName(reportInfo) == hashName;
-			else if (parametersWidget != null)
-				return GenerateHashName(parametersWidget) == hashName;
+			else if (ParametersWidget != null)
+				return GenerateHashName(ParametersWidget) == hashName;
 			else
 				return false;
 		}
@@ -66,16 +66,16 @@ namespace QSReport
 		{
 			this.Build ();
 
-			parametersWidget = widget;
+			ParametersWidget = widget;
 
-			TabName = parametersWidget.Title;
-			reportviewer1.DefaultExportFileName = parametersWidget.Title;
+			TabName = ParametersWidget.Title;
+			reportviewer1.DefaultExportFileName = ParametersWidget.Title;
 
 			panelParameters.Visible = true;
 
-			panelParameters.Panel = parametersWidget as Widget;
+			panelParameters.Panel = ParametersWidget as Widget;
 
-			parametersWidget.LoadReport += ParametersWidget_LoadReport;
+			ParametersWidget.LoadReport += ParametersWidget_LoadReport;
 		}
 
 		void LoadReport(ReportInfo info)
@@ -125,7 +125,7 @@ namespace QSReport
 
 		public override void Destroy()
 		{
-			parametersWidget?.Destroy();
+			ParametersWidget?.Destroy();
 			base.Destroy();
 		}
 
@@ -133,8 +133,8 @@ namespace QSReport
         {
 			reportviewer1?.Dispose();
 			reportviewer1 = null;
-			if(parametersWidget != null) {
-				parametersWidget.LoadReport -= ParametersWidget_LoadReport;
+			if(ParametersWidget != null) {
+				ParametersWidget.LoadReport -= ParametersWidget_LoadReport;
 			}
 			base.Dispose();
         }
