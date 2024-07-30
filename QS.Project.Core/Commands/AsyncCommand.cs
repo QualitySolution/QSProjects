@@ -40,19 +40,20 @@ namespace QS.Commands {
 		}
 
 		public void Execute() {
-			if(_canExecute is null
-				&& _cancelationTokenSource.IsCancellationRequested) {
-				_cancelationTokenSource = new CancellationTokenSource();
-			}
-
 			if(CanExecute()) {
-				_runningTask = Task.Run(async () => {
-					RaiseCanExecuteChanged();
-					await _handler(_cancelationTokenSource.Token);
-					_runningTask = null;
-					RaiseCanExecuteChanged();
-				},
-				_cancelationTokenSource.Token); 
+				_runningTask = Task.Run(
+					async () => {
+						RaiseCanExecuteChanged();
+						try {
+							await _handler(_cancelationTokenSource.Token);
+						}
+						finally {
+							_runningTask = null;
+							_cancelationTokenSource = new CancellationTokenSource();
+							RaiseCanExecuteChanged();
+						}
+					},
+					_cancelationTokenSource.Token);
 			}
 		}
 
