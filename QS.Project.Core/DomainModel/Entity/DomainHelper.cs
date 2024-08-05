@@ -8,6 +8,7 @@ using Gamma.Utilities;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
+using QS.Utilities.Extensions;
 using QS.Utilities.Text;
 
 namespace QS.DomainModel.Entity
@@ -176,7 +177,7 @@ namespace QS.DomainModel.Entity
 
 		public static string GetPropertyTitle (Type clazz, string propName)
 		{
-			var propInfo = clazz.GetProperty (propName);
+			var propInfo = clazz.GetPropertyInfo(propName);
 			if(propInfo == null)
 				return propName;
 			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);

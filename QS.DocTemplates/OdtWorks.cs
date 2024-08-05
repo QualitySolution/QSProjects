@@ -6,10 +6,9 @@ using System.Linq;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
 using NLog;
-using QS.DocTemplates;
-using QSProjectsLib;
+using QS.Utilities;
 
-namespace QSDocTemplates
+namespace QS.DocTemplates
 {
 
 	public class OdtWorks
@@ -290,7 +289,7 @@ namespace QSDocTemplates
 				}
 				if (fieldName.EndsWith(".Пропись"))
 				{						
-					string val = RusCurrency.Str((int)valueDec, true, "рубль", "рубля", "рублей", "", "", "");
+					string val = NumberToTextRus.Str((int)valueDec, true, "рубль", "рубля", "рублей");
 					node.Attributes["office:string-value"].Value = val;
 				}
 			}
@@ -324,7 +323,7 @@ namespace QSDocTemplates
 				}
 				if (fieldName.EndsWith(".Пропись"))
 				{						
-					string val = RusCurrency.Str((int)valueDec, true, "рубль", "рубля", "рублей", "", "", "");
+					string val = NumberToTextRus.Str((int)valueDec, true, "рубль", "рубля", "рублей");
 					node.Attributes["office:string-value"].Value = val;
 					element.InnerText = val;
 				}
