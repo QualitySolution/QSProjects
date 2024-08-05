@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using Gamma.Utilities;
 using Gamma.GtkWidgets.Cells;
@@ -34,12 +34,16 @@ namespace Gamma.ColumnConfig
 		public NumberRendererMapping(
 			ColumnMapping<TNode> column,
 			Expression<Func<TNode, object>> getDataExp,
-			EditedHandler editedHandler) : base(column)
+			EditedHandler editedHandler,
+			bool withThousandsSeparator) : base(column)
 		{
 			var getter = getDataExp.Compile();
 			cellRenderer.Edited += editedHandler;
 			Custom = true;
-			cellRenderer.LambdaSetters.Add((c, n) => c.Text = String.Format ("{0:" + $"F{c.Digits}" + "}", getter (n)));
+
+			var numberFormat = withThousandsSeparator ? "N" : "F";
+			cellRenderer.LambdaSetters.Add((c, n) =>
+				c.Text = string.Format("{0:" + $"{numberFormat}{c.Digits}" + "}", getter(n)));
 		}
 
 		public NumberRendererMapping (ColumnMapping<TNode> column)
@@ -144,9 +148,15 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public NumberRendererMapping<TNode> EditedEvent(Gtk.EditedHandler handler)
+		public NumberRendererMapping<TNode> EditedEvent(EditedHandler handler)
 		{
 			cellRenderer.Edited += handler;
+			return this;
+		}
+		
+		public NumberRendererMapping<TNode> EditingStartedEvent(EditingStartedHandler handler)
+		{
+			cellRenderer.EditingStarted += handler;
 			return this;
 		}
 
