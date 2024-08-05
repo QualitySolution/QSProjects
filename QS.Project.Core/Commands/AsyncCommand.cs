@@ -49,6 +49,8 @@ namespace QS.Commands {
 						}
 						finally {
 							_runningTask = null;
+							_cancelationTokenSource.Cancel();
+							_cancelationTokenSource.Dispose();
 							_cancelationTokenSource = new CancellationTokenSource();
 							RaiseCanExecuteChanged();
 						}
