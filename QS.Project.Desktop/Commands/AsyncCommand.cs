@@ -1,21 +1,24 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using QS.Dialog;
 
 namespace QS.Commands {
 	public class AsyncCommand : PropertySubscribedCommandBase {
 		private CancellationTokenSource _cancelationTokenSource;
+		private readonly IGuiDispatcher _guiDispatcher;
 		private readonly Func<CancellationToken, Task> _handler;
 		private readonly Func<bool> _canExecute;
 		private Task _runningTask;
 
-		public AsyncCommand(Func<CancellationToken, Task> handler, Func<bool> canExecute) {
+		public AsyncCommand(IGuiDispatcher guiDispatcher, Func<CancellationToken, Task> handler, Func<bool> canExecute) {
 			_cancelationTokenSource = new CancellationTokenSource();
+			_guiDispatcher = guiDispatcher;
 			_handler = handler;
 			_canExecute = canExecute;
 		}
 
-		public AsyncCommand(Func<CancellationToken, Task> handler) : this(handler, () => true) {
+		public AsyncCommand(IGuiDispatcher guiDispatcher, Func<CancellationToken, Task> handler) : this(guiDispatcher, handler, () => true) {
 		}
 
 		public override bool CanExecute(object parameter) {
@@ -41,21 +44,24 @@ namespace QS.Commands {
 
 		public void Execute() {
 			if(CanExecute()) {
-				_runningTask = Task.Run(
-					async () => {
-						RaiseCanExecuteChanged();
-						try {
-							await _handler(_cancelationTokenSource.Token);
-						}
-						finally {
-							_runningTask = null;
-							_cancelationTokenSource.Cancel();
-							_cancelationTokenSource.Dispose();
-							_cancelationTokenSource = new CancellationTokenSource();
+				_runningTask = new Task(async () => {
+					try {
+						await _handler(_cancelationTokenSource.Token);
+					}
+					finally {
+						_runningTask = null;
+						_cancelationTokenSource.Cancel();
+						_cancelationTokenSource.Dispose();
+						_cancelationTokenSource = new CancellationTokenSource();
+						_guiDispatcher.RunInGuiTread(() => {
 							RaiseCanExecuteChanged();
-						}
-					},
-					_cancelationTokenSource.Token);
+						});
+					}
+				}, _cancelationTokenSource.Token);
+				
+				RaiseCanExecuteChanged();
+
+				_runningTask.Start();
 			}
 		}
 
