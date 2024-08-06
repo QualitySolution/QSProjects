@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Gtk;
 using QS;
 using QS.DomainModel.UoW;
@@ -86,10 +86,9 @@ namespace QSReport
 
 			if (info.PrintType == ReportInfo.PrintingType.MultiplePrinters)
 			{
-				IUnitOfWorkFactory unitOfWorkFactory = UnitOfWorkFactory.GetDefaultFactory;
 				var commonService = ServicesConfig.CommonServices;
 				var userPrintSettingsRepository = new UserPrintingRepository();
-				multiplePrintOperation = new MultiplePrintOperation(unitOfWorkFactory, commonService, userPrintSettingsRepository);
+				multiplePrintOperation = new MultiplePrintOperation(ServicesConfig.UnitOfWorkFactory, commonService, userPrintSettingsRepository);
 			}
 
 			if(info.Source != null)

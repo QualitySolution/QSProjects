@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,6 +14,7 @@ using QS.DomainModel.UoW;
 using QS.Gtk.Widgets;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
+using QS.Project.Services;
 using QS.Tdi;
 using QSOrmProject.DomainMapping;
 using QSOrmProject.UpdateNotification;
@@ -276,7 +277,7 @@ namespace QSOrmProject
 			if(dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = UnitOfWorkFactory.CreateWithoutRoot();
+				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 
 			if(ItemsQuery != null) {
 				SelectDialog = new OrmReference(localUoW, ItemsQuery);
@@ -356,7 +357,7 @@ namespace QSOrmProject
 			if (dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = UnitOfWorkFactory.CreateWithoutRoot ();
+				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot ();
 
 			if (ItemsQuery != null) {
 				ItemsCriteria = ItemsQuery.DetachedCriteria.GetExecutableCriteria (localUoW.Session);

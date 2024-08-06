@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Threading;
 
-namespace QS.Dialog
-{
+namespace QS.Dialog {
 	public interface IGuiDispatcher
 	{
 		/// <summary>

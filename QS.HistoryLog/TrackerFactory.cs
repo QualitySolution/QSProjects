@@ -14,7 +14,7 @@ namespace QS.HistoryLog {
 
 		public ISingleUowEventListener CreateListnerForNewUow(IUnitOfWorkTracked uow)
 		{
-			return new HibernateTracker(connectionStringBuilder.GetConnectionString(true));
+			return new HibernateTracker(connectionStringBuilder);
 		}
 	}
 }

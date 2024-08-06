@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using Gamma.GtkWidgets;
 using QS.Banks.Domain;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Validation;
 
 namespace QSBanks
@@ -13,7 +14,7 @@ namespace QSBanks
 		public BankDlg (int id)
 		{
 			this.Build ();
-			UoWGeneric = UnitOfWorkFactory.CreateForRoot<Bank> (id);
+			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<Bank> (id);
 			ConfigureDlg ();
 		}
 
@@ -44,7 +45,7 @@ namespace QSBanks
 
 		public override bool Save ()
 		{ //FIXME Если функция не понадобится в других проектах возможно ее нужно удалить. 
-			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			var validator = ServicesConfig.ValidationService;
 			if (!validator.Validate(Entity))
 				return false;
 
