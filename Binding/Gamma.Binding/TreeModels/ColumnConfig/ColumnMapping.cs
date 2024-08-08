@@ -163,9 +163,13 @@ namespace Gamma.ColumnConfig
 			return render;
 		}
 		
-		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, EditedHandler editedHandler, bool expand = true)
+		public NumberRendererMapping<TNode> AddNumericRenderer(
+			Expression<Func<TNode, object>> dataProperty,
+			EditedHandler editedHandler,
+			bool withThousandsSeparator = false,
+			bool expand = true)
 		{
-			var render = new NumberRendererMapping<TNode> (this, dataProperty, editedHandler);
+			var render = new NumberRendererMapping<TNode> (this, dataProperty, editedHandler, withThousandsSeparator);
 			render.IsExpand = expand;
 			Renderers.Add(render);
 			return render;
