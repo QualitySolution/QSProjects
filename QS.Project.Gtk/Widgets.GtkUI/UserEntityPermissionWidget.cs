@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace QS.Widgets.GtkUI
 				.AddColumn("Документ").AddTextRenderer(x => x.CustomName)
 				.Finish();
 
-			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
+			ytreeviewEntitiesList.ItemsDataSource = Model.DisplayedAvailablePermissionsToAdd;
 			ytreeviewEntitiesList.Binding
 				.AddBinding(Model.PermissionListViewModel, vm => vm.SelectedAvailableEntity, w => w.SelectedRow)
 				.InitializeFromSource();
@@ -79,15 +79,13 @@ namespace QS.Widgets.GtkUI
 
 		private void SearchDocumentsOnTextChanged(object sender, EventArgs e)
 		{
-			ytreeviewEntitiesList.ItemsDataSource = null;
 			Model.SearchTypes(searchDocuments.Text);
-			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
 		}
 
 		private void AddPermission()
 		{
 			var selected = ytreeviewEntitiesList.GetSelectedObject() as TypeOfEntity;
-			Model.AddPermission(selected);
+			Model.AddPermissionToUser(selected);
 		}
 
 		private void OnButtonAddClicked(object sender, EventArgs e)
@@ -110,7 +108,6 @@ namespace QS.Widgets.GtkUI
 
 		public void UpdateData(IList<UserPermissionNode> newUserPermissions) {
 			Model.UpdateData(newUserPermissions);
-			ytreeviewEntitiesList.ItemsDataSource = Model.ObservableTypeOfEntitiesList;
 			permissionlistview.Redraw();
 		}
 	}
@@ -118,12 +115,12 @@ namespace QS.Widgets.GtkUI
 	public sealed class EntityUserPermissionModel {
 		private readonly IUnitOfWork _uow;
 		private readonly UserBase _user;
-		private readonly IList<UserPermissionNode> _deletePermissionList = new List<UserPermissionNode>();
+		private readonly IList<UserPermissionNode> _permissionsToDelete = new List<UserPermissionNode>();
+		private readonly IList<TypeOfEntity> _allCurrentAvailablePermissionsToAdd;
 		private IList<UserPermissionNode> _permissionList;
-		private List<TypeOfEntity> _originalTypeOfEntityList;
 		public PermissionListViewModel PermissionListViewModel { get; set; }
 
-		public IObservableList<TypeOfEntity> ObservableTypeOfEntitiesList { get; private set; }
+		public IObservableList<TypeOfEntity> DisplayedAvailablePermissionsToAdd { get; }
 
 		public EntityUserPermissionModel(IUnitOfWork uow, UserBase user, PermissionListViewModel permissionListViewModel) {
 			_user = user;
@@ -136,72 +133,67 @@ namespace QS.Widgets.GtkUI
 				new ObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
 			PermissionListViewModel.PermissionsList.CollectionChanged += OnPermissionsListElementRemoved;
 
-			_originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(_uow).ToList();
+			_allCurrentAvailablePermissionsToAdd =
+				TypeOfEntityRepository.GetAllSavedTypeOfEntityOrderedByName(_uow);
+			
 			//убираем типы уже загруженные в права
 			foreach(var item in _permissionList) {
-				if(_originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
-					_originalTypeOfEntityList.Remove(item.TypeOfEntity);
+				if(_allCurrentAvailablePermissionsToAdd.Contains(item.TypeOfEntity)) {
+					_allCurrentAvailablePermissionsToAdd.Remove(item.TypeOfEntity);
 				}
 			}
 
-			SortTypeOfEntityList();
-			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
+			DisplayedAvailablePermissionsToAdd = new ObservableList<TypeOfEntity>(_allCurrentAvailablePermissionsToAdd);
 		}
 
 		private void OnPermissionsListElementRemoved(object aList, NotifyCollectionChangedEventArgs args) {
 			if(args.Action == NotifyCollectionChangedAction.Remove) {
 				foreach(UserPermissionNode item in args.OldItems) {
-					DeletePermission(item);					
+					RemovePermissionFromUser(item);					
 				}
 			}
 		}
 
 		public void SearchTypes(string searchString) {
-			_originalTypeOfEntityList = TypeOfEntityRepository.GetAllSavedTypeOfEntity(_uow).ToList();
-			//убираем типы уже загруженные в права
-			foreach(var item in _permissionList) {
-				if(_originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
-					_originalTypeOfEntityList.Remove(item.TypeOfEntity);
-				}
+
+			DisplayedAvailablePermissionsToAdd.Clear();
+
+			foreach(var availableTypeOfEntity in _allCurrentAvailablePermissionsToAdd) {
+				DisplayedAvailablePermissionsToAdd.Add(availableTypeOfEntity);
 			}
 
-			SortTypeOfEntityList();
-
-			ObservableTypeOfEntitiesList = null;
-			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
-
 			if(searchString != "") {
-				for(int i = 0; i < ObservableTypeOfEntitiesList.Count; i++) {
-					if(ObservableTypeOfEntitiesList[i].Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) == -1) {
-						ObservableTypeOfEntitiesList.Remove(ObservableTypeOfEntitiesList[i]);
+				for(int i = 0; i < DisplayedAvailablePermissionsToAdd.Count; i++) {
+					if(DisplayedAvailablePermissionsToAdd[i].Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) == -1) {
+						DisplayedAvailablePermissionsToAdd.Remove(DisplayedAvailablePermissionsToAdd[i]);
 						i -= 1;
 					}
 				}
 			}
 		}
 
-		public void AddPermission(TypeOfEntity entityNode) {
-			if(entityNode == null) {
-				return;
-			}
+		public void AddPermissionToUser(TypeOfEntity entityNode) {
+			if(entityNode == null) return;
 
-			ObservableTypeOfEntitiesList.Remove(entityNode);
+			RemoveAvailablePermission(entityNode);
 
 			UserPermissionNode savedPermission;
 			var foundOriginalPermission = PermissionListViewModel.PermissionsList.OfType<UserPermissionNode>()
 				.FirstOrDefault(x => x.TypeOfEntity == entityNode);
 			if(foundOriginalPermission == null) {
-				savedPermission = new UserPermissionNode();
-				savedPermission.EntityUserOnlyPermission = new EntityUserPermission() {
-					User = _user,
-					TypeOfEntity = entityNode
+				savedPermission = new UserPermissionNode {
+					EntityUserOnlyPermission = new EntityUserPermission {
+						User = _user,
+						TypeOfEntity = entityNode
+					},
+					EntityPermissionExtended = new List<EntityUserPermissionExtended>()
 				};
-				savedPermission.EntityPermissionExtended = new List<EntityUserPermissionExtended>();
 				foreach(var item in PermissionListViewModel.PermissionExtensionStore.PermissionExtensions) {
-					var node = new EntityUserPermissionExtended();
-					node.User = _user;
-					node.TypeOfEntity = entityNode;
-					node.PermissionId = item.PermissionId;
+					var node = new EntityUserPermissionExtended {
+						User = _user,
+						TypeOfEntity = entityNode,
+						PermissionId = item.PermissionId
+					};
 					savedPermission.EntityPermissionExtended.Add(node);
 				}
 
@@ -209,27 +201,13 @@ namespace QS.Widgets.GtkUI
 				PermissionListViewModel.PermissionsList.Add(savedPermission);
 			}
 			else {
-				if(_deletePermissionList.Contains(foundOriginalPermission)) {
-					_deletePermissionList.Remove(foundOriginalPermission);
+				if(_permissionsToDelete.Contains(foundOriginalPermission)) {
+					_permissionsToDelete.Remove(foundOriginalPermission);
 				}
 
 				savedPermission = foundOriginalPermission;
 				PermissionListViewModel.PermissionsList.Add(savedPermission);
 			}
-		}
-
-		public void DeletePermission(UserPermissionNode deletedPermission) {
-			if(deletedPermission == null) {
-				return;
-			}
-
-			ObservableTypeOfEntitiesList.Add(deletedPermission.TypeOfEntity);
-			PermissionListViewModel.PermissionsList.Remove(deletedPermission);
-			if(deletedPermission.EntityUserOnlyPermission.Id != 0) {
-				_deletePermissionList.Add(deletedPermission);
-			}
-
-			SortTypeOfEntityList();
 		}
 
 		public void Save() {
@@ -239,7 +217,7 @@ namespace QS.Widgets.GtkUI
 				PermissionListViewModel.SaveExtendedPermissions(_uow);
 			}
 
-			foreach(var item in _deletePermissionList) {
+			foreach(var item in _permissionsToDelete) {
 				_uow.Delete<EntityUserPermission>(item.EntityPermission as EntityUserPermission);
 				foreach(var extendedPermission in item.EntityPermissionExtended)
 					_uow.Delete(extendedPermission);
@@ -250,28 +228,128 @@ namespace QS.Widgets.GtkUI
 			PermissionListViewModel.PermissionsList.CollectionChanged -= OnPermissionsListElementRemoved;
 			
 			_permissionList = newUserPermissions;
-			PermissionListViewModel.PermissionsList =
-				new ObservableList<IPermissionNode>(_permissionList.OfType<IPermissionNode>().ToList());
-			PermissionListViewModel.PermissionsList.CollectionChanged += OnPermissionsListElementRemoved;
 			
-			//убираем типы уже загруженные в права
-			foreach(var item in _permissionList) {
-				if(_originalTypeOfEntityList.Contains(item.TypeOfEntity)) {
-					_originalTypeOfEntityList.Remove(item.TypeOfEntity);
+			PermissionListViewModel.PermissionsList.Clear();
+
+			foreach(var newPermission in newUserPermissions) {
+				PermissionListViewModel.PermissionsList.Add(newPermission);
+
+				if(_allCurrentAvailablePermissionsToAdd.Contains(newPermission.TypeOfEntity)) {
+					RemoveAvailablePermission(newPermission.TypeOfEntity);
 				}
+			}
+			
+			PermissionListViewModel.PermissionsList.CollectionChanged += OnPermissionsListElementRemoved;
+		}
+
+		private void RemoveAvailablePermission(TypeOfEntity entityNode) {
+			_allCurrentAvailablePermissionsToAdd.Remove(entityNode);
+			DisplayedAvailablePermissionsToAdd.Remove(entityNode);
+		}
+
+		private void RemovePermissionFromUser(UserPermissionNode deletedPermission) {
+			if(deletedPermission == null) return;
+
+			AddAvailablePermission(deletedPermission.TypeOfEntity);
+			
+			if(deletedPermission.EntityUserOnlyPermission.Id != 0) {
+				_permissionsToDelete.Add(deletedPermission);
 			}
 
 			SortTypeOfEntityList();
-			ObservableTypeOfEntitiesList = new ObservableList<TypeOfEntity>(_originalTypeOfEntityList);
+		}
+		
+		private void AddAvailablePermission(TypeOfEntity entityNode) {
+			_allCurrentAvailablePermissionsToAdd.Add(entityNode);
+			DisplayedAvailablePermissionsToAdd.Add(entityNode);
 		}
 
 		private void SortTypeOfEntityList()
 		{
-			if(_originalTypeOfEntityList?.FirstOrDefault() == null)
-				return;
+			if(DisplayedAvailablePermissionsToAdd?.FirstOrDefault() == null) return;
+			
+			var sortedData = MergeSort(DisplayedAvailablePermissionsToAdd, (x, y) => 
+				string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
+			
+			DisplayedAvailablePermissionsToAdd.Clear();
+			_allCurrentAvailablePermissionsToAdd.Clear();
 
-			_originalTypeOfEntityList.Sort((x, y) => 
-					string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
+			foreach(var typeOfEntity in sortedData) {
+				DisplayedAvailablePermissionsToAdd.Add(typeOfEntity);
+				_allCurrentAvailablePermissionsToAdd.Add(typeOfEntity);
+			}
+		}
+
+		private IEnumerable<T> MergeSort<T>(IList<T> data, Comparison<T> comparison) {
+
+			var dataArray = data.ToArray();
+			
+			MergeSort(dataArray, 0, dataArray.Length - 1, comparison);
+
+			return dataArray;
+		}
+		
+		void MergeSort<T>(T[] array, int left, int right, Comparison<T> comparison) {
+			if(left >= right) {
+				return;
+			}
+
+			var middle = left + (right - left) / 2;
+
+			MergeSort(array, left, middle, comparison);
+			MergeSort(array, middle + 1, right, comparison);
+
+			Merge(array, left, middle, right, comparison);
+		}
+		
+		private void Merge<T>(T[] array, int left, int middle, int right, Comparison<T> comparison)
+		{
+			// Создаем временные массивы
+			var leftArrayLength = middle - left + 1;
+			var rightArrayLength = right - middle;
+
+			var leftArray = new T[leftArrayLength];
+			var rightArray = new T[rightArrayLength];
+
+			// Копируем данные во временные массивы
+			Array.Copy(array, left, leftArray, 0, leftArrayLength);
+			Array.Copy(array, middle + 1, rightArray, 0, rightArrayLength);
+
+			// Сливаем временные массивы обратно в основной массив
+			var i = 0; // Начальный индекс первого подмассива
+			var j = 0; // Начальный индекс второго подмассива
+			var k = left; // Начальный индекс сливаемого массива
+
+			while(i < leftArrayLength && j < rightArrayLength) {
+				var compare = comparison(leftArray[i], rightArray[j]);
+				
+				if(compare <= 0)
+				{
+					array[k] = leftArray[i];
+					i++;
+				}
+				else
+				{
+					array[k] = rightArray[j];
+					j++;
+				}
+				k++;
+			}
+
+			// Копируем оставшиеся элементы, если они есть
+			while(i < leftArrayLength)
+			{
+				array[k] = leftArray[i];
+				i++;
+				k++;
+			}
+
+			while(j < rightArrayLength)
+			{
+				array[k] = rightArray[j];
+				j++;
+				k++;
+			}
 		}
 	}
 }
