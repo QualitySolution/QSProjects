@@ -268,88 +268,11 @@ namespace QS.Widgets.GtkUI
 		{
 			if(DisplayedAvailablePermissionsToAdd?.FirstOrDefault() == null) return;
 			
-			var sortedData = MergeSort(DisplayedAvailablePermissionsToAdd, (x, y) => 
+			DisplayedAvailablePermissionsToAdd.MergeSort((x, y) => 
 				string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
 			
-			DisplayedAvailablePermissionsToAdd.Clear();
-			_allCurrentAvailablePermissionsToAdd.Clear();
-
-			foreach(var typeOfEntity in sortedData) {
-				DisplayedAvailablePermissionsToAdd.Add(typeOfEntity);
-				_allCurrentAvailablePermissionsToAdd.Add(typeOfEntity);
-			}
-		}
-
-		private IEnumerable<T> MergeSort<T>(IList<T> data, Comparison<T> comparison) {
-
-			var dataArray = data.ToArray();
-			
-			MergeSort(dataArray, 0, dataArray.Length - 1, comparison);
-
-			return dataArray;
-		}
-		
-		void MergeSort<T>(T[] array, int left, int right, Comparison<T> comparison) {
-			if(left >= right) {
-				return;
-			}
-
-			var middle = left + (right - left) / 2;
-
-			MergeSort(array, left, middle, comparison);
-			MergeSort(array, middle + 1, right, comparison);
-
-			Merge(array, left, middle, right, comparison);
-		}
-		
-		private void Merge<T>(T[] array, int left, int middle, int right, Comparison<T> comparison)
-		{
-			// Создаем временные массивы
-			var leftArrayLength = middle - left + 1;
-			var rightArrayLength = right - middle;
-
-			var leftArray = new T[leftArrayLength];
-			var rightArray = new T[rightArrayLength];
-
-			// Копируем данные во временные массивы
-			Array.Copy(array, left, leftArray, 0, leftArrayLength);
-			Array.Copy(array, middle + 1, rightArray, 0, rightArrayLength);
-
-			// Сливаем временные массивы обратно в основной массив
-			var i = 0; // Начальный индекс первого подмассива
-			var j = 0; // Начальный индекс второго подмассива
-			var k = left; // Начальный индекс сливаемого массива
-
-			while(i < leftArrayLength && j < rightArrayLength) {
-				var compare = comparison(leftArray[i], rightArray[j]);
-				
-				if(compare <= 0)
-				{
-					array[k] = leftArray[i];
-					i++;
-				}
-				else
-				{
-					array[k] = rightArray[j];
-					j++;
-				}
-				k++;
-			}
-
-			// Копируем оставшиеся элементы, если они есть
-			while(i < leftArrayLength)
-			{
-				array[k] = leftArray[i];
-				i++;
-				k++;
-			}
-
-			while(j < rightArrayLength)
-			{
-				array[k] = rightArray[j];
-				j++;
-				k++;
-			}
+			_allCurrentAvailablePermissionsToAdd.MergeSort((x, y) => 
+				string.Compare(x.CustomName ?? x.Type, y.CustomName ?? y.Type));
 		}
 	}
 }
