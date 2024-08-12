@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" Width="400" Height="180"
+             x:Class="QS.Project.Avalonia.DialogWindow"
+			 WindowStartupLocation="CenterOwner">
+	<Window.Resources>
+		<Image x:Key="Error" Source="avares://QS.Project.Avalonia/Assets/Error.png"/>
+		<Image x:Key="Info" Source="avares://QS.Project.Avalonia/Assets/Info.png"/>
+		<Image x:Key="Success" Source="avares://QS.Project.Avalonia/Assets/Success.png"/>
+		<Image x:Key="Warning" Source="avares://QS.Project.Avalonia/Assets/Warning.png"/>
+	</Window.Resources>
+
+	<Panel>
+		<Border>
+
+			<Grid RowDefinitions="*, Auto" ColumnDefinitions="Auto, *">
+				<Image x:Name="icon" Height="30" Margin="12" VerticalAlignment="Top"/>
+				
+				<StackPanel Margin="12" Orientation="Horizontal" x:Name="buttonContainer" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right">
+					<Button Click="OnCloseClick" Content="Закрыть"/>
+				</StackPanel>
+				
+				<ContentControl Margin="12" Grid.Column="1" x:Name="contentControl">
+					<ContentPresenter TextAlignment="Left" Margin="12" Grid.Column="1"/>
+				</ContentControl>
+			</Grid>
+			
+		</Border>
+	</Panel>
+	
+</Window>
