@@ -13,7 +13,6 @@
 	</Window.Resources>
 
 	<Panel>
-		<Border>
 
 			<Grid RowDefinitions="*, Auto" ColumnDefinitions="Auto, *">
 				<Image x:Name="icon" Height="30" Margin="12" VerticalAlignment="Top"/>
@@ -22,12 +21,13 @@
 					<Button Click="OnCloseClick" Content="Закрыть"/>
 				</StackPanel>
 				
-				<ContentControl Margin="12" Grid.Column="1" x:Name="contentControl">
-					<ContentPresenter TextAlignment="Left" Margin="12" Grid.Column="1"/>
-				</ContentControl>
+				<ScrollViewer Margin="12" Grid.Column="1" IsScrollChainingEnabled="True">
+					<ContentControl  x:Name="contentControl">
+						<ContentPresenter TextAlignment="Left" Margin="12" Grid.Column="1"/>
+					</ContentControl>
+				</ScrollViewer>
 			</Grid>
 			
-		</Border>
 	</Panel>
 	
 </Window>
