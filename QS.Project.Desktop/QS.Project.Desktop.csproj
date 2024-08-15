@@ -5,7 +5,8 @@
         <RootNamespace>QS</RootNamespace>
         <ProjectGuid>{5EF2A7DA-3886-4809-95DF-880BD783A211}</ProjectGuid>
 		<Company>Quality Solution</Company>
-    </PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
