@@ -5,6 +5,7 @@
 		<RootNamespace>QS.Updater</RootNamespace>
 		<Company>Quality Solution</Company>
 		<ProjectGuid>{C776EE5A-1795-439B-BB7D-9AB1B20EEAC4}</ProjectGuid>
+		<Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
