@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq.Expressions;
@@ -36,7 +36,8 @@ namespace QS.Widgets.GtkUI
 			Binding = new BindingControler<PhotoView>(
 				this,
 				new Expression<Func<PhotoView, object>>[] {
-					w => w.ImageFile
+					w => w.ImageFile,
+					w => w.FileName
 				}
 			);
 			this.Build();
@@ -44,6 +45,17 @@ namespace QS.Widgets.GtkUI
 		}
 
 		public Func<string> GetSaveFileName;
+		private string _fileName;
+
+		public string FileName {
+			get => _fileName;
+			set {
+				if(_fileName != value) {
+					_fileName = value;
+					OnFilenameChanged();
+				}
+			}
+		}
 
 		public byte[] ImageFile {
 			get => imageviewerPhoto.ImageFile;
@@ -80,6 +92,9 @@ namespace QS.Widgets.GtkUI
 
 				buttonSavePhoto.Sensitive = true;
 				btnPrint.Sensitive = CanPrint;
+				FileName = Chooser.Filename
+					.Substring(Chooser.Filename.LastIndexOf(System.IO.Path.DirectorySeparatorChar))
+					.Trim(System.IO.Path.DirectorySeparatorChar);
 				logger.Info("Ok");
 			}
 			Chooser.Destroy();
@@ -94,7 +109,9 @@ namespace QS.Widgets.GtkUI
 				"Отмена", ResponseType.Cancel,
 				"Сохранить", ResponseType.Accept
 			) {
-				CurrentName = (GetSaveFileName != null ? GetSaveFileName() : "фото") + ".jpg"
+				CurrentName = string.IsNullOrWhiteSpace(FileName)
+					? (GetSaveFileName != null ? GetSaveFileName() : "фото") + ".jpg"
+					: FileName
 			};
 			fc.Show();
 			if(fc.Run() == (int)ResponseType.Accept) {
@@ -116,6 +133,10 @@ namespace QS.Widgets.GtkUI
 				fs.Close();
 				System.Diagnostics.Process.Start(filePath);
 			}
+		}
+
+		protected void OnFilenameChanged() {
+			Binding.FireChange(w => w.FileName);
 		}
 
 		protected void OnImageChanged()

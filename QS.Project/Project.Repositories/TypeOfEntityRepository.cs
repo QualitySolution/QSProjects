@@ -54,9 +54,11 @@ namespace QS.Project.Repositories
 			}
 		}
 
-		public static IList<TypeOfEntity> GetAllSavedTypeOfEntity(IUnitOfWork uow)
+		public static IList<TypeOfEntity> GetAllSavedTypeOfEntityOrderedByName(IUnitOfWork uow)
 		{
-			return uow.GetAll<TypeOfEntity>().ToList();
+			return uow.GetAll<TypeOfEntity>()
+				.OrderBy(x => x.CustomName)
+				.ToList();
 		}
 	}
 }
