@@ -10,6 +10,7 @@
     <RootNamespace>QS.Test</RootNamespace>
     <AssemblyName>QS.LibsTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <Nullable>disable</Nullable>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

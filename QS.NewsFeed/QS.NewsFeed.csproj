@@ -10,6 +10,7 @@
     <RootNamespace>QS.NewsFeed</RootNamespace>
     <AssemblyName>QS.NewsFeed</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

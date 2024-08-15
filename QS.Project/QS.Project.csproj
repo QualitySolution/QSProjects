@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QS</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
 	<Deterministic>false</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

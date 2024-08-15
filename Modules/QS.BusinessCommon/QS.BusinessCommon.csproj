@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <Nullable>disable</Nullable>
 		<ProjectGuid>{F22749B2-E35B-455D-BD8D-081373B16FC7}</ProjectGuid>
 		<RootNamespace>QS.BusinessCommon</RootNamespace>
 		<Company>Quality Solution</Company>

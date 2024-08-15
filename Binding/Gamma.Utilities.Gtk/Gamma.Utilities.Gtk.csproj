@@ -8,6 +8,7 @@
     <RootNamespace>Gamma.Utilities.Gtk</RootNamespace>
     <AssemblyName>Gamma.Utilities.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <Nullable>disable</Nullable>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

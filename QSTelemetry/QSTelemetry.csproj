@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>QSTelemetry</RootNamespace>
     <AssemblyName>QSTelemetry</AssemblyName>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
