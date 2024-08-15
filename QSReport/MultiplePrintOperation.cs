@@ -1,4 +1,4 @@
-﻿using fyiReporting.RDL;
+using fyiReporting.RDL;
 using fyiReporting.RdlGtkViewer;
 using Gtk;
 using QS.DomainModel.UoW;
@@ -69,6 +69,20 @@ namespace QS.Report
 			{
 				_isPrintingInProgress = false;
 			}
+		}
+
+		public void Run(Pages pages, string printer, UserPrintSettings userPrintSettings, bool isWindowsOs)
+		{
+			if(_isPrintingInProgress)
+			{
+				return;
+			}
+
+			_isPrintingInProgress = true;
+
+			Print(printer, userPrintSettings, pages, isWindowsOs);
+
+			_isPrintingInProgress = false;
 		}
 
 		private static void Print(string printer, UserPrintSettings userPrintSettings, Pages pages, bool isWindowsOs)
