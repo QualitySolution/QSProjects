@@ -11,10 +11,12 @@
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ConsolePause>false</ConsolePause>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release</OutputPath>
     <ConsolePause>false</ConsolePause>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />
