@@ -1,5 +1,6 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using QS.Launcher.ViewModels.TypesViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;

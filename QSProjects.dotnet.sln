@@ -53,6 +53,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Testing.Desktop", "QS.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Avalonia", "QS.Project.Avalonia\QS.Project.Avalonia.csproj", "{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher", "QS.Launcher\QS.Launcher.csproj", "{3C598CEF-3294-46AC-96A5-5E6DC879C44E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher.Desktop", "QS.Launcher.Desktop\QS.Launcher.Desktop.csproj", "{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

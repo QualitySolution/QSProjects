@@ -1,10 +1,32 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl x:Class="QS.Launcher.Views.DataBasesView"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
-             x:Class="QS.Launcher.Views.DataBasesView">
-	<Grid>
-		<Button Content="Назад" Command="{Binding PreviousPageCommand}" HorizontalAlignment="Center"/>
-	</Grid>
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
+             x:DataType="vm:DataBasesViewModel"
+             mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto, Auto, Auto">
+
+            <ComboBox x:Name="databases" Margin="5" HorizontalAlignment="Stretch" ItemsSource="{Binding Databases}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel MaxHeight="20" HorizontalAlignment="Stretch">
+                            <Label Content="{Binding Name}" />
+                            <Label HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Size}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*, *">
+                <Button Margin="5" HorizontalAlignment="Stretch" Content="Подключиться" IsEnabled="{Binding #databases.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

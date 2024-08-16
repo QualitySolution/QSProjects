@@ -8,10 +8,10 @@ using System.Windows.Input;
 namespace QS.Launcher.ViewModels; 
 public class MainWindowViewModel : ViewModelBase
 {
-	public ObservableCollection<UserControl> Pages { get; set; }
+	public ObservableCollection<ContentControl> Pages { get; set; }
 
-	private UserControl selectedPage;
-	public UserControl SelectedPage
+	private ContentControl selectedPage;
+	public ContentControl SelectedPage
 	{
 		get => selectedPage;
 		set => this.RaiseAndSetIfChanged(ref selectedPage, value);
@@ -32,8 +32,6 @@ public class MainWindowViewModel : ViewModelBase
 		[
 			lw, dbw
 		];
-
-		SelectedPage = Pages[0];
 	}
 	
 	public void ChangePage(int index)

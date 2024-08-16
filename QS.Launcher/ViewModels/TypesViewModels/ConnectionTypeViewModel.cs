@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QS.Launcher.ViewModels;
+namespace QS.Launcher.ViewModels.TypesViewModels;
 
 public class ConnectionTypeViewModel
 {

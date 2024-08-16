@@ -10,14 +10,4 @@ public partial class MainWindow : Window
 
 		DataContext = new MainWindowViewModel(carousel);
 	}
-
-	private void Next(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-	{
-		carousel.Next();
-	}
-
-	private void Back(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-	{
-		carousel.Previous();
-	}
 }

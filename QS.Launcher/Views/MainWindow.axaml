@@ -1,21 +1,28 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window x:Class="QS.Launcher.Views.MainWindow"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:QS.Launcher.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:QS.Launcher.Views"
-        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
-		WindowStartupLocation="CenterScreen"
-		Width="450" Height="650"
-		MinWidth="300" MinHeight="300"
-        x:Class="QS.Launcher.Views.MainWindow"
+        xmlns:vm="using:QS.Launcher.ViewModels"
+        Title="QS.Launcher"
+        Width="450"
+        Height="650"
+        MinWidth="300"
+        MinHeight="300"
+        d:DesignHeight="650"
+        d:DesignWidth="450"
+        x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="QS.Launcher">
-	<ScrollViewer>
-		<Carousel x:Name="carousel" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
-			<Carousel.PageTransition>
-				<PageSlide Orientation="Horizontal" Duration="0:0:0.25" SlideInEasing="SineEaseInOut" SlideOutEasing="SineEaseInOut"/>
-			</Carousel.PageTransition>
-		</Carousel>
-	</ScrollViewer>
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
+    <ScrollViewer>
+        <Panel>
+            <Carousel x:Name="carousel" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
+                <Carousel.PageTransition>
+                    <PageSlide Orientation="Horizontal" Duration="0.25" />
+                </Carousel.PageTransition>
+            </Carousel>
+        </Panel>
+    </ScrollViewer>
 </Window>

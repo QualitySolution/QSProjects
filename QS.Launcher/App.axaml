@@ -1,21 +1,22 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="QS.Launcher.App"
-             RequestedThemeVariant="Light">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+<Application x:Class="QS.Launcher.App" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" RequestedThemeVariant="Light">
+    <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Styles>
         <FluentTheme />
 
-		<Style Selector=":is(Control)">
-			<Setter Property="Transitions">
-				<Setter.Value>
-					<Transitions>
-						<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
-						<DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
-					</Transitions>
-				</Setter.Value>
-			</Setter>
-		</Style>
+        <Style Selector=":is(Control).animated">
+            <Setter Property="Transitions">
+                <Setter.Value>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                    </Transitions>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
     </Application.Styles>
 </Application>

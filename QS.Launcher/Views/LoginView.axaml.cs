@@ -30,11 +30,6 @@ public partial class LoginView : UserControl
 		loginContainer.Classes.Add("up");
 
 		DoThingAfterDelay(() => createConnection.IsEnabled = false, 150);
-		//Dispatcher.UIThread.Post(async () =>
-		//{ 
-		//	await Task.Delay(150);
-		//	createConnection.IsEnabled = false;
-		//});
 	}
 
 	public async void HideControlAfterDelay(Control control, int delayMilliseconds)
