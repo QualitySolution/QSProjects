@@ -18,6 +18,8 @@ public class LoginViewModel : PageViewModel
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
 
+	public List<Connection> Connections { get; set; }
+
 	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
 
 	public string password;
@@ -29,7 +31,7 @@ public class LoginViewModel : PageViewModel
 
 	public LoginViewModel(ICommand nextCommand, ICommand previousCommand) : base(nextCommand, previousCommand)
 	{
-		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/avalonia-logo.ico")));
+		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/sps.png")));
 
 		ConnectionTypes =
 		[
