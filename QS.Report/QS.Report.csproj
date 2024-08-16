@@ -10,6 +10,7 @@
     <ProjectGuid>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</ProjectGuid>
     <RootNamespace>QS.Report</RootNamespace>
     <AssemblyName>QS.Report</AssemblyName>
+    <Nullable>disable</Nullable>
 	<WarningLevel>4</WarningLevel>
     <Description>Библиотека для работы с отчетами. В этой части библиотеки должна отсутствовать UI часть.</Description>
   </PropertyGroup>

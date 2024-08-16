@@ -10,6 +10,7 @@
     <RootNamespace>QS.Test</RootNamespace>
     <AssemblyName>QS.LibsTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <Nullable>disable</Nullable>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -21,12 +22,14 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -5,7 +5,8 @@
     	<Company>Quality Solution</Company>
         <RootNamespace>Gamma.Utilities</RootNamespace>
         <ProjectGuid>{1BF2A638-420D-456C-96A7-36873A0FB894}</ProjectGuid>
-    </PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
