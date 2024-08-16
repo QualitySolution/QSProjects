@@ -1,55 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>QS</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D30A23BF-C5DC-4A1B-95FC-9C2038D46E8E}</ProjectGuid>
-    <OutputType>Library</OutputType>
     <RootNamespace>QS.Report</RootNamespace>
     <AssemblyName>QS.Report</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+	<WarningLevel>4</WarningLevel>
     <Description>Библиотека для работы с отчетами. В этой части библиотеки должна отсутствовать UI часть.</Description>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <WarningsNotAsErrors></WarningsNotAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="mscorlib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Domain\UserPrintSettings.cs" />
-    <Compile Include="Domain\UserSelectedPrinter.cs" />
-    <Compile Include="HibernateMapping\UserPrintSettingsMap.cs" />
-    <Compile Include="HibernateMapping\UserSelectedPrinterMap.cs" />
-    <Compile Include="IReportPrinter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReportInfo.cs" />
-    <Compile Include="IPrintableRDLDocument.cs" />
-    <Compile Include="Repository\IUserPrintingRepository.cs" />
-    <Compile Include="Repository\UserPrintingRepository.cs" />
-    <Compile Include="ViewModels\RdlViewerViewModel.cs" />
-    <Compile Include="RDLReportsHashGenerator.cs" />
-    <Compile Include="ViewModels\ReportParametersUowViewModelBase.cs" />
-    <Compile Include="ViewModels\ReportParametersViewModelBase.cs" />
-    <Compile Include="ViewModels\SelectablePrintersViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\My-FyiReporting\RdlEngine\RdlEngine.csproj">
@@ -73,15 +39,6 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -60,7 +60,7 @@ namespace QSProjectsLib
 				string sql;
 
 				try {
-					var reg = new Regex("password=(.+?)(;|$)");
+					var reg = new Regex("(?i:password)=(.+?)(;|$)");
 					QSMain.CheckConnectionAlive ();
 					DbCommand cmd = QSMain.ConnectionDB.CreateCommand ();
 					cmd.CommandText = "SELECT version();";

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -16,7 +17,11 @@ namespace QS.Extensions.Observable.Collections.List {
 	/// collection has been persisted.
 	/// </remarks>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public interface IObservableList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
+	public interface IObservableList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged {
+		/// <summary><para>Removes the all the elements that match the conditions defined by the specified predicate.</para></summary>
+		/// <param name="match">The predicate delegate that specifies the elements to remove.</param>
+		int RemoveAll(Predicate<T> match);
+	}
 
 
 	public interface IObservableList : IList, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
