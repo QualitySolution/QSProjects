@@ -1,0 +1,47 @@
+﻿syntax = "proto3";
+
+package QS.Cloud.Core;
+service UserControl{
+	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+	rpc ChangeBaseAccess (ChangeBaseAccessRequest) returns (ChangeBaseAccessResponse);
+}
+
+message CreateUserRequest{
+	string login = 1;
+	string name = 2;
+	string email = 3;
+	string password = 4;
+}
+message CreateUserResponse{
+	bool success = 1;
+	string message = 2;
+}
+message UpdateUserRequest{
+}
+message UpdateUserResponse{
+	bool success = 1;
+	string message = 2;
+}
+
+message DeleteUserRequest{
+	string user = 1;
+}
+
+message DeleteUserResponse {
+	bool success = 1;
+	string message = 2;
+}
+
+message ChangeBaseAccessRequest{
+	string user = 1;
+	int32 base_id = 2;
+	bool grant = 3;
+	bool admin = 4;
+
+}
+message ChangeBaseAccessResponse {
+	bool success = 1;
+	string message = 2;
+}

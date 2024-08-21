@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:QS.Launcher.Views"
         xmlns:vm="using:QS.Launcher.ViewModels"
-        Title="QS.Launcher"
+        Title="QS.Лаунчер"
         Width="450"
         Height="650"
         MinWidth="300"

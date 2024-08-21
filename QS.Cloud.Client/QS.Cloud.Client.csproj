@@ -6,10 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Protos" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Google.Protobuf" Version="3.22.1" />
       <PackageReference Include="Grpc.Core" Version="2.46.6" />
       <PackageReference Include="Grpc.Tools" Version="2.52.0">
@@ -19,8 +15,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Protos\BaseManagement.proto" />
       <None Remove="Protos\CloudFeatures.proto" />
+      <None Remove="Protos\SessionManagement.proto" />
+      <None Remove="Protos\UserControl.proto" />
+      <Protobuf Include="Protos\BaseManagement.proto" />
       <Protobuf Include="Protos\CloudFeatures.proto" />
+      <Protobuf Include="Protos\SessionManagement.proto" />
+      <Protobuf Include="Protos\UserControl.proto" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package QS.Cloud.Core;
+
+
+
+service SessionManagement{
+	rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
+	rpc UserAccessBaseCount (UserAccessBaseCountRequest) returns (UserAccessBaseCountResponse);
+	rpc CloseSession (CloseSessionRequest) returns (CloseSessionResponse);
+	rpc Alive (AliveRequest) returns (stream AliveResponse);
+	rpc CreateUserInBase (CreateUserInBaseRequest) returns (CreateUserInBaseResponse);	
+}
+enum SessionStatuses{
+	SESSION_STATUSES_OK = 0;
+	SESSION_STATUSES_USER_LIMIT = 1;
+	SESSION_STATUSES_MESSAGE = 2;
+	SESSION_STATUSES_NEED_RELOGIN = 3;
+}
+
+message ChangePasswordRequest{
+	string new_password = 1;
+}
+
+message ChangePasswordResponse{
+	bool success = 1;
+}
+
+message UserAccessBaseCountRequest{}
+
+message UserAccessBaseCountResponse{
+	int32 result = 1;
+}
+
+message CloseSessionRequest{}
+
+message CloseSessionResponse {
+	bool success = 1;
+}
+
+message AliveRequest{}
+
+message AliveResponse{
+	SessionStatuses status = 1;
+	string message = 2;
+}
+
+message CreateUserInBaseRequest{}
+
+message CreateUserInBaseResponse{
+	bool success = 1;
+}
