@@ -4,7 +4,7 @@ public interface IDbProvider : IDisposable
 {
 	public string ConnectionString { get; set; }
 
-	public bool ChangePassword(string oldPassword, string newPassword);
+	public bool ChangePassword(string username, string oldPassword, string newPassword);
 		   
 	public bool CreateDatabase(string databaseName);
 		   

@@ -28,14 +28,18 @@ public class MariaDbConnection : IDbProvider
 		return connection.Execute(sql) != 0;
 	}
 
-	public bool ChangePassword(string oldPassword, string newPassword)
+	public bool ChangePassword(string username, string oldPassword, string newPassword)
 	{
-		throw new NotImplementedException();
+		string sql = $"ALTER USER '{username}'@'%' IDENTIFIED BY '{newPassword}'";
+
+		return connection.Execute(sql) != 0;
 	}
 
 	public bool CreateDatabase(string databaseName)
 	{
-		throw new NotImplementedException();
+		string sql = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
+
+		return connection.Execute(sql) != 0;
 	}
 
 	public void Dispose()
