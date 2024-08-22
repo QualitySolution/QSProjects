@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Core", "QS.Project.Core\QS.Project.Core.csproj", "{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Cloud.Client", "QS.Cloud.Client\QS.Cloud.Client.csproj", "{07719CDB-8555-461F-94BB-59DD2B1D01E7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4152E814-7269-46BE-83F8-81844577EF5D} = {4152E814-7269-46BE-83F8-81844577EF5D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.Core", "QS.Updater.Core\QS.Updater.Core.csproj", "{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}"
 EndProject

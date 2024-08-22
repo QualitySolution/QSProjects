@@ -1,8 +1,9 @@
+using QS.DbManagement;
 
+using System;
 
-namespace QS.DbManagement.QSCloud
+namespace QS.Cloud.Client
 {
-
 	public class QSCloudConnection : IDbProvider
 	{
 		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -34,5 +35,7 @@ namespace QS.DbManagement.QSCloud
 			throw new NotImplementedException();
 		}
 	}
+
 }
+
 
