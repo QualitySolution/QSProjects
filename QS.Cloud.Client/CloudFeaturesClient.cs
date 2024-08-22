@@ -21,7 +21,7 @@ namespace QS.Cloud.Client
             {
                 BaseGuid = baseGuid
             };
-            var response = client.AvailableFeatures(request, Headers);
+            var response = client.AvailableFeatures(request, headers);
 
             return response.Features.ToList();
         }

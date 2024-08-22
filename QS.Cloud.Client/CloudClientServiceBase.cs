@@ -3,25 +3,24 @@ using Grpc.Core;
 
 namespace QS.Cloud.Client
 {
-	public class CloudClientServiceBase : IDisposable
+	public abstract class CloudClientServiceBase : IDisposable
 	{
-		private readonly ISessionInfoProvider sessionInfoProvider;
 		private readonly string serviceAddress;
 		private readonly int servicePort;
 
-		protected readonly Metadata Headers;
+		protected Metadata headers;
         
-		public CloudClientServiceBase(ISessionInfoProvider sessionInfoProvider, string serviceAddress, int servicePort)
+		public CloudClientServiceBase(string serviceAddress, int servicePort)
 		{
-			this.sessionInfoProvider = sessionInfoProvider ?? throw new ArgumentNullException(nameof(sessionInfoProvider));
 			this.serviceAddress = serviceAddress;
 			this.servicePort = servicePort;
-			Headers = new Metadata {{"Authorization", $"Bearer {this.sessionInfoProvider.SessionId}"}};
 		}
 
 		private Channel channel;
-		protected Channel Channel {
-			get {
+		protected Channel Channel
+		{
+			get
+			{
 				if(channel == null || channel.State == ChannelState.Shutdown)
 					channel = new Channel(serviceAddress, servicePort, ChannelCredentials.Insecure);
 				if (channel.State == ChannelState.TransientFailure)
@@ -30,7 +29,7 @@ namespace QS.Cloud.Client
 			}
 		}
 		
-		public bool CanConnect => !String.IsNullOrEmpty(this.sessionInfoProvider.SessionId);
+		public abstract bool CanConnect { get; }
 		
 		public virtual void Dispose()
 		{

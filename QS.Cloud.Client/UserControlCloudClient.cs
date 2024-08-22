@@ -5,7 +5,7 @@ using System.Text;
 
 namespace QS.Cloud.Client
 {
-	public class UserControlCloudClient : CloudClientServiceBase
+	public class UserControlCloudClient : CloudClientBySession
 	{
 		public UserControlCloudClient(ISessionInfoProvider sessionInfoProvider)
 			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
@@ -20,7 +20,7 @@ namespace QS.Cloud.Client
 				Login = login, Name = userName, Email = email, Password = password
 			};
 
-			var response = client.CreateUser(request, Headers);
+			var response = client.CreateUser(request, headers);
 
 			return response.Success;
 		}
@@ -30,11 +30,37 @@ namespace QS.Cloud.Client
 			var client = new UserControl.UserControlClient(Channel);
 
 			var request = new DeleteUserRequest { User = login };
-			var response = client.DeleteUser(request);
+			var response = client.DeleteUser(request, headers);
 
 			return response.Success;
 		}
 
+		// strange, but protobuf has the same signature
+		public bool UpdateUser()
+		{
+			var client = new UserControl.UserControlClient(Channel);
 
+			var request = new UpdateUserRequest();
+			var response = client.UpdateUser(request, headers);
+
+			return response.Success;
+		}
+
+		public bool ChangeBaseAccess(string user, int baseId, bool grant, bool admin)
+		{
+			var client = new UserControl.UserControlClient(Channel);
+
+			var request = new ChangeBaseAccessRequest
+			{
+				User = user,
+				BaseId = baseId,
+				Grant = grant,
+				Admin = admin
+			};
+
+			var response = client.ChangeBaseAccess(request);
+
+			return response.Success;
+		}
 	}
 }
