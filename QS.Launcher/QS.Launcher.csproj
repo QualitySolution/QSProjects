@@ -54,6 +54,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Views\LoginView.axaml.cs">
       <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>

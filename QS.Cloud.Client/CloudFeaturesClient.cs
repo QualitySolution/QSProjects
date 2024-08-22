@@ -5,7 +5,7 @@ using QS.Cloud.Core;
 
 namespace QS.Cloud.Client
 {
-    public class CloudFeaturesClient: CloudClientServiceBase
+    public class CloudFeaturesClient: CloudClientBySession
     {
         public CloudFeaturesClient(ISessionInfoProvider sessionInfoProvider) 
 	        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }

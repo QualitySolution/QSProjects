@@ -1,4 +1,8 @@
-<Application x:Class="QS.Launcher.App" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" RequestedThemeVariant="Light">
+<Application x:Class="QS.Launcher.App"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:QS.Project.Avalonia.ViewModels.Converters"
+             RequestedThemeVariant="Light">
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Styles>
@@ -19,4 +23,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
     </Application.Styles>
+
+    <Application.Resources>
+        <converters:StringEqualConverter x:Key="StringEqualConverter" />
+    </Application.Resources>
 </Application>

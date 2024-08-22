@@ -22,6 +22,13 @@ public class LoginViewModel : PageViewModel
 
 	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
 
+	private ConnectionTypeViewModel selectedConnectionType;
+	public ConnectionTypeViewModel SelectedConnectionType
+	{
+		get => selectedConnectionType;
+		set => this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
+	}
+
 	public string password;
 	public string Password
 	{

@@ -9,6 +9,11 @@
              x:DataType="vm:LoginViewModel"
              mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <x:String x:Key="MariaDB">MariaDB</x:String>
+        <x:String x:Key="QSCloud">QS Cloud</x:String>
+    </UserControl.Resources>
+
     <ScrollViewer>
         <Grid Margin="20" VerticalAlignment="Stretch" ColumnDefinitions="*, *" RowDefinitions="200, Auto, Auto, Auto, Auto, Auto">
             <Image Grid.ColumnSpan="2" Source="{Binding CompanyImage}" />
@@ -29,7 +34,13 @@
                     Classes="invisible animated"
                     IsEnabled="False">
                 <StackPanel>
-                    <ComboBox Margin="5" HorizontalAlignment="Stretch" ItemsSource="{Binding ConnectionTypes}" PlaceholderForeground="#7A000000" PlaceholderText="Тип подключения">
+                    <ComboBox x:Name="connectionType"
+                              Margin="5"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding ConnectionTypes}"
+                              PlaceholderForeground="#7A000000"
+                              PlaceholderText="Тип подключения"
+                              SelectedItem="{Binding SelectedConnectionType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel MaxHeight="20" Orientation="Horizontal">
@@ -40,7 +51,19 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <TextBox Margin="5" Watermark="Адрес/Логин" />
+                    <TextBox Margin="5" Classes.Adress="{Binding SelectedConnectionType.Title, Converter={StaticResource StringEqualConverter}, ConverterParameter={StaticResource MariaDB}}" Classes.Login="{Binding SelectedConnectionType.Title, Converter={StaticResource StringEqualConverter}, ConverterParameter={StaticResource QSCloud}}">
+                        <TextBox.Styles>
+                            <Style Selector="TextBox">
+                                <Setter Property="Watermark" Value="Адрес/Логин" />
+                            </Style>
+                            <Style Selector="TextBox.Adress">
+                                <Setter Property="Watermark" Value="Адрес" />
+                            </Style>
+                            <Style Selector="TextBox.Login">
+                                <Setter Property="Watermark" Value="Логин" />
+                            </Style>
+                        </TextBox.Styles>
+                    </TextBox>
 
                     <Grid ColumnDefinitions="*, *, *">
                         <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Добавить" />
