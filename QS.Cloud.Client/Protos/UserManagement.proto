@@ -1,7 +1,7 @@
 ﻿syntax = "proto3";
 
 package QS.Cloud.Core;
-service UserControl{
+service UserManagement{
 	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
 	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
