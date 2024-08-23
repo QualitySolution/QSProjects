@@ -1,5 +1,6 @@
 using Dapper;
 using MySqlConnector;
+using System;
 
 namespace QS.DbManagement
 {

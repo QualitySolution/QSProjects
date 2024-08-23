@@ -19,7 +19,6 @@ public partial class LoginView : UserControl
 	private void ShowCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		createConnection.Classes.Remove("invisible");
-		createConnection.IsEnabled = true;
 		
 		loginContainer.Classes.Remove("up");
 	}
@@ -27,9 +26,8 @@ public partial class LoginView : UserControl
 	private void HideCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		createConnection.Classes.Add("invisible");
-		loginContainer.Classes.Add("up");
 
-		DoThingAfterDelay(() => createConnection.IsEnabled = false, 150);
+		loginContainer.Classes.Add("up");
 	}
 
 	public async void HideControlAfterDelay(Control control, int delayMilliseconds)

@@ -31,8 +31,7 @@
                     Padding="0,3,0,3"
                     BorderBrush="LightGray"
                     BorderThickness="0,1,0,1"
-                    Classes="invisible animated"
-                    IsEnabled="False">
+                    Classes="invisible animated">
                 <StackPanel>
                     <ComboBox x:Name="connectionType"
                               Margin="5"
@@ -51,19 +50,13 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <TextBox Margin="5" Classes.Adress="{Binding SelectedConnectionType.Title, Converter={StaticResource StringEqualConverter}, ConverterParameter={StaticResource MariaDB}}" Classes.Login="{Binding SelectedConnectionType.Title, Converter={StaticResource StringEqualConverter}, ConverterParameter={StaticResource QSCloud}}">
-                        <TextBox.Styles>
-                            <Style Selector="TextBox">
-                                <Setter Property="Watermark" Value="Адрес/Логин" />
-                            </Style>
-                            <Style Selector="TextBox.Adress">
-                                <Setter Property="Watermark" Value="Адрес" />
-                            </Style>
-                            <Style Selector="TextBox.Login">
-                                <Setter Property="Watermark" Value="Логин" />
-                            </Style>
-                        </TextBox.Styles>
-                    </TextBox>
+                    <ItemsControl ItemsSource="{Binding SelectedConnectionType.Parameters}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <Grid ColumnDefinitions="*, *, *">
                         <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="Добавить" />
@@ -74,23 +67,30 @@
 
                 <Border.Styles>
                     <Style Selector="Border.invisible">
+                        <Setter Property="IsHitTestVisible" Value="False" />
                         <Setter Property="Opacity" Value="0" />
                         <Setter Property="RenderTransform" Value="translateY(-180px)" />
                     </Style>
                 </Border.Styles>
             </Border>
 
-            <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="up animated">
+            <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated">
                 <TextBox Margin="5" Watermark="Пользователь" />
                 <TextBox Margin="5" Watermark="Пароль" />
 
                 <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding NextPageCommand}" Content="Войти" />
 
                 <ItemsControl.Styles>
+                    <Style Selector="ItemsControl">
+                        <Setter Property="RenderTransform" Value="translateY(0px)" />
+                    </Style>
                     <Style Selector="ItemsControl.up">
-                        <Setter Property="RenderTransform" Value="translateY(-140px)" />
+                        <Setter Property="RenderTransform" Value="{Binding #createConnection.Bounds.Height, Converter={StaticResource DoubleToRenderTransformYConverter}}" />
                     </Style>
                 </ItemsControl.Styles>
+                <!--<ItemsControl.Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                </ItemsControl.Transitions>-->
             </ItemsControl>
 
         </Grid>

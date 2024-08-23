@@ -1,5 +1,6 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using QS.DbManagement;
 using QS.Launcher.ViewModels.TypesViewModels;
 using ReactiveUI;
 using System;
@@ -42,8 +43,24 @@ public class LoginViewModel : PageViewModel
 
 		ConnectionTypes =
 		[
-			new() { Title = "QS Cloud", Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")) },
-			new() { Title = "MariaDB", Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")) }
+			new()
+			{
+				Title = "QS Cloud",
+				Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")),
+				Parameters = [new ParameterVM("Логин")]
+			},
+			new()
+			{
+				Title = "MariaDB",
+				Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")),
+				Parameters = [new ParameterVM("Адрес")]
+			},
+			new()
+			{
+				Title = "SQLite",
+				Icon = null,
+				Parameters = [new ParameterVM("База данных"), new ParameterVM("Строка подключения")]
+			}
 		];
 	}
 }

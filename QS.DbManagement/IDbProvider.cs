@@ -1,3 +1,5 @@
+using System;
+
 namespace QS.DbManagement
 {
 	public interface IDbProvider : IDisposable
