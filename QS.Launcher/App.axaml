@@ -21,14 +21,11 @@
                     <Transitions>
                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
                         <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                        <DoubleTransition Property="Height" Duration="0:0:0.15" />
                     </Transitions>
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!--<Style Selector=":is(Control).invisible">
-            <Setter Property="IsVisible" Value="{Binding RelativeSource={RelativeSource Self}, Path=IsVisible, Converter={StaticResource NumericIsNotZeroConverter}}" />
-        </Style>-->
 
         <Style Selector="Button">
             <Setter Property="HorizontalContentAlignment" Value="Center" />

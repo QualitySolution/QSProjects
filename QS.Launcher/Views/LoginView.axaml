@@ -31,7 +31,8 @@
                     Padding="0,3,0,3"
                     BorderBrush="LightGray"
                     BorderThickness="0,1,0,1"
-                    Classes="invisible animated">
+                    Classes="invisible animated"
+                    SizeChanged="Border_SizeChanged">
                 <StackPanel>
                     <ComboBox x:Name="connectionType"
                               Margin="5"
@@ -69,12 +70,12 @@
                     <Style Selector="Border.invisible">
                         <Setter Property="IsHitTestVisible" Value="False" />
                         <Setter Property="Opacity" Value="0" />
-                        <Setter Property="RenderTransform" Value="translateY(-180px)" />
+                        <Setter Property="RenderTransform" Value="translateY(-90px)" />
                     </Style>
                 </Border.Styles>
             </Border>
 
-            <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated">
+            <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
                 <TextBox Margin="5" Watermark="Пользователь" />
                 <TextBox Margin="5" Watermark="Пароль" />
 
@@ -84,13 +85,7 @@
                     <Style Selector="ItemsControl">
                         <Setter Property="RenderTransform" Value="translateY(0px)" />
                     </Style>
-                    <Style Selector="ItemsControl.up">
-                        <Setter Property="RenderTransform" Value="{Binding #createConnection.Bounds.Height, Converter={StaticResource DoubleToRenderTransformYConverter}}" />
-                    </Style>
                 </ItemsControl.Styles>
-                <!--<ItemsControl.Transitions>
-                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
-                </ItemsControl.Transitions>-->
             </ItemsControl>
 
         </Grid>

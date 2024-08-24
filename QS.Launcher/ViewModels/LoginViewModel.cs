@@ -30,11 +30,18 @@ public class LoginViewModel : PageViewModel
 		set => this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
 	}
 
-	public string password;
+	private string password;
 	public string Password
 	{
 		get => password;
 		set => this.RaiseAndSetIfChanged(ref password, value);
+	}
+
+	private double transformHeight;
+	public double TransformHeight
+	{
+		get => transformHeight;
+		set => this.RaiseAndSetIfChanged(ref transformHeight, value);
 	}
 
 	public LoginViewModel(ICommand nextCommand, ICommand previousCommand) : base(nextCommand, previousCommand)

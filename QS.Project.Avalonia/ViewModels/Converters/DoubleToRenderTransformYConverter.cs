@@ -1,5 +1,6 @@
 using Avalonia.Data.Converters;
 using Avalonia.Media;
+using Avalonia.Diagnostics;
 using System;
 using System.Globalization;
 
@@ -12,6 +13,8 @@ public class DoubleToRenderTransformYConverter : IValueConverter
 			throw new InvalidCastException("Target type must be ITransform");
 		if (value is not double)
 			throw new InvalidCastException("Source type must be double");
+
+		System.Diagnostics.Debug.WriteLine($"DoubleToRenderTransformYConverter: {value}");
 
 		return new TranslateTransform(0, -(double)value);
 	}
