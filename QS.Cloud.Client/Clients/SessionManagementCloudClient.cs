@@ -13,19 +13,6 @@ namespace QS.Cloud.Client
 		public SessionManagementCloudClient(ISessionInfoProvider sessionInfoProvider)
 			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
 
-		public bool ChangePassword(string newPassword)
-		{
-			var client = new SessionManagement.SessionManagementClient(Channel);
-
-			var request = new ChangePasswordRequest
-			{
-				NewPassword = newPassword
-			};
-
-			var response = client.ChangePassword(request, headers);
-			return response.Success;
-		}
-
 		public bool CloseSession()
 		{
 			var client = new SessionManagement.SessionManagementClient(Channel);

@@ -19,12 +19,10 @@ public class LoginViewModel : PageViewModel
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
 
-	public List<Connection> Connections { get; set; }
+	public List<ConnectionInfo> ConnectionTypes { get; }
 
-	public List<ConnectionTypeViewModel> ConnectionTypes { get; }
-
-	private ConnectionTypeViewModel selectedConnectionType;
-	public ConnectionTypeViewModel SelectedConnectionType
+	private ConnectionInfo selectedConnectionType;
+	public ConnectionInfo SelectedConnectionType
 	{
 		get => selectedConnectionType;
 		set => this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
@@ -54,19 +52,19 @@ public class LoginViewModel : PageViewModel
 			{
 				Title = "QS Cloud",
 				Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")),
-				Parameters = [new ParameterVM("Логин")]
+				Parameters = [new ConnectionParameter("Логин")]
 			},
 			new()
 			{
 				Title = "MariaDB",
 				Icon = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")),
-				Parameters = [new ParameterVM("Адрес")]
+				Parameters = [new ConnectionParameter("Адрес")]
 			},
 			new()
 			{
 				Title = "SQLite",
 				Icon = null,
-				Parameters = [new ParameterVM("База данных"), new ParameterVM("Строка подключения")]
+				Parameters = [new ConnectionParameter("База данных"), new ConnectionParameter("Строка подключения")]
 			}
 		];
 	}

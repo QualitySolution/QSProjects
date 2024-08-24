@@ -1,9 +1,6 @@
 using Avalonia.Controls;
-using System;
-using System.Threading.Tasks;
 using QS.Launcher.ViewModels;
 using System.Windows.Input;
-using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 
@@ -47,7 +44,7 @@ public partial class LoginView : UserControl
 		loginContainer.Classes.Add("up");
 	}
 
-	private void Border_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)
+	private void Border_SizeChanged(object? sender, SizeChangedEventArgs e)
 	{
 		((Setter)upStyle.Setters[0]).Value = TransformOperations.Parse($"translateY(-{(int)e.NewSize.Height}px)");
 	}

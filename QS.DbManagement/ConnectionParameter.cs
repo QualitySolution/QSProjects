@@ -1,8 +1,8 @@
 namespace QS.DbManagement
 {
-	public class ParameterVM
+	public class ConnectionParameter
 	{
-		public ParameterVM(string title, object value = null)
+		public ConnectionParameter(string title, object value = null)
 		{
 			Title = title;
 			Value = value;

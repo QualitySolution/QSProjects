@@ -17,13 +17,15 @@
     <ItemGroup>
       <None Remove="Protos\BaseManagement.proto" />
       <None Remove="Protos\CloudFeatures.proto" />
+      <None Remove="Protos\LoginManagement.proto" />
       <None Remove="Protos\SessionManagement.proto" />
       <None Remove="Protos\UserControl.proto" />
+      <None Remove="Protos\UserManagement.proto" />
       <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
-      <Protobuf Include="Protos\BaseManagement.proto" />
       <Protobuf Include="Protos\CloudFeatures.proto" />
+      <Protobuf Include="Protos\LoginManagement.proto" />
       <Protobuf Include="Protos\SessionManagement.proto" />
-      <Protobuf Include="Protos\UserControl.proto" />
+      <Protobuf Include="Protos\UserManagement.proto" />
     </ItemGroup>
 
 </Project>

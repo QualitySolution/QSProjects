@@ -1,19 +1,16 @@
 using QS.Cloud.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace QS.Cloud.Client
 {
-	public class UserControlCloudClient : CloudClientBySession
+	public class UserManagementCloudClient : CloudClientBySession
 	{
-		public UserControlCloudClient(ISessionInfoProvider sessionInfoProvider)
+		public UserManagementCloudClient(ISessionInfoProvider sessionInfoProvider)
 			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
 
 
-		public bool CreateUser(string login, string userName, string email, string password)
+		public CreateUserResponse CreateUser(string login, string userName, string email, string password)
 		{
-			var client = new UserControl.UserControlClient(Channel);
+			var client = new UserManagement.UserManagementClient(Channel);
 
 			var request = new CreateUserRequest
 			{
@@ -22,33 +19,33 @@ namespace QS.Cloud.Client
 
 			var response = client.CreateUser(request, headers);
 
-			return response.Success;
+			return response;
 		}
 
-		public bool DeleteUser(string login)
+		public DeleteUserResponse DeleteUser(string login)
 		{
-			var client = new UserControl.UserControlClient(Channel);
+			var client = new UserManagement.UserManagementClient(Channel);
 
 			var request = new DeleteUserRequest { User = login };
 			var response = client.DeleteUser(request, headers);
 
-			return response.Success;
+			return response;
 		}
 
 		// strange, but protobuf has the same signature
-		public bool UpdateUser()
+		public UpdateUserResponse UpdateUser()
 		{
-			var client = new UserControl.UserControlClient(Channel);
+			var client = new UserManagement.UserManagementClient(Channel);
 
 			var request = new UpdateUserRequest();
 			var response = client.UpdateUser(request, headers);
 
-			return response.Success;
+			return response;
 		}
 
 		public bool ChangeBaseAccess(string user, int baseId, bool grant, bool admin)
 		{
-			var client = new UserControl.UserControlClient(Channel);
+			var client = new UserManagement.UserManagementClient(Channel);
 
 			var request = new ChangeBaseAccessRequest
 			{
