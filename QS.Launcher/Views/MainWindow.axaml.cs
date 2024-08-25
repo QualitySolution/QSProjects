@@ -8,6 +8,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-		DataContext = new MainWindowViewModel(carousel);
+		DataContext = new MainWindowVM();
 	}
 }

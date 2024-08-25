@@ -1,0 +1,43 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.BaseManagementView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:QS.Launcher.ViewModels.PageViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="vm:BaseMagamenetVM"
+             mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto, Auto, Auto">
+
+            <ListBox x:Name="databases" Margin="5" HorizontalAlignment="Stretch" ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel MaxHeight="20" HorizontalAlignment="Stretch">
+                            <Label Content="{Binding Name}" />
+                            <Label HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Size}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto">
+
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+                    <Button Margin="5" HorizontalAlignment="Stretch" Content="Создать базу" />
+                    <Button Margin="5" HorizontalAlignment="Stretch" Content="Удалить базу" IsEnabled="{Binding #databases.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <Button Margin="5" HorizontalAlignment="Stretch" Content="Переименовать базу" IsEnabled="{Binding #databases.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <Button Margin="5" HorizontalAlignment="Stretch" Content="Сделать резервную копию базы" IsEnabled="{Binding #databases.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <Separator Margin="5" />
+                    <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ChangePageCommand}" Content="Назад">
+                        <Button.CommandParameter>
+                            <x:Int32>1</x:Int32>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

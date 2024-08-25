@@ -1,6 +1,8 @@
 using Dapper;
 using MySqlConnector;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QS.DbManagement
 {
@@ -15,11 +17,15 @@ namespace QS.DbManagement
 		}
 	
 		public bool IsConnected => throw new NotImplementedException();
-	
-		public MariaDbConnection(string connectionString)
+
+		public ConnectionInfo Connection => throw new NotImplementedException();
+
+		public bool IsAdmin => throw new NotImplementedException();
+
+		public MariaDbConnection(ConnectionInfo connectionInfo)
 		{
-			ConnectionString = connectionString;
-			connection = new MySqlConnection(connectionString);
+			ConnectionString = connectionInfo.Parameters.Find(p => p.Title == "ConnectionString").Value as string;
+			connection = new MySqlConnection(ConnectionString);
 		}
 	
 		public bool AddUser(string username, string password)
@@ -53,6 +59,18 @@ namespace QS.DbManagement
 			string sql = $"DROP DATABASE IF EXISTS `{databaseName}`";
 	
 			return connection.Execute(sql) != 0;
+		}
+
+		public bool LoginToServer(LoginToServerData loginToServerData) {
+			throw new NotImplementedException();
+		}
+
+		public List<DbInfo> GetUserDatabases(string username) {
+			throw new NotImplementedException();
+		}
+
+		public bool LoginToDatabase(string databaseName, string username, string password) {
+			throw new NotImplementedException();
 		}
 	}
 

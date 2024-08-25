@@ -3,15 +3,16 @@ using System.Windows.Input;
 using QS.Launcher.ViewModels;
 using Avalonia.VisualTree;
 using Avalonia.Input;
+using QS.Launcher.ViewModels.PageViewModels;
 
-namespace QS.Launcher.Views; 
+namespace QS.Launcher.Views.Pages; 
 public partial class DataBasesView : UserControl
 {
-	public DataBasesView(ICommand? nextPageCommand, ICommand? backPageCommand)
+	public DataBasesView(ICommand? nextPageCommand, ICommand? backPageCommand, ICommand? changePageCommand)
 	{
 		InitializeComponent();
 
-		DataContext = new DataBasesViewModel(nextPageCommand, backPageCommand);
+		DataContext = new DataBasesVM(nextPageCommand, backPageCommand, changePageCommand);
 	}
 
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e)

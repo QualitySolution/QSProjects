@@ -1,12 +1,12 @@
 using Avalonia.Controls;
-using QS.Launcher.Views;
+using QS.Launcher.Views.Pages;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels; 
-public class MainWindowViewModel : ViewModelBase
+public class MainWindowVM : ViewModelBase
 {
 	public ObservableCollection<ContentControl> Pages { get; set; }
 
@@ -19,18 +19,22 @@ public class MainWindowViewModel : ViewModelBase
 
 	private readonly ICommand nextPageCommand;
 	private readonly ICommand previousPageCommand;
+	private readonly ICommand changePageCommand;
 
-	public MainWindowViewModel(Carousel carousel)
+	public MainWindowVM()
 	{
 		nextPageCommand = ReactiveCommand.Create(NextPage);
 		previousPageCommand = ReactiveCommand.Create(PreviousPage);
+		changePageCommand = ReactiveCommand.Create<int>(ChangePage);
 
-		var lw = new LoginView(nextPageCommand, previousPageCommand);
-		var dbw = new DataBasesView(nextPageCommand, previousPageCommand);
+		var login = new LoginView(nextPageCommand, previousPageCommand, changePageCommand);
+		var databases = new DataBasesView(nextPageCommand, previousPageCommand, changePageCommand);
+		var userManagement = new UserManagementView(nextPageCommand, previousPageCommand, changePageCommand);
+		var baseMagamenet = new BaseManagementView(nextPageCommand, previousPageCommand, changePageCommand);
 
 		Pages =
 		[
-			lw, dbw
+			login, databases, userManagement, baseMagamenet
 		];
 	}
 	

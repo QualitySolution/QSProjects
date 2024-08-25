@@ -6,6 +6,12 @@ using System.Linq;
 
 namespace QS.Cloud.Client
 {
+	public static class QSDbProviderFactoryExtensions
+	{
+		public static IDbProvider CreateQSCloudProvider(this DbProviderFactory factory, ConnectionInfo connectionInfo)
+			=> new QSCloudConnection(connectionInfo);
+	}
+
 	public class QSCloudConnection : IDbProvider
 	{
 		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -25,7 +31,7 @@ namespace QS.Cloud.Client
 		public QSCloudConnection(ConnectionInfo connection) {
 			Connection = connection;
 
-			string password = Connection.Parameters.First(p => p.Title == "password").Value as string;
+
 		}
 
 		public bool AddUser(string username, string password)

@@ -1,11 +1,10 @@
-using QS.Launcher.ViewModels.TypesViewModels;
+using QS.Launcher.ViewModels.TypeViewModels;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace QS.Launcher.ViewModels;
+namespace QS.Launcher.ViewModels.PageViewModels;
 
-public class DataBasesViewModel : PageViewModel
-{
+public class DataBasesVM : CarouselPageVM {
 	public List<DatabaseViewModel> Databases { get; set; } = [];
 
 	public DatabaseViewModel? SelectedDatabase { get; set; }
@@ -13,8 +12,9 @@ public class DataBasesViewModel : PageViewModel
 	public bool IsAdmin { get; } = true;
 
 	public bool ShouldCloseLauncherAfterStart { get; set; } = false;
-		
-	public DataBasesViewModel(ICommand nextPageCommand, ICommand previousPageCommand) : base(nextPageCommand, previousPageCommand)
+
+	public DataBasesVM(ICommand? nextPageCommand, ICommand? previousPageCommand, ICommand? changePageCommand)
+		: base(nextPageCommand, previousPageCommand, changePageCommand)
 	{
 		// for test
 		Databases =

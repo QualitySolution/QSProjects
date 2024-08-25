@@ -54,16 +54,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QS.Cloud.Client\QS.Cloud.Client.csproj" />
     <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
     <ProjectReference Include="..\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\LoginView.axaml.cs">
+    <Compile Update="Views\Pages\BaseManagementView.axaml.cs">
+      <DependentUpon>BaseManagementView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\LoginView.axaml.cs">
       <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\DataBasesView.axaml.cs">
+    <Compile Update="Views\Pages\DataBasesView.axaml.cs">
       <DependentUpon>DataBasesView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\UserManagementView.axaml.cs">
+      <DependentUpon>UserManagementView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

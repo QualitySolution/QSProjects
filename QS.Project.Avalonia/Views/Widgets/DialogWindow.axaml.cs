@@ -77,4 +77,13 @@ public partial class DialogWindow : Window
 	{
 		Close();
 	}
+
+	#region FastMessages
+
+	public static void Error(string message) => new DialogWindow(message, "Error", DialogType.Error).Show();
+	public static void Info(string message) => new DialogWindow(message, "Info", DialogType.Info).Show();
+	public static void Success(string message) => new DialogWindow(message, "Success", DialogType.Success).Show();
+	public static void Warning(string message) => new DialogWindow(message, "Warning", DialogType.Warning).Show();
+
+	#endregion
 }
