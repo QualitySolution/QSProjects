@@ -4,10 +4,10 @@ namespace QS.Launcher.Views;
 
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(MainWindowVM viewModel)
     {
         InitializeComponent();
 
-		DataContext = new MainWindowVM();
+		DataContext = viewModel;
 	}
 }

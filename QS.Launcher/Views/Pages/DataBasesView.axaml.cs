@@ -8,11 +8,11 @@ using QS.Launcher.ViewModels.PageViewModels;
 namespace QS.Launcher.Views.Pages; 
 public partial class DataBasesView : UserControl
 {
-	public DataBasesView(ICommand? nextPageCommand, ICommand? backPageCommand, ICommand? changePageCommand)
+	public DataBasesView(DataBasesVM viewModel)
 	{
 		InitializeComponent();
 
-		DataContext = new DataBasesVM(nextPageCommand, backPageCommand, changePageCommand);
+		DataContext = viewModel;
 	}
 
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e)

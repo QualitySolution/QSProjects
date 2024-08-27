@@ -1,5 +1,6 @@
+using QS.Cloud.Core;
 using QS.DbManagement;
-
+using QS.DbManagement.Responces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,18 +68,37 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 
-		public bool LoginToServer(LoginToServerData loginToServerData) {
+		public LoginToServerResponce LoginToServer(LoginToServerData loginToServerData) {
 
-			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider(loginToServerData.UserName, loginToServerData.Password);
+			string organisation = Connection.Parameters.First(p => p.Title == "Логин").Value.ToString();
+			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{organisation}\{loginToServerData.UserName}", loginToServerData.Password);
 
 			loginClient = new LoginManagementCloudClient(authInfo);
-			var resp = loginClient.Start("0.0.1.0");
 
-			IsAdmin = resp.YouAccountAdmin;
-			return resp.YouAccountAdmin;
+			LoginToServerResponce resp;
+
+			StartResponse cloudResponce;
+			try {
+				cloudResponce = loginClient.Start("0.0.1.0");
+
+				resp = new LoginToServerResponce {
+					Success = true,
+					IsAdmin = cloudResponce.YouAccountAdmin,
+					NeedToUpdateLauncher = cloudResponce.YouAccountAdmin
+				};
+			}
+			catch(Grpc.Core.RpcException ex) {
+
+				resp = new LoginToServerResponce {
+					Success = false,
+					ErrorMessage = ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated ?
+						"Неверные данные для входа" : ex.StatusCode.ToString()
+				};
+			}
+
+			return resp;
 		}
 	}
-
 }
 
 

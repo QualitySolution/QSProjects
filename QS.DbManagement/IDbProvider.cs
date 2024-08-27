@@ -1,3 +1,4 @@
+using QS.DbManagement.Responces;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +16,7 @@ namespace QS.DbManagement
 		
 		bool AddUser(string username, string password);
 
-		bool LoginToServer(LoginToServerData loginToServerData);
+		LoginToServerResponce LoginToServer(LoginToServerData loginToServerData);
 
 		List<DbInfo> GetUserDatabases(string username);
 

@@ -1,6 +1,4 @@
 using Avalonia.Controls;
-using QS.Launcher.ViewModels;
-using System.Windows.Input;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
 using QS.Launcher.ViewModels.PageViewModels;
@@ -11,7 +9,7 @@ public partial class LoginView : UserControl
 {
 	private readonly Style upStyle;
 
-    public LoginView(ICommand? nextPageCommand, ICommand? backPageCommand, ICommand? changePageCommand)
+    public LoginView(LoginVM viewModel)
     {
 		upStyle = new Style(x => x.OfType<ItemsControl>().Class("up")) {
 			Setters =
@@ -26,7 +24,7 @@ public partial class LoginView : UserControl
 
 		loginContainer.Styles.Add(upStyle);
 
-		DataContext = new LoginVM(nextPageCommand, backPageCommand, changePageCommand);
+		DataContext = viewModel;
     }
 
 

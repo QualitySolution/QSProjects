@@ -1,6 +1,8 @@
 using Avalonia.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.Views.Pages;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -21,20 +23,20 @@ public class MainWindowVM : ViewModelBase
 	private readonly ICommand previousPageCommand;
 	private readonly ICommand changePageCommand;
 
-	public MainWindowVM()
+	public MainWindowVM(IServiceProvider serviceProvider)
 	{
 		nextPageCommand = ReactiveCommand.Create(NextPage);
 		previousPageCommand = ReactiveCommand.Create(PreviousPage);
 		changePageCommand = ReactiveCommand.Create<int>(ChangePage);
 
-		var login = new LoginView(nextPageCommand, previousPageCommand, changePageCommand);
-		var databases = new DataBasesView(nextPageCommand, previousPageCommand, changePageCommand);
-		var userManagement = new UserManagementView(nextPageCommand, previousPageCommand, changePageCommand);
-		var baseMagamenet = new BaseManagementView(nextPageCommand, previousPageCommand, changePageCommand);
+		var login = serviceProvider.GetRequiredService<LoginView>();
+		var databases = serviceProvider.GetRequiredService<DataBasesView>();
+		var userManagement = serviceProvider.GetRequiredService<UserManagementView>();
+		var baseManagement = serviceProvider.GetRequiredService<BaseManagementView>();
 
 		Pages =
 		[
-			login, databases, userManagement, baseMagamenet
+			login, databases, userManagement, baseManagement
 		];
 	}
 	

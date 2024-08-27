@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
 
-class BaseMagamenetVM : CarouselPageVM {
+public class BaseMagamenetVM : CarouselPageVM {
 
 	public List<DatabaseViewModel> Databases { get; set; } = [];
 

@@ -1,13 +1,13 @@
 using Dapper;
 using MySqlConnector;
+using QS.DbManagement.Responces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace QS.DbManagement
 {
-	public class MariaDbConnection : IDbProvider
-	{
+	public class MariaDbConnection : IDbProvider {
 		readonly MySqlConnection connection;
 	
 		public string ConnectionString
@@ -61,15 +61,15 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool LoginToServer(LoginToServerData loginToServerData) {
-			throw new NotImplementedException();
-		}
-
 		public List<DbInfo> GetUserDatabases(string username) {
 			throw new NotImplementedException();
 		}
 
 		public bool LoginToDatabase(string databaseName, string username, string password) {
+			throw new NotImplementedException();
+		}
+
+		LoginToServerResponce IDbProvider.LoginToServer(LoginToServerData loginToServerData) {
 			throw new NotImplementedException();
 		}
 	}

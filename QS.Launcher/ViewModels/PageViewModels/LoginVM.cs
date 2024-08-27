@@ -89,16 +89,12 @@ public class LoginVM : CarouselPageVM {
 		else if(SelectedConnectionType.Title == "MariaDB")
 			dbProvider = factory.CreateMariaDbProvider(SelectedConnectionType);
 
-		try {
-			if(dbProvider.LoginToServer(new LoginToServerData { UserName = User, Password = this.Password }))
-				NextPageCommand?.Execute(null);
-			else
-				DialogWindow.Error("Не подключились");
-		}
-		catch(Exception ex) {
+		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = User, Password = this.Password });
+		if(resp.Success)
+			NextPageCommand?.Execute(null);
+		else
+			DialogWindow.Error(resp.ErrorMessage);
 
-			DialogWindow.Error(ex.Message);
-		}
 	}
 
 	public bool CanLogin => !string.IsNullOrWhiteSpace(Password) &&
