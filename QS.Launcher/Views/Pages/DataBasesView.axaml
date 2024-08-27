@@ -15,8 +15,8 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel MaxHeight="20" HorizontalAlignment="Stretch">
-                            <Label Content="{Binding Name}" />
-                            <Label HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Size}" />
+                            <Label Content="{Binding Title}" />
+                            <Label HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding BaseId}" />
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

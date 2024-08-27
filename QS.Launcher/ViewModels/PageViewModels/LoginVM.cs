@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Input;
+using QS.Launcher.ViewModels.Commands;
+using DynamicData.Kernel;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
 
@@ -42,32 +44,15 @@ public class LoginVM : CarouselPageVM {
 
 	public ICommand LoginCommand { get; }
 
-	public LoginVM(ICommand? nextCommand, ICommand? previousCommand, ICommand? changePageCommand)
-		: base(nextCommand, previousCommand, changePageCommand)
-	{
-		CompanyImage = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Launcher/Assets/sps.png")));
+	private DataBasesVM dbVM;
 
-		ConnectionTypes =
-		[
-			new()
-			{
-				Title = "QS Cloud",
-				IconBytes = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")),
-				Parameters = [new ConnectionParameter("Логин")]
-			},
-			new()
-			{
-				Title = "MariaDB",
-				IconBytes = File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")),
-				Parameters = [new ConnectionParameter("Адрес")]
-			},
-			new()
-			{
-				Title = "SQLite",
-				IconBytes = null,
-				Parameters = [new ConnectionParameter("База данных"), new ConnectionParameter("Строка подключения")]
-			}
-		];
+	public LoginVM(NextPageCommand? nextCommand, PreviousPageCommand? previousCommand, ChangePageCommand? changePageCommand,
+		IEnumerable<ConnectionInfo> connections, Uri companyLogoUri, DataBasesVM dbVM) : base(nextCommand, previousCommand, changePageCommand)
+	{
+		this.dbVM = dbVM;
+		CompanyImage = new Bitmap(AssetLoader.Open(companyLogoUri));
+
+		ConnectionTypes = connections.AsList();
 
 		var canExecute = this.WhenAnyValue(
 			x => x.User, x => x.Password,
@@ -82,19 +67,19 @@ public class LoginVM : CarouselPageVM {
 		if(SelectedConnectionType is null)
 			return;
 
-		DbProviderFactory factory = new();
-
-		if(SelectedConnectionType.Title == "QS Cloud")
-			dbProvider = factory.CreateQSCloudProvider(SelectedConnectionType);
-		else if(SelectedConnectionType.Title == "MariaDB")
-			dbProvider = factory.CreateMariaDbProvider(SelectedConnectionType);
+		// TODO: solve the differences between ConnectionTypes and Connections
+		if (dbProvider is null || dbProvider.Connection == SelectedConnectionType)
+			dbProvider = SelectedConnectionType.CreateProvider();
 
 		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = User, Password = this.Password });
-		if(resp.Success)
+
+		if(resp.Success) {
+			dbVM.Provider = dbProvider;
+			dbVM.IsAdmin = resp.IsAdmin;
 			NextPageCommand?.Execute(null);
+		}
 		else
 			DialogWindow.Error(resp.ErrorMessage);
-
 	}
 
 	public bool CanLogin => !string.IsNullOrWhiteSpace(Password) &&

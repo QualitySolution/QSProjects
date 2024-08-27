@@ -7,13 +7,7 @@ using System.Linq;
 
 namespace QS.Cloud.Client
 {
-	public static class QSDbProviderFactoryExtensions
-	{
-		public static IDbProvider CreateQSCloudProvider(this DbProviderFactory factory, ConnectionInfo connectionInfo)
-			=> new QSCloudConnection(connectionInfo);
-	}
-
-	public class QSCloudConnection : IDbProvider
+	public class QSCloudProvider : IDbProvider
 	{
 		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 	
@@ -29,10 +23,8 @@ namespace QS.Cloud.Client
 		private UserManagementCloudClient userClient;
 
 
-		public QSCloudConnection(ConnectionInfo connection) {
+		public QSCloudProvider(QSCloudConnectionInfo connection) {
 			Connection = connection;
-
-
 		}
 
 		public bool AddUser(string username, string password)
@@ -60,8 +52,12 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 
-		public List<DbInfo> GetUserDatabases(string username) {
-			throw new NotImplementedException();
+		public List<DbInfo> GetUserDatabases() {
+			return loginClient.GetBasesForUser().Select(bi => new DbInfo
+			{
+				Title = bi.BaseTitle,
+				BaseId = bi.BaseId
+			}).ToList();
 		}
 
 		public bool LoginToDatabase(string databaseName, string username, string password) {

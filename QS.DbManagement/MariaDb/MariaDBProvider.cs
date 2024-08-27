@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace QS.DbManagement
 {
-	public class MariaDbConnection : IDbProvider {
+	public class MariaDBProvider : IDbProvider {
 		readonly MySqlConnection connection;
 	
 		public string ConnectionString
@@ -22,7 +22,7 @@ namespace QS.DbManagement
 
 		public bool IsAdmin => throw new NotImplementedException();
 
-		public MariaDbConnection(ConnectionInfo connectionInfo)
+		public MariaDBProvider(MariaDBConnectionInfo connectionInfo)
 		{
 			ConnectionString = connectionInfo.Parameters.Find(p => p.Title == "ConnectionString").Value as string;
 			connection = new MySqlConnection(ConnectionString);
@@ -61,7 +61,7 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public List<DbInfo> GetUserDatabases(string username) {
+		public List<DbInfo> GetUserDatabases() {
 			throw new NotImplementedException();
 		}
 

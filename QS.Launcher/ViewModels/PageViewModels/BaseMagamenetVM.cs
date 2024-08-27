@@ -1,3 +1,4 @@
+using QS.Launcher.ViewModels.Commands;
 using QS.Launcher.ViewModels.TypeViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ public class BaseMagamenetVM : CarouselPageVM {
 
 	public DatabaseViewModel? SelectedDatabase { get; set; }
 
-	public BaseMagamenetVM(ICommand? nextPageCommand, ICommand? previousPageCommand, ICommand? changePageCommand)
+	public BaseMagamenetVM(NextPageCommand? nextPageCommand, PreviousPageCommand? previousPageCommand, ChangePageCommand? changePageCommand)
 		: base(nextPageCommand, previousPageCommand, changePageCommand)
 	{
 		Databases =

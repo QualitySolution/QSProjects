@@ -19,16 +19,8 @@ public class MainWindowVM : ViewModelBase
 		set => this.RaiseAndSetIfChanged(ref selectedPage, value);
 	}
 
-	private readonly ICommand nextPageCommand;
-	private readonly ICommand previousPageCommand;
-	private readonly ICommand changePageCommand;
-
 	public MainWindowVM(IServiceProvider serviceProvider)
 	{
-		nextPageCommand = ReactiveCommand.Create(NextPage);
-		previousPageCommand = ReactiveCommand.Create(PreviousPage);
-		changePageCommand = ReactiveCommand.Create<int>(ChangePage);
-
 		var login = serviceProvider.GetRequiredService<LoginView>();
 		var databases = serviceProvider.GetRequiredService<DataBasesView>();
 		var userManagement = serviceProvider.GetRequiredService<UserManagementView>();

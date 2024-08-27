@@ -1,10 +1,11 @@
+using QS.Launcher.Views;
 using ReactiveUI;
 using System;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.Commands;
 
-public class ChangePageCommand(MainWindowVM vm) : ICommand {
+public class ChangePageCommand(MainWindow vm) : ICommand {
 	public event EventHandler? CanExecuteChanged;
 
 	public bool CanExecute(object? parameter) {
@@ -16,7 +17,7 @@ public class ChangePageCommand(MainWindowVM vm) : ICommand {
 	}
 }
 
-public class NextPageCommand(MainWindowVM vm) : ICommand {
+public class NextPageCommand(MainWindow vm) : ICommand {
 	public event EventHandler? CanExecuteChanged;
 
 	public bool CanExecute(object? parameter) {
@@ -28,7 +29,7 @@ public class NextPageCommand(MainWindowVM vm) : ICommand {
 	}
 }
 
-public class PreviousPageCommand(MainWindowVM vm) : ICommand {
+public class PreviousPageCommand(MainWindow vm) : ICommand {
 	public event EventHandler? CanExecuteChanged;
 
 	public bool CanExecute(object? parameter) {

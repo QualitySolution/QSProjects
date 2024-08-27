@@ -18,7 +18,7 @@ namespace QS.DbManagement
 
 		LoginToServerResponce LoginToServer(LoginToServerData loginToServerData);
 
-		List<DbInfo> GetUserDatabases(string username);
+		List<DbInfo> GetUserDatabases();
 
 		bool LoginToDatabase(string databaseName, string username, string password);
 	

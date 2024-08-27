@@ -1,8 +1,9 @@
+using QS.Launcher.ViewModels.Commands;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
 
-public class CarouselPageVM(ICommand? nextPageCommand, ICommand? previousPageCommand, ICommand? changePageCommand) : ViewModelBase
+public class CarouselPageVM(NextPageCommand? nextPageCommand, PreviousPageCommand? previousPageCommand, ChangePageCommand? changePageCommand) : ViewModelBase
 {
 	protected ICommand? nextPageCommand;
 	public ICommand? NextPageCommand { get; } = nextPageCommand;
