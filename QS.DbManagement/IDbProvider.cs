@@ -20,7 +20,7 @@ namespace QS.DbManagement
 
 		List<DbInfo> GetUserDatabases();
 
-		bool LoginToDatabase(string databaseName, string username, string password);
+		LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo);
 	
 		bool IsConnected { get; }
 

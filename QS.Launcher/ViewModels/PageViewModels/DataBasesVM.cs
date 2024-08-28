@@ -2,6 +2,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using DynamicData.Kernel;
 using QS.DbManagement;
 using QS.Launcher.ViewModels.Commands;
+using QS.Project.Avalonia;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,14 @@ public class DataBasesVM : CarouselPageVM {
 
 	public void Connect() {
 
-		// Connect
+		var resp = provider.LoginToDatabase(SelectedDatabase);
+
+		if(!resp.Success) {
+			DialogWindow.Error(resp.ErrorMessage);
+			return;
+		}
+
+		DialogWindow.Success(resp.ConnectionString);
 
 		if (ShouldCloseLauncherAfterStart) {
 			var window = (Avalonia.Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;

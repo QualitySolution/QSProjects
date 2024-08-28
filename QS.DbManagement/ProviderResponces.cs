@@ -29,5 +29,7 @@ namespace QS.DbManagement.Responces
 		public List<DbInfo> Bases { get; set; }
 	}
 
-	public class LoginToDatabaseResponce : Responce { }
+	public class LoginToDatabaseResponce : Responce {
+		public string ConnectionString { get; set; }
+	}
 }

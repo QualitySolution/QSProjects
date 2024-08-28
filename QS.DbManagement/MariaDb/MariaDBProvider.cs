@@ -65,7 +65,7 @@ namespace QS.DbManagement
 			throw new NotImplementedException();
 		}
 
-		public bool LoginToDatabase(string databaseName, string username, string password) {
+		public LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo) {
 			throw new NotImplementedException();
 		}
 

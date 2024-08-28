@@ -3,7 +3,11 @@ using QS.DbManagement;
 using QS.DbManagement.Responces;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
+using System.Data.SqlTypes;
+using MySqlConnector;
+using Grpc.Core;
 
 namespace QS.Cloud.Client
 {
@@ -60,8 +64,32 @@ namespace QS.Cloud.Client
 			}).ToList();
 		}
 
-		public bool LoginToDatabase(string databaseName, string username, string password) {
-			throw new NotImplementedException();
+		public LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo) {
+			LoginToDatabaseResponce resp;
+
+			try {
+				var cloudResponce = loginClient.StartSession(dbInfo.BaseId);
+
+				var builder = new MySqlConnectionStringBuilder {
+					Server = cloudResponce.Db.Server,
+					Port = uint.Parse(cloudResponce.Db.Port),
+					UserID = cloudResponce.Db.Login,
+					Password = cloudResponce.Db.Password,
+					Database = cloudResponce.Db.BaseName
+				};
+				resp = new LoginToDatabaseResponce {
+					Success = cloudResponce.Success,
+					ConnectionString = builder.ConnectionString
+				};
+			}
+			catch(Exception ex) {
+				resp = new LoginToDatabaseResponce {
+					Success = false,
+					ErrorMessage = ex.Message
+				};
+			}
+
+			return resp;
 		}
 
 		public LoginToServerResponce LoginToServer(LoginToServerData loginToServerData) {
@@ -83,7 +111,7 @@ namespace QS.Cloud.Client
 					NeedToUpdateLauncher = cloudResponce.YouAccountAdmin
 				};
 			}
-			catch(Grpc.Core.RpcException ex) {
+			catch(RpcException ex) {
 
 				resp = new LoginToServerResponce {
 					Success = false,
