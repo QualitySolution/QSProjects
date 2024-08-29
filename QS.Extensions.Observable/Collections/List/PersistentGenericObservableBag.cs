@@ -68,6 +68,17 @@ namespace QS.Extensions.Observable.Collections.List {
 			OnItemRemoved(item, index);
 			UnsubscribeElementChanged(item);
 		}
+		
+		public int RemoveAll(Predicate<T> match) {
+			int num = 0;
+			for(int i = Count - 1; i >= 0 ; i--) {
+				if(match(base[i])) {
+					base.RemoveAt(i);
+					num++;
+				}
+			}
+			return num;
+		}
 
 		#region INotifyCollectionChanged Members
 

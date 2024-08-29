@@ -209,6 +209,14 @@ namespace QSProjectsLib
 					return;
 				}
 			}
+
+			if(uriSplit.Length == 0) {
+				labelLoginInfo.Text = "Неверная настройка";
+				ConnectionError = "Адрес сервера не корректен.";
+				logger.Warn(connectionError);
+				return;
+			}
+			
 			host = uriSplit[0];
 			if (uriSplit.Length > 1) {
 				uint.TryParse(uriSplit[1], out port);
