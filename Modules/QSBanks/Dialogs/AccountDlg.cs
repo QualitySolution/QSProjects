@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using Gamma.Utilities;
 using NHibernate.Criterion;
@@ -6,6 +6,7 @@ using NLog;
 using QS.Banks.Domain;
 using QS.Dialog.Gtk;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 using QS.Validation;
 
 namespace QSBanks
@@ -92,7 +93,7 @@ namespace QSBanks
 
 		public bool Save()
 		{
-			var validator = new ObjectValidator(new GtkValidationViewFactory());
+			var validator = ServicesConfig.ValidationService;
 			if (!validator.Validate(entity))
 				return false;
 			logger.Info ("Сохраняем счет организации...");

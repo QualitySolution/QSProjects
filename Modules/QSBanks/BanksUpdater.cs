@@ -13,6 +13,7 @@ using QS.BaseParameters;
 using QS.Dialog.GtkUI;
 using QS.DomainModel.UoW;
 using QS.Project.DB;
+using QS.Project.Services;
 using QS.Utilities;
 using QSBanks.CBRSource;
 
@@ -100,7 +101,7 @@ namespace QSBanks
 		public void UpdateBanks()
 		{
 			accountsDeactivated = banksRemoved = banksDeactivated = banksAdded = banksFixed = 0;
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot($"[BU]Обновление банков")) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot($"[BU]Обновление банков")) {
 				LoadBanks(uow);
 
 				bool successfullyUpdate = UpdateBanksFromCBR(uow);

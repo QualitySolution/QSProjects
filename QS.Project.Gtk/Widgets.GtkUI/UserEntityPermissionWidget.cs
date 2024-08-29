@@ -219,7 +219,7 @@ namespace QS.Widgets.GtkUI
 			}
 
 			foreach(var item in _permissionsToDelete) {
-				_uow.Delete<EntityUserPermission>(item.EntityPermission as EntityUserPermission);
+				_uow.Delete(item.EntityPermission);
 				foreach(var extendedPermission in item.EntityPermissionExtended)
 					_uow.Delete(extendedPermission);
 			}

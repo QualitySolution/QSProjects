@@ -18,6 +18,7 @@ namespace QS.Deletion
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		private readonly DeleteConfiguration configuration;
+		private readonly IUnitOfWorkFactory uowFactory;
 		internal Operation RootOperation;
 		internal EntityDTO RootEntity;
 		internal bool IsHibernateMode;
@@ -30,7 +31,7 @@ namespace QS.Deletion
 		IUnitOfWork IDeleteCore.UoW {
 			get {
 				if (uow == null) {
-					uow = UnitOfWorkFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
+					uow = uowFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
 					isOwnerUow = true;
 				}
 				return uow;
@@ -46,9 +47,10 @@ namespace QS.Deletion
 			}
 		}
 
-		public DeleteCore(DeleteConfiguration configuration, IUnitOfWork uow = null, DbConnection connection = null)
+		public DeleteCore(DeleteConfiguration configuration, IUnitOfWorkFactory uowFactory, IUnitOfWork uow = null, DbConnection connection = null)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.uowFactory = uowFactory ?? throw new ArgumentNullException(nameof(uowFactory));
 			this.uow = uow;
 			this.connection = connection;
 		}

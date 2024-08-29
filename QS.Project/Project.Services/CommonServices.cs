@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Dialog;
 using QS.Validation;
 
@@ -15,7 +15,7 @@ namespace QS.Services
 		)
 		{
 			ValidationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
-			InteractiveService = interactiveService ?? throw new ArgumentNullException(nameof(interactiveService));
+			InteractiveService = interactiveService;
 			PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
 			CurrentPermissionService = currentPermissionService ?? throw new ArgumentNullException(nameof(currentPermissionService));
 			UserService = userService ?? throw new ArgumentNullException(nameof(userService));

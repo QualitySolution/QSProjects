@@ -6,6 +6,7 @@ using Gamma.Utilities;
 using QS.Dialog;
 using QS.DomainModel.UoW;
 using QS.Project.Journal;
+using QS.Project.Services;
 using QS.ViewModels;
 
 namespace QS.Project.Filter
@@ -25,7 +26,7 @@ namespace QS.Project.Filter
 
 		protected FilterViewModelBase()
 		{
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			UoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 			PropertyChanged += FilterViewModelBase_PropertyChanged;
 		}
 

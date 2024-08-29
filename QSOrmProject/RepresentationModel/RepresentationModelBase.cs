@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,7 @@ using Gamma.Binding;
 using Gamma.ColumnConfig;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Project.Services;
 
 namespace QSOrmProject.RepresentationModel
 {
@@ -26,7 +27,7 @@ namespace QSOrmProject.RepresentationModel
 		public IUnitOfWork UoW {
 			get {
 				if(uow == null || uow.Session != null && !uow.Session.IsOpen) {
-					uow = UnitOfWorkFactory.CreateWithoutRoot();
+					uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 					canDisposeUoW = true;
 				}
 				return uow;

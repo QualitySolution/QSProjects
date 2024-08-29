@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,6 +8,7 @@ using Gtk;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
 using QS.Dialog.Gtk;
+using QS.Project.Services;
 
 namespace QS.Widgets.GtkUI
 {
@@ -67,7 +68,7 @@ namespace QS.Widgets.GtkUI
 			args.RetVal = true;
 		}
 
-		private void fillAutocomplete()
+		private void FillAutocomplete()
 		{
 			logger.Info("Запрос данных для автодополнения...");
 			completionListStore = new ListStore(typeof(string));
@@ -79,7 +80,7 @@ namespace QS.Widgets.GtkUI
 			if(dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = UnitOfWorkFactory.CreateWithoutRoot();
+				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 
 			var bindSource = Binding.BindedSources.FirstOrDefault();
 			if(bindSource == null)
@@ -111,7 +112,7 @@ namespace QS.Widgets.GtkUI
 		protected override bool OnFocusInEvent(Gdk.EventFocus evnt)
 		{
 			if(completionListStore == null)
-				fillAutocomplete();
+				FillAutocomplete();
 			return base.OnFocusInEvent(evnt);
 		}
 	}

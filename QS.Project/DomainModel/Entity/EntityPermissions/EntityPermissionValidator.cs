@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using QS.DomainModel.UoW;
 using QS.Project.Repositories;
@@ -8,6 +8,11 @@ namespace QS.DomainModel.Entity.EntityPermissions
 {
 	public class EntityPermissionValidator : IEntityPermissionValidator
 	{
+		private readonly IUnitOfWorkFactory uowFactory;
+
+		public EntityPermissionValidator(IUnitOfWorkFactory uowFactory) {
+			this.uowFactory = uowFactory ?? throw new ArgumentNullException(nameof(uowFactory));
+		}
 
 		/// <summary>
 		/// Объявляет что для администраторов не будет проходить проверка прав
@@ -19,7 +24,7 @@ namespace QS.DomainModel.Entity.EntityPermissions
 		public virtual EntityPermission Validate(Type entityType, int userId)
 		{
 			UserBase user;
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = uowFactory.CreateWithoutRoot()) {
 				user = UserRepository.GetUserById(uow, userId);
 
 				//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора

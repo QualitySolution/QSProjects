@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QS.DomainModel.Entity;
@@ -6,6 +6,7 @@ using QS.DomainModel.UoW;
 using QS.Permissions;
 using QS.Project.Domain;
 using System.Reflection;
+using QS.Project.Services;
 
 namespace QS.Project.Repositories
 {
@@ -48,7 +49,7 @@ namespace QS.Project.Repositories
 
 		public static IList<string> GetAllTypesOfEntity()
 		{
-			using(IUnitOfWork uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
 				return uow.Session.QueryOver<TypeOfEntity>().List().Select(t => t.Type).ToList();
 			}
 		}

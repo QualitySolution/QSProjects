@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gtk;
 using QS.DomainModel.UoW;
 using QS.Project.Repositories;
+using QS.Project.Services;
 
 namespace QS.Widgets.GtkUI
 {
@@ -16,7 +17,7 @@ namespace QS.Widgets.GtkUI
 		public UserPermissionWidget()
 		{
 			this.Build();
-			UoW = UnitOfWorkFactory.CreateWithoutRoot();
+			UoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
 			Sensitive = false;
 		}
 

@@ -1,10 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using Gamma.Binding.Core;
 using Gtk;
 using NLog;
@@ -17,11 +10,18 @@ using QS.Project.Journal;
 using QS.Project.Journal.EntitySelector;
 using QS.RepresentationModel.GtkUI;
 using QS.Tdi;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using QS.ViewModels.Control.EEVM;
 using IEntitySelector = QS.Project.Journal.EntitySelector.IEntitySelector;
 
-namespace QS.Widgets.GtkUI
-{
+
+namespace QS.Widgets.GtkUI {
 	[ToolboxItem(true)]
 	[Category("QS.Project")]
 	[Obsolete("Используйте новый виджет EntityEntry и новый тип журналов QS.Project.Journal")]
@@ -54,7 +54,8 @@ namespace QS.Widgets.GtkUI
 			_normalEntryToolTipMarkup = entryObject.TooltipMarkup;
 		}
 
-        public bool CanOpenWithoutTabParent { get; set; }
+
+		public bool CanOpenWithoutTabParent { get; set; }
 
         private bool sensitive = true;
 		[Browsable(false)]

@@ -6,8 +6,8 @@ using System.Threading;
 using NHibernate.Type;
 using QS.DomainModel.Entity;
 
-namespace QS.Deletion
-{
+
+namespace QS.Deletion {
 	public abstract class Operation
 	{
 		public uint ItemId;
@@ -93,7 +93,7 @@ namespace QS.Deletion
 					return;
 
 				logger.Debug ($"Удаляем [{item.Id}] {item.Title}...");
-				core.UoW.TryDelete (item.Entity);
+				core.UoW.Delete (item.Entity);
 			}
 
 			if (cancellation.IsCancellationRequested)
@@ -125,7 +125,7 @@ namespace QS.Deletion
 
 				logger.Debug ("Очищаем свойство {0} в {1}...", PropertyName, item.Title);
 				propertyCache.SetValue (item.Entity, null, null);
-				core.UoW.TrySave (item.Entity);
+				core.UoW.Save (item.Entity);
 			}
 		}
 	}
@@ -165,7 +165,7 @@ namespace QS.Deletion
 					var collection = (IList)collectionProp.GetValue (item.Entity, null);
 					collection.Remove (RemovingEntity.Entity);
 				}
-				core.UoW.TrySave (item.Entity);
+				core.UoW.Save (item.Entity);
 			}
 		}
 	}
@@ -184,7 +184,7 @@ namespace QS.Deletion
 
 			core.AddExcuteOperation(String.Format("Обновляем значение в {0} свойства {1} на {2}", DomainHelper.GetSubjectNames(UpdateInClassType)?.Accusative, PropertyName, PropertyValue));
 			propertyCache.SetValue(UpdatingEntity, PropertyValue, null);
-			core.UoW.TrySave(UpdatingEntity);
+			core.UoW.Save(UpdatingEntity);
 		}
 	}
 }

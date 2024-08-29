@@ -1,8 +1,9 @@
-﻿using QS.DomainModel.Entity;
+using QS.DomainModel.Entity;
+using QS.DomainModel.Tracking;
 using QS.Project.DB;
+using System.Threading.Tasks;
 
-namespace QS.DomainModel.UoW
-{
+namespace QS.DomainModel.UoW {
 	public class UnitOfWork<TRootEntity> : UnitOfWorkBase, IUnitOfWorkGeneric<TRootEntity> 
 		where TRootEntity : class, IDomainObject, new()
 	{
@@ -18,7 +19,8 @@ namespace QS.DomainModel.UoW
 			}
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title, SingleUowEventsTracker tracker = null) 
+			: base(sessionProvider, tracker)
 		{
 			IsNew = true;
             ActionTitle = title;
@@ -27,7 +29,8 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title, SingleUowEventsTracker tracker = null) 
+			: base(sessionProvider, tracker)
 		{
 			IsNew = true;
 			Root = root;
@@ -36,14 +39,15 @@ namespace QS.DomainModel.UoW
 				((IBusinessObject)Root).UoW = this;
 		}
 
-		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title) : base(sessionProvider)
+		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title, SingleUowEventsTracker tracker = null) 
+			: base(sessionProvider, tracker)
 		{
 			IsNew = false;
             ActionTitle = title;
 			Root = GetById<TRootEntity>(id);
 		}
 
-		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
+		public override void Save(object entity, bool orUpdate = true)
 		{
 			base.Save (entity, orUpdate);
 
@@ -57,6 +61,18 @@ namespace QS.DomainModel.UoW
 		{
 			Save(Root);
 		}
-    }
+		
+		public override async Task SaveAsync(object entity, bool orUpdate = true) {
+			await base.SaveAsync(entity, orUpdate);
+
+			if(RootObject.Equals(entity)) {
+				await CommitAsync();
+			}
+		}
+
+		public async Task SaveAsync() {
+			await SaveAsync(Root);
+		}
+	}
 }
 
