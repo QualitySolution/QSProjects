@@ -9,8 +9,9 @@ namespace QS.Report.ViewModels {
 		protected ReportParametersUowViewModelBase(
 			RdlViewerViewModel rdlViewerViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
+			IReportInfoFactory reportInfoFactory,
 			UnitOfWorkProvider unitOfWorkProvider = null
-			) : base(rdlViewerViewModel) {
+			) : base(rdlViewerViewModel, reportInfoFactory) {
 			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
 			this.unitOfWorkProvider = unitOfWorkProvider;
 		}

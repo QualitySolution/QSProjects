@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,16 +132,11 @@ namespace QS.Report
 			}
 		}
 
-		public ReportInfo (string connectionString = "")
+		public ReportInfo (string connectionString)
 		{
-			if (string.IsNullOrWhiteSpace(connectionString))
-				try {
-					_connectionString = Project.DB.Connection.ConnectionString;
-				} catch (NullReferenceException) {
-					_connectionString = "";
-				}
-			else
-				_connectionString = connectionString;
+			if(String.IsNullOrWhiteSpace(connectionString)) 
+				throw new ArgumentException($"'{nameof(connectionString)}' cannot be null or whitespace.", nameof(connectionString));
+			_connectionString = connectionString;
 		}
 
 		public enum PrintingType

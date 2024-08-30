@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using QS.ViewModels;
 
@@ -7,10 +7,12 @@ namespace QS.Report.ViewModels
 	public abstract class ReportParametersViewModelBase : ViewModelBase
 	{
 		private readonly RdlViewerViewModel rdlViewerViewModel;
+		private readonly IReportInfoFactory reportInfoFactory;
 
-		protected ReportParametersViewModelBase(RdlViewerViewModel rdlViewerViewModel)
+		protected ReportParametersViewModelBase(RdlViewerViewModel rdlViewerViewModel, IReportInfoFactory reportInfoFactory)
 		{
 			this.rdlViewerViewModel = rdlViewerViewModel ?? throw new ArgumentNullException(nameof(rdlViewerViewModel));
+			this.reportInfoFactory = reportInfoFactory ?? throw new ArgumentNullException(nameof(reportInfoFactory));
 		}
 
 		#region Свойства
@@ -31,11 +33,8 @@ namespace QS.Report.ViewModels
 		#region Параметры отчета
 		protected abstract Dictionary<string, object> Parameters { get; }
 
-		public virtual ReportInfo ReportInfo => new ReportInfo {
-			Identifier = Identifier,
-			Title = Title,
-			Parameters = Parameters
-		};
+		public virtual ReportInfo ReportInfo => reportInfoFactory.Create(Identifier, Title, Parameters);
+
 		#endregion
 
 		#region Действия View
