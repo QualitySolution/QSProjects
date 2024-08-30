@@ -20,4 +20,10 @@
   <ItemGroup>
     <ProjectReference Include="..\QS.Launcher\QS.Launcher.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="launcher.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
