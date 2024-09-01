@@ -10,5 +10,7 @@ namespace QS.DbManagement {
 		public byte[] IconBytes { get; set; }
 
 		public abstract IDbProvider CreateProvider();
+
+		public abstract Connection CreateConnection(IDictionary<string, string> parameters);
 	}
 }

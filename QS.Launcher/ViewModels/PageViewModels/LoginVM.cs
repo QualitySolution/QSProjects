@@ -10,6 +10,7 @@ using System.IO;
 using System.Windows.Input;
 using QS.Launcher.ViewModels.Commands;
 using DynamicData.Kernel;
+using System.Collections.ObjectModel;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
 
@@ -27,6 +28,8 @@ public class LoginVM : CarouselPageVM {
 		get => selectedConnectionType;
 		set => this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
 	}
+
+	public ObservableCollection<Connection> Connections { get; set; }
 
 	private string? user;
 	public string? User {
@@ -47,12 +50,15 @@ public class LoginVM : CarouselPageVM {
 	private DataBasesVM dbVM;
 
 	public LoginVM(NextPageCommand? nextCommand, PreviousPageCommand? previousCommand, ChangePageCommand? changePageCommand,
-		IEnumerable<ConnectionInfo> connections, Uri companyLogoUri, DataBasesVM dbVM) : base(nextCommand, previousCommand, changePageCommand)
+		IEnumerable<ConnectionInfo> connectionInfos, IEnumerable<Connection> connections, Uri companyLogoUri, DataBasesVM dbVM)
+		: base(nextCommand, previousCommand, changePageCommand)
 	{
 		this.dbVM = dbVM;
 		CompanyImage = new Bitmap(AssetLoader.Open(companyLogoUri));
 
-		ConnectionTypes = connections.AsList();
+		Connections = new(connections);
+
+		ConnectionTypes = connectionInfos.AsList();
 
 		var canExecute = this.WhenAnyValue(
 			x => x.User, x => x.Password,
