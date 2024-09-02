@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Width="400"
         Height="180"
+        Topmost="True"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
     <Window.Resources>

@@ -13,15 +13,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="Views\Widgets\Assets\**" />
+    <Compile Remove="Views\Widgets\Assets\**" />
+    <EmbeddedResource Remove="Views\Widgets\Assets\**" />
+    <None Remove="Views\Widgets\Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.3" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.3" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Widgets\Assets\" />
   </ItemGroup>
 </Project>

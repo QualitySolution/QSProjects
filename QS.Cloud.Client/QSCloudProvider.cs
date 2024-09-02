@@ -17,7 +17,7 @@ namespace QS.Cloud.Client
 	
 		public bool IsConnected => throw new NotImplementedException();
 
-		public ConnectionInfo Connection { get; }
+		public ConnectionInfo ConnectionInfo { get; }
 
 		public bool IsAdmin { get; protected set; }
 
@@ -28,7 +28,7 @@ namespace QS.Cloud.Client
 
 
 		public QSCloudProvider(QSCloudConnectionInfo connection) {
-			Connection = connection;
+			ConnectionInfo = connection;
 		}
 
 		public bool AddUser(string username, string password)
@@ -94,7 +94,7 @@ namespace QS.Cloud.Client
 
 		public LoginToServerResponce LoginToServer(LoginToServerData loginToServerData) {
 
-			string organisation = Connection.Parameters.First(p => p.Title == "Логин").Value.ToString();
+			string organisation = ConnectionInfo.Parameters.First(p => p.Title == "Логин").Value.ToString();
 			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{organisation}\{loginToServerData.UserName}", loginToServerData.Password);
 
 			loginClient = new LoginManagementCloudClient(authInfo);

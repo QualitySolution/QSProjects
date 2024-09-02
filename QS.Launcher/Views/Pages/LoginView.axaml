@@ -40,7 +40,7 @@
                               ItemsSource="{Binding ConnectionTypes}"
                               PlaceholderForeground="#7A000000"
                               PlaceholderText="Тип подключения"
-                              SelectedItem="{Binding SelectedConnectionType}">
+                              SelectedItem="{Binding SelectedConnection.ConnectionInfo}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel MaxHeight="20" Orientation="Horizontal">
@@ -51,7 +51,8 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <ItemsControl ItemsSource="{Binding SelectedConnectionType.Parameters}">
+                    <TextBox Margin="5" Text="{Binding SelectedConnection.ConnectionTitle}" Watermark="Название подключения" />
+                    <ItemsControl ItemsSource="{Binding SelectedConnectionInfo.Parameters}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />

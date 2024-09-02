@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.ReactiveUI;
-using QS.Cloud.Client;
 using QS.DbManagement;
 
 namespace QS.Launcher.Desktop;
@@ -10,7 +9,7 @@ namespace QS.Launcher.Desktop;
 /// <summary>
 /// This class is for example purposes, usually project has its own Startup with DI-container for Launcher.
 /// </summary>
-class Program
+class ExampleStartup
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -22,11 +21,6 @@ class Program
 	public static AppBuilder ConfigureApp() {
 
 		ConnectionInfo[] connectionInfos = [
-			new QSCloudConnectionInfo {
-				Title = "QS Cloud",
-				IconBytes = System.IO.File.ReadAllBytes(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico")),
-				Parameters = [new ConnectionParameter("Логин")]
-			},
 			new MariaDBConnectionInfo {
 				Title = "MariaDB",
 				IconBytes = System.IO.File.ReadAllBytes(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")),
@@ -40,7 +34,13 @@ class Program
 
 		var connections = GetConnections();
 
-		AppBuilder appBuilder = AppBuilder.Configure(() => new App(connectionInfos, connections))
+		var options = new LauncherOptions {
+			AppTitle = "Ланучер для детей",
+			CompanyImage = new Uri("avares://QS.Launcher/Assets/sps.png"),
+			CompanyIcon = new Uri("avares://QS.Launcher/Assets/sps1024.png")
+		};
+
+		AppBuilder appBuilder = AppBuilder.Configure(() => new App(connectionInfos, options))
 			.UsePlatformDetect()
 			.WithInterFont()
 			.LogToTrace()

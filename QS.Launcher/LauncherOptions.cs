@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QS.Launcher;
 public class LauncherOptions {
-	public string CompanyImageBase64 { get; set; }
+	public Uri CompanyImage { get; set; }
 
-	public string CompanyIconBase64 { get; set; }
+	public Uri CompanyIcon { get; set; }
 
 	public string AppTitle { get; set; }
 }

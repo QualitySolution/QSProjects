@@ -6,7 +6,7 @@ namespace QS.DbManagement
 {
 	public interface IDbProvider : IDisposable
 	{
-		ConnectionInfo Connection { get; }
+		ConnectionInfo ConnectionInfo { get; }
 	
 		bool ChangePassword(string username, string oldPassword, string newPassword);
 		

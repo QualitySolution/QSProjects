@@ -1,16 +1,14 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using DynamicData.Kernel;
 using QS.DbManagement;
+using QS.Launcher.ViewModels.Commands;
 using QS.Project.Avalonia;
-using QS.Cloud.Client;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows.Input;
-using QS.Launcher.ViewModels.Commands;
-using DynamicData.Kernel;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
 
@@ -23,10 +21,20 @@ public class LoginVM : CarouselPageVM {
 
 	public List<ConnectionInfo> ConnectionTypes { get; }
 
-	private ConnectionInfo? selectedConnectionType;
-	public ConnectionInfo? SelectedConnectionType {
-		get => selectedConnectionType;
-		set => this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
+	//private ConnectionInfo? selectedConnectionType;
+	//public ConnectionInfo? SelectedConnectionInfo {
+	//	get => selectedConnectionType;
+	//	set {
+	//		this.RaiseAndSetIfChanged(ref selectedConnectionType, value);
+	//		if (SelectedConnection != null)
+	//			SelectedConnection.ConnectionInfo = value;
+	//	}
+	//}
+
+	private Connection? selectedConnection;
+	public Connection? SelectedConnection {
+		get => selectedConnection;
+		set => this.RaiseAndSetIfChanged(ref selectedConnection, value);
 	}
 
 	public ObservableCollection<Connection> Connections { get; set; }
@@ -47,14 +55,15 @@ public class LoginVM : CarouselPageVM {
 
 	public ICommand LoginCommand { get; }
 
-	private DataBasesVM dbVM;
+	public ICommand AddCommand { get; } = ReactiveCommand.Create(() => { });
+
+	private readonly DataBasesVM dbVM;
 
 	public LoginVM(NextPageCommand? nextCommand, PreviousPageCommand? previousCommand, ChangePageCommand? changePageCommand,
-		IEnumerable<ConnectionInfo> connectionInfos, IEnumerable<Connection> connections, Uri companyLogoUri, DataBasesVM dbVM)
-		: base(nextCommand, previousCommand, changePageCommand)
-	{
+		IEnumerable<ConnectionInfo> connectionInfos, IEnumerable<Connection> connections, LauncherOptions options, DataBasesVM dbVM)
+		: base(nextCommand, previousCommand, changePageCommand) {
 		this.dbVM = dbVM;
-		CompanyImage = new Bitmap(AssetLoader.Open(companyLogoUri));
+		CompanyImage = new Bitmap(AssetLoader.Open(options.CompanyImage));
 
 		Connections = new(connections);
 
@@ -70,12 +79,12 @@ public class LoginVM : CarouselPageVM {
 
 	public void Login() {
 
-		if(SelectedConnectionType is null)
+		if(SelectedConnection is null || SelectedConnection.ConnectionInfo is null)
 			return;
 
 		// TODO: solve the differences between ConnectionTypes and Connections
-		if (dbProvider is null || dbProvider.Connection == SelectedConnectionType)
-			dbProvider = SelectedConnectionType.CreateProvider();
+		if(dbProvider is null || dbProvider.ConnectionInfo == SelectedConnection.ConnectionInfo)
+			dbProvider = SelectedConnection.ConnectionInfo.CreateProvider();
 
 		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = User, Password = this.Password });
 
@@ -89,5 +98,5 @@ public class LoginVM : CarouselPageVM {
 	}
 
 	public bool CanLogin => !string.IsNullOrWhiteSpace(Password) &&
-		!string.IsNullOrWhiteSpace(User) && SelectedConnectionType is not null;
+		!string.IsNullOrWhiteSpace(User) && SelectedConnection.ConnectionInfo is not null;
 }

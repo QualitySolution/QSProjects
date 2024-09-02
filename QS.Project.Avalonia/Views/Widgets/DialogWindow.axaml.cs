@@ -80,10 +80,10 @@ public partial class DialogWindow : Window
 
 	#region FastMessages
 
-	public static void Error(string message) => new DialogWindow(message, "Error", DialogType.Error).Show();
-	public static void Info(string message) => new DialogWindow(message, "Info", DialogType.Info).Show();
-	public static void Success(string message) => new DialogWindow(message, "Success", DialogType.Success).Show();
-	public static void Warning(string message) => new DialogWindow(message, "Warning", DialogType.Warning).Show();
+	public static void Error(string message, string title = "Error") => new DialogWindow(message, title, DialogType.Error).Show();
+	public static void Info(string message, string title = "Info") => new DialogWindow(message, title, DialogType.Info).Show();
+	public static void Success(string message, string title = "Success") => new DialogWindow(message, title, DialogType.Success).Show();
+	public static void Warning(string message, string title = "Warning") => new DialogWindow(message, title, DialogType.Warning).Show();
 
 	#endregion
 }

@@ -9,6 +9,7 @@ using QS.Launcher.ViewModels.Commands;
 using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
+using QS.Project.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,14 @@ public partial class App : Application {
 		AvaloniaXamlLoader.Load(this);
 	}
 
-	public App(IEnumerable<ConnectionInfo> connectionInfos) {
+	public App(IEnumerable<ConnectionInfo> connectionInfos, LauncherOptions launcherOptions) {
 		this.connectionInfos = connectionInfos;
+		this.launcherOptions = launcherOptions;
 	}
 
 	IEnumerable<ConnectionInfo> connectionInfos;
+
+	LauncherOptions launcherOptions;
 
 	public App() : base() {}
 
@@ -37,7 +41,7 @@ public partial class App : Application {
 
 		collection.AddConnectionTypes(connectionInfos);
 		collection.AddConnections(connectionInfos);
-		collection.AddCompanyDependencies();
+		collection.AddCompanyDependencies(launcherOptions);
 
 		var services = collection.BuildServiceProvider();
 
@@ -73,8 +77,8 @@ public static class ServiceCollectionExtensions {
 		collection.AddTransient<ChangePageCommand>();
 	}
 
-	public static void AddCompanyDependencies(this IServiceCollection collection) {
-		collection.AddTransient(sp => new Uri("avares://QS.Launcher/Assets/sps.png"));
+	public static void AddCompanyDependencies(this IServiceCollection collection, LauncherOptions launcherOptions) {
+		collection.AddSingleton(launcherOptions);
 	}
 
 	public static void AddConnectionTypes(this IServiceCollection collection, IEnumerable<ConnectionInfo> connectionInfos) {
@@ -83,13 +87,19 @@ public static class ServiceCollectionExtensions {
 	}
 
 	public static void AddConnections(this IServiceCollection collection, IEnumerable<ConnectionInfo> connectionInfos) {
-		List<Dictionary<string, string>> conDefs;
-		using (var stream = System.IO.File.OpenRead("connections.json")) {
-			conDefs = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(stream);
+		List<Dictionary<string, string>> connectionDefinitions;
+		using (var stream = System.IO.File.Open("connections.json", System.IO.FileMode.OpenOrCreate)) {
+			try {
+				connectionDefinitions = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(stream);
+			}
+			catch (JsonException ex) {
+				DialogWindow.Error(ex.Message, "Файл с подключениями некорректен");
+				connectionDefinitions = [];
+			}
 		}
 
 
-		foreach(var parameters in conDefs)
+		foreach(var parameters in connectionDefinitions)
 			collection.AddSingleton(
 				connectionInfos.First(ci => ci.Title == parameters["Title"])
 				.CreateConnection(parameters));

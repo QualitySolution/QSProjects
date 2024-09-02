@@ -18,7 +18,7 @@ namespace QS.DbManagement
 	
 		public bool IsConnected => throw new NotImplementedException();
 
-		public ConnectionInfo Connection => throw new NotImplementedException();
+		public ConnectionInfo ConnectionInfo => throw new NotImplementedException();
 
 		public bool IsAdmin => throw new NotImplementedException();
 

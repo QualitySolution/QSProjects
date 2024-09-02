@@ -13,7 +13,6 @@
         d:DesignHeight="650"
         d:DesignWidth="450"
         x:DataType="vm:MainWindowVM"
-        Icon="/Assets/sps1024.png"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <ScrollViewer>
