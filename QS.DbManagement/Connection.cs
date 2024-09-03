@@ -1,13 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace QS.DbManagement
 {
-    public class Connection
+    public class Connection : ICloneable
     {
 		public ConnectionInfo ConnectionInfo { get; set; }
 
 		public string ConnectionTitle { get; set; }
+
+		public object Clone() => new Connection {
+			ConnectionInfo = (ConnectionInfo)ConnectionInfo.Clone(),
+			ConnectionTitle = (string)ConnectionTitle.Clone()
+		};
 	}
 }

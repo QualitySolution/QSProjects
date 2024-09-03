@@ -24,7 +24,7 @@ namespace QS.DbManagement
 
 		public MariaDBProvider(MariaDBConnectionInfo connectionInfo)
 		{
-			ConnectionString = connectionInfo.Parameters.Find(p => p.Title == "ConnectionString").Value as string;
+			ConnectionString = connectionInfo.Parameters.First(p => p.Title == "ConnectionString").Value as string;
 			connection = new MySqlConnection(ConnectionString);
 		}
 	

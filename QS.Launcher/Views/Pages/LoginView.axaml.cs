@@ -16,7 +16,7 @@ public partial class LoginView : UserControl
 			{
 				new Setter(
 					ItemsControl.RenderTransformProperty,
-					TransformOperations.Parse($"translateY(-91px)"))
+					TransformOperations.Parse($"translateY(-136px)"))
 			},
 		};
 

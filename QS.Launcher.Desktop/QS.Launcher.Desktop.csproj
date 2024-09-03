@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QS.Cloud.Client\QS.Cloud.Client.csproj" />
     <ProjectReference Include="..\QS.Launcher\QS.Launcher.csproj" />
   </ItemGroup>
 

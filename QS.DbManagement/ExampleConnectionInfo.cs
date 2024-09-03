@@ -1,8 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QS.DbManagement {
 	public class ExampleConnectionInfo : ConnectionInfo {
+
+		public ExampleConnectionInfo(IEnumerable<ConnectionParameter> parameters) {
+			Parameters = parameters.ToList();
+		}
+
 		public override IDbProvider CreateProvider() {
 			throw new NotImplementedException("This class is only for testing");
 		}
@@ -11,11 +17,16 @@ namespace QS.DbManagement {
 			throw new NotImplementedException();
 		}
 
-		public ExampleConnectionInfo() {
-			Parameters.Add(new ConnectionParameter("Parameter1", "Value1"));
-			Parameters.Add(new ConnectionParameter("Parameter2", "Value2"));
-			Parameters.Add(new ConnectionParameter("Parameter3"));
+		public override object Clone() {
+			return new ExampleConnectionInfo(Parameters);
+		}
 
+		public ExampleConnectionInfo() {
+			Parameters = new List<ConnectionParameter> {
+				new ConnectionParameter("Parameter1", "Value1"),
+				new ConnectionParameter("Parameter2", "Value2"),
+				new ConnectionParameter("Parameter3")
+			};
 			Title = "ExampleConnection";
 		}
 	}

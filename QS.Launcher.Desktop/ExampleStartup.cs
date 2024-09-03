@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.ReactiveUI;
+using QS.Cloud.Client;
 using QS.DbManagement;
 
 namespace QS.Launcher.Desktop;
@@ -21,15 +22,17 @@ class ExampleStartup
 	public static AppBuilder ConfigureApp() {
 
 		ConnectionInfo[] connectionInfos = [
-			new MariaDBConnectionInfo {
+			new QSCloudConnectionInfo([new ConnectionParameter("Логин")]){
+				Title = "QS Cloud",
+				IconBytes = System.IO.File.ReadAllBytes(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "qs.ico"))
+			},
+			new MariaDBConnectionInfo([new ConnectionParameter("Адрес")]) {
 				Title = "MariaDB",
 				IconBytes = System.IO.File.ReadAllBytes(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "mariadb.png")),
-				Parameters = [new ConnectionParameter("Адрес")]
 			},
-			new ExampleConnectionInfo {
+			new ExampleConnectionInfo([new ConnectionParameter("База данных"), new ConnectionParameter("Строка подключения")]) {
 				Title = "SQLite",
 				IconBytes = null,
-				Parameters = [new ConnectionParameter("База данных"), new ConnectionParameter("Строка подключения")]
 		} ];
 
 		var connections = GetConnections();
