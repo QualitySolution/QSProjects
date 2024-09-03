@@ -29,9 +29,11 @@ namespace Gamma.Binding {
 					AddElements(e.NewItems, e.NewStartingIndex);
 					break;
 				case NotifyCollectionChangedAction.Remove:
-					RemoveElements(e.OldItems);
+					// Не поддерживается удаление множества элементов
+					RemoveElementAt(e.OldStartingIndex);
 					break;
 				case NotifyCollectionChangedAction.Replace:
+					// Не поддерживается удаление множества элементов
 					ReplaceElements(e.NewItems, e.OldItems, e.NewStartingIndex);
 					break;
 				case NotifyCollectionChangedAction.Reset:
@@ -64,26 +66,17 @@ namespace Gamma.Binding {
 			}
 		}
 
-		void RemoveElements(IList items) {
-			//Попытка реализовать работу со множеством элементов,
-			//хотя по факту всегда приходит событие с одним элементом
-			//но теоретически может быть множество
-			
-			if(items.Count < 1) {
-				throw new InvalidOperationException("В событии удаления элементов из коллекции отсутствуют добавляемые элементы");
-			}
-
-			int[] indexes = new int[items.Count];
-			for(int i = 0; i < items.Count - 1; i++) {
-				indexes[i] = sourceList.IndexOf(items[i]);
-			}
-			TreePath path = new TreePath(indexes);
-			Adapter.EmitRowDeleted(path);
+		void RemoveElementAt(int index) {
+			var treePath = new TreePath(new int[] { index });
+			Adapter.EmitRowDeleted(treePath);
 		}
 
 		void ReplaceElements(IList newItems, IList oldItems, int index)
 		{
-			RemoveElements(oldItems);
+			// Не поддерживается удаление множества элементов
+			if(oldItems.Count == 1) {
+				RemoveElementAt(index);
+			}
 			AddElements(newItems, index);
 		}
 
