@@ -32,15 +32,22 @@ public partial class LoginView : UserControl
 	{
 		// if we change binding, transitions will not work
 		createConnection.Classes.Remove("invisible");
-		
 		loginContainer.Classes.Remove("up");
+		cogwheel.Classes.Remove("rolled");
 	}
 
 	private void HideCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
 		createConnection.Classes.Add("invisible");
-		
 		loginContainer.Classes.Add("up");
+		cogwheel.Classes.Add("rolled");
+	}
+
+	private void ToggleCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
+		if(createConnection.Classes.Contains("invisible"))
+			ShowCreationView(sender, e);
+		else
+			HideCreationView(sender, e);
 	}
 
 	private void Border_SizeChanged(object? sender, SizeChangedEventArgs e)

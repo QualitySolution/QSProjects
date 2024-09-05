@@ -8,6 +8,8 @@ namespace QS.DbManagement
 
 		public string ConnectionTitle { get; set; }
 
+		public string User { get; set; }
+
 		public object Clone() => new Connection {
 			ConnectionInfo = (ConnectionInfo)ConnectionInfo.Clone(),
 			ConnectionTitle = (string)ConnectionTitle.Clone()

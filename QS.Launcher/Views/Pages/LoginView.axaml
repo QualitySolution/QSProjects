@@ -9,11 +9,6 @@
              x:DataType="vm:LoginVM"
              mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <x:String x:Key="MariaDB">MariaDB</x:String>
-        <x:String x:Key="QSCloud">QS Cloud</x:String>
-    </UserControl.Resources>
-
     <ScrollViewer>
         <Grid Margin="20" VerticalAlignment="Stretch" ColumnDefinitions="*, *" RowDefinitions="200, Auto, Auto, Auto, Auto, Auto">
             <Image Grid.ColumnSpan="2" Source="{Binding CompanyImage}" />
@@ -30,13 +25,18 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Click="ShowCreationView"
-                        Command="{Binding NewCommand}"
-                        Content="+"
-                        FontWeight="SemiBold"
-                        IsEnabled="{Binding NewConnection, Converter={x:Static ObjectConverters.IsNull}}" />
+                <Button Grid.Column="1" Height="32" Margin="5,0,0,0" Click="ToggleCreationView" FontWeight="SemiBold">
+                    <Image x:Name="cogwheel" Classes="animated" Source="avares://QS.Launcher/Assets/cogwheel.ico">
+                        <Image.Styles>
+                            <Style Selector="Image">
+                                <Setter Property="RenderTransform" Value="rotate(0deg)" />
+                            </Style>
+                            <Style Selector="Image.rolled">
+                                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+                            </Style>
+                        </Image.Styles>
+                    </Image>
+                </Button>
             </Grid>
 
             <Border x:Name="createConnection"
@@ -49,9 +49,12 @@
                     Classes="invisible animated"
                     SizeChanged="Border_SizeChanged">
                 <StackPanel>
+                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Название подключения" />
+                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.User, Mode=TwoWay}" Watermark="Пользователь" />
                     <ComboBox x:Name="connectionType"
                               Margin="5"
                               HorizontalAlignment="Stretch"
+                              IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}"
                               ItemsSource="{Binding ConnectionTypes}"
                               PlaceholderForeground="#7A000000"
                               PlaceholderText="Тип подключения"
@@ -66,30 +69,23 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <TextBox Margin="5" Text="{Binding NewConnection.ConnectionTitle}" Watermark="Название подключения" />
                     <ItemsControl ItemsSource="{Binding NewConnectionInfo.Parameters}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />
+                                <TextBox Margin="5" Text="{Binding Value, Mode=TwoWay}" Watermark="{Binding Title}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
                     <Grid ColumnDefinitions="*, *, *">
-                        <Button Margin="5"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"
-                                Click="HideCreationView"
-                                Command="{Binding AddCommand}"
-                                Content="Добавить"
-                                IsEnabled="{Binding NewConnection, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding NewCommand}" Content="Новое" />
                         <Button Grid.Column="1"
                                 Margin="5"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Center"
-                                Click="HideCreationView"
                                 Command="{Binding CancelCommand}"
-                                Content="Отмена" />
+                                Content="Дублировать"
+                                IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <Button Grid.Column="2"
                                 Margin="5"
                                 HorizontalAlignment="Stretch"
@@ -111,7 +107,6 @@
             </Border>
 
             <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
-                <TextBox Margin="5" Text="{Binding User}" Watermark="Пользователь" />
                 <TextBox Margin="5" Text="{Binding Password}" Watermark="Пароль" />
 
                 <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding LoginCommand}" Content="Войти" IsEnabled="{Binding CanLogin}" />

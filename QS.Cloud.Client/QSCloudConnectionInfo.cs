@@ -43,7 +43,7 @@ namespace QS.Cloud.Client {
 		}
 
 		public override object Clone() => new QSCloudConnectionInfo(Parameters.ToList()) {
-			IconBytes = (byte[])IconBytes.Clone(),
+			IconBytes = IconBytes,
 			Title = (string)Title.Clone()
 		};
 	}

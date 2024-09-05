@@ -39,11 +39,16 @@ public class LoginVM : CarouselPageVM {
 		}
 	}
 
-	public ConnectionInfo NewConnectionInfo {
-		get => NewConnection?.ConnectionInfo;
+	public ConnectionInfo? NewConnectionInfo {
+		get {
+			if (SelectedConnection != null)
+				return SelectedConnection.ConnectionInfo.Clone() as ConnectionInfo;
+			else return null;
+		}
 		set {
-			NewConnection.ConnectionInfo = value;
-			this.RaisePropertyChanged(nameof(NewConnection));
+			if (value != null)
+				SelectedConnection.ConnectionInfo = (ConnectionInfo)value.Clone();
+			this.RaisePropertyChanged(nameof(SelectedConnection));
 			this.RaisePropertyChanged(nameof(NewConnectionInfo));
 			this.RaisePropertyChanged(nameof(CanLogin));
 		}
@@ -51,14 +56,14 @@ public class LoginVM : CarouselPageVM {
 
 	public ObservableCollection<Connection> Connections { get; set; }
 
-	private string? user;
-	public string? User {
-		get => user;
-		set {
-			this.RaiseAndSetIfChanged(ref user, value);
-			this.RaisePropertyChanged(nameof(CanLogin));
-		}
-	}
+	//private string? user;
+	//public string? User {
+	//	get => user;
+	//	set {
+	//		this.RaiseAndSetIfChanged(ref user, value);
+	//		this.RaisePropertyChanged(nameof(CanLogin));
+	//	}
+	//}
 
 	private string? password;
 	public string? Password {
@@ -91,7 +96,6 @@ public class LoginVM : CarouselPageVM {
 
 
 		LoginCommand = ReactiveCommand.Create(Login);
-		AddCommand = ReactiveCommand.Create(AddCreatedConnection);
 		NewCommand = ReactiveCommand.Create(CreateNewConnection);
 		DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 		CancelCommand = ReactiveCommand.Create(CancelConnectionCreation);
@@ -101,18 +105,8 @@ public class LoginVM : CarouselPageVM {
 		foreach (var ci in ConnectionTypes) {
 			ci.Parameters.ForEach(p => p.Value = null);
 		}
+		//NewConnectionInfo = null;
 		this.RaisePropertyChanged(nameof(NewConnectionInfo));
-	}
-
-	public void AddCreatedConnection() {
-		if (Connections.Any(c => c.ConnectionTitle == NewConnection.ConnectionTitle)) {
-			NewConnection.ConnectionTitle += "(копия)";
-		}
-		Connections.Add(NewConnection);
-		SelectedConnection = NewConnection;
-		NewConnection = null;
-
-		ClearParamsInConnectionInfos();
 	}
 
 	public void DeleteSelectedConnection() {
@@ -123,20 +117,27 @@ public class LoginVM : CarouselPageVM {
 		ClearParamsInConnectionInfos();
 	}
 
+	public void CloneConnection() {
+		SelectedConnection = SelectedConnection.Clone() as Connection;
+		if(Connections.Any(c => c.ConnectionTitle == NewConnection.ConnectionTitle)) {
+			NewConnection.ConnectionTitle += "(копия)";
+		}
+		Connections.Add(SelectedConnection);
+	}
+
 	public void CancelConnectionCreation() {
-		NewConnection = null;
+		SelectedConnection = null;
 	}
 
 	public void CreateNewConnection() {
-		if(SelectedConnection is not null)
-			NewConnection = (Connection)SelectedConnection.Clone();
-		else
-			NewConnection = new();
+		Connection newCon = new();
+		Connections.Add(newCon);
+		SelectedConnection = newCon;
 	}
-
+	
 	public void Login() {
 
-		var usedConnection = NewConnection ?? SelectedConnection;
+		var usedConnection = SelectedConnection;
 
 		if(usedConnection is null || usedConnection.ConnectionInfo is null)
 			return;
@@ -145,7 +146,7 @@ public class LoginVM : CarouselPageVM {
 		if(dbProvider is null || dbProvider.ConnectionInfo == usedConnection.ConnectionInfo)
 			dbProvider = usedConnection.ConnectionInfo.CreateProvider();
 
-		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = User, Password = this.Password });
+		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = usedConnection.User, Password = this.Password });
 
 		if(resp.Success) {
 			dbVM.Provider = dbProvider;
@@ -163,7 +164,7 @@ public class LoginVM : CarouselPageVM {
 				usedConnection is not null &&
 				usedConnection.ConnectionInfo is not null &&
 				!string.IsNullOrWhiteSpace(Password) &&
-				!string.IsNullOrWhiteSpace(User);
+				!string.IsNullOrWhiteSpace(usedConnection.User);
 		}
 	}
 }
