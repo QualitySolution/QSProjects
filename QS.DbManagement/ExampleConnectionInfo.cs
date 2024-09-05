@@ -17,9 +17,9 @@ namespace QS.DbManagement {
 			throw new NotImplementedException();
 		}
 
-		public override object Clone() {
-			return new ExampleConnectionInfo(Parameters);
-		}
+		public override object Clone() => new ExampleConnectionInfo(Parameters) {
+			Title = Title
+		};
 
 		public ExampleConnectionInfo() {
 			Parameters = new List<ConnectionParameter> {

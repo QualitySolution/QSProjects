@@ -3,6 +3,7 @@ using Avalonia.Platform;
 using DynamicData.Kernel;
 using QS.DbManagement;
 using QS.Launcher.ViewModels.Commands;
+using QS.Launcher.ViewModels.ModelsDTO;
 using QS.Project.Avalonia;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -19,19 +20,21 @@ public class LoginVM : CarouselPageVM {
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
 
-	public List<ConnectionInfo> ConnectionTypes { get; }
+	internal List<ConnectionInfoDTO> ConnectionTypes { get; }
 
-	private Connection? selectedConnection;
-	public Connection? SelectedConnection {
+	private ConnectionDTO? selectedConnection;
+	internal ConnectionDTO? SelectedConnection {
 		get => selectedConnection;
 		set {
 			this.RaiseAndSetIfChanged(ref selectedConnection, value);
 			this.RaisePropertyChanged(nameof(CanLogin));
+			this.RaisePropertyChanged(nameof(Connections));
+			this.RaisePropertyChanged(nameof(NewConnectionInfo));
 		}
 	}
 
-	private Connection? newConnection;
-	public Connection? NewConnection {
+	private ConnectionDTO? newConnection;
+	internal ConnectionDTO? NewConnection {
 		get => newConnection;
 		set {
 			this.RaiseAndSetIfChanged(ref newConnection, value);
@@ -39,22 +42,23 @@ public class LoginVM : CarouselPageVM {
 		}
 	}
 
-	public ConnectionInfo? NewConnectionInfo {
+	internal ConnectionInfoDTO? NewConnectionInfo {
 		get {
-			if (SelectedConnection != null)
-				return SelectedConnection.ConnectionInfo.Clone() as ConnectionInfo;
+			if (SelectedConnection?.ConnectionInfo != null)
+				return ConnectionTypes.First(ci => ci.Title == SelectedConnection.ConnectionInfo.Title);
 			else return null;
 		}
 		set {
-			if (value != null)
-				SelectedConnection.ConnectionInfo = (ConnectionInfo)value.Clone();
+			if (value != null) 
+				SelectedConnection.ConnectionInfo = (ConnectionInfoDTO)value.Clone();
+			//SelectedConnection.ConnectionInfo = value;
 			this.RaisePropertyChanged(nameof(SelectedConnection));
 			this.RaisePropertyChanged(nameof(NewConnectionInfo));
 			this.RaisePropertyChanged(nameof(CanLogin));
 		}
 	}
 
-	public ObservableCollection<Connection> Connections { get; set; }
+	internal ObservableCollection<ConnectionDTO> Connections { get; set; }
 
 	//private string? user;
 	//public string? User {
@@ -90,9 +94,9 @@ public class LoginVM : CarouselPageVM {
 		this.dbVM = dbVM;
 		CompanyImage = new Bitmap(AssetLoader.Open(options.CompanyImage));
 
-		Connections = new(connections);
+		Connections = new(connections.Select(c => new ConnectionDTO(c)));
 
-		ConnectionTypes = connectionInfos.AsList();
+		ConnectionTypes = connectionInfos.Select(ci => new ConnectionInfoDTO(ci)).AsList();
 
 
 		LoginCommand = ReactiveCommand.Create(Login);
@@ -101,28 +105,20 @@ public class LoginVM : CarouselPageVM {
 		CancelCommand = ReactiveCommand.Create(CancelConnectionCreation);
 	}
 
-	public void ClearParamsInConnectionInfos() {
-		foreach (var ci in ConnectionTypes) {
-			ci.Parameters.ForEach(p => p.Value = null);
-		}
-		//NewConnectionInfo = null;
-		this.RaisePropertyChanged(nameof(NewConnectionInfo));
-	}
-
 	public void DeleteSelectedConnection() {
 		Connections.Remove(SelectedConnection);
 		SelectedConnection = null;
 		NewConnection = null;
 
-		ClearParamsInConnectionInfos();
 	}
 
 	public void CloneConnection() {
-		SelectedConnection = SelectedConnection.Clone() as Connection;
+		// TODO: Add clone behaviour to dto
+		//SelectedConnection = SelectedConnection.Clone() as Connection;
 		if(Connections.Any(c => c.ConnectionTitle == NewConnection.ConnectionTitle)) {
 			NewConnection.ConnectionTitle += "(копия)";
 		}
-		Connections.Add(SelectedConnection);
+		//Connections.Add(SelectedConnection);
 	}
 
 	public void CancelConnectionCreation() {
@@ -130,7 +126,7 @@ public class LoginVM : CarouselPageVM {
 	}
 
 	public void CreateNewConnection() {
-		Connection newCon = new();
+		ConnectionDTO newCon = new();
 		Connections.Add(newCon);
 		SelectedConnection = newCon;
 	}
@@ -142,9 +138,10 @@ public class LoginVM : CarouselPageVM {
 		if(usedConnection is null || usedConnection.ConnectionInfo is null)
 			return;
 
+		usedConnection.ConnectionInfo.UpdateFields();
 		// TODO: solve the differences between ConnectionTypes and Connections
-		if(dbProvider is null || dbProvider.ConnectionInfo == usedConnection.ConnectionInfo)
-			dbProvider = usedConnection.ConnectionInfo.CreateProvider();
+		if(dbProvider is null || dbProvider.ConnectionInfo.Title == usedConnection.ConnectionInfo.Title)
+			dbProvider = usedConnection.ConnectionInfo.Instance.CreateProvider();
 
 		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = usedConnection.User, Password = this.Password });
 
