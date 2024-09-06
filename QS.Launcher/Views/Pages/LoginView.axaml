@@ -62,8 +62,8 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel MaxHeight="20" Orientation="Horizontal">
-                                    <Image Source="{Binding IconBytes}" Stretch="Uniform" />
-                                    <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Title}" />
+                                    <Image Width="25" Source="{Binding IconBytes}" Stretch="Uniform" />
+                                    <Label Margin="5,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Title}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -83,7 +83,7 @@
                                 Margin="5"
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Center"
-                                Command="{Binding CancelCommand}"
+                                Command="{Binding CloneCommand}"
                                 Content="Дублировать"
                                 IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <Button Grid.Column="2"

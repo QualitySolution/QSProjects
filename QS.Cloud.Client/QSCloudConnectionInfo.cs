@@ -29,16 +29,17 @@ namespace QS.Cloud.Client {
 			// TODO: deal with Icon
 			ConnectionInfo info = new QSCloudConnectionInfo(
 				parameters
-					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title")
-					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))
-					.ToList()) {
-				Title = "QS Cloud"
+					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title" && pair.Key != "User")
+					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
+				Title = "QS Cloud",
+				IconBytes = IconBytes
 			};
 
 
 			return new Connection {
 				ConnectionInfo = info,
-				ConnectionTitle = parameters["ConnectionTitle"]
+				ConnectionTitle = parameters["ConnectionTitle"],
+				User = parameters["User"],
 			};
 		}
 

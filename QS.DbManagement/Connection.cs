@@ -12,7 +12,8 @@ namespace QS.DbManagement
 
 		public object Clone() => new Connection {
 			ConnectionInfo = (ConnectionInfo)ConnectionInfo.Clone(),
-			ConnectionTitle = (string)ConnectionTitle.Clone()
+			ConnectionTitle = ConnectionTitle,
+			User = User
 		};
 	}
 }

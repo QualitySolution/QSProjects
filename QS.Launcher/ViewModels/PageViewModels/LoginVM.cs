@@ -33,15 +33,6 @@ public class LoginVM : CarouselPageVM {
 		}
 	}
 
-	private ConnectionDTO? newConnection;
-	internal ConnectionDTO? NewConnection {
-		get => newConnection;
-		set {
-			this.RaiseAndSetIfChanged(ref newConnection, value);
-			this.RaisePropertyChanged(nameof(CanLogin));
-		}
-	}
-
 	internal ConnectionInfoDTO? NewConnectionInfo {
 		get {
 			if (SelectedConnection?.ConnectionInfo != null)
@@ -51,7 +42,6 @@ public class LoginVM : CarouselPageVM {
 		set {
 			if (value != null) 
 				SelectedConnection.ConnectionInfo = (ConnectionInfoDTO)value.Clone();
-			//SelectedConnection.ConnectionInfo = value;
 			this.RaisePropertyChanged(nameof(SelectedConnection));
 			this.RaisePropertyChanged(nameof(NewConnectionInfo));
 			this.RaisePropertyChanged(nameof(CanLogin));
@@ -59,15 +49,6 @@ public class LoginVM : CarouselPageVM {
 	}
 
 	internal ObservableCollection<ConnectionDTO> Connections { get; set; }
-
-	//private string? user;
-	//public string? User {
-	//	get => user;
-	//	set {
-	//		this.RaiseAndSetIfChanged(ref user, value);
-	//		this.RaisePropertyChanged(nameof(CanLogin));
-	//	}
-	//}
 
 	private string? password;
 	public string? Password {
@@ -84,7 +65,7 @@ public class LoginVM : CarouselPageVM {
 	public ICommand AddCommand { get; }
 	public ICommand NewCommand { get; }
 	public ICommand DeleteCommand { get; }
-	public ICommand CancelCommand { get; }
+	public ICommand CloneCommand { get; }
 
 	private readonly DataBasesVM dbVM;
 
@@ -102,27 +83,20 @@ public class LoginVM : CarouselPageVM {
 		LoginCommand = ReactiveCommand.Create(Login);
 		NewCommand = ReactiveCommand.Create(CreateNewConnection);
 		DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
-		CancelCommand = ReactiveCommand.Create(CancelConnectionCreation);
+		CloneCommand = ReactiveCommand.Create(CloneConnection);
 	}
 
 	public void DeleteSelectedConnection() {
 		Connections.Remove(SelectedConnection);
 		SelectedConnection = null;
-		NewConnection = null;
-
 	}
 
 	public void CloneConnection() {
-		// TODO: Add clone behaviour to dto
-		//SelectedConnection = SelectedConnection.Clone() as Connection;
-		if(Connections.Any(c => c.ConnectionTitle == NewConnection.ConnectionTitle)) {
-			NewConnection.ConnectionTitle += "(копия)";
-		}
-		//Connections.Add(SelectedConnection);
-	}
-
-	public void CancelConnectionCreation() {
-		SelectedConnection = null;
+		var n = SelectedConnection.Clone() as ConnectionDTO;
+		n.ConnectionTitle += "(копия)";
+		n.UpdateFields();
+		Connections.Add(n);
+		SelectedConnection = n;
 	}
 
 	public void CreateNewConnection() {
@@ -139,7 +113,6 @@ public class LoginVM : CarouselPageVM {
 			return;
 
 		usedConnection.ConnectionInfo.UpdateFields();
-		// TODO: solve the differences between ConnectionTypes and Connections
 		if(dbProvider is null || dbProvider.ConnectionInfo.Title == usedConnection.ConnectionInfo.Title)
 			dbProvider = usedConnection.ConnectionInfo.Instance.CreateProvider();
 
@@ -156,7 +129,7 @@ public class LoginVM : CarouselPageVM {
 
 	public bool CanLogin {
 		get {
-			var usedConnection = NewConnection ?? SelectedConnection;
+			var usedConnection = SelectedConnection;
 			return
 				usedConnection is not null &&
 				usedConnection.ConnectionInfo is not null &&

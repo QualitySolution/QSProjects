@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace QS.DbManagement
 {
@@ -16,6 +15,8 @@ namespace QS.DbManagement
 					case "Адрес":
 						Address = (string)parameter.Value;
 						break;
+					default:
+						throw new ArgumentException($"Неизвестный параметр {parameter.Title}");
 				}
 			}
 		}
@@ -26,7 +27,20 @@ namespace QS.DbManagement
 		};
 
 		public override Connection CreateConnection(IDictionary<string, string> parameters) {
-			throw new NotImplementedException();
+			ConnectionInfo info = new MariaDBConnectionInfo(
+				parameters
+					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title" && pair.Key != "User")
+					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
+				Title = "MariaDB",
+				IconBytes = IconBytes
+			};
+
+
+			return new Connection {
+				ConnectionInfo = info,
+				ConnectionTitle = parameters["ConnectionTitle"],
+				User = parameters["User"],
+			};
 		}
 
 		public override IDbProvider CreateProvider() => new MariaDBProvider(this);

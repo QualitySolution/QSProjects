@@ -101,8 +101,7 @@ public static class ServiceCollectionExtensions {
 
 		foreach(var parameters in connectionDefinitions)
 			collection.AddSingleton(
-				connectionInfos.First(ci => ci.Title == parameters["Title"])
-				.CreateConnection(parameters));
+				connectionInfos.First(ci => ci.Title == parameters["Title"]).CreateConnection(parameters));
 	}
 }
 

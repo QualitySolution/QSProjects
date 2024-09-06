@@ -1,9 +1,10 @@
 using QS.DbManagement;
 using ReactiveUI;
+using System;
 
 namespace QS.Launcher.ViewModels.ModelsDTO;
 
-internal class ConnectionDTO : ReactiveObject {
+internal class ConnectionDTO : ReactiveObject, ICloneable {
 
 	string connectionTitle;
 	public string ConnectionTitle {
@@ -38,5 +39,15 @@ internal class ConnectionDTO : ReactiveObject {
 
 	public ConnectionDTO() {
 		
+	}
+
+	public object Clone() {
+		return new ConnectionDTO(Instance.Clone() as Connection);
+	}
+
+	public void UpdateFields() {
+		Instance.ConnectionTitle = ConnectionTitle;
+		Instance.User = User;
+		Instance.ConnectionInfo = ConnectionInfo.Instance;
 	}
 }
