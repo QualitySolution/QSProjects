@@ -29,7 +29,7 @@ namespace QS.DbManagement
 		public override Connection CreateConnection(IDictionary<string, string> parameters) {
 			ConnectionInfo info = new MariaDBConnectionInfo(
 				parameters
-					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title" && pair.Key != "User")
+					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title" && pair.Key != "User" && pair.Key != "last")
 					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
 				Title = "MariaDB",
 				IconBytes = IconBytes
@@ -40,6 +40,7 @@ namespace QS.DbManagement
 				ConnectionInfo = info,
 				ConnectionTitle = parameters["ConnectionTitle"],
 				User = parameters["User"],
+				Last = parameters.ContainsKey("Last") && parameters["Last"] == "true"
 			};
 		}
 

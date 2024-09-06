@@ -24,7 +24,7 @@ internal class ConnectionDTO : ReactiveObject, ICloneable {
 		set => this.RaiseAndSetIfChanged(ref connectionInfo, value);
 	}
 
-
+	public bool Last { get; set; } = false;
 
 	public Connection Instance { get; }
 
@@ -35,6 +35,8 @@ internal class ConnectionDTO : ReactiveObject, ICloneable {
 
 		if (connection.ConnectionInfo != null)
 			ConnectionInfo = new(connection.ConnectionInfo);
+
+		Last = connection.Last;
 	}
 
 	public ConnectionDTO() {
@@ -42,12 +44,17 @@ internal class ConnectionDTO : ReactiveObject, ICloneable {
 	}
 
 	public object Clone() {
+		UpdateFields();
 		return new ConnectionDTO(Instance.Clone() as Connection);
 	}
 
 	public void UpdateFields() {
 		Instance.ConnectionTitle = ConnectionTitle;
 		Instance.User = User;
+
+		ConnectionInfo.UpdateFields();
 		Instance.ConnectionInfo = ConnectionInfo.Instance;
 	}
+
+
 }

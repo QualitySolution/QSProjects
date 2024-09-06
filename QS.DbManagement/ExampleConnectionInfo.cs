@@ -16,7 +16,7 @@ namespace QS.DbManagement {
 		public override Connection CreateConnection(IDictionary<string, string> parameters) {
 			ConnectionInfo ci = new ExampleConnectionInfo(
 				parameters
-					.Where(pair => pair.Key != "User" && pair.Key != "Title" && pair.Key != "ConnectionTitle")
+					.Where(pair => pair.Key != "User" && pair.Key != "Title" && pair.Key != "ConnectionTitle" && pair.Key != "Last")
 					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
 				IconBytes = IconBytes,
 				Title = "Example" };
@@ -24,7 +24,8 @@ namespace QS.DbManagement {
 			return new Connection {
 				ConnectionInfo = ci,
 				ConnectionTitle = parameters["ConnectionTitle"],
-				User = parameters["User"]
+				User = parameters["User"],
+				Last = parameters.ContainsKey("Last") && parameters["Last"] == "true"
 			};
 		}
 

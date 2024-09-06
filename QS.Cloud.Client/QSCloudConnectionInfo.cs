@@ -9,6 +9,8 @@ namespace QS.Cloud.Client {
 		public string Login { get; set; }
 
 		public QSCloudConnectionInfo(IEnumerable<ConnectionParameter> parameters) {
+			Title = "QS Cloud";
+
 			Parameters = parameters.ToList();
 			foreach(var parameter in parameters) {
 				switch(parameter.Title) {
@@ -26,20 +28,23 @@ namespace QS.Cloud.Client {
 		}
 
 		public override Connection CreateConnection(IDictionary<string, string> parameters) {
-			// TODO: deal with Icon
+
+			var conn = new Connection();
+
 			ConnectionInfo info = new QSCloudConnectionInfo(
 				parameters
-					.Where(pair => pair.Key != "ConnectionTitle" && pair.Key != "Title" && pair.Key != "User")
+					.Where(pair => pair.Key != nameof(conn.ConnectionTitle) && pair.Key != nameof(Title)
+						&& pair.Key != nameof(conn.User) && pair.Key != nameof(conn.Last))
 					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
-				Title = "QS Cloud",
 				IconBytes = IconBytes
 			};
 
 
 			return new Connection {
 				ConnectionInfo = info,
-				ConnectionTitle = parameters["ConnectionTitle"],
-				User = parameters["User"],
+				ConnectionTitle = parameters[nameof(conn.ConnectionTitle)],
+				User = parameters[nameof(conn.User)],
+				Last = parameters.ContainsKey(nameof(conn.Last)) && parameters[nameof(conn.Last)] == "true"
 			};
 		}
 

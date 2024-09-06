@@ -8,7 +8,11 @@ using QS.Project.Avalonia;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels;
@@ -66,6 +70,9 @@ public class LoginVM : CarouselPageVM {
 	public ICommand NewCommand { get; }
 	public ICommand DeleteCommand { get; }
 	public ICommand CloneCommand { get; }
+	public ICommand SaveCommand { get; }
+
+	readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
 	private readonly DataBasesVM dbVM;
 
@@ -77,6 +84,8 @@ public class LoginVM : CarouselPageVM {
 
 		Connections = new(connections.Select(c => new ConnectionDTO(c)));
 
+		SelectedConnection = Connections.FirstOrDefault(c => c.Last);
+
 		ConnectionTypes = connectionInfos.Select(ci => new ConnectionInfoDTO(ci)).AsList();
 
 
@@ -84,6 +93,7 @@ public class LoginVM : CarouselPageVM {
 		NewCommand = ReactiveCommand.Create(CreateNewConnection);
 		DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 		CloneCommand = ReactiveCommand.Create(CloneConnection);
+		SaveCommand = ReactiveCommand.Create(SerialaizeConnections);
 	}
 
 	public void DeleteSelectedConnection() {
@@ -118,6 +128,8 @@ public class LoginVM : CarouselPageVM {
 
 		var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = usedConnection.User, Password = this.Password });
 
+		Task.Run(() => SaveCommand.Execute(null));
+
 		if(resp.Success) {
 			dbVM.Provider = dbProvider;
 			dbVM.IsAdmin = resp.IsAdmin;
@@ -135,6 +147,24 @@ public class LoginVM : CarouselPageVM {
 				usedConnection.ConnectionInfo is not null &&
 				!string.IsNullOrWhiteSpace(Password) &&
 				!string.IsNullOrWhiteSpace(usedConnection.User);
+		}
+	}
+
+	public void SerialaizeConnections() {
+		// if last selected connection changed
+		if (!SelectedConnection.Last) {
+			var prevLast = Connections.FirstOrDefault(c => c.Last);
+			if(prevLast != null)
+				prevLast.Last = false;
+			SelectedConnection.Last = true;
+		}
+		foreach (var conn in Connections)
+			conn.UpdateFields();
+
+		using(FileStream stream = new("connections.json", FileMode.Create)) {
+			JsonSerializer.Serialize(stream, Connections
+				.Select(c => c.Instance.PrepareParams())
+				.ToList(), serializerOptions);
 		}
 	}
 }
