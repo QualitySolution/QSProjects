@@ -1,0 +1,21 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.UserManagementView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:QS.Launcher.ViewModels.PageViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+			 x:DataType="vm:UserManagementVM"
+             mc:Ignorable="d">
+    <ScrollViewer>
+        <Grid>
+            <Label Content="Управление пользователями" />
+            <Button Content="Назад" Command="{Binding ChangePageCommand}" >
+<Button.CommandParameter>
+                                <x:Int32>1</x:Int32>
+                            </Button.CommandParameter>
+                        </Button>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -2,11 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+		<Nullable>disable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Protos" />
-    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Google.Protobuf" Version="3.22.1" />
@@ -18,8 +15,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Protos\BaseManagement.proto" />
       <None Remove="Protos\CloudFeatures.proto" />
+      <None Remove="Protos\LoginManagement.proto" />
+      <None Remove="Protos\SessionManagement.proto" />
+      <None Remove="Protos\UserControl.proto" />
+      <None Remove="Protos\UserManagement.proto" />
+      <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
       <Protobuf Include="Protos\CloudFeatures.proto" />
+      <Protobuf Include="Protos\LoginManagement.proto" />
+      <Protobuf Include="Protos\SessionManagement.proto" />
+      <Protobuf Include="Protos\UserManagement.proto" />
     </ItemGroup>
 
 </Project>

@@ -5,9 +5,9 @@ using QS.Cloud.Core;
 
 namespace QS.Cloud.Client
 {
-    public class CloudClientService: CloudClientServiceBase
+    public class CloudFeaturesClient: CloudClientBySession
     {
-        public CloudClientService(ISessionInfoProvider sessionInfoProvider) 
+        public CloudFeaturesClient(ISessionInfoProvider sessionInfoProvider) 
 	        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
         
         #region Запросы
@@ -21,7 +21,7 @@ namespace QS.Cloud.Client
             {
                 BaseGuid = baseGuid
             };
-            var response = client.AvailableFeatures(request, Headers);
+            var response = client.AvailableFeatures(request, headers);
 
             return response.Features.ToList();
         }

@@ -5,6 +5,7 @@
 		<ProjectGuid>{8984DB2F-4849-4F5B-915C-CE69537E93A8}</ProjectGuid>
 		<RootNamespace>QS</RootNamespace>
 		<Company>Quality Solution</Company>
+		<Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

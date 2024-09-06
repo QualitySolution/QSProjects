@@ -4,7 +4,8 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <Company>Quality Solution</Company>
         <ProjectGuid>{A869EC36-67D2-4A36-95E9-0B1E7350928F}</ProjectGuid>
-    </PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="NLog" Version="5.1.2" />

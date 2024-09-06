@@ -1,0 +1,123 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.LoginView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
+             x:DataType="vm:LoginVM"
+             mc:Ignorable="d">
+
+    <ScrollViewer>
+        <Grid Margin="20" VerticalAlignment="Stretch" ColumnDefinitions="*, *" RowDefinitions="200, Auto, Auto, Auto, Auto, Auto">
+            <Image Grid.ColumnSpan="2" Source="{Binding CompanyImage}" />
+            <Label Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Content="Спецодежда" FontWeight="SemiBold" />
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Stretch" ColumnDefinitions="*, Auto">
+                <ComboBox x:Name="connections" HorizontalAlignment="Stretch" ItemsSource="{Binding Connections}" PlaceholderForeground="#7A000000" PlaceholderText="Выберите подключение" SelectedItem="{Binding SelectedConnection, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel MaxHeight="20" Orientation="Horizontal">
+                                <Image Source="{Binding ConnectionInfo.IconBytes}" Stretch="Uniform" />
+                                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding ConnectionTitle, Mode=TwoWay}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Grid.Column="1" Height="32" Margin="5,0,0,0" Click="ToggleCreationView" FontWeight="SemiBold">
+                    <Image x:Name="cogwheel" Classes="animated" Source="avares://QS.Launcher/Assets/cogwheel.ico">
+                        <Image.Styles>
+                            <Style Selector="Image">
+                                <Setter Property="RenderTransform" Value="rotate(0deg)" />
+                            </Style>
+                            <Style Selector="Image.rolled">
+                                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+                            </Style>
+                        </Image.Styles>
+                    </Image>
+                </Button>
+            </Grid>
+
+            <Border x:Name="createConnection"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    Margin="0,3,0,3"
+                    Padding="0,3,0,3"
+                    BorderBrush="LightGray"
+                    BorderThickness="0,1,0,1"
+                    Classes="invisible animated"
+                    SizeChanged="Border_SizeChanged">
+                <StackPanel>
+                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Название подключения" />
+                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.User, Mode=TwoWay}" Watermark="Пользователь" />
+                    <ComboBox x:Name="connectionType"
+                              Margin="5"
+                              HorizontalAlignment="Stretch"
+                              IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}"
+                              ItemsSource="{Binding ConnectionTypes}"
+                              PlaceholderForeground="#7A000000"
+                              PlaceholderText="Тип подключения"
+                              SelectedItem="{Binding NewConnectionInfo}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel MaxHeight="20" Orientation="Horizontal">
+                                    <Image Width="25" Source="{Binding IconBytes}" Stretch="Uniform" />
+                                    <Label Margin="5,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Title}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <ItemsControl ItemsSource="{Binding SelectedConnection.ConnectionInfo.Parameters}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid ColumnDefinitions="*, *, *">
+                        <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding NewCommand}" Content="Новое" />
+                        <Button Grid.Column="1"
+                                Margin="5"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding CloneCommand}"
+                                Content="Дублировать"
+                                IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <Button Grid.Column="2"
+                                Margin="5"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Click="HideCreationView"
+                                Command="{Binding DeleteCommand}"
+                                Content="Удалить"
+                                IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </Grid>
+                </StackPanel>
+
+                <Border.Styles>
+                    <Style Selector="Border.invisible">
+                        <Setter Property="IsHitTestVisible" Value="False" />
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="RenderTransform" Value="translateY(-90px)" />
+                    </Style>
+                </Border.Styles>
+            </Border>
+
+            <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
+                <TextBox Margin="5" Text="{Binding Password}" Watermark="Пароль" />
+
+                <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding LoginCommand}" Content="Войти" IsEnabled="{Binding CanLogin}" />
+
+                <ItemsControl.Styles>
+                    <Style Selector="ItemsControl">
+                        <Setter Property="RenderTransform" Value="translateY(0px)" />
+                    </Style>
+                </ItemsControl.Styles>
+            </ItemsControl>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

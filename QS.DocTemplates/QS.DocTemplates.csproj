@@ -10,6 +10,7 @@
         <RootNamespace>QS.DocTemplates</RootNamespace>
         <AssemblyName>QS.DocTemplates</AssemblyName>
         <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+        <Nullable>disable</Nullable>
         <FileAlignment>512</FileAlignment>
         <ProductVersion>8.0.30703</ProductVersion>
         <SchemaVersion>2.0</SchemaVersion>
@@ -23,6 +24,7 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +34,7 @@
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="System" />
