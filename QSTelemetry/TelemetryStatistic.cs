@@ -28,6 +28,12 @@ namespace QSTelemetry
 
 		[DataMember]
         public bool IsDemo { get; set; }
+        
+        [DataMember(IsRequired = false)]
+        public uint? ProductEdition { get; set; }
+        
+        [DataMember(IsRequired = false)]
+        public uint? BaseEmployees { get; set; }
 
 		[DataMember]
         public Dictionary<string, long> Counters { get; set; }
