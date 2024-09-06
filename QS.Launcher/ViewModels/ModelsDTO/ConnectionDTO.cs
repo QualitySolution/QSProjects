@@ -26,7 +26,7 @@ internal class ConnectionDTO : ReactiveObject, ICloneable {
 
 	public bool Last { get; set; } = false;
 
-	public Connection Instance { get; }
+	public Connection Instance { get; private set; }
 
 	public ConnectionDTO(Connection connection) {
 		Instance = connection;
@@ -49,8 +49,11 @@ internal class ConnectionDTO : ReactiveObject, ICloneable {
 	}
 
 	public void UpdateFields() {
+		Instance ??= new();
+
 		Instance.ConnectionTitle = ConnectionTitle;
 		Instance.User = User;
+		Instance.Last = Last;
 
 		ConnectionInfo.UpdateFields();
 		Instance.ConnectionInfo = ConnectionInfo.Instance;

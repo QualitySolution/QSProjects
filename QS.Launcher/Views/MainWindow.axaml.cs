@@ -12,6 +12,8 @@ public partial class MainWindow : Window
 
 		Icon = new WindowIcon(new Bitmap(AssetLoader.Open(options.CompanyIcon)));
 		Title = options.AppTitle;
+
+		Closing += (_, _) => ViewModel.SaveConnections();
 	}
 
 	MainWindowVM ViewModel => DataContext as MainWindowVM;

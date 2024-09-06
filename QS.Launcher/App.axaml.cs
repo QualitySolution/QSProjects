@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.Launcher.ViewModels;
@@ -10,8 +9,8 @@ using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
 using QS.Project.Avalonia;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 
@@ -87,15 +86,19 @@ public static class ServiceCollectionExtensions {
 	}
 
 	public static void AddConnections(this IServiceCollection collection, IEnumerable<ConnectionInfo> connectionInfos) {
-		List<Dictionary<string, string>> connectionDefinitions;
-		using (var stream = System.IO.File.Open("connections.json", System.IO.FileMode.OpenOrCreate)) {
-			try {
-				connectionDefinitions = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(stream);
+		List<Dictionary<string, string>> connectionDefinitions = [];
+		try {
+			using (var stream = File.Open("connections.json", FileMode.Open)) {
+				try {
+					connectionDefinitions = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(stream);
+				}
+				catch (JsonException jsonEx) {
+					DialogWindow.Error(jsonEx.Message, "Файл с подключениями некорректен");
+				}
 			}
-			catch (JsonException ex) {
-				DialogWindow.Error(ex.Message, "Файл с подключениями некорректен");
-				connectionDefinitions = [];
-			}
+		}
+		catch(FileNotFoundException fileEx) {
+			DialogWindow.Info("Будет создан новый", "Файл с подключениями не найден");
 		}
 
 

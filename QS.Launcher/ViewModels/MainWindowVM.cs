@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.Views.Pages;
 using ReactiveUI;
 using System;
@@ -12,6 +13,8 @@ public class MainWindowVM : ViewModelBase
 {
 	public ObservableCollection<ContentControl> Pages { get; set; }
 
+	LoginView login;
+
 	private ContentControl selectedPage;
 	public ContentControl SelectedPage
 	{
@@ -21,7 +24,7 @@ public class MainWindowVM : ViewModelBase
 
 	public MainWindowVM(IServiceProvider serviceProvider)
 	{
-		var login = serviceProvider.GetRequiredService<LoginView>();
+		login = serviceProvider.GetRequiredService<LoginView>();
 		var databases = serviceProvider.GetRequiredService<DataBasesView>();
 		var userManagement = serviceProvider.GetRequiredService<UserManagementView>();
 		var baseManagement = serviceProvider.GetRequiredService<BaseManagementView>();
@@ -30,6 +33,10 @@ public class MainWindowVM : ViewModelBase
 		[
 			login, databases, userManagement, baseManagement
 		];
+	}
+
+	public void SaveConnections() {
+		((LoginVM)login.DataContext).SerialaizeConnections();
 	}
 	
 	public void ChangePage(int index)
