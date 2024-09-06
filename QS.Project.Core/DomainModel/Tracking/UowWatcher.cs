@@ -24,7 +24,7 @@ namespace QS.DomainModel.Tracking
 				var sessionId = (uow.Session as ISessionImplementor).SessionId;
 				RegisteredUoWs.Add(sessionId, uowLink);
 				logger.Debug($"Зарегистрирован новый UnitOfWork. {ActiveUowCountText()}." +
-					$" Создан в {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})\nSessionId {sessionId}");
+					$" Создан в {uowLink.Title.UserActionTitle} {uowLink.Title.CallerMemberName} ({uowLink.Title.CallerFilePath}:{uowLink.Title.CallerLineNumber})\nSessionId {sessionId}");
 				UowRegistered?.Invoke(null, new UowRegistereEventArgs(uow));
 			}
 		}
