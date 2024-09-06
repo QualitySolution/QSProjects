@@ -52,11 +52,12 @@ public partial class LoginView : UserControl
 
 	private void Border_SizeChanged(object? sender, SizeChangedEventArgs e)
 	{
-		//if (!createConnection.Classes.Contains("invisible"))
 		((Setter)upStyle.Setters[0]).Value = TransformOperations.Parse($"translateY(-{(int)e.NewSize.Height}px)");
 		if (loginContainer.Classes.Contains("up")) {
+			loginContainer.Classes.Remove("animated");
 			loginContainer.Classes.Remove("up");
 			loginContainer.Classes.Add("up");
+			loginContainer.Classes.Add("animated");
 		}
 	}
 }
