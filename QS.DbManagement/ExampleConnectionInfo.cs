@@ -19,7 +19,7 @@ namespace QS.DbManagement {
 					.Where(pair => pair.Key != "User" && pair.Key != "Title" && pair.Key != "ConnectionTitle" && pair.Key != "Last")
 					.Select(pair => new ConnectionParameter(pair.Key, pair.Value))) {
 				IconBytes = IconBytes,
-				Title = "Example" };
+				Title = parameters["Title"] };
 
 			return new Connection {
 				ConnectionInfo = ci,
