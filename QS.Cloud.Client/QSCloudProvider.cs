@@ -69,14 +69,14 @@ namespace QS.Cloud.Client
 
 			try {
 				var cloudResponce = loginClient.StartSession(dbInfo.BaseId);
-
 				var builder = new MySqlConnectionStringBuilder {
 					Server = cloudResponce.Db.Server,
-					Port = uint.Parse(cloudResponce.Db.Port),
 					UserID = cloudResponce.Db.Login,
 					Password = cloudResponce.Db.Password,
 					Database = cloudResponce.Db.BaseName
 				};
+				if(!string.IsNullOrEmpty(cloudResponce.Db.Port))
+					builder.Port = uint.Parse(cloudResponce.Db.Port);
 				resp = new LoginToDatabaseResponce {
 					Success = cloudResponce.Success,
 					ConnectionString = builder.ConnectionString

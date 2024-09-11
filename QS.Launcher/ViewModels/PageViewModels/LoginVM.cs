@@ -24,6 +24,8 @@ public class LoginVM : CarouselPageVM {
 		set => this.RaiseAndSetIfChanged(ref companyImage, value);
 	}
 
+	public string AppTitle { get; set; }
+
 	internal List<ConnectionInfoDTO> ConnectionTypes { get; }
 
 	private ConnectionDTO? selectedConnection;
@@ -78,9 +80,11 @@ public class LoginVM : CarouselPageVM {
 
 	public LoginVM(NextPageCommand? nextCommand, PreviousPageCommand? previousCommand, ChangePageCommand? changePageCommand,
 		IEnumerable<ConnectionInfo> connectionInfos, IEnumerable<Connection> connections, LauncherOptions options, DataBasesVM dbVM)
-		: base(nextCommand, previousCommand, changePageCommand) {
+		: base(nextCommand, previousCommand, changePageCommand)
+	{
 		this.dbVM = dbVM;
 		CompanyImage = new Bitmap(AssetLoader.Open(options.CompanyImage));
+		AppTitle = options.AppTitle;
 
 		Connections = new(connections.Select(c => new ConnectionDTO(c)));
 

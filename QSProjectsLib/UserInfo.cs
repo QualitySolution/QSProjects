@@ -24,7 +24,7 @@ namespace QSProjectsLib
 		public string Name;
 		public Dictionary<string, bool> Permissions;
 
-		internal UserInfo (string login)
+		public UserInfo (string login)
 		{
 			this.login = login;
 			LoadUserInfo ();
