@@ -17,12 +17,12 @@
   <ItemGroup>
     <AvaloniaResource Remove="Assets\mariadb.png" />
     <AvaloniaResource Remove="Assets\mariadb.svg" />
-    <AvaloniaResource Remove="Assets\qs.ico" />
   </ItemGroup>
 
   
   <ItemGroup>
     <None Remove="Assets\avalonia-logo.ico" />
+    <None Remove="Assets\qs.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,9 +49,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\qs.ico">
+    <AvaloniaResource Update="Assets\qs.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </AvaloniaResource>
     <None Update="launcher.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

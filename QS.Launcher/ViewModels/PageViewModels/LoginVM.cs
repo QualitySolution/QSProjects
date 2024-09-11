@@ -152,7 +152,7 @@ public class LoginVM : CarouselPageVM {
 
 	public void SerialaizeConnections() {
 		// if last selected connection changed
-		if (!SelectedConnection.Last) {
+		if (SelectedConnection != null && !SelectedConnection.Last) {
 			var prevLast = Connections.FirstOrDefault(c => c.Last);
 			if(prevLast != null)
 				prevLast.Last = false;
