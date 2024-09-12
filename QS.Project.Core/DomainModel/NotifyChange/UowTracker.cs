@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NHibernate.Event;
+using QS.Dialog;
 using QS.DomainModel.Tracking;
 
 namespace QS.DomainModel.NotifyChange
@@ -11,10 +12,12 @@ namespace QS.DomainModel.NotifyChange
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly List<EntityChangeEvent> entityChanges = new List<EntityChangeEvent>();
+		private readonly ITrackerActionInvoker invoker;
 		private readonly List<SubscriberWeakLink> eventSubscribers;
 
-		public UowTracker(List<SubscriberWeakLink> subscriberWeakLinks)
+		public UowTracker(ITrackerActionInvoker invoker, List<SubscriberWeakLink> subscriberWeakLinks)
 		{
+			this.invoker = invoker ?? throw new ArgumentNullException(nameof(invoker));
 			eventSubscribers = subscriberWeakLinks;
 		}
 
@@ -33,8 +36,10 @@ namespace QS.DomainModel.NotifyChange
 				var changes = entityChanges.Where(subscriber.IsSuitable).ToArray();
 				if (changes.Length > 0)
 				{
-					logger.Debug($"Вызываем подписчика [{subscriber}]");
-					subscriber.Invoke(changes);
+					invoker.Invoke(() => {
+						logger.Debug($"Вызываем подписчика [{subscriber}]");
+						subscriber.Invoke(changes);
+					});
 				}
 			}
 			entityChanges.Clear();

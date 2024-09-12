@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using QS.Deletion;
 using QS.Deletion.Configuration;
@@ -12,12 +12,14 @@ namespace QS.Project.Services
 	public class DeleteEntityGUIService : IDeleteEntityService
 	{
 		private readonly DeleteConfiguration configuration;
+		private readonly IUnitOfWorkFactory uowFactory;
 		private readonly INavigationManager navigation;
 		private readonly IInteractiveQuestion interactive;
 
-		public DeleteEntityGUIService(DeleteConfiguration configuration, INavigationManager navigation, IInteractiveQuestion interactive)
+		public DeleteEntityGUIService(DeleteConfiguration configuration, IUnitOfWorkFactory uowFactory, INavigationManager navigation, IInteractiveQuestion interactive)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			this.uowFactory = uowFactory ?? throw new ArgumentNullException(nameof(uowFactory));
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 		}
@@ -29,7 +31,7 @@ namespace QS.Project.Services
 
 		public DeleteCore DeleteEntity(Type clazz, int id, IUnitOfWork uow = null, Action beforeDeletion = null, bool forceDelete = false)
 		{
-			var deletion = new DeleteCore(configuration, uow);
+			var deletion = new DeleteCore(configuration, uowFactory, uow);
 			deletion.BeforeDeletion = beforeDeletion;
 
 			#region Подготовка удаления

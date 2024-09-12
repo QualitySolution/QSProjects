@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -11,14 +11,16 @@ namespace QS.Project.Journal.EntitySelector
 		where TJournalFilterViewModel : class, IJournalFilter
 		where TEntity : class, IDomainObject
 	{
+		private readonly IUnitOfWorkFactory uowFactory;
 		private readonly ICommonServices commonServices;
 		protected ConstructorInfo journalConstructorInfo;
 		protected ConstructorInfo filterConstructorInfo;
 
 		public Type EntityType => typeof(TEntity);
 
-		public DefaultEntitySelectorFactory(ICommonServices commonServices)
+		public DefaultEntitySelectorFactory(IUnitOfWorkFactory uowFactory, ICommonServices commonServices)
 		{
+			this.uowFactory = uowFactory ?? throw new ArgumentNullException(nameof(uowFactory));
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
 
 			Type filterType = typeof(TJournalFilterViewModel);
@@ -38,7 +40,7 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
-			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
+			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(new object[] { filter, uowFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;
 			return selectorViewModel;
 		}

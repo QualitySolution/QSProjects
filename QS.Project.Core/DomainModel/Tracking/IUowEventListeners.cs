@@ -1,4 +1,4 @@
-﻿using NHibernate.Event;
+using NHibernate.Event;
 
 namespace QS.DomainModel.Tracking
 {

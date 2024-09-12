@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -98,11 +98,6 @@ namespace QS.ViewModels
 
 		public UserBase CurrentUser { get; set; }
 		protected ICommonServices CommonServices { get; }
-
-		[Obsolete("[Только для Водовоза]Этот конструктор реализован для совместимости со старыми вызовами, используйте конструктор который принимает IUnitOfWorkFactory в качестве внешней зависимости.")]
-		protected EntityTabViewModelBase(IEntityUoWBuilder ctorParam, ICommonServices commonServices) 
-			: this(ctorParam, QS.DomainModel.UoW.UnitOfWorkFactory.GetDefaultFactory, commonServices)
-		{ }
 
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
 		protected EntityTabViewModelBase(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, INavigationManager navigation = null)
