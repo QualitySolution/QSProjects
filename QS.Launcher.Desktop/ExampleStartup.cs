@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using QS.Cloud.Client;
@@ -35,8 +34,6 @@ class ExampleStartup
 				IconBytes = null,
 		} ];
 
-		var connections = GetConnections();
-
 		var options = new LauncherOptions {
 			AppTitle = "Ланучер для детей",
 			CompanyImage = new Uri("avares://QS.Launcher/Assets/sps.png"),
@@ -50,10 +47,5 @@ class ExampleStartup
 			.UseReactiveUI();
 
 		return appBuilder;
-	}
-
-	static List<Connection> GetConnections() {
-		var connections = new List<Connection>();
-		return connections;
 	}
 }
