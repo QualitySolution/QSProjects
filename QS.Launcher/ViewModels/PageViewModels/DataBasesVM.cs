@@ -6,6 +6,7 @@ using QS.Project.Avalonia;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Windows.Input;
 
@@ -37,9 +38,13 @@ public class DataBasesVM : CarouselPageVM {
 
 	public ICommand ConnectCommand { get; }
 
+	private LauncherOptions launcherOptions;
+
 	public DataBasesVM(NextPageCommand? nextPageCommand, PreviousPageCommand? previousPageCommand,
-		ChangePageCommand? changePageCommand) : base(nextPageCommand, previousPageCommand, changePageCommand)
+		ChangePageCommand? changePageCommand, LauncherOptions options)
+		: base(nextPageCommand, previousPageCommand, changePageCommand)
 	{
+		launcherOptions = options;
 
 		IObservable<bool>? canExecute = this
 			.WhenAnyValue(x => x.SelectedDatabase)
@@ -55,12 +60,19 @@ public class DataBasesVM : CarouselPageVM {
 			DialogWindow.Error(resp.ErrorMessage);
 			return;
 		}
-
+		string fn = launcherOptions.AppExecutablePath;
 		DialogWindow.Success(resp.ConnectionString);
+		Process.Start(new ProcessStartInfo {
+			WorkingDirectory = "D:\\",
+			FileName = fn,
+			UseShellExecute = true,
+			CreateNoWindow = true,
+			Arguments = resp.ConnectionString
+		});
 
 		if (ShouldCloseLauncherAfterStart) {
-			var window = (Avalonia.Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-			window.Close();
+			var window = (Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+			window?.Close();
 		}
 	}
 }

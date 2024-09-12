@@ -11,4 +11,6 @@ public class LauncherOptions {
 	public Uri CompanyIcon { get; set; }
 
 	public string AppTitle { get; set; }
+
+	public string AppExecutablePath { get; set; }
 }
