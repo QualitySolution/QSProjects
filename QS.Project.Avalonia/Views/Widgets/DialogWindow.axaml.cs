@@ -57,7 +57,7 @@ public partial class DialogWindow : Window
 		InitializeComponent();
 		Message = message;
 		Title = title;
-		contentControl.Content = new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap };
+		contentControl.Content = new SelectableTextBlock { Text = message, TextWrapping = TextWrapping.Wrap };
 
 		var b = new Bitmap(AssetLoader.Open(new Uri("avares://QS.Project.Avalonia/Assets/" + type.ToString() + ".png")));
 

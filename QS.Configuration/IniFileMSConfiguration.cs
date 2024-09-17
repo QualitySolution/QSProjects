@@ -1,12 +1,14 @@
-using System;
-using System.IO;
-using System.Text;
-using IniParser;
 using IniParser.Model;
+using IniParser;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
-namespace QS.Configuration
-{
-	public class IniFileConfiguration : IChangeableConfiguration
+namespace QS.Configuration {
+	public class IniFileMSConfiguration : IChangeableConfiguration, IConfiguration
 	{
 		private readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		private readonly FileIniDataParser parser = new FileIniDataParser();
@@ -14,8 +16,7 @@ namespace QS.Configuration
 
 		public readonly string IniFile;
 
-		public IniFileConfiguration(string iniFile)
-		{
+		public IniFileMSConfiguration(string iniFile) {
 			if(string.IsNullOrWhiteSpace(iniFile)) {
 				throw new ArgumentException("Имя ini файла должно быть указано.", nameof(iniFile));
 			}
@@ -46,7 +47,7 @@ namespace QS.Configuration
 					}
 				}
 				else {
-					if(config.Sections.ContainsSection(section)){
+					if(config.Sections.ContainsSection(section)) {
 						if(String.IsNullOrWhiteSpace(parameter)) {
 							config.Sections.RemoveSection(section);
 							parser.WriteFile(IniFile, config);
@@ -63,8 +64,7 @@ namespace QS.Configuration
 			}
 		}
 
-		public void Reload()
-		{
+		public void Reload() {
 			if(File.Exists(IniFile)) {
 				config = parser.ReadFile(IniFile, Encoding.UTF8);
 			}
@@ -75,8 +75,7 @@ namespace QS.Configuration
 		}
 
 		#region private
-		private void ParseKey(string key, out string section, out string parameter)
-		{
+		private void ParseKey(string key, out string section, out string parameter) {
 			section = null;
 			parameter = null;
 
@@ -87,6 +86,18 @@ namespace QS.Configuration
 			}
 			else
 				parameter = key;
+		}
+
+		public IConfigurationSection GetSection(string key) {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<IConfigurationSection> GetChildren() {
+			throw new NotImplementedException();
+		}
+
+		public IChangeToken GetReloadToken() {
+			throw new NotImplementedException();
 		}
 		#endregion
 	}
