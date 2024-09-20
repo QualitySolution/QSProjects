@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Autofac;
+using QS.Deletion.Configuration;
 using QS.Deletion.ViewModels;
 
 namespace QS.Deletion
@@ -11,6 +12,7 @@ namespace QS.Deletion
 			builder.RegisterType<PrepareDeletionViewModel>().AsSelf();
 			builder.RegisterType<DeletionViewModel>().AsSelf();
 			builder.RegisterType<DeletionProcessViewModel>().AsSelf();
+			builder.RegisterType<DeleteConfiguration>().AsSelf();
 		}
 	}
 }

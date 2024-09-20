@@ -7,6 +7,12 @@ namespace QS.Deletion.Configuration
 {
 	public class DeleteConfiguration
 	{
+		private NHibernate.Cfg.Configuration hibernateConfiguration;
+
+		public DeleteConfiguration(NHibernate.Cfg.Configuration hibernateConfiguration) {
+			this.hibernateConfiguration = hibernateConfiguration;
+		}
+
 		internal List<IDeleteInfo> ClassInfos { get; } = new List<IDeleteInfo> ();
 
 		public IEnumerable<IDeleteRule> ClassDeleteRules => ClassInfos;

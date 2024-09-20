@@ -7,7 +7,7 @@ namespace QS.Deletion
 {
 	public static class DeleteConfig
 	{
-		public static DeleteConfiguration Main { get; } = new DeleteConfiguration();
+		public static DeleteConfiguration Main { get; }
 
 		public static IEnumerable<IDeleteRule> ClassDeleteRules => Main.ClassDeleteRules;
 
