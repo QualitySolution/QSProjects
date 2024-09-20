@@ -215,52 +215,6 @@ namespace QSProjectsLib
 			return true;
 		}
 
-		public static void CheckServer ()
-		{
-			CheckServer (null);
-		}
-
-		/// <summary>
-		/// Проверка локали сервера.
-		/// </summary>
-		/// <param name="parent">Если Parent = null, сообщение будет выводиться в nlog. В противном случае в диалоговое окно.</param>
-		public static void CheckServer (Window parent)
-		{
-			string sql = "SHOW VARIABLES LIKE \"character_set_%\";";
-			MySqlCommand cmd = new MySqlCommand (sql, connectionDB);
-			string TextMes = "";
-			logger.Debug (sql);
-			using (MySqlDataReader rdr = cmd.ExecuteReader ()) {
-				while (rdr.Read ()) {
-					logger.Debug (String.Format ("{0} = {1}", rdr ["Variable_name"], rdr ["Value"]));
-					switch (rdr ["Variable_name"].ToString ()) {
-					case "character_set_server":
-						if (rdr ["Value"].ToString () != "utf8" && rdr["Value"].ToString() != "utf8mb3" && rdr["Value"].ToString() != "utf8mb4") {
-							TextMes += String.Format ("* character_set_server = {0} - для нормальной работы программы кодировка сервера " +
-							"должна быть utf8, utf8mb3 или utf8mb4, иначе возможны проблемы с языковыми символами, этот параметр изменяется " +
-							"в настройках сервера MySQL\\MariaDB.\n", rdr ["Value"].ToString ());
-						}
-						break;
-					case "character_set_database":
-						if (rdr ["Value"].ToString () != "utf8" && rdr["Value"].ToString() != "utf8mb3" && rdr["Value"].ToString() != "utf8mb4") {
-							TextMes += String.Format ("* character_set_database = {0} - для нормальной работы программы кодировка базы данных " +
-							"должна быть utf8, utf8mb3 или utf8mb4, иначе возможны проблемы с языковыми символами, измените кодировку для используемой базы.\n", rdr ["Value"].ToString ());
-						}
-						break;
-					}
-				}
-			}
-			if (TextMes != "") {
-				logger.Warn(TextMes);
-				MessageDialog VersionError = new MessageDialog (parent, DialogFlags.DestroyWithParent,
-					                             MessageType.Warning, 
-					                             ButtonsType.Close, 
-					                             TextMes);
-				VersionError.Run ();
-				VersionError.Destroy ();
-			}
-		}
-
 		public static void DoPing ()
 		{
 			connectionDB.Ping ();
