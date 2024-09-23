@@ -52,9 +52,6 @@
     <AvaloniaResource Update="Assets\qs.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
-    <None Update="launcher.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

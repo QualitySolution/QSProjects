@@ -112,7 +112,7 @@ namespace QS.Deletion.Configuration
 			if (info != null)
 				return info;
 
-			info = new DeleteInfoHibernate<TEntity> ();
+			info = new DeleteInfoHibernate<TEntity>(hibernateConfiguration);
 			ClassInfos.Add (info);
 			return info;
 		}

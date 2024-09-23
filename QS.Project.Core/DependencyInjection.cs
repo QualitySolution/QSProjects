@@ -243,5 +243,37 @@ namespace QS.Project.Core {
 			});
 			return services;
 		}
+
+		/// <summary>
+		/// Заполняет пользователя в <see cref="IUserService"/> по переданному логину, если пользователь не создан - создаём.
+		/// </summary>
+		/// <param name="services"></param>
+		/// <param name="login"></param>
+		/// <returns></returns>
+		public static IServiceCollection AddUserService(this IServiceCollection services, string login) {
+			services.AddSingleton<IUserService>((provider) => {
+				var uowFactory = provider.GetRequiredService<IUnitOfWorkFactory>();
+				var connectionSettings = provider.GetRequiredService<IDatabaseConnectionSettings>();
+				using(var uow = uowFactory.CreateWithoutRoot()) {
+					var serviceUser = uow.Session.Query<UserBase>()
+						.Where(u => u.Login == connectionSettings.UserName)
+						.FirstOrDefault();
+
+					if(serviceUser is null) {
+						serviceUser = new UserBase {
+							Name = login,
+							Login = login
+						};
+
+						uow.Save(serviceUser);
+						uow.Commit();
+					}
+
+					UserRepository.GetCurrentUserId = () => serviceUser.Id;
+					return new UserService(serviceUser);
+				}
+			});
+			return services;
+		}
 	}
 }

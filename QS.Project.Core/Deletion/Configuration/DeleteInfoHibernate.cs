@@ -64,14 +64,17 @@ namespace QS.Deletion.Configuration
 
 		#endregion
 
-		public DeleteInfoHibernate()
+		private NHibernate.Cfg.Configuration hibernateConfiguration;
+
+		public DeleteInfoHibernate(NHibernate.Cfg.Configuration configuration)
 		{
 			DeleteItems = new List<DeleteDependenceInfo>();
 			ClearItems = new List<ClearDependenceInfo>();
 			RemoveFromItems = new List<RemoveFromDependenceInfo>();
 			UpdateItems = new List<UpdateDependenceInfo>();
 
-			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass);
+			hibernateConfiguration = configuration;
+			var hmap = configuration.GetClassMapping(ObjectClass);
 			if (hmap == null)
 				throw new InvalidOperationException(String.Format("Класс {0} отсутствует в мапинге NHibernate.", ObjectClass));
 			TableName = hmap.Table.Name;
@@ -299,7 +302,7 @@ namespace QS.Deletion.Configuration
 			if (IsRootForSubclasses == false)
 				return null;
 
-			return OrmConfig.NhConfig.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
+			return hibernateConfiguration.ClassMappings.Where(x => x.RootClazz.MappedClass == ObjectClass).Select(x => x.MappedClass).ToArray();
 		}
 
 		Type IDeleteInfoHibernate.GetRootClass()
@@ -307,7 +310,7 @@ namespace QS.Deletion.Configuration
 			if (!IsSubclass)
 				return null;
 
-			var hmap = OrmConfig.NhConfig.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
+			var hmap = hibernateConfiguration.GetClassMapping(ObjectClass) as NHibernate.Mapping.Subclass;
 			return hmap.RootClazz.MappedClass;
 		}
 

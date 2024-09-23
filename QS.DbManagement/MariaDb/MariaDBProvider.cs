@@ -22,6 +22,8 @@ namespace QS.DbManagement
 
 		public bool IsAdmin => throw new NotImplementedException();
 
+		public string UserName { get; private set; }
+
 		public MariaDBProvider(MariaDBConnectionInfo connectionInfo)
 		{
 			ConnectionString = connectionInfo.Parameters.First(p => p.Title == "ConnectionString").Value as string;
@@ -70,6 +72,9 @@ namespace QS.DbManagement
 		}
 
 		LoginToServerResponce IDbProvider.LoginToServer(LoginToServerData loginToServerData) {
+
+			UserName = loginToServerData.UserName;
+
 			throw new NotImplementedException();
 		}
 	}

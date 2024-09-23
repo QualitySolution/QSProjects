@@ -11,15 +11,16 @@ using Grpc.Core;
 
 namespace QS.Cloud.Client
 {
-	public class QSCloudProvider : IDbProvider
-	{
+	public class QSCloudProvider : IDbProvider {
 		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	
+
 		public bool IsConnected => throw new NotImplementedException();
 
 		public ConnectionInfo ConnectionInfo { get; }
 
 		public bool IsAdmin { get; protected set; }
+
+		public string UserName { get; private set; }
 
 		private CloudFeaturesClient featuresClient;
 		private LoginManagementCloudClient loginClient;
@@ -93,6 +94,8 @@ namespace QS.Cloud.Client
 		}
 
 		public LoginToServerResponce LoginToServer(LoginToServerData loginToServerData) {
+
+			UserName = loginToServerData.UserName;
 
 			string organisation = ConnectionInfo.Parameters.First(p => p.Title == "Логин").Value.ToString();
 			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{organisation}\{loginToServerData.UserName}", loginToServerData.Password);
