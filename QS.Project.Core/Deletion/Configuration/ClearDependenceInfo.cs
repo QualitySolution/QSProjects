@@ -48,9 +48,9 @@ namespace QS.Deletion.Configuration
 		/// </summary>
 		/// <param name="propertyRefExpr">Лямда функция указывающая на свойство, пример (e => e.Name)</param>
 		/// <typeparam name="TObject">Тип объекта доменной модели</typeparam>
-		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr){
+		public static ClearDependenceInfo Create<TObject> (Expression<Func<TObject, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg){
 			string propName = PropertyUtil.GetName (propertyRefExpr);
-			string fieldName = OrmConfig.NhConfig.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
+			string fieldName = cfg.GetClassMapping (typeof(TObject)).GetProperty (propName).ColumnIterator.First ().Text;
 			return new ClearDependenceInfo(typeof(TObject),
 				String.Format ("WHERE {0} = @id", fieldName),
 				fieldName
