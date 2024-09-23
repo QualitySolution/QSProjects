@@ -12,9 +12,11 @@ namespace QS.Widgets.GtkUI
 	[ToolboxItem (true)]
 	[Category("QS.Project")]
 	public partial class DateRangePicker : Bin
-	{
+	{		
 		public static int? CalendarFontSize;
-
+		private const string DateStartsBeginningWith = "Начиная с";
+		private const string DateStartsBefore = "До";
+		
 		public BindingControler<DateRangePicker> Binding { get; private set; }
 
 		#region Fields
@@ -155,9 +157,9 @@ namespace QS.Widgets.GtkUI
 			else if (!StartDateOrNull.HasValue && !EndDateOrNull.HasValue)
 				entryDate.Text = String.Empty;
 			else if(StartDateOrNull.HasValue)
-				entryDate.Text = String.Format ("Начиная с {0:d}", StartDate);
+				entryDate.Text = String.Format ($"{DateStartsBeginningWith} {StartDate:d}");
 			else if(EndDateOrNull.HasValue)
-				entryDate.Text = String.Format ("До {0:d}", EndDate);
+				entryDate.Text = String.Format ($"{DateStartsBefore} {EndDate:d}");
 		}
 
 		#region Event handlers
@@ -370,12 +372,22 @@ namespace QS.Widgets.GtkUI
 			DateTime startTemp, endTemp;
 			var dateRegex = new Regex(@"[0-9]{1,2}(\/|\.|\-|\\)[0-9]{1,2}(\/|\.|\-|\\)[0-9]{2,4}");
 			var matches = dateRegex.Matches(textRange);
+			if(textRange.StartsWith(DateStartsBeginningWith) && matches.Count == 1 && DateTime.TryParse(matches[0].Value, out startTemp)) {
+				start = startTemp;
+				end = null;
+				return true;
+			}
+			if(textRange.StartsWith(DateStartsBefore) && matches.Count == 1 && DateTime.TryParse(matches[0].Value, out endTemp)) {
+				start = null;
+				end = endTemp;
+				return true;
+			}
 			if(matches.Count == 2 && DateTime.TryParse(matches[0].Value, out startTemp) && DateTime.TryParse(matches[1].Value, out endTemp)) {
 				start = startTemp;
 				end = endTemp;
 				return true;
 			} 
-			else if(matches.Count == 1 && DateTime.TryParse(matches[0].Value, out startTemp)) {
+			if(matches.Count == 1 && DateTime.TryParse(matches[0].Value, out startTemp)) {
 				start = startTemp;
 				end = startTemp;
 				return true;
