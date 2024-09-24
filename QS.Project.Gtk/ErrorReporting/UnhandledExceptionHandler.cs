@@ -4,7 +4,6 @@ using Autofac;
 using GLib;
 using Gtk;
 using QS.Dialog;
-using QS.DomainModel.UoW;
 using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
@@ -49,14 +48,20 @@ namespace QS.ErrorReporting
 		/// Получаем из контейнера все необходимые для работы зависимости. Чтобы в момент аварии не к чему лишнему не обращаться, не лезть в базу и т.п.
 		/// Контейнер не сохраняется. Метод можно вызывать повторно для переключения зависимостей на другой контейнер.
 		/// </summary>
-		public void UpdateDependencies(ILifetimeScope container) {
+		public void UpdateDependencies(ILifetimeScope container, ProgressPerformanceHelper prpgress = null) {
+			prpgress?.CheckPoint(nameof(applicationInfo));
 			applicationInfo = container.Resolve<IApplicationInfo>();
+			prpgress?.CheckPoint(nameof(errorReportingSettings));
 			errorReportingSettings = container.Resolve<IErrorReportingSettings>();
+			prpgress?.CheckPoint(nameof(logService));
 			logService = container.Resolve<ILogService>();
 			
+			prpgress?.CheckPoint(nameof(customErrorHandlers));
 			customErrorHandlers = container.Resolve<IEnumerable<IErrorHandler>>();
+			prpgress?.CheckPoint(nameof(dataBaseInfo));
 			dataBaseInfo = container.ResolveOptional<IDataBaseInfo>();
 			
+			prpgress?.CheckPoint(nameof(user));
 			var userService = container.ResolveOptional<IUserService>();
 			user = userService?.GetCurrentUser();
 		}
