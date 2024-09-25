@@ -34,7 +34,7 @@ public class DataBasesVM : CarouselPageVM {
 
 	public bool IsAdmin { get; set; } = false;
 
-	public bool ShouldCloseLauncherAfterStart { get; set; } = false;
+	public bool ShouldCloseLauncherAfterStart { get; set; } = true;
 
 	public ICommand ConnectCommand { get; }
 
@@ -64,7 +64,7 @@ public class DataBasesVM : CarouselPageVM {
 		DialogWindow.Success(resp.ConnectionString);
 
 		Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", resp.ConnectionString, EnvironmentVariableTarget.User);
-		Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName);
+		Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName, EnvironmentVariableTarget.User);
 
 		Process.Start(new ProcessStartInfo {
 			WorkingDirectory = "D:\\",
