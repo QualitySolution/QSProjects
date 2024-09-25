@@ -60,15 +60,18 @@ public class DataBasesVM : CarouselPageVM {
 			DialogWindow.Error(resp.ErrorMessage);
 			return;
 		}
-		string fn = launcherOptions.AppExecutablePath;
+		string fileName = launcherOptions.AppExecutablePath;
+
+#if DEBUG
 		DialogWindow.Success(resp.ConnectionString);
+#endif
 
 		Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", resp.ConnectionString, EnvironmentVariableTarget.User);
 		Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName, EnvironmentVariableTarget.User);
 
 		Process.Start(new ProcessStartInfo {
 			WorkingDirectory = "D:\\",
-			FileName = fn,
+			FileName = fileName,
 			UseShellExecute = true,
 			CreateNoWindow = true,
 			Arguments = resp.ConnectionString
