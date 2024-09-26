@@ -59,6 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
     <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
     <ProjectReference Include="..\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
   </ItemGroup>

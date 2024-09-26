@@ -19,7 +19,7 @@ namespace QS.Cloud.Client.Clients
 			var request = new AliveRequest();
 
 			var call = client.Alive(request, headers);
-			while (await call.ResponseStream.MoveNext(new System.Threading.CancellationToken()) {
+			while (await call.ResponseStream.MoveNext(new System.Threading.CancellationToken())) {
 				var curStatus = call.ResponseStream.Current.Status;
 				if (curStatus != LastStatus) {
 					LastStatus = curStatus;

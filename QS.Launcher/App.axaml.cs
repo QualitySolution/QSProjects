@@ -9,6 +9,7 @@ using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
 using QS.Project.Avalonia;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,7 +40,7 @@ public partial class App : Application {
 		collection.AddNavigationCommands();
 
 		collection.AddConnectionTypes(connectionInfos);
-		collection.AddConnections(connectionInfos);
+		collection.AddConnections(connectionInfos, launcherOptions.OldConfigFilename);
 		collection.AddCompanyDependencies(launcherOptions);
 
 		var services = collection.BuildServiceProvider();
@@ -85,7 +86,8 @@ public static class ServiceCollectionExtensions {
 			collection.AddSingleton(connectionInfo);
 	}
 
-	public static void AddConnections(this IServiceCollection collection, IEnumerable<ConnectionInfo> connectionInfos) {
+
+	public static void AddConnections(this IServiceCollection collection, IEnumerable<ConnectionInfo> connectionInfos, string? oldConfigName = null) {
 		List<Dictionary<string, string>> connectionDefinitions = [];
 		try {
 			using (var stream = File.Open("connections.json", FileMode.Open)) {
@@ -98,7 +100,19 @@ public static class ServiceCollectionExtensions {
 			}
 		}
 		catch(FileNotFoundException fileEx) {
-			DialogWindow.Info("Будет создан новый", "Файл с подключениями не найден");
+			// Trying to find old ini-config and update it to new json-config
+			if (!string.IsNullOrEmpty(oldConfigName)) {
+				
+				string fullOldConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), oldConfigName);
+
+				if (File.Exists(fullOldConfigPath)) {
+					connectionDefinitions = Configuration.ConfigTransition.FromOldIniConfig(fullOldConfigPath);
+					DialogWindow.Info("Найден файл с подключениями старой версии, будет создан новый на его основе", "Конфигурация обновлена");
+				}
+				else 
+					DialogWindow.Info("Будет создан новый", "Файл с подключениями не найден");
+				
+			}
 		}
 
 

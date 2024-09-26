@@ -13,4 +13,6 @@ public class LauncherOptions {
 	public string AppTitle { get; set; }
 
 	public string AppExecutablePath { get; set; }
+
+	public string? OldConfigFilename { get; set; }
 }
