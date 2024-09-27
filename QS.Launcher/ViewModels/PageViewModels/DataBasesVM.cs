@@ -63,11 +63,13 @@ public class DataBasesVM : CarouselPageVM {
 		string fileName = launcherOptions.AppExecutablePath;
 
 #if DEBUG
-		DialogWindow.Success(resp.ConnectionString);
+		DialogWindow.Success(resp.ConnectionString + "\nSession id: " + resp.Parameters.Find(p => p.Title == "SessionId").Value);
 #endif
 
 		Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", resp.ConnectionString, EnvironmentVariableTarget.User);
 		Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName, EnvironmentVariableTarget.User);
+		foreach (ConnectionParameter par in resp.Parameters)
+			Environment.SetEnvironmentVariable("QS_" + par.Title, par.Value as string, EnvironmentVariableTarget.User);
 
 		Process.Start(new ProcessStartInfo {
 			WorkingDirectory = "D:\\",

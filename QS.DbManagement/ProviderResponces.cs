@@ -31,5 +31,7 @@ namespace QS.DbManagement.Responces
 
 	public class LoginToDatabaseResponce : Responce {
 		public string ConnectionString { get; set; }
+
+		public List<ConnectionParameter> Parameters { get; set; }
 	}
 }

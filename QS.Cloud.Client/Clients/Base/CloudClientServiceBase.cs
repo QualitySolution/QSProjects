@@ -31,9 +31,9 @@ namespace QS.Cloud.Client
 		
 		public abstract bool CanConnect { get; }
 		
-		public virtual void Dispose()
+		public virtual async void Dispose()
 		{
-			channel?.ShutdownAsync().Wait();
+			await channel?.ShutdownAsync();
 		}
 	}
 }

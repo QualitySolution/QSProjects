@@ -109,7 +109,7 @@ public static class ServiceCollectionExtensions {
 					connectionDefinitions = Configuration.ConfigTransition.FromOldIniConfig(fullOldConfigPath);
 					DialogWindow.Info("Найден файл с подключениями старой версии, будет создан новый на его основе", "Конфигурация обновлена");
 				}
-				else 
+				else
 					DialogWindow.Info("Будет создан новый", "Файл с подключениями не найден");
 				
 			}

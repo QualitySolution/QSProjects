@@ -80,7 +80,8 @@ namespace QS.Cloud.Client
 					builder.Port = uint.Parse(cloudResponce.Db.Port);
 				resp = new LoginToDatabaseResponce {
 					Success = cloudResponce.Success,
-					ConnectionString = builder.ConnectionString
+					ConnectionString = builder.ConnectionString,
+					Parameters = new List<ConnectionParameter>() { new ConnectionParameter("SessionId", cloudResponce.SessionId) }
 				};
 			}
 			catch(Exception ex) {
@@ -106,7 +107,7 @@ namespace QS.Cloud.Client
 
 			StartResponse cloudResponce;
 			try {
-				cloudResponce = loginClient.Start("0.0.1.0");
+				cloudResponce = loginClient.Start("0.1.0.0");
 
 				resp = new LoginToServerResponce {
 					Success = true,
