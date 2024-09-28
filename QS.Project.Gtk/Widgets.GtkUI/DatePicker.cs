@@ -180,13 +180,13 @@ namespace QS.Widgets.GtkUI
 			editDate.VBox.Add(SelectDate);
 			editDate.ShowAll();
 			int response = editDate.Run ();
-			if(response == (int)ResponseType.Ok)
-			{
-				DateOrNull = WithTime ? SelectDate.GetDate() + timeEntry.Time : SelectDate.GetDate();
-				OnDateChangedByUser();
-			}
+			DateTime tempDate = WithTime ? SelectDate.GetDate() + timeEntry.Time : SelectDate.GetDate();
 			SelectDate.Destroy();
 			editDate.Destroy ();
+			if(response == (int)ResponseType.Ok) {
+				DateOrNull = tempDate;
+				OnDateChangedByUser();
+			}
 		}
 
 		public void Clear()
