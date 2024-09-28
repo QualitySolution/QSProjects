@@ -83,14 +83,14 @@ namespace QS.Utilities.Debug
 			TimePoint lastPoint = startPoint;
 
 			var sb = new StringBuilder("Результаты замера производительности");
-			sb.AppendLine($"Начало в {lastPoint.Time:hh:mm:ss}");
+			sb.Append($"\nНачало в {lastPoint.Time:hh:mm:ss}");
 
 			foreach(var point in currentPointsList.Skip(1)) {
 				sb.Append(lastPoint.GetText(0, point.Time));
 				lastPoint = point;
 			}
 
-			sb.AppendLine($"Итого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.");
+			sb.Append($"\nИтого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.");
 
 			return sb.ToString();
 		}

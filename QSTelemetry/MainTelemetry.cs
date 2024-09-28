@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Threading;
@@ -35,6 +35,8 @@ namespace QSTelemetry
         public static string Product;
         public static string Edition;
         public static string Version;
+        public static uint? ProductEdition;
+        public static uint? EmployeesCount;
         public static bool IsDemo;
 
 		public static bool DoNotTrack = false;
@@ -80,6 +82,8 @@ namespace QSTelemetry
             statistic.Product = Product;
             statistic.Edition = Edition;
             statistic.Version = Version;
+            statistic.ProductEdition = ProductEdition;
+            statistic.BaseEmployees = EmployeesCount;
             statistic.Counters = Counters;
             statistic.OS = Environment.OSVersion.VersionString;
             statistic.NetFramework = Environment.Version.ToString();
