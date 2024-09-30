@@ -1,78 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5A2BB01E-E124-432E-8099-D1343D3897B9}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSWidgetLib</RootNamespace>
-    <AssemblyName>QSWidgetLib</AssemblyName>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
     <Nullable>disable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <Prefer32Bit>false</Prefer32Bit>
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <Prefer32Bit>false</Prefer32Bit>
     <Nullable>disable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Posix" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="DatePicker.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.DatePicker.cs" />
-    <Compile Include="SelectPeriod.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.SelectPeriod.cs" />
-    <Compile Include="CheckList.cs" />
-    <Compile Include="WidgetId.cs" />
-    <Compile Include="CompanyName.cs" />
-    <Compile Include="ImageViewer.cs" />
-    <Compile Include="VImagesList.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.VImagesList.cs" />
-    <Compile Include="ValidatedEntry.cs" />
-    <Compile Include="MenuButton.cs" />
-    <Compile Include="TimeEntry.cs" />
-    <Compile Include="ParallelEditing.cs" />
-    <Compile Include="DatePeriodPicker.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.DatePeriodPicker.cs" />
-    <Compile Include="LegalName.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.LegalName.cs" />
-    <Compile Include="CommonValues.cs" />
-    <Compile Include="SearchEntity.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.SearchEntity.cs" />
-    <Compile Include="LegalNameAlternative.cs" />
-    <Compile Include="gtk-gui\QSWidgetLib.LegalNameAlternative.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
@@ -87,5 +32,29 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.1.2" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="atk-sharp">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\atk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdk-sharp">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\gdk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\glib-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-sharp">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cairo">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\Mono.Cairo\Mono.Cairo.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\Mono.Posix\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="pango-sharp">
+      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\pango-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
