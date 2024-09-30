@@ -150,7 +150,13 @@ namespace QSBanks
 				}
 				banksZip = new ZipFile(bicZipData);
 				ZipConstants.DefaultCodePage = Encoding.UTF8.CodePage;
-				ZipEntry zipEntry = banksZip.GetEntry($"{DateTime.Today.Year}{DateTime.Today.Month.ToString("D2")}{DateTime.Today.Day.ToString("D2")}_ED807_full.xml");
+				ZipEntry zipEntry =
+					banksZip.GetEntry($"{DateTime.Today.Year}{DateTime.Today.Month:D2}{DateTime.Today.Day:D2}_ED807_full.xml");
+
+				if(zipEntry is null) {
+					return false;
+				}
+				
 				XmlSerializer ser = new XmlSerializer(typeof(ED807));
 				using(Stream banks = banksZip.GetInputStream(zipEntry)) {
 					bicDocument = BIC.GetBICDocument(banks);
