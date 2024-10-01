@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="icons\" />
+    <Folder Include="libs\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.1.2" />
@@ -36,25 +37,25 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="atk-sharp">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\atk-sharp.dll</HintPath>
+      <HintPath>./libs/atk-sharp.dll</HintPath>
     </Reference>
     <Reference Include="gdk-sharp">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\gdk-sharp.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/gdk-sharp.dll</HintPath>
+	</Reference>
     <Reference Include="glib-sharp">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\glib-sharp.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/glib-sharp.dll</HintPath>
+	</Reference>
     <Reference Include="gtk-sharp">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\gtk-sharp.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/gtk-sharp.dll</HintPath>
+	</Reference>
     <Reference Include="Mono.Cairo">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\Mono.Cairo\Mono.Cairo.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/Mono.Cairo.dll</HintPath>
+	</Reference>
     <Reference Include="Mono.Posix">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\Mono.Posix\Mono.Posix.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/Mono.Posix.dll</HintPath>
+	</Reference>
     <Reference Include="pango-sharp">
-      <HintPath>C:\Program Files (x86)\GtkSharp\2.12\lib\gtk-sharp-2.0\pango-sharp.dll</HintPath>
-    </Reference>
+		<HintPath>./libs/pango-sharp.dll</HintPath>
+	</Reference>
   </ItemGroup>
 </Project>
