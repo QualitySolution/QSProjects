@@ -17,8 +17,10 @@ namespace QS.Serial.Encoding
 		public byte ProductId { get; private set; }
 		public byte EditionId { get; private set; }
 		public ushort ClientId { get; private set; }
-
 		public DateTime? ExpiryDate { get; private set; }
+		#endregion
+		#region Версия 3
+		public ushort Employees{ get; private set; }
 		#endregion
 
 		#endregion
@@ -73,7 +75,7 @@ namespace QS.Serial.Encoding
 
 				CodeVersion = summaryArray[0];
 
-				if (CodeVersion != 1 && CodeVersion != 2)
+				if (CodeVersion != 1 && CodeVersion != 2 && CodeVersion != 3)
 				{
 					IsNotSupport = true;
 					return;
@@ -94,6 +96,17 @@ namespace QS.Serial.Encoding
 							IsExpired = ExpiryDate < DateTime.Now;
 						}
 						break;
+					case 3:
+						ClientId = BitConverter.ToUInt16(summaryArray, 1);
+						ProductId = summaryArray[10];
+						EditionId = summaryArray[11];
+						IsAnotherProduct = ProductId != applicationInfo?.ProductCode;
+						Employees = BitConverter.ToUInt16(summaryArray, 6);
+						if(summaryArray.Length >= 14) {
+							ExpiryDate = GetDateFromBinary(summaryArray, 12);
+							IsExpired = ExpiryDate < DateTime.Now;
+						}
+						break;
 				}
 				IsValid = !IsAnotherProduct && !IsNotSupport && !IsExpired;
 				OnPropertyChanged();
@@ -111,6 +124,7 @@ namespace QS.Serial.Encoding
 			DecodedProduct = String.Empty;
 			CodeVersion = default;
 			ClientId = default;
+			Employees = default;
 			ExpiryDate = default;
 			IsValid = IsNotSupport = IsAnotherProduct = IsExpired = false;
 		}
@@ -135,6 +149,13 @@ namespace QS.Serial.Encoding
 							       $"Продукт: {ProductId}\n" +
 							       $"Редакция: {EditionId}\n" +
 							       $"Дата окончания: {ExpiryDate?.ToString("d") ?? "Нет"}";
+						case 3:
+							return $"Версия кодирования: {CodeVersion}\n" +
+							       $"Id клиента: {ClientId}\n" +
+							       $"Продукт: {ProductId}\n" +
+							       $"Редакция: {EditionId}\n" +
+							       $"Количество сотрудников: " + (Employees > 0 ? Employees.ToString() : "\u221e") +
+							       $"\nДата окончания: {ExpiryDate?.ToString("d") ?? "Нет"}";
 						default:
 							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");
 					}
