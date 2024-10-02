@@ -15,6 +15,14 @@
 
   
   <ItemGroup>
+    <AvaloniaXaml Remove="Views\Controls\**" />
+    <Compile Remove="Views\Controls\**" />
+    <EmbeddedResource Remove="Views\Controls\**" />
+    <None Remove="Views\Controls\**" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
     <AvaloniaResource Remove="Assets\mariadb.png" />
     <AvaloniaResource Remove="Assets\mariadb.svg" />
   </ItemGroup>
@@ -52,10 +60,6 @@
     <AvaloniaResource Update="Assets\qs.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Controls\Helpers\" />
   </ItemGroup>
 
   <ItemGroup>
