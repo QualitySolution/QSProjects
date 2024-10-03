@@ -44,7 +44,7 @@ namespace QS.Serial.Encoding
 
 		[PropertyChangedAlso(nameof(ComponentsText))]
 		public virtual string Number {
-			get {return number;}
+			get => number;
 			set { 
 				if (number == value)
 					return;
@@ -69,9 +69,8 @@ namespace QS.Serial.Encoding
 				}
 
 				if (summaryArray.Length < 9)
-				{
 					return;
-				}
+
 
 				CodeVersion = summaryArray[0];
 
@@ -108,7 +107,7 @@ namespace QS.Serial.Encoding
 						}
 						break;
 				}
-				IsValid = !IsAnotherProduct && !IsNotSupport && !IsExpired;
+				IsValid = !IsAnotherProduct && !IsNotSupport;
 				OnPropertyChanged();
 			}
 		}
