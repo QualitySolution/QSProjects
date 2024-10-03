@@ -61,6 +61,8 @@ namespace QS.Test.Serial
 		[TestCase("G8oE-6zju-qHUb-8Cqf-c", true, 2, (ushort)34,(ushort)15, null)]//Тестовый Профессиональная 2 пользователя
 		[TestCase("G8oE-6zju-qHUb-8Cqk-B", true, 3, (ushort)34, (ushort)15, null)]//Тестовый Предприятие 1 пользователь
 		[TestCase("65qs-56f8-nnsu-Goat-8Pmb", true, 4, (ushort)34, (ushort)10, "2024-10-04")]//Тестовый Спецаутсорсинг 1 пользователь с датой окончания
+		[TestCase("", false, 0, (ushort)0, (ushort)0, null)]//Пустой серийник
+		[TestCase("Fhd9-nwjg-zuYU-Wduk-M", false, 0, (ushort)0, (ushort)0, null)]//Серийник от другого продукта.
 		public void EncoderV3_WorkwearTest(string sn, bool isValid, byte edition, ushort clientId, ushort employees, DateTime? expiryDate)
 		{
 			var appInfo = Substitute.For<IApplicationInfo>();
