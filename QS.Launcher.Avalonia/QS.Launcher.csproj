@@ -4,13 +4,18 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <LangVersion>latest</LangVersion>
+	<LangVersion>9.0</LangVersion>
   </PropertyGroup>
 	<PropertyGroup Label="Avalonia">
 		<AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="Avalonia" Version="11.1.3" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+	  <PackageReference Include="ReactiveUI" Version="20.1.63" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
+	  <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
 	</ItemGroup>
 
 </Project>

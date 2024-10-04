@@ -1,16 +1,22 @@
 using QS.Launcher.ViewModels.Commands;
 using System.Windows.Input;
 
-namespace QS.Launcher.ViewModels.PageViewModels;
+namespace QS.Launcher.ViewModels.PageViewModels {
+	public class CarouselPageVM : ViewModelBase
+	{
+		public ICommand? NextPageCommand { get; set; }
 
-public class CarouselPageVM(NextPageCommand? nextPageCommand, PreviousPageCommand? previousPageCommand, ChangePageCommand? changePageCommand) : ViewModelBase
-{
-	protected ICommand? nextPageCommand;
-	public ICommand? NextPageCommand { get; } = nextPageCommand;
+		public ICommand? PreviousPageCommand { get; set; }
 
-	protected ICommand? previousPageCommand;
-	public ICommand? PreviousPageCommand { get; } = previousPageCommand;
+		public ICommand? ChangePageCommand { get; set; }
 
-	protected ICommand? changePageCommand;
-	public ICommand? ChangePageCommand { get; } = changePageCommand;
+		public CarouselPageVM(NextPageCommand? nextPageCommand, PreviousPageCommand? previousPageCommand, ChangePageCommand? changePageCommand)
+		{
+			NextPageCommand = nextPageCommand;
+			PreviousPageCommand = previousPageCommand;
+			ChangePageCommand = changePageCommand;
+		}
+
+		public CarouselPageVM() { }	
+	}
 }

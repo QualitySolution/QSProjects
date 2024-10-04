@@ -5,26 +5,19 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using QS.Dialog;
 
 namespace QS.Project.Avalonia;
 
-public enum DialogType
-{
-	Info,
-	Warning,
-	Error,
-	Success
-}
-
 public partial class DialogWindow : Window
 {
-	public DialogType MessageType
+	public ImportanceLevel MessageType
 	{
 		get => GetValue(MessageTypeProperty);
 		set => SetValue(MessageTypeProperty, value);
 	}
-	public static readonly StyledProperty<DialogType> MessageTypeProperty =
-		AvaloniaProperty.Register<DialogWindow, DialogType>(nameof(DialogType));
+	public static readonly StyledProperty<ImportanceLevel> MessageTypeProperty =
+		AvaloniaProperty.Register<DialogWindow, ImportanceLevel>(nameof(MessageType));
 
 	public string Message
 	{
@@ -52,7 +45,7 @@ public partial class DialogWindow : Window
 	/// <param name="title"></param>
 	/// <param name="type"></param>
 	/// <param name="buttons">You can specify additional buttons with their own Click handlers</param>
-	public DialogWindow(string message, string title = "", DialogType type = DialogType.Info, params Button[] buttons)
+	public DialogWindow(string message, string title = "", ImportanceLevel type = ImportanceLevel.Info, params Button[] buttons)
 	{
 		InitializeComponent();
 		Message = message;
@@ -80,10 +73,11 @@ public partial class DialogWindow : Window
 
 	#region FastMessages
 
-	public static void Error(string message, string title = "Error") => new DialogWindow(message, title, DialogType.Error).Show();
-	public static void Info(string message, string title = "Info") => new DialogWindow(message, title, DialogType.Info).Show();
-	public static void Success(string message, string title = "Success") => new DialogWindow(message, title, DialogType.Success).Show();
-	public static void Warning(string message, string title = "Warning") => new DialogWindow(message, title, DialogType.Warning).Show();
+	public static void Show (ImportanceLevel type, string message, string title = null) => new DialogWindow(message, title, type).Show();
+	public static void Error(string message, string title = "Error") => new DialogWindow(message, title, ImportanceLevel.Error).Show();
+	public static void Info(string message, string title = "Info") => new DialogWindow(message, title, ImportanceLevel.Info).Show();
+	public static void Success(string message, string title = "Success") => new DialogWindow(message, title, ImportanceLevel.Success).Show();
+	public static void Warning(string message, string title = "Warning") => new DialogWindow(message, title, ImportanceLevel.Warning).Show();
 
 	#endregion
 }

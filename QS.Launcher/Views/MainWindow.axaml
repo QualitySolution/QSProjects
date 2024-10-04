@@ -17,7 +17,7 @@
         mc:Ignorable="d">
     <ScrollViewer>
         <Panel>
-            <Carousel x:Name="carousel" ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}">
+            <Carousel x:Name="carousel" ItemsSource="{Binding Pages}" SelectedIndex="{Binding SelectedPageIndex}">
                 <Carousel.PageTransition>
                     <PageSlide Orientation="Horizontal" Duration="0.25" />
                 </Carousel.PageTransition>

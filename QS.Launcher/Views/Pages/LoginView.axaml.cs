@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
+using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
 
 namespace QS.Launcher.Views.Pages;

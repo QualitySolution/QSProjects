@@ -1,56 +1,44 @@
-using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.Views.Pages;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
 
-namespace QS.Launcher.ViewModels; 
-public class MainWindowVM : ViewModelBase
-{
-	public ObservableCollection<ContentControl> Pages { get; set; }
+namespace QS.Launcher.ViewModels {
+	public class MainWindowVM : ViewModelBase {
+		public int PagesCount { get; set; }
 
-	LoginView login;
+		LoginVM login;
 
-	private ContentControl selectedPage;
-	public ContentControl SelectedPage
-	{
-		get => selectedPage;
-		set => this.RaiseAndSetIfChanged(ref selectedPage, value);
-	}
+		private int selectedPageIndex;
+		public int SelectedPageIndex {
+			get => selectedPageIndex;
+			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
+		}
 
-	public MainWindowVM(IServiceProvider serviceProvider)
-	{
-		login = serviceProvider.GetRequiredService<LoginView>();
-		var databases = serviceProvider.GetRequiredService<DataBasesView>();
-		var userManagement = serviceProvider.GetRequiredService<UserManagementView>();
-		var baseManagement = serviceProvider.GetRequiredService<BaseManagementView>();
+		public MainWindowVM(IEnumerable<CarouselPageVM> pages) {
 
-		Pages =
-		[
-			login, databases, userManagement, baseManagement
-		];
-	}
+			foreach (var page in pages) {
+				page.NextPageCommand = ReactiveCommand.Create(NextPage);
+				page.PreviousPageCommand = ReactiveCommand.Create(PreviousPage);
+				page.ChangePageCommand = ReactiveCommand.Create<int>(ChangePage);
 
-	public void SaveConnections() {
-		((LoginVM)login.DataContext).SerialaizeConnections();
-	}
-	
-	public void ChangePage(int index)
-	{
-		SelectedPage = Pages[index];
-	}
+				if(page is LoginVM loginVM)
+					login = loginVM;
+			}
+		}
 
-	public void NextPage()
-	{
-		ChangePage((Pages.IndexOf(SelectedPage) + 1) % Pages.Count);
-	}
+		public void SaveConnections() {
+			login.SerialaizeConnections();
+		}
 
-	public void PreviousPage()
-	{
-		ChangePage((Pages.IndexOf(SelectedPage) - 1 + Pages.Count) % Pages.Count);
+		public void ChangePage(int index) {
+			SelectedPageIndex = index;
+		}
+
+		public void NextPage() {
+			ChangePage((SelectedPageIndex + 1) % PagesCount);
+		}
+
+		public void PreviousPage() {
+			ChangePage((SelectedPageIndex - 1 + PagesCount) % PagesCount);
+		}
 	}
 }

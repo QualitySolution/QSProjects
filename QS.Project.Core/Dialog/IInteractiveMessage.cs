@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace QS.Dialog
 {
 	public interface IInteractiveMessage
@@ -10,6 +10,7 @@ namespace QS.Dialog
 	{
 		Info,
 		Warning,
-		Error
+		Error,
+		Success
 	}
 }

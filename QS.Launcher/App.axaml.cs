@@ -37,7 +37,7 @@ public partial class App : Application {
 		var collection = new ServiceCollection();
 
 		collection.AddViewsAndViewModels();
-		collection.AddNavigationCommands();
+		//collection.AddNavigationCommands();
 
 		collection.AddConnectionTypes(connectionInfos);
 		collection.AddConnections(connectionInfos, launcherOptions.OldConfigFilename);
