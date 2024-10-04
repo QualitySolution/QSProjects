@@ -1,7 +1,6 @@
 using Avalonia.Data.Converters;
 using System;
 using System.Globalization;
-using System.Text;
 
 namespace QS.Project.Avalonia.Converters;
 

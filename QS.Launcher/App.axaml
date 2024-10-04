@@ -1,17 +1,15 @@
 <Application x:Class="QS.Launcher.App"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="using:QS.Project.Avalonia.ViewModels.Converters"
-             xmlns:localConverters="using:QS.Launcher.ViewModels.Converters"
+             xmlns:converters="clr-namespace:QS.Project.Avalonia.Converters;assembly=QS.Project.Avalonia"
+             xmlns:localConverters="using:QS.Project.Avalonia.Converters"
              x:CompileBindings="False"
              RequestedThemeVariant="Light">
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Resources>
-        <converters:StringEqualConverter x:Key="StringEqualConverter" />
         <converters:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
-        <converters:DoubleToRenderTransformYConverter x:Key="DoubleToRenderTransformYConverter" />
-        <localConverters:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
+        <converters:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
     </Application.Resources>
 
     <Application.Styles>

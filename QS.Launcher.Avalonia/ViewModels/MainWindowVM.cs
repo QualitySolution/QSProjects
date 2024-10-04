@@ -1,5 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.ViewModels.PageViewModels;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels {
 	public class MainWindowVM : ViewModelBase {
@@ -13,16 +16,16 @@ namespace QS.Launcher.ViewModels {
 			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
 		}
 
-		public MainWindowVM(IEnumerable<CarouselPageVM> pages) {
-
+		public MainWindowVM(DataBasesVM dataBasesVM, LoginVM loginVM, BaseManagementVM baseManagementVM, UserManagementVM userManagementVM
+			, IServiceProvider provider)
+		{
+			CarouselPageVM[] pages = { dataBasesVM, loginVM, baseManagementVM, userManagementVM };
 			foreach (var page in pages) {
 				page.NextPageCommand = ReactiveCommand.Create(NextPage);
 				page.PreviousPageCommand = ReactiveCommand.Create(PreviousPage);
 				page.ChangePageCommand = ReactiveCommand.Create<int>(ChangePage);
-
-				if(page is LoginVM loginVM)
-					login = loginVM;
 			}
+			login = loginVM;
 		}
 
 		public void SaveConnections() {

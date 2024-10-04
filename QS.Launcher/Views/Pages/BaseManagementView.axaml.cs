@@ -1,16 +1,14 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.ViewModels.PageViewModels;
 using System;
-using System.Windows.Input;
+using System.Linq;
 
 namespace QS.Launcher.Views.Pages;
 
 public partial class BaseManagementView : UserControl {
-	public BaseManagementView(BaseMagamenetVM viewModel) {
+	public BaseManagementView(BaseManagementVM viewModel) {
 		InitializeComponent();
-
 		DataContext = viewModel;
 	}
 }

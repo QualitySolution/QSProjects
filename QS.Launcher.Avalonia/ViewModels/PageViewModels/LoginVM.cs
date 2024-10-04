@@ -3,9 +3,13 @@ using QS.DbManagement;
 using QS.Dialog;
 using QS.Launcher.ViewModels.ModelsDTO;
 using ReactiveUI;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
@@ -78,7 +82,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		{
 			this.dbVM = dbVM;
 			this.interactiveMessage = interactiveMessage;
-			CompanyImage = new Bitmap(AssetLoader.Open(options.CompanyImage));
+
+			using(var s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(options.CompanyImageName)) {
+				using(var ms = new MemoryStream()) {
+					s.CopyTo(ms);
+					CompanyImage = ms.ToArray();
+				}
+			}
 			AppTitle = options.AppTitle;
 
 			Connections = new(connections.Select(c => new ConnectionDTO(c)));

@@ -1,7 +1,7 @@
-﻿using ReactiveUI;
+using ReactiveUI;
 
-namespace QS.Launcher.ViewModels;
-
-public class ViewModelBase : ReactiveObject
-{
+namespace QS.Launcher.ViewModels {
+	public class ViewModelBase : ReactiveObject
+	{
+	}
 }

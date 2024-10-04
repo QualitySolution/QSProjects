@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<LangVersion>9.0</LangVersion>
   </PropertyGroup>
@@ -10,12 +10,28 @@
 		<AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Assets\mariadb.png" />
+	  <None Remove="Assets\qs.ico" />
+	  <None Remove="Assets\sps.png" />
+	  <None Remove="Assets\sps1024.png" />
+	</ItemGroup>
+	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	  <PackageReference Include="ReactiveUI" Version="20.1.63" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
 	  <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Resource Include="Assets\mariadb.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
+	  <EmbeddedResource Include="Assets\qs.ico">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <Resource Include="Assets\sps.png" />
+	  <Resource Include="Assets\sps1024.png" />
 	</ItemGroup>
 
 </Project>
