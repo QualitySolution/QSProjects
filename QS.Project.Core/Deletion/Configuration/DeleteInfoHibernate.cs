@@ -7,7 +7,6 @@ using Gamma.Utilities;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
-using QS.Project.DB;
 
 namespace QS.Deletion.Configuration
 {
@@ -18,13 +17,9 @@ namespace QS.Deletion.Configuration
 
 		#region Свойства
 
-		public Type ObjectClass {
-			get {
-				return typeof(TEntity);
-			}
-		}
+		public Type ObjectClass => typeof(TEntity);
 
-		//Только для поиска соответствия из модулей работающих по таблицам. Например Users в QSProjectLib
+		//Только для поиска соответствия из модулей работающих по таблицам. Например, Users в QSProjectLib
 		public string TableName { get; private set;}
 			
 		public string ObjectsName {
@@ -41,21 +36,9 @@ namespace QS.Deletion.Configuration
 
 		public bool IsRequiredCascadeDeletion { get; set;}
 
-		public bool IsSubclass
-		{
-			get
-			{
-				return OrmConfig.NhConfig.GetClassMapping(ObjectClass) is NHibernate.Mapping.Subclass;
-			}
-		}
+		public bool IsSubclass => hibernateConfiguration.GetClassMapping(ObjectClass) is NHibernate.Mapping.Subclass;
 
-		public bool HasDependences
-		{
-			get
-			{
-				return DeleteItems.Count > 0 || ClearItems.Count > 0 || RemoveFromItems.Count > 0 || IsRootForSubclasses;
-			}
-		}
+		public bool HasDependency => DeleteItems.Count > 0 || ClearItems.Count > 0 || RemoveFromItems.Count > 0 || IsRootForSubclasses;
 
 		public List<DeleteDependenceInfo> DeleteItems { get; set;}
 		public List<ClearDependenceInfo> ClearItems { get; set;}
@@ -88,15 +71,15 @@ namespace QS.Deletion.Configuration
 			return this;
 		}
 
-		public DeleteInfoHibernate<TEntity> AddDeleteDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg)
+		public DeleteInfoHibernate<TEntity> AddDeleteDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
-			DeleteItems.Add (DeleteDependenceInfo.Create<TDependOn> (propertyRefExpr, cfg));
+			DeleteItems.Add (DeleteDependenceInfo.Create<TDependOn> (propertyRefExpr, hibernateConfiguration));
 			return this;
 		}
 
-		public DeleteInfoHibernate<TEntity> AddDeleteCascadeDependence(Expression<Func<TEntity, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg)
+		public DeleteInfoHibernate<TEntity> AddDeleteCascadeDependence(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
-			DeleteItems.Add (DeleteDependenceInfo.CreateFromParentPropery<TEntity> (propertyRefExpr, cfg));
+			DeleteItems.Add (DeleteDependenceInfo.CreateFromParentPropery<TEntity> (propertyRefExpr, hibernateConfiguration));
 			return this;
 		}
 
@@ -114,23 +97,23 @@ namespace QS.Deletion.Configuration
 
 		//TODO удалить метод после 11.2019;
 		[Obsolete("Используйте вместо этого более универсальный метод AddDeleteDependenceFromCollection.")]
-		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromBag(Expression<Func<TEntity, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg)
+		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromBag(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
 			string propName = PropertyUtil.GetName(propertyRefExpr);
-			DeleteItems.Add (DeleteDependenceInfo.CreateFromCollection<TEntity> (propName, cfg));
+			DeleteItems.Add (DeleteDependenceInfo.CreateFromCollection<TEntity> (propName, hibernateConfiguration));
 			return this;
 		}
 
-		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromCollection(Expression<Func<TEntity, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg)
+		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromCollection(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
 			string propName = PropertyUtil.GetName(propertyRefExpr);
-			DeleteItems.Add(DeleteDependenceInfo.CreateFromCollection<TEntity>(propName, cfg));
+			DeleteItems.Add(DeleteDependenceInfo.CreateFromCollection<TEntity>(propName, hibernateConfiguration));
 			return this;
 		}
 
-		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr, NHibernate.Cfg.Configuration cfg)
+		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
-			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr, cfg));
+			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr, hibernateConfiguration));
 			return this;
 		}
 

@@ -26,7 +26,7 @@ namespace QS.Deletion.Configuration
 		public List<RemoveFromDependenceInfo> RemoveFromItems { get; set;}
 		public List<UpdateDependenceInfo> UpdateItems { get; set;}
 
-		public bool HasDependences
+		public bool HasDependency
 		{
 			get
 			{

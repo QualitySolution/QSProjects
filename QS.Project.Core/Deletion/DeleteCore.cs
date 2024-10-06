@@ -220,7 +220,7 @@ namespace QS.Deletion
 			EntityDTO secondEntity = null;
 
 			var secondInfo = CalculateSecondInfo(currentDeletion, masterEntity);
-			if (!currentDeletion.HasDependences && !(secondInfo == null || secondInfo.HasDependences))
+			if (!currentDeletion.HasDependency && !(secondInfo == null || secondInfo.HasDependency))
 				return;
 
 			OperationTitle = String.Format("Проверка ссылок на: {0}", masterEntity.Title);
