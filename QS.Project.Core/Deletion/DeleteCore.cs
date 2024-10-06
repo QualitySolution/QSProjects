@@ -47,10 +47,12 @@ namespace QS.Deletion
 			}
 		}
 
-		public DeleteCore(DeleteConfiguration configuration, IUnitOfWorkFactory uowFactory, IUnitOfWork uow = null, DbConnection connection = null)
+		public DeleteCore(DeleteConfiguration configuration, IUnitOfWorkFactory uowFactory = null, IUnitOfWork uow = null, DbConnection connection = null)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-			this.uowFactory = uowFactory ?? throw new ArgumentNullException(nameof(uowFactory));
+			if(uow == null && uowFactory == null)
+				throw new ArgumentNullException($"{nameof(uowFactory)} и {nameof(uow)}");
+			this.uowFactory = uowFactory;
 			this.uow = uow;
 			this.connection = connection;
 		}

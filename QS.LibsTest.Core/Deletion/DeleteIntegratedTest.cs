@@ -27,7 +27,7 @@ namespace QS.Test.Deletion
 			//Тут очень важна последовательность конфига, аккуратнее исправляйте тест.
 			//Смысл теста в том, что через каскадное удаление объект в котором предполагалась очистка ссылки, удаляется перед, этим.
 			// А в момент очистки ссылки он заново записывается, обычно с тем же ID, что в последствии вызывает различные проблемы,
-			// например не возможно удалить объект, на который имеется ссылка из этого, или не удается этот записать, так как удален
+			// например не возможно удалить объект, на который имееться ссылка из этого, или не удается этот записать, так как удален
 			// тот на который мы ссылаемся. Повторюсь, мы не должны были его записывать.
 			var delConfig = new DeleteConfiguration();
 			delConfig.AddHibernateDeleteInfo<DependDeleteItem>()
@@ -53,7 +53,7 @@ namespace QS.Test.Deletion
 				uow.Save(item2);
 				uow.Commit();
 
-				var deletion = new DeleteCore(delConfig, uow);
+				var deletion = new DeleteCore(delConfig, uow: uow);
 				var cancellation = new System.Threading.CancellationToken();
 				deletion.PrepareDeletion(typeof(RootDeleteItem), root.Id, cancellation);
 				Assert.That(deletion.ItemsToDelete, Is.EqualTo(3));
