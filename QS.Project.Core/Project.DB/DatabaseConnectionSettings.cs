@@ -9,5 +9,15 @@ namespace QS.Project.DB {
 		public string Password { get; set; }
 		public MySqlSslMode MySqlSslMode { get; set; }
 		public uint? DefaultCommandTimeout { get; set; }
+
+		public DatabaseConnectionSettings(MySqlConnectionStringBuilder stringBuilder) {
+			ServerName = stringBuilder.Server;
+			Port = stringBuilder.Port;
+			DatabaseName = stringBuilder.Database;
+			UserName = stringBuilder.UserID;
+			Password = stringBuilder.Password;
+			MySqlSslMode = stringBuilder.SslMode;
+			DefaultCommandTimeout = stringBuilder.ConnectionTimeout;
+		}
 	}
 }
