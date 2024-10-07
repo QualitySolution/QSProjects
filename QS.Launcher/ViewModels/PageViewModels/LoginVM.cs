@@ -23,10 +23,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public string AppTitle { get; set; }
 
-		internal List<ConnectionInfoDTO> ConnectionTypes { get; }
+		public List<ConnectionInfoDTO> ConnectionTypes { get; }
 
 		private ConnectionDTO? selectedConnection;
-		internal ConnectionDTO? SelectedConnection {
+		public ConnectionDTO? SelectedConnection {
 			get => selectedConnection;
 			set {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
@@ -36,7 +36,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 		}
 
-		internal ConnectionInfoDTO? NewConnectionInfo {
+		public ConnectionInfoDTO? NewConnectionInfo {
 			get {
 				if(SelectedConnection?.ConnectionInfo != null)
 					return ConnectionTypes.First(ci => ci.Title == SelectedConnection.ConnectionInfo.Title);
@@ -51,7 +51,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 		}
 
-		internal ObservableCollection<ConnectionDTO> Connections { get; set; }
+		public ObservableCollection<ConnectionDTO> Connections { get; set; }
 
 		private string? password;
 		public string? Password {
@@ -148,16 +148,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 		}
 
-		public bool CanLogin {
-			get {
-				var usedConnection = SelectedConnection;
-				return
-					usedConnection is not null &&
-					usedConnection.ConnectionInfo is not null &&
+		public bool CanLogin => SelectedConnection is not null &&
+					SelectedConnection.ConnectionInfo is not null &&
 					!string.IsNullOrWhiteSpace(Password) &&
-					!string.IsNullOrWhiteSpace(usedConnection.User);
-			}
-		}
+					!string.IsNullOrWhiteSpace(SelectedConnection.User);
 
 		public void SerialaizeConnections() {
 			// if last selected connection changed
