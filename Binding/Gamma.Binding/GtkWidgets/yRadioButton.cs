@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Gtk;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
@@ -12,7 +12,7 @@ namespace Gamma.GtkWidgets
 	{
 		public BindingControler<yRadioButton> Binding { get; private set; }
 
-		public yRadioButton() : base("")
+		public yRadioButton(string label = "") : base(label)
 		{
 			Binding = new BindingControler<yRadioButton> (this, new Expression<Func<yRadioButton, object>>[] {
 				(w => w.Active),
