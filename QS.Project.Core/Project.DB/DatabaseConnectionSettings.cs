@@ -10,6 +10,7 @@ namespace QS.Project.DB {
 		public MySqlSslMode MySqlSslMode { get; set; }
 		public uint? DefaultCommandTimeout { get; set; }
 
+		public DatabaseConnectionSettings() { }
 		public DatabaseConnectionSettings(MySqlConnectionStringBuilder stringBuilder) {
 			ServerName = stringBuilder.Server;
 			Port = stringBuilder.Port;
