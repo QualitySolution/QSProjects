@@ -3,6 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>QS.Project</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Label="Avalonia">
     <AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
@@ -30,5 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+    <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
   </ItemGroup>
 </Project>

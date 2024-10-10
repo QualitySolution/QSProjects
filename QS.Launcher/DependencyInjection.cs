@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
-using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
