@@ -1,8 +1,8 @@
 using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Responces;
-using System;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace QS.DbManagement
@@ -18,15 +18,18 @@ namespace QS.DbManagement
 	
 		public bool IsConnected => throw new NotImplementedException();
 
-		public ConnectionInfo ConnectionInfo => throw new NotImplementedException();
-
 		public bool IsAdmin => throw new NotImplementedException();
 
+		#region Параметры подключени
+		public string Server { get; private set; }
 		public string UserName { get; private set; }
+		#endregion
 
-		public MariaDBProvider(MariaDBConnectionInfo connectionInfo)
+		public MariaDBProvider(IList<ConnectionParameterValue> parameters, string password = null)
 		{
-			ConnectionString = connectionInfo.Parameters.First(p => p.Title == "ConnectionString").Value as string;
+			Server = parameters.First(p => p.Name == "Server").Value;
+			UserName = parameters.First(p => p.Name == "Login").Value;
+			throw new NotImplementedException();
 			connection = new MySqlConnection(ConnectionString);
 		}
 	
@@ -71,10 +74,7 @@ namespace QS.DbManagement
 			throw new NotImplementedException();
 		}
 
-		LoginToServerResponce IDbProvider.LoginToServer(LoginToServerData loginToServerData) {
-
-			UserName = loginToServerData.UserName;
-
+		LoginToServerResponce IDbProvider.LoginToServer() {
 			throw new NotImplementedException();
 		}
 	}

@@ -61,14 +61,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 			string fileName = launcherOptions.AppExecutablePath;
 
-#if DEBUG
-			interactiveMessage.ShowMessage(ImportanceLevel.Success, resp.ConnectionString + "\nSession id: " + resp.Parameters.Find(p => p.Title == "SessionId").Value, "Отлично!");
-#endif
-
 			Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", resp.ConnectionString, EnvironmentVariableTarget.User);
 			Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName, EnvironmentVariableTarget.User);
-			foreach(ConnectionParameter par in resp.Parameters)
-				Environment.SetEnvironmentVariable("QS_" + par.Title, par.Value as string, EnvironmentVariableTarget.User);
+			foreach(var par in resp.Parameters)
+				Environment.SetEnvironmentVariable("QS_" + par.Name, par.Value, EnvironmentVariableTarget.User);
 
 			Process.Start(new ProcessStartInfo {
 				WorkingDirectory = "D:\\",

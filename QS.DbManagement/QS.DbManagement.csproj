@@ -7,6 +7,17 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="MySqlConnector" Version="2.3.7" />
+    <PackageReference Include="ReactiveUI" Version="20.1.63" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\mariadb.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

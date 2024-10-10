@@ -29,4 +29,8 @@
       <Protobuf Include="Protos\UserManagement.proto" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Icons\qscloud.ico" />
+    </ItemGroup>
+
 </Project>

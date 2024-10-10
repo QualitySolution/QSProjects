@@ -29,7 +29,7 @@ namespace QS.Launcher.ViewModels {
 		}
 
 		public void SaveConnections() {
-			login.SerialaizeConnections();
+			login.SaveConnections();
 		}
 
 		public void ChangePage(int index) {
