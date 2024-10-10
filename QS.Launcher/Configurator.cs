@@ -62,6 +62,11 @@ namespace QS.Launcher {
 		public void SaveConnections(IList<Connection> connections) {
 			var connectionDefinitions = connections.Select(c => c.GetConfigDefinitions()).ToList();
 			try {
+				// Убедимся, что директория существует
+				string directory = Path.GetDirectoryName(options.ConnectionsJsonFileName);
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
+				}
 				using(var stream = File.Open(options.ConnectionsJsonFileName, FileMode.Create)) {
 					JsonSerializer.SerializeAsync(stream, connectionDefinitions, serializerOptions);
 				}
