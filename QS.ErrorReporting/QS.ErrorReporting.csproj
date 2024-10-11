@@ -5,8 +5,8 @@
 		<ProjectGuid>{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}</ProjectGuid>
 		<RootNamespace>QS.ErrorReporting</RootNamespace>
 		<Company>Quality Solution</Company>
-		<LangVersion>8</LangVersion>
-		<Nullable>enable</Nullable>
+		<LangVersion>7.3</LangVersion>
+		<Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
