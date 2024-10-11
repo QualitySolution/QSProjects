@@ -95,13 +95,13 @@ namespace QS.Launcher {
 
 					if(parameters["Type"] == "QSCloud") {
 						parameters.Add("Account", config[$"{section}:Account"]);
-						parameters.Add("Title", $"Облако для {config[$"{section}:Account"]}\\{config[$"{section}:UserLogin"]}");
+						parameters.Add("Title", $"В облако {config[$"{section}:Account"]} как {config[$"{section}:UserLogin"]}");
 						parameters.Add("Hash", $"[QSCloud]{config[$"{section}:Account"]}\\{config[$"{section}:UserLogin"]}");
 					}
 
 					if(parameters["Type"] == "MariaDB") {
 						parameters.Add("Server", config[$"{section}:Server"]);
-						parameters.Add("Title", $"MariaDB {config[$"{section}:UserLogin"]}@{config[$"{section}:Server"]}");
+						parameters.Add("Title", $"На сервер {config[$"{section}:Server"]} как {config[$"{section}:UserLogin"]}");
 						parameters.Add("Hash", $"[MariaDB]{config[$"{section}:UserLogin"]}@{config[$"{section}:Server"]}");
 					}
 
