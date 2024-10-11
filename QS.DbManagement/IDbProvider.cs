@@ -16,11 +16,11 @@ namespace QS.DbManagement
 		
 		bool AddUser(string username, string password);
 
-		LoginToServerResponce LoginToServer();
+		LoginToServerResponse LoginToServer();
 
 		List<DbInfo> GetUserDatabases();
 
-		LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo);
+		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);
 	
 		bool IsConnected { get; }
 

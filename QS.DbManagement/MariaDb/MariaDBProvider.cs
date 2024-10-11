@@ -70,11 +70,11 @@ namespace QS.DbManagement
 			throw new NotImplementedException();
 		}
 
-		public LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo) {
+		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			throw new NotImplementedException();
 		}
 
-		LoginToServerResponce IDbProvider.LoginToServer() {
+		LoginToServerResponse IDbProvider.LoginToServer() {
 			throw new NotImplementedException();
 		}
 	}

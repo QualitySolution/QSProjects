@@ -71,8 +71,8 @@ namespace QS.Cloud.Client
 			}).ToList();
 		}
 
-		public LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo) {
-			LoginToDatabaseResponce resp;
+		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
+			LoginToDatabaseResponse resp;
 
 			try {
 				var cloudResponse = loginClient.StartSession(dbInfo.BaseId);
@@ -83,14 +83,14 @@ namespace QS.Cloud.Client
 					Password = cloudResponse.Db.Password,
 					Database = cloudResponse.Db.BaseName
 				};
-				resp = new LoginToDatabaseResponce {
+				resp = new LoginToDatabaseResponse {
 					Success = cloudResponse.Success,
 					ConnectionString = builder.ConnectionString,
 					Parameters = new List<(string Name, string Value)> { ("SessionId", cloudResponse.SessionId) }
 				};
 			}
 			catch(Exception ex) {
-				resp = new LoginToDatabaseResponce {
+				resp = new LoginToDatabaseResponse {
 					Success = false,
 					ErrorMessage = ex.Message
 				};
@@ -99,21 +99,21 @@ namespace QS.Cloud.Client
 			return resp;
 		}
 
-		public LoginToServerResponce LoginToServer() {
-			LoginToServerResponce resp;
+		public LoginToServerResponse LoginToServer() {
+			LoginToServerResponse resp;
 
 			StartResponse cloudResponce;
 			try {
 				cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-				resp = new LoginToServerResponce {
+				resp = new LoginToServerResponse {
 					Success = true,
 					IsAdmin = cloudResponce.YouAccountAdmin,
 					NeedToUpdateLauncher = cloudResponce.NeedUpdateLauncher
 				};
 			}
 			catch(RpcException ex) {
-				resp = new LoginToServerResponce {
+				resp = new LoginToServerResponse {
 					Success = false,
 					ErrorMessage = ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated ?
 						"Неверные данные для входа" : ex.StatusCode.ToString()
