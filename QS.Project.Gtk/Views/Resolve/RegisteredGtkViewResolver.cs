@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gtk;
+using QS.Navigation;
 using QS.ViewModels;
 
 namespace QS.Views.Resolve
 {
 	public class RegisteredGtkViewResolver : IGtkViewResolver
 	{
-		List<ResolveRule> registeredViews = new List<ResolveRule>();
+		List<TypeMatchViewResolveRule> registeredViews = new List<TypeMatchViewResolveRule>();
 		private readonly IGtkViewFactory viewFactory;
 		readonly IGtkViewResolver nextResolver;
 
@@ -28,7 +29,7 @@ namespace QS.Views.Resolve
 			where TViewModel : ViewModelBase
 			where TView : Widget
 		{
-			registeredViews.Add(new ResolveRule(typeof(TViewModel), typeof(TView)));
+			registeredViews.Add(new TypeMatchViewResolveRule(typeof(TViewModel), typeof(TView)));
 			return this;
 		}
 
@@ -37,28 +38,11 @@ namespace QS.Views.Resolve
 		public Widget Resolve(ViewModelBase viewModel)
 		{
 			foreach(var rule in registeredViews) {
-				if(rule.IsMath(viewModel))
+				if(rule.IsMatch(viewModel))
 					return viewFactory.Create(rule.ViewType, viewModel);
 			}
 
 			return nextResolver.Resolve(viewModel);
-		}
-	}
-
-	internal class ResolveRule
-	{
-		readonly Type ViewModelType;
-		public readonly Type ViewType;
-
-		public ResolveRule(Type viewModel, Type view)
-		{
-			ViewModelType = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-			ViewType = view ?? throw new ArgumentNullException(nameof(view));
-		}
-
-		public bool IsMath(ViewModelBase viewModel)
-		{
-			return ViewModelType.IsAssignableFrom(viewModel.GetType());
 		}
 	}
 }
