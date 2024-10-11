@@ -4,6 +4,7 @@ using QS.DbManagement.Responces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using MySqlConnector;
 using Grpc.Core;
 
@@ -103,7 +104,7 @@ namespace QS.Cloud.Client
 
 			StartResponse cloudResponce;
 			try {
-				cloudResponce = loginClient.Start("0.1.0.0");
+				cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
 				resp = new LoginToServerResponce {
 					Success = true,
