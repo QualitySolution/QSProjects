@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+	<LangVersion>7.3</LangVersion>
   </PropertyGroup>
 	<PropertyGroup Label="Avalonia">
 		<AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
@@ -27,10 +27,8 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="Assets\mariadb.png">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Resource>
 	  <EmbeddedResource Include="Assets\qs.ico">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </EmbeddedResource>
 	  <Resource Include="Assets\sps.png" />
 	  <Resource Include="Assets\sps1024.png" />

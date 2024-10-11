@@ -21,8 +21,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public List<ConnectionTypeBase> ConnectionTypes { get; }
 
-		private Connection? selectedConnection;
-		public Connection? SelectedConnection {
+		private Connection selectedConnection;
+		public Connection SelectedConnection {
 			get => selectedConnection;
 			set {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
@@ -32,7 +32,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 		}
 
-		public ConnectionTypeBase? NewConnectionInfo {
+		public ConnectionTypeBase NewConnectionInfo {
 			get {
 				if(SelectedConnection?.ConnectionType != null)
 					return ConnectionTypes.First(ci => ci.Title == SelectedConnection.ConnectionType.Title);
@@ -49,8 +49,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public ObservableCollection<Connection> Connections { get; set; }
 
-		private string? password;
-		public string? Password {
+		private string password;
+		public string Password {
 			get => password;
 			set {
 				this.RaiseAndSetIfChanged(ref password, value);
@@ -134,8 +134,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 		}
 
-		public bool CanLogin => SelectedConnection is not null &&
-					SelectedConnection.ConnectionType is not null &&
+		public bool CanLogin => SelectedConnection != null &&
+					SelectedConnection.ConnectionType != null &&
 					!string.IsNullOrWhiteSpace(Password) &&
 					SelectedConnection.CanConnect();
 

@@ -16,7 +16,7 @@ namespace QS.Launcher {
 		private readonly IInteractiveMessage interactive;
 		private readonly IList<ConnectionTypeBase> connectionTypes;
 		
-		readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+		readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
 		public Configurator(LauncherOptions options, IInteractiveMessage interactive, IEnumerable<ConnectionTypeBase> connectionTypes) {
 			this.options = options ?? throw new ArgumentNullException(nameof(options));

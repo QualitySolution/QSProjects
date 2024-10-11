@@ -23,8 +23,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public List<DbInfo> Databases { get; set; }
 
-		private DbInfo? selectedDatabase;
-		public DbInfo? SelectedDatabase {
+		private DbInfo selectedDatabase;
+		public DbInfo SelectedDatabase {
 			get => selectedDatabase;
 			set => this.RaiseAndSetIfChanged(ref selectedDatabase, value);
 		}
@@ -45,9 +45,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			launcherOptions = options;
 			this.interactiveMessage = interactiveMessage;
 
-			IObservable<bool>? canExecute = this
+			IObservable<bool> canExecute = this
 				.WhenAnyValue(x => x.SelectedDatabase)
-				.Select(x => x is not null);
+				.Select(x => x != null);
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecute);
 		}
 

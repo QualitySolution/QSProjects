@@ -22,6 +22,6 @@ namespace QS.Launcher {
 		/// <summary>
 		/// Путь к старому конфигу приложения, для переноса настроек.
 		/// </summary>
-		public string? OldConfigFilename { get; set; }
+		public string OldConfigFilename { get; set; }
 	}
 }
