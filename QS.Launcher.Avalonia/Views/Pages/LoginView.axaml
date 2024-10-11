@@ -50,7 +50,6 @@
                     SizeChanged="Border_SizeChanged">
                 <StackPanel>
                     <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Название подключения" />
-                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Пользователь" />
                     <ComboBox x:Name="connectionType"
                               Margin="5"
                               HorizontalAlignment="Stretch"
