@@ -86,6 +86,7 @@ namespace QS.Cloud.Client
 				resp = new LoginToDatabaseResponse {
 					Success = cloudResponse.Success,
 					ConnectionString = builder.ConnectionString,
+					Login = UserName,
 					Parameters = new List<(string Name, string Value)> { ("SessionId", cloudResponse.SessionId) }
 				};
 			}

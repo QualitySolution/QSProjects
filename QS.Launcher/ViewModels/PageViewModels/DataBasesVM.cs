@@ -4,9 +4,9 @@ using QS.Dialog;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using QS.Launcher.AppRunner;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class DataBasesVM : CarouselPageVM {
@@ -40,10 +40,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		IInteractiveMessage interactiveMessage;
 
 		private LauncherOptions launcherOptions;
+		private readonly IAppRunner appRunner;
 
-		public DataBasesVM(LauncherOptions options, IInteractiveMessage interactiveMessage) {
-			launcherOptions = options;
-			this.interactiveMessage = interactiveMessage;
+		public DataBasesVM(LauncherOptions options, IAppRunner appRunner, IInteractiveMessage interactiveMessage) {
+			launcherOptions = options ?? throw new ArgumentNullException(nameof(options));
+			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
+			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 
 			IObservable<bool> canExecute = this
 				.WhenAnyValue(x => x.SelectedDatabase)
@@ -59,20 +61,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Ошибка подключения к базе данных");
 				return;
 			}
-			string fileName = launcherOptions.AppExecutablePath;
 
-			Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", resp.ConnectionString, EnvironmentVariableTarget.User);
-			Environment.SetEnvironmentVariable("QS_LOGIN", provider.UserName, EnvironmentVariableTarget.User);
-			foreach(var par in resp.Parameters)
-				Environment.SetEnvironmentVariable("QS_" + par.Name, par.Value, EnvironmentVariableTarget.User);
-
-			Process.Start(new ProcessStartInfo {
-				WorkingDirectory = "D:\\",
-				FileName = fileName,
-				UseShellExecute = true,
-				CreateNoWindow = true,
-				Arguments = resp.ConnectionString
-			});
+			appRunner.Run(resp);
 
 			if(ShouldCloseLauncherAfterStart)
 				StartClosingLauncherEvent?.Invoke();

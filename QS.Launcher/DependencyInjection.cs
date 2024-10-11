@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
+using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
 
@@ -27,5 +28,19 @@ namespace QS.Launcher {
 			services.AddSingleton(connectionType);
 			return services;
 		}
+
+		#region AppRunner
+
+		public static IServiceCollection UseInProcessRunner(this IServiceCollection services) {
+			return services
+				.AddSingleton<IAppRunner, InProcessRunner>()
+				.AddSingleton<InProcessRunner>();
+		}
+		
+		public static IServiceCollection UseNewProcessRunner(this IServiceCollection services) {
+			return services.AddSingleton<IAppRunner, NewProcessRunner>();
+		}
+
+		#endregion
 	}
 }
