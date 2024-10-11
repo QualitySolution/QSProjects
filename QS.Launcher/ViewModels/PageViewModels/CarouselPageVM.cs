@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class CarouselPageVM : ViewModelBase {

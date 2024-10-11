@@ -23,6 +23,7 @@
 	  <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
 	  <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
 	  <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+	  <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Resource Include="Assets\mariadb.png">
