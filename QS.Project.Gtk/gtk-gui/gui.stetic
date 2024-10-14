@@ -6,7 +6,6 @@
   </configuration>
   <import>
     <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
-    <widget-library name="../../QSWidgetLib/bin/Debug/QSWidgetLib.dll" />
     <widget-library name="../bin/Debug/QS.Project.Gtk.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="QS.Project.Dialogs.GtkUI.RepresentationJournalDialog" design-size="655 304">
@@ -422,9 +421,53 @@
           </packing>
         </child>
         <child>
-          <widget class="QSWidgetLib.SearchEntity" id="searchDocuments">
+          <widget class="Gtk.HBox" id="hbox3">
             <property name="MemberName" />
-            <property name="Events">ButtonPressMask</property>
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Поиск:</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="entrySearchText">
+                <property name="MemberName" />
+                <property name="Tooltip" translatable="yes">Введите фразу для поиска</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="Changed" handler="SearchDocumentsOnTextChanged" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="buttonClear">
+                <property name="MemberName" />
+                <property name="Tooltip" translatable="yes">Очистить поисковую фразу</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">stock:gtk-clear Menu</property>
+                <property name="Label" translatable="yes" />
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonClearClicked" />
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
           </widget>
           <packing>
             <property name="Position">1</property>
@@ -1599,7 +1642,7 @@
             <property name="MemberName" />
             <property name="ShadowType">In</property>
             <child>
-              <widget class="QSWidgetLib.ImageViewer" id="imageviewerPhoto">
+              <widget class="QS.Widgets.ImageViewer" id="imageviewerPhoto">
                 <property name="MemberName" />
                 <property name="VerticalFit">True</property>
                 <property name="HorizontalFit">True</property>

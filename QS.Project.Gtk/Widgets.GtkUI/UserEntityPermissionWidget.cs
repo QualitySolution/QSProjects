@@ -49,7 +49,6 @@ namespace QS.Widgets.GtkUI
 				.InitializeFromSource();
 			
 			ytreeviewEntitiesList.ButtonReleaseEvent += YtreeviewEntitiesListOnButtonReleaseEvent;
-			searchDocuments.TextChanged += SearchDocumentsOnTextChanged;
 
 			CreatePopupMenu();
 
@@ -80,7 +79,7 @@ namespace QS.Widgets.GtkUI
 
 		private void SearchDocumentsOnTextChanged(object sender, EventArgs e)
 		{
-			Model.SearchTypes(searchDocuments.Text);
+			Model.SearchTypes(entrySearchText.Text);
 		}
 
 		private void AddPermission()
@@ -110,6 +109,10 @@ namespace QS.Widgets.GtkUI
 		public void UpdateData(IList<UserPermissionNode> newUserPermissions) {
 			Model.UpdateData(newUserPermissions);
 			permissionlistview.Redraw();
+		}
+
+		protected void OnButtonClearClicked(object sender, EventArgs e) {
+			entrySearchText.Text = String.Empty;
 		}
 	}
 

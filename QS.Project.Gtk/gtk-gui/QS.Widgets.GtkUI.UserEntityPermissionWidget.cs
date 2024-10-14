@@ -18,7 +18,13 @@ namespace QS.Widgets.GtkUI
 
 		private global::QS.Project.Dialogs.PermissionListView permissionlistview;
 
-		private global::QSWidgetLib.SearchEntity searchDocuments;
+		private global::Gtk.HBox hbox3;
+
+		private global::Gtk.Label label2;
+
+		private global::Gtk.Entry entrySearchText;
+
+		private global::Gtk.Button buttonClear;
 
 		protected virtual void Build()
 		{
@@ -78,14 +84,47 @@ namespace QS.Widgets.GtkUI
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox2]));
 			w6.Position = 0;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.searchDocuments = new global::QSWidgetLib.SearchEntity();
-			this.searchDocuments.Events = ((global::Gdk.EventMask)(256));
-			this.searchDocuments.Name = "searchDocuments";
-			this.vbox2.Add(this.searchDocuments);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.searchDocuments]));
-			w7.Position = 1;
+			this.hbox3 = new global::Gtk.HBox();
+			this.hbox3.Name = "hbox3";
+			this.hbox3.Spacing = 6;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.label2 = new global::Gtk.Label();
+			this.label2.Name = "label2";
+			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("Поиск:");
+			this.hbox3.Add(this.label2);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.label2]));
+			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.entrySearchText = new global::Gtk.Entry();
+			this.entrySearchText.TooltipMarkup = "Введите фразу для поиска";
+			this.entrySearchText.CanFocus = true;
+			this.entrySearchText.Name = "entrySearchText";
+			this.entrySearchText.IsEditable = true;
+			this.entrySearchText.InvisibleChar = '●';
+			this.hbox3.Add(this.entrySearchText);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.entrySearchText]));
+			w8.Position = 1;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.buttonClear = new global::Gtk.Button();
+			this.buttonClear.TooltipMarkup = "Очистить поисковую фразу";
+			this.buttonClear.CanFocus = true;
+			this.buttonClear.Name = "buttonClear";
+			this.buttonClear.UseUnderline = true;
+			global::Gtk.Image w9 = new global::Gtk.Image();
+			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-clear", global::Gtk.IconSize.Menu);
+			this.buttonClear.Image = w9;
+			this.hbox3.Add(this.buttonClear);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.buttonClear]));
+			w10.Position = 2;
+			w10.Expand = false;
+			w10.Fill = false;
+			this.vbox2.Add(this.hbox3);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox3]));
+			w11.Position = 1;
+			w11.Expand = false;
+			w11.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
@@ -94,6 +133,8 @@ namespace QS.Widgets.GtkUI
 			this.Hide();
 			this.ytreeviewEntitiesList.RowActivated += new global::Gtk.RowActivatedHandler(this.OnYtreeviewEntitiesListRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler(this.OnButtonAddClicked);
+			this.entrySearchText.Changed += new global::System.EventHandler(this.SearchDocumentsOnTextChanged);
+			this.buttonClear.Clicked += new global::System.EventHandler(this.OnButtonClearClicked);
 		}
 	}
 }
