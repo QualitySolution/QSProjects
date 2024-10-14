@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace QS.Launcher {
 	public class LauncherOptions {
 		/// <summary>
@@ -23,5 +26,7 @@ namespace QS.Launcher {
 		/// Путь к старому конфигу приложения, для переноса настроек.
 		/// </summary>
 		public string OldConfigFilename { get; set; }
+		
+		public Func<List<Dictionary<string, string>>> MakeDefaultConnections { get; set; }
 	}
 }

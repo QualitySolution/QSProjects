@@ -48,7 +48,7 @@ namespace QS.Launcher {
 					}
 				}
 				else {
-					//FIXME создать подключения по умолчанию.
+					connectionDefinitions = options.MakeDefaultConnections?.Invoke();
 				}
 			}
 
