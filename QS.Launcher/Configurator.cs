@@ -29,6 +29,8 @@ namespace QS.Launcher {
 			try {
 				using(var stream = File.Open(options.ConnectionsJsonFileName, FileMode.Open)) {
 					try {
+						if(stream.Length == 0)
+							throw new FileNotFoundException("Файл пуст.");
 						connectionDefinitions = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(stream);
 					}
 					catch(JsonException jsonEx) {
