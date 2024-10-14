@@ -89,7 +89,6 @@
     <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkWindowBase.cs" />
     <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
-    <Compile Include="yWidgets\yImageViewer.cs" />
     <Compile Include="yWidgets\yLegalName.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />

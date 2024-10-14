@@ -171,6 +171,7 @@
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
+    <Compile Include="Widgets\ImageViewer.cs" />
     <Compile Include="Widgets\ProgressWidget.cs" />
     <Compile Include="Navigation\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />

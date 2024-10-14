@@ -1599,7 +1599,7 @@
             <property name="MemberName" />
             <property name="ShadowType">In</property>
             <child>
-              <widget class="QSWidgetLib.ImageViewer" id="imageviewerPhoto">
+              <widget class="QS.Widgets.ImageViewer" id="imageviewerPhoto">
                 <property name="MemberName" />
                 <property name="VerticalFit">True</property>
                 <property name="HorizontalFit">True</property>

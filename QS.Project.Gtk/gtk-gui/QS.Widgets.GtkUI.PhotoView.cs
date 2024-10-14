@@ -8,7 +8,7 @@ namespace QS.Widgets.GtkUI
 
 		private global::Gtk.Frame frame1;
 
-		private global::QSWidgetLib.ImageViewer imageviewerPhoto;
+		private global::QS.Widgets.ImageViewer imageviewerPhoto;
 
 		private global::Gtk.HButtonBox hbuttonbox1;
 
@@ -33,7 +33,7 @@ namespace QS.Widgets.GtkUI
 			this.frame1.Name = "frame1";
 			this.frame1.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child frame1.Gtk.Container+ContainerChild
-			this.imageviewerPhoto = new global::QSWidgetLib.ImageViewer();
+			this.imageviewerPhoto = new global::QS.Widgets.ImageViewer();
 			this.imageviewerPhoto.Name = "imageviewerPhoto";
 			this.imageviewerPhoto.VerticalFit = true;
 			this.imageviewerPhoto.HorizontalFit = true;
