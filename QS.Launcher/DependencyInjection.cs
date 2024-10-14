@@ -1,3 +1,4 @@
+using Autofac;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.Launcher.AppRunner;
@@ -33,8 +34,12 @@ namespace QS.Launcher {
 
 		public static IServiceCollection UseInProcessRunner(this IServiceCollection services) {
 			return services
-				.AddSingleton<IAppRunner, InProcessRunner>()
-				.AddSingleton<InProcessRunner>();
+				.AddSingleton<IAppRunner, InProcessRunner>();
+		}
+		
+		// Потому что мы не знаем как в MS DI сделать чтобы синголтон и для интерфейса и для класса был все таки один.
+		public static void UseInProcessRunner(this ContainerBuilder builder) {
+			builder.RegisterType<InProcessRunner>().As<IAppRunner>().AsSelf().SingleInstance();
 		}
 		
 		public static IServiceCollection UseNewProcessRunner(this IServiceCollection services) {

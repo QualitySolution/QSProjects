@@ -42,6 +42,7 @@ message BaseConnection{
 
 //GetBasesForUser - Получение списка баз в которые можно зайти.
 message GetBasesForUserRequest{
+	uint32 application_id = 1;
 }
 
 message GetBasesForUserResponse{
@@ -51,6 +52,7 @@ message GetBasesForUserResponse{
 message BaseInfo{
 	int32 base_id = 1;
 	string base_title = 2;
+	string base_version = 3;
 }
 
 //ChangePassword - смена собственного пароля от учетной записи

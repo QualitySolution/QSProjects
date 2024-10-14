@@ -6,6 +6,18 @@ namespace QS.Launcher.Views
 	{
 		private global::Gtk.VBox vbox2;
 
+		private global::Gamma.GtkWidgets.yLabel ylabel1;
+
+		private global::Gtk.ScrolledWindow GtkScrolledWindow;
+
+		private global::Gamma.GtkWidgets.yTreeView treeBases;
+
+		private global::Gamma.GtkWidgets.yHBox yhbox1;
+
+		private global::Gamma.GtkWidgets.yButton buttonBack;
+
+		private global::Gamma.GtkWidgets.yButton buttonLoginInBase;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -16,12 +28,64 @@ namespace QS.Launcher.Views
 			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.ylabel1 = new global::Gamma.GtkWidgets.yLabel();
+			this.ylabel1.Name = "ylabel1";
+			this.ylabel1.Xalign = 0F;
+			this.ylabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Выберите базу данных:");
+			this.vbox2.Add(this.ylabel1);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.ylabel1]));
+			w1.Position = 0;
+			w1.Expand = false;
+			w1.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
+			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
+			this.GtkScrolledWindow.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
+			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
+			this.treeBases = new global::Gamma.GtkWidgets.yTreeView();
+			this.treeBases.CanFocus = true;
+			this.treeBases.Name = "treeBases";
+			this.GtkScrolledWindow.Add(this.treeBases);
+			this.vbox2.Add(this.GtkScrolledWindow);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow]));
+			w3.Position = 1;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.yhbox1 = new global::Gamma.GtkWidgets.yHBox();
+			this.yhbox1.Name = "yhbox1";
+			this.yhbox1.Spacing = 6;
+			// Container child yhbox1.Gtk.Box+BoxChild
+			this.buttonBack = new global::Gamma.GtkWidgets.yButton();
+			this.buttonBack.CanFocus = true;
+			this.buttonBack.Name = "buttonBack";
+			this.buttonBack.UseUnderline = true;
+			this.buttonBack.Label = global::Mono.Unix.Catalog.GetString("Назад");
+			this.yhbox1.Add(this.buttonBack);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonBack]));
+			w4.Position = 0;
+			// Container child yhbox1.Gtk.Box+BoxChild
+			this.buttonLoginInBase = new global::Gamma.GtkWidgets.yButton();
+			this.buttonLoginInBase.CanFocus = true;
+			this.buttonLoginInBase.Name = "buttonLoginInBase";
+			this.buttonLoginInBase.UseUnderline = true;
+			this.buttonLoginInBase.Label = global::Mono.Unix.Catalog.GetString("Войти в базу");
+			this.yhbox1.Add(this.buttonLoginInBase);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonLoginInBase]));
+			w5.Position = 1;
+			this.vbox2.Add(this.yhbox1);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.yhbox1]));
+			w6.Position = 2;
+			w6.Expand = false;
+			w6.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.buttonBack.Clicked += new global::System.EventHandler(this.OnButtonBackClicked);
+			this.buttonLoginInBase.Clicked += new global::System.EventHandler(this.OnButtonLoginInBaseClicked);
 		}
 	}
 }

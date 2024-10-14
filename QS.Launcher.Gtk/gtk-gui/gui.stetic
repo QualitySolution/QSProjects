@@ -6,9 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/QS.Launcher.Gtk.dll" internal="true" />
     <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../../QS.Project.Gtk/bin/Debug/QS.Project.Gtk.dll" />
+    <widget-library name="../bin/Debug/QS.Launcher.Gtk.dll" internal="true" />
   </import>
   <widget class="Gtk.Window" id="QS.Launcher.Views.MainWindow" design-size="400 300">
     <property name="MemberName" />
@@ -139,6 +139,7 @@
                 <property name="IsEditable">True</property>
                 <property name="Visibility">False</property>
                 <property name="InvisibleChar">●</property>
+                <signal name="Activated" handler="OnEntryPasswordActivated" />
               </widget>
               <packing>
                 <property name="TopAttach">2</property>
@@ -315,7 +316,20 @@
           </packing>
         </child>
         <child>
-          <placeholder />
+          <widget class="Gamma.GtkWidgets.yButton" id="buttonLogin">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Войти</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonLoginClicked" />
+          </widget>
+          <packing>
+            <property name="Position">5</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
         </child>
       </widget>
     </child>
@@ -328,13 +342,75 @@
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
-          <placeholder />
+          <widget class="Gamma.GtkWidgets.yLabel" id="ylabel1">
+            <property name="MemberName" />
+            <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes">Выберите базу данных:</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
         </child>
         <child>
-          <placeholder />
+          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+            <property name="MemberName" />
+            <property name="HscrollbarPolicy">Never</property>
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gamma.GtkWidgets.yTreeView" id="treeBases">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="ShowScrollbars">True</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
         </child>
         <child>
-          <placeholder />
+          <widget class="Gamma.GtkWidgets.yHBox" id="yhbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonBack">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Назад</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonBackClicked" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonLoginInBase">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Войти в базу</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonLoginInBaseClicked" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
         </child>
       </widget>
     </child>

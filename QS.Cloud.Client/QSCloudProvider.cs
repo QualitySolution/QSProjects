@@ -67,7 +67,8 @@ namespace QS.Cloud.Client
 			return loginClient.GetBasesForUser().Select(bi => new DbInfo
 			{
 				Title = bi.BaseTitle,
-				BaseId = bi.BaseId
+				BaseId = bi.BaseId,
+				Version = bi.BaseVersion
 			}).ToList();
 		}
 

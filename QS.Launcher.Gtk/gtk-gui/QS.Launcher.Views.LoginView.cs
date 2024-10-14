@@ -34,6 +34,8 @@ namespace QS.Launcher.Views
 
 		private global::Gamma.GtkWidgets.yLabel labelCapslockInfo;
 
+		private global::Gamma.GtkWidgets.yButton buttonLogin;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -207,6 +209,17 @@ namespace QS.Launcher.Views
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelCapslockInfo]));
 			w15.Position = 4;
 			w15.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.buttonLogin = new global::Gamma.GtkWidgets.yButton();
+			this.buttonLogin.CanFocus = true;
+			this.buttonLogin.Name = "buttonLogin";
+			this.buttonLogin.UseUnderline = true;
+			this.buttonLogin.Label = global::Mono.Unix.Catalog.GetString("Войти");
+			this.vbox2.Add(this.buttonLogin);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.buttonLogin]));
+			w16.Position = 5;
+			w16.Expand = false;
+			w16.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
@@ -217,6 +230,8 @@ namespace QS.Launcher.Views
 			this.labelKeyboardLayoutInfo.Hide();
 			this.labelCapslockInfo.Hide();
 			this.Hide();
+			this.entryPassword.Activated += new global::System.EventHandler(this.OnEntryPasswordActivated);
+			this.buttonLogin.Clicked += new global::System.EventHandler(this.OnButtonLoginClicked);
 		}
 	}
 }
