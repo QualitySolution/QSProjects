@@ -4,7 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectGuid>{2A0710B2-B71B-4959-88DA-0940100E172A}</ProjectGuid>
     <Company>Quality Solution</Company>
-	<Nullable>disable</Nullable>
+    <Nullable>disable</Nullable>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

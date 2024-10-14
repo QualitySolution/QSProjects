@@ -6,6 +6,7 @@
         <RootNamespace>QS.Utilities</RootNamespace>
         <ProjectGuid>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</ProjectGuid>
 		<Nullable>disable</Nullable>
+		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />

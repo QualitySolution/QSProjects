@@ -6,6 +6,7 @@
         <RootNamespace>Gamma.Utilities</RootNamespace>
         <ProjectGuid>{1BF2A638-420D-456C-96A7-36873A0FB894}</ProjectGuid>
 		<Nullable>disable</Nullable>
+		<LangVersion>7.3</LangVersion>
 	</PropertyGroup>
 
     <ItemGroup>
