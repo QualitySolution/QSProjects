@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace QSProjectsLib
+namespace QS.Helpers
 {
 	public static class WindowStartupFix
 	{
