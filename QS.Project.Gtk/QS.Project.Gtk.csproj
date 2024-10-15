@@ -229,6 +229,8 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
+    <Compile Include="Project.Versioning\Views\ChangeLogView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Versioning.Views.ChangeLogView.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -307,6 +309,10 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Project.Versioning\" />
+    <Folder Include="Project.Versioning\Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
