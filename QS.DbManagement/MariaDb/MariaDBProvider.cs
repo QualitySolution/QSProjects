@@ -1,9 +1,10 @@
 using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Responces;
+using QS.Project.Versioning;
 using System.Collections.Generic;
-using System;
 using System.Linq;
+using System;
 
 namespace QS.DbManagement
 {
@@ -66,7 +67,7 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public List<DbInfo> GetUserDatabases() {
+		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
 			throw new NotImplementedException();
 		}
 

@@ -1,12 +1,13 @@
+using Grpc.Core;
+using MySqlConnector;
 using QS.Cloud.Core;
-using QS.DbManagement;
 using QS.DbManagement.Responces;
-using System;
+using QS.DbManagement;
+using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using MySqlConnector;
-using Grpc.Core;
+using System;
 
 namespace QS.Cloud.Client
 {
@@ -63,8 +64,8 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 
-		public List<DbInfo> GetUserDatabases() {
-			return loginClient.GetBasesForUser().Select(bi => new DbInfo
+		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
+			return loginClient.GetBasesForUser(applicationInfo.ProductCode).Select(bi => new DbInfo
 			{
 				Title = bi.BaseTitle,
 				BaseId = bi.BaseId,

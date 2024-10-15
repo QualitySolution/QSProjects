@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 package QS.Cloud.Core;
 
@@ -42,7 +42,7 @@ message BaseConnection{
 
 //GetBasesForUser - Получение списка баз в которые можно зайти.
 message GetBasesForUserRequest{
-	uint32 application_id = 1;
+	uint32 product_id = 1;
 }
 
 message GetBasesForUserResponse{

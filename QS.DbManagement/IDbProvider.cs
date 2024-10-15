@@ -1,6 +1,7 @@
 using QS.DbManagement.Responces;
-using System;
+using QS.Project.Versioning;
 using System.Collections.Generic;
+using System;
 
 namespace QS.DbManagement
 {
@@ -18,7 +19,7 @@ namespace QS.DbManagement
 
 		LoginToServerResponse LoginToServer();
 
-		List<DbInfo> GetUserDatabases();
+		List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo);
 
 		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);
 	

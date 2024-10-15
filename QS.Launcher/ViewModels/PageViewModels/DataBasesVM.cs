@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using QS.Launcher.AppRunner;
+using QS.Project.Versioning;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class DataBasesVM : CarouselPageVM {
@@ -16,7 +17,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			get => provider;
 			set {
 				this.RaiseAndSetIfChanged(ref provider, value);
-				Databases = provider.GetUserDatabases().AsList();
+				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
 			}
 		}
@@ -41,10 +42,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private LauncherOptions launcherOptions;
 		private readonly IAppRunner appRunner;
+		private readonly IApplicationInfo applicationInfo;
 
-		public DataBasesVM(LauncherOptions options, IAppRunner appRunner, IInteractiveMessage interactiveMessage) {
+		public DataBasesVM(LauncherOptions options, IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage) {
 			launcherOptions = options ?? throw new ArgumentNullException(nameof(options));
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
+			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 
 			IObservable<bool> canExecute = this
