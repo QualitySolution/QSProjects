@@ -69,7 +69,7 @@ namespace QS.Launcher.Views
 			this.buttonLoginInBase.CanFocus = true;
 			this.buttonLoginInBase.Name = "buttonLoginInBase";
 			this.buttonLoginInBase.UseUnderline = true;
-			this.buttonLoginInBase.Label = global::Mono.Unix.Catalog.GetString("Войти в базу");
+			this.buttonLoginInBase.Label = global::Mono.Unix.Catalog.GetString("Запустить");
 			this.yhbox1.Add(this.buttonLoginInBase);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonLoginInBase]));
 			w5.Position = 1;
