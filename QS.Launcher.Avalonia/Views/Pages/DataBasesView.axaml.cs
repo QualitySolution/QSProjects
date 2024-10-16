@@ -17,6 +17,11 @@ public partial class DataBasesView : UserControl {
 				viewModel.ConnectCommand.Execute(null);
 			}
 		};
+
+		databases.DoubleTapped += (s, e) => {
+			if(databases.SelectedItem is not null)
+				viewModel.ConnectCommand.Execute(null);
+		};
 	}
 
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e) {
