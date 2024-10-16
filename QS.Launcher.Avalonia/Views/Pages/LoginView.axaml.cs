@@ -25,6 +25,13 @@ public partial class LoginView : UserControl
 		loginContainer.Styles.Add(upStyle);
 
 		DataContext = viewModel;
+
+		KeyDown += (s, e) => {
+			if(e.Key == Avalonia.Input.Key.Enter) {
+				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
+				viewModel.LoginCommand.Execute(null);
+			}
+		};
     }
 
 

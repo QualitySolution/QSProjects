@@ -1,11 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
-using Microsoft.Extensions.DependencyInjection;
-using NHibernate.Util;
 using QS.Launcher.ViewModels.PageViewModels;
-using System;
-using System.Linq;
 
 namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
@@ -14,6 +10,13 @@ public partial class DataBasesView : UserControl {
 
 		DataContext = viewModel;
 		viewModel.StartClosingLauncherEvent += () => (App.Current.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
+
+		KeyDown += (s, e) => {
+			if(e.Key == Key.Enter) {
+				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
+				viewModel.ConnectCommand.Execute(null);
+			}
+		};
 	}
 
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e) {
