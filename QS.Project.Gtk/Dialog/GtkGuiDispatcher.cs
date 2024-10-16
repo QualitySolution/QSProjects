@@ -15,9 +15,11 @@ namespace QS.Dialog
 
 		Thread IGuiDispatcher.GuiThread => GuiThread;
 
-		public void RunInGuiTread(System.Action action)
-		{
-			Application.Invoke((sender, e) => action());
+		public void RunInGuiTread(System.Action action) {
+			if(GuiThread == Thread.CurrentThread)
+				action();
+			else
+				Application.Invoke((sender, e) => action());
 		}
 
 		public void WaitInMainLoop(Func<bool> checkStop, uint sleepMilliseconds = 20)

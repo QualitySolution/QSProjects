@@ -64,6 +64,7 @@
     <Compile Include="Extensions\GtkImageExtensions.cs" />
     <Compile Include="Extensions\HboxExtensions.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
+    <Compile Include="Helpers\WindowStartupFix.cs" />
     <Compile Include="Project.Services\GtkApplicationQuitService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Resolve\GtkViewFactory.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
+    <Compile Include="Dialog\Views\StatusBarView.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
