@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using QS.DbManagement.Responces;
 
 namespace QS.Launcher.AppRunner {
@@ -18,9 +19,10 @@ namespace QS.Launcher.AppRunner {
 			foreach(var par in loginToDatabase.Parameters)
 				Environment.SetEnvironmentVariable("QS_" + par.Name, par.Value, EnvironmentVariableTarget.User);
 
+			var dir = Path.GetDirectoryName(fileName);
 			Process.Start(new ProcessStartInfo {
-				WorkingDirectory = "D:\\",
-				FileName = fileName,
+				WorkingDirectory = dir,
+				FileName = fileName.Replace(dir, string.Empty),
 				UseShellExecute = true,
 				CreateNoWindow = true,
 				Arguments = loginToDatabase.ConnectionString

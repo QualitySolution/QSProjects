@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
-	// TODO: Deal with Bitmap
 	public class LoginVM : CarouselPageVM {
 		private byte[] companyImage;
 		public byte[] CompanyImage {
@@ -28,22 +27,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
 				this.RaisePropertyChanged(nameof(Connections));
-				this.RaisePropertyChanged(nameof(NewConnectionInfo));
-			}
-		}
-
-		public ConnectionTypeBase NewConnectionInfo {
-			get {
-				if(SelectedConnection?.ConnectionType != null)
-					return ConnectionTypes.First(ci => ci.Title == SelectedConnection.ConnectionType.Title);
-				else return null;
-			}
-			set {
-				//if(value != null)
-					//SelectedConnection.ConnectionType = (ConnectionTypes)value.Clone();
-				this.RaisePropertyChanged(nameof(SelectedConnection));
-				this.RaisePropertyChanged(nameof(NewConnectionInfo));
-				this.RaisePropertyChanged(nameof(CanLogin));
+				this.RaisePropertyChanged(nameof(SelectedConnection.CustomParameters));
 			}
 		}
 

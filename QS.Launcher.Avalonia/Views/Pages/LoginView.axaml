@@ -26,7 +26,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Button Grid.Column="1" Height="32" Margin="5,0,0,0" Click="ToggleCreationView" FontWeight="SemiBold">
-                    <Image x:Name="cogwheel" Classes="animated" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
+                    <Image x:Name="cogwheel" Classes="animated rolled" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
                         <Image.Styles>
                             <Style Selector="Image">
                                 <Setter Property="RenderTransform" Value="rotate(0deg)" />
@@ -57,7 +57,7 @@
                               ItemsSource="{Binding ConnectionTypes}"
                               PlaceholderForeground="#7A000000"
                               PlaceholderText="Тип подключения"
-                              SelectedItem="{Binding NewConnectionInfo}">
+                              SelectedItem="{Binding SelectedConnection.ConnectionType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel MaxHeight="20" Orientation="Horizontal">

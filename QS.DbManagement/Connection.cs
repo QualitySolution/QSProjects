@@ -12,7 +12,7 @@ namespace QS.DbManagement {
 		}
 
 		public ConnectionTypeBase ConnectionType { get; }
-		
+
 		public List<ConnectionParameterValue> CustomParameters { get; } = new List<ConnectionParameterValue>();
 
 		public bool Last { get; set; } = false;
@@ -20,15 +20,20 @@ namespace QS.DbManagement {
 		public Connection(ConnectionTypeBase connectionType, IDictionary<string, string> parameters) {
 			ConnectionType = connectionType;
 			ConnectionTitle = parameters["Title"];
-			Last = parameters.ContainsKey("Last") && parameters["Last"] == "true";
-			foreach(var parameter in ConnectionType.Parameters) {
-				if(parameters.TryGetValue(parameter.Name, out var parameterValue))
-					CustomParameters.Add(new ConnectionParameterValue(parameter, parameterValue));
-			}
+			Last = parameters.ContainsKey("Last") && parameters["Last"] == "True";
+			foreach(var parameter in ConnectionType.Parameters)
+				CustomParameters.Add(new ConnectionParameterValue(parameter, parameters.ContainsKey(parameter.Name) ? parameters[parameter.Name] : null));
 		}
-		
+
+		public Connection(Connection other) {
+			ConnectionType = other.ConnectionType;
+			ConnectionTitle = other.ConnectionTitle;
+			foreach(var parameter in other.CustomParameters)
+				CustomParameters.Add(parameter.Clone() as ConnectionParameterValue);
+		}
+
 		public bool CanConnect() => ConnectionType.CanConnect(CustomParameters);
-		
+
 		public IDbProvider CreateProvider(string password) => ConnectionType.CreateProvider(CustomParameters, password);
 		public Dictionary<string, string> GetConfigDefinitions() {
 			var config = new Dictionary<string, string> {
@@ -41,14 +46,6 @@ namespace QS.DbManagement {
 			return config;
 		}
 
-		public object Clone() {
-			var clone = new Connection(ConnectionType, new Dictionary<string, string>()) {
-				ConnectionTitle = ConnectionTitle,
-				Last = Last
-			};
-			foreach(var parameter in CustomParameters)
-				clone.CustomParameters.Add((ConnectionParameterValue)parameter.Clone());
-			return clone;
-		}
+		public object Clone() => new Connection(this);
 	}
 }
