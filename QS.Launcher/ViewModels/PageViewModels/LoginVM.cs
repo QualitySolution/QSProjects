@@ -39,8 +39,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			set {
 				this.RaiseAndSetIfChanged(ref password, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
+				this.RaisePropertyChanged(nameof(IsPasswordEngOnly));
 			}
 		}
+
+		public bool IsPasswordEngOnly => string.IsNullOrEmpty(Password) || 
+			Password.Where(c => char.IsLetter(c)).All(c => c <= '~');
 
 		protected IDbProvider dbProvider;
 

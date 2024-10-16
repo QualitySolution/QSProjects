@@ -23,7 +23,7 @@
             </ListBox>
 
             <Grid Grid.Row="1" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto">
-                <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Подключиться" />
+                <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
 
                 <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
 

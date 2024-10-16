@@ -1,7 +1,11 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media.Transformation;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using QS.Launcher.ViewModels.PageViewModels;
+using System.Globalization;
 
 namespace QS.Launcher.Views.Pages;
 
