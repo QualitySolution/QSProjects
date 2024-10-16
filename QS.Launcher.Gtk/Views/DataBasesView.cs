@@ -20,6 +20,16 @@ namespace QS.Launcher.Views {
 				.AddBinding(v => v.SelectedDatabase, w => w.SelectedRow)
 				.InitializeFromSource();
 			treeBases.RowActivated += (o, args) => ViewModel.Connect();
+			treeBases.KeyPressEvent += (o, args) => {
+				if(args.Event.Key == Gdk.Key.Return) {
+					ViewModel.Connect();
+				}
+			};
+			this.KeyPressEvent += (o, args) => {
+				if(args.Event.Key == Gdk.Key.Return) {
+					ViewModel.Connect();
+				}
+			};
 		}
 
 		protected void OnButtonBackClicked(object sender, EventArgs e) {
