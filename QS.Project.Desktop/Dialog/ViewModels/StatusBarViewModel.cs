@@ -6,11 +6,11 @@ using QS.ViewModels;
 
 namespace QS.Dialog.ViewModels {
 	public class StatusBarViewModel : ViewModelBase {
-		private readonly IGuiDispatcher dispatcher;
+		private readonly ITrackerActionInvoker invoker;
 		private readonly IUserService userService;
 
-		public StatusBarViewModel(IGuiDispatcher dispatcher, IUserService userService) {
-			this.dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+		public StatusBarViewModel(ITrackerActionInvoker invoker, IUserService userService) {
+			this.invoker = invoker;
 			this.userService = userService;
 			RegisterTargetForNlog();
 		}
@@ -44,7 +44,7 @@ namespace QS.Dialog.ViewModels {
 		public string UserName => userService.GetCurrentUser()?.Name;
 
 		private void SetStatusText (string text) {
-			dispatcher.RunInGuiTread(() => StatusText = text.EllipsizeMiddle(160));
+			invoker.Invoke(() => StatusText = text.EllipsizeMiddle(160));
 		}
 	}
 }
