@@ -19,6 +19,7 @@ namespace QS.Launcher.Views {
 				.AddBinding(v => v.Databases, w => w.ItemsDataSource)
 				.AddBinding(v => v.SelectedDatabase, w => w.SelectedRow)
 				.InitializeFromSource();
+			treeBases.RowActivated += (o, args) => ViewModel.Connect();
 		}
 
 		protected void OnButtonBackClicked(object sender, EventArgs e) {
