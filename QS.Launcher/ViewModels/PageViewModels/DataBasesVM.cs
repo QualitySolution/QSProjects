@@ -36,16 +36,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public ICommand ConnectCommand { get; }
 
-		public event Action StartClosingLauncherEvent;
+		public event Action<bool> StartLaunchProgram;
 
 		IInteractiveMessage interactiveMessage;
 
-		private LauncherOptions launcherOptions;
 		private readonly IAppRunner appRunner;
 		private readonly IApplicationInfo applicationInfo;
 
-		public DataBasesVM(LauncherOptions options, IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage) {
-			launcherOptions = options ?? throw new ArgumentNullException(nameof(options));
+		public DataBasesVM(IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage) {
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
@@ -65,10 +63,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
+			StartLaunchProgram?.Invoke(ShouldCloseLauncherAfterStart);
 			appRunner.Run(resp);
-
-			if(ShouldCloseLauncherAfterStart)
-				StartClosingLauncherEvent?.Invoke();
 		}
 	}
 }

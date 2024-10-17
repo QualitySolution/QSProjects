@@ -23,14 +23,33 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <Grid Grid.Row="2" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto">
+            <Grid Grid.Row="2" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto">
                 <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
 
                 <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
 
                 <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Content="Не закрывать лаунчер после подключения" Foreground="#7A000000" IsChecked="{Binding !ShouldCloseLauncherAfterStart}" />
 
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{Binding IsAdmin}">
+                <StackPanel x:Name="loadingPanel" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" IsVisible="False" Orientation="Horizontal">
+                    <Label Margin="5" Content="Запуск..." />
+                    <Image x:Name="cogwheel" Height="32" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
+                        <Image.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:4.00" />
+                            </Transitions>
+                        </Image.Transitions>
+                        <Image.Styles>
+                            <Style Selector="Image">
+                                <Setter Property="RenderTransform" Value="rotate(0deg)" />
+                            </Style>
+                            <Style Selector="Image.rolled">
+                                <Setter Property="RenderTransform" Value="rotate(720deg)" />
+                            </Style>
+                        </Image.Styles>
+                    </Image>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding IsAdmin}">
                     <Grid ColumnDefinitions="*, Auto, *">
                         <Separator Grid.Column="0" />
 
