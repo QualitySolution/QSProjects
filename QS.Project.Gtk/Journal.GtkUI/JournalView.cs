@@ -14,7 +14,7 @@ using QS.ViewModels;
 using QS.Views.Dialog;
 using QS.Views.GtkUI;
 using QS.Views.Resolve;
-using QSWidgetLib;
+using QS.Widgets;
 
 namespace QS.Journal.GtkUI
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
-using QS.DomainModel.Entity;
+using System.ComponentModel;
 using Gamma.Utilities;
 using System.Linq.Expressions;
 
@@ -19,9 +19,9 @@ namespace QS.Commands
 		private List<object[]> updatedSets = new List<object[]>();
 
 		public void CanExecuteChangedWith<TUpdatedSubject>(TUpdatedSubject updatedSubject, params Expression<Func<TUpdatedSubject, object>>[] propertySelectors)
-			where TUpdatedSubject : PropertyChangedBase
+			where TUpdatedSubject : INotifyPropertyChanged
 		{
-			var updatedPropertiesNames = propertySelectors.Select(updatedSubject.GetPropertyName).ToArray();
+			var updatedPropertiesNames = propertySelectors.Select(PropertyUtil.GetName).ToArray();
 
 			var foundSet = updatedSets.FirstOrDefault(x => object.ReferenceEquals(x[0], updatedSubject));
 			if(foundSet != null) {

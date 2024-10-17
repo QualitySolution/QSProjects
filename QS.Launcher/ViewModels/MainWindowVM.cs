@@ -1,8 +1,7 @@
-using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.ViewModels.PageViewModels;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
+using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels {
 	public class MainWindowVM : ViewModelBase {
@@ -29,7 +28,7 @@ namespace QS.Launcher.ViewModels {
 		}
 
 		public void SaveConnections() {
-			login.SerialaizeConnections();
+			login.SaveConnections();
 		}
 
 		public void ChangePage(int index) {

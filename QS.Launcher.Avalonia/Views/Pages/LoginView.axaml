@@ -19,14 +19,14 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel MaxHeight="20" Orientation="Horizontal">
-                                <Image Source="{Binding ConnectionInfo.IconBytes, Converter={StaticResource ByteArrayToBitmapConverter}}" Stretch="Uniform" />
+                                <Image Source="{Binding ConnectionType.IconBytes, Converter={StaticResource ByteArrayToBitmapConverter}}" Stretch="Uniform" />
                                 <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding ConnectionTitle, Mode=TwoWay}" />
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Button Grid.Column="1" Height="32" Margin="5,0,0,0" Click="ToggleCreationView" FontWeight="SemiBold">
-                    <Image x:Name="cogwheel" Classes="animated" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
+                    <Image x:Name="cogwheel" Classes="animated rolled" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
                         <Image.Styles>
                             <Style Selector="Image">
                                 <Setter Property="RenderTransform" Value="rotate(0deg)" />
@@ -50,7 +50,6 @@
                     SizeChanged="Border_SizeChanged">
                 <StackPanel>
                     <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Название подключения" />
-                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.User, Mode=TwoWay}" Watermark="Пользователь" />
                     <ComboBox x:Name="connectionType"
                               Margin="5"
                               HorizontalAlignment="Stretch"
@@ -58,7 +57,7 @@
                               ItemsSource="{Binding ConnectionTypes}"
                               PlaceholderForeground="#7A000000"
                               PlaceholderText="Тип подключения"
-                              SelectedItem="{Binding NewConnectionInfo}">
+                              SelectedItem="{Binding SelectedConnection.ConnectionType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel MaxHeight="20" Orientation="Horizontal">
@@ -69,7 +68,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <ItemsControl ItemsSource="{Binding SelectedConnection.ConnectionInfo.Parameters}">
+                    <ItemsControl ItemsSource="{Binding SelectedConnection.CustomParameters}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />
@@ -107,7 +106,8 @@
             </Border>
 
             <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
-                <TextBox Margin="5" Text="{Binding Password}" Watermark="Пароль" />
+                <TextBox Margin="5" PasswordChar="•" Text="{Binding Password}" Watermark="Пароль" />
+                <Label Margin="5,0,0,0" Content="Внимание: введены не английские символы" Foreground="Red" IsVisible="{Binding !IsPasswordEngOnly}" />
 
                 <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding LoginCommand}" Content="Войти" IsEnabled="{Binding CanLogin}" />
 

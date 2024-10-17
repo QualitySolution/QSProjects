@@ -1,10 +1,11 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media.Transformation;
+using Avalonia.Platform;
 using Avalonia.Styling;
-using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.ViewModels.PageViewModels;
-using System;
-using System.Linq;
+using System.Globalization;
 
 namespace QS.Launcher.Views.Pages;
 
@@ -28,6 +29,13 @@ public partial class LoginView : UserControl
 		loginContainer.Styles.Add(upStyle);
 
 		DataContext = viewModel;
+
+		KeyDown += (s, e) => {
+			if(e.Key == Avalonia.Input.Key.Enter) {
+				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
+				viewModel.LoginCommand.Execute(null);
+			}
+		};
     }
 
 

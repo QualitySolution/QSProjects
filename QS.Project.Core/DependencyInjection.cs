@@ -223,6 +223,19 @@ namespace QS.Project.Core {
 			});
 			return services;
 		}
+		
+		/// <summary>
+		/// Регистрируем создание соединения с базой
+		/// </summary>
+		public static IServiceCollection AddDatabaseConnection(this IServiceCollection services) {
+			services.AddScoped((provider) => {
+				var connectionStringBuilder = provider.GetRequiredService<MySqlConnectionStringBuilder>();
+				var connection = new MySqlConnection(connectionStringBuilder.ConnectionString);
+				connection.Open();
+				return connection;
+			});
+			return services;
+		}
 
 		public static IServiceCollection AddUserService(this IServiceCollection services) {
 			services.AddSingleton<IUserService>((provider) => {

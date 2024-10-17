@@ -2,14 +2,12 @@ namespace QS.DbManagement
 {
 	public class ConnectionParameter
 	{
-		public ConnectionParameter(string title, object value = null)
-		{
+		public ConnectionParameter(string name, string title) {
+			Name = name;
 			Title = title;
-			Value = value;
 		}
 
+		public string Name { get; set; }
 		public string Title { get; set; }
-
-		public object Value { get; set; }
 	}
 }

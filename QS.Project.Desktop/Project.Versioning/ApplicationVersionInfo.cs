@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace QS.Project.Versioning
 {
+	/// <summary>
+	/// Класс для получения информации о приложении.
+	/// Информация берется из атрибутов сборки, использовать в приложениях на .NET Framework.
+	/// </summary>
 	public class ApplicationVersionInfo : IApplicationInfo
 	{
 		public string ProductName => Assembly.GetName().Name;

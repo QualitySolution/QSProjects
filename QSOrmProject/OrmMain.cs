@@ -5,22 +5,17 @@ using System.Reflection;
 using Autofac;
 using NHibernate.Proxy;
 using NLog;
-using QS.Deletion;
-using QS.Deletion.Views;
 using QS.Dialog;
-using QS.Dialog.GtkUI;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
-using QS.Navigation;
 using QS.Project.Domain;
 using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
 using QS.Utilities;
 using QS.ViewModels;
-using QS.Views.Resolve;
 using QSOrmProject.DomainMapping;
 using QSProjectsLib;
 
@@ -192,28 +187,6 @@ namespace QSOrmProject
 			public uint Id { get; set; }
 		}
 
-		public static List<DeletionObject> GetDeletionObjects(Type objectClass, int id, IUnitOfWork uow = null)
-		{
-			var result = new List<DeletionObject>();
-			var delete = new DeleteCore(DeleteConfig.Main, ServicesConfig.UnitOfWorkFactory, uow);
-			delete.PrepareDeletion(objectClass, id, new System.Threading.CancellationTokenSource().Token);
-
-			foreach(var item in delete.DeletedItems) {
-				result.Add(new DeletionObject() { Id = item.Id, Type = item.ClassType });
-			}
-			return result;
-		}
-
-		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
-		public static bool DeleteObject(string table, int id)
-		{
-			var info = DeleteConfig.Main.GetDeleteInfo(table);
-			if (info == null)
-				throw new InvalidOperationException($"Правила для удаления объектов таблицы {table} не найдено.");
-
-			return DeleteObject(info.ObjectClass, id);
-		}
-
 		[Obsolete("Используйте сервис удаления напрямую. Например DeleteEntityGUIService.")]
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
@@ -260,28 +233,6 @@ namespace QSOrmProject
 
 		#endregion
 
-		#region Переходный период на QS.Project
-
-		/// <summary>
-		/// Необходимо для интеграции с библиотекой QSProjectsLib
-		/// </summary>
-		static void RunDeletionFromProjectLib(object sender, QSProjectsLib.QSMain.RunOrmDeletionEventArgs e)
-		{
-			e.Result = DeleteObject(e.TableName, e.ObjectId);
-		}
-
-		static void EnableLegacyDeletion()
-        {
-			QSProjectsLib.QSMain.RunOrmDeletion += RunDeletionFromProjectLib;
-		}
-
-		public static void DisableLegacyDeletion()
-		{
-			QSProjectsLib.QSMain.RunOrmDeletion -= RunDeletionFromProjectLib;
-		}
-
-		#endregion
-
 		public static void Init() 
 		{
 		}
@@ -299,9 +250,6 @@ namespace QSOrmProject
 			var trackerActionInvoker = ServicesConfig.Scope.Resolve<ITrackerActionInvoker>();
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(trackerActionInvoker); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
 			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
-
-			EnableLegacyDeletion();
-
 		}
 	}
 }

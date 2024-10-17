@@ -15,8 +15,7 @@ namespace QS.Dialog
 
 		Thread IGuiDispatcher.GuiThread => GuiThread;
 
-		public void RunInGuiTread(System.Action action)
-		{
+		public void RunInGuiTread(System.Action action) {
 			Application.Invoke((sender, e) => action());
 		}
 

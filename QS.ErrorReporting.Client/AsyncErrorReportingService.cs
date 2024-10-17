@@ -15,7 +15,7 @@ namespace QS.ErrorReporting
         {
         }
         
-        private Channel? channel;
+        private Channel channel;
 
         private async Task<Channel> GetChannelAsync()
         {

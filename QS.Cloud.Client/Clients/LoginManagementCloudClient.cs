@@ -29,10 +29,11 @@ namespace QS.Cloud.Client
 			return response;
 		}
 
-		public List<BaseInfo> GetBasesForUser()
+		public List<BaseInfo> GetBasesForUser(uint productId)
 		{
 			var client = new LoginManagement.LoginManagementClient(Channel);
 			var request = new GetBasesForUserRequest();
+			request.ProductId = productId;
 			var response = client.GetBasesForUser(request, headers);
 			return response.Bases.ToList();
 		}

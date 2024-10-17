@@ -1,14 +1,13 @@
 using QS.DbManagement.Responces;
-using System;
+using QS.Project.Versioning;
 using System.Collections.Generic;
+using System;
 
 namespace QS.DbManagement
 {
 	public interface IDbProvider : IDisposable
 	{
 		string UserName { get; }
-
-		ConnectionInfo ConnectionInfo { get; }
 	
 		bool ChangePassword(string username, string oldPassword, string newPassword);
 		
@@ -18,11 +17,11 @@ namespace QS.DbManagement
 		
 		bool AddUser(string username, string password);
 
-		LoginToServerResponce LoginToServer(LoginToServerData loginToServerData);
+		LoginToServerResponse LoginToServer();
 
-		List<DbInfo> GetUserDatabases();
+		List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo);
 
-		LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo);
+		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);
 	
 		bool IsConnected { get; }
 

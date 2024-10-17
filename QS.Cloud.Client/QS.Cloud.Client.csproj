@@ -23,10 +23,15 @@
       <None Remove="Protos\UserControl.proto" />
       <None Remove="Protos\UserManagement.proto" />
       <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
+      <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
       <Protobuf Include="Protos\CloudFeatures.proto" />
       <Protobuf Include="Protos\LoginManagement.proto" />
       <Protobuf Include="Protos\SessionManagement.proto" />
       <Protobuf Include="Protos\UserManagement.proto" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Icons\qscloud.ico" />
     </ItemGroup>
 
 </Project>

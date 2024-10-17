@@ -1,37 +1,36 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace QS.DbManagement.Responces
 {
-	public class Responce {
+	public class Response {
 		public bool Success { get; set; }
 		public string ErrorMessage { get; set; }
 	}
 
-    public class LoginToServerResponce : Responce
+    public class LoginToServerResponse : Response
     {
 		public bool IsAdmin { get; set; }
 		public bool NeedToUpdateLauncher { get; set; }
     }
 
-	public class ChangePasswordResponce : Responce { }
+	public class ChangePasswordResponse : Response { }
 
-	public class CreateDatabaseResponce : Responce { }
+	public class CreateDatabaseResponse : Response { }
 
-	public class DropDatabaseResponce : Responce { }
+	public class DropDatabaseResponse : Response { }
 
-	public class AddUserResponce : Responce { }
+	public class AddUserResponse : Response { }
 
-	public class DeleteUserResponce : Responce { }
+	public class DeleteUserResponse : Response { }
 
-	public class GetUserDatabasesResponce : Responce {
+	public class GetUserDatabasesResponse : Response {
 		public List<DbInfo> Bases { get; set; }
 	}
 
-	public class LoginToDatabaseResponce : Responce {
+	public class LoginToDatabaseResponse : Response {
 		public string ConnectionString { get; set; }
+		public string Login { get; set; }
 
-		public List<ConnectionParameter> Parameters { get; set; }
+		public List<(string Name, string Value)> Parameters { get; set; }
 	}
 }

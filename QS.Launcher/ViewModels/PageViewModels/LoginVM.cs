@@ -1,19 +1,14 @@
-using DynamicData.Kernel;
+using System;
 using QS.DbManagement;
 using QS.Dialog;
-using QS.Launcher.ViewModels.ModelsDTO;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
-	// TODO: Deal with Bitmap
 	public class LoginVM : CarouselPageVM {
 		private byte[] companyImage;
 		public byte[] CompanyImage {
@@ -23,44 +18,33 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public string AppTitle { get; set; }
 
-		public List<ConnectionInfoDTO> ConnectionTypes { get; }
+		public List<ConnectionTypeBase> ConnectionTypes { get; }
 
-		private ConnectionDTO? selectedConnection;
-		public ConnectionDTO? SelectedConnection {
+		private Connection selectedConnection;
+		public Connection SelectedConnection {
 			get => selectedConnection;
 			set {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
 				this.RaisePropertyChanged(nameof(Connections));
-				this.RaisePropertyChanged(nameof(NewConnectionInfo));
+				this.RaisePropertyChanged(nameof(SelectedConnection.CustomParameters));
 			}
 		}
 
-		public ConnectionInfoDTO? NewConnectionInfo {
-			get {
-				if(SelectedConnection?.ConnectionInfo != null)
-					return ConnectionTypes.First(ci => ci.Title == SelectedConnection.ConnectionInfo.Title);
-				else return null;
-			}
-			set {
-				if(value != null)
-					SelectedConnection.ConnectionInfo = (ConnectionInfoDTO)value.Clone();
-				this.RaisePropertyChanged(nameof(SelectedConnection));
-				this.RaisePropertyChanged(nameof(NewConnectionInfo));
-				this.RaisePropertyChanged(nameof(CanLogin));
-			}
-		}
+		public ObservableCollection<Connection> Connections { get; set; }
 
-		public ObservableCollection<ConnectionDTO> Connections { get; set; }
-
-		private string? password;
-		public string? Password {
+		private string password;
+		public string Password {
 			get => password;
 			set {
 				this.RaiseAndSetIfChanged(ref password, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
+				this.RaisePropertyChanged(nameof(IsPasswordEngOnly));
 			}
 		}
+
+		public bool IsPasswordEngOnly => string.IsNullOrEmpty(Password) || 
+			Password.Where(c => char.IsLetter(c)).All(c => c <= '~');
 
 		protected IDbProvider dbProvider;
 
@@ -73,36 +57,31 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		protected IInteractiveMessage interactiveMessage;
 
-		readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-
+		private readonly Configurator configurator;
 		private readonly DataBasesVM dbVM;
 
-		public LoginVM(IEnumerable<ConnectionInfo> connectionInfos, IEnumerable<Connection> connections, LauncherOptions options,
-			DataBasesVM dbVM, IInteractiveMessage interactiveMessage) : base()
+		public LoginVM(
+			IEnumerable<ConnectionTypeBase> connectionTypes,
+			LauncherOptions options,
+			Configurator configurator,
+			DataBasesVM dbVM,
+			IInteractiveMessage interactiveMessage) : base()
 		{
+			this.configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
 			this.dbVM = dbVM;
 			this.interactiveMessage = interactiveMessage;
-
-			using(var s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(options.CompanyImageName)) {
-				using(var ms = new MemoryStream()) {
-					s.CopyTo(ms);
-					CompanyImage = ms.ToArray();
-				}
-			}
+			CompanyImage = options.LogoImage;
 			AppTitle = options.AppTitle;
 
-			Connections = new(connections.Select(c => new ConnectionDTO(c)));
-
+			ConnectionTypes = connectionTypes.ToList();
+			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
-
-			ConnectionTypes = connectionInfos.Select(ci => new ConnectionInfoDTO(ci)).AsList();
-
-
+			
 			LoginCommand = ReactiveCommand.Create(Login);
 			NewCommand = ReactiveCommand.Create(CreateNewConnection);
 			DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 			CloneCommand = ReactiveCommand.Create(CloneConnection);
-			SaveCommand = ReactiveCommand.Create(SerialaizeConnections);
+			SaveCommand = ReactiveCommand.Create(SaveConnections);
 		}
 
 		public void DeleteSelectedConnection() {
@@ -111,31 +90,26 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		public void CloneConnection() {
-			var n = SelectedConnection.Clone() as ConnectionDTO;
+			var n = SelectedConnection.Clone() as Connection;
 			n.ConnectionTitle += "(копия)";
-			n.UpdateFields();
 			Connections.Add(n);
 			SelectedConnection = n;
 		}
 
 		public void CreateNewConnection() {
-			ConnectionDTO newCon = new();
+			Connection newCon = new Connection(ConnectionTypes.First(), new Dictionary<string, string>() {
+				{"Title", "Новое подключение"}
+			});
 			Connections.Add(newCon);
 			SelectedConnection = newCon;
 		}
 
 		public void Login() {
-
-			var usedConnection = SelectedConnection;
-
-			if(usedConnection is null || usedConnection.ConnectionInfo is null)
+			if(SelectedConnection is null)
 				return;
-
-			usedConnection.ConnectionInfo.UpdateFields();
-			if(dbProvider is null || dbProvider.ConnectionInfo.Title == usedConnection.ConnectionInfo.Title)
-				dbProvider = usedConnection.ConnectionInfo.Instance.CreateProvider();
-
-			var resp = dbProvider.LoginToServer(new LoginToServerData { UserName = usedConnection.User, Password = this.Password });
+			
+			dbProvider = SelectedConnection.CreateProvider(Password);
+			var resp = dbProvider.LoginToServer();
 
 			Task.Run(() => SaveCommand.Execute(null));
 
@@ -148,27 +122,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 		}
 
-		public bool CanLogin => SelectedConnection is not null &&
-					SelectedConnection.ConnectionInfo is not null &&
+		public bool CanLogin => SelectedConnection != null &&
+					SelectedConnection.ConnectionType != null &&
 					!string.IsNullOrWhiteSpace(Password) &&
-					!string.IsNullOrWhiteSpace(SelectedConnection.User);
+					SelectedConnection.CanConnect();
 
-		public void SerialaizeConnections() {
-			// if last selected connection changed
-			if(SelectedConnection != null && !SelectedConnection.Last) {
-				var prevLast = Connections.FirstOrDefault(c => c.Last);
-				if(prevLast != null)
-					prevLast.Last = false;
-				SelectedConnection.Last = true;
-			}
+		public void SaveConnections() {
 			foreach(var conn in Connections)
-				conn.UpdateFields();
-
-			using(FileStream stream = new("connections.json", FileMode.Create)) {
-				JsonSerializer.Serialize(stream, Connections
-					.Select(c => c.Instance.PrepareParams())
-					.ToList(), serializerOptions);
-			}
+				conn.Last = SelectedConnection == conn;
+			
+			configurator.SaveConnections(Connections);
 		}
 	}
 }

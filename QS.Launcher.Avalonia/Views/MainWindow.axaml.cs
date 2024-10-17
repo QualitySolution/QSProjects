@@ -8,7 +8,7 @@ public partial class MainWindow : Window {
 	public MainWindow(MainWindowVM vm, IEnumerable<UserControl> pages, LauncherOptions options) {
 		InitializeComponent();
 
-		Icon = new WindowIcon(new Bitmap(typeof(MainWindowVM).Assembly.GetManifestResourceStream(options.CompanyIconName)));
+		Icon = new WindowIcon(new Bitmap(new System.IO.MemoryStream(options.LogoIcon)));
 		Title = options.AppTitle;
 
 		Closing += (_, _) => vm.SaveConnections();

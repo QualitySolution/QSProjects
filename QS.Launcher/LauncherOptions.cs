@@ -1,13 +1,32 @@
+using System;
+using System.Collections.Generic;
+
 namespace QS.Launcher {
 	public class LauncherOptions {
-		public string CompanyImageName { get; set; }
+		/// <summary>
+		/// Картинка с логотипом
+		/// </summary>
+		public byte[] LogoImage { get; set; }
 
-		public string CompanyIconName { get; set; }
+		/// <summary>
+		/// Иконка приложения
+		/// </summary>
+		public byte[] LogoIcon { get; set; }
 
 		public string AppTitle { get; set; }
 
 		public string AppExecutablePath { get; set; }
-
-		public string? OldConfigFilename { get; set; }
+		
+		/// <summary>
+		/// Путь к файлу json с конфигурацией подключений.
+		/// </summary>
+		public string ConnectionsJsonFileName { get; set; }
+		
+		/// <summary>
+		/// Путь к старому конфигу приложения, для переноса настроек.
+		/// </summary>
+		public string OldConfigFilename { get; set; }
+		
+		public Func<List<Dictionary<string, string>>> MakeDefaultConnections { get; set; }
 	}
 }

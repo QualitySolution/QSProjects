@@ -93,7 +93,6 @@
     <Compile Include="gtk-gui\QSProjectsLib.LongOperationDlg.cs" />
     <Compile Include="Helpers\BooleanWorks.cs" />
     <Compile Include="ClipboardWorkaround.cs" />
-    <Compile Include="WindowStartupFix.cs" />
     <Compile Include="Permissions\IPermissionsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

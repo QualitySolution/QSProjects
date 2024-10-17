@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 package QS.Cloud.Core;
 
@@ -37,11 +37,12 @@ message BaseConnection{
 	string password = 2;
 	string server = 3;
 	string base_name = 4;
-	string port = 5;
+	uint32 port = 5;
 }
 
 //GetBasesForUser - Получение списка баз в которые можно зайти.
 message GetBasesForUserRequest{
+	uint32 product_id = 1;
 }
 
 message GetBasesForUserResponse{
@@ -51,6 +52,7 @@ message GetBasesForUserResponse{
 message BaseInfo{
 	int32 base_id = 1;
 	string base_title = 2;
+	string base_version = 3;
 }
 
 //ChangePassword - смена собственного пароля от учетной записи

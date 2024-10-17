@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -64,6 +64,7 @@
     <Compile Include="Extensions\GtkImageExtensions.cs" />
     <Compile Include="Extensions\HboxExtensions.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
+    <Compile Include="Helpers\WindowStartupFix.cs" />
     <Compile Include="Project.Services\GtkApplicationQuitService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Resolve\GtkViewFactory.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Project.Dialogs.GtkUI\ServiceDlg\GtkRunOperationService.cs" />
     <Compile Include="Project.Dialogs.GtkUI\PermissionListView.cs" />
     <Compile Include="Widgets.GtkUI\NullableCheckButton.cs" />
+    <Compile Include="Widgets\ImageViewer.cs" />
     <Compile Include="Widgets\ProgressWidget.cs" />
     <Compile Include="Navigation\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
@@ -232,6 +234,9 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.SimpleSelectionDatePicker.cs" />
     <Compile Include="Widgets.GtkUI\TimePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
+    <Compile Include="Dialog\Views\StatusBarView.cs" />
+    <Compile Include="Project.Versioning\Views\ChangeLogView.cs" />
+    <Compile Include="gtk-gui\QS.Project.Versioning.Views.ChangeLogView.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -270,10 +275,6 @@
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
       <Project>{E2228A2B-4883-4DD8-8A05-23501F7B8A33}</Project>
       <Name>QS.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QSWidgetLib\QSWidgetLib.csproj">
-      <Project>{5A2BB01E-E124-432E-8099-D1343D3897B9}</Project>
-      <Name>QSWidgetLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj">
       <Project>{5EF2A7DA-3886-4809-95DF-880BD783A211}</Project>
@@ -317,6 +318,10 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Project.Versioning\" />
+    <Folder Include="Project.Versioning\Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

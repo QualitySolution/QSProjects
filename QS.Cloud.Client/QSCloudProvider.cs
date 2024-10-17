@@ -1,13 +1,13 @@
-using QS.Cloud.Core;
-using QS.DbManagement;
-using QS.DbManagement.Responces;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Data.SqlTypes;
-using MySqlConnector;
 using Grpc.Core;
+using MySqlConnector;
+using QS.Cloud.Core;
+using QS.DbManagement.Responces;
+using QS.DbManagement;
+using QS.Project.Versioning;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System;
 
 namespace QS.Cloud.Client
 {
@@ -16,10 +16,13 @@ namespace QS.Cloud.Client
 
 		public bool IsConnected => throw new NotImplementedException();
 
-		public ConnectionInfo ConnectionInfo { get; }
-
 		public bool IsAdmin { get; protected set; }
 
+		#region Параметры подключени
+		public string Account { get; private set; }
+		
+
+		#endregion
 		public string UserName { get; private set; }
 
 		private CloudFeaturesClient featuresClient;
@@ -28,8 +31,12 @@ namespace QS.Cloud.Client
 		private UserManagementCloudClient userClient;
 
 
-		public QSCloudProvider(QSCloudConnectionInfo connection) {
-			ConnectionInfo = connection;
+		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
+			Account = parameters.First(p => p.Name == "Account").Value;
+			UserName = parameters.First(p => p.Name == "Login").Value;
+			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
+			
+			loginClient = new LoginManagementCloudClient(authInfo);
 		}
 
 		public bool AddUser(string username, string password)
@@ -57,35 +64,36 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 
-		public List<DbInfo> GetUserDatabases() {
-			return loginClient.GetBasesForUser().Select(bi => new DbInfo
+		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
+			return loginClient.GetBasesForUser(applicationInfo.ProductCode).Select(bi => new DbInfo
 			{
 				Title = bi.BaseTitle,
-				BaseId = bi.BaseId
+				BaseId = bi.BaseId,
+				Version = bi.BaseVersion
 			}).ToList();
 		}
 
-		public LoginToDatabaseResponce LoginToDatabase(DbInfo dbInfo) {
-			LoginToDatabaseResponce resp;
+		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
+			LoginToDatabaseResponse resp;
 
 			try {
-				var cloudResponce = loginClient.StartSession(dbInfo.BaseId);
+				var cloudResponse = loginClient.StartSession(dbInfo.BaseId);
 				var builder = new MySqlConnectionStringBuilder {
-					Server = cloudResponce.Db.Server,
-					UserID = cloudResponce.Db.Login,
-					Password = cloudResponce.Db.Password,
-					Database = cloudResponce.Db.BaseName
+					Server = cloudResponse.Db.Server,
+					Port = cloudResponse.Db.Port,
+					UserID = cloudResponse.Db.Login,
+					Password = cloudResponse.Db.Password,
+					Database = cloudResponse.Db.BaseName
 				};
-				if(!string.IsNullOrEmpty(cloudResponce.Db.Port))
-					builder.Port = uint.Parse(cloudResponce.Db.Port);
-				resp = new LoginToDatabaseResponce {
-					Success = cloudResponce.Success,
+				resp = new LoginToDatabaseResponse {
+					Success = cloudResponse.Success,
 					ConnectionString = builder.ConnectionString,
-					Parameters = new List<ConnectionParameter>() { new ConnectionParameter("SessionId", cloudResponce.SessionId) }
+					Login = UserName,
+					Parameters = new List<(string Name, string Value)> { ("SessionId", cloudResponse.SessionId) }
 				};
 			}
 			catch(Exception ex) {
-				resp = new LoginToDatabaseResponce {
+				resp = new LoginToDatabaseResponse {
 					Success = false,
 					ErrorMessage = ex.Message
 				};
@@ -94,30 +102,21 @@ namespace QS.Cloud.Client
 			return resp;
 		}
 
-		public LoginToServerResponce LoginToServer(LoginToServerData loginToServerData) {
-
-			UserName = loginToServerData.UserName;
-
-			string organisation = ConnectionInfo.Parameters.First(p => p.Title == "Логин").Value.ToString();
-			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{organisation}\{loginToServerData.UserName}", loginToServerData.Password);
-
-			loginClient = new LoginManagementCloudClient(authInfo);
-
-			LoginToServerResponce resp;
+		public LoginToServerResponse LoginToServer() {
+			LoginToServerResponse resp;
 
 			StartResponse cloudResponce;
 			try {
-				cloudResponce = loginClient.Start("0.1.0.0");
+				cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-				resp = new LoginToServerResponce {
+				resp = new LoginToServerResponse {
 					Success = true,
 					IsAdmin = cloudResponce.YouAccountAdmin,
-					NeedToUpdateLauncher = cloudResponce.YouAccountAdmin
+					NeedToUpdateLauncher = cloudResponce.NeedUpdateLauncher
 				};
 			}
 			catch(RpcException ex) {
-
-				resp = new LoginToServerResponce {
+				resp = new LoginToServerResponse {
 					Success = false,
 					ErrorMessage = ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated ?
 						"Неверные данные для входа" : ex.StatusCode.ToString()
