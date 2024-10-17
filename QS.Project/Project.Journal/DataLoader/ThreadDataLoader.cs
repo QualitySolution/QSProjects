@@ -221,7 +221,7 @@ namespace QS.Project.Journal.DataLoader
 
 			var runLoaders = AvailableQueryLoaders.Where(x => x.HasUnloadedItems).ToArray();
 
-			if(runLoaders.Length == 0) { //Нет загрузчиков с помощь которых мы могли бы прочитать данные.
+			if(runLoaders.Length == 0) { //Нет загрузчиков с помощью которых мы могли бы прочитать данные.
 				SetLoadInProgress(false);
 				return;
 			}
