@@ -1,74 +1,75 @@
 using Autofac;
 using QS.Dialog;
-using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace QS.Navigation;
 
 public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManager {
-	public IPage? CurrentPage { get; protected set; }
 
-	protected AvaloniaNavigationManager(IInteractiveMessage interactive, IPageHashGenerator hashGenerator = null)
-		: base(interactive, hashGenerator) { }
+	IPage? currentPage;
+	public IPage? CurrentPage
+	{
+		get => currentPage;
+		protected set => this.RaiseAndSetIfChanged(ref currentPage, value);
+	}
+
+	public ObservableCollection<IAvaloniaPage> Pages { get; protected set; } = [];
+
+	// ридонли не риоднли - pohui
+	AvaloniaPageTabFactory tabFactory;
+	AvaloniaPageWindowFactory windowFactory;
+
+	public AvaloniaNavigationManager(IInteractiveMessage interactive,
+		IViewModelsPageFactory viewModelsFactory,
+		AvaloniaPageWindowFactory windowFactory,
+		AvaloniaPageTabFactory tabFactory,
+		IPageHashGenerator? hashGenerator = null)
+		: base(interactive, hashGenerator)
+	{
+		this.tabFactory = tabFactory;
+		this.windowFactory = windowFactory;
+
+
+		Pages.Add(new AvaloniaPage() { AvaloniaView = new Avalonia.Controls.Button() { Content = "From manager"}, Title = "Madrid" });
+		Pages.Add(new AvaloniaPage() { AvaloniaView = new Avalonia.Controls.Button() { Content = "adadad"}, Title = "F#" });
+	}
 
 	public bool AskClosePage(IPage page, CloseSource source = CloseSource.External) {
-		throw new NotImplementedException();
+		Pages.Remove((IAvaloniaPage)page);
+		CurrentPage = Pages.Count > 0 ? Pages[0] : null;
+		return true;
 	}
 
-	public IPage FindPage(DialogViewModelBase viewModel) {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public void ForceClosePage(IPage page, CloseSource source = CloseSource.External) {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModel<TViewModel>(DialogViewModelBase master, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(DialogViewModelBase master, TCtorArg1 arg1, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(DialogViewModelBase master, TCtorArg1 arg1, TCtorArg2 arg2, TCtorArg3 arg3, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
-	public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues, OpenPageOptions options = OpenPageOptions.None, Action<TViewModel> configureViewModel = null, Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase {
-		throw new NotImplementedException();
-	}
-
+	// View сама переключает CurrentPage, этот метод для внутреннего переключения
 	public override void SwitchOn(IPage page) {
-		CurrentPage = page;
-
-		throw new NotImplementedException();
+		if(!Pages.Contains((IAvaloniaPage)page))
+			OpenPage(null, page);
+		else
+			CurrentPage = page;
 	}
 
 	protected override IViewModelsPageFactory GetPageFactory<TViewModel>() {
-		throw new NotImplementedException();
+		if(typeof(TViewModel).IsAssignableTo<IWindowDialogSettings>())
+			return windowFactory;
+		else
+			return tabFactory;
 	}
 
 	protected override void OpenPage(IPage masterPage, IPage page) {
+		Pages.Add((IAvaloniaPage)page);
 		CurrentPage = page;
-
-		throw new NotImplementedException();
 	}
 
 	protected override void OpenSlavePage(IPage masterPage, IPage page) {
 		throw new NotImplementedException();
+	}
+
+	public void ForceClosePage(IPage page, CloseSource source = CloseSource.External) {
+		AskClosePage(page);
 	}
 }
