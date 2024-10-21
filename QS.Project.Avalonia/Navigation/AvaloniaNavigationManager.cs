@@ -25,7 +25,6 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	AvaloniaPageWindowFactory windowFactory;
 
 	public AvaloniaNavigationManager(IInteractiveMessage interactive,
-		IViewModelsPageFactory viewModelsFactory,
 		AvaloniaPageWindowFactory windowFactory,
 		AvaloniaPageTabFactory tabFactory,
 		IPageHashGenerator? hashGenerator = null)

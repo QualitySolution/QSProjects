@@ -44,6 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="LauncherApp.axaml.cs">
+      <DependentUpon>LauncherApp.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Pages\BaseManagementView.axaml.cs">
       <DependentUpon>BaseManagementView.axaml</DependentUpon>
     </Compile>

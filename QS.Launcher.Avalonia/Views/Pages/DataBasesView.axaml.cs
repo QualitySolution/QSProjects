@@ -37,7 +37,7 @@ public partial class DataBasesView : UserControl {
 		await Task.Delay(transition.Duration);
 		loadingPanel.IsVisible = false;
 		if(shouldCloseLauncher)
-			(App.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
+			(LauncherApp.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
 		else
 			cogwheel.Classes.Remove("rolled");
 	}
