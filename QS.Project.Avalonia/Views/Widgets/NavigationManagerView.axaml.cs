@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using FluentAvalonia.UI.Controls;
 using QS.Navigation;
 using QS.Project.Avalonia.Interactive;
 
@@ -14,7 +13,7 @@ public partial class NavigationManagerView : UserControl {
 	public NavigationManagerView() {
 		InitializeComponent();
 
-		DataContext = new AvaloniaNavigationManager(new AvaloniaInteractiveMessage());
+		DataContext = new AvaloniaNavigationManager(new AvaloniaInteractiveMessage(), null, null);
 	}
 
 	public AvaloniaNavigationManager NavigationManager => DataContext as AvaloniaNavigationManager;

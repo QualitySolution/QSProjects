@@ -32,10 +32,6 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	{
 		this.tabFactory = tabFactory;
 		this.windowFactory = windowFactory;
-
-		// just sample, delete it later
-		Pages.Add(new AvaloniaPage() { AvaloniaView = new Avalonia.Controls.Button() { Content = "From manager"}, Title = "Madrid" });
-		Pages.Add(new AvaloniaPage() { AvaloniaView = new Avalonia.Controls.Button() { Content = "adadad"}, Title = "F#" });
 	}
 
 	public bool AskClosePage(IPage page, CloseSource source = CloseSource.External) {
