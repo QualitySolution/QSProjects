@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autofac;
 using QS.Report.ViewModels;
 using QS.Views.Resolve;
@@ -39,6 +39,11 @@ namespace QS.Report.Views
 		protected void OnReportviewer1ReportPrinted(object sender, EventArgs e)
 		{
 			ViewModel.RiseReportPrinted();
+		}
+
+		protected override void OnDestroyed() {
+			base.OnDestroyed();
+			reportviewer1 = null;
 		}
 	}
 }
