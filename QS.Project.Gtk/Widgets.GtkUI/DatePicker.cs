@@ -283,6 +283,10 @@ namespace QS.Widgets.GtkUI
 			clearImage.DisposeImagePixbuf();
 			var editImage = buttonEditDate.Image as Image;
 			editImage.DisposeImagePixbuf();
+			if(Binding != null) {
+				Binding.CleanSources();
+				Binding = null;
+			}
 			base.OnDestroyed();
 		}
 	}
