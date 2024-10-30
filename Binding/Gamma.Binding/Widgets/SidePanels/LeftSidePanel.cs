@@ -72,23 +72,19 @@ namespace Gamma.Widgets.SidePanels
 				if(Panel != null)
 					panel.Visible = !value;
 
-				if (value)
-				{
-					if (PanelHided != null)
-						PanelHided(this, EventArgs.Empty);
+				if (value) {
+					PanelHided?.Invoke(this, EventArgs.Empty);
 				}
-				else
-				{
-					if (PanelOpened != null)
-						PanelOpened(this, EventArgs.Empty);
+				else {
+					PanelOpened?.Invoke(this, EventArgs.Empty);
 				}
 				Binding.FireChange(x => x.IsHided);
 			}
 		}
 
-		public LeftSidePanel ()
+		public LeftSidePanel()
 		{
-			this.Build ();
+			Build ();
 
 			Binding = new BindingControler<LeftSidePanel>(this, new Expression<Func<LeftSidePanel, object>>[] {
 				(w => w.IsHided),
@@ -101,6 +97,17 @@ namespace Gamma.Widgets.SidePanels
 			IsHided = newHiddenState;
 			ClosedByUser = newHiddenState;
 			OpenedByUser = !newHiddenState;
+		}
+
+		protected override void OnDestroyed() {
+			eventboxArrow.ButtonPressEvent -= OnEventboxArrowButtonPressEvent;
+			if(Binding != null) {
+				Binding.CleanSources();
+				Binding = null;
+			}
+			PanelOpened = null;
+			PanelHided = null;
+			base.OnDestroyed();
 		}
 	}
 }
