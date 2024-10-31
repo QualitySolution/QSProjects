@@ -9,7 +9,7 @@ namespace QS.Dialog.ViewModels {
 		private readonly ITrackerActionInvoker invoker;
 		private readonly IUserService userService;
 
-		public StatusBarViewModel(ITrackerActionInvoker invoker, IUserService userService) {
+		public StatusBarViewModel(ITrackerActionInvoker invoker, IUserService userService = null) {
 			this.invoker = invoker;
 			this.userService = userService;
 			RegisterTargetForNlog();
@@ -41,7 +41,11 @@ namespace QS.Dialog.ViewModels {
 			protected set => SetField (ref statusText, value);
 		}
 		
-		public string UserName => userService.GetCurrentUser()?.Name;
+		private string userName;
+		public string UserName {
+			get => userName ?? userService?.GetCurrentUser()?.Name;
+			set => SetField(ref userName, value);
+		}
 
 		private void SetStatusText (string text) {
 			invoker.Invoke(() => StatusText = text.EllipsizeMiddle(160));
