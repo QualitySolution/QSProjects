@@ -11,8 +11,9 @@ namespace QS.Dialog.Views {
 		yLabel labelUser;
 		yLabel labelStatus;
 		
-		public StatusBarView() {
-			Remove(Children[0]);
+		public StatusBarView() : base() {
+			BoxChild boxChild = (BoxChild) this[Children[0]];
+			boxChild.Expand = false;
 			labelUser = new yLabel();
 			labelUser.Xalign = 0;
 			PackStart(labelUser, false, false, 0);
