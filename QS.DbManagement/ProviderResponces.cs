@@ -31,6 +31,6 @@ namespace QS.DbManagement.Responces
 		public string ConnectionString { get; set; }
 		public string Login { get; set; }
 
-		public List<(string Name, string Value)> Parameters { get; set; }
+		public Dictionary<string,string> Parameters { get; set; }
 	}
 }

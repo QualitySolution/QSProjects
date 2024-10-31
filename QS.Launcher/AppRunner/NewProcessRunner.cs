@@ -17,7 +17,7 @@ namespace QS.Launcher.AppRunner {
 			Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", loginToDatabase.ConnectionString, EnvironmentVariableTarget.User);
 			Environment.SetEnvironmentVariable("QS_LOGIN", loginToDatabase.Login, EnvironmentVariableTarget.User);
 			foreach(var par in loginToDatabase.Parameters)
-				Environment.SetEnvironmentVariable("QS_" + par.Name, par.Value, EnvironmentVariableTarget.User);
+				Environment.SetEnvironmentVariable("QS_" + par.Key, par.Value, EnvironmentVariableTarget.User);
 
 			var dir = Path.GetDirectoryName(fileName);
 			Process.Start(new ProcessStartInfo {
