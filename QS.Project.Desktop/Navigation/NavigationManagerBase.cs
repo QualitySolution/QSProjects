@@ -10,7 +10,7 @@ using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
 namespace QS.Navigation {
-	public abstract class NavigationManagerBase
+	public abstract class NavigationManagerBase : ReactiveUI.ReactiveObject
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
 		

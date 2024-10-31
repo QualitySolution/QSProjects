@@ -16,7 +16,6 @@
     </Window.Resources>
 
     <Panel>
-
         <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
             <Image x:Name="icon" Height="30" Margin="12" VerticalAlignment="Top" />
 

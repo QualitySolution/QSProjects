@@ -6,7 +6,7 @@ using System;
 
 namespace QS.Launcher;
 
-public partial class App() : Application
+public partial class LauncherApp() : Application
 {
 	public Func<MainWindow> MainWindowGetter { get; set; }
 

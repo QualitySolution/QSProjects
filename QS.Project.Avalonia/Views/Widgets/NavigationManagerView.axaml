@@ -1,0 +1,50 @@
+<UserControl x:Class="QS.Project.NavigationManagerView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="using:FluentAvalonia.UI.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:navigation="clr-namespace:QS.Navigation;assembly=QS.Project.Avalonia"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="navigation:AvaloniaNavigationManager"
+             mc:Ignorable="d">
+    <TabControl x:Name="tabControl" ItemsSource="{Binding Pages}" SelectedItem="{Binding CurrentPage}">
+        <TabControl.Styles>
+            <Style Selector="TabItem">
+                <Setter Property="HeaderTemplate">
+                    <DataTemplate x:DataType="navigation:IAvaloniaPage">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0" FontSize="20" Text="{Binding Title}" />
+                            <Button Width="25"
+                                    Height="25"
+                                    Padding="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Click="OnCloseTabClick"
+                                    Content="🞨"
+                                    FontSize="16">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover">
+                                        <Setter Property="Background" Value="Gray" />
+                                        <Setter Property="BorderBrush" Value="LightGray" />
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </Setter>
+
+
+            </Style>
+        </TabControl.Styles>
+        <TabControl.ContentTemplate>
+            <DataTemplate x:DataType="navigation:IAvaloniaPage">
+                <ContentPresenter Content="{Binding AvaloniaView}" />
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
+</UserControl>
