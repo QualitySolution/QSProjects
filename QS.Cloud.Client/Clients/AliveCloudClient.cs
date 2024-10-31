@@ -21,13 +21,14 @@ namespace QS.Cloud.Client
 		public SessionStatuses LastStatus { get; protected set; }
 
 		private DateTime? failSince;
+		private CancellationTokenSource cancellation;
 
-		private async Task Listen() {
+		private async Task Listen(CancellationToken token) {
 			var client = new SessionManagement.SessionManagementClient(Channel);
 			var request = new AliveRequest();
 
 			var call = client.Alive(request, headers);
-			while (await call.ResponseStream.MoveNext(new CancellationToken())) {
+			while (await call.ResponseStream.MoveNext(token)) {
 				failSince = null;
 
 				var curStatus = call.ResponseStream.Current.Status;
@@ -62,18 +63,27 @@ namespace QS.Cloud.Client
 				logger.Error(task.Exception);
 
 				logger.Info($"Соединение с QS.Cloud разорвано... Пробуем соединиться.");
-				ConnectionLoop(new CancellationToken());
+				cancellation = new CancellationTokenSource();
+				ConnectionLoop(cancellation.Token);
 			}
 		}
 
 		private void ConnectionLoop(CancellationToken token) {
 			var readerTask = 
-				Task.Run(Listen, token)
+				Task.Run(() => Listen(token) , token)
 				.ContinueWith(FaultedTaskHandling);
 		}
 
 		public void KeepAlive() {
-			ConnectionLoop(new CancellationToken());
+			if(cancellation != null)
+				throw new InvalidOperationException("AliveCloudClient уже запущен.");
+			cancellation = new CancellationTokenSource();
+			ConnectionLoop(cancellation.Token);
+		}
+		
+		public override void Dispose() {
+			cancellation.Cancel();
+			base.Dispose();
 		}
 	}
 }

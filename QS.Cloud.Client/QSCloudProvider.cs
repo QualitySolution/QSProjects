@@ -56,7 +56,7 @@ namespace QS.Cloud.Client
 	
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			loginClient.Dispose();
 		}
 	
 		public bool DropDatabase(string databaseName)
