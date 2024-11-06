@@ -535,7 +535,7 @@ namespace QS.Journal.GtkUI
 			if(ViewModel.JournalFilter != null) {
 				ViewModel.JournalFilter.PropertyChanged -= JournalFilter_PropertyChanged;
 			}
-			FilterView?.Destroy();
+			//FilterView?.Destroy();
 			tableview?.Destroy();
 
 			foreach(var keyPair in _widgetsWithJournalActions) {
