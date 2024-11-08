@@ -811,7 +811,6 @@ namespace QS.Tdi.Gtk
 	            disp.Dispose();
 			}
 
-			tab.TabParent = null;
 			tab = null;
             
 			GC.Collect();
