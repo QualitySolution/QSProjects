@@ -8,6 +8,7 @@ namespace QS.Banks.Domain
 	public abstract class AccountOwnerBase : PropertyChangedBase, IAccountOwner
 	{
 		IObservableList<Account> accounts = new ObservableList<Account>();
+		private Account defaultAccount;
 
 		public virtual IObservableList<Account> Accounts {
 			get { return accounts; }
@@ -19,16 +20,8 @@ namespace QS.Banks.Domain
 
 		[Display(Name = "Основной счет")]
 		public virtual Account DefaultAccount {
-			get{
-				return Accounts.FirstOrDefault(x => x.IsDefault);
-			}
-			set{
-				Account oldDefAccount = Accounts.FirstOrDefault(x => x.IsDefault);
-				if(oldDefAccount != null && value != null && oldDefAccount.Id != value.Id) {
-					oldDefAccount.IsDefault = false;
-				}
-				value.IsDefault = true;
-			}
+			get => defaultAccount;
+			set => SetField(ref defaultAccount, value);
 		}
 
 		public virtual void AddAccount(Account account)
@@ -56,6 +49,8 @@ namespace QS.Banks.Domain
 		Account DefaultAccount { get; set; }
 
 		IObservableList<Account> Accounts { get;}
+
+		void AddAccount(Account account);
 	}
 }
 

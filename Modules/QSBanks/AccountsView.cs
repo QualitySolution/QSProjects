@@ -42,6 +42,16 @@ namespace QSBanks
 					? Rc.GetStyle(datatreeviewAccounts).Text(StateType.Insensitive)
 					: Rc.GetStyle(datatreeviewAccounts).Text(StateType.Normal))
 				.Finish();
+
+			if(accountOwner != null) {
+				foreach(var account in accountOwner.Accounts) {
+					account.Owner = accountOwner;
+					if(account.IsDefault) {
+						account.Owner.DefaultAccount = account;
+					}
+				}
+			}			
+
 			datatreeviewAccounts.ItemsDataSource = accountOwner.Accounts;
 		}
 
@@ -83,7 +93,7 @@ namespace QSBanks
 			AccountDlg dlg = new AccountDlg (UoW, newAccount);
 			dlg.AccountSaved += (s, savedAccount) =>
 			{
-				accountOwner.Accounts.Add(savedAccount);
+				accountOwner.AddAccount(savedAccount);
 			};
 			mytab.TabParent.AddSlaveTab (mytab, dlg);
 		}
