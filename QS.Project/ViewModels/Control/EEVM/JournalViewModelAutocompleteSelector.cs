@@ -53,7 +53,8 @@ namespace QS.ViewModels.Control.EEVM
 		{
 			if(journalViewModel != null) {
 				journalViewModel.DataLoader.ItemsListUpdated -= DataLoader_ItemsListUpdated;
-				journalViewModel.Dispose();
+				if(journalViewModel is IDisposable disposable)
+					disposable.Dispose();
 				journalViewModel = null;
 			}
 

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using NHibernate;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Services;
 using QS.Tdi;
@@ -13,7 +14,8 @@ namespace QS.Project.Journal
 	{
 		public Type EntityType { get; }
 
-		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices) : base(unitOfWorkFactory, commonServices)
+		protected SimpleEntityJournalViewModelBase(Type entityType, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, IEntityChangeWatcher changeWatcher = null
+			) : base(unitOfWorkFactory, commonServices, entityChangeWatcher: changeWatcher)
 		{
 			EntityType = entityType;
 		}

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using NHibernate;
 using QS.Deletion;
+using QS.Dialog;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
@@ -12,10 +15,14 @@ using QS.Project.Services;
 using QS.Services;
 using QS.Tdi;
 using QS.Project.Journal.EntitySelector;
+using QS.ViewModels;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntitiesJournalViewModelBase<TNode> : JournalViewModelBase, IEntityAutocompleteSelector
+	/// <summary>
+	/// Базовый класс для журналов разрабатываемых внутри ВВ используется с завязкой на TDI поэтому не переносим в dotnet. 
+	/// </summary>
+	public abstract class EntitiesJournalViewModelBase<TNode> : UowJournalViewModelBase, ITdiJournal, IEntityAutocompleteSelector
 		where TNode : JournalEntityNodeBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -69,9 +76,12 @@ namespace QS.Project.Journal
 		protected EntitiesJournalViewModelBase(
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,
-			INavigationManager navigation = null) : base(unitOfWorkFactory, commonServices?.InteractiveService, navigation)
+			INavigationManager navigation = null,
+			IEntityChangeWatcher entityChangeWatcher = null
+			) : base(unitOfWorkFactory, navigation, entityChangeWatcher)
 		{
 			this.commonServices = commonServices ?? throw new ArgumentNullException(nameof(commonServices));
+			this.interactiveService = this.commonServices.InteractiveService;
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 		}
@@ -412,5 +422,128 @@ namespace QS.Project.Journal
 		}
 
 		#endregion Actions
+
+		#region Код в этом блоке скопирован из TabViewModelBase так как C# не поддерживает множественное наследование
+
+		public override string Title { get => TabName; set => TabName = value; }
+
+		#region ITdiTab implementation
+
+		public HandleSwitchIn HandleSwitchIn { get; private set; }
+		public HandleSwitchOut HandleSwitchOut { get; private set; }
+
+		private string tabName = string.Empty;
+
+		/// <summary>
+		/// Имя вкладки может быть автоматически получено из атрибута DisplayNameAttribute у класса диалога.
+		/// </summary>
+		public virtual string TabName {
+			get {
+				if(string.IsNullOrWhiteSpace(tabName)) {
+					return GetType().GetCustomAttribute<DisplayNameAttribute>(true)?.DisplayName;
+				}
+				return tabName;
+			}
+			set {
+				if(tabName == value)
+					return;
+				tabName = value;
+				OnTabNameChanged();
+			}
+		}
+
+		public ITdiTabParent TabParent { set; get; }
+
+		public bool FailInitialize { get; protected set; }
+
+		public event EventHandler<TdiTabNameChangedEventArgs> TabNameChanged;
+		public event EventHandler TabClosed;
+
+		public virtual bool CompareHashName(string hashName)
+		{
+			return GenerateHashName(this.GetType()) == hashName;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Отменяет открытие вкладки
+		/// </summary>
+		/// <param name="message">Сообщение пользователю при отмене открытия</param>
+		protected void AbortOpening(string message, string title = "Невозможно открыть вкладку")
+		{
+			ShowErrorMessage(message, title);
+			AbortOpening();
+		}
+
+		/// <summary>
+		/// Отменяет открытие вкладки
+		/// </summary>
+		protected void AbortOpening()
+		{
+			FailInitialize = true;
+		}
+
+		public static string GenerateHashName<TTab>() where TTab : TabViewModelBase
+		{
+			return GenerateHashName(typeof(TTab));
+		}
+
+		public static string GenerateHashName(Type tabType)
+		{
+			if(!typeof(TabViewModelBase).IsAssignableFrom(tabType))
+				throw new ArgumentException($"Тип должен наследоваться от {nameof(TabViewModelBase)}", nameof(tabType));
+
+			return string.Format("Tab_{0}", tabType.Name);
+		}
+
+		protected virtual void OnTabNameChanged()
+		{
+			TabNameChanged?.Invoke(this, new TdiTabNameChangedEventArgs(TabName));
+			OnPropertyChanged(nameof(Title));
+		}
+
+		public override void Close(bool askSave, CloseSource source)
+		{
+			if(askSave)
+				TabParent?.AskToCloseTab(this, source);
+			else
+				TabParent?.ForceCloseTab(this, source);
+			
+			base.Close(askSave, source);
+		}
+
+		public void OnTabClosed()
+		{
+			TabClosed?.Invoke(this, EventArgs.Empty);
+		}
+
+		#region Перенесено из ViewModelBase для поддержания обратной совместимости. умрет здесь вместе с TabViewModelBase
+
+		private readonly IInteractiveService interactiveService;
+
+		protected virtual void ShowInfoMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Info, message, title);
+		}
+
+		protected virtual void ShowWarningMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Warning, message, title);
+		}
+
+		protected virtual void ShowErrorMessage(string message, string title = null)
+		{
+			interactiveService.ShowMessage(ImportanceLevel.Error, message, title);
+		}
+
+		protected virtual bool AskQuestion(string question, string title = null)
+		{
+			return interactiveService.Question(question, title);
+		}
+
+		#endregion
+
+		#endregion
 	}
 }

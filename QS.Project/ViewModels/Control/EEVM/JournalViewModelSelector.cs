@@ -44,7 +44,7 @@ namespace QS.ViewModels.Control.EEVM {
 				page = (navigationManager as ITdiCompatibilityNavigation).OpenViewModelOnTdi<TJournalViewModel>(GetParentTab(), OpenPageOptions.AsSlave);
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if (!String.IsNullOrEmpty(dialogTitle))
-				page.ViewModel.TabName = dialogTitle;
+				page.ViewModel.Title = dialogTitle;
 			//Сначала на всякий случай отписываемся от события, вдруг это повторное открытие не не
 			page.ViewModel.OnSelectResult -= ViewModel_OnSelectResult;
 			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;
@@ -137,7 +137,7 @@ namespace QS.ViewModels.Control.EEVM {
 
 			page.ViewModel.SelectionMode = JournalSelectionMode.Single;
 			if(!String.IsNullOrEmpty(dialogTitle))
-				page.ViewModel.TabName = dialogTitle;
+				page.ViewModel.Title = dialogTitle;
 			//Сначала на всякий случай отписываемся от события, вдруг это повторное открытие не не
 			page.ViewModel.OnSelectResult -= ViewModel_OnSelectResult;
 			page.ViewModel.OnSelectResult += ViewModel_OnSelectResult;

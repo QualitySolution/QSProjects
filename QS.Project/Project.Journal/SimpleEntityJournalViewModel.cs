@@ -24,7 +24,9 @@ namespace QS.Project.Journal
 			Func<TEntityTab> createDlgFunc,
 			Func<CommonJournalNode, TEntityTab> openDlgFunc,
 			IUnitOfWorkFactory unitOfWorkFactory,
-			ICommonServices commonServices) : base(typeof(TEntity), unitOfWorkFactory, commonServices)
+			ICommonServices commonServices,
+			IEntityChangeWatcher entityChangeWatcher = null
+			) : base(typeof(TEntity), unitOfWorkFactory, commonServices, entityChangeWatcher)
 		{
 			this.titleExp = titleExp ?? throw new ArgumentNullException(nameof(titleExp));
 
@@ -74,7 +76,7 @@ namespace QS.Project.Journal
 
 		public void ExternalNotifyChangedWith(params Type[] entityTypes)
 		{
-			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdate, entityTypes);
+			ChangeWatcher?.BatchSubscribeOnEntity(OnExternalUpdate, entityTypes);
 		}
 
 		void OnExternalUpdate(EntityChangeEvent[] changeEvents)

@@ -5,21 +5,18 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NLog;
-using QS.Dialog;
 using QS.DomainModel.Entity;
-using QS.DomainModel.NotifyChange;
-using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
 using QS.Project.Search;
-using QS.Tdi;
-using QS.ViewModels;
+using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
 {
-	public abstract class JournalViewModelBase : UoWTabViewModelBase, ITdiJournal, ISlideableViewModel
+	public abstract class JournalViewModelBase : DialogViewModelBase, ISlideableViewModel
 	{
+		
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
@@ -99,7 +96,7 @@ namespace QS.Project.Journal
 
 		#endregion
 
-		protected JournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigation) : base(unitOfWorkFactory, interactiveService, navigation)
+		protected JournalViewModelBase(INavigationManager navigation) : base(navigation)
 		{
 			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
@@ -146,34 +143,6 @@ namespace QS.Project.Journal
 		}
 
 		#endregion Configure actions
-
-		public void UpdateOnChanges(params Type[] entityTypes)
-		{
-			NotifyConfiguration.Instance?.UnsubscribeAll(this);
-			NotifyConfiguration.Instance?.BatchSubscribeOnEntity(OnEntitiesUpdated, entityTypes);
-		}
-
-		private void OnEntitiesUpdated(EntityChangeEvent[] changeEvents)
-		{
-			var changesDelta = changeEvents.Any(x => x.DeleteEvent == null)
-				? changeEvents.Any(x => x.InsertEvent == null) ? 0 : 1
-				: -1;
-
-			DataLoader.ItemsCountForNextLoad = DataLoader.Items.Count + changesDelta;
-
-			var dataLoaderType = DataLoader.GetType();
-			var isThreadDataLoader = dataLoaderType.IsGenericType && dataLoaderType.GetGenericTypeDefinition() == typeof(ThreadDataLoader<>);
-
-			var needResetItemsCountForNextLoad = isThreadDataLoader	&& !DataLoader.FirstPage && DataLoader.PageSize >= DataLoader.ItemsCountForNextLoad;
-
-			Refresh(needResetItemsCountForNextLoad);
-		}
-
-		public override void Dispose()
-		{
-			NotifyConfiguration.Instance?.UnsubscribeAll(this);
-			base.Dispose();
-		}
 
 		#region Поиск
 		void Search_OnSearch(object sender, EventArgs e)

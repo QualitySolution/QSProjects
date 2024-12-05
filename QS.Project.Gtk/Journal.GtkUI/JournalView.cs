@@ -12,14 +12,13 @@ using QS.Utilities;
 using QS.Utilities.Text;
 using QS.ViewModels;
 using QS.Views.Dialog;
-using QS.Views.GtkUI;
 using QS.Views.Resolve;
 using QS.Widgets;
 
 namespace QS.Journal.GtkUI
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : TabViewBase<JournalViewModelBase>
+	public partial class JournalView : DialogViewBase<JournalViewModelBase>
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -133,7 +132,7 @@ namespace QS.Journal.GtkUI
 			foreach(var spinner in whishList) {
 				var allChars = String.Join("", spinner.Frames);
 				var layout = labelTotalRow.CreatePangoLayout(allChars);
-				//К сожалению этот способ определения не поддерживаемых символов на винде для не цветных спинеров все равно возвращает 0, даже если символ не поддерживается.
+				//К сожалению этот способ определения неподдерживаемых символов на винде для цветных спинеров все равно возвращает 0, даже если символ не поддерживается.
 				if(layout.UnknownGlyphsCount == 0) {
 					CountingTextSpinner = new TextSpinner(spinner);
 					break;

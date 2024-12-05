@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using NHibernate;
-using QS.Dialog;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Domain;
@@ -14,7 +14,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal
 {
-	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : JournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : UowJournalViewModelBase
 		where TEntity : class, IDomainObject
 		where TEntityViewModel : DialogViewModelBase
 		where TNode : class
@@ -28,11 +28,11 @@ namespace QS.Project.Journal
 
 		protected EntityJournalViewModelBase(
 			IUnitOfWorkFactory unitOfWorkFactory,
-			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
+			IEntityChangeWatcher changeWatcher,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
-			) : base(unitOfWorkFactory, interactiveService, navigationManager)
+			) : base(unitOfWorkFactory, navigationManager, changeWatcher)
 		{
 			CurrentPermissionService = currentPermissionService;
 			DeleteEntityService = deleteEntityService;
@@ -49,7 +49,7 @@ namespace QS.Project.Journal
 
 			var names = typeof(TEntity).GetSubjectNames();
 			if(!String.IsNullOrEmpty(names?.NominativePlural))
-				TabName = names.NominativePlural.StringToTitleCase();
+				Title = names.NominativePlural.StringToTitleCase();
 
 			UpdateOnChanges(typeof(TEntity));
 		}
@@ -92,7 +92,7 @@ namespace QS.Project.Journal
 		/// <summary>
 		/// Функция формирования запроса.
 		/// ВАЖНО: Необходимо следить чтобы в запросе не было INNER JOIN с ORDER BY и LIMIT.
-		/// Иначе запрос с LIMIT будет выполнятся также медленно как и без него.
+		/// Иначе запрос с LIMIT будет выполнятся также медленно, как и без него.
 		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
 		/// </summary>
 		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);
