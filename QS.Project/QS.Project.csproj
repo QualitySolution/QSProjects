@@ -22,6 +22,7 @@
     <Folder Include="Project.Domain\" />
     <Folder Include="Project.HibernateMapping\" />
     <Folder Include="DomainModel\" />
+    <Folder Include="Project.Journal\DataLoader\" />
     <Folder Include="Project.Repositories\" />
     <Folder Include="DomainModel\Entity\" />
     <Folder Include="Project.DB\" />
@@ -33,7 +34,6 @@
     <Folder Include="Permissions\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
-    <Folder Include="Project.Journal\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
@@ -43,7 +43,6 @@
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
-    <Folder Include="Project.Journal\DataLoader\" />
     <Folder Include="Navigation\" />
     <Folder Include="ViewModels\Control\" />
     <Folder Include="ViewModels\Control\EEVM\" />
