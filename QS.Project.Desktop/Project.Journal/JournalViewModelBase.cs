@@ -20,6 +20,12 @@ namespace QS.Project.Journal
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		public virtual IJournalFilterViewModel JournalFilter { get; protected set; }
+		
+		private bool isFilterShow = true;
+		public virtual bool IsFilterShow {
+			get => isFilterShow;
+			set => SetField(ref isFilterShow, value);
+		}
 
 		public virtual IJournalSearch Search { get; set; }
 

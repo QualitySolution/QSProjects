@@ -50,7 +50,7 @@ namespace QS.Journal.GtkUI
 			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
 			if(ThrowExceptionOnDataLoad)
 				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
-			checkShowFilter.Clicked += (sender, e) => { hboxFilter.Visible = checkShowFilter.Active; };
+			checkShowFilter.Clicked += (sender, e) => { ViewModel.IsFilterShow = checkShowFilter.Active; };
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
@@ -67,8 +67,7 @@ namespace QS.Journal.GtkUI
 				hboxFilter.Add(FilterView);
 				FilterView.Show();
 				checkShowFilter.Visible = true;
-				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
-				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
+				checkShowFilter.Active = hboxFilter.Visible = ViewModel.IsFilterShow;
 			}
 			else {
 				//FIXME Этот код только для водовоза
@@ -110,12 +109,8 @@ namespace QS.Journal.GtkUI
 				Application.Invoke((s, args) => labelFooter.Markup = ViewModel.FooterInfo);
 			if(e.PropertyName == nameof(ViewModel.TableSelectionMode))
 				SetSelectionMode(ViewModel.TableSelectionMode);
-		}
-
-		void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if(e.PropertyName == nameof(ViewModel.JournalFilter.IsShow))
-				checkShowFilter.Active = hboxFilter.Visible = ViewModel.JournalFilter.IsShow;
+			if(e.PropertyName == nameof(ViewModel.IsFilterShow))
+				checkShowFilter.Active = hboxFilter.Visible = ViewModel.IsFilterShow;
 		}
 
 		TextSpinner CountingTextSpinner;

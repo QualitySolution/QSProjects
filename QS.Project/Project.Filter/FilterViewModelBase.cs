@@ -22,7 +22,6 @@ namespace QS.Project.Filter
 		private bool canNotify = true;
 
 		public virtual IUnitOfWork UoW { get; protected set; }
-		public virtual bool IsShow { get; set; }
 
 		protected FilterViewModelBase()
 		{
