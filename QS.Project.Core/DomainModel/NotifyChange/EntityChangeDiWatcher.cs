@@ -5,7 +5,7 @@ using QS.DomainModel.NotifyChange.Conditions;
 namespace QS.DomainModel.NotifyChange {
 	/// <summary>
 	/// Класс с отслеживанием изменений сущностей, предназначенный для использования с DI
-	/// В отличии от глобального инстанса <see cref="NotifyConfiguration.Instance"/> не требует явного отписывания.
+	/// В отличие от линглтона <see cref="AppLevelChangeListener"/> не требует явного отписывания.
 	/// Так как реализует интерфейс <see cref="IDisposable"/>, он будет отписан автоматически при уничтожении c DI контейнером.
 	/// </summary>
 	public class EntityChangeDiWatcher : IEntityChangeWatcher, IDisposable {
@@ -14,7 +14,7 @@ namespace QS.DomainModel.NotifyChange {
 
 		private HashSet<object> toDispose = new HashSet<object>();
 
-		public EntityChangeDiWatcher(IEntityChangeWatcher globalWatcher) {
+		public EntityChangeDiWatcher(AppLevelChangeListener globalWatcher) {
 			this.globalWatcher = globalWatcher ?? throw new ArgumentNullException(nameof(globalWatcher));
 		}
 

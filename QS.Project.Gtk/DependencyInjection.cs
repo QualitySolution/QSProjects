@@ -41,7 +41,7 @@ namespace QS.Project.GtkSharp {
 			return services;
 		}
 
-		public static IServiceCollection AddGuiInteracive(this IServiceCollection services) {
+		public static IServiceCollection AddGuiInteractive(this IServiceCollection services) {
 			services
 				.AddSingleton<IInteractiveMessage, GtkMessageDialogsInteractive>()
 				.AddSingleton<IInteractiveQuestion, GtkQuestionDialogsInteractive>()

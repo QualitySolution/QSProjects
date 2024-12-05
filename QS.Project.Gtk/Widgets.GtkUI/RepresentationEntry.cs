@@ -9,6 +9,7 @@ using NLog;
 using QS.Dialog.Gtk;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Project.Dialogs;
 using QS.Project.Dialogs.GtkUI;
@@ -32,7 +33,6 @@ namespace QS.Widgets.GtkUI
 		
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		private Type subjectType;
 		private bool sensitive = true;
 		public bool CanEditReference = true;
 		public Func<object, string> ObjectDisplayFunc;
@@ -89,11 +89,11 @@ namespace QS.Widgets.GtkUI
 					return;
 				if(value == null) {
 					representationModel = null;
-					SubjectType = null;
+					SetSubjectType(null);
 					return;
 				}
 				representationModel = value;
-				SubjectType = RepresentationModel.EntityType;
+				SetSubjectType(RepresentationModel.EntityType);
 				//Включение быстрого выбора
 				if(RepresentationModel.CanEntryFastSelect) {
 					entryObject.Completion = new EntryCompletion();
@@ -138,15 +138,18 @@ namespace QS.Widgets.GtkUI
 			UpdateWidget();
 		}
 
-		protected Type SubjectType {
-			get { return subjectType; }
-			set {
-				DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
-				subjectType = value;
-				if(subjectType != null) {
-					DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, subjectType);
-				}
+		protected IEntityChangeWatcher ChangeWatcher;
+		protected Type SubjectType { get; private set; }
+
+		protected void SetSubjectType(Type value, IEntityChangeWatcher entityChangeWatcher = null)
+		{
+			SubjectType = value;
+			ChangeWatcher?.UnsubscribeAll(this);
+			if(entityChangeWatcher != null) {
+				ChangeWatcher = entityChangeWatcher;
 			}
+			if (SubjectType != null) 
+				ChangeWatcher?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, SubjectType);
 		}
 
 		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
@@ -222,7 +225,7 @@ namespace QS.Widgets.GtkUI
 
 		protected void OnButtonViewEntityClicked(object sender, EventArgs e)
 		{
-			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
+			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(SubjectType);
 			if(entityConfig.SimpleDialog) {
 				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
 				return;
@@ -352,7 +355,7 @@ namespace QS.Widgets.GtkUI
 		{
 			logger.Debug("EntryReferenceVM Destroyed() called.");
 			//Отписываемся от событий.
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
+			ChangeWatcher.UnsubscribeAll(this);
 			if(subject is INotifyPropertyChanged) {
 				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
 			}

@@ -17,6 +17,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using QS.DomainModel.NotifyChange;
 using QS.ViewModels.Control.EEVM;
 using IEntitySelector = QS.Project.Journal.EntitySelector.IEntitySelector;
 
@@ -99,7 +100,7 @@ namespace QS.Widgets.GtkUI {
 		{
 			entitySelectorAutocompleteFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
 			this.entitySelectorFactory = entitySelectorAutocompleteFactory;
-			SubjectType = entitySelectorFactory.EntityType;
+			SetSubjectType(entitySelectorFactory.EntityType);
 			entryObject.IsEditable = true;
 			entryChangedByUser = true;
 			ConfigureEntryComplition();
@@ -108,7 +109,7 @@ namespace QS.Widgets.GtkUI {
 		public void SetEntitySelectorFactory(IEntitySelectorFactory entitySelectorFactory)
 		{
 			this.entitySelectorFactory = entitySelectorFactory ?? throw new ArgumentNullException(nameof(entitySelectorFactory));
-			SubjectType = entitySelectorFactory.EntityType;
+			SetSubjectType(entitySelectorFactory.EntityType);
 			entryObject.IsEditable = false;
 			entryChangedByUser = false;
 			ConfigureEntryComplition();
@@ -173,16 +174,17 @@ namespace QS.Widgets.GtkUI {
 			UpdateWidget();
 		}
 
-		private Type subjectType;
-		protected Type SubjectType {
-			get { return subjectType; }
-			set {
-				DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
-				subjectType = value;
-				if(subjectType != null) {
-					DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, subjectType);
-				}
-			}
+		protected IEntityChangeWatcher ChangeWatcher;
+		protected Type SubjectType { get; private set; }
+
+		protected void SetSubjectType(Type value, IEntityChangeWatcher entityChangeWatcher = null)
+		{
+			SubjectType = value;
+			ChangeWatcher?.UnsubscribeAll(this);
+			if(entityChangeWatcher != null)
+				ChangeWatcher = entityChangeWatcher;
+			if (SubjectType != null)
+				ChangeWatcher?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, SubjectType);
 		}
 
 		void ExternalEntityChangeEventMethod(DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
@@ -304,7 +306,7 @@ namespace QS.Widgets.GtkUI {
 				}
 			}
 
-			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(subjectType);
+			IEntityConfig entityConfig = DomainConfiguration.GetEntityConfig(SubjectType);
 			if(entityConfig.SimpleDialog) {
 				EntityEditSimpleDialog.RunSimpleDialog(this.Toplevel as Window, SubjectType, Subject);
 				return;
@@ -491,7 +493,7 @@ namespace QS.Widgets.GtkUI {
 			
 			logger.Debug("EntityViewModelEntry OnDestroyed() called.");
 			//Отписываемся от событий.
-			DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
+			ChangeWatcher?.UnsubscribeAll(this);
 
             if(entitySelector != null)
             {

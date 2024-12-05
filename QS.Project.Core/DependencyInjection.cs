@@ -18,6 +18,7 @@ using QS.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using QS.DomainModel.NotifyChange;
 using ListenerType = NHibernate.Event.ListenerType;
 
 namespace QS.Project.Core {
@@ -52,6 +53,23 @@ namespace QS.Project.Core {
 				.AddTransient<SingleUowEventsTracker>()
 				.AddSingleton<IUnitOfWorkFactory, TrackedUnitOfWorkFactory>()
 				;
+			return services;
+		}
+		
+		/// <summary>
+		/// Регистрирует и включает механизм отслеживания изменений сущностей
+		/// </summary>
+		public static IServiceCollection AddEntityChangeWatcher(this IServiceCollection services) {
+			services.AddSingleton<AppLevelChangeListener>(provider => {
+				var trackerActionInvoker = provider.GetRequiredService<ITrackerActionInvoker>();
+				var listener = new AppLevelChangeListener(trackerActionInvoker);
+				GlobalUowEventsTracker.RegisterGlobalListener(listener);
+				SingleUowEventsTracker.RegisterSingleUowListnerFactory(listener);
+				return listener;
+			});
+			
+			services.AddScoped<IEntityChangeWatcher, EntityChangeDiWatcher>();
+
 			return services;
 		}
 

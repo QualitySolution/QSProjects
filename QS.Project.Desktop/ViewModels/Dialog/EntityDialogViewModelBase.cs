@@ -14,6 +14,7 @@ namespace QS.ViewModels.Dialog
 	public class EntityDialogViewModelBase<TEntity> : UowDialogViewModelBase
 		where TEntity : class, IDomainObject, new()
 	{
+		protected readonly IEntityChangeWatcher ChangeWatcher;
 		public override IUnitOfWork UoW => UoWGeneric;
 
 		public IUnitOfWorkGeneric<TEntity> UoWGeneric { get; private set; }
@@ -25,11 +26,15 @@ namespace QS.ViewModels.Dialog
 			IUnitOfWorkFactory unitOfWorkFactory,
 			INavigationManager navigation,
 			IValidator validator = null,
-			UnitOfWorkProvider unitOfWorkProvider = null) : base(unitOfWorkFactory, navigation, validator, unitOfWorkProvider: unitOfWorkProvider)
+			UnitOfWorkProvider unitOfWorkProvider = null,
+			IEntityChangeWatcher changeWatcher = null
+			) : base(unitOfWorkFactory, navigation, validator, unitOfWorkProvider: unitOfWorkProvider)
 		{
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
 			}
+
+			this.ChangeWatcher = changeWatcher;
 
 			string actionTitle = null;
 			if(typeof(TEntity).GetSubjectNames()?.Genitive != null)
@@ -49,7 +54,7 @@ namespace QS.ViewModels.Dialog
 
 			Validations.Add(new ValidationRequest(Entity));
 			
-			NotifyConfiguration.Instance?.BatchSubscribeOnEntity<TEntity>(ExternalDelete);
+			ChangeWatcher?.BatchSubscribeOnEntity<TEntity>(ExternalDelete);
 		}
 
 		#region Создание имени диалога
@@ -107,7 +112,7 @@ namespace QS.ViewModels.Dialog
 
 		public override void Dispose()
 		{
-			NotifyConfiguration.Instance?.UnsubscribeAll(this);
+			ChangeWatcher?.UnsubscribeAll(this);
 			base.Dispose();
 		}
 	}

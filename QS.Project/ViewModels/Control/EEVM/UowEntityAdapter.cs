@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 
 namespace QS.ViewModels.Control.EEVM
@@ -9,11 +10,14 @@ namespace QS.ViewModels.Control.EEVM
 		where TEntity : class, IDomainObject
 	{
 		private readonly IUnitOfWork uow;
+		protected readonly IEntityChangeWatcher ChangeWatcher;
 
-		public UowEntityAdapter(IUnitOfWork uow)
+		public UowEntityAdapter(IEEVMBuilderParameters parameters)
 		{
-			this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
-			DomainModel.NotifyChange.NotifyConfiguration.Instance?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
+			if(parameters == null) throw new ArgumentNullException(nameof(parameters));
+			this.uow = parameters.UnitOfWork ?? throw new ArgumentNullException(nameof(parameters.UnitOfWork));
+			ChangeWatcher = parameters.ChangeWatcher;
+			ChangeWatcher?.BatchSubscribeOnEntity(ExternalEntityChangeEventMethod, typeof(TEntity));
 		}
 
 		public EntityEntryViewModel<TEntity> EntityEntryViewModel { set; get; }
@@ -41,7 +45,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public void Dispose()
 		{
-			DomainModel.NotifyChange.NotifyConfiguration.Instance?.UnsubscribeAll(this);
+			ChangeWatcher?.UnsubscribeAll(this);
 			EntityEntryViewModel = null;
 		}
 	}

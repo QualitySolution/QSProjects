@@ -8,6 +8,7 @@ using QS.ViewModels.Resolve;
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using QS.DomainModel.NotifyChange;
 
 namespace QS.ViewModels.Control.EEVM {
 	/// <summary>
@@ -161,7 +162,7 @@ namespace QS.ViewModels.Control.EEVM {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
 			}
-			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(_parameters.UnitOfWork);
+			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(_parameters);
 			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector, entityAdapter);
 		}
 		#endregion Fluent Config
@@ -182,6 +183,7 @@ namespace QS.ViewModels.Control.EEVM {
 			public IUnitOfWork UnitOfWork { get; }
 			public INavigationManager NavigationManager { get; }
 			public ILifetimeScope AutofacScope { get; }
+			public IEntityChangeWatcher ChangeWatcher => AutofacScope.ResolveOptional<IEntityChangeWatcher>();
 		}
 	}
 }

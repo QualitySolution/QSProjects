@@ -106,7 +106,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public virtual EntityEntryViewModel<TEntity> Finish()
 		{
-			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(parameters.UnitOfWork);
+			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(parameters);
 			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector, entityAdapter);
 		}
 

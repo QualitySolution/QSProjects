@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Autofac;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.ViewModels.Dialog;
@@ -24,6 +25,8 @@ namespace QS.ViewModels.Control.EEVM
 		/// Необходимо пока только для Autocompletion, пока не стал добавлять в обязательные поля.
 		/// </summary>
 		public ILifetimeScope AutofacScope { get; set; }
+
+		public IEntityChangeWatcher ChangeWatcher => AutofacScope.ResolveOptional<IEntityChangeWatcher>();
 
 		public CommonEEVMBuilderFactory(DialogViewModelBase dialogViewModel, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation, ILifetimeScope autofacScope = null)
 		{
@@ -64,11 +67,18 @@ namespace QS.ViewModels.Control.EEVM
 		/// </summary>
 		public ILifetimeScope AutofacScope { get; set; }
 
-		public CommonEEVMBuilderFactory(DialogViewModelBase dialogViewModel, IUnitOfWork unitOfWork, INavigationManager navigation, ILifetimeScope autofacScope = null)
+		public IEntityChangeWatcher ChangeWatcher => AutofacScope.ResolveOptional<IEntityChangeWatcher>();
+
+		public CommonEEVMBuilderFactory(
+			DialogViewModelBase dialogViewModel,
+			IUnitOfWork unitOfWork,
+			INavigationManager navigation,
+			ILifetimeScope autofacScope = null
+			)
 		{
-			DialogViewModel = dialogViewModel;
-			UnitOfWork = unitOfWork;
-			NavigationManager = navigation;
+			DialogViewModel = dialogViewModel ?? throw new ArgumentNullException(nameof(dialogViewModel));
+			UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+			NavigationManager = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			AutofacScope = autofacScope;
 		}
 
