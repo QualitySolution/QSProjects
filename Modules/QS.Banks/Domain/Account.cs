@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
@@ -64,12 +65,13 @@ namespace QS.Banks.Domain
 		public virtual bool IsDefault {
 			get => isDefault;
 			set {
-				if(SetField(ref isDefault, value) && value && Owner != null){
+				if(CanChangeIsDefault(value) && SetField(ref isDefault, value) && value && Owner != null){
 					foreach(var item in Owner.Accounts) {
 						if(item != this) {
 							item.IsDefault = false;
 						}
 					}
+					Owner.DefaultAccount = this;
 				}
 			}
 		}
@@ -87,6 +89,14 @@ namespace QS.Banks.Domain
         }
 
 		#endregion
+
+		private bool CanChangeIsDefault(bool isEnabling) {
+			if(isEnabling) {
+				return true;
+			}
+
+			return Owner?.Accounts.Any(x => x.IsDefault && x != this) ?? true;
+		}
 
 		#region IValidatableObject implementation
 
