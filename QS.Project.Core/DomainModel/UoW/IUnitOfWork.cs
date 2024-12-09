@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QS.DomainModel.UoW {
@@ -44,7 +45,7 @@ namespace QS.DomainModel.UoW {
 		/// Этот параметр нужен тогда когда мы сохраняем много новых объектов, при использовании метода SaveOrUpdate Nhibernate перед INSERT 
 		/// делает SELECT что бы проверить нет ли уже объекта для обновления. Что при большом количестве объектов приводит к задержкам сохранения.
 		/// </param>
-		Task SaveAsync(object entity, bool orUpdate = true);
+		Task SaveAsync(object entity, bool orUpdate = true, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Удаление сущности.
@@ -54,7 +55,7 @@ namespace QS.DomainModel.UoW {
 		/// <summary>
 		/// Удаление сущности.
 		/// </summary>
-		Task DeleteAsync(object entity);
+		Task DeleteAsync(object entity, CancellationToken cancellationToken = default);
 
 		IQueryable<T> GetAll<T> () where T : IDomainObject;
 
@@ -79,7 +80,7 @@ namespace QS.DomainModel.UoW {
 		object GetById(Type clazz, int id);
 
 		void Commit();
-		Task CommitAsync();
+		Task CommitAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Уведомляет о сохранении сущности в пределах текущей сессии.

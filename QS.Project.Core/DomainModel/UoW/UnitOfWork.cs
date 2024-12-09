@@ -1,6 +1,7 @@
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QS.DomainModel.UoW {
@@ -62,8 +63,8 @@ namespace QS.DomainModel.UoW {
 			Save(Root);
 		}
 		
-		public override async Task SaveAsync(object entity, bool orUpdate = true) {
-			await base.SaveAsync(entity, orUpdate);
+		public override async Task SaveAsync(object entity, bool orUpdate = true, CancellationToken cancellationToken = default) {
+			await base.SaveAsync(entity, orUpdate, cancellationToken);
 
 			if(RootObject.Equals(entity)) {
 				await CommitAsync();
