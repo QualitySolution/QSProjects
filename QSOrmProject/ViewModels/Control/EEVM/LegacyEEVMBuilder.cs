@@ -82,7 +82,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null)
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
+				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
 			else
 				base.UseViewModelJournal<TJournalViewModel>();
 			return this;
@@ -92,7 +92,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TJournalViewModel : JournalViewModelBase
 		{
 			if(parameters.DialogViewModel == null) {
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
+				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
 				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.AutofacScope);
 			}
 			else
@@ -104,7 +104,7 @@ namespace QS.ViewModels.Control.EEVM
 				where TJournalViewModel : JournalViewModelBase
 				where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(parameters.DialogViewModel == null) {
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filterParams);
+				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filterParams);
 				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filterParams);
 			}
 			else
@@ -116,7 +116,7 @@ namespace QS.ViewModels.Control.EEVM
 				where TJournalViewModel : JournalViewModelBase
 				where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(parameters.DialogViewModel == null) {
-				EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filter);
+				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filter);
 				EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filter);
 			}
 			else
@@ -128,7 +128,7 @@ namespace QS.ViewModels.Control.EEVM
 			where TEntityViewModel : DialogViewModelBase
 		{
 			if(legacyParameters.GetDialogTab != null)
-				EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, legacyParameters.GetDialogTab);
+				EntityDlgOpener = new TdiEntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, legacyParameters.GetDialogTab);
 			else
 				EntityDlgOpener = new EntityViewModelOpener<TEntityViewModel>(parameters.NavigationManager, parameters.DialogViewModel);
 			return this;
