@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 
 namespace QS.ViewModels.Control.EEVM {
-	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
+	public class TdiJournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase 
 	{
@@ -19,13 +19,13 @@ namespace QS.ViewModels.Control.EEVM {
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
 		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public JournalViewModelSelector(Func<ITdiTab> getParentTab, INavigationManager navigationManager)
+		public TdiJournalViewModelSelector(Func<ITdiTab> getParentTab, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.GetParentTab = getParentTab ?? throw new ArgumentNullException(nameof(getParentTab));
 		}
 
-		public JournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager)
+		public TdiJournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.ParentViewModel = parentViewModel ?? throw new ArgumentNullException(nameof(parentViewModel));
@@ -57,7 +57,7 @@ namespace QS.ViewModels.Control.EEVM {
 
 	}
 
-	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
+	public class TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : TdiJournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : IDomainObject
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : class, IJournalFilterViewModel
@@ -65,7 +65,7 @@ namespace QS.ViewModels.Control.EEVM {
 		private readonly Action<TJournalFilterViewModel> filterParams;
 		private readonly TJournalFilterViewModel _filter;
 
-		public JournalViewModelSelector(
+		public TdiJournalViewModelSelector(
 			DialogViewModelBase parentViewModel,
 			INavigationManager navigationManager,
 			TJournalFilterViewModel filter
@@ -73,7 +73,7 @@ namespace QS.ViewModels.Control.EEVM {
 			_filter = filter ?? throw new ArgumentNullException(nameof(filter));
 		}
 
-		public JournalViewModelSelector(
+		public TdiJournalViewModelSelector(
 			DialogViewModelBase parentViewModel, 
 			INavigationManager navigationManager, 
 			Action<TJournalFilterViewModel> filterParams
@@ -86,7 +86,7 @@ namespace QS.ViewModels.Control.EEVM {
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
 		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public JournalViewModelSelector(
+		public TdiJournalViewModelSelector(
 			Func<ITdiTab> getParentTab,
 			INavigationManager navigationManager,
 			Action<TJournalFilterViewModel> filterParams
@@ -98,7 +98,7 @@ namespace QS.ViewModels.Control.EEVM {
 		/// Специальный конструктор для старых диалогов базирующихся ITdiTab
 		/// </summary>
 		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public JournalViewModelSelector(
+		public TdiJournalViewModelSelector(
 			Func<ITdiTab> getParentTab,
 			INavigationManager navigationManager,
 			TJournalFilterViewModel filter

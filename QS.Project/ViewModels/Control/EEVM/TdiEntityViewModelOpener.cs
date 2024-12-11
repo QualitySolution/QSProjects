@@ -6,21 +6,21 @@ using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
-	public class EntityViewModelOpener<TEntityViewModel> : IEntityDlgOpener
+	public class TdiEntityViewModelOpener<TEntityViewModel> : IEntityDlgOpener
 		where TEntityViewModel : DialogViewModelBase
 	{
 		private readonly INavigationManager navigationManager;
 		private readonly DialogViewModelBase masterViewModel;
 		readonly Func<ITdiTab> getParrentTab;
 
-		public EntityViewModelOpener(INavigationManager navigationManager, DialogViewModelBase masterViewModel = null)
+		public TdiEntityViewModelOpener(INavigationManager navigationManager, DialogViewModelBase masterViewModel = null)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.masterViewModel = masterViewModel;
 		}
 
 		[Obsolete("Конструктор для совместимости со старыми диалогами, в классах с ViewModel используйте другой конструктор.")]
-		public EntityViewModelOpener(INavigationManager navigationManager, Func<ITdiTab> getParrentTab)
+		public TdiEntityViewModelOpener(INavigationManager navigationManager, Func<ITdiTab> getParrentTab)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.getParrentTab = getParrentTab;

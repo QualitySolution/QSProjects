@@ -44,10 +44,6 @@
     <Folder Include="Validation\" />
     <Folder Include="Project.Services\Interactive\" />
     <Folder Include="Navigation\" />
-    <Folder Include="ViewModels\Control\" />
-    <Folder Include="ViewModels\Control\EEVM\" />
-    <Folder Include="ViewModels\Control\ESVM\" />
-    <Folder Include="ViewModels\Resolve\" />
     <Folder Include="Project.ViewModels\" />
     <Folder Include="BaseParameters\" />
     <Folder Include="BaseParameters\ViewModels\" />
