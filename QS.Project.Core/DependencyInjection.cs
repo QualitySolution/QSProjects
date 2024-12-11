@@ -287,7 +287,7 @@ namespace QS.Project.Core {
 				var connectionSettings = provider.GetRequiredService<IDatabaseConnectionSettings>();
 				using(var uow = uowFactory.CreateWithoutRoot()) {
 					var serviceUser = uow.Session.Query<UserBase>()
-						.Where(u => u.Login == connectionSettings.UserName)
+						.Where(u => u.Login == login)
 						.FirstOrDefault();
 
 					if(serviceUser is null) {
