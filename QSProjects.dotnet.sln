@@ -58,8 +58,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Avalonia", "QS.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher", "QS.Launcher\QS.Launcher.csproj", "{3C598CEF-3294-46AC-96A5-5E6DC879C44E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher.Desktop", "QS.Launcher.Desktop\QS.Launcher.Desktop.csproj", "{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.DbManagement", "QS.DbManagement\QS.DbManagement.csproj", "{4152E814-7269-46BE-83F8-81844577EF5D}"
 EndProject
 Global
@@ -164,10 +162,6 @@ Global
 		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C598CEF-3294-46AC-96A5-5E6DC879C44E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B54DDEA-2F83-4A9D-A755-49D3F096EB47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4152E814-7269-46BE-83F8-81844577EF5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4152E814-7269-46BE-83F8-81844577EF5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4152E814-7269-46BE-83F8-81844577EF5D}.Release|Any CPU.ActiveCfg = Release|Any CPU

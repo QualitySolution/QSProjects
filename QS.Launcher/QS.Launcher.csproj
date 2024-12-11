@@ -30,8 +30,6 @@
 	  </Resource>
 	  <EmbeddedResource Include="Assets\qs.ico">
 	  </EmbeddedResource>
-	  <Resource Include="Assets\sps.png" />
-	  <Resource Include="Assets\sps1024.png" />
 	</ItemGroup>
 
 </Project>
