@@ -1,6 +1,7 @@
 ﻿using System;
 using QS.Banks.Domain;
 using QS.Deletion;
+using QS.Deletion.Configuration;
 
 namespace QS.Banks
 {
@@ -8,18 +9,18 @@ namespace QS.Banks
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public static void ConfigureDeletion()
+		public static void ConfigureDeletion(DeleteConfiguration configuration)
 		{
 			logger.Info("Настройка параметров удаления в модуле Banks...");
 
-			DeleteConfig.AddHibernateDeleteInfo<BankRegion>()
+			configuration.AddHibernateDeleteInfo<BankRegion>()
 				.AddDeleteDependence<Bank>(item => item.Region);
 
-			DeleteConfig.AddHibernateDeleteInfo<Bank>()
+			configuration.AddHibernateDeleteInfo<Bank>()
 				.AddDeleteDependence<Account>(item => item.InBank)
 				.AddDeleteDependenceFromCollection(item => item.CorAccounts);
 
-			DeleteConfig.AddHibernateDeleteInfo<Account>()
+			configuration.AddHibernateDeleteInfo<Account>()
 				.AddClearDependence<Bank>(item => item.DefaultCorAccount);
 		}
 	}

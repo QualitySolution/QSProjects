@@ -69,7 +69,6 @@
     <Compile Include="BanksUpdater.cs" />
     <Compile Include="BankFilter.cs" />
     <Compile Include="gtk-gui\QSBanks.BankFilter.cs" />
-    <Compile Include="ConfigureDeletion.cs" />
     <Compile Include="CBRSource\BIC.cs" />
     <Compile Include="CBRSource\CreditOrgInfo.cs" />
     <Compile Include="CBRSource\RegionsEnum.cs" />
