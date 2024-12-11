@@ -34,7 +34,8 @@ namespace QSOrmProject.RepresentationModel
 		/// </summary>
 		protected RepresentationModelEntityBase()
 		{
-			NotifyConfiguration.Instance.BatchSubscribeOnEntity<TEntity>(OnExternalUpdate);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//NotifyConfiguration.Instance.BatchSubscribeOnEntity<TEntity>(OnExternalUpdate);
 		}
 
 		void OnExternalUpdate(EntityChangeEvent[] changeEvents)
@@ -51,7 +52,8 @@ namespace QSOrmProject.RepresentationModel
 		public void Destroy()
 		{
 			Dispose();
-			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
 		}
 	}

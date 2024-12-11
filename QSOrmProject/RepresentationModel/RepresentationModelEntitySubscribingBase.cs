@@ -25,7 +25,8 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelEntitySubscribingBase (params Type[] subcribeOnTypes)
 		{
 			this.subcribeOnTypes = subcribeOnTypes;
-			NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdateCommon, subcribeOnTypes);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//NotifyConfiguration.Instance.BatchSubscribeOnEntity(OnExternalUpdateCommon, subcribeOnTypes);
 		}
 
 		void OnExternalUpdateCommon (EntityChangeEvent[] changeEvents)
@@ -41,7 +42,8 @@ namespace QSOrmProject.RepresentationModel
 
 		public new void Destroy()
 		{
-			NotifyConfiguration.Instance.UnsubscribeAll(this);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//NotifyConfiguration.Instance.UnsubscribeAll(this);
 			logger.Debug("{0} called Destroy()", this.GetType());
 			base.Destroy();
 		}

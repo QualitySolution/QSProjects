@@ -40,7 +40,8 @@ namespace QSOrmProject.RepresentationModel
 		protected RepresentationModelWithoutEntityBase (params Type[] subcribeOnTypes)
 		{
 			this.subcribeOnTypes = subcribeOnTypes;
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(HandleEntityChangeEvent, subcribeOnTypes);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnEntity(HandleEntityChangeEvent, subcribeOnTypes);
 		}
 
 		void HandleEntityChangeEvent(QS.DomainModel.NotifyChange.EntityChangeEvent[] changeEvents)
@@ -59,7 +60,8 @@ namespace QSOrmProject.RepresentationModel
 		{
 			Dispose();
 			logger.Debug("{0} called Destroy()", this.GetType());
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
+			//FIXME Если кто-то будет использовать необходимо переделать на DI
+			//QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.UnsubscribeAll(this);
 		}
 	}
 }

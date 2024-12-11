@@ -246,10 +246,6 @@ namespace QSOrmProject
 			QS.Project.DB.Connection.ChangeDbConnectionStringAction = newConnectionString => QSMain.ChangeConnectionString(newConnectionString);
 			QS.DomainModel.Config.DomainConfiguration.GetEntityConfig = (clazz) => GetObjectDescription(clazz) as IEntityConfig;
 			QS.Deletion.DeleteHelper.DeleteEntity = (clazz, id) => DeleteObject(clazz, id);
-
-			var trackerActionInvoker = ServicesConfig.Scope.Resolve<ITrackerActionInvoker>();
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Enable(trackerActionInvoker); //Включаем чтобы не падали старые проекта. По хорошему каждый проект должен отдельно включать.
-			QS.DomainModel.NotifyChange.NotifyConfiguration.Instance.BatchSubscribeOnAll(NotifyObjectUpdated);
 		}
 	}
 }
