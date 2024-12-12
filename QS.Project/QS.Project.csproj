@@ -37,7 +37,6 @@
     <Folder Include="ViewModels\" />
     <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
-    <Folder Include="Project.Search\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
     <Folder Include="..\QS.Project.Core\ErrorReporting\" />
