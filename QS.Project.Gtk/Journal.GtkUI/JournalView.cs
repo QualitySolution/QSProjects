@@ -526,7 +526,10 @@ namespace QS.Journal.GtkUI
 			ViewModel.UpdateJournalActions -= UpdateButtonActions;
 			
 			ViewModel.DataLoader.CancelLoading();
-			FilterView?.Destroy();
+			if(ViewModel.JournalFilter != null) {
+				ViewModel.JournalFilter.PropertyChanged -= JournalFilter_PropertyChanged;
+			}
+			
 			tableview?.Destroy();
 
 			foreach(var keyPair in _widgetsWithJournalActions) {

@@ -28,11 +28,11 @@ namespace QS.Report.ViewModels
 			AutofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			ReportParametersViewModel = (ReportParametersViewModelBase)autofacScope.Resolve(reportParametersViewModelType, 
 				new TypedParameter(typeof(RdlViewerViewModel), this));
-			ReportParametersViewModel.PropertyChanged += ReportParametersViewModel_PropertyChanged;
+			ReportParametersViewModel.PropertyChanged += OnReportParametersViewModelPropertyChanged;
 			Title = ReportParametersViewModel.Title;
 		}
 
-		void ReportParametersViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void OnReportParametersViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if(e.PropertyName == nameof(ReportParametersViewModel.Title))
 				Title = ReportParametersViewModel.Title;
@@ -44,8 +44,13 @@ namespace QS.Report.ViewModels
 		}
 
 		public void Dispose() {
-			if(ReportParametersViewModel is IDisposable disposable)
+			if(ReportParametersViewModel is IDisposable disposable) {
 				disposable.Dispose();
+			}
+
+			ReportParametersViewModel.PropertyChanged -= OnReportParametersViewModelPropertyChanged;
+			LoadReport = null;
+			ReportPrinted = null;
 		}
 	}
 }

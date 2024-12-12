@@ -5,6 +5,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
+using QS.Extensions;
 using QS.Navigation;
 using QS.Utilities.Text;
 using QS.Utilities;
@@ -647,7 +648,7 @@ namespace QS.Tdi.Gtk
 
 			TdiTabInfo info = _tabs.Find(i => i.TdiTab == tab);
 			if(info == null) {
-				logger.Warn("Вкладка предположительно уже закрыта, попускаем...");
+				logger.Warn("Вкладка предположительно уже закрыта, пропускаем...");
 				return;
 			}
 
@@ -667,7 +668,7 @@ namespace QS.Tdi.Gtk
 			}
 
 			if(tab == null) {
-				logger.Warn("Не найден вкладка соответствующая кнопке закрыть.");
+				logger.Warn("Не найдена вкладка, соответствующая кнопке закрыть.");
 				return;
 			}
 
@@ -773,36 +774,45 @@ namespace QS.Tdi.Gtk
 			var tab = info.TdiTab;
 
 			//Закрываем вкладку
-			TabVBox tabBox = GetTabBoxForTab(tab);
+			var tabBox = GetTabBoxForTab(tab);
+			var tabHeader = GetTabLabel(tabBox);
 			bool IsCurrent = this.CurrentPageWidget == tabBox;
 			_tabs.RemoveAll(t => t.TdiTab == tab);
 			_tabs.ForEach(t => t.SlaveTabs.RemoveAll(s => s == tab));
+			
 			if(IsCurrent)
-				this.PrevPage();
-			this.Remove(tabBox);
+				PrevPage();
+			
+			Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if(maybeSliderActiveDialog != null) {
 				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
 			}
 			OnTabClosed(tab, source);
 			tab.OnTabClosed();
+			
+			//TODO проверить работу Destroy
+			//после вызова Destroy у родительского элемента-контейнера,
+			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
 			if(tabBox != null && tabBox.Tab is Container) {
 				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
 				.OfType<IMustBeDestroyed>().ToList()
 				.ForEach(w => w.Destroy());
 			}
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
-			if(tabBox != null) {
-				tabBox.Destroy();
+			
+			tabBox?.Destroy();
+			tabHeader?.Destroy();
+
+			tab.TabNameChanged -= OnTabNameChanged;
+			
+            if(tab is IDisposable disp)
+            {
+	            disp.Dispose();
 			}
 
-            tab.TabNameChanged -= OnTabNameChanged;
-			
-            if (tab is IDisposable)
-            {
-				(tab as IDisposable).Dispose();
-				tab = null;
-			}
+			tab = null;
+            
 			GC.Collect();
 		}
 

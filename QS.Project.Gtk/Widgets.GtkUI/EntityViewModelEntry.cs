@@ -148,11 +148,13 @@ namespace QS.Widgets.GtkUI {
 			set {
 				if(subject == value)
 					return;
-				if(subject is INotifyPropertyChanged notifyPropertyChangedSubject) {
-					notifyPropertyChangedSubject.PropertyChanged -= OnSubjectPropertyChanged;
-					notifyPropertyChangedSubject.PropertyChanged += OnSubjectPropertyChanged;
+				if(subject is INotifyPropertyChanged oldNotifiedSubject) {
+					oldNotifiedSubject.PropertyChanged -= OnSubjectPropertyChanged;
 				}
 				subject = value;
+				if(subject is INotifyPropertyChanged newNotifiedSubject) {
+					newNotifiedSubject.PropertyChanged += OnSubjectPropertyChanged;
+				}
 				UpdateWidget();
 				OnChanged();
 			}
@@ -287,8 +289,9 @@ namespace QS.Widgets.GtkUI {
             }
 		}
 
-		void EntitySelector_TabClosed(object sender, EventArgs e)
-		{
+		void EntitySelector_TabClosed(object sender, EventArgs e) {
+			entitySelector.OnEntitySelectedResult -= JournalViewModel_OnEntitySelectedResult;
+			entitySelector.TabClosed -= EntitySelector_TabClosed;
 			entitySelector = null;
 		}
 
