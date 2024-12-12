@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using NSubstitute;
 using NUnit.Framework;
-using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
