@@ -1,6 +1,3 @@
-properties([parameters([
-	booleanParam(defaultValue: false, description: 'Старый плагин отображения покрытия', name: 'OldCoverage')
-])])
 node {
    stage('QS.Libs') {
       checkout([
