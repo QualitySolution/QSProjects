@@ -4,6 +4,7 @@ using System.Threading;
 using NSubstitute;
 using NUnit.Framework;
 using QS.Dialog;
+using QS.DomainModel.NotifyChange;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Test.TestApp.Domain;
@@ -32,11 +33,11 @@ namespace QS.Test.Project.Journal
 					uow.Save(doc);
 				}
 				uow.Commit();
-
-				var interactiveService = Substitute.For<IInteractiveService>();
+				
 				var navigationManager = Substitute.For<INavigationManager>();
+				var changeWatcher = Substitute.For<IEntityChangeWatcher>();
 
-				var model = new FullQuerySetEntityJournalViewModel(UnitOfWorkFactory, interactiveService, navigationManager);
+				var model = new FullQuerySetEntityJournalViewModel(UnitOfWorkFactory, navigationManager, changeWatcher);
 
 				ManualResetEvent oSignalEvent = new ManualResetEvent(false);
 				Exception treadException = null;

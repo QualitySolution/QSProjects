@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using QS.Deletion;
 using QS.Deletion.Configuration;
-using QS.DomainModel.NotifyChange;
 using QS.Test.TestApp.Domain.Linked;
 using QS.Testing.DB;
 
@@ -17,19 +15,18 @@ namespace QS.Test.Deletion
 		public void Init()
 		{
 			InitialiseNHibernate(typeof(RootDeleteItem).Assembly);
-			NotifyConfiguration.Enable();
 		}
 
 		[Test(Description = "Проверяем что не пытаемся очищать ссылки в удаляемых объектах.")]
 		[Category("real case")]
 		public void Delete_NotFailWhenTryCleanPropertyOfDeletedInstanceTest()
 		{
-			//Тут очень важна последовательность конфига, аккуратнее исправляйте тест.
-			//Смысл теста в том, что через каскадное удаление объект в котором предполагалась очистка ссылки, удаляется перед, этим.
-			// А в момент очистки ссылки он заново записывается, обычно с тем же ID, что в последствии вызывает различные проблемы,
-			// например не возможно удалить объект, на который имееться ссылка из этого, или не удается этот записать, так как удален
+			// Тут очень важна последовательность конфига, аккуратнее исправляйте тест.
+			// Смысл теста в том, что через каскадное удаление объект в котором предполагалась очистка ссылки, удаляется перед.
+			// А в момент очистки ссылки он заново записывается в базу, обычно с тем же ID, что в последствии вызывает различные проблемы,
+			// например не возможно удалить объект, на который уже якобы удаленный объект ссылается или не удается записать левый объект, так как удален
 			// тот на который мы ссылаемся. Повторюсь, мы не должны были его записывать.
-			var delConfig = new DeleteConfiguration();
+			var delConfig = new DeleteConfiguration(NhConfiguration);
 			delConfig.AddHibernateDeleteInfo<DependDeleteItem>()
 				.AddDeleteCascadeDependence(x => x.CleanLink);
 			delConfig.AddHibernateDeleteInfo<AlsoDeleteItem>()

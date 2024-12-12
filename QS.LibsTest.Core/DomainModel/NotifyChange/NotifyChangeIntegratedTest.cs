@@ -15,17 +15,22 @@ namespace QS.Test.DomainModel.NotifyChange
 		[OneTimeSetUp]
 		public void Init()
 		{
+			NotifyChangeEnable();
 			InitialiseNHibernate(typeof(SimpleEntity).Assembly);
-			NotifyConfiguration.Enable();
 		}
 
-		class BatchEventTestSubscruber : IDisposable
+		class BatchEventTestSubscriber : IDisposable
 		{
+			private readonly AppLevelChangeListener changeWatcher;
 			public List<EntityChangeEvent[]> calls = new List<EntityChangeEvent[]>();
+			
+			public BatchEventTestSubscriber(AppLevelChangeListener changeWatcher) {
+				this.changeWatcher = changeWatcher;
+			}
 
 			public void Dispose()
 			{
-				NotifyConfiguration.Instance.UnsubscribeAll(this);
+				changeWatcher.UnsubscribeAll(this);
 			}
 
 			public void Handler(EntityChangeEvent[] changeEvents)
@@ -39,8 +44,8 @@ namespace QS.Test.DomainModel.NotifyChange
 		[Test(Description = "Проверяем что реагируем только на определенный тип событий, в частности удаление.")]
 		public void NotifyOnlyDeleteEventTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
-				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
+				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>().AndChangeType(TypeOfChangeEvent.Delete);
 
 				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
@@ -52,8 +57,8 @@ namespace QS.Test.DomainModel.NotifyChange
 					uow.Commit();
 				}
 
-				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
-				var changeEvents = subscruber.calls.First();
+				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscriber.calls.First();
 				Assert.That(changeEvents.First().EventType, Is.EqualTo(TypeOfChangeEvent.Delete));
 			}
 		}
@@ -61,8 +66,8 @@ namespace QS.Test.DomainModel.NotifyChange
 		[Test(Description = "Проверяем что можем фильтровать события по свойству объекта.")]
 		public void NotifyByWhereConditionTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
-				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
+				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>().AndWhere(x => x.Text == "1");
 
 				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
@@ -74,8 +79,8 @@ namespace QS.Test.DomainModel.NotifyChange
 					uow.Commit();
 				}
 
-				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
-				var changeEvents = subscruber.calls.First();
+				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscriber.calls.First();
 				Assert.That(changeEvents.Count(), Is.EqualTo(1));
 				Assert.That(changeEvents.First().EventType, Is.EqualTo(TypeOfChangeEvent.Insert));
 				var entity = changeEvents.First().GetEntity<SimpleEntity>();
@@ -86,8 +91,8 @@ namespace QS.Test.DomainModel.NotifyChange
 		[Test(Description = "Проверяем что можем фильтровать события с двумя условиями через И.")]
 		public void NotifyByWhereAndTwoConditionTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
-				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
+				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>()
 					.AndWhere(x => x.Text.Contains("1"))
 					.AndWhere(x => x.Text.Contains("2"));
@@ -102,8 +107,8 @@ namespace QS.Test.DomainModel.NotifyChange
 					uow.Commit();
 				}
 
-				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
-				var changeEvents = subscruber.calls.First();
+				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscriber.calls.First();
 				Assert.That(changeEvents.Count(), Is.EqualTo(1));
 				Assert.That(changeEvents.First().EventType, Is.EqualTo(TypeOfChangeEvent.Insert));
 				var entity = changeEvents.First().GetEntity<SimpleEntity>();
@@ -114,8 +119,8 @@ namespace QS.Test.DomainModel.NotifyChange
 		[Test(Description = "Проверяем что можем фильтровать события с двумя условиями через ИЛИ.")]
 		public void NotifyByWhereOrTwoConditionTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
-				NotifyConfiguration.Instance.BatchSubscribe(subscruber.Handler)
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
+				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>()
 					.AndWhere(x => x.Text.Contains("1"))
 					.Or.IfEntity<SimpleEntity>()
@@ -133,8 +138,8 @@ namespace QS.Test.DomainModel.NotifyChange
 					uow.Commit();
 				}
 
-				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
-				var changeEvents = subscruber.calls.First();
+				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
+				var changeEvents = subscriber.calls.First();
 				Assert.That(changeEvents.Count(), Is.EqualTo(3));
 			}
 		}
@@ -144,23 +149,23 @@ namespace QS.Test.DomainModel.NotifyChange
 		[Test(Description = "Проверяем что подписка BatchSubscribeOnEntity реагирует на сохранение.")]
 		public void DirectBatchSubscribe_NotifySaveEventTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
 
-				NotifyConfiguration.Instance.BatchSubscribeOnEntity<SimpleEntity>(subscruber.Handler);
+				ChangeWatcher.BatchSubscribeOnEntity<SimpleEntity>(subscriber.Handler);
 
 				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
 					uow.Save();
 				}
-				Assert.That(subscruber.calls.Count, Is.EqualTo(1));
+				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
 			}
 		}
 
 		[Test(Description = "Проверяем что можем получить значения полей.")]
 		public void BatchSubscribe_InsertAndUpdateAndDelete_GetOldAndNewPropertyValuesTest()
 		{
-			using (var subscruber = new BatchEventTestSubscruber()) {
+			using (var subscriber = new BatchEventTestSubscriber(ChangeWatcher)) {
 
-				NotifyConfiguration.Instance.BatchSubscribeOnEntity<SimpleEntity>(subscruber.Handler);
+				ChangeWatcher.BatchSubscribeOnEntity<SimpleEntity>(subscriber.Handler);
 
 				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
 					uow.Root.Text = "Test text";
@@ -175,22 +180,20 @@ namespace QS.Test.DomainModel.NotifyChange
 					uow.Delete(loadedEntity);
 					uow.Commit();
 				}
-				Assert.That(subscruber.calls.Count, Is.EqualTo(3));
+				Assert.That(subscriber.calls.Count, Is.EqualTo(3));
 
-				var event1 = subscruber.calls[0].First();
+				var event1 = subscriber.calls[0].First();
 				Assert.That(event1.GetOldValue<SimpleEntity>(x => x.Text), Is.Null);
 				Assert.That(event1.GetNewValue<SimpleEntity>(x => x.Text), Is.EqualTo("Test text"));
 
-				var event2 = subscruber.calls[1].First();
+				var event2 = subscriber.calls[1].First();
 				Assert.That(event2.GetOldValue<SimpleEntity>(x => x.Text), Is.EqualTo("Test text"));
 				Assert.That(event2.GetNewValue<SimpleEntity>(x => x.Text), Is.EqualTo("New test text"));
 
-				var event3 = subscruber.calls[2].First();
+				var event3 = subscriber.calls[2].First();
 				Assert.That(event3.GetOldValue<SimpleEntity>(x => x.Text), Is.EqualTo("New test text"));
 				Assert.That(event3.GetNewValue<SimpleEntity>(x => x.Text), Is.Null);
 			}
 		}
 	}
-
-
 }

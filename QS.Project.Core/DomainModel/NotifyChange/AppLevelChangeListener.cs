@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using QS.Dialog;
 using QS.DomainModel.NotifyChange.Conditions;
 using QS.DomainModel.Tracking;
@@ -15,7 +16,7 @@ namespace QS.DomainModel.NotifyChange
 		private readonly List<SubscriberWeakLink> BatchEventSubscribers = new List<SubscriberWeakLink>();
 		private readonly ITrackerActionInvoker trackerActionInvoker;
 
-		internal AppLevelChangeListener(ITrackerActionInvoker trackerActionInvoker)
+		public AppLevelChangeListener(ITrackerActionInvoker trackerActionInvoker)
 		{
 			this.trackerActionInvoker = trackerActionInvoker ?? throw new ArgumentNullException(nameof(trackerActionInvoker));
 		}

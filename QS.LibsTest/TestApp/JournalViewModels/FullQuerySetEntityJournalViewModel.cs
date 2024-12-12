@@ -1,7 +1,7 @@
 ﻿using System;
 using NHibernate;
 using NHibernate.Transform;
-using QS.Dialog;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Project.Journal;
@@ -12,8 +12,8 @@ namespace QS.Test.TestApp.JournalViewModels
 {
 	public class FullQuerySetEntityJournalViewModel : EntityJournalViewModelBase<Document1, EntityDialogViewModel, FullQuerySetDocumentJournalNode>
 	{
-		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory, IInteractiveService interactiveService, INavigationManager navigationManager) 
-			: base(unitOfWorkFactory, interactiveService, navigationManager)
+		public FullQuerySetEntityJournalViewModel (IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigationManager, IEntityChangeWatcher changeWatcher) 
+			: base(unitOfWorkFactory, navigationManager, changeWatcher)
 		{
 
 		}
