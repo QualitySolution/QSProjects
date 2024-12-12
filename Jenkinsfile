@@ -10,7 +10,7 @@ node {
          extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'QSProjects']],
          userRemoteConfigs: scm.userRemoteConfigs
       ])
-      sh 'nuget restore QSProjects/QSProjectsLib.sln'
+      sh 'nuget restore QSProjects/SolutionLinux/QSProjectsLib.sln'
    }
    stage('My-FyiReporting') {
       checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/QSBuild']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'My-FyiReporting']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/QualitySolution/My-FyiReporting.git']]]
@@ -29,7 +29,7 @@ node {
       }
    }
    stage('Build Net4.x') {
-        sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/QSProjectsLib.sln'
+        sh 'msbuild /p:Configuration=Debug /p:Platform=x86 QSProjects/SolutionLinux/QSProjectsLib.sln'
    }
    stage('Test net4.x'){
        try {
