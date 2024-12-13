@@ -14,8 +14,8 @@ namespace QS.Test.DomainModel.UoW
 			//arrange
 			InitialiseNHibernate();
 
-			var uow = UnitOfWorkFactory.CreateWithoutRoot();
-			UnitOfWorkBase uowBaseClass = (UnitOfWorkBase)uow;
+			var uow = UnitOfWorkFactory.Create();
+			UnitOfWork uowBaseClass = (UnitOfWork)uow;
 			uowBaseClass.OpenTransaction();
 			uow.Session.Close();
 

@@ -48,9 +48,11 @@ namespace QS.Test.DomainModel.NotifyChange
 				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>().AndChangeType(TypeOfChangeEvent.Delete);
 
-				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
-					uow.Save();
-					uow.Session.Evict(uow.Root);
+				using (var uow = UnitOfWorkFactory.Create()) {
+					var entity = new SimpleEntity();
+					uow.Save(entity);
+					uow.Commit();
+					uow.Session.Evict(entity);
 
 					var loadedEntity = uow.GetById<SimpleEntity>(1);
 					uow.Delete(loadedEntity);
@@ -70,7 +72,7 @@ namespace QS.Test.DomainModel.NotifyChange
 				ChangeWatcher.BatchSubscribe(subscriber.Handler)
 					.IfEntity<SimpleEntity>().AndWhere(x => x.Text == "1");
 
-				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				using (var uow = UnitOfWorkFactory.Create()) {
 					var entity1 = new SimpleEntity { Text = "1" };
 					uow.Save(entity1);
 
@@ -97,7 +99,7 @@ namespace QS.Test.DomainModel.NotifyChange
 					.AndWhere(x => x.Text.Contains("1"))
 					.AndWhere(x => x.Text.Contains("2"));
 
-				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				using (var uow = UnitOfWorkFactory.Create()) {
 					var entity1 = new SimpleEntity { Text = "1,2" };
 					uow.Save(entity1);
 					var entity2 = new SimpleEntity { Text = "2" };
@@ -126,7 +128,7 @@ namespace QS.Test.DomainModel.NotifyChange
 					.Or.IfEntity<SimpleEntity>()
 					.AndWhere(x => x.Text.Contains("2"));
 
-				using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+				using (var uow = UnitOfWorkFactory.Create()) {
 					var entity1 = new SimpleEntity { Text = "1,2" };
 					uow.Save(entity1);
 					var entity2 = new SimpleEntity { Text = "2" };
@@ -153,8 +155,10 @@ namespace QS.Test.DomainModel.NotifyChange
 
 				ChangeWatcher.BatchSubscribeOnEntity<SimpleEntity>(subscriber.Handler);
 
-				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
-					uow.Save();
+				using (var uow = UnitOfWorkFactory.Create()) {
+					var entity = new SimpleEntity();
+					uow.Save(entity);
+					uow.Commit();
 				}
 				Assert.That(subscriber.calls.Count, Is.EqualTo(1));
 			}
@@ -167,10 +171,12 @@ namespace QS.Test.DomainModel.NotifyChange
 
 				ChangeWatcher.BatchSubscribeOnEntity<SimpleEntity>(subscriber.Handler);
 
-				using (var uow = UnitOfWorkFactory.CreateWithNewRoot<SimpleEntity>()) {
-					uow.Root.Text = "Test text";
-					uow.Save();
-					uow.Session.Evict(uow.Root);
+				using (var uow = UnitOfWorkFactory.Create()) {
+					var entity = new SimpleEntity();
+					entity.Text = "Test text";
+					uow.Save(entity);
+					uow.Commit();
+					uow.Session.Evict(entity);
 
 					var loadedEntity = uow.GetById<SimpleEntity>(1);
 					loadedEntity.Text = "New test text";

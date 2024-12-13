@@ -24,7 +24,7 @@ namespace QS.ViewModels.Dialog
 			get => base.Title;
 			set {
 				base.Title = value;
-				if(String.IsNullOrWhiteSpace(UoW.ActionTitle.UserActionTitle) && !String.IsNullOrWhiteSpace(value))
+				if(UoW.ActionTitle != null && String.IsNullOrWhiteSpace(UoW.ActionTitle.UserActionTitle) && !String.IsNullOrWhiteSpace(value))
 					UoW.ActionTitle.UserActionTitle = $"Диалог «{value}»";
 			}
 		}
