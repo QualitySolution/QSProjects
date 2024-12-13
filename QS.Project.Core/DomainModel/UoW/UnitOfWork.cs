@@ -8,19 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("QS.LibsTest.Core")]
 namespace QS.DomainModel.UoW {
 	public class UnitOfWork : IUnitOfWork, IUnitOfWorkTracked
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-		static UnitOfWork()
-		{
-			BusinessObjectPreparer.Init();
-		}
 
 		internal UnitOfWork(ISessionProvider sessionProvider, UnitOfWorkTitle title, SingleUowEventsTracker eventsTracker = null)
 		{

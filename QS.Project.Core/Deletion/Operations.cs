@@ -156,8 +156,6 @@ namespace QS.Deletion {
 				logger.Debug ("Удаляем {2} из коллекции {0} в {1}...", CollectionName, item.Title, RemovingEntity.Title);
 				if(removeMethod != null)
 				{
-					if (item.Entity is IBusinessObject)
-						(item.Entity as IBusinessObject).UoW = core.UoW;
 					removeMethod.Invoke (item.Entity, new object[] {RemovingEntity.Entity});
 				} 
 				else 
