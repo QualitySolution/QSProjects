@@ -1,3 +1,4 @@
+using Autofac;
 using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Cfg;
 using NHibernate.Event;
@@ -5,6 +6,7 @@ using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
+using QS.Project.DB;
 using System.Reflection;
 
 namespace QS.Testing.DB {
@@ -47,7 +49,11 @@ namespace QS.Testing.DB {
 			NhConfiguration = fluentConfig.BuildConfiguration();
 			var sessionFactory = NhConfiguration.BuildSessionFactory();
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(NhConfiguration, sessionFactory);
-			UnitOfWorkFactory = new NotTrackedUnitOfWorkFactory(inMemoryDBTestSessionProvider);
+			var builder = new ContainerBuilder();
+			builder.RegisterInstance(inMemoryDBTestSessionProvider).As<ISessionProvider>();
+			builder.RegisterType<SingleUowEventsTracker>().AsSelf();
+			var container = builder.Build();
+			UnitOfWorkFactory = new TrackedUnitOfWorkFactory(container);
 		}
 
 		#region NotifyChange
