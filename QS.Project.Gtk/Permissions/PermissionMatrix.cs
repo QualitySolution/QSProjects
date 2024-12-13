@@ -56,7 +56,7 @@ namespace QS.Permissions
 	   			.ToArray();
 			PermissionCount = PermissionNames.Length;
 
-			using(var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = ServicesConfig.UnitOfWorkFactory.Create()) {
 				var entities = uow.GetAll<TPerEntity>();
 				columnNames = entities.Select(x => DomainHelper.GetTitle(x)).ToArray();
 				Entities = entities.ToArray();

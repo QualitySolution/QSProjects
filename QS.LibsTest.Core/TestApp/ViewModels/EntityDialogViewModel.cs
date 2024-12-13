@@ -9,7 +9,7 @@ namespace QS.Test.TestApp.ViewModels
 {
 	public class EntityDialogViewModel : EntityDialogViewModelBase<SimpleEntity>
 	{
-		public EntityDialogViewModel(IEntityUoWBuilder uowBuilder, IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IValidator validator = null) : base(uowBuilder, unitOfWorkFactory, navigation, validator)
+		public EntityDialogViewModel(IEntityUoWBuilder uowBuilder, IUnitOfWork unitOfWork, INavigationManager navigation, IValidator validator = null) : base(uowBuilder, unitOfWork, navigation, validator)
 		{
 		}
 	}

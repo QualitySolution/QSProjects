@@ -31,7 +31,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		}
 
 		public override int GetTotalItemsCount() {
-			return _mainQueryFunc(UnitOfWorkFactory.CreateWithoutRoot(), null).Count();
+			return _mainQueryFunc(UnitOfWorkFactory.Create(), null).Count();
 		}
 
 		public override TNode GetNode(int entityId, IUnitOfWork uow) {
@@ -40,7 +40,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 
 		public virtual void LoadChunk(int? parentId = null) {
 			LoadedItems.Clear();
-			var items = _mainQueryFunc(UnitOfWorkFactory.CreateWithoutRoot(), parentId).ToList();
+			var items = _mainQueryFunc(UnitOfWorkFactory.Create(), parentId).ToList();
 			ReorganizeChilds(items);
 			LoadedItems.AddRange(items);
 		}

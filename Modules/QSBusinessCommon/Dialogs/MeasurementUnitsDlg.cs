@@ -1,8 +1,6 @@
 using Gamma.Binding.Converters;
 using QS.BusinessCommon.Domain;
-using QS.DomainModel.UoW;
 using QS.Project.Services;
-using QS.Validation;
 
 namespace QSBusinessCommon
 {
@@ -13,14 +11,16 @@ namespace QSBusinessCommon
 		public MeasurementUnitsDlg ()
 		{
 			this.Build ();
-			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateWithNewRoot<MeasurementUnits>();
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
+			Entity = new MeasurementUnits();
 			ConfigureDlg ();
 		}
 
 		public MeasurementUnitsDlg (int id)
 		{
 			this.Build ();
-			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<MeasurementUnits> (id);
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
+			Entity = UoW.GetById<MeasurementUnits>(id);
 			ConfigureDlg ();
 		}
 
@@ -41,7 +41,8 @@ namespace QSBusinessCommon
 				return false;
 
 			logger.Info ("Сохраняем единицы измерения...");
-			UoWGeneric.Save();
+			UoW.Save(Entity);
+			UoW.Commit();
 			return true;
 		}
 

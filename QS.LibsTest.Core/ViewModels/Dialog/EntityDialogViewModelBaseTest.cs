@@ -18,12 +18,12 @@ namespace QS.Test.ViewModels.Dialog
 		public void Validate_SaveAfterValidationTest()
 		{
 			var entity = Substitute.For<ValidatedEntity>();
-			var uow = Substitute.For<IUnitOfWorkGeneric<ValidatedEntity>>();
+			var uow = Substitute.For<IUnitOfWork>();
 			uow.Root.Returns(entity);
 			uow.RootObject.Returns(entity);
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
+			uowBuilder.GetEntity<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
 			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(true);
@@ -44,7 +44,7 @@ namespace QS.Test.ViewModels.Dialog
 			uow.RootObject.Returns(entity);
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
+			uowBuilder.GetEntity<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 			var validation = Substitute.For<IValidator>();
 			validation.Validate(entity, Arg.Any<ValidationContext>()).Returns(false);
@@ -65,7 +65,7 @@ namespace QS.Test.ViewModels.Dialog
 			uow.RootObject.Returns(entity);
 			var uowFactory = Substitute.For<IUnitOfWorkFactory>();
 			var uowBuilder = Substitute.For<IEntityUoWBuilder>();
-			uowBuilder.CreateUoW<ValidatedEntity>(uowFactory).Returns(uow);
+			uowBuilder.GetEntity<ValidatedEntity>(uowFactory).Returns(uow);
 			var navigation = Substitute.For<INavigationManager>();
 
 			var viewModel = new EntityDialogViewModelBase<ValidatedEntity>(uowBuilder, uowFactory, navigation);

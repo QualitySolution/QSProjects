@@ -101,7 +101,7 @@ namespace QSBanks
 		public void UpdateBanks()
 		{
 			accountsDeactivated = banksRemoved = banksDeactivated = banksAdded = banksFixed = 0;
-			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot($"[BU]Обновление банков")) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.Create($"[BU]Обновление банков")) {
 				LoadBanks(uow);
 
 				bool successfullyUpdate = UpdateBanksFromCBR(uow);

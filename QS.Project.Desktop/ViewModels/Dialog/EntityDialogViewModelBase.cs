@@ -15,39 +15,32 @@ namespace QS.ViewModels.Dialog
 		where TEntity : class, IDomainObject, new()
 	{
 		protected readonly IEntityChangeWatcher ChangeWatcher;
-		public override IUnitOfWork UoW => UoWGeneric;
 
-		public IUnitOfWorkGeneric<TEntity> UoWGeneric { get; private set; }
-
-		public TEntity Entity => UoWGeneric.Root;
+		public TEntity Entity;
 
 		public EntityDialogViewModelBase(
 			IEntityUoWBuilder uowBuilder,
-			IUnitOfWorkFactory unitOfWorkFactory,
+			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
 			IValidator validator = null,
-			UnitOfWorkProvider unitOfWorkProvider = null,
 			IEntityChangeWatcher changeWatcher = null
-			) : base(unitOfWorkFactory, navigation, validator, unitOfWorkProvider: unitOfWorkProvider)
+			) : base(navigation, unitOfWork, validator)
 		{
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
 			}
 
 			this.ChangeWatcher = changeWatcher;
-
-			string actionTitle = null;
+			
 			if(typeof(TEntity).GetSubjectNames()?.Genitive != null)
-				actionTitle = $"Редактирование {typeof(TEntity).GetSubjectNames().Genitive}";
+				unitOfWork.ActionTitle.UserActionTitle = $"Редактирование {typeof(TEntity).GetSubjectNames().Genitive}";
 
-			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory, actionTitle);
+			Entity = uowBuilder.GetEntity<TEntity>(unitOfWork);
 			if (Entity == null) {
 				AppellativeAttribute names = DomainHelper.GetSubjectNames(typeof(TEntity));
 				throw new AbortCreatingPageException($"Загрузить [{names.Nominative}:{uowBuilder.EntityOpenId}] не удалось. " +
 				                                     $"Возможно другой пользователь удалил этот объект.", "Ошибка открытия диалога");
 			}
-			if(unitOfWorkProvider != null)
-				unitOfWorkProvider.UoW = UoW;
 			base.Title = GetDialogNameByEntity();
 			if(Entity is INotifyPropertyChanged propertyChanged)
 				propertyChanged.PropertyChanged += Entity_PropertyChanged;
@@ -79,7 +72,7 @@ namespace QS.ViewModels.Dialog
 		{
 			AppellativeAttribute names = DomainHelper.GetSubjectNames(Entity);
 
-			if(UoW.IsNew) {
+			if(Entity.Id == 0) {
 				if(names != null && !string.IsNullOrWhiteSpace(names.Nominative)) {
 					switch(names.Gender) {
 						case GrammaticalGender.Masculine:
@@ -108,6 +101,11 @@ namespace QS.ViewModels.Dialog
 		private void ExternalDelete(EntityChangeEvent[] changeEvents) {
 			if(changeEvents.Any(changeEvent => changeEvent.EventType == TypeOfChangeEvent.Delete && ((IDomainObject) changeEvent.Entity).Id == Entity.Id))
 				NavigationManager.ForceClosePage(NavigationManager.FindPage(this));
+		}
+
+		protected override bool SaveEntities() {
+			UoW.Save(Entity);
+			return true;
 		}
 
 		public override void Dispose()

@@ -25,7 +25,7 @@ namespace QS.Project.Filter
 
 		protected FilterViewModelBase()
 		{
-			UoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot($"{typeof(TFilter)}");
+			UoW = ServicesConfig.UnitOfWorkFactory.Create($"{typeof(TFilter)}");
 			PropertyChanged += FilterViewModelBase_PropertyChanged;
 		}
 

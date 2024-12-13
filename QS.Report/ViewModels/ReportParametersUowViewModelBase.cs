@@ -2,36 +2,13 @@ using System;
 using QS.DomainModel.UoW;
 
 namespace QS.Report.ViewModels {
-	public abstract class ReportParametersUowViewModelBase : ReportParametersViewModelBase, IDisposable {
-		private readonly IUnitOfWorkFactory unitOfWorkFactory;
-		private readonly UnitOfWorkProvider unitOfWorkProvider;
-
+	public abstract class ReportParametersUowViewModelBase : ReportParametersViewModelBase {
 		protected ReportParametersUowViewModelBase(
 			RdlViewerViewModel rdlViewerViewModel,
-			IUnitOfWorkFactory unitOfWorkFactory,
-			UnitOfWorkProvider unitOfWorkProvider = null
+			IUnitOfWork unitOfWork
 			) : base(rdlViewerViewModel) {
-			this.unitOfWorkFactory = unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory));
-			this.unitOfWorkProvider = unitOfWorkProvider;
+			this.UoW = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 		}
-		
-		private IUnitOfWork unitOfWork;
-
-		public virtual IUnitOfWork UoW {
-			get {
-				if(unitOfWork == null) {
-					unitOfWork = unitOfWorkFactory.CreateWithoutRoot();
-					if(unitOfWorkProvider != null)
-						unitOfWorkProvider.UoW = unitOfWork;
-				}
-
-				return unitOfWork;
-			}
-		}
-		
-		public virtual void Dispose()
-		{
-			UoW?.Dispose();
-		}
+		public virtual IUnitOfWork UoW { get; private set; }
 	}
 }

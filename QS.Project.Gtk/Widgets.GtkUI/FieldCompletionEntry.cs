@@ -80,7 +80,7 @@ namespace QS.Widgets.GtkUI
 			if(dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
+				localUoW = ServicesConfig.UnitOfWorkFactory.Create();
 
 			var bindSource = Binding.BindedSources.FirstOrDefault();
 			if(bindSource == null)

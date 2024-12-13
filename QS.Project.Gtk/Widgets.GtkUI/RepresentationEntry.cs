@@ -200,7 +200,7 @@ namespace QS.Widgets.GtkUI
 		{
 			var modelWithParent = RepresentationModel as IRepresentationModelWithParent;
 			if(modelWithParent != null && MyEntityDialogExist) {
-				if(MyEntityDialog.UoW.IsNew && MyEntityDialog.EntityObject == modelWithParent.GetParent) {
+				if(MyEntityDialog.EntityObject.GetId() == 0 && MyEntityDialog.EntityObject == modelWithParent.GetParent) {
 					if(DialogHelper.SaveBeforeSelectFromChildReference(modelWithParent.GetParent.GetType(), SubjectType)) {
 						if(!MyTdiDialog.Save())
 							return;

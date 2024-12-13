@@ -22,30 +22,13 @@ namespace QS.Dialog.Gtk
 	{
 		protected bool IsDestroyed;
 
-		public IUnitOfWork UoW {
-			get {
-				return UoWGeneric;
-			}
-		}
-
-		private IUnitOfWorkGeneric<TEntity> uowGeneric;
-
-		public IUnitOfWorkGeneric<TEntity> UoWGeneric {
-			get {
-				return uowGeneric;
-			}
-			protected set {
-				uowGeneric = value;
-				OnTabNameChanged ();
-				CheckButtonSubscription ();
-			}
-		}
+		public IUnitOfWork UoW { get; protected set; }
 
 		public override bool CompareHashName (string hashName)
 		{
-			if (Entity == null || UoWGeneric == null || UoWGeneric.IsNew)
+			if (entity == null || UoW == null || Entity.Id == 0)
 				return false;
-			return GenerateHashName (Entity.Id) == hashName;
+			return GenerateHashName (entity.Id) == hashName;
 		}
 
 		public static string GenerateHashName (int id)
@@ -66,7 +49,7 @@ namespace QS.Dialog.Gtk
 		private bool manualChange = false;
 
 		public virtual bool HasChanges {
-			get { return manualChange || UoWGeneric.HasChanges; }
+			get { return manualChange || UoW.HasChanges; }
 			set { manualChange = value; }
 		}
 
@@ -74,12 +57,16 @@ namespace QS.Dialog.Gtk
 
 		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
 
-		public object EntityObject {
-			get { return UoWGeneric.Root; }
-		}
+		public object EntityObject => Entity;
 
+		private TEntity entity;
 		public TEntity Entity {
-			get { return UoWGeneric.Root; }
+			get => entity;
+			set {
+				entity = value;
+				OnTabNameChanged ();
+				CheckButtonSubscription ();
+			}
 		}
 
 		private string tabName = String.Empty;
@@ -88,11 +75,11 @@ namespace QS.Dialog.Gtk
 			get {
 				if (!String.IsNullOrWhiteSpace (tabName))
 					return tabName;
-				if (UoW != null && UoW.RootObject != null) {
+				if (UoW != null && Entity != null) {
 					var att = typeof (TEntity).GetCustomAttributes (typeof (AppellativeAttribute), true);
 					AppellativeAttribute subAtt = (att.FirstOrDefault () as AppellativeAttribute);
 
-					if (UoW.IsNew) {
+					if (Entity.Id == 0) {
 						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.Nominative)) {
 							switch (subAtt.Gender) {
 							case GrammaticalGender.Masculine:
@@ -106,30 +93,30 @@ namespace QS.Dialog.Gtk
 							}
 						}
 					} else {
-						var notifySubject = UoW.RootObject as INotifyPropertyChanged;
+						var notifySubject = Entity as INotifyPropertyChanged;
 
-						var prop = UoW.RootObject.GetType ().GetProperty ("Title");
+						var prop = Entity.GetType().GetProperty("Title");
 						if (prop != null) {
 							if (notifySubject != null) {
 								notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
 								notifySubject.PropertyChanged += Subject_TitlePropertyChanged;
 							}
-							return prop.GetValue (UoW.RootObject, null).ToString ();
+							return prop.GetValue (Entity, null).ToString ();
 						}
 
-						prop = UoW.RootObject.GetType ().GetProperty ("Name");
+						prop = Entity.GetType ().GetProperty ("Name");
 						if (prop != null) {
 							if (notifySubject != null) {
 								notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
 								notifySubject.PropertyChanged += Subject_NamePropertyChanged;
 							}
-							return prop.GetValue (UoW.RootObject, null).ToString ();
+							return prop.GetValue (Entity, null).ToString ();
 						}
 
 						if (subAtt != null && !String.IsNullOrWhiteSpace (subAtt.Nominative))
 							return subAtt.Nominative.StringToTitleCase();
 					}
-					return UoW.RootObject.ToString ();
+					return Entity.ToString ();
 				}
 				return String.Empty;
 			}
@@ -159,8 +146,7 @@ namespace QS.Dialog.Gtk
 
 		protected IPermissionResult permissionResult { get; set; }
 
-		protected EntityDialogBase()
-		{
+		protected EntityDialogBase() {
 			InitializePermissionValidator();
 		}
 
@@ -170,7 +156,7 @@ namespace QS.Dialog.Gtk
 
 			Type entityType = typeof(TEntity);
 			int? currUserId;
-			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.Create()) {
 				currUserId = UserRepository.GetCurrentUser(uow)?.Id;
 			}
 			if(!currUserId.HasValue)
@@ -187,7 +173,7 @@ namespace QS.Dialog.Gtk
 		protected void OnEntitySaved (bool tabClosed = false)
 		{
 			if (EntitySaved != null)
-				EntitySaved (this, new EntitySavedEventArgs (Entity, tabClosed));
+				EntitySaved (this, new EntitySavedEventArgs (entity, tabClosed));
 		}
 
 		protected void OnButtonSaveClicked (object sender, EventArgs e)
@@ -209,7 +195,7 @@ namespace QS.Dialog.Gtk
 		public override void Destroy ()
 		{
 			IsDestroyed = true;
-			UoWGeneric?.Dispose();
+			UoW?.Dispose();
 			base.Destroy ();
 		}
 
@@ -218,7 +204,7 @@ namespace QS.Dialog.Gtk
 			base.OnTabNameChanged();
 
 			if(UoW?.ActionTitle != null)
-				uowGeneric.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
+				UoW.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
 		}
 
 		protected void OpenTab (string hashName, Func<ITdiTab> newTabFunc)

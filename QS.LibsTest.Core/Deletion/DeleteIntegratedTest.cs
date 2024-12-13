@@ -35,7 +35,7 @@ namespace QS.Test.Deletion
 				.AddDeleteDependence<DependDeleteItem>(x => x.DeleteLink)
 				.AddDeleteDependence<AlsoDeleteItem>(x => x.Root);
 
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.Create()) {
 				var root = new RootDeleteItem();
 				var item1 = new AlsoDeleteItem() {
 					Root = root

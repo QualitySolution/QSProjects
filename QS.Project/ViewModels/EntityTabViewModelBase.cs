@@ -12,6 +12,7 @@ using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Services;
+using QS.Tdi;
 using QS.Utilities.Text;
 
 namespace QS.ViewModels
@@ -21,13 +22,9 @@ namespace QS.ViewModels
 	{
 		#region IEntityDialog implementation
 
-		public override IUnitOfWork UoW => UoWGeneric;
+		public TEntity Entity {get; private set;}
 
-		public IUnitOfWorkGeneric<TEntity> UoWGeneric { get; set; }
-
-		public TEntity Entity => UoWGeneric.Root;
-
-		public object EntityObject => UoWGeneric.Root;
+		public object EntityObject => Entity;
 
 		#endregion
 
@@ -36,10 +33,10 @@ namespace QS.ViewModels
 			get {
 				if(!string.IsNullOrWhiteSpace(tabName))
 					return tabName;
-				if(UoW != null && UoW.RootObject != null) {
+				if(UoW != null && Entity != null) {
 					AppellativeAttribute subAtt = typeof(TEntity).GetCustomAttribute<AppellativeAttribute>(true);
 
-					if(UoW.IsNew) {
+					if(Entity.Id == 0) {
 						if(subAtt != null && !string.IsNullOrWhiteSpace(subAtt.Nominative)) {
 							switch(subAtt.Gender) {
 								case GrammaticalGender.Masculine:
@@ -53,26 +50,26 @@ namespace QS.ViewModels
 							}
 						}
 					} else {
-						var notifySubject = UoW.RootObject as INotifyPropertyChanged;
+						var notifySubject = Entity as INotifyPropertyChanged;
 
-						var prop = UoW.RootObject.GetType().GetProperty("Title");
+						var prop = Entity.GetType().GetProperty("Title");
 						if(prop != null) {
 							if(notifySubject != null) {
 								notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
 								notifySubject.PropertyChanged += Subject_TitlePropertyChanged;
 							}
-							var title = prop.GetValue(UoW.RootObject, null)?.ToString();
+							var title = prop.GetValue(Entity, null)?.ToString();
 							if(!String.IsNullOrWhiteSpace(title))
 								return title;
 						}
 
-						prop = UoW.RootObject.GetType().GetProperty("Name");
+						prop = Entity.GetType().GetProperty("Name");
 						if(prop != null) {
 							if(notifySubject != null) {
 								notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
 								notifySubject.PropertyChanged += Subject_NamePropertyChanged;
 							}
-							var name = prop.GetValue(UoW.RootObject, null)?.ToString();
+							var name = prop.GetValue(Entity, null)?.ToString();
 							if(!String.IsNullOrWhiteSpace(name))
 								return name;
 						}
@@ -80,7 +77,7 @@ namespace QS.ViewModels
 						if(subAtt != null && !string.IsNullOrWhiteSpace(subAtt.Nominative))
 							return subAtt.Nominative.StringToTitleCase();
 					}
-					return UoW.RootObject.ToString();
+					return Entity.ToString();
 				}
 				return string.Empty;
 			}
@@ -108,7 +105,8 @@ namespace QS.ViewModels
 			if(uowBuilder == null) {
 				throw new ArgumentNullException(nameof(uowBuilder));
 			}
-			UoWGeneric = uowBuilder.CreateUoW<TEntity>(unitOfWorkFactory);
+			
+			Entity = uowBuilder.GetEntity<TEntity>(UoW);
 
 			Initialize();
 		}
@@ -169,6 +167,14 @@ namespace QS.ViewModels
 		}
 
 		protected virtual bool BeforeValidation() => true;
+		
+		protected override void SaveUoW()
+		{
+			UoW.Save(Entity);
+			if(Entity != null) {
+				OnEntitySaved(new EntitySavedEventArgs(Entity));
+			}
+		}
 
 		protected bool Validate() => BeforeValidation() && CommonServices.ValidationService.Validate(Entity, ValidationContext);
 
@@ -186,7 +192,7 @@ namespace QS.ViewModels
 
 		public override bool CompareHashName(string hashName)
 		{
-			if(Entity == null || UoWGeneric == null || UoWGeneric.IsNew) {
+			if(Entity == null || UoW == null || Entity.Id == 0) {
 				return false;
 			}
 			return GenerateHashName(Entity.Id) == hashName;
@@ -210,7 +216,7 @@ namespace QS.ViewModels
 		protected override void OnTabNameChanged()
 		{
 			if(UoW?.ActionTitle != null) {
-				UoWGeneric.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
+				UoW.ActionTitle.UserActionTitle = $"Диалог '{TabName}'";
 			}
 
 			base.OnTabNameChanged();

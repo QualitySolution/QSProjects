@@ -27,7 +27,7 @@ namespace QSOrmProject.RepresentationModel
 		public IUnitOfWork UoW {
 			get {
 				if(uow == null || uow.Session != null && !uow.Session.IsOpen) {
-					uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
+					uow = ServicesConfig.UnitOfWorkFactory.Create();
 					canDisposeUoW = true;
 				}
 				return uow;

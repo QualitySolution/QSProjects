@@ -131,7 +131,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 		#region DynamicQueryLoader override
 
 		public override int GetTotalItemsCount() {
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = UnitOfWorkFactory.Create()) {
 				if(ItemsCountFunction != null) {
 					return ItemsCountFunction(uow);
 				}
@@ -153,7 +153,7 @@ namespace QS.Project.Journal.DataLoader.Hierarchy {
 			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
 				return;
 
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow = UnitOfWorkFactory.Create()) {
 				var workQuery = _mainQueryFunc.Invoke(uow);
 				if(workQuery == null) {
 					HasUnloadedItems = false;

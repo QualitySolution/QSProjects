@@ -259,7 +259,7 @@ namespace QS.Project.Core {
 			services.AddSingleton<IUserService>((provider) => {
 				var uowFactory = provider.GetRequiredService<IUnitOfWorkFactory>();
 				var connectionSettings = provider.GetRequiredService<IDatabaseConnectionSettings>();
-				using(var uow = uowFactory.CreateWithoutRoot()) {
+				using(var uow = uowFactory.Create()) {
 					var serviceUser = uow.Session.Query<UserBase>()
 						.Where(u => u.Login == connectionSettings.UserName)
 						.FirstOrDefault();
@@ -285,7 +285,7 @@ namespace QS.Project.Core {
 			services.AddSingleton<IUserService>((provider) => {
 				var uowFactory = provider.GetRequiredService<IUnitOfWorkFactory>();
 				var connectionSettings = provider.GetRequiredService<IDatabaseConnectionSettings>();
-				using(var uow = uowFactory.CreateWithoutRoot()) {
+				using(var uow = uowFactory.Create()) {
 					var serviceUser = uow.Session.Query<UserBase>()
 						.Where(u => u.Login == login)
 						.FirstOrDefault();

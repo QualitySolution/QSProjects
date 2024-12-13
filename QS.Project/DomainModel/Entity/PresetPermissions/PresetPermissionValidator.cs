@@ -15,7 +15,7 @@ namespace QS.DomainModel.Entity.PresetPermissions
 		{
 			PresetUserPermission perm;
 
-			using(var uow = uowFactory.CreateWithoutRoot()) {
+			using(var uow = uowFactory.Create()) {
 				perm = uow.Session.QueryOver<PresetUserPermission>()
 				.Where(x => x.User.Id == userId && x.PermissionName == presetPermissionName)
 				.Take(1)

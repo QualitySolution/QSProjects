@@ -64,7 +64,7 @@ namespace QS.Project.Dialogs.GtkUI {
 					dialogTitle = $"Редактирование {names.Genitive}";
 				}
 			}
-			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot(actionTitle))
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.Create(actionTitle))
 			{
 				//Создаем объект редактирования
 				object tempObject = id.HasValue ? uow.GetById(objectType, id.Value) : Activator.CreateInstance(objectType);

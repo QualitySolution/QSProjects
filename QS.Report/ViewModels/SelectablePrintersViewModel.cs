@@ -24,7 +24,7 @@ namespace QS.Report.ViewModels
 
 		public SelectablePrintersViewModel(INavigationManager navigation, IUnitOfWorkFactory unitOfWorkFactory, ICommonServices commonServices, IUserPrintingRepository userPrintingRepository) : base(navigation)
 		{
-			_uow = (unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory))).CreateWithoutRoot();
+			_uow = (unitOfWorkFactory ?? throw new ArgumentNullException(nameof(unitOfWorkFactory))).Create();
 
 			_user = commonServices.UserService.GetCurrentUser();
 

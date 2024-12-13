@@ -277,7 +277,7 @@ namespace QSOrmProject
 			if(dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
+				localUoW = ServicesConfig.UnitOfWorkFactory.Create();
 
 			if(ItemsQuery != null) {
 				SelectDialog = new OrmReference(localUoW, ItemsQuery);
@@ -357,7 +357,7 @@ namespace QSOrmProject
 			if (dlg != null)
 				localUoW = dlg.UoW;
 			else
-				localUoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot ();
+				localUoW = ServicesConfig.UnitOfWorkFactory.Create ();
 
 			if (ItemsQuery != null) {
 				ItemsCriteria = ItemsQuery.DetachedCriteria.GetExecutableCriteria (localUoW.Session);

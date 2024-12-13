@@ -1,9 +1,7 @@
 using System;
 using Gamma.GtkWidgets;
 using QS.Banks.Domain;
-using QS.DomainModel.UoW;
 using QS.Project.Services;
-using QS.Validation;
 
 namespace QSBanks
 {
@@ -14,7 +12,8 @@ namespace QSBanks
 		public BankDlg (int id)
 		{
 			this.Build ();
-			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<Bank> (id);
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
+			Entity = UoW.GetById<Bank>(id);
 			ConfigureDlg ();
 		}
 
@@ -24,7 +23,7 @@ namespace QSBanks
 		{
 			buttonSave.Sensitive = dataentryBik.IsEditable = dataentryCity.IsEditable = 
 				dataentryName.IsEditable = false;
-			if (UoWGeneric.Root.Deleted) {
+			if (Entity.Deleted) {
 				labelDeleted.Markup = "<span foreground=\"red\">Банк удалён.</span>";
 			}
 
@@ -51,7 +50,8 @@ namespace QSBanks
 
 			logger.Info ("Сохраняем банк...");
 			try {
-				UoWGeneric.Save();
+				UoW.Save(Entity);
+				UoW.Commit();
 			} catch (Exception ex) {
 				logger.Error(ex, "Не удалось записать банк.");
 				return false;

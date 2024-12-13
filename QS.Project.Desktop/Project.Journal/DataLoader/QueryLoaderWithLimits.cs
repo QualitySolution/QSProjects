@@ -31,7 +31,7 @@ namespace QS.Project.Journal.DataLoader
 
 		public override int GetTotalItemsCount()
 		{
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.Create()) {
 				if(ItemsCountFunction != null)
 				{
 					return ItemsCountFunction.Invoke(uow);
@@ -51,7 +51,7 @@ namespace QS.Project.Journal.DataLoader
 			if(pageSize.HasValue && (LoadedItemsCount - ReadedItemsCount) >= pageSize)
 				return;
 
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.Create()) {
 				var workQuery = _queryFunc.Invoke(uow, LoadedItemsCount, pageSize, false);
 				if(workQuery == null) {
 					HasUnloadedItems = false;

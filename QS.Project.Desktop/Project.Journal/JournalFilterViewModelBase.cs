@@ -16,7 +16,7 @@ namespace QS.Project.Journal
 		public virtual IUnitOfWork UoW {
 			get {
 				if(uow == null)
-					uow = unitOfWorkFactory.CreateWithoutRoot();
+					uow = unitOfWorkFactory.Create();
 
 				return uow;
 			}

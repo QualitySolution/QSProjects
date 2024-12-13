@@ -31,7 +31,7 @@ namespace QS.Deletion
 		IUnitOfWork IDeleteCore.UoW {
 			get {
 				if (uow == null) {
-					uow = uowFactory.CreateWithoutRoot ("Удаление с собственным UnitOfWork");
+					uow = uowFactory.Create ("Удаление с собственным UnitOfWork");
 					isOwnerUow = true;
 				}
 				return uow;

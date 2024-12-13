@@ -143,7 +143,7 @@ namespace QS.Project.Dialogs.GtkUI {
 
 		public void UpdateUsers(bool showDeactivated)
 		{
-			using (var uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = ServicesConfig.UnitOfWorkFactory.Create()) {
 				var users = UserRepository.GetUsers(uow, showDeactivated);
 				ObservableUsers = new ObservableList<UserBase>(users);
 				UsersUpdated?.Invoke(this, EventArgs.Empty);

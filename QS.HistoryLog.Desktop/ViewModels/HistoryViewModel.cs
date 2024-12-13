@@ -9,7 +9,6 @@ using QS.HistoryLog.Domain;
 using QS.Navigation;
 using QS.Project.Domain;
 using QS.Utilities;
-using QS.Validation;
 using QS.ViewModels.Dialog;
 
 namespace QS.HistoryLog.ViewModels
@@ -21,11 +20,7 @@ namespace QS.HistoryLog.ViewModels
 		private const int entityBatchSize = 300;
 		private int EntitiesTaken = 0;
 
-		public HistoryViewModel(
-			IUnitOfWorkFactory unitOfWorkFactory,
-			INavigationManager navigation,
-			IValidator validator = null,
-			string UoWTitle = null) : base(unitOfWorkFactory, navigation, validator, UoWTitle)
+		public HistoryViewModel(IUnitOfWork unitOfWork, INavigationManager navigation) : base(navigation, unitOfWork)
 		{
 			Title = "Просмотр журнала изменений";
 			changedEntities = new List<ChangedEntity>();

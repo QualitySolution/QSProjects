@@ -91,7 +91,6 @@
     <Compile Include="RepresentationModel\RepresentationModelBase.cs" />
     <Compile Include="RepresentationModel\RepresentationModelWithoutEntityBase.cs" />
     <Compile Include="WithoutTDI\FakeTDITabGtkWindowBase.cs" />
-    <Compile Include="WithoutTDI\FakeTDIEntityGtkDialogBase.cs" />
     <Compile Include="yWidgets\yLegalName.cs" />
     <Compile Include="ReferenceRepresentation.cs" />
     <Compile Include="Widgets\EntryReferenceVM.cs" />
@@ -119,7 +118,6 @@
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilderFactory.cs" />
     <Compile Include="ViewModels\Control\EEVM\LegacyEEVMBuilder.cs" />
     <Compile Include="ViewModels\Control\EEVM\OrmReferenceAutocompleteSelector.cs" />
-    <Compile Include="ViewModels\Dialog\LegacyEntityDialogViewModelBase.cs" />
     <Compile Include="ViewModels\Control\EEVM\ILegacyEEVMBuilderParameters.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

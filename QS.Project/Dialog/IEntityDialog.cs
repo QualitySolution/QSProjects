@@ -14,8 +14,6 @@ namespace QS.Dialog
 	public interface IEntityDialog<TEntity> : IEntityDialog
 		where TEntity : IDomainObject, new()
 	{
-		IUnitOfWorkGeneric<TEntity> UoWGeneric { get; }
-
 		TEntity Entity { get; }
 	}
 

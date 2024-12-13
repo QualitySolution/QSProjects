@@ -49,7 +49,7 @@ namespace QS.Project.Repositories
 
 		public static IList<string> GetAllTypesOfEntity()
 		{
-			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(IUnitOfWork uow = ServicesConfig.UnitOfWorkFactory.Create()) {
 				return uow.Session.QueryOver<TypeOfEntity>().List().Select(t => t.Type).ToList();
 			}
 		}

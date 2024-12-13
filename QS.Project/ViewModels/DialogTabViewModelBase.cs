@@ -26,6 +26,11 @@ namespace QS.ViewModels
 		public virtual Func<int> CustomCancellationConfirmationDialogFunc { get; private set; }
 
 		public event EventHandler<EntitySavedEventArgs> EntitySaved;
+		
+		public virtual void OnEntitySaved(EntitySavedEventArgs args)
+		{
+			EntitySaved?.Invoke(this, args);
+		}
 
 		public void SaveAndClose()
 		{
@@ -54,13 +59,7 @@ namespace QS.ViewModels
 			return true;
 		}
 
-		private void SaveUoW()
-		{
-			UoW.Save();
-			if(UoW.RootObject != null) {
-				EntitySaved?.Invoke(this, new EntitySavedEventArgs(UoW.RootObject));
-			}
-		}
+		protected abstract void SaveUoW();
 		
 		#endregion
 	}

@@ -12,7 +12,7 @@ namespace QS.Test.DomainModel.Entity
 		{
 			InitialiseNHibernate(typeof(BusinessObjectTestEntity).Assembly);
 
-			using(var uow = UnitOfWorkFactory.CreateWithNewRoot<BusinessObjectTestEntity>()) {
+			using(var uow = UnitOfWorkFactory.Create<BusinessObjectTestEntity>()) {
 				uow.Save();
 				var savedEntity = uow.Root;
 				uow.Session.Evict(savedEntity);

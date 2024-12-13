@@ -52,7 +52,7 @@ namespace QS.Test.Project.Journal
 			InitialiseNHibernate(typeof(Document1).Assembly);
 			NewSessionWithSameDB();
 
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.Create()) {
 				var listToSave = new List<IDomainObject> {
 					new Document1(new DateTime(2019, 1, 1)),
 					new Document1(new DateTime(2019, 1, 1)),
@@ -151,7 +151,7 @@ namespace QS.Test.Project.Journal
 			InitialiseNHibernate(typeof(Document1).Assembly);
 			NewSessionWithSameDB();
 
-			using (var uow = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow = UnitOfWorkFactory.Create()) {
 				var listToSave = new List<IDomainObject> {
 					new Document1(new DateTime(2019, 1, 1)),
 					new Document2(new DateTime(2017, 5, 23)),

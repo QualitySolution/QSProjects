@@ -24,7 +24,7 @@ namespace QS.DomainModel.Entity.EntityPermissions
 		public virtual EntityPermission Validate(Type entityType, int userId)
 		{
 			UserBase user;
-			using(var uow = uowFactory.CreateWithoutRoot()) {
+			using(var uow = uowFactory.Create()) {
 				user = UserRepository.GetUserById(uow, userId);
 
 				//Разрешено изменять документ если пользователь администратор и отключена проверка прав администратора

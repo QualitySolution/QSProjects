@@ -1,6 +1,6 @@
-﻿using System;
-using QS.DomainModel.Entity;
+﻿using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+
 namespace QS.Project.Domain
 {
 	public interface IEntityUoWBuilder
@@ -9,7 +9,7 @@ namespace QS.Project.Domain
 		
 		int EntityOpenId { get; }
 
-		IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory, string UoWTitle = null)
+		TEntity GetEntity<TEntity>(IUnitOfWork unitOfWork)
 			where TEntity : class, IDomainObject, new();
 	}
 
@@ -24,12 +24,12 @@ namespace QS.Project.Domain
 		public bool IsNewEntity { get; private set; }
 		public int EntityOpenId { get; private set; }
 
-		public IUnitOfWorkGeneric<TEntity> CreateUoW<TEntity>(IUnitOfWorkFactory unitOfWorkFactory, string UoWTitle = null) where TEntity : class, IDomainObject, new()
+		public TEntity GetEntity<TEntity>(IUnitOfWork unitOfWork) where TEntity : class, IDomainObject, new()
 		{
 			if(IsNewEntity) {
-				return unitOfWorkFactory.CreateWithNewRoot<TEntity>(UoWTitle);
+				return new TEntity();
 			} else {
-				return unitOfWorkFactory.CreateForRoot<TEntity>(EntityOpenId, UoWTitle);
+				return unitOfWork.GetById<TEntity>(EntityOpenId);
 			}
 		}
 
@@ -47,5 +47,4 @@ namespace QS.Project.Domain
 		
 		#endregion
 	}
-
 }

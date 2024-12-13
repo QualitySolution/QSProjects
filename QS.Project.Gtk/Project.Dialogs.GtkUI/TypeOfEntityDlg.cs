@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.DomainModel.UoW;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Project.Services;
 using QS.Utilities.Text;
-using QS.Validation;
 
 namespace QS.Project.Dialogs.GtkUI
 {
@@ -15,14 +13,16 @@ namespace QS.Project.Dialogs.GtkUI
 		public TypeOfEntityDlg()
 		{
 			this.Build();
-			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateWithNewRoot<TypeOfEntity>();
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
+			Entity = new TypeOfEntity();
 			ConfigureDlg();
 		}
 
 		public TypeOfEntityDlg(int id)
 		{
 			this.Build();
-			UoWGeneric = ServicesConfig.UnitOfWorkFactory.CreateForRoot<TypeOfEntity>(id);
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
+			Entity = UoW.GetById<TypeOfEntity>(id);
 			ConfigureDlg();
 		}
 
@@ -68,7 +68,8 @@ namespace QS.Project.Dialogs.GtkUI
 			if (!validator.Validate(Entity))
 				return false;
 
-			UoWGeneric.Save();
+			UoW.Save(Entity);
+			UoW.Commit();
 			return true;
 		}
 

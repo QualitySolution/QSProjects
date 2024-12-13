@@ -70,7 +70,7 @@ namespace QSOrmProject
 		public override IUnitOfWork UoW {
 			get {
 				if (uow == null) {
-					uow = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
+					uow = ServicesConfig.UnitOfWorkFactory.Create();
 					isOwnerUow = true;
 				}
 				return uow;
@@ -194,7 +194,7 @@ namespace QSOrmProject
 		private bool CanDelete => ButtonMode.HasFlag(ReferenceButtonMode.CanDelete) || permissionResult.CanDelete;
 
 		public OrmReference(System.Type objType)
-			: this(objType, ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot())
+			: this(objType, ServicesConfig.UnitOfWorkFactory.Create())
 		{
 			isOwnerUow = true;
 		}
@@ -205,7 +205,7 @@ namespace QSOrmProject
 		}
 
 		public OrmReference(QueryOver query)
-			: this(ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot(), query) {
+			: this(ServicesConfig.UnitOfWorkFactory.Create(), query) {
 			isOwnerUow = true;
 		}
 

@@ -17,7 +17,7 @@ namespace QS.Widgets.GtkUI
 		public UserPermissionWidget()
 		{
 			this.Build();
-			UoW = ServicesConfig.UnitOfWorkFactory.CreateWithoutRoot();
+			UoW = ServicesConfig.UnitOfWorkFactory.Create();
 			Sensitive = false;
 		}
 
