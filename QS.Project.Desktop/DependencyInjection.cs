@@ -17,6 +17,7 @@ namespace QS.Project {
 				.AddSingleton<GlobalUowEventsTracker>()
 				.AddTransient<SingleUowEventsTracker>()
 				.AddSingleton<IUnitOfWorkFactory, TrackedUnitOfWorkFactory>()
+				.AddScoped<IUnitOfWork>(c => c.GetRequiredService<IUnitOfWorkFactory>().Create())
 				;
 			return services;
 		}
