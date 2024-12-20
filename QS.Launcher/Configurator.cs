@@ -87,8 +87,8 @@ namespace QS.Launcher {
 		private static List<Dictionary<string, string>> FromOldIniConfig(IChangeableConfiguration config) {
 			var result = new List<Dictionary<string, string>>();
 			
-			for(int i = 0; i < 100; i++) {
-				var section = "Login" + (i > 0 ? i.ToString() : String.Empty);
+			for(int i = -1; i < 100; i++) {
+				var section = "Login" + (i >= 0 ? i.ToString() : String.Empty);
 				if(config[$"{section}:ConnectionName"] != null) {
 					var parameters = new Dictionary<string, string> {
 						{ "Type", config[$"{section}:Type"] == "0" ? "MariaDB" : "QSCloud" },
