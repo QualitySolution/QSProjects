@@ -42,8 +42,8 @@ namespace QS.Launcher {
 			builder.RegisterType<InProcessRunner>().As<IAppRunner>().AsSelf().SingleInstance();
 		}
 		
-		public static IServiceCollection UseNewProcessRunner(this IServiceCollection services) {
-			return services.AddSingleton<IAppRunner, NewProcessRunner>();
+		public static IServiceCollection UseNewProcessRunner(this IServiceCollection services, string executableFileName) {
+			return services.AddSingleton<IAppRunner>(c => new NewProcessRunner(executableFileName));
 		}
 
 		#endregion

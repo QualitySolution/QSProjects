@@ -5,27 +5,26 @@ using QS.DbManagement.Responces;
 
 namespace QS.Launcher.AppRunner {
 	public class NewProcessRunner : IAppRunner {
-		private readonly LauncherOptions launcherOptions;
+		private readonly string exeFileName;
 
-		public NewProcessRunner(LauncherOptions launcherOptions) {
-			this.launcherOptions = launcherOptions ?? throw new ArgumentNullException(nameof(launcherOptions));
+		public NewProcessRunner(string exeFileName) {
+			this.exeFileName = exeFileName;
 		}
 
 		public void Run(LoginToDatabaseResponse loginToDatabase) {
-			string fileName = launcherOptions.AppExecutablePath;
+			if(File.Exists(this.exeFileName))
+				throw new ArgumentException($"Запускаемого файла {exeFileName} не существует.");
 
 			Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", loginToDatabase.ConnectionString, EnvironmentVariableTarget.User);
 			Environment.SetEnvironmentVariable("QS_LOGIN", loginToDatabase.Login, EnvironmentVariableTarget.User);
 			foreach(var par in loginToDatabase.Parameters)
 				Environment.SetEnvironmentVariable("QS_" + par.Key, par.Value, EnvironmentVariableTarget.User);
-
-			var dir = Path.GetDirectoryName(fileName);
+			
 			Process.Start(new ProcessStartInfo {
-				WorkingDirectory = dir,
-				FileName = fileName.Replace(dir, string.Empty),
+				WorkingDirectory = Path.GetDirectoryName(exeFileName),
+				FileName = Path.GetFileName(exeFileName),
 				UseShellExecute = true,
 				CreateNoWindow = true,
-				Arguments = loginToDatabase.ConnectionString
 			});
 		}
 	}

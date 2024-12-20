@@ -14,8 +14,6 @@ namespace QS.Launcher {
 		public byte[] LogoIcon { get; set; }
 
 		public string AppTitle { get; set; }
-
-		public string AppExecutablePath { get; set; }
 		
 		/// <summary>
 		/// Путь к файлу json с конфигурацией подключений.
