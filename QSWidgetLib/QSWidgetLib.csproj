@@ -86,6 +86,6 @@
     <Folder Include="icons\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.1.2" />
+    <PackageReference Include="NLog" Version="5.3.4" />
   </ItemGroup>
 </Project>
