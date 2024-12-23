@@ -12,20 +12,22 @@ namespace QS.Launcher.AppRunner {
 		}
 
 		public void Run(LoginToDatabaseResponse loginToDatabase) {
-			if(File.Exists(this.exeFileName))
+			if (!File.Exists(this.exeFileName))
 				throw new ArgumentException($"Запускаемого файла {exeFileName} не существует.");
 
-			Environment.SetEnvironmentVariable("QS_CONNECTION_STRING", loginToDatabase.ConnectionString, EnvironmentVariableTarget.User);
-			Environment.SetEnvironmentVariable("QS_LOGIN", loginToDatabase.Login, EnvironmentVariableTarget.User);
-			foreach(var par in loginToDatabase.Parameters)
-				Environment.SetEnvironmentVariable("QS_" + par.Key, par.Value, EnvironmentVariableTarget.User);
-			
-			Process.Start(new ProcessStartInfo {
+			var startInfo = new ProcessStartInfo {
 				WorkingDirectory = Path.GetDirectoryName(exeFileName),
-				FileName = Path.GetFileName(exeFileName),
-				UseShellExecute = true,
-				CreateNoWindow = true,
-			});
+				FileName = Path.GetFullPath(exeFileName),
+				UseShellExecute = false,
+				CreateNoWindow = true
+			};
+
+			startInfo.Environment["QS_CONNECTION_STRING"] = loginToDatabase.ConnectionString;
+			startInfo.Environment["QS_LOGIN"] = loginToDatabase.Login;
+			foreach (var par in loginToDatabase.Parameters)
+				startInfo.Environment["QS_" + par.Key] = par.Value;
+
+			Process.Start(startInfo);
 		}
 	}
 }
