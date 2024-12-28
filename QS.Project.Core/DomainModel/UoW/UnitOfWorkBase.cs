@@ -214,7 +214,7 @@ namespace QS.DomainModel.UoW {
 			await Session.DeleteAsync(entity, cancellationToken);
 		}
 
-		internal virtual void OpenTransaction()
+		public virtual void OpenTransaction()
 		{
 			if(transaction == null || !transaction.IsActive) {
 				transaction = Session.BeginTransaction();

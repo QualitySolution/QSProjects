@@ -90,5 +90,7 @@ namespace QS.DomainModel.UoW {
 		event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
 
 		void RaiseSessionScopeEntitySaved(object[] entities);
+
+		void OpenTransaction();
 	}
 }
