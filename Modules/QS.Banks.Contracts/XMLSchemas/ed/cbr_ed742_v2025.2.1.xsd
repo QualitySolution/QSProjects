@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED742FPSRequestInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация по запросу потранзакционного реестра.</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element name="DateTimeInterval" type="ed:DateTimeInterval">
+				<xs:annotation>
+					<xs:documentation>Временной интервал, за который формируется реестр</xs:documentation>
+					<xs:documentation>Time Range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BusinessDay" type="ed:BusinessDay">
+				<xs:annotation>
+					<xs:documentation>Дата операционного дня, за который формируется реестр</xs:documentation>
+					<xs:documentation>Operation Date</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК Участника, по счету которого производится запрос.</xs:documentation>
+				<xs:documentation>National BIC of Participant.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета, по которому производится запрос.</xs:documentation>
+				<xs:documentation>Participant Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED742" type="ed:ED742"/>
+	<xs:complexType name="ED742">
+		<xs:annotation>
+			<xs:documentation>Запрос потранзакционного реестра</xs:documentation>
+			<xs:documentation>Transaction List Request</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="RequestInfo" type="ed:ED742FPSRequestInfoType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация для запроса</xs:documentation>
+							<xs:documentation>Request Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED807" type="ed:ED807"/>
+	<xs:complexType name="ED807">
+		<xs:annotation>
+			<xs:documentation>Изменения, внесенные в Справочник БИК (Полный Справочник БИК)</xs:documentation>
+			<xs:documentation>Full National BIC Directory/ National BIC Directory Changes</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESIDWithPartInfo">
+				<xs:sequence>
+					<xs:element name="BICDirectoryEntry" type="ed:BICDirectoryEntryType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Запись в Справочнике БИК.</xs:documentation>
+							<xs:documentation>BIC Directory Entry.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CreationReason" type="lt:ReasonCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код причины формирования ЭСИС.</xs:documentation>
+						<xs:documentation>Creation reason code (ReQueST, Profile was CHangeD, Profile was created at Start Of Business Day).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CreationDateTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания ЭС.</xs:documentation>
+						<xs:documentation>Date and time of creation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="InfoTypeCode" type="lt:RequestCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид представления информации.</xs:documentation>
+						<xs:documentation>Info Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BusinessDay" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата ОД, к которой относятся данные Справочника БИК.</xs:documentation>
+						<xs:documentation>Business day</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DirectoryVersion" type="lt:Max2NumberType">
+					<xs:annotation>
+						<xs:documentation>Номер версии Справочника БИК в течение операционного дня.</xs:documentation>
+						<xs:documentation>Directory version inside of business day.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>					
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

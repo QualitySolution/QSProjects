@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="RegisterList">
+		<xs:annotation>
+			<xs:documentation>Информация об исходном реестре</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CrdTransfRegisterInfo" type="ed:CrdTransfRegisterInfo" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Реестр исполненных распоряжений</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Идентификаторы исходного реестра клиринговых позиций</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="RegisterNo" type="lt:Max6OrdinalNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер исходного реестра</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CrdTransfRegisterInfo">
+		<xs:annotation>
+			<xs:documentation>Реестр исполненных распоряжений</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Идентификаторы сформированного распоряжения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Annotation" type="lt:Max150TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Текст пояснения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="RegisterItemID" type="lt:RegisterItemIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный номер позиции</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Нетто позиции</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PartSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма частичного исполнения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DC" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак дебета/кредита</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StatusCode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код статуса распоряжения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CtrlCode" type="lt:ControlCodeType">
+			<xs:annotation>
+				<xs:documentation>Код причины для неуспешно обработанных распоряжений в статусе "отложено", "исключено" и "проконтролировано"</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED231" type="ed:ED231"/>
+	<xs:complexType name="ED231">
+		<xs:annotation>
+			<xs:documentation>Реестр результатов обработки клиринговых позиций</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="RegisterList" type="ed:RegisterList" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация об исходном реестре</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="BeginProcessingDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Начало периода обработки реестра</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EndProcessingDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Конец периода обработки реестра</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ClearingSystemCode" type="lt:TwoDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код системы обработки</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterItemsQuantity" type="lt:RegisterItemsQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество позиций в реестре</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterMode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид реестра</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

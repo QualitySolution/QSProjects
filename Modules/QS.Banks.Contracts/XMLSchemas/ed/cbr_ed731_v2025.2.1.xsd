@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="RequestReasonType">
+		<xs:annotation>
+			<xs:documentation>Причина формирования запроса из ЦК ПС</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CreateReasonCode" type="lt:CreateReasonCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код причины формирования запроса из ЦК ПС</xs:documentation>
+				<xs:documentation>Request Reason Code</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED731" type="ed:ED731"/>
+	<xs:complexType name="ED731">
+		<xs:annotation>
+			<xs:documentation>Запрос об управлении ликвидностью</xs:documentation>
+			<xs:documentation>Request for Limits Setting</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="RequestInfo" type="ed:RequestInfoType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация для управления ликвидностью</xs:documentation>
+							<xs:documentation>Liquidity Control Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RequestReason" type="ed:RequestReasonType" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация для управления ликвидностью</xs:documentation>
+							<xs:documentation>Liquidity Control Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+							<xs:documentation>EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

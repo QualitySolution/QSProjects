@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений. 
+
+Схемы с описанием конверта ЭЦП (КА). 
+
+май 2005 г.-->
+<!--e-mail:  support.cbr.xml@quorus.ru-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sen="urn:cbr-ru:dsig:env:v1.1" targetNamespace="urn:cbr-ru:dsig:env:v1.1" elementFormDefault="qualified" version="1.1.0">
+	<xs:complexType name="SigType">
+		<xs:annotation>
+			<xs:documentation>Значение ЭЦП (КА)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:any namespace="urn:cbr-ru:dsig:v1.1" processContents="strict">
+				<xs:annotation>
+					<xs:documentation>Реквизит со значением ЭЦП (КА)</xs:documentation>
+				</xs:annotation>
+			</xs:any>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="ObjectType">
+		<xs:annotation>
+			<xs:documentation>Бинарные данные. Контейнер для подписываемого объекта</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:base64Binary"/>
+	</xs:simpleType>
+	<xs:complexType name="SigEnvelopeType">
+		<xs:annotation>
+			<xs:documentation>Конверт ЭЦП (КА)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SigContainer" type="sen:SigType">
+				<xs:annotation>
+					<xs:documentation>Контейнер для ЭЦП (КА)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Object" type="sen:ObjectType">
+				<xs:annotation>
+					<xs:documentation>Контейнер для подписываемого объекта</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SigEnvelope" type="sen:SigEnvelopeType">
+		<xs:annotation>
+			<xs:documentation>Конверт ЭЦП (КА)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

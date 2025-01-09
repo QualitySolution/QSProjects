@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed817_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed818_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed201_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PacketIP" type="ed:PacketIP"/>
+	<xs:complexType name="PacketIP">
+		<xs:annotation>
+			<xs:documentation>Пакет ЭС для передачи информации по контролю прямым участником ЭПС косвенного участника</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:choice maxOccurs="unbounded">
+					<xs:element ref="ed:ED817" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Копия ЭПС из очереди распоряжений косвенного участника, ожидающих подтверждения прямым участником</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED818" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Результаты контроля прямым участником ЭПС из очереди распоряжений косвенного участника</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED201" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Извещение о результатах контроля ЭС (пакета ЭС)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED464" type="ed:ED464"/>
+	<xs:complexType name="ED464">
+		<xs:annotation>
+			<xs:documentation>Запрос об отзыве/аннулировании ЭСИС (пакета ЭСИС)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС (пакета ЭС)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="OrgBIC" type="lt:BICRUIDType">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код клиента</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BICPBR" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код подразделения Банка России, владельца денежной наличности Банка России</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

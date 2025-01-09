@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="EDContainerType">
+		<xs:annotation>
+			<xs:documentation>Контейнер для сообщения</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ProprietoryDocument" type="xs:base64Binary">
+				<xs:annotation>
+					<xs:documentation>Документ собственного формата</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ParticipantCode" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код участника в ПЦ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FileName" type="lt:Max150TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование файла</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="ED390" type="ed:ED390"/>
+	<xs:complexType name="ED390">
+		<xs:annotation>
+			<xs:documentation>Конверт для обмена с процессинговым центром</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="EDContainer" type="ed:EDContainerType">
+						<xs:annotation>
+							<xs:documentation>Контейнер для сообщения</xs:documentation>
+						</xs:annotation>
+					</xs:element>					
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED206ProcessingDetails">
+		<xs:annotation>
+			<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+			<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Session" type="ed:Session" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+					<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="DebitDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата списания со счета в Банке России.</xs:documentation>
+				<xs:documentation>CBR Debit Account Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreditDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата зачисления на счет в Банке России.</xs:documentation>
+				<xs:documentation>CBR Credit Account Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BusinessScenario" type="lt:BusinessScenarioType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+				<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED206" type="ed:ED206"/>
+	<xs:complexType name="ED206">
+		<xs:annotation>
+			<xs:documentation>Подтверждение дебета/кредита</xs:documentation>
+			<xs:documentation>Debit/Credit Confirmation</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="AccDoc" type="ed:AccDocRefID">
+						<xs:annotation>
+							<xs:documentation>Реквизиты исходного распоряжения о переводе денежных средств (поля 3 и 4).</xs:documentation>
+							<xs:documentation>Initial FTI's Attributes (fields 3 and 4).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial EPM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProcessingDetails" type="ed:ED206ProcessingDetails" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+							<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="Acc" type="lt:AccountNumberRUIDType">
+					<xs:annotation>
+						<xs:documentation>Номер счета, по которому формируется ЭСИС.</xs:documentation>
+						<xs:documentation>Account Number on which EM is generated (debited account for Debit Confirmation or credited account for Credit Confirmation).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BICCorr" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>БИК банка - корреспондента.</xs:documentation>
+						<xs:documentation>National BIC (correspondent BIC).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CorrAcc" type="lt:AccountNumberRUIDType">
+					<xs:annotation>
+						<xs:documentation>Корреспондирующий счет.</xs:documentation>
+						<xs:documentation>Corresponding Account.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма ЭПС.</xs:documentation>
+						<xs:documentation>FTI`s Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата совершения операции.</xs:documentation>
+						<xs:documentation>Date of FTI setttlement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransTime" type="lt:TimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Время совершения операции.</xs:documentation>
+						<xs:documentation>Time of FTI settlement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DC" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак дебета/кредита.</xs:documentation>
+						<xs:documentation>Debit/Credit code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="VDKCode" type="lt:OneDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Код признака проведения платежа за счет внутридневного кредита.</xs:documentation>
+						<xs:documentation>Code of indication that payment is executed from intraday credit funds.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SystemCode" type="lt:SystemCodeType">
+					<xs:annotation>
+						<xs:documentation>Признак системы обработки.</xs:documentation>
+						<xs:documentation>Fund transfer service (urgent/non-urgent).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ActualReceiver" type="lt:EDDrawerIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС.</xs:documentation>
+						<xs:documentation>EM Receiver Unique Identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="VDKSum" type="lt:KopeckAmountType">
+					<xs:annotation>
+						<xs:documentation>Сумма, исполненная за счет лимита ВДК.</xs:documentation>
+						<xs:documentation>Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

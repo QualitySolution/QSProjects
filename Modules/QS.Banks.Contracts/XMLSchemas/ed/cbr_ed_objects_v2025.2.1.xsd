@@ -1,0 +1,4069 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений. 
+
+Схемы с описанием общих прикладных объектов электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные объекты электронных сообщений</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="AccDocRefID">
+		<xs:annotation>
+			<xs:documentation>Реквизиты исходного распоряжения.</xs:documentation>
+			<xs:documentation>Settlement Document Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccDocNo" type="lt:AccountDocIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер распоряжения (поле 3).</xs:documentation>
+				<xs:documentation>Initial Paper Document Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccDocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата составления распоряжения (поле 4).</xs:documentation>
+				<xs:documentation>Initial Paper Document Issue Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccModifList">
+		<xs:annotation>
+			<xs:documentation>Список счетов</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Лицевой счет</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccOperationType" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак операции со счетом</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccBrfModifList">
+		<xs:annotation>
+			<xs:documentation>Список балансовых счетов</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccBrf" type="lt:AccountNumberRUIDBrfType" use="required">
+			<xs:annotation>
+				<xs:documentation>Балансовый счет</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccOperationType" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак операции со счетом</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccIntradayRestrictions">
+		<xs:annotation>
+			<xs:documentation>Ограничения по счету.</xs:documentation>
+			<xs:documentation>Intraday restrictions on an account.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StopSendFTI" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ограничение (прекращение) приема ЭС с распоряжениями.</xs:documentation>
+					<xs:documentation>Stop send FTI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopCredits" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Запрет зачисления.</xs:documentation>
+					<xs:documentation>Stop credits.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopUrgentFTS" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Остановка предоставления сервиса срочного перевода денежных средств.</xs:documentation>
+					<xs:documentation>Stop providing urgent fund transfer service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SuspendSendRecvEM" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Приостановление обмена ЭС по счету.</xs:documentation>
+					<xs:documentation>Suspend send and receive EM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopDebits" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Запрет списания денежных средств.</xs:documentation>
+					<xs:documentation>Stop debits.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopFPS" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Приостановление предоставления сервиса быстрых платежей.</xs:documentation>
+					<xs:documentation>Stop FPS.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LiquidAccumulate" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Накопление ликвидности.</xs:documentation>
+					<xs:documentation>Liquidity Accumulate.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PendingDeletion" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>В ожидании удаления.</xs:documentation>
+					<xs:documentation>Pending deletion.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RouteToCBR" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Контроль ПБР перед зачислением.</xs:documentation>
+					<xs:documentation>Route credits to serving CBR subdivision.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ManualVerifMode" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Предварительный контроль ПБР.</xs:documentation>
+					<xs:documentation>Manual verification mode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Arrest" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Арест или ограничение на неопределенную сумму.</xs:documentation>
+					<xs:documentation>Arrest or limitation for indeterminate amount.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SpecialMode" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наличие к счету очереди не исполненных в срок распоряжений.</xs:documentation>
+					<xs:documentation>The system shall support a “special mode” attribute, which shall apply at the account level.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AccMigrated">
+		<xs:annotation>
+			<xs:documentation>Информация, связанная с процессом миграции счетов Участника.</xs:documentation>
+			<xs:documentation>Information regarding Participant’s Migration from RABIS.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BalanceReceived" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Данные об остатке на счете получены в АС ППС.</xs:documentation>
+				<xs:documentation>Balance was received in NPS from RABIS.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccOI">
+		<xs:annotation>
+			<xs:documentation>Информация по ответисполнителям</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BICOI" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК подразделения ответисполнителя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OINo" type="lt:UserIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер ответисполнителя, которому даны права к счету</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OISurname" type="lt:Max50TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Фамилия ответисполнителя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OIName" type="lt:Max50TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Имя ответисполнителя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OIPatronymic" type="lt:Max50TextType">
+			<xs:annotation>
+				<xs:documentation>Отчество ответисполнителя(при наличии)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccessType" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип доступа к счету</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccountsInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о счетах, входящая в профиль участника.</xs:documentation>
+			<xs:documentation>Participant’s Account Information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccIntradayRestrictions" type="ed:AccIntradayRestrictions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ограничения по счету.</xs:documentation>
+					<xs:documentation>Intraday restrictions on an account.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PendingDeletionInfo" type="ed:PendingDeletionInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дополнительная информация для ограничения «в ожидании удаления» (информация о предстоящем удалении счета).</xs:documentation>
+					<xs:documentation>Additional information for “Pending deletion” restriction.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BalanceSweepingAccount" type="ed:BalanceSweepingAccount" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Периодические переводы.</xs:documentation>
+					<xs:documentation>Balance Sweeping Destination Account.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PoolSPInfo" type="ed:PoolSPInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация об участниках пула ликвидности.</xs:documentation>
+					<xs:documentation>Primary account of liquidity pool (LP) OR List of Subordinate Accounts of LP.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IPInfo" type="ed:IPInfoListType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о косвенных участниках: Список БИК и счетов косвенных участников для прямого.</xs:documentation>
+					<xs:documentation>Indirect Participant Info.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LimitsInfo" type="ed:LimitsInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Значения лимитов.</xs:documentation>
+					<xs:documentation>Participant Limits Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorizedClaimAuthors" type="ed:AuthorizedClaimAuthors" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Список уполномоченных составителей требований.</xs:documentation>
+					<xs:documentation>Authorized Claim Authors List.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ArrestsInfo" type="ed:ArrestsInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация об арестах и/или ограничениях.</xs:documentation>
+					<xs:documentation>Arrests/Limitations Info.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета.</xs:documentation>
+				<xs:documentation>Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountType" type="lt:AccountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип номера счета.</xs:documentation>
+				<xs:documentation>Account Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateOfDeletion" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата фактического исключения информации о счете.</xs:documentation>
+				<xs:documentation>Scheduled date of account’s deletion.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultARMNo" type="lt:Max2TextType">
+			<xs:annotation>
+				<xs:documentation>Номер АРМ по умолчанию для счета.</xs:documentation>
+				<xs:documentation>Default Terminal ID for Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UseCorrespAccInFTS" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Использование корреспондентского счета в СБП.</xs:documentation>
+				<xs:documentation>Corresp Account usage in FTS.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UseVDKOVNInFTS" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Автоматическое использование лимита ВДК/ОВН в СБП.</xs:documentation>
+				<xs:documentation>VDK/OVN usage in FTS.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccRstrListType">
+		<xs:annotation>
+			<xs:documentation>Перечень ограничений операций по счету.</xs:documentation>
+			<xs:documentation>Account's Restrictions.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccRstr" type="lt:RstrType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код ограничения операций по счету.</xs:documentation>
+				<xs:documentation>Account Restriction Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccRstrDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата начала действия Ограничения операций по счету.</xs:documentation>
+				<xs:documentation>Restriction start date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SuccessorBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК преемника.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccountsType">
+		<xs:annotation>
+			<xs:documentation>Информация о счетах участника перевода денежных средств.</xs:documentation>
+			<xs:documentation>Participant’s Accounts information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccRstrList" type="ed:AccRstrListType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень ограничений операций по счету.</xs:documentation>
+					<xs:documentation>Account's Restrictions.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета.</xs:documentation>
+				<xs:documentation>Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RegulationAccountType" type="lt:AccountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип счета в соответствии с нормативом.</xs:documentation>
+				<xs:documentation>Account Type according to regulation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CK" type="lt:Eq2TextType">
+			<xs:annotation>
+				<xs:documentation>Контрольный ключ.</xs:documentation>
+				<xs:documentation>Control Key.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountCBRBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР, обслуживающего счет участника перевода.</xs:documentation>
+				<xs:documentation>CBR Subdivision serving the account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateIn" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата открытия счета.</xs:documentation>
+				<xs:documentation>Account’s Open Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateOut" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата исключения информации о счете участника.</xs:documentation>
+				<xs:documentation>Account’s Close Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountStatus" type="lt:AccountStatusType">
+			<xs:annotation>
+				<xs:documentation>Статус счета.</xs:documentation>
+				<xs:documentation>Account Status.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AdditionalConditions">
+		<xs:annotation>
+			<xs:documentation>Дополнительные условия проведения платежей или осуществления расчетов.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="UrgentPayments" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Разрешение экстренных платежей.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeUrgentPayments" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Разрешение экстренных платежей". </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SuspendedMode" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Вид обработки внутридневной очереди при завершении расчетов.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeSuspendedMode" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Вид обработки внутридневной очереди при завершении расчетов".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LimitedMode" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Вид лимитирования платежей.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeLimitedMode" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Вид лимитирования платежей".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LiquidityBfOD" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Разрешение установления Банком России ликвидности для расчетов ПУР до начала операционного дня.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeLiquidityBfOD" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Разрешение установления Банком России ликвидности для расчетов ПУР до начала операционного дня".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LiquidityInOD" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Разрешение установления Банком России ликвидности для расчетов ПУР в течение операционного дня.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeLiquidityInOD" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Разрешение установления Банком России ликвидности для расчетов ПУР в течение операционного дня".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ArrestDetailedInfo">
+		<xs:annotation>
+			<xs:documentation>Список арестов и/или ограничений.</xs:documentation>
+			<xs:documentation>List of Arrests/Limitations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RestrictionBasisDoc" type="ed:RestrictionBasisDocument" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Основание для установления ограничения в отношении участника или его счета, основание для наложения ареста/ограничения.</xs:documentation>
+					<xs:documentation>Restriction or restricton’s deletion basis document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ArrestID" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор ареста/ограничения.</xs:documentation>
+				<xs:documentation>ID of Arrest/Limitation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IndeterminateAmountFlag" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Индикатор документа - решения налогового органа о приостановлении операций по счету без указания суммы.</xs:documentation>
+				<xs:documentation>Indeterminate account Flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ArrestAmount" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма ареста/ограничения.</xs:documentation>
+				<xs:documentation>Amount of arrest (limitation) imposed on the account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ArrestInfo">
+		<xs:annotation>
+			<xs:documentation>Общая сумма и общая фактически установленная сумма арестов и/или ограничений по счету.</xs:documentation>
+			<xs:documentation>Total Amount of Arrest (Limitation) and Total Unpaid Amount of Arrest (Limitation) on account.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="TotalAmount" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Общая сумма арестов и/или ограничений по счету.</xs:documentation>
+				<xs:documentation>Total Amount of Arrest (Limitation) on account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IndeterminateAmountFlag" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Индикатор документа - решения налогового органа о приостановлении операций по счету без указания суммы.</xs:documentation>
+				<xs:documentation>Indeterminate account Flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ArrestsInfo">
+		<xs:annotation>
+			<xs:documentation>Информация об арестах и/или ограничениях.</xs:documentation>
+			<xs:documentation>Arrests/Limitations Info.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ArrestDetailedInfo" type="ed:ArrestDetailedInfo" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список арестов и/или ограничений.</xs:documentation>
+					<xs:documentation>List of Arrests/Limitations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuthClaimAuthorType">
+		<xs:annotation>
+			<xs:documentation>Список участников и их счетов, для которых данный участник может являться уполномоченным составителем требований.</xs:documentation>
+			<xs:documentation>List of Accounts (and optionally Clearing Circuits).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccountsList" type="ed:BICAccCSListType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список участников и их счетов.</xs:documentation>
+					<xs:documentation>List of Accounts.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuthorizedClaimAuthors">
+		<xs:annotation>
+			<xs:documentation>Список уполномоченных составителей требований.</xs:documentation>
+			<xs:documentation>Authorized Claim Authors List.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AuthorizedClaimAuthorsList" type="ed:AuthorizedClaimAuthorsList" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Уполномоченный составитель требования.</xs:documentation>
+					<xs:documentation>Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuthorizedClaimAuthorsList">
+		<xs:annotation>
+			<xs:documentation>Уполномоченный составитель требования.</xs:documentation>
+			<xs:documentation>Authorized Claim Author.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="BIC" type="lt:BICRUIDType">
+				<xs:annotation>
+					<xs:documentation>БИК уполномоченного составителя требования.</xs:documentation>
+					<xs:documentation>BIC of Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UID" type="lt:EDDrawerIDType">
+				<xs:annotation>
+					<xs:documentation>УИС уполномоченного составителя требования.</xs:documentation>
+					<xs:documentation>UID of Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="IPBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника.</xs:documentation>
+				<xs:documentation>IP National BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateTo" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата окончания действия акцепта.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPAccount" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета косвенного участника-получателя.</xs:documentation>
+				<xs:documentation>Indirect Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RsrvIndicator" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на информацию об участии в схеме Условных платежей с запросом резервирования.</xs:documentation>
+				<xs:documentation>Condition Payment with reservation Indicator.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AuthorizedClaimAuthorsForIP">
+		<xs:annotation>
+			<xs:documentation>Список уполномоченных составителей требований косвенного участника.</xs:documentation>
+			<xs:documentation>Authorized Claim Authors List For Indirect Participant.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AuthorizedClaimAuthorsListForIP" type="ed:AuthorizedClaimAuthorsListForIP" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Уполномоченный составитель требования.</xs:documentation>
+					<xs:documentation>Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AuthorizedClaimAuthorsListForIP">
+		<xs:annotation>
+			<xs:documentation>Уполномоченный составитель требования.</xs:documentation>
+			<xs:documentation>Authorized Claim Author.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="BIC" type="lt:BICRUIDType">
+				<xs:annotation>
+					<xs:documentation>БИК уполномоченного составителя требования.</xs:documentation>
+					<xs:documentation>BIC of Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UID" type="lt:EDDrawerIDType">
+				<xs:annotation>
+					<xs:documentation>УИС уполномоченного составителя требования.</xs:documentation>
+					<xs:documentation>UID of Authorized Claim Author.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateTo" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата окончания действия акцепта.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPAccount" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета косвенного участника-получателя.</xs:documentation>
+				<xs:documentation>Indirect Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BankRU">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка в электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК (поле 11 или 14).</xs:documentation>
+				<xs:documentation>Bank, Bank Branch or CBR Subdivision BIC (Field 11 or 14).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка плательщика (поле 12) или номер счета банка получателя средств (поле 15).</xs:documentation>
+				<xs:documentation>Payer Agent Account Number (Field 12) or Beneficiary Agent Account Number (Field 15) opened in CBR Subdivision.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BICAccCSListType">
+		<xs:annotation>
+			<xs:documentation>Список участников и их счетов.</xs:documentation>
+			<xs:documentation>List of Accounts (and optionally Clearing Circuits).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>National BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RsrvIndicator" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на информацию об участии в схеме Условных платежей с запросом резервирования.</xs:documentation>
+				<xs:documentation>Condition Payment with reservation Indicator.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Счет.</xs:documentation>
+				<xs:documentation>Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника.</xs:documentation>
+				<xs:documentation>IP National BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateTo" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата окончания действия акцепта.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPAccount" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета косвенного участника-получателя.</xs:documentation>
+				<xs:documentation>Indirect Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BICDirectoryEntryType">
+		<xs:annotation>
+			<xs:documentation>Запись в Справочнике БИК.</xs:documentation>
+			<xs:documentation>BIC Directory Entry.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ParticipantInfo" type="ed:ParticipantInfoType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Информация об Участнике, входящая в Справочник БИК.</xs:documentation>
+					<xs:documentation>Information about Participant (from BIC Directory Entry).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SWBICS" type="ed:SWBICList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень БИК (СВИФТ), соответствующих Участнику.</xs:documentation>
+					<xs:documentation>SWIFT BICs of Participant.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Accounts" type="ed:AccountsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о счетах участника перевода денежных средств.</xs:documentation>
+					<xs:documentation>Participant’s Accounts information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>Participant’s BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeType" type="lt:ChangeType">
+			<xs:annotation>
+				<xs:documentation>Тип изменения в Справочнике по сравнению с предыдущей версией Справочника (добавление записи/изменение/удаление).</xs:documentation>
+				<xs:documentation>Type of change in BIC Directory Entry (No changes (NCNG), Entry was changed (CHGD), Entry was added (ADDD).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BICDirectoryEntryExt">
+		<xs:annotation>
+			<xs:documentation>Запись в Справочнике БИК.</xs:documentation>
+			<xs:documentation>BIC Directory Entry.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ParticipantInfo" type="ed:ParticipantInfoType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Информация об Участнике, входящая в Справочник БИК.</xs:documentation>
+					<xs:documentation>Information about Participant (from BIC Directory Entry).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SWBICS" type="ed:SWBICList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень БИК (СВИФТ), соответствующих Участнику.</xs:documentation>
+					<xs:documentation>SWIFT BICs of Participant.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Accounts" type="ed:AccountsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о счетах участника перевода денежных средств.</xs:documentation>
+					<xs:documentation>Participant’s Accounts information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PoolSPInfo" type="ed:PoolSPInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация об участниках пула ликвидности.</xs:documentation>
+					<xs:documentation>Primary account of liquidity pool (LP) OR List of Subordinate Accounts of LP.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ForeignCorrespOrganizations" type="ed:ForeignCorrespOrganizationsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация об иностранных банках (иностранных кредитных организациях), являющихся корреспондентами российской кредитной организации.</xs:documentation>
+					<xs:documentation>Foreign Correspondent Organizations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IsISO" type="lt:IndicatorType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Обмен ISO.</xs:documentation>
+					<xs:documentation>Is ISO.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>Participant’s BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BICInfo">
+		<xs:annotation>
+			<xs:documentation>БИК</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Cash">
+		<xs:annotation>
+			<xs:documentation>Касса.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CashAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Лицевой счет кассы.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CashAccInfo">
+		<xs:annotation>
+			<xs:documentation>Кассовая отчетность.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CashAccCode" type="lt:CashAccountingCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Символ кассовой отчетности.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CashAccSum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма по символу кассовой отчетности.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CashCorrespondentInfo">
+		<xs:annotation>
+			<xs:documentation>Корреспондент.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BICCorr" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР корреспондента.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет, корреспондирующий со счетом кассы.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CFBICList">
+		<xs:annotation>
+			<xs:documentation>Cписок БИК Централизованных филиалов.</xs:documentation>
+			<xs:documentation>List of BICs of Banks using Authorized Sender.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CFBIC" type="lt:BICRUIDType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>БИК Централизованного филиала.</xs:documentation>
+					<xs:documentation>BIC of Bank using Authorized Sender.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClearingAccount">
+		<xs:annotation>
+			<xs:documentation>Клиринговый счет.</xs:documentation>
+			<xs:documentation>Clearing Account Information.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер клирингового счета.</xs:documentation>
+				<xs:documentation>Clearing Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ClearingCircuits">
+		<xs:annotation>
+			<xs:documentation>Перечень клиринговых схем.</xs:documentation>
+			<xs:documentation>A mandatory list of clearing circuits.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GarFunds" type="ed:GarFunds">
+				<xs:annotation>
+					<xs:documentation>Гарантийные фонды.</xs:documentation>
+					<xs:documentation>Guarantee fund information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ClearingAccount" type="ed:ClearingAccount">
+				<xs:annotation>
+					<xs:documentation>Клиринговый счет.</xs:documentation>
+					<xs:documentation>Clearing Account Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ClearingCircuit" type="lt:ClearingCircuitType" use="required">
+			<xs:annotation>
+				<xs:documentation>Клиринговая схема.</xs:documentation>
+				<xs:documentation>Clearing circuit ID.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PerfomanceSchema" type="lt:PerfomanceSchemaType" use="required">
+			<xs:annotation>
+				<xs:documentation>Принцип исполнения.</xs:documentation>
+				<xs:documentation>RCP should be settled on according to this schema.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultSchema" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Клиринговая схема, используемая "по умолчанию".</xs:documentation>
+				<xs:documentation>Default Clearing Schema.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ClaimLimitsAllowed" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Возможность установления лимитов требований.</xs:documentation>
+				<xs:documentation>Allows claim limits.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CoverFundsSchemeParameters">
+		<xs:annotation>
+			<xs:documentation>Параметры условия для схемы "исполнение платежного распоряжения с использованием обеспечивающих денежных средств".</xs:documentation>
+			<xs:documentation>Condition Parameters.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CoverSum" type="ed:CoverSum" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Сумма, подлежащая обеспечению.</xs:documentation>
+					<xs:documentation>Amount to be provided.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ParticipantToBeNotified" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>УИС участника, которому направляется копия оригинального платежного распоряжения в схеме "Исполнение платежного распоряжения с использованием обеспечивающих денежных средств" (ConditionCode="COVR").</xs:documentation>
+				<xs:documentation>UID of Participant to which APS send the copy of the "original" FTI, in order to notify the need to cover short position.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CoverSum">
+		<xs:annotation>
+			<xs:documentation>Сумма, подлежащая обеспечению.</xs:documentation>
+			<xs:documentation>Amount to be provided.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Min" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Минимальная сумма, подлежащая обеспечению.</xs:documentation>
+				<xs:documentation>Minimum Amount to be provided.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Max" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Максимальная сумма, подлежащая обеспечению.</xs:documentation>
+				<xs:documentation>Maximum Amount to be provided.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CustomerAccInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты ОУР и АУР, не являющегося КО</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max160TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование клиента</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccModifList" type="ed:AccModifList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список счетов.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccBrfModifList" type="ed:AccBrfModifList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список балансовых счетов.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="OURBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК ОУР</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OCBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК обслуживающего подразделения Банка России.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор, присвоенный составителю/получателю ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MemberType" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Категория участника расчетов</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DispatchPayeePayts" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Разрешение направления ЭПС-получателя.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ForeignPaytsSystemMode" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Признак участия в иностранной платежной системе.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CustomerMemoOrder">
+		<xs:annotation>
+			<xs:documentation>Реквизиты по дебету/кредиту.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccName" type="lt:Max160TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование счета.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Лицевой счет/корсчет.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР/КО.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DailyTransfer">
+		<xs:annotation>
+			<xs:documentation>Информация о ежедневном переводе денежных средств.</xs:documentation>
+			<xs:documentation>Balance Sweeping Event.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="TimeTransfer" type="lt:TimeType">
+				<xs:annotation>
+					<xs:documentation>Время для ежедневного перевода остатка денежных средств.</xs:documentation>
+					<xs:documentation>Time of balance sweeping.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EventTransfer" type="ed:EventTransfer">
+				<xs:annotation>
+					<xs:documentation>Событие для ежедневного перевода остатка денежных средств.</xs:documentation>
+					<xs:documentation>Event of Balance Sweeping.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="DepartmentalInfo">
+		<xs:annotation>
+			<xs:documentation>Ведомственная информация (поля 101, 104-110).</xs:documentation>
+			<xs:documentation>Departmental Information (fields 101, 104-110).</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="DrawerStatus" type="lt:DrawerStatusCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 101.</xs:documentation>
+				<xs:documentation>Field 101.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CBC" type="lt:CBCIDTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 104.</xs:documentation>
+				<xs:documentation>Field 104.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OKATO" type="lt:OKATOIDTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 105.</xs:documentation>
+				<xs:documentation>Field 105.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PaytReason" type="lt:TaxPaytReasonCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 106.</xs:documentation>
+				<xs:documentation>Field 106.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TaxPeriod" type="lt:TaxPeriodCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 107.</xs:documentation>
+				<xs:documentation>Field 107.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocNo" type="lt:TaxDocIDTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 108.</xs:documentation>
+				<xs:documentation>Field 108.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocDate" type="lt:TaxDocDateCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 109.</xs:documentation>
+				<xs:documentation>Field 109.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TaxPaytKind" type="lt:TaxPaytKindCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 110.</xs:documentation>
+				<xs:documentation>Field 110.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DataForm">
+		<xs:annotation>
+			<xs:documentation>Реквизиты заполнения формы</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ReportID" type="lt:ReportIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор (номер) формы</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DataCode" type="lt:TwoDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Условный номер графы формы</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DepositInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты востребуемого депозита</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ExecReqNum" type="lt:Max20TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер удовлетворенной заявки на участие в депозитном аукционе или на размещение депозита по фиксированной процентной ставке</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReqDateTime" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата и время составления удовлетворенной заявки</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepositConsDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата генерального депозитного соглашения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepositConsNo" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер генерального депозитного соглашения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepositOpDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата проведения депозитного аукциона или депозитной операции по фиксированной процентной ставке</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepositOpMethod" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Способ проведения депозитной операции</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepositOpKind" type="lt:Max5TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Срок депозита/Стандартное условие</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AttractDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата перечисления средств в депозит, открываемый в Банке России</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReturnDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата возврата депозита и получения процентов.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ApplicationSum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма востребуемого депозита.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OrgRegNum" type="lt:BankDKOIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Регистрационный номер кредитной организации.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DestinationInfo">
+		<xs:annotation>
+			<xs:documentation>БИК и счет для перечисления денежных средств в конце дня, предшествующего дате удаления счета.</xs:documentation>
+			<xs:documentation>Destination Account.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="DestinationBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК банка, в котором открыт счет назначения.</xs:documentation>
+				<xs:documentation>Destination BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DestinationAccount" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет назначения.</xs:documentation>
+				<xs:documentation>Destination Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ED">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для всех электронных сообщений данного пространства имен</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:EDRefID">
+				<xs:sequence>
+					<xs:any namespace="urn:cbr-ru:dsig:v1.1" processContents="strict" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Реквизит ЭС со значением ЗК</xs:documentation>
+						</xs:annotation>
+					</xs:any>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EDRefID">
+		<xs:annotation>
+			<xs:documentation>Реквизиты призначной группы ЭС.</xs:documentation>
+			<xs:documentation>EM referenced group attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="EDNo" type="lt:EDNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер ЭС в течение опердня.</xs:documentation>
+				<xs:documentation>EM Sequence Number during business day.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EDDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата составления ЭС.</xs:documentation>
+				<xs:documentation>EM Generation Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EDAuthor" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор составителя ЭС - УИС.</xs:documentation>
+				<xs:documentation>EM Author Unique Identifier - UID.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="EPDComplete">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для всех электронных платежных сообщений. Содержит реквизиты, общие для всех типов ЭПС.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="SettleNotEarlier" type="ed:SettleNotEarlier" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>"Исполнить не ранее, чем".</xs:documentation>
+							<xs:documentation>"Execute not earlier".</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SettleNotLater" type="ed:SettleNotLater" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>"Исполнить не позднее, чем".</xs:documentation>
+							<xs:documentation>"Execute not later than".</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AccDoc" type="ed:AccDocRefID">
+						<xs:annotation>
+							<xs:documentation>Реквизиты исходного распоряжения о переводе денежных средств (поля 3 и 4).</xs:documentation>
+							<xs:documentation>Initial Paper Settlement Document Attributes (fields 3 and 4).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Payer" type="ed:PayerRU">
+						<xs:annotation>
+							<xs:documentation>Реквизиты плательщика.</xs:documentation>
+							<xs:documentation>Payer Attributes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Payee" type="ed:PayeeRU">
+						<xs:annotation>
+							<xs:documentation>Реквизиты получателя средств.</xs:documentation>
+							<xs:documentation>Beneficiary Attributes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="EDReceiver" type="lt:EDDrawerIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС.</xs:documentation>
+						<xs:documentation>EM Receiver Unique Identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaytKind" type="lt:OneDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Вид платежа (поле 5).</xs:documentation>
+						<xs:documentation>FTI's Type (Field 5).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма (поле 7).</xs:documentation>
+						<xs:documentation>Amount (Field 7).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentPrecedence" type="lt:TwoDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Приоритет платежа.</xs:documentation>
+						<xs:documentation>Payment Priority.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReqSettlementDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Запрошенная (требуемая) дата исполнения распоряжения.</xs:documentation>
+						<xs:documentation>Requested Setllement Date.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CodePurpose" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Назначение платежа кодовое (поле 20).</xs:documentation>
+						<xs:documentation>Code purpose (field 20).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EPSInfo">
+		<xs:annotation>
+			<xs:documentation>Признаки, относящиеся к ВПС и возможности ВПС направлять РКП.</xs:documentation>
+			<xs:documentation>EPS Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ClearingCircuits" type="ed:ClearingCircuits" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень клиринговых схем.</xs:documentation>
+					<xs:documentation>A mandatory list of clearing circuits (at least one).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="RCPAllowed" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>РКП может быть направлен.</xs:documentation>
+				<xs:documentation>Can send RCP’s.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ESID">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для всех электронных служебно-информационных сообщений. Содержит реквизиты, общие для всех типов ЭСИС.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:attribute name="EDReceiver" type="lt:EDDrawerIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС.</xs:documentation>
+						<xs:documentation>EM Receiver Unique Identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ESIDWithPartInfo">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для ЭСИС с информацией о части.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="PartInfo" type="ed:PartInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о части.</xs:documentation>
+							<xs:documentation>Information about partition.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭСИС.</xs:documentation>
+							<xs:documentation>Initial ESIM-request Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EDReestrInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о записях реестра принятых к исполнению распоряжений.</xs:documentation>
+			<xs:documentation>Information about registry items about accepted for execution FTI's.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EDReestrFieldList" type="ed:FieldInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список реквизитов записи реестра.</xs:documentation>
+					<xs:documentation>Registry Item Attributes List.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="TransactionID" type="lt:Max5OrdinalNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер записи в реестре.</xs:documentation>
+				<xs:documentation>Registry Item Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ESWithMandatoryEDReceiver">
+		<xs:annotation>
+			<xs:documentation>Комплексный тип для электронных сообщений. Содержит обязательный реквизит EDReceiver.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:attribute name="EDReceiver" type="lt:EDDrawerIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС.</xs:documentation>
+						<xs:documentation>EM Receiver Unique Identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ESWithEDSender">
+		<xs:annotation>
+			<xs:documentation>Комплексный тип для электронных сообщений. Содержит реквизит EDSender.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:attribute name="EDSender" type="lt:EDDrawerIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>УИС головного участника МЭР, или децентрализованного участника - отправителя ЭС.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EventType">
+		<xs:annotation>
+			<xs:documentation>Событие.</xs:documentation>
+			<xs:documentation>Event.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="EventCode" type="lt:EventCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код события.</xs:documentation>
+				<xs:documentation>Event code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EventNumber" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Номер события (если применимо к этому типу).</xs:documentation>
+				<xs:documentation>Event number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EventFrequency" type="lt:Max4NumberType">
+			<xs:annotation>
+				<xs:documentation>Периодичность наступления события.</xs:documentation>
+				<xs:documentation>Event frequency.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EventTime" type="lt:TimeType">
+			<xs:annotation>
+				<xs:documentation>Установленное время наступления события.</xs:documentation>
+				<xs:documentation>Event time.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EventMinimumDuration" type="lt:Max3NumberType">
+			<xs:annotation>
+				<xs:documentation>Установленная минимальная продолжительность.</xs:documentation>
+				<xs:documentation>Event minimum duration.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeType" type="lt:ChangeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип изменения.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="EventTransfer">
+		<xs:annotation>
+			<xs:documentation>Событие для ежедневного перевода остатка денежных средств.</xs:documentation>
+			<xs:documentation>Event of Balance Sweeping.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="EventCode" type="lt:EventCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код типа события.</xs:documentation>
+				<xs:documentation>Event Type Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EventNumber" type="lt:Max3NumberType">
+			<xs:annotation>
+				<xs:documentation>Номер события.</xs:documentation>
+				<xs:documentation>Event Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FieldInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о запрашиваемом (запрошенном) реквизите.</xs:documentation>
+			<xs:documentation>Information about requesting (requested) Attrubute.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FieldNo" type="lt:Max70TextType">
+				<xs:annotation>
+					<xs:documentation>Номер реквизита (поля).</xs:documentation>
+					<xs:documentation>Attribute (field) Number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FieldValue" type="lt:Max210TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Значение реквизита.</xs:documentation>
+					<xs:documentation>Attribute Value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FinOrg">
+		<xs:annotation>
+			<xs:documentation>Реквизиты финансовой организации в электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Financial Institution Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование банка (поля 81.1, 82.1, 85.1, 86.1).</xs:documentation>
+					<xs:documentation>Name of Bank (fields 81.1, 82.1, 85.1, 86.1).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК банка (поля 81.2, 82.2, 85.2, 86.2).</xs:documentation>
+				<xs:documentation>Bank National BIC (fields 81.2, 82.2, 85.2, 86.2).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWBIC" type="lt:BICSWIFTIDType">
+			<xs:annotation>
+				<xs:documentation>Идентификационный код банка, присвоенный SWIFT (поля 81.3, 82.3, 85.3, 86.3).</xs:documentation>
+				<xs:documentation>SWIFT BIC (fields 81.3, 82.3, 85.3, 86.3).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BankAccount" type="lt:AccountNumberSWIFTIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета (поля 81.4, 82.4, 85.4, 86.4).</xs:documentation>
+				<xs:documentation>Account Number (fields 81.4, 82.4, 85.4, 86.4).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FinOrgRU">
+		<xs:annotation>
+			<xs:documentation>Реквизиты финансовой организации в электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Financial Institution Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК банка (поля 83.2, 84.2).</xs:documentation>
+				<xs:documentation>Bank National BIC (fields 83.2, 84.2).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWBIC" type="lt:BICSWIFTIDType">
+			<xs:annotation>
+				<xs:documentation>Идентификационный код банка, присвоенный SWIFT (поля 83.3, 84.3).</xs:documentation>
+				<xs:documentation>SWIFT BIC (fields 83.3, 84.3).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка (поля 83.4, 84.4).</xs:documentation>
+				<xs:documentation>Bank Account Number (fields 83.4, 84.4).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="GarFundNumber">
+		<xs:annotation>
+			<xs:documentation>Номер счета гарантийного фонда.</xs:documentation>
+			<xs:documentation>Guarantee funds number.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета гарантийного фонда.</xs:documentation>
+				<xs:documentation>Guarantee Fund Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="GarFunds">
+		<xs:annotation>
+			<xs:documentation>Гарантийные фонды.</xs:documentation>
+			<xs:documentation>Guarantee fund information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GarFundNumber" type="ed:GarFundNumber" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер счета гарантийного фонда.</xs:documentation>
+					<xs:documentation>Guarantee funds number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="GarFundsUsage" type="lt:GarFundsUsageType" use="required">
+			<xs:annotation>
+				<xs:documentation>Использование гарантийных фондов.</xs:documentation>
+				<xs:documentation>Guarantee funds usage.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="InitialAccDoc">
+		<xs:annotation>
+			<xs:documentation>Реквизиты исходного документа.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccDocNo" type="lt:AccountDocIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер документа.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccDocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата выписки документа.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IndirectParticipantInfoAgType">
+		<xs:annotation>
+			<xs:documentation>Информация о косвенном участнике.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="IPBICPayer" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника-плательщика.</xs:documentation>
+				<xs:documentation>National BIC of Indirect Participant Payer.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPBICPayee" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника-получателя средств.</xs:documentation>
+				<xs:documentation>National BIC of Indirect Participant Payee.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IndirectParticipantInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о косвенном участнике.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="IPBICPayer" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника-плательщика.</xs:documentation>
+				<xs:documentation>National BIC of Indirect Participant Payer.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IPBICPayee" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника-получателя средств.</xs:documentation>
+				<xs:documentation>National BIC of Indirect Participant Payee.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IntradayRestrictions">
+		<xs:annotation>
+			<xs:documentation>Ограничения, наложенные на участника.</xs:documentation>
+			<xs:documentation>Intraday Restrictions applied to Participants.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StopUrgentFTS" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ограничение предоставления сервиса срочного перевода денежных средств.</xs:documentation>
+					<xs:documentation>Stop providing urgent fund transfer service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopSendFTI" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ограничение (прекращение) приема ЭС с распоряжениями.</xs:documentation>
+					<xs:documentation>Stop sending FTI's.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopSendRecvEM" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Приостановление обмена ЭС.</xs:documentation>
+					<xs:documentation>Restriction of exchange with electronic messages.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CreditorsRequirementsMoratorium" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Мораторий на удовлетворение требований кредиторов.</xs:documentation>
+					<xs:documentation>Creditors requirements moratorium.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PendingDeletion" type="ed:IntradayRestrictionsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>В ожидании удаления.</xs:documentation>
+					<xs:documentation>Pending deletion.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IntradayRestrictionsType">
+		<xs:annotation>
+			<xs:documentation>Ограничение предоставления сервиса.</xs:documentation>
+			<xs:documentation>Restriction of service.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RestrictionBasisDoc" type="ed:RestrictionBasisDocument" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Основание для установления ограничения в отношении участника или его счета, основание для наложения ареста/ограничения.</xs:documentation>
+					<xs:documentation>Restriction or restricton’s deletion basis document.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Applied" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Применено ли ограничение.</xs:documentation>
+				<xs:documentation>Restriction applied flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ApplyDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата установления ограничения.</xs:documentation>
+				<xs:documentation>Date of applying of the restriction.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IPInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о косвенных участниках.</xs:documentation>
+			<xs:documentation>Indirect Participant Info.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="BICList" type="ed:IPListType">
+					<xs:annotation>
+						<xs:documentation>Список БИК косвенных участников для прямого участника.</xs:documentation>
+						<xs:documentation>List of Indirect Participant BIC’s for Direct Participant.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="DirectParticipant" type="ed:MainPoolParticipant">
+					<xs:annotation>
+						<xs:documentation>БИК и счет прямого участника.</xs:documentation>
+						<xs:documentation>Primary account of LP.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="SWBICS" type="ed:SWBICList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень SWIFT BIC, соответсвующих Участнику</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Accounts" type="ed:AccountsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о счетах участника перевода денежных средств.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IPInfoListType">
+		<xs:annotation>
+			<xs:documentation>Информация о косвенных участниках.</xs:documentation>
+			<xs:documentation>Indirect Participant Info.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IPBICAccList" type="ed:IPBICAccListType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о БИК и счетах косвенных участников.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IPBICAccListType">
+		<xs:annotation>
+			<xs:documentation>БИК и номер счета косвенного участника.</xs:documentation>
+			<xs:documentation>Indirect Participant Info.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IPRstrList" type="ed:IPRstrListType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень ограничений косвенного участника.</xs:documentation>
+					<xs:documentation>Indirect Participant's Restrictions.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника.</xs:documentation>
+				<xs:documentation>IP's BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета косвенного участника.</xs:documentation>
+				<xs:documentation>IP's Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IPListType">
+		<xs:annotation>
+			<xs:documentation>БИК косвенного участника.</xs:documentation>
+			<xs:documentation>List of Indirect Participant BIC’s for Direct Participant.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК косвенного участника.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LimitInfoType">
+		<xs:annotation>
+			<xs:documentation>Значение и использование лимита.</xs:documentation>
+			<xs:documentation>Value and Usage of Limit.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="LimitType" type="lt:LimitType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип лимита.</xs:documentation>
+				<xs:documentation>Limit Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Value" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Значение лимита.</xs:documentation>
+				<xs:documentation>Limit Value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК плательщика.</xs:documentation>
+				<xs:documentation>Payer BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Utilization" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Текущее использование (утилизация) лимита.</xs:documentation>
+				<xs:documentation>Limit Utilization.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>National BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Счет подчиненного участника пула.</xs:documentation>
+				<xs:documentation>SP’s Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UID" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>УИС.</xs:documentation>
+				<xs:documentation>UID.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LimitInfoBrfType">
+		<xs:annotation>
+			<xs:documentation>Значение и использование лимита.</xs:documentation>
+			<xs:documentation>IOCL (limit of intraday credit) Value and Usage.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Value" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Значение лимита ВДК.</xs:documentation>
+				<xs:documentation>IOCL Value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Utilization" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Текущее использование лимита ВДК.</xs:documentation>
+				<xs:documentation>IOCL Utilization.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LimitsInfo">
+		<xs:annotation>
+			<xs:documentation>Значение и использование лимитов.</xs:documentation>
+			<xs:documentation>Value and Usage of Limits.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LimitInfo" type="ed:LimitInfoType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Значение и использование лимита.</xs:documentation>
+					<xs:documentation>Value and Usage of Limit.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LegacySystemsInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация, используемая только в ЦК ПС.</xs:documentation>
+			<xs:documentation>Legacy systems information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UFCFMD" type="ed:UFCFMD" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Справочник УФ-ЦФ.</xs:documentation>
+					<xs:documentation>Masterdata or Authorized senders.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="UFCFCECMD" type="ed:UFCFMD" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Справочник УФ-ЦФ по схеме ЦИК России-ИКСРФ.</xs:documentation>
+					<xs:documentation>Masterdata or Authorized senders CEC.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LimitInfo">
+		<xs:annotation>
+			<xs:documentation>Информация об устанавливаемом лимите</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PURBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК ПУР, на который устанавливается лимит.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LimitSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма лимита</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ListAcc">
+		<xs:annotation>
+			<xs:documentation>Список счетов.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Лицевой счет АУР - клиента, не являющегося КО</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ListAccBrf">
+		<xs:annotation>
+			<xs:documentation>Список балансовых счетов.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccBrf" type="lt:AccountNumberRUIDBrfType" use="required">
+			<xs:annotation>
+				<xs:documentation>Балансовый счет ОУР или балансовый счет АУР - структурного подразделения Банка России</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ListOfSP">
+		<xs:annotation>
+			<xs:documentation>Список подчиненных участников пула.</xs:documentation>
+			<xs:documentation>List of Subordinate Accounts of LP.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SPInfo" type="ed:SPInfo" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>БИК и счет подчиненного участника пула.</xs:documentation>
+					<xs:documentation>Subordinate Account of LP.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LiquidityReservationSchemeParameters">
+		<xs:annotation>
+			<xs:documentation>Параметры условия для схемы "резервирование ликвидности".</xs:documentation>
+			<xs:documentation>Condition Parameters.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ConfirmationMessageAuthor" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>УИС участника, являющегося составителем подтверждающего ЭС о выполнении условия исполнения, в случае, если этот участник отличен от составителя исходного платежного распоряжения.</xs:documentation>
+				<xs:documentation>EM Author Unique System Identifier of confirmation message author if differs from initial FTI's author.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CancelIfNotReserved" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак того, что платежное распоряжение должно быть аннулировано, если резервирование ликвидности не может быть выполнено незамедлительно (не должно помещаться во внутридневную очередь при недостаточности денежных средств).</xs:documentation>
+				<xs:documentation>Indication that Initial FTI's must be immediately canceled if luquidity reserving can not be immediately executed (cash funds insuficiency).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Me2MeDetailsType">
+		<xs:annotation>
+			<xs:documentation>Информация о переводе денежных средств физическим лицом между своими счетами.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Me2Me" type="lt:Me2MeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак перевода средств физическим лицом в свою пользу.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PaymentCategory" type="lt:PaymentCategoryType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак платности операции по банковским счетам физического лица.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Migrated">
+		<xs:annotation>
+			<xs:documentation>Информация, связанная с процессом миграции Участника</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="MigratedInd" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Мигрировавший участник</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LastRABISDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата последнего дня обслуживания в РАБИС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="OfficialPersonInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о лице.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="HoldPosition" type="lt:Max150TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Должность.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Name" type="lt:Max60TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>ФИО.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PacketEDWithPartInfo">
+		<xs:annotation>
+			<xs:documentation>Комплексный тип для пакета электронных сообщений с информацией о части.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="PartInfo" type="ed:PartInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о части.</xs:documentation>
+							<xs:documentation>Information about partition.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭСИС.</xs:documentation>
+							<xs:documentation>Initial ESIM-request Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParticipantAttributes">
+		<xs:annotation>
+			<xs:documentation>Признаки участника.</xs:documentation>
+			<xs:documentation>Participant’s Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CanBeAuthorOfConfLiqRsrv" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на наличие возможности направления ЭС, подтверждающего выполнение условия перевода денежных средств.</xs:documentation>
+				<xs:documentation>Attribute “Can be the author of a confirmation message under the liquidity reservation scheme”.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CanBeAuthorOfLiqRsrv" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на наличие возможности направления распоряжения, исполнение которого осуществляется с использованием резервирования суммы денежных средств.</xs:documentation>
+				<xs:documentation>Attribute “Can be an Author of FTI under the liquidity reservation scheme”.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CanBeAuthorOfCover" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на наличие возможности направления распоряжения, исполнение которого осуществляется при условии исполнения другого распоряжения.</xs:documentation>
+				<xs:documentation>Attribute “Can be an Author of FTI using cover funds”.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CanSendDD" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Признак того, может ли участник быть составителем требования в потоке операций дебетового перевода.</xs:documentation>
+				<xs:documentation>Attribute “Can be an Author debit transfers” (Boolean): whether this participant is allowed to be an Author of FTI's which represent either a collection order or a direct debit instruction sent under the debit transfer flow”.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CanBeAuthorReqOfRsrv" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Признак, указывающий на наличие возможности направления запроса о резервировании суммы денежных средств на исполнение распоряжения.</xs:documentation>
+				<xs:documentation>Attribute “Can be an Author of request on the liquidity reserve”.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RstrListType">
+		<xs:annotation>
+			<xs:documentation>Перечень ограничений участника.</xs:documentation>
+			<xs:documentation>Participant's Restrictions.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Rstr" type="lt:RstrType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код ограничения, наложенного на участника.</xs:documentation>
+				<xs:documentation>Participant's Restriction Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RstrDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата начала действия ограничения участника.</xs:documentation>
+				<xs:documentation>Participant's Restriction's start date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IPRstrListType">
+		<xs:annotation>
+			<xs:documentation>Перечень ограничений косвенного участника.</xs:documentation>
+			<xs:documentation>Indirect Participant's Restrictions.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="IPRstr" type="lt:RstrType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код ограничения, наложенного на косвенного участника.</xs:documentation>
+				<xs:documentation>Indirect Participant's Restriction Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RstrDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата начала действия ограничения участника.</xs:documentation>
+				<xs:documentation>Participant's Restriction's start date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IndirectParticipantAccountType">
+		<xs:annotation>
+			<xs:documentation>Счет косвенного участника.</xs:documentation>
+			<xs:documentation>Account of indirect Participant.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="IPAccount" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет косвенного участника, открытого у прямого участника.</xs:documentation>
+				<xs:documentation>Indirect Participant’s Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DirectParticipantBICAccountType">
+		<xs:annotation>
+			<xs:documentation>БИК и счет прямого участника.</xs:documentation>
+			<xs:documentation>BIC and Account of direct Participant.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК прямого участника.</xs:documentation>
+				<xs:documentation>Direct Participant’s BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет прямого участника.</xs:documentation>
+				<xs:documentation>Direct Participant’s Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccountStatementListType">
+		<xs:annotation>
+			<xs:documentation>Список счетов, не включенных в Справочник участников ПС БР, по которым направляются извещения об операциях по счету в электронном виде.</xs:documentation>
+			<xs:documentation>Accounts list.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета.</xs:documentation>
+				<xs:documentation>Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР, обслуживающего счет.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BeginDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата начала направления извещений</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EndDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата окончания направления извещений</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ClearingOrganizationType">
+		<xs:annotation>
+			<xs:documentation>Признак совмещения кредитной организацией функций клиринговой организации.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК кредитной организации, совмещающая функции клиринговой организации.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор составителя, кредитной организации, совмещающая функции клиринговой организации.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ForeignCorrespOrganizationsType">
+		<xs:annotation>
+			<xs:documentation>Информация об иностранных банках (иностранных кредитных организациях), являющихся корреспондентами российской кредитной организации.</xs:documentation>
+			<xs:documentation>Foreign Correspondent Organizations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SWBICS" type="ed:SWBICsList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень БИК (СВИФТ).</xs:documentation>
+					<xs:documentation>SWIFT BICs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Name" type="lt:Max160TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Наименование.</xs:documentation>
+				<xs:documentation>Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CntrCd" type="lt:Eq2TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код страны.</xs:documentation>
+				<xs:documentation>Country Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Ind" type="lt:Max16TextType">
+			<xs:annotation>
+				<xs:documentation>Индекс.</xs:documentation>
+				<xs:documentation>Postal Index.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Tnp" type="lt:Max5TextType">
+			<xs:annotation>
+				<xs:documentation>Тип населенного пункта.</xs:documentation>
+				<xs:documentation>Locality Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Nnp" type="lt:Max160TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование населенного пункта.</xs:documentation>
+				<xs:documentation>Locality Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Adr" type="lt:Max160TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Адрес.</xs:documentation>
+				<xs:documentation>Address.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EnglName" type="lt:Max140TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование на английском языке.</xs:documentation>
+				<xs:documentation>Participant’s Name in English.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Number" type="lt:UniversalIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Информация о номере иностранного банка.</xs:documentation>
+				<xs:documentation>Registry Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SWBICsList">
+		<xs:annotation>
+			<xs:documentation>Перечень БИК (СВИФТ).</xs:documentation>
+			<xs:documentation>SWIFT BICs.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="SWBIC" type="lt:BICSWIFTIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Международный банковский идентификационный код SWIFT BIC.</xs:documentation>
+				<xs:documentation>SWIFT BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ParticipantInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация об Участнике, входящая в Справочник БИК.</xs:documentation>
+			<xs:documentation>Information about Participant (from BIC Directory Entry).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RstrList" type="ed:RstrListType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Перечень ограничений участника.</xs:documentation>
+					<xs:documentation>Participant's Restrictions.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="NameP" type="lt:Max160TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование участника.</xs:documentation>
+				<xs:documentation>Participant’s Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EnglName" type="lt:Max140TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование участника на английском языке.</xs:documentation>
+				<xs:documentation>Participant’s Name in English.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RegN" type="lt:Max9TextType">
+			<xs:annotation>
+				<xs:documentation>Регистрационный порядковый номер.</xs:documentation>
+				<xs:documentation>Participant’s Registry Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CntrCd" type="lt:Eq2TextType">
+			<xs:annotation>
+				<xs:documentation>Код страны.</xs:documentation>
+				<xs:documentation>Country Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Rgn" type="lt:Max2TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код территории.</xs:documentation>
+				<xs:documentation>Region Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Ind" type="lt:Max16TextType">
+			<xs:annotation>
+				<xs:documentation>Индекс.</xs:documentation>
+				<xs:documentation>Postal Index.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Tnp" type="lt:Max5TextType">
+			<xs:annotation>
+				<xs:documentation>Тип населенного пункта.</xs:documentation>
+				<xs:documentation>Locality Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Nnp" type="lt:Max25TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование населенного пункта.</xs:documentation>
+				<xs:documentation>Locality Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Adr" type="lt:Max160TextType">
+			<xs:annotation>
+				<xs:documentation>Адрес.</xs:documentation>
+				<xs:documentation>Address.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PrntBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК головной организации.</xs:documentation>
+				<xs:documentation>Parent organization.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateIn" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата включения в состав участников перевода.</xs:documentation>
+				<xs:documentation>Date of Participant Activation (for migrated Participant) or Date Information about Participant was included (for NonMigrated Participant).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateOut" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата исключения информации об Участнике.</xs:documentation>
+				<xs:documentation>Date of Participant’s Deletion.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PtType" type="lt:Max2TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип участника перевода.</xs:documentation>
+				<xs:documentation>Participant type according to regulation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Srvcs" type="lt:Max1TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Доступные сервисы перевода денежных средств.</xs:documentation>
+				<xs:documentation>Available fund transfer services.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="XchType" type="lt:Max1TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Участник обмена.</xs:documentation>
+				<xs:documentation>Participant’s exchange type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UID" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>УИС.</xs:documentation>
+				<xs:documentation>Unique Author ID.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ParticipantStatus" type="lt:ParticipantStatusType">
+			<xs:annotation>
+				<xs:documentation>Статус участника.</xs:documentation>
+				<xs:documentation>Participant Status.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ParticipantProfileType">
+		<xs:annotation>
+			<xs:documentation>Профиль участника.</xs:documentation>
+			<xs:documentation>Participant's Private Profile.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ParticipantProfileInfo" type="ed:ParticipantProfileInfoType">
+				<xs:annotation>
+					<xs:documentation>Информация об Участнике, входящая в Профиль участника.</xs:documentation>
+					<xs:documentation>Participant Profile Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccountsInfo" type="ed:AccountsInfoType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о счетах, входящая в профиль участника.</xs:documentation>
+					<xs:documentation>Participant’s Account Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ParticipantProfileInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация об Участнике, входящая в Профиль участника.</xs:documentation>
+			<xs:documentation>Participant Profile Information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UFCFInfo" type="ed:UFCFInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>БИК Уполномоченного филиала (указывается для Централизованного филиала) ЛИБО Список БИК Централизованных филиалов (указываются для Уполномоченного филиала).</xs:documentation>
+					<xs:documentation>BIC of Authorized sender Or List of BICs of Banks using Authorized sender to communicate with NPS.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IntradayRestrictions" type="ed:IntradayRestrictions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ограничения, наложенные на участника.</xs:documentation>
+					<xs:documentation>Intraday Restrictions applied to Participants.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ParticipantAttributes" type="ed:ParticipantAttributes">
+				<xs:annotation>
+					<xs:documentation>Признаки участника.</xs:documentation>
+					<xs:documentation>Participant’s Attributes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EPSInfo" type="ed:EPSInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Признаки, относящиеся к ВПС и возможности ВПС направлять РКП.</xs:documentation>
+					<xs:documentation>EPS Attributes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccountsAuthorizedForDD" type="ed:AuthClaimAuthorType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Список участников и их счетов, для которых данный участник может являться уполномоченным составителем требований.</xs:documentation>
+					<xs:documentation>List of Accounts authorized for direct debit (If this Participant if Authorized Claims Author).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AuthorizedClaimAuthorsForIP" type="ed:AuthorizedClaimAuthorsForIP" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Список уполномоченных составителей требований косвенного участника.</xs:documentation>
+					<xs:documentation>Authorized Claim Authors List For Indirect Participant.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LimitsInfo" type="ed:LimitsInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Значения лимитов.</xs:documentation>
+					<xs:documentation>Participant Limits Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DirectParticipantBICAccount" type="ed:DirectParticipantBICAccountType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о прямом участнике.</xs:documentation>
+					<xs:documentation>Direct Participant Info.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccountStatementList" type="ed:AccountStatementListType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список счетов, не включенных в Справочник участников ПС БР, по которым направляются извещения об операциях по счету в электронном виде.</xs:documentation>
+					<xs:documentation>Accounts list.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ClearingOrganization" type="ed:ClearingOrganizationType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Признак совмещения кредитной организацией функций клиринговой организации.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ForeignCorrespOrganizations" type="ed:ForeignCorrespOrganizationsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация об иностранных банках (иностранных кредитных организациях), являющихся корреспондентами российской кредитной организации.</xs:documentation>
+					<xs:documentation>Foreign Correspondent Organizations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PtType" type="lt:Max2TextType">
+			<xs:annotation>
+				<xs:documentation>Тип участника перевода.</xs:documentation>
+				<xs:documentation>Participant type according to regulation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServCBRBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР, обслуживающего участника перевода.</xs:documentation>
+				<xs:documentation>BIC of CBR Subdivision servicing Participant.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultARMNo" type="lt:Max2TextType">
+			<xs:annotation>
+				<xs:documentation>Номер АРМ по умолчанию.</xs:documentation>
+				<xs:documentation>Default Terminal ID for Participant.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChannelMode" type="lt:OneDigitCodeType" fixed="3">
+			<xs:annotation>
+				<xs:documentation>Признак основного канала взаимодействия с ПС БР.</xs:documentation>
+				<xs:documentation>Indicator of primary interaction channel with NPS.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН.</xs:documentation>
+				<xs:documentation>INN.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IsISO" type="lt:IndicatorType">
+			<xs:annotation>
+				<xs:documentation>Обмен в ISO.</xs:documentation>
+				<xs:documentation>ISO.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PartInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о части передаваемой информации.</xs:documentation>
+			<xs:documentation>Information about transmitted partition.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PartNo" type="lt:OrdinalNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер части.</xs:documentation>
+				<xs:documentation>Partition Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PartQuantity" type="lt:OrdinalNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество частей.</xs:documentation>
+				<xs:documentation>Quantity of Partitions.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PartAggregateID" type="lt:PartAggregateIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор совокупности частей</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayeeAccInfo">
+		<xs:annotation>
+			<xs:documentation>Список счетов для ПУР-получателя.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PayeeAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета ПУР - получателя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayeeInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты получателя</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MaxPaytSum" type="ed:SumWithUnlimit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Максимальная сумма платежа на счет получателя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TotalPaytsSum" type="ed:SumWithUnlimit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Общая сумма платежей, предъявляемых этим получателем к счету плательщика в течение ОД</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PayeeAccInfo" type="ed:PayeeAccInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список счетов для ПУР-получателя.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PayeeBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК получателя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayeeUIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор, присвоенный получателю ЭС.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayerRU">
+		<xs:annotation>
+			<xs:documentation>Реквизиты плательщика в полноформатных электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Payer Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max160TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование плательщика (поле 8).</xs:documentation>
+					<xs:documentation>Payer's Name (Field 8).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bank" type="ed:BankRU">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка, обслуживающего плательщика.</xs:documentation>
+					<xs:documentation>Payer's serving Bank Attributes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PersonalAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета плательщика (поле 9).</xs:documentation>
+				<xs:documentation>Payer's Account (Field 9).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН плательщика (поле 60).</xs:documentation>
+				<xs:documentation>Payer's INN if assigned (Field 60).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="KPP" type="lt:KPPIDTextType">
+			<xs:annotation>
+				<xs:documentation>Код постановки на учет (КПП) плательщика (поле 102).</xs:documentation>
+				<xs:documentation>Payer's Tax Registration Code (KPP) if assigned (Field 102).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayeeRU">
+		<xs:annotation>
+			<xs:documentation>Реквизиты получателя средств в полноформатных электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Beneficiary Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max160TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование получателя средств (поле 16).</xs:documentation>
+					<xs:documentation>Beneficiary's Name (Field 16).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bank" type="ed:BankRU">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка, обслуживающего получателя средств.</xs:documentation>
+					<xs:documentation>Beneficiary's serving Bank Attributes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PersonalAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета получателя средств (поле 17).</xs:documentation>
+				<xs:documentation>Beneficiary's Account (Field 17).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН получателя средств (поле 61).</xs:documentation>
+				<xs:documentation>Beneficiary's INN if assigned (Field 61).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="KPP" type="lt:KPPIDTextType">
+			<xs:annotation>
+				<xs:documentation>Код постановки на учет (КПП) получателя средств (поле 103).</xs:documentation>
+				<xs:documentation>Beneficiary's Tax Registration Code (KPP) if assigned (Field 103).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FreeServicesCodeList">
+		<xs:annotation>
+			<xs:documentation>Список предоставленных бесплатных услуг по видам</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ServicesCode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код услуги</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReceiverSWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата предоставления услуг</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesQuantity" type="lt:Max9QuantityType" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество предоставленных услуг</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesRate" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Тариф</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ARMNo" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Номер АРМ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор составителя, присвоенный пользователю СПФС-КСБ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayServicesCodeList">
+		<xs:annotation>
+			<xs:documentation>Список предоставленных платных услуг по видам</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ServicesCode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код услуги</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReceiverSWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата предоставления услуг</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesQuantity" type="lt:Max9QuantityType" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество предоставленных услуг</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ServicesRate" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тариф</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма</xs:documentation>
+				<xs:documentation>Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ARMNo" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Номер АРМ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор составителя, присвоенный пользователю СПФС-КСБ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayServicesList">
+		<xs:annotation>
+			<xs:documentation>Список предоставленных услуг</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PayServicesCodeList" type="ed:PayServicesCodeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список предоставленных платных услуг по видам</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FreeServicesCodeList" type="ed:FreeServicesCodeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список предоставленных бесплатных услуг по видам</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор пользователя СПФС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RegisterNo" type="lt:Max6NumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер реестра</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TotalSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Общая сумма платы за предоставленные услуги</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PendingDeletionInfo">
+		<xs:annotation>
+			<xs:documentation>Дополнительная информация для ограничения «в ожидании удаления» (информация о предстоящем удалении счета).</xs:documentation>
+			<xs:documentation>Additional information for “Pending deletion” restriction.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DestinationInfo" type="ed:DestinationInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация для перечисления денежных средств в конце дня, предшествующего дате удаления счета.</xs:documentation>
+					<xs:documentation>Destination Account that should be used for balance sweeping at the last day.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="AccountCloseDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Запланированная дата удаления.</xs:documentation>
+				<xs:documentation>Scheduled deletion date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PoolSPInfo">
+		<xs:annotation>
+			<xs:documentation>Информация об участниках пула ликвидности.</xs:documentation>
+			<xs:documentation>Primary account of liquidity pool (LP) OR List of Subordinate Accounts of LP.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="ListOfSP" type="ed:ListOfSP">
+				<xs:annotation>
+					<xs:documentation>Список подчиненных участников пула.</xs:documentation>
+					<xs:documentation>List of Subordinate Accounts of LP.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MainPoolParticipant" type="ed:MainPoolParticipant">
+				<xs:annotation>
+					<xs:documentation>БИК и счет головного Участника пула.</xs:documentation>
+					<xs:documentation>Primary account of LP.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ProcessingDetails">
+		<xs:annotation>
+			<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+			<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Session" type="ed:Session" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+					<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BusinessScenario" type="lt:BusinessScenarioType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+				<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DebitDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата списания со счета в Банке России.</xs:documentation>
+				<xs:documentation>Debit Date of Debit Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreditDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата зачисления на счет в Банке России.</xs:documentation>
+				<xs:documentation>Credit Date of Credit Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RCPSchemeParameters">
+		<xs:annotation>
+			<xs:documentation>Параметры условия для схемы "Исполнение Реестра клиринговых позиций".</xs:documentation>
+			<xs:documentation>Condition Parameters.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BeginProcessingDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Начало периода обработки реестра.</xs:documentation>
+				<xs:documentation>RCP Begin processing date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EndProcessingDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Конец периода обработки реестра.</xs:documentation>
+				<xs:documentation>RCP End processing date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ClearingCircuit" type="lt:ClearingCircuitType">
+			<xs:annotation>
+				<xs:documentation>Клиринговая схема, к которой относится реестр клиринговых позиций.</xs:documentation>
+				<xs:documentation>Clearing scheme related to Registry of the Clearing Positions (RCP).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RelatedDocRefID">
+		<xs:annotation>
+			<xs:documentation>Реквизиты исходного распоряжения.</xs:documentation>
+			<xs:documentation>Initial Settlement Document Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="RelatedDocNo" type="lt:Max16TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер документа (поле 78).</xs:documentation>
+				<xs:documentation>Document Number (Field 78).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RelatedDocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата документа (поле 79).</xs:documentation>
+				<xs:documentation>Document Date (Field 79).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RestrictionBasisDocument">
+		<xs:annotation>
+			<xs:documentation>Основание для ограничения участия в расчетах или исключения из состава участников расчетов.</xs:documentation>
+			<xs:documentation>Restriction or deletion basis document.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="DocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата документа.</xs:documentation>
+				<xs:documentation>Document’s Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocNumber" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Номер документа.</xs:documentation>
+				<xs:documentation>Document’s Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Description" type="lt:Max210TextType">
+			<xs:annotation>
+				<xs:documentation>Описание документа.</xs:documentation>
+				<xs:documentation>Document’s description.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ReservationInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о резервированиях.</xs:documentation>
+			<xs:documentation>Reservation Information.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="NonCashReservedSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Общая сумма резервирований ликвидности по счету, за исключением связанных со снятием наличных денежных средств.</xs:documentation>
+				<xs:documentation>Total Amount of liquidity reservation on account, except for reservation related to cash withdrawal.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CashReservedSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Общая сумма резервирований ликвидности по счету в связи со снятием наличных денежных средств.</xs:documentation>
+				<xs:documentation>Total Amount of liquidity reservation on account related to cash withdrawal.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RTGSCustomerInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты клиента, по которому предоставляется информация об атрибутах участия в системе БЭСП</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max160TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование клиента</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdditionalConditions" type="ed:AdditionalConditions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дополнительные условия проведения платежей или осуществления расчетов.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PURBICInfo" type="ed:BICInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о БИК ПУР, в отношении которых применяется двусторонний лимит.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListAcc" type="ed:ListAcc" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список счетов.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ListAccBrf" type="ed:ListAccBrf" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список балансовых счетов.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PayeeInfo" type="ed:PayeeInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Реквизиты получателя.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="OURBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК ОУР</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OCBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК обслуживающего подразделения Банка России.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК КО.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор, присвоенный составителю/получателю ЭС.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ParentBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК головной КО.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MemberType" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Категория участника расчетов</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RegistrationMode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Вид регистрации</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RegistrationDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата регистрации</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ExceptionDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата исключения из расчетов.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StoppageMode" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Вид ограничения участия.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StoppageDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата установки ограничения участия.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StoppageEndDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата снятия ограничения участия.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StoppageReason" type="lt:TwoDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Причина введения ограничения участия.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReasonAddText" type="lt:Max300TextType">
+			<xs:annotation>
+				<xs:documentation>Дополнительный текст.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ExecPayeePayts" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Разрешение проведения платежей на основании ЭПС-получателя.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DispatchPayeePayts" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Разрешение направления ЭПС-получателя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ForeignPaytsSystemMode" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Признак участия в иностранной платежной системе.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SEDAccInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о счете</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PBRBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК подразделения расчетной сети Банка России</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OverdueDebetAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер лицевого счета по учету просроченной задолженности</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OverdueDebetBal" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Остаток на счете по учету просроченной задолженности</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OverduePercentAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер лицевого счета по учету просроченных процентов по предоставленным кредитам</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OverduePercentBal" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Остаток на счете по учету просроченных процентов</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LoanAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер ссудного лицевого счета 320</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PercentAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер лицевого счета по уплате процентов</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreditNum" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный номер кредита Банка России</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SEDAccDocInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о расчетном документе.</xs:documentation>
+			<xs:documentation>Information about FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Purpose" type="lt:Max210TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Назначение платежа.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>BIC of CBR Subdivision servicing credit organization.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PersonalAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер лицевого счета получателя/плательщика, открытого на балансе подразделения расчетной сети Банка России, номер корреспондирующего счета.</xs:documentation>
+				<xs:documentation>Correspondent Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DC" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак дебета/кредита</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма расчетного документа.</xs:documentation>
+				<xs:documentation>FTI’s Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ODBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК ПБР, в котором открыты лицевые счета на балансовых счетах 320, 47427, 32404, 32503, 70101, 70106.</xs:documentation>
+				<xs:documentation>Operational Deparment BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер лицевого счета на балансовых счетах 320,47427, 32404, 32503, 70101, 70106, а также внебалансовом счете 91601.</xs:documentation>
+				<xs:documentation>Account opened in Operational Department.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccDocNo" type="lt:AccountDocIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер расчетного документа</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccDocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата расчетного документа</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreditNum" type="lt:Max10TextType">
+			<xs:annotation>
+				<xs:documentation>Уникальный номер кредита Банка России.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Session">
+		<xs:annotation>
+			<xs:documentation>Тип и номер рейса (или время исполнения).</xs:documentation>
+			<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time).</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="SessionID" type="lt:SessionIDType">
+				<xs:annotation>
+					<xs:documentation>Номер рейса.</xs:documentation>
+					<xs:documentation>Cycle Number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SettlementTime" type="lt:TimeType">
+				<xs:annotation>
+					<xs:documentation>Время исполнения распоряжения.</xs:documentation>
+					<xs:documentation>Settlement Time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="SessionType" type="lt:SessionTypeType">
+			<xs:annotation>
+				<xs:documentation>Тип рейса.</xs:documentation>
+				<xs:documentation>Cycle Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SettlementCondition">
+		<xs:annotation>
+			<xs:documentation>Реквизиты условия исполнения распоряжения.</xs:documentation>
+			<xs:documentation>Payment Settlement Condition Attributes.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="LiquidityReservationSchemeParameters" type="ed:LiquidityReservationSchemeParameters">
+				<xs:annotation>
+					<xs:documentation>Параметры условия для схемы "резервирование ликвидности".</xs:documentation>
+					<xs:documentation>Condition Parameters.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CoverFundsSchemeParameters" type="ed:CoverFundsSchemeParameters">
+				<xs:annotation>
+					<xs:documentation>Параметры условия для схемы "исполнение платежного распоряжения с использованием обеспечивающих денежных средств".</xs:documentation>
+					<xs:documentation>Condition Parameters.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RCPSchemeParameters" type="ed:RCPSchemeParameters">
+				<xs:annotation>
+					<xs:documentation>Параметры условия для схемы "Исполнение Реестра клиринговых позиций".</xs:documentation>
+					<xs:documentation>Condition Parameters.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="ConditionCode" type="lt:ConditionCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код условия (схемы) исполнения распоряжения.</xs:documentation>
+				<xs:documentation>Condition Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SettleNotEarlier">
+		<xs:annotation>
+			<xs:documentation>"Исполнить не ранее, чем".</xs:documentation>
+			<xs:documentation>"Execute not earlier".</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="SessionID" type="lt:SessionIDType">
+				<xs:annotation>
+					<xs:documentation>Номер рейса, в котором нужно сделать первую попытку исполнить распоряжение.</xs:documentation>
+					<xs:documentation>Settlement Cycle Number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SettlementTime" type="lt:TimeType">
+				<xs:annotation>
+					<xs:documentation>Время, до наступления которого распоряжение не исполняется.</xs:documentation>
+					<xs:documentation>Time before that the FTI should not be executed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="SettleNotLater">
+		<xs:annotation>
+			<xs:documentation>"Исполнить не позднее, чем".</xs:documentation>
+			<xs:documentation>"Execute not later than".</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SettlementTime" type="lt:TimeType">
+				<xs:annotation>
+					<xs:documentation>Время, после наступления которого неисполненное распоряжение автоматически аннулируется (если не исполнено ранее).</xs:documentation>
+					<xs:documentation>Time after that the FTI should be automatically canceled (if still have not been executed).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ShortPayeeInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты получателя</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MaxPaytSum" type="ed:SumWithUnlimit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Максимальная сумма платежа на счет получателя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TotalPaytsSum" type="ed:SumWithUnlimit" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Общая сумма платежей, предъявляемых этим получателем к счету плательщика в течение ОД</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PayeeBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК получателя</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayeeUIS" type="lt:EDDrawerIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор, присвоенный получателю ЭС.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SPInfo">
+		<xs:annotation>
+			<xs:documentation>БИК и счет подчиненного участника пула.</xs:documentation>
+			<xs:documentation>Subordinate Account of LP.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК подчиненного участника пула.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета подчиненного участника пула.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="MainPoolParticipant">
+		<xs:annotation>
+			<xs:documentation>БИК и счет головного Участника пула.</xs:documentation>
+			<xs:documentation>Primary account of LP.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК главного участника.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер главного счета.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BalanceSweepingAccount">
+		<xs:annotation>
+			<xs:documentation>Периодические переводы.</xs:documentation>
+			<xs:documentation>Balance Sweeping Destination Account.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EDSweepingAccount" type="ed:SweepingAccount" minOccurs="1" maxOccurs="10">
+				<xs:annotation>
+					<xs:documentation>Информация о ежедневном переводе денежных средств.</xs:documentation>
+					<xs:documentation>Balance Sweeping Event.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DailyTransfer" type="ed:DailyTransfer" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Информация о ежедневном переводе денежных средств.</xs:documentation>
+					<xs:documentation>Balance Sweeping Event.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StopDates" type="lt:DateType" minOccurs="0" maxOccurs="70">
+				<xs:annotation>
+					<xs:documentation>Даты запрета периодического перевода.</xs:documentation>
+					<xs:documentation>Stop dates.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SweepingAccount">
+		<xs:annotation>
+			<xs:documentation>Информация о ежедневном переводе денежных средств.</xs:documentation>
+			<xs:documentation>Balance Sweeping Destination Account.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Purpose" type="lt:Max210TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Назначение платежа.</xs:documentation>
+					<xs:documentation>Purpose</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ParticipantName" type="lt:Max160TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование участника-получателя</xs:documentation>
+					<xs:documentation>Payee Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PayeeName" type="lt:Max160TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование получателя средств</xs:documentation>
+					<xs:documentation>Payee Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника-получателя.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ParticipantAccount" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета участника-получателя.</xs:documentation>
+				<xs:documentation>Destination Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета получателя средств.</xs:documentation>
+				<xs:documentation>Destination Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН получателя средств.</xs:documentation>
+				<xs:documentation>INN.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SumPercent" type="lt:PercentNumberType">
+			<xs:annotation>
+				<xs:documentation>Доля остатка денежных средств для перевода на счет назначения.</xs:documentation>
+				<xs:documentation>Persent of sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Максимальная сумма перевода.</xs:documentation>
+				<xs:documentation>Max sum.</xs:documentation>
+		</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SumWithUnlimit">
+		<xs:annotation>
+			<xs:documentation>Сумма с признаком отсутствия верхней границы на списание</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма.</xs:documentation>
+				<xs:documentation>Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UnlimitedFundsMode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак отсутствия ограничений на списание средств</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SumWithUnlimitAndInd">
+		<xs:annotation>
+			<xs:documentation>Сумма с признаком отсутствия верхней границы на списание и признаком изменения</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма.</xs:documentation>
+				<xs:documentation>Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChangeSum" type="lt:Indicator1Type">
+			<xs:annotation>
+				<xs:documentation>Признак изменения реквизита "Сумма".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="UnlimitedFundsMode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак отсутствия ограничений на списание средств</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SWBICList">
+		<xs:annotation>
+			<xs:documentation>Перечень БИК (СВИФТ), соответствующих Участнику.</xs:documentation>
+			<xs:documentation>SWIFT BICs of Participant.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="SWBIC" type="lt:BICSWIFTIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК (СВИФТ) (по справочнику СВИФТ, стандарт ИСО 9362).</xs:documentation>
+				<xs:documentation>Participant’s SWIFT BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DefaultSWBIC" type="lt:IndicatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак использования БИК (СВИФТ), «по умолчанию».</xs:documentation>
+				<xs:documentation>Default SWIFT BIC flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SWIFTTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений SWIFT MT</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="SWIFTTypeNo" type="lt:Max5TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения SWIFT MT</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SWIFTMXTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений SWIFT MX</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="SWIFTMXTypeNo" type="lt:Max15TextType" use="required" fixed="999999999999999">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения SWIFT MX</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TSLCTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений TSLC</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="TSLCTypeNo" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения TSLC</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ISOTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений ISO</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ISOTypeNo" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения ISO</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ISOTSTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений ISO TS</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ISOTypeNo" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения ISO</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ISOCTCCRTypeList">
+		<xs:annotation>
+			<xs:documentation>Список типов сообщений ISO CTCCR</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ISOTypeNo" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения ISO</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TUCodeList">
+		<xs:annotation>
+			<xs:documentation>ТУ, начавшие день в БЭСП</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TUCode" type="lt:TUCodeIDType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Код ТУ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UFCFInfo">
+		<xs:annotation>
+			<xs:documentation>БИК Уполномоченного филиала (указывается для Централизованного филиала) ЛИБО Список БИК Централизованных филиалов (указываются для Уполномоченного филиала).</xs:documentation>
+			<xs:documentation>BIC of Authorized sender Or List of BICs of Banks using Authorized sender to communicate with NPS.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="UFBIC" type="lt:BICRUIDType">
+				<xs:annotation>
+					<xs:documentation>БИК Уполномоченного филиала.</xs:documentation>
+					<xs:documentation>BIC of Authorized Sender.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CFBICList" type="ed:CFBICList">
+				<xs:annotation>
+					<xs:documentation>Cписок БИК Централизованных филиалов.</xs:documentation>
+					<xs:documentation>List of BICs of Banks using Authorized Sender.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="UFCFRecord">
+		<xs:annotation>
+			<xs:documentation>Запись Справочника УФ-ЦФ.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UFBIC" type="lt:BICRUIDType">
+				<xs:annotation>
+					<xs:documentation>БИК Уполномоченного филиала.</xs:documentation>
+					<xs:documentation>BIC of Authorized Sender.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CFBICList" type="ed:CFBICList">
+				<xs:annotation>
+					<xs:documentation>Cписок БИК Централизованных филиалов.</xs:documentation>
+					<xs:documentation>List of BICs of Banks using Authorized Sender.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UFCFMD">
+		<xs:annotation>
+			<xs:documentation>Справочник УФ-ЦФ.</xs:documentation>
+			<xs:documentation>Masterdata or Authorized senders.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UFCFRecord" type="ed:UFCFRecord" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Запись Справочника УФ-ЦФ.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OpPreciousMetal">
+		<xs:annotation>
+			<xs:documentation>Операция с драгоценными металлами.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="ValueDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата валютирования</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Mass" type="lt:Max12WeightType" use="required">
+			<xs:annotation>
+				<xs:documentation>Масса</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="OpRevaluationInfo">
+		<xs:annotation>
+			<xs:documentation>Дополнительная информация по операции.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OpPreciousMetal" type="ed:OpPreciousMetal">
+				<xs:annotation>
+					<xs:documentation>Операция с драгоценными металлами</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InitialEDInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о транзакционном пакете ЭС</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EDRefID" type="ed:EDRefID">
+				<xs:annotation>
+					<xs:documentation>Идентификаторы транзакционного пакета ЭС</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PacketStatus" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Статус транзакционного пакета ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ESIDResponse">
+		<xs:annotation>
+			<xs:documentation>Общие реквизиты служебно-информационного пакета для ЭКО</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="InitialEDInfo" type="ed:InitialEDInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация об исходном транзакционном пакете ЭС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС - запроса</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BRCashType">
+		<xs:annotation>
+			<xs:documentation>Денежная наличность</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CashType" use="required">
+			<xs:annotation>
+				<xs:documentation>Вид наличности</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:annotation>
+					<xs:documentation>Код. Однозначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 значный.</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="lt:OneDigitCodeType">
+					<xs:enumeration value="0">
+						<xs:annotation>
+							<xs:documentation>Монета Банка России</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="1">
+						<xs:annotation>
+							<xs:documentation>Банкноты Банка России</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Nominal" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номинал</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!--FastPaymentService-->
+	<!--<xs:complexType name="BalanceInfoType">
+		<xs:annotation>
+			<xs:documentation>Остаток на счете</xs:documentation>
+			<xs:documentation>FPS Liquidity and Current balance</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CurrentBalance" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Текущий остаток в ЦК ПС.</xs:documentation>
+				<xs:documentation>Current Balance.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>  -->
+	<xs:complexType name="BICAccount">
+		<xs:annotation>
+			<xs:documentation>БИК и счет</xs:documentation>
+			<xs:documentation>BIC and Account</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК Участника</xs:documentation>
+				<xs:documentation>Participants BIC</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет Участника</xs:documentation>
+				<xs:documentation>Account Number</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BankFPSED">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка в распоряжениях.</xs:documentation>
+			<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>Bank, Bank Branch.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка плательщика или номер счета банка получателя.</xs:documentation>
+				<xs:documentation>Payer Agent Account Number or Beneficiary Agent Account Number opened in CBR Subdivision.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RequestInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о состоянии ликвидности в СБП.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК Участника, по счету которого производится запрос.</xs:documentation>
+				<xs:documentation>National BIC of Participant.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета, по которому производится запрос.</xs:documentation>
+				<xs:documentation>Participant Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма операции.</xs:documentation>
+				<xs:documentation>Limit Change Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LiquidityTransKind" type="lt:LiquidityTransKindType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код операции по управлению позицией ликвидности в СБП.</xs:documentation>
+				<xs:documentation>Limit Action Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IsNextDay" type="lt:IsNextDayType">
+			<xs:annotation>
+				<xs:documentation>Признак исполнения запроса в начале следующего операционного дня.</xs:documentation>
+				<xs:documentation>Sign of execution at the beginning of the next day.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DateTimeInterval">
+		<xs:annotation>
+			<xs:documentation>Временной интервал, за который формируется реестр</xs:documentation>
+			<xs:documentation>Time range</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BeginTime" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Минимальные астрономические дата и время обработки в СБП распоряжения, включаемого в реестр.</xs:documentation>
+				<xs:documentation>Time From.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EndTime" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Максимальные астрономические дата и время обработки в СБП распоряжения, включаемого в реестр.</xs:documentation>
+				<xs:documentation>Time To.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BusinessDay">
+		<xs:annotation>
+			<xs:documentation>Дата операционного дня, за который формируется реестр</xs:documentation>
+			<xs:documentation>Time range</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AbstractDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата операционного дня, за который формируется реестр.</xs:documentation>
+				<xs:documentation>Operation Date</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FPSRequestInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация по запросу потранзакционного реестра.</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element name="DateTimeInterval" type="ed:DateTimeInterval">
+				<xs:annotation>
+					<xs:documentation>Временной интервал, за который формируется реестр</xs:documentation>
+					<xs:documentation>Time Range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BusinessDay" type="ed:BusinessDay">
+				<xs:annotation>
+					<xs:documentation>Дата операционного дня, за который формируется реестр</xs:documentation>
+					<xs:documentation>Operation Date</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК Участника, по счету которого производится запрос.</xs:documentation>
+				<xs:documentation>National BIC of Participant.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер счета, по которому производится запрос.</xs:documentation>
+				<xs:documentation>Participant Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BilateralBalanceType">
+		<xs:annotation>
+			<xs:documentation>Суммы оборотов по всем исполненным распоряжениям между счетами участников </xs:documentation>
+			<xs:documentation>Bilateral gross balances between accounts which belongs to the one balance sheet.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BICA" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника А.</xs:documentation>
+				<xs:documentation>Participant BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccA" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет участника А.</xs:documentation>
+				<xs:documentation>Participants's Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BICB" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника В.</xs:documentation>
+				<xs:documentation>Participant BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccB" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет участника В.</xs:documentation>
+				<xs:documentation>Participants's Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DebitTurnOver" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Обороты по дебету.</xs:documentation>
+				<xs:documentation>Debt Turns</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FPSBilateralBalanceType">
+		<xs:annotation>
+			<xs:documentation>Суммы оборотов по всем исполненным распоряжениям между счетами участников.</xs:documentation>
+			<xs:documentation>Bilateral gross balances between accounts which belongs to the one balance sheet.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="RecordID" type="lt:RecordIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер записи в реестре.</xs:documentation>
+				<xs:documentation>Record Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BICA" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника А.</xs:documentation>
+				<xs:documentation>Participant BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountA" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет участника А.</xs:documentation>
+				<xs:documentation>Participants's Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BICB" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника В.</xs:documentation>
+				<xs:documentation>Participant BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountB" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Счет участника В.</xs:documentation>
+				<xs:documentation>Participants's Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DebitTurnOver" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Обороты по дебету.</xs:documentation>
+				<xs:documentation>Debt Turns</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OperationQuantity" type="lt:EDQuantityType" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество распоряжений.</xs:documentation>
+				<xs:documentation>Debt Turns</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FPSTurnoverType">
+		<xs:annotation>
+			<xs:documentation>Обороты в СБП в течение операционного дня.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="FPSCreditSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Общая сумма документов по кредиту счета участника с начала операционного дня СБП.</xs:documentation>
+				<xs:documentation>Total Credit Docs Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FPSDebetSum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Общая сумма документов по дебету счета участника с начала операционного дня СБП.</xs:documentation>
+				<xs:documentation>Total Debt Docs Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TimeFromTo">
+		<xs:annotation>
+			<xs:documentation>Период времени, за который производится запрос.</xs:documentation>
+			<xs:documentation>Time range requested EM were sent or received.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="TimeFrom" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Начало диапазона времени.</xs:documentation>
+				<xs:documentation>Time From.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TimeTo" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Конец диапазона времени.</xs:documentation>
+				<xs:documentation>Time To.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TimePeriod">
+		<xs:annotation>
+			<xs:documentation>Период времени, за который производится запрос.</xs:documentation>
+			<xs:documentation>Request Time Period</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element name="TimeFromTo" type="ed:TimeFromTo">
+				<xs:annotation>
+					<xs:documentation>Период времени, за который производится запрос.</xs:documentation>
+					<xs:documentation>Time range requested EM were sent or received.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InquiryDate" type="lt:DateType">
+				<xs:annotation>
+					<xs:documentation>Дата ОД в СБП, за которую нужна информация.</xs:documentation>
+					<xs:documentation>Date for which EM is requested.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<!-- Альбом УФК-ОД ОПЕРУ1 -->
+	<xs:complexType name="CustomerFK">
+		<xs:annotation>
+			<xs:documentation>Клиент Федерального казначейства</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Account" type="lt:AccountNumberIDType">
+				<xs:annotation>
+					<xs:documentation>Номер счета бенефициара</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="lt:Max140TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EDWithDeclaration">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для обмена с ФК.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:attribute name="DeclarationDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата заявки</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DeclarationNo" type="lt:DeclarationNoType" use="required">
+					<xs:annotation>
+						<xs:documentation>Номер заявки</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InstitutionFK">
+		<xs:annotation>
+			<xs:documentation>Банк клиента Федерального казначейства</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Account" type="lt:AccountNumberIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер корсчета банка</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SwiftCode" type="lt:FloatSWIFTIDType">
+				<xs:annotation>
+					<xs:documentation>SWIFT код</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="lt:Max140TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BIC" type="lt:BICRUIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>БИК</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BankFK">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BIC" type="lt:BICRUIDType">
+				<xs:annotation>
+					<xs:documentation>БИК КО, филиала КО или ПБР (поле 11 или 14)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CorrespAcc" type="lt:AccountNumberRUIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер счета банка (поле 12 или 15)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--GIS GMP -->
+	<xs:complexType name="ChangeStatusType">
+		<xs:annotation>
+			<xs:documentation>Сведения о статусе и основаниях изменения.</xs:documentation>
+			<xs:documentation>Change status.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Meaning" type="lt:OneDigitCodeType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Статус, отражающий изменение данных.</xs:documentation>
+					<xs:documentation>Meaning.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Reason" type="lt:Max512TextContentType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Основание изменения.</xs:documentation>
+					<xs:documentation>Changes Reason.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChangeDate" type="lt:GISGMPDateTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата и время уточнения информации.</xs:documentation>
+					<xs:documentation>Change Date.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StatusInformationType">
+		<xs:annotation>
+			<xs:documentation>Информация о статусах и времени их установления.</xs:documentation>
+			<xs:documentation>Status Information Type</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="StatusCode" type="lt:TwoDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код статуса.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ApplyDateTime" type="lt:DateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата и время установления статуса.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!--SPFS -->
+	<xs:complexType name="SWIFTErrCodeList">
+		<xs:annotation>
+			<xs:documentation>Список кодов ошибок SWIFT</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SWIFTErrAnnotation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Текст пояснения.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SWIFTErrCode" type="lt:Eq3TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код ошибки</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений. 
+
+Схемы с описанием информационных блоков заголовка служебного сообщения.
+
+-->
+<xs:schema xmlns:props="urn:cbr-ru:msg:props:v1.3" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cbr-ru:msg:props:v1.3" elementFormDefault="qualified" version="2017.2.0">
+	<xs:annotation>
+		<xs:documentation>Прикладные типы для заголовка служебного конверта </xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="AcknowledgementTypeCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Тип квитанции. (1 - отправка, 2 - поступление в зону ответственности УБР или участника, 3 - прочтение приложением-получателем).</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AddressInfoIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Адресная информация. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="DateType">
+		<xs:annotation>
+			<xs:documentation>Дата. [ГОСТ ИСО 8601-2001]. Формат CCYY-MM-DD.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:date">
+			<xs:pattern value="\d{4}-\d{2}-\d{2}">
+				<xs:annotation>
+					<xs:documentation>Формат CCYY-MM-DD</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeType">
+		<xs:annotation>
+			<xs:documentation>ДатаВремя. [ГОСТ ИСО 8601-2001]. Формат YYYY-MM-DDThh:mm:ssZ. Всемирное время.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime"/>
+	</xs:simpleType>
+	<xs:simpleType name="DocFormatCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Обозначение формата передаваемого сообщения. (1 - УФЭБС, 2 - внутренний формат ТПК УОС, 3 - файлы ПУ, МЭР, 9 - другие)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocIDIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный идентификатор сообщения в формате ТПК УОС. Текстовый, до 100 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocTypeIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип сообщения (EDnnn, PacketEPD, PacketESID, MTnnn и т.п.). Текстовый, до 100 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EDAuthorIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный идентификатор составителя ЭС; УИС. [УИС]. Цифровой, 10 знаков.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{10}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EDNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер электронного сообщения. Целое, до 9 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FileNameIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Имя файла. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="IndicatorType">
+		<xs:annotation>
+			<xs:documentation>Индикатор. Состояние флага.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:simpleType name="MessageIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Идентификатор электронного сообщения. Текстовый, до 100 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MessageTypeCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Тип электронного сообщения. (1 – сообщения системы массовых платежей, 2 – для обмена информационными данными (в т. ч., статистической отчетностью), 3 – для технологических сообщений-квитанций (в рамках транспортных систем), 5 – другие служебные сообщения)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PriorityCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Транспортный приоритет электронного сообщения. Цифровой, 1 значный.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResultCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Результат операции. Цифровой, 4 значный</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ResultTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 3000 символов</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="3000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SequenceNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер сообщения в течении операционного дня. Целое, от 1 до 1000000000.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="1000000000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReceivedOnExternalMedium">
+		<xs:annotation>
+			<xs:documentation>Код. Признак поступления сообщения на отчуждаемом носителе.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="EDRefID">
+		<xs:annotation>
+			<xs:documentation>Призначная группа реквизитов сообщения УФЭБС</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="EDNo" type="props:EDNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер ЭС в течение опердня</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EDDate" type="props:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата составления ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="EDAuthor" type="props:EDAuthorIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор составителя ЭС - УИС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Основной информационный блок заголовка служебного конверта</xs:documentation>
+	</xs:annotation>
+	<xs:element name="MessageInfo" type="props:MessageInfo">
+		<xs:annotation>
+			<xs:documentation>Информационный блок заголовка служебного конверта</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="MessageInfo">
+		<xs:annotation>
+			<xs:documentation>Информационный блок заголовка служебного конверта</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="To" type="props:AddressInfoIDType" maxOccurs="1000">
+				<xs:annotation>
+					<xs:documentation>Адрес получателя. Реквизит формируется и заполняется приложением, передающим сообщение на доставку. В случае кратности >1, для каждого адресата используется индивидуальный тэг</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="From" type="props:AddressInfoIDType">
+				<xs:annotation>
+					<xs:documentation>Адрес отправителя. Реквизит формируется и заполняется приложением, передающим сообщение на доставку адаптеру</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AppMessageID" type="props:MessageIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Прикладной идентификатор. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MessageID" type="props:MessageIDType">
+				<xs:annotation>
+					<xs:documentation>Идентификатор служебного конверта. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CorrelationMessageID" type="props:MessageIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ссылочный идентификатор служебного конверта. Формируется для ответных соощений и квитанций и содержит значение элемента props:MessageID исходного сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MessageType" type="props:MessageTypeCodeType">
+				<xs:annotation>
+					<xs:documentation>Тип электронного сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Priority" type="props:PriorityCodeType">
+				<xs:annotation>
+					<xs:documentation>Приоритет сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LegacyTransportFileName" type="props:FileNameIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Имя файла. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CreateTime" type="props:DateTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата и время создания транспортного сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SendTime" type="props:DateTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата и время отправки транспортного сообщения. Реквизит формируется и заполняется транспортным адаптером отправителя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReceiveTime" type="props:DateTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата и время поступления сообщения в платежную сеть УБР или участника. Реквизит заполняется при поступлении сообщения от участника в платежную сеть УБР или из платежной системы УБР в платежную сеть участника</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AcceptTime" type="props:DateTimeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата и время прочтения сообщения приложением-получателем. Реквизит заполняется приложением-получателем при чтении сообщения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AckRequest" type="props:IndicatorType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Флаг для запроса технологических квитанций. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ReceivedOnExternalMedium" type="props:ReceivedOnExternalMedium" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Признак поступления сообщения на отчуждаемом носителе. Реквизит заполняется значением "1", если ЭС получено от составителя ЭС на отчуждаемом носителе. Реквизит не заполняется, если ЭС было отправлено по каналам связи</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PDI" type="props:IndicatorType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Признак повторной отправки.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Блок заголовка транспортной квитанции</xs:documentation>
+	</xs:annotation>
+	<xs:element name="AcknowledgementInfo" type="props:AcknowledgementInfo">
+		<xs:annotation>
+			<xs:documentation>Транспортная квитанция</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="AcknowledgementInfo">
+		<xs:annotation>
+			<xs:documentation>Транспортная квитанция</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AcknowledgementType" type="props:AcknowledgementTypeCodeType">
+				<xs:annotation>
+					<xs:documentation>Тип квитанции. Реквизит формируется и заполняется компонентом, формирующим квитанцию</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResultCode" type="props:ResultCodeType">
+				<xs:annotation>
+					<xs:documentation>Результат транспортной операции (отправки, поступления, приема и т. д.). Реквизит формируется и заполняется составителем квитанции</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResultText" type="props:ResultTextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Описание результата операции. Реквизит формируется и заполняется составителем квитанции</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Блок заголовка для указания последовательности</xs:documentation>
+	</xs:annotation>
+	<xs:element name="SequenceInfo" type="props:SequenceInfo">
+		<xs:annotation>
+			<xs:documentation>Информационный блок для обеспечения последовательности приёма</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SequenceInfo">
+		<xs:annotation>
+			<xs:documentation>Информационный блок для обеспечения последовательности приёма</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SequenceNumber" type="props:SequenceNumberType">
+				<xs:annotation>
+					<xs:documentation>Порядковый номер сообшения в пределах операционного дня. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SequenceDate" type="props:DateType">
+				<xs:annotation>
+					<xs:documentation>Дата формирования сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SequenceUIC" type="props:EDAuthorIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Уникальный идентификатор составителя ЭС. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку. Реквизит зарезервирован для дальнейшего использования, в данной версии не используется</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Блок идентификационной информации</xs:documentation>
+	</xs:annotation>
+	<xs:element name="DocInfo" type="props:DocInfo">
+		<xs:annotation>
+			<xs:documentation>Блок идентификационной информации</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="DocInfo">
+		<xs:annotation>
+			<xs:documentation>Блок идентификационной информации</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="DocFormat" type="props:DocFormatCodeType">
+				<xs:annotation>
+					<xs:documentation>Формат сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DocType" type="props:DocTypeIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Тип сообщения. Реквизит формируется и заполняется составителем служебного конверта, передающим сообщение на доставку</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDRefID" type="props:EDRefID" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Призначная группа реквизитов сообщения УФЭБС. Заполняется в случае, если реквизит "Формат сообщения" соответствует УФЭБС (props:DocFormat = "1")</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DocID" type="props:DocIDIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Идентификатор передаваемого сообщения. Заполняется для сообщений в формате ТПК УОС</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
