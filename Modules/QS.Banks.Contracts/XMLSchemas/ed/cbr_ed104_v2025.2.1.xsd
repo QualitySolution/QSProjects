@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED104" type="ed:ED104"/>
+	<xs:complexType name="ED104">
+		<xs:annotation>
+			<xs:documentation>Инкассовое поручение</xs:documentation>
+			<xs:documentation>Collection Order</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:EPDComplete">
+				<xs:sequence>
+					<xs:element name="IndirectParticipantInfo" type="ed:IndirectParticipantInfoAgType" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация о косвенном участнике.</xs:documentation>
+							<xs:documentation>Information about Indirect Participant.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ParticipantBusinessScenario" type="lt:ParticipantBusinessScenarioType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор бизнес-сценария, определяемый участником.</xs:documentation>
+							<xs:documentation>Participant-defined Business Scenario.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SettlementCondition" type="ed:SettlementCondition" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты условия исполнения распоряжения.</xs:documentation>
+							<xs:documentation>Payment Settlement Condition Attributes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Purpose" type="lt:Max210TextType">
+						<xs:annotation>
+							<xs:documentation>Назначение платежа (поле 24).</xs:documentation>
+							<xs:documentation>Payment Purpose (Field 24).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DepartmentalInfo" type="ed:DepartmentalInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Ведомственная информация (поля 101, 104-110).</xs:documentation>
+							<xs:documentation>Authorities Information (fields 101, 104-110).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ArrestID" type="lt:Max10TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор ареста (ограничения).</xs:documentation>
+							<xs:documentation>Arrest (restriction) on account ID.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial FTI Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProcessingDetails" type="ed:ProcessingDetails" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+							<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="TransKind" type="lt:TwoDigitCodeType" use="required" fixed="06">
+					<xs:annotation>
+						<xs:documentation>Вид операции (поле 18).</xs:documentation>
+						<xs:documentation>FTI Type (Field 18).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Priority" type="lt:PaytPriorityCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Очередность платежа (поле 21).</xs:documentation>
+						<xs:documentation>FTI Sequence (Field 21).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReceiptDateCollectBank" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Дата поступления документов в банк получателя (поле 48). Дата представления документов получателем средств в обслуживающий его банк.</xs:documentation>
+						<xs:documentation>Date of acception (receiving) of the documents to Beneficiary's Bank (Field 48). Date of FTI's submission of Benefitiary (Creditor) to his serving Bank.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReceiptDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Поступило в банк плательщика (поле 62).</xs:documentation>
+						<xs:documentation>FTI's Acceptance Date to Payer's Bank (Field 62).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="FileDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Дата помещения в картотеку (поле 63).</xs:documentation>
+						<xs:documentation>FTI's Queueing Date into the queue of FTI's not settled in time (Field 63).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ChargeOffDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Списано со счета плательщика (поле 71). Дата списания денежных средств со счета плательщика.</xs:documentation>
+						<xs:documentation>Debit Date (Field 71).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SystemCode" type="lt:SystemCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак системы обработки.</xs:documentation>
+						<xs:documentation>Fund transfer service (urgent/non-urgent).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentID" type="lt:PaymentIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор платежа, присвоенный получателем средств (поле 22).</xs:documentation>
+						<xs:documentation>Unique Payment Identifier assigned by the (ultimate) creditor (Field 22).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ResField" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Резервное поле (поле 23).</xs:documentation>
+						<xs:documentation>Reserval Field (Field 23).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="OperationID" type="lt:OperationIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный присваиваемый номер операции.</xs:documentation>
+						<xs:documentation>Unique Number assigned to Operation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BROperationID" type="lt:OperationIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный присваиваемый номер операции Банка России.</xs:documentation>
+						<xs:documentation>Unique Number assigned to Bank of Russia Operation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

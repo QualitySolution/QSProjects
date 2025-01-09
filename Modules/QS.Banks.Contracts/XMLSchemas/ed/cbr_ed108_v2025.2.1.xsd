@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed101_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CTTDepartmentalInfo">
+		<xs:annotation>
+			<xs:documentation>Ведомственная информация</xs:documentation>
+			<xs:documentation>Departmental Information</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="F101R" type="lt:DrawerStatusCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 101р.</xs:documentation>
+				<xs:documentation>Field 101p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F106R" type="lt:TaxPaytReasonCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 106р.</xs:documentation>
+				<xs:documentation>Field 106p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F107R" type="lt:TaxPeriodCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 107р.</xs:documentation>
+				<xs:documentation>Field 107p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F108R" type="lt:TaxDocIDTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 108р.</xs:documentation>
+				<xs:documentation>Field 108p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F109R" type="lt:TaxDocDateCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 109р.</xs:documentation>
+				<xs:documentation>Field 109p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F110R" type="lt:TaxPaytKindCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 110р.</xs:documentation>
+				<xs:documentation>Field 110p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F111R" type="lt:TaxFKAccCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 111р.</xs:documentation>
+				<xs:documentation>Field 111p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="F112R" type="lt:TaxFinOrgAccCodeTextType">
+			<xs:annotation>
+				<xs:documentation>Поле 112р.</xs:documentation>
+				<xs:documentation>Field 112p.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ED108CustomerInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о плательщике/получателе.</xs:documentation>
+			<xs:documentation>Information about Payer/Receiver (Creditor).</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonName" type="lt:Max70TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Фамилия, имя и отчество физического лица.</xs:documentation>
+					<xs:documentation>Last Name, First Name and Patronymic of Individual.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonAddress" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес физического лица.</xs:documentation>
+					<xs:documentation>Address of Individual.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TradeName" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование.</xs:documentation>
+					<xs:documentation>Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PersonalID" type="lt:Max25TextType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор.</xs:documentation>
+				<xs:documentation>Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер банковского счета.</xs:documentation>
+				<xs:documentation>Bank Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН.</xs:documentation>
+				<xs:documentation>INN.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ED108BenefitCustomerInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о лице, чья обязанность по уплате денежных средств исполняется.</xs:documentation>
+			<xs:documentation>Information about beneficiary.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonName" type="lt:Max70TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Фамилия, имя и отчество физического лица.</xs:documentation>
+					<xs:documentation>Last Name, First Name and Patronymic of Individual.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonAddress" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес физического лица.</xs:documentation>
+					<xs:documentation>Address of Individual.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TradeName" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование.</xs:documentation>
+					<xs:documentation>Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PersonalID" type="lt:Max25TextType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор.</xs:documentation>
+				<xs:documentation>Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН.</xs:documentation>
+				<xs:documentation>INN.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CreditTransferTransactionInfo">
+		<xs:annotation>
+			<xs:documentation>Реестр принятых к исполнению распоряжений.</xs:documentation>
+			<xs:documentation>Register of FTIs accepted for execution.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TransactionPayerInfo" type="ed:ED108CustomerInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о плательщике.</xs:documentation>
+					<xs:documentation>Information about Payer (Debtor).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TransactionPayeeInfo" type="ed:ED108CustomerInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о получателе средств.</xs:documentation>
+					<xs:documentation>Information about Benefitiary (Creditor).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TransactionPurpose" type="lt:Max210TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Назначение платежа из распоряжения плательщика.</xs:documentation>
+					<xs:documentation>Purpose of Transaction from Payer's (Debtor's) FTI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RemittanceInfo" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация, связанная с переводом.</xs:documentation>
+					<xs:documentation>Information concerning with transfer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CTTDepartmentalInfo" type="ed:CTTDepartmentalInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ведомственная информация из распоряжения плательщика.</xs:documentation>
+					<xs:documentation>Departmental Information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TransactionBeneficiaryInfo" type="ed:ED108BenefitCustomerInfo" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о лице, чья обязанность по уплате денежных средств исполняется.</xs:documentation>
+					<xs:documentation>Information about beneficiary.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="TransactionID" type="lt:Max5OrdinalNumberType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер записи в реестре.</xs:documentation>
+				<xs:documentation>Registry Item Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerDocNo" type="lt:Max6OrdinalNumberType">
+			<xs:annotation>
+				<xs:documentation>Номер распоряжения плательщика.</xs:documentation>
+				<xs:documentation>Number of Payer's (Debtor's) FTI</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerDocDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата распоряжения плательщика.</xs:documentation>
+				<xs:documentation>Date of Payer's (Debtor's) FTI.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OperationID" type="lt:OperationIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный присваиваемый номер операции.</xs:documentation>
+				<xs:documentation>Unique Number assigned to Operation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TransactionDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата перевода.</xs:documentation>
+				<xs:documentation>Transfer Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TransactionSum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма перевода.</xs:documentation>
+				<xs:documentation>Transfer Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PaymentID" type="lt:PaymentIDType">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор платежа (поле 22).</xs:documentation>
+				<xs:documentation>Unique Payment Identifier assigned by the (ultimate) creditor (Field 22).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReqSettlementDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Запрошенная (требуемая) дата исполнения распоряжения.</xs:documentation>
+				<xs:documentation>Requested (Reqiured) Setllement Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED108" type="ed:ED108"/>
+	<xs:complexType name="ED108">
+		<xs:annotation>
+			<xs:documentation>Платежное поручение на общую сумму с реестром</xs:documentation>
+			<xs:documentation>Payment Order for a total amount with the register (transaction bulk)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED101">
+				<xs:sequence>
+					<xs:element name="CreditTransferTransactionInfo" type="ed:CreditTransferTransactionInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Реестр принятых к исполнению распоряжений.</xs:documentation>
+							<xs:documentation>Register of FTIs accepted for execution.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

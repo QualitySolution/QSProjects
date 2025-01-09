@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED201" type="ed:ED201"/>
+	<xs:complexType name="ED201">
+		<xs:annotation>
+			<xs:documentation>Извещение о результатах контроля ЭС (пакета ЭС)</xs:documentation>
+			<xs:documentation>Notification of the Results of an EM (EM Package) Control</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="Annotation" type="lt:Max150TextType">
+						<xs:annotation>
+							<xs:documentation>Текст пояснения.</xs:documentation>
+							<xs:documentation>Annotation (Clarification text).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ErrorDiagnostic" type="lt:TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Детальная диагностика ошибки.</xs:documentation>
+							<xs:documentation>Error Diagnostics Details.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MsgID" type="lt:Max150TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Транспортный идентификатор сообщения.</xs:documentation>
+							<xs:documentation>Transport Identifier of Message.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС (пакета ЭС).</xs:documentation>
+							<xs:documentation>Initial EM (EM Package) Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CtrlCode" type="lt:ControlCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код результата контроля ЭС (пакета ЭС).</xs:documentation>
+						<xs:documentation>EM (EM Package) validation result code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CtrlTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время проведения контроля ЭС (пакета ЭС).</xs:documentation>
+						<xs:documentation>Date and Time of EM (EM Package) validation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CreationReasonType">
+		<xs:annotation>
+			<xs:documentation>Причины формирования Профиля участника (ED808).</xs:documentation>
+			<xs:documentation>Participant Profile Creation Reason Code.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CreationReasonCode" type="lt:ReasonCodeType" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Код причины формирования ED808.</xs:documentation>
+					<xs:documentation>ED808 Creation reason code.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED808" type="ed:ED808"/>
+	<xs:complexType name="ED808">
+		<xs:annotation>
+			<xs:documentation>Профиль участника</xs:documentation>
+			<xs:documentation>Participant's Private Profile</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="CreationReason" type="ed:CreationReasonType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Причины формирования Профиля участника (ED808).</xs:documentation>
+							<xs:documentation>Participant Profile Creation Reason Code.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BICDirectoryEntry" type="ed:BICDirectoryEntryType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Запись в Справочнике БИК.</xs:documentation>
+							<xs:documentation>BIC Directory Entry.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ParticipantProfile" type="ed:ParticipantProfileType">
+						<xs:annotation>
+							<xs:documentation>Профиль участника.</xs:documentation>
+							<xs:documentation>Participant's Private Profile.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭСИС-запроса.</xs:documentation>
+							<xs:documentation>Initial ESIM-request Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CreationDateTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания ЭС.</xs:documentation>
+						<xs:documentation>Date and time of creation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="InfoTypeCode" type="lt:RequestCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид представления информации.</xs:documentation>
+						<xs:documentation>Info Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BusinessDay" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата ОД, к которой относятся данные Профиля.</xs:documentation>
+						<xs:documentation>Business day.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DirectoryVersion" type="lt:Max2NumberType">
+					<xs:annotation>
+						<xs:documentation>Номер версии Профиля участника в течение операционного дня.</xs:documentation>
+						<xs:documentation>Directory version inside of business day.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>				
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

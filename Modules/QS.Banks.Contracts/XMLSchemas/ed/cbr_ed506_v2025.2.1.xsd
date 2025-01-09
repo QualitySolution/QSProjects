@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС 
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ISOContainer">
+		<xs:annotation>
+			<xs:documentation>Контейнер для сообщения ISO</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ISODocument" type="xs:base64Binary">
+				<xs:annotation>
+					<xs:documentation>Сообщение</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="FormatType" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип сообщения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TerminalSessionNum" type="lt:Max35TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор сообщения ISO</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED506" type="ed:ED506"/>
+	<xs:complexType name="ED506">
+		<xs:annotation>
+			<xs:documentation>Конверт для передачи финансовых сообщений формата ISO</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="ISOContainer" type="ed:ISOContainer" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Контейнер для сообщения ISO</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="SenderSWIFTBIC" type="lt:UICIDType">
+					<xs:annotation>
+						<xs:documentation>КП отправителя</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ActualReceiver" type="lt:EDDrawerIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС - УИС.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReceiverSWIFTBIC" type="lt:UICIDType">
+					<xs:annotation>
+						<xs:documentation>КП получателя</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ISOContainerQuantity" type="lt:Max9QuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество сообщений ISO</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений для безналичных расчетов.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен Участники - СБП
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="ed/cbr_ed201_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed710_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed711_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed731_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed732_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed742_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed743_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed799_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed806_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed807_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed808_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed819_v2025.2.1.xsd"/>
+</xs:schema>

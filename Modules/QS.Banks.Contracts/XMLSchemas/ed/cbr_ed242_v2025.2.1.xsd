@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED242Session">
+		<xs:annotation>
+			<xs:documentation>Тип и номер рейса (или время исполнения).</xs:documentation>
+			<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time).</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="SessionID" type="lt:SessionIDED240ED242Type">
+				<xs:annotation>
+					<xs:documentation>Номер рейса.</xs:documentation>
+					<xs:documentation>Cycle Number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SettlementTime" type="lt:TimeType">
+				<xs:annotation>
+					<xs:documentation>Время исполнения распоряжения.</xs:documentation>
+					<xs:documentation>Settlement Time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="SessionType" type="lt:SessionTypeType">
+			<xs:annotation>
+				<xs:documentation>Тип рейса.</xs:documentation>
+				<xs:documentation>Cycle Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="ED242" type="ed:ED242"/>
+	<xs:complexType name="ED242">
+		<xs:annotation>
+			<xs:documentation>Запрос о повторном получении сообщения</xs:documentation>
+			<xs:documentation>Request for repeated receipt of the message</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="Session" type="ed:ED242Session" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+							<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы ЭС.</xs:documentation>
+							<xs:documentation>EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="RepeatReceptInqCode" type="lt:OneDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Тип запроса.</xs:documentation>
+						<xs:documentation>Request Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EDTypeNo" type="lt:Max100XTextType">
+					<xs:annotation>
+						<xs:documentation>Тип ЭС.</xs:documentation>
+						<xs:documentation>EM Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ARMNo" type="lt:TwoDigitIdentifierType">
+					<xs:annotation>
+						<xs:documentation>Номер АРМ.</xs:documentation>
+						<xs:documentation>Terminal ID.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

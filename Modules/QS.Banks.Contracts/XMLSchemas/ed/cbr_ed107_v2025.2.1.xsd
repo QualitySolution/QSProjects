@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="EPDFinOrg">
+		<xs:annotation>
+			<xs:documentation>Базовый комплексный тип для ЭС ED107</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="SettleNotEarlier" type="ed:SettleNotEarlier" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>"Исполнить не ранее, чем".</xs:documentation>
+							<xs:documentation>"Execute not earlier".</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SettleNotLater" type="ed:SettleNotLater" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>"Исполнить не позднее, чем".</xs:documentation>
+							<xs:documentation>"Execute not later than".</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AccDoc" type="ed:AccDocRefID">
+						<xs:annotation>
+							<xs:documentation>Реквизиты исходного распоряжения о переводе денежных средств (поля 3 и 4)</xs:documentation>
+							<xs:documentation>Initial FTI's Attributes (fields 3 and 4).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RelatedDoc" type="ed:RelatedDocRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты распоряжения, связанного с исполнением данного поручения банка, при его наличии</xs:documentation>
+							<xs:documentation>Attributes of initial settlement document.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="OrderingBank" type="ed:FinOrg" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о банке-плательщике (поле 81)</xs:documentation>
+							<xs:documentation>Information about Paying Bank (Field 81).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrevInstrAgent" type="ed:FinOrg" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о предыдущем инструктирующем банке (поле 82)</xs:documentation>
+							<xs:documentation>Information about Preceding Instructing Bank (Field 82).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InstructingAgent" type="ed:FinOrgRU">
+						<xs:annotation>
+							<xs:documentation>Информация о банке-отправителе (поле 83).</xs:documentation>
+							<xs:documentation>Information about Sending Bank (Field 83).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InstructedAgent" type="ed:FinOrgRU">
+						<xs:annotation>
+							<xs:documentation>Информация о банке-исполнителе (поле 84).</xs:documentation>
+							<xs:documentation>Information about Executing Bank (Field 84).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="AcctWithInst" type="ed:FinOrg" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация об агенте банка-получателя (поле 85).</xs:documentation>
+							<xs:documentation>Information about Agent of Receiver's (Creditor's) Bank (Field 85).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Beneficiary" type="ed:FinOrg" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о банке-получателе (поле 86).</xs:documentation>
+							<xs:documentation>Information about Receiver (Creditor) Bank (Field 86)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="EDReceiver" type="lt:EDDrawerIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор получателя ЭС.</xs:documentation>
+						<xs:documentation>EM Receiver Unique Identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaytKind" type="lt:OneDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Вид платежа (поле 5).</xs:documentation>
+						<xs:documentation>Payment Kind (Field 5).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма (поле 7).</xs:documentation>
+						<xs:documentation>Amount (Field 7).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentPrecedence" type="lt:TwoDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Приоритет платежа.</xs:documentation>
+						<xs:documentation>Payment Priority. Mandatory for all FTIs.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReqSettlementDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Запрошенная (требуемая) дата исполнения распоряжения.</xs:documentation>
+						<xs:documentation>Requested (Reqiured) Setllement Date.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CodePurpose" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Назначение платежа кодовое (поле 20).</xs:documentation>
+						<xs:documentation>Code purpose (field 20).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED107" type="ed:ED107"/>
+	<xs:complexType name="ED107">
+		<xs:annotation>
+			<xs:documentation>Поручение банка</xs:documentation>
+			<xs:documentation>Interbank Payment Order</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:EPDFinOrg">
+				<xs:sequence>
+					<xs:element name="ParticipantBusinessScenario" type="lt:ParticipantBusinessScenarioType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор бизнес-сценария, определяемый участником.</xs:documentation>
+							<xs:documentation>Participant-defined Business Scenario.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SettlementCondition" type="ed:SettlementCondition" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты условия исполнения распоряжения.</xs:documentation>
+							<xs:documentation>Payment Settlement Condition Attributes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Sndr2RecvrInfo" type="lt:Max210TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Банковская информация (поле 74).</xs:documentation>
+							<xs:documentation>Bank Information (Field 74).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial FTI Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ProcessingDetails" type="ed:ProcessingDetails" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификатор бизнес-сценария, определяемый системой.</xs:documentation>
+							<xs:documentation>System-defined Business Scenario Identifier.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="TransKind" type="lt:TwoDigitCodeType" use="required" fixed="01">
+					<xs:annotation>
+						<xs:documentation>Вид операции (поле 18).</xs:documentation>
+						<xs:documentation>FTI Type (Field 18).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Priority" type="lt:PaytPriorityCodeType" use="required" fixed="5">
+					<xs:annotation>
+						<xs:documentation>Очередность платежа (поле 21).</xs:documentation>
+						<xs:documentation>FTI Sequence (Field 21).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SystemCode" type="lt:SystemCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак системы обработки.</xs:documentation>
+						<xs:documentation>Fund transfer service (urgent/non-urgent).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentID" type="lt:PaymentIDType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор платежа, присвоенный получателем средств (поле 22).</xs:documentation>
+						<xs:documentation>Unique Payment Identifier assigned by the (ultimate) creditor (Field 22).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="OffenseType">
+		<xs:annotation>
+			<xs:documentation>Блок дополнительной информации об административном правонарушении</xs:documentation>
+			<xs:documentation>Offense Type</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="OffenseDate" type="lt:GISGMPDateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата и время нарушения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OffensePlace" type="lt:Max255StringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Место нарушения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LegalAct" type="lt:Max255StringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Статья нарушения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DigitalLink" type="lt:Max2000StringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Ссылка на фото (видео) материалов нарушения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DepartmentName" type="lt:Max255StringType" use="required">
+			<xs:annotation>
+				<xs:documentation>Данные о подразделении, вынесшем постановление</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="DiscountType">
+		<xs:annotation>
+			<xs:documentation>Информация о скидке</xs:documentation>
+			<xs:documentation>Discount Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Value" type="lt:KopeckAmountType">
+				<xs:annotation>
+					<xs:documentation>Сумма скидки</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Expiry" type="lt:Max25TextType">
+				<xs:annotation>
+					<xs:documentation>Срок действия скидки.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdditionalDataType">
+		<xs:annotation>
+			<xs:documentation>Дополнительные поля начисления</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max100StringType">
+				<xs:annotation>
+					<xs:documentation>Наименование поля</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Value" type="lt:Max255StringType">
+				<xs:annotation>
+					<xs:documentation>Значение поля</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PayerGovernmentType">
+		<xs:annotation>
+			<xs:documentation>Сведения о плательщике.</xs:documentation>
+			<xs:documentation>Payer</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max2000StringType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование плательщика (поле 8).</xs:documentation>
+					<xs:documentation>Payer's Name (Field 8).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PayerIdentifier" type="lt:Max25TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор плательщика.</xs:documentation>
+				<xs:documentation>PayerIdentifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AdditionalPayerIdentifier" type="lt:Max25TextType">
+			<xs:annotation>
+				<xs:documentation>Дополнительный идентификатор плательщика.</xs:documentation>
+				<xs:documentation>PayerIdentifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BankGovernmentType">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка в электронных платежных сообщениях.</xs:documentation>
+			<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max200StringType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование.</xs:documentation>
+					<xs:documentation>Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК (поле 11 или 14).</xs:documentation>
+				<xs:documentation>Bank, Bank Branch or CBR Subdivision BIC (Field 11 or 14).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка плательщика (поле 12) или номер счета банка получателя средств (поле 15).</xs:documentation>
+				<xs:documentation>Payer Agent Account Number (Field 12) or Beneficiary Agent Account Number (Field 15) opened in CBR Subdivision.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PayeeGovernmentType">
+		<xs:annotation>
+			<xs:documentation>Данные организации, являющейся получателем средств.</xs:documentation>
+			<xs:documentation>PayeeGoverment</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="lt:Max2000StringType">
+				<xs:annotation>
+					<xs:documentation>Наименование получателя средств (поле 16).</xs:documentation>
+					<xs:documentation>Beneficiary's Name (Field 16).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bank" type="ed:BankGovernmentType">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка в электронных платежных сообщениях.</xs:documentation>
+					<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PersonalAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер счета получателя средств (поле 17).</xs:documentation>
+				<xs:documentation>Beneficiary's Account (Field 17).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="INN" type="lt:INNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ИНН получателя средств (поле 61).</xs:documentation>
+				<xs:documentation>Beneficiary's INN if assigned (Field 61).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="KPP" type="lt:KPPIDTextType">
+			<xs:annotation>
+				<xs:documentation>Код постановки на учет (КПП) получателя средств (поле 103).</xs:documentation>
+				<xs:documentation>Beneficiary's Tax Registration Code (KPP) if assigned (Field 103).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OGRN" type="lt:OGRNIDTextType">
+			<xs:annotation>
+				<xs:documentation>ОГРН организации.</xs:documentation>
+				<xs:documentation>OGRN.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LinkedChargesIdentifiersType">
+		<xs:annotation>
+			<xs:documentation> Идентификаторы начислений, на основании которых выставлено данное начисление.</xs:documentation>
+			<xs:documentation>Linked Charges Identifiers</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PaymentID" type="lt:PaymentIDType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>УИН, на основании которого выставлено данное начисление (УИН связанного начисления).</xs:documentation>
+					<xs:documentation>Payment ID.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChargesResponseType">
+		<xs:annotation>
+			<xs:documentation>Извещение о начислении по УИН.</xs:documentation>
+			<xs:documentation>Charges Response</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChargesResponseDetailed" type="ed:ChargesResponseDetailedType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Извещение о начислении по УИН.</xs:documentation>
+					<xs:documentation>Charges Response</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChargesResponseDetailedType">
+		<xs:annotation>
+			<xs:documentation>Извещение о начислении по УИН.</xs:documentation>
+			<xs:documentation>Charges Response</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Payee" type="ed:PayeeGovernmentType">
+				<xs:annotation>
+					<xs:documentation>Реквизиты получателя средств.</xs:documentation>
+					<xs:documentation>Payee.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Payer" type="ed:PayerGovernmentType">
+				<xs:annotation>
+					<xs:documentation>Сведения о плательщике.</xs:documentation>
+					<xs:documentation>Payer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LegalAct" type="lt:Max255StringType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация о нормативном правовом (правовом) акте, являющемся основанием для исчисления суммы денежных средств, подлежащих уплате.</xs:documentation>
+					<xs:documentation>Legal Act.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DepartmentalInfo" type="ed:DepartmentalInfo">
+				<xs:annotation>
+					<xs:documentation>Ведомственная информация (поля 101, 104-110).</xs:documentation>
+					<xs:documentation>DepartmentalInfo.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdditionalOffense" type="ed:OffenseType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Блок дополнительной информации об административном правонарушении</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DiscountFixed" type="ed:DiscountType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Условия оплаты с фиксированной суммой скидки</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DiscountSize" type="ed:DiscountType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Условия оплаты со скидкой (процент)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MultiplierSize" type="ed:DiscountType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Условия оплаты с применением понижающего размер начисления коэффициента</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChangeStatusInfo" type="ed:ChangeStatusType">
+				<xs:annotation>
+					<xs:documentation>Сведения о статусе начисления и основаниях его изменения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="LinkedChargesIdentifiersType" type="ed:LinkedChargesIdentifiersType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation> Идентификаторы начислений, на основании которых выставлено данное начисление.</xs:documentation>
+					<xs:documentation>Linked Charges Identifiers</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AdditionalData" type="ed:AdditionalDataType" minOccurs="0" maxOccurs="10">
+				<xs:annotation>
+					<xs:documentation>Дополнительные поля начисления</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="PaymentID" type="lt:PaymentIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор начисления (УИН). {GIS_GMP:SupplierBilld}</xs:documentation>
+				<xs:documentation>PaymentID.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BillDate" type="lt:GISGMPDateTimeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата, а также сведения о периоде времени, в который осуществлено начисление суммы денежных средств, подлежащих уплате.</xs:documentation>
+				<xs:documentation>Bill Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ValidUntil" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата, до которой (включительно) актуально выставленное начисление.</xs:documentation>
+				<xs:documentation>ValidUntil.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TotalAmount" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма начисления.</xs:documentation>
+				<xs:documentation>Total Amount</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DeliveryDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата отсылки (вручения) плательщику документа с начислением в случае, если этот документ был отослан (вручен) получателем средств плательщику.</xs:documentation>
+				<xs:documentation>Delivery Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PaymentTerm" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Срок оплаты начисления в соответствии с нормативным правовым (правовым) актом.</xs:documentation>
+				<xs:documentation>Payment Term.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Origin" type="lt:Max20TextType">
+			<xs:annotation>
+				<xs:documentation>Признак предварительного начисления.</xs:documentation>
+				<xs:documentation>Origin.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NoticeTerm" type="lt:Max8NumberType">
+			<xs:annotation>
+				<xs:documentation>Количество дней от даты начисления, подлежащей уплате плательщиком, по истечении которых необходимо повторно предоставлять уведомление о начислении по подписке в случае, если оно не оплачено или сумма платежей меньше суммы к оплате, указанной в начислении.</xs:documentation>
+				<xs:documentation>NoticeTerm.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OKVED" type="lt:Max10TextType">
+			<xs:annotation>
+				<xs:documentation>Код по ОКВЭД</xs:documentation>
+				<xs:documentation>OKVED.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChargeOffense" type="lt:OneDigitCodeType">
+			<xs:annotation>
+				<xs:documentation>Признак административного правонарушения, зафиксированного специальными техническими средствами, работающими в автоматическом режиме.</xs:documentation>
+				<xs:documentation>ChargeOffense.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AmountToPay" type="lt:Max18NegNumType" use="required">
+			<xs:annotation>
+				<xs:documentation>Остаток суммы подлежащей оплате, указанной в начислении (в копейках).</xs:documentation>
+				<xs:documentation>AmountToPay.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AcknowledgmentStatus" type="lt:Max2TextType">
+			<xs:annotation>
+				<xs:documentation>Статус квитирования.</xs:documentation>
+				<xs:documentation>AcknowledgmentStatus.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RequisiteCheckCode" type="lt:Max255StringType">
+			<xs:annotation>
+				<xs:documentation>Код проверки реквизитов.</xs:documentation>
+				<xs:documentation>Requisite check code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Purpose" type="lt:Max210StringType">
+			<xs:annotation>
+				<xs:documentation>Назначение платежа (поле 24).</xs:documentation>
+				<xs:documentation>Payment Purpose (Field 24).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ServiceInfoType">
+		<xs:annotation>
+			<xs:documentation>Сервисная информация.</xs:documentation>
+			<xs:documentation>Service Information</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChargesCheckCode" type="lt:OneDigitCodeType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Информация о проверке реквизитов из ГИС ГМП.</xs:documentation>
+					<xs:documentation>Charges Check Code</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChargesCheckDescription" type="lt:Max4000TextType" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Описание проверки реквизитов из ГИС ГМП.</xs:documentation>
+					<xs:documentation>Charges Check Code</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="GISGMPResultStatus" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Результат запроса информации в ГИС ГМП.</xs:documentation>
+				<xs:documentation>GISGMP Result Status.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED664" type="ed:ED664"/>
+	<xs:complexType name="ED664">
+		<xs:annotation>
+			<xs:documentation>Необходимая для уплаты информация от ГИС ГМП</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="ServiceInfo" type="ed:ServiceInfoType">
+						<xs:annotation>
+							<xs:documentation>Сервисная информация.</xs:documentation>
+							<xs:documentation>Service Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ChargesResponse" type="ed:ChargesResponseType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Извещение о начислении по УИН.</xs:documentation>
+							<xs:documentation>Charges Response</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial EM (EM Package) Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+							<xs:documentation>Initial FTI Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

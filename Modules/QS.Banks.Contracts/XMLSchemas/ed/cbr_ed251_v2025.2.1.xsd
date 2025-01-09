@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен УФК-ОД ОПЕРУ1
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED251" type="ed:ED251">
+	</xs:element>
+	<xs:complexType name="ED251">
+		<xs:annotation>
+        		<xs:documentation>Сообщение свободного формата</xs:documentation>
+      		</xs:annotation>
+      		<xs:complexContent>
+         		<xs:extension base="ed:ED">
+            			<xs:sequence>
+               				<xs:element name="Text" type="lt:Max2000TextType">
+                  				<xs:annotation>
+                     					<xs:documentation>Текст сообщения</xs:documentation>
+                  				</xs:annotation>
+               				</xs:element>
+            			</xs:sequence>
+         		</xs:extension>
+      		</xs:complexContent>
+   	</xs:complexType>
+</xs:schema>

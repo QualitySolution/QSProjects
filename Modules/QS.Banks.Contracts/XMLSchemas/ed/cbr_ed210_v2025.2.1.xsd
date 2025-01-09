@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED210" type="ed:ED210"/>
+	<xs:complexType name="ED210">
+		<xs:annotation>
+			<xs:documentation>Запрос извещения об операциях по счету</xs:documentation>
+			<xs:documentation>Interim Account Statement Request</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:attribute name="AbstractRequest" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид запроса.</xs:documentation>
+						<xs:documentation>Request Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AbstractDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата, на которую формируется извещение об операциях по счету.</xs:documentation>
+						<xs:documentation>Date for which Interim Account Statement is generated.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BeginTime" type="lt:TimeType">
+					<xs:annotation>
+						<xs:documentation>Начало периода формирования извещения об операциях по счету.</xs:documentation>
+						<xs:documentation>Beginning of the period for generating Interim Account Statement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EndTime" type="lt:TimeType">
+					<xs:annotation>
+						<xs:documentation>Конец периода формирования извещения об операциях по счету.</xs:documentation>
+						<xs:documentation>End of period for generating Interim Account Statement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PoolInfoFlag" type="lt:IndicatorType">
+					<xs:annotation>
+						<xs:documentation>Флаг, указывающий на необходимость предоставления информации по счетам пула (при запросе головным участником пула).</xs:documentation>
+						<xs:documentation>Flag indicating that reply EM should contain all the information related to all subordinate pool members (if the request was created by head of liquidity pool).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BIC" type="lt:BICRUIDType">
+					<xs:annotation>
+						<xs:documentation>БИК Участника, по счету которого производится запрос/БИК ПБР, на балансе которого открыт счет, по которому производится запрос.</xs:documentation>
+						<xs:documentation>National BIC of Participant, on account of which request was issued./Serving CBR Subdivision National BIC.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Acc" type="lt:AccountNumberRUIDType">
+					<xs:annotation>
+						<xs:documentation>Номер счета, по которому производится запрос.</xs:documentation>
+						<xs:documentation>Requested account.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SessionID" type="lt:SessionIDType">
+					<xs:annotation>
+						<xs:documentation>Номер рейса (сеанса)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
