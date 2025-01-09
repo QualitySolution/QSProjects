@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED710" type="ed:ED710"/>
+	<xs:complexType name="ED710">
+		<xs:annotation>
+			<xs:documentation>Запрос информации о состоянии ликвидности в СБП</xs:documentation>
+			<xs:documentation>Request of Information on Sent/Received EM</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="BICAccount" type="ed:BICAccount">
+						<xs:annotation>
+							<xs:documentation>БИК и счет</xs:documentation>
+							<xs:documentation>BIC and Account</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="BusinessDay" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Дата операционного дня СБП, за которую запрашивается информация о ликвидности.</xs:documentation>
+						<xs:documentation>Business day</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RequestType" type="lt:ED710RequestType">
+					<xs:annotation>
+						<xs:documentation>Вид запроса.</xs:documentation>
+						<xs:documentation>Request Type</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

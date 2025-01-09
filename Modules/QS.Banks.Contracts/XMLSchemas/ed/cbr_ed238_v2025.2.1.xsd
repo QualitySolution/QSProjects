@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED238RegisterItemsInfo">
+		<xs:annotation>
+			<xs:documentation>Список позиций реестра</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Annotation" type="lt:Max150TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Текст пояснения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Идентификаторы сформированного распоряжения</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="RegisterItemID" type="lt:RegisterItemIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный номер позиции</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника – плательщика вознаграждения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayeeBIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника – получателя вознаграждения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SumNDS" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма НДС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FeeDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата ОД НСПК, за которую осуществляется оплата вознаграждения по операциям участников МПС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StatusCode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код статуса распоряжения</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CtrlCode" type="lt:ControlCodeType">
+			<xs:annotation>
+				<xs:documentation>Код причины для неуспешно обработанных распоряжений</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED238" type="ed:ED238"/>
+	<xs:complexType name="ED238">
+		<xs:annotation>
+			<xs:documentation>Реестр результатов обработки оплаты вознаграждения НСПК по операциям участников МПС</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="RegisterItemsInfo" type="ed:ED238RegisterItemsInfo" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Список позиций реестра</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного реестра для оплаты вознаграждения НСПК по операциям участников МПС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="RegisterNo" type="lt:Max6OrdinalNumberType" use="required">
+					<xs:annotation>
+						<xs:documentation>Номер исходного реестра</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>				
+				<xs:attribute name="RegisterItemsQuantity" type="lt:RegisterItemsQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество позиций в реестре</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterMode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид реестра</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

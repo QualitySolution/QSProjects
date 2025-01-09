@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED811LimitInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация об устанавливаемом лимите.</xs:documentation>
+			<xs:documentation>Information about set limit.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="LimitType" type="lt:LimitType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип лимита (постоянный, изменяемый).</xs:documentation>
+				<xs:documentation>Limit Type (fixed, variable).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OldValue" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Предыдущее значение лимита.</xs:documentation>
+				<xs:documentation>Previous Limit Value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Value" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Устанавливаемое значение лимита.</xs:documentation>
+				<xs:documentation>New Limit Value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК плательщика.</xs:documentation>
+				<xs:documentation>Payer BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>National BIC of Subordinate Participant OR National BIC of Indirect Participant OR National BIC of Authorized Claim Author.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Счет подчиненного участника пула.</xs:documentation>
+				<xs:documentation>SP’s Account.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AggrementID" type="lt:TwoDigitIdentifierType">
+			<xs:annotation>
+				<xs:documentation>Идентификатор договора.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DateTo" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата окончания действия акцепта.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED811" type="ed:ED811"/>
+	<xs:complexType name="ED811">
+		<xs:annotation>
+			<xs:documentation>Подтверждение исполнения запроса об управлении лимитами</xs:documentation>
+			<xs:documentation>Notification of limits setting execution</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="LimitInfo" type="ed:ED811LimitInfoType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация об устанавливаемом лимите.</xs:documentation>
+							<xs:documentation>Information about set limit.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭСИС-запроса.</xs:documentation>
+							<xs:documentation>Initial ESIM-request Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>БИК Участника.</xs:documentation>
+						<xs:documentation>National BIC of Participant.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Acc" type="lt:AccountNumberRUIDType">
+					<xs:annotation>
+						<xs:documentation>Счет Участника.</xs:documentation>
+						<xs:documentation>Participant Account.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="LimitChangeType" type="lt:LimitChangeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид изменения лимита.</xs:documentation>
+						<xs:documentation>Type of Limit Change.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="LimitActivationDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Дата вступления в действие лимита.</xs:documentation>
+						<xs:documentation>Limit Activation Date.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

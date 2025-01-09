@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений для безналичных расчетов.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен с кредитными организациями и другими клиентами Банка России (массовые платежи).
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="ed/cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed103_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed104_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed105_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed107_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed108_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed109_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed110_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed111_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed113_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed114_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed201_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed202_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed203_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed204_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed205_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed206_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed207_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed208_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed210_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed211_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed213_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed214_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed215_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed217_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed218_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed219_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed221_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed222_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed240_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed241_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed242_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed243_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed244_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed245_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed274_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed275_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed276_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed280_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed283_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed284_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed285_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed291_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed294_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed295_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed330_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed462_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed463_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed464_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed465_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed663_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed664_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed801_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed802_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed804_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed805_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed806_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed807_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed808_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed810_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed811_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed813_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed814_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed816_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed817_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed818_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed819_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed999_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_packetcash_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_packeteid_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_packetepd_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_packetesid_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_packetip_v2025.2.1.xsd"/>
+</xs:schema>

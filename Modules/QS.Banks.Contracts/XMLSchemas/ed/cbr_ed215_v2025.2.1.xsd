@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed103_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed104_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed105_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed107_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed108_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed109_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed110_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed111_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED215Copy">
+		<xs:annotation>
+			<xs:documentation>Копия ЭПС.</xs:documentation>
+			<xs:documentation>Copy of single EPM.</xs:documentation>
+		</xs:annotation>
+			<xs:choice>
+				<xs:element ref="ed:ED101">
+					<xs:annotation>
+						<xs:documentation>Платежное поручение.</xs:documentation>
+						<xs:documentation>Customer Credit Transfer.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED103">
+					<xs:annotation>
+						<xs:documentation>Платежное требование.</xs:documentation>
+						<xs:documentation>Payment Request.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED104">
+					<xs:annotation>
+						<xs:documentation>Инкассовое поручение.</xs:documentation>
+						<xs:documentation>Collection Order.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED105">
+					<xs:annotation>
+						<xs:documentation>Платежный ордер.</xs:documentation>
+						<xs:documentation>Special Payment Order.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED107">
+					<xs:annotation>
+						<xs:documentation>Поручение банка.</xs:documentation>
+						<xs:documentation>Interbank Payment Order.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED108">
+					<xs:annotation>
+						<xs:documentation>Платежное поручение на общую сумму с реестром.</xs:documentation>
+						<xs:documentation>Payment Order for a total amount with the register (transaction bulk).</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED109">
+					<xs:annotation>
+						<xs:documentation>Банковский ордер.</xs:documentation>
+						<xs:documentation>Bank Order.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED110">
+					<xs:annotation>
+						<xs:documentation>ЭПС сокращенного формата.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED111">
+					<xs:annotation>
+						<xs:documentation>Мемориальный ордер в электронном виде.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		<xs:attribute name="CtrlCode" type="lt:ControlCodeType" use="optional">
+			<xs:annotation>
+				<xs:documentation>Код результата контроля ЭС (пакета ЭС).</xs:documentation>
+				<xs:documentation>EM (EM Package) validation result code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED215" type="ed:ED215"/>
+	<xs:complexType name="ED215">
+		<xs:annotation>
+			<xs:documentation>ЭСИС с копией полей ЭПС</xs:documentation>
+			<xs:documentation>ESIM with a Copy of EPM Fields</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESIDWithPartInfo">
+				<xs:sequence>
+					<xs:element name="EDCopy" type = "ed:ED215Copy" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Копия полей одного ЭПС.</xs:documentation>
+							<xs:documentation>Copy of fields of FTI.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="StatusStateCode" type="lt:TwoDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Код статуса (состояния) ЭПС (пакета ЭПС).</xs:documentation>
+						<xs:documentation>EPM (EPM Package) Status (State) Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="QuantityED" type="lt:EDQuantityType">
+					<xs:annotation>
+						<xs:documentation>Количество ЭПС в группе.</xs:documentation>
+						<xs:documentation>The number of FTIs in Group.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType">
+					<xs:annotation>
+						<xs:documentation>Общая сумма ЭПС в группе.</xs:documentation>
+						<xs:documentation>FTI Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

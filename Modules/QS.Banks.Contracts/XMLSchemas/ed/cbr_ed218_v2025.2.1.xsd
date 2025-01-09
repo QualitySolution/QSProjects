@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED218" type="ed:ED218"/>
+	<xs:complexType name="ED218">
+		<xs:annotation>
+			<xs:documentation>Запрос выходной формы</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:attribute name="ReportID" type="lt:ReportIDType">
+					<xs:annotation>
+						<xs:documentation>Идентификатор (номер) формы</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ReportDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата, за которую запрашивается информация</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MakingStatusCode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код признака формирования формы</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

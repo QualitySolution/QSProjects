@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED732LiquidityInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о результатах исполнения запроса об управлении ликвидностью</xs:documentation>
+			<xs:documentation>ED732Liquidity Control Information</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="FPSLiquidity" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Зарезервированная на счете ликвидность для работы в СБП.</xs:documentation>
+				<xs:documentation>FPS Reserved Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FPSPosition" type="lt:NotNegativeKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Доступная текущая позиция в СБП (ПСБП).</xs:documentation>
+				<xs:documentation>FPS Current Position</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ExecCode" type="lt:ExecCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Информация о результате исполнения запроса об управлении ликвидностью</xs:documentation>
+				<xs:documentation>Participant Restriction Info</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED732" type="ed:ED732"/>
+	<xs:complexType name="ED732">
+		<xs:annotation>
+			<xs:documentation>Подтверждение исполнения запроса об управлении ликвидностью</xs:documentation>
+			<xs:documentation>Liquidity Control Confirm</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="RequestInfo" type="ed:RequestInfoType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация для управления ликвидностью</xs:documentation>
+							<xs:documentation>Liquidity Control Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LiquidityInfo" type="ed:ED732LiquidityInfoType" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация для управления ликвидностью</xs:documentation>
+							<xs:documentation>Liquidity Control Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+							<xs:documentation>EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

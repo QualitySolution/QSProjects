@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений для безналичных расчетов.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен ВПС - ЦК ПС
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="ed/cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed201_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed208_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed232_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed233_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="ed/cbr_ed816_v2025.2.1.xsd"/>
+</xs:schema>

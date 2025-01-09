@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ed233UnsatisfiedConditions">
+		<xs:annotation>
+			<xs:documentation>Невыполненные условия исполнения.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="QueuingReasonCode" type="lt:QueuingReasonCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Причина помещения во внутридневную очередь.</xs:documentation>
+				<xs:documentation>Intraday Queuing Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FTIRegisterInfo">
+		<xs:annotation>
+			<xs:documentation>Реестр исполненных распоряжений.</xs:documentation>
+			<xs:documentation>Information about FTIs from RCP.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="UnsatisfiedConditions" type="ed:ed233UnsatisfiedConditions" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Невыполненные условия исполнения (причина помещения распоряжения в очередь).</xs:documentation>
+					<xs:documentation>Reason of Queuing.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Annotation" type="lt:Max150TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Текст пояснения.</xs:documentation>
+					<xs:documentation>Annotation (Clarification text).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Идентификатор распоряжения.</xs:documentation>
+					<xs:documentation>FTI unique ID.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК участника ВПС.</xs:documentation>
+				<xs:documentation>Bank’s BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма распоряжения.</xs:documentation>
+				<xs:documentation>FTI’s Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DC" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Признак дебета/кредита.</xs:documentation>
+				<xs:documentation>Debit/Credit Indicator.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CtrlCode" type="lt:ControlCodeType">
+			<xs:annotation>
+				<xs:documentation>Код причины для неуспешно обработанных распоряжений.</xs:documentation>
+				<xs:documentation>Reason Code for unsuccessfully processed FTI.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StatusStateCode" type="lt:TwoDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код статуса (состояния) ЭПС.</xs:documentation>
+				<xs:documentation>EPM Status (State) Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED233" type="ed:ED233"/>
+	<xs:complexType name="ED233">
+		<xs:annotation>
+			<xs:documentation>Результат обработки реестра клиринговых позиций</xs:documentation>
+			<xs:documentation>RCP Processing Notification</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="FTIRegisterInfo" type="ed:FTIRegisterInfo" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Реестр исполненных распоряжений.</xs:documentation>
+							<xs:documentation>Information about FTIs from RCP.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного реестра клиринговых позиций ED232.</xs:documentation>
+							<xs:documentation>RCP (ED232) identifier.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="BeginProcessingDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Начало периода обработки реестра.</xs:documentation>
+						<xs:documentation>RCP Begin processing date.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EndProcessingDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Конец периода обработки реестра.</xs:documentation>
+						<xs:documentation>RCP End processing date.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ClearingCircuit" type="lt:ClearingCircuitType" use="required">
+					<xs:annotation>
+						<xs:documentation>Клиринговая схема, к которой относится реестр клиринговых позиций.</xs:documentation>
+						<xs:documentation>Clearing scheme related to Registry of the Clearing Positions (RCP).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterItemsQuantity" type="lt:RegisterItemsQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество позиций в реестре.</xs:documentation>
+						<xs:documentation>Number of FTI’s in RCP (ED232).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterMode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Вид реестра.</xs:documentation>
+						<xs:documentation>RCP Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="RegisterNo" type="lt:Max6OrdinalNumberType" use="required">
+					<xs:annotation>
+						<xs:documentation>Номер исходного реестра (уникальный для составителя РКП в разрезе клиринговой схемы).</xs:documentation>
+						<xs:documentation>RCP unique number during BD for the RCP and clearing scheme.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:ed701="urn:cbr-ru:ed701:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed701:v2.0" schemaLocation="cbr_ed701_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed702_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="BanksInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о банке плательщике и о банке получателя средств.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BankPayer" type="ed:BankFPSED" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка плательщика</xs:documentation>
+					<xs:documentation>Payer Bank Info</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BankPayee" type="ed:BankFPSED" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка, получателя средств</xs:documentation>
+					<xs:documentation>Payee Bank Info</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FPSTransactionsInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация об операциях совершенных в СБП.</xs:documentation>
+			<xs:documentation>Transactions Info.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="ed701:ED701">
+					<xs:annotation>
+						<xs:documentation>Поручение для СБП</xs:documentation>
+						<xs:documentation>Customer Credit Transfer</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="ed:ED702">
+					<xs:annotation>
+						<xs:documentation>Поручение для трансграничного перевода в СБП</xs:documentation>
+						<xs:documentation>Customer Credit Transfer</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ED708" type="ed:ED708"/>
+	<xs:complexType name="ED708">
+		<xs:annotation>
+			<xs:documentation>Поручение для расчетов в РСР</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="BanksInfo" type="ed:BanksInfoType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация о банке плательщике и о банке получателя средств.</xs:documentation>
+							<xs:documentation>Banks Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FPSTransactionsInfo" type="ed:FPSTransactionsInfoType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация об операциях совершенных в СБП.</xs:documentation>
+							<xs:documentation>Transactions Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Общая сумма всех распоряжений из данного ЭС.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EDQuantity" type="lt:EDQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество вложенных ЭС.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransKind" type="lt:TwoDigitCodeType" use="required" fixed="01">
+					<xs:annotation>
+						<xs:documentation>Вид операции.</xs:documentation>
+						<xs:documentation>FTI Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransDateTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время формирования сообщения.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

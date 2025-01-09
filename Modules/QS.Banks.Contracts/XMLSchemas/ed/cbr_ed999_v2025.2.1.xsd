@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ПС БР
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd" />
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd" />
+   	<xs:element name="ED999" type="ed:ED999"/>
+   	<xs:complexType name="ED999">
+      		<xs:annotation>
+         		<xs:documentation>Запрос-зонд</xs:documentation>
+         		<xs:documentation>System availability request</xs:documentation>
+      		</xs:annotation>
+      		<xs:complexContent>
+         		<xs:extension base="ed:ESID">
+				<xs:attribute name="CreationDateTime" type="lt:DateTimeType">
+					<xs:annotation>
+						<xs:documentation>Дата/время создания сообщения.</xs:documentation>
+						<xs:documentation>EM Creation Date and Time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+      		</xs:complexContent>
+   	</xs:complexType>
+</xs:schema>

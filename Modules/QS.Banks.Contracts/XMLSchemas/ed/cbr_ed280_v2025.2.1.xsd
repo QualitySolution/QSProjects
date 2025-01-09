@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd" />
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd" />
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED280" type="ed:ED280">
+	</xs:element>
+	<xs:complexType name="ED280">
+      		<xs:annotation>
+         		<xs:documentation>Извещение о получении ЭС</xs:documentation>
+      		</xs:annotation>
+      		<xs:complexContent>
+         		<xs:extension base="ed:ESWithMandatoryEDReceiver">
+            			<xs:sequence>
+					<xs:element name="NameClient" type="lt:Max300TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Наименование клиента - отправителя</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+               				<xs:element name="InitialED" type="ed:EDRefID" >
+                  				<xs:annotation>
+                     					<xs:documentation>Идентификаторы исходного ЭСИС.</xs:documentation>
+                  				</xs:annotation>
+               				</xs:element>
+         			</xs:sequence>
+				<xs:attribute name="EDCreationTime" type="lt:TimeType">
+					<xs:annotation>
+						<xs:documentation>Время составления ЭС.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="OrgBIC" type="lt:BICRUIDType">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код кредитной организации, распорядителя денежной наличности Банка России.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BICPBR" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код подразделения Банка России, владельца денежной наличности Банка России.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+        		</xs:extension>
+    		</xs:complexContent>
+   	</xs:complexType>
+</xs:schema>

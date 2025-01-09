@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED111" type="ed:ED111"/>
+	<xs:complexType name="ED111">
+		<xs:annotation>
+			<xs:documentation>Мемориальный ордер в электронном виде</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="InitialAccDoc" type="ed:InitialAccDoc">
+						<xs:annotation>
+							<xs:documentation>Реквизиты исходного документа</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MemoOrderPayer" type="ed:CustomerMemoOrder">
+						<xs:annotation>
+							<xs:documentation>Реквизиты по Дебету</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MemoOrderPayee" type="ed:CustomerMemoOrder">
+						<xs:annotation>
+							<xs:documentation>Реквизиты по Кредиту</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RefDocInfo" type="lt:Max1020TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Содержание операции, наименование, номер и дата документа, на основании которого составлен мемориальный ордер</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС (поля 203-205)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Session" type="ed:Session" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+							<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransKind" type="lt:TwoDigitCodeType" use="required" fixed="09">
+					<xs:annotation>
+						<xs:documentation>Вид операции (поле 18)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SystemCode" type="lt:SystemCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак системы обработки</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

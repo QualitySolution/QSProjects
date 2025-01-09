@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!-- edited with XMLSpy v2018 rel. 2 sp1 (x64) (http://www.altova.com) by USER (ORG) -->
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен УФК-ОД ОПЕРУ1
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed219_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed250_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed251_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed252_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed253_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed254_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed255_v2025.2.1.xsd"/>
+	<xs:complexType name="EMListType">
+		<xs:annotation>
+			<xs:documentation>Список ЭС</xs:documentation>
+		</xs:annotation>
+		<xs:choice maxOccurs="unbounded">
+			<xs:element ref="ed:ED219" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Выходная форма</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED250" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Извещение о результатах обработки пакета ЭС</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED251" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Сообщение свободного формата</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED252" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Заявление на проведение операций с иностранной валютой</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED253" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Совершенная операция</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED254" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Состояние счетов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ed:ED255" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Запрос состояния счетов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PacketFK" type="ed:PacketFK"/>
+	<xs:complexType name="PacketFK">
+		<xs:annotation>
+			<xs:documentation>Пакет ЭС для обмена ФК и БР</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС</xs:documentation>
+							<xs:documentation>Initial EM Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EMList" type="ed:EMListType" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Перечень ЭС</xs:documentation>
+							<xs:documentation>EM List.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="AbstractKind" type="lt:OneDigitCodeType">
+					<xs:annotation>
+						<xs:documentation>Тип выписки.</xs:documentation>
+						<xs:documentation>Request Kind.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

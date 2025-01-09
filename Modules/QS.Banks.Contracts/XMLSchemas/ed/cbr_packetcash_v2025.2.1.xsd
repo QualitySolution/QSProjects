@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed280_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed283_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed284_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed285_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed462_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed463_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed464_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed465_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PacketCash" type="ed:PacketCash"/>
+	<xs:complexType name="PacketCash">
+		<xs:annotation>
+			<xs:documentation>Пакет ЭС для операции с наличными деньгами</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+            			<xs:sequence>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element ref="ed:ED101">
+							<xs:annotation>
+								<xs:documentation>Платежное поручение.</xs:documentation>
+								<xs:documentation>Customer Credit Transfer.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED280">
+							<xs:annotation>
+								<xs:documentation>Извещение о получении ЭС.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED283">
+							<xs:annotation>
+								<xs:documentation>Заявка на получение/сдачу наличных денег Банка России, заявка на выдачу/прием наличных денег Банка России в соответствии с предоставленным Банком России разрешением.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED284">
+							<xs:annotation>
+								<xs:documentation>Разрешение на совершение операций с наличными деньгами Банка России.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED285">
+							<xs:annotation>
+								<xs:documentation>Сообщение о проведенной операции с наличными деньгами Банка России.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED462">
+							<xs:annotation>
+								<xs:documentation>Заявка на получение или сдачу денежной наличности.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED463">
+							<xs:annotation>
+								<xs:documentation>Извещение о результатах промежуточного контроля ЭС (пакета ЭС).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED464">
+							<xs:annotation>
+								<xs:documentation>Запрос об отзыве/аннулировании ЭСИС (пакета ЭСИС).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ed:ED465">
+							<xs:annotation>
+								<xs:documentation>Извещение о состоянии ЭCИС (пакета ЭСИС).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:choice>
+            			</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
