@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений. 
+
+ППС
+Схемы с описанием базовых типов. 
+Используются для создания прикладных типов.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:bt="urn:cbr-ru:ed:basetypes:v2.0" targetNamespace="urn:cbr-ru:ed:basetypes:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2018.3.0">
+	<xs:annotation>
+		<xs:documentation>Базовые типы (общие для Банка России)</xs:documentation>
+	</xs:annotation>
+	<xs:simpleType name="AmountCategory">
+		<xs:annotation>
+			<xs:documentation>Сумма. Количество денежных единиц в заданной валюте (по умолчанию).</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:pattern value="[\-]?[1-9]\d{0,}|[0]">
+				<xs:annotation>
+					<xs:documentation>шаблон, запрещающий предшествующий знак "+" и лидирующие нули</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeCategory">
+		<xs:annotation>
+			<xs:documentation>Код. Символьная строка (буквы, цифры, знаки) используемая для краткого (и/или независимого от языка) представления или замены определенных значений или текстовых свойств. </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="CurrencyCategory">
+		<xs:annotation>
+			<xs:documentation>Курс валюты. Цена денежной единицы одной страны, выраженная в денежных единицах другой страны. Числовая информация, определенная последовательностью положительных чисел с десятичной дробной частью.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateCategory">
+		<xs:annotation>
+			<xs:documentation>Дата. Применяется для обозначения конкретного момента в последовательности времени.  [ГОСТ ИСО 8601-2001]. Формат YYYY-MM-DD.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:date">
+			<xs:pattern value="\d{4}-\d{2}-\d{2}">
+				<xs:annotation>
+					<xs:documentation>Формат YYYY-MM-DD</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeCategory">
+		<xs:annotation>
+			<xs:documentation>ДатаВремя. [ГОСТ ИСО 8601-2001]. Формат YYYY-MM-DDThh:mm:ss. В конце можно указать Z - для всемирного времени, либо смещение относительно всемирного времени в формате +hh:00 или -hh:00.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime"/>
+	</xs:simpleType>
+	<xs:simpleType name="IdentifierCategory">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Символьная строка для установления уникальной отличительной черты одного экземпляра объекта в рамках одной системы.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="IdentifierTextCategory">
+		<xs:annotation>
+			<xs:documentation>Символьная строка. Используется для базовых типов "Идентификатор", "Код", если областью значений является любая текстовая строка ограниченной длины. Разрешенные символы - символы с кодами  32-126, русские буквы: А-Я а-я, №.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[&#x0020;]*[&#x0021;-&#x007E;&#x0410;-&#x044F;&#x0401;&#x0451;&#x2116;][&#x0020;-&#x007E;&#x0410;-&#x044F;&#x0401;&#x0451;&#x2116;]*">
+				<xs:annotation>
+					<xs:documentation>Разрешенные символы (символы с кодами  32-126, русские буквы: А-Я а-я, №)</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IdentifierXSetTextCategory">
+		<xs:annotation>
+			<xs:documentation>Символьная строка. Используется для базовых типов "Идентификатор", "Код", если областью значений является любая текстовая строка ограниченной длины из набора символов X.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[&#x0020;]*[&#x0027;-&#x0029;&#x002B;-&#x003A;&#x0041;-&#x005A;&#x0061;-&#x007B;&#x003F;&#x007D;&#x000D;&#x000A;][&#x0020;&#x0027;-&#x0029;&#x002B;-&#x003A;&#x0041;-&#x005A;&#x0061;-&#x007B;&#x003F;&#x007D;&#x000D;&#x000A;]*">
+				<xs:annotation>
+					<xs:documentation>Разрешенные символы (A-Za-z0-9+?/:(){}.,'- CR LF SPACE)</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IndicatorCategory">
+		<xs:annotation>
+			<xs:documentation>Индикатор. Состояние флага.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:simpleType name="NumberCategory">
+		<xs:annotation>
+			<xs:documentation>Число. Числовая информация, определенная последовательностью положительных целых чисел. Для нее не нужны единицы измерения.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:pattern value="[\-]?[1-9]\d{0,}|[0]">
+				<xs:annotation>
+					<xs:documentation>шаблон, запрещающий предшествующий знак "+" и лидирующие нули</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="QuantityCategory">
+		<xs:annotation>
+			<xs:documentation>Количество. Счетное количество неденежных единиц. Количество представляется с заданными по умолчанию единицами измерения.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:pattern value="[\-]?[1-9]\d{0,}|[0]">
+				<xs:annotation>
+					<xs:documentation>шаблон, запрещающий предшествующий знак "+" и лидирующие нули</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextCategory">
+		<xs:annotation>
+			<xs:documentation>Текст. Символьная строка</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[&#x0020;]*[&#x0021;-&#x007E;&#x0410;-&#x044F;&#x0401;&#x0451;&#x2116;][&#x0020;-&#x007E;&#x0410;-&#x044F;&#x0401;&#x0451;&#x2116;]*">
+				<xs:annotation>
+					<xs:documentation>Разрешенные символы (символы с кодами  32-126, русские буквы: А-Я а-я, №)</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="XSetTextCategory">
+		<xs:annotation>
+			<xs:documentation>ТекстXSWIFT. Символьная строка</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[&#x0020;]*[&#x0027;-&#x0029;&#x002B;-&#x003A;&#x0041;-&#x005A;&#x0061;-&#x007B;&#x003F;&#x007D;&#x000D;&#x000A;][&#x0020;&#x0027;-&#x0029;&#x002B;-&#x003A;&#x0041;-&#x005A;&#x0061;-&#x007B;&#x003F;&#x007D;&#x000D;&#x000A;]*">
+				<xs:annotation>
+					<xs:documentation>Разрешенные символы (A-Za-z0-9+?/:(){}.,'- CR LF SPACE)</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextContentCategory">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Символьная строка. Применяется только для передачи произвольного текста.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[\s\S]*[\S][\s\S]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimeCategory">
+		<xs:annotation>
+			<xs:documentation>Время. Применяется для обозначения конкретного момента в последовательности времени.  [ГОСТ ИСО 8601-2001]. Формат hh:mm:ss.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:time">
+			<xs:pattern value="\d{2}:\d{2}:\d{2}">
+				<xs:annotation>
+					<xs:documentation>Формат hh:mm:ss</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WeightCategory">
+        	<xs:annotation>
+            		<xs:documentation>Масса. Масса чего-либо в единицах массы, например, граммах, фунтах, тоннах.</xs:documentation>
+        	</xs:annotation>
+        	<xs:restriction base="xs:decimal">
+        	</xs:restriction>
+    	</xs:simpleType>
+	<xs:simpleType name="YearCategory">
+		<xs:annotation>
+			<xs:documentation>Год. Применяется для обозначения конкретного момента в последовательности времени.  [ГОСТ ИСО 8601-2001]. Формат YYYY.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:gYear">
+			<xs:pattern value="\d{4}">
+				<xs:annotation>
+					<xs:documentation>Формат YYYY</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="YearMonthCategory">
+		<xs:annotation>
+			<xs:documentation>Месяц года. Применяется для обозначения конкретного момента в последовательности времени.  [ГОСТ ИСО 8601-2001]. Формат YYYY-MM.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:gYearMonth">
+			<xs:pattern value="\d{4}-\d{2}">
+				<xs:annotation>
+					<xs:documentation>Формат YYYY-MM</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

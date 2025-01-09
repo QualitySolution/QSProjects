@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED740" type="ed:ED740"/>
+	<xs:complexType name="ED740">
+		<xs:annotation>
+			<xs:documentation>Запрос информации об обработанных поручениях</xs:documentation>
+			<xs:documentation>Request of Information on Sent/Received EM</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="BankPayer" type="ed:BankFPSED" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты банка плательщика</xs:documentation>
+							<xs:documentation>Payer Bank Info</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BankPayee" type="ed:BankFPSED" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты банка, получателя средств</xs:documentation>
+							<xs:documentation>Payee Bank Info</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TimePeriod" type="ed:TimePeriod">
+						<xs:annotation>
+							<xs:documentation>Период времени, за который производится запрос.</xs:documentation>
+							<xs:documentation>Request Time Period</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

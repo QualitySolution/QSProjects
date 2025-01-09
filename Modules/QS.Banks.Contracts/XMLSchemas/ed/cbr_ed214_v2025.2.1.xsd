@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED214" type="ed:ED214"/>
+	<xs:complexType name="ED214">
+		<xs:annotation>
+			<xs:documentation>Извещение об акцепте</xs:documentation>
+			<xs:documentation>Notification of Acceptance</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="Violation" type="lt:Max298TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Характер нарушения, пункт, №, дата договора.</xs:documentation>
+							<xs:documentation>Violation characteristics, item, №, agreement date.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС ED213.</xs:documentation>
+							<xs:documentation>Initial ED213 Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="AcptCode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код акцепта.</xs:documentation>
+						<xs:documentation>Acceptance Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SumPT" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма, предъявленная к акцепту.</xs:documentation>
+						<xs:documentation>Amount for Acceptance.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AcptSum" type="lt:KopeckAmountType">
+					<xs:annotation>
+						<xs:documentation>Сумма акцепта.</xs:documentation>
+						<xs:documentation>Accepted Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

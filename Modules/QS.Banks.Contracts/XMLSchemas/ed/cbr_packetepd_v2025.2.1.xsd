@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed103_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed104_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed105_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed107_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed108_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed109_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed110_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed111_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PacketEPD" type="ed:PacketEPD"/>
+	<xs:complexType name="PacketEPD">
+		<xs:annotation>
+			<xs:documentation>Пакет ЭПС</xs:documentation>
+			<xs:documentation>EPM Package</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="Session" type="ed:Session" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+							<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element ref="ed:ED101">
+						<xs:annotation>
+							<xs:documentation>Платежное поручение.</xs:documentation>
+							<xs:documentation>Customer Credit Transfer.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED103">
+						<xs:annotation>
+							<xs:documentation>Платежное требование.</xs:documentation>
+							<xs:documentation>Payment Request.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED104">
+						<xs:annotation>
+							<xs:documentation>Инкассовое поручение.</xs:documentation>
+							<xs:documentation>Collection Order.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED105">
+						<xs:annotation>
+							<xs:documentation>Платежный ордер.</xs:documentation>
+							<xs:documentation>Special Payment Order.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED107">
+						<xs:annotation>
+							<xs:documentation>Поручение банка.</xs:documentation>
+							<xs:documentation>Interbank Payment Order.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED108">
+						<xs:annotation>
+							<xs:documentation>Платежное поручение на общую сумму с реестром.</xs:documentation>
+							<xs:documentation>Payment Order for a total amount with the register (transaction bulk).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED109">
+						<xs:annotation>
+							<xs:documentation>Банковский ордер.</xs:documentation>
+							<xs:documentation>Bank Order.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED110">
+						<xs:annotation>
+							<xs:documentation>ЭПС сокращенного формата.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED111">
+						<xs:annotation>
+							<xs:documentation>Мемориальный ордер в электронном виде.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+				</xs:sequence>
+				<xs:attribute name="EDQuantity" type="lt:EDQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество ЭПС в пакете.</xs:documentation>
+						<xs:documentation>Quantity of EPM in package.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Общая сумма ЭПС в пакете.</xs:documentation>
+						<xs:documentation>Total Amount of EPM in package.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SystemCode" type="lt:SystemCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак системы обработки.</xs:documentation>
+						<xs:documentation>Fund transfer service (urgent/non-urgent).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

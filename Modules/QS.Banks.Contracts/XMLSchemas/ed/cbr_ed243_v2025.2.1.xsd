@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="EDDefineRequestInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты ЭПС, поясняющие запрос.</xs:documentation>
+			<xs:documentation>EPM Attributes for request clarification.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PayerName" type="lt:Max160TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование плательщика.</xs:documentation>
+					<xs:documentation>Payer Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PayeeName" type="lt:Max160TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование получателя.</xs:documentation>
+					<xs:documentation>Beneficiary Name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDDefineRequestText" type="lt:Max210TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Текст запроса/Пояснение к запросу.</xs:documentation>
+					<xs:documentation>Request Text/Clarifications to Request.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDFieldList" type="ed:FieldInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список уточняемых реквизитов в ранее направленном распоряжении.</xs:documentation>
+					<xs:documentation>List of Clarified Attributes in previously sent FTI.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EDReestrInfo" type="ed:EDReestrInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация о записях реестра принятых к исполнению распоряжений.</xs:documentation>
+					<xs:documentation>Information about registry items about FTIs accepted for execution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="AccDocDate" type="lt:DateType">
+			<xs:annotation>
+				<xs:documentation>Дата составления распоряжения (поле 4).</xs:documentation>
+				<xs:documentation>Settlement Document Issue Date.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccDocNo" type="lt:AccountDocIDType">
+			<xs:annotation>
+				<xs:documentation>Номер распоряжения.</xs:documentation>
+				<xs:documentation>Settlement Document Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayerAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер банковского (лицевого) счета плательщика.</xs:documentation>
+				<xs:documentation>Banking (Current) Account Number of Payer.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PayeeAcc" type="lt:AccountNumberRUIDType">
+			<xs:annotation>
+				<xs:documentation>Номер банковского (лицевого) счета получателя.</xs:documentation>
+				<xs:documentation>Banking (Current) Account Number of Beneficiary.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма.</xs:documentation>
+				<xs:documentation>Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED243" type="ed:ED243"/>
+	<xs:complexType name="ED243">
+		<xs:annotation>
+			<xs:documentation>Запрос о получении информации по ЭПС участника</xs:documentation>
+			<xs:documentation>Request for Information on the Participant's EPMs</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="OriginalEPD" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial EPM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDDefineRequestInfo" type="ed:EDDefineRequestInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Реквизиты ЭПС, поясняющие запрос.</xs:documentation>
+							<xs:documentation>EPM Attributes for request clarification.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="EDDefineRequestCode" type="lt:TwoDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код запроса.</xs:documentation>
+						<xs:documentation>Request Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

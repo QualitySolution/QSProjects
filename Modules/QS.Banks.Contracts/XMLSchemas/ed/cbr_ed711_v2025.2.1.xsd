@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="FPSLiquidityInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о состоянии ликвидности в СБП.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BusinessDay" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата операционного дня СБП, за которую формируется извещение</xs:documentation>
+				<xs:documentation>Message Business Day.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FPSLiquidity" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Зарезервированная на счете ликвидность для работы в СБП (ЛСБП)</xs:documentation>
+				<xs:documentation>FPS Reserved Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FPSEnterPosition" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Доступная позиция в СБП (ПСБП) на начало ОД</xs:documentation>
+				<xs:documentation>FPS Input Position</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FPSPosition" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Доступная текущая позиция в СБП (ПСБП).</xs:documentation>
+				<xs:documentation>FPS Current Position</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CurrentBalance" type="lt:BalanceKopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Текущее значение ТС ЦК.</xs:documentation>
+				<xs:documentation>Current Balance.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ArrestSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма ареста (если больше нуля).</xs:documentation>
+				<xs:documentation>Arrest sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MandatoryReserveSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма денежных средств, необходимых для исполнения распоряжений на взыскание недовзноса в обязательные резервы и (или) суммы невыполнения усреднения со сроком исполнения на следующий ОД в ЦК ПС.</xs:documentation>
+				<xs:documentation>Mandatory Reserve Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreditLimitSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма лимита внутридневного кредита и кредита овернайт.</xs:documentation>
+				<xs:documentation>Credit Limit Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CollectionOrdersSum" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма принятых к исполнению распоряжений о переводе денежных средств в погашение требований по кредиту овернайт.</xs:documentation>
+				<xs:documentation>Collection Orders Sum.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LiqEDID">
+		<xs:annotation>
+			<xs:documentation>Идентификаторы ЭС по управлению ликвидностью</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Идентификаторы ЭС, на основании которых осуществлялось управление ликвидностью.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Sum" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма операции</xs:documentation>
+				<xs:documentation>Operation Sum</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LiquidityTransKind" type="lt:LiquidityTransKindType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код операции по управлению позицией ликвидности в СБП</xs:documentation>
+				<xs:documentation>FPS Position Control Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED711" type="ed:ED711"/>
+	<xs:complexType name="ED711">
+		<xs:annotation>
+			<xs:documentation>Извещение о состоянии ликвидности в СБП.</xs:documentation>
+			<xs:documentation>Liqudity Info.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="BICAccount" type="ed:BICAccount" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>БИК и счет</xs:documentation>
+							<xs:documentation>BIC and Account</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FPSLiquidityInfo" type="ed:FPSLiquidityInfoType" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Информация о состоянии ликвидности в СБП.</xs:documentation>
+							<xs:documentation>FPS Liquidity Position Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FPSTurnover" type="ed:FPSTurnoverType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Обороты в СБП в течение операционного дня.</xs:documentation>
+							<xs:documentation>FPS Liquidity Position Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LiqEDID" type="ed:LiqEDID" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы ЭС по управлению ликвидностью</xs:documentation>
+							<xs:documentation>Liquidity identifier EM</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС</xs:documentation>
+							<xs:documentation>Initial EM Info.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CreationReason" type="lt:ReasonLiqCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код причины формирования ЭС.</xs:documentation>
+						<xs:documentation>EM Create Reason Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CreationDateTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время создания извещения о состоянии ликвидности в СБП.</xs:documentation>
+						<xs:documentation>Create Information DateTime.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

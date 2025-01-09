@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электроных сообщений, используемых в расчетной сети Банка России.
+Обмен УФК-ОД ОПЕРУ1
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:element name="InstitutionBF" type="ed:InstitutionBF"/>
+	<xs:complexType name="InstitutionBF">
+		<xs:annotation>
+			<xs:documentation>Банк Бенефициара</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Account" type="lt:AccountNumberIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер корсчета банка</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SwiftCode" type="lt:FloatSWIFTIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>SWIFT код</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Description" type="lt:Max140TextType">
+				<xs:annotation>
+					<xs:documentation>Наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BIC" type="lt:BICRUIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>БИК</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ExchangeDetail" type="ed:ExchangeDetail"/>
+	<xs:complexType name="ExchangeDetail">
+		<xs:annotation>
+			<xs:documentation>Тип обмена</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CurrencyCode" type="lt:CurrencyIDType">
+				<xs:annotation>
+					<xs:documentation>Код валюты/ драгоценного металла</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Sum" type="lt:NotNegativeSumDecimalType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Сумма/ масса драгоценного металла</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Account" type="lt:AccountNumberRUIDType">
+				<xs:annotation>
+					<xs:documentation>Номер счета клиента, на который должна поступить покупаемая валюта (драгоценный металл)/с которого должна быть списана продаваемая валюта (драгоценный металл)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Exchange" type="ed:Exchange"/>
+	<xs:complexType name="Exchange">
+		<xs:annotation>
+			<xs:documentation>Покупка-продажа</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ValueDate" type="lt:DateType">
+				<xs:annotation>
+					<xs:documentation>Дата валютирования/ дата расчетов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Sell" type="ed:ExchangeDetail">
+				<xs:annotation>
+					<xs:documentation>Покупка</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Buy" type="ed:ExchangeDetail">
+				<xs:annotation>
+					<xs:documentation>Продажа</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RateType" type="lt:CurrencyRateIDType">
+				<xs:annotation>
+					<xs:documentation>Тип курса</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="AccountInRUR" type="lt:AccountNumberRUIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер счета в Операционном департаменте Банка России для зачисления рублей РФ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Remittance" type="ed:Remittance"/>
+	<xs:complexType name="Remittance">
+		<xs:annotation>
+			<xs:documentation>Получатель средств</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ValueDate" type="lt:DateType">
+				<xs:annotation>
+					<xs:documentation>Дата валютирования/ дата расчетов</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CurrencyCode" type="lt:CurrencyIDType">
+				<xs:annotation>
+					<xs:documentation>Код валюты/ драгоценного металла</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Sum" type="lt:NotNegativeSumDecimalType">
+				<xs:annotation>
+					<xs:documentation>Сумма/ масса драгоценного металла</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CustomerAccount" type="lt:AccountNumberIDType">
+				<xs:annotation>
+					<xs:documentation>Номер счета клиента-перевододателя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Beneficiary" type="ed:CustomerFK">
+				<xs:annotation>
+					<xs:documentation>Бенефициар</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BeneficiaryInstitution" type="ed:InstitutionBF">
+				<xs:annotation>
+					<xs:documentation>Банк Бенефициара</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CorrespondentInstitution" type="ed:InstitutionFK" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Банк-корреспондент</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IntermediaryInstitution1" type="ed:InstitutionFK" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Банк-посредник 1</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IntermediaryInstitution2" type="ed:InstitutionFK" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Банк-посредник 2</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IntermediaryInstitution3" type="ed:InstitutionFK" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Банк-посредник 3</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RemittanceInfo" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Назначение платежа</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChargeDetails" type="lt:ChargeDetailsIDType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Комиссия и расходы</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SenderToReceiverInfo" type="lt:Max500TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Информация отправителя получателю (поле SWIFT-сообщения 72)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED252" type="ed:ED252"/>
+	<xs:complexType name="ED252">
+		<xs:annotation>
+			<xs:documentation>Заявление на проведение операций с иностранной валютой и драгоценными металлами</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:EDWithDeclaration">
+				<xs:sequence>
+					<xs:element name="CustomerDescription" type="lt:Max160TextType">
+						<xs:annotation>
+							<xs:documentation>Наименование клиента</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CustomerAddress" type="lt:Max140TextType">
+						<xs:annotation>
+							<xs:documentation>Адрес клиента</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Exchange" type="ed:Exchange" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Покупка-продажа</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Remittance" type="ed:Remittance" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Перевод</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

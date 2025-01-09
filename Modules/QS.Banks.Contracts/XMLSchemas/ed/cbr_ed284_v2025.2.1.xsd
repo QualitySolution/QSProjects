@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED284" type="ed:ED284"/>
+	<xs:complexType name="ED284">
+		<xs:annotation>
+			<xs:documentation>Разрешение на совершение операций с наличными деньгами Банка России</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="Cash" type="ed:BRCashType" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Денежная наличность</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PermOfficialPersonInfo" type="ed:OfficialPersonInfo" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Информация о лице, подписавшем разрешение на совершение операции.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="NameClient" type="lt:Max300TextType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Наименование клиента - отправителя</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="TransDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата совершения операции.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="OrgBIC" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код кредитной организации, распорядителя денежной наличности Банка России.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BICPBR" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код подразделения Банка России, владельца денежной наличности Банка России.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DocNo" type="lt:AccountDocIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Номер документа</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="DocDate" type="lt:DateType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата документа</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CashOperKind" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код вида операции.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма документа</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AccSpec" type="lt:AccountNumberRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Специальный лицевой счет для списания/зачисления НДБР.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
