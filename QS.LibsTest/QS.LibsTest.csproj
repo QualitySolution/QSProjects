@@ -136,6 +136,10 @@
     <Folder Include="ViewModels\Resove\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Modules\QS.Banks.Contracts\QS.Banks.Contracts.csproj">
+      <Project>{21b9ce5f-33ff-4417-9d36-a23f2e6c3547}</Project>
+      <Name>QS.Banks.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
       <Project>{D21C0F94-5B1B-49E1-A5B0-50C3F99287E2}</Project>
       <Name>QSBanks</Name>
