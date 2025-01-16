@@ -76,7 +76,7 @@ namespace QS.Banks.Domain
 			}
 		}
 
-		public virtual string Title => "Счет: " + Name;
+		public virtual string Title => $"[{Id}] Счёт {Name} №{Number} в банке {InBank?.Name}";
 
 		/// <summary>
 		/// Ссылка на владельца счета. Необходима для возможности установки счета по умолчанию.
