@@ -44,11 +44,13 @@ namespace QS.Report.ViewModels
 		}
 
 		public void Dispose() {
+			if(ReportParametersViewModel != null)
+				ReportParametersViewModel.PropertyChanged -= OnReportParametersViewModelPropertyChanged;
+			
 			if(ReportParametersViewModel is IDisposable disposable) {
-				disposable.Dispose();
+				disposable?.Dispose();
 			}
-
-			ReportParametersViewModel.PropertyChanged -= OnReportParametersViewModelPropertyChanged;
+			
 			LoadReport = null;
 			ReportPrinted = null;
 		}
