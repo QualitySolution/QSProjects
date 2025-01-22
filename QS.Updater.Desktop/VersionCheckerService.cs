@@ -8,15 +8,11 @@ namespace QS.Updater
 	public class VersionCheckerService
 	{
 		private readonly CheckBaseVersion checkBaseVersion;
-		private readonly IInteractiveMessage interactive;
-		private readonly IApplicationQuitService quitService;
 		private readonly IAppUpdater applicationUpdater;
 		private readonly IDBUpdater dbUpdater;
 
 		public VersionCheckerService(CheckBaseVersion checkBaseVersion, IInteractiveMessage interactive, IApplicationQuitService quitService, IAppUpdater applicationUpdater = null, IDBUpdater dbUpdater = null) {
 			this.checkBaseVersion = checkBaseVersion ?? throw new ArgumentNullException(nameof(checkBaseVersion));
-			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
-			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.applicationUpdater = applicationUpdater;
 			this.dbUpdater = dbUpdater;
 		}
@@ -24,8 +20,7 @@ namespace QS.Updater
 		public UpdateInfo? RunUpdate() 
 		{
 			UpdateInfo? updateInfo = null;
-			if (applicationUpdater != null)
-			{
+			if (applicationUpdater != null) {
 				updateInfo = applicationUpdater.CheckUpdate(false);
 			}
 
@@ -42,8 +37,7 @@ namespace QS.Updater
 				}
 			}
 
-			if (checkBaseVersion.ResultFlags != CheckBaseResult.Ok) 
-			{
+			if (checkBaseVersion.ResultFlags != CheckBaseResult.Ok) {
 				updateInfo = new UpdateInfo("", checkBaseVersion.TextMessage, UpdateStatus.Error, ImportanceLevel.Warning);
 			}
 

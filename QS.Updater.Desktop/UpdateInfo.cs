@@ -27,7 +27,13 @@ namespace QS.Updater
 		Skip,
 		Shelve,
 		UpToDate,
+		/// <summary>
+		/// Дополнительные сообщения со стороны сервера.
+		/// </summary>
 		ExternalError,
+		/// <summary>
+		/// Ошибка подключения к серверу обновлений.
+		/// </summary>
 		Error
 	}
 }
