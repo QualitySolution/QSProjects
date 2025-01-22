@@ -89,11 +89,28 @@ namespace QS.Project.Versioning
 	[Flags]
 	public enum CheckBaseResult
 	{
+		/// <summary>
+		/// Версия базы корректна и позволяет работать.
+		/// </summary>
 		Ok = 0x0,
+		/// <summary>
+		/// База данных от другого продукта.
+		/// </summary>
 		IncorrectProduct = 0x1,
+		/// <summary>
+		/// Не поддерживаемая редакция базы.
+		/// </summary>
 		UnsupportedEdition = 0x2,
+		/// <summary>
+		/// Версия базы не определена.
+		/// </summary>
 		IncorrectVersion = 0x4,
+		/// <summary>
+		/// Программа новее базы. Для продолжения работы обновление базы обязательно.
+		/// </summary>
 		BaseVersionLess = 0x8,
+		/// <summary>
+		/// База данных новее программы. Для продолжения работы необходимо обновление программы.
 		BaseVersionGreater = 0x16
 	}
 }
