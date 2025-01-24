@@ -32,15 +32,6 @@ namespace QS.Project.Journal.DataLoader
 
 		public bool FirstPage => true;
 
-		bool loadInProgress;
-		public bool LoadInProgress {
-			get => loadInProgress;
-			private set {
-				loadInProgress = value;
-				OnLoadingStateChange(value ? LoadingState.InProgress : LoadingState.Idle);
-			}
-		}
-
 		public bool TotalCountingInProgress { get; private set; }
 
 		public uint? TotalCount => (uint?)Items?.Count;
@@ -69,6 +60,21 @@ namespace QS.Project.Journal.DataLoader
 			TotalCountingInProgress = false;
 		}
 
+		#region LoadingInPorogress	
+
+		int loadInProgress;
+		public bool LoadInProgress => loadInProgress == 1;
+
+		bool SetLoadInProgress(bool value) {
+			int newValue = value ? 1 : 0;
+			bool isSet = Interlocked.Exchange(ref loadInProgress, newValue) != newValue;
+			if(isSet)
+				OnLoadingStateChange(value ? LoadingState.InProgress : LoadingState.Idle);
+			return isSet;
+		}
+
+		#endregion
+		
 		#region Загрузка данных
 		private int reloadRequested = 0;
 
@@ -77,23 +83,21 @@ namespace QS.Project.Journal.DataLoader
 			if(cts.IsCancellationRequested)
 				cts = new CancellationTokenSource();
 
-			if(LoadInProgress) {
-					Interlocked.Exchange(ref reloadRequested, 1);
+			if (!SetLoadInProgress(true)) {
+				Interlocked.Exchange(ref reloadRequested, 1);
 				return;
 			}
-
-			LoadInProgress = true;
+			
 			DateTime startTime = DateTime.Now;
 			Task.Factory.StartNew(() => Items = (IList)getNodes(cts.Token), cts.Token)
 				.ContinueWith((tsk) => {
-					LoadInProgress = false;
+					SetLoadInProgress(false);
 					if(tsk.IsFaulted)
 						OnLoadError(tsk.Exception);
 					logger.Info($"Загружено за {(DateTime.Now - startTime).TotalSeconds} сек.");
 					ItemsListUpdated?.Invoke(this, EventArgs.Empty);
 					TotalCountChanged?.Invoke(this, EventArgs.Empty);
 				});
-			Console.WriteLine("exit");
 		}
 
 		#endregion
