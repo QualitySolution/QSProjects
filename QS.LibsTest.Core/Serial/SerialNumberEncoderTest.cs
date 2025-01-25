@@ -57,12 +57,19 @@ namespace QS.Test.Serial
 		}
 		
 		[Test(Description = "Тест набора серийных номеров версии 3")]
+
+		#region Проверка совместимости со временными серийниками версии без платных функций, возможно в будущем удалить
 		[TestCase("Fhd9-nuXE-UWLQ-7eW3-w", true, 1, (ushort)11,(ushort)6, null)]//Тестовый Однопользовательская
 		[TestCase("G8oE-6zju-qHUb-8Cqf-c", true, 2, (ushort)34,(ushort)15, null)]//Тестовый Профессиональная 2 пользователя
 		[TestCase("G8oE-6zju-qHUb-8Cqk-B", true, 3, (ushort)34, (ushort)15, null)]//Тестовый Предприятие 1 пользователь
-		[TestCase("65qs-56f8-nnsu-Goat-8Pmb", true, 4, (ushort)34, (ushort)10, "2024-10-04")]//Тестовый Спецаутсорсинг 1 пользователь с датой окончания
-		[TestCase("", false, 0, (ushort)0, (ushort)0, null)]//Пустой серийник
 		[TestCase("Fhd9-nwjg-zuYU-Wduk-M", false, 0, (ushort)0, (ushort)0, null)]//Серийник от другого продукта.
+		#endregion
+		[TestCase("2i2z-gckf-9vHD-e3bh-CT7Z-yeo", true, 1, (ushort)34,(ushort)50, null)]//Тестовый Однопользовательская
+		[TestCase("2i2z-gcqW-BK1V-Cm4r-eFjJ-8G2", true, 2, (ushort)34,(ushort)500, null)]//Тестовый Профессиональная 2 пользователя
+		[TestCase("2i2z-gckf-t5bQ-N1A7-gPew-aJq", true, 3, (ushort)34, (ushort)1500, null)]//Тестовый Предприятие 1 пользователь
+		[TestCase("2fCG-SsBF-4hpf-TKgL-jdvC-rzF", true, 4, (ushort)11, (ushort)0, null)]//Тестовый Спецаутсорсинг 1 пользователь
+		[TestCase("ZK1s-9ro6-JC4n-uB6A-nKK2-Suqx-j", true, 4, (ushort)11, (ushort)0, "2026-01-25")]//Тестовый Спецаутсорсинг 1 пользователь с датой окончания
+		[TestCase("", false, 0, (ushort)0, (ushort)0, null)]//Пустой серийник
 		public void EncoderV3_WorkwearTest(string sn, bool isValid, byte edition, ushort clientId, ushort employees, DateTime? expiryDate)
 		{
 			var appInfo = Substitute.For<IApplicationInfo>();
