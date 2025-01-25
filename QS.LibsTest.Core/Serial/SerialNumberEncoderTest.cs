@@ -57,7 +57,6 @@ namespace QS.Test.Serial
 		}
 		
 		[Test(Description = "Тест набора серийных номеров версии 3")]
-
 		#region Проверка совместимости со временными серийниками версии без платных функций, возможно в будущем удалить
 		[TestCase("Fhd9-nuXE-UWLQ-7eW3-w", true, 1, (ushort)11,(ushort)6, null)]//Тестовый Однопользовательская
 		[TestCase("G8oE-6zju-qHUb-8Cqf-c", true, 2, (ushort)34,(ushort)15, null)]//Тестовый Профессиональная 2 пользователя
@@ -84,6 +83,31 @@ namespace QS.Test.Serial
 				Assert.That(encoder.EditionId, Is.EqualTo(edition));
 				Assert.That(encoder.ClientId, Is.EqualTo(clientId));
 				Assert.That(encoder.Employees, Is.EqualTo(employees));
+				Assert.That(encoder.ExpiryDate, Is.EqualTo(expiryDate));
+			}
+		}
+		
+		[Test(Description = "Тест набора серийных номеров версии 3 c платными функциями")]
+		[TestCase("2i2z-f9dS-7WB5-wBwA-4RvN-qRv", true, 3, (ushort)34, (ushort)3, (ushort)0, (uint)0b0,null)]//Тестовый Профессиональная 2 пользователя без платных фукнций
+		[TestCase("2i2z-f9dT-A1a7-rniq-sqpT-9tc", true, 3, (ushort)34, (ushort)3,(ushort)500, (uint)0b1,null)]//Тестовый Профессиональная 2 пользователя + Модуль штрихкоды
+		[TestCase("2i2z-f9dT-A1a7-rniq-tX5e-8kw", true, 3, (ushort)34, (ushort)3,(ushort)500, (uint)0b111,null)]//Тестовый Профессиональная 2 пользователя + штрихкоды, стирка, скуд
+		[TestCase("aGM2-CGUa-4jWC-LYM4-bMVL-AJib-z", true, 3, (ushort)34, (ushort)3,(ushort)500, (uint)0b111,"2026-01-25")]//Тестовый Профессиональная 2 пользователя + штрихкоды, стирка, скуд
+		public void EncoderV3_Features_WorkwearTest(string sn, bool isValid, byte edition, ushort clientId, ushort users, ushort employees, uint paidFeatures, DateTime? expiryDate)
+		{
+			var appInfo = Substitute.For<IApplicationInfo>();
+			appInfo.ProductCode.Returns<byte>(2);
+			var encoder = new SerialNumberEncoder(appInfo);
+			encoder.Number = sn;
+			Assert.That(encoder.IsValid, Is.EqualTo(isValid));
+			if(isValid)
+				Assert.That(encoder.CodeVersion, Is.EqualTo(3));
+			if(isValid) {
+				Assert.That(encoder.ProductId, Is.EqualTo(2));
+				Assert.That(encoder.EditionId, Is.EqualTo(edition));
+				Assert.That(encoder.ClientId, Is.EqualTo(clientId));
+				//Assert.That(encoder., Is.EqualTo(users));
+				Assert.That(encoder.Employees, Is.EqualTo(employees));
+				Assert.That(encoder.PaidFeaturesFags, Is.EqualTo(paidFeatures));
 				Assert.That(encoder.ExpiryDate, Is.EqualTo(expiryDate));
 			}
 		}
