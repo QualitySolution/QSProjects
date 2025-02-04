@@ -22,6 +22,9 @@ namespace QS.Updater
 			UpdateInfo? updateInfo = null;
 			if (applicationUpdater != null) {
 				updateInfo = applicationUpdater.CheckUpdate(false);
+				if(updateInfo?.Status == UpdateStatus.AppUpdateIsRunning) {
+					return updateInfo;
+				}
 			}
 
 			checkBaseVersion.Check();
@@ -38,7 +41,7 @@ namespace QS.Updater
 			}
 
 			if (checkBaseVersion.ResultFlags != CheckBaseResult.Ok) {
-				updateInfo = new UpdateInfo("", checkBaseVersion.TextMessage, UpdateStatus.Error, ImportanceLevel.Warning);
+				updateInfo = new UpdateInfo("", checkBaseVersion.TextMessage, UpdateStatus.BaseError, ImportanceLevel.Warning);
 			}
 
 			return updateInfo;
