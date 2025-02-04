@@ -24,9 +24,23 @@ namespace QS.Updater
 	public enum UpdateStatus 
 	{
 		Ok,
+		/// <summary>
+		/// Обновление пропущено пользователем
+		/// </summary>
 		Skip,
+		/// <summary>
+		/// Обновление отложено пользователем
+		/// </summary>
 		Shelve,
+		/// <summary>
+		/// Запущена установка обновления. Необходимо закрыть приложение.
+		/// </summary>
+		AppUpdateIsRunning,
 		UpToDate,
+		/// <summary>
+		/// Ошибка версии базы данных
+		/// </summary>
+		BaseError,
 		/// <summary>
 		/// Дополнительные сообщения со стороны сервера.
 		/// </summary>
@@ -34,6 +48,6 @@ namespace QS.Updater
 		/// <summary>
 		/// Ошибка подключения к серверу обновлений.
 		/// </summary>
-		Error
+		ConnectionError
 	}
 }

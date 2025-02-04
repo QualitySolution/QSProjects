@@ -66,7 +66,7 @@ namespace QS.Updater.App {
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Ошибка доступа к серверу обновления.");
-				return new UpdateInfo("Ошибка доступа к серверу обновления", "Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже", UpdateStatus.Error, ImportanceLevel.Error);
+				return new UpdateInfo("Ошибка доступа к серверу обновления", "Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже", UpdateStatus.ConnectionError, ImportanceLevel.Error);
 			}
 
 			if (!response.Releases.Any()) 
@@ -99,7 +99,7 @@ namespace QS.Updater.App {
 				var isClosed = false;
 				string title = string.Empty;
 				string message = string.Empty;
-				UpdateStatus status = UpdateStatus.Error;
+				UpdateStatus status = UpdateStatus.Shelve;
 				page.PageClosed += (sender, e) => 
 				{
 					isClosed = true;
@@ -112,11 +112,10 @@ namespace QS.Updater.App {
 					{
 						title = "Установка обновления";
 						message = "Приложение будет закрыто";
-						status = UpdateStatus.Ok;
+						status = UpdateStatus.AppUpdateIsRunning;
 						quitService.Quit();
 					}
-					else 
-					{
+					else {
 						title = "Обновление отложено";
 						status = UpdateStatus.Shelve;
 					}
