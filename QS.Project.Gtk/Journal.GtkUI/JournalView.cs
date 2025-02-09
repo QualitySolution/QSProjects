@@ -183,6 +183,10 @@ namespace QS.Journal.GtkUI
 				if(ViewModel.ExpandAfterReloading) {
 					tableview.ExpandAll();
 				}
+
+				foreach(var column in tableview.Columns) {
+					column.QueueResize();
+				}
 			});
 		}
 
