@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Dialect.Function;
+using NHibernate.Type;
 
 namespace QS.Project.DB
 {
@@ -200,6 +201,10 @@ namespace QS.Project.DB
 		}
 
 		#endregion
+
+		public static IProjection Coalesce(IType type, params IProjection[] projections) {
+			return Projections.SqlFunction("COALESCE", type, projections);
+		}
 	}
 
 	public enum OrderByDirection
