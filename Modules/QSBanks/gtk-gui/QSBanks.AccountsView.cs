@@ -6,7 +6,11 @@ namespace QSBanks
 	{
 		private global::Gtk.VBox vbox1;
 
+		private global::Gtk.HBox hbox2;
+
 		private global::Gtk.Label labelTitle;
+
+		private global::Gtk.Button buttonCopyAccountDetails;
 
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
@@ -31,15 +35,36 @@ namespace QSBanks
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
+			this.hbox2 = new global::Gtk.HBox();
+			this.hbox2.Name = "hbox2";
+			this.hbox2.Spacing = 6;
+			// Container child hbox2.Gtk.Box+BoxChild
 			this.labelTitle = new global::Gtk.Label();
 			this.labelTitle.Name = "labelTitle";
 			this.labelTitle.Xalign = 0F;
 			this.labelTitle.LabelProp = global::Mono.Unix.Catalog.GetString("Банковские счета организации");
-			this.vbox1.Add(this.labelTitle);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.labelTitle]));
+			this.hbox2.Add(this.labelTitle);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.labelTitle]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.buttonCopyAccountDetails = new global::Gtk.Button();
+			this.buttonCopyAccountDetails.CanFocus = true;
+			this.buttonCopyAccountDetails.Name = "buttonCopyAccountDetails";
+			this.buttonCopyAccountDetails.UseUnderline = true;
+			this.buttonCopyAccountDetails.Label = global::Mono.Unix.Catalog.GetString("Скопировать реквизиты");
+			this.hbox2.Add(this.buttonCopyAccountDetails);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonCopyAccountDetails]));
+			w2.PackType = ((global::Gtk.PackType)(1));
+			w2.Position = 2;
+			w2.Expand = false;
+			w2.Fill = false;
+			this.vbox1.Add(this.hbox2);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox2]));
+			w3.Position = 0;
+			w3.Expand = false;
+			w3.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -50,8 +75,8 @@ namespace QSBanks
 			this.datatreeviewAccounts.Name = "datatreeviewAccounts";
 			this.GtkScrolledWindow.Add(this.datatreeviewAccounts);
 			this.vbox1.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
-			w3.Position = 1;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
+			w5.Position = 1;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
@@ -62,53 +87,54 @@ namespace QSBanks
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.UseUnderline = true;
 			this.buttonAdd.Label = global::Mono.Unix.Catalog.GetString("Новый счет");
-			global::Gtk.Image w4 = new global::Gtk.Image();
-			w4.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-add", global::Gtk.IconSize.Menu);
-			this.buttonAdd.Image = w4;
+			global::Gtk.Image w6 = new global::Gtk.Image();
+			w6.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-add", global::Gtk.IconSize.Menu);
+			this.buttonAdd.Image = w6;
 			this.hbox1.Add(this.buttonAdd);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonAdd]));
-			w5.Position = 0;
-			w5.Expand = false;
-			w5.Fill = false;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonAdd]));
+			w7.Position = 0;
+			w7.Expand = false;
+			w7.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonEdit = new global::Gtk.Button();
 			this.buttonEdit.CanFocus = true;
 			this.buttonEdit.Name = "buttonEdit";
 			this.buttonEdit.UseUnderline = true;
 			this.buttonEdit.Label = global::Mono.Unix.Catalog.GetString("Изменить");
-			global::Gtk.Image w6 = new global::Gtk.Image();
-			w6.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
-			this.buttonEdit.Image = w6;
+			global::Gtk.Image w8 = new global::Gtk.Image();
+			w8.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-edit", global::Gtk.IconSize.Menu);
+			this.buttonEdit.Image = w8;
 			this.hbox1.Add(this.buttonEdit);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonEdit]));
-			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonEdit]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.buttonDelete = new global::Gtk.Button();
 			this.buttonDelete.CanFocus = true;
 			this.buttonDelete.Name = "buttonDelete";
 			this.buttonDelete.UseUnderline = true;
 			this.buttonDelete.Label = global::Mono.Unix.Catalog.GetString("Удалить");
-			global::Gtk.Image w8 = new global::Gtk.Image();
-			w8.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-remove", global::Gtk.IconSize.Menu);
-			this.buttonDelete.Image = w8;
+			global::Gtk.Image w10 = new global::Gtk.Image();
+			w10.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-remove", global::Gtk.IconSize.Menu);
+			this.buttonDelete.Image = w10;
 			this.hbox1.Add(this.buttonDelete);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonDelete]));
-			w9.Position = 2;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonDelete]));
+			w11.Position = 2;
+			w11.Expand = false;
+			w11.Fill = false;
 			this.vbox1.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
-			w10.Position = 2;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox1]));
+			w12.Position = 2;
+			w12.Expand = false;
+			w12.Fill = false;
 			this.Add(this.vbox1);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.buttonCopyAccountDetails.Clicked += new global::System.EventHandler(this.OnButtonCopyAccountDetailsClicked);
 			this.datatreeviewAccounts.RowActivated += new global::Gtk.RowActivatedHandler(this.OnDatatreeviewAccountsRowActivated);
 			this.buttonAdd.Clicked += new global::System.EventHandler(this.OnButtonAddClicked);
 			this.buttonEdit.Clicked += new global::System.EventHandler(this.OnButtonEditClicked);

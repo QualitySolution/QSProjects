@@ -129,6 +129,10 @@ namespace QSBanks
 			if (OrmMain.DeleteObject (typeof(Account), (datatreeviewAccounts.GetSelectedObjects () [0] as Account).Id))
 				accountOwner.Accounts.Remove (datatreeviewAccounts.GetSelectedObjects () [0] as Account);
 		}
+
+		protected void OnButtonCopyAccountDetailsClicked(object sender, EventArgs e)
+		{
+		}
 	}
 }
 
