@@ -341,6 +341,11 @@ namespace QS.Navigation
 				(masterPage as IPageInternal).AddChildPage(page);
 			}
 			else {
+				if(masterPage != null && !TopLevelPages.Contains(masterPage)) {
+					masterPage = TopLevelPages.FirstOrDefault(top => top.ChildPages.Contains(masterPage));
+					if(masterPage == null)
+						throw new InvalidOperationException();
+				}
 				pages.Add(page);
 				tdiNotebook.AddTab((page as ITdiPage).TdiTab, (masterPage as ITdiPage)?.TdiTab);
 			}
