@@ -33,7 +33,7 @@ namespace QS.Extensions.Observable.Collections.List
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public new T this[int index] { 
-			get { return base[index]; } 
+			get => base[index];
 			set {
 				var oldItem = base[index];
 				base[index] = value;
@@ -42,10 +42,20 @@ namespace QS.Extensions.Observable.Collections.List
 			}
 		}
 
+		object IList.this[int index] {
+			get => this[index];
+			set => this[index] = (T)value;
+		}
+		
 		public new void Add(T item) {
 			base.Add(item);
 			OnItemAdded(item);
 			SubscribeElementChanged(item);
+		}
+		
+		int IList.Add(object value) {
+			Add((T)value);
+			return Count - 1;
 		}
 
 		public new void Clear() {
@@ -54,10 +64,18 @@ namespace QS.Extensions.Observable.Collections.List
 			ClearSubscribes();
 		}
 
+		void IList.Clear() {
+			Clear();
+		}
+
 		public new void Insert(int index, T item) {
 			base.Insert(index, item);
 			OnItemInserted(index, item);
 			SubscribeElementChanged(item);
+		}
+
+		void IList.Insert(int index, object value) {
+			Insert(index, (T)value);
 		}
 
 		public new bool Remove(T item) {
@@ -70,12 +88,20 @@ namespace QS.Extensions.Observable.Collections.List
 			return result;
 		}
 
+		void IList.Remove(object item) {
+			Remove((T)item);
+		}
+
 		public new void RemoveAt(int index) {
 			T item = this[index];
 
 			base.RemoveAt(index);
 			OnItemRemoved(item, index);
 			UnsubscribeElementChanged(item);
+		}
+
+		void IList.RemoveAt(int index) {
+			RemoveAt(index);
 		}
 
 		#region INotifyCollectionChanged Members
