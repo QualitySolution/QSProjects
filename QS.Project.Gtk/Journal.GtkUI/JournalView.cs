@@ -191,7 +191,12 @@ namespace QS.Journal.GtkUI
 		}
 
 		private void SetItemsSource() {
-			if(tableview.ColumnsConfig.TreeModelFunc != null) {
+
+			if(tableview.ColumnsConfig is null) {
+				logger.Log(LogLevel.Warn, $"Вызов обновления источника журнала {ViewModel.TabName} с ColumnsConfig null");
+			}
+			
+			if(tableview.ColumnsConfig?.TreeModelFunc != null) {
 				tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke();
 			}
 			else {
