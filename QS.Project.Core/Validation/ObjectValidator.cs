@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,6 +29,14 @@ namespace QS.Validation
 		/// <returns>Возвращает <see langword="true"/> если объект корректен.</returns>
 		public bool Validate(object validatableObject, ValidationContext validationContext = null, bool showValidationResults = true)
 		{
+			if(validationContext is null) {
+				validationContext = new ValidationContext(validatableObject);
+			}
+
+			if(ServiceProvider != null) {
+				validationContext.InitializeServiceProvider((type) => ServiceProvider.GetRequiredService(type));
+			}
+
 			return Validate(new[] { new ValidationRequest(validatableObject, validationContext)}, showValidationResults);
 		}
 
