@@ -16,10 +16,22 @@ namespace QS.Utilities
 
 		}
 
+		/// <summary>
+		/// Возвращает название месяца.
+		/// </summary>
 		public static string GetMonthName(int monthNumber)
 		{
 			var tempDate = new DateTime(2015, monthNumber, 1);
 			return tempDate.ToString("MMMM");
+		}
+
+		/// <summary>
+		/// Возвращает название месяца в родительном падеже.
+		/// </summary>
+		public static string GetMonthGenitiveName(int monthNumber) {
+			string[] monthsGenitive = { "января", "февраля", "марта", "апреля", "мая", "июня", 
+				"июля", "августа", "сентября", "октября", "ноября", "декабря" };
+			return monthsGenitive[monthNumber - 1];
 		}
 
 		public static void GetWeekPeriod(out DateTime startDate, out DateTime endDate, DateTime date)
