@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using NHibernate.Collection.Generic;
 using NHibernate.Engine;
 using System.Collections.Generic;
@@ -32,11 +33,21 @@ namespace QS.Extensions.Observable.Collections.List {
 				SubscribeElementChanged(value);
 			}
 		}
+		
+		object IList.this[int index] {
+			get => this[index];
+			set => this[index] = (T)value;
+		}
 
 		public new void Add(T item) {
 			base.Add(item);
 			OnItemAdded(item);
 			SubscribeElementChanged(item);
+		}
+		
+		int IList.Add(object value) {
+			Add((T)value);
+			return Count - 1;
 		}
 
 		public new void Clear() {
@@ -44,11 +55,19 @@ namespace QS.Extensions.Observable.Collections.List {
 			OnCollectionReset();
 			ClearSubscribes();
 		}
+		
+		void IList.Clear() {
+			Clear();
+		}
 
 		public new void Insert(int index, T item) {
 			base.Insert(index, item);
 			OnItemInserted(index, item);
 			SubscribeElementChanged(item);
+		}
+		
+		void IList.Insert(int index, object value) {
+			Insert(index, (T)value);
 		}
 
 		public new bool Remove(T item) {
@@ -60,6 +79,10 @@ namespace QS.Extensions.Observable.Collections.List {
 
 			return result;
 		}
+		
+		void IList.Remove(object item) {
+			Remove((T)item);
+		}
 
 		public new void RemoveAt(int index) {
 			T item = this[index];
@@ -67,6 +90,21 @@ namespace QS.Extensions.Observable.Collections.List {
 			base.RemoveAt(index);
 			OnItemRemoved(item, index);
 			UnsubscribeElementChanged(item);
+		}
+		
+		void IList.RemoveAt(int index) {
+			RemoveAt(index);
+		}
+		
+		public int RemoveAll(Predicate<T> match) {
+			int num = 0;
+			for(int i = Count - 1; i >= 0 ; i--) {
+				if(match(base[i])) {
+					base.RemoveAt(i);
+					num++;
+				}
+			}
+			return num;
 		}
 
 		#region INotifyCollectionChanged Members
