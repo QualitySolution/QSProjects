@@ -218,7 +218,7 @@ namespace QSOrmProject
 		public static bool DeleteObject(Type objectClass, int id, IUnitOfWork uow = null, System.Action beforeDeletion = null)
 		{
 			try {
-				var deleteSerive = ServicesConfig.Scope.Resolve<DeleteEntityGUIService>();
+				var deleteSerive = ServicesConfig.Scope.Resolve<IDeleteEntityService>();
 
 				var deletion = deleteSerive.DeleteEntity(objectClass, id, uow, beforeDeletion);
 
