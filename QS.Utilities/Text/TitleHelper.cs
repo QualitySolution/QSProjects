@@ -16,6 +16,9 @@ namespace QS.Utilities.Text
 			return result;
 		}
 
+		/// <summary>
+		/// Делает в строке первую букву заглавной.
+		/// </summary>
 		public static string StringToTitleCase(this string input)
 		{
 			if(String.IsNullOrWhiteSpace(input))
