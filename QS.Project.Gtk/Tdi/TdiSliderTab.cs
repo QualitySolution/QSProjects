@@ -8,7 +8,7 @@ using QS.ViewModels.Extension;
 
 namespace QS.Tdi
 {
-	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath, ITdiSliderTab
+	public class TdiSliderTab : HBox, ITdiTab, ITdiTabParent, ITdiTabWithPath, ITdiSliderTab, IDialogDocumentation
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 		private Widget journalWidget;
@@ -32,9 +32,10 @@ namespace QS.Tdi
 		readonly ITDIWidgetResolver widgetResolver;
 		#endregion
 
-		public TdiSliderTab(ITdiJournal jour, ITDIWidgetResolver widgetResolver)
+		public TdiSliderTab(ITdiJournal jour, ITDIWidgetResolver widgetResolver, IDialogDocumentation documentation = null)
 		{
 			this.widgetResolver = widgetResolver ?? throw new ArgumentNullException(nameof(widgetResolver));
+			journalDocumentation = documentation;
 			Journal = jour;
 			HandleSwitchIn = OnSwitchIn;
 			HandleSwitchOut = OnSwitchOut;
@@ -289,6 +290,7 @@ namespace QS.Tdi
 			var oldTab = ActiveDialog;
 			ActiveDialog.OnTabClosed();
 			ActiveDialog = null;
+			dialogDocumentation = null;
 			activeGlgWidget.Destroy();
 			(TabParent as TdiNotebook)?.OnSliderTabClosed(this, oldTab, source);
 			OnSliderTabChanged();
@@ -297,7 +299,7 @@ namespace QS.Tdi
 
 		#endregion
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, IDialogDocumentation documentation = null)
 		{
 			if(slaveTab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
@@ -307,9 +309,9 @@ namespace QS.Tdi
 			}
 
 			if(masterTab == Journal || masterTab == ActiveDialog)
-				TabParent.AddSlaveTab(this as ITdiTab, slaveTab);
+				TabParent.AddSlaveTab(this as ITdiTab, slaveTab, documentation: documentation);
 			else
-				TabParent.AddSlaveTab(masterTab, slaveTab);
+				TabParent.AddSlaveTab(masterTab, slaveTab, documentation: documentation);
 		}
 
 		/// <summary>
@@ -318,7 +320,7 @@ namespace QS.Tdi
 		/// <param name="tab">Основная вкладка.</param>
 		/// <param name="afterTab">Дочерняя вкладка.</param>
 		/// <param name="canSlided">Если true, то открываются в одной вкладке.</param>
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true)
+		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true, IDialogDocumentation documentation = null)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
@@ -333,14 +335,15 @@ namespace QS.Tdi
 					var askSave = (ActiveDialog as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
 					CloseDialog(CloseSource.FromParentPage, askSave);
 				}
+				dialogDocumentation = documentation;
 				ActiveDialog = tab;
 				return;
 			}
 
 			if(afterTab == null || afterTab == Journal || afterTab == ActiveDialog)
-				TabParent.AddTab(tab, this as ITdiTab);
+				TabParent.AddTab(tab, this as ITdiTab, documentation: this);
 			else
-				TabParent.AddTab(tab, afterTab);
+				TabParent.AddTab(tab, afterTab, documentation: documentation);
 		}
 
 		public bool FailInitialize {
@@ -448,6 +451,13 @@ namespace QS.Tdi
 				PathChanged(this, EventArgs.Empty);
 		}
 
+		#endregion
+
+		#region IDialogDocumentation
+		IDialogDocumentation journalDocumentation;
+		IDialogDocumentation dialogDocumentation;
+		public string DocumentationUrl => dialogDocumentation?.DocumentationUrl ?? journalDocumentation?.DocumentationUrl;
+		public string ButtonTooltip => dialogDocumentation?.ButtonTooltip ?? journalDocumentation?.ButtonTooltip;
 		#endregion
 	}
 }

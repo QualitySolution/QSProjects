@@ -2,6 +2,7 @@
 using QS.Dialog.GtkUI;
 using QS.Navigation;
 using QS.Tdi;
+using QS.ViewModels.Extension;
 
 namespace QSOrmProject
 {
@@ -68,12 +69,12 @@ namespace QSOrmProject
 		}
 
 		#region ITdiTabParent implementation
-		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab)
+		public void AddSlaveTab (ITdiTab masterTab, ITdiTab slaveTab, IDialogDocumentation documentation = null)
 		{
 			RunDlg (slaveTab);
 		}
 
-		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		public void AddTab (ITdiTab tab, ITdiTab afterTab, bool CanSlided = true, IDialogDocumentation documentation = null)
 		{
 			RunDlg (tab);
 		}

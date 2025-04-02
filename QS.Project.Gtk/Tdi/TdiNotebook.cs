@@ -5,7 +5,6 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.GtkUI;
-using QS.Extensions;
 using QS.Navigation;
 using QS.Utilities.Text;
 using QS.Utilities;
@@ -23,6 +22,7 @@ namespace QS.Tdi.Gtk
 		public event EventHandler<TabAddedEventArgs> TabAdded;
 		public event EventHandler<TabSwitchedEventArgs> TabSwitched;
 		public event EventHandler<TabClosedEventArgs> TabClosed;
+		public event EventHandler DocumentationOpened;
 
 		public ReadOnlyCollection<TdiTabInfo> Tabs;
 		public bool DefaultUseSlider = true;
@@ -295,7 +295,7 @@ namespace QS.Tdi.Gtk
 
 		#region Открытие вкладки
 
-		public void AddTab(ITdiTab tab, int after = -1)
+		public void AddTab(ITdiTab tab, int after = -1, IDialogDocumentation documentation = null)
 		{
 			if(tab.FailInitialize) {
 				logger.Warn("Вкладка <{0}> не добавлена, так как сообщает что построена с ошибкой(Свойство FailInitialize) .",
@@ -332,12 +332,14 @@ namespace QS.Tdi.Gtk
 			box.ShowAll();
 			var journalTab = tab as ITdiJournal;
 			if(journalTab != null && ((journalTab.UseSlider == null && DefaultUseSlider) || journalTab.UseSlider.Value)) {
-				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab, WidgetResolver);
+				TdiSliderTab slider = new TdiSliderTab((ITdiJournal)tab, WidgetResolver, documentation);
 				tab = slider;
+				documentation = slider;
 			}
 			tab.TabNameChanged += OnTabNameChanged;
 			_tabs.Add(new TdiTabInfo(tab, nameLabel) { Color = _useTabColors ? Colors[_currentColor] : null });
-			var vbox = new TabVBox(tab, WidgetResolver);
+			var vbox = new TabVBox(tab, WidgetResolver, documentation);
+			vbox.OnDocumentationOpened += (sender, e) => DocumentationOpened?.Invoke(sender, e);
 			int inserted;
 			if(after >= 0)
 				inserted = this.InsertPage(vbox, box, after + 1);
@@ -477,7 +479,7 @@ namespace QS.Tdi.Gtk
 			return result;
 		}
 
-		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab)
+		public void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, IDialogDocumentation documentation = null)
 		{
 			TdiTabInfo info = _tabs.Find(t => t.TdiTab == masterTab);
 			if(info == null)
@@ -490,23 +492,23 @@ namespace QS.Tdi.Gtk
 			}
 
 			info.SlaveTabs.Add(slaveTab);
-			this.AddTab(slaveTab, masterTab);
+			this.AddTab(slaveTab, masterTab, documentation: documentation);
 			this.SetTabReorderable(GetTabBoxForTab(slaveTab), false);
 			var addedTabInfo = _tabs.Find(t => t.TdiTab == slaveTab);
 			addedTabInfo.MasterTabInfo = info;
 			OnTabNameChanged(slaveTab, new TdiTabNameChangedEventArgs(slaveTab.TabName));
 		}
 
-		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true)
+		public void AddTab(ITdiTab tab, ITdiTab afterTab, bool CanSlided = true, IDialogDocumentation documentation = null)
 		{
 			if(afterTab == null)
-				AddTab(tab);
+				AddTab(tab, documentation: documentation);
 			else {
 				var tabBox = GetTabBoxForTab(afterTab);
 				if(tabBox == null) {
-					AddTab(tab);
+					AddTab(tab, documentation: documentation);
 				} else {
-					AddTab(tab, this.PageNum(tabBox));
+					AddTab(tab, this.PageNum(tabBox), documentation);
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using QS.Navigation;
+using QS.ViewModels.Extension;
 
 namespace QS.Tdi
 {
@@ -10,7 +11,7 @@ namespace QS.Tdi
         /// </summary>
         /// <param name="masterTab">Вкладка, для которой надо открыть подчинённую.</param>
         /// <param name="slaveTab">Подчинённая вкладка.</param>
-        void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab);
+        void AddSlaveTab(ITdiTab masterTab, ITdiTab slaveTab, IDialogDocumentation documentation = null);
 
         /// <summary>
         /// Добавить вкладку.
@@ -18,7 +19,7 @@ namespace QS.Tdi
         /// <param name="tab">Вкладка, которую надо открыть.</param>
         /// <param name="afterTab">После какой вкладки добавлять. Обычно после выбранной - в этом случае аргумент "this".</param>
         /// <param name="canSlided">Может ли вкладка открыться рядом с журналом. "True" и открывается из журнала - появляется справа, "false" - открывается в отдельной вкладке.</param>
-		void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true);
+		void AddTab(ITdiTab tab, ITdiTab afterTab, bool canSlided = true, IDialogDocumentation documentation = null);
 
 		/// <summary>
 		/// Выполняем проверку есть ли у вкладки подчиненные, если есть выводится сообщение пользователю с переключение на незакрытую подчинённую вкладку.

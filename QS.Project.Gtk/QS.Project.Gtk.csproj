@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -286,6 +286,7 @@
     <EmbeddedResource Include="Icons\close-button.png" />
     <EmbeddedResource Include="Icons\Eye.png" />
     <EmbeddedResource Include="Icons\CrossedEye.png" />
+    <EmbeddedResource Include="Icons\documentation.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
