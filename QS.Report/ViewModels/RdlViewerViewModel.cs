@@ -2,10 +2,11 @@
 using Autofac;
 using QS.Navigation;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Report.ViewModels
 {
-	public class RdlViewerViewModel : DialogViewModelBase, IDisposable
+	public class RdlViewerViewModel : DialogViewModelBase, IDisposable, IDialogDocumentation
 	{
 		public ReportParametersViewModelBase ReportParametersViewModel { get; private set; }
 		public ILifetimeScope AutofacScope { get; }
@@ -54,5 +55,10 @@ namespace QS.Report.ViewModels
 			LoadReport = null;
 			ReportPrinted = null;
 		}
+
+		#region IDialogDocumentation
+		public string DocumentationUrl => (ReportParametersViewModel as IDialogDocumentation)?.DocumentationUrl;
+		public string ButtonTooltip => (ReportParametersViewModel as IDialogDocumentation)?.ButtonTooltip;
+		#endregion
 	}
 }
