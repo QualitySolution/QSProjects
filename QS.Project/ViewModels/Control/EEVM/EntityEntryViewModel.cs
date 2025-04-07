@@ -117,7 +117,7 @@ namespace QS.ViewModels.Control.EEVM
 		public bool CanCleanEntity { get; set; } = true;
 		#endregion
 
-		#region Выбор сущьности основным способом
+		#region Выбор сущности основным способом
 
 		private IEntitySelector entitySelector;
 		public IEntitySelector EntitySelector {
