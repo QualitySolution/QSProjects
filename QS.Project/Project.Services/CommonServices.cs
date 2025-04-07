@@ -1,5 +1,6 @@
 ﻿using System;
 using QS.Dialog;
+using QS.Permissions;
 using QS.Validation;
 
 namespace QS.Services

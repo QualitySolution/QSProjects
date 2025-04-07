@@ -5,10 +5,10 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Permissions;
 using QS.Project.Domain;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Services;
-using QS.Services;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 

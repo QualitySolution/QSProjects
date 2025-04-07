@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using QS.Services;
+using QS.Permissions;
+
 namespace QS.Project.Journal
 {
 	public class JournalEntityConfig<TNode>

@@ -1,6 +1,8 @@
 ﻿using System;
 using QS.DomainModel.Entity.EntityPermissions;
 using QS.DomainModel.Entity.PresetPermissions;
+using QS.Permissions;
+
 namespace QS.Services
 {
 	public class PermissionService : IPermissionService

@@ -1,7 +1,6 @@
-﻿using System;
-using QS.RepresentationModel.GtkUI;
+﻿using QS.RepresentationModel.GtkUI;
 using System.Linq;
-using QS.Services;
+using QS.Permissions;
 
 namespace QS.Project.Dialogs.GtkUI.JournalActions
 {

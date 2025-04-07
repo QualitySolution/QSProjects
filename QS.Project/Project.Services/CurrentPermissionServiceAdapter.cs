@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Permissions;
 using QS.Services;
 
 namespace QS.Project.Services

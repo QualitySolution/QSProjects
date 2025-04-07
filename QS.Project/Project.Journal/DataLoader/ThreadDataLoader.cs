@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Services;
+using QS.Permissions;
 
 namespace QS.Project.Journal.DataLoader
 {
