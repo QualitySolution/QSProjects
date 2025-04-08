@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using QS.Extensions.Observable.Collections.List;
 
@@ -5,11 +7,22 @@ namespace QS.ViewModels.Control {
 	public interface IChoiceListViewModel : INotifyPropertyChanged {
 
 		ObservableList<SelectedEntity> Items { get; }
+
+		/// <summary>
+		/// Показывать в списке строку с сущностью null.
+		/// Результат в спец. поле NullIsSelected
+		/// </summary>
+		void ShowNullValue(bool show, string title);
+
+		/// <summary>
+		/// В списке выбрана сущность null
+		/// </summary>
+		bool NullIsSelected { get; }
 		
 		/// <summary>
 		///  Выбраны все сущности
 		/// </summary>
-		bool AllSelected  { get; }
+		bool AllSelected { get; }
 
 		/// <summary>
 		///  Не выбрано ни одной сущности
@@ -26,7 +39,6 @@ namespace QS.ViewModels.Control {
 		/// </summary>
 		void UnSelectAll ();
 		
-////28569 не очевидное название
 		/// <summary>
 		///  Подсветить все сущности списка содержащие в названии указанную строку
 		/// </summary>
@@ -35,16 +47,26 @@ namespace QS.ViewModels.Control {
 		/// <summary>
 		///  Массив id сущностей
 		/// </summary>
-		int[] SelectedIds { get; }
+		int[] SelectedIds { get;}
 		
-////28569 Добавить только null
 		/// <summary>
-		/// Массив id сущностей со спецзначениями
-		/// Выводит массив id если что-то выбрано, либо массив с одним значением
-		/// -1 если выбрано всё втом числе  null элемент
-		/// -2 если ничего не выбрано
+		/// Массив id сущностей со спецзначениями.
+		/// Выводит массив id если что-то выбрано, либо массив с одним значением, 
+		/// -1 если выбрано всё втом числе  null элемент,
+		/// -2 если ничего не выбрано,
+		/// -3 если выбран только null. 
 		/// Никогда не возвращает пустой массив.
 		/// </summary>
 		int[] SelectedIdsMod { get; }
+
+		/// <summary>
+		///  Список выбранных сущностей
+		/// </summary>
+		IEnumerable<object> SelectedEntities { get; }
+
+		/// <summary>
+		///  Список не выбранных сущностей
+		/// </summary>
+		IEnumerable<object> UnSelectedEntities { get; }
 	}
 }

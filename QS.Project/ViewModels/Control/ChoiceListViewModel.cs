@@ -7,75 +7,70 @@ using QS.DomainModel.UoW;
 using QS.Extensions.Observable.Collections.List;
 
 namespace QS.ViewModels.Control {
-	public class ChoiceListViewModel<TEntity> : PropertyChangedBase, IChoiceListViewModel, IDisposable
-		where TEntity : class ////28569 разобрать
-	{
-		
+	public class ChoiceListViewModel<TEntity> : PropertyChangedBase, IChoiceListViewModel, IDisposable {
 		public ChoiceListViewModel(IList<TEntity> itemsList) {
-			FillItemsFromList(itemsList);
-			//this.UoW = uow ?? throw new ArgumentNullException(nameof(uow));
+			foreach(var item in itemsList) {
+				Items.Add(new SelectedEntity(++itemCount, Id(item), Title(item), item));
+	        }
+	        Items.PropertyOfElementChanged += OnPropertyOfElementChanged;
 		}
 
-		public Func<TEntity, int> Id = e => DomainHelper.GetId(e);
-		public Func<TEntity, string> Name = e => DomainHelper.GetTitle(e);
+		private int itemCount = 0;
+		public Func<TEntity, int?> Id = e => DomainHelper.GetIdOrNull(e);
+		public Func<TEntity, string> Title = e => DomainHelper.GetTitle(e);
 		
 		private ObservableList<SelectedEntity> items = new ObservableList<SelectedEntity>();
-		public ObservableList<SelectedEntity> Items {
-			get {
-				if(items == null)
-					FillItems();
-				return items;
-			}
-		}
-
-		private void FillItemsFromList(IList<TEntity> itemsList) {
-			foreach(var item in itemsList) {
-				items.Add(new SelectedEntity() {
-					Id = Id(item),
-					Name = Name(item)
-				});
-			}
-			items.PropertyOfElementChanged += OnPropertyOfElementChanged;
-		}
-		
-		void FillItems(IUnitOfWork uow = null) {
-////28569 разобрать			
-/*
-			if(uow != null) { 
-				SelectedEntity resultAlias = null;
-				items = new ObservableList<SelectedEntity>(uow.Session.QueryOver<TEntity>()
-					.SelectList(list => list
-						.Select(x => x.Id).WithAlias(() => resultAlias.Id)
-						.Select(x => x.Name).WithAlias(() => resultAlias.Name)
-						.Select(() => true).WithAlias(() => resultAlias.Select)
-						.Select(() => true).WithAlias(() => resultAlias.Highlighted)
-					).OrderBy(x => x.Name).Asc
-					.TransformUsing(Transformers.AliasToBean<SelectedEntity>())
-					.List<SelectedEntity>());
-			}
-*/			
-//			items.PropertyOfElementChanged += OnPropertyOfElementChanged;
-		}
-
+		public ObservableList<SelectedEntity> Items => items;
 		private void OnPropertyOfElementChanged(object sender, PropertyChangedEventArgs e) {
 			OnPropertyChanged(nameof(AllSelected));
 			OnPropertyChanged(nameof(AllUnSelected));
 		}
 		
 		public int[] SelectedIds {
-			get => Items.Where(x => x.Select && x.Id > 0).Select(x => x.Id).Distinct().ToArray();
+			get => Items.Where(x => x.Select && x.EntityId != null).Select(x => (int)x.EntityId).Distinct().ToArray();
 		}
 		
 		public int[] SelectedIdsMod {
 			get {
 				if(AllSelected)
 					return new[] { -1 };
-				var ids = Items.Where(x => x.Select && x.Id > 0).Select(x => x.Id).Distinct().ToArray();
-				if(ids.Length != 0)
-					return ids;
-				else return new[] { -2 };
+				
+				if(SelectedIds.Length == 0) 
+					if(NullIsSelected) 
+						return new[] { -3 };
+					else 
+						return new[] { -2 };
+				else 
+					return SelectedIds;
 			} 
 		}
+
+		public IEnumerable<object> SelectedEntities =>
+			 Items.Where(x => x.Select).Select(x => x.Entity);
+		
+		public IEnumerable<object> UnSelectedEntities =>
+			Items.Where(x => !x.Select).Select(x => x.Entity);
+		
+		private bool visibleNullValue = false;
+		public bool VisibleNullValue {
+			get => visibleNullValue;
+			set => SetField(ref visibleNullValue, value);
+		}
+		
+		public bool NullIsSelected {
+			get => Items.Any(x => x.Select && x.ItemId == -1);
+		}
+
+		public void ShowNullValue(bool show, string title) {
+			if(Items.Any(x => x.ItemId == -1)) {
+				if(!show)
+					items.RemoveAll(x => x.ItemId == -1);
+			} else if(show)
+				items.Add(new SelectedEntity(-1, null, title, null));
+			OnPropertyChanged(nameof(Items));
+			VisibleNullValue = show;
+		}
+		
 		
 		public bool AllSelected {
 			get => Items.All(x => x.Select);
@@ -115,8 +110,17 @@ namespace QS.ViewModels.Control {
 	
 	public class SelectedEntity : PropertyChangedBase
 	{
-		public int Id { get; set; }
-		public string Name { get; set; }
+		public SelectedEntity(int itemId, int? entityId, string name, object entity) {
+			ItemId = itemId;
+			EntityId = entityId;
+			Name = name;
+			Entity = entity;
+		}
+		
+		public int ItemId { get; }
+		public int? EntityId { get; }
+		public object Entity { get; }
+		public string Name { get; }
 		
 		private bool select = true;
 		public virtual bool Select {
