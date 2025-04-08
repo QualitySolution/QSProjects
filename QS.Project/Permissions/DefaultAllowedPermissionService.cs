@@ -5,7 +5,7 @@ namespace QS.Permissions
 {
 	public class DefaultAllowedPermissionService : IPermissionService, ICurrentPermissionService
 	{
-		public IPermissionResult ValidateEntityPermission(Type entityType)
+		public IPermissionResult ValidateEntityPermission(Type entityType, DateTime? documentDate = null)
 		{
 			return new PermissionResult(EntityPermission.AllAllowed);
 		}
