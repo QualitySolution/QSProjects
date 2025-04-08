@@ -60,12 +60,12 @@ namespace QS.ViewModels.Control {
 		int[] SelectedIdsMod { get; }
 
 		/// <summary>
-		///  Список выбранных сущностей
+		///  Список выбранных сущностей, в том числе null
 		/// </summary>
 		IEnumerable<object> SelectedEntities { get; }
 
 		/// <summary>
-		///  Список не выбранных сущностей
+		///  Список не выбранных сущностей, в том числе null
 		/// </summary>
 		IEnumerable<object> UnSelectedEntities { get; }
 	}

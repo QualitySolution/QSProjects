@@ -66,7 +66,7 @@ namespace QS.ViewModels.Control {
 				if(!show)
 					items.RemoveAll(x => x.ItemId == -1);
 			} else if(show)
-				items.Add(new SelectedEntity(-1, null, title, null));
+				items.Insert(0,new SelectedEntity(-1, null, title, null));
 			OnPropertyChanged(nameof(Items));
 			VisibleNullValue = show;
 		}
