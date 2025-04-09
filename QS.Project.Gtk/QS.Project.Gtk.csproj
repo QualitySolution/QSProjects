@@ -231,6 +231,8 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
     <Compile Include="Project.Versioning\Views\ChangeLogView.cs" />
     <Compile Include="gtk-gui\QS.Project.Versioning.Views.ChangeLogView.cs" />
+    <Compile Include="Views\Control\ChoiceListView.cs" />
+    <Compile Include="gtk-gui\QS.Views.Control.ChoiceListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
@@ -279,6 +281,8 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\DateRange.png" />
+    <EmbeddedResource Include="Icons\select-all.png" />
+    <EmbeddedResource Include="Icons\unselect-all.png" />
     <EmbeddedResource Include="Icons\Сalendar.png" />
     <EmbeddedResource Include="Icons\SendErrorReport.png" />
     <EmbeddedResource Include="Icons\blank-square.png" />
