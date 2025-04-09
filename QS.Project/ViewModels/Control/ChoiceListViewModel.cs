@@ -3,33 +3,93 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using QS.DomainModel.Entity;
-using QS.DomainModel.UoW;
 using QS.Extensions.Observable.Collections.List;
 
 namespace QS.ViewModels.Control {
-	public class ChoiceListViewModel<TEntity> : PropertyChangedBase, IChoiceListViewModel, IDisposable {
-		public ChoiceListViewModel(IList<TEntity> itemsList) {
+	public class ChoiceListViewModel<TEntity> : PropertyChangedBase, IChoiceListViewModel where TEntity : class
+	{
+		public ChoiceListViewModel(IList<TEntity> itemsList, Func<TEntity, int?> IdFunc = null, Func<TEntity, string> TitleFunc = null) {
 			foreach(var item in itemsList) {
-				Items.Add(new SelectedEntity(++itemCount, Id(item), Title(item), item));
+				Items.Add(new SelectableEntity<TEntity>(
+					++itemCount,
+					TitleFunc != null ? TitleFunc(item) : DomainHelper.GetTitle(item),
+					IdFunc != null ? IdFunc(item) : DomainHelper.GetIdOrNull(item),
+					item));
 	        }
 	        Items.PropertyOfElementChanged += OnPropertyOfElementChanged;
 		}
 
+		#region Содержимое
+
 		private int itemCount = 0;
-		public Func<TEntity, int?> Id = e => DomainHelper.GetIdOrNull(e);
-		public Func<TEntity, string> Title = e => DomainHelper.GetTitle(e);
 		
-		private ObservableList<SelectedEntity> items = new ObservableList<SelectedEntity>();
-		public ObservableList<SelectedEntity> Items => items;
+		private ObservableList<ISelectableEntity> items = new ObservableList<ISelectableEntity>();
+		public ObservableList<ISelectableEntity> Items => items;
+		
 		private void OnPropertyOfElementChanged(object sender, PropertyChangedEventArgs e) {
 			OnPropertyChanged(nameof(AllSelected));
 			OnPropertyChanged(nameof(AllUnSelected));
 		}
+
+		#endregion
+
+		#region Конфигурация
 		
+		private bool visibleNullValue = false;
+		public bool VisibleNullValue {
+			get => visibleNullValue;
+			set => SetField(ref visibleNullValue, value);
+		}
+
+		/// <summary>
+		/// Показывать в списке строку с сущностью null.
+		/// Результат в спец. поле NullIsSelected
+		/// </summary>
+		public void ShowNullValue(bool show, string title) {
+			if(Items.Any(x => x.ItemId == -1)) {
+				if(!show)
+					items.RemoveAll(x => x.ItemId == -1);
+			} else if(show)
+				items.Insert(0,new SelectableEntity<TEntity>(-1, title, null, null));
+			OnPropertyChanged(nameof(Items));
+			VisibleNullValue = show;
+		}
+
+		#endregion
+
+		#region Вывод данных
+		
+		/// <summary>
+		///  Список выбранных сущностей, в том числе null
+		/// </summary>
+		public IEnumerable<TEntity> SelectedEntities =>
+			Items.Where(x => x.Select).Select(x => ((SelectableEntity<TEntity>)x).Entity);
+		
+		/// <summary>
+		///  Список не выбранных сущностей, в том числе null
+		/// </summary>
+		public IEnumerable<TEntity> UnSelectedEntities =>
+			Items.Where(x => !x.Select).Select(x => ((SelectableEntity<TEntity>)x).Entity);
+
+		/// <summary>
+		///  Массив id выбранных сущностей
+		/// </summary>
 		public int[] SelectedIds {
-			get => Items.Where(x => x.Select && x.EntityId != null).Select(x => (int)x.EntityId).Distinct().ToArray();
+			get => Items.Where(x => 
+							x.Select &&
+							x is SelectableEntity<TEntity> &&
+							((SelectableEntity<TEntity>)x).EntityId != null)
+						.Select(x => (int)((SelectableEntity<TEntity>)x).EntityId).Distinct().ToArray();
 		}
 		
+		/// <summary>
+		/// Массив id сущностей со спецзначениями.
+		/// Выводит массив id если что-то выбрано, либо массив с одним значением, 
+		/// -1 если выбрано всё втом числе  null элемент,
+		/// -2 если ничего не выбрано,
+		/// -3 если выбран только null. 
+		/// Никогда не возвращает пустой массив.
+		/// </summary>
 		public int[] SelectedIdsMod {
 			get {
 				if(AllSelected)
@@ -44,33 +104,13 @@ namespace QS.ViewModels.Control {
 					return SelectedIds;
 			} 
 		}
-
-		public IEnumerable<object> SelectedEntities =>
-			 Items.Where(x => x.Select).Select(x => x.Entity);
 		
-		public IEnumerable<object> UnSelectedEntities =>
-			Items.Where(x => !x.Select).Select(x => x.Entity);
-		
-		private bool visibleNullValue = false;
-		public bool VisibleNullValue {
-			get => visibleNullValue;
-			set => SetField(ref visibleNullValue, value);
-		}
-		
+		/// <summary>
+		/// В списке выбрана сущность null
+		/// </summary>
 		public bool NullIsSelected {
 			get => Items.Any(x => x.Select && x.ItemId == -1);
 		}
-
-		public void ShowNullValue(bool show, string title) {
-			if(Items.Any(x => x.ItemId == -1)) {
-				if(!show)
-					items.RemoveAll(x => x.ItemId == -1);
-			} else if(show)
-				items.Insert(0,new SelectedEntity(-1, null, title, null));
-			OnPropertyChanged(nameof(Items));
-			VisibleNullValue = show;
-		}
-		
 		
 		public bool AllSelected {
 			get => Items.All(x => x.Select);
@@ -79,6 +119,10 @@ namespace QS.ViewModels.Control {
 		public bool AllUnSelected {
 			get => Items.All(x => !x.Select);
 		}
+
+		#endregion
+
+		#region Действия
 
 		public void SelectAll() {
 			foreach (var pt in Items)
@@ -90,48 +134,22 @@ namespace QS.ViewModels.Control {
 				e.Select = false;
 		}
 		
-		public void SelectLike(string maskLike) {
+		/// <summary>
+		/// Выделить и поднять в верх списка элементы содержищие текст в title
+		/// </summary>
+		/// <param name="maskLike"></param>
+		public void HighlightLike(string maskLike) {
 			foreach(var line in Items)
-				line.Highlighted = line.Name.ToLower().Contains(maskLike.ToLower());
+				line.Highlighted = line.Label.ToLower().Contains(maskLike.ToLower());
 			Items.Sort(Comparison);
 		}
 		
-		private int Comparison(SelectedEntity x, SelectedEntity y) {
+		private int Comparison(ISelectableEntity x, ISelectableEntity y) {
 			if(x.Highlighted == y.Highlighted)
-				return x.Name.CompareTo(y.Name);
+				return x.Label.CompareTo(y.Label);
 			return x.Highlighted ? -1 : 1;
 		}
-		
-		public void Dispose() {
-////28569 разобрать
-// TODO release managed resources here
-		}
-	}
-	
-	public class SelectedEntity : PropertyChangedBase
-	{
-		public SelectedEntity(int itemId, int? entityId, string name, object entity) {
-			ItemId = itemId;
-			EntityId = entityId;
-			Name = name;
-			Entity = entity;
-		}
-		
-		public int ItemId { get; }
-		public int? EntityId { get; }
-		public object Entity { get; }
-		public string Name { get; }
-		
-		private bool select = true;
-		public virtual bool Select {
-			get => select;
-			set => SetField(ref select, value); 
-		}
 
-		private bool highlighted = true;
-		public bool Highlighted {
-			get => highlighted;
-			set => SetField(ref highlighted, value);
-		}
+		#endregion
 	}
 }

@@ -31,16 +31,16 @@ namespace QS.Views.Control {
 		}
 
 		private void CreateTable(){
-			ytreeChoiseEntities.CreateFluentColumnsConfig<SelectedEntity>()
+			ytreeChoiseEntities.CreateFluentColumnsConfig<ISelectableEntity>()
 				.AddColumn("☑").AddToggleRenderer(x => x.Select).Editing()
-				.AddColumn("Название").AddTextRenderer(x => x.Name).SearchHighlight()
+				.AddColumn("Название").AddTextRenderer(x => x.Label).SearchHighlight()
 				.RowCells().AddSetter<Gtk.CellRendererText>((c, x) => c.Sensitive = x.Highlighted)
 				.Finish();
 			ytreeChoiseEntities.ItemsDataSource = ViewModel.Items;
 			
 			yentrySearch.Changed += delegate {
 				ytreeChoiseEntities.SearchHighlightText = yentrySearch.Text;
-				ViewModel.SelectLike(yentrySearch.Text);
+				ViewModel.HighlightLike(yentrySearch.Text);
 				ytreeChoiseEntities.YTreeModel.EmitModelChanged();
 			};
 			ycheckbuttonChooseAll.Sensitive = ycheckbuttonUnChooseAll.Sensitive = ViewModel.Items.Any();
