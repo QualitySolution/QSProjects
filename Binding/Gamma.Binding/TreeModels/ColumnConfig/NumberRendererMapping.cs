@@ -117,10 +117,10 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public NumberRendererMapping<TNode> Editing (Adjustment adjustment)
+		public NumberRendererMapping<TNode> Editing (Adjustment adjustment, bool on = true)
 		{
 			cellRenderer.Adjustment = adjustment;
-			cellRenderer.Editable = true;
+			cellRenderer.Editable = on;
 			return this;
 		}
 
