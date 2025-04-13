@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHibernate;
 using QS.Dialog;
@@ -8,6 +9,7 @@ using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Project.Journal.DataLoader;
+using QS.Project.Journal.NodeExtensions;
 using QS.Project.Services;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
@@ -57,12 +59,10 @@ namespace QS.Project.Journal
 		protected override void CreateNodeActions()
 		{
 			base.CreateNodeActions();
-
+			
 			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
-			bool canEdit = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanUpdate;
-			bool canDelete = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanDelete;
 
-			var addAction = new JournalAction("Добавить",
+			var addAction = new JournalAction("Создать",
 					(selected) => canCreate,
 					(selected) => VisibleCreateAction,
 					(selected) => CreateEntityDialog(),
@@ -70,8 +70,9 @@ namespace QS.Project.Journal
 					);
 			NodeActionsList.Add(addAction);
 
-			var editAction = new JournalAction("Изменить",
-					(selected) => canEdit && selected.Any(),
+			var editAction = new JournalAction( 
+				    selected => CalculatePermission(selected).Any(p => p.CanUpdate) ? "Изменить" : "Открыть",
+					(selected) => selected.Any() && CalculatePermission(selected).All(s => s.CanUpdate || s.CanRead),
 					(selected) => VisibleEditAction,
 					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
 					);
@@ -81,7 +82,7 @@ namespace QS.Project.Journal
 				RowActivatedAction = editAction;
 
 			var deleteAction = new JournalAction("Удалить",
-					(selected) => canDelete && selected.Any(),
+					(selected) => selected.Any() && CalculatePermission(selected).All(s => s.CanDelete),
 					(selected) => VisibleDeleteAction,
 					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray()),
 					"Delete"
@@ -89,10 +90,24 @@ namespace QS.Project.Journal
 			NodeActionsList.Add(deleteAction);
 		}
 
+		private IEnumerable<IPermissionResult> CalculatePermission(object[] selected){
+			if(CurrentPermissionService == null) {
+				yield return new SimplePermissionResult(true, true, true, true);
+			}
+			//Если нода журнала может сообщать дату документа запускаем проверку каждого элемента
+			else if(typeof(TNode).IsAssignableFrom(typeof(IDatedJournalNode))) {
+				foreach(var node in selected) 
+					yield return CurrentPermissionService.ValidateEntityPermission(typeof(TEntity), ((IDatedJournalNode)node).DocumentDate);
+			}
+			else { //Если нода обычная достаточно проверки по типу
+				yield return CurrentPermissionService.ValidateEntityPermission(typeof(TEntity));
+			}
+		}
+
 		/// <summary>
 		/// Функция формирования запроса.
 		/// ВАЖНО: Необходимо следить чтобы в запросе не было INNER JOIN с ORDER BY и LIMIT.
-		/// Иначе запрос с LIMIT будет выполнятся также медленно как и без него.
+		/// Иначе запрос с LIMIT выполниться также медленно, как и без него.
 		/// В таких случаях необходимо заменять на другой JOIN и условие в WHERE
 		/// </summary>
 		protected abstract IQueryOver<TEntity> ItemsQuery(IUnitOfWork uow);

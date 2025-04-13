@@ -30,7 +30,6 @@
     <Folder Include="Permissions\" />
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
-    <Folder Include="Project.Journal\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Project.Filter\" />
     <Folder Include="Project.Search\" />

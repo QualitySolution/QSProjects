@@ -11,7 +11,7 @@ namespace QS.Permissions
 		/// Проверить права доступа к сущности(документу)
 		/// </summary>
 		/// <param name="entityType">Тип объекта к которому запрашиваются права.</param>
-		/// <param name="documentDate">Опционально. Дата проведения документа или другой сущности в учете. Используется ограничения редактирования по времени, например при использовании даты запрета редактирования документов.</param>
+		/// <param name="documentDate">Опционально. Дата проведения документа или другой сущности в учете. Используется для ограничения редактирования по времени, например при использовании даты запрета редактирования документов.</param>
 		/// <returns></returns>
 		IPermissionResult ValidateEntityPermission(Type entityType, DateTime? documentDate = null);
 		bool ValidatePresetPermission(string permissionName);
