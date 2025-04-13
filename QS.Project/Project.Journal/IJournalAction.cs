@@ -4,7 +4,7 @@ namespace QS.Project.Journal
 {
 	public interface IJournalAction
 	{
-		string Title { get; }
+		string GetTitle(object[] selectedNodes);
 		bool GetVisibility(object[] selectedNodes);
 		bool GetSensitivity(object[] selectedNodes);
 		Action<object[]> ExecuteAction { get; set; }
