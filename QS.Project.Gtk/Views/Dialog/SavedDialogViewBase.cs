@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Gamma.GtkWidgets;
 using Gtk;
 using QS.Navigation;
 using QS.Utilities;
 using QS.ViewModels.Dialog;
+using QS.ViewModels.Extension;
 
 namespace QS.Views.Dialog
 {
@@ -31,8 +33,26 @@ namespace QS.Views.Dialog
 				cancelButton.Clicked -= OnButtonCancelClicked;
 				cancelButton.Clicked += OnButtonCancelClicked;
 			}
+			SetupISaveCancelManagement();
 		}
 
+		/// <summary>
+		/// Настраивает кнопки сохранения и отмены если ViewModel реализует интерфейс ISaveCancelManagement
+		/// Интерфейс позволяет ViewModel управлять состоянием кнопок
+		/// </summary>
+		private void SetupISaveCancelManagement() {
+			if(ViewModel is ISaveCancelManagement saveCancelManagement) {
+				if(saveButton is yButton yButtonSave)
+					yButtonSave.Binding.AddBinding(saveCancelManagement, v => v.SaveButtonVisible, w => w.Visible).InitializeFromSource();
+				else if(saveButton != null)
+					saveButton.Visible = saveCancelManagement.SaveButtonVisible;
+				if(cancelButton is yButton yButtonCancel)
+					yButtonCancel.Binding.AddBinding(saveCancelManagement, v => v.CancelButtonLabel, w => w.Label).InitializeFromSource();
+				else if(cancelButton != null)
+					cancelButton.Label = saveCancelManagement.CancelButtonLabel;
+			}
+		}
+		
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
 			saveButton.Sensitive = false;

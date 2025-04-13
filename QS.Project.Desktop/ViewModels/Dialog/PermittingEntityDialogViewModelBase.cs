@@ -9,9 +9,10 @@ using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
 using QS.Validation;
+using QS.ViewModels.Extension;
 
 namespace QS.ViewModels.Dialog {
-	public class PermittingEntityDialogViewModelBase<TEntity> : EntityDialogViewModelBase<TEntity>
+	public class PermittingEntityDialogViewModelBase<TEntity> : EntityDialogViewModelBase<TEntity>, ISaveCancelManagement
 		where TEntity : class, IDomainObject, new()
 	{
 		private readonly IInteractiveMessage interactive;
@@ -64,5 +65,10 @@ namespace QS.ViewModels.Dialog {
 		public bool CanEdit => EntityPermission.CanUpdate;
 		
 		protected bool CanDocumentDateChange(DateTime toDate) => PermissionService.ValidateEntityPermission(typeof(TEntity), toDate).CanUpdate;
+
+		#region ISaveCancelManagement
+		public bool SaveButtonVisible => CanEdit;
+		public string CancelButtonLabel => CanEdit ? "Отменить" : "Закрыть";
+		#endregion
 	}
 }
