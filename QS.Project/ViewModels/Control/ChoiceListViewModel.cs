@@ -85,7 +85,7 @@ namespace QS.ViewModels.Control {
 		/// <summary>
 		/// Массив id сущностей со спецзначениями.
 		/// Выводит массив id если что-то выбрано, либо массив с одним значением, 
-		/// -1 если выбрано всё втом числе  null элемент,
+		/// -1 если выбрано всё, в том числе null элемент,
 		/// -2 если ничего не выбрано,
 		/// -3 если выбран только null. 
 		/// Никогда не возвращает пустой массив.
@@ -125,17 +125,17 @@ namespace QS.ViewModels.Control {
 		#region Действия
 
 		public void SelectAll() {
-			foreach (var pt in Items)
+			foreach (var pt in Items.Where(x => x.Highlighted))
 				pt.Select = true;
 		}
 		 
 		public void UnSelectAll() {
-			foreach (var e in Items)
+			foreach (var e in Items.Where(x => x.Highlighted))
 				e.Select = false;
 		}
 		
 		/// <summary>
-		/// Выделить и поднять в верх списка элементы содержищие текст в title
+		/// Выделить и поднять в верх списка элементы содержащие текст в title
 		/// </summary>
 		/// <param name="maskLike"></param>
 		public void HighlightLike(string maskLike) {

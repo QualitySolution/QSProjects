@@ -1,7 +1,5 @@
-using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using QS.ViewModels.Control;
 
@@ -15,10 +13,7 @@ namespace QS.Views.Control {
 		
 		public ChoiceListView(){
 			this.Build();
-			Binding = new BindingControler<ChoiceListView>(this, new Expression<Func<ChoiceListView, object>>[] 
-			{
-				w => w.Sensitive
-			});
+			Binding = new BindingControler<ChoiceListView>(this);
 		}
 		
 		private IChoiceListViewModel viewModel;
