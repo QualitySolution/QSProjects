@@ -1790,6 +1790,7 @@
         <child>
           <widget class="Gtk.Entry" id="entryDate">
             <property name="MemberName" />
+            <property name="WidthRequest">175</property>
             <property name="CanFocus">True</property>
             <property name="IsEditable">True</property>
             <property name="MaxLength">23</property>
