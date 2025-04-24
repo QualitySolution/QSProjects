@@ -60,13 +60,15 @@ namespace QS.HistoryLog
 				return;
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
-			if(changes.Any(hce => hce.EntityId == entity.Id && NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName))
+			if(changes.Any(hce => hce.EntityId == entity.Id
+				&& NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName
+				&& hce.Operation == EntityChangeOperation.Create))
 				return;
 
 			var fields = Enumerable.Range(0, insertEvent.State.Length)
-								   .Select(i => FieldChange.CheckChange(uow, i, insertEvent))
-								   .Where(x => x != null)
-								   .ToList();
+				.Select(i => FieldChange.CheckChange(uow, i, insertEvent))
+				.Where(x => x != null)
+				.ToList();
 
 			if(fields.Count > 0) {
 				changes.Add(new ChangedEntity(EntityChangeOperation.Create, insertEvent.Entity, fields));
@@ -81,13 +83,15 @@ namespace QS.HistoryLog
 				return;
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
-			if(changes.Any(hce => hce.EntityId == entity.Id && NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName))
+			if(changes.Any(hce => hce.EntityId == entity.Id
+				&& NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName
+				&& hce.Operation == EntityChangeOperation.Change))
 				return;
 
 			var fields = Enumerable.Range(0, updateEvent.State.Length)
-								   .Select(i => FieldChange.CheckChange(uow, i, updateEvent))
-								   .Where(x => x != null)
-								   .ToList();
+				.Select(i => FieldChange.CheckChange(uow, i, updateEvent))
+				.Where(x => x != null)
+				.ToList();
 
 			if(fields.Count > 0)
 			{
