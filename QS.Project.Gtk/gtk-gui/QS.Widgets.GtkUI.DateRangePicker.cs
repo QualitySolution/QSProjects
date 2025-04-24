@@ -24,6 +24,7 @@ namespace QS.Widgets.GtkUI
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.entryDate = new global::Gtk.Entry();
+			this.entryDate.WidthRequest = 175;
 			this.entryDate.CanFocus = true;
 			this.entryDate.Name = "entryDate";
 			this.entryDate.IsEditable = true;
