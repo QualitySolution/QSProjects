@@ -174,23 +174,37 @@ namespace QS.DocTemplates
 			}
 		}
 
-		public void FillValues()
-		{
+		public void FillValues() {
+			const string officeNamespace = "office";
 			logger.Info ("Заполняем поля документа...");
 			XmlDocument content = GetXMLDocument("content.xml");
 			XmlNamespaceManager nsMgr = new XmlNamespaceManager(content.NameTable);
-			nsMgr.AddNamespace("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
+			nsMgr.AddNamespace(officeNamespace, $"urn:oasis:names:tc:opendocument:xmlns:{officeNamespace}:1.0");
 			nsMgr.AddNamespace("text", "urn:oasis:names:tc:opendocument:xmlns:text:1.0");
 			nsMgr.AddNamespace("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
 
-			foreach (XmlNode node in content.SelectNodes ("/office:document-content/office:body/office:text/text:user-field-decls/text:user-field-decl", nsMgr)) {
+			foreach (XmlNode node in content.SelectNodes (
+						$"/{officeNamespace}:document-content/{officeNamespace}:body/{officeNamespace}:text/text:user-field-decls/text:user-field-decl", nsMgr)) {
 				string fieldName = node.Attributes ["text:name"].Value;
 				var field = DocParser.FieldsList.FirstOrDefault(f => fieldName == f.Name) ?? DocParser.FieldsList.Find (f => fieldName.StartsWith (f.Name));
 				if (field == null) {
 					logger.Warn ("Поле {0} не найдено, поэтому пропущено.", fieldName);
 					continue;
 				}
+
 				SetFieldValue(node, field.Type, field.Value);
+
+				var displayedFields = content.SelectNodes(
+					$"/{officeNamespace}:document-content/{officeNamespace}:body/{officeNamespace}:text//text:user-field-get", nsMgr);
+
+				//т.к. в новых офисах пропала поддержка старого формата OpenDocument и Word перестал подтягивать значения переменных
+				//то явно их прописываем
+				foreach(XmlNode displayedField in displayedFields) {
+					if(displayedField != null && displayedField.Attributes["text:name"].Value == fieldName) {
+						displayedField.InnerText = node.Attributes[$"{officeNamespace}:string-value"].Value;
+						break;
+					}
+				}
 			}
 
 			//Строка и поле
