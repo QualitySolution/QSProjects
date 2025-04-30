@@ -92,6 +92,7 @@ namespace QS.Views.Control
 			this.ytreeChoiseEntities.WidthRequest = 400;
 			this.ytreeChoiseEntities.CanFocus = true;
 			this.ytreeChoiseEntities.Name = "ytreeChoiseEntities";
+			this.ytreeChoiseEntities.HeadersVisible = false;
 			this.GtkScrolledWindow.Add(this.ytreeChoiseEntities);
 			this.vbox1.Add(this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));

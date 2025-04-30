@@ -4203,7 +4203,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Views.Control.ChoiceListView" design-size="414 300">
+  <widget class="Gtk.Bin" id="QS.Views.Control.ChoiceListView" design-size="419 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -4288,6 +4288,7 @@
                 <property name="WidthRequest">400</property>
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
+                <property name="HeadersVisible">False</property>
               </widget>
             </child>
           </widget>

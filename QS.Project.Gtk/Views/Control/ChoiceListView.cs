@@ -9,7 +9,7 @@ namespace QS.Views.Control {
 	public partial class ChoiceListView : Gtk.Bin 
 	{
 		private bool destroyed;
-		public BindingControler<ChoiceListView> Binding { get; private set; }
+		public BindingControler<ChoiceListView> Binding { get; }
 		
 		public ChoiceListView(){
 			this.Build();
@@ -24,6 +24,8 @@ namespace QS.Views.Control {
 				CreateTable();
 			}
 		}
+		
+		public bool ShowColumnsTitle => ytreeChoiseEntities.HeadersVisible;
 
 		private void CreateTable(){
 			ytreeChoiseEntities.CreateFluentColumnsConfig<ISelectableEntity>()

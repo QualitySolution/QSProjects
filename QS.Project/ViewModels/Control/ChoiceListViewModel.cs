@@ -62,7 +62,7 @@ namespace QS.ViewModels.Control {
 
 		/// <summary>
 		/// Показывать в списке строку с сущностью null.
-		/// Результат в спец. поле NullIsSelected
+		/// Результат в спецполе NullIsSelected
 		/// </summary>
 		public void ShowNullValue(bool show, string title) {
 			if(Items.Any(x => x.ItemId == -1)) {
