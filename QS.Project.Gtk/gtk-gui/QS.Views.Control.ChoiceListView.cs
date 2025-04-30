@@ -12,9 +12,11 @@ namespace QS.Views.Control
 
 		private global::Gamma.GtkWidgets.yButton ycheckbuttonUnChooseAll;
 
+		private global::Gamma.GtkWidgets.yImage yimage1;
+
 		private global::Gamma.GtkWidgets.yEntry yentrySearch;
 
-		private global::Gamma.GtkWidgets.yImage yimage1;
+		private global::Gtk.Button buttonClear;
 
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
@@ -61,28 +63,41 @@ namespace QS.Views.Control
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
+			this.yimage1 = new global::Gamma.GtkWidgets.yImage();
+			this.yimage1.Name = "yimage1";
+			this.yimage1.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-find", global::Gtk.IconSize.Menu);
+			this.hbox2.Add(this.yimage1);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.yimage1]));
+			w5.Position = 2;
+			w5.Expand = false;
+			w5.Fill = false;
+			// Container child hbox2.Gtk.Box+BoxChild
 			this.yentrySearch = new global::Gamma.GtkWidgets.yEntry();
 			this.yentrySearch.CanFocus = true;
 			this.yentrySearch.Name = "yentrySearch";
 			this.yentrySearch.IsEditable = true;
 			this.yentrySearch.InvisibleChar = '•';
 			this.hbox2.Add(this.yentrySearch);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.yentrySearch]));
-			w5.Position = 2;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.yimage1 = new global::Gamma.GtkWidgets.yImage();
-			this.yimage1.Name = "yimage1";
-			this.yimage1.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-find", global::Gtk.IconSize.Menu);
-			this.hbox2.Add(this.yimage1);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.yimage1]));
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.yentrySearch]));
 			w6.Position = 3;
-			w6.Expand = false;
-			w6.Fill = false;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.buttonClear = new global::Gtk.Button();
+			this.buttonClear.CanFocus = true;
+			this.buttonClear.Name = "buttonClear";
+			this.buttonClear.UseUnderline = true;
+			global::Gtk.Image w7 = new global::Gtk.Image();
+			w7.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-clear", global::Gtk.IconSize.Menu);
+			this.buttonClear.Image = w7;
+			this.hbox2.Add(this.buttonClear);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.buttonClear]));
+			w8.Position = 4;
+			w8.Expand = false;
+			w8.Fill = false;
 			this.vbox1.Add(this.hbox2);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox2]));
-			w7.Position = 0;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.hbox2]));
+			w9.Position = 0;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -95,14 +110,15 @@ namespace QS.Views.Control
 			this.ytreeChoiseEntities.HeadersVisible = false;
 			this.GtkScrolledWindow.Add(this.ytreeChoiseEntities);
 			this.vbox1.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
-			w9.Position = 1;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
+			w11.Position = 1;
 			this.Add(this.vbox1);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.Hide();
+			this.buttonClear.Clicked += new global::System.EventHandler(this.OnButtonClearClicked);
 		}
 	}
 }

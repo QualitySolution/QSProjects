@@ -59,5 +59,9 @@ namespace QS.Views.Control {
 			
 			destroyed = true;
 		}
+
+		protected void OnButtonClearClicked(object sender, System.EventArgs e) {
+			yentrySearch.Text = string.Empty;
+		}
 	}
 }
