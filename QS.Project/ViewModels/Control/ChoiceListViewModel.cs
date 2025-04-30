@@ -27,10 +27,29 @@ namespace QS.ViewModels.Control {
 		public ObservableList<ISelectableEntity> Items => items;
 		
 		private void OnPropertyOfElementChanged(object sender, PropertyChangedEventArgs e) {
+			if(e.PropertyName == nameof(ISelectableEntity.Select)) {
+				OnAnyItemSelectChanged();
+			}
+		}
+		#endregion
+
+		#region Работа с выделением 
+		private bool notifySelection = true;
+		
+		public event EventHandler SelectionChanged;
+
+		void OnAnyItemSelectChanged() {
+			if(!notifySelection) 
+				return;
+			OnPropertyChanged(nameof(SelectedEntities));
+			OnPropertyChanged(nameof(UnSelectedEntities));
+			OnPropertyChanged(nameof(SelectedIds));
+			OnPropertyChanged(nameof(SelectedIdsMod));
+			OnPropertyChanged(nameof(NullIsSelected));
 			OnPropertyChanged(nameof(AllSelected));
 			OnPropertyChanged(nameof(AllUnSelected));
+			SelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
-
 		#endregion
 
 		#region Конфигурация
@@ -125,13 +144,19 @@ namespace QS.ViewModels.Control {
 		#region Действия
 
 		public void SelectAll() {
+			notifySelection = false;
 			foreach (var pt in Items.Where(x => x.Highlighted))
 				pt.Select = true;
+			notifySelection = true;
+			OnAnyItemSelectChanged();
 		}
 		 
 		public void UnSelectAll() {
+			notifySelection = false;
 			foreach (var e in Items.Where(x => x.Highlighted))
 				e.Select = false;
+			notifySelection = true;
+			OnAnyItemSelectChanged();
 		}
 		
 		/// <summary>

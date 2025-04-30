@@ -16,16 +16,10 @@ namespace QS.ViewModels.Control {
 		public string Label { get; }
 		
 		private bool select = true;
-		public virtual bool Select {
+		public bool Select {
 			get => select;
 			set => SetField(ref select, value); 
 		}
-
-		private bool highlighted = true;
-
-		public bool Highlighted {
-			get => highlighted;
-			set => SetField(ref highlighted, value);
-		}
+		public bool Highlighted { get; set; } = true;
 	}
 }
