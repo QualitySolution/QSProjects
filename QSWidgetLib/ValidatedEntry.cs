@@ -140,7 +140,7 @@ namespace QSWidgetLib
 
 		protected void RemoveInvalidSymbols(object sender, System.EventArgs Args)
 		{
-			this.Text = Text.Replace(" ", "").Replace("\n", "");
+			Text = Text.Trim(' ', '\n', '\r');
 		}
 	}
 
