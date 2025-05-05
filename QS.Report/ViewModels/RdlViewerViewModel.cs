@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autofac;
 using QS.Navigation;
 using QS.ViewModels.Dialog;
@@ -44,11 +44,14 @@ namespace QS.Report.ViewModels
 		}
 
 		public void Dispose() {
+			if(ReportParametersViewModel != null) {
+				ReportParametersViewModel.PropertyChanged -= OnReportParametersViewModelPropertyChanged;
+			}
+
 			if(ReportParametersViewModel is IDisposable disposable) {
 				disposable.Dispose();
 			}
 
-			ReportParametersViewModel.PropertyChanged -= OnReportParametersViewModelPropertyChanged;
 			LoadReport = null;
 			ReportPrinted = null;
 		}
