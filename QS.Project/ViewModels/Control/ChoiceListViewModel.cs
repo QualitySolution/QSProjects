@@ -8,7 +8,7 @@ using QS.Extensions.Observable.Collections.List;
 namespace QS.ViewModels.Control {
 	public class ChoiceListViewModel<TEntity> : PropertyChangedBase, IChoiceListViewModel where TEntity : class
 	{
-		public ChoiceListViewModel(IList<TEntity> itemsList, Func<TEntity, int?> IdFunc = null, Func<TEntity, string> TitleFunc = null) {
+		public ChoiceListViewModel(IList<TEntity> itemsList, Func<TEntity, int?> IdFunc = null, Func<TEntity, string> TitleFunc = null, bool sortByTitleASK = true) {
 			foreach(var item in itemsList) {
 				Items.Add(new SelectableEntity<TEntity>(
 					++itemCount,
@@ -16,6 +16,8 @@ namespace QS.ViewModels.Control {
 					IdFunc != null ? IdFunc(item) : DomainHelper.GetIdOrNull(item),
 					item));
 	        }
+			if(sortByTitleASK)
+				Items.Sort((x,y) => String.Compare(x.Label, y.Label, StringComparison.CurrentCulture));
 	        Items.PropertyOfElementChanged += OnPropertyOfElementChanged;
 		}
 
