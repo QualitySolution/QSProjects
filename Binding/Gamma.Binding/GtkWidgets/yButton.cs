@@ -46,13 +46,10 @@ namespace Gamma.GtkWidgets
 			Sensitive = command.CanExecute(commandArgument);
 		}
 
-		public override void Destroy() 
-		{
-			command.CanExecuteChanged -= CommandCanExecuteChanged;
-			base.Destroy();
-		}
-
 		protected override void OnDestroyed() {
+			if(command != null) {
+				command.CanExecuteChanged -= CommandCanExecuteChanged;
+			}
 			Binding.CleanSources();
 			base.OnDestroyed();
 		}
