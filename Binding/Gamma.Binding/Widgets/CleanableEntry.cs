@@ -57,6 +57,8 @@ namespace Gamma.Widgets {
 
 		protected override void OnDestroyed() {
 			entry.Changed -= EntryChanged;
+			entry.TextInserted -= EntryTextInserted;
+			entry.TextDeleted -= EntryTextDeleted;
 			base.OnDestroyed();
 		}
 
