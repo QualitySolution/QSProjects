@@ -38,6 +38,11 @@ namespace QS.Report.ViewModels
 		#endregion
 
 		#region Действия View
+		public void SetReportTextItemsModifier(Func<string, string> modifierFunc)
+		{
+			rdlViewerViewModel.ReportTextItemsModifierFunc = modifierFunc ?? throw new ArgumentNullException(nameof(modifierFunc));
+		}
+
 		public void LoadReport()
 		{
 			rdlViewerViewModel.LoadReport();
