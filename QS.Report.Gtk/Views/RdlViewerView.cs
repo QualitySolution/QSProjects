@@ -30,6 +30,10 @@ namespace QS.Report.Views
 
 		public void LoadReport()
 		{
+			if(ViewModel.ReportTextItemsModifierFunc != null) {
+				reportviewer1.ReportTextItemsModifierFunc = ViewModel.ReportTextItemsModifierFunc;
+			}
+
 			if(ViewModel.ReportInfo.Source != null)
 				reportviewer1.LoadReport(ViewModel.ReportInfo.Source, ViewModel.ReportInfo.GetParametersString(), ViewModel.ReportInfo.ConnectionString, true);
 			else

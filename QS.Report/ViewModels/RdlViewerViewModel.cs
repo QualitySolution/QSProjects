@@ -17,6 +17,8 @@ namespace QS.Report.ViewModels
 
 		public Action LoadReport;
 
+		public Func<string, string> ReportTextItemsModifierFunc { get; set; } = null;
+
 		public RdlViewerViewModel(ReportInfo reportInfo, INavigationManager navigation) : base(navigation)
 		{
 			this.reportInfo = reportInfo;
