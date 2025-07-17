@@ -1,7 +1,7 @@
 ﻿using System;
 namespace QS.RepresentationModel.GtkUI
 {
-	internal enum СompletionColumn
+	internal enum CompletionColumn
 	{
 		Title,
 		Item

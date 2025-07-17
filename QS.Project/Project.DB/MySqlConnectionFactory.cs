@@ -10,9 +10,9 @@ namespace QS.Project.DB
 
 		private readonly string connectionString;
 
-		public MySqlConnectionFactory(string сonnectionString)
+		public MySqlConnectionFactory(string connectionString)
 		{
-			connectionString = сonnectionString ?? throw new ArgumentNullException(nameof(сonnectionString));
+			this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
 		}
 
 		public MySqlConnection OpenMySqlConnection()

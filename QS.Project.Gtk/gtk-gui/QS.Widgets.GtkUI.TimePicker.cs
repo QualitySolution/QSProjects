@@ -51,7 +51,7 @@ namespace QS.Widgets.GtkUI
 			this.buttonSetTime.Name = "buttonSetTime";
 			this.buttonSetTime.UseUnderline = true;
 			global::Gtk.Image w4 = new global::Gtk.Image();
-			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Сalendar.png");
+			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Calendar.png");
 			this.buttonSetTime.Image = w4;
 			this.hbox1.Add(this.buttonSetTime);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonSetTime]));
