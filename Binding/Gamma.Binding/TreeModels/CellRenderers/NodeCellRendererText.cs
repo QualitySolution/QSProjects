@@ -32,12 +32,10 @@ namespace Gamma.GtkWidgets.Cells
 			RenderNode(node);
 			if (SearchHighlight && !String.IsNullOrEmpty(Text) && searchHighlightTexts != null && searchHighlightTexts.Length > 0)
 			{
-				string resultMarkup = Text;
-				foreach(var searchText in searchHighlightTexts)
-				{
+				string resultMarkup = ReplaceSpecialChars(Text);
+				foreach(var searchText in searchHighlightTexts) {
 					string pattern = ReplaceSpecialChars(Regex.Escape(searchText.ToLower()));
-					resultMarkup = ReplaceSpecialChars(resultMarkup);
-					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => $"<b>{match.Value}</b>", RegexOptions.IgnoreCase);
 				}
 				Markup = resultMarkup;
 			}
