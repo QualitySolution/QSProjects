@@ -53,7 +53,7 @@ namespace QS.Widgets.GtkUI
 			this.buttonEditDate.Name = "buttonEditDate";
 			this.buttonEditDate.UseUnderline = true;
 			global::Gtk.Image w4 = new global::Gtk.Image();
-			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Сalendar.png");
+			w4.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.Calendar.png");
 			this.buttonEditDate.Image = w4;
 			this.hbox1.Add(this.buttonEditDate);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.buttonEditDate]));
