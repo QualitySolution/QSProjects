@@ -24,7 +24,7 @@ namespace QS.Deletion.Configuration
 			}
 		}
 
-		//Только для поиска соответствия из модулей работающих по таблицам. Например Users в QSProjectLib
+		//Только для поиска соответствия из модулей работающих по таблицам. Например, Users в QSProjectLib
 		public string TableName { get; private set;}
 			
 		public string ObjectsName {
@@ -85,12 +85,51 @@ namespace QS.Deletion.Configuration
 			return this;
 		}
 
+		/// <summary>
+		/// Добавляет самую стандартную зависимость удаления. Она означает что система предложит удалить объект, который ссылается на удаляемый объект, в указанном свойстве.
+		/// <example>
+		/// Мы удаляем объект "Клиент", а в базе есть документ ссылающийся на этого клиента.
+		/// <code>
+		/// DeleteConfig.AddHibernateDeleteInfo&lt;Клиент&gt;()
+		///     .AddDeleteDependence&lt;Документ&gt;(x =&gt; x.Клиент);
+		/// </code>
+		/// В этом случае при удалении клиента мы так же удалим все документы на него ссылающиеся.
+		/// </example>
+		/// </summary>
 		public DeleteInfoHibernate<TEntity> AddDeleteDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
 			DeleteItems.Add (DeleteDependenceInfo.Create<TDependOn> (propertyRefExpr));
 			return this;
 		}
+		
+		/// <summary>
+		/// Добавляет вторую стандартную зависимость удаления. Она означает что система предложит очистить ссылку в указанном свойстве объекта, который ссылается на удаляемый объект.
+		/// <example>
+		/// Мы удаляем объект "Клиент", а в базе есть документ ссылающийся на этого клиента.
+		/// <code>
+		/// DeleteConfig.AddHibernateDeleteInfo&lt;Клиент&gt;()
+		///     .AddClearDependence&lt;Документ&gt;(x =&gt; x.Клиент);
+		/// </code>
+		/// В этом случае при удалении клиента мы в документе в поле клиент проставим null и сохраним в базу.
+		/// </example>
+		/// </summary>
+		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
+		{
+			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			return this;
+		}
 
+		/// <summary>
+		/// Перевернутое удаление. Используется в тех случаях когда нужно вместе с нами удалить объект на который мы ссылаемся. 
+		/// <example>
+		/// Мы удаляем объект "СтрокаДокумента", в строке документа есть ссылка на складскую операцию "СкладскаяОперация".
+		/// <code>
+		/// DeleteConfig.AddHibernateDeleteInfo&lt;СтрокаДокумента&gt;()
+		///     .AddDeleteCascadeDependence(x =&gt; x.СкладскаяОперация);
+		/// </code>
+		/// В этом случае при удалении строки мы так же удалим складскую операцию, хоть не она ссылается на строку, а стока ссылается на операцию.
+		/// </example>
+		/// </summary>
 		public DeleteInfoHibernate<TEntity> AddDeleteCascadeDependence(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
 			DeleteItems.Add (DeleteDependenceInfo.CreateFromParentPropery<TEntity> (propertyRefExpr));
@@ -122,12 +161,6 @@ namespace QS.Deletion.Configuration
 		{
 			string propName = PropertyUtil.GetName(propertyRefExpr);
 			DeleteItems.Add(DeleteDependenceInfo.CreateFromCollection<TEntity>(propName));
-			return this;
-		}
-
-		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
-		{
-			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
 			return this;
 		}
 
