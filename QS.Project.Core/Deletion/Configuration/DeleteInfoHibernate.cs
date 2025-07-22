@@ -148,15 +148,6 @@ namespace QS.Deletion.Configuration
 			return this;
 		}
 
-		//TODO удалить метод после 11.2019;
-		[Obsolete("Используйте вместо этого более универсальный метод AddDeleteDependenceFromCollection.")]
-		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromBag(Expression<Func<TEntity, object>> propertyRefExpr)
-		{
-			string propName = PropertyUtil.GetName(propertyRefExpr);
-			DeleteItems.Add (DeleteDependenceInfo.CreateFromCollection<TEntity> (propName));
-			return this;
-		}
-
 		public DeleteInfoHibernate<TEntity> AddDeleteDependenceFromCollection(Expression<Func<TEntity, object>> propertyRefExpr)
 		{
 			string propName = PropertyUtil.GetName(propertyRefExpr);
