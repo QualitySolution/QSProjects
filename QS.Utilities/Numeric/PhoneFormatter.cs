@@ -97,7 +97,7 @@ namespace QS.Utilities.Numeric
 			this.format = format;
 		}
 
-		public bool Validate(string phone, bool emptyIsValid = true)
+		public bool Validate(string phone, bool emptyIsValid = true, bool onlyMobile = false)
 		{
 			if(String.IsNullOrWhiteSpace(phone))
 				return emptyIsValid;
@@ -105,6 +105,10 @@ namespace QS.Utilities.Numeric
 			switch(format) {
 				case PhoneFormat.RussiaOnlyHyphenated:
 					return Regex.IsMatch(phone, "^\\+7-[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$");
+				case PhoneFormat.RussiaOnlyShort:
+					return Regex.IsMatch(
+						phone,
+						onlyMobile ? "^\\+79[0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}$" : "^\\+7[0-9]{3}[0-9]{3}[0-9]{2}[0-9]{2}$");
 				default:
 					throw new NotImplementedException($"Формат {format} не реализован.");
 			}
