@@ -149,7 +149,7 @@ namespace QS.HistoryLog
 			Reset();
 		}
 
-		private void Save(ChangeSet changeSet) {
+		public void Save(ChangeSet changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				var transaction = connection.BeginTransaction();
