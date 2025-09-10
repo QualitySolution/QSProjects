@@ -20,7 +20,7 @@ namespace QS.Updater.DB.Views
 			checkCreateBackup.Binding.AddBinding(viewModel, v => v.NeedCreateBackup, w => w.Active).InitializeFromSource();
 			textviewLog.Binding.AddBinding(viewModel, v => v.CommandsLog, w => w.Buffer.Text).InitializeFromSource();
 			viewModel.PropertyChanged += ViewModel_PropertyChanged;
-			buttonExecute.Binding.AddBinding(viewModel, v => v.ButtonExcuteSensitive, w => w.Sensitive).InitializeFromSource();
+			buttonExecute.Binding.AddBinding(viewModel, v => v.ButtonExecuteSensitive, w => w.Sensitive).InitializeFromSource();
 		}
 
 		void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
