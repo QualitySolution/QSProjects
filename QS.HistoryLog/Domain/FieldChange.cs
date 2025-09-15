@@ -8,8 +8,7 @@ using System;
 using System.Reflection;
 
 namespace QS.HistoryLog.Domain {
-	public class FieldChange : FieldChangeBase
-	{
+	public class FieldChange : FieldChangeBase, IFieldChange {
 		#region Конфигурация
 
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -18,7 +17,7 @@ namespace QS.HistoryLog.Domain {
 
 		#region Свойства
 
-		public virtual ChangedEntity Entity { get; set; }
+		public virtual IChangedEntity Entity { get; set; }
 
 		#endregion
 

@@ -1,4 +1,5 @@
 using MySqlConnector;
+using QS.DomainModel.Entity;
 using QS.SqlLog.Domain;
 using QS.SqlLog.Interfaces;
 using System;
@@ -24,7 +25,7 @@ namespace QS.SqlLog
 			}
 		}
 
-		public void Save(ChangeSetDto changeSet) {
+		public void Save(IChangeSet changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				var transaction = connection.BeginTransaction();
@@ -41,7 +42,7 @@ namespace QS.SqlLog
 		}
 
 
-		public async Task SaveAsync(ChangeSetDto changeSet) {
+		public async Task SaveAsync(IChangeSet changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				await connection.OpenAsync();
 				var transaction = await connection.BeginTransactionAsync();
@@ -57,7 +58,7 @@ namespace QS.SqlLog
 			}
 		}
 
-		private void ExecuteMultipleBatches(ChangeSetDto changeSet, MySqlConnection connection, MySqlTransaction transaction) {
+		private void ExecuteMultipleBatches(IChangeSet changeSet, MySqlConnection connection, MySqlTransaction transaction) {
 
 			var repeatCount = Math.Ceiling((decimal)changeSet.Entities.Count / _maxChangedEntitiesSaveInOneBatch);
 			var entitiesIndex = 0;
@@ -85,7 +86,7 @@ namespace QS.SqlLog
 			}
 		}
 
-		private void ExecuteSingleBatch(ChangeSetDto changeSet, MySqlConnection connection, MySqlTransaction transaction) {
+		private void ExecuteSingleBatch(IChangeSet changeSet, MySqlConnection connection, MySqlTransaction transaction) {
 			using(var batch = new MySqlBatch(connection, transaction)) {
 				batch.BatchCommands.Add(CreateInsertChangesSetCommand(changeSet));
 				batch.BatchCommands.Add(CreateSetChangeSetIdParameterCommand());
@@ -111,7 +112,7 @@ namespace QS.SqlLog
 			return new MySqlBatchCommand("SET @ChangedEntityId = LAST_INSERT_ID();");
 		}
 
-		private MySqlBatchCommand CreateInsertChangesSetCommand(ChangeSetDto changeSet) {
+		private MySqlBatchCommand CreateInsertChangesSetCommand(IChangeSet changeSet) {
 			var sqlInsertChangeSet =
 				"INSERT INTO history_changeset (user_login, action_name, user_id) " +
 				"VALUES (@UserLogin, @ActionName, @UserId);";
@@ -125,14 +126,14 @@ namespace QS.SqlLog
 			};
 		}
 
-		private MySqlBatchCommand CreateInsertEntityChangesCommand(FieldChangeDto change) {
+		private MySqlBatchCommand CreateInsertEntityChangesCommand(IFieldChange change) {
 			var sqlInsertChange =
 				"INSERT INTO history_changes (type, field_name, old_value, old_id, new_value, new_id, changed_entity_id) " +
 				"VALUES (@TypeOfChange, @Path, @OldValue, @OldId, @NewValue, @NewId, @ChangedEntityId);";
 
 			return new MySqlBatchCommand(sqlInsertChange) {
 				Parameters = {
-					new MySqlParameter("@TypeOfChange", change.Type),
+					new MySqlParameter("@TypeOfChange", change.Type.ToString()),
 					new MySqlParameter("@Path", change.Path),
 					new MySqlParameter("@OldValue", change.OldValue),
 					new MySqlParameter("@OldId", change.OldId),
@@ -142,7 +143,7 @@ namespace QS.SqlLog
 			};
 		}
 
-		private MySqlBatchCommand CreateInsertChangedEntityCommand(ChangedEntityDto entity) {
+		private MySqlBatchCommand CreateInsertChangedEntityCommand(IChangedEntity entity) {
 			var sqlInsertEntity =
 				"INSERT INTO history_changed_entities (datetime, operation, entity_class, entity_id, entity_title, changeset_id) " +
 				"VALUES (@ChangeTime, @OperationDbName, @EntityClassName, @EntityId, @EntityTitle, @ChangeSetId);";
@@ -150,7 +151,7 @@ namespace QS.SqlLog
 			return new MySqlBatchCommand(sqlInsertEntity) {
 				Parameters = {
 					new MySqlParameter("@ChangeTime", entity.ChangeTime),
-					new MySqlParameter("@OperationDbName", entity.Operation),
+					new MySqlParameter("@OperationDbName", entity.Operation.ToString()),
 					new MySqlParameter("@EntityClassName", entity.EntityClassName),
 					new MySqlParameter("@EntityId", entity.EntityId),
 					new MySqlParameter("@EntityTitle", entity.EntityTitle),
