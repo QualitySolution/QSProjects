@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using QS.DomainModel.Entity;
 using QS.Project.Domain;
 
 namespace QS.HistoryLog.Domain
 {
-	public class ChangeSet : ChangeSetBase
-	{
+	public class ChangeSet : ChangeSetBase, IChangeSet {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		/// <summary>
@@ -14,7 +13,7 @@ namespace QS.HistoryLog.Domain
 		public virtual int UserId{ get; set; }
 		public virtual UserBase User { get; set; }
 
-		public virtual IList<ChangedEntity> Entities { get; set; } = new List<ChangedEntity>();
+		public virtual ICovariantCollection<IChangedEntity> Entities { get; set; } = new CovariantCollection<ChangedEntity>();
 
 		public virtual string UserName { get{
 				return User?.Name ?? UserLogin;

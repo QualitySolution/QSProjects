@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Gamma.Utilities;
@@ -101,14 +101,4 @@ namespace QS.HistoryLog.Domain
 		#endregion
 	}
 
-	public enum FieldChangeType {
-		[Display(Name = "Добавлено")]
-		Added,
-		[Display(Name = "Изменено")]
-		Changed,
-		[Display(Name = "Очищено")]
-		Removed,
-		[Display(Name = "Без изменений")]
-		Unchanged
-	}
 }

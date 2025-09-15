@@ -9,4 +9,8 @@
     <PackageReference Include="MySqlConnector" Version="2.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
+  </ItemGroup>
+
 </Project>

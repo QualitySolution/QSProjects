@@ -1,10 +1,12 @@
+using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
-using System;
-using Dapper;
-using System.Threading.Tasks;
 using QS.DomainModel.Config;
-using QS.DomainModel.UoW;
+using QS.DomainModel.Entity;
+using QS.HistoryLog;
+using QS.HistoryLog.Domain;
+using System;
+using System.Threading.Tasks;
 
 namespace QS.Testing.SqlLog {
 	public class SqlLogTest {
@@ -30,7 +32,7 @@ namespace QS.Testing.SqlLog {
 
 				var entity = new QS.SqlLog.Domain.ChangedEntityDto {
 					ChangeTime = DateTime.Now,
-					Operation = "Create",
+					Operation = EntityChangeOperation.Create,
 					EntityClassName = "TestEntity",
 					EntityId = 123,
 					EntityTitle = "Test Entity Title"
@@ -42,7 +44,7 @@ namespace QS.Testing.SqlLog {
 					NewValue = "Шапка",
 					OldId = 123,
 					NewId = 321,
-					Type = "Added"
+					Type = FieldChangeType.Added
 				});
 
 				changeSet.Entities.Add(entity);
@@ -72,23 +74,25 @@ namespace QS.Testing.SqlLog {
 
 				QS.Project.Repositories.UserRepository.GetCurrentUserId = () => 1;
 
-				var tracker = new QS.HistoryLog.HibernateTracker(connectionString);
+				var tracker = new HibernateTracker(connectionString);
 				// получаем через рефлексию поле
 				var changesField = typeof(QS.HistoryLog.HibernateTracker).GetField("changes", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-				var list = (System.Collections.Generic.List<QS.HistoryLog.Domain.ChangedEntity>)changesField.GetValue(tracker);
+				var list = (System.Collections.Generic.List<ChangedEntity>)changesField.GetValue(tracker);
 
 				var entity = new TestDomainEntity { Id = 123, Name = "Test Entity" };
 
-				var fc = new QS.HistoryLog.Domain.FieldChange {
-					Path = "Name",
-					OldValue = "Куртка",
-					NewValue = "Шапка",
-					OldId = 123,
-					NewId = 321,
-					Type = QS.HistoryLog.Domain.FieldChangeType.Added
+				var fc = new CovariantCollection<FieldChange>(){
+					new FieldChange {
+						Path = "Name",
+						OldValue = "Куртка",
+						NewValue = "Шапка",
+						OldId = 123,
+						NewId = 321,
+						Type = FieldChangeType.Added
+					}
 				};
 
-				var changedEntity = new QS.HistoryLog.Domain.ChangedEntity(QS.HistoryLog.Domain.EntityChangeOperation.Create, entity, new System.Collections.Generic.List<QS.HistoryLog.Domain.FieldChange> { fc });
+				var changedEntity = new ChangedEntity(EntityChangeOperation.Create, entity, fc);
 				list.Add(changedEntity);
 
 				//act

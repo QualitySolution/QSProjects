@@ -9,7 +9,6 @@ using NHibernate.Proxy;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
-using QS.HistoryLog.Adapters;
 using QS.HistoryLog.Domain;
 using QS.Project.Repositories;
 using QS.SqlLog;
@@ -55,7 +54,7 @@ namespace QS.HistoryLog
 			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
 				return;
 
-			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new List<FieldChange>());
+			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new CovariantCollection<FieldChange>());
 			changes.Add(hce);
 		}
 
@@ -72,18 +71,16 @@ namespace QS.HistoryLog
 				&& hce.Operation == EntityChangeOperation.Create))
 				return;
 
-			var fields = Enumerable.Range(0, insertEvent.State.Length)
+			CovariantCollection<FieldChange> fields = new CovariantCollection<FieldChange>(Enumerable.Range(0, insertEvent.State.Length)
 				.Select(i => FieldChange.CheckChange(uow, i, insertEvent))
-				.Where(x => x != null)
-				.ToList();
+				.Where(x => x != null));
 
-			if(fields.Count > 0) {
+			if(fields.Any()) {
 				changes.Add(new ChangedEntity(EntityChangeOperation.Create, insertEvent.Entity, fields));
 			}
 		}
 
-		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent)
-		{
+		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent) {
 			var entity = updateEvent.Entity as IDomainObject;
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
 			if(entity == null || !NeedTrace(entity))
@@ -95,14 +92,14 @@ namespace QS.HistoryLog
 				&& hce.Operation == EntityChangeOperation.Change))
 				return;
 
-			var fields = Enumerable.Range(0, updateEvent.State.Length)
+			CovariantCollection<FieldChange> fields = new CovariantCollection<FieldChange>(Enumerable.Range(0, updateEvent.State.Length)
 				.Select(i => FieldChange.CheckChange(uow, i, updateEvent))
-				.Where(x => x != null)
-				.ToList();
+				.Where(x => x != null));
 
-			if(fields.Count > 0)
-			{
-				changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
+			if(fields.Any()) {
+				{
+					changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
+				}
 			}
 		}
 
@@ -148,7 +145,7 @@ namespace QS.HistoryLog
 
 			changeSet.AddChangeEntities(toSave);
 
-			HibernateTrackerAdapter.Save(changeSet, new ChangeSetPersister(connectionString));
+			new ChangeSetPersister(connectionString).Save(changeSet);
 			logger.Debug(NumberToTextRus.FormatCase(changes.Sum(x => x.Changes.Count), "Зарегистрировано {0} изменение ",
 				             "Зарегистрировано {0} изменения ", "Зарегистрировано {0} изменений ")
 			             + NumberToTextRus.FormatCase(changes.Count, "в {0} объекте ", "в {0} объектах ", "в {0} объектах ")
