@@ -230,7 +230,7 @@ namespace QS.Navigation {
 			}
 			catch (Exception ex) when (ex.FindExceptionTypeInInner<AbortCreatingPageException>() != null) {
 				var abortEx = ex.FindExceptionTypeInInner<AbortCreatingPageException>();
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, abortEx.Message, abortEx.Title);
+				interactiveMessage.ShowMessage(abortEx.ImportanceLevel, abortEx.Message, abortEx.Title);
 				logger.Warn($"Остановка открытия вкладки: {abortEx.Message}");
 				if (RunningByTest) {
 					//Если мы в тестах, то окно с ошибкой никто не увидит. Лучше прокинуть эксепшен наружу.
