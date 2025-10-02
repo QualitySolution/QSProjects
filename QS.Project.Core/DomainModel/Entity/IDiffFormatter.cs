@@ -1,5 +1,5 @@
-﻿using System;
-namespace QS.HistoryLog
+using System;
+namespace QS.DomainModel.Entity 
 {
 	public interface IDiffFormatter
 	{

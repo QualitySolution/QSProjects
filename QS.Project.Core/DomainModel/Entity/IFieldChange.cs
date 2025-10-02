@@ -5,6 +5,7 @@ using System.Text;
 
 namespace QS.DomainModel.Entity {
 	public interface IFieldChange {
+		public IDiffFormatter DiffFormatter { get; set; }
 		public string Path { get; set; }
 		public string OldValue { get; set; }
 		public string NewValue { get; set; }

@@ -10,6 +10,11 @@ namespace QS.SqlLog.Domain
 		public string UserLogin { get; set; }
 		public ICovariantCollection<IChangedEntity> Entities { get; } = new CovariantCollection<ChangedEntityDto>();
 		public UserBase User { get; set; } = null;
+		public string UserName {
+			get {
+				return User?.Name ?? UserLogin;
+			}
+		}
 	}
 }
 

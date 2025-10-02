@@ -9,5 +9,6 @@ namespace QS.SqlLog.Domain {
 		public int? NewId { get; set; }
 		public FieldChangeType Type { get; set; }
 		public IChangedEntity Entity { get; set; } = null;
+		public IDiffFormatter DiffFormatter { get; set; } = null;
 	}
 }
