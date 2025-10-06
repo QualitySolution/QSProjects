@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google.Protobuf" Version="3.22.1" />
+      <PackageReference Include="Grpc.Core" Version="2.46.6" />
+      <PackageReference Include="Grpc.Tools" Version="2.52.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QS.ErrorReporting.Client\QS.ErrorReporting.Client.csproj" />
+      <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
+    </ItemGroup>
+
+</Project>
