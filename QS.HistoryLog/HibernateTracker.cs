@@ -145,7 +145,7 @@ namespace QS.HistoryLog
 
 			changeSet.AddChangeEntities(toSave);
 
-			new ChangeSetPersister(connectionString).Save(changeSet);
+			new ChangeSetWriter(connectionString).Save(changeSet);
 			logger.Debug(NumberToTextRus.FormatCase(changes.Sum(x => x.Changes.Count), "Зарегистрировано {0} изменение ",
 				             "Зарегистрировано {0} изменения ", "Зарегистрировано {0} изменений ")
 			             + NumberToTextRus.FormatCase(changes.Count, "в {0} объекте ", "в {0} объектах ", "в {0} объектах ")

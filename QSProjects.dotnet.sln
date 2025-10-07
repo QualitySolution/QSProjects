@@ -51,9 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Testing.Desktop", "QS.Testing.Desktop\QS.Testing.Desktop.csproj", "{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.SqlLog", "QS.SqlLog\QS.SqlLog.csproj", "{254AFF78-23B8-65CC-6E55-151948F6E428}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Testing.SqlLog", "QS.Testing.SqlLog\QS.Testing.SqlLog.csproj", "{ABE1CF89-E5C2-47BA-BA45-943791CE8F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Sql", "QS.HistoryLog.Sql\QS.HistoryLog.Sql.csproj", "{254AFF78-23B8-65CC-6E55-151948F6E428}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,10 +151,6 @@ Global
 		{254AFF78-23B8-65CC-6E55-151948F6E428}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254AFF78-23B8-65CC-6E55-151948F6E428}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254AFF78-23B8-65CC-6E55-151948F6E428}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABE1CF89-E5C2-47BA-BA45-943791CE8F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABE1CF89-E5C2-47BA-BA45-943791CE8F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABE1CF89-E5C2-47BA-BA45-943791CE8F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABE1CF89-E5C2-47BA-BA45-943791CE8F37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

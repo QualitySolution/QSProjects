@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
@@ -5,32 +7,30 @@ using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
 using QS.HistoryLog;
 using QS.HistoryLog.Domain;
-using System;
-using System.Threading.Tasks;
 
-namespace QS.Testing.SqlLog {
-	public class SqlLogTest {
+namespace QS.Test.HistoryLog {
+	public class ChangeSetWriterTest {
 		string connectionString { get; set; }
 		string dbName = "test_SqlLog";
 
-		public SqlLogTest() {
+		public ChangeSetWriterTest() {
 			connectionString = $"server=office.qsolution.ru;user id=test;password=8bV7lJBhg5QgijV0;database={dbName};Allow User Variables=true;";
 		}
 
 		[Test]
-		public async Task HystoryLog() {
+		public async Task HistoryLog() {
 			//ARRANGE 
 			using(var connection = new MySqlConnection(connectionString)) {
 				await connection.OpenAsync();
 				await PrepareDatabase(connection);
 
-				var changeSet = new QS.SqlLog.Domain.ChangeSetDto {
+				var changeSet = new ChangeSetDto {
 					ActionName = "UnitTestAction",
 					UserId = 1,
 					UserLogin = "test_user"
 				};
 
-				var entity = new QS.SqlLog.Domain.ChangedEntityDto {
+				var entity = new ChangedEntityDto {
 					ChangeTime = DateTime.Now,
 					Operation = EntityChangeOperation.Create,
 					EntityClassName = "TestEntity",
@@ -38,7 +38,7 @@ namespace QS.Testing.SqlLog {
 					EntityTitle = "Test Entity Title"
 				};
 
-				entity.Changes.Add(new QS.SqlLog.Domain.FieldChangeDto {
+				entity.Changes.Add(new FieldChangeDto {
 					Path = "Name",
 					OldValue = "Куртка",
 					NewValue = "Шапка",
@@ -50,7 +50,7 @@ namespace QS.Testing.SqlLog {
 				changeSet.Entities.Add(entity);
 
 				//act
-				var persister = new QS.SqlLog.ChangeSetPersister(connectionString);
+				var persister = new ChangeSetWriter(connectionString);
 				persister.Save(changeSet);
 
 				// assert

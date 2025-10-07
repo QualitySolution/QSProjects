@@ -1,6 +1,6 @@
 using QS.DomainModel.Entity;
 
-namespace QS.SqlLog.Domain {
+namespace QS.HistoryLog.Domain {
 	public class FieldChangeDto : IFieldChange {
 		public string Path { get; set; }
 		public string OldValue { get; set; }

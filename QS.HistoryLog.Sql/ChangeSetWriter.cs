@@ -1,13 +1,11 @@
-using MySqlConnector;
-using QS.DomainModel.Entity;
-using QS.SqlLog.Domain;
-using QS.SqlLog.Interfaces;
 using System;
 using System.Threading.Tasks;
+using MySqlConnector;
+using QS.DomainModel.Entity;
 
-namespace QS.SqlLog
+namespace QS.HistoryLog
 {
-    public class ChangeSetPersister : IChangeSetPersister {
+    public class ChangeSetWriter : IChangeSetWriter {
 		/// <summary>
 		/// Используется для записи журнала изменений.
 		/// </summary>
@@ -16,7 +14,7 @@ namespace QS.SqlLog
 		private const int _maxChangedEntitiesSaveInOneBatch = 10000;
 
 
-		public ChangeSetPersister(string connectionString) {
+		public ChangeSetWriter(string connectionString) {
 			this.connectionString = connectionString;
 			if(!connectionString.Contains("Allow User Variables")) {
 				if(!this.connectionString.EndsWith(";"))
@@ -40,7 +38,6 @@ namespace QS.SqlLog
 				transaction.Commit();
 			}
 		}
-
 
 		public async Task SaveAsync(IChangeSet changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {

@@ -1,8 +1,7 @@
-using QS.DomainModel.Entity;
 using System;
-using System.Collections.Generic;
+using QS.DomainModel.Entity;
 
-namespace QS.SqlLog.Domain
+namespace QS.HistoryLog.Domain
 {
 	public class ChangedEntityDto : IChangedEntity {
 		public DateTime ChangeTime { get; set; } = DateTime.UtcNow;
