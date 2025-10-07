@@ -5,16 +5,31 @@ using MySqlConnector;
 using NUnit.Framework;
 using QS.DomainModel.Config;
 using QS.DomainModel.Entity;
-using QS.HistoryLog;
 using QS.HistoryLog.Domain;
+using QS.HistoryLog;
+using Testcontainers.MariaDb;
 
 namespace QS.Test.HistoryLog {
 	public class ChangeSetWriterTest {
-		string connectionString { get; set; }
-		string dbName = "test_SqlLog";
+		private MariaDbContainer _mariaDbContainer;
+		private string connectionString;
+		private const string DbName = "test_HistoryLog";
 
-		public ChangeSetWriterTest() {
-			connectionString = $"server=office.qsolution.ru;user id=test;password=8bV7lJBhg5QgijV0;database={dbName};Allow User Variables=true;";
+		[OneTimeSetUp]
+		public async Task OneTimeSetUp() {
+			_mariaDbContainer = new MariaDbBuilder()
+				.WithDatabase(DbName)
+				.Build();
+
+			await _mariaDbContainer.StartAsync();
+			connectionString = _mariaDbContainer.GetConnectionString();
+		}
+
+		[OneTimeTearDown]
+		public async Task OneTimeTearDown() {
+			if (_mariaDbContainer != null) {
+				await _mariaDbContainer.DisposeAsync();
+			}
 		}
 
 		[Test]
@@ -113,9 +128,9 @@ namespace QS.Test.HistoryLog {
 		}
 
 		async Task PrepareDatabase(MySqlConnection connection) {
-			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS {dbName};");
-			await connection.ExecuteAsync($"CREATE DATABASE {dbName};");
-			await connection.ExecuteAsync($"USE {dbName};");
+			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS {DbName};");
+			await connection.ExecuteAsync($"CREATE DATABASE {DbName};");
+			await connection.ExecuteAsync($"USE {DbName};");
 			string query = @"
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
