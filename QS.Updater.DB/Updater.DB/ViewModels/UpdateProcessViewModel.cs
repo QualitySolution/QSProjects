@@ -9,7 +9,6 @@ using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
 using QS.Project.DB;
-using QS.Project.Versioning;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
@@ -36,7 +35,6 @@ namespace QS.Updater.DB.ViewModels
 			INavigationManager navigation,
 			UpdateConfiguration configuration,
 			IMySQLProvider mySQLProvider,
-			IApplicationInfo applicationInfo,
 			ParametersService parametersService,
 			IInteractiveService interactive,
 			IGuiDispatcher guiDispatcher) : base(navigation)
@@ -92,10 +90,10 @@ namespace QS.Updater.DB.ViewModels
 		public IProgressBarDisplayable OperationProgress { get; set; }
 		public IProgressBarDisplayable TotalProgress { get; set; }
 
-		private bool buttonExcuteSensitive = true;
-		public virtual bool ButtonExcuteSensitive {
-			get => buttonExcuteSensitive;
-			set => SetField(ref buttonExcuteSensitive, value);
+		private bool buttonExecuteSensitive = true;
+		public virtual bool ButtonExecuteSensitive {
+			get => buttonExecuteSensitive;
+			set => SetField(ref buttonExecuteSensitive, value);
 		}
 
 		public string Description { get; set; }
@@ -105,11 +103,11 @@ namespace QS.Updater.DB.ViewModels
 
 		public void Execute()
 		{
-			ButtonExcuteSensitive = false;
+			ButtonExecuteSensitive = false;
 			try {
 				if (NeedCreateBackup) {
 					if (ExecuteBackup() || cancellation.IsCancellationRequested) {
-						buttonExcuteSensitive = true;
+						buttonExecuteSensitive = true;
 						cancellation = new CancellationTokenSource();
 						return;
 					}
@@ -135,15 +133,18 @@ namespace QS.Updater.DB.ViewModels
 			}
 			catch (MySqlException ex) when (ex.Number == 1142) {
 				logger.Error(ex, "Нет прав на доступ к таблицам базы данных, в момент выполнения обновления.");
-				ButtonExcuteSensitive = false;
+				ButtonExecuteSensitive = false;
 				interactive.ShowMessage(ImportanceLevel.Error, "У вас нет прав на выполнение команд обновления базы на уровне MySQL\\MariaDB сервера. Получите права на изменение структуры таблиц базы данных или выполните обновление от пользователя root.");
 			}
 		}
 
 		public void Cancel()
 		{
-			if(interactive.Question("Остановка процесса обновления на середине приведет к неработоспособному состоянию базы данных. Действительно хотите остановить?", "Остановка операции"))
-				Close(false, CloseSource.Cancel);
+			if(parametersService.UpdateInProgress(typeof(bool)) == true) {
+				if(!interactive.Question("Остановка процесса обновления на середине приведет к неработоспособному состоянию базы данных. Действительно хотите остановить?", "Остановка операции"))
+					return;
+			}
+			Close(false, CloseSource.Cancel);
 		}
 
 		#endregion
