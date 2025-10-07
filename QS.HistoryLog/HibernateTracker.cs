@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using MySqlConnector;
 using NHibernate.Event;
 using NHibernate.Proxy;
 using QS.DomainModel.Entity;
@@ -11,13 +10,7 @@ using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
 using QS.Project.Repositories;
-using QS.SqlLog;
 using QS.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace QS.HistoryLog
 {
@@ -27,8 +20,6 @@ namespace QS.HistoryLog
 		/// </summary>
 		private readonly string connectionString;
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		//На случай, если изменений много, а размер передаваемого пакета данных не велик
-		private const int _maxChangedEntitiesSaveInOneBatch = 10000;
 
 		private static ReadOnlyCollection<char> DIRECTORY_SEPARATORS = new ReadOnlyCollection<char>(new List<char>() { '\\', '/' });
 
@@ -61,7 +52,7 @@ namespace QS.HistoryLog
 		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
 			var entity = insertEvent.Entity as IDomainObject;
-			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
+			// Умеем отслеживать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
 			if(entity == null || !NeedTrace(entity))
 				return;
 
@@ -82,7 +73,7 @@ namespace QS.HistoryLog
 
 		public void OnPostUpdate(IUnitOfWorkTracked uow, PostUpdateEvent updateEvent) {
 			var entity = updateEvent.Entity as IDomainObject;
-			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
+			// Умеем отслеживать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
 			if(entity == null || !NeedTrace(entity))
 				return;
 
@@ -136,7 +127,7 @@ namespace QS.HistoryLog
 			
 			//NHibernate очень часто при удалении множества объектов, имеющих ссылки друг на друга, сначала очищает у объекта поля со ссылками
 			//на другой удаляемый объект, а потом его удалят тот в котором очищались ссылки. Что достаточно бестолково, можно было просто удалить.
-			//из-за таких действий история изменений для пользователя выглядит странно. Код ниже удаляет бестолковые записи об изменениях. 
+			//Из-за таких действий история изменений для пользователя выглядит странно. Код ниже удаляет бестолковые записи об изменениях. 
 			var hashOfDeleted = new HashSet<string>(
 				changes.Where(x => x.Operation == EntityChangeOperation.Delete)
 					.Select(x => x.EntityHash)
