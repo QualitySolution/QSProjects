@@ -15,7 +15,7 @@ node {
    }
    stage('Test dotnet')
    {
-   	sh 'rm -rf QSProjects/QS.LibsTest.Core/TestResults'
+   	  sh 'find QSProjects -type d -name "TestResults" -exec rm -rf {} + || true'
       try {  
    	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
       } catch (e) {}
