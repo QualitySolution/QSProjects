@@ -22,7 +22,7 @@ namespace QS.Test.HistoryLog {
 				.Build();
 
 			await _mariaDbContainer.StartAsync();
-			connectionString = _mariaDbContainer.GetConnectionString();
+			connectionString = _mariaDbContainer.GetConnectionString() + ";Allow User Variables=true";
 		}
 
 		[OneTimeTearDown]
