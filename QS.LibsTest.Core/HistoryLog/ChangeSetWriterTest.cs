@@ -19,10 +19,11 @@ namespace QS.Test.HistoryLog {
 		public async Task OneTimeSetUp() {
 			_mariaDbContainer = new MariaDbBuilder()
 				.WithDatabase(DbName)
+				.WithCommand("--character-set-server=utf8mb4", "--collation-server=utf8mb4_general_ci")
 				.Build();
 
 			await _mariaDbContainer.StartAsync();
-			connectionString = _mariaDbContainer.GetConnectionString() + ";Allow User Variables=true";
+			connectionString = _mariaDbContainer.GetConnectionString() + ";Allow User Variables=true;CharSet=utf8mb4";
 		}
 
 		[OneTimeTearDown]
@@ -129,7 +130,7 @@ namespace QS.Test.HistoryLog {
 
 		async Task PrepareDatabase(MySqlConnection connection) {
 			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS {DbName};");
-			await connection.ExecuteAsync($"CREATE DATABASE {DbName};");
+			await connection.ExecuteAsync($"CREATE DATABASE {DbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 			await connection.ExecuteAsync($"USE {DbName};");
 			string query = @"
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -149,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4;
 
 
 CREATE TABLE IF NOT EXISTS `history_changeset` (
@@ -166,7 +167,8 @@ CREATE TABLE IF NOT EXISTS `history_changeset` (
     ON DELETE SET NULL
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 1;
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `history_changed_entities` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -188,7 +190,8 @@ CREATE TABLE IF NOT EXISTS `history_changed_entities` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 1;
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `history_changes` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -212,7 +215,8 @@ CREATE TABLE IF NOT EXISTS `history_changes` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 1;
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb4;
 ";
 
 			await connection.ExecuteAsync(query, commandTimeout: 120);
