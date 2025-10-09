@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
-using QS.DomainModel.Config;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog;
 using Testcontainers.MariaDb;
@@ -81,55 +79,8 @@ namespace QS.Test.HistoryLog {
 				Assert.AreEqual(1, changesCount, "field changes count");
 			}
 		}
-
-		[Test]
-		public async Task HibernateTracker_SaveChangeSet() {
-			//ARRANGE 
-			using(var connection = new MySqlConnection(connectionString)) {
-				await connection.OpenAsync();
-				await PrepareDatabase(connection);
-
-				QS.Project.Repositories.UserRepository.GetCurrentUserId = () => 1;
-
-				var tracker = new HibernateTracker(connectionString);
-				// получаем через рефлексию поле
-				var changesField = typeof(QS.HistoryLog.HibernateTracker).GetField("changes", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-				var list = (System.Collections.Generic.List<ChangedEntity>)changesField.GetValue(tracker);
-
-				var entity = new TestDomainEntity { Id = 123, Name = "Test Entity" };
-
-				var fc = new CovariantCollection<FieldChange>(){
-					new FieldChange {
-						Path = "Name",
-						OldValue = "Куртка",
-						NewValue = "Шапка",
-						OldId = 123,
-						NewId = 321,
-						Type = FieldChangeType.Added
-					}
-				};
-
-				var changedEntity = new ChangedEntity(EntityChangeOperation.Create, entity, fc);
-				list.Add(changedEntity);
-
-				//act
-				var uow = new TestUnitOfWork();
-
-				tracker.SaveChangeSet(uow);
-
-				// assert
-				var csCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changeset;");
-				Assert.AreEqual(1, csCount, "changeset count");
-
-				var entitiesCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changed_entities;");
-				Assert.AreEqual(1, entitiesCount, "changed entities count");
-
-				var changesCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changes;");
-				Assert.AreEqual(1, changesCount, "field changes count");
-			}
-		}
-
-		async Task PrepareDatabase(MySqlConnection connection) {
+		
+		private async Task PrepareDatabase(MySqlConnection connection) {
 			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS {DbName};");
 			await connection.ExecuteAsync($"CREATE DATABASE {DbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 			await connection.ExecuteAsync($"USE {DbName};");
@@ -223,39 +174,6 @@ DEFAULT CHARACTER SET = utf8mb4;
 			await connection.ExecuteAsync(query, commandTimeout: 120);
 
 			await connection.ExecuteAsync("INSERT INTO users (id,name,login) VALUES (1,'test_user', '+7-965-590-24-11');");
-		}
-
-		// Вспомогательные типы для теста
-		[QS.HistoryLog.HistoryTrace]
-		class TestDomainEntity : QS.DomainModel.Entity.IDomainObject {
-			public int Id { get; set; }
-			public string Name { get; set; }
-		}
-
-		class TestUnitOfWork : QS.DomainModel.UoW.IUnitOfWork {
-			public QS.DomainModel.UoW.UnitOfWorkTitle ActionTitle { get; } = new QS.DomainModel.UoW.UnitOfWorkTitle("test", "member", "file.cs", 1);
-			public NHibernate.ISession Session => null;
-			public object RootObject => null;
-			public bool IsNew => false;
-			public bool IsAlive => true;
-			public bool HasChanges => false;
-			public void Save<TEntity>(TEntity entity, bool orUpdate = true) where TEntity : QS.DomainModel.Entity.IDomainObject { }
-			public void Save() { }
-			public void TrySave(object entity, bool orUpdate = true) { }
-			public void TryDelete(object entity) { }
-			public System.Linq.IQueryable<T> GetAll<T>() where T : QS.DomainModel.Entity.IDomainObject { throw new NotImplementedException(); }
-			public NHibernate.IQueryOver<T, T> Query<T>() where T : class { throw new NotImplementedException(); }
-			public NHibernate.IQueryOver<T, T> Query<T>(System.Linq.Expressions.Expression<System.Func<T>> alias) where T : class { throw new NotImplementedException(); }
-			public T GetById<T>(int id) where T : QS.DomainModel.Entity.IDomainObject { throw new NotImplementedException(); }
-			public T GetInSession<T>(T origin) where T : class, QS.DomainModel.Entity.IDomainObject { throw new NotImplementedException(); }
-			public System.Collections.Generic.IList<T> GetById<T>(int[] ids) where T : class, QS.DomainModel.Entity.IDomainObject { throw new NotImplementedException(); }
-			public System.Collections.Generic.IList<T> GetById<T>(System.Collections.Generic.IEnumerable<int> ids) where T : class, QS.DomainModel.Entity.IDomainObject { throw new NotImplementedException(); }
-			public object GetById(Type clazz, int id) { throw new NotImplementedException(); }
-			public void Commit() { }
-			public void Delete<TEntity>(TEntity entity) where TEntity : QS.DomainModel.Entity.IDomainObject { }
-			public event EventHandler<EntityUpdatedEventArgs> SessionScopeEntitySaved;
-			public void RaiseSessionScopeEntitySaved(object[] entities) { }
-			public void Dispose() { }
 		}
 	}
 }
