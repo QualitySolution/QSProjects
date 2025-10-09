@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using QS.DomainModel.Entity;
+using QS.HistoryLog.Domain;
 
 namespace QS.HistoryLog {
 	public interface IChangeSetWriter {
-		void Save(IChangeSet changeSet);
-		Task SaveAsync(IChangeSet changeSet);
+		void Save(IChangeSetToSave changeSet);
+		Task SaveAsync(IChangeSetToSave changeSet);
 	}
 }

@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using Gamma.Utilities;
-using NHibernate.Type;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
 

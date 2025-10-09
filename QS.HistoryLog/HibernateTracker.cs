@@ -45,7 +45,7 @@ namespace QS.HistoryLog
 			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
 				return;
 
-			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new CovariantCollection<FieldChange>());
+			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new List<FieldChange>());
 			changes.Add(hce);
 		}
 
@@ -62,7 +62,7 @@ namespace QS.HistoryLog
 				&& hce.Operation == EntityChangeOperation.Create))
 				return;
 
-			CovariantCollection<FieldChange> fields = new CovariantCollection<FieldChange>(Enumerable.Range(0, insertEvent.State.Length)
+			List<FieldChange> fields = new List<FieldChange>(Enumerable.Range(0, insertEvent.State.Length)
 				.Select(i => FieldChange.CheckChange(uow, i, insertEvent))
 				.Where(x => x != null));
 
@@ -83,7 +83,7 @@ namespace QS.HistoryLog
 				&& hce.Operation == EntityChangeOperation.Change))
 				return;
 
-			CovariantCollection<FieldChange> fields = new CovariantCollection<FieldChange>(Enumerable.Range(0, updateEvent.State.Length)
+			List<FieldChange> fields = new List<FieldChange>(Enumerable.Range(0, updateEvent.State.Length)
 				.Select(i => FieldChange.CheckChange(uow, i, updateEvent))
 				.Where(x => x != null));
 

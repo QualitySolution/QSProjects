@@ -1,9 +1,7 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Gamma.Utilities;
 using NHibernate.Mapping;
-using NHibernate.Type;
 using QS.DomainModel.Entity;
 
 namespace QS.HistoryLog.Domain
