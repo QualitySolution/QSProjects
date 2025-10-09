@@ -1,7 +1,7 @@
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MySqlConnector;
-using QS.DomainModel.Entity;
+using QS.HistoryLog.Domain;
 
 namespace QS.HistoryLog
 {
@@ -23,82 +23,62 @@ namespace QS.HistoryLog
 			}
 		}
 
-		public void Save(IChangeSet changeSet) {
+		public void Save(IChangeSetToSave changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				var transaction = connection.BeginTransaction();
-
-				if(changeSet.Entities.Count < _maxChangedEntitiesSaveInOneBatch) {
-					ExecuteSingleBatch(changeSet, connection, transaction);
+				
+				foreach(var batch in CreateBatches(changeSet, connection, transaction)) {
+					batch.ExecuteNonQuery();
+					batch.Dispose();
 				}
-				else {
-					ExecuteMultipleBatches(changeSet, connection, transaction);
-				}
-
+				
 				transaction.Commit();
 			}
 		}
 
-		public async Task SaveAsync(IChangeSet changeSet) {
+		public async Task SaveAsync(IChangeSetToSave changeSet) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				await connection.OpenAsync();
 				var transaction = await connection.BeginTransactionAsync();
-
-				if(changeSet.Entities.Count < _maxChangedEntitiesSaveInOneBatch) {
-					ExecuteSingleBatch(changeSet, connection, transaction);
+				
+				foreach(var batch in CreateBatches(changeSet, connection, transaction)) {
+					await batch.ExecuteNonQueryAsync();
+					batch.Dispose();
 				}
-				else {
-					ExecuteMultipleBatches(changeSet, connection, transaction);
-				}
-
+				
 				await transaction.CommitAsync();
 			}
 		}
 
-		private void ExecuteMultipleBatches(IChangeSet changeSet, MySqlConnection connection, MySqlTransaction transaction) {
+		private IEnumerable<MySqlBatch> CreateBatches(IChangeSetToSave changeSet, MySqlConnection connection, MySqlTransaction transaction) {
+			MySqlBatch batch = new MySqlBatch(connection, transaction);
+			batch.BatchCommands.Add(CreateInsertChangesSetCommand(changeSet));
+			batch.BatchCommands.Add(CreateSetChangeSetIdParameterCommand());
 
-			var repeatCount = Math.Ceiling((decimal)changeSet.Entities.Count / _maxChangedEntitiesSaveInOneBatch);
-			var entitiesIndex = 0;
+			var entityCountInBatch = 0;
+			foreach(var entity in changeSet.Entities) {
+				// Добавляем сущность в батч
+				batch.BatchCommands.Add(CreateInsertChangedEntityCommand(entity));
+				batch.BatchCommands.Add(CreateSetChangedEntityIdParameterCommand());
 
-			for(var i = 0; i < repeatCount; i++) {
-				using(var batch = new MySqlBatch(connection, transaction)) {
-					if(i == 0) {
-						batch.BatchCommands.Add(CreateInsertChangesSetCommand(changeSet));
-						batch.BatchCommands.Add(CreateSetChangeSetIdParameterCommand());
-					}
+				foreach(var change in entity.Changes) {
+					batch.BatchCommands.Add(CreateInsertEntityChangesCommand(change));
+				}
 
-					do {
-						batch.BatchCommands.Add(CreateInsertChangedEntityCommand(changeSet.Entities[entitiesIndex]));
-						batch.BatchCommands.Add(CreateSetChangedEntityIdParameterCommand());
+				entityCountInBatch++;
 
-						foreach(var change in changeSet.Entities[entitiesIndex].Changes) {
-							batch.BatchCommands.Add(CreateInsertEntityChangesCommand(change)
-							);
-						}
-
-						entitiesIndex++;
-					} while(entitiesIndex < changeSet.Entities.Count && entitiesIndex % _maxChangedEntitiesSaveInOneBatch != 0);
-					batch.ExecuteNonQuery();
+				// Если достигли лимита - возвращаем батч
+				if(entityCountInBatch >= _maxChangedEntitiesSaveInOneBatch) {
+					yield return batch;
+					batch = new MySqlBatch(connection, transaction);
+					entityCountInBatch = 0;
 				}
 			}
-		}
 
-		private void ExecuteSingleBatch(IChangeSet changeSet, MySqlConnection connection, MySqlTransaction transaction) {
-			using(var batch = new MySqlBatch(connection, transaction)) {
-				batch.BatchCommands.Add(CreateInsertChangesSetCommand(changeSet));
-				batch.BatchCommands.Add(CreateSetChangeSetIdParameterCommand());
-
-				foreach(var entity in changeSet.Entities) {
-					batch.BatchCommands.Add(CreateInsertChangedEntityCommand(entity));
-					batch.BatchCommands.Add(CreateSetChangedEntityIdParameterCommand());
-
-					foreach(var change in entity.Changes) {
-						batch.BatchCommands.Add(CreateInsertEntityChangesCommand(change)
-						);
-					}
-				}
-				batch.ExecuteNonQuery();
-			}
+			// Возвращаем оставшийся батч
+			if(entityCountInBatch > 0) 
+				yield return batch;
 		}
 
 		private MySqlBatchCommand CreateSetChangeSetIdParameterCommand() {
@@ -109,7 +89,7 @@ namespace QS.HistoryLog
 			return new MySqlBatchCommand("SET @ChangedEntityId = LAST_INSERT_ID();");
 		}
 
-		private MySqlBatchCommand CreateInsertChangesSetCommand(IChangeSet changeSet) {
+		private MySqlBatchCommand CreateInsertChangesSetCommand(IChangeSetToSave changeSet) {
 			var sqlInsertChangeSet =
 				"INSERT INTO history_changeset (user_login, action_name, user_id) " +
 				"VALUES (@UserLogin, @ActionName, @UserId);";
@@ -123,7 +103,7 @@ namespace QS.HistoryLog
 			};
 		}
 
-		private MySqlBatchCommand CreateInsertEntityChangesCommand(IFieldChange change) {
+		private MySqlBatchCommand CreateInsertEntityChangesCommand(IFieldChangeToSave change) {
 			var sqlInsertChange =
 				"INSERT INTO history_changes (type, field_name, old_value, old_id, new_value, new_id, changed_entity_id) " +
 				"VALUES (@TypeOfChange, @Path, @OldValue, @OldId, @NewValue, @NewId, @ChangedEntityId);";
@@ -140,7 +120,7 @@ namespace QS.HistoryLog
 			};
 		}
 
-		private MySqlBatchCommand CreateInsertChangedEntityCommand(IChangedEntity entity) {
+		private MySqlBatchCommand CreateInsertChangedEntityCommand(IChangedEntityToSave entity) {
 			var sqlInsertEntity =
 				"INSERT INTO history_changed_entities (datetime, operation, entity_class, entity_id, entity_title, changeset_id) " +
 				"VALUES (@ChangeTime, @OperationDbName, @EntityClassName, @EntityId, @EntityTitle, @ChangeSetId);";

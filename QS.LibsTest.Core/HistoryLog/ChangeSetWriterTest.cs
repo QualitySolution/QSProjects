@@ -1,15 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
 using QS.DomainModel.Config;
-using QS.DomainModel.Entity;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog;
 using Testcontainers.MariaDb;
 
 namespace QS.Test.HistoryLog {
+	[TestFixture(TestOf = typeof(ChangeSetWriter))]
 	public class ChangeSetWriterTest {
 		private MariaDbContainer _mariaDbContainer;
 		private string connectionString;
@@ -34,19 +35,19 @@ namespace QS.Test.HistoryLog {
 		}
 
 		[Test]
-		public async Task HistoryLog() {
+		public async Task ChangeSetWriter_SaveAsyncTest() {
 			//ARRANGE 
 			using(var connection = new MySqlConnection(connectionString)) {
 				await connection.OpenAsync();
 				await PrepareDatabase(connection);
 
-				var changeSet = new ChangeSetDto {
+				var changeSet = new SimpleChangeSet {
 					ActionName = "UnitTestAction",
 					UserId = 1,
 					UserLogin = "test_user"
 				};
 
-				var entity = new ChangedEntityDto {
+				var entity = new SimpleChangedEntity {
 					ChangeTime = DateTime.Now,
 					Operation = EntityChangeOperation.Create,
 					EntityClassName = "TestEntity",
@@ -54,7 +55,7 @@ namespace QS.Test.HistoryLog {
 					EntityTitle = "Test Entity Title"
 				};
 
-				entity.Changes.Add(new FieldChangeDto {
+				entity.Changes.Add(new SimpleFieldChange {
 					Path = "Name",
 					OldValue = "Куртка",
 					NewValue = "Шапка",
@@ -66,8 +67,8 @@ namespace QS.Test.HistoryLog {
 				changeSet.Entities.Add(entity);
 
 				//act
-				var persister = new ChangeSetWriter(connectionString);
-				persister.Save(changeSet);
+				var writer = new ChangeSetWriter(connectionString);
+				await writer.SaveAsync(changeSet);
 
 				// assert
 				var csCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changeset;");
