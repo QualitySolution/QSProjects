@@ -9,7 +9,7 @@ namespace QS.HistoryLog.Domain
 	{
 		#region Свойства
 
-		public virtual IChangeSetToSave ChangeSet { get; set; }
+		public virtual ChangeSet ChangeSet { get; set; }
 		
 		public virtual List<FieldChange> Changes { get; set; }
 		IEnumerable<IFieldChangeToSave> IChangedEntityToSave.Changes => Changes;
