@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -77,30 +77,24 @@ namespace QS.Osrm
 
             var client = new RestClient(ServerUrl);
             client.UseNewtonsoftJson();
+
+			var startTime = DateTime.Now;
             var response = await client.ExecuteAsync<RouteResponse>(request);
 
-            Logging(response, routePOIs);
+			if(response.Data == null) {
+				logger.Error("Ошибка в обработке запроса к osrm status={0} message={1}", response.ResponseStatus, response.ErrorMessage);
+			}
+			else if(response.Data.Code != _responseOk) {
+				logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
+				logger.Debug("Запрошен машрут: {0}", ConvertPointsToString(routePOIs, " -> "));
+				logger.Debug("Полный ответ: {0}", response.Content);
+			}
+			else {
 
-            return response.Data;
-        }
+				logger.Debug("Полный ответ за {0} сек.: {1}", (DateTime.Now - startTime).TotalSeconds, response.Content);
+			}
 
-        private void Logging(IRestResponse<RouteResponse> response, List<PointOnEarth> routePOIs)
-        {
-            if (response.Data == null)
-            {
-                logger.Error("Ошибка в обработке запроса к osrm status={0} message={1}", response.ResponseStatus, response.ErrorMessage);
-            }
-            else if (response.Data.Code != _responseOk)
-            {
-                logger.Error("Ошибка при получении маршрута со osrm {0}: {1}", response.Data.Code, response.Data.Message);
-                logger.Debug("Запрошен машрут: {0}", ConvertPointsToString(routePOIs, " -> "));
-                logger.Debug("Полный ответ: {0}", response.Content);
-            }
-            else
-            {
-                DateTime startTime = DateTime.Now;
-                logger.Debug("Полный ответ за {0} сек.: {1}", (DateTime.Now - startTime).TotalSeconds, response.Content);
-            }
+			return response.Data;
         }
 
         private string ConvertPointsToString(List<PointOnEarth> routePOIs, string separator = ";")
