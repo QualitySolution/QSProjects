@@ -44,6 +44,9 @@ namespace QS.Testing.DB
 			ConnectionString = MariaDbContainer.GetConnectionString() + ";Allow User Variables=true;CharSet=utf8mb4";
 			ConnectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionString);
 
+			// Полный сброс глобального состояния OrmConfig для изоляции от предыдущих тестов
+			OrmConfig.ResetForTesting();
+			
 			// Конфигурация NHibernate для работы с MariaDB
 			var dbConfig = MySQLConfiguration.Standard
 				.Driver<MySqlConnectorDriver>()
