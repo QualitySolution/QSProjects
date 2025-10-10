@@ -11,14 +11,14 @@ namespace QS.HistoryLog.Domain
 
 		public virtual ChangeSet ChangeSet { get; set; }
 		
-		public virtual List<FieldChange> Changes { get; set; }
+		public virtual IList<FieldChange> Changes { get; set; }
 		IEnumerable<IFieldChangeToSave> IChangedEntityToSave.Changes => Changes;
 		
 		#endregion
 
 		public ChangedEntity() { }
 
-		public ChangedEntity(EntityChangeOperation operation, object entity, List<FieldChange> changes)
+		public ChangedEntity(EntityChangeOperation operation, object entity, IList<FieldChange> changes)
 		{
 			Operation = operation;
 			var type = NHibernateProxyHelper.GuessClass(entity);
@@ -31,7 +31,9 @@ namespace QS.HistoryLog.Domain
 			EntityId = DomainHelper.GetId(entity);
 			ChangeTime = DateTime.Now;
 
-			changes.ForEach(f => f.Entity = this);
+			foreach(var f in changes)
+				f.Entity = this;
+			
 			Changes = changes;
 		}
 

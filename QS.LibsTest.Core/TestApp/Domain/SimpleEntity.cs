@@ -9,6 +9,8 @@ namespace QS.Test.TestApp.Domain
 
 		public virtual string Text { get; set; }
 
+		public virtual string Title => $"Простая сущность {Text}";
+
 		public SimpleEntity()
 		{
 		}
