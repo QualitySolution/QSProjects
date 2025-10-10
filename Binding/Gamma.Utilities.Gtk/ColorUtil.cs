@@ -18,5 +18,9 @@ namespace Gamma.Utilities
 			var att = aEnum.GetAttribute<ColorNameAttribute>();
 			return att != null ? att.ColorString : null;
 		}
+
+		public static string GetHex(Color color) {
+			return $"#{(color.Red >> 8):X2}{(color.Green >> 8):X2}{(color.Blue >> 8):X2}";
+		}
 	}
 }

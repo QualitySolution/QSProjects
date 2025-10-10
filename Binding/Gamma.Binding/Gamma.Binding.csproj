@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\Converters\ArrayToEnumerableConverter.cs" />
+    <Compile Include="Binding\Converters\HexStringToColorConvertor.cs" />
     <Compile Include="GtkWidgets\yMenuItem.cs" />
     <Compile Include="GtkWidgets\ySpinButtonCurrencyFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
