@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace QS.ErrorReporting.Web.Middlewares {
+namespace QS.ErrorReporting.Middlewares {
 	public class ErrorHandlingMiddleware {
 		private readonly RequestDelegate _next;
 		private readonly IRestServiceErrorReporter _reporter;

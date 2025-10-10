@@ -4,7 +4,7 @@ using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
 
-namespace QS.ErrorReporting.Web.Interceptors
+namespace QS.ErrorReporting.Interceptors
 {
     public class ErrorRedirectionGrpcWebClient: Interceptor
     {

@@ -1,7 +1,7 @@
 using System;
 using QS.Project.Versioning;
 
-namespace QS.ErrorReporting.Web
+namespace QS.ErrorReporting
 {
     public class CloudAppInfo : IApplicationInfo
     {

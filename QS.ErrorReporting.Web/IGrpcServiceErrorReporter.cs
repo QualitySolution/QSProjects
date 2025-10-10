@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Grpc.Core;
 
-namespace QS.ErrorReporting.Web {
+namespace QS.ErrorReporting {
 	
 	/// <summary>
 	/// Сервис отправки куда надо сообщений об ошибка

@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace QS.ErrorReporting.Web
+namespace QS.ErrorReporting
 {
     public class JournaldLogService : IAsyncLogService
     {

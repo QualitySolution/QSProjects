@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Grpc.Core;
-using QS.ErrorReporting.Web.Authentication;
 using QS.Project.DB;
 using QS.Project.Versioning;
 
-namespace QS.ErrorReporting.Web {
+namespace QS.ErrorReporting {
 	public class GrpcServiceErrorReporter : IGrpcServiceErrorReporter {
 		private readonly IApplicationInfo application;
 		private readonly IDataBaseInfo databaseInfo;

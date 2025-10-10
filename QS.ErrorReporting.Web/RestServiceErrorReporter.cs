@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using QS.Project.DB;
 using QS.Project.Versioning;
 
-namespace QS.ErrorReporting.Web {
+namespace QS.ErrorReporting {
 	public class RestServiceErrorReporter : IRestServiceErrorReporter {
 		private readonly IApplicationInfo application;
 		private readonly IDataBaseInfo databaseInfo;
