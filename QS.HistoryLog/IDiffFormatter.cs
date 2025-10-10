@@ -1,5 +1,4 @@
-﻿using System;
-namespace QS.HistoryLog
+namespace QS.HistoryLog 
 {
 	public interface IDiffFormatter
 	{

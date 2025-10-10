@@ -26,6 +26,9 @@ namespace QS.Testing.DB
 			if (configuration != null)
 				return;
 
+			// Полный сброс глобального состояния OrmConfig для изоляции от предыдущих тестов
+			OrmConfig.ResetForTesting();
+
 			var db_config = FluentNHibernate.Cfg.Db.MonoSqliteConfiguration.Standard.InMemory();
 
 			OrmConfig.ConfigureOrm(db_config, assemblies);

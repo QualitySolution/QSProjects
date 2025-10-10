@@ -1,26 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Gamma.Utilities;
 using NHibernate.Proxy;
 using QS.DomainModel.Entity;
-using QS.Utilities.Text;
 
 namespace QS.HistoryLog.Domain
 {
-	public class ChangedEntity : ChangedEntityBase
+	public class ChangedEntity : ChangedEntityBase, IChangedEntityToSave
 	{
 		#region Свойства
 
 		public virtual ChangeSet ChangeSet { get; set; }
 		
 		public virtual IList<FieldChange> Changes { get; set; }
+		IEnumerable<IFieldChangeToSave> IChangedEntityToSave.Changes => Changes;
 		
 		#endregion
 
 		public ChangedEntity() { }
 
-		public ChangedEntity(EntityChangeOperation operation, object entity, List<FieldChange> changes)
+		public ChangedEntity(EntityChangeOperation operation, object entity, IList<FieldChange> changes)
 		{
 			Operation = operation;
 			var type = NHibernateProxyHelper.GuessClass(entity);
@@ -33,7 +31,9 @@ namespace QS.HistoryLog.Domain
 			EntityId = DomainHelper.GetId(entity);
 			ChangeTime = DateTime.Now;
 
-			changes.ForEach(f => f.Entity = this);
+			foreach(var f in changes)
+				f.Entity = this;
+			
 			Changes = changes;
 		}
 

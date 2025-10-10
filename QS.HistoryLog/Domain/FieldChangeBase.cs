@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System;
 using System.Linq;
 using Gamma.Utilities;
 using NHibernate.Mapping;
-using NHibernate.Type;
 using QS.DomainModel.Entity;
 
 namespace QS.HistoryLog.Domain
@@ -101,14 +99,4 @@ namespace QS.HistoryLog.Domain
 		#endregion
 	}
 
-	public enum FieldChangeType {
-		[Display(Name = "Добавлено")]
-		Added,
-		[Display(Name = "Изменено")]
-		Changed,
-		[Display(Name = "Очищено")]
-		Removed,
-		[Display(Name = "Без изменений")]
-		Unchanged
-	}
 }

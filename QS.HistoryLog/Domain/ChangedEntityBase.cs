@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System;
 using Gamma.Utilities;
-using NHibernate.Type;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
 
@@ -38,12 +36,4 @@ namespace QS.HistoryLog.Domain
 		#endregion
 	}
 
-	public enum EntityChangeOperation {
-		[Display(Name = "Создание")]
-		Create,
-		[Display(Name = "Изменение")]
-		Change,
-		[Display(Name = "Удаление")]
-		Delete
-	}
 }
