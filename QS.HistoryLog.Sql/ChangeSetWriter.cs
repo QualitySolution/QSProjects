@@ -5,7 +5,7 @@ using QS.HistoryLog.Domain;
 
 namespace QS.HistoryLog
 {
-    public class ChangeSetWriter : IChangeSetWriter {
+    public class ChangeSetWriter {
 		/// <summary>
 		/// Используется для записи журнала изменений.
 		/// </summary>
