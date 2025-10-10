@@ -87,20 +87,15 @@ namespace QS.HistoryLog
 				.Select(i => FieldChange.CheckChange(uow, i, updateEvent))
 				.Where(x => x != null));
 
-			if(fields.Any()) {
-				{
-					changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
-				}
-			}
+			if(fields.Any())
+				changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
 		}
 
-		public void Reset()
-		{
+		public void Reset() {
 			changes.Clear();
 		}
 
-		public void OnPostCommit(IUnitOfWorkTracked uow)
-		{
+		public void OnPostCommit(IUnitOfWorkTracked uow) {
 			SaveChangeSet((IUnitOfWork)uow);
 		}
 
