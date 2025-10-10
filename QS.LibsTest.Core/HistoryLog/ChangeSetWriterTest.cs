@@ -5,39 +5,22 @@ using MySqlConnector;
 using NUnit.Framework;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog;
-using Testcontainers.MariaDb;
+using QS.Testing.DB;
 
 namespace QS.Test.HistoryLog {
 	[TestFixture(TestOf = typeof(ChangeSetWriter))]
-	public class ChangeSetWriterTest {
-		private MariaDbContainer _mariaDbContainer;
-		private string connectionString;
-		private const string DbName = "test_HistoryLog";
-
-		[OneTimeSetUp]
-		public async Task OneTimeSetUp() {
-			_mariaDbContainer = new MariaDbBuilder()
-				.WithDatabase(DbName)
-				.WithCommand("--character-set-server=utf8mb4", "--collation-server=utf8mb4_general_ci")
-				.Build();
-
-			await _mariaDbContainer.StartAsync();
-			connectionString = _mariaDbContainer.GetConnectionString() + ";Allow User Variables=true;CharSet=utf8mb4";
-		}
-
-		[OneTimeTearDown]
-		public async Task OneTimeTearDown() {
-			if (_mariaDbContainer != null) {
-				await _mariaDbContainer.DisposeAsync();
-			}
+	public class ChangeSetWriterTest : MariaDbTestContainerSqlFixtureBase {
+		public override async Task OneTimeSetUp() {
+			await base.OneTimeSetUp();
+			await PrepareDatabase(CreateHistoryLogSchema());
 		}
 
 		[Test]
 		public async Task ChangeSetWriter_SaveAsyncTest() {
 			//ARRANGE 
-			using(var connection = new MySqlConnection(connectionString)) {
+			using(var connection = CreateConnection(enableUserVariables: true)) {
 				await connection.OpenAsync();
-				await PrepareDatabase(connection);
+				await connection.ExecuteAsync($"USE `{DbName}`;");
 
 				var changeSet = new SimpleChangeSet {
 					ActionName = "UnitTestAction",
@@ -69,7 +52,7 @@ namespace QS.Test.HistoryLog {
 
 				//act
 				// Используем маленький batch size для проверки записи в несколько batch-ей
-				var writer = new ChangeSetWriter(connectionString, batchSize: 5);
+				var writer = new ChangeSetWriter(ConnectionString, batchSize: 5);
 				await writer.SaveAsync(changeSet);
 
 				// assert
@@ -84,11 +67,8 @@ namespace QS.Test.HistoryLog {
 			}
 		}
 		
-		private async Task PrepareDatabase(MySqlConnection connection) {
-			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS {DbName};");
-			await connection.ExecuteAsync($"CREATE DATABASE {DbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-			await connection.ExecuteAsync($"USE {DbName};");
-			string query = @"
+		private string CreateHistoryLogSchema() {
+			return @"
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -173,11 +153,9 @@ CREATE TABLE IF NOT EXISTS `history_changes` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4;
+
+INSERT INTO users (id,name,login) VALUES (1,'test_user', '+7-965-590-24-11');
 ";
-
-			await connection.ExecuteAsync(query, commandTimeout: 120);
-
-			await connection.ExecuteAsync("INSERT INTO users (id,name,login) VALUES (1,'test_user', '+7-965-590-24-11');");
 		}
 	}
 }
