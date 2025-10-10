@@ -12,10 +12,11 @@ namespace QS.HistoryLog
 		private readonly string connectionString;
 		//На случай, если изменений много, а размер передаваемого пакета данных не велик
 		private const int _maxChangedEntitiesSaveInOneBatch = 10000;
+		private readonly int _batchSize;
 
-
-		public ChangeSetWriter(string connectionString) {
+		public ChangeSetWriter(string connectionString, int? batchSize = null) {
 			this.connectionString = connectionString;
+			_batchSize = batchSize ?? _maxChangedEntitiesSaveInOneBatch;
 			if(!connectionString.Contains("Allow User Variables")) {
 				if(!this.connectionString.EndsWith(";"))
 					this.connectionString += ";";
@@ -69,7 +70,7 @@ namespace QS.HistoryLog
 				entityCountInBatch++;
 
 				// Если достигли лимита - возвращаем батч
-				if(entityCountInBatch >= _maxChangedEntitiesSaveInOneBatch) {
+				if(entityCountInBatch >= _batchSize) {
 					yield return batch;
 					batch = new MySqlBatch(connection, transaction);
 					entityCountInBatch = 0;

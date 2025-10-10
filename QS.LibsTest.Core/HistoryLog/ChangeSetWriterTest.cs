@@ -45,27 +45,31 @@ namespace QS.Test.HistoryLog {
 					UserLogin = "test_user"
 				};
 
-				var entity = new SimpleChangedEntity {
-					ChangeTime = DateTime.Now,
-					Operation = EntityChangeOperation.Create,
-					EntityClassName = "TestEntity",
-					EntityId = 123,
-					EntityTitle = "Test Entity Title"
-				};
+				// Создаём 12 сущностей, чтобы при batch size = 5 получилось 3 batch-а (5 + 5 + 2)
+				for(int i = 1; i <= 12; i++) {
+					var entity = new SimpleChangedEntity {
+						ChangeTime = DateTime.Now,
+						Operation = EntityChangeOperation.Create,
+						EntityClassName = "TestEntity",
+						EntityId = 100 + i,
+						EntityTitle = $"Test Entity {i}"
+					};
 
-				entity.Changes.Add(new SimpleFieldChange {
-					Path = "Name",
-					OldValue = "Куртка",
-					NewValue = "Шапка",
-					OldId = 123,
-					NewId = 321,
-					Type = FieldChangeType.Added
-				});
+					entity.Changes.Add(new SimpleFieldChange {
+						Path = "Name",
+						OldValue = $"Старое значение {i}",
+						NewValue = $"Новое значение {i}",
+						OldId = 1000 + i,
+						NewId = 2000 + i,
+						Type = FieldChangeType.Changed
+					});
 
-				changeSet.Entities.Add(entity);
+					changeSet.Entities.Add(entity);
+				}
 
 				//act
-				var writer = new ChangeSetWriter(connectionString);
+				// Используем маленький batch size для проверки записи в несколько batch-ей
+				var writer = new ChangeSetWriter(connectionString, batchSize: 5);
 				await writer.SaveAsync(changeSet);
 
 				// assert
@@ -73,10 +77,10 @@ namespace QS.Test.HistoryLog {
 				Assert.AreEqual(1, csCount, "changeset count");
 
 				var entitiesCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changed_entities;");
-				Assert.AreEqual(1, entitiesCount, "changed entities count");
+				Assert.AreEqual(12, entitiesCount, "changed entities count");
 
 				var changesCount = await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM history_changes;");
-				Assert.AreEqual(1, changesCount, "field changes count");
+				Assert.AreEqual(12, changesCount, "field changes count");
 			}
 		}
 		
