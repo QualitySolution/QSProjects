@@ -1,7 +1,5 @@
-using System;
-using DiffPlex;
+﻿using DiffPlex;
 using DiffPlex.DiffBuilder;
-using QS.DomainModel.Entity;
 
 namespace QS.HistoryLog
 {

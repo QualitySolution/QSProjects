@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using Gamma.GtkWidgets;
 using Gtk;
-using QS.DomainModel.Entity;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog.ViewModels;
 using QS.Project.Domain;

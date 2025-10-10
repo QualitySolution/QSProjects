@@ -187,7 +187,7 @@ namespace QS.HistoryLog.ViewModels
 				OnPropertyChanged(nameof(ChangesSelectedEntity));
 			}
 		}
-		public IEnumerable<FieldChange> ChangesSelectedEntity => SelectedEntity == null ? new List<FieldChange>() : SelectedEntity.Changes.Cast<FieldChange>();
+		public IList<FieldChange> ChangesSelectedEntity => SelectedEntity == null ? new List<FieldChange>() : SelectedEntity.Changes;
 		#endregion
 	}
 }
