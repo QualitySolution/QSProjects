@@ -119,43 +119,26 @@ namespace QS.Testing.DB
 		/// Выполнить SQL скрипт создания схемы базы данных
 		/// </summary>
 		/// <param name="createSchemaScript">SQL скрипт создания таблиц</param>
-		/// <param name="additionalSql">Дополнительный SQL (например, начальные данные)</param>
-		protected async Task PrepareDatabase(string createSchemaScript, string additionalSql = "")
-		{
-			using (var connection = CreateConnection(enableUserVariables: true))
-			{
+		protected async Task PrepareDatabase(string createSchemaScript) {
+			using(var connection = CreateConnection(enableUserVariables: true)) {
 				await connection.OpenAsync();
-				
-				// Пересоздаём базу данных
-				await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{DbName}`;");
-				await connection.ExecuteAsync($"CREATE DATABASE `{DbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-				await connection.ExecuteAsync($"USE `{DbName}`;");
-				
-				// Выполняем скрипт создания схемы
-				var script = createSchemaScript;
-				script = script.Replace("DELIMITER $$", "").Replace("DELIMITER ;", "").Replace("END$$", "END;");
-				
-				if (!string.IsNullOrEmpty(additionalSql))
-				{
-					script += "\n" + additionalSql;
-				}
-				
-				await connection.ExecuteAsync(script, commandTimeout: 120);
+				await PrepareDatabase(connection, createSchemaScript);
 			}
 		}
 
 		/// <summary>
-		/// Выполнить SQL скрипт
+		/// Выполнить SQL скрипт создания схемы базы данных
 		/// </summary>
-		/// <param name="sql">SQL скрипт</param>
-		protected async Task ExecuteSql(string sql)
+		/// <param name="connection">Рабочее соединение с базой</param>
+		/// <param name="createSchemaScript">SQL скрипт создания таблиц</param>
+		protected async Task PrepareDatabase(MySqlConnection connection, string createSchemaScript)
 		{
-			using (var connection = CreateConnection(enableUserVariables: true))
-			{
-				await connection.OpenAsync();
-				await connection.ExecuteAsync($"USE `{DbName}`;");
-				await connection.ExecuteAsync(sql, commandTimeout: 120);
-			}
+			// Пересоздаём базу данных
+			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{DbName}`;");
+			await connection.ExecuteAsync($"CREATE DATABASE `{DbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
+			await connection.ExecuteAsync($"USE `{DbName}`;");
+			
+			await connection.ExecuteAsync(createSchemaScript, commandTimeout: 120);
 		}
 	}
 }

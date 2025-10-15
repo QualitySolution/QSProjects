@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Dapper;
-using MySqlConnector;
 using NUnit.Framework;
 using QS.HistoryLog.Domain;
 using QS.HistoryLog;
