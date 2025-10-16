@@ -1,8 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
+using System.Data;
+using System.Threading.Tasks;
+using System;
 using Testcontainers.MariaDb;
 
 namespace QS.Testing.DB
@@ -24,7 +25,7 @@ namespace QS.Testing.DB
 		protected MariaDbTestContainerSqlFixtureBase()
 		{
 			// Автоматически формируем имя базы на основе имени класса
-			DbName = $"test_{GetType().Name}";
+			DbName = $"{GetType().Name}";
 		}
 
 		/// <summary>
@@ -107,7 +108,9 @@ namespace QS.Testing.DB
 		/// </summary>
 		protected async Task RecreateDatabase()
 		{
-			using (var connection = new MySqlConnection(MariaDbContainer.GetConnectionString()))
+			// Выполняем операции на уровне сервера без выбранной БД, иначе ловим эксепшен что такой базы нет существует. Что как будтобы логично.
+			var csb = new MySqlConnectionStringBuilder(MariaDbContainer.GetConnectionString()) { Database = string.Empty };
+			using (var connection = new MySqlConnection(csb.ConnectionString))
 			{
 				await connection.OpenAsync();
 				await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{DbName}`;");
@@ -131,13 +134,13 @@ namespace QS.Testing.DB
 		/// </summary>
 		/// <param name="connection">Рабочее соединение с базой</param>
 		/// <param name="createSchemaScript">SQL скрипт создания таблиц</param>
-		protected async Task PrepareDatabase(MySqlConnection connection, string createSchemaScript)
-		{
-			// Пересоздаём базу данных
-			await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{DbName}`;");
-			await connection.ExecuteAsync($"CREATE DATABASE `{DbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
+		protected async Task PrepareDatabase(MySqlConnection connection, string createSchemaScript) {
+			await RecreateDatabase();
+
+			// Открываем переданное соединение к только что созданной базе и применяем схему
+			if(connection.State != ConnectionState.Open)
+				await connection.OpenAsync();
 			await connection.ExecuteAsync($"USE `{DbName}`;");
-			
 			await connection.ExecuteAsync(createSchemaScript, commandTimeout: 120);
 		}
 	}
