@@ -141,7 +141,7 @@ namespace QS.Testing.DB
 			if(connection.State != ConnectionState.Open)
 				await connection.OpenAsync();
 			await connection.ExecuteAsync($"USE `{DbName}`;");
-			await connection.ExecuteAsync(createSchemaScript, commandTimeout: 120);
+			await connection.ExecuteAsync(createSchemaScript, commandTimeout: 180);
 		}
 	}
 }
