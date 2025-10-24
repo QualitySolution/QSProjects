@@ -34,5 +34,39 @@ namespace QS.Project.DB {
 		public static RlikeExpression Rlike(string propertyName, string value) => new RlikeExpression(propertyName, value);
 
 		#endregion
+		
+		#region Between
+
+		/// <summary>
+		/// Between с использованием проекций для выражения и границ
+		/// </summary>
+		/// <param name="expression">Проекция выражения</param>
+		/// <param name="min">Проекция левой границы(минимальное значение)</param>
+		/// <param name="max">Проекция правой границы(максимальное значение)</param>
+		/// <returns></returns>
+		public static CustomBetweenExpression Between(IProjection expression, IProjection min, IProjection max)
+			=> new CustomBetweenExpression(expression, min, max);
+		
+		/// <summary>
+		/// Between с использованием проекций для выражения и границ
+		/// </summary>
+		/// <param name="expression">Проекция выражения</param>
+		/// <param name="minName">Имя свойства класса для левой границы(минимальное значение)</param>
+		/// <param name="maxName">Имя свойства класса для правой границы(максимальное значение)</param>
+		/// <returns></returns>
+		public static CustomBetweenExpression Between(IProjection expression, string minName, string maxName)
+			=> new CustomBetweenExpression(expression, minName, maxName);
+		
+		/// <summary>
+		/// Between с использованием проекций для выражения и границ
+		/// </summary>
+		/// <param name="expressionName">Имя свойства для выражения</param>
+		/// <param name="minName">Имя свойства класса для левой границы(минимальное значение)</param>
+		/// <param name="maxName">Имя свойства класса для правой границы(максимальное значение)</param>
+		/// <returns></returns>
+		public static CustomBetweenExpression Between(string expressionName, string minName, string maxName)
+			=> new CustomBetweenExpression(expressionName, minName, maxName);
+
+		#endregion
 	}
 }
