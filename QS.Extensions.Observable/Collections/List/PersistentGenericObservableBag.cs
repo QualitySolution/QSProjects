@@ -40,9 +40,9 @@ namespace QS.Extensions.Observable.Collections.List {
 		}
 
 		public new void Clear() {
+			ClearSubscribes();
 			base.Clear();
 			OnCollectionReset();
-			ClearSubscribes();
 		}
 
 		public new void Insert(int index, T item) {
