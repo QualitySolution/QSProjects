@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using NUnit.Framework;
-using QS.DomainModel.Entity;
 using QS.Extensions.Observable.Collections.List;
 
 namespace QS.Test.Observable
@@ -10,33 +9,6 @@ namespace QS.Test.Observable
 	[TestFixture(TestOf = typeof(ObservableList<>))]
 	public class ObservableListTest
 	{
-		#region Тестовые классы
-		
-		/// <summary>
-		/// Тестовый класс на основе PropertyChangedBase для проверки уведомлений об изменении свойств
-		/// </summary>
-		private class TestItem : PropertyChangedBase
-		{
-			private string name;
-			public string Name {
-				get => name;
-				set => SetField(ref name, value);
-			}
-
-			private int value;
-			public int Value {
-				get => this.value;
-				set => SetField(ref this.value, value);
-			}
-
-			public TestItem(string name, int value = 0)
-			{
-				this.name = name;
-				this.value = value;
-			}
-		}
-		
-		#endregion
 
 		[Test(Description = "Проверяем, что событие CollectionChanged срабатывает при добавлении элемента")]
 		public void Add_CollectionChangedEventFired()
