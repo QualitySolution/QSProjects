@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using NHibernate.Cfg;
 using QS.DomainModel.UoW;
+using QS.Extensions.Observable.Collections.List;
 using QS.Project.DB;
 
 namespace QS.Testing.DB
@@ -30,7 +31,8 @@ namespace QS.Testing.DB
 			OrmConfig.ResetForTesting();
 
 			var db_config = FluentNHibernate.Cfg.Db.MonoSqliteConfiguration.Standard.InMemory();
-
+			
+			OrmConfig.Conventions = new[] { new ObservableListConvention() };
 			OrmConfig.ConfigureOrm(db_config, assemblies);
 			configuration = OrmConfig.NhConfig;
 			inMemoryDBTestSessionProvider = new InMemoryDBTestSessionProvider(configuration);

@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using NUnit.Framework;
 using QS.Extensions.Observable.Collections.List;
+using QS.Test.TestApp.Domain;
 
 namespace QS.Test.Observable
 {
