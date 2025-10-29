@@ -19,7 +19,7 @@ namespace QS.Test.HistoryLog {
 			//ARRANGE 
 			using(var connection = CreateConnection(enableUserVariables: true)) {
 				await connection.OpenAsync();
-				await connection.ExecuteAsync($"USE `{DbName}`;");
+				await connection.ExecuteAsync($"USE `{DefaultDbName}`;");
 
 				var changeSet = new SimpleChangeSet {
 					ActionName = "UnitTestAction",
@@ -51,7 +51,7 @@ namespace QS.Test.HistoryLog {
 
 				//act
 				// Используем маленький batch size для проверки записи в несколько batch-ей
-				var writer = new ChangeSetWriter(ConnectionString, batchSize: 5);
+				var writer = new ChangeSetWriter(GetConnectionString(), batchSize: 5);
 				await writer.SaveAsync(changeSet);
 
 				// assert
