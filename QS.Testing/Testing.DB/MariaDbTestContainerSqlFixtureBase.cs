@@ -1,9 +1,7 @@
 using Dapper;
 using MySqlConnector;
 using NUnit.Framework;
-using System.Data;
 using System.Threading.Tasks;
-using System;
 using Testcontainers.MariaDb;
 
 namespace QS.Testing.DB
@@ -15,9 +13,7 @@ namespace QS.Testing.DB
 	public abstract class MariaDbTestContainerSqlFixtureBase
 	{
 		protected MariaDbContainer MariaDbContainer;
-		protected string ConnectionString;
-		protected MySqlConnectionStringBuilder ConnectionStringBuilder;
-		protected string DbName { get; set; }
+		protected string DefaultDbName { get; set; }
 
 		/// <summary>
 		/// Конструктор. Автоматически формирует имя базы данных на основе имени тестового класса.
@@ -25,7 +21,7 @@ namespace QS.Testing.DB
 		protected MariaDbTestContainerSqlFixtureBase()
 		{
 			// Автоматически формируем имя базы на основе имени класса
-			DbName = $"{GetType().Name}";
+			DefaultDbName = $"{GetType().Name}";
 		}
 
 		/// <summary>
@@ -34,7 +30,7 @@ namespace QS.Testing.DB
 		/// <param name="dbName">Имя базы данных</param>
 		protected MariaDbTestContainerSqlFixtureBase(string dbName)
 		{
-			DbName = dbName;
+			DefaultDbName = dbName;
 		}
 
 		/// <summary>
@@ -63,17 +59,14 @@ namespace QS.Testing.DB
 			if (MariaDbContainer != null)
 				return;
 
-			// Запуск контейнера MariaDB
+			// Запуск контейнера MariaDB без создания базы по умолчанию
 			MariaDbContainer = new MariaDbBuilder()
-				.WithDatabase(DbName)
+				.WithUsername("root")
+				.WithPassword("root")
 				.WithCommand("--character-set-server=utf8mb4", "--collation-server=utf8mb4_general_ci")
 				.Build();
 
 			await MariaDbContainer.StartAsync();
-			
-			// Формирование строки подключения
-			ConnectionString = MariaDbContainer.GetConnectionString() + ";Allow User Variables=true;CharSet=utf8mb4";
-			ConnectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionString);
 		}
 
 		/// <summary>
@@ -88,44 +81,50 @@ namespace QS.Testing.DB
 			}
 		}
 
+		protected MySqlConnectionStringBuilder GetConnectionStringBuilder(string dbName = null, bool enableUserVariables = false, bool withoutDb = false) {
+			var csb = new MySqlConnectionStringBuilder(MariaDbContainer.GetConnectionString());
+			
+			csb.Database = withoutDb ? null : (dbName ?? DefaultDbName);
+
+			if (enableUserVariables)
+				csb.AllowUserVariables = true;
+			
+			return csb;
+		}
+		
+		/// <summary>
+		/// Получить строку подключения к базе данных
+		/// </summary>
+		/// <param name="dbName">Имя базы данных. Если null - соединение на уровне сервера (без выбранной БД)</param>
+		/// <param name="enableUserVariables">Включить поддержку пользовательских переменных</param>
+		/// <returns>Строка подключения</returns>
+		protected string GetConnectionString(string dbName = null, bool enableUserVariables = false, bool withoutDb = false) {
+			return GetConnectionStringBuilder(dbName, enableUserVariables, withoutDb).ConnectionString;
+		}
+
 		/// <summary>
 		/// Создать новое подключение к базе данных
 		/// </summary>
+		/// <param name="dbName">Имя базы данных. Если null - соединение на уровне сервера (без выбранной БД)</param>
 		/// <param name="enableUserVariables">Включить поддержку пользовательских переменных</param>
 		/// <returns>Новое подключение MySqlConnection</returns>
-		protected MySqlConnection CreateConnection(bool enableUserVariables = false)
-		{
-			var connectionString = ConnectionString;
-			if (enableUserVariables && !connectionString.Contains("Allow User Variables"))
-			{
-				connectionString += ";Allow User Variables=true";
-			}
-			return new MySqlConnection(connectionString);
+		protected MySqlConnection CreateConnection(string dbName = null, bool enableUserVariables = false, bool withoutDb = false) {
+			return new MySqlConnection(GetConnectionString(dbName, enableUserVariables, withoutDb));
 		}
 
 		/// <summary>
 		/// Пересоздать базу данных (удалить и создать заново)
 		/// </summary>
-		protected async Task RecreateDatabase()
+		protected async Task RecreateDatabase(string dbName = null)
 		{
-			// Выполняем операции на уровне сервера без выбранной БД, иначе ловим эксепшен что такой базы нет существует. Что как будтобы логично.
-			var csb = new MySqlConnectionStringBuilder(MariaDbContainer.GetConnectionString()) { Database = string.Empty };
-			using (var connection = new MySqlConnection(csb.ConnectionString))
+			if (dbName == null)
+				dbName = DefaultDbName;
+
+			using (var connection = CreateConnection(withoutDb: true))
 			{
 				await connection.OpenAsync();
-				await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{DbName}`;");
-				await connection.ExecuteAsync($"CREATE DATABASE `{DbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-			}
-		}
-
-		/// <summary>
-		/// Выполнить SQL скрипт создания схемы базы данных
-		/// </summary>
-		/// <param name="createSchemaScript">SQL скрипт создания таблиц</param>
-		protected async Task PrepareDatabase(string createSchemaScript) {
-			using(var connection = CreateConnection(enableUserVariables: true)) {
-				await connection.OpenAsync();
-				await PrepareDatabase(connection, createSchemaScript);
+				await connection.ExecuteAsync($"DROP DATABASE IF EXISTS `{dbName}`;");
+				await connection.ExecuteAsync($"CREATE DATABASE `{dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 			}
 		}
 
@@ -134,14 +133,26 @@ namespace QS.Testing.DB
 		/// </summary>
 		/// <param name="connection">Рабочее соединение с базой</param>
 		/// <param name="createSchemaScript">SQL скрипт создания таблиц</param>
-		protected async Task PrepareDatabase(MySqlConnection connection, string createSchemaScript) {
-			await RecreateDatabase();
-
-			// Открываем переданное соединение к только что созданной базе и применяем схему
-			if(connection.State != ConnectionState.Open)
+		/// <param name="dbName">Имя подготавливаемой базы, если не указана создается база по умолчанию <see cref="DefaultDbName"/> </param>
+		protected async Task PrepareDatabase(string createSchemaScript, MySqlConnection connection = null, string dbName = null) {
+			if(dbName == null)
+				dbName = DefaultDbName;
+			
+			await RecreateDatabase(dbName);
+			bool needToDisposeConnection = false;
+			
+			if(connection == null) {
+				connection = CreateConnection(dbName, true);
 				await connection.OpenAsync();
-			await connection.ExecuteAsync($"USE `{DbName}`;");
+				needToDisposeConnection = true;
+			}
+			
+			await connection.ExecuteAsync($"USE `{dbName}`;");
 			await connection.ExecuteAsync(createSchemaScript, commandTimeout: 180);
+			
+			if(needToDisposeConnection) {
+				await connection.CloseAsync();
+			}
 		}
 	}
 }
