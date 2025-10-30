@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -14,6 +14,20 @@ namespace QS.Widgets
 
 		private Regex regex;
 		private ValidationType validationMode;
+		private string customRegexPattern;
+
+		public string CustomRegex {
+			get => customRegexPattern;
+			set {
+				customRegexPattern = value;
+				if(!string.IsNullOrEmpty(value)) {
+					regex = new Regex(value);
+					validationMode = ValidationType.CustomRegex;
+					this.Changed += RegexValidate;
+				}
+			}
+		}
+
 		public ValidationType ValidationMode {
 			get {
 				return validationMode;
@@ -85,7 +99,8 @@ namespace QS.Widgets
 		None,
 		Numeric,
 		Email,
-		Price
+		Price,
+		CustomRegex
 	};
 }
 
