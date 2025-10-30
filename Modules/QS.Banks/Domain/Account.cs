@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.RegularExpressions;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
@@ -13,58 +15,64 @@ namespace QS.Banks.Domain
 	[EntityPermission]
 	public class Account : PropertyChangedBase, IValidatableObject, IDomainObject
 	{
+		private string _name;
+		private DateTime? _created;
+		private string _number;
+		private string _code1C;
+		private bool _inactive;
+		private Bank _inBank;
+		private CorAccount _bankCorAccount;
+		private bool _isDefault;
+		
 		#region Свойства
 
 		public virtual int Id { get; set; }
 
-		string name;
 		public virtual string Name {
-			get => string.IsNullOrEmpty(name) ? "Основной" : name;
-			set => SetField (ref name, value);
+			get => string.IsNullOrEmpty(_name) ? "Основной" : _name;
+			set => SetField (ref _name, value);
+		}
+		
+		[Display (Name = "Создан")]
+		public virtual DateTime? Created {
+			get => _created;
+			set => SetField (ref _created, value);
 		}
 
-		string number;
 		[Display (Name = "Номер")]
 		public virtual string Number {
-			get => number;
-			set => SetField (ref number, value);
+			get => _number;
+			set => SetField (ref _number, value);
 		}
 
-		string code1c;
 		[Display (Name = "Код 1с")]
 		public virtual string Code1c {
-			get => code1c;
-			set => SetField (ref code1c, value);
+			get => _code1C;
+			set => SetField (ref _code1C, value);
 		}
 
-		bool inactive;
 		[Display (Name = "Неактивный")]
 		public virtual bool Inactive {
-			get => inactive;
-			set => SetField (ref inactive, value);
+			get => _inactive;
+			set => SetField (ref _inactive, value);
 		}
 
-		Bank inBank;
 		[Display (Name = "Банк")]
 		public virtual Bank InBank {
-			get => inBank;
-			set { SetField (ref inBank, value);
-				Inactive = InBank == null || InBank.Deleted;
-			}
+			get => _inBank;
+			set => SetField (ref _inBank, value);
 		}
 
-		CorAccount bankCorAccount;
 		[Display(Name = "Кор. счет выбранного банка")]
 		public virtual CorAccount BankCorAccount {
-			get => bankCorAccount;
-			set => SetField(ref bankCorAccount, value);
+			get => _bankCorAccount;
+			set => SetField(ref _bankCorAccount, value);
 		}
 
-		bool isDefault;
 		public virtual bool IsDefault {
-			get => isDefault;
+			get => _isDefault;
 			set {
-				if(SetField(ref isDefault, value) && value && Owner != null){
+				if(CanChangeIsDefault(value) && SetField(ref _isDefault, value) && value && Owner != null){
 					foreach(var item in Owner.Accounts) {
 						if(item != this) {
 							item.IsDefault = false;
@@ -87,6 +95,14 @@ namespace QS.Banks.Domain
         }
 
 		#endregion
+		
+		private bool CanChangeIsDefault(bool isEnabling) {
+			if(isEnabling) {
+				return true;
+			}
+
+			return Owner?.Accounts.Any(x => x.IsDefault && x != this) ?? true;
+		}
 
 		#region IValidatableObject implementation
 
