@@ -27,6 +27,7 @@ namespace QS.Widgets
 				}
 			}
 		}
+
 		public ValidationType ValidationMode {
 			get {
 				return validationMode;
