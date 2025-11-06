@@ -97,6 +97,7 @@ namespace QS.Testing.DB
 		/// </summary>
 		/// <param name="dbName">Имя базы данных. Если null - соединение на уровне сервера (без выбранной БД)</param>
 		/// <param name="enableUserVariables">Включить поддержку пользовательских переменных</param>
+		/// <param name="withoutDb">Если true - подключение без указания базы данных</param>
 		/// <returns>Строка подключения</returns>
 		protected string GetConnectionString(string dbName = null, bool enableUserVariables = false, bool withoutDb = false) {
 			return GetConnectionStringBuilder(dbName, enableUserVariables, withoutDb).ConnectionString;
@@ -107,6 +108,7 @@ namespace QS.Testing.DB
 		/// </summary>
 		/// <param name="dbName">Имя базы данных. Если null - соединение на уровне сервера (без выбранной БД)</param>
 		/// <param name="enableUserVariables">Включить поддержку пользовательских переменных</param>
+		/// <param name="withoutDb">Если true - подключение без указания базы данных</param>
 		/// <returns>Новое подключение MySqlConnection</returns>
 		protected MySqlConnection CreateConnection(string dbName = null, bool enableUserVariables = false, bool withoutDb = false) {
 			return new MySqlConnection(GetConnectionString(dbName, enableUserVariables, withoutDb));
