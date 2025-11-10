@@ -5,7 +5,7 @@ using QS.Utilities.Debug;
 namespace QS.Dialog {
 	
 	/// <summary>
-	/// Помощник замера производительности с отображением в прогресса для пользователя.
+	/// Помощник замера производительности с отображением прогресса для пользователя.
 	/// Так как часто при выполнении пошаговых действий требующих отслеживания времени выполнения шагов
 	/// требуется по тем же контрольным точкам выводить прогресс выполнения пользователю, то этот класс
 	/// позволяет сделать это одновременно.
@@ -14,15 +14,15 @@ namespace QS.Dialog {
 		private readonly IProgressBarDisplayable progress;
 		
 		/// <summary>
-		/// Если true, названия шагов буду выводится так же на прогресс бар.
+		/// Если true, названия шагов буду выводиться так же на прогресс бар.
 		/// </summary>
 		public bool ShowProgressText { get; set; }
 		
-		/// <param name="progress">прогресс бар на который нужно выводить шаги</param>
-		/// <param name="stepsCount">количество шагов</param>
+		/// <param name="progress">Прогресс бар на который нужно выводить шаги</param>
+		/// <param name="stepsCount">Количество шагов</param>
 		/// <param name="nameFirstInterval">Название первого шага(интервала времени)</param>
-		/// <param name="logger">логер, если указан в каждой контрольной точки времени будет выводится сообщение в лог</param>
-		/// <param name="showProgressText">Если true, названия шагов буду выводится так же на прогресс бар.</param>
+		/// <param name="logger">Логер, если указан в каждой контрольной точки времени будет выводиться сообщение в лог</param>
+		/// <param name="showProgressText">Если true, названия шагов будут выводиться так же на прогресс бар.</param>
 		public ProgressPerformanceHelper(
 			IProgressBarDisplayable progress,
 			uint stepsCount,
