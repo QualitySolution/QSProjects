@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using NHibernate.Cfg;
 using QS.DomainModel.UoW;
 using QS.Extensions.Observable.Collections.List;
