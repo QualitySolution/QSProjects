@@ -32,6 +32,12 @@ namespace QSProjectsLib
 		/// Ini секция будет перезаполнена.
 		/// </summary>
 		public static Func<IEnumerable<Connection>> MakeDefaultConnections;
+		
+		/// <summary>
+		/// Действие для дополнительной настройки MySqlConnectionStringBuilder перед созданием соединения.
+		/// Позволяет из кода проекта добавить дополнительные параметры connection string (например, Keepalive).
+		/// </summary>
+		public static Action<MySqlConnectionStringBuilder> ConfigureConnectionStringBuilder;
 		#endregion
 		#region Расширения
 		public Func<IDBCreator> GetDBCreator;
@@ -216,7 +222,7 @@ namespace QSProjectsLib
 				logger.Warn(connectionError);
 				return;
 			}
-			
+
 			host = uriSplit[0];
 			if (uriSplit.Length > 1) {
 				uint.TryParse(uriSplit[1], out port);
@@ -228,6 +234,9 @@ namespace QSProjectsLib
 			conStrBuilder.Database = BaseName;
 			conStrBuilder.UserID = login;
 			conStrBuilder.Password = entryPassword.Text;
+			
+			// Вызов делегата для дополнительной настройки connection string из кода проекта
+			ConfigureConnectionStringBuilder?.Invoke(conStrBuilder);
 
 			connStr = conStrBuilder.ConnectionString;
 
