@@ -9,7 +9,7 @@ namespace QS.HistoryLog.Domain
 		/// <summary>
 		/// Поле используется только для сохранения, так как в этот момент не нужен полный класс достаточно id.
 		/// </summary>
-		public virtual int UserId{ get; set; }
+		public virtual int? UserId{ get; set; }
 		public virtual UserBase User { get; set; }
 
 		public virtual IList<ChangedEntity> Entities { get; set; } = new List<ChangedEntity>();
