@@ -4,10 +4,9 @@ using System.Linq;
 using System.Reflection;
 using NHibernate.Mapping;
 using NUnit.Framework;
-using QS.HistoryLog;
 using QS.Project.DB;
 
-namespace QS.Testing.HistoryLog.Testing
+namespace QS.HistoryLog.Testing
 {
 	public abstract class DomainModelTestBase
 	{
