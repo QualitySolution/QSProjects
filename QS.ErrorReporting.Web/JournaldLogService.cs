@@ -13,7 +13,10 @@ namespace QS.ErrorReporting
 	    }
 
 	    public async Task<string> GetLogAsync(uint? rowCount = null) {
-		    rowCount ??= 300; //Потому что журнал Systemd точно большой. Не ограничивать количество строк нельзя.
+		    if(rowCount == null) {
+			    rowCount = 300; //Потому что журнал Systemd точно большой. Не ограничивать количество строк нельзя.
+		    }
+
 		    var info = new ProcessStartInfo
 		    {
 			    RedirectStandardOutput = true,
