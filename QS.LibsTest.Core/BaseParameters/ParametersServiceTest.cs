@@ -210,6 +210,21 @@ namespace QS.Test.BaseParameters
 				Assert.That(inDB, Is.EqualTo("String2"));
 			}
 		}
+		
+		[Test(Description = "Проверка что можем обновить значение параметра, если его не было в момент загрузки но появился потом.")]
+		public void SetValue_UpdateParameter_ExistCase()
+		{
+			using (var connection = new SqliteConnection(connectionString)) {
+				MakeTable(connection);
+				dynamic parameters = new ParametersService(connection);
+				Assert.That(parameters.StringParameter, Is.Null);
+				connection.Execute(sqlInsert, new { name = "StringParameter", str_value = "String result" });
+				parameters.StringParameter = "String2";
+				Assert.That(parameters.StringParameter, Is.EqualTo("String2"));
+				var inDB = connection.ExecuteScalar<string>(sqlSelect, new { name = "StringParameter" });
+				Assert.That(inDB, Is.EqualTo("String2"));
+			}
+		}
 
 		[Test(Description = "Проверка что можем удалить параметр установил значение в null.")]
 		public void SetValue_RemoveParameter_StringCase()
