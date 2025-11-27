@@ -38,6 +38,7 @@ namespace QS.ErrorReporting {
 						Report = new ErrorInfo {
 							StackTrace = exception.ToString(),
 							Log = logService?.GetLog(settings?.LogRowCount),
+							Message = exception.Message
 						},
 						ReportType =  (ReportType)(int)errorType
 					});
