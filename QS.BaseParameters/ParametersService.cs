@@ -112,16 +112,16 @@ namespace QS.BaseParameters
 		#region Изменение параметров
 		public void UpdateParameter (string name, object value)
 		{
-			string sql;
+			var stringValue = ConvertToString(value);
+			
 			if (All.ContainsKey (name))
 			{
-				if(All[name] == ConvertToString(value))
+				if(All[name] == stringValue)
 					return;
-
-				sql = "UPDATE base_parameters SET str_value = @str_value WHERE name = @name";
 			}
-			else
-				sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value)";
+
+			string sql = "INSERT INTO base_parameters (name, str_value) VALUES (@name, @str_value) " +
+			             "ON DUPLICATE KEY UPDATE str_value = @str_value";
 
 			logger.Debug ("Изменяем параметр базы {0}={1}", name, value);
 			DbCommand cmd = connection.CreateCommand ();
@@ -132,12 +132,12 @@ namespace QS.BaseParameters
 			cmd.Parameters.Add (paramName);
 			DbParameter paramValue = cmd.CreateParameter ();
 			paramValue.ParameterName = "@str_value";
-			paramValue.Value = ConvertToString(value);
+			paramValue.Value = stringValue;
 			cmd.Parameters.Add (paramValue);
 			cmd.ExecuteNonQuery ();
 			CloseConnectionIfNeeded();
 
-			All [name] = ConvertToString(value);
+			All [name] = stringValue;
 			logger.Debug ("Ок");
 		}
 
