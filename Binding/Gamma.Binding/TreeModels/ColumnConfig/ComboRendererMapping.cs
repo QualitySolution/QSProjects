@@ -133,8 +133,9 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func)
+		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func, string emptyValueTitle = null)
 		{
+			cellRenderer.EmptyValueTitle = emptyValueTitle;
 			cellRenderer.IsDynamicallyFillList = true;
 			cellRenderer.ItemsListFunc = func;
 
