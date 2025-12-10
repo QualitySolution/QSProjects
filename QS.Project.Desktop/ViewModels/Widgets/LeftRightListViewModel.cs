@@ -15,6 +15,16 @@ namespace QS.ViewModels.Widgets {
 				leftItem.LeftIndex = LeftItems.IndexOf(leftItem);
 			}
 		}
+		
+		public void SetRightItems(IEnumerable<TItem> items, Func<TItem, string> displayFunc) {
+			LeftItems.Clear();
+			RightItems.Clear();
+			var itemViewModel = items.Select(x => new LeftRightListItemViewModel<TItem>(x, displayFunc)).Cast<LeftRightListItemViewModel>().ToList();
+			RightItems = new ObservableList<LeftRightListItemViewModel>(itemViewModel);
+			foreach(var rightItem in RightItems) {
+				rightItem.LeftIndex = RightItems.IndexOf(rightItem);
+			}
+		}
 
 		public IEnumerable<TItem> GetRightItems() {
 			return RightItems.Cast<LeftRightListItemViewModel<TItem>>().Select(x => x.Content);
