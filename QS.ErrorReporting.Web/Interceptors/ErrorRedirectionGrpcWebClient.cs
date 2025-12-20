@@ -20,22 +20,50 @@ namespace QS.ErrorReporting.Interceptors
         }
 
         public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(
-            TRequest request,
-            ServerCallContext context,
-            UnaryServerMethod<TRequest, TResponse> continuation)
+	        TRequest request,
+	        ServerCallContext context,
+	        UnaryServerMethod<TRequest, TResponse> continuation)
         {
-            try 
-            {
-                return await continuation(request, context);
-            }
-            catch (Exception ex) 
-            {
-                logger.LogError(ex,"Поймана ошибка");
-                var result = await reporter.SendReportAsync(ex, context, (ex is RpcException) ? ErrorType.Known : ErrorType.Automatic);
-                if(!result)
-                    logger.LogError("Ошибка при отправке отчета об ошибке");
-                throw;
-            }
+	        try
+	        {
+		        return await continuation(request, context);
+	        }
+	        catch (Exception ex)
+	        {
+		        await Handle(ex, context);
+		        throw;
+	        }
+        }
+
+        public override async Task ServerStreamingServerHandler<TRequest, TResponse>(
+	        TRequest request,
+	        IServerStreamWriter<TResponse> responseStream,
+	        ServerCallContext context,
+	        ServerStreamingServerMethod<TRequest, TResponse> continuation)
+        {
+	        try
+	        {
+		        await continuation(request, responseStream, context);
+	        }
+	        catch (Exception ex)
+	        {
+		        await Handle(ex, context);
+		        throw;
+	        }
+        }
+
+        private async Task Handle(Exception ex, ServerCallContext context)
+        {
+	        logger.LogError(ex, "Поймана ошибка");
+
+	        var result = await reporter.SendReportAsync(
+		        ex,
+		        context,
+		        ex is RpcException ? ErrorType.Known : ErrorType.Automatic
+	        );
+
+	        if (!result)
+		        logger.LogError("Ошибка при отправке отчета");
         }
     }
 }
