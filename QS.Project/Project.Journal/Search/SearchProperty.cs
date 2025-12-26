@@ -46,7 +46,7 @@ namespace QS.Project.Journal.Search {
 			
 			if (typeOfProperty == typeof(int) || typeOfProperty == typeof(int?)) {
 				if(int.TryParse(searchValue, out int intValue)){
-					return Restrictions.Eq(projection, intValue);;
+					return Restrictions.Eq(projection, intValue);
 				}
 			}
 			else if(typeOfProperty == typeof(uint) || typeOfProperty == typeof(uint?)) {
@@ -69,7 +69,9 @@ namespace QS.Project.Journal.Search {
 				return Restrictions.Like(Projections.Cast(NHibernateUtil.Time, projection), searchValue, likeMatchMode);
 			}
 			else if(typeOfProperty == typeof(DateTime) || typeOfProperty == typeof(DateTime?)) {
-				return Restrictions.Like(Projections.Cast(NHibernateUtil.DateTime, projection), searchValue, likeMatchMode);
+				var dateValue = PrepareDateValue(searchValue);
+				if(dateValue != null) 
+					return Restrictions.Like(Projections.Cast(NHibernateUtil.DateTime, projection), dateValue, likeMatchMode);
 			}
 			else if (typeOfProperty.IsEnum){
 				return Restrictions.Like(Projections.Cast(NHibernateUtil.String, projection), searchValue, likeMatchMode);
@@ -77,6 +79,30 @@ namespace QS.Project.Journal.Search {
 			else 
 				throw new NotSupportedException($"Тип {typeOfProperty} не поддерживается");
 
+			return null;
+		}
+
+		private string PrepareDateValue(string searchValue) {
+			var ruCulture = new System.Globalization.CultureInfo("ru-RU");
+			var formats = new[] {
+				"dd.MM.yyyy", "dd.MM.yy",    // 26.12.2025, 26.12.25
+				"dd/MM/yyyy", "dd/MM/yy",    // 26/12/2025, 26/12/25
+				"yyyy-MM-dd",                 // 2025-12-26
+				"dd-MM-yyyy", "dd-MM-yy",    // 26-12-2025, 26-12-25
+				"d.M.yyyy", "d.M.yy",        // 26.12.2025, 26.12.25 (без ведущих нулей)
+				"d/M/yyyy", "d/M/yy",        // 26/12/2025, 26/12/25 (без ведущих нулей)
+			};
+			
+			// Сначала пытаемся распарсить с явными форматами
+			if(DateTime.TryParseExact(searchValue, formats, ruCulture, System.Globalization.DateTimeStyles.None, out DateTime dateValue)) {
+				return dateValue.ToString("yyyy-MM-dd");
+			}
+			
+			// Если не получилось, пытаемся стандартным способом
+			if(DateTime.TryParse(searchValue, ruCulture, System.Globalization.DateTimeStyles.None, out dateValue)) {
+				return dateValue.ToString("yyyy-MM-dd");
+			}
+			
 			return null;
 		}
 	}
