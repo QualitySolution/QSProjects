@@ -47,14 +47,5 @@ namespace QS.HistoryLog
 			return value == null ? null : String.Format ("[{0}]", DomainHelper.GetTitle(value));
 		}
 	}
-
-	public interface IFileTrace
-	{
-		string Name { set; get; }
-
-		uint Size { set; get; }
-
-		bool IsChanged { set; get; }
-	}
 }
 
