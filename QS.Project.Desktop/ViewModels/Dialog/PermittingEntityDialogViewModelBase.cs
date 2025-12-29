@@ -21,12 +21,11 @@ namespace QS.ViewModels.Dialog {
 
 		public PermittingEntityDialogViewModelBase(
 			IEntityUoWBuilder uowBuilder,
-			IUnitOfWorkFactory unitOfWorkFactory,
+			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
 			ICurrentPermissionService permissionService,
 			IInteractiveMessage interactive = null,
-			IValidator validator = null,
-			UnitOfWorkProvider unitOfWorkProvider = null) : base(uowBuilder, unitOfWorkFactory, navigation, validator, unitOfWorkProvider) {
+			IValidator validator = null) : base(uowBuilder, unitOfWork, navigation, validator) {
 			this.interactive = interactive;
 			PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
 			if(!EntityPermission.CanRead) {

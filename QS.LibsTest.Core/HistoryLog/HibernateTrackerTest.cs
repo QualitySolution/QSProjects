@@ -26,7 +26,7 @@ namespace QS.Test.HistoryLog {
 		[Test]
 		public async Task HibernateTracker_SaveChangeSet() {
 			HistoryMain.Enable(ConnectionStringBuilder);
-			using(var uow = UnitOfWorkFactory.CreateWithoutRoot(userActionTitle: "Test Action")) {
+			using(var uow = UnitOfWorkFactory.Create(userActionTitle: "Test Action")) {
 				var user = new UserBase { Name = "Test User" };
 				UserRepository.GetCurrentUserId = () => user.Id;
 				uow.Save(user);

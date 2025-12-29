@@ -22,7 +22,7 @@ namespace QS.Test.Observable
 		{
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 			
 			// Arrange - создаем и сохраняем сущность с коллекцией
 			var entity = new EntityWithObservableList("Test Entity");
@@ -34,7 +34,7 @@ namespace QS.Test.Observable
 			uow.Commit();
 
 			// Act - загружаем сущность в новой сессии и подписываемся на события
-			using (var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 
 				// Проверяем, что коллекция загрузилась
@@ -70,7 +70,7 @@ namespace QS.Test.Observable
 		public void LoadedCollection_AddItem_CollectionChangedEventFired() {
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 
 			// Arrange
 			var entity = new EntityWithObservableList("Test Entity");
@@ -80,7 +80,7 @@ namespace QS.Test.Observable
 			uow.Commit();
 
 			// Act
-			using(var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 
 				NotifyCollectionChangedEventArgs collectionChangedArgs = null;
@@ -100,7 +100,7 @@ namespace QS.Test.Observable
 		public void LoadedCollection_RemoveItem_CollectionChangedEventFired() {
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 
 			// Arrange
 			var entity = new EntityWithObservableList("Test Entity");
@@ -110,7 +110,7 @@ namespace QS.Test.Observable
 			uow.Save(entity);
 			uow.Commit();
 
-			using(var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 				var itemToRemove = loadedEntity.Items.First();
 
@@ -131,7 +131,7 @@ namespace QS.Test.Observable
 		public void LoadedCollection_RemoveItem_UnsubscribesFromElementPropertyChanged() {
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 
 			// Arrange
 			var entity = new EntityWithObservableList("Test Entity");
@@ -141,7 +141,7 @@ namespace QS.Test.Observable
 			uow.Commit();
 
 			// Act
-			using(var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using(var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 				var item = loadedEntity.Items.First();
 
@@ -162,7 +162,7 @@ namespace QS.Test.Observable
 		{
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 			
 			// Arrange
 			var entity = new EntityWithObservableList("Test Entity");
@@ -174,7 +174,7 @@ namespace QS.Test.Observable
 			uow.Commit();
 			
 			// Act
-			using (var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 				
 				var changedProperties = new System.Collections.Generic.List<string>();
@@ -198,7 +198,7 @@ namespace QS.Test.Observable
 		{
 			NewSessionWithSameDB();
 			// Должен оставаться открытым до завершения теста, чтобы база не удалилась из памяти
-			using var uow = UnitOfWorkFactory.CreateWithoutRoot();
+			using var uow = UnitOfWorkFactory.Create();
 			// Arrange
 			
 			var entity = new EntityWithObservableList("Test Entity");
@@ -209,7 +209,7 @@ namespace QS.Test.Observable
 			uow.Commit();
 
 			// Act - изменяем и сохраняем
-			using (var uow2 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow2 = UnitOfWorkFactory.Create()) {
 				var loadedEntity = uow2.GetById<EntityWithObservableList>(entity.Id);
 				
 				loadedEntity.Items[0].Name = "Modified Item 1";
@@ -221,7 +221,7 @@ namespace QS.Test.Observable
 			}
 
 			// Assert - проверяем в новой сессии
-			using (var uow3 = UnitOfWorkFactory.CreateWithoutRoot()) {
+			using (var uow3 = UnitOfWorkFactory.Create()) {
 				var reloadedEntity = uow3.GetById<EntityWithObservableList>(entity.Id);
 				
 				Assert.That(reloadedEntity.Items.Count, Is.EqualTo(3));
