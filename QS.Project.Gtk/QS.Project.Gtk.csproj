@@ -237,8 +237,9 @@
     <Compile Include="Dialog\Views\StatusBarView.cs" />
     <Compile Include="Project.Versioning\Views\ChangeLogView.cs" />
     <Compile Include="gtk-gui\QS.Project.Versioning.Views.ChangeLogView.cs" />
+    <Compile Include="Views\Control\ChoiceListView.cs" />
+    <Compile Include="gtk-gui\QS.Views.Control.ChoiceListView.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
@@ -286,13 +287,16 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\DateRange.png" />
-    <EmbeddedResource Include="Icons\Сalendar.png" />
+    <EmbeddedResource Include="Icons\select-all.png" />
+    <EmbeddedResource Include="Icons\unselect-all.png" />
+    <EmbeddedResource Include="Icons\Calendar.png" />
     <EmbeddedResource Include="Icons\SendErrorReport.png" />
     <EmbeddedResource Include="Icons\blank-square.png" />
     <EmbeddedResource Include="Icons\check-symbol.png" />
     <EmbeddedResource Include="Icons\close-button.png" />
     <EmbeddedResource Include="Icons\Eye.png" />
     <EmbeddedResource Include="Icons\CrossedEye.png" />
+    <EmbeddedResource Include="Icons\documentation.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />

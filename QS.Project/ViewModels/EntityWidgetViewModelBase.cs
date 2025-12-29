@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Gamma.Utilities;
 using QS.DomainModel.Entity;
+using QS.Permissions;
 using QS.Services;
 
 namespace QS.ViewModels

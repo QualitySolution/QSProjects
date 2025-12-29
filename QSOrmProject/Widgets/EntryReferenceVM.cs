@@ -275,7 +275,7 @@ namespace QSOrmProject
 
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var title = (string)tree_model.GetValue (iter, (int)СompletionColumn.Tilte);
+			var title = (string)tree_model.GetValue (iter, (int)CompletionColumn.Title);
 			string pattern = String.Format ("{0}", Regex.Escape (entryObject.Text));
 			(cell as CellRendererText).Markup = 
 				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
@@ -283,14 +283,14 @@ namespace QSOrmProject
 
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
-			var val = completion.Model.GetValue (iter, (int)СompletionColumn.Item);
+			var val = completion.Model.GetValue (iter, (int)CompletionColumn.Item);
 			return RepresentationModel.SearchFilterNodeFunc(val, key);
 		}
 
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			var node = args.Model.GetValue (args.Iter, (int)СompletionColumn.Item);
+			var node = args.Model.GetValue (args.Iter, (int)CompletionColumn.Item);
 			SelectSubjectByNode(node);
 			OnChangedByUser();
 			args.RetVal = true;

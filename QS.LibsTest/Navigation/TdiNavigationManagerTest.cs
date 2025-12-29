@@ -332,6 +332,7 @@ namespace QS.Test.Navigation
 			Assert.That(pageFirstOpened.ViewModel, Is.Not.EqualTo(pageSecondOpened));
 		}
 		#endregion
+		#region ClosePage
 		[Test(Description = "Проверяем что можем закрыть через навигатор модальный диалог.")]
 		public void ForceClosePage_ModalDialogTest()
 		{
@@ -482,6 +483,7 @@ namespace QS.Test.Navigation
 			Assert.That(eventRised, Is.True);
 			Assert.That(navManager.TopLevelPages.Count, Is.EqualTo(0));
 		}
+		#endregion
 
 		[Test(Description = "Проверка что можем найти страницу передав DialogViewModelBase.(Реальный баг)")]
 		public void FindPage_ByDialogViewModelBaseTest()
@@ -924,6 +926,234 @@ namespace QS.Test.Navigation
 			Assert.That(source, Is.EqualTo(CloseSource.External));
 		}
 
+		#endregion
+
+		#region IDialogDocumentaton
+		[Test(Description = "Проверка, что если ViewModel реализует интерфейс IDialogDocumentation, кнопка с документацией появится.")]
+		public void DialogDocumentationButton_AvailableTest()
+		{
+		    GtkInit.AtOnceInitGtk();
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<DialogWithDocumentationViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+		    var page = navigation.OpenViewModel<DialogWithDocumentationViewModel>(null);
+		    Assert.That(navigation.AllPages.Count(), Is.EqualTo(1));
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("TestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+		
+		[Test(Description = "Проверка, что если ViewModel открытая в слайдере отображает кнопку с документаций")]
+		public void DialogDocumentationButton_AvailableInSliderTest()
+		{
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<DialogWithDocumentationViewModel>().AsSelf();
+		    builder.RegisterType<SlideableViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+		    
+		    var parameters = new Dictionary<string, object>();
+		    parameters["useSlider"] = true;
+		    var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+
+		    var page = navigation.OpenViewModel<DialogWithDocumentationViewModel>(slidePage.ViewModel);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    var slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+		    Assert.That(slider.Journal, Is.Not.Null);
+		    Assert.That(slider.ActiveDialog, Is.Not.Null);
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("TestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+		
+		[Test(Description = "Проверка что журнал со слайдером отображает значок документации. Дополнительно решено что при открытии диалога без документации значек с документацией журнала все равно отображается.")]
+		public void DialogDocumentationButton_AvailableOnSliderTest()
+		{
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<EmptyDialogViewModel>().AsSelf();
+		    builder.RegisterType<JournalWithDocumentationViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+		    
+		    var parameters = new Dictionary<string, object>();
+		    parameters["useSlider"] = true;
+		    var slidePage = navigation.OpenViewModelNamedArgs<JournalWithDocumentationViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    var slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+		    Assert.That(slider.Journal, Is.Not.Null);
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("JournalTestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		    
+		    //Открываем диалог без документации
+		    var page = navigation.OpenViewModel<EmptyDialogViewModel>(slidePage.ViewModel);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+		    Assert.That(slider.Journal, Is.Not.Null);
+		    Assert.That(slider.ActiveDialog, Is.Not.Null);
+		    vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("JournalTestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+		
+		[Test(Description = "Проверка что журнал со слайдером заменяет значок документации при открытии диалога с документацией.")]
+		public void DialogDocumentationButton_AvailableDialogInSliderTest()
+		{
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<DialogWithDocumentationViewModel>().AsSelf();
+		    builder.RegisterType<JournalWithDocumentationViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+		    
+		    var parameters = new Dictionary<string, object>();
+		    parameters["useSlider"] = true;
+		    var slidePage = navigation.OpenViewModelNamedArgs<JournalWithDocumentationViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    var slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+		    Assert.That(slider.Journal, Is.Not.Null);
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("JournalTestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		    
+		    //Открываем диалог без документации
+		    var page = navigation.OpenViewModel<DialogWithDocumentationViewModel>(slidePage.ViewModel);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(1));
+		    slider = notebook.Tabs[0].TdiTab as TdiSliderTab;
+		    Assert.That(slider.Journal, Is.Not.Null);
+		    Assert.That(slider.ActiveDialog, Is.Not.Null);
+		    vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("TestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+
+		#region OpenAsSlave
+
+		[Test(Description = "Проверка, что если ViewModel реализует интерфейс IDialogDocumentation, кнопка с документацией появится.")]
+		public void DialogDocumentationButton_AvailableTest_AsSlave()
+		{
+		    GtkInit.AtOnceInitGtk();
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<DialogWithDocumentationViewModel>().AsSelf();
+		    builder.RegisterType<JournalWithDocumentationViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+
+		    var mainPage = navigation.OpenViewModel<DialogWithDocumentationViewModel>(null);
+		    var page = navigation.OpenViewModel<JournalWithDocumentationViewModel>(mainPage.ViewModel, OpenPageOptions.AsSlave);
+		    Assert.That(navigation.AllPages.Count(), Is.EqualTo(2));
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("JournalTestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+		
+		[Test(Description = "Проверка, что если ViewModel открытая дочерней к диалогу в слайдере отображает кнопку с документаций")]
+		public void DialogDocumentationButton_AvailableInSliderTest_AsSlave()
+		{
+		    var builder = new ContainerBuilder();
+		    IContainer container = null;
+		    builder.RegisterType<ClassNamesHashGenerator>().As<IPageHashGenerator>();
+		    builder.RegisterType<GtkViewFactory>().As<IGtkViewFactory>();
+		    builder.RegisterType<TdiNavigationManager>().AsSelf().As<INavigationManager>().SingleInstance();
+		    builder.Register((ctx) => new AutofacViewModelsTdiPageFactory(container)).As<IViewModelsPageFactory>();
+		    builder.Register(x => new ClassNamesBaseGtkViewResolver(x.Resolve<IGtkViewFactory>(), typeof(ModalDialogView))).As<IGtkViewResolver>();
+		    builder.Register(x => new AutofacTdiPageFactory(container)).As<ITdiPageFactory>();
+		    builder.Register(x => new AutofacViewModelsGtkPageFactory(container)).AsSelf();
+		    builder.Register(x => Substitute.For<IInteractiveService>()).As<IInteractiveService>();
+		    builder.Register(x => Substitute.For<IInteractiveMessage>()).As<IInteractiveMessage>();
+		    builder.RegisterType<DialogWithDocumentationViewModel>().AsSelf();
+		    builder.RegisterType<JournalWithDocumentationViewModel>().AsSelf();
+		    builder.RegisterType<SlideableViewModel>().AsSelf();
+		    container = builder.Build();
+
+		    var notebook = new TdiNotebook();
+		    var navigation = container.Resolve<TdiNavigationManager>(new TypedParameter(typeof(TdiNotebook), notebook));
+		    
+		    var parameters = new Dictionary<string, object>();
+		    parameters["useSlider"] = true;
+		    var slidePage = navigation.OpenViewModelNamedArgs<SlideableViewModel>(null, parameters, OpenPageOptions.IgnoreHash);
+
+		    var page = navigation.OpenViewModel<DialogWithDocumentationViewModel>(slidePage.ViewModel);
+		    
+		    var slavePage = navigation.OpenViewModel<JournalWithDocumentationViewModel>(page.ViewModel, OpenPageOptions.AsSlave);
+
+		    Assert.That(notebook.Tabs.Count, Is.EqualTo(2));
+		    var vbox = notebook.CurrentPageWidget as TabVBox;
+		    Assert.That(vbox.documentation?.DocumentationUrl, Is.EqualTo("JournalTestUrl"));
+		    Assert.That(vbox.docButton.Visible, Is.True);
+		}
+
+		#endregion
 		#endregion
 	}
 }

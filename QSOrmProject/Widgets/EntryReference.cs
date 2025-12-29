@@ -231,7 +231,7 @@ namespace QSOrmProject
 
 		void OnCellLayoutDataFunc (CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			var title = (string)tree_model.GetValue (iter, (int)СompletionColumn.Tilte);
+			var title = (string)tree_model.GetValue (iter, (int)CompletionColumn.Title);
 			string pattern = String.Format ("{0}", Regex.Escape (entryObject.Text));
 			(cell as CellRendererText).Markup = 
 				Regex.Replace (title, pattern, (match) => String.Format ("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
@@ -240,10 +240,10 @@ namespace QSOrmProject
 		bool Completion_MatchFunc (EntryCompletion completion, string key, TreeIter iter)
 		{
 			if (searchSearchProvider == null) {
-				var val = completion.Model.GetValue (iter, (int)СompletionColumn.Tilte).ToString ();
+				var val = completion.Model.GetValue (iter, (int)CompletionColumn.Title).ToString ();
 				return val.IndexOf (key, StringComparison.CurrentCultureIgnoreCase) > -1;
 			} else {
-				var val = completion.Model.GetValue (iter, (int)СompletionColumn.Item);
+				var val = completion.Model.GetValue (iter, (int)CompletionColumn.Item);
 				return searchSearchProvider.Match(val, key);
 			}
 		}
@@ -251,7 +251,7 @@ namespace QSOrmProject
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected (object o, MatchSelectedArgs args)
 		{
-			Subject = args.Model.GetValue (args.Iter, (int)СompletionColumn.Item);
+			Subject = args.Model.GetValue (args.Iter, (int)CompletionColumn.Item);
 			OnChangedByUser();
 			args.RetVal = true;
 		}

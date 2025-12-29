@@ -1,5 +1,4 @@
-﻿using System;
-using DiffPlex;
+﻿using DiffPlex;
 using DiffPlex.DiffBuilder;
 
 namespace QS.HistoryLog

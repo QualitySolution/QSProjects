@@ -1,6 +1,5 @@
-﻿using System;
+﻿using QS.Permissions;
 using QS.RepresentationModel.GtkUI;
-using QS.Services;
 
 namespace QS.Project.Dialogs.GtkUI.JournalActions
 {

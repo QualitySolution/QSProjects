@@ -123,7 +123,7 @@ namespace Gamma.ColumnConfig
 		/// Fill combobox by items.
 		/// </summary>
 		/// <param name="itemsList">Items list.</param>
-		/// <param name="emptyValueTitle">Title for empty value, if set combobox dispaly first item with default value of type(for class is null), and can user set empty value</param>
+		/// <param name="emptyValueTitle">Title for empty value, if set combobox display first item with default value of type(for class is null), and can user set empty value</param>
 		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList, string emptyValueTitle = null)
 		{
 			cellRenderer.EmptyValueTitle = emptyValueTitle;
@@ -133,8 +133,9 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func)
+		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func, string emptyValueTitle = null)
 		{
+			cellRenderer.EmptyValueTitle = emptyValueTitle;
 			cellRenderer.IsDynamicallyFillList = true;
 			cellRenderer.ItemsListFunc = func;
 

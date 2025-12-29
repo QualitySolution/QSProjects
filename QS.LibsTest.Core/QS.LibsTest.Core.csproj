@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Dapper" Version="2.1.66" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
         <PackageReference Include="Mono.Data.Sqlite" Version="1.0.61" />
         <PackageReference Include="Mono.Data.Sqlite.Core" Version="1.0.61.1">
@@ -19,6 +19,7 @@
         <PackageReference Include="NSubstitute" Version="5.0.0" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+        <PackageReference Include="Testcontainers.MariaDb" Version="4.7.0" />
         <PackageReference Include="coverlet.collector" Version="3.2.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +29,9 @@
     <ItemGroup>
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
+      <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
       <ProjectReference Include="..\QS.Features\QS.Features.csproj" />
+      <ProjectReference Include="..\QS.HistoryLog.Testing\QS.HistoryLog.Testing.csproj" />
       <ProjectReference Include="..\QS.Testing\QS.Testing.csproj" />
       <ProjectReference Include="..\QS.Updater.App\QS.Updater.App.csproj" />
       <ProjectReference Include="..\QS.Updater.Core\QS.Updater.Core.csproj" />

@@ -13,9 +13,7 @@ namespace QS.Report.Views
 		{
 			this.Build();
 			ViewModel = viewModel;
-
-			reportviewer1.DefaultExportFileName = ViewModel.ReportInfo?.Title;
-
+			
 			if(ViewModel.ReportParametersViewModel != null) {
 				var resolver = ViewModel.AutofacScope.Resolve<IGtkViewResolver>();
 				var widget = resolver.Resolve(ViewModel.ReportParametersViewModel);
@@ -34,6 +32,8 @@ namespace QS.Report.Views
 				reportviewer1.LoadReport(ViewModel.ReportInfo.Source, ViewModel.ReportInfo.GetParametersString(), ViewModel.ReportInfo.ConnectionString, true);
 			else
 				reportviewer1.LoadReport(ViewModel.ReportInfo.GetReportUri(), ViewModel.ReportInfo.GetParametersString(), ViewModel.ReportInfo.ConnectionString, true);
+			
+			reportviewer1.DefaultExportFileName = ViewModel.ReportInfo?.Title;
 		}
 
 		protected void OnReportviewer1ReportPrinted(object sender, EventArgs e)

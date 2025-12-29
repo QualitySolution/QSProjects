@@ -23,6 +23,18 @@ namespace QS.Project.Journal.Search {
 			return this;
 		}
 		
+		/// <summary>
+		/// Поиск в поле, с предварительной обработкой поисковой строки.
+		/// </summary>
+		/// <param name="prepareFunc">Функция возвращающая обработанную строку</param>
+		/// <param name="aliases">Свойства по которым требует поиск</param>
+		public SearchCriterion ByPrepareValue(Func<string,string> prepareFunc, params Expression<Func<object>>[] aliases) {
+			foreach(var alias in aliases) {
+				searchProperties.Add(SearchProperty.Create(alias, LikeMatchMode, prepareFunc));
+			}
+			return this;
+		}
+		
 		public SearchCriterion WithLikeMode(MatchMode matchMode) {
 			LikeMatchMode = matchMode;
 			return this;

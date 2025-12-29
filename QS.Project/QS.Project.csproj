@@ -35,7 +35,6 @@
     <Folder Include="RepresentationModel\" />
     <Folder Include="DomainModel\Config\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="Project.Services\" />
     <Folder Include="Project.Filter\" />
     <Folder Include="Project.Journal\EntitySelector\" />
     <Folder Include="DomainModel\Entity\PresetPermissions\" />
@@ -68,7 +67,7 @@
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.8" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="MySqlConnector">
-      <Version>2.2.6</Version>
+      <Version>2.2.7</Version>
     </PackageReference>
     <PackageReference Include="NHibernate" Version="5.5.2" />
     <PackageReference Include="NLog" Version="5.3.4" />

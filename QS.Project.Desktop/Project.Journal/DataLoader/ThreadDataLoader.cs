@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
-using QS.Services;
+using QS.Permissions;
 
 namespace QS.Project.Journal.DataLoader
 {
@@ -176,7 +176,7 @@ namespace QS.Project.Journal.DataLoader
 
 		#region Загрузка данных
 		//Храним отдельно список узлов доступных снаружи и внутренний список с которым работает сам модуль.
-		//Так как мы работает в отдельном потоке, снаружи всегда должен быть доступен предыдущий список. Пока мы обрабатываем новый запрос.
+		//Так как мы работаем в отдельном потоке, снаружи всегда должен быть доступен предыдущий список. Пока мы обрабатываем новый запрос.
 		private IList publishedNodes;
 		private readonly List<TNode> readedNodes = new List<TNode>();
 		private readonly object publishedNodesLock = new object();

@@ -1,4 +1,5 @@
 ﻿using System;
+using QS.Permissions;
 using QS.Services;
 
 namespace QS.Project.Services
@@ -14,7 +15,7 @@ namespace QS.Project.Services
 			this.UserService = userService ?? throw new ArgumentNullException(nameof(userService));
 		}
 
-		public IPermissionResult ValidateEntityPermission(Type entityType)
+		public IPermissionResult ValidateEntityPermission(Type entityType, DateTime? documentDate = null)
 		{
 			return PermissionService.ValidateUserPermission(entityType, UserService.CurrentUserId);
 		}

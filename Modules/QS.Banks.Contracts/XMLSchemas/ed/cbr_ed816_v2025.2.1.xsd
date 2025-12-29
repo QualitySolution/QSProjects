@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED816" type="ed:ED816"/>
+	<xs:complexType name="ED816">
+		<xs:annotation>
+			<xs:documentation>Сообщение о подтверждении первоначального условного распоряжения</xs:documentation>
+			<xs:documentation>Confirmation of Original Conditional Instruction</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="FreeText" type="lt:Max140TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Текст пояснения.</xs:documentation>
+							<xs:documentation>Annotation (Clarification text).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+							<xs:documentation>Initial EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

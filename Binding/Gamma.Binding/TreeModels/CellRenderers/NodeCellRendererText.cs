@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Gtk;
 using System.Reflection;
@@ -32,14 +32,24 @@ namespace Gamma.GtkWidgets.Cells
 			RenderNode(node);
 			if (SearchHighlight && !String.IsNullOrEmpty(Text) && searchHighlightTexts != null && searchHighlightTexts.Length > 0)
 			{
-				string resultMarkup = Text;
-				foreach(var searchText in searchHighlightTexts)
-				{
-					string pattern = Regex.Escape(searchText.ToLower());
-					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
+				string resultMarkup = ReplaceSpecialChars(Text);
+				foreach(var searchText in searchHighlightTexts) {
+					string pattern = ReplaceSpecialChars(Regex.Escape(searchText.ToLower()));
+					resultMarkup = Regex.Replace(resultMarkup, pattern, (match) => $"<b>{match.Value}</b>", RegexOptions.IgnoreCase);
 				}
 				Markup = resultMarkup;
 			}
+		}
+
+		private string ReplaceSpecialChars(string input) {
+			var result = input
+				.Replace("&", "&amp;")
+				.Replace("<", "&lt;")
+				.Replace(">", "&gt;")
+				.Replace("\"", "&quot;")
+				.Replace("'", "&apos;")
+				;
+			return result;
 		}
 
 		protected override void OnEdited(string path, string new_text) {

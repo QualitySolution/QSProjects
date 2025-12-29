@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by TeaM DJiNN (TeaM DJiNN) -->
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП трансграничные платежи
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>информация о банке с наименованием банка</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED702BankFPSED">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка в распоряжениях.</xs:documentation>
+			<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BankName" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование банка.</xs:documentation>
+					<xs:documentation>Bank's name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка.</xs:documentation>
+				<xs:documentation>Bank's Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SwiftBIC" type="lt:BICSWIFTIDType">
+			<xs:annotation>
+				<xs:documentation>SWIFT BIC банка.</xs:documentation>
+				<xs:documentation>SWIFT BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ClrSysMmbId" type="lt:Max12TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор ОПКЦ.</xs:documentation>
+				<xs:documentation>OPCC Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>информация о банке без наименования банка</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ED702BankFPSED2">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банка в распоряжениях.</xs:documentation>
+			<xs:documentation>Bank Attributes in FTI.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="BIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>БИК.</xs:documentation>
+				<xs:documentation>BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CorrespAcc" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Номер счета банка.</xs:documentation>
+				<xs:documentation>Bank's Account Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SwiftBIC" type="lt:BICSWIFTIDType">
+			<xs:annotation>
+				<xs:documentation>SWIFT BIC банка.</xs:documentation>
+				<xs:documentation>SWIFT BIC.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ClrSysMmbId" type="lt:Max12TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор ОПКЦ.</xs:documentation>
+				<xs:documentation>OPCC Identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!---Сумма и код валюты-->
+	<xs:complexType name="AmountAndCurrencyType">
+		<xs:annotation>
+			<xs:documentation>Сумма и код валюты</xs:documentation>
+			<xs:documentation>Amount and currency.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Amount" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма.</xs:documentation>
+				<xs:documentation>Amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Currency" type="lt:CurrencyCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код валюты.</xs:documentation>
+				<xs:documentation>Currency code".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- Адрес плательщика/получателя-->
+	<xs:complexType name="AddressType">
+		<xs:annotation>
+			<xs:documentation>Адрес.</xs:documentation>
+			<xs:documentation>Address.</xs:documentation>
+		</xs:annotation>
+		<xs:choice maxOccurs="1">
+			<xs:element name="AddressLine" type="lt:Max140TextType">
+				<xs:annotation>
+					<xs:documentation>Неструктурированный адрес.</xs:documentation>
+					<xs:documentation>Unstructured address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StructuredAddress" type="ed:StructuredAddressType">
+				<xs:annotation>
+					<xs:documentation>Cтруктурированный адрес.</xs:documentation>
+					<xs:documentation>Structured address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="StructuredAddressType">
+		<xs:annotation>
+			<xs:documentation>Структурированный адрес.</xs:documentation>
+			<xs:documentation>Structured address.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PostCode" type="lt:Max16TextType">
+			<xs:annotation>
+				<xs:documentation>Почтовый индекс.</xs:documentation>
+				<xs:documentation>Post Code.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CountryCode" type="lt:Max2TextType">
+			<xs:annotation>
+				<xs:documentation>Страна (адрес).</xs:documentation>
+				<xs:documentation>CountryCode.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CountrySubDivision" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Территориальная единица страны.</xs:documentation>
+				<xs:documentation>Country Sub Division.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DistrictName" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Район.</xs:documentation>
+				<xs:documentation>District Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TownName" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Город.</xs:documentation>
+				<xs:documentation>Town Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="TownLocationName" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Место нахождения в городе.</xs:documentation>
+				<xs:documentation>Town Location Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="StreetName" type="lt:Max70TextType">
+			<xs:annotation>
+				<xs:documentation>Улица.</xs:documentation>
+				<xs:documentation>Street Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BuildingNumber" type="lt:Max16TextType">
+			<xs:annotation>
+				<xs:documentation>Номер дома.</xs:documentation>
+				<xs:documentation>Building Number.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BuildingName" type="lt:Max35TextType">
+			<xs:annotation>
+				<xs:documentation>Корпус (строение).</xs:documentation>
+				<xs:documentation>Building Name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PostBox" type="lt:Max16TextType">
+			<xs:annotation>
+				<xs:documentation>Почтовый ящик.</xs:documentation>
+				<xs:documentation>Post Box.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Room" type="lt:Max70TextType">
+			<xs:annotation>
+				<xs:documentation>Номер помещения.</xs:documentation>
+				<xs:documentation>Room.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- Информация о плательщике -->
+	<xs:complexType name="Payer">
+		<xs:annotation>
+			<xs:documentation>Реквизиты плательщика.</xs:documentation>
+			<xs:documentation>Information about Payer.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element name="OrganisationInfo" type="ed:PayerOrganisationInfo">
+					<xs:annotation>
+						<xs:documentation>Реквизиты юридического лица - плательщика.</xs:documentation>
+						<xs:documentation>Information about organisation - Payer.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PersonInfo" type="ed:PayerPersonInfo">
+					<xs:annotation>
+						<xs:documentation>Реквизиты физического лица - плательщика.</xs:documentation>
+						<xs:documentation>Information about person - Payer.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="AccountInfo" type="ed:AccountInfo" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты номера счета или иной идентификатор счета плательщика.</xs:documentation>
+					<xs:documentation>Organisation's account information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="ed:AddressType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес плательщика.</xs:documentation>
+					<xs:documentation>Address of organisation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CountryOfResidence" type="lt:Max2TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Страна плательщика.</xs:documentation>
+					<xs:documentation>Country of payer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PhoneNumber" type="lt:Max15TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер телефона плательщика.</xs:documentation>
+					<xs:documentation>Payer phone number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bank" type="ed:ED702BankFPSED" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка, обслуживающего плательщика.</xs:documentation>
+					<xs:documentation>Information about Payer's Bank.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Информация о плательщике - юридическом лице-->
+	<xs:complexType name="PayerOrganisationInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты юридического лица - плательщика.</xs:documentation>
+			<xs:documentation>Information about organisation - Payer.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationName" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование юридического лица – плательщика.</xs:documentation>
+					<xs:documentation>Organisation name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrganisationIdentification" type="ed:OrganisationIdentification" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Идентификация юридического лица – плательщика.</xs:documentation>
+					<xs:documentation>Organisation Identification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganisationIdentification">
+		<xs:annotation>
+			<xs:documentation>Идентификация юридического лица.</xs:documentation>
+			<xs:documentation>Organisation Identification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="OrganisationIdentificatorType" type="lt:OrganisationIdentificatorType">
+			<xs:annotation>
+				<xs:documentation>Тип идентификатора юридического лица.</xs:documentation>
+				<xs:documentation>Organisation's identificator type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IdentificatorValue" type="lt:Max12TextType">
+			<xs:annotation>
+				<xs:documentation>Значение идентификатора юридического лица.</xs:documentation>
+				<xs:documentation>Organisation's identificator value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AccountInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты номера счета или иной идентификатор счета.</xs:documentation>
+			<xs:documentation>Account information.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="AccountType" type="lt:ED702FPSAccountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип идентификатора счета.</xs:documentation>
+				<xs:documentation>Account type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="AccountValue" type="lt:Max35TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Значение идентификатора счета.</xs:documentation>
+				<xs:documentation>Account value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- Информация о плательщике - физическом лице-->
+	<xs:complexType name="PayerPersonInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты физического лица - плательщика.</xs:documentation>
+			<xs:documentation>Information about person - Payer.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonName" type="lt:Max140TextType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Фамилия, имя, отчество (при наличии) физического лица – плательщика.</xs:documentation>
+					<xs:documentation>Person name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonIdentification" type="ed:PersonIdentification" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Идентификация физического лица – плательщика.</xs:documentation>
+					<xs:documentation>Person Identification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonIdentification">
+		<xs:annotation>
+			<xs:documentation>Идентификация физического лица.</xs:documentation>
+			<xs:documentation>Person Identification.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="PersonIdentificatorType" type="lt:ED702PersonIdentificatorType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип идентификатора физического лица.</xs:documentation>
+				<xs:documentation>Person's identificator type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IdentificatorValue" type="lt:Max35TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Значение идентификатора физического лица.</xs:documentation>
+				<xs:documentation>Person's identificator value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!-- Информация о получателе -->
+	<xs:complexType name="Payee">
+		<xs:annotation>
+			<xs:documentation>Реквизиты получателя средств.</xs:documentation>
+			<xs:documentation>Information about Payee.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element name="OrganisationInfo" type="ed:PayeeOrganisationInfo">
+					<xs:annotation>
+						<xs:documentation>Реквизиты юридического лица - получателя средств.</xs:documentation>
+						<xs:documentation>Information about organisation - Payee.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="PersonInfo" type="ed:PayeePersonInfo" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Реквизиты физического лица - получателя средств.</xs:documentation>
+						<xs:documentation>Information about person - Payee.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="AccountInfo" type="ed:AccountInfo" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты номера счета или иной идентификатор счета получателя средств.</xs:documentation>
+					<xs:documentation>Account information.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="ed:AddressType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Адрес получателя</xs:documentation>
+					<xs:documentation>Payee's address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CountryOfResidence" type="lt:Max2TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Страна получателя.</xs:documentation>
+					<xs:documentation>Country of payee.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PhoneNumber" type="lt:Max15TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер телефона получателя.</xs:documentation>
+					<xs:documentation>Payee phone number.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Bank" type="ed:ED702BankFPSED" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Реквизиты банка, обслуживающего получателя средств.</xs:documentation>
+					<xs:documentation>Information about Payee's Bank.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Информация о получателе - юридическом лице-->
+	<xs:complexType name="PayeeOrganisationInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты юридического лица - получателя средств.</xs:documentation>
+			<xs:documentation>Information about organisation - Payee.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="OrganisationName" type="lt:Max140TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Наименование юридического лица – получателя средств.</xs:documentation>
+					<xs:documentation>Organisation name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OrganisationIdentification" type="ed:OrganisationIdentification" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Идентификация юридического лица – получателя средств.</xs:documentation>
+					<xs:documentation>Organisation Identification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Информация о получателе - физическом лице-->
+	<xs:complexType name="PayeePersonInfo">
+		<xs:annotation>
+			<xs:documentation>Реквизиты физического лица - получателя средств.</xs:documentation>
+			<xs:documentation>Information about person - Payee.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PersonName" type="lt:Max140TextType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Фамилия, имя, отчество (при наличии) физического лица – получателя средств.</xs:documentation>
+					<xs:documentation>Person name.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PersonIdentification" type="ed:PersonIdentification" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Идентификация физического лица – получателя средств.</xs:documentation>
+					<xs:documentation>Person Identification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Комисиия -->
+	<xs:complexType name="ChargesInformationType">
+		<xs:annotation>
+			<xs:documentation>Информация о комиссиях</xs:documentation>
+			<xs:documentation>Charge's Information.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Amount" type="lt:NotNegativeKopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма комиссии.</xs:documentation>
+				<xs:documentation>Charge's amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Currency" type="lt:CurrencyCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код валюты комиссии.</xs:documentation>
+				<xs:documentation>Charge's currency code".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BankIdentificatorValue" type="lt:Max12TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор банка, взявшего комиссию.</xs:documentation>
+				<xs:documentation>Organisation's identificator value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ChargeBankRole" type="lt:ED702ChargeBankRoleType" use="required">
+			<xs:annotation>
+				<xs:documentation>Роль банка, взявшего комиссию</xs:documentation>
+				<xs:documentation>Bank Role.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LineDetailsType">
+		<xs:annotation>
+			<xs:documentation>Контрольные суммы для конверсии</xs:documentation>
+			<xs:documentation>Control Sum.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="RemittedAmount" type="lt:KopeckAmountType">
+			<xs:annotation>
+				<xs:documentation>Сумма списания (зачисления).</xs:documentation>
+				<xs:documentation>Remitted amount.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Currency" type="lt:CurrencyCodeType">
+			<xs:annotation>
+				<xs:documentation>Код валюты суммы списания (зачисления).</xs:documentation>
+				<xs:documentation>Currency code".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="RemittedAmountCode" type="lt:RemittedAmountType">
+			<xs:annotation>
+				<xs:documentation>Пояснение суммы списания (зачисления)</xs:documentation>
+				<xs:documentation>Annotation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED702" type="ed:ED702"/>
+	<xs:complexType name="ED702">
+		<xs:annotation>
+			<xs:documentation>Поручение для трансграничного перевода в СБП</xs:documentation>
+			<xs:documentation>Customer Credit Transfer</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="AccDoc" type="ed:AccDocRefID" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Реквизиты исходного распоряжения о переводе денежных средств.</xs:documentation>
+							<xs:documentation>Initial Paper Settlement Document Attributes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Payer" type="ed:Payer" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Реквизиты плательщика.</xs:documentation>
+							<xs:documentation>Information about Payer.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Payee" type="ed:Payee">
+						<xs:annotation>
+							<xs:documentation>Реквизиты получателя средств.</xs:documentation>
+							<xs:documentation>Information about Payee.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Purpose" type="lt:Max210TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Назначение платежа.</xs:documentation>
+							<xs:documentation>Payment Purpose.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrvsInstgAgt1" type="ed:ED702BankFPSED" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Первый предыдущий инструктирующий банк.</xs:documentation>
+							<xs:documentation>Previous Instructing Agent1</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="PrvsInstgAgt2" type="ed:ED702BankFPSED2" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Второй предыдущий инструктирующий банк.</xs:documentation>
+							<xs:documentation>Previous Instructing Agent2</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IntrmyAgt1" type="ed:ED702BankFPSED2" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Первый банк посредник</xs:documentation>
+							<xs:documentation>Instructed Agent1</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IntrmyAgt2" type="ed:ED702BankFPSED2" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Второй банк посредник</xs:documentation>
+							<xs:documentation>Instructed Agent2</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InstructedAmount" type="ed:AmountAndCurrencyType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Проинструктированная сумма</xs:documentation>
+							<xs:documentation>Instructed Sum</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ChargesInformation" type="ed:ChargesInformationType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Информация о комиссиях</xs:documentation>
+							<xs:documentation>Charges Information</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="DuePayableAmount" type="ed:AmountAndCurrencyType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Сумма зачисления получателю средств</xs:documentation>
+							<xs:documentation>Due Payable Amount</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="LineDetails" type="ed:LineDetailsType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Контрольные суммы для конверсии</xs:documentation>
+							<xs:documentation>ControlSum</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС.</xs:documentation>
+							<xs:documentation>Initial FTI Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="TransactionID" type="lt:UniversalIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор перевода в ОПКЦ.</xs:documentation>
+						<xs:documentation>Transaction ID in FPS.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+					<xs:annotation>
+						<xs:documentation>Сумма.</xs:documentation>
+						<xs:documentation>Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransKind" type="lt:TwoDigitCodeType" use="required" fixed="01">
+					<xs:annotation>
+						<xs:documentation>Вид операции.</xs:documentation>
+						<xs:documentation>FTI Type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransDateTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время формирования сообщения.</xs:documentation>
+						<xs:documentation>Transaction execute date and time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="OperationType" type="lt:ED702OperationType" use="required">
+					<xs:annotation>
+						<xs:documentation>Тип операции.</xs:documentation>
+						<xs:documentation>Transaction type.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentID" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор платежа.</xs:documentation>
+						<xs:documentation>Unique Payment Identifier assigned by the (ultimate) creditor.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PaymentCategory" type="lt:PaymentCategoryType">
+					<xs:annotation>
+						<xs:documentation>Категория платежа.</xs:documentation>
+						<xs:documentation>Payment category.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CodePurpose" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Назначение платежа кодовое (поле 20).</xs:documentation>
+						<xs:documentation>Code purpose (field 20).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Priority" type="lt:PaytPriorityCodeType">
+					<xs:annotation>
+						<xs:documentation>Очередность платежа (поле 21).</xs:documentation>
+						<xs:documentation>FTI Sequence (Field 21).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ExchangeRate" type="lt:FloatingPointAmountType">
+					<xs:annotation>
+						<xs:documentation>Курс конверсии.</xs:documentation>
+						<xs:documentation>Exchange Rate.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ChargeBearer" type="lt:Max4TextType" use="required" fixed="SLEV">
+					<xs:annotation>
+						<xs:documentation>Сторона, оплачивающая расходы.</xs:documentation>
+						<xs:documentation>The party paying the expenses.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransactionIDPSP" type="lt:Max35TextType">
+					<xs:annotation>
+						<xs:documentation>Уникальный идентификатор перевода в иностранной платежной системе.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransDateTimePSP" type="lt:DateTimeType">
+					<xs:annotation>
+						<xs:documentation>Дата и время формирования уникального идентификатора перевода в иностранной платежной системе.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TransOptionCode" type="lt:TransOptionCodeType">
+					<xs:annotation>
+						<xs:documentation>Код варианта перевода.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

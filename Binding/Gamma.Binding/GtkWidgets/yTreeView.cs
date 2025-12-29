@@ -23,6 +23,8 @@ namespace Gamma.GtkWidgets {
 			"чтобы можно было подменить провайдер модели с поддержкой старой реализации")]
 		public static ITreeModelProvider TreeModelProvider { get; set; } = new TreeModelProvider();
 
+		public event EventHandler AfterModelChanged;
+
 		public BindingControler<yTreeView> Binding { get; private set; }
 
 		IColumnsConfig columnsConfig;
@@ -102,8 +104,10 @@ namespace Gamma.GtkWidgets {
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
 				Model = yTreeModel == null ? null : yTreeModel.Adapter;
 				toDispose?.Dispose();
+				AfterModelChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+
 
 		public void SetItemsSource<TNode>(IList<TNode> list)
 		{

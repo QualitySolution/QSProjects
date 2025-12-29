@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED463" type="ed:ED463"/>
+	<xs:complexType name="ED463">
+		<xs:annotation>
+			<xs:documentation>Извещение о результатах промежуточного контроля ЭС (пакета ЭС)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="Annotation" type="lt:Max150TextType">
+						<xs:annotation>
+							<xs:documentation>Текст пояснения</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ErrorDiagnostic" type="lt:TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Детальная диагностика ошибки</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="MsgID" type="lt:Max150TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Транспортный идентификатор сообщения</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="NameClient" type="lt:Max300TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Наименование клиента - отправителя</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС (пакета ЭС)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="CtrlCode" type="lt:ControlCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код результата контроля ЭС (пакета ЭС)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CtrlTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время проведения контроля ЭС (пакета ЭС).</xs:documentation>
+						<xs:documentation>Date and Time of EM (EM Package) validation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="OrgBIC" type="lt:BICRUIDType">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код клиента</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="BICPBR" type="lt:BICRUIDType" use="required">
+					<xs:annotation>
+						<xs:documentation>Банковский идентификационный код подразделения Банка России, владельца денежной наличности Банка России</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

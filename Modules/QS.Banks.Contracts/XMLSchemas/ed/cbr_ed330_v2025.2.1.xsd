@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в платежной системе Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED330" type="ed:ED330"/>
+	<xs:complexType name="ED330">
+		<xs:annotation>
+			<xs:documentation>Информация об изменении графика функционирования платежной системы Банка России</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="PartInfo" type="ed:PartInfo" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Информация о части</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CorrectionDescription" type="lt:TextType">
+						<xs:annotation>
+							<xs:documentation>Текст описания изменения расписания</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

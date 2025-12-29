@@ -1,0 +1,3209 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных типов.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" xmlns:bt="urn:cbr-ru:ed:basetypes:v2.0" targetNamespace="urn:cbr-ru:ed:leaftypes:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:basetypes:v2.0" schemaLocation="cbr_ed_basetypes_v2018.3.0.xsd"/>
+	<xs:simpleType name="AccountDocIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер первичного распоряжения. Цифровой, от 1 до 6 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Paper Document Number. Numeric, from 1 to 6 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="6"/>
+			<xs:pattern value="[0-9]*[1-9][0-9]*">
+				<xs:annotation>
+					<xs:documentation>исключение значений 0, 00, 000</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountDoc3IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер первичного распоряжения. Цифровой, от 1 до 3 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Paper Document Number. Numeric, from 1 to 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="3"/>
+			<xs:pattern value="[0-9]*[1-9][0-9]*">
+				<xs:annotation>
+					<xs:documentation>исключение значений 0, 00, 000</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberRUIDBrfType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер балансового счета второго порядка. Цифровой, 5 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Balance account second order number. Numeric, 5 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{5}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberRUIDBrf1Type">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер балансового счета первого порядка. Цифровой, 3 знака.</xs:documentation>
+			<xs:documentation>Identifier. Balance account first order number. Numeric, 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberRUIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета. [Лицевой счет]. Текстовый, 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Account Number. [Current Account]. Text, 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{5}[0-9ABCEHKMPTX]\d{14}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberRUIDorBrfType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер балансового счета второго порядка, цифровой, 5 знаков либо номер счета [Лицевой счет], текстовый, 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Balance account second order number, numeric, 5 digits or account number, text, 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{5}([0-9ABCEHKMPTX]\d{14}){0,}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberSWIFTIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета. Текстовый, до 34 символов.</xs:documentation>
+			<xs:documentation>Identifier. Account Number. Text, up to 34 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierXSetTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="34"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountStatusType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="ACAC"/>
+			<xs:enumeration value="ACDL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="BANA"/>
+			<xs:enumeration value="CBRA"/>
+			<xs:enumeration value="CRSA"/>
+			<xs:enumeration value="TRSA"/>
+			<xs:enumeration value="CLRA"/>
+			<xs:enumeration value="EPGA"/>
+			<xs:enumeration value="EPSA"/>
+			<xs:enumeration value="GARA"/>
+			<xs:enumeration value="TRUA"/>
+			<xs:enumeration value="UTRA"/>
+			<xs:enumeration value="CLAC"/>
+			<xs:enumeration value="CBDC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ArchiveIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Идентификатор архива. Текстовый, до 255 символов</xs:documentation>
+			<xs:documentation>Identifier. Archive identifier. Text, up to 255 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ASEKRNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Тип документа АС ЭКР. Целое, до 18 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AssetIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный номер актива. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Unique asset number. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BankDKOIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Регистрационный номер КО. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Bank registration number. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BankIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Регистрационный номер КО в соответствии с КГРКО. Текстовый, до 9 символов.</xs:documentation>
+			<xs:documentation>Identifier. Bank registration number in accordance with KGRKO. Text, up to 9 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BICRUIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Банковский идентификационный код; БИК. [БИК РФ]. Цифровой, 9 значный.</xs:documentation>
+			<xs:documentation>Identifier. Banking identifier code; National BIC. [National BIC]. Numeric, 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{9}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BICSWIFTIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Банковский идентификационный код, присвоенный SWIFT. Строка до 11 символов формата 4!a2!a2!c[3!c].</xs:documentation>
+			<xs:documentation>Identifier. SWIFT BIC. String up to 11 characters in format 4!a2!a2!c[3!c].</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:minLength value="8"/>
+			<xs:maxLength value="11"/>
+			<xs:pattern value="[A-Z]{6}[0-9A-Z]{2}([0-9A-Z]{3})?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BalanceKopeckAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В копейках (для обозначения остатка на счете). Целое число, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Amount. In Kopecks (for account balance description). Integer numeric, up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:AmountCategory">
+			<xs:totalDigits value="18"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BusinessScenarioType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="ANNL"/>
+			<xs:enumeration value="BLSW"/>
+			<xs:enumeration value="CAPE"/>
+			<xs:enumeration value="CLWD"/>
+			<xs:enumeration value="CAWC"/>
+			<xs:enumeration value="COLE"/>
+			<xs:enumeration value="GFUT"/>
+			<xs:enumeration value="LEVL"/>
+			<xs:enumeration value="LNOV"/>
+			<xs:enumeration value="LOAN"/>
+			<xs:enumeration value="SPEC"/>
+			<xs:enumeration value="WCNF"/>
+			<xs:enumeration value="PART"/>
+			<xs:enumeration value="PRSP"/>
+			<xs:enumeration value="NSPK"/>
+			<xs:enumeration value="OPKC"/>
+			<xs:enumeration value="NMPS"/>
+			<xs:enumeration value="PLCR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CBCIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Поле 104. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Field 104. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CashAccountingCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Символ кассовых операций. [Символы кассовой отчетности]. Две цифры или две цифры точка [.] одна цифра.</xs:documentation>
+			<xs:documentation>Code. Cash transactions symbol. [Characters cash reporting]. 2 digits or 2 digits dot 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{2}|\d{2}[.]\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CashDocIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер кассового документа. Текстовый, до 9 символов.</xs:documentation>
+			<xs:documentation>Identifier. Cash Document Number. Text, up to 9 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:maxLength value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ChangeIndicatorCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Признак изменения реквизита. Цифровой, 1 значный.</xs:documentation>
+			<xs:documentation>Code. Indication changing attribute. Numeric, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ChangeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="ADDD"/>
+			<xs:enumeration value="CHGD"/>
+			<xs:enumeration value="NCNG"/>
+			<xs:enumeration value="DLTD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ClearingCircuitType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="0001"/>
+			<xs:enumeration value="0002"/>
+			<xs:enumeration value="0003"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ClientIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Идентификатор клиента. Цифровой, 10 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Client identifier. Numeric, 10 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{10}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CMType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="ACIN"/>
+			<xs:enumeration value="BALC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ConditionCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Код условия. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Condition Code. Text, 4 character.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="RSRV"/>
+			<xs:enumeration value="ERCP"/>
+			<xs:enumeration value="COVR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ControlCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Код контроля/ошибки в ЭС. Цифровой, 4 значный.</xs:documentation>
+			<xs:documentation>Code. EM Control/Error Code. Numeric,4 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CurrencyIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код валюты. [ОКВ]. Текстовый, 3 символа.</xs:documentation>
+			<xs:documentation>Identifier. Currency Code. Text, 3 character.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="3"/>
+			<xs:maxLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateType">
+		<xs:annotation>
+			<xs:documentation>Дата. [ГОСТ ИСО 8601-2001]. Формат YYYY-MM-DD.</xs:documentation>
+			<xs:documentation>Date. [GOST ISO 8601-2001]. Format YYYY-MM-DD.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:DateCategory">
+			<xs:pattern value="\d{4}-\d{2}-\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeType">
+		<xs:annotation>
+			<xs:documentation>ДатаВремя. [ГОСТ ИСО 8601-2001]. Формат YYYY-MM-DDThh:mm:ssZ.</xs:documentation>
+			<xs:documentation>DateTime. [GOST ISO 8601-2001]. Format YYYY-MM-DDThh:mm:ssZ.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:DateTimeCategory">
+			<xs:pattern value="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimeSpanType">
+		<xs:annotation>
+			<xs:documentation>Интервал времени. Формат hh:mm:ss/hh:mm:ss.</xs:documentation>
+			<xs:documentation>Time span. Format hh:mm:ss/hh:mm:ss.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(([0-1][0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]/(([0-1][0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoAccountIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета депо в депозитарии. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot account number with the depository. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoAccount12IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета депо в депозитарии. Текстовый, до 12 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot account number with the depository. Text, up to 12 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoAccount32IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета депо в депозитарии. Текстовый, до 32 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot account number with the depository. Text, up to 32 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код депозитария. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot Code. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoPartitionIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер раздела счета депо. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot section account number. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoPartition17IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер раздела счета депо. Текстовый, до 17 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot section account number. Text, up to 17 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="17"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepoPartition32IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер раздела счета депо. Текстовый, до 32 символов.</xs:documentation>
+			<xs:documentation>Identifier. Depot section account number. Text, up to 32 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DrawerStatusCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 101. Текстовый, 1-2 значный.</xs:documentation>
+			<xs:documentation>Code. Field 101. Text, 1-2 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED235ED236OperationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CBEX"/>
+			<xs:enumeration value="CBFE"/>
+			<xs:enumeration value="BCFE"/>
+			<xs:enumeration value="BCEX"/>
+			<xs:enumeration value="BBFE"/>
+			<xs:enumeration value="BBFI"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED818StatusStateCode">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PSSD"/>
+			<xs:enumeration value="RJCT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EDDrawerIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный идентификатор составителя ЭС; УИС. [УИС]. Цифровой, 10 знаков.</xs:documentation>
+			<xs:documentation>Identifier. EM Author Unique Identifier; UID. [UID]. Numeric, 10 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{10}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EDNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер электронного сообщения. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. EM Number. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EDQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество электронных сообщений в пакете ЭПС или ЭСИС. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. EM Quantity in EPM or ESIM package. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EGRULIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Регистрационный номер организации в едином государственном реестре юридических лиц. [ЕГРЮЛ]. Текстовый, до 20 символов.</xs:documentation>
+			<xs:documentation>Identifier. Registration number of the organization. Text, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Enu45OneDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Однозначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 значный.</xs:documentation>
+			<xs:documentation>Code. 1-digit attribute value code. [Attribute value codes]. Numeric, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EnuTransactionKindCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Двузначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 2 значный.</xs:documentation>
+			<xs:documentation>Code. Two digit code of attribite value. [see Code Attribute Values]. Numeric, 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="02"/>
+			<xs:enumeration value="06"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq10IdentifierDigitType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Цифровой, 10 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Numeric, 10 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{10}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq35IdentifierTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Строка, 35 символов.</xs:documentation>
+			<xs:documentation>Identifier. String, 35 characters</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="35"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq2TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, 2 символа.</xs:documentation>
+			<xs:documentation>Text. String, 2 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="2"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq3TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, 3 символа.</xs:documentation>
+			<xs:documentation>Text. String, 3 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="3"/>
+			<xs:maxLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq4TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, 4 символа.</xs:documentation>
+			<xs:documentation>Text. String, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="4"/>
+			<xs:maxLength value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq11NumberType">
+		<xs:annotation>
+			<xs:documentation>Цифровой, 11 знаков.</xs:documentation>
+			<xs:documentation>Numeric, 11 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Eq14TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, 14 символа.</xs:documentation>
+			<xs:documentation>Text. String, 14 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="14"/>
+			<xs:maxLength value="14"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ERCControlCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="EXEC"/>
+			<xs:enumeration value="WRNG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ErrorEDQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество не сверенных контролером документов/реквизитов документов. Целое, до 5 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Number of documents (elements of documents) not certified controller. Integer, up to 5 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:minInclusive value="0"/>
+			<xs:totalDigits value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EventCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="CLOS"/>
+			<xs:enumeration value="INCC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FNameIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Имя файла. Текстовый.</xs:documentation>
+			<xs:documentation>Identifier. File name. Text.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="EDInquiryCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="RSTS"/>
+			<xs:enumeration value="RCPY"/>
+			<xs:enumeration value="RSPC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED708InquiryCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="RSTS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ThreeDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Трехзначный код значения реквизита. Цифровой, 3 значный.</xs:documentation>
+			<xs:documentation>Code. Three symbols code of value of Attribute. [Code values of Attributes]. Digital, 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FourDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Четырехзначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Four symbols code of value of Attribute. [Code values of Attributes]. Digital, 4 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FTIGroupCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="CND1"/>
+			<xs:enumeration value="CND2"/>
+			<xs:enumeration value="INTR"/>
+			<xs:enumeration value="QWRH"/>
+			<xs:enumeration value="QWAP"/>
+			<xs:enumeration value="QSPC"/>
+			<xs:enumeration value="QWCH"/>
+			<xs:enumeration value="QWEC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GarFundsUsageType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="GFCA"/>
+			<xs:enumeration value="GFCI"/>
+			<xs:enumeration value="GFNU"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Indicator1Type">
+		<xs:annotation>
+			<xs:documentation>Индикатор. Состояние флага = 1.</xs:documentation>
+			<xs:documentation>Indication. Value = 1.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IndicatorCategory">
+			<xs:pattern value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IndicatorType">
+		<xs:annotation>
+			<xs:documentation>Индикатор. Состояние флага.</xs:documentation>
+			<xs:documentation>Indication.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IndicatorCategory"/>
+	</xs:simpleType>
+	<xs:simpleType name="INNIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Индивидуальный номер налогоплательщика; ИНН. [ИНН]. Текстовый, до 12 символов.</xs:documentation>
+			<xs:documentation>Identifier. Resident Tax Identification Number; INN. [INN]. Text, up to 12 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ISINIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. ИСИН. Текстовый, 12 символов.</xs:documentation>
+			<xs:documentation>Identifier. ISIN. Text, up to 12 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="12"/>
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IsNextDayType">
+		<xs:annotation>
+			<xs:documentation>Код. Цифровой, 1 значный.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="KPPIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код причины постановки на учет; КПП. [КПП]. Текстовый, до 9 символов.</xs:documentation>
+			<xs:documentation>Identifier. Tax Registration Code; KPP. [KPP]. Text, up to 9 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="KopeckAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В копейках. Положительное целое число, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Amount in kopecks. Positive integer number up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:AmountCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LayoutType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="LAYA"/>
+			<xs:enumeration value="LAYB"/>
+			<xs:enumeration value="ANYY"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LimitChangeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="SETL"/>
+			<xs:enumeration value="DELL"/>
+			<xs:enumeration value="STND"/>
+			<xs:enumeration value="DLND"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LimitType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="FIPL"/>
+			<xs:enumeration value="FPML"/>
+			<xs:enumeration value="ICLL"/>
+			<xs:enumeration value="IOCL"/>
+			<xs:enumeration value="IPCL"/>
+			<xs:enumeration value="NURL"/>
+			<xs:enumeration value="TCLL"/>
+			<xs:enumeration value="URGL"/>
+			<xs:enumeration value="VIPL"/>
+			<xs:enumeration value="VPML"/>
+			<xs:enumeration value="IPIL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MassType">
+		<xs:annotation>
+			<xs:documentation>Масса. В сотых грамма. Положительное целое число или ноль, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Weight. In hundredths of a gram. Positive integer number up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:WeightCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="0"/>
+			<xs:pattern value="[0]|[1-9]\d{0,}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, 1 символ.</xs:documentation>
+			<xs:documentation>Text. String, 1 character.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max10TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 10 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 10 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max100StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 100 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 100 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max100TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 100 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 100 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max100XTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 100 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 100 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+			<xs:pattern value="[A-Za-z0-9]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1000TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 1000 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 1000 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1020TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 1020 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 1020 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1020"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1024TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 1024 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 1024 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1024"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1200TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 1200 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 1200 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max11TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, Строка, до 11 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 11 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max12TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 12 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 12 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max12IdentifierTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, до 12 символов.</xs:documentation>
+			<xs:documentation>Identifier. Text, up to 12 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max12WeightType">
+		<xs:annotation>
+			<xs:documentation>Масса. В сотых грамма. Положительное целое число до 12 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="12"/>
+			<xs:minInclusive value="0"/>
+			<xs:fractionDigits value="0"/>
+			<xs:pattern value="([0]|([1-9]\d{0,}))"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max140TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 140 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 140 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="140"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max15TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 15 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 15 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="15"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max150TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 150 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 150 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="150"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max16TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 16 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 16 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max19TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 19 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 19 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="19"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max160StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 160 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 160 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="160"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max160TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 160 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 160 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="160"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max160TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 160 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 160 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="160"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max2TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 2 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 2 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max18TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 18 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 18 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="18"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max20TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 20 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 20 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max200TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 200 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 200 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max210StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 210 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 210 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="210"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max210TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 210 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 210 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="210"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max24QuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество ценных бумаг. Целое, до 24 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Securities Number. Integer, up to 24 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="24"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max25TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 25 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 25 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="25"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max200StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 200 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 200 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max250TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 250 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 250 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="250"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max250TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 250 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 250 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="250"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max254TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 254 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 254 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="254"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max255StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 255 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 255 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max255TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 255 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 255 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max255TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 255 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 255 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max298TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 298 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 298 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="298"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max2NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое число, до 2 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="2"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max3NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое число, до 3 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max3TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 3 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 3 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max30TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 30 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 30 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max300TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 300 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 300 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="300"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max35TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 35 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 35 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max4TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 4 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max40TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 40 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 40 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max45TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 45 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 45 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="45"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max4NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое число, до 4 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 4 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="4"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max4DayQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество дней. Целое, до 4 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Number of days. Integer number, up to 4 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="4"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max400TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 400 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 400 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="400"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max4000TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 4000 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 4000 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="4000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max5NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое положительное число, до 5 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 5 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max8NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое положительное число, до 8 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 8 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="8"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max5TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 5 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 5 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max5OrdinalNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Порядковый номер. Целое, до 5 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Sequence Number. Integer number, up to 5 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="5"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max50TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 50 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 50 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max55TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 55 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 55 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="55"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max64TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 64 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 64 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max512TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 512 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 512 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="512"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max512TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 512 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 512 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="512"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max6DayQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество дней. Целое, до 6 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Number of days. Integer number, up to 6 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="6"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max6NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое положительное число, до 6 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 6 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="6"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max6QuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество электронных сообщений. Целое, до 6 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. EM Quantity. Integer number, up to 6 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="6"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max6OrdinalNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Порядковый номер. Целое, до 6 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Sequence Number. Integer, up to 6 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="6"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max6TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 6 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 6 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max60TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 60 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 60 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="60"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max600TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 600 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 600 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="600"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max64AmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В рублях. Положительное число, до 64 разрядов до 62 разрядов после десятичной точки.</xs:documentation>
+			<xs:documentation>Amount. In rubles. Positive number, up to 64 digits, up to 62 decimals.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="64"/>
+			<xs:minInclusive value="0"/>
+			<xs:fractionDigits value="62"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max7TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 7 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 7 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="7"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max70TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 70 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 70 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="70"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max700TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 700 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 700 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="700"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max75TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 75 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 75 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="75"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max8TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 8 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 8 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max80TextContentType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 80 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 80 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="80"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9ByteQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество байт. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Number of bytes. Integer number, up to 9 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9IdentifierTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, до 9 символов.</xs:documentation>
+			<xs:documentation>Identifier. Text, up to 9 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9QuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество электронных сообщений. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. EM Quantity. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9NumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Целое положительное число, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Integer, up to 9 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9NotNegativeQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество электронных сообщений. Целое число или ноль, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. EM Quantity. Integer or zero, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 9 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 9 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MTxxxTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка вида MTxxx, где xxx - ровно три цифры.</xs:documentation>
+			<xs:documentation>Text. String type MTxxx, where xxx - exactly 3 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:pattern value="[M][T]([0-9]{3})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TSLCTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка вида TSLC.xxx.xxx.xx, где x - только цифра.</xs:documentation>
+			<xs:documentation>Text. String type TSLC.xxx.xxx.xx, where x - only number.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:pattern value="[T][S][L][C][.]([0-9]{3})[.]([0-9]{3})[.]([0-9]{2})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ISOTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка вида pain.xxx.xxx.xx или camt.xxx.xxx.xx, где x - только цифра.</xs:documentation>
+			<xs:documentation>Text. String type pain.xxx.xxx.xx or camt.xxx.xxx.xx, where x - only number.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:pattern value="([p][a][i][n]|[c][a][m][t])[.]([0-9]{3})[.]([0-9]{3})[.]([0-9]{2})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NotNegativeKopeckAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В копейках (для обозначения неотрицательной суммы). Положительное целое число или ноль, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Amount in kopecks. Positive integer number or zero, up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:AmountCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NotNegativeCurrencyAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В сотых долях валюты (для обозначения неотрицательной суммы). Положительное целое число или ноль, до 18 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:AmountCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OGRNIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Основной регистрационный номер организации. [ОГРН]. Текстовый, до 13 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:maxLength value="13"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OKATOIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Поле 105. Текстовый, от 1 до 11 символов.</xs:documentation>
+			<xs:documentation>Identifier. Field 105. Text, from 1 to 11 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OneDayQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество дней. Целое, 1 разряд.</xs:documentation>
+			<xs:documentation>Quantity. Number of days. Integer number, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="1"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OneDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Однозначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 значный.</xs:documentation>
+			<xs:documentation>Code. 1-digit attribute value code. [Attribute value codes]. Numeric, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OneOrTwoDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Однозначный или двузначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 или 2 значный.</xs:documentation>
+			<xs:documentation>Code. One or Two digit code of attribite value. [Code Attribute Values]. Numeric, 1 or 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{1,2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OneDigitNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Однозначный номер. Цифровой, 1 значный.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:pattern value="\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OperationTextType">
+		<xs:annotation>
+			<xs:documentation>Код. [Кодовые значения реквизитов]. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. [Attribute value codes]. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="AAAC"/>
+			<xs:enumeration value="APAC"/>
+			<xs:enumeration value="CHNG"/>
+			<xs:enumeration value="CWAC"/>
+			<xs:enumeration value="NSRP"/>
+			<xs:enumeration value="FORE"/>
+			<xs:enumeration value="OTAE"/>
+			<xs:enumeration value="OTAP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OperationIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный присваиваемый номер операции. Текстовый, до 32 символов.</xs:documentation>
+			<xs:documentation>Identifier. Unique Assigning Operation Number. Text, up to 32 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrdinalNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Порядковый номер. Целое, до 6 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Sequence Number. Integer, up to 6 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="6"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrdinalDrawerOINumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер ОИ ПБР составителя. Целое, до 3 разрядов.</xs:documentation>
+			<xs:documentation>Numeric. Executor Number. Integer, up to 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PartAggregateIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный идентификатор совокупности частей. Цифровой, до 27 разрядов.</xs:documentation>
+			<xs:documentation>Identifier. Unique Identifier of partitions aggregate. Digital, up to 27 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{1,27}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipantBusinessScenarioType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="AWCI"/>
+			<xs:enumeration value="COVR"/>
+			<xs:enumeration value="RCPC"/>
+			<xs:enumeration value="RCPI"/>
+			<xs:enumeration value="RSRV"/>
+			<xs:enumeration value="RSOD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipantStatusType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="PSAC"/>
+			<xs:enumeration value="PSDL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PaymentIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный идентификатор платежа. Текстовый, до 25 символов.</xs:documentation>
+			<xs:documentation>Identifier. Unique Payment Identifier. Text, up to 25 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="25"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PaytPriorityCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Очередность платежа. [Очередность платежа]. (0 - очередность не указана, 1-5).</xs:documentation>
+			<xs:documentation>Code. Payment sequence. [Payment sequence]. (0 - if payment sequence is not indicated, 1-5).</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PercentNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Процент. Положительное число, до 7 разрядов, до 4 разрядов после десятичной точки.</xs:documentation>
+			<xs:documentation>Numeric. Percent. Positive number, up to 7 digits, up to 4 decimals.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="7"/>
+			<xs:minInclusive value="0"/>
+			<xs:fractionDigits value="4"/>
+			<xs:pattern value="([0]|([1-9]\d{0,2}))([.]\d{0,4})?">
+				<xs:annotation>
+					<xs:documentation>Формат [3.4]</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PerfomanceSchemaType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="AONS"/>
+			<xs:enumeration value="INDS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PercentRateTextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 10 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 10 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+			<xs:pattern value="([0-9.]*)|[W][A]">
+				<xs:annotation>
+					<xs:documentation>Формат "0123456789 или WA"</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RequestCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="FIRR"/>
+			<xs:enumeration value="SIRR"/>
+			<xs:enumeration value="PROF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReasonCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="ACCH"/>
+			<xs:enumeration value="AICH"/>
+			<xs:enumeration value="ALCH"/>
+			<xs:enumeration value="APPA"/>
+			<xs:enumeration value="RIRA"/>
+			<xs:enumeration value="RIRP"/>
+			<xs:enumeration value="RMAA"/>
+			<xs:enumeration value="RMVA"/>
+			<xs:enumeration value="RQST"/>
+			<xs:enumeration value="SOBD"/>
+			<xs:enumeration value="UIRA"/>
+			<xs:enumeration value="UIRP"/>
+			<xs:enumeration value="ARRD"/>
+			<xs:enumeration value="ARRM"/>
+			<xs:enumeration value="ARRS"/>
+			<xs:enumeration value="EOBD"/>
+			<xs:enumeration value="EOCC"/>
+			<xs:enumeration value="ICLD"/>
+			<xs:enumeration value="ICLM"/>
+			<xs:enumeration value="ICLS"/>
+			<xs:enumeration value="PCHD"/>
+			<xs:enumeration value="CSCH"/>
+			<xs:enumeration value="NSCH"/>
+			<xs:enumeration value="FCBD"/>
+			<xs:enumeration value="CIBD"/>
+			<xs:enumeration value="PPAD"/>
+			<xs:enumeration value="CHCN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegisterItemIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер позиции реестра. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Identifier. Registry number position. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{1,9}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegisterItemsQuantityType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество позиций. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Positions Quantity. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReportIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер формы. Цифровой, 7 значный.</xs:documentation>
+			<xs:documentation>Identifier. Form number. Numeric, 7 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{7}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RequisiteCheckCodeType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 89 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 89 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="89"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RstrType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="NORS"/>
+			<xs:enumeration value="URRS"/>
+			<xs:enumeration value="LWRS"/>
+			<xs:enumeration value="LMRS"/>
+			<xs:enumeration value="CLRS"/>
+			<xs:enumeration value="FPRS"/>
+			<xs:enumeration value="MRTR"/>
+			<xs:enumeration value="SDRS"/>
+			<xs:enumeration value="FPIP"/>
+			<xs:enumeration value="ESRS"/>
+			<xs:enumeration value="RSIP"/>
+			<xs:enumeration value="FOCL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SessionIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер рейса/сеанса. Цифровой, 1 значный.</xs:documentation>
+			<xs:documentation>Identifier. Cycle Number. Numeric, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SessionIDED240ED242Type">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер рейса/сеанса. Цифровой, 1 значный.</xs:documentation>
+			<xs:documentation>Identifier. Cycle Number. Numeric, 1 digit.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SessionTypeType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип рейса. Текстовый, 4 знака.</xs:documentation>
+			<xs:documentation>Identifier. Cycle Type. Text, 4 character.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="URGN"/>
+			<xs:enumeration value="NURG"/>
+			<xs:enumeration value="CONS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityAmountType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество ценных бумаг. Целое, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Securities Number. Integer, up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="18"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityIssueAmountType">
+		<xs:annotation>
+			<xs:documentation>Количество. Количество выпусков ценных бумаг. Целое, до 3 разрядов.</xs:documentation>
+			<xs:documentation>Quantity. Securities issues Number. Integer, up to 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="3"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SystemCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Двузначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 2 значный.</xs:documentation>
+			<xs:documentation>Code. Two digit code of attribite value. [Code Attribute Values]. Numeric, 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="02"/>
+			<xs:enumeration value="05"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TUCodeIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код территориального учреждения. Цифровой, 2 знака.</xs:documentation>
+			<xs:documentation>Identifier. Territorial office code. Numeric, 2 digits</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxDocDateCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 109. Строка, до 10 символов.</xs:documentation>
+			<xs:documentation>Code. Field 109. String, up to 10 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxDocIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Поле 108. Текстовый, до 15 символов.</xs:documentation>
+			<xs:documentation>Identifier. Field 108. String, up to 15 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="15"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxFinOrgAccCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 112. Текстовый, до 16 символов.</xs:documentation>
+			<xs:documentation>Code. Field 112. String, up to 16 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxFKAccCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 111. Текстовый, до 11 символов.</xs:documentation>
+			<xs:documentation>Code. Field 111. String, up to 11 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxPaytKindCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 110. Текстовый, 1-2 значный.</xs:documentation>
+			<xs:documentation>Code. Field 110. String, 1-2 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxPaytReasonCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 106. Текстовый, 1-2 значный.</xs:documentation>
+			<xs:documentation>Code. Field 106. String, 1-2 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TaxPeriodCodeTextType">
+		<xs:annotation>
+			<xs:documentation>Код. Поле 107. Строка, от 1 до 10 символов.</xs:documentation>
+			<xs:documentation>Code. Field 107. String from 1 to 10 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка без ограничения длины.</xs:documentation>
+			<xs:documentation>FreeText. String.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextContentCategory"/>
+	</xs:simpleType>
+	<xs:simpleType name="TimeType">
+		<xs:annotation>
+			<xs:documentation>Время. [ГОСТ ИСО 8601-2001]. Формат hh:mm:ss.</xs:documentation>
+			<xs:documentation>Time. [GOST ISO 8601-2001]. Format hh:mm:ss.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TimeCategory">
+			<xs:pattern value="\d{2}:\d{2}:\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TotalKopeckAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. В копейках. Положительное целое число, до 22 разрядов.</xs:documentation>
+			<xs:documentation>Amount. In kopecks. Positive integer number up to 22 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:AmountCategory">
+			<xs:totalDigits value="22"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TwoDigitCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Двузначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 2 значный.</xs:documentation>
+			<xs:documentation>Code. Two digit code of attribite value. [Code Attribute Values]. Numeric, 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:pattern value="\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TwoDigitIdentifierType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Цифровой, 2 значный.</xs:documentation>
+			<xs:documentation>Identifier. Digital, 2 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UICIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Идентификационный код пользователя. Строка 11 символов.</xs:documentation>
+			<xs:documentation>Identifier. User identification code. String 11 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="[0-9A-Z]{11}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UniversalIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, до 32 символов.</xs:documentation>
+			<xs:documentation>Identifier. Text, up to 32 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UpdateType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INCT"/>
+			<xs:enumeration value="DECT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UserIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер пользователя ПБР. Цифровой, 3 значный.</xs:documentation>
+			<xs:documentation>Identifier. User number. Numeric, 3 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UUIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Формат [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}">
+				<xs:annotation>
+					<xs:documentation>Тип UUID</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="QueueType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="QINT"/>
+			<xs:enumeration value="QSPC"/>
+			<xs:enumeration value="QWAP"/>
+			<xs:enumeration value="QWCH"/>
+			<xs:enumeration value="QWRH"/>
+			<xs:enumeration value="QWEC"/>
+			<xs:enumeration value="QWAC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="QueuingReasonCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Код контроля/ошибки в ЭС. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Queuing Reason Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="QLLQ"/>
+			<xs:enumeration value="QWFC"/>
+			<xs:enumeration value="QLSF"/>
+			<xs:enumeration value="QLSV"/>
+			<xs:enumeration value="QLIF"/>
+			<xs:enumeration value="QLIV"/>
+			<xs:enumeration value="QCLI"/>
+			<xs:enumeration value="QICL"/>
+			<xs:enumeration value="QTCL"/>
+			<xs:enumeration value="QLRS"/>
+			<xs:enumeration value="QLRW"/>
+			<xs:enumeration value="QIRS"/>
+			<xs:enumeration value="QACI"/>
+			<xs:enumeration value="QCES"/>
+			<xs:enumeration value="QNET"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="WithdrawReasonCodeType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип рейса. Текстовый, 4 знака.</xs:documentation>
+			<xs:documentation>Identifier. Cycle Type. Text, 4 character.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory"/>
+	</xs:simpleType>
+	<!--FastPaymentService -->
+	<xs:simpleType name="CurrencyCodeType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код валюты. Текстовый, 3 символа A-Z.</xs:documentation>
+			<xs:documentation>Identifier. Currency Code. Text, 3 character A-Z.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{3,3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED702ChargeBankRoleType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CH01"/>
+			<xs:enumeration value="CH02"/>
+			<xs:enumeration value="CH03"/>
+			<xs:enumeration value="CH04"/>
+			<xs:enumeration value="CH05"/>
+			<xs:enumeration value="CH06"/>
+			<xs:enumeration value="CH07"/>
+			<xs:enumeration value="CH08"/>
+			<xs:enumeration value="CH09"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED702OperationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CTPH"/>
+			<xs:enumeration value="CTRB"/>
+			<xs:enumeration value="CTRT"/>
+			<xs:enumeration value="CTRD"/>
+			<xs:enumeration value="CTND"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FloatingPointAmountType">
+		<xs:annotation>
+			<xs:documentation>Сумма. Положительное число, до 11 разрядов, до 10 разрядов после точки.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="10"/>
+			<xs:totalDigits value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FPSOperationsType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CCPH"/>
+			<xs:enumeration value="CCRC"/>
+			<xs:enumeration value="CCRB"/>
+			<xs:enumeration value="CCPL"/>
+			<xs:enumeration value="CBPH"/>
+			<xs:enumeration value="CBPP"/>
+			<xs:enumeration value="CBRC"/>
+			<xs:enumeration value="CBRB"/>
+			<xs:enumeration value="CCRD"/>
+			<xs:enumeration value="CCRT"/>
+			<xs:enumeration value="CCRN"/>
+			<xs:enumeration value="CBRD"/>
+			<xs:enumeration value="CBRT"/>
+			<xs:enumeration value="CBRN"/>
+			<xs:enumeration value="BCPH"/>
+			<xs:enumeration value="BCRC"/>
+			<xs:enumeration value="BCRB"/>
+			<xs:enumeration value="BCRD"/>
+			<xs:enumeration value="BCRT"/>
+			<xs:enumeration value="BCRN"/>
+			<xs:enumeration value="BBPH"/>
+			<xs:enumeration value="BBRT"/>
+			<xs:enumeration value="BBRN"/>
+			<xs:enumeration value="BBRB"/>
+			<xs:enumeration value="BBRD"/>
+			<xs:enumeration value="BBRC"/>
+			<xs:enumeration value="CGPH"/>
+			<xs:enumeration value="CGRT"/>
+			<xs:enumeration value="CTPH"/>
+			<xs:enumeration value="CTRB"/>
+			<xs:enumeration value="CTRT"/>
+			<xs:enumeration value="BCCB"/>
+			<xs:enumeration value="BCRX"/>
+			<xs:enumeration value="CTRD"/>
+			<xs:enumeration value="CTND"/>
+			<xs:enumeration value="BGPH"/>
+			<xs:enumeration value="BGRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OperationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CCPH"/>
+			<xs:enumeration value="CCRC"/>
+			<xs:enumeration value="CCRB"/>
+			<xs:enumeration value="CCPL"/>
+			<xs:enumeration value="CBPH"/>
+			<xs:enumeration value="CBPP"/>
+			<xs:enumeration value="CBRC"/>
+			<xs:enumeration value="CBRB"/>
+			<xs:enumeration value="CCRD"/>
+			<xs:enumeration value="CCRT"/>
+			<xs:enumeration value="CCRN"/>
+			<xs:enumeration value="CBRD"/>
+			<xs:enumeration value="CBRT"/>
+			<xs:enumeration value="CBRN"/>
+			<xs:enumeration value="BCPH"/>
+			<xs:enumeration value="BCRC"/>
+			<xs:enumeration value="BCRB"/>
+			<xs:enumeration value="BCRD"/>
+			<xs:enumeration value="BCRT"/>
+			<xs:enumeration value="BCRN"/>
+			<xs:enumeration value="BBPH"/>
+			<xs:enumeration value="BBRT"/>
+			<xs:enumeration value="BBRN"/>
+			<xs:enumeration value="BBRB"/>
+			<xs:enumeration value="BBRD"/>
+			<xs:enumeration value="BBRC"/>
+			<xs:enumeration value="CGPH"/>
+			<xs:enumeration value="CGRT"/>
+			<xs:enumeration value="BCCB"/>
+			<xs:enumeration value="BCRX"/>
+			<xs:enumeration value="BGPH"/>
+			<xs:enumeration value="BGRT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EMInfoType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INF1"/>
+			<xs:enumeration value="INF2"/>
+			<xs:enumeration value="INF3"/>
+			<xs:enumeration value="INF4"/>
+			<xs:enumeration value="INF5"/>
+			<xs:enumeration value="INF6"/>
+			<xs:enumeration value="INF7"/>
+			<xs:enumeration value="INF8"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FPSEventCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SOBD"/>
+			<xs:enumeration value="SOLS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FPSStatusStateCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SETL">
+				<xs:annotation>
+					<xs:documentation>Распоряжение исполнено.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="WAIT">
+				<xs:annotation>
+					<xs:documentation>Распоряжение ожидает обработки.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RJCT">
+				<xs:annotation>
+					<xs:documentation>Распоряжение забраковано.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="NTEX">
+				<xs:annotation>
+					<xs:documentation>Распоряжение не найдено.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED708StatusStateCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SETL">
+				<xs:annotation>
+					<xs:documentation>ED708 исполнено.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RJCT">
+				<xs:annotation>
+					<xs:documentation>ED708 забраковано.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="NTEX">
+				<xs:annotation>
+					<xs:documentation>ED708 не найдено.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ANNL">
+				<xs:annotation>
+					<xs:documentation>ED708 аннулировано по причине недостаточности средств.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="QUEX">
+				<xs:annotation>
+					<xs:documentation>ED708 помещено в очередь для исполнения.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FPSOperationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INSR">
+				<xs:annotation>
+					<xs:documentation>Добавить запись в таблицу (INSERT).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DELT">
+				<xs:annotation>
+					<xs:documentation>Удалить запись из таблицы (DELETE).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="UPDT">
+				<xs:annotation>
+					<xs:documentation>Изменить запись в таблице (UPDATE).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LiquidityTransKindType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INCL">
+				<xs:annotation>
+					<xs:documentation>Распоряжение на увеличение суммы средств в СБП.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DECL">
+				<xs:annotation>
+					<xs:documentation>Распоряжение на уменьшение суммы средств в СБП.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INCP">
+				<xs:annotation>
+					<xs:documentation>Увеличение суммы средств, используемых в СБП, по причине выполнения программных процедур ПС БР.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DECP">
+				<xs:annotation>
+					<xs:documentation>Уменьшение суммы средств, используемых в СБП, по причине выполнения программных процедур ПС БР.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DECN">
+				<xs:annotation>
+					<xs:documentation>Уменьшение суммы средств, используемых в СБП, до нуля.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReasonLiqCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RQST"/>
+			<xs:enumeration value="RQSH"/>
+			<xs:enumeration value="NDFP"/>
+			<xs:enumeration value="NDPS"/>
+			<xs:enumeration value="CHNL"/>
+			<xs:enumeration value="LOWL"/>
+			<xs:enumeration value="LVLL"/>
+			<xs:enumeration value="NDNL"/>
+			<xs:enumeration value="ICLS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RemittedAmountType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INCM"/>
+			<xs:enumeration value="WRTO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CreateReasonCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ARRS"/>
+			<xs:enumeration value="FNRS"/>
+			<xs:enumeration value="FNLN"/>
+			<xs:enumeration value="FNGP"/>
+			<xs:enumeration value="PULL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ExecCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EXEC"/>
+			<xs:enumeration value="PART"/>
+			<xs:enumeration value="NXTD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DCType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DEBT"/>
+			<xs:enumeration value="CRED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DirectionType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ENLL"/>
+			<xs:enumeration value="OFFS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RecordIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Уникальный номер записи. Цифровой, 26 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Record Identifier. Numeric, 26 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:pattern value="\d{26}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UltimateDebtorIdentificationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TXID"/>
+			<xs:enumeration value="RGRC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UltimateCreditorIdentificationType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CLID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TSPInfoType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TSPN"/>
+			<xs:enumeration value="TSPI"/>
+			<xs:enumeration value="TSPC"/>
+			<xs:enumeration value="TXID"/>
+			<xs:enumeration value="WBST"/>
+			<xs:enumeration value="GVID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrganisationIdentificatorType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TXID"/>
+			<xs:enumeration value="RGRC"/>
+			<xs:enumeration value="FTID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FPSAccountType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BBAN"/>
+			<xs:enumeration value="EPID"/>
+			<xs:enumeration value="ORID"/>
+			<xs:enumeration value="TRSA"/>
+			<xs:enumeration value="OTHA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED702FPSAccountType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BBAN"/>
+			<xs:enumeration value="ORID"/>
+			<xs:enumeration value="IBAN"/>
+			<xs:enumeration value="EPID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonIdentificatorType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TXID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED702PersonIdentificatorType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TXID"/>
+			<xs:enumeration value="PSID"/>
+			<xs:enumeration value="FPID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PaymentCategoryType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FREE"/>
+			<xs:enumeration value="PAID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED710RequestType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="RQSH"/>
+			<xs:enumeration value="RQST"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Альбом УФК-ОД ОПЕРУ1 -->
+	<xs:simpleType name="AccountDocMax38IDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер бумажного документа. Текстовый, до 38 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="38"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountNumberIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер счета. Текстовый, до 34 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="34"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccountingRateType">
+		<xs:annotation>
+			<xs:documentation>Курс валюты. Положительное число, до 21 разряда, до 12 разрядов после десятичной точки.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="21"/>
+			<xs:minInclusive value="0.000000000001"/>
+			<xs:fractionDigits value="12"/>
+			<xs:pattern value="([0]|([1-9]\d{0,8}))([.]\d{0,12})?">
+				<xs:annotation>
+					<xs:documentation>Формат [13.8]</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ChargeDetailsIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Комиссия и расходы. Текстовый, 3 символа.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="OUR"/>
+			<xs:enumeration value="BEN"/>
+			<xs:enumeration value="SHA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CurrencyRateIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип курса. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="CBRF"/>
+			<xs:enumeration value="MARKET"/>
+			<xs:enumeration value="CBRMET"/>
+			<xs:enumeration value="CLCMET"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CustomsCodeIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код таможни. Текстовый, до 8 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="8"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DeclarationNoType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер заявки. Целое, до 9 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory">
+			<xs:totalDigits value="9"/>
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DocIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип документа. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="DECLREF"/>
+			<xs:enumeration value="LETTER"/>
+			<xs:enumeration value="MEMO"/>
+			<xs:enumeration value="SWIFT"/>
+			<xs:enumeration value="UNDEF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max2000StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 2000 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 2000 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max2000TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 2000 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="2000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max350TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 350 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="350"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max355TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 355 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="355"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max500TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 500 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="500"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NotNegativeSumDecimalType">
+		<xs:annotation>
+			<xs:documentation>Сумма. Положительное число с десятичной точкой или ноль.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0."/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OpCodeIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Код операции. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="EXCH"/>
+			<xs:enumeration value="REMTN"/>
+			<xs:enumeration value="CANCL"/>
+			<xs:enumeration value="OTHERS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SettlementRateType">
+		<xs:annotation>
+			<xs:documentation>Курс валюты. Положительное число, до 21 разряда, до 8 разрядов после десятичной точки.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:totalDigits value="21"/>
+			<xs:minInclusive value="0.00000001"/>
+			<xs:fractionDigits value="8"/>
+			<xs:pattern value="([0]|([1-9]\d{0,12}))([.]\d{0,8})?">
+				<xs:annotation>
+					<xs:documentation>Формат [13.8]</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FloatSWIFTIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Банковский идентификационный код SWIFT. Текстовый, до 11 символов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TransactionIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Тип проводки. Текстовый.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="DIRECT"/>
+			<xs:enumeration value="RECALL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED307ParticipantStatusType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="PSAC"/>
+			<xs:enumeration value="PSWD"/>
+			<xs:enumeration value="PSDL"/>
+			<xs:enumeration value="PSDE"/>
+			<!-- Действующий  -->
+			<!-- Запланирован к исключению из Справочника с «ДД.ММ.ГГГГ» -->
+			<!-- Удален -->
+			<!-- Ошибка удаления -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ED307AccountStatusType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="ACAC"/>
+			<xs:enumeration value="ACWD"/>
+			<xs:enumeration value="ACDL"/>
+			<xs:enumeration value="ACDE"/>
+			<xs:enumeration value="ACSE"/>
+			<!-- Действующий -->
+			<!-- Запланирован к исключению из Справочника с «ДД.ММ.ГГГГ» -->
+			<!-- Удален -->
+			<!-- Ошибка удаления -->
+			<!-- Ошибка перечисления остатка счета -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ClearingCodeListType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="VISA"/>
+			<xs:enumeration value="MASC"/>
+			<xs:enumeration value="MIRC"/>
+			<xs:enumeration value="UPAY"/>
+			<xs:enumeration value="JCBC"/>
+			<xs:enumeration value="AMES"/>
+			<xs:enumeration value="FSSC"/>
+			<!--VISA-->
+			<!--MasterCard-->
+			<!--МИР-->
+			<!--UnionPay-->
+			<!--JCB-->
+			<!--American Express-->
+			<!--Фонд социального страхования-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PBODocIDType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Номер первичного распоряжения. Цифровой, от 1 до 12 знаков.</xs:documentation>
+			<xs:documentation>Identifier. Paper Document Number. Numeric, from 1 to 12 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="12"/>
+			<xs:pattern value="[0-9]*[1-9][0-9]*">
+				<xs:annotation>
+					<xs:documentation>исключение значений 0, 00, 000</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StatementServiceType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SBMT"/>
+			<xs:enumeration value="SEMT"/>
+			<xs:enumeration value="SNOT"/>
+			<xs:enumeration value="NORS"/>
+			<!-- Ведомость за месяц передается клиенту при наличии данных-->
+			<!-- Ведомость за месяц передается вместе со счетом за услуги, при наличии платных услуг-->
+			<!-- Ведомость за месяц не передается-->
+			<!-- НЕТ-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RstrCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="URRS"/>
+			<xs:enumeration value="LWRS"/>
+			<xs:enumeration value="PSRS"/>
+			<xs:enumeration value="ESRS"/>
+			<xs:enumeration value="PDRS"/>
+			<xs:enumeration value="MRTR"/>
+			<xs:enumeration value="FPIP"/>
+			<xs:enumeration value="RSIP"/>
+			<xs:enumeration value="FOCL"/>
+			<!-- Ограничение предоставления сервиса срочного перевода-->
+			<!--Отзыв (аннулирование) лицензии -->
+			<!-- Ограничение (прекращение) приема ЭС с распоряжениями-->
+			<!-- Приостановление обмена ЭС-->
+			<!-- Удаление участника-->
+			<!-- Мораторий на удовлетворение требований кредиторов (по всем счетам клиента)-->
+			<!-- Приостановление предоставления сервиса быстрых платежей косвенному участнику-->
+			<!-- Приостановление доступа к услугам по переводу денежных средств в качестве косвенного участника-->
+			<!-- Закрытие Полевого учреждения Банка России-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccRstrCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CLRS"/>
+			<xs:enumeration value="LMRS"/>
+			<xs:enumeration value="URRS"/>
+			<xs:enumeration value="PSRS"/>
+			<xs:enumeration value="ESRS"/>
+			<xs:enumeration value="SCRS"/>
+			<xs:enumeration value="MVRS"/>
+			<xs:enumeration value="RTRS"/>
+			<xs:enumeration value="FPRS"/>
+			<xs:enumeration value="LSRS"/>
+			<xs:enumeration value="QPRS"/>
+			<xs:enumeration value="FWRS"/>
+			<xs:enumeration value="SDRS"/>
+			<!-- Закрытие счета -->
+			<!-- Временное сохранение счета с его функционированием в ограниченном режиме-->
+			<!--Ограничение предоставления сервиса срочного перевода (по счету)-->
+			<!-- Ограничение (прекращение) приема ЭС с распоряжениями по счету-->
+			<!-- Приостановление обмена ЭС по счету-->
+			<!-- Запрет зачисления-->
+			<!-- Предварительный контроль ПБР-->
+			<!-- Контроль ПБР перед зачислением-->
+			<!-- Приостановление предоставления сервиса быстрых платежей-->
+			<!-- Накопление ликвидности-->
+			<!-- Наличие очереди не исполненных в срок распоряжений-->
+			<!-- Запрет списания денежных средств-->
+			<!-- Признак ВСП-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrderStatusCode">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ACTD"/>
+			<xs:enumeration value="EXTD"/>
+			<xs:enumeration value="RJCT"/>
+			<!--Принято-->
+			<!--Исполнено-->
+			<!--Отклонено-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LMRSTransactionIntradayType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EDTR"/>
+			<xs:enumeration value="IDTR"/>
+			<!--Перечисление в конце дня-->
+			<!--Перечисление в течение и в конце ОД-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UFCFPropType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MAIN"/>
+			<xs:enumeration value="SLVE"/>
+			<xs:enumeration value="MCEC"/>
+			<xs:enumeration value="SLEC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AccrueScenarioType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NEWA"/>
+			<xs:enumeration value="ADDA"/>
+			<!--ED346 новое начисление-->
+			<!--ED346 доначисление-->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max9NegNumType">
+		<xs:annotation>
+			<xs:documentation>Число. С возможностью указания отрицательного числа. Целое, до 9 разрядов.</xs:documentation>
+			<xs:documentation>Number. Integer, up to 9 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="9"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- GISGMP -->
+	<xs:simpleType name="GISGMPIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор ГИС ГМП.</xs:documentation>
+			<xs:documentation>Identifier.GIS GMP.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierCategory">
+			<xs:maxLength value="50"/>
+			<xs:pattern value="[\i-[:]][\c-[:]]*">
+				<xs:annotation>
+					<xs:documentation>Значение должно начинаться с буквы или символа подчеркивания и может содержать только буквы, цифры, символы подчеркивания, дефисы и точки.</xs:documentation>
+				</xs:annotation>
+			</xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PacketGISGMPIDTextType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор ответного ЭС.</xs:documentation>
+			<xs:documentation>Identifier.GIS GMP.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GISGMPDateTimeType">
+		<xs:annotation>
+			<xs:documentation>ДатаВремя. Формат YYYY-MM-DDThh:mm:ssZ. Всемирное время.</xs:documentation>
+			<xs:documentation>DateTime. Format YYYY-MM-DDThh:mm:ssZ.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:DateTimeCategory"/>
+	</xs:simpleType>
+	<xs:simpleType name="Max18NegNumType">
+		<xs:annotation>
+			<xs:documentation>Число. С возможностью указания отрицательного числа. Целое, до 18 разрядов.</xs:documentation>
+			<xs:documentation>Number. Integer, up to 18 digits.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:QuantityCategory">
+			<xs:totalDigits value="18"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GISGMPNumberType">
+		<xs:annotation>
+			<xs:documentation>Число. Номер документа ГИС ГМП. Целое, до 20 разрядов.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:NumberCategory"/>
+	</xs:simpleType>
+	<xs:simpleType name="DCEventCodeType">
+		<xs:annotation>
+			<xs:documentation>Код. Текстовый, 4 значный.</xs:documentation>
+			<xs:documentation>Code. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="STOD"/>
+			<xs:enumeration value="ENOD"/>
+			<xs:enumeration value="NXTD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="COSCustomerPropertyType">
+		<xs:annotation>
+			<xs:documentation>Код. Признак клиента в СПФС.</xs:documentation>
+			<xs:documentation>Code. Client type.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:CodeCategory">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TransOptionCodeType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="XTIP"/>
+			<xs:enumeration value="XTFP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Me2MeType">
+		<xs:annotation>
+			<xs:documentation>Идентификатор. Текстовый, 4 символа.</xs:documentation>
+			<xs:documentation>Identifier. Text, 4 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:enumeration value="MEME"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max36TextType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 36 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 36 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:TextCategory">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="36"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max21StringType">
+		<xs:annotation>
+			<xs:documentation>Текст. Строка, до 21 символов.</xs:documentation>
+			<xs:documentation>Text. String, up to 21 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="21"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max1000StringType">
+		<xs:annotation>
+			<xs:documentation>ТекстПроизвольный. Строка, до 1000 символов.</xs:documentation>
+			<xs:documentation>FreeText. String, up to 1000 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="1000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OKTMOIDTextType">
+		<xs:annotation>
+			<xs:documentation>ОКТМО. Текстовый, от 8 до 11 символов.</xs:documentation>
+			<xs:documentation>OKTMO. Text, from 8 to 11 characters.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="bt:IdentifierTextCategory">
+			<xs:minLength value="8"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

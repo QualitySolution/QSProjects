@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="Banks\BanksUpdaterTests.cs" />
     <Compile Include="Tdi\TabHashHelperTest.cs" />
+    <Compile Include="TestApp\ViewModels\DialogWithDocumentationViewModel.cs" />
+    <Compile Include="TestApp\ViewModels\JournalWithDocumentationViewModel.cs" />
     <Compile Include="TestApp\Domain\FullEntity.cs" />
     <Compile Include="TestApp\JournalViewModels\DocumentsJournalViewModel.cs" />
     <Compile Include="TestApp\ViewModels\AbortCreationViewModel.cs" />
@@ -102,6 +104,10 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\NumberName123987TestView.cs" />
+    <Compile Include="TestApp\Views\DialogWithDocumentationView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithDocumentationView.cs" />
+    <Compile Include="TestApp\Views\JournalWithDocumentationView.cs" />
+    <Compile Include="gtk-gui\QS.Test.TestApp.Views.JournalWithDocumentationView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -116,6 +122,7 @@
     <Folder Include="Views\" />
     <Folder Include="TestApp\" />
     <Folder Include="TestApp\Views\" />
+    <Folder Include="TestApp\Domain\" />
     <Folder Include="GtkUI\" />
     <Folder Include="TestApp\HibernateMapping\" />
     <Folder Include="Tdi\GtkUI\" />
@@ -124,6 +131,10 @@
     <Folder Include="Views\Resolve\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Modules\QS.Banks.Contracts\QS.Banks.Contracts.csproj">
+      <Project>{21b9ce5f-33ff-4417-9d36-a23f2e6c3547}</Project>
+      <Name>QS.Banks.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
       <Project>{D21C0F94-5B1B-49E1-A5B0-50C3F99287E2}</Project>
       <Name>QSBanks</Name>

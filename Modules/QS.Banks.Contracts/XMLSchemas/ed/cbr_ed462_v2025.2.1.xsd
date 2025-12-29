@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="CreatorInfoType">
+		<xs:annotation>
+			<xs:documentation>Составитель</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Position" type="lt:Max150TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Должность</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FIO" type="lt:Max150TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Фамилия, инициалы</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CustomerDataType">
+		<xs:annotation>
+			<xs:documentation>Вноситель/получатель</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CustomerName" type="lt:Max150TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Фамилия, имя, отчество</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CashInfoType">
+		<xs:annotation>
+			<xs:documentation>В том числе по символам</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CashCode" type="lt:CashAccountingCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Символ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CashSum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CashType">
+		<xs:annotation>
+			<xs:documentation>Денежная наличность</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="CashType" use="required">
+			<xs:annotation>
+				<xs:documentation>Вид наличности</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:annotation>
+					<xs:documentation>Код. Однозначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 значный.</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="lt:OneDigitCodeType">
+					<xs:enumeration value="0">
+						<xs:annotation>
+							<xs:documentation>Монета Банка России</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="1">
+						<xs:annotation>
+							<xs:documentation>Банкноты Банка России</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Nominal" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номинал</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ValsPackType" type="lt:Max2NumberType">
+			<xs:annotation>
+				<xs:documentation>Тип упаковки</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RequestType">
+		<xs:annotation>
+			<xs:documentation>Заявка на получение или сдачу денежной наличности</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="DocNo" type="lt:AccountDocIDType">
+			<xs:annotation>
+				<xs:documentation>Номер ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OrgBIC" type="lt:BICRUIDType">
+			<xs:annotation>
+				<xs:documentation>Банковский идентификационный код клиента - отправителя ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NameClient" type="lt:Max300TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Наименование клиента - отправителя ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BicPBR" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Банковский идентификационный код получателя ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NamePBR" type="lt:Max300TextType">
+			<xs:annotation>
+				<xs:documentation>Наименование получателя ЭЗ</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="OperationType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип операции</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:annotation>
+					<xs:documentation>Код. Однозначный код значения реквизита. [Кодовые значения реквизитов]. Цифровой, 1 значный.</xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="lt:OneDigitCodeType">
+					<xs:enumeration value="1">
+						<xs:annotation>
+							<xs:documentation>Сдача денежной наличности</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="2">
+						<xs:annotation>
+							<xs:documentation>Получение денежной наличности</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="3">
+						<xs:annotation>
+							<xs:documentation>Передача НДБР в КО (Д1)</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="4">
+						<xs:annotation>
+							<xs:documentation>Прием НДБР от  КО  (Д4)</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="OperationDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Планируемая дата совершения операции</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Acc" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Лицевой счет для зачисления/списания</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Sum" type="lt:KopeckAmountType" use="required">
+			<xs:annotation>
+				<xs:documentation>Сумма документа</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED462" type="ed:ED462"/>
+	<xs:complexType name="ED462">
+		<xs:annotation>
+			<xs:documentation>Заявка на получение или сдачу денежной наличности, наличных денег Банка России</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="Request" type="ed:RequestType">
+						<xs:annotation>
+							<xs:documentation>Заявка на получение или сдачу денежной наличности, наличных денег Банка России</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Cash" type="ed:CashType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Денежная наличность</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CashInfo" type="ed:CashInfoType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>В том числе по символам</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CustomerData" type="ed:CustomerDataType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Вноситель/получатель</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Annotation" type="lt:Max200TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Примечание</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CreatorInfo" type="ed:CreatorInfoType" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Составители</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

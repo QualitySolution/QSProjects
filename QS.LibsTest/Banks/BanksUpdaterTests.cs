@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using QS.Banks.Contracts;
 using QS.Banks.Domain;
 using QS.Extensions.Observable.Collections.List;
 using QSBanks;
-using QSBanks.CBRSource;
 
 namespace QS.Test.Banks
 {

@@ -15,6 +15,7 @@ namespace QS.Banks.HMap
 
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
 
+			Map(x => x.Created).Column("created");
 			Map(x => x.Name).Column("name");
 			Map(x => x.Number).Column("number");
 			Map(x => x.Code1c).Column("code_1c");

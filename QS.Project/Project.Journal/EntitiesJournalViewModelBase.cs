@@ -10,6 +10,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
+using QS.Permissions;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Services;
 using QS.Services;

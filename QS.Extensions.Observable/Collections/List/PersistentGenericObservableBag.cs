@@ -1,9 +1,11 @@
-using System;
 using NHibernate.Collection.Generic;
 using NHibernate.Engine;
+using NHibernate.Persister.Collection;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Collections;
 using System.ComponentModel;
+using System;
 
 namespace QS.Extensions.Observable.Collections.List {
 
@@ -23,6 +25,16 @@ namespace QS.Extensions.Observable.Collections.List {
 		public PersistentGenericObservableBag(ISessionImplementor session) : base(session) {
 		}
 
+		/// <summary>
+		/// Вызывается NHibernate после загрузки коллекции из БД.
+		/// Используется для подписки на события элементов.
+		/// </summary>
+		public override bool AfterInitialize(ICollectionPersister persister) {
+			var result = base.AfterInitialize(persister);
+			SubscribesAll();
+			return result;
+		}
+
 		public new T this[int index] {
 			get { return base[index]; }
 			set {
@@ -32,23 +44,41 @@ namespace QS.Extensions.Observable.Collections.List {
 				SubscribeElementChanged(value);
 			}
 		}
+		
+		object IList.this[int index] {
+			get => this[index];
+			set => this[index] = (T)value;
+		}
 
 		public new void Add(T item) {
 			base.Add(item);
 			OnItemAdded(item);
 			SubscribeElementChanged(item);
 		}
+		
+		int IList.Add(object value) {
+			Add((T)value);
+			return Count - 1;
+		}
 
 		public new void Clear() {
+			ClearSubscribes();
 			base.Clear();
 			OnCollectionReset();
-			ClearSubscribes();
+		}
+		
+		void IList.Clear() {
+			Clear();
 		}
 
 		public new void Insert(int index, T item) {
 			base.Insert(index, item);
 			OnItemInserted(index, item);
 			SubscribeElementChanged(item);
+		}
+		
+		void IList.Insert(int index, object value) {
+			Insert(index, (T)value);
 		}
 
 		public new bool Remove(T item) {
@@ -60,6 +90,10 @@ namespace QS.Extensions.Observable.Collections.List {
 
 			return result;
 		}
+		
+		void IList.Remove(object item) {
+			Remove((T)item);
+		}
 
 		public new void RemoveAt(int index) {
 			T item = this[index];
@@ -67,6 +101,10 @@ namespace QS.Extensions.Observable.Collections.List {
 			base.RemoveAt(index);
 			OnItemRemoved(item, index);
 			UnsubscribeElementChanged(item);
+		}
+		
+		void IList.RemoveAt(int index) {
+			RemoveAt(index);
 		}
 		
 		public int RemoveAll(Predicate<T> match) {

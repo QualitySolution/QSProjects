@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+СБП
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED725" type="ed:ED725"/>
+	<xs:complexType name="ED725">
+		<xs:annotation>
+			<xs:documentation>Информация о статусе поручения для расчетов в РСР</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="Annotation" type="lt:Max150TextType" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Текст пояснения.</xs:documentation>
+							<xs:documentation>Annotation (Clarification text).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы ЭС запроса ED724.</xs:documentation>
+							<xs:documentation>Initial ESIM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного поручения для расчетов в РСР.</xs:documentation>
+							<xs:documentation>Initial EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="StatusStateCode" type="lt:ED708StatusStateCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код статуса (состояния) поручения для расчетов в РСР.</xs:documentation>
+						<xs:documentation>EPM Status (State) Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CtrlCode" type="lt:ControlCodeType">
+					<xs:annotation>
+						<xs:documentation>Код результата контроля поручения для расчетов в РСР.</xs:documentation>
+						<xs:documentation>EM validation result code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="CtrlTime" type="lt:DateTimeType">
+					<xs:annotation>
+						<xs:documentation>Дата и время проведения контроля поручения для расчетов в РСР.</xs:documentation>
+						<xs:documentation>Date and Time of EM validation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SettlementTime" type="lt:DateTimeType">
+					<xs:annotation>
+						<xs:documentation>Дата и время исполнения поручения для расчетов в РСР.</xs:documentation>
+						<xs:documentation>Setllement Date Time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

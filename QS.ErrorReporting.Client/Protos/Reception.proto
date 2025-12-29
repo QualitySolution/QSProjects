@@ -35,6 +35,7 @@ message ErrorInfo{
     string stack_trace = 1;
     string user_description = 2;
     string log = 3;
+	string message = 4;
 }
 
 enum ReportType{

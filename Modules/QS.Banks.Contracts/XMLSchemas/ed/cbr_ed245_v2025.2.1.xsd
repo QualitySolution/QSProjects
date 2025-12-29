@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="IMInfo">
+		<xs:annotation>
+			<xs:documentation>Информация об отдельном информационном ЭСИС.</xs:documentation>
+			<xs:documentation>Information about separate informational ESIM.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:EDRefID">
+				<xs:sequence>
+					<xs:element name="RefPacketEID" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы пакета информационных ЭСИС.</xs:documentation>
+							<xs:documentation>Reference to P2P Package.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IMGroupInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о группе информационных ЭСИС.</xs:documentation>
+			<xs:documentation>Information about Informationl ESIM Group.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IMInfo" type="ed:IMInfo" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация об отдельном информационном ЭСИС.</xs:documentation>
+					<xs:documentation>Information about P2P EM.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="EDTypeNo" type="lt:Max100XTextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип ЭС.</xs:documentation>
+				<xs:documentation>EM Type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ReceiverTypeCode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип получателя ЭСИС.</xs:documentation>
+				<xs:documentation>Receiver Type of ESIM.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IMGroupQuantity" type="lt:EDQuantityType" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество ЭСИС в группе.</xs:documentation>
+				<xs:documentation>ESIM Quantity in group.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED245" type="ed:ED245"/>
+	<xs:complexType name="ED245">
+		<xs:annotation>
+			<xs:documentation>Отчет для выверки информационных ЭСИС</xs:documentation>
+			<xs:documentation>Report to Reconcile the Informational ESIMs</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="IMGroupInfo" type="ed:IMGroupInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Информация о группе информационных ЭСИС.</xs:documentation>
+							<xs:documentation>Information about Informationl ESIM Group.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="IMQuantity" type="lt:Max9NotNegativeQuantityType" use="required">
+					<xs:annotation>
+						<xs:documentation>Количество ЭСИС в отчете.</xs:documentation>
+						<xs:documentation>ESIM Quantity in Report.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

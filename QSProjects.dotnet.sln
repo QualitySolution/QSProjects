@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
@@ -53,6 +53,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", "QS.Extensions.Observable\QS.Extensions.Observable.csproj", "{2A0710B2-B71B-4959-88DA-0940100E172A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Testing.Desktop", "QS.Testing.Desktop\QS.Testing.Desktop.csproj", "{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Sql", "QS.HistoryLog.Sql\QS.HistoryLog.Sql.csproj", "{254AFF78-23B8-65CC-6E55-151948F6E428}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.ErrorReporting.Web", "QS.ErrorReporting.Web\QS.ErrorReporting.Web.csproj", "{C9C88734-03C4-4CB5-90A3-148E838AB48B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Testing", "QS.HistoryLog.Testing\QS.HistoryLog.Testing.csproj", "{4DDF096E-A3E4-47F0-873D-D6F6409500BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Avalonia", "QS.Project.Avalonia\QS.Project.Avalonia.csproj", "{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}"
 EndProject
@@ -154,6 +160,18 @@ Global
 		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924723A9-C7F1-4DC1-B5A9-D8A5A86BDCC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{254AFF78-23B8-65CC-6E55-151948F6E428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{254AFF78-23B8-65CC-6E55-151948F6E428}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{254AFF78-23B8-65CC-6E55-151948F6E428}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{254AFF78-23B8-65CC-6E55-151948F6E428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C88734-03C4-4CB5-90A3-148E838AB48B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C88734-03C4-4CB5-90A3-148E838AB48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C88734-03C4-4CB5-90A3-148E838AB48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C88734-03C4-4CB5-90A3-148E838AB48B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DDF096E-A3E4-47F0-873D-D6F6409500BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DDF096E-A3E4-47F0-873D-D6F6409500BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DDF096E-A3E4-47F0-873D-D6F6409500BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DDF096E-A3E4-47F0-873D-D6F6409500BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74BB6681-2F4C-4D08-9B7C-1FA2B07A3E62}.Release|Any CPU.ActiveCfg = Release|Any CPU

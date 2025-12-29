@@ -320,9 +320,9 @@ namespace QS.Navigation
 			if(masterTab == null)
 				tdiNotebook.AddTab((page as ITdiPage).TdiTab);
 			else if (masterTab?.TabParent is TdiSliderTab slider)
-				slider.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab); 
+				slider.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab, documentation: page.ViewModel as IDialogDocumentation); 
 			else
-				tdiNotebook.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab);
+				tdiNotebook.AddSlaveTab(masterTab, (page as ITdiPage).TdiTab, documentation: page.ViewModel as IDialogDocumentation);
 		}
 
 		protected override void OpenPage(IPage masterPage, IPage page)
@@ -337,12 +337,17 @@ namespace QS.Navigation
 
 			if (masterTab is ITdiJournal && masterTab.TabParent is TdiSliderTab && (page.ViewModel as ISlideableViewModel)?.AlwaysNewPage != true) {
 				var slider = masterTab.TabParent as TdiSliderTab;
-				slider.AddTab((page as ITdiPage).TdiTab, masterTab);
+				slider.AddTab((page as ITdiPage).TdiTab, masterTab, documentation: page.ViewModel as IDialogDocumentation);
 				(masterPage as IPageInternal).AddChildPage(page);
 			}
 			else {
+				if(masterPage != null && !TopLevelPages.Contains(masterPage)) {
+					masterPage = TopLevelPages.FirstOrDefault(top => top.ChildPages.Contains(masterPage));
+					if(masterPage == null)
+						throw new InvalidOperationException();
+				}
 				pages.Add(page);
-				tdiNotebook.AddTab((page as ITdiPage).TdiTab, (masterPage as ITdiPage)?.TdiTab);
+				tdiNotebook.AddTab((page as ITdiPage).TdiTab, (masterPage as ITdiPage)?.TdiTab, documentation: page.ViewModel as IDialogDocumentation);
 			}
 		}
 

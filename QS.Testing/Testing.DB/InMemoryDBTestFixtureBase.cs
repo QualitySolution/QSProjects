@@ -6,6 +6,7 @@ using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
+using QS.Extensions.Observable.Collections.List;
 using QS.Project.DB;
 using System.Reflection;
 
@@ -14,7 +15,7 @@ namespace QS.Testing.DB {
 	/// Базовый класс для тестирования работы с базой.
 	/// *Внимание* на при создании нового UoW, создается новая чистая база данных в памяти
 	/// по конфигурации.
-	/// Вызовите NewSessionWithSameDB для создания нового Uow к уже имеющейся базе, для создания новых первое созданное к это базе соединение не должно быть закрыто.
+	/// Вызовите NewSessionWithSameDB для создания нового Uow к уже имеющейся базе, для создания новых соединение первое созданное к это базе не должно быть закрыто.
 	/// Вызовите NewSessionWithNewDB для переключения в режим по умолчанию, новый UoW с новой чистой базой.
 	/// </summary>
 	public abstract class InMemoryDBTestFixtureBase

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED202" type="ed:ED202"/>
+	<xs:complexType name="ED202">
+		<xs:annotation>
+			<xs:documentation>Запрос по ЭПС (пакету ЭПС)</xs:documentation>
+			<xs:documentation>Request on EPM (EPM package)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="EDRefID" type="ed:EDRefID">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы запрашиваемого ЭПС (пакета ЭПС).</xs:documentation>
+							<xs:documentation>Requested EM (EM Package) Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="EDInquiryCode" type="lt:EDInquiryCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код запроса по ЭПС (пакету ЭПС).</xs:documentation>
+						<xs:documentation>Request for EPM (EPM package) Code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -113,7 +113,12 @@ namespace QS.ViewModels.Control.EEVM {
 					page = navigationManager.OpenViewModel<TJournalViewModel, TJournalFilterViewModel>(ParentViewModel, _filter, OpenPageOptions.AsSlave);
 				}
 				else {
-					page = navigationManager.OpenViewModel<TJournalViewModel>(ParentViewModel, OpenPageOptions.AsSlave);
+					if(filterParams != null) {
+						page = navigationManager.OpenViewModel<TJournalViewModel, Action<TJournalFilterViewModel>>(ParentViewModel, filterParams, OpenPageOptions.AsSlave);
+					}
+					else {
+						page = navigationManager.OpenViewModel<TJournalViewModel>(ParentViewModel, OpenPageOptions.AsSlave);
+					}
 				}
 			}
 			else {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed101_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed107_v2025.2.1.xsd"/>
+	<xs:element name="ED817" type="ed:ED817"/>
+	<xs:complexType name="ED817">
+		<xs:annotation>
+			<xs:documentation>Копия ЭПС из очереди распоряжений косвенного участника, ожидающих подтверждения прямым участником</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:choice>
+					<xs:element ref="ed:ED101">
+						<xs:annotation>
+							<xs:documentation>Платежное поручение.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED107">
+						<xs:annotation>
+							<xs:documentation>Поручение банка.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

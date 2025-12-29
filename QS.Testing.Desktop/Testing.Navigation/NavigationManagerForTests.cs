@@ -8,7 +8,7 @@ using QS.ViewModels.Dialog;
 namespace QS.Testing.Testing.Navigation {
 	
 	/// <summary>
-	/// Пока не полная реализация прощенного менеджера навигации предназначенного для использования в тестах.
+	/// Пока не полная реализация упрощенного менеджера навигации предназначенного для использования в тестах.
 	/// Будет наполнять по необходимости.
 	/// </summary>
 	public class NavigationManagerForTests : NavigationManagerBase, INavigationManager {
@@ -16,6 +16,7 @@ namespace QS.Testing.Testing.Navigation {
 		
 		public NavigationManagerForTests(ILifetimeScope scope, IInteractiveMessage interactive, IPageHashGenerator hashGenerator = null) : base(interactive, hashGenerator) {
 			viewModelsFactory = new AutofacViewModelsFactoryForTests(scope); //Здесь пока не усложняю с зависимостями.
+			RunningByTest = true;
 		}
 
 		public IPage<TViewModel> FindPage<TViewModel>() where TViewModel : DialogViewModelBase

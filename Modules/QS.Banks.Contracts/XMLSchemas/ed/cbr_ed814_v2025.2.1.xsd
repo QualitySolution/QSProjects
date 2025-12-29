@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED814" type="ed:ED814"/>
+	<xs:complexType name="ED814">
+		<xs:annotation>
+			<xs:documentation>Подтверждение обработки запроса об управлении внутридневной очередью</xs:documentation>
+			<xs:documentation>Notification of queue reordering</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы управляющего сообщения (ED813).</xs:documentation>
+							<xs:documentation>Control Message (ED813) Identifier.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы перемещенного ЭПС.</xs:documentation>
+							<xs:documentation>Identifiers of reordered EPM.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="OperationTime" type="lt:DateTimeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Дата и время проведения операции.</xs:documentation>
+						<xs:documentation>Operation execution date and time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

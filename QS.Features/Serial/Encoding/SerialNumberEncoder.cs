@@ -1,6 +1,7 @@
 ﻿using System;
 using QS.DomainModel.Entity;
 using QS.Project.Versioning;
+using QS.Utilities.Numeric;
 
 namespace QS.Serial.Encoding
 {
@@ -21,6 +22,7 @@ namespace QS.Serial.Encoding
 		#endregion
 		#region Версия 3
 		public ushort Employees{ get; private set; }
+		public uint PaidFeaturesFags { get; private set; }
 		#endregion
 
 		#endregion
@@ -101,8 +103,11 @@ namespace QS.Serial.Encoding
 						EditionId = summaryArray[11];
 						IsAnotherProduct = ProductId != applicationInfo?.ProductCode;
 						Employees = BitConverter.ToUInt16(summaryArray, 6);
-						if(summaryArray.Length >= 14) {
-							ExpiryDate = GetDateFromBinary(summaryArray, 12);
+						if(summaryArray.Length >= 16) {
+							PaidFeaturesFags = BitConverter.ToUInt32(summaryArray, 12);
+						}
+						if(summaryArray.Length >= 18) {
+							ExpiryDate = GetDateFromBinary(summaryArray, 16);
 							IsExpired = ExpiryDate < DateTime.Now;
 						}
 						break;
@@ -152,8 +157,9 @@ namespace QS.Serial.Encoding
 							return $"Версия кодирования: {CodeVersion}\n" +
 							       $"Id клиента: {ClientId}\n" +
 							       $"Продукт: {ProductId}\n" +
-							       $"Редакция: {EditionId}\n" +
-							       $"Количество сотрудников: " + (Employees > 0 ? Employees.ToString() : "\u221e") +
+							       $"Редакция: {EditionId}" +
+							       $"\nОплаченные функции:\n{PaidFeaturesFags.ToStringAsBinary32()}" +
+							       $"\nКоличество сотрудников: " + (Employees > 0 ? Employees.ToString() : "\u221e") +
 							       $"\nДата окончания: {ExpiryDate?.ToString("d") ?? "Нет"}";
 						default:
 							throw new NotSupportedException($"Версия кодирования {CodeVersion} не поддерживается");

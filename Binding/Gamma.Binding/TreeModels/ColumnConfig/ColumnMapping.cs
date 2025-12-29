@@ -35,9 +35,13 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
-		public ColumnMapping (FluentColumnsConfig<TNode> parentConfig, string title)
+		public ColumnMapping (
+			FluentColumnsConfig<TNode> parentConfig,
+			string title,
+			TreeViewColumnSizing treeViewColumnSizing = TreeViewColumnSizing.Autosize)
 		{
 			TreeViewColumn = new TreeViewColumn();
+			TreeViewColumn.Sizing = treeViewColumnSizing;
 			BindingController = new BindingControler<TreeViewColumn>(TreeViewColumn);
 			this.myConfig = parentConfig;
 			TreeViewColumn.Title = title;

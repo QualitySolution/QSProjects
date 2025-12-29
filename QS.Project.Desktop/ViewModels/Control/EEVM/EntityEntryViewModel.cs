@@ -109,14 +109,15 @@ namespace QS.ViewModels.Control.EEVM
 		public string EntityTitle => Entity == null ? null : DomainHelper.GetTitle(Entity);
 
 		public virtual bool SensitiveSelectButton => IsEditable && EntitySelector != null;
-		public virtual bool SensitiveCleanButton => IsEditable && Entity != null;
+		public virtual bool SensitiveCleanButton => CanCleanEntity && IsEditable && Entity != null;
 		public virtual bool SensitiveAutoCompleteEntry => IsEditable && AutocompleteSelector != null;
 		public virtual bool SensitiveViewButton => CanViewEntity && DlgOpener != null && Entity != null;
 
 		public bool CanViewEntity { get; set; } = true;
+		public bool CanCleanEntity { get; set; } = true;
 		#endregion
 
-		#region Выбор сущьности основным способом
+		#region Выбор сущности основным способом
 
 		private IEntitySelector entitySelector;
 		public IEntitySelector EntitySelector {

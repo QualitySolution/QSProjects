@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED274" type="ed:ED274"/>
+	<xs:complexType name="ED274">
+		<xs:annotation>
+			<xs:documentation>Уведомление о результатах приема к исполнению выставляемого на оплату инкассового поручения, выставляемого на оплату платежного требования</xs:documentation>
+			<xs:documentation>Notification of the Results of Acceptance for Settlement of a Collection Order Issued for payment and a Direct Debit Instruction Issued for payment</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESWithMandatoryEDReceiver">
+				<xs:sequence>
+					<xs:element name="Annotation" type="lt:Max700TextType">
+						<xs:annotation>
+							<xs:documentation>Текст пояснения.</xs:documentation>
+							<xs:documentation>Annotation (Clarification text).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="InitialED" type="ed:EDRefID" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+							<xs:documentation>Initial EM Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="EDRefID" type="ed:EDRefID" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Идентификаторы исходного ЭПС (пакета ЭПС).</xs:documentation>
+							<xs:documentation>Initial EM (EM Package) Identifiers.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="InfoCode" type="lt:OneDigitCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>Код уведомления.</xs:documentation>
+						<xs:documentation>Code of Notification.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="SumPT" type="lt:KopeckAmountType">
+					<xs:annotation>
+						<xs:documentation>Сумма, предъявленная к акцепту.</xs:documentation>
+						<xs:documentation>Amount Presented for Acceptance.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AcptSum" type="lt:KopeckAmountType">
+					<xs:annotation>
+						<xs:documentation>Сумма акцепта.</xs:documentation>
+						<xs:documentation>Acceptance Amount.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AcptDate" type="lt:DateType">
+					<xs:annotation>
+						<xs:documentation>Дата поступления заявления об акцепте.</xs:documentation>
+						<xs:documentation>Date of receipt of Acceptance Request.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

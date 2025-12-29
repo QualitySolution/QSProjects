@@ -8,7 +8,7 @@ namespace QS.Project.Journal
 	public abstract class JournalFilterViewModelBase<TFilter> : ViewModelBase, IDisposable, IJournalFilterViewModel
 		where TFilter : JournalFilterViewModelBase<TFilter>, IJournalFilterViewModel
 	{
-		private bool canNotify = true;
+		protected bool CanNotify = true;
 
 		private IUnitOfWork uow;
 		private readonly IUnitOfWorkFactory unitOfWorkFactory;
@@ -32,7 +32,7 @@ namespace QS.Project.Journal
 
 		public void Update()
 		{
-			if(canNotify)
+			if(CanNotify)
 				JournalViewModel.Refresh();
 		}
 
@@ -49,12 +49,12 @@ namespace QS.Project.Journal
 		/// <param name="setters">Лямбды ограничений</param>
 		public void SetAndRefilterAtOnce(params Action<TFilter>[] setters)
 		{
-			canNotify = false;
+			CanNotify = false;
 			TFilter filter = this as TFilter;
 			foreach(var item in setters) {
 				item(filter);
 			}
-			canNotify = true;
+			CanNotify = true;
 			Update();
 		}
 

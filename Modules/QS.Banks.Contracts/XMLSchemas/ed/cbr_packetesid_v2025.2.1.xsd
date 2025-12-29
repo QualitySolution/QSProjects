@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2025.2.1">
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed201_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed202_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed203_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed204_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed205_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed206_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed207_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed210_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed211_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed215_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed217_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed218_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed219_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed221_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed222_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed240_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed241_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed242_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed245_v2025.2.1.xsd"/>
+	<xs:include schemaLocation="cbr_ed807_v2025.2.1.xsd"/>
+        <xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="PacketESIDWithEPDInfo">
+	<xs:annotation>
+		<xs:documentation>Комплексный тип пакета электронных служебно - информационных сообщений</xs:documentation>
+	</xs:annotation>
+	<xs:complexContent>
+		<xs:extension base="ed:ESID">
+			<xs:sequence>
+				<xs:element name="InitialPacketED" type="ed:EDRefID" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Идентификаторы исходного ЭС.</xs:documentation>
+						<xs:documentation>EM-request Identifiers.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="Session" type="ed:Session" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Тип и номер рейса, в котором произошло исполнение распоряжения (или время исполнения) (если распоряжение исполнено в рейсе).</xs:documentation>
+						<xs:documentation>Settlement Cycle Type and Number (Or Settlement Time) when FTI was settled (if FTI was settled in cycle).</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="PacketESID" type="ed:PacketESID"/>
+	<xs:complexType name="PacketESID">
+		<xs:annotation>
+			<xs:documentation>Пакет ЭСИС</xs:documentation>
+			<xs:documentation>ESIM Package</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:PacketESIDWithEPDInfo">
+				<xs:choice maxOccurs="unbounded">
+					<xs:element ref="ed:ED201">
+						<xs:annotation>
+							<xs:documentation>Извещение о результатах контроля ЭС (пакета ЭС).</xs:documentation>
+							<xs:documentation>Notification of the Results of an EM (EM Package) Control.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED202">
+						<xs:annotation>
+							<xs:documentation>Запрос по ЭПС (пакету ЭПС).</xs:documentation>
+							<xs:documentation>Request on EPM (EPM package).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED203">
+						<xs:annotation>
+							<xs:documentation>Запрос по группе ЭПС.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED204">
+						<xs:annotation>
+							<xs:documentation>Запрос об отзыве/аннулировании ЭС (пакета ЭС).</xs:documentation>
+							<xs:documentation>EPM (Package) Withdrawal Request.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED205">
+						<xs:annotation>
+							<xs:documentation>Извещение о состоянии ЭПС (пакета ЭПС).</xs:documentation>
+							<xs:documentation>Notification Of EPM (Package) Status.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED206">
+						<xs:annotation>
+							<xs:documentation>Подтверждение дебета/кредита.</xs:documentation>
+							<xs:documentation>Debit/Credit Confirmation.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED207">
+						<xs:annotation>
+							<xs:documentation>Извещение о группе ЭПС.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED210">
+						<xs:annotation>
+							<xs:documentation>Запрос извещения об операциях по счету.</xs:documentation>
+							<xs:documentation>Interim Account Statement Request.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED211">
+						<xs:annotation>
+							<xs:documentation>Извещение об операциях по счету</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED215">
+						<xs:annotation>
+							<xs:documentation>ЭСИС с копией полей ЭПС.</xs:documentation>
+							<xs:documentation>ESIM with a Copy of EPM Fields.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED217">
+						<xs:annotation>
+							<xs:documentation>Извещение о задолженности по внутридневному кредиту.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED218">
+						<xs:annotation>
+							<xs:documentation>Запрос выходной формы.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED219">
+						<xs:annotation>
+							<xs:documentation>Выходная форма.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED221">
+						<xs:annotation>
+							<xs:documentation>Отчет об операциях по счету для выверки документов дня участников.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED222">
+						<xs:annotation>
+							<xs:documentation>Извещение о дебете/кредите для кассовых документов.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED240">
+						<xs:annotation>
+							<xs:documentation>Запрос информации о переданных/полученных ЭС.</xs:documentation>
+							<xs:documentation>Request of Information on Sent/Received EM.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED241">
+						<xs:annotation>
+							<xs:documentation>Информация о переданных/полученных ЭС.</xs:documentation>
+							<xs:documentation>Information on Sent/Received EM.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED242">
+						<xs:annotation>
+							<xs:documentation>Запрос о повторном получении сообщения.</xs:documentation>
+							<xs:documentation>Request for repeated receipt of the message.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED245">
+						<xs:annotation>
+							<xs:documentation>Отчет для выверки информационных ЭСИС.</xs:documentation>
+							<xs:documentation>Report to Reconcile the Informational ESIMs.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="ed:ED807">
+						<xs:annotation>
+							<xs:documentation>Изменения, внесенные в Справочник БИК (Полный Справочник БИК).</xs:documentation>
+							<xs:documentation>Full National BIC Directory/ National BIC Directory Changes.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+				<xs:attribute name="EDQuantity" type="lt:EDQuantityType">
+					<xs:annotation>
+						<xs:documentation>Количество ЭС в пакете.</xs:documentation>
+						<xs:documentation>Quantity of EPM in package.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="EDCreationTime" type="lt:TimeType">
+					<xs:annotation>
+						<xs:documentation>Время составления ЭС.</xs:documentation>
+						<xs:documentation>EM Generation Time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

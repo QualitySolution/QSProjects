@@ -1,8 +1,8 @@
 namespace QS.Gtk.Widgets
 {
-	internal enum СompletionColumn
+	internal enum CompletionColumn
 	{
-		Tilte,
+		Title,
 		Item
 	}
 }

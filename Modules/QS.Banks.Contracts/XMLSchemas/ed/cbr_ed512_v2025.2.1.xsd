@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+ППС 
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в платежной системе Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" version="2025.2.1">
+	<xs:include schemaLocation="cbr_ed_objects_v2025.2.1.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2025.2.1.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Локальные прикладные объекты</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="SenderSWIFTBIC">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED503</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SWIFTTypeList" type="ed:SWIFTTypeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений SWIFT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="MXSenderSWIFTBIC">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED514</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SWIFTMXTypeList" type="ed:SWIFTMXTypeList">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений SWIFT MX</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="OURSWIFTBIC">
+		<xs:annotation>
+			<xs:documentation>Информация по отправителям ЭС ED503 в разрезе идентификаторов получателя</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="SenderSWIFTBIC" type="ed:SenderSWIFTBIC" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED503</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="OURMXSWIFTBIC">
+		<xs:annotation>
+			<xs:documentation>Информация по отправителям ЭС ED514 в разрезе идентификаторов получателя</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MXSenderSWIFTBIC" type="ed:MXSenderSWIFTBIC" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED514</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Counteragent">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED501</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SenderTSLCUISType">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED504</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TSLCTypeList" type="ed:TSLCTypeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений TSLC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SenderISOUISType">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED506</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ISOTypeList" type="ed:ISOTypeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений ISO</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SenderISOTSUISType">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED509</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ISOTSTypeList" type="ed:ISOTSTypeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений ISO TS</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SenderISOCTCCRUISType">
+		<xs:annotation>
+			<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED513</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ISOCTCCRTypeList" type="ed:ISOCTCCRTypeList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список типов сообщений ISO CTCCR</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="UIS" type="lt:EDDrawerIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Уникальный идентификатор отправителя ЭС</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="SWIFTBIC" type="lt:UICIDType">
+			<xs:annotation>
+				<xs:documentation>КП</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ChangeCOSDirDataInfo">
+		<xs:annotation>
+			<xs:documentation>Информация о модификации справочника</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Counteragent" type="ed:Counteragent" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED501</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OURSWIFTBIC" type="ed:OURSWIFTBIC" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация по отправителям ЭС ED503 в разрезе идентификаторов получателя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SenderTSLCUIS" type="ed:SenderTSLCUISType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED504</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SenderISOUIS" type="ed:SenderISOUISType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED506</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SenderISOTSUIS" type="ed:SenderISOTSUISType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED509</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SenderISOCTCCRUIS" type="ed:SenderISOCTCCRUISType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Список идентификаторов, присвоенных отправителям ЭС ED513</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="OURMXSWIFTBIC" type="ed:OURMXSWIFTBIC" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Информация по отправителям ЭС ED514 в разрезе идентификаторов получателя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="DictionUpdateMode" type="lt:OneDigitCodeType" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип модификации справочника</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:element name="ED512" type="ed:ED512"/>
+	<xs:complexType name="ED512">
+		<xs:annotation>
+			<xs:documentation>Распоряжение для управления реквизитами пользователей системы передачи финансовых сообщений Банка России</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ED">
+				<xs:sequence>
+					<xs:element name="ChangeCOSDirDataInfo" type="ed:ChangeCOSDirDataInfo" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Информация о модификации справочника</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
