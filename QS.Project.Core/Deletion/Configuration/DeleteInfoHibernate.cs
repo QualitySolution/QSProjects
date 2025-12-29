@@ -101,7 +101,7 @@ namespace QS.Deletion.Configuration
 		/// </summary>
 		public DeleteInfoHibernate<TEntity> AddClearDependence<TDependOn>(Expression<Func<TDependOn, object>> propertyRefExpr)
 		{
-			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr));
+			ClearItems.Add (ClearDependenceInfo.Create<TDependOn> (propertyRefExpr, hibernateConfiguration));
 			return this;
 		}
 

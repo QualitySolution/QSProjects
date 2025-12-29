@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
+using MySqlConnector;
 using NHibernate.Event;
 using NHibernate.Proxy;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
 using QS.HistoryLog.Domain;
+using QS.Project.DB;
 using QS.Project.Repositories;
 using QS.Utilities;
 
@@ -128,7 +129,7 @@ namespace QS.HistoryLog
 
 			changeSet.AddChangeEntities(toSave);
 
-			new ChangeSetWriter(connectionString).Save(changeSet);
+			new ChangeSetWriter(_connectionStringBuilder.GetConnectionString(true)).Save(changeSet);
 			logger.Debug(NumberToTextRus.FormatCase(changes.Sum(x => x.Changes.Count), "Зарегистрировано {0} изменение ",
 				             "Зарегистрировано {0} изменения ", "Зарегистрировано {0} изменений ")
 			             + NumberToTextRus.FormatCase(changes.Count, "в {0} объекте ", "в {0} объектах ", "в {0} объектах ")

@@ -21,8 +21,14 @@ namespace QS.Cloud.Client
 		{
 			get
 			{
-				if(channel == null || channel.State == ChannelState.Shutdown)
-					channel = new Channel(serviceAddress, servicePort, ChannelCredentials.Insecure);
+				if(channel == null || channel.State == ChannelState.Shutdown) {
+					var channelOptions = new[]
+					{
+						new ChannelOption(ChannelOptions.MaxReceiveMessageLength, 10 * 1024 * 1024), // 10MB
+						new ChannelOption(ChannelOptions.MaxSendMessageLength, 10 * 1024 * 1024) // 10MB
+					};
+					channel = new Channel(serviceAddress, servicePort, ChannelCredentials.Insecure, channelOptions);
+				}
 				if (channel.State == ChannelState.TransientFailure)
 					channel.ConnectAsync();
 				return channel;

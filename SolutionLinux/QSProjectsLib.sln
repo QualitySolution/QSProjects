@@ -125,9 +125,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Testing.Desktop", "..\QS.Testing.Desktop\QS.Testing.Desktop.csproj", "{3F4F3462-4B81-4622-A9B9-A5CEF5C8FC6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Banks.Contracts", "Modules\QS.Banks.Contracts\QS.Banks.Contracts.csproj", "{21B9CE5F-33FF-4417-9D36-A23F2E6C3547}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Banks.Contracts", "..\Modules\QS.Banks.Contracts\QS.Banks.Contracts.csproj", "{21B9CE5F-33FF-4417-9D36-A23F2E6C3547}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Sql", "QS.HistoryLog.Sql\QS.HistoryLog.Sql.csproj", "{EE2E555A-497B-47AD-A9B3-78DE422CECA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Sql", "..\QS.HistoryLog.Sql\QS.HistoryLog.Sql.csproj", "{EE2E555A-497B-47AD-A9B3-78DE422CECA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Launcher.Gtk", "..\QS.Launcher.Gtk\QS.Launcher.Gtk.csproj", "{A54C2769-77C5-41B8-BA3F-00F87733AC51}"
 EndProject

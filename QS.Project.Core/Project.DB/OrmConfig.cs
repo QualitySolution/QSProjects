@@ -45,19 +45,5 @@ namespace QS.Project.DB {
 			CheckConfig();
 			return Config.FindMappingByFullClassName(clazz);
 		}
-		
-		/// <summary>
-		/// Сброс глобального состояния OrmConfig. Используется для изоляции тестов.
-		/// В новой ветке где отказались от статических классов это можно будет удалить.
-		/// </summary>
-		public static void ResetForTesting()
-		{
-			if(Sessions != null && !Sessions.IsClosed) {
-				Sessions.Dispose();
-			}
-			Sessions = null;
-			fluenConfig = null;
-			nhConfig = null;
-		}
 	}
 }
