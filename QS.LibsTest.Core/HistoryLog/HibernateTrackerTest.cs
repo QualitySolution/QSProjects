@@ -15,6 +15,7 @@ namespace QS.Test.HistoryLog {
 		
 		[OneTimeSetUp]
 		public async Task OneTimeSetUp() {
+			UseTracking = true;
 			await InitialiseMariaDb(typeof(TrackedEntity).Assembly, typeof(ChangeSet).Assembly, typeof(UserBase).Assembly);
 		}
 

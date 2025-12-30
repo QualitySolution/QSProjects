@@ -8,6 +8,7 @@ using QS.Project.DB;
 
 namespace QS.HistoryLog
 {
+	[Obsolete("Надо будет избавится от статики совсем")]
 	public static class HistoryMain
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
