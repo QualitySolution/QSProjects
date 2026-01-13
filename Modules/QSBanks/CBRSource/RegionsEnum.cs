@@ -1,36 +1,50 @@
-﻿using System;
+using System;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-[Serializable()]
+[Serializable]
 [XmlType(AnonymousType=true)]
-[XmlRoot(Namespace="", IsNullable=false)]
+[XmlRoot("EnumRegions", Namespace = "", IsNullable = false)]
 public class RegionsEnum
 {
-	[XmlElement("RGID", Form = XmlSchemaForm.Unqualified)]
+	[XmlAttribute("TotalRegions")]
+	public int TotalRegions { get; set; }
+
+	[XmlElement("ER", Form = XmlSchemaForm.Unqualified)]
 	public RegionsEnumRGID[] Items { get; set; }
 
 	public static RegionsEnum GetRegions()
 	{
-		CreditOrgInfo coi = new CreditOrgInfo();
-		XmlNode regionsXML = coi.RegionsEnumXML();
-		XmlSerializer ser = new XmlSerializer(typeof(RegionsEnum));
-		XmlNodeReader reader = new XmlNodeReader(regionsXML);
-		return ser.Deserialize(reader) as RegionsEnum;
+		using(var coi = new CreditOrgInfo())
+		{
+			XmlNode regionsXML = coi.EnumRegionsXML();
+			XmlSerializer ser = new XmlSerializer(typeof(RegionsEnum));
+
+			using(var reader = new XmlNodeReader(regionsXML))
+			{
+				return ser.Deserialize(reader) as RegionsEnum;
+			}
+		}
 	}
 }
 
-[Serializable()]
-[XmlType(AnonymousType=true)]
-public class RegionsEnumRGID
+[Serializable]
+[XmlType(AnonymousType = true)]
+public class RegionsEnumRGID 
 {
-	[XmlElement(Form = XmlSchemaForm.Unqualified)]
+	private string _cname;
+
+	[XmlElement("rgn", Form = XmlSchemaForm.Unqualified)]
 	public decimal RegCode { get; set; }
 
-	[XmlIgnore()]
+	[XmlIgnore]
 	public bool RegCodeSpecified { get; set; }
 
-	[XmlElement(Form = XmlSchemaForm.Unqualified)]
-	public string CNAME { get; set; }
+	[XmlElement("Name", Form = XmlSchemaForm.Unqualified)]
+	public string CNAME
+	{
+		get => _cname;
+		set => _cname = value?.Trim();
+	}
 }
