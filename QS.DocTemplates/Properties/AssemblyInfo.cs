@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("QS.DocTemplates")]
-[assembly: AssemblyCopyright("Quality Solution 2025")]
+[assembly: AssemblyCopyright("Quality Solution 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
