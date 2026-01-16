@@ -5,6 +5,8 @@ namespace QS.Updater.App {
 		[Display(Name = "Текущий", ShortName = "Тек.")]
 		Current,
 		[Display(Name = "Стабильный", ShortName = "Стаб.")]
-		Stable
+		Stable,
+		[Display(Name = "Без обновлений", ShortName = "Без обн.")]
+		OffAutoUpdate
 	}
 }
