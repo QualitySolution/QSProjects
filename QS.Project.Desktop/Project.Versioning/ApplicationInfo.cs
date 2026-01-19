@@ -15,16 +15,7 @@ namespace QS.Project.Versioning
 		public string Modification { get; set; }
 		public string ModificationTitle { get; set; }
 		public bool ModificationIsHidden { get; set; }
-		public string[] CompatibleModifications {
-			get {
-				throw new NotImplementedException();
-				// var modificationAttributes = Assembly.GetCustomAttributes<AssemblyCompatibleModificationAttribute>();
-				// var list = modificationAttributes.Select(x => x.Name).ToList();
-				// if (!String.IsNullOrWhiteSpace(Modification) && !list.Contains(Modification))
-				// 	list.Add(Modification);
-				// return list.ToArray();
-				}
-			}
+		public string[] CompatibleModifications { get; set; } = Array.Empty<string>();
 
 		public Version Version => Assembly.GetName().Version;
 
