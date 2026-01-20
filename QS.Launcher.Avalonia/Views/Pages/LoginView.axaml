@@ -18,9 +18,9 @@
                 <ComboBox x:Name="connections" HorizontalAlignment="Stretch" ItemsSource="{Binding Connections}" PlaceholderForeground="#7A000000" PlaceholderText="Выберите подключение" SelectedItem="{Binding SelectedConnection, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel MaxHeight="20" Orientation="Horizontal">
-                                <Image Source="{Binding ConnectionType.IconBytes, Converter={StaticResource ByteArrayToBitmapConverter}}" Stretch="Uniform" />
-                                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding ConnectionTitle, Mode=TwoWay}" />
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="20" Height="20" Source="{Binding ConnectionType.IconBytes, Converter={StaticResource ByteArrayToBitmapConverter}}" Stretch="Uniform" />
+                                <Label Margin="5,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding ConnectionTitle, Mode=TwoWay}" />
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
