@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
+	private DataBasesVM ViewModel;
 
 	public DataBasesView(DataBasesVM viewModel) {
 		InitializeComponent();
 
-		DataContext = viewModel;
+		DataContext = ViewModel = viewModel;
 
 		viewModel.StartLaunchProgram += HandleStartMainProgram;
 
@@ -21,11 +22,6 @@ public partial class DataBasesView : UserControl {
 				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
 				viewModel.ConnectCommand.Execute(null);
 			}
-		};
-
-		databases.DoubleTapped += (s, e) => {
-			if(databases.SelectedItem is not null)
-				viewModel.ConnectCommand.Execute(null);
 		};
 	}
 
@@ -45,5 +41,10 @@ public partial class DataBasesView : UserControl {
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e) {
 		if(!adminPanel.Classes.Remove("invisible"))
 			adminPanel.Classes.Add("invisible");
+	}
+
+	private void Databases_OnDoubleTapped(object? sender, TappedEventArgs e) {
+		if(databases.SelectedItem is not null)
+			ViewModel.ConnectCommand.Execute(null);
 	}
 }

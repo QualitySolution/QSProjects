@@ -12,7 +12,10 @@
         <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto, Auto, Auto, Auto">
 
             <Label Grid.Row="0" Margin="5,0,0,0" HorizontalAlignment="Stretch" Content="Выберите базу данных:" />
-            <ListBox x:Name="databases" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">
+            <ListBox x:Name="databases" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" 
+                ItemsSource="{Binding Databases}"
+                SelectedItem="{Binding SelectedDatabase}"
+                DoubleTapped="Databases_OnDoubleTapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel MaxHeight="20" HorizontalAlignment="Stretch">
@@ -21,10 +24,13 @@
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+	            <ListBox.KeyBindings>
+		            <KeyBinding Gesture="Enter" Command="{Binding ConnectCommand}" />
+	            </ListBox.KeyBindings>
             </ListBox>
 
             <Grid Grid.Row="2" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto">
-                <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
+                <Button IsDefault="True" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
 
                 <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
 
