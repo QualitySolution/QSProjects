@@ -4,6 +4,7 @@ using QS.Dialog;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using QS.Launcher.AppRunner;
@@ -12,6 +13,8 @@ using QS.Project.Versioning;
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class DataBasesVM : CarouselPageVM {
 
+		private Connection currentConnection;
+		private Action saveConnectionsAction;
 		private IDbProvider provider;
 		public IDbProvider Provider {
 			get => provider;
@@ -19,7 +22,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				this.RaiseAndSetIfChanged(ref provider, value);
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
+				
+				// Загружаем и устанавливаем последнюю выбранную базу
+				LoadLastSelectedDatabase();
 			}
+		}
+		
+		public void SetProvider(IDbProvider dbProvider, Connection connection, Action saveConnections) {
+			currentConnection = connection;
+			saveConnectionsAction = saveConnections;
+			Provider = dbProvider;
 		}
 
 		public List<DbInfo> Databases { get; set; }
@@ -53,6 +65,18 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				.Select(x => x != null);
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecute);
 		}
+		
+		private void LoadLastSelectedDatabase() {
+			if(Databases == null || Databases.Count == 0)
+				return;
+			
+			// Используем LastBaseId из текущего подключения
+			if(currentConnection?.LastBaseId != null) 
+				SelectedDatabase = Databases.FirstOrDefault(db => db.BaseId == currentConnection.LastBaseId.Value);
+
+			if(SelectedDatabase == null)
+				SelectedDatabase = Databases.FirstOrDefault();
+		}
 
 		public void Connect() {
 
@@ -63,8 +87,22 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
+			// Сохраняем последнюю выбранную базу
+			SaveLastSelectedDatabase();
+
 			StartLaunchProgram?.Invoke(ShouldCloseLauncherAfterStart);
 			appRunner.Run(resp);
+		}
+		
+		private void SaveLastSelectedDatabase() {
+			if(SelectedDatabase == null || currentConnection == null)
+				return;
+			
+			// Сохраняем BaseId в текущее подключение
+			currentConnection.LastBaseId = SelectedDatabase.BaseId;
+			
+			// Вызываем сохранение подключений
+			saveConnectionsAction?.Invoke();
 		}
 	}
 }

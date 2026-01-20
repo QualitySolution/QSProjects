@@ -33,11 +33,12 @@ namespace QS.Launcher {
 		#region AppRunner
 
 		public static IServiceCollection UseInProcessRunner(this IServiceCollection services) {
-			return services
-				.AddSingleton<IAppRunner, InProcessRunner>();
+			services.AddSingleton<InProcessRunner>();
+			services.AddSingleton<IAppRunner>(sp => sp.GetRequiredService<InProcessRunner>());
+			return services;
 		}
 		
-		// Потому что мы не знаем как в MS DI сделать чтобы синголтон и для интерфейса и для класса был все таки один.
+		// Для Autofac - регистрируем как интерфейс и класс одновременно
 		public static void UseInProcessRunner(this ContainerBuilder builder) {
 			builder.RegisterType<InProcessRunner>().As<IAppRunner>().AsSelf().SingleInstance();
 		}

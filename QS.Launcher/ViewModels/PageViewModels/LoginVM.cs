@@ -114,7 +114,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Task.Run(() => SaveCommand.Execute(null));
 
 			if(resp.Success) {
-				dbVM.Provider = dbProvider;
+				dbVM.SetProvider(dbProvider, SelectedConnection, SaveConnections);
 				dbVM.IsAdmin = resp.IsAdmin;
 				NextPageCommand?.Execute(null);
 			}

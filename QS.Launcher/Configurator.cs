@@ -69,9 +69,11 @@ namespace QS.Launcher {
 				if (!Directory.Exists(directory)) {
 					Directory.CreateDirectory(directory);
 				}
+				logger.Debug("Перезаписываем файл с соединениями");
 				using(var stream = File.Open(options.ConnectionsJsonFileName, FileMode.Create)) {
 					JsonSerializer.SerializeAsync(stream, connectionDefinitions, serializerOptions);
 				}
+				logger.Debug("Записали соединения соединениями");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Ошибка сохранения файла конфигурации подключений ({0}).", options.ConnectionsJsonFileName);

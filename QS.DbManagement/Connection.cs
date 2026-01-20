@@ -16,11 +16,15 @@ namespace QS.DbManagement {
 		public List<ConnectionParameterValue> CustomParameters { get; } = new List<ConnectionParameterValue>();
 
 		public bool Last { get; set; } = false;
+		
+		public int? LastBaseId { get; set; }
 
 		public Connection(ConnectionTypeBase connectionType, IDictionary<string, string> parameters) {
 			ConnectionType = connectionType;
 			ConnectionTitle = parameters["Title"];
 			Last = parameters.ContainsKey("Last") && parameters["Last"] == "True";
+			if(parameters.ContainsKey("LastBaseId") && int.TryParse(parameters["LastBaseId"], out int lastBaseId))
+				LastBaseId = lastBaseId;
 			foreach(var parameter in ConnectionType.Parameters)
 				CustomParameters.Add(new ConnectionParameterValue(parameter, parameters.ContainsKey(parameter.Name) ? parameters[parameter.Name] : null));
 		}
@@ -41,6 +45,8 @@ namespace QS.DbManagement {
 				{"Title", ConnectionTitle},
 				{"Last", Last.ToString()}
 			};
+			if(LastBaseId.HasValue)
+				config.Add("LastBaseId", LastBaseId.Value.ToString());
 			foreach(var parameter in CustomParameters)
 				config.Add(parameter.Name, parameter.Value?.ToString());
 			return config;
