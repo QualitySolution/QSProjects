@@ -26,5 +26,13 @@ namespace QS.Launcher {
 		public string OldConfigFilename { get; set; }
 		
 		public Func<List<Dictionary<string, string>>> MakeDefaultConnections { get; set; }
+		
+		/// <summary>
+		/// Указывает, запущен ли лаунчер как отдельное standalone приложение.
+		/// True - лаунчер запускается отдельно и запускает другое приложение в новом процессе.
+		/// False - лаунчер работает в одном процессе с основным приложением (in-process режим).
+		/// В standalone режиме доступна галочка "Не закрывать лаунчер после подключения".
+		/// </summary>
+		public bool IsStandalone { get; set; } = true;
 	}
 }

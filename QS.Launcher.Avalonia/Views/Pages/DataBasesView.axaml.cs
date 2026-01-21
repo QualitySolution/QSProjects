@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
+	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 	private DataBasesVM ViewModel;
 
 	public DataBasesView(DataBasesVM viewModel) {
@@ -26,16 +27,26 @@ public partial class DataBasesView : UserControl {
 	}
 
 	public async void HandleStartMainProgram(bool shouldCloseLauncher) {
+		logger.Info($">>> HandleStartMainProgram: shouldCloseLauncher={shouldCloseLauncher}");
+		
 		loadingPanel.IsVisible = true;
 		cogwheel.Classes.Add("rolled");
 
 		var transition = cogwheel.Transitions.OfType<TransformOperationsTransition>().FirstOrDefault();
 		await Task.Delay(transition.Duration);
 		loadingPanel.IsVisible = false;
-		if(shouldCloseLauncher)
+		
+		if(shouldCloseLauncher) {
+			logger.Info($">>> HandleStartMainProgram: Вызываем Shutdown!");
+			// NewProcessRunner: закрываем всё приложение лаунчера (Shutdown)
 			(LauncherApp.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
-		else
-			cogwheel.Classes.Remove("rolled");
+		}
+		else {
+			logger.Info($">>> HandleStartMainProgram: Закрываем только окно");
+			// InProcessRunner: закрываем только окно лаунчера
+			var window = TopLevel.GetTopLevel(this) as Window;
+			window?.Close();
+		}
 	}
 
 	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e) {
