@@ -80,8 +80,16 @@ namespace QS.Launcher {
 					}
 				}
 				else {
-					connectionDefinitions = options.MakeDefaultConnections?.Invoke();
+					var defaultConnections = options.MakeDefaultConnections?.Invoke();
+					if(defaultConnections != null) {
+						connectionDefinitions = defaultConnections;
+					}
 				}
+			}
+			
+			// Гарантируем что connectionDefinitions не null
+			if(connectionDefinitions == null) {
+				connectionDefinitions = new List<Dictionary<string, string>>();
 			}
 
 			var connections = new List<Connection>();
