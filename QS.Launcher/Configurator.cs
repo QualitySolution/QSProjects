@@ -113,7 +113,7 @@ namespace QS.Launcher {
 			string tempFile = options.ConnectionsJsonFileName + ".tmp";
 			string backupFile = options.ConnectionsJsonFileName + ".backup";
 			
-			// Защита от конкурентного доступа ��ерез блокировку файла
+			// Защита от конкурентного доступа через блокировку файла
 			string lockFile = options.ConnectionsJsonFileName + ".lock";
 			
 			try {
@@ -136,20 +136,20 @@ namespace QS.Launcher {
 						logger.Debug("Создана резервная копия {0}", backupFile);
 					}
 					
-				// Атомарно заменяем основной файл
-				if(File.Exists(options.ConnectionsJsonFileName)) {
-					File.Delete(options.ConnectionsJsonFileName);
-				}
-				File.Move(tempFile, options.ConnectionsJsonFileName);
-				logger.Debug("Файл конфигурации успешно обновлен");
-					
-					// Удаляем резервную копию после успешного сохранения
-					if(File.Exists(backupFile)) {
-						File.Delete(backupFile);
+					// Атомарно заменяем основной файл
+					if(File.Exists(options.ConnectionsJsonFileName)) {
+						File.Delete(options.ConnectionsJsonFileName);
+					}
+					File.Move(tempFile, options.ConnectionsJsonFileName);
+					logger.Debug("Файл конфигурации успешно обновлен");
+						
+						// Удаляем резервную копию после успешного сохранения
+						if(File.Exists(backupFile)) {
+							File.Delete(backupFile);
+						}
 					}
 				}
-			}
-			catch(Exception ex) {
+				catch(Exception ex) {
 				logger.Error(ex, "Ошибка сохранения файла конфигурации подключений ({0}).", options.ConnectionsJsonFileName);
 				
 				// Пытаемся восстановить из резервной копии
