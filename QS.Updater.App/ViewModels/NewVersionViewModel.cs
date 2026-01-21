@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using QS.Configuration;
 using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
@@ -24,6 +25,7 @@ namespace QS.Updater.App.ViewModels {
 		private readonly IGuiDispatcher guiDispatcher;
 		private readonly IInteractiveMessage interactive;
 		private readonly IDataBaseInfo dataBaseInfo;
+		private readonly IChangeableConfiguration configuration;
 
 		public NewVersionViewModel(
 			ReleaseInfo[] releases,
@@ -33,6 +35,7 @@ namespace QS.Updater.App.ViewModels {
 			ModalProgressCreator progressCreator,
 			IGuiDispatcher guiDispatcher,
 			IInteractiveMessage interactive,
+			IChangeableConfiguration configuration,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -42,6 +45,8 @@ namespace QS.Updater.App.ViewModels {
 			this.progressCreator = progressCreator ?? throw new ArgumentNullException(nameof(progressCreator));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
 				throw new ArgumentException("Коллекция должна быть не пустая.", nameof(this.Releases));
@@ -164,6 +169,11 @@ namespace QS.Updater.App.ViewModels {
 			webClient.DownloadFileAsync(new Uri(SelectedRelease.InstallerLink), tempPath);
 			// Ждем окончания загрузки файла не возвращая управление, иначе в процессе скачивания продолжается работа, а это не надо во всех случаях
 			guiDispatcher.WaitInMainLoop(() => loadingComplete, 50);
+		}
+
+		public void OffAutoUpdate() {
+			configuration[$"AppUpdater:Channel"] = UpdateChannel.OffAutoUpdate.ToString();
+			Close(false, CloseSource.Self);
 		}
 		#endregion
 	}
