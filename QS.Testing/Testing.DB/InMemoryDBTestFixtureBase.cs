@@ -6,7 +6,6 @@ using QS.Dialog;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.Tracking;
 using QS.DomainModel.UoW;
-using QS.Extensions.Observable.Collections.List;
 using QS.Project.DB;
 using System.Reflection;
 
