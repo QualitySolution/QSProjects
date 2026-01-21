@@ -30,6 +30,10 @@ public partial class LoginView : UserControl
 
 		DataContext = viewModel;
 
+		Loaded += (s, e) => {
+			passwordTextBox.Focus();
+		};
+
 		KeyDown += (s, e) => {
 			if(e.Key == Avalonia.Input.Key.Enter) {
 				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
