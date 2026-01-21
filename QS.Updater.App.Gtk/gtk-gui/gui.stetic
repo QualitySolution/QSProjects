@@ -188,6 +188,22 @@
             <property name="Fill">False</property>
           </packing>
         </child>
+        <child>
+          <widget class="Gamma.GtkWidgets.yButton" id="ybuttonOffAutoUpdate">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Не получать обновления</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonOffAutoUpdateClicked" />
+          </widget>
+          <packing>
+            <property name="Position">5</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
       </widget>
     </child>
   </widget>

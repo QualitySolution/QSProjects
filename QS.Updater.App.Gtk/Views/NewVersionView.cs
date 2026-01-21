@@ -86,5 +86,8 @@ namespace QS.Updater.App.Views {
 		protected void OnButtonOkClicked(object sender, EventArgs e) {
 			ViewModel.Install();
 		}
+		protected void OnButtonOffAutoUpdateClicked(object sender, EventArgs e) {
+			ViewModel.OffAutoUpdate();
+		}
 	}
 }
