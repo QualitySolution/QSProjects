@@ -27,6 +27,8 @@ namespace QS.Updater.App.Views
 		private global::Gamma.GtkWidgets.yButton buttonCancel;
 
 		private global::Gamma.GtkWidgets.yButton buttonOk;
+		
+		private global::Gamma.GtkWidgets.yButton ybuttonOffAutoUpdate;
 
 		protected virtual void Build()
 		{
@@ -141,6 +143,17 @@ namespace QS.Updater.App.Views
 			w13.Position = 4;
 			w13.Expand = false;
 			w13.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.ybuttonOffAutoUpdate = new global::Gamma.GtkWidgets.yButton();
+			this.ybuttonOffAutoUpdate.CanFocus = true;
+			this.ybuttonOffAutoUpdate.Name = "ybuttonOffAutoUpdate";
+			this.ybuttonOffAutoUpdate.UseUnderline = true;
+			this.ybuttonOffAutoUpdate.Label = global::Mono.Unix.Catalog.GetString("Не получать обновления");
+			this.vbox2.Add(this.ybuttonOffAutoUpdate);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.ybuttonOffAutoUpdate]));
+			w14.Position = 5;
+			w14.Expand = false;
+			w14.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
@@ -150,6 +163,7 @@ namespace QS.Updater.App.Views
 			this.buttonSkip.Clicked += new global::System.EventHandler(this.OnButtonSkipClicked);
 			this.buttonCancel.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
+			this.ybuttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
 		}
 	}
 }
