@@ -17,10 +17,10 @@ namespace QS.Updater
 			this.dbUpdater = dbUpdater;
 		}
 
-		public UpdateInfo? RunUpdate(bool isOffAutoUpdateChannelActive) 
+		public UpdateInfo? RunUpdate(bool isOffAutoUpdate = false) 
 		{
 			UpdateInfo? updateInfo = null;
-			if (applicationUpdater != null && !isOffAutoUpdateChannelActive) {
+			if (applicationUpdater != null && !isOffAutoUpdate) {
 				updateInfo = applicationUpdater.CheckUpdate(false);
 				if(updateInfo?.Status == UpdateStatus.AppUpdateIsRunning) {
 					return updateInfo;
