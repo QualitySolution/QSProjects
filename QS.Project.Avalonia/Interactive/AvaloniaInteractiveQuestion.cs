@@ -1,7 +1,7 @@
-using QS.Dialog;
 using System;
+using QS.Dialog;
 
-namespace QS.Project.Avalonia.Interactive;
+namespace QS.Project.Interactive;
 public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 	public bool Question(string message, string title = null) {
 		// TODO: Implement Question dialog behaviour to DialogWindow.axaml.cs

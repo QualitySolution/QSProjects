@@ -1,9 +1,9 @@
-using Avalonia.Data.Converters;
-using Avalonia.Media.Imaging;
 using System;
 using System.Globalization;
+using Avalonia.Data.Converters;
+using Avalonia.Media.Imaging;
 
-namespace QS.Project.Avalonia.Converters;
+namespace QS.Project.Converters;
 public class ByteArrayToBitmapConverter : IValueConverter {
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		if (value is null or not byte[])

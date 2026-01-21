@@ -1,8 +1,8 @@
-using Avalonia.Data.Converters;
 using System;
 using System.Globalization;
+using Avalonia.Data.Converters;
 
-namespace QS.Project.Avalonia.Converters;
+namespace QS.Project.Converters;
 public class NumericIsNotZeroConverter : IValueConverter {
 
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {

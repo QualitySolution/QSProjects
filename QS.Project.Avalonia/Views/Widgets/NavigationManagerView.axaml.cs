@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using QS.Navigation;
-using QS.Project.Avalonia.Interactive;
+using QS.Project.Interactive;
 
 namespace QS.Project;
 

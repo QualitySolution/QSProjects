@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
-using QS.Project.Avalonia.Interactive;
 using QS.Project.Dialog;
+using QS.Project.Interactive;
 
 namespace QS.Project;
 

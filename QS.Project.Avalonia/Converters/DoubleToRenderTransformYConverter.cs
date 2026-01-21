@@ -1,10 +1,9 @@
-using Avalonia.Data.Converters;
-using Avalonia.Media;
-using Avalonia.Diagnostics;
 using System;
 using System.Globalization;
+using Avalonia.Data.Converters;
+using Avalonia.Media;
 
-namespace QS.Project.Avalonia.Converters;
+namespace QS.Project.Converters;
 public class DoubleToRenderTransformYConverter : IValueConverter {
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		if(targetType != typeof(ITransform))

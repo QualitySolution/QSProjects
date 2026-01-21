@@ -1,9 +1,9 @@
-using ReactiveUI;
 using System;
 using System.Diagnostics;
 using System.Reactive.Concurrency;
+using ReactiveUI;
 
-namespace QS.Project.Avalonia.ExceptionHandling;
+namespace QS.Project.ExceptionHandling;
 public class RxExceptionHandler : IObserver<Exception>
 {
 	public Action<Exception> OnExceptionAction { get; set; }
