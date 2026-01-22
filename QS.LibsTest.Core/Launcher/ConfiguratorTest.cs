@@ -19,7 +19,7 @@ namespace QS.Test.Launcher {
 		private string testConfigFile;
 		private LauncherOptions options;
 		private IInteractiveMessage interactive;
-		private List<ConnectionTypeBase> connectionTypes;
+		private readonly List<ConnectionTypeBase> connectionTypes = new List<ConnectionTypeBase>();
 		
 		[SetUp]
 		public void Setup() {
@@ -32,9 +32,6 @@ namespace QS.Test.Launcher {
 			};
 			
 			interactive = Substitute.For<IInteractiveMessage>();
-			
-			// Пустой список типов подключений для простоты тестирования
-			connectionTypes = new List<ConnectionTypeBase>();
 		}
 		
 		[TearDown]
@@ -109,19 +106,6 @@ namespace QS.Test.Launcher {
 			Assert.That(File.Exists(testConfigFile + ".lock"), Is.False, "Файл блокировки должен быть удален");
 		}
 		
-		[Test(Description = "Проверка что backup файл удаляется после успешной записи")]
-		public void SaveConnections_RemovesBackupFile_AfterSuccess() {
-			// Создаем существующий файл
-			CreateTestConfig("[]");
-			
-			var configurator = new Configurator(options, interactive, connectionTypes);
-			var connections = new List<Connection>();
-			
-			configurator.SaveConnections(connections);
-			
-			Assert.That(File.Exists(testConfigFile + ".backup"), Is.False, "Backup файл должен быть удален после успешной записи");
-		}
-		
 		[Test(Description = "Проверка восстановления из backup при пустом основном файле")]
 		public void ReadConnections_RestoresFromBackup_WhenMainFileIsEmpty() {
 			// Создаем backup с пустым массивом
@@ -147,7 +131,6 @@ namespace QS.Test.Launcher {
 			// Создаем существующий файл с данными
 			CreateTestConfig(@"[]");
 			
-			var originalContent = File.ReadAllText(testConfigFile);
 			var configurator = new Configurator(options, interactive, connectionTypes);
 			var connections = new List<Connection>();
 			
@@ -272,6 +255,42 @@ namespace QS.Test.Launcher {
 			Assert.That(Directory.Exists(subDir), Is.True, "Вложенные директории должны быть созданы");
 			Assert.That(File.Exists(nestedConfigFile), Is.True, "Файл должен быть создан в новой директории");
 		}
+		
+		[Test(Description = "Проверка что backup создаётся со 2-го сохранения и не удаляется после успешной записи")]
+		public void SaveConnections_CreatesAndKeepsBackupFile_AfterSecondSave() {
+			// Чтобы backup создавался, нужен предыдущий файл (не пустой)
+			CreateTestConfig("[]");
+
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			var connections = new List<Connection>();
+
+			// 1-е сохранение: существующий файл копируется в backup
+			configurator.SaveConnections(connections);
+			Assert.That(File.Exists(testConfigFile + ".backup"), Is.True,
+				"Backup должен быть создан при наличии предыдущей версии файла");
+
+			// 2-е сохранение: backup должен остаться
+			configurator.SaveConnections(connections);
+			Assert.That(File.Exists(testConfigFile + ".backup"), Is.True,
+				"Backup не должен удаляться после успешного сохранения");
+		}
+
+		[Test(Description = "Проверка что backup содержит предыдущую версию файла")]
+		public void SaveConnections_BackupContainsPreviousVersion() {
+			// Делаем main отличимым от результата SaveConnections (который запишет пустой массив)
+			var previousJson = "[{\"x\":1}]";
+			CreateTestConfig(previousJson);
+
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			configurator.SaveConnections(new List<Connection>());
+
+			var backupPath = testConfigFile + ".backup";
+			Assert.That(File.Exists(backupPath), Is.True, "Backup должен быть создан");
+			Assert.That(File.ReadAllText(backupPath), Is.EqualTo(previousJson),
+				"Backup должен содержать предыдущую сохранённую версию (байт-в-байт)");
+
+			Assert.That(File.ReadAllText(testConfigFile).Trim(), Is.EqualTo("[]"),
+				"Основной файл должен быть обновлён новой версией");
+		}
 	}
 }
-

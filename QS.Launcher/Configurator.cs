@@ -41,8 +41,8 @@ namespace QS.Launcher {
 					}
 					catch(JsonException jsonEx) {
 						logger.Error(jsonEx, "Ошибка чтения файла конфигурации подключений ({0}).", options.ConnectionsJsonFileName);
-						needToRestoreFromBackup = true;
 						interactive.ShowMessage(ImportanceLevel.Error, $"Файл конфигурация подключений ({options.ConnectionsJsonFileName}) испорчен. Попытка восстановления из резервной копии.");
+						needToRestoreFromBackup = true;
 					}
 				}
 			}
@@ -105,7 +105,7 @@ namespace QS.Launcher {
 			var connectionDefinitions = connections.Select(c => c.GetConfigDefinitions()).ToList();
 			
 			string directory = Path.GetDirectoryName(options.ConnectionsJsonFileName);
-			if (!Directory.Exists(directory)) {
+			if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) {
 				Directory.CreateDirectory(directory);
 			}
 			
@@ -118,7 +118,7 @@ namespace QS.Launcher {
 			
 			try {
 				// Создаем файл блокировки для синхронизации между процессами
-				using(var lockStream = File.Open(lockFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
+				using(var _ = File.Open(lockFile, FileMode.Create, FileAccess.Write, FileShare.None)) {
 					logger.Debug("Начинаем сохранение соединений в файл {0}", options.ConnectionsJsonFileName);
 					
 					// Сначала записываем во временный файл
@@ -130,10 +130,34 @@ namespace QS.Launcher {
 					
 					logger.Debug("Данные записаны во временный файл {0}", tempFile);
 					
-					// Создаем резервную копию существующего файла (если он есть)
+					// Проверяем корректность записанного временного файла
+					try {
+						using(var verifyStream = File.Open(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+							if(verifyStream.Length == 0) {
+								throw new InvalidOperationException("Временный файл конфигурации пуст после записи");
+							}
+							// Проверяем что JSON валиден
+							JsonSerializer.Deserialize<List<Dictionary<string, string>>>(verifyStream);
+						}
+						logger.Debug("Временный файл прошел валидацию");
+					}
+					catch(Exception validateEx) {
+						logger.Error(validateEx, "Валидация временного файла не прошла");
+						throw new InvalidOperationException("Не удалось создать корректный файл конфигурации", validateEx);
+					}
+					
+					// Создаем резервную копию существующего файла ПЕРЕД его заменой (если он есть и корректен)
 					if(File.Exists(options.ConnectionsJsonFileName)) {
-						File.Copy(options.ConnectionsJsonFileName, backupFile, true);
-						logger.Debug("Создана резервная копия {0}", backupFile);
+						try {
+							var fileInfo = new FileInfo(options.ConnectionsJsonFileName);
+							if(fileInfo.Length > 0) {
+								File.Copy(options.ConnectionsJsonFileName, backupFile, true);
+								logger.Debug("Создана резервная копия предыдущей версии {0}", backupFile);
+							}
+						}
+						catch(Exception backupEx) {
+							logger.Warn(backupEx, "Не удалось создать резервную копию, но продолжаем сохранение");
+						}
 					}
 					
 					// Атомарно заменяем основной файл
@@ -141,15 +165,10 @@ namespace QS.Launcher {
 						File.Delete(options.ConnectionsJsonFileName);
 					}
 					File.Move(tempFile, options.ConnectionsJsonFileName);
-					logger.Debug("Файл конфигурации успешно обновлен");
-						
-						// Удаляем резервную копию после успешного сохранения
-						if(File.Exists(backupFile)) {
-							File.Delete(backupFile);
-						}
-					}
+					logger.Info("Файл конфигурации успешно обновлен. Резервная копия предыдущей версии сохранена в {0}", backupFile);
 				}
-				catch(Exception ex) {
+			}
+			catch(Exception ex) {
 				logger.Error(ex, "Ошибка сохранения файла конфигурации подключений ({0}).", options.ConnectionsJsonFileName);
 				
 				// Пытаемся восстановить из резервной копии
