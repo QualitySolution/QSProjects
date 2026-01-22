@@ -1,0 +1,22 @@
+<UserControl x:Class="QS.Project.Versioning.Views.ChangeLogView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Project.Versioning.ViewModels;assembly=QS.Project.Desktop"
+             d:DesignHeight="500"
+             d:DesignWidth="700"
+             x:DataType="vm:ChangeLogViewModel"
+             mc:Ignorable="d">
+    <ScrollViewer Margin="10">
+        <TextBox Text="{Binding TextLog}"
+                 MinWidth="700"
+                 MinHeight="500"
+                 TextWrapping="Wrap"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 BorderThickness="1"
+                 BorderBrush="Gray" />
+    </ScrollViewer>
+</UserControl>
+
