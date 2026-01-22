@@ -388,6 +388,31 @@ namespace QS.Test.Launcher {
 			Assert.That(File.Exists(testConfigFile), Is.True);
 		}
 
+		[Test(Description = "Восстановление: если основной файл отсутствует, но есть .backup — загружается из backup и восстанавливает основной файл")]
+		public void ReadConnections_RestoresFromBackup_WhenMainFileMissing() {
+			// Гарантируем отсутствие основного файла
+			if(File.Exists(testConfigFile)) {
+				File.Delete(testConfigFile);
+			}
+
+			// Backup с валидным JSON
+			File.WriteAllText(testConfigFile + ".backup", "[]");
+
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			var connections = configurator.ReadConnections();
+
+			Assert.That(connections, Is.Not.Null);
+			Assert.That(connections.Count, Is.EqualTo(0));
+
+			interactive.Received(1).ShowMessage(
+				ImportanceLevel.Warning,
+				Arg.Is<string>(s => s.Contains("восстановлен")),
+				Arg.Any<string>());
+
+			Assert.That(File.Exists(testConfigFile), Is.True, "Основной файл должен быть восстановлен из backup");
+			Assert.That(File.ReadAllText(testConfigFile).Trim(), Is.EqualTo("[]"));
+		}
+
 		private class TestConnectionType : ConnectionTypeBase {
 			public TestConnectionType(string name) {
 				ConnectionTypeName = name;
