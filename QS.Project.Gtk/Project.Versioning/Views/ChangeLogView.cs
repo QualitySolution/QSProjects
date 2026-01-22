@@ -1,5 +1,3 @@
-using System;
-using QS.Navigation;
 using QS.Project.Versioning.ViewModels;
 
 namespace QS.Project.Versioning.Views {
@@ -16,10 +14,6 @@ namespace QS.Project.Versioning.Views {
             ytextviewLog.WrapMode = Gtk.WrapMode.Word;
 			            
 			ytextviewLog.Binding.AddBinding(viewModel, vm => vm.TextLog, w => w.Buffer.Text).InitializeFromSource();
-		}
-
-		protected void OnYbuttonCloseClicked(object sender, EventArgs e) {
-			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}
 }

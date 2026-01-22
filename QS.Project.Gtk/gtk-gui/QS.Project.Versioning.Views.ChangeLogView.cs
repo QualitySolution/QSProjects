@@ -10,10 +10,6 @@ namespace QS.Project.Versioning.Views
 
 		private global::Gamma.GtkWidgets.yTextView ytextviewLog;
 
-		private global::Gamma.GtkWidgets.yHBox yhbox_button;
-
-		private global::Gamma.GtkWidgets.yButton ybutton_close;
-
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -37,33 +33,12 @@ namespace QS.Project.Versioning.Views
 			this.yvbox1.Add(this.GtkScrolledWindow);
 			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.GtkScrolledWindow]));
 			w2.Position = 1;
-			// Container child yvbox1.Gtk.Box+BoxChild
-			this.yhbox_button = new global::Gamma.GtkWidgets.yHBox();
-			this.yhbox_button.Name = "yhbox_button";
-			this.yhbox_button.Spacing = 6;
-			// Container child yhbox_button.Gtk.Box+BoxChild
-			this.ybutton_close = new global::Gamma.GtkWidgets.yButton();
-			this.ybutton_close.CanFocus = true;
-			this.ybutton_close.Name = "ybutton_close";
-			this.ybutton_close.UseUnderline = true;
-			this.ybutton_close.Label = global::Mono.Unix.Catalog.GetString("Закрыть");
-			this.yhbox_button.Add(this.ybutton_close);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.yhbox_button[this.ybutton_close]));
-			w3.PackType = ((global::Gtk.PackType)(1));
-			w3.Position = 2;
-			w3.Expand = false;
-			this.yvbox1.Add(this.yhbox_button);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.yvbox1[this.yhbox_button]));
-			w4.Position = 2;
-			w4.Expand = false;
-			w4.Fill = false;
 			this.Add(this.yvbox1);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
 			this.Hide();
-			this.ybutton_close.Clicked += new global::System.EventHandler(this.OnYbuttonCloseClicked);
 		}
 	}
 }

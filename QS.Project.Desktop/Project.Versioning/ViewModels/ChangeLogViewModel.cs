@@ -5,22 +5,16 @@ using QS.Navigation;
 using QS.ViewModels.Dialog;
 
 namespace QS.Project.Versioning.ViewModels {
-	public class ChangeLogViewModel: WindowDialogViewModelBase {
+	public class ChangeLogViewModel: DialogViewModelBase {
 		
 		private static Logger logger = LogManager.GetCurrentClassLogger ();
 		
 		public ChangeLogViewModel(INavigationManager navigation) : base(navigation)
 		{
 			Title = "История версий программы";
-			
-			try {
-				using (StreamReader historyFile = new StreamReader ("changes.txt")) {
-					TextLog = historyFile.ReadToEnd ();
-				}
-			}
-			catch (Exception e) {
-				logger.Warn("Не удалось открыть changes.txt");
-				TextLog = "Не удалось открыть changes.txt";
+
+			using (StreamReader historyFile = new StreamReader ("changes.txt")) {
+				TextLog = historyFile.ReadToEnd ();
 			}
 		}
 		
