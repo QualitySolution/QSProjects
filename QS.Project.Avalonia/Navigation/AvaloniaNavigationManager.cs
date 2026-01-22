@@ -3,9 +3,7 @@ using QS.Dialog;
 using QS.ViewModels.Extension;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace QS.Navigation;
 
@@ -23,15 +21,18 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	// ридонли не риоднли - pohui
 	AvaloniaPageTabFactory tabFactory;
 	AvaloniaPageWindowFactory windowFactory;
+	readonly IAvaloniaViewResolver viewResolver;
 
 	public AvaloniaNavigationManager(IInteractiveMessage interactive,
 		AvaloniaPageWindowFactory windowFactory,
 		AvaloniaPageTabFactory tabFactory,
+		IAvaloniaViewResolver viewResolver,
 		IPageHashGenerator? hashGenerator = null)
 		: base(interactive, hashGenerator)
 	{
 		this.tabFactory = tabFactory;
 		this.windowFactory = windowFactory;
+		this.viewResolver = viewResolver ?? throw new ArgumentNullException(nameof(viewResolver));
 	}
 
 	public bool AskClosePage(IPage page, CloseSource source = CloseSource.External) {
@@ -56,7 +57,15 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override void OpenPage(IPage masterPage, IPage page) {
-		Pages.Add((IAvaloniaPage)page);
+		page.ViewModel.NavigationManager = this;
+		pages.Add(page);
+		
+		var avaloniaPage = (IAvaloniaPage)page;
+		avaloniaPage.View = viewResolver.Resolve(page.ViewModel);
+		if(avaloniaPage.View == null)
+			throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
+		
+		Pages.Add(avaloniaPage);
 		CurrentPage = page;
 	}
 

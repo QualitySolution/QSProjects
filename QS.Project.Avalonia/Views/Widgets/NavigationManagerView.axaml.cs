@@ -1,7 +1,6 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
+using FluentAvalonia.UI.Controls;
 using QS.Navigation;
-using QS.Project.Interactive;
 
 namespace QS.Project;
 
@@ -12,14 +11,14 @@ namespace QS.Project;
 public partial class NavigationManagerView : UserControl {
 	public NavigationManagerView() {
 		InitializeComponent();
-
-		DataContext = new AvaloniaNavigationManager(new AvaloniaInteractiveMessage(), null, null);
 	}
 
-	public AvaloniaNavigationManager NavigationManager => DataContext as AvaloniaNavigationManager;
+	public AvaloniaNavigationManager? NavigationManager => DataContext as AvaloniaNavigationManager;
 
-	private void OnCloseTabClick(object sender, RoutedEventArgs e) {
-		var dc = (sender as Control).DataContext as IAvaloniaPage;
-		NavigationManager.AskClosePage(dc, CloseSource.ClosePage);
+	private void OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args) {
+		var page = args.Item as IAvaloniaPage;
+		if(page != null && NavigationManager != null) {
+			NavigationManager.AskClosePage(page, CloseSource.ClosePage);
+		}
 	}
 }

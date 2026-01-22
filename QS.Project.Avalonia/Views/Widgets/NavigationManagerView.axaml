@@ -10,41 +10,16 @@
              d:DesignWidth="800"
              x:DataType="navigation:AvaloniaNavigationManager"
              mc:Ignorable="d">
-    <TabControl x:Name="tabControl" ItemsSource="{Binding Pages}" SelectedItem="{Binding CurrentPage}">
-        <TabControl.Styles>
-            <Style Selector="TabItem">
-                <Setter Property="HeaderTemplate">
-                    <DataTemplate x:DataType="navigation:IAvaloniaPage">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="0,0,5,0" FontSize="20" Text="{Binding Title}" />
-                            <Button Width="25"
-                                    Height="25"
-                                    Padding="0"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Background="Transparent"
-                                    BorderBrush="Transparent"
-                                    Click="OnCloseTabClick"
-                                    Content="🞨"
-                                    FontSize="16">
-                                <Button.Styles>
-                                    <Style Selector="Button:pointerover">
-                                        <Setter Property="Background" Value="Gray" />
-                                        <Setter Property="BorderBrush" Value="LightGray" />
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                        </StackPanel>
-                    </DataTemplate>
-                </Setter>
-
-
-            </Style>
-        </TabControl.Styles>
-        <TabControl.ContentTemplate>
+    <fa:TabView x:Name="tabView" 
+                TabItems="{Binding Pages}" 
+                SelectedItem="{Binding CurrentPage}"
+                TabCloseRequested="OnTabCloseRequested">
+        <fa:TabView.TabItemTemplate>
             <DataTemplate x:DataType="navigation:IAvaloniaPage">
-                <ContentPresenter Content="{Binding AvaloniaView}" />
+                <fa:TabViewItem Header="{Binding Title}" 
+                                IsClosable="True"
+                                Content="{Binding View}" />
             </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
+        </fa:TabView.TabItemTemplate>
+    </fa:TabView>
 </UserControl>
