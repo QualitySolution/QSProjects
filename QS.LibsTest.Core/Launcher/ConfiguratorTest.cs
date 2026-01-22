@@ -335,6 +335,59 @@ namespace QS.Test.Launcher {
 			Assert.That(File.Exists(testConfigFile), Is.True);
 		}
 
+		[Test(Description = "Миграция: для MariaDB подключения к одному Server+UserLogin объединяются (3 секции -> 2 подключения)")]
+		public void ReadConnections_MariaDbConnectionsWithSameServerAndLogin_AreMerged() {
+			var oldIniPath = Path.Combine(tempDir, "old_config.ini");
+			options.OldConfigFilename = oldIniPath;
+
+			// Важно:
+			// - Type=0 => MariaDB
+			// - Уникальность определяется мигратором через Hash: [MariaDB]{UserLogin}@{Server}
+			// - Login11 и Login16 одинаковые (root@plutus...) => одно подключение
+			// - Login17 другой пользователь (andrey@plutus...) => второе подключение
+			File.WriteAllText(oldIniPath,
+				"[Login11]\n" +
+				"ConnectionName=2.7\n" +
+				"Server=plutus.srv.qsolution.ru\n" +
+				"Type=0\n" +
+				"DataBase=workwear_dev27\n" +
+				"UserLogin=root\n" +
+				"\n" +
+				"[Login16]\n" +
+				"ConnectionName=Плутос тест\n" +
+				"Server=plutus.srv.qsolution.ru\n" +
+				"Type=0\n" +
+				"DataBase=test_PersonalAreaService\n" +
+				"UserLogin=root\n" +
+				"\n" +
+				"[Login17]\n" +
+				"ConnectionName=2.8 релиз\n" +
+				"Server=plutus.srv.qsolution.ru\n" +
+				"Type=0\n" +
+				"DataBase=workwear_28\n" +
+				"UserLogin=andrey\n");
+
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			var connections = configurator.ReadConnections();
+
+			Assert.That(connections, Is.Not.Null);
+			Assert.That(connections.Count, Is.EqualTo(2), "Ожидаем 2 подключения после объединения");
+
+			// Проверим что оба подключения типа MariaDB и с нужными логинами/сервером
+			var defs = new List<Dictionary<string, string>> {
+				connections[0].GetConfigDefinitions(),
+				connections[1].GetConfigDefinitions()
+			};
+
+			Assert.That(defs.TrueForAll(d => d["Type"] == "MariaDB"));
+			Assert.That(defs.TrueForAll(d => d["Server"] == "plutus.srv.qsolution.ru"));
+			CollectionAssert.AreEquivalent(new[] { "root", "andrey" }, defs.ConvertAll(d => d["Login"]));
+
+			// Smoke-check: сохранить обратно должно получиться
+			Assert.DoesNotThrow(() => configurator.SaveConnections(connections));
+			Assert.That(File.Exists(testConfigFile), Is.True);
+		}
+
 		private class TestConnectionType : ConnectionTypeBase {
 			public TestConnectionType(string name) {
 				ConnectionTypeName = name;
