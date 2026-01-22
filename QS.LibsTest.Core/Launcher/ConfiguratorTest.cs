@@ -32,6 +32,10 @@ namespace QS.Test.Launcher {
 			};
 			
 			interactive = Substitute.For<IInteractiveMessage>();
+
+			// Для тестов миграции/чтения нужны типы, иначе Configurator не создаст Connection
+			connectionTypes.Add(new TestConnectionType("MariaDB"));
+			connectionTypes.Add(new TestConnectionType("QSCloud"));
 		}
 		
 		[TearDown]
@@ -291,6 +295,61 @@ namespace QS.Test.Launcher {
 
 			Assert.That(File.ReadAllText(testConfigFile).Trim(), Is.EqualTo("[]"),
 				"Основной файл должен быть обновлён новой версией");
+		}
+		
+		[Test(Description = "Миграция: загрузка подключений из старого INI-конфига (OldConfigFilename)")]
+		public void ReadConnections_LoadsFromOldIniConfig_WhenNoJsonExists() {
+			var oldIniPath = Path.Combine(tempDir, "old_config.ini");
+			options.OldConfigFilename = oldIniPath;
+
+			File.WriteAllText(oldIniPath,
+				"[Login]\n" +
+				"UserLogin=andrey\n" +
+				"Server=\n" +
+				"ConnectionName=Облако\n" +
+				"Type=1\n" +
+				"Account=qsolution\n" +
+				"DataBase=ClientManager\n" +
+				"\n" +
+				"[Default]\n" +
+				"ConnectionName=Облако\n" +
+				"\n" +
+				"[AppUpdater]\n" +
+				"SkipVersion=1.3.3\n");
+
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			var connections = configurator.ReadConnections();
+
+			Assert.That(connections, Is.Not.Null);
+			Assert.That(connections.Count, Is.EqualTo(1), "Должно быть загружено 1 подключение из INI");
+
+			var defs = connections[0].GetConfigDefinitions();
+			Assert.That(defs["Type"], Is.EqualTo("QSCloud"));
+			Assert.That(defs["Login"], Is.EqualTo("andrey"));
+			Assert.That(defs["Account"], Is.EqualTo("qsolution"));
+			Assert.That(defs["Title"], Does.Contain("qsolution"));
+			Assert.That(defs["Title"], Does.Contain("andrey"));
+
+			// Дальше smoke-check что сохраняется обратно
+			Assert.DoesNotThrow(() => configurator.SaveConnections(connections));
+			Assert.That(File.Exists(testConfigFile), Is.True);
+		}
+
+		private class TestConnectionType : ConnectionTypeBase {
+			public TestConnectionType(string name) {
+				ConnectionTypeName = name;
+				Title = $"Test {name}";
+
+				// Минимальный набор параметров чтобы Connection заполнил CustomParameters
+				Parameters.Add(new ConnectionParameter("Login", "Login"));
+				Parameters.Add(new ConnectionParameter("Account", "Account"));
+				Parameters.Add(new ConnectionParameter("Server", "Server"));
+			}
+
+			public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) => true;
+
+			public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
+				=> Substitute.For<IDbProvider>();
 		}
 	}
 }
