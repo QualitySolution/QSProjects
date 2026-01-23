@@ -1,4 +1,3 @@
-using Autofac;
 using NSubstitute;
 using NUnit.Framework;
 using QS.BaseParameters;
@@ -21,13 +20,7 @@ namespace QS.Test.Updater.App {
 			var applicationQuitService = Substitute.For<IApplicationQuitService>();
 			var applicationUpdater  = Substitute.For<IAppUpdater>();
 			var dbUpdater = Substitute.For<IDBUpdater>();
-			var checker = Substitute.For<VersionCheckerService>(
-				new TypedParameter(typeof(CheckBaseVersion), checkBaseVersion),
-				new TypedParameter(typeof(IInteractiveMessage), interactive),
-				new TypedParameter(typeof(IApplicationQuitService), applicationQuitService),
-				new TypedParameter(typeof(IAppUpdater), applicationUpdater),
-				new TypedParameter(typeof(IDBUpdater), dbUpdater)
-				);
+			var checker = new VersionCheckerService(checkBaseVersion, interactive, applicationQuitService, applicationUpdater, dbUpdater);
 			var result = checker.RunUpdate(isOffAutoUpdate);
 			return result == null;
 		}
