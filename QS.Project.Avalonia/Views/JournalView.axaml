@@ -1,0 +1,66 @@
+<UserControl x:Class="QS.Views.JournalView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:journal="clr-namespace:QS.Project.Journal;assembly=QS.Project.Desktop"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="journal:JournalViewModelBase"
+             mc:Ignorable="d">
+    <DockPanel>
+        <!-- Панель инструментов сверху -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+            <Button x:Name="buttonRefresh" Content="Обновить" Margin="0,0,5,0" />
+            <CheckBox x:Name="checkShowFilter" Content="Фильтр" Margin="0,0,5,0" />
+        </StackPanel>
+
+        <!-- Фильтр -->
+        <ContentControl x:Name="filterContainer" 
+                        DockPanel.Dock="Top" 
+                        Margin="5"
+                        IsVisible="{Binding IsFilterShow}" />
+
+        <!-- Поиск -->
+        <ContentControl x:Name="searchContainer" 
+                        DockPanel.Dock="Top" 
+                        Margin="5"
+                        IsVisible="{Binding SearchEnabled}" />
+
+        <!-- Панель действий снизу -->
+        <Grid DockPanel.Dock="Bottom" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- Footer инфо -->
+            <TextBlock x:Name="labelFooter" 
+                       Grid.Column="0" 
+                       Text="{Binding FooterInfo}" 
+                       VerticalAlignment="Center" />
+            
+            <!-- Кнопки действий -->
+            <StackPanel x:Name="actionsPanel" 
+                        Grid.Column="1" 
+                        Orientation="Horizontal" 
+                        Spacing="5" />
+        </Grid>
+
+        <!-- Основная таблица -->
+        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                BorderThickness="1" 
+                Margin="5">
+            <DataGrid x:Name="dataGrid"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      GridLinesVisibility="All"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      SelectionMode="Single"
+                      ItemsSource="{Binding Items}">
+            </DataGrid>
+        </Border>
+    </DockPanel>
+</UserControl>
+
