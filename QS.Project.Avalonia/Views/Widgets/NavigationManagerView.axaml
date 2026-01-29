@@ -13,6 +13,7 @@
     <fa:TabView x:Name="tabView" 
                 TabItems="{Binding Pages}" 
                 SelectedItem="{Binding CurrentPage}"
+                IsAddTabButtonVisible="False"
                 TabCloseRequested="OnTabCloseRequested">
         <fa:TabView.TabItemTemplate>
             <DataTemplate x:DataType="navigation:IAvaloniaPage">
