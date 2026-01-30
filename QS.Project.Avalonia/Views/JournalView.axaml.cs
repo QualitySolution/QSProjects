@@ -16,7 +16,6 @@ public partial class JournalView : UserControl
 {
 	private JournalViewModelBase? viewModel;
 	protected IAvaloniaViewResolver? viewResolver;
-	private List<DataGridColumn> columns = new List<DataGridColumn>();
 
 	/// <summary>
 	/// Событие для настройки колонок после полной инициализации контролов
@@ -36,13 +35,19 @@ public partial class JournalView : UserControl
 	}
 
 	/// <summary>
-	/// Колонки журнала, задаваемые в XAML
+	///  Свойство для установки контента таблицы (Вместо стандартного DataGrid).
+	///  Это позволяет встраивать свои таблицы внутрь JournalView.
 	/// </summary>
-	public List<DataGridColumn> Columns
+	public Control? TableContent
 	{
-		get => columns;
-		set => columns = value;
+		get => this.FindControl<ContentControl>("TablePlaceholder")?.Content as Control;
+		set {
+			var placeholder = this.FindControl<ContentControl>("TablePlaceholder");
+			if (placeholder != null)
+				placeholder.Content = value;
+		}
 	}
+
 
 	public JournalViewModelBase? ViewModel
 	{
@@ -68,10 +73,52 @@ public partial class JournalView : UserControl
 
 		Console.WriteLine("JournalView: ConfigureJournal начало...");
 
+		// Поиск типа GridView для автоматической подстановки
+		var vmType = ViewModel.GetType();
+		var vmName = vmType.Name;
+		var potentialViewName = vmName.Replace("ViewModel", "GridView");
+		Type? gridViewType = null;
+		
+		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+			var type = assembly.GetTypes().FirstOrDefault(t => t.Name == potentialViewName && typeof(Control).IsAssignableFrom(t));
+			if (type != null) {
+				gridViewType = type;
+				break;
+			}
+		}
+
 		// Подписываемся на события
+		// 1. Загружаем XAML текущего экземпляра (это может быть наследник ClientJournalView)
+		// Это применит свойства, определенные в XAML наследника (например GridTemplate)
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
-		ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+		// 2. Если контент пустой (что ожидаемо для наследника, который задает только шаблоны),
+		// то загружаем базовую разметку из JournalView.axaml
+		if (this.Content == null)
+		{
+			// Грузим XAML UI. Так как там нет x:Class, создадутся просто объекты (UserControl/DockPanel...).
+			// Используем Uri для загрузки ресурса.
+			var ui = (UserControl)AvaloniaXamlLoader.Load(new Uri("avares://QS.Project.Avalonia/Views/JournalView.axaml"));
+			this.Content = ui.Content; // Забираем DockPanel
+
+			// Восстанавливаем кастомный контент таблицы после загрузки UI
+			// Потому что загрузка XAML перезатрет ContentControl, который мы могли бы найти до этого (но мы его еще не искали)
+			// Однако, мы создали contentInstance ДО загрузки UI.
+			// А присваивать его в TableContent нужно ПОСЛЕ того, как визуальное дерево загружено.
+		}
+
+		// Теперь можно безопасно искать контролы и вставлять кастомный контент
+		if (gridViewType != null) {
+			Console.WriteLine($"JournalView: Найдена специфичная таблица {gridViewType.Name}");
+			var contentInstance = Activator.CreateInstance(gridViewType) as Control;
+			if (contentInstance != null) {
+				// Устанавливаем DataContext явно, хотя он наследуется, но для верности
+				contentInstance.DataContext = ViewModel; 
+				TableContent = contentInstance; // Вставляем в загруженную разметку
+			}
+		}
+
+		// Кэшируем контролы. Ищем их в this (визуальное дерево уже должно быть привязано к this)
 		ViewModel.UpdateJournalActions += UpdateButtonActions;
 
 		// Получаем контролы
@@ -109,29 +156,8 @@ public partial class JournalView : UserControl
 		Avalonia.Threading.Dispatcher.UIThread.Post(() =>
 		{
 			Console.WriteLine("JournalView: Вызываем ConfigureColumns из Dispatcher...");
-			ConfigureColumns();
 			ColumnsConfigurationRequired?.Invoke(this, EventArgs.Empty);
 		}, Avalonia.Threading.DispatcherPriority.Loaded);
-	}
-
-	/// <summary>
-	/// Виртуальный метод для настройки колонок таблицы в наследниках
-	/// </summary>
-	protected virtual void ConfigureColumns()
-	{
-		// Получаем dataGrid через FindControl
-		var grid = this.FindControl<DataGrid>("dataGrid");
-		
-		// Если колонки были заданы через XAML, применяем их
-		if (grid != null && Columns.Count > 0)
-		{
-			grid.Columns.Clear();
-			foreach (var column in Columns)
-			{
-				grid.Columns.Add(column);
-			}
-		}
-		// Иначе наследники могут переопределить этот метод для настройки колонок
 	}
 
 	private void ConfigureFilter()
@@ -184,7 +210,7 @@ public partial class JournalView : UserControl
 
 	private void SetSelectionMode(JournalSelectionMode mode)
 	{
-		var grid = this.FindControl<DataGrid>("dataGrid");
+		var grid = GetDataGrid();
 		if (grid == null) return;
 
 		grid.SelectionMode = mode switch
@@ -223,7 +249,7 @@ public partial class JournalView : UserControl
 			Console.WriteLine($"JournalView: ItemsListUpdated, количество элементов: {itemsCount}");
 			
 			// Проверим DataGrid
-			var grid = this.FindControl<DataGrid>("dataGrid");
+			var grid = GetDataGrid();
 			if (grid != null)
 			{
 				// Принудительно обновляем ItemsSource, так как автоматический биндинг может не подхватить изменение
@@ -236,7 +262,6 @@ public partial class JournalView : UserControl
 				}
 
 				Console.WriteLine($"JournalView: DataGrid обновлен, ItemsSource count: {(grid.ItemsSource as System.Collections.IList)?.Count ?? -1}");
-				Console.WriteLine($"JournalView: DataGrid.DataContext = {grid.DataContext}");
 				Console.WriteLine($"JournalView: DataGrid.Columns.Count = {grid.Columns.Count}");
 			}
 			else
@@ -287,11 +312,23 @@ public partial class JournalView : UserControl
 
 	protected object[] GetSelectedItems()
 	{
-		var grid = this.FindControl<DataGrid>("dataGrid");
+		var grid = GetDataGrid();
 		if (grid?.SelectedItems == null) 
 			return Array.Empty<object>();
 
 		return grid.SelectedItems.Cast<object>().ToArray();
+	}
+
+	protected DataGrid? GetDataGrid()
+	{
+		var placeholder = this.FindControl<ContentControl>("TablePlaceholder");
+		if (placeholder?.Content is Control content)
+		{
+			var grid = content.FindControl<DataGrid>("dataGrid");
+			if (grid != null) return grid;
+		}
+		
+		return this.FindControl<DataGrid>("dataGrid");
 	}
 
 	public void Dispose()
@@ -305,5 +342,4 @@ public partial class JournalView : UserControl
 		}
 	}
 }
-
 

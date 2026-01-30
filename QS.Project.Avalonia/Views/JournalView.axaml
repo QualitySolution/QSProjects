@@ -51,15 +51,7 @@
         <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
                 BorderThickness="1" 
                 Margin="5">
-            <DataGrid x:Name="dataGrid"
-                      IsReadOnly="True"
-                      AutoGenerateColumns="False"
-                      GridLinesVisibility="All"
-                      CanUserReorderColumns="True"
-                      CanUserResizeColumns="True"
-                      SelectionMode="Single"
-                      ItemsSource="{Binding Items}">
-            </DataGrid>
+            <ContentControl x:Name="TablePlaceholder" />
         </Border>
     </DockPanel>
 </UserControl>
