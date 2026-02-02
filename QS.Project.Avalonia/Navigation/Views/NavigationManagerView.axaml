@@ -1,4 +1,4 @@
-<UserControl x:Class="QS.Project.NavigationManagerView"
+<UserControl x:Class="QS.Navigation.Views.NavigationManagerView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"

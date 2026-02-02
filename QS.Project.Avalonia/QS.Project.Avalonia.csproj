@@ -18,6 +18,10 @@
     <Compile Remove="Views\Widgets\Assets\**" />
     <EmbeddedResource Remove="Views\Widgets\Assets\**" />
     <None Remove="Views\Widgets\Assets\**" />
+    <Compile Update="Navigation\Views\NavigationManagerView.axaml.cs">
+      <DependentUpon>NavigationManagerView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,5 +38,13 @@
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Journal\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Navigation\Views\NavigationManagerView.axaml" />
   </ItemGroup>
 </Project>

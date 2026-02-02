@@ -1,8 +1,7 @@
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
-using QS.Navigation;
 
-namespace QS.Project;
+namespace QS.Navigation.Views;
 
 /// <summary>
 /// Avalonia-based NavigationManager with tabs and navi menu.
