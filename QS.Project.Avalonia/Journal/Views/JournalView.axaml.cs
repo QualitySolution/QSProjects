@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Avalonia.Controls;
@@ -7,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using QS.Navigation;
 using QS.Project.Journal;
 
-namespace QS.Views;
+namespace QS.Journal.Views;
 
 /// <summary>
 /// Базовый класс для отображения журналов в Avalonia

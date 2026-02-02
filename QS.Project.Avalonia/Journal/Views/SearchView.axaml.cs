@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using QS.Project.Search;
 
-namespace QS.Views;
+namespace QS.Journal.Views;
 
 public partial class SearchView : UserControl
 {

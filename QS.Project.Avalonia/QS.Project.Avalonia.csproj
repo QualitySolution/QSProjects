@@ -22,6 +22,14 @@
       <DependentUpon>NavigationManagerView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Journal\Views\JournalView.axaml.cs">
+      <DependentUpon>JournalView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Journal\Views\SearchView.axaml.cs">
+      <DependentUpon>SearchView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -41,10 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Journal\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <AdditionalFiles Include="Journal\Views\SearchView.axaml" />
     <AdditionalFiles Include="Navigation\Views\NavigationManagerView.axaml" />
   </ItemGroup>
 </Project>
