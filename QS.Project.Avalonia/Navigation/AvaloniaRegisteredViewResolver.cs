@@ -22,12 +22,14 @@ public class AvaloniaRegisteredViewResolver(AvaloniaViewFactory viewFactory, IAv
 
 	#endregion
 
-	public Control Resolve(ViewModelBase viewModel) {
-		foreach(var rule in registeredViews) {
-			if(rule.IsMatch(viewModel))
-				return viewFactory.Create(rule.ViewType, viewModel);
+	public Control Resolve(ViewModelBase viewModel, string? viewSuffix = null) {
+		if (string.IsNullOrEmpty(viewSuffix) || viewSuffix == "View") {
+			foreach(var rule in registeredViews) {
+				if(rule.IsMatch(viewModel))
+					return viewFactory.Create(rule.ViewType, viewModel);
+			}
 		}
 
-		return nextResolver.Resolve(viewModel);
+		return nextResolver.Resolve(viewModel, viewSuffix);
 	}
 }

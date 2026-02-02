@@ -30,13 +30,14 @@ public class AvaloniaViewResolver : IAvaloniaViewResolver {
 		this.viewFactory = viewFactory;
 	}
 
-	public Control Resolve(ViewModelBase viewModel) {
+	public Control Resolve(ViewModelBase viewModel, string? viewSuffix = null) {
+		string suffix = viewSuffix ?? "View";
 		var fullClassName = viewModel.GetType().FullName;
 		var match = Regex.Matches(fullClassName, "^([a-zA-Z\\d\\.]+)\\.ViewModels(\\.[a-zA-Z\\d\\.]+)*\\.([a-zA-Z\\d]+)ViewModel$");
 		if(match.Count != 1)
 			throw new InvalidOperationException($"Имя класса {fullClassName} не соответствует шаблону `[CoreNamespace].ViewModels.[SubNamespaces].[Name]ViewModel`");
 		var groups = match[0].Groups;
-		var expectedViewName = $"{groups[1].Value}.Views{groups[2].Value}.{groups[3].Value}View";
+		var expectedViewName = $"{groups[1].Value}.Views{groups[2].Value}.{groups[3].Value}{suffix}";
 
 		foreach(var assembly in lookupAssemblies) {
 			Type viewClass = assembly.GetType(expectedViewName);
@@ -48,3 +49,4 @@ public class AvaloniaViewResolver : IAvaloniaViewResolver {
 		return null;
 	}
 }
+

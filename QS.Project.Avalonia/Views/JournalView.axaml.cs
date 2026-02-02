@@ -71,52 +71,28 @@ public partial class JournalView : UserControl
 	{
 		if (ViewModel == null) return;
 
-		Console.WriteLine("JournalView: ConfigureJournal начало...");
-
-		// Поиск типа GridView для автоматической подстановки
-		var vmType = ViewModel.GetType();
-		var vmName = vmType.Name;
-		var potentialViewName = vmName.Replace("ViewModel", "GridView");
-		Type? gridViewType = null;
-		
-		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-			var type = assembly.GetTypes().FirstOrDefault(t => t.Name == potentialViewName && typeof(Control).IsAssignableFrom(t));
-			if (type != null) {
-				gridViewType = type;
-				break;
-			}
+		// 1. Попытка загрузить кастомную таблицу (GridView) через резолвер
+		// Для каждого журнала ДОЛЖНА существовать соответствующая GridView
+		if (viewResolver == null)
+		{
+			throw new InvalidOperationException($"ViewResolver не установлен для журнала {ViewModel.GetType().Name}. Невозможно загрузить таблицу.");
 		}
+		
+		var customTable = viewResolver.Resolve(ViewModel, "GridView");
+		if (customTable == null)
+		{
+			throw new InvalidOperationException(
+				$"Не найдена View с суффиксом 'GridView' для ViewModel типа '{ViewModel.GetType().FullName}'. " +
+				$"Необходимо создать соответствующий UserControl (например, {{Name}}GridView) с таблицей данных.");
+		}
+		
+		TableContent = customTable;
 
 		// Подписываемся на события
 		// 1. Загружаем XAML текущего экземпляра (это может быть наследник ClientJournalView)
 		// Это применит свойства, определенные в XAML наследника (например GridTemplate)
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
-		// 2. Если контент пустой (что ожидаемо для наследника, который задает только шаблоны),
-		// то загружаем базовую разметку из JournalView.axaml
-		if (this.Content == null)
-		{
-			// Грузим XAML UI. Так как там нет x:Class, создадутся просто объекты (UserControl/DockPanel...).
-			// Используем Uri для загрузки ресурса.
-			var ui = (UserControl)AvaloniaXamlLoader.Load(new Uri("avares://QS.Project.Avalonia/Views/JournalView.axaml"));
-			this.Content = ui.Content; // Забираем DockPanel
-
-			// Восстанавливаем кастомный контент таблицы после загрузки UI
-			// Потому что загрузка XAML перезатрет ContentControl, который мы могли бы найти до этого (но мы его еще не искали)
-			// Однако, мы создали contentInstance ДО загрузки UI.
-			// А присваивать его в TableContent нужно ПОСЛЕ того, как визуальное дерево загружено.
-		}
-
-		// Теперь можно безопасно искать контролы и вставлять кастомный контент
-		if (gridViewType != null) {
-			Console.WriteLine($"JournalView: Найдена специфичная таблица {gridViewType.Name}");
-			var contentInstance = Activator.CreateInstance(gridViewType) as Control;
-			if (contentInstance != null) {
-				// Устанавливаем DataContext явно, хотя он наследуется, но для верности
-				contentInstance.DataContext = ViewModel; 
-				TableContent = contentInstance; // Вставляем в загруженную разметку
-			}
-		}
 
 		// Кэшируем контролы. Ищем их в this (визуальное дерево уже должно быть привязано к this)
 		ViewModel.UpdateJournalActions += UpdateButtonActions;
