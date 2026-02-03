@@ -10,11 +10,11 @@
              mc:Ignorable="d">
     <DockPanel>
         <!-- Панель действий сверху -->
-        <StackPanel x:Name="actionsPanel" 
-                    DockPanel.Dock="Top" 
-                    Orientation="Horizontal" 
-                    Margin="5"
-                    Spacing="5" />
+        <ContentControl x:Name="actionsContainer"
+                        DockPanel.Dock="Top"
+                        Margin="5"
+                        Content="{Binding ActionsViewModel}"
+                        IsVisible="{Binding ActionsViewModel, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
         <!-- Фильтр -->
         <ContentControl x:Name="filterContainer" 

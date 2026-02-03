@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.Entity;
+using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
@@ -49,6 +50,15 @@ namespace QS.Project.Journal
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
 
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
+
+		private JournalActionsViewModelBase actionsViewModel;
+		/// <summary>
+		/// View model для панели действий журнала
+		/// </summary>
+		public virtual JournalActionsViewModelBase ActionsViewModel {
+			get => actionsViewModel;
+			set => SetField(ref actionsViewModel, value);
+		}
 
 		public void Refresh(bool needResetItemsCountForNextLoad = true)
 		{

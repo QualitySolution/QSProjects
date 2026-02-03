@@ -83,27 +83,9 @@ public partial class JournalView : UserControl
 		TableContent = customTable;
 
 		// Подписываемся на события
-		// 1. Загружаем XAML текущего экземпляра (это может быть наследник ClientJournalView)
-		// Это применит свойства, определенные в XAML наследника (например GridTemplate)
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 
-		// Кэшируем контролы. Ищем их в this (визуальное дерево уже должно быть привязано к this)
-		ViewModel.UpdateJournalActions += UpdateButtonActions;
-
-		// Получаем контролы
-		var buttonRefresh = this.FindControl<Button>("buttonRefresh");
-		var checkShowFilter = this.FindControl<CheckBox>("checkShowFilter");
-
-		// Настраиваем кнопки
-		if (buttonRefresh != null)
-			buttonRefresh.Click += (_, _) => ViewModel.Refresh();
-
-		if (checkShowFilter != null)
-		{
-			checkShowFilter.IsChecked = ViewModel.IsFilterShow;
-			checkShowFilter.Click += (_, _) => ViewModel.IsFilterShow = checkShowFilter.IsChecked ?? false;
-		}
 
 		// Настраиваем режим выбора
 		SetSelectionMode(ViewModel.TableSelectionMode);
@@ -114,8 +96,6 @@ public partial class JournalView : UserControl
 		// Настраиваем поиск
 		ConfigureSearch();
 
-		// Настраиваем действия
-		UpdateButtonActions();
 
 		// Загружаем данные
 		Console.WriteLine("JournalView: Вызываем Refresh...");
@@ -125,12 +105,9 @@ public partial class JournalView : UserControl
 	private void ConfigureFilter()
 	{
 		var filterContainer = this.FindControl<ContentControl>("filterContainer");
-		var checkShowFilter = this.FindControl<CheckBox>("checkShowFilter");
 		
 		if (ViewModel?.JournalFilter == null || filterContainer == null || viewResolver == null)
 		{
-			if (checkShowFilter != null)
-				checkShowFilter.IsVisible = false;
 			return;
 		}
 
@@ -141,14 +118,7 @@ public partial class JournalView : UserControl
 			if (filterView != null)
 			{
 				filterContainer.Content = filterView;
-				if (checkShowFilter != null)
-					checkShowFilter.IsVisible = true;
 			}
-		}
-		else
-		{
-			if (checkShowFilter != null)
-				checkShowFilter.IsVisible = false;
 		}
 	}
 
@@ -194,12 +164,6 @@ public partial class JournalView : UserControl
 		{
 			SetSelectionMode(ViewModel!.TableSelectionMode);
 		}
-		else if (e.PropertyName == nameof(ViewModel.IsFilterShow))
-		{
-			var checkShowFilter = this.FindControl<CheckBox>("checkShowFilter");
-			if (checkShowFilter != null)
-				checkShowFilter.IsChecked = ViewModel!.IsFilterShow;
-		}
 	}
 
 	private void ViewModel_ItemsListUpdated(object? sender, EventArgs e)
@@ -243,34 +207,6 @@ public partial class JournalView : UserControl
 		});
 	}
 
-	private void UpdateButtonActions()
-	{
-		var actionsPanel = this.FindControl<StackPanel>("actionsPanel");
-		if (actionsPanel == null || ViewModel == null) return;
-
-		actionsPanel.Children.Clear();
-
-		var selectedItems = GetSelectedItems();
-
-		// Добавляем кнопки действий
-		foreach (var action in ViewModel.NodeActions ?? Enumerable.Empty<IJournalAction>())
-		{
-			var button = new Button
-			{
-				Content = action.GetTitle(selectedItems),
-				IsEnabled = action.GetSensitivity(selectedItems),
-				IsVisible = action.GetVisibility(selectedItems)
-			};
-
-			button.Click += (_, _) =>
-			{
-				var items = GetSelectedItems();
-				action.ExecuteAction?.Invoke(items);
-			};
-
-			actionsPanel.Children.Add(button);
-		}
-	}
 
 	protected object[] GetSelectedItems()
 	{
@@ -300,7 +236,6 @@ public partial class JournalView : UserControl
 			ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
 			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions -= UpdateButtonActions;
 		}
 	}
 }
