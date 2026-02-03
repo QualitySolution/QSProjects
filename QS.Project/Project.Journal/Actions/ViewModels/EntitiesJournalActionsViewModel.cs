@@ -9,7 +9,7 @@ using QS.ViewModels;
 
 namespace QS.Project.Journal.Actions.ViewModels
 {
-	public class EntitiesJournalActionsViewModel : ButtonsJournalActionsViewModel
+	public class EntitiesJournalActionsViewModel<TNode> : ButtonsJournalActionsViewModelBase<TNode>
 	{
 		private Action hideJournalAction;
 		protected IReadOnlyDictionary<Type, JournalEntityConfig> EntityConfigs;
@@ -199,7 +199,7 @@ namespace QS.Project.Journal.Actions.ViewModels
 		private void CreateMultipleAddActions()
 		{
 			var addParentNodeAction =
-				new DefaultJournalAction(DefaultAddLabel(), () => true, () => true, () => { }, ActionType.MultipleAdd);
+				new JournalAction(DefaultAddLabel(), () => true, () => true, () => { }, ActionType.MultipleAdd);
 
 			foreach(var entityConfig in EntityConfigs.Values)
 			{
@@ -207,7 +207,7 @@ namespace QS.Project.Journal.Actions.ViewModels
 				{
 					foreach(var createDlgConfig in documentConfig.GetCreateEntityDlgConfigs())
 					{
-						var childNodeAction = new DefaultJournalAction(createDlgConfig.Title,
+						var childNodeAction = new JournalAction(createDlgConfig.Title,
 							() => entityConfig.PermissionResult.CanCreate,
 							() => entityConfig.PermissionResult.CanCreate,
 							() =>
@@ -226,7 +226,7 @@ namespace QS.Project.Journal.Actions.ViewModels
 				}
 			}
 
-			JournalActions.Add(addParentNodeAction);
+			Actions.Add(addParentNodeAction);
 		}
 		
 		#endregion

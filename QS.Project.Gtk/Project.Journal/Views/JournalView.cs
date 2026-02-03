@@ -53,6 +53,7 @@ namespace QS.Project.Journal.Views
 			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
+			tableview.RowActivated += Tableview_RowActivated;
 			SetSeletionMode(ViewModel.SelectionMode);
 
 			//FIXME Этот код только для водовоза
@@ -78,7 +79,7 @@ namespace QS.Project.Journal.Views
 				ViewModel.JournalFilter.PropertyChanged += JournalFilter_PropertyChanged;
 			}
 			
-			if(ViewModel.JournalActions is JournalActionsViewModel actionsViewModel)
+			if(ViewModel.JournalActions is JournalActionsViewModelBase actionsViewModel)
 			{
 				Widget actionsView;
 				
@@ -97,11 +98,6 @@ namespace QS.Project.Journal.Views
 				Box.BoxChild documentButtonBox = (Box.BoxChild)hboxButtons[actionsView];
 				documentButtonBox.Expand = false;
 				documentButtonBox.Fill = false;
-				
-				tableview.RowActivated += (o, args) =>
-				{
-					ViewModel.JournalActions?.RowActivatedAction?.Invoke();
-				};
 			}
 
 			Widget searchView = ViewModel.AutofacScope != null ? ResolutionExtensions.ResolveOptionalNamed<Widget>(ViewModel.AutofacScope, "GtkJournalSearchView", new TypedParameter(typeof(SearchViewModel), ViewModel.Search)) : null;
@@ -120,6 +116,7 @@ namespace QS.Project.Journal.Views
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
 		}
 
+		#region Обработчики событий
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if(e.PropertyName == nameof(ViewModel.FooterInfo))
@@ -127,6 +124,12 @@ namespace QS.Project.Journal.Views
 			if(e.PropertyName == nameof(ViewModel.SelectionMode))
 				SetSeletionMode(ViewModel.SelectionMode);
 		}
+
+		void Tableview_RowActivated(object o, RowActivatedArgs args)
+		{
+			ViewModel.JournalActions?.OnCellDoubleClick(tableview.gets);
+		}
+
 
 		void JournalFilter_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{

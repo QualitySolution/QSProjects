@@ -50,7 +50,7 @@ namespace QS.Project.Journal.Actions.Views
 			}
 		}
 		
-		private void CreateMultipleButton(string label, IList<DefaultJournalAction> childActions)
+		private void CreateMultipleButton(string label, IList<ViewModels.JournalAction> childActions)
 		{
 			var menuButton = new MenuButton 
 			{
@@ -69,7 +69,7 @@ namespace QS.Project.Journal.Actions.Views
             yhboxBtns.Add(menuButton);
 		}
 
-		private MenuItem CreateMenuItemWidget(DefaultJournalAction action)
+		private MenuItem CreateMenuItemWidget(ViewModels.JournalAction action)
 		{
 			MenuItem menuItem = new MenuItem(action.Label);
 

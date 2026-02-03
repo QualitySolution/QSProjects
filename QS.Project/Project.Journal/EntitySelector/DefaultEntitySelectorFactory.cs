@@ -51,7 +51,7 @@ namespace QS.Project.Journal.EntitySelector
 		public IEntitySelector CreateSelector(bool multipleSelect = false)
 		{
 			var filter = (TJournalFilterViewModel)filterConstructorInfo.Invoke(new object[] { });
-			var journalActions = (JournalActionsViewModel)JournalActionsConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
+			var journalActions = (JournalActionsViewModelBase)JournalActionsConstructorInfo.Invoke(new object[] { commonServices.InteractiveService });
 			var selectorViewModel = (TJournalViewModel)journalConstructorInfo.Invoke(
 				new object[] { journalActions, filter, UnitOfWorkFactory.GetDefaultFactory, commonServices });
 			selectorViewModel.SelectionMode = JournalSelectionMode.Single;

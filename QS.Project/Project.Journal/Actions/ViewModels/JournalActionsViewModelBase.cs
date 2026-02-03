@@ -1,16 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.DomainModel.Entity;
 using QS.ViewModels;
 
 namespace QS.Project.Journal.Actions.ViewModels
 {
-	public class JournalActionsViewModel : WidgetViewModelBase
+	public class JournalActionsViewModelBase<TNode> : ViewModelBase, IJournalEventsHandler, IJournalActionsViewModel
 	{
+		#region Свойства
 		public JournalViewModelBase MyJournal { get; set; }
-		
-		protected IList<object> selectedItems;
+		#endregion
+
+		#region IJournalEventsHandler
+		void IJournalEventsHandler.OnCellDoubleClick(object node, object columnTag, object subcolumnTag)
+		{
+			OnCellDoubleClick((TNode)node, columnTag, subcolumnTag);
+		}
+
+		void IJournalEventsHandler.OnSelectionChanged(IList<object> nodes)
+		{
+			OnSelectionChanged(nodes.Cast<TNode>().ToArray());
+		}
+		#endregion
+
+		#region События во View журнала
+
+		protected virtual void OnCellDoubleClick(TNode node, object columnTag, object subcolumnTag)
+		{
+
+		}
+
+		protected virtual void OnSelectionChanged(IList<TNode> nodes)
+		{
+			selectedItems = nodes;
+		}
+
+		public virtual void OnKeyPressed(string key)
+		{
+
+		}
+
+		#endregion
+
+		#region Выделение
+		protected IList<TNode> selectedItems;
+		#endregion
+
+		//FIXME Ниже под удаление.
 
 		private JournalSelectionMode selectionMode;
 		public JournalSelectionMode SelectionMode
@@ -54,8 +90,6 @@ namespace QS.Project.Journal.Actions.ViewModels
 		}
 
 		public Action RowActivatedAction { get; set; }
-		
-		public IList<DefaultJournalAction> JournalActions { get; set; } = new List<DefaultJournalAction>();
 
 		protected virtual void InitializeRowActivatedAction()
 		{
@@ -99,7 +133,7 @@ namespace QS.Project.Journal.Actions.ViewModels
 
 		private void CreateAction()
 		{
-			var selectAction = new DefaultJournalAction(
+			var selectAction = new JournalAction(
 				"Выбрать",
 				CanSelect,
 				() => SelectionMode != JournalSelectionMode.None,
@@ -109,59 +143,5 @@ namespace QS.Project.Journal.Actions.ViewModels
 			
 			JournalActions.Add(selectAction);
 		}
-	}
-
-	public class DefaultJournalAction : PropertyChangedBase
-	{
-		private string label;
-		
-		public DefaultJournalAction(
-			string label,
-			Func<bool> sensitiveFunc,
-			Func<bool> visibleFunc,
-			Action executeAction,
-			ActionType actionType,
-			string hotkeys = null)
-		{
-			SensitiveFunc = sensitiveFunc;
-			VisibleFunc = visibleFunc;
-			Label = label;
-			ExecuteAction = executeAction;
-			ActionType = actionType;
-			HotKeys = hotkeys;
-			ChildDefaultJournalActions = new List<DefaultJournalAction>();
-		}
-
-		public Func<bool> SensitiveFunc { get; set; }
-		public Func<bool> VisibleFunc { get; set; }
-
-		public bool Sensitive => SensitiveFunc != null && SensitiveFunc.Invoke();
-		public bool Visible => VisibleFunc != null && VisibleFunc.Invoke();
-
-		public string Label
-		{
-			get => label;
-			set => SetField(ref label, value);
-		}
-
-		public Action ExecuteAction { get; set; }
-		public IList<DefaultJournalAction> ChildDefaultJournalActions { get; }
-		public ActionType ActionType { get; }
-		public string HotKeys { get; }
-
-		public new void OnPropertyChanged(string propertyName = "")
-		{
-			base.OnPropertyChanged(propertyName);
-		}
-	}
-
-	public enum ActionType
-	{
-		Select,
-		Add,
-		MultipleAdd,
-		Edit,
-		Delete,
-		Custom
 	}
 }

@@ -25,7 +25,7 @@ namespace QS.Project.Journal
 		}
 
 		protected FilterableSingleEntityJournalViewModelBase(
-			JournalActionsViewModel journalActionsViewModel,
+			JournalActionsViewModelBase journalActionsViewModel,
 			TFilterViewModel filterViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,

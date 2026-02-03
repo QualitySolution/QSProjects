@@ -5,9 +5,9 @@ using QS.Views;
 
 namespace QS.Project.Journal.Actions.Views
 {
-    public partial class JournalActionsView : ViewBase<JournalActionsViewModel>
+    public partial class JournalActionsView : ViewBase<JournalActionsViewModelBase>
     {
-        public JournalActionsView(JournalActionsViewModel viewModel) : base(viewModel)
+        public JournalActionsView(JournalActionsViewModelBase viewModel) : base(viewModel)
         {
             Build();
             Configure();

@@ -6,6 +6,6 @@ namespace QS.Dialog
 {
 	public interface IJournalActionsResolver
 	{
-		Widget Resolve(JournalActionsViewModel journalActionsViewModel);
+		Widget Resolve(JournalActionsViewModelBase journalActionsViewModel);
 	}
 }

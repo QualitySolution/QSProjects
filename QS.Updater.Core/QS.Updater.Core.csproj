@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>QS</RootNamespace>
-        <ProjectGuid>{BC159BA7-EF22-4800-AC34-DE4B2B386AAE}</ProjectGuid>
     </PropertyGroup>
 
     <ItemGroup>

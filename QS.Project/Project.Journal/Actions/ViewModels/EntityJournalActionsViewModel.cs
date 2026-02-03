@@ -9,7 +9,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Project.Journal.Actions.ViewModels
 {
-	public class EntityJournalActionsViewModel<TEntityViewModel, TEntity> : ButtonsJournalActionsViewModel
+	public class EntityJournalActionsViewModel<TEntityViewModel, TEntity, TNode> : ButtonsJournalActionsViewModelBase<TNode>
 		where TEntityViewModel : DialogViewModelBase
 	{
 		public INavigationManager NavigationManager { get; }

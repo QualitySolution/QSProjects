@@ -20,7 +20,7 @@ namespace QS.Project.Journal
 		public Type EntityType { get; }
 
 		protected SingleEntityJournalViewModelBase(
-			JournalActionsViewModel journalActionsViewModel,
+			JournalActionsViewModelBase journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,
 			bool hideJournalForOpenDialog = false,

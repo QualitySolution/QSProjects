@@ -66,10 +66,10 @@
     <Compile Include="Project.DB\Passwords\CloudChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\MySqlChangePasswordModel.cs" />
     <Compile Include="Project.DB\Passwords\IChangePasswordModel.cs" />
-    <Compile Include="Project.Journal\Actions\ViewModels\ButtonsJournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\ButtonsJournalActionsViewModelBase.cs" />
     <Compile Include="Project.Journal\Actions\ViewModels\EntitiesJournalActionsViewModel.cs" />
     <Compile Include="Project.Journal\Actions\ViewModels\EntityJournalActionsViewModel.cs" />
-    <Compile Include="Project.Journal\Actions\ViewModels\JournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\ViewModels\JournalActionsViewModelBase.cs" />
     <Compile Include="Project.Repositories\IMySqlPasswordRepository.cs" />
     <Compile Include="Project.Repositories\MySqlPasswordRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -324,6 +324,11 @@
     <Compile Include="ErrorReporting\ExceptionHelper.cs" />
     <Compile Include="ErrorReporting\IErrorReportingSettings.cs" />
     <Compile Include="ErrorReporting\ReportWorker.cs" />
+    <Compile Include="Project.Journal\Actions\IJournalEventsHandler.cs" />
+    <Compile Include="Project.Journal\Actions\IJournalActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\IСhoiceActionsViewModel.cs" />
+    <Compile Include="Project.Journal\Actions\JournalAction.cs" />
+    <Compile Include="Project.Journal\Actions\ActionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Project.Domain\" />

@@ -94,7 +94,7 @@
       <Name>Gamma.Binding</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\QS.Attachments\QS.Attachments.csproj">
-      <Project>{0bf087b7-b2c5-46be-9941-bb0ad8aae7d3}</Project>
+      <Project>{4BD2C9E3-4154-4AB3-972F-40DD4B828213}</Project>
       <Name>QS.Attachments</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj">

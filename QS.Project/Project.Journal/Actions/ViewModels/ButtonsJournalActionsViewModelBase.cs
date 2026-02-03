@@ -1,13 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QS.ViewModels;
 
 namespace QS.Project.Journal.Actions.ViewModels
 {
-	public abstract class ButtonsJournalActionsViewModel : JournalActionsViewModel
+	public abstract class ButtonsJournalActionsViewModelBase<TNode> : JournalActionsViewModelBase<TNode>
 	{
+		public IList<JournalAction<TNode>> Actions { get; set; } = new List<JournalAction<TNode>>();
+
+		protected override void OnSelectionChanged(IList<TNode> nodes)
+		{
+			base.OnSelectionChanged(nodes);
+			foreach (var action in Actions)
+				action.OnSelectionChanged(nodes);
+		}
+
+
 		#region Дефолтные значения экшена Добавить
-		
+
 		protected virtual string DefaultAddLabel() => "Добавить";
 
 		protected abstract bool CanCreateEntity();
@@ -79,7 +90,7 @@ namespace QS.Project.Journal.Actions.ViewModels
 				CreateAction(DefaultDeleteLabel(), CanDeleteEntity, () => true, DefaultDeleteAction, ActionType.Delete, "Delete");
 			}
 		}
-		
+
 		#endregion
 		
 		protected void CreateAction(
@@ -90,17 +101,17 @@ namespace QS.Project.Journal.Actions.ViewModels
 			ActionType actionType,
 			string hotkeys = null)
 		{
-			var action = new DefaultJournalAction(label, sensitiveFunc, visibleFunc, executeAction, actionType, hotkeys);
-			JournalActions.Add(action);
+			var action = new JournalAction(label, sensitiveFunc, visibleFunc, executeAction, actionType, hotkeys);
+			Actions.Add(action);
 		}
 		
 		#endregion
 		
 		protected override void InitializeRowActivatedAction()
 		{
-			if(JournalActions.Any())
+			if(Actions.Any())
 			{
-				var editAction = JournalActions.SingleOrDefault(a => a.ActionType == ActionType.Edit);
+				var editAction = Actions.SingleOrDefault(a => a.ActionType == ActionType.Edit);
 
 				if(editAction != null)
 				{
@@ -114,4 +125,4 @@ namespace QS.Project.Journal.Actions.ViewModels
 			}
 		}
 	}
-}
+}Ы

@@ -70,7 +70,7 @@ namespace QS.Project.Journal
 		//NavigationManager navigation = null - чтобы не переделывать классов в Водовозе, где будет использоваться передадут.
 		
 		protected EntitiesJournalViewModelBase(
-			JournalActionsViewModel journalActionsViewModel,
+			JournalActionsViewModelBase journalActionsViewModel,
 			IUnitOfWorkFactory unitOfWorkFactory,
 			ICommonServices commonServices,
 			INavigationManager navigation = null)
