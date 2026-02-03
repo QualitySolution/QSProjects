@@ -85,10 +85,13 @@ public partial class JournalView : UserControl
 		// Подписываемся на события
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
-
+		ViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
 		// Настраиваем режим выбора
 		SetSelectionMode(ViewModel.TableSelectionMode);
+
+		// Подписываемся на события таблицы для передачи в ActionsViewModel
+		ConfigureDataGridEvents();
 
 		// Настраиваем фильтр
 		ConfigureFilter();
@@ -138,6 +141,50 @@ public partial class JournalView : UserControl
 				searchContainer.Content = searchView;
 			}
 		}
+	}
+
+	private void ConfigureDataGridEvents()
+	{
+		var grid = GetDataGrid();
+		if (grid == null) return;
+
+		// Подписываемся на изменение выбора
+		grid.SelectionChanged += DataGrid_SelectionChanged;
+		
+		// Подписываемся на двойной клик
+		grid.DoubleTapped += DataGrid_DoubleTapped;
+		
+		// Подписываемся на нажатие клавиш
+		grid.KeyDown += DataGrid_KeyDown;
+	}
+
+	private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+	{
+		if (ViewModel?.ActionsViewModel == null) return;
+
+		var selectedItems = GetSelectedItems();
+		ViewModel.ActionsViewModel.OnSelectionChanged(selectedItems);
+	}
+
+	private void DataGrid_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
+	{
+		if (ViewModel?.ActionsViewModel == null) return;
+
+		var selectedItems = GetSelectedItems();
+		if (selectedItems.Length > 0)
+		{
+			// Пытаемся получить информацию о колонке (опционально)
+			ViewModel.ActionsViewModel.OnCellDoubleClick(selectedItems[0], null, null);
+		}
+	}
+
+	private void DataGrid_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+	{
+		if (ViewModel?.ActionsViewModel == null) return;
+
+		// Преобразуем клавишу в строку
+		var key = e.Key.ToString();
+		ViewModel.ActionsViewModel.OnKeyPressed(key);
 	}
 
 	private void SetSelectionMode(JournalSelectionMode mode)
@@ -236,6 +283,14 @@ public partial class JournalView : UserControl
 			ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
 			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+		}
+
+		var grid = GetDataGrid();
+		if (grid != null)
+		{
+			grid.SelectionChanged -= DataGrid_SelectionChanged;
+			grid.DoubleTapped -= DataGrid_DoubleTapped;
+			grid.KeyDown -= DataGrid_KeyDown;
 		}
 	}
 }

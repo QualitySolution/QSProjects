@@ -51,11 +51,11 @@ namespace QS.Journal
 
 		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
-		private JournalActionsViewModelBase actionsViewModel;
+		private IJournalEventsHandler actionsViewModel;
 		/// <summary>
 		/// View model для панели действий журнала
 		/// </summary>
-		public virtual JournalActionsViewModelBase ActionsViewModel {
+		public virtual IJournalEventsHandler ActionsViewModel {
 			get => actionsViewModel;
 			set => SetField(ref actionsViewModel, value);
 		}
@@ -92,8 +92,6 @@ namespace QS.Journal
 				}
 			}
 		}
-
-		public Action UpdateJournalActions;
 
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
 

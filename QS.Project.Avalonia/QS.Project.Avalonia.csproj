@@ -30,6 +30,10 @@
       <DependentUpon>SearchView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Journal\Views\ButtonJournalActionsView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ButtonJournalActionsView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
