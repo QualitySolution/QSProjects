@@ -1,6 +1,7 @@
 using System;
-using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using QS.Project.Search;
@@ -12,11 +13,13 @@ public partial class SearchView : UserControl
 	private SearchViewModel? viewModel;
 	private DispatcherTimer? searchTimer;
 	
+	#region Настройка
 	/// <summary>
 	/// Задержка в передачи запроса на поиск во view model.
 	/// Измеряется в миллисекундах.
 	/// </summary>
-	public static uint QueryDelay = 300;
+	public static uint QueryDelay = 0;
+	#endregion
 
 	public SearchView()
 	{
@@ -37,19 +40,19 @@ public partial class SearchView : UserControl
 
 	private void ConfigureView()
 	{
-		var entry1 = this.FindControl<TextBox>("entrySearch");
-		var entry2 = this.FindControl<TextBox>("entrySearch2");
-		var entry3 = this.FindControl<TextBox>("entrySearch3");
-		var entry4 = this.FindControl<TextBox>("entrySearch4");
+		var entrySearchControl = this.FindControl<TextBox>("entrySearch");
+		var buttonSearchClearControl = this.FindControl<Button>("buttonSearchClear");
 
-		if (entry1 != null)
-			entry1.TextChanged += OnSearchTextChanged;
-		if (entry2 != null)
-			entry2.TextChanged += OnSearchTextChanged;
-		if (entry3 != null)
-			entry3.TextChanged += OnSearchTextChanged;
-		if (entry4 != null)
-			entry4.TextChanged += OnSearchTextChanged;
+		if (entrySearchControl != null)
+		{
+			entrySearchControl.TextChanged += EntrySearch_TextChanged;
+			entrySearchControl.KeyDown += EntrySearch_KeyDown;
+		}
+
+		if (buttonSearchClearControl != null)
+		{
+			buttonSearchClearControl.Click += ButtonSearchClear_Click;
+		}
 
 		// Настраиваем таймер для отложенного поиска
 		if (QueryDelay > 0)
@@ -61,42 +64,56 @@ public partial class SearchView : UserControl
 			searchTimer.Tick += (_, _) =>
 			{
 				searchTimer.Stop();
-				UpdateSearch();
+				RunSearch();
 			};
 		}
 	}
 
-	private void OnSearchTextChanged(object? sender, TextChangedEventArgs e)
+	private void EntrySearch_TextChanged(object? sender, TextChangedEventArgs e)
 	{
-		if (searchTimer != null)
+		if (QueryDelay != 0 && searchTimer != null)
 		{
 			searchTimer.Stop();
 			searchTimer.Start();
 		}
 		else
 		{
-			UpdateSearch();
+			RunSearch();
 		}
 	}
 
-	private void UpdateSearch()
+	private void EntrySearch_KeyDown(object? sender, KeyEventArgs e)
+	{
+		if (e.Key == Key.Return || e.Key == Key.Enter)
+		{
+			searchTimer?.Stop();
+			RunSearch();
+		}
+	}
+
+	private void RunSearch()
 	{
 		if (viewModel == null) return;
 
-		var entry1 = this.FindControl<TextBox>("entrySearch");
-		var entry2 = this.FindControl<TextBox>("entrySearch2");
-		var entry3 = this.FindControl<TextBox>("entrySearch3");
-		var entry4 = this.FindControl<TextBox>("entrySearch4");
-
-		var allFields = new[]
+		var entrySearchControl = this.FindControl<TextBox>("entrySearch");
+		if (entrySearchControl != null)
 		{
-			entry1?.Text ?? "",
-			entry2?.Text ?? "",
-			entry3?.Text ?? "",
-			entry4?.Text ?? ""
-		};
+			var allFields = entrySearchControl.Text?.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+			viewModel.SearchValues = allFields;
+		}
+	}
 
-		viewModel.SearchValues = allFields.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+	private void ButtonSearchClear_Click(object? sender, RoutedEventArgs e)
+	{
+		if (viewModel != null)
+		{
+			viewModel.SearchValues = Array.Empty<string>();
+			var entrySearchControl = this.FindControl<TextBox>("entrySearch");
+			if (entrySearchControl != null)
+			{
+				entrySearchControl.Text = string.Empty;
+			}
+		}
 	}
 }
 
