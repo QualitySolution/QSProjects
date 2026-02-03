@@ -16,11 +16,6 @@ public partial class JournalView : UserControl
 	private JournalViewModelBase? viewModel;
 	protected IAvaloniaViewResolver? viewResolver;
 
-	/// <summary>
-	/// Событие для настройки колонок после полной инициализации контролов
-	/// </summary>
-	public event EventHandler? ColumnsConfigurationRequired;
-
 	public JournalView()
 	{
 		InitializeComponent();
@@ -125,14 +120,6 @@ public partial class JournalView : UserControl
 		// Загружаем данные
 		Console.WriteLine("JournalView: Вызываем Refresh...");
 		ViewModel.Refresh();
-		
-		// Настраиваем колонки ПОСЛЕ всех инициализаций через Dispatcher
-		Console.WriteLine("JournalView: Планируем вызов ConfigureColumns через Dispatcher...");
-		Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-		{
-			Console.WriteLine("JournalView: Вызываем ConfigureColumns из Dispatcher...");
-			ColumnsConfigurationRequired?.Invoke(this, EventArgs.Empty);
-		}, Avalonia.Threading.DispatcherPriority.Loaded);
 	}
 
 	private void ConfigureFilter()
