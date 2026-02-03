@@ -9,11 +9,12 @@
              x:DataType="journal:JournalViewModelBase"
              mc:Ignorable="d">
     <DockPanel>
-        <!-- Панель инструментов сверху -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
-            <Button x:Name="buttonRefresh" Content="Обновить" Margin="0,0,5,0" />
-            <CheckBox x:Name="checkShowFilter" Content="Фильтр" Margin="0,0,5,0" />
-        </StackPanel>
+        <!-- Панель действий сверху -->
+        <StackPanel x:Name="actionsPanel" 
+                    DockPanel.Dock="Top" 
+                    Orientation="Horizontal" 
+                    Margin="5"
+                    Spacing="5" />
 
         <!-- Фильтр -->
         <ContentControl x:Name="filterContainer" 
@@ -27,25 +28,12 @@
                         Margin="5"
                         IsVisible="{Binding SearchEnabled}" />
 
-        <!-- Панель действий снизу -->
-        <Grid DockPanel.Dock="Bottom" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            
-            <!-- Footer инфо -->
-            <TextBlock x:Name="labelFooter" 
-                       Grid.Column="0" 
-                       Text="{Binding FooterInfo}" 
-                       VerticalAlignment="Center" />
-            
-            <!-- Кнопки действий -->
-            <StackPanel x:Name="actionsPanel" 
-                        Grid.Column="1" 
-                        Orientation="Horizontal" 
-                        Spacing="5" />
-        </Grid>
+        <!-- Footer снизу -->
+        <TextBlock x:Name="labelFooter" 
+                   DockPanel.Dock="Bottom"
+                   Margin="5"
+                   Text="{Binding FooterInfo}" 
+                   VerticalAlignment="Center" />
 
         <!-- Основная таблица -->
         <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
