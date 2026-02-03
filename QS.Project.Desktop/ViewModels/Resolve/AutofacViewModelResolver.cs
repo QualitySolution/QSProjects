@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using QS.Journal;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
 

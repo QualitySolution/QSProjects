@@ -2,11 +2,10 @@ using System;
 using System.Linq;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
-using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 
-namespace QS.Project.Journal {
+namespace QS.Journal {
 	public class UowJournalViewModelBase : JournalViewModelBase, IDisposable {
 
 		public UowJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IEntityChangeWatcher changeWatcher) : base(navigation) {

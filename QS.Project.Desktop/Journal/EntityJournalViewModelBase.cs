@@ -8,21 +8,20 @@ using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
+using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.NodeExtensions;
 using QS.Project.Services;
 using QS.Utilities.Text;
 using QS.ViewModels.Dialog;
 
-namespace QS.Project.Journal
+namespace QS.Journal
 {
 	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : UowJournalViewModelBase
 		where TEntity : class, IDomainObject
 		where TEntityViewModel : DialogViewModelBase
 		where TNode : class
 	{
-		#region Обязательные зависимости
-		#endregion
 		#region Опциональные зависимости
 		protected IDeleteEntityService DeleteEntityService;
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
