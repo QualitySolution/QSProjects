@@ -1,6 +1,6 @@
 using QS.Project.Journal;
 
-namespace QS.Journal
+namespace QS.Journal.Actions
 {
 	/// <summary>
 	/// Базовая view model для панели действий журнала

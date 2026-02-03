@@ -7,6 +7,7 @@ using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.Entity;
 using QS.Journal;
+using QS.Journal.Actions;
 using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.Search;
