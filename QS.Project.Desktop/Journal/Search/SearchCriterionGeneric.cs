@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
 
-namespace QS.Project.Journal.Search {
+namespace QS.Journal.Search {
 	public class SearchCriterionGeneric<TEntity> : SearchCriterion {
 		public SearchCriterionGeneric(IJournalSearch journalSearch) : base(journalSearch)
 		{

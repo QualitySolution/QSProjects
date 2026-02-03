@@ -4,9 +4,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:journal="clr-namespace:QS.Project.Journal;assembly=QS.Project.Desktop"
+             xmlns:journal1="clr-namespace:QS.Journal;assembly=QS.Project.Desktop"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             x:DataType="journal:JournalViewModelBase"
+             x:DataType="journal1:JournalViewModelBase"
              mc:Ignorable="d">
     <DockPanel>
         <!-- Панель действий сверху -->

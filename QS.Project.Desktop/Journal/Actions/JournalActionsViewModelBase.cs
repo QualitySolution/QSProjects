@@ -1,5 +1,3 @@
-using QS.Project.Journal;
-
 namespace QS.Journal.Actions
 {
 	/// <summary>

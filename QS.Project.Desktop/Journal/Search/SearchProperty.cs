@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
 
-namespace QS.Project.Journal.Search {
+namespace QS.Journal.Search {
 	public class SearchProperty {
 		//Класс создается только через фабричные методы, так как в обычном конструкторе нельзя использовать дженерики, без создания еще одного класса.
 		#region Фабрика

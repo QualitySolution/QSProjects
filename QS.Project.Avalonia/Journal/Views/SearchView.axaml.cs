@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using QS.Project.Search;
+using QS.Journal.Search;
 
 namespace QS.Journal.Views;
 

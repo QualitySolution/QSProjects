@@ -1,9 +1,10 @@
 using QS.DomainModel.Entity;
+using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
-using System;
 using System.Linq;
+using System;
 
 namespace QS.ViewModels.Control.EEVM {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector

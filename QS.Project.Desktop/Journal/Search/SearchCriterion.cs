@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
 
-namespace QS.Project.Journal.Search {
+namespace QS.Journal.Search {
 	public class SearchCriterion {
 		protected readonly IJournalSearch journalSearch;
 		protected readonly List<SearchProperty> searchProperties = new List<SearchProperty>();

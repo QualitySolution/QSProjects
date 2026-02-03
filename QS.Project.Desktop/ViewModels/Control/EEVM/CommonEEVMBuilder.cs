@@ -1,6 +1,7 @@
 using System;
 using Autofac;
 using QS.DomainModel.Entity;
+using QS.Journal;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Resolve;

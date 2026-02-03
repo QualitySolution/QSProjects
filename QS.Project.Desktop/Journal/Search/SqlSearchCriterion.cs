@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QS.Project.Journal.Search {
+namespace QS.Journal.Search {
 	/// <summary>
 	/// Класс предназначен для формирования критериев поиска для журналов на чистом SQL.
 	/// </summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using QS.ViewModels;
-using QS.Project.Journal;
-namespace QS.Project.Search
+
+namespace QS.Journal.Search
 {
 	public class SearchViewModel : WidgetViewModelBase, IJournalSearch
 	{

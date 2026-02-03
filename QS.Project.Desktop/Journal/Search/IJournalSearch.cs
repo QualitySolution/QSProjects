@@ -1,5 +1,6 @@
 ﻿using System;
-namespace QS.Project.Journal
+
+namespace QS.Journal.Search
 {
 	public interface IJournalSearch
 	{

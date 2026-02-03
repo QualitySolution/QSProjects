@@ -9,6 +9,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using QS.DomainModel.NotifyChange;
+using QS.Journal;
 
 namespace QS.ViewModels.Control.EEVM {
 	/// <summary>

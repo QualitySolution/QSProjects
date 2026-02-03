@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.ViewModels;
 
 namespace QS.Project.Journal

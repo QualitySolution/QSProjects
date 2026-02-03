@@ -6,15 +6,14 @@ using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NLog;
 using QS.DomainModel.Entity;
-using QS.Journal;
 using QS.Journal.Actions;
+using QS.Journal.Search;
 using QS.Navigation;
+using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
-using QS.Project.Journal.Search;
-using QS.Project.Search;
 using QS.ViewModels.Dialog;
 
-namespace QS.Project.Journal
+namespace QS.Journal
 {
 	public abstract class JournalViewModelBase : DialogViewModelBase, ISlideableViewModel
 	{
