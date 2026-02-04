@@ -6,6 +6,7 @@ using Gamma.GtkWidgets;
 using Gtk;
 using QS.DomainModel.Entity.EntityPermissions.EntityExtendedPermission;
 using QS.Journal.GtkUI;
+using QS.Journal.Views;
 using QS.Project.Repositories;
 using QS.Widgets;
 

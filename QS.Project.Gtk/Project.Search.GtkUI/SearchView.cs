@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Gdk;
 using NLog;
+using QS.Journal.Search;
 
 namespace QS.Project.Search.GtkUI
 {

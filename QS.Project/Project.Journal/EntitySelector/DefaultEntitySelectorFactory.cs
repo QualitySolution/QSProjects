@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.Services;
 
 namespace QS.Project.Journal.EntitySelector

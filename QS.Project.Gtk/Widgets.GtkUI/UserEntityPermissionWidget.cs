@@ -9,6 +9,7 @@ using QS.DomainModel.UoW;
 using QS.EntityRepositories;
 using QS.Extensions.Observable.Collections.List;
 using QS.Journal.GtkUI;
+using QS.Journal.Views;
 using QS.Project.Domain;
 using QS.Project.Repositories;
 using QS.Utilities.Extensions;

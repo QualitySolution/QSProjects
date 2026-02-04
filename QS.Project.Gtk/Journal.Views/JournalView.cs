@@ -6,6 +6,8 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
+using QS.Journal.Actions;
+using QS.Journal.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Utilities;
@@ -15,7 +17,7 @@ using QS.Views.Dialog;
 using QS.Views.Resolve;
 using QS.Widgets;
 
-namespace QS.Journal.GtkUI
+namespace QS.Journal.Views
 {
 	[WindowSize(900, 600)]
 	public partial class JournalView : DialogViewBase<JournalViewModelBase>
@@ -42,6 +44,8 @@ namespace QS.Journal.GtkUI
 		}
 
 		private Widget FilterView;
+		private ButtonJournalActionsView buttonActionsView;
+		
 		private void ConfigureJournal()
 		{
 			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
@@ -99,7 +103,6 @@ namespace QS.Journal.GtkUI
 			UpdateButtonActions();
 			SetTotalLableText();
 			ViewModel.PropertyChanged += OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions += UpdateButtonActions;
 		}
 
 		private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -298,40 +301,49 @@ namespace QS.Journal.GtkUI
 
 		private void ConfigureActions()
 		{
-			buttonRefreshActions.Clear();
-			
-			foreach(var action in ViewModel.NodeActions) {
-				Button actionWidget;
-				var actionForClosure = action;
+			// Пробуем использовать новую модель действий
+			if(ViewModel.ActionsViewModel is IButtonJournalActionsViewModel buttonActionsViewModel) {
+				buttonActionsView = new ButtonJournalActionsView(buttonActionsViewModel);
+				hboxButtons.PackStart(buttonActionsView, true, true, 0);
+				buttonActionsView.ShowAll();
+			}
+			// Обратная совместимость - старый способ через NodeActions
+			else {
+				buttonRefreshActions.Clear();
 				
-				if(action.ChildActions.Any()) {
-					MenuButton menuButton = new MenuButton();
-					menuButton.Label = action.GetTitle(new object[] { });
-					Menu childActionButtons = new Menu();
-					foreach(var childAction in action.ChildActions) {
-						childActionButtons.Add(CreateMenuItemWidget(childAction));
+				foreach(var action in ViewModel.NodeActions) {
+					Button actionWidget;
+					var actionForClosure = action;
+					
+					if(action.ChildActions.Any()) {
+						MenuButton menuButton = new MenuButton();
+						menuButton.Label = action.GetTitle(new object[] { });
+						Menu childActionButtons = new Menu();
+						foreach(var childAction in action.ChildActions) {
+							childActionButtons.Add(CreateMenuItemWidget(childAction));
+						}
+						menuButton.Menu = childActionButtons;
+						actionWidget = menuButton;
+						if (action.ExecuteAction == null)
+							action.ExecuteAction = items => menuButton.Press();
+					} else {
+						var button = new Button();
+						button.Label = action.GetTitle(new object[] { });
+						button.Clicked += (sender, args) =>  ExecuteAction(action);
+						actionWidget = button;
 					}
-					menuButton.Menu = childActionButtons;
-					actionWidget = menuButton;
-					if (action.ExecuteAction == null)
-						action.ExecuteAction = items => menuButton.Press();
-				} else {
-					var button = new Button();
-					button.Label = action.GetTitle(new object[] { });
-					button.Clicked += (sender, args) =>  ExecuteAction(action);
-					actionWidget = button;
+					
+					buttonRefreshActions.Add((s) => actionWidget.Label = actionForClosure.GetTitle(s));
+					buttonRefreshActions.Add((s) => actionWidget.Sensitive = actionForClosure.GetSensitivity(s));
+					buttonRefreshActions.Add((s) => actionWidget.Visible = actionForClosure.GetVisibility(s));
+
+					actionWidget.ShowAll();
+
+					hboxButtons.Add(actionWidget);
+					Box.BoxChild addDocumentButtonBox = (Box.BoxChild)hboxButtons[actionWidget];
+					addDocumentButtonBox.Expand = false;
+					addDocumentButtonBox.Fill = false;
 				}
-				
-				buttonRefreshActions.Add((s) => actionWidget.Label = actionForClosure.GetTitle(s));
-				buttonRefreshActions.Add((s) => actionWidget.Sensitive = actionForClosure.GetSensitivity(s));
-				buttonRefreshActions.Add((s) => actionWidget.Visible = actionForClosure.GetVisibility(s));
-
-				actionWidget.ShowAll();
-
-				hboxButtons.Add(actionWidget);
-				Box.BoxChild addDocumentButtonBox = (Box.BoxChild)hboxButtons[actionWidget];
-				addDocumentButtonBox.Expand = false;
-				addDocumentButtonBox.Fill = false;
 			}
 
 			tableview.RowActivated += OnTableViewRowActivated;
@@ -442,6 +454,13 @@ namespace QS.Journal.GtkUI
 
 		private void UpdateButtonActions() {
 			var selectedItems = GetSelectedItems();
+			
+			// Новая модель действий
+			if(ViewModel.ActionsViewModel != null) {
+				ViewModel.ActionsViewModel.OnSelectionChanged(selectedItems);
+			}
+			
+			// Старый способ для обратной совместимости
 			foreach(var item in buttonRefreshActions)
 				item.Invoke(selectedItems);
 		}
@@ -462,7 +481,6 @@ namespace QS.Journal.GtkUI
 			GLib.Source.Remove(_pulseProgressTimer);
 			
 			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
-			ViewModel.UpdateJournalActions -= UpdateButtonActions;
 			
 			ViewModel.DataLoader.CancelLoading();
 			
@@ -483,6 +501,13 @@ namespace QS.Journal.GtkUI
 
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
+			// Пробуем использовать новую модель действий
+			if(ViewModel.ActionsViewModel != null) {
+				ViewModel.ActionsViewModel.OnKeyPressed(hotKey);
+				return;
+			}
+			
+			// Старый способ для обратной совместимости
 			var nodeActions = ViewModel.NodeActions
 				.Where(n => !string.IsNullOrWhiteSpace(n.HotKeys)
 					&& n.HotKeys

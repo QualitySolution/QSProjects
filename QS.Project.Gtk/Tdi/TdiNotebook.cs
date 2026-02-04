@@ -10,6 +10,7 @@ using QS.Utilities.Text;
 using QS.Utilities;
 using QS.ViewModels.Extension;
 using QS.Journal.GtkUI;
+using QS.Journal.Views;
 using QS.Views.GtkUI;
 
 namespace QS.Tdi.Gtk
