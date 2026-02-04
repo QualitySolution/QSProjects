@@ -48,19 +48,19 @@ namespace QS.Journal.Actions
 		/// </summary>
 		public JournalAction<TNode> AddAction(
 			string title,
-			System.Func<IList<TNode>, bool> sensitiveFunc,
-			System.Func<IList<TNode>, bool> visibleFunc,
 			System.Action<IList<TNode>> executeAction,
+			System.Func<IList<TNode>, bool> sensitiveFunc = null,
+			System.Func<IList<TNode>, bool> visibleFunc = null,
 			string hotkeys = null)
 		{
 			var action = new JournalAction<TNode>(
 				title,
+				executeAction,
 				sensitiveFunc,
 				visibleFunc,
-				executeAction,
 				hotkeys);
-			action.GetSelectedNodesFunc = () => selectedNodes;
-			Actions.Add(action);
+			// ВАЖНО: Мы должны использовать первый метод AddAction, чтобы установить GetSelectedNodesFunc и добавить в ActionsView
+			AddAction(action);
 			return action;
 		}
 

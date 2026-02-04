@@ -14,15 +14,15 @@ namespace QS.Journal.Actions
 		/// Инициализирует новый объект класса JournalAction
 		/// </summary>
 		/// <param name="title">Название действия.</param>
+		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
 		/// <param name="sensitiveFunc">Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие, к примеру, как объект выпадающего меню), при выделенных Node-ах.</param>
-		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
 		/// <param name="hotkeys">Горячие клавиши</param>
 		public JournalAction(
 			string title,
-			Func<IList<TNode>, bool> sensitiveFunc,
-			Func<IList<TNode>, bool> visibleFunc,
 			Action<IList<TNode>> executeAction,
+			Func<IList<TNode>, bool> sensitiveFunc = null,
+			Func<IList<TNode>, bool> visibleFunc = null,
 			string hotkeys = null)
 		{
 			SensitiveFunc = sensitiveFunc;
@@ -37,15 +37,15 @@ namespace QS.Journal.Actions
 		/// Инициализирует новый объект класса JournalAction с динамическим заголовком
 		/// </summary>
 		/// <param name="titleFunc">Функция для получения названия действия в зависимости от выбранных Node-ов.</param>
+		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
 		/// <param name="sensitiveFunc">Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
 		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие, к примеру, как объект выпадающего меню), при выделенных Node-ах.</param>
-		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
 		/// <param name="hotkeys">Горячие клавиши</param>
 		public JournalAction(
 			Func<IList<TNode>, string> titleFunc,
-			Func<IList<TNode>, bool> sensitiveFunc,
-			Func<IList<TNode>, bool> visibleFunc,
 			Action<IList<TNode>> executeAction,
+			Func<IList<TNode>, bool> sensitiveFunc = null,
+			Func<IList<TNode>, bool> visibleFunc = null,
 			string hotkeys = null)
 		{
 			TitleFunc = titleFunc;

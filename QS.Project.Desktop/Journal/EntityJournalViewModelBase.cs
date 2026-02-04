@@ -71,9 +71,9 @@ namespace QS.Journal
 			// Действие "Создать"
 			var addAction = new JournalAction<TNode>(
 				"Создать",
+				selected => CreateEntityDialog(),
 				selected => canCreate,
 				selected => VisibleCreateAction,
-				selected => CreateEntityDialog(),
 				"Insert"
 			);
 			actionsViewModel.AddAction(addAction);
@@ -84,18 +84,18 @@ namespace QS.Journal
 					var permissions = CalculatePermission(selected.Cast<object>().ToArray());
 					return permissions.Any(p => p.CanUpdate) ? "Изменить" : "Открыть";
 				},
+				selected => selected.ToList().ForEach(EditEntityDialog),
 				selected => selected.Any() && CalculatePermission(selected.Cast<object>().ToArray()).All(s => s.CanUpdate || s.CanRead),
-				selected => VisibleEditAction,
-				selected => selected.ToList().ForEach(EditEntityDialog)
+				selected => VisibleEditAction
 			);
 			actionsViewModel.AddAction(editAction);
 
 			// Действие "Удалить"
 			var deleteAction = new JournalAction<TNode>(
 				"Удалить",
+				selected => DeleteEntities(selected.ToArray()),
 				selected => selected.Any() && CalculatePermission(selected.Cast<object>().ToArray()).All(s => s.CanDelete),
 				selected => VisibleDeleteAction,
-				selected => DeleteEntities(selected.ToArray()),
 				"Delete"
 			);
 			actionsViewModel.AddAction(deleteAction);
