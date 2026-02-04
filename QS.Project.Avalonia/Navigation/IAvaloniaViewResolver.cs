@@ -1,9 +1,10 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using QS.ViewModels;
 
 namespace QS.Navigation;
 
-public interface IAvaloniaViewResolver {
+public interface IAvaloniaViewResolver : IDataTemplate {
 	Control Resolve(ViewModelBase viewModel, string? viewSuffix = null);
 }
 

@@ -48,5 +48,17 @@ public class AvaloniaViewResolver : IAvaloniaViewResolver {
 
 		return null;
 	}
+
+	public Control? Build(object? param)
+	{
+		if(param is ViewModelBase vm)
+			return Resolve(vm);
+		return null;
+	}
+
+	public bool Match(object? data)
+	{
+		return data is ViewModelBase;
+	}
 }
 

@@ -27,11 +27,39 @@ namespace QS.Journal.Actions
 		{
 			SensitiveFunc = sensitiveFunc;
 			VisibleFunc = visibleFunc;
-			Title = title;
+			this.title = title;
 			ExecuteAction = executeAction;
 			HotKeys = hotkeys;
 			ChildActions = new List<JournalAction<TNode>>();
 		}
+
+		/// <summary>
+		/// Инициализирует новый объект класса JournalAction с динамическим заголовком
+		/// </summary>
+		/// <param name="titleFunc">Функция для получения названия действия в зависимости от выбранных Node-ов.</param>
+		/// <param name="sensitiveFunc">Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.</param>
+		/// <param name="visibleFunc">Функция проверки Visible(видно ли действие, к примеру, как объект выпадающего меню), при выделенных Node-ах.</param>
+		/// <param name="executeAction">Выполняемая функция, при активировании с выделенными Node-ами</param>
+		/// <param name="hotkeys">Горячие клавиши</param>
+		public JournalAction(
+			Func<IList<TNode>, string> titleFunc,
+			Func<IList<TNode>, bool> sensitiveFunc,
+			Func<IList<TNode>, bool> visibleFunc,
+			Action<IList<TNode>> executeAction,
+			string hotkeys = null)
+		{
+			TitleFunc = titleFunc;
+			SensitiveFunc = sensitiveFunc;
+			VisibleFunc = visibleFunc;
+			ExecuteAction = executeAction;
+			HotKeys = hotkeys;
+			ChildActions = new List<JournalAction<TNode>>();
+		}
+
+		/// <summary>
+		/// Функция для получения динамического заголовка
+		/// </summary>
+		public Func<IList<TNode>, string> TitleFunc { get; set; }
 
 		/// <summary>
 		/// Функция проверки sensitive(отклика кнопки на нажатие), при выделенных Node-ах.
@@ -98,8 +126,13 @@ namespace QS.Journal.Actions
 
 		public void OnSelectionChanged(IList<TNode> selectedNodes)
 		{
+			// Обновляем заголовок если есть TitleFunc
+			if (TitleFunc != null)
+				Title = TitleFunc.Invoke(selectedNodes);
+			
 			Sensitive = SensitiveFunc?.Invoke(selectedNodes) ?? true;
 			Visible = VisibleFunc?.Invoke(selectedNodes) ?? true;
+			
 			foreach (var child in ChildActions)
 				child.OnSelectionChanged(selectedNodes);
 		}

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using QS.Project.Journal;
+using QS.ViewModels;
 
 namespace QS.Journal.Actions
 {
@@ -7,7 +7,7 @@ namespace QS.Journal.Actions
 	/// Базовая view model для панели действий журнала
 	/// </summary>
 	/// <typeparam name="TNode">Тип узла (строки) журнала</typeparam>
-	public abstract class JournalActionsViewModelBase<TNode> : IJournalEventsHandler
+	public abstract class JournalActionsViewModelBase<TNode> : ViewModelBase, IJournalEventsHandler
 	{
 		/// <summary>
 		/// View model журнала, к которому относятся действия

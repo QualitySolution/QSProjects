@@ -15,7 +15,7 @@ public class AvaloniaRegisteredViewResolver(AvaloniaViewFactory viewFactory, IAv
 	/// <returns>The view.</returns>
 	/// <typeparam name="TViewModel">Тип ViewModel, может быть интерфейсом или базовым классом, для регистрации одного View ко многим реализациям ViewModel</typeparam>
 	/// <typeparam name="TView">Тип View</typeparam>
-	public AvaloniaRegisteredViewResolver RegisterView<TViewModel, TView>() where TViewModel : ViewModelBase where TView : Control {
+	public AvaloniaRegisteredViewResolver RegisterView<TViewModel, TView>() where TViewModel : class where TView : Control {
 		registeredViews.Add(new TypeMatchViewResolveRule(typeof(TViewModel), typeof(TView)));
 		return this;
 	}
@@ -31,5 +31,29 @@ public class AvaloniaRegisteredViewResolver(AvaloniaViewFactory viewFactory, IAv
 		}
 
 		return nextResolver.Resolve(viewModel, viewSuffix);
+	}
+
+	public Control? Build(object? param)
+	{
+		if (param == null) return null;
+		
+		foreach(var rule in registeredViews) {
+			if(rule.IsMatch(param))
+				return viewFactory.Create(rule.ViewType, (ViewModelBase)param);
+		}
+		
+		return nextResolver.Build(param);
+	}
+
+	public bool Match(object? data)
+	{
+		if (data == null) return false;
+
+		foreach(var rule in registeredViews) {
+			if(rule.IsMatch(data))
+				return true;
+		}
+
+		return nextResolver.Match(data);
 	}
 }

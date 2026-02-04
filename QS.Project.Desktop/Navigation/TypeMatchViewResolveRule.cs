@@ -11,7 +11,7 @@ namespace QS.Navigation {
 			ViewType = view ?? throw new ArgumentNullException(nameof(view));
 		}
 
-		public bool IsMatch(ViewModelBase viewModel) {
+		public bool IsMatch(object viewModel) {
 			return ViewModelType.IsAssignableFrom(viewModel.GetType());
 		}
 	}

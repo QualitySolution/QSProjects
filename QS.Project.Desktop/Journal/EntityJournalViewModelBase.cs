@@ -5,10 +5,10 @@ using NHibernate;
 using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Journal.Actions;
 using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
-using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.NodeExtensions;
 using QS.Project.Services;
@@ -46,6 +46,11 @@ namespace QS.Journal
 			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
 				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
 
+			// Создаем новую view model для действий
+			var actionsViewModel = new ButtonJournalActionsViewModel<TNode>();
+			actionsViewModel.Journal = this;
+			ActionsViewModel = actionsViewModel;
+
 			CreateNodeActions();
 
 			var names = typeof(TEntity).GetSubjectNames();
@@ -59,34 +64,41 @@ namespace QS.Journal
 		{
 			base.CreateNodeActions();
 			
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			
 			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
 
-			var addAction = new JournalAction("Создать",
-					(selected) => canCreate,
-					(selected) => VisibleCreateAction,
-					(selected) => CreateEntityDialog(),
-					"Insert"
-					);
-			NodeActionsList.Add(addAction);
+			// Действие "Создать"
+			var addAction = new JournalAction<TNode>(
+				"Создать",
+				selected => canCreate,
+				selected => VisibleCreateAction,
+				selected => CreateEntityDialog(),
+				"Insert"
+			);
+			actionsViewModel.AddAction(addAction);
 
-			var editAction = new JournalAction( 
-				    selected => CalculatePermission(selected).Any(p => p.CanUpdate) ? "Изменить" : "Открыть",
-					(selected) => selected.Any() && CalculatePermission(selected).All(s => s.CanUpdate || s.CanRead),
-					(selected) => VisibleEditAction,
-					(selected) => selected.Cast<TNode>().ToList().ForEach(EditEntityDialog)
-					);
-			NodeActionsList.Add(editAction);
+			// Действие "Изменить/Открыть"
+			var editAction = new JournalAction<TNode>(
+				selected => {
+					var permissions = CalculatePermission(selected.Cast<object>().ToArray());
+					return permissions.Any(p => p.CanUpdate) ? "Изменить" : "Открыть";
+				},
+				selected => selected.Any() && CalculatePermission(selected.Cast<object>().ToArray()).All(s => s.CanUpdate || s.CanRead),
+				selected => VisibleEditAction,
+				selected => selected.ToList().ForEach(EditEntityDialog)
+			);
+			actionsViewModel.AddAction(editAction);
 
-			if(SelectionMode == JournalSelectionMode.None)
-				RowActivatedAction = editAction;
-
-			var deleteAction = new JournalAction("Удалить",
-					(selected) => selected.Any() && CalculatePermission(selected).All(s => s.CanDelete),
-					(selected) => VisibleDeleteAction,
-					(selected) => DeleteEntities(selected.Cast<TNode>().ToArray()),
-					"Delete"
-					);
-			NodeActionsList.Add(deleteAction);
+			// Действие "Удалить"
+			var deleteAction = new JournalAction<TNode>(
+				"Удалить",
+				selected => selected.Any() && CalculatePermission(selected.Cast<object>().ToArray()).All(s => s.CanDelete),
+				selected => VisibleDeleteAction,
+				selected => DeleteEntities(selected.ToArray()),
+				"Delete"
+			);
+			actionsViewModel.AddAction(deleteAction);
 		}
 
 		private IEnumerable<IPermissionResult> CalculatePermission(object[] selected){

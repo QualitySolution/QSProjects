@@ -36,6 +36,9 @@ namespace QS.Journal.Actions
 			// Устанавливаем функцию получения выбранных узлов
 			action.GetSelectedNodesFunc = () => selectedNodes;
 			
+			// Инициализируем состояние действия
+			action.OnSelectionChanged(selectedNodes);
+			
 			Actions.Add(action);
 			ActionsView.Add(action);
 		}
