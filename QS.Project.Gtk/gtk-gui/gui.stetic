@@ -2085,7 +2085,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.SearchView" design-size="402 33">
+  <widget class="Gtk.Bin" id="QS.Journal.Views.SearchView" design-size="402 33">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -2245,7 +2245,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Project.Search.GtkUI.OneEntrySearchView" design-size="403 37">
+  <widget class="Gtk.Bin" id="QS.Journal.Views.OneEntrySearchView" design-size="403 37">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>

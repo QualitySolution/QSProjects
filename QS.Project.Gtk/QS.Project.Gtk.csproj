@@ -66,6 +66,8 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.LeftRightListView.cs" />
     <Compile Include="Helpers\WindowStartupFix.cs" />
     <Compile Include="Journal.Views\JournalView.cs" />
+    <Compile Include="Journal.Views\OneEntrySearchView.cs" />
+    <Compile Include="Journal.Views\SearchView.cs" />
     <Compile Include="Project.Services\GtkApplicationQuitService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Resolve\GtkViewFactory.cs" />
@@ -150,8 +152,7 @@
     <Compile Include="Project.Dialogs.GtkUI\JournalActions\JournalPopupAction.cs" />
     <Compile Include="RepresentationModel.GtkUI\IJournalPopupItem.cs" />
     <Compile Include="RepresentationModel.GtkUI\JournalPopupItemFactory.cs" />
-    <Compile Include="Project.Search.GtkUI\SearchView.cs" />
-    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.SearchView.cs" />
+    <Compile Include="gtk-gui\QS.Journal.Views.SearchView.cs" />
     <Compile Include="Views.GtkUI\TabViewBase.cs" />
     <Compile Include="Views.GtkUI\TabViewBaseGeneric.cs" />
     <Compile Include="Views.GtkUI\ITabView.cs" />
@@ -180,8 +181,7 @@
     <Compile Include="Navigation\TdiNavigationManager.cs" />
     <Compile Include="Widgets.GtkUI\TimeRangePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimeRangePicker.cs" />
-    <Compile Include="Project.Search.GtkUI\OneEntrySearchView.cs" />
-    <Compile Include="gtk-gui\QS.Project.Search.GtkUI.OneEntrySearchView.cs" />
+    <Compile Include="gtk-gui\QS.Journal.Views.OneEntrySearchView.cs" />
     <Compile Include="Views\Control\EntityEntry.cs" />
     <Compile Include="gtk-gui\QS.Views.Control.EntityEntry.cs" />
     <Compile Include="Navigation\AutofacTdiPageFactory.cs" />

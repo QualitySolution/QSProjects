@@ -4,7 +4,7 @@ using Gdk;
 using NLog;
 using QS.Journal.Search;
 
-namespace QS.Project.Search.GtkUI
+namespace QS.Journal.Views
 {
 	public partial class OneEntrySearchView : Gtk.Bin
 	{

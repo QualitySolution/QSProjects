@@ -4,7 +4,7 @@ using Gdk;
 using NLog;
 using QS.Journal.Search;
 
-namespace QS.Project.Search.GtkUI
+namespace QS.Journal.Views
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class SearchView : Gtk.Bin
