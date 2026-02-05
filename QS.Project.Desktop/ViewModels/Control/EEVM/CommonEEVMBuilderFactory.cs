@@ -38,7 +38,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public CommonEEVMBuilder<TPropertyEntity> ForProperty<TPropertyEntity>(Expression<Func<TBindedEntity, TPropertyEntity>> sourceProperty)
-			where TPropertyEntity : class, IDomainObject
+			where TPropertyEntity : class
 		{
 			var binder = new PropertyBinder<TBindedEntity, TPropertyEntity>(BindedEntity, sourceProperty);
 			return new CommonEEVMBuilder<TPropertyEntity>(this, binder);

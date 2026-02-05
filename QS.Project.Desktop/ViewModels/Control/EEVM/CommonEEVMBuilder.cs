@@ -9,9 +9,9 @@ using QS.ViewModels.Resolve;
 namespace QS.ViewModels.Control.EEVM
 {
 	public class CommonEEVMBuilder<TEntity>
-		where TEntity: class, IDomainObject
+		where TEntity: class
 	{
-		#region Обазательные параметры
+		#region Обязательные параметры
 		protected IEEVMBuilderParameters parameters;
 		protected IPropertyBinder<TEntity> PropertyBinder;
 		#endregion
@@ -107,7 +107,22 @@ namespace QS.ViewModels.Control.EEVM
 
 		public virtual EntityEntryViewModel<TEntity> Finish()
 		{
-			var entityAdapter = EntityAdapter ?? new UowEntityAdapter<TEntity>(parameters);
+			IEntityAdapter<TEntity> entityAdapter;
+			
+			if(EntityAdapter != null) {
+				entityAdapter = EntityAdapter;
+			}
+			else if(typeof(IDomainObject).IsAssignableFrom(typeof(TEntity))) {
+				// Создаем UowEntityAdapter только если TEntity реализует IDomainObject
+				var adapterType = typeof(UowEntityAdapter<>).MakeGenericType(typeof(TEntity));
+				entityAdapter = (IEntityAdapter<TEntity>)Activator.CreateInstance(adapterType, parameters.UnitOfWork);
+			}
+			else {
+				throw new InvalidOperationException(
+					$"Тип {typeof(TEntity).Name} не реализует IDomainObject. " +
+					"Необходимо явно указать EntityAdapter через UseAdapter() или UseFuncAdapter().");
+			}
+			
 			return new EntityEntryViewModel<TEntity>(PropertyBinder, EntitySelector, EntityDlgOpener, EntityAutocompleteSelector, entityAdapter);
 		}
 

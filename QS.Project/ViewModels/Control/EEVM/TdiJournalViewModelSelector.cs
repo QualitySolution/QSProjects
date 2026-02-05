@@ -9,7 +9,7 @@ using System;
 
 namespace QS.ViewModels.Control.EEVM {
 	public class TdiJournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
-		where TEntity : IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase 
 	{
 		protected readonly INavigationManager navigationManager;
@@ -59,7 +59,7 @@ namespace QS.ViewModels.Control.EEVM {
 	}
 
 	public class TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : TdiJournalViewModelSelector<TEntity, TJournalViewModel>
-		where TEntity : IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : class, IJournalFilterViewModel
 	{
