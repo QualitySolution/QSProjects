@@ -44,7 +44,7 @@ namespace QS.ViewModels.Dialog {
 		private PropertyInfo datePropertyInfo;
 		
 		/// <summary>
-		/// Проброс свойства даты документа для View. Реализукт проверку прав на смедую даты документа в закрытом периоде.
+		/// Проброс свойства даты документа для View. Реализует проверку прав даты документа в закрытом периоде.
 		/// </summary>
 		public virtual DateTime? DocumentDate {
 			get => datePropertyInfo?.GetValue(Entity) as DateTime?;

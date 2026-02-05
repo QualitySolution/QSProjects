@@ -3,6 +3,7 @@ using Autofac;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.Entity;
+using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.Tdi;
