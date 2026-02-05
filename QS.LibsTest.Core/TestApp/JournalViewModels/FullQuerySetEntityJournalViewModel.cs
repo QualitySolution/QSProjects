@@ -3,8 +3,8 @@ using NHibernate;
 using NHibernate.Transform;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.Navigation;
-using QS.Project.Journal;
 using QS.Test.TestApp.Domain;
 using QS.Test.TestApp.ViewModels;
 
