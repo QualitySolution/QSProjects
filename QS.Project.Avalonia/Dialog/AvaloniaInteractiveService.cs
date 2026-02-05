@@ -1,6 +1,4 @@
-using QS.Dialog;
-
-namespace QS.Project.Interactive;
+namespace QS.Dialog;
 public class AvaloniaInteractiveService(AvaloniaInteractiveMessage interactiveMessage, AvaloniaInteractiveQuestion interactiveQuestion) : IInteractiveService {
 
 	public bool Question(string message, string title = null) {

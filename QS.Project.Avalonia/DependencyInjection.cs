@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
-using QS.Project.Dialog;
-using QS.Project.Interactive;
 
 namespace QS.Project;
 

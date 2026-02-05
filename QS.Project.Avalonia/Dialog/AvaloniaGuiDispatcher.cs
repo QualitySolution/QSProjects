@@ -1,9 +1,8 @@
 using System;
 using System.Threading;
 using Avalonia.Threading;
-using QS.Dialog;
 
-namespace QS.Project.Dialog;
+namespace QS.Dialog;
 
 public class AvaloniaGuiDispatcher : IGuiDispatcher
 {
