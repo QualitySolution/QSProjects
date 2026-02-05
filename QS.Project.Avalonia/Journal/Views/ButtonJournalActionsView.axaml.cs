@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using QS.Journal.Actions;
 
@@ -59,24 +61,93 @@ namespace QS.Journal.Views
 
 			foreach (var action in viewModel.ActionsView)
 			{
-				var button = new Button();
+				Control control;
 				
-				// Создаем биндинги программно
-				button.Bind(Button.ContentProperty, 
-					new Avalonia.Data.Binding(nameof(action.Title)) { Source = action });
-				button.Bind(Button.IsEnabledProperty, 
-					new Avalonia.Data.Binding(nameof(action.Sensitive)) { Source = action });
-				button.Bind(Button.IsVisibleProperty, 
-					new Avalonia.Data.Binding(nameof(action.Visible)) { Source = action });
-
-				// Обработчик клика
-				button.Click += (_, _) =>
+				// Если есть дочерние действия - создаем DropDownButton
+				if (action.ChildActionsView != null && action.ChildActionsView.Any())
 				{
-					action.Execute();
-				};
+					control = CreateDropDownButton(action);
+				}
+				// Иначе создаем обычную кнопку
+				else
+				{
+					control = CreateButton(action);
+				}
 
-				actionsPanelControl.Children.Add(button);
+				actionsPanelControl.Children.Add(control);
 			}
+		}
+
+		private Button CreateButton(IJournalActionView action)
+		{
+			var button = new Button();
+			
+			// Создаем биндинги программно
+			button.Bind(Button.ContentProperty, 
+				new Avalonia.Data.Binding(nameof(action.Title)) { Source = action });
+			button.Bind(Button.IsEnabledProperty, 
+				new Avalonia.Data.Binding(nameof(action.Sensitive)) { Source = action });
+			button.Bind(Button.IsVisibleProperty, 
+				new Avalonia.Data.Binding(nameof(action.Visible)) { Source = action });
+
+			// Обработчик клика
+			button.Click += (_, _) => action.Execute();
+
+			return button;
+		}
+
+		private DropDownButton CreateDropDownButton(IJournalActionView action)
+		{
+			var dropDownButton = new DropDownButton();
+			
+			// Создаем биндинги программно
+			dropDownButton.Bind(DropDownButton.ContentProperty, 
+				new Avalonia.Data.Binding(nameof(action.Title)) { Source = action });
+			dropDownButton.Bind(DropDownButton.IsEnabledProperty, 
+				new Avalonia.Data.Binding(nameof(action.Sensitive)) { Source = action });
+			dropDownButton.Bind(DropDownButton.IsVisibleProperty, 
+				new Avalonia.Data.Binding(nameof(action.Visible)) { Source = action });
+
+			// Создаем меню с дочерними действиями
+			var menuFlyout = new MenuFlyout();
+			foreach (var childAction in action.ChildActionsView)
+			{
+				var menuItem = CreateMenuItem(childAction);
+				menuFlyout.Items.Add(menuItem);
+			}
+			
+			dropDownButton.Flyout = menuFlyout;
+
+			return dropDownButton;
+		}
+
+		private MenuItem CreateMenuItem(IJournalActionView action)
+		{
+			var menuItem = new MenuItem();
+			
+			// Создаем биндинги программно
+			menuItem.Bind(HeaderedItemsControl.HeaderProperty, 
+				new Avalonia.Data.Binding(nameof(action.Title)) { Source = action });
+			menuItem.Bind(MenuItem.IsEnabledProperty, 
+				new Avalonia.Data.Binding(nameof(action.Sensitive)) { Source = action });
+			menuItem.Bind(MenuItem.IsVisibleProperty, 
+				new Avalonia.Data.Binding(nameof(action.Visible)) { Source = action });
+
+			// Если есть дочерние действия - создаем подменю
+			if (action.ChildActionsView != null && action.ChildActionsView.Any())
+			{
+				foreach (var childAction in action.ChildActionsView)
+				{
+					menuItem.Items.Add(CreateMenuItem(childAction));
+				}
+			}
+			// Иначе привязываем выполнение действия
+			else
+			{
+				menuItem.Click += (_, _) => action.Execute();
+			}
+
+			return menuItem;
 		}
 	}
 }
