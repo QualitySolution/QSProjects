@@ -1,7 +1,6 @@
 using System;
 using Autofac;
 using QS.DomainModel.Entity;
-using QS.DomainModel.UoW;
 using QS.Project.Journal;
 
 namespace QS.ViewModels.Control.EEVM

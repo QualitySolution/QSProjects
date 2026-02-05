@@ -1,4 +1,3 @@
-using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.Tdi;
