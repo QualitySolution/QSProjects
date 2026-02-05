@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace QS.Journal.Actions
@@ -22,6 +23,11 @@ namespace QS.Journal.Actions
 		/// Видимость действия
 		/// </summary>
 		bool Visible { get; }
+		
+		/// <summary>
+		/// Дочерние действия (для выпадающих меню)
+		/// </summary>
+		IEnumerable<IJournalActionView> ChildActionsView { get; }
 		
 		/// <summary>
 		/// Выполнить действие

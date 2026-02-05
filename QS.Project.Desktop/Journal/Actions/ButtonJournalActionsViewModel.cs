@@ -33,14 +33,27 @@ namespace QS.Journal.Actions
 		/// </summary>
 		public void AddAction(JournalAction<TNode> action)
 		{
-			// Устанавливаем функцию получения выбранных узлов
-			action.GetSelectedNodesFunc = () => selectedNodes;
+			// Устанавливаем функцию получения выбранных узлов для действия и всех дочерних действий
+			SetGetSelectedNodesFuncRecursively(action);
 			
 			// Инициализируем состояние действия
 			action.OnSelectionChanged(selectedNodes);
 			
 			Actions.Add(action);
 			ActionsView.Add(action);
+		}
+
+		/// <summary>
+		/// Рекурсивно устанавливает GetSelectedNodesFunc для действия и всех его дочерних действий
+		/// </summary>
+		private void SetGetSelectedNodesFuncRecursively(JournalAction<TNode> action)
+		{
+			action.GetSelectedNodesFunc = () => selectedNodes;
+			
+			foreach (var childAction in action.ChildActions)
+			{
+				SetGetSelectedNodesFuncRecursively(childAction);
+			}
 		}
 
 		/// <summary>

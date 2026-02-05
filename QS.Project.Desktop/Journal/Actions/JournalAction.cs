@@ -112,6 +112,11 @@ namespace QS.Journal.Actions
 		#region IJournalActionView
 
 		/// <summary>
+		/// Дочерние действия для View (не дженерик)
+		/// </summary>
+		public IEnumerable<IJournalActionView> ChildActionsView => ChildActions;
+
+		/// <summary>
 		/// Выполнить действие (для IJournalActionView)
 		/// </summary>
 		public void Execute()
