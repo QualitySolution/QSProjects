@@ -7,7 +7,7 @@ using QS.Project.Journal;
 namespace QS.ViewModels.Control.EEVM
 {
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel> : IEntityAutocompleteSelector<TEntity>, IDisposable
-		where TEntity : class, IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase
 	{
 		protected ILifetimeScope autofacScope;
@@ -62,7 +62,7 @@ namespace QS.ViewModels.Control.EEVM
 	}
 
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>
-		where TEntity : class, IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : class, IJournalFilterViewModel {
 		private readonly Action<TJournalFilterViewModel> filterParams;
