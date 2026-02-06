@@ -1,4 +1,3 @@
-using QS.DomainModel.Entity;
 using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal;
@@ -8,7 +7,7 @@ using System;
 
 namespace QS.ViewModels.Control.EEVM {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
-		where TEntity : IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase 
 	{
 		protected readonly INavigationManager navigationManager;
@@ -44,7 +43,7 @@ namespace QS.ViewModels.Control.EEVM {
 	}
 
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
-		where TEntity : IDomainObject
+		where TEntity : class
 		where TJournalViewModel : JournalViewModelBase
 		where TJournalFilterViewModel : class, IJournalFilterViewModel
 	{
