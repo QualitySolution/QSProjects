@@ -22,6 +22,15 @@ namespace QS.Journal.Actions
 		/// </summary>
 		public ObservableCollection<IJournalActionView> ActionsView { get; }
 
+		private JournalAction<TNode> doubleClickAction;
+		/// <summary>
+		/// Действие, выполняемое при двойном клике на строке журнала
+		/// </summary>
+		public JournalAction<TNode> DoubleClickAction {
+			get => doubleClickAction;
+			set => SetField(ref doubleClickAction, value);
+		}
+
 		public ButtonJournalActionsViewModel()
 		{
 			Actions = new ObservableCollection<JournalAction<TNode>>();
@@ -83,6 +92,14 @@ namespace QS.Journal.Actions
 		public IList<TNode> GetSelectedNodes() => selectedNodes;
 
 		#region IJournalEventsHandler
+
+		public override void OnCellDoubleClick(object node, object columnTag, object subcolumnTag)
+		{
+			// При двойном клике выполняем RowActivatedAction, если оно установлено
+			if (DoubleClickAction != null && DoubleClickAction.Sensitive && DoubleClickAction.Visible) {
+				DoubleClickAction.ExecuteAction?.Invoke(selectedNodes);
+			}
+		}
 
 		public override void OnSelectionChanged(IList<object> nodes)
 		{

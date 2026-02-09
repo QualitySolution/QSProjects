@@ -9,6 +9,7 @@ using QS.Journal.Actions;
 using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Domain;
+using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Project.Journal.NodeExtensions;
 using QS.Project.Services;
@@ -25,6 +26,18 @@ namespace QS.Journal
 		#region Опциональные зависимости
 		protected IDeleteEntityService DeleteEntityService;
 		public ICurrentPermissionService CurrentPermissionService { get; set; }
+		#endregion
+
+		#region Предопределенные действия
+		/// <summary>
+		/// Действие "Выбрать" для режима выбора
+		/// </summary>
+		protected JournalAction<TNode> SelectAction { get; set; }
+		
+		/// <summary>
+		/// Действие "Изменить/Открыть" для редактирования
+		/// </summary>
+		protected JournalAction<TNode> EditAction { get; set; }
 		#endregion
 
 		protected EntityJournalViewModelBase(
@@ -52,6 +65,13 @@ namespace QS.Journal
 			ActionsViewModel = actionsViewModel;
 
 			CreateNodeActions();
+			
+			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction
+			PropertyChanged += (sender, args) => {
+				if(args.PropertyName == nameof(SelectionMode)) {
+					UpdateDoubleClickAction();
+				}
+			};
 
 			var names = typeof(TEntity).GetSubjectNames();
 			if(!String.IsNullOrEmpty(names?.NominativePlural))
@@ -66,6 +86,15 @@ namespace QS.Journal
 			
 			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
 			
+			// Действие "Выбрать" (только для режима выбора)
+			SelectAction = new JournalAction<TNode>(
+				"Выбрать",
+				selected => OnItemsSelected(selected.Cast<object>().ToArray()),
+				selected => selected.Any(),
+				selected => SelectionMode != JournalSelectionMode.None
+			);
+			actionsViewModel.AddAction(SelectAction);
+			
 			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
 
 			// Действие "Создать"
@@ -79,7 +108,7 @@ namespace QS.Journal
 			actionsViewModel.AddAction(addAction);
 
 			// Действие "Изменить/Открыть"
-			var editAction = new JournalAction<TNode>(
+			EditAction = new JournalAction<TNode>(
 				selected => {
 					var permissions = CalculatePermission(selected.Cast<object>().ToArray());
 					return permissions.Any(p => p.CanUpdate) ? "Изменить" : "Открыть";
@@ -88,7 +117,7 @@ namespace QS.Journal
 				selected => selected.Any() && CalculatePermission(selected.Cast<object>().ToArray()).All(s => s.CanUpdate || s.CanRead),
 				selected => VisibleEditAction
 			);
-			actionsViewModel.AddAction(editAction);
+			actionsViewModel.AddAction(EditAction);
 
 			// Действие "Удалить"
 			var deleteAction = new JournalAction<TNode>(
@@ -99,6 +128,26 @@ namespace QS.Journal
 				"Delete"
 			);
 			actionsViewModel.AddAction(deleteAction);
+
+			// Устанавливаем действие при двойном клике
+			UpdateDoubleClickAction();
+		}
+
+		/// <summary>
+		/// Обновляет действие при двойном клике в зависимости от режима выбора
+		/// </summary>
+		protected virtual void UpdateDoubleClickAction()
+		{
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			if(actionsViewModel == null)
+				return;
+				
+			// В режиме выбора - выбор элемента, иначе - редактирование
+			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
+				actionsViewModel.DoubleClickAction = SelectAction;
+			} else {
+				actionsViewModel.DoubleClickAction = EditAction;
+			}
 		}
 
 		private IEnumerable<IPermissionResult> CalculatePermission(object[] selected){
