@@ -52,8 +52,7 @@ namespace QS.Journal.Views {
 		private void RebuildButtons()
 		{
 			// Очищаем существующие кнопки
-			foreach (Widget child in hboxButtons.Children)
-			{
+			foreach (Widget child in hboxButtons.Children) {
 				hboxButtons.Remove(child);
 				child.Destroy();
 			}
@@ -62,13 +61,21 @@ namespace QS.Journal.Views {
 				return;
 
 			// Создаем кнопки для каждого действия
-			foreach (var action in viewModel.ActionsView)
-			{
+			var widgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
+			foreach (var action in viewModel.ActionsView) {
 				var widget = CreateButtonWidget(action);
+				widgets.Add((widget, action));
 				hboxButtons.PackStart(widget, false, false, 0);
 			}
 
 			hboxButtons.ShowAll();
+			
+			// После ShowAll() нужно явно скрыть виджеты, у которых Visible = false
+			// так как NoShowAll работает только при вызове Show(), а не ShowAll()
+			foreach (var (widget, action) in widgets) {
+				if (!action.Visible)
+					widget.Hide();
+			}
 		}
 
 		private Widget CreateButtonWidget(IJournalActionView action)
@@ -86,6 +93,7 @@ namespace QS.Journal.Views {
 		private Widget CreateButton(IJournalActionView action)
 		{
 			var button = new yButton();
+			button.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible
 			button.Binding.AddSource(action)
 				.AddBinding(a => a.Title, w => w.Label)
 				.AddBinding(a => a.Sensitive, w => w.Sensitive)
@@ -101,6 +109,7 @@ namespace QS.Journal.Views {
 		private Widget CreateMenuButton(IJournalActionView action)
 		{
 			var menuButton = new MenuButton();
+			menuButton.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible
 			
 			// Создаем меню с дочерними действиями
 			var menu = new Menu();
@@ -124,6 +133,7 @@ namespace QS.Journal.Views {
 		private MenuItem CreateMenuItem(IJournalActionView action)
 		{
 			var menuItem = new yMenuItem(action.Title);
+			menuItem.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible
 			
 			// Биндинг свойств через Fluent API
 			menuItem.Binding.AddSource(action)
