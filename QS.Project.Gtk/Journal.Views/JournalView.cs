@@ -352,7 +352,16 @@ namespace QS.Journal.Views
 		private void OnTableViewRowActivated(object o, RowActivatedArgs args)
 		{
 			var selectedItems = GetSelectedItems();
-			if(ViewModel.RowActivatedAction != null)
+			
+			// Пробуем использовать новую систему действий
+			if(ViewModel.ActionsViewModel != null) {
+				// Получаем информацию о ячейке, если возможно
+				object node = selectedItems.Length > 0 ? selectedItems[0] : null;
+				ViewModel.ActionsViewModel.OnCellDoubleClick(node, null, null);
+				lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
+			}
+			// Обратная совместимость - старая система действий
+			else if(ViewModel.RowActivatedAction != null)
 			{
 				if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
 				{
