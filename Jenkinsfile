@@ -20,8 +20,9 @@ node {
    	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
       } catch (e) {}
       finally{
-   	  discoverGitReferenceBuild()
-        recordCoverage ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
+        recordCoverage id: 'coverage-prev', name: 'Coverage (vs previous build)', ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
+        discoverGitReferenceBuild()
+        recordCoverage id: 'coverage-master', name: 'Coverage (vs master)', ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
         mstest testResultsFile:"**/*.trx", keepLongStdio: true
       }
    }
