@@ -12,6 +12,7 @@ using NHibernate.Criterion;
 using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Journal.Actions;
 
 namespace QS.Project.Journal
 {
@@ -61,8 +62,18 @@ namespace QS.Project.Journal
 
 		protected override void CreateNodeActions()
 		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
+			var actionsViewModel = (ButtonJournalActionsViewModel<CommonJournalNode>)ActionsViewModel;
+			actionsViewModel.LeftActions.Clear();
+			actionsViewModel.LeftActionsView.Clear();
+			
+			// Действие "Выбрать" (только для режима выбора)
+			SelectAction = new JournalAction<CommonJournalNode>(
+				"Выбрать",
+				selected => OnItemsSelected(selected.Cast<object>().ToArray()),
+				selected => selected.Any(),
+				selected => SelectionMode != JournalSelectionMode.None
+			);
+			actionsViewModel.AddAction(SelectAction);
 
 			if(addActionEnabled)
 				CreateDefaultAddActions();
@@ -70,6 +81,13 @@ namespace QS.Project.Journal
 				CreateDefaultEditAction();
 			if(deleteActionEnabled)
 				CreateDefaultDeleteAction();
+				
+			// Устанавливаем действие при двойном клике
+			UpdateDoubleClickAction();
+			
+			// Добавляем кнопку "Обновить" справа (если еще не добавлена)
+			if(!actionsViewModel.RightActions.Any())
+				AddRefreshAction(actionsViewModel);
 		}
 
 		#endregion

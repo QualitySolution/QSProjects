@@ -10,6 +10,7 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Journal;
+using QS.Journal.Actions;
 using QS.Navigation;
 using QS.Permissions;
 using QS.Project.Journal.DataLoader;
@@ -86,6 +87,18 @@ namespace QS.Project.Journal
 			this.interactiveService = this.commonServices.InteractiveService;
 			UseSlider = true;
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
+			
+			// Создаем новую view model для действий
+			var actionsViewModel = new ButtonJournalActionsViewModel<TNode>();
+			actionsViewModel.Journal = this;
+			ActionsViewModel = actionsViewModel;
+			
+			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction
+			PropertyChanged += (sender, args) => {
+				if(args.PropertyName == nameof(SelectionMode)) {
+					UpdateDoubleClickAction();
+				}
+			};
 		}
 
 		void FilterViewModel_OnFiltered(object sender, EventArgs e)
@@ -268,24 +281,83 @@ namespace QS.Project.Journal
 
 		#region Actions
 
-		protected override void CreateNodeActions()
+		/// <summary>
+		/// Действие "Выбрать" для режима выбора
+		/// </summary>
+		protected JournalAction<TNode> SelectAction { get; set; }
+		
+		/// <summary>
+		/// Действие "Изменить/Открыть" для редактирования
+		/// </summary>
+		protected JournalAction<TNode> EditAction { get; set; }
+
+		protected virtual void CreateNodeActions()
 		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			
+			// Действие "Выбрать" (только для режима выбора)
+			SelectAction = new JournalAction<TNode>(
+				"Выбрать",
+				selected => OnItemsSelected(selected.Cast<object>().ToArray()),
+				selected => selected.Any(),
+				selected => SelectionMode != JournalSelectionMode.None
+			);
+			actionsViewModel.AddAction(SelectAction);
+			
 			CreateDefaultAddActions();
 			CreateDefaultEditAction();
 			CreateDefaultDeleteAction();
+			
+			// Устанавливаем действие при двойном клике
+			UpdateDoubleClickAction();
+			
+			// Добавляем кнопку "Обновить" справа
+			AddRefreshAction(actionsViewModel);
+		}
+
+		/// <summary>
+		/// Добавляет кнопку "Обновить" в правую часть панели
+		/// </summary>
+		protected virtual void AddRefreshAction(ButtonJournalActionsViewModel<TNode> actionsViewModel)
+		{
+			var refreshAction = new JournalAction<TNode>(
+				"Обновить",
+				selected => Refresh(),
+				selected => true,
+				selected => true,
+				"F5"
+			);
+			actionsViewModel.AddRightAction(refreshAction);
+		}
+
+		/// <summary>
+		/// Обновляет действие при двойном клике в зависимости от режима выбора
+		/// </summary>
+		protected virtual void UpdateDoubleClickAction()
+		{
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			if(actionsViewModel == null)
+				return;
+				
+			// В режиме выбора - выбор элемента, иначе - редактирование
+			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
+				actionsViewModel.DoubleClickAction = SelectAction;
+			} else {
+				actionsViewModel.DoubleClickAction = EditAction;
+			}
 		}
 
 		protected override void CreatePopupActions()
 		{
 		}
 
-		protected void CreateDefaultAddActions()
+		protected virtual void CreateDefaultAddActions()
 		{
 			if(!EntityConfigs.Any()) {
 				return;
 			}
+
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
 
 			var totalCreateDialogConfigs = EntityConfigs
 				.Where(x => x.Value.PermissionResult.CanCreate)
@@ -294,31 +366,37 @@ namespace QS.Project.Journal
 							.Sum());
 
 			if(EntityConfigs.Values.Count(x => x.PermissionResult.CanRead) > 1 || totalCreateDialogConfigs > 1) {
-				var addParentNodeAction = new JournalAction("Добавить", (selected) => true, (selected) => true, (selected) => { });
+				var addParentNodeAction = new JournalAction<TNode>(
+					"Добавить", 
+					selected => { },
+					selected => true,
+					selected => true
+				);
+				
 				foreach(var entityConfig in EntityConfigs.Values) {
 					foreach(var documentConfig in entityConfig.EntityDocumentConfigurations) {
 						foreach(var createDlgConfig in documentConfig.GetCreateEntityDlgConfigs()) {
-							var childNodeAction = new JournalAction(createDlgConfig.Title,
-								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => entityConfig.PermissionResult.CanCreate,
-								(selected) => {
+							var childNodeAction = new JournalAction<TNode>(
+								createDlgConfig.Title,
+								selected => {
 									TabParent.OpenTab(createDlgConfig.OpenEntityDialogFunction, this);
 									if(documentConfig.JournalParameters.HideJournalForCreateDialog) {
 										HideJournal(TabParent);
 									}
-								}
+								},
+								selected => entityConfig.PermissionResult.CanCreate,
+								selected => entityConfig.PermissionResult.CanCreate
 							);
-							addParentNodeAction.ChildActionsList.Add(childNodeAction);
+							addParentNodeAction.ChildActions.Add(childNodeAction);
 						}
 					}
 				}
-				NodeActionsList.Add(addParentNodeAction);
+				actionsViewModel.AddAction(addParentNodeAction);
 			} else {
 				var entityConfig = EntityConfigs.First().Value;
-				var addAction = new JournalAction("Добавить",
-					(selected) => entityConfig.PermissionResult.CanCreate,
-					(selected) => entityConfig.PermissionResult.CanCreate,
-					(selected) => {
+				var addAction = new JournalAction<TNode>(
+					"Добавить",
+					selected => {
 						var docConfig = entityConfig.EntityDocumentConfigurations.First();
 						ITdiTab tab = docConfig.GetCreateEntityDlgConfigs().First().OpenEntityDialogFunction();
 
@@ -330,29 +408,21 @@ namespace QS.Project.Journal
 							HideJournal(TabParent);
 						}
 					},
+					selected => entityConfig.PermissionResult.CanCreate,
+					selected => entityConfig.PermissionResult.CanCreate,
 					"Insert"
-					);
-				NodeActionsList.Add(addAction);
-			};
+				);
+				actionsViewModel.AddAction(addAction);
+			}
 		}
 
-		protected void CreateDefaultEditAction()
+		protected virtual void CreateDefaultEditAction()
 		{
-			var editAction = new JournalAction("Изменить",
-				(selected) => {
-					var selectedNodes = selected.OfType<TNode>();
-					if(selectedNodes == null || selectedNodes.Count() != 1) {
-						return false;
-					}
-					TNode selectedNode = selectedNodes.First();
-					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
-						return false;
-					}
-					var config = EntityConfigs[selectedNode.EntityType];
-					return config.PermissionResult.CanUpdate;
-				},
-				(selected) => true,
-				(selected) => {
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			
+			EditAction = new JournalAction<TNode>(
+				"Изменить",
+				selected => {
 					var selectedNodes = selected.OfType<TNode>();
 					if(selectedNodes == null || selectedNodes.Count() != 1) {
 						return;
@@ -368,18 +438,8 @@ namespace QS.Project.Journal
 					if(foundDocumentConfig.JournalParameters.HideJournalForOpenDialog) {
 						HideJournal(TabParent);
 					}
-				}
-			);
-			if(SelectionMode == JournalSelectionMode.None) {
-				RowActivatedAction = editAction;
-			}
-			NodeActionsList.Add(editAction);
-		}
-
-		protected void CreateDefaultDeleteAction()
-		{
-			var deleteAction = new JournalAction("Удалить",
-				(selected) => {
+				},
+				selected => {
 					var selectedNodes = selected.OfType<TNode>();
 					if(selectedNodes == null || selectedNodes.Count() != 1) {
 						return false;
@@ -389,10 +449,20 @@ namespace QS.Project.Journal
 						return false;
 					}
 					var config = EntityConfigs[selectedNode.EntityType];
-					return config.PermissionResult.CanDelete;
+					return config.PermissionResult.CanUpdate;
 				},
-				(selected) => true,
-				(selected) => {
+				selected => true
+			);
+			actionsViewModel.AddAction(EditAction);
+		}
+
+		protected virtual void CreateDefaultDeleteAction()
+		{
+			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
+			
+			var deleteAction = new JournalAction<TNode>(
+				"Удалить",
+				selected => {
 					var selectedNodes = selected.OfType<TNode>();
 					if(selectedNodes == null || selectedNodes.Count() != 1) {
 						return;
@@ -406,9 +476,22 @@ namespace QS.Project.Journal
 						DeleteHelper.DeleteEntity(selectedNode.EntityType, selectedNode.Id);
 					}
 				},
+				selected => {
+					var selectedNodes = selected.OfType<TNode>();
+					if(selectedNodes == null || selectedNodes.Count() != 1) {
+						return false;
+					}
+					TNode selectedNode = selectedNodes.First();
+					if(!EntityConfigs.ContainsKey(selectedNode.EntityType)) {
+						return false;
+					}
+					var config = EntityConfigs[selectedNode.EntityType];
+					return config.PermissionResult.CanDelete;
+				},
+				selected => true,
 				"Delete"
 			);
-			NodeActionsList.Add(deleteAction);
+			actionsViewModel.AddAction(deleteAction);
 		}
 
 		protected void HideJournal(ITdiTabParent parenTab)
