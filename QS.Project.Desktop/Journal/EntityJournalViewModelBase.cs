@@ -131,6 +131,24 @@ namespace QS.Journal
 
 			// Устанавливаем действие при двойном клике
 			UpdateDoubleClickAction();
+			
+			// Добавляем кнопку "Обновить" справа
+			AddRefreshAction(actionsViewModel);
+		}
+
+		/// <summary>
+		/// Добавляет кнопку "Обновить" в правую часть панели
+		/// </summary>
+		protected virtual void AddRefreshAction(ButtonJournalActionsViewModel<TNode> actionsViewModel)
+		{
+			var refreshAction = new JournalAction<TNode>(
+				"Обновить",
+				selected => Refresh(),
+				selected => true,
+				selected => true,
+				"F5"
+			);
+			actionsViewModel.AddRightAction(refreshAction);
 		}
 
 		/// <summary>

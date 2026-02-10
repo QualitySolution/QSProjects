@@ -4,9 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="50"
              x:Class="QS.Journal.Views.ButtonJournalActionsView">
-    <StackPanel Orientation="Horizontal" 
-                Spacing="5"
-                x:Name="actionsPanel">
-        <!-- Кнопки будут добавляться динамически в code-behind -->
-    </StackPanel>
+    <DockPanel>
+        <!-- Правая панель действий -->
+        <StackPanel DockPanel.Dock="Right"
+                    Orientation="Horizontal" 
+                    Spacing="5"
+                    x:Name="rightActionsPanel">
+            <!-- Правые кнопки будут добавляться динамически в code-behind -->
+        </StackPanel>
+        
+        <!-- Левая панель действий (заполняет оставшееся место) -->
+        <StackPanel Orientation="Horizontal" 
+                    Spacing="5"
+                    x:Name="actionsPanel">
+            <!-- Основные кнопки будут добавляться динамически в code-behind -->
+        </StackPanel>
+    </DockPanel>
 </UserControl>

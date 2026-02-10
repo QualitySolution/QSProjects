@@ -13,14 +13,24 @@ namespace QS.Journal.Actions
 		private IList<TNode> selectedNodes = new List<TNode>();
 
 		/// <summary>
-		/// Список действий журнала
+		/// Список действий журнала (слева)
 		/// </summary>
-		public ObservableCollection<JournalAction<TNode>> Actions { get; }
+		public ObservableCollection<JournalAction<TNode>> LeftActions { get; }
 
 		/// <summary>
-		/// Коллекция действий для View (не дженерик)
+		/// Коллекция действий для View (не дженерик) (слева)
 		/// </summary>
-		public ObservableCollection<IJournalActionView> ActionsView { get; }
+		public ObservableCollection<IJournalActionView> LeftActionsView { get; }
+
+		/// <summary>
+		/// Список действий журнала, расположенных справа на панели
+		/// </summary>
+		public ObservableCollection<JournalAction<TNode>> RightActions { get; }
+
+		/// <summary>
+		/// Коллекция действий для View (не дженерик), расположенных справа
+		/// </summary>
+		public ObservableCollection<IJournalActionView> RightActionsView { get; }
 
 		private JournalAction<TNode> doubleClickAction;
 		/// <summary>
@@ -33,8 +43,10 @@ namespace QS.Journal.Actions
 
 		public ButtonJournalActionsViewModel()
 		{
-			Actions = new ObservableCollection<JournalAction<TNode>>();
-			ActionsView = new ObservableCollection<IJournalActionView>();
+			LeftActions = new ObservableCollection<JournalAction<TNode>>();
+			LeftActionsView = new ObservableCollection<IJournalActionView>();
+			RightActions = new ObservableCollection<JournalAction<TNode>>();
+			RightActionsView = new ObservableCollection<IJournalActionView>();
 		}
 
 		/// <summary>
@@ -48,8 +60,8 @@ namespace QS.Journal.Actions
 			// Инициализируем состояние действия
 			action.OnSelectionChanged(selectedNodes);
 			
-			Actions.Add(action);
-			ActionsView.Add(action);
+			LeftActions.Add(action);
+			LeftActionsView.Add(action);
 		}
 
 		/// <summary>
@@ -87,6 +99,41 @@ namespace QS.Journal.Actions
 		}
 
 		/// <summary>
+		/// Добавить действие в правую часть панели
+		/// </summary>
+		public void AddRightAction(JournalAction<TNode> action)
+		{
+			// Устанавливаем функцию получения выбранных узлов для действия и всех дочерних действий
+			SetGetSelectedNodesFuncRecursively(action);
+			
+			// Инициализируем состояние действия
+			action.OnSelectionChanged(selectedNodes);
+			
+			RightActions.Add(action);
+			RightActionsView.Add(action);
+		}
+
+		/// <summary>
+		/// Добавить действие в правую часть панели с базовыми параметрами
+		/// </summary>
+		public JournalAction<TNode> AddRightAction(
+			string title,
+			System.Action<IList<TNode>> executeAction,
+			System.Func<IList<TNode>, bool> sensitiveFunc = null,
+			System.Func<IList<TNode>, bool> visibleFunc = null,
+			string hotkeys = null)
+		{
+			var action = new JournalAction<TNode>(
+				title,
+				executeAction,
+				sensitiveFunc,
+				visibleFunc,
+				hotkeys);
+			AddRightAction(action);
+			return action;
+		}
+
+		/// <summary>
 		/// Получить текущие выбранные узлы
 		/// </summary>
 		public IList<TNode> GetSelectedNodes() => selectedNodes;
@@ -105,8 +152,14 @@ namespace QS.Journal.Actions
 		{
 			selectedNodes = nodes.Cast<TNode>().ToList();
 			
-			// Обновляем состояние всех действий
-			foreach (var action in Actions)
+			// Обновляем состояние всех действий (слева)
+			foreach (var action in LeftActions)
+			{
+				action.OnSelectionChanged(selectedNodes);
+			}
+			
+			// Обновляем состояние всех действий (справа)
+			foreach (var action in RightActions)
 			{
 				action.OnSelectionChanged(selectedNodes);
 			}
@@ -114,13 +167,23 @@ namespace QS.Journal.Actions
 
 		public override void OnKeyPressed(string key)
 		{
-			// Обработка горячих клавиш
-			foreach (var action in Actions)
+			// Обработка горячих клавиш для действий слева
+			foreach (var action in LeftActions)
 			{
 				if (action.HotKeys == key && action.Sensitive && action.Visible)
 				{
 					action.ExecuteAction?.Invoke(selectedNodes);
-					break;
+					return;
+				}
+			}
+			
+			// Обработка горячих клавиш для действий справа
+			foreach (var action in RightActions)
+			{
+				if (action.HotKeys == key && action.Sensitive && action.Visible)
+				{
+					action.ExecuteAction?.Invoke(selectedNodes);
+					return;
 				}
 			}
 		}

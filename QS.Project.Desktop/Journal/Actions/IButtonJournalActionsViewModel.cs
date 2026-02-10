@@ -8,8 +8,13 @@ namespace QS.Journal.Actions
 	public interface IButtonJournalActionsViewModel
 	{
 		/// <summary>
-		/// Коллекция действий для отображения
+		/// Коллекция действий для отображения (слева)
 		/// </summary>
-		ObservableCollection<IJournalActionView> ActionsView { get; }
+		ObservableCollection<IJournalActionView> LeftActionsView { get; }
+		
+		/// <summary>
+		/// Коллекция действий для отображения справа на панели
+		/// </summary>
+		ObservableCollection<IJournalActionView> RightActionsView { get; }
 	}
 }

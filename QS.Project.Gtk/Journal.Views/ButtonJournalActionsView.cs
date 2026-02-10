@@ -31,20 +31,27 @@ namespace QS.Journal.Views {
 			{
 				if (viewModel != null)
 				{
-					viewModel.ActionsView.CollectionChanged -= ActionsView_CollectionChanged;
+					viewModel.LeftActionsView.CollectionChanged -= LeftActionsView_CollectionChanged;
+					viewModel.RightActionsView.CollectionChanged -= RightActionsView_CollectionChanged;
 				}
 
 				viewModel = value;
 
 				if (viewModel != null)
 				{
-					viewModel.ActionsView.CollectionChanged += ActionsView_CollectionChanged;
+					viewModel.LeftActionsView.CollectionChanged += LeftActionsView_CollectionChanged;
+					viewModel.RightActionsView.CollectionChanged += RightActionsView_CollectionChanged;
 					RebuildButtons();
 				}
 			}
 		}
 
-		private void ActionsView_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void LeftActionsView_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			RebuildButtons();
+		}
+
+		private void RightActionsView_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			RebuildButtons();
 		}
@@ -60,19 +67,32 @@ namespace QS.Journal.Views {
 			if (viewModel == null)
 				return;
 
-			// Создаем кнопки для каждого действия
-			var widgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
-			foreach (var action in viewModel.ActionsView) {
+			// Создаем кнопки для левых действий
+			var leftWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
+			foreach (var action in viewModel.LeftActionsView) {
 				var widget = CreateButtonWidget(action);
-				widgets.Add((widget, action));
+				leftWidgets.Add((widget, action));
 				hboxButtons.PackStart(widget, false, false, 0);
+			}
+
+			// Создаем кнопки для правых действий (упаковываем в конец)
+			var rightWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
+			foreach (var action in viewModel.RightActionsView) {
+				var widget = CreateButtonWidget(action);
+				rightWidgets.Add((widget, action));
+				hboxButtons.PackEnd(widget, false, false, 0);
 			}
 
 			hboxButtons.ShowAll();
 			
 			// После ShowAll() нужно явно скрыть виджеты, у которых Visible = false
 			// так как NoShowAll работает только при вызове Show(), а не ShowAll()
-			foreach (var (widget, action) in widgets) {
+			foreach (var (widget, action) in leftWidgets) {
+				if (!action.Visible)
+					widget.Hide();
+			}
+			
+			foreach (var (widget, action) in rightWidgets) {
 				if (!action.Visible)
 					widget.Hide();
 			}
@@ -165,7 +185,8 @@ namespace QS.Journal.Views {
 		{
 			if (viewModel != null)
 			{
-				viewModel.ActionsView.CollectionChanged -= ActionsView_CollectionChanged;
+				viewModel.LeftActionsView.CollectionChanged -= LeftActionsView_CollectionChanged;
+				viewModel.RightActionsView.CollectionChanged -= RightActionsView_CollectionChanged;
 			}
 
 			base.Destroy();

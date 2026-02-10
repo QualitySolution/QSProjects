@@ -14,6 +14,7 @@ namespace QS.Journal.Views
 	public partial class ButtonJournalActionsView : UserControl
 	{
 		private StackPanel? actionsPanelControl;
+		private StackPanel? rightActionsPanelControl;
 		private IButtonJournalActionsViewModel? viewModel;
 
 		public ButtonJournalActionsView()
@@ -25,6 +26,7 @@ namespace QS.Journal.Views
 		{
 			AvaloniaXamlLoader.Load(this);
 			actionsPanelControl = this.FindControl<StackPanel>("actionsPanel");
+			rightActionsPanelControl = this.FindControl<StackPanel>("rightActionsPanel");
 		}
 
 		protected override void OnDataContextChanged(EventArgs e)
@@ -34,7 +36,8 @@ namespace QS.Journal.Views
 			// Отписываемся от старой ViewModel
 			if (viewModel != null)
 			{
-				viewModel.ActionsView.CollectionChanged -= Actions_CollectionChanged;
+				viewModel.LeftActionsView.CollectionChanged -= LeftActions_CollectionChanged;
+				viewModel.RightActionsView.CollectionChanged -= RightActions_CollectionChanged;
 			}
 
 			// Подписываемся на новую ViewModel
@@ -42,24 +45,31 @@ namespace QS.Journal.Views
 			
 			if (viewModel != null)
 			{
-				viewModel.ActionsView.CollectionChanged += Actions_CollectionChanged;
-				RebuildActions();
+				viewModel.LeftActionsView.CollectionChanged += LeftActions_CollectionChanged;
+				viewModel.RightActionsView.CollectionChanged += RightActions_CollectionChanged;
+				RebuildLeftActions();
+				RebuildRightActions();
 			}
 		}
 
-		private void Actions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		private void LeftActions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
-			RebuildActions();
+			RebuildLeftActions();
 		}
 
-		private void RebuildActions()
+		private void RightActions_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			RebuildRightActions();
+		}
+
+		private void RebuildLeftActions()
 		{
 			if (actionsPanelControl == null || viewModel == null)
 				return;
 
 			actionsPanelControl.Children.Clear();
 
-			foreach (var action in viewModel.ActionsView)
+			foreach (var action in viewModel.LeftActionsView)
 			{
 				Control control;
 				
@@ -75,6 +85,32 @@ namespace QS.Journal.Views
 				}
 
 				actionsPanelControl.Children.Add(control);
+			}
+		}
+
+		private void RebuildRightActions()
+		{
+			if (rightActionsPanelControl == null || viewModel == null)
+				return;
+
+			rightActionsPanelControl.Children.Clear();
+
+			foreach (var action in viewModel.RightActionsView)
+			{
+				Control control;
+				
+				// Если есть дочерние действия - создаем DropDownButton
+				if (action.ChildActionsView != null && action.ChildActionsView.Any())
+				{
+					control = CreateDropDownButton(action);
+				}
+				// Иначе создаем обычную кнопку
+				else
+				{
+					control = CreateButton(action);
+				}
+
+				rightActionsPanelControl.Children.Add(control);
 			}
 		}
 
