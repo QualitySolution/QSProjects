@@ -297,53 +297,12 @@ namespace QS.Journal.Views
 			return tableview.GetSelectedObjects();
 		}
 
-		private readonly List<Action<object[]>> buttonRefreshActions = new List<Action<object[]>>();
-
 		private void ConfigureActions()
 		{
-			// Пробуем использовать новую модель действий
 			if(ViewModel.ActionsViewModel is IButtonJournalActionsViewModel buttonActionsViewModel) {
 				buttonActionsView = new ButtonJournalActionsView(buttonActionsViewModel);
 				hboxButtons.PackStart(buttonActionsView, true, true, 0);
 				buttonActionsView.ShowAll();
-			}
-			// Обратная совместимость - старый способ через NodeActions
-			else {
-				buttonRefreshActions.Clear();
-				
-				foreach(var action in ViewModel.NodeActions) {
-					Button actionWidget;
-					var actionForClosure = action;
-					
-					if(action.ChildActions.Any()) {
-						MenuButton menuButton = new MenuButton();
-						menuButton.Label = action.GetTitle(new object[] { });
-						Menu childActionButtons = new Menu();
-						foreach(var childAction in action.ChildActions) {
-							childActionButtons.Add(CreateMenuItemWidget(childAction));
-						}
-						menuButton.Menu = childActionButtons;
-						actionWidget = menuButton;
-						if (action.ExecuteAction == null)
-							action.ExecuteAction = items => menuButton.Press();
-					} else {
-						var button = new Button();
-						button.Label = action.GetTitle(new object[] { });
-						button.Clicked += (sender, args) =>  ExecuteAction(action);
-						actionWidget = button;
-					}
-					
-					buttonRefreshActions.Add((s) => actionWidget.Label = actionForClosure.GetTitle(s));
-					buttonRefreshActions.Add((s) => actionWidget.Sensitive = actionForClosure.GetSensitivity(s));
-					buttonRefreshActions.Add((s) => actionWidget.Visible = actionForClosure.GetVisibility(s));
-
-					actionWidget.ShowAll();
-
-					hboxButtons.Add(actionWidget);
-					Box.BoxChild addDocumentButtonBox = (Box.BoxChild)hboxButtons[actionWidget];
-					addDocumentButtonBox.Expand = false;
-					addDocumentButtonBox.Fill = false;
-				}
 			}
 
 			tableview.RowActivated += OnTableViewRowActivated;
@@ -351,36 +310,14 @@ namespace QS.Journal.Views
 
 		private void OnTableViewRowActivated(object o, RowActivatedArgs args)
 		{
-			var selectedItems = GetSelectedItems();
-			
-			// Пробуем использовать новую систему действий
 			if(ViewModel.ActionsViewModel != null) {
-				// Получаем информацию о ячейке, если возможно
+				var selectedItems = GetSelectedItems();
 				object node = selectedItems.Length > 0 ? selectedItems[0] : null;
 				ViewModel.ActionsViewModel.OnCellDoubleClick(node, null, null);
 				lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
 			}
-			// Обратная совместимость - старая система действий
-			else if(ViewModel.RowActivatedAction != null)
-			{
-				if(ViewModel.RowActivatedAction.GetSensitivity(selectedItems))
-				{
-					ViewModel.RowActivatedAction.ExecuteAction(selectedItems);
-					lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
-				}
-			}
-			else
-			{
+			else {
 				ExpandCollapseOnRowActivated(args);
-			}
-		}
-		
-		private void ExecuteAction(IJournalAction action)
-		{
-			var selectedItems = GetSelectedItems();
-			if(action.GetSensitivity(selectedItems) && action.GetVisibility(selectedItems)) {
-				lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
-				action.ExecuteAction.Invoke(selectedItems);
 			}
 		}
 
@@ -393,30 +330,6 @@ namespace QS.Journal.Views
 			}
 		}
 
-		private MenuItem CreateMenuItemWidget(IJournalAction action)
-		{
-			var menuItem = new MenuItem(action.GetTitle(new object[] { }));
-
-			buttonRefreshActions.Add((s) => ((Label)menuItem.Child).LabelProp = action.GetTitle(s));
-			buttonRefreshActions.Add((s) => menuItem.Sensitive = action.GetSensitivity(s));
-			buttonRefreshActions.Add((s) => menuItem.Visible = action.GetVisibility(s));
-			
-			if(action.ChildActions.Any()) {
-				var subMenu = new Menu();
-				menuItem.Submenu = subMenu;
-				foreach(var childAction in action.ChildActions) {
-					subMenu.Add(CreateMenuItemWidget(childAction));
-				}
-			}
-			else {
-				menuItem.ButtonPressEvent += (o, args) => {
-					if(args.Event.Button != (uint)GtkMouseButton.Left) return;
-					ExecuteAction(action);
-				};
-			}
-
-			return menuItem;
-		}
 
 		void Tableview_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
@@ -436,7 +349,8 @@ namespace QS.Journal.Views
 		private void CreatePopupMenuActionsRecursively(Menu menu, IJournalAction popupAction, object[] selectedItems)
 		{
 			if (!popupAction.GetVisibility(selectedItems))
-				return; // Если элемент не виден, то не хуй его создавать.
+				return;
+			
 			var item = new MenuItem(popupAction.GetTitle(selectedItems));
 			item.Sensitive = popupAction.GetSensitivity(selectedItems);
 			
@@ -447,11 +361,14 @@ namespace QS.Journal.Views
 				
 				item.Submenu = subMenu;
 			}
-			//Действия выполняются только для самых последних дочерних JournalActions
 			else {
 				item.ButtonPressEvent += (o, args) => {
 					if(args.Event.Button != (uint)GtkMouseButton.Left) return;
-					ExecuteAction(popupAction);
+					
+					if(popupAction.GetSensitivity(selectedItems)) {
+						lastScrollPosition = GtkScrolledWindow.Vadjustment?.Value ?? 0;
+						popupAction.ExecuteAction.Invoke(selectedItems);
+					}
 				};
 			}
 			menu.Add(item);
@@ -468,10 +385,6 @@ namespace QS.Journal.Views
 			if(ViewModel.ActionsViewModel != null) {
 				ViewModel.ActionsViewModel.OnSelectionChanged(selectedItems);
 			}
-			
-			// Старый способ для обратной совместимости
-			foreach(var item in buttonRefreshActions)
-				item.Invoke(selectedItems);
 		}
 
 		private bool isDestroyed = false;
@@ -510,34 +423,8 @@ namespace QS.Journal.Views
 
 		private void ExecuteTypeJournalAction(string hotKey)
 		{
-			// Пробуем использовать новую модель действий
 			if(ViewModel.ActionsViewModel != null) {
 				ViewModel.ActionsViewModel.OnKeyPressed(hotKey);
-				return;
-			}
-			
-			// Старый способ для обратной совместимости
-			var nodeActions = ViewModel.NodeActions
-				.Where(n => !string.IsNullOrWhiteSpace(n.HotKeys)
-					&& n.HotKeys
-						.Replace(" ", string.Empty).ToLower()
-						.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
-						.Contains(hotKey.ToLower()))
-				.ToList();
-
-			if(nodeActions.Count > 1)
-			{
-				throw new InvalidOperationException($"Должен быть только один NodeAction с горячей клавишей {hotKey}");
-			}
-
-			if(nodeActions.Count == 1)
-			{
-				var selectedItems = GetSelectedItems();
-				var action = nodeActions.First();
-				if(action.GetSensitivity(selectedItems) && action.GetVisibility(selectedItems))
-				{
-					action.ExecuteAction.Invoke(selectedItems);
-				}
 			}
 		}
 

@@ -80,10 +80,8 @@ namespace QS.Journal
 			UpdateOnChanges(typeof(TEntity));
 		}
 
-		protected override void CreateNodeActions()
+		protected void CreateNodeActions()
 		{
-			base.CreateNodeActions();
-			
 			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
 			
 			// Действие "Выбрать" (только для режима выбора)

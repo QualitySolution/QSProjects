@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using NHibernate.Criterion;
 using NLog;
@@ -43,13 +42,8 @@ namespace QS.Journal
 			set { }
 		}
 
-		public virtual IEnumerable<IJournalAction> NodeActions => NodeActionsList;
-		protected virtual List<IJournalAction> NodeActionsList { get; set; }
-
 		public virtual IEnumerable<IJournalAction> PopupActions => PopupActionsList;
 		protected virtual List<IJournalAction> PopupActionsList { get; set; }
-
-		public virtual IJournalAction RowActivatedAction { get; protected set; }
 
 		private IJournalEventsHandler actionsViewModel;
 		/// <summary>
@@ -86,11 +80,7 @@ namespace QS.Journal
 		[PropertyChangedAlso(nameof(TableSelectionMode))]
 		public virtual JournalSelectionMode SelectionMode {
 			get => selectionMode;
-			set {
-				if(SetField(ref selectionMode, value, () => SelectionMode)) {
-					CreateNodeActions();
-				}
-			}
+			set => SetField(ref selectionMode, value, () => SelectionMode);
 		}
 
 		public event EventHandler<JournalSelectedEventArgs> OnSelectResult;
@@ -112,7 +102,6 @@ namespace QS.Journal
 
 		protected JournalViewModelBase(INavigationManager navigation) : base(navigation)
 		{
-			NodeActionsList = new List<IJournalAction>();
 			PopupActionsList = new List<IJournalAction>();
 
 			//Поиск
@@ -125,35 +114,16 @@ namespace QS.Journal
 		protected virtual void OnItemsSelected(object[] selectedNodes, bool closeJournal = true)
 		{
 			OnSelectResult?.Invoke(this, new JournalSelectedEventArgs(selectedNodes));
-            if(closeJournal)
-            {
+	        if(closeJournal)
+	        {
 				Close(false, CloseSource.Self);
 			}
 		}
 
 		#region Configure actions
 
-		protected virtual void CreateNodeActions()
-		{
-			NodeActionsList.Clear();
-			CreateDefaultSelectAction();
-		}
-
 		protected virtual void CreatePopupActions()
 		{
-		}
-
-		protected virtual void CreateDefaultSelectAction()
-		{
-			var selectAction = new JournalAction("Выбрать",
-				(selected) => selected.Any(),
-				(selected) => SelectionMode != JournalSelectionMode.None,
-				(selected) => OnItemsSelected(selected)
-			);
-			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
-				RowActivatedAction = selectAction;
-			}
-			NodeActionsList.Add(selectAction);
 		}
 
 		#endregion Configure actions
