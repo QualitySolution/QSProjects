@@ -84,7 +84,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
-			where TJournalViewModel : JournalViewModelBase {
+			where TJournalViewModel : IJournalViewMode {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
 			}
@@ -94,7 +94,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 			where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
@@ -105,7 +105,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(TJournalFilterViewModel filter)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 			where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");

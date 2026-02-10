@@ -32,14 +32,14 @@ namespace QS.ViewModels.Control.EEVM
 		#region Fluent Config
 
 		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 		{
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(parameters.DialogViewModel, parameters.NavigationManager);
 			return this;
 		}
 
 		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 		{
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel>(parameters.DialogViewModel, parameters.NavigationManager);
 			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>(parameters.AutofacScope);
@@ -47,7 +47,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 			where TJournalFilterViewModel : class, IJournalFilterViewModel
 		{
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.DialogViewModel, parameters.NavigationManager, filterParams);
@@ -56,7 +56,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(TJournalFilterViewModel filter)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 			where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			EntitySelector = new JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.DialogViewModel, parameters.NavigationManager, filter);
 			EntityAutocompleteSelector = new JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(parameters.AutofacScope, filter);

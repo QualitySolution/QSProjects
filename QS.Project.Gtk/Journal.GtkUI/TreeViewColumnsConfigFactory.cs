@@ -7,10 +7,10 @@ namespace QS.Journal.GtkUI
 {
 	public static class TreeViewColumnsConfigFactory
 	{
-		private static Dictionary<Type, Func<JournalViewModelBase, IColumnsConfig>> columnsConfigs = new Dictionary<Type, Func<JournalViewModelBase, IColumnsConfig>>();
+		private static Dictionary<Type, Func<IJournalViewMode, IColumnsConfig>> columnsConfigs = new Dictionary<Type, Func<IJournalViewMode, IColumnsConfig>>();
 
 		public static void Register<TJournalViewModel>(Func<IColumnsConfig> columnsConfigFunc)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 		{
 			Type journalType = typeof(TJournalViewModel);
 			if(columnsConfigs.ContainsKey(journalType))
@@ -19,7 +19,7 @@ namespace QS.Journal.GtkUI
 		}
 
 		public static void Register<TJournalViewModel>(Func<TJournalViewModel, IColumnsConfig> columnsConfigFunc)
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewMode
 		{
 			Type journalType = typeof(TJournalViewModel);
 			if(columnsConfigs.ContainsKey(journalType))
@@ -27,7 +27,7 @@ namespace QS.Journal.GtkUI
 			columnsConfigs.Add(journalType, (jvm) => columnsConfigFunc((TJournalViewModel)jvm));
 		}
 
-		public static IColumnsConfig Resolve(JournalViewModelBase journalViewModel)
+		public static IColumnsConfig Resolve(IJournalViewMode journalViewModel)
 		{
 			if(journalViewModel == null) {
 				throw new ArgumentNullException(nameof(journalViewModel));

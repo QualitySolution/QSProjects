@@ -23,9 +23,9 @@ namespace QS.Project.Journal
 			}
 		}
 
-		public JournalViewModelBase JournalViewModel { get; }
+		public IJournalViewMode JournalViewModel { get; }
 
-		public JournalFilterViewModelBase(JournalViewModelBase journalViewModel, IUnitOfWorkFactory unitOfWorkFactory = null)
+		public JournalFilterViewModelBase(IJournalViewMode journalViewModel, IUnitOfWorkFactory unitOfWorkFactory = null)
 		{
 			JournalViewModel = journalViewModel ?? throw new ArgumentNullException(nameof(journalViewModel));
 			this.unitOfWorkFactory = unitOfWorkFactory;

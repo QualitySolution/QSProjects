@@ -8,7 +8,7 @@ using System;
 namespace QS.ViewModels.Control.EEVM {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
 		where TEntity : class
-		where TJournalViewModel : JournalViewModelBase 
+		where TJournalViewModel : IJournalViewMode 
 	{
 		protected readonly INavigationManager navigationManager;
 		protected readonly DialogViewModelBase ParentViewModel;
@@ -44,7 +44,7 @@ namespace QS.ViewModels.Control.EEVM {
 
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : class
-		where TJournalViewModel : JournalViewModelBase
+		where TJournalViewModel : IJournalViewMode
 		where TJournalFilterViewModel : class, IJournalFilterViewModel
 	{
 		private readonly Action<TJournalFilterViewModel> filterParams;

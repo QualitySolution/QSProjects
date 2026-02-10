@@ -1,7 +1,6 @@
 using System;
 using Autofac;
 using QS.DomainModel.Entity;
-using QS.DomainModel.UoW;
 using QS.Journal;
 using QS.Project.Journal;
 
@@ -9,7 +8,7 @@ namespace QS.ViewModels.Control.EEVM
 {
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel> : IEntityAutocompleteSelector<TEntity>, IDisposable
 		where TEntity : class
-		where TJournalViewModel : JournalViewModelBase
+		where TJournalViewModel : IJournalViewMode
 	{
 		protected ILifetimeScope autofacScope;
 
@@ -56,7 +55,7 @@ namespace QS.ViewModels.Control.EEVM
 				journalViewModel.DataLoader.ItemsListUpdated -= DataLoader_ItemsListUpdated;
 				if(journalViewModel is IDisposable disposable)
 					disposable.Dispose();
-				journalViewModel = null;
+				journalViewModel = default(TJournalViewModel);
 			}
 
 			autofacScope = null;
@@ -65,7 +64,7 @@ namespace QS.ViewModels.Control.EEVM
 
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>
 		where TEntity : class
-		where TJournalViewModel : JournalViewModelBase
+		where TJournalViewModel : IJournalViewMode
 		where TJournalFilterViewModel : class, IJournalFilterViewModel {
 		private readonly Action<TJournalFilterViewModel> filterParams;
 		private readonly TJournalFilterViewModel _filter;

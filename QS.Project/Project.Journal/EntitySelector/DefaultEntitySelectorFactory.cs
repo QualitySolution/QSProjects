@@ -8,7 +8,7 @@ using QS.Services;
 namespace QS.Project.Journal.EntitySelector
 {
 	public class DefaultEntitySelectorFactory<TEntity, TJournalViewModel, TJournalFilterViewModel> : IEntitySelectorFactory
-		where TJournalViewModel : JournalViewModelBase, IEntitySelector
+		where TJournalViewModel : IJournalViewMode, IEntitySelector
 		where TJournalFilterViewModel : class, IJournalFilter
 		where TEntity : class, IDomainObject
 	{
