@@ -6,7 +6,6 @@ using QS.DomainModel.Entity;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Navigation;
-using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM
 {
@@ -17,7 +16,7 @@ namespace QS.ViewModels.Control.EEVM
 		where TBindedEntity: class, INotifyPropertyChanged
 	{
 		public TBindedEntity BindedEntity { get; set; }
-		public DialogViewModelBase DialogViewModel { get; set; }
+		public IDialogViewModel DialogViewModel { get; set; }
 		public IUnitOfWork UnitOfWork { get; set; }
 		public INavigationManager NavigationManager { get; set; }
 
@@ -28,7 +27,7 @@ namespace QS.ViewModels.Control.EEVM
 
 		public IEntityChangeWatcher ChangeWatcher => AutofacScope.ResolveOptional<IEntityChangeWatcher>();
 
-		public CommonEEVMBuilderFactory(DialogViewModelBase dialogViewModel, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation, ILifetimeScope autofacScope = null)
+		public CommonEEVMBuilderFactory(IDialogViewModel dialogViewModel, TBindedEntity source, IUnitOfWork unitOfWork, INavigationManager navigation, ILifetimeScope autofacScope = null)
 		{
 			BindedEntity = source;
 			DialogViewModel = dialogViewModel;
@@ -58,7 +57,7 @@ namespace QS.ViewModels.Control.EEVM
 	/// </summary>
 	public class CommonEEVMBuilderFactory : IEEVMBuilderParameters
 	{
-		public DialogViewModelBase DialogViewModel { get; set; }
+		public IDialogViewModel DialogViewModel { get; set; }
 		public IUnitOfWork UnitOfWork { get; set; }
 		public INavigationManager NavigationManager { get; set; }
 
@@ -70,7 +69,7 @@ namespace QS.ViewModels.Control.EEVM
 		public IEntityChangeWatcher ChangeWatcher => AutofacScope.ResolveOptional<IEntityChangeWatcher>();
 
 		public CommonEEVMBuilderFactory(
-			DialogViewModelBase dialogViewModel,
+			IDialogViewModel dialogViewModel,
 			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
 			ILifetimeScope autofacScope = null

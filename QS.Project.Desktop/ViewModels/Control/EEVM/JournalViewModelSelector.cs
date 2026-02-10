@@ -1,19 +1,18 @@
 using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal;
-using QS.ViewModels.Dialog;
 using System.Linq;
 using System;
 
 namespace QS.ViewModels.Control.EEVM {
 	public class JournalViewModelSelector<TEntity, TJournalViewModel> : IEntitySelector
 		where TEntity : class
-		where TJournalViewModel : IJournalViewMode 
+		where TJournalViewModel : IJournalViewModel 
 	{
 		protected readonly INavigationManager navigationManager;
-		protected readonly DialogViewModelBase ParentViewModel;
+		protected readonly IDialogViewModel ParentViewModel;
 
-		public JournalViewModelSelector(DialogViewModelBase parentViewModel, INavigationManager navigationManager)
+		public JournalViewModelSelector(IDialogViewModel parentViewModel, INavigationManager navigationManager)
 		{
 			this.navigationManager = navigationManager ?? throw new ArgumentNullException(nameof(navigationManager));
 			this.ParentViewModel = parentViewModel ?? throw new ArgumentNullException(nameof(parentViewModel));
@@ -44,14 +43,14 @@ namespace QS.ViewModels.Control.EEVM {
 
 	public class JournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelSelector<TEntity, TJournalViewModel>
 		where TEntity : class
-		where TJournalViewModel : IJournalViewMode
+		where TJournalViewModel : IJournalViewModel
 		where TJournalFilterViewModel : class, IJournalFilterViewModel
 	{
 		private readonly Action<TJournalFilterViewModel> filterParams;
 		private readonly TJournalFilterViewModel _filter;
 
 		public JournalViewModelSelector(
-			DialogViewModelBase parentViewModel,
+			IDialogViewModel parentViewModel,
 			INavigationManager navigationManager,
 			TJournalFilterViewModel filter
 			) : base(parentViewModel, navigationManager) {
@@ -59,7 +58,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public JournalViewModelSelector(
-			DialogViewModelBase parentViewModel, 
+			IDialogViewModel parentViewModel, 
 			INavigationManager navigationManager, 
 			Action<TJournalFilterViewModel> filterParams
 			):base (parentViewModel, navigationManager)

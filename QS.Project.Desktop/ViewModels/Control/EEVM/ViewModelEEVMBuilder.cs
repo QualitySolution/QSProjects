@@ -1,15 +1,15 @@
 using Autofac;
 using QS.DomainModel.Entity;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.Navigation;
 using QS.Project.Journal;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Resolve;
-using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using QS.DomainModel.NotifyChange;
-using QS.Journal;
+using System;
 
 namespace QS.ViewModels.Control.EEVM {
 	/// <summary>
@@ -84,7 +84,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
-			where TJournalViewModel : IJournalViewMode {
+			where TJournalViewModel : IJournalViewModel {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
 			}
@@ -94,7 +94,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
-			where TJournalViewModel : IJournalViewMode
+			where TJournalViewModel : IJournalViewModel
 			where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
@@ -105,7 +105,7 @@ namespace QS.ViewModels.Control.EEVM {
 		}
 
 		public virtual ViewModelEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(TJournalFilterViewModel filter)
-			where TJournalViewModel : IJournalViewMode
+			where TJournalViewModel : IJournalViewModel
 			where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(!IsParametersCreated) {
 				throw new InvalidOperationException("Базовые параметры не установлены");
@@ -170,7 +170,7 @@ namespace QS.ViewModels.Control.EEVM {
 
 		public class ViewModelEEVMBuilderParameters : IEEVMBuilderParameters {
 			public ViewModelEEVMBuilderParameters(
-				DialogViewModelBase dialogViewModel,
+				IDialogViewModel dialogViewModel,
 				IUnitOfWork unitOfWork,
 				INavigationManager navigationManager,
 				ILifetimeScope autofacScope) {
@@ -180,7 +180,7 @@ namespace QS.ViewModels.Control.EEVM {
 				AutofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			}
 
-			public DialogViewModelBase DialogViewModel { get; }
+			public IDialogViewModel DialogViewModel { get; }
 			public IUnitOfWork UnitOfWork { get; }
 			public INavigationManager NavigationManager { get; }
 			public ILifetimeScope AutofacScope { get; }

@@ -9,7 +9,7 @@ namespace QS.Journal {
 	/// <summary>
 	/// Интерфейс view model журнала для взаимодействия с view
 	/// </summary>
-	public interface IJournalViewMode : IDialogViewModel {
+	public interface IJournalViewModel : IDialogViewModel {
 		/// <summary>
 		/// Фильтр журнала
 		/// </summary>

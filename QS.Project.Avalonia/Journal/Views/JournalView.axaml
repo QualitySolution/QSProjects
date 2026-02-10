@@ -6,7 +6,7 @@
              xmlns:journal="clr-namespace:QS.Journal;assembly=QS.Project.Desktop"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             x:DataType="journal:IJournalViewMode"
+             x:DataType="journal:IJournalViewModel"
              mc:Ignorable="d">
     <DockPanel>
         <!-- Панель действий сверху -->

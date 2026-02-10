@@ -8,7 +8,7 @@ namespace QS.ViewModels.Control.EEVM
 {
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel> : IEntityAutocompleteSelector<TEntity>, IDisposable
 		where TEntity : class
-		where TJournalViewModel : IJournalViewMode
+		where TJournalViewModel : IJournalViewModel
 	{
 		protected ILifetimeScope autofacScope;
 
@@ -64,7 +64,7 @@ namespace QS.ViewModels.Control.EEVM
 
 	public class JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel, TJournalFilterViewModel> : JournalViewModelAutocompleteSelector<TEntity, TJournalViewModel>
 		where TEntity : class
-		where TJournalViewModel : IJournalViewMode
+		where TJournalViewModel : IJournalViewModel
 		where TJournalFilterViewModel : class, IJournalFilterViewModel {
 		private readonly Action<TJournalFilterViewModel> filterParams;
 		private readonly TJournalFilterViewModel _filter;
