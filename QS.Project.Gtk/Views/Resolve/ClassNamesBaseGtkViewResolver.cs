@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Gtk;
-using QS.ViewModels;
 
 namespace QS.Views.Resolve
 {
@@ -32,7 +31,7 @@ namespace QS.Views.Resolve
 			this.viewFactory = viewFactory;
 		}
 
-		public Widget Resolve(ViewModelBase viewModel)
+		public Widget Resolve(object viewModel)
 		{
 			var fullClassName = viewModel.GetType().FullName;
 			var match = Regex.Matches(fullClassName, "^([a-zA-Z\\d\\.]+)\\.ViewModels(\\.[a-zA-Z\\d\\.]+)*\\.([a-zA-Z\\d]+)ViewModel$");

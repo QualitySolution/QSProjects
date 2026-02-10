@@ -1,12 +1,11 @@
 using Avalonia.Controls;
-using QS.ViewModels;
 using System;
 
 namespace QS.Navigation;
 
 public class AvaloniaViewFactory(Func<IAvaloniaViewResolver> getViewResolver)
 {
-	public Control Create(Type viewClass, ViewModelBase viewModel) {
+	public Control Create(Type viewClass, object viewModel) {
 		// Пытаемся найти конструктор с (ViewModel, IAvaloniaViewResolver)
 		var constructorWithResolver = viewClass.GetConstructor([viewModel.GetType(), typeof(IAvaloniaViewResolver)]);
 		if(constructorWithResolver != null)

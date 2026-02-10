@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -15,12 +14,11 @@ using QS.Utilities.Text;
 using QS.ViewModels;
 using QS.Views.Dialog;
 using QS.Views.Resolve;
-using QS.Widgets;
 
 namespace QS.Journal.Views
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : DialogViewBase<JournalViewModelBase>
+	public partial class JournalView : DialogViewBase<IJournalViewMode>
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -34,7 +32,7 @@ namespace QS.Journal.Views
 
 		#endregion
 
-		public JournalView(JournalViewModelBase viewModel, IGtkViewResolver viewResolver = null) : base(viewModel)
+		public JournalView(IJournalViewMode viewModel, IGtkViewResolver viewResolver = null) : base(viewModel)
 		{
 			this.viewResolver = viewResolver;
 			this.Build();

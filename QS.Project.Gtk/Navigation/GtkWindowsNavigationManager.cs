@@ -3,6 +3,7 @@ using System.Linq;
 using Gamma.Utilities;
 using Gtk;
 using QS.Dialog;
+using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 using QS.Views.Dialog;
 using QS.Views.Resolve;
@@ -53,7 +54,7 @@ namespace QS.Navigation
 		protected override void OpenPage(IPage masterPage, IPage page)
 		{
 			//FIXME Временное решение пока не выпилим TDi, и реализуем заполнение этого через конструктор.
-			page.ViewModel.NavigationManager = this;
+			((DialogViewModelBase)page.ViewModel).NavigationManager = this;
 			pages.Add(page);
 			var gtkPage = (IGtkWindowPage)page;
 			IWindowDialogSettings windowSettings = page.ViewModel as IWindowDialogSettings;

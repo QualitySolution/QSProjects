@@ -1,17 +1,17 @@
 ﻿using System;
 using Gtk;
 using QS.Dialog.Gtk;
-using QS.ViewModels.Dialog;
+using QS.Navigation;
 
 namespace QS.Tdi
 {
 	public class ViewModelTdiTab : TdiTabBase
 	{
-		public DialogViewModelBase ViewModel;
+		public IDialogViewModel ViewModel;
 
 		public ViewModelTdiTab() { }
 
-		public void Setup(DialogViewModelBase viewModel, Widget widget)
+		public void Setup(IDialogViewModel viewModel, Widget widget)
 		{
 			if(widget == null) throw new ArgumentNullException(nameof(widget));
 

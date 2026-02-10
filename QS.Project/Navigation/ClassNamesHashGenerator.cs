@@ -4,7 +4,6 @@ using System.Linq;
 using Autofac;
 using QS.Project.Domain;
 using QS.Tdi;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -19,12 +18,12 @@ namespace QS.Navigation
 
 		#region IPageHashGenerator
 
-		public string GetHash<TViewModel>(DialogViewModelBase master, Type[] ctorTypes, object[] ctorValues)
+		public string GetHash<TViewModel>(IDialogViewModel master, Type[] ctorTypes, object[] ctorValues)
 		{
 			return InternalGetHash(typeof(TViewModel), ctorValues);
 		}
 
-		public string GetHashNamedArgs<TViewModel>(DialogViewModelBase master, IDictionary<string, object> ctorArgs)
+		public string GetHashNamedArgs<TViewModel>(IDialogViewModel master, IDictionary<string, object> ctorArgs)
 		{
 			return InternalGetHash(typeof(TViewModel), ctorArgs.Values.ToArray());
 		}

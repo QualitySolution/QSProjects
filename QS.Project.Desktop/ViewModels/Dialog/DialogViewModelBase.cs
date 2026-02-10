@@ -7,7 +7,7 @@ namespace QS.ViewModels.Dialog
 	/// Которые пользователь открывает для совершения каких-то отдельных действий.
 	/// Внутри кода, такие диалоги открываются через INavigationManager
 	/// </summary>
-	public abstract class DialogViewModelBase : ViewModelBase
+	public abstract class DialogViewModelBase : ViewModelBase, IDialogViewModel
 	{
 		public INavigationManager NavigationManager { get; set; }
 

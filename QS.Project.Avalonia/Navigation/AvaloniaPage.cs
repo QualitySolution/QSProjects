@@ -3,11 +3,13 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Navigation;
 
-public class AvaloniaPage<TViewModel> : PageBase, IPage<TViewModel>, IAvaloniaPage where TViewModel : DialogViewModelBase {
+public class AvaloniaPage<TViewModel> : PageBase, IPage<TViewModel>, IAvaloniaPage 
+	where TViewModel : IDialogViewModel 
+{
 	public Control View { get; set; }
 
 	public TViewModel ViewModel { get; private set; }
-	DialogViewModelBase IPage.ViewModel => ViewModel;
+	IDialogViewModel IPage.ViewModel => ViewModel;
 
 	public override string Title => ViewModel?.Title;
 

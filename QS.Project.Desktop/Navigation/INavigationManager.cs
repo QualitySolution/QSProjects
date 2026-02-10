@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Autofac;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -18,48 +17,48 @@ namespace QS.Navigation
 		/// <param name="options">Параметры режима открытия.</param>
 		/// <typeparam name="TViewModel">Тип ViewModel которую необходимо создать.</typeparam>
 		IPage<TViewModel> OpenViewModel<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			TCtorArg3 arg3,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 
 		IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			IDictionary<string, object> ctorArgs,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 
-		IPage FindPage(DialogViewModelBase viewModel);
-		IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase;
+		IPage FindPage(IDialogViewModel viewModel);
+		IPage<TViewModel> FindPage<TViewModel>(IDialogViewModel viewModel) where TViewModel : IDialogViewModel;
 
 		IPage CurrentPage { get; }
 

@@ -1,10 +1,9 @@
 ﻿using QS.Tdi;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
 	public class TdiPage<TViewModel> : PageBase, IPage, IPage<TViewModel>, ITdiPage
-		where TViewModel : DialogViewModelBase
+		where TViewModel : IDialogViewModel
 	{
 		public TdiPage(TViewModel viewModel, ITdiTab tab, string hash)
 		{
@@ -18,6 +17,6 @@ namespace QS.Navigation
 
 		public ITdiTab TdiTab { get; private set; }
 
-		DialogViewModelBase IPage.ViewModel => ViewModel;
+		IDialogViewModel IPage.ViewModel => ViewModel;
 	}
 }

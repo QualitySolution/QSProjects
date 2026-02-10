@@ -5,6 +5,6 @@ using QS.ViewModels;
 namespace QS.Navigation;
 
 public interface IAvaloniaViewResolver : IDataTemplate {
-	Control Resolve(ViewModelBase viewModel, string? viewSuffix = null);
+	Control Resolve(object viewModel, string? viewSuffix = null);
 }
 

@@ -1,11 +1,10 @@
 ﻿using System;
-using QS.ViewModels;
 
 namespace QS.Navigation
 {
 	public class ViewModelOpenedEventArgs : EventArgs
 	{
-		public ViewModelBase ViewModel { get; private set; }
+		public IDialogViewModel ViewModel { get; private set; }
 		public IPage Page { get; private set; }
 
 		public ViewModelOpenedEventArgs(IPage page)
@@ -14,7 +13,7 @@ namespace QS.Navigation
 			ViewModel = page.ViewModel;
 		}
 
-		public ViewModelOpenedEventArgs(ViewModelBase viewModel)
+		public ViewModelOpenedEventArgs(IDialogViewModel viewModel)
 		{
 			ViewModel = viewModel;
 		}

@@ -57,7 +57,6 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override void OpenPage(IPage masterPage, IPage page) {
-		page.ViewModel.NavigationManager = this;
 		pages.Add(page);
 		
 		var avaloniaPage = (IAvaloniaPage)page;

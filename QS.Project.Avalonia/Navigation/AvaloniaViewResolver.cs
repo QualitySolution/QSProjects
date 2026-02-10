@@ -30,7 +30,7 @@ public class AvaloniaViewResolver : IAvaloniaViewResolver {
 		this.viewFactory = viewFactory;
 	}
 
-	public Control Resolve(ViewModelBase viewModel, string? viewSuffix = null) {
+	public Control Resolve(object viewModel, string? viewSuffix = null) {
 		string suffix = viewSuffix ?? "View";
 		var fullClassName = viewModel.GetType().FullName;
 		var match = Regex.Matches(fullClassName, "^([a-zA-Z\\d\\.]+)\\.ViewModels(\\.[a-zA-Z\\d\\.]+)*\\.([a-zA-Z\\d]+)ViewModel$");

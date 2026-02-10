@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Gtk;
 using QS.Navigation;
@@ -35,7 +34,7 @@ namespace QS.Views.Resolve
 
 		#endregion
 
-		public Widget Resolve(ViewModelBase viewModel)
+		public Widget Resolve(object viewModel)
 		{
 			foreach(var rule in registeredViews) {
 				if(rule.IsMatch(viewModel))

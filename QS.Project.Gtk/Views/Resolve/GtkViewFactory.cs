@@ -1,6 +1,5 @@
 ﻿using System;
 using Gtk;
-using QS.ViewModels;
 
 namespace QS.Views.Resolve {
 	public class GtkViewFactory : IGtkViewFactory {
@@ -10,7 +9,7 @@ namespace QS.Views.Resolve {
 			this.getGtkViewResolver = getGtkViewResolver;
 		}
 
-		public Widget Create(Type viewClass, ViewModelBase viewModel) {
+		public Widget Create(Type viewClass, object viewModel) {
 			var constructorWithResolver = viewClass.GetConstructor(new[] { viewModel.GetType(), typeof(IGtkViewResolver) });
 			if(constructorWithResolver != null) {
 				return (Widget)constructorWithResolver.Invoke(new object[] { viewModel, getGtkViewResolver() });
@@ -20,6 +19,6 @@ namespace QS.Views.Resolve {
 	}
 
 	public interface IGtkViewFactory {
-		Widget Create(Type viewClass, ViewModelBase viewModel);
+		Widget Create(Type viewClass, object viewModel);
 	}
 }

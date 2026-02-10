@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -49,7 +48,7 @@ namespace QS.Navigation
 
 		public IEnumerable<IPage> ChildPages => childPages;
 
-		DialogViewModelBase IPage.ViewModel => null;
+		IDialogViewModel IPage.ViewModel => null;
 
 		#region Приватное
 

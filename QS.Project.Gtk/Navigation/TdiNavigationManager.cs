@@ -14,7 +14,7 @@ using QS.Views.Resolve;
 
 namespace QS.Navigation
 {
-	public class TdiNavigationManager : NavigationManagerBase, INavigationManager, ITdiCompatibilityNavigation
+	public class TdiNavigationManager : NavigationManagerBase, ITdiCompatibilityNavigation
 	{
 		protected readonly TdiNotebook tdiNotebook;
 		protected readonly IGtkViewResolver viewResolver;
@@ -85,7 +85,7 @@ namespace QS.Navigation
 			ITdiTab master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
@@ -97,7 +97,7 @@ namespace QS.Navigation
 			TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { typeof(TCtorArg1) };
 			var values = new object[] { arg1 };
@@ -110,7 +110,7 @@ namespace QS.Navigation
 			TCtorArg2 arg2,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
 			var values = new object[] { arg1, arg2 };
@@ -123,7 +123,7 @@ namespace QS.Navigation
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindOrCreatePage(master), options,

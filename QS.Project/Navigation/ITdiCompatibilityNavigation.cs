@@ -8,7 +8,7 @@ namespace QS.Navigation
 {
 	/// <summary>
 	/// Интерфейс специально созданный для переходного периода, пока есть микс диалогов базирующихся чисто на Tdi и ViewModels.
-	/// Его не нужно реализовывать в не Tdi менеджерах. И нужно будет удалить когда чисто TDI диалогов не останется.
+	/// Его не нужно реализовывать вне Tdi менеджерах. И нужно будет удалить когда чисто TDI диалогов не останется.
 	/// </summary>
 	public interface ITdiCompatibilityNavigation : INavigationManager
 	{
@@ -16,26 +16,26 @@ namespace QS.Navigation
 			Tdi.ITdiTab master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1>(
 			Tdi.ITdiTab master, TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModelOnTdi<TViewModel, TCtorArg1, TCtorArg2>(
 			Tdi.ITdiTab master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 		IPage<TViewModel> OpenViewModelOnTdiTypedArgs<TViewModel>(
 			Tdi.ITdiTab master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase;
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel;
 
 		ITdiPage OpenTdiTabOnTdi<TTab>(
 			ITdiTab masterTab,

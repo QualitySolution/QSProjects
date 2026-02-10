@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using QS.Dialog;
-using QS.ErrorReporting;
 using QS.Utilities.Debug;
 using QS.Utilities.Text;
-using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
 namespace QS.Navigation {
@@ -78,13 +76,13 @@ namespace QS.Navigation {
 
 		#region Поиск
 
-		public virtual IPage FindPage(DialogViewModelBase viewModel) =>
+		public virtual IPage FindPage(IDialogViewModel viewModel) =>
 			viewModel is null ? null : AllPages.FirstOrDefault(x => x.ViewModel == viewModel);
 
 		//Внимание здесь специально параметр viewModel не является типом приведения результата TViewModel, так как если 
 		//бы viewModel была типом TViewModel, то в вызове можно было бы не указывать Generic тип, а это бы приводило к 
 		//попытке каста в IPage<DialogViewModelBase> при передаче не типизированного VM.
-		public IPage<TViewModel> FindPage<TViewModel>(DialogViewModelBase viewModel) where TViewModel : DialogViewModelBase
+		public IPage<TViewModel> FindPage<TViewModel>(IDialogViewModel viewModel) where TViewModel : IDialogViewModel
 		{
 			return (IPage<TViewModel>)FindPage(viewModel);
 		}
@@ -94,10 +92,10 @@ namespace QS.Navigation {
 		#region Открытие
 
 		public IPage<TViewModel> OpenViewModel<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { };
 			var values = new object[] { };
@@ -105,11 +103,11 @@ namespace QS.Navigation {
 		}
 
 		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { typeof(TCtorArg1) };
 			var values = new object[] { arg1 };
@@ -117,12 +115,12 @@ namespace QS.Navigation {
 		}
 
 		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2) };
 			var values = new object[] { arg1, arg2 };
@@ -130,13 +128,13 @@ namespace QS.Navigation {
 		}
 
 		public IPage<TViewModel> OpenViewModel<TViewModel, TCtorArg1, TCtorArg2, TCtorArg3>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			TCtorArg3 arg3,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			var types = new Type[] { typeof(TCtorArg1), typeof(TCtorArg2), typeof(TCtorArg3) };
 			var values = new object[] { arg1, arg2, arg3 };
@@ -144,12 +142,12 @@ namespace QS.Navigation {
 		}
 
 		public IPage<TViewModel> OpenViewModelTypedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,
@@ -159,11 +157,11 @@ namespace QS.Navigation {
 		}
 
 		public IPage<TViewModel> OpenViewModelNamedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			IDictionary<string, object> ctorArgs,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TViewModel> configureViewModel = null,
-			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : DialogViewModelBase
+			Action<ContainerBuilder> addingRegistrations = null) where TViewModel : IDialogViewModel
 		{
 			return (IPage<TViewModel>)OpenViewModelInternal(
 				FindPage(master), options,

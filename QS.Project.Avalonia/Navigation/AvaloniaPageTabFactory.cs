@@ -9,11 +9,11 @@ namespace QS.Navigation;
 
 public class AvaloniaPageTabFactory(ILifetimeScope container) : IViewModelsPageFactory {
 	public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(
-		DialogViewModelBase master,
+		IDialogViewModel master,
 		IDictionary<string, object> ctorArgs,
 		string hash,
 		Action<ContainerBuilder> addingRegistrations,
-		Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
+		Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel
 	{
 		var scope = addingRegistrations == null ? container.BeginLifetimeScope() : container.BeginLifetimeScope(addingRegistrations);
 		var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
@@ -25,12 +25,12 @@ public class AvaloniaPageTabFactory(ILifetimeScope container) : IViewModelsPageF
 	}
 
 	public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(
-		DialogViewModelBase master,
+		IDialogViewModel master,
 		Type[] ctorTypes,
 		object[] ctorValues,
 		string hash,
 		Action<ContainerBuilder> addingRegistrations,
-		Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
+		Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel
 	{
 		var scope = addingRegistrations == null ? container.BeginLifetimeScope() : container.BeginLifetimeScope(addingRegistrations);
 		var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));

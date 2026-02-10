@@ -22,7 +22,7 @@ public class AvaloniaRegisteredViewResolver(AvaloniaViewFactory viewFactory, IAv
 
 	#endregion
 
-	public Control Resolve(ViewModelBase viewModel, string? viewSuffix = null) {
+	public Control Resolve(object viewModel, string? viewSuffix = null) {
 		if (string.IsNullOrEmpty(viewSuffix) || viewSuffix == "View") {
 			foreach(var rule in registeredViews) {
 				if(rule.IsMatch(viewModel))

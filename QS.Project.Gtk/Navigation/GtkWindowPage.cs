@@ -1,15 +1,14 @@
 ﻿using Gtk;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
 	public class GtkWindowPage<TViewModel> : PageBase, IPage<TViewModel>, IGtkWindowPage
-		where TViewModel : DialogViewModelBase
+		where TViewModel : IDialogViewModel
 	{
 		public override string Title => ViewModel?.Title;
 		public TViewModel ViewModel { get; private set; }
 
-		DialogViewModelBase IPage.ViewModel => ViewModel;
+		IDialogViewModel IPage.ViewModel => ViewModel;
 
 		public Widget GtkView { get; set; }
 

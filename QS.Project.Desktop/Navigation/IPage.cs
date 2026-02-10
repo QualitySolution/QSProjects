@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -17,7 +16,7 @@ namespace QS.Navigation
 		/// </summary>
 		string Title { get; }
 
-		DialogViewModelBase ViewModel { get; }
+		IDialogViewModel ViewModel { get; }
 
 		/// <summary>
 		/// Для хранения пользовательской информации как в WinForms
@@ -34,7 +33,7 @@ namespace QS.Navigation
 	}
 	
 	public interface IPage<TViewModel> : IPage
-		where TViewModel : DialogViewModelBase
+		where TViewModel : IDialogViewModel
 	{
 		new TViewModel ViewModel { get; }
 	}
