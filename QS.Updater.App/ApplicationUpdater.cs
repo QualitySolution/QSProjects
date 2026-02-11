@@ -94,9 +94,7 @@ namespace QS.Updater.App {
 			}
 			
 			var updateToVersion = Version.Parse(response.Releases.First().Version);
-			if(manualRun || !skipVersionState.IsSkippedVersion(updateToVersion) || 
-			                 (skipVersionState.IsSkippedVersion(updateToVersion) && 
-			                  (applicationInfo.Version.Major < updateToVersion.Major || applicationInfo.Version.Minor < updateToVersion.Minor))) {
+			if(manualRun || !skipVersionState.IsSkippedVersion(updateToVersion)) {
 				var page = navigation.OpenViewModel<NewVersionViewModel, ReleaseInfo[]>(null, response.Releases.ToArray());
 				var isClosed = false;
 				string title = string.Empty;
