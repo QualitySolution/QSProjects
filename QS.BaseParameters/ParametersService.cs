@@ -65,6 +65,14 @@ namespace QS.BaseParameters
 		{
 		}
 
+		/// <summary>
+		/// Конструктор для тестов, принимает готовый словарь параметров.
+		/// </summary>
+		public ParametersService(Dictionary<string, string> parameters)
+		{
+			this.all = parameters ?? throw new ArgumentNullException(nameof(parameters));
+		}
+
 		private Dictionary<string, string> all;
 		public Dictionary<string, string> All {
 			get {
