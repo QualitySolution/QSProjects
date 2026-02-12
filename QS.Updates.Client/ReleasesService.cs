@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Grpc.Core;
 
 namespace QS.Updates
@@ -28,7 +27,7 @@ namespace QS.Updates
         
         #region Запросы
         
-        public CheckForUpdatesResponse CheckForUpdates(int productCode, string version, string modification = "", string serial = "", ReleaseChannel releaseChannel = ReleaseChannel.Current)
+        public virtual CheckForUpdatesResponse CheckForUpdates(int productCode, string version, string modification = "", string serial = "", ReleaseChannel releaseChannel = ReleaseChannel.Current)
         {
             var client = new Releases.ReleasesClient(Channel);
             var request = new CheckForUpdatesRequest() {
