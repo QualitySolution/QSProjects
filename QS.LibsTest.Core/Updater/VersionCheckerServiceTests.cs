@@ -83,7 +83,7 @@ namespace QS.Test.Updater
 			);
 
 			// Act
-			var result = versionChecker.RunUpdate(isOffAutoUpdate: false);
+			var result = versionChecker.RunUpdate();
 
 			// Assert
 			Assert.IsTrue(dialogOpened, "Диалог обновления должен был открыться");
@@ -152,7 +152,7 @@ namespace QS.Test.Updater
 			);
 
 			// Act
-			var result = versionChecker.RunUpdate(isOffAutoUpdate: false);
+			var result = versionChecker.RunUpdate();
 
 			// Assert
 			Assert.IsFalse(dialogOpened, "Диалог обновления НЕ должен был открыться, так как версия пропущена");
@@ -223,7 +223,7 @@ namespace QS.Test.Updater
 			);
 
 			// Act
-			var result = versionChecker.RunUpdate(isOffAutoUpdate: false);
+			var result = versionChecker.RunUpdate();
 
 			// Assert
 			Assert.IsTrue(dialogOpened, "Диалог обновления должен был открыться, так как база новее программы");
