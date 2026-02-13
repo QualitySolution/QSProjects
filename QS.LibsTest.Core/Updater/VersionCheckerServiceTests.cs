@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using QS.BaseParameters;
@@ -43,7 +44,6 @@ namespace QS.Test.Updater
 			var checkBaseVersion = new CheckBaseVersion(applicationInfo, parametersService);
 
 			// Мокаем зависимости
-			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var quitService = Substitute.For<IApplicationQuitService>();
 			var dbUpdater = Substitute.For<IDBUpdater>();
 			dbUpdater.HasUpdates.Returns(false);
@@ -222,20 +222,117 @@ namespace QS.Test.Updater
 			Assert.IsNotNull(result);
 		}
 
+		/// <summary>
+		/// Тест 4: Версия базы 2.10, программы 2.8.34, установлен стабильный канал.
+		/// При запросе в стабильный канал обновлений нет, но так как база новее - предлагается переключить канал.
+		/// После переключения на текущий канал появляется обновление 2.10 и должен открыться диалог.
+		/// </summary>
+		[Test(Description = "Проверяем переключение канала обновлений когда база новее и в текущем канале нет обновлений")]
+		public void RunUpdate_WhenDatabaseNewerAndNeedChannelSwitch_ShouldOpenUpdateDialog()
+		{
+			// Arrange
+			var appVersion = new Version(2, 8, 34);
+			var updateVersion = new Version(2, 10);
+			var databaseVersion = "2.10";
+
+			// Мокаем ParametersService для имитации версии базы 2.10
+			var parametersService = CreateParametersService("TestProduct", databaseVersion, "standard");
+
+			// Создаем ApplicationInfo с версией программы 2.8.34
+			var applicationInfo = CreateApplicationInfo("TestProduct", appVersion, new[] { "standard" });
+
+			// Создаем CheckBaseVersion
+			var checkBaseVersion = new CheckBaseVersion(applicationInfo, parametersService);
+
+			// Мокаем зависимости
+			var quitService = Substitute.For<IApplicationQuitService>();
+			var dbUpdater = Substitute.For<IDBUpdater>();
+			dbUpdater.HasUpdates.Returns(false);
+
+			// Настраиваем конфигурацию без пропуска версии
+			var configuration = Substitute.For<IChangeableConfiguration>();
+			configuration["AppUpdater:SkipVersion"].Returns((string)null);
+
+			var skipVersionState = new SkipVersionStateIniConfig(configuration);
+
+			// Создаем мок для UpdateChannelService
+			var channelService = Substitute.For<IUpdateChannelService>();
+			channelService.CurrentChannel.Returns(UpdateChannel.Stable); // Изначально стабильный канал
+			channelService.AvailableChannels.Returns(new[] { UpdateChannel.Stable, UpdateChannel.Current });
+
+			// Создаем реальный ApplicationUpdater
+			bool dialogOpened = false;
+			
+			// Создаем ReleasesService с двумя разными ответами для разных каналов
+			var releasesService = CreateReleasesServiceWithChannels(updateVersion.ToString());
+			
+			var navigationManager = CreateNavigationManager(() => dialogOpened = true, CloseSource.Self);
+			var interactiveService = Substitute.For<IInteractiveService>();
+			
+			// Настраиваем ответ на вопрос о переключении канала - пользователь выбирает "Current"
+			interactiveService.Question(
+				Arg.Is<string[]>(args => args.Contains("Текущий")), 
+				Arg.Any<string>()
+			).Returns("Текущий");
+			
+			var guiDispatcher = new GuiDispatcherForTests();
+
+			var applicationUpdater = new ApplicationUpdater(
+				releasesService,
+				applicationInfo,
+				navigationManager,
+				interactiveService,
+				guiDispatcher,
+				quitService,
+				channelService,
+				parametersService
+			);
+
+			// Создаем VersionCheckerService
+			var versionChecker = new VersionCheckerService(
+				checkBaseVersion,
+				applicationUpdater,
+				dbUpdater,
+				skipVersionState
+			);
+
+			// Act
+			var result = versionChecker.RunUpdate();
+
+			// Assert
+			Assert.IsTrue(dialogOpened, "Диалог обновления должен был открыться после переключения канала");
+			Assert.IsNotNull(result);
+			
+			// Проверяем что был вызван вопрос о переключении канала
+			interactiveService.Received(1).Question(
+				Arg.Is<string[]>(args => args.Contains("Текущий")), 
+				Arg.Any<string>()
+			);
+			
+			// Проверяем что ReleasesService был вызван дважды - для Stable и для Current
+			releasesService.Received(2).CheckForUpdates(
+				Arg.Any<int>(),
+				Arg.Any<string>(),
+				Arg.Any<string>(),
+				Arg.Any<string>(),
+				Arg.Any<ReleaseChannel>()
+			);
+		}
+
 		#region Вспомогательные методы
 
-	private ParametersService CreateParametersService(string productName, string version, string edition)
-	{
-		// Создаем словарь параметров для тестов
-		var parameters = new System.Collections.Generic.Dictionary<string, string>
+		private ParametersService CreateParametersService(string productName, string version, string edition)
 		{
-			{ "product_name", productName },
-			{ "version", version },
-			{ "edition", edition }
-		};
+			// Создаем словарь параметров для тестов
+			var parameters = new System.Collections.Generic.Dictionary<string, string>
+			{
+				{ "product_name", productName },
+				{ "version", version },
+				{ "edition", edition }
+			};
 
-		return new ParametersService(parameters);
-	}
+			return new ParametersService(parameters);
+		}
 
 		private IApplicationInfo CreateApplicationInfo(string productName, Version version, string[] compatibleModifications)
 		{
@@ -271,6 +368,47 @@ namespace QS.Test.Updater
 				Arg.Any<string>(),
 				Arg.Any<ReleaseChannel>()
 			).Returns(response);
+
+			return service;
+		}
+
+		private ReleasesService CreateReleasesServiceWithChannels(string currentChannelVersion)
+		{
+			// Создаем мок сервиса с разными ответами для разных каналов
+			var service = Substitute.For<ReleasesService>();
+			
+			service.CheckForUpdates(
+				Arg.Any<int>(),
+				Arg.Any<string>(),
+				Arg.Any<string>(),
+				Arg.Any<string>(),
+				Arg.Any<ReleaseChannel>()
+			).Returns(callInfo =>
+			{
+				var channel = (ReleaseChannel)callInfo[4];
+				var response = new CheckForUpdatesResponse();
+				
+				// Для стабильного канала - нет обновлений
+				if (channel == ReleaseChannel.Stable)
+				{
+					return response; // Пустой список релизов
+				}
+				
+				// Для текущего канала - есть обновление
+				if (channel == ReleaseChannel.Current)
+				{
+					var release = new ReleaseInfo
+					{
+						Version = currentChannelVersion,
+						Changes = "Update from current channel",
+						DatabaseUpdate = DatabaseUpdate.None,
+						InstallerLink = "http://test.com/installer.exe"
+					};
+					response.Releases.Add(release);
+				}
+				
+				return response;
+			});
 
 			return service;
 		}
