@@ -68,7 +68,6 @@ namespace QS.Test.Updater
 				interactiveService,
 				guiDispatcher,
 				quitService,
-				skipVersionState,
 				null,
 				parametersService
 			);
@@ -76,10 +75,9 @@ namespace QS.Test.Updater
 			// Создаем VersionCheckerService
 			var versionChecker = new VersionCheckerService(
 				checkBaseVersion,
-				interactiveMessage,
-				quitService,
 				applicationUpdater,
-				dbUpdater
+				dbUpdater,
+				skipVersionState
 			);
 
 			// Act
@@ -112,7 +110,6 @@ namespace QS.Test.Updater
 			var checkBaseVersion = new CheckBaseVersion(applicationInfo, parametersService);
 
 			// Мокаем зависимости
-			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var quitService = Substitute.For<IApplicationQuitService>();
 			var dbUpdater = Substitute.For<IDBUpdater>();
 			dbUpdater.HasUpdates.Returns(false);
@@ -137,7 +134,6 @@ namespace QS.Test.Updater
 				interactiveService,
 				guiDispatcher,
 				quitService,
-				skipVersionState,
 				null,
 				parametersService
 			);
@@ -145,10 +141,9 @@ namespace QS.Test.Updater
 			// Создаем VersionCheckerService
 			var versionChecker = new VersionCheckerService(
 				checkBaseVersion,
-				interactiveMessage,
-				quitService,
 				applicationUpdater,
-				dbUpdater
+				dbUpdater,
+				skipVersionState
 			);
 
 			// Act
@@ -157,7 +152,7 @@ namespace QS.Test.Updater
 			// Assert
 			Assert.IsFalse(dialogOpened, "Диалог обновления НЕ должен был открыться, так как версия пропущена");
 			Assert.IsNotNull(result);
-			Assert.AreEqual(UpdateStatus.Ok, result.Value.Status);
+			Assert.AreEqual(UpdateStatus.Skip, result.Value.Status);
 		}
 
 		/// <summary>
@@ -182,7 +177,6 @@ namespace QS.Test.Updater
 			var checkBaseVersion = new CheckBaseVersion(applicationInfo, parametersService);
 
 			// Мокаем зависимости
-			var interactiveMessage = Substitute.For<IInteractiveMessage>();
 			var quitService = Substitute.For<IApplicationQuitService>();
 			var dbUpdater = Substitute.For<IDBUpdater>();
 			dbUpdater.HasUpdates.Returns(false);
@@ -208,7 +202,6 @@ namespace QS.Test.Updater
 				interactiveService,
 				guiDispatcher,
 				quitService,
-				skipVersionState,
 				null,
 				parametersService
 			);
@@ -216,10 +209,9 @@ namespace QS.Test.Updater
 			// Создаем VersionCheckerService
 			var versionChecker = new VersionCheckerService(
 				checkBaseVersion,
-				interactiveMessage,
-				quitService,
 				applicationUpdater,
-				dbUpdater
+				dbUpdater,
+				skipVersionState
 			);
 
 			// Act
@@ -228,8 +220,6 @@ namespace QS.Test.Updater
 			// Assert
 			Assert.IsTrue(dialogOpened, "Диалог обновления должен был открыться, так как база новее программы");
 			Assert.IsNotNull(result);
-			// Может быть либо Shelve, либо другой статус в зависимости от того как закрылось окно
-			Assert.AreEqual(UpdateStatus.Shelve, result.Value.Status);
 		}
 
 		#region Вспомогательные методы

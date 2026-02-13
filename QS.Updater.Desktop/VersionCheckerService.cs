@@ -1,6 +1,5 @@
 ﻿using System;
 using QS.Dialog;
-using QS.Project.Services;
 using QS.Project.Versioning;
 
 namespace QS.Updater
@@ -10,27 +9,40 @@ namespace QS.Updater
 		private readonly CheckBaseVersion checkBaseVersion;
 		private readonly IAppUpdater applicationUpdater;
 		private readonly IDBUpdater dbUpdater;
+		private readonly ISkipVersionState skipVersionState;
 
-		public VersionCheckerService(CheckBaseVersion checkBaseVersion, IInteractiveMessage interactive, IApplicationQuitService quitService, IAppUpdater applicationUpdater = null, IDBUpdater dbUpdater = null) {
+		public VersionCheckerService(
+			CheckBaseVersion checkBaseVersion,
+			IAppUpdater applicationUpdater = null,
+			IDBUpdater dbUpdater = null,
+			ISkipVersionState skipVersionState = null) {
 			this.checkBaseVersion = checkBaseVersion ?? throw new ArgumentNullException(nameof(checkBaseVersion));
 			this.applicationUpdater = applicationUpdater;
 			this.dbUpdater = dbUpdater;
+			this.skipVersionState = skipVersionState;
 		}
 
 		public UpdateInfo? RunUpdate() 
 		{
 			UpdateInfo? updateInfo = null;
-			if (applicationUpdater != null) {
-				updateInfo = applicationUpdater.CheckUpdate(false);
+			checkBaseVersion.Check();
+			if(applicationUpdater != null) {
+				updateInfo = applicationUpdater.CheckUpdate();
+				if(applicationUpdater.CanUpdate) {
+					if(skipVersionState.IsSkippedVersion(applicationUpdater.UpdateToVersion) && checkBaseVersion.ResultFlags != CheckBaseResult.BaseVersionGreater) {
+						updateInfo = new UpdateInfo("", "Пользователь пропустил эту версию приложения", UpdateStatus.Skip, ImportanceLevel.Warning);
+					}
+					else {
+						updateInfo = applicationUpdater.RunUpdate();
+					}
+				}
+				else if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
+					updateInfo = applicationUpdater.TryAnotherChannel();
+				}
+				
 				if(updateInfo?.Status == UpdateStatus.AppUpdateIsRunning) {
 					return updateInfo;
 				}
-			}
-
-			checkBaseVersion.Check();
-			if(applicationUpdater != null && checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
-				applicationUpdater.TryAnotherChannel();
-				checkBaseVersion.Check();
 			}
 			
 			if(dbUpdater != null && (checkBaseVersion.ResultFlags == CheckBaseResult.Ok || checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess)) {
