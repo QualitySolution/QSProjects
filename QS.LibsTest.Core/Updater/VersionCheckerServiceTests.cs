@@ -316,10 +316,92 @@ namespace QS.Test.Updater
 				Arg.Any<string>(),
 				Arg.Any<string>(),
 				Arg.Any<ReleaseChannel>()
-			);
-		}
+		);
+	}
 
-		#region Вспомогательные методы
+	/// <summary>
+	/// Тест 5: Версия базы 2.8, программы 2.8.5, установлен канал OffAutoUpdate.
+	/// При запросе с каналом OffAutoUpdate автоматическое обновление должно быть отключено.
+	/// Диалог обновления не должен открываться, даже если есть доступные обновления.
+	/// </summary>
+	[Test(Description = "Проверяем что канал OffAutoUpdate отключает автоматическое обновление")]
+	public void RunUpdate_WhenChannelIsOffAutoUpdate_ShouldNotCheckForUpdates()
+	{
+		// Arrange
+		var appVersion = new Version(2, 8, 5);
+		var updateVersion = new Version(2, 9, 1);
+
+		// Мокаем ParametersService для имитации версии базы
+		var parametersService = CreateParametersService("TestProduct", "2.8", "standard");
+
+		// Создаем ApplicationInfo с версией программы 2.8.5
+		var applicationInfo = CreateApplicationInfo("TestProduct", appVersion, new[] { "standard" });
+
+		// Создаем CheckBaseVersion
+		var checkBaseVersion = new CheckBaseVersion(applicationInfo, parametersService);
+
+		// Мокаем зависимости
+		var quitService = Substitute.For<IApplicationQuitService>();
+		var dbUpdater = Substitute.For<IDBUpdater>();
+		dbUpdater.HasUpdates.Returns(false);
+
+		// Настраиваем конфигурацию без пропуска версии
+		var configuration = Substitute.For<IChangeableConfiguration>();
+		configuration["AppUpdater:SkipVersion"].Returns((string)null);
+
+		var skipVersionState = new SkipVersionStateIniConfig(configuration);
+
+		// Создаем мок для UpdateChannelService с каналом OffAutoUpdate
+		var channelService = Substitute.For<IUpdateChannelService>();
+		channelService.CurrentChannel.Returns(UpdateChannel.OffAutoUpdate);
+		channelService.AvailableChannels.Returns(new[] { UpdateChannel.Current, UpdateChannel.Stable, UpdateChannel.OffAutoUpdate });
+
+		// Создаем реальный ApplicationUpdater
+		bool dialogOpened = false;
+		var releasesService = CreateReleasesService(updateVersion.ToString());
+		var navigationManager = CreateNavigationManager(() => dialogOpened = true, CloseSource.Self);
+		var interactiveService = Substitute.For<IInteractiveService>();
+		var guiDispatcher = new GuiDispatcherForTests();
+
+		var applicationUpdater = new ApplicationUpdater(
+			releasesService,
+			applicationInfo,
+			navigationManager,
+			interactiveService,
+			guiDispatcher,
+			quitService,
+			channelService,
+			parametersService
+		);
+
+		// Создаем VersionCheckerService
+		var versionChecker = new VersionCheckerService(
+			checkBaseVersion,
+			applicationUpdater,
+			dbUpdater,
+			skipVersionState
+		);
+
+		// Act
+		var result = versionChecker.RunUpdate();
+
+		// Assert
+		Assert.IsFalse(dialogOpened, "Диалог обновления НЕ должен был открыться, так как установлен канал OffAutoUpdate");
+		
+		// Проверяем что ReleasesService НЕ был вызван, так как автообновление отключено
+		releasesService.DidNotReceive().CheckForUpdates(
+			Arg.Any<int>(),
+			Arg.Any<string>(),
+			Arg.Any<string>(),
+			Arg.Any<string>(),
+			Arg.Any<ReleaseChannel>()
+		);
+		
+		// Проверяем что база проверена корректно
+		Assert.AreEqual(CheckBaseResult.Ok, checkBaseVersion.ResultFlags);
+	}
+
+	#region Вспомогательные методы
 
 		private ParametersService CreateParametersService(string productName, string version, string edition)
 		{
