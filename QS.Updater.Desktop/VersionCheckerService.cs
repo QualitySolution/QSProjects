@@ -31,14 +31,14 @@ namespace QS.Updater
 			if(applicationUpdater != null) {
 				updateInfo = applicationUpdater.CheckUpdate();
 				if(applicationUpdater.CanUpdate) {
-					if(skipVersionState.IsSkippedVersion(applicationUpdater.UpdateToVersion) && checkBaseVersion.ResultFlags != CheckBaseResult.BaseVersionGreater) {
+					if(skipVersionState.IsSkippedVersion(applicationUpdater.UpdateToVersion) && checkBaseVersion.Result != CheckBaseResult.BaseVersionGreater) {
 						updateInfo = new UpdateInfo("", "Пользователь пропустил эту версию приложения", UpdateStatus.Skip, ImportanceLevel.Warning);
 					}
 					else {
 						updateInfo = applicationUpdater.RunUpdate();
 					}
 				}
-				else if(checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionGreater) {
+				else if(checkBaseVersion.Result == CheckBaseResult.BaseVersionGreater) {
 					updateInfo = applicationUpdater.TryAnotherChannel();
 					if(applicationUpdater.CanUpdate)
 						updateInfo = applicationUpdater.RunUpdate();
@@ -49,14 +49,14 @@ namespace QS.Updater
 				}
 			}
 			
-			if(dbUpdater != null && (checkBaseVersion.ResultFlags == CheckBaseResult.Ok || checkBaseVersion.ResultFlags == CheckBaseResult.BaseVersionLess)) {
+			if(dbUpdater != null && (checkBaseVersion.Result == CheckBaseResult.Ok || checkBaseVersion.Result == CheckBaseResult.BaseVersionLess)) {
 				if(dbUpdater.HasUpdates) {
 					dbUpdater.UpdateDB();
 					checkBaseVersion.Check();
 				}
 			}
 
-			if (checkBaseVersion.ResultFlags != CheckBaseResult.Ok) {
+			if (checkBaseVersion.Result != CheckBaseResult.Ok) {
 				updateInfo = new UpdateInfo("", checkBaseVersion.TextMessage, UpdateStatus.BaseError, ImportanceLevel.Warning);
 			}
 

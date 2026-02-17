@@ -398,7 +398,7 @@ namespace QS.Test.Updater
 		);
 		
 		// Проверяем что база проверена корректно
-		Assert.AreEqual(CheckBaseResult.Ok, checkBaseVersion.ResultFlags);
+		Assert.AreEqual(CheckBaseResult.Ok, checkBaseVersion.Result);
 	}
 
 	#region Вспомогательные методы
