@@ -8,6 +8,8 @@ namespace QS.Updater.App.Views
 
 		private global::Gamma.GtkWidgets.yLabel labelMainInfo;
 
+		private global::Gamma.GtkWidgets.yLabel labelBaseInfo;
+
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
 		private global::Gamma.GtkWidgets.yTable tableReleases;
@@ -50,14 +52,23 @@ namespace QS.Updater.App.Views
 			w1.Expand = false;
 			w1.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
+			this.labelBaseInfo = new global::Gamma.GtkWidgets.yLabel();
+			this.labelBaseInfo.Name = "labelBaseInfo";
+			this.labelBaseInfo.LabelProp = global::Mono.Unix.Catalog.GetString("ylabel1");
+			this.vbox2.Add(this.labelBaseInfo);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelBaseInfo]));
+			w2.Position = 1;
+			w2.Expand = false;
+			w2.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.HeightRequest = 400;
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 			this.GtkScrolledWindow.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
 			this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-			global::Gtk.Viewport w2 = new global::Gtk.Viewport();
-			w2.ShadowType = ((global::Gtk.ShadowType)(0));
+			global::Gtk.Viewport w3 = new global::Gtk.Viewport();
+			w3.ShadowType = ((global::Gtk.ShadowType)(0));
 			// Container child GtkViewport.Gtk.Container+ContainerChild
 			this.tableReleases = new global::Gamma.GtkWidgets.yTable();
 			this.tableReleases.Name = "tableReleases";
@@ -65,11 +76,11 @@ namespace QS.Updater.App.Views
 			this.tableReleases.NColumns = ((uint)(3));
 			this.tableReleases.RowSpacing = ((uint)(6));
 			this.tableReleases.ColumnSpacing = ((uint)(6));
-			w2.Add(this.tableReleases);
-			this.GtkScrolledWindow.Add(w2);
+			w3.Add(this.tableReleases);
+			this.GtkScrolledWindow.Add(w3);
 			this.vbox2.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow]));
-			w5.Position = 1;
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow]));
+			w6.Position = 2;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.hboxSelectRelease = new global::Gamma.GtkWidgets.yHBox();
 			this.hboxSelectRelease.Name = "hboxSelectRelease";
@@ -79,34 +90,34 @@ namespace QS.Updater.App.Views
 			this.ylabel1.Name = "ylabel1";
 			this.ylabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Использовать установщик версии:");
 			this.hboxSelectRelease.Add(this.ylabel1);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hboxSelectRelease[this.ylabel1]));
-			w6.Position = 0;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hboxSelectRelease[this.ylabel1]));
+			w7.Position = 0;
+			w7.Expand = false;
+			w7.Fill = false;
 			// Container child hboxSelectRelease.Gtk.Box+BoxChild
 			this.comboSelectInstaller = new global::Gamma.Widgets.yListComboBox();
 			this.comboSelectInstaller.Name = "comboSelectInstaller";
 			this.comboSelectInstaller.AddIfNotExist = false;
 			this.comboSelectInstaller.DefaultFirst = false;
 			this.hboxSelectRelease.Add(this.comboSelectInstaller);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hboxSelectRelease[this.comboSelectInstaller]));
-			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
-			this.vbox2.Add(this.hboxSelectRelease);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hboxSelectRelease]));
-			w8.Position = 2;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hboxSelectRelease[this.comboSelectInstaller]));
+			w8.Position = 1;
 			w8.Expand = false;
 			w8.Fill = false;
+			this.vbox2.Add(this.hboxSelectRelease);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hboxSelectRelease]));
+			w9.Position = 3;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.labelDBUpdateInfo = new global::Gamma.GtkWidgets.yLabel();
 			this.labelDBUpdateInfo.Name = "labelDBUpdateInfo";
 			this.labelDBUpdateInfo.LabelProp = global::Mono.Unix.Catalog.GetString("ylabel2");
 			this.labelDBUpdateInfo.Wrap = true;
 			this.vbox2.Add(this.labelDBUpdateInfo);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelDBUpdateInfo]));
-			w9.Position = 3;
-			w9.Expand = false;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.labelDBUpdateInfo]));
+			w10.Position = 4;
+			w10.Expand = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.hbox5 = new global::Gtk.HBox();
 			this.hbox5.Name = "hbox5";
@@ -119,8 +130,8 @@ namespace QS.Updater.App.Views
 			this.buttonLater.UseUnderline = true;
 			this.buttonLater.Label = global::Mono.Unix.Catalog.GetString("Напомнить позже");
 			this.hbox5.Add(this.buttonLater);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonLater]));
-			w10.Position = 0;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonLater]));
+			w11.Position = 0;
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.buttonSkip = new global::Gamma.GtkWidgets.yButton();
 			this.buttonSkip.TooltipMarkup = "Помечает текущую версию как пропущенную и не предлагает обновление до выхода след" +
@@ -130,8 +141,8 @@ namespace QS.Updater.App.Views
 			this.buttonSkip.UseUnderline = true;
 			this.buttonSkip.Label = global::Mono.Unix.Catalog.GetString("Пропустить выпуск");
 			this.hbox5.Add(this.buttonSkip);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonSkip]));
-			w11.Position = 1;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonSkip]));
+			w12.Position = 1;
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.buttonOffAutoUpdate = new global::Gamma.GtkWidgets.yButton();
 			this.buttonOffAutoUpdate.TooltipMarkup = "Полностью отключает проверку обновлений. Для повторного включения необходимо зано" +
@@ -141,27 +152,27 @@ namespace QS.Updater.App.Views
 			this.buttonOffAutoUpdate.UseUnderline = true;
 			this.buttonOffAutoUpdate.Label = global::Mono.Unix.Catalog.GetString("Не получать обновления");
 			this.hbox5.Add(this.buttonOffAutoUpdate);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonOffAutoUpdate]));
-			w12.Position = 2;
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonOffAutoUpdate]));
+			w13.Position = 2;
 			this.vbox2.Add(this.hbox5);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox5]));
-			w13.Position = 4;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox5]));
+			w14.Position = 5;
+			w14.Expand = false;
+			w14.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.buttonOk = new global::Gamma.GtkWidgets.yButton();
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString("Скачать и установить");
-			global::Gtk.Image w14 = new global::Gtk.Image();
-			w14.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-apply", global::Gtk.IconSize.Menu);
-			this.buttonOk.Image = w14;
+			global::Gtk.Image w15 = new global::Gtk.Image();
+			w15.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-apply", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w15;
 			this.vbox2.Add(this.buttonOk);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.buttonOk]));
-			w15.Position = 5;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.buttonOk]));
+			w16.Position = 6;
+			w16.Expand = false;
+			w16.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{

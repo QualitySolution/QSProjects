@@ -12,9 +12,13 @@ namespace QS.Updater.App.Views {
 			this.Build();
 
 			labelMainInfo.Binding.AddBinding(ViewModel, v => v.MainInfoText, w => w.LabelProp).InitializeFromSource();
+			labelBaseInfo.Binding.AddSource(ViewModel)
+				.AddBinding(v => v.DbInfoText, w => w.LabelProp)
+				.AddBinding(v => v.VisibleDbInfo, w => w.Visible)
+				.InitializeFromSource();
 			labelDBUpdateInfo.Binding.AddSource(ViewModel)
 				.AddBinding(v => v.DbUpdateInfo, w => w.LabelProp)
-				.AddBinding(v => v.VisibleDbInfo, w => w.Visible)
+				.AddBinding(v => v.VisibleDbUpdateInfo, w => w.Visible)
 				.InitializeFromSource();
 
 			hboxSelectRelease.Binding.AddBinding(ViewModel, v => v.VisibleSelectRelease, w => w.Visible).InitializeFromSource();

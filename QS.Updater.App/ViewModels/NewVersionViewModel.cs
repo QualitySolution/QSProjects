@@ -73,6 +73,7 @@ namespace QS.Updater.App.ViewModels {
 		#region Свойства View
 		public readonly ReleaseInfo[] Releases;
 		public string MainInfoText => $"Доступная версия: {Releases.First().Version} \t Установленная версия: {applicationInfo.Version.VersionToShortString()}";
+		public string DbInfoText => $"Версия базы данных: {dataBaseInfo?.Version.VersionToShortString() ?? "неизвестно"}";
 		public string DbUpdateInfo {
 			get {
 				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
@@ -86,18 +87,18 @@ namespace QS.Updater.App.ViewModels {
 		public readonly List<ReleaseInfo> CanSelectedReleases = new List<ReleaseInfo>();
 
 		private ReleaseInfo selectedRelease;
-		[PropertyChangedAlso(nameof(VisibleDbInfo))]
+		[PropertyChangedAlso(nameof(VisibleDbUpdateInfo))]
 		[PropertyChangedAlso(nameof(DbUpdateInfo))]
 		public virtual ReleaseInfo SelectedRelease {
 			get => selectedRelease;
 			set => SetField(ref selectedRelease, value);
 		}
 
-		public bool VisibleDbInfo => WillDbChange.Any();
+		public bool VisibleDbUpdateInfo => WillDbChange.Any();
+		public bool VisibleDbInfo => dataBaseInfo != null;
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
 
-		public bool CanSkipUpdate => checkBaseVersion.Result != CheckBaseResult.BaseVersionGreater;
-
+		public bool CanSkipUpdate => checkBaseVersion?.Result != CheckBaseResult.BaseVersionGreater;
 		#endregion
 
 		#region Helpers
@@ -169,7 +170,7 @@ namespace QS.Updater.App.ViewModels {
 		}
 
 		public void OffAutoUpdate() {
-			configuration[$"AppUpdater:Channel"] = UpdateChannel.Off.ToString();
+			configuration[$"AppUpdater:Channel"] = nameof(UpdateChannel.Off);
 			Close(false, CloseSource.Cancel);
 		}
 		#endregion
