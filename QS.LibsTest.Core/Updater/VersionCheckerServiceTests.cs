@@ -353,8 +353,8 @@ namespace QS.Test.Updater
 
 		// Создаем мок для UpdateChannelService с каналом OffAutoUpdate
 		var channelService = Substitute.For<IUpdateChannelService>();
-		channelService.CurrentChannel.Returns(UpdateChannel.OffAutoUpdate);
-		channelService.AvailableChannels.Returns(new[] { UpdateChannel.Current, UpdateChannel.Stable, UpdateChannel.OffAutoUpdate });
+		channelService.CurrentChannel.Returns(UpdateChannel.Off);
+		channelService.AvailableChannels.Returns(new[] { UpdateChannel.Current, UpdateChannel.Stable, UpdateChannel.Off });
 
 		// Создаем реальный ApplicationUpdater
 		bool dialogOpened = false;
