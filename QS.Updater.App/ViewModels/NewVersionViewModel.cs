@@ -169,7 +169,7 @@ namespace QS.Updater.App.ViewModels {
 		}
 
 		public void OffAutoUpdate() {
-			configuration[$"AppUpdater:Channel"] = UpdateChannel.OffAutoUpdate.ToString();
+			configuration[$"AppUpdater:Channel"] = UpdateChannel.Off.ToString();
 			Close(false, CloseSource.Cancel);
 		}
 		#endregion

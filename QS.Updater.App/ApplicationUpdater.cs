@@ -52,7 +52,7 @@ namespace QS.Updater.App {
 
 		public UpdateInfo CheckUpdate() {
 			// Если установлен канал OffAutoUpdate - автообновление отключено
-			if(channelService?.CurrentChannel == UpdateChannel.OffAutoUpdate) {
+			if(channelService?.CurrentChannel == UpdateChannel.Off) {
 				logger.Info("Автоматическое обновление отключено (канал OffAutoUpdate)");
 				return new UpdateInfo("Автообновление отключено", "Автоматическое обновление отключено в настройках", UpdateStatus.Ok, ImportanceLevel.Info);
 			}
