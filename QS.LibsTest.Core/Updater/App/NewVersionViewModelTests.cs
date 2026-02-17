@@ -74,6 +74,7 @@ namespace QS.Test.Updater.App {
 			Assert.IsTrue(result, "Должна быть видна информация об обновлении БД");
 			Assert.That(info, Does.Contain("Потребуется провести изменение базы данных"));
 			Assert.That(info, Does.Contain("Совместимость"));
+			Assert.That(info, Does.Contain("1.1.х"), "Должна отображаться версия в формате Major.Minor");
 		}
 
 		[Test(Description = "WillDbChange должен содержать релиз с BreakingChange обновлением")]
@@ -94,6 +95,7 @@ namespace QS.Test.Updater.App {
 			Assert.IsTrue(result, "Должна быть видна информация об обновлении БД");
 			Assert.That(info, Does.Contain("Внимание!"));
 			Assert.That(info, Does.Contain("не смогут работать с базой"));
+			Assert.That(info, Does.Contain("1.1"), "Должна отображаться версия в формате Major.Minor");
 		}
 
 		[Test(Description = "WillDbChange не должен включать релизы, если версия БД больше или равна версии релиза")]

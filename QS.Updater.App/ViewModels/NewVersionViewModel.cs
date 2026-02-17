@@ -76,10 +76,11 @@ namespace QS.Updater.App.ViewModels {
 		public string DbInfoText => $"Версия базы данных: {dataBaseInfo?.Version.VersionToShortString() ?? "неизвестно"}";
 		public string DbUpdateInfo {
 			get {
+				var selectedVersion = Version.Parse(SelectedRelease.Version);
 				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
-					return $"Внимание! Потребуется провести обновление базы данных. Убедитесь что вы знаете пароль администратора. Клиенты с версиями ниже {SelectedRelease.Version:2} не смогут работать с базой после ее обновления.";
+					return $"Внимание! После обновления программы потребуется провести обновление базы данных. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {selectedVersion.Major}.{selectedVersion.Minor} не смогут работать с базой после ее обновления.";
 				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
-					return $"Потребуется провести изменение базы данных. Убедитесь что вы знаете пароль администратора. Совместимость с клиентами {SelectedRelease.Version:2}.х будет сохранена.";
+					return $"Потребуется провести изменение базы данных. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {selectedVersion.Major}.{selectedVersion.Minor}.х будет сохранена.";
 				return null;
 			}
 		}
