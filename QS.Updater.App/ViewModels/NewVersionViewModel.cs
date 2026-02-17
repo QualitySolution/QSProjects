@@ -90,11 +90,12 @@ namespace QS.Updater.App.ViewModels {
 				}
 
 				if(WillDbChange.Any()) {
-					var maxDbVersion = WillDbChange.First().Version;
+					var maxDbVersionText = WillDbChange.First().Version;
+					var maxDbVersion = Version.Parse(maxDbVersionText);
 					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
-						return $"Внимание! После обновления программы потребуется провести обновление базы данных до {maxDbVersion}. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {selectedVersion.Major}.{selectedVersion.Minor} не смогут работать с базой после ее обновления.";
+						return $"Внимание! После обновления программы потребуется провести обновление базы данных до {maxDbVersionText}. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {maxDbVersion.ToString(2)} не смогут работать с базой после ее обновления.";
 					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
-						return $"Потребуется провести изменение базы данных до {maxDbVersion}. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {selectedVersion.Major}.{selectedVersion.Minor}.х будет сохранена.";
+						return $"Потребуется провести изменение базы данных до {maxDbVersionText}. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {maxDbVersion.ToString(2)}.х будет сохранена.";
 				}
 				return null;
 			}
