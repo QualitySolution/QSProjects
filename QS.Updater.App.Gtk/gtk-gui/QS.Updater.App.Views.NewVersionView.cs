@@ -22,11 +22,11 @@ namespace QS.Updater.App.Views
 
 		private global::Gtk.HBox hbox5;
 
-		private global::Gamma.GtkWidgets.yButton buttonCancel;
+		private global::Gamma.GtkWidgets.yButton buttonLater;
 
 		private global::Gamma.GtkWidgets.yButton buttonSkip;
 
-		private global::Gamma.GtkWidgets.yButton ybuttonOffAutoUpdate;
+		private global::Gamma.GtkWidgets.yButton buttonOffAutoUpdate;
 
 		private global::Gamma.GtkWidgets.yButton buttonOk;
 
@@ -112,14 +112,14 @@ namespace QS.Updater.App.Views
 			this.hbox5.Name = "hbox5";
 			this.hbox5.Spacing = 6;
 			// Container child hbox5.Gtk.Box+BoxChild
-			this.buttonCancel = new global::Gamma.GtkWidgets.yButton();
-			this.buttonCancel.TooltipMarkup = "Закрывает окно обновления без выполнения каких-либо действий.";
-			this.buttonCancel.CanFocus = true;
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.UseUnderline = true;
-			this.buttonCancel.Label = global::Mono.Unix.Catalog.GetString("Напомнить позже");
-			this.hbox5.Add(this.buttonCancel);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonCancel]));
+			this.buttonLater = new global::Gamma.GtkWidgets.yButton();
+			this.buttonLater.TooltipMarkup = "Закрывает окно обновления без выполнения каких-либо действий.";
+			this.buttonLater.CanFocus = true;
+			this.buttonLater.Name = "buttonLater";
+			this.buttonLater.UseUnderline = true;
+			this.buttonLater.Label = global::Mono.Unix.Catalog.GetString("Напомнить позже");
+			this.hbox5.Add(this.buttonLater);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonLater]));
 			w10.Position = 0;
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.buttonSkip = new global::Gamma.GtkWidgets.yButton();
@@ -133,15 +133,15 @@ namespace QS.Updater.App.Views
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonSkip]));
 			w11.Position = 1;
 			// Container child hbox5.Gtk.Box+BoxChild
-			this.ybuttonOffAutoUpdate = new global::Gamma.GtkWidgets.yButton();
-			this.ybuttonOffAutoUpdate.TooltipMarkup = "Полностью отключает проверку обновлений. Для повторного включения необходимо зано" +
+			this.buttonOffAutoUpdate = new global::Gamma.GtkWidgets.yButton();
+			this.buttonOffAutoUpdate.TooltipMarkup = "Полностью отключает проверку обновлений. Для повторного включения необходимо зано" +
 				"во выбрать канал обновлений.";
-			this.ybuttonOffAutoUpdate.CanFocus = true;
-			this.ybuttonOffAutoUpdate.Name = "ybuttonOffAutoUpdate";
-			this.ybuttonOffAutoUpdate.UseUnderline = true;
-			this.ybuttonOffAutoUpdate.Label = global::Mono.Unix.Catalog.GetString("Не получать обновления");
-			this.hbox5.Add(this.ybuttonOffAutoUpdate);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.ybuttonOffAutoUpdate]));
+			this.buttonOffAutoUpdate.CanFocus = true;
+			this.buttonOffAutoUpdate.Name = "buttonOffAutoUpdate";
+			this.buttonOffAutoUpdate.UseUnderline = true;
+			this.buttonOffAutoUpdate.Label = global::Mono.Unix.Catalog.GetString("Не получать обновления");
+			this.hbox5.Add(this.buttonOffAutoUpdate);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox5[this.buttonOffAutoUpdate]));
 			w12.Position = 2;
 			this.vbox2.Add(this.hbox5);
 			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox5]));
@@ -168,9 +168,9 @@ namespace QS.Updater.App.Views
 				this.Child.ShowAll();
 			}
 			this.Hide();
-			this.buttonCancel.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);
+			this.buttonLater.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);
 			this.buttonSkip.Clicked += new global::System.EventHandler(this.OnButtonSkipClicked);
-			this.ybuttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
+			this.buttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
 		}
 	}

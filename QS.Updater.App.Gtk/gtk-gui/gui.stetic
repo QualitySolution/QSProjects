@@ -139,7 +139,7 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="buttonCancel">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonLater">
                 <property name="MemberName" />
                 <property name="Tooltip" translatable="yes">Закрывает окно обновления без выполнения каких-либо действий.</property>
                 <property name="CanFocus">True</property>
@@ -169,7 +169,7 @@
               </packing>
             </child>
             <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="ybuttonOffAutoUpdate">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonOffAutoUpdate">
                 <property name="MemberName" />
                 <property name="Tooltip" translatable="yes">Полностью отключает проверку обновлений. Для повторного включения необходимо заново выбрать канал обновлений.</property>
                 <property name="CanFocus">True</property>

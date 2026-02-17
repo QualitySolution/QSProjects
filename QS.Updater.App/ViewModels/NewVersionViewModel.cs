@@ -9,7 +9,6 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.DB;
-using QS.Project.Services;
 using QS.Project.Versioning;
 using QS.Updates;
 using QS.Utilities.Text;
@@ -26,6 +25,7 @@ namespace QS.Updater.App.ViewModels {
 		private readonly IInteractiveMessage interactive;
 		private readonly IDataBaseInfo dataBaseInfo;
 		private readonly IChangeableConfiguration configuration;
+		private readonly CheckBaseVersion checkBaseVersion;
 
 		public NewVersionViewModel(
 			ReleaseInfo[] releases,
@@ -36,6 +36,7 @@ namespace QS.Updater.App.ViewModels {
 			IGuiDispatcher guiDispatcher,
 			IInteractiveMessage interactive,
 			IChangeableConfiguration configuration,
+			CheckBaseVersion checkBaseVersion = null,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -46,12 +47,15 @@ namespace QS.Updater.App.ViewModels {
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-			
+			this.checkBaseVersion = checkBaseVersion;
+
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
 				throw new ArgumentException("Коллекция должна быть не пустая.", nameof(this.Releases));
 			
-			//Заполняем выпуски которые могут быть установлены.
+			checkBaseVersion?.Check();
+			
+			//Заполняем выпуски, которые могут быть установлены.
 			//Здесь пропускаем все дубликаты ссылок на установку.
 			HashSet<string> added = new HashSet<string>();
 			foreach(var release in Releases) {
@@ -91,14 +95,8 @@ namespace QS.Updater.App.ViewModels {
 
 		public bool VisibleDbInfo => WillDbChange.Any();
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
-		public bool CanSkipVersion 
-		{
-			get 
-			{
-				Version selectedVersion = Version.Parse(SelectedRelease.Version);
-				return applicationInfo.Version.Major >= selectedVersion.Major && applicationInfo.Version.Minor >= selectedVersion.Minor;
-			}
-		}
+
+		public bool CanSkipUpdate => checkBaseVersion.Result != CheckBaseResult.BaseVersionGreater;
 
 		#endregion
 
@@ -112,7 +110,6 @@ namespace QS.Updater.App.ViewModels {
 
 		#region Действия
 		public void SkipVersion() {
-			if (!CanSkipVersion) return;
 			skipVersionState.SaveSkipVersion(Version.Parse(Releases.First().Version));
 			Close(false, CloseSource.Cancel);
 		}
@@ -173,7 +170,7 @@ namespace QS.Updater.App.ViewModels {
 
 		public void OffAutoUpdate() {
 			configuration[$"AppUpdater:Channel"] = UpdateChannel.OffAutoUpdate.ToString();
-			Close(false, CloseSource.Self);
+			Close(false, CloseSource.Cancel);
 		}
 		#endregion
 	}

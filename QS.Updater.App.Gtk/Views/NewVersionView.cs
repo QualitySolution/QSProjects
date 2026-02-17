@@ -22,7 +22,8 @@ namespace QS.Updater.App.Views {
 			comboSelectInstaller.ItemsList = ViewModel.CanSelectedReleases;
 			comboSelectInstaller.Binding.AddBinding(ViewModel, v => v.SelectedRelease, w => w.SelectedItem).InitializeFromSource();
 
-			buttonSkip.Binding.AddBinding(ViewModel, vm => vm.CanSkipVersion, w => w.Sensitive).InitializeFromSource();
+			buttonSkip.Binding.AddBinding(ViewModel, vm => vm.CanSkipUpdate, w => w.Sensitive).InitializeFromSource();
+			buttonOffAutoUpdate.Binding.AddBinding(ViewModel, vm => vm.CanSkipUpdate, w => w.Sensitive).InitializeFromSource();
 
 			for(uint i = 0; i < ViewModel.Releases.Length; i++) {
 				uint baseRow = i * 4;
@@ -67,7 +68,7 @@ namespace QS.Updater.App.Views {
 				Toplevel.Realized += (sender, args) => {
 					//Здесь таким хитрым способом устанавливаем цвет фона у textView. Подбирал способ очень долго.
 					//Фишка в том что реальная информация о стиле появляется только после Realized, до этого времени если взять цвет фона,
-					//он будет отличатся от установленного в системе стиля.
+					//он будет отличиться от установленного в системе стиля.
 					changesText.ModifyBase(StateType.Normal, Toplevel.Style.Background(StateType.Normal));
 				};
 				tableReleases.Attach(changesText, 0, 4, baseRow + 3, baseRow + 4, AttachOptions.Fill | AttachOptions.Expand, AttachOptions.Shrink, 0, 0);
