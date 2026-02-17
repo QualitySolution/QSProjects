@@ -38,7 +38,7 @@ namespace QS.Updater
 		AppUpdateIsRunning,
 		UpToDate,
 		/// <summary>
-		/// Ошибка версии базы данных
+		/// Версия базы данных не соответствует версии приложения.
 		/// </summary>
 		BaseError,
 		/// <summary>
