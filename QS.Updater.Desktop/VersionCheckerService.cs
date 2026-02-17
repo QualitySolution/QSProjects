@@ -22,6 +22,8 @@ namespace QS.Updater
 			this.skipVersionState = skipVersionState;
 		}
 
+		public IAppUpdater ApplicationUpdater => applicationUpdater;
+
 		public UpdateInfo? RunUpdate() 
 		{
 			UpdateInfo? updateInfo = null;
