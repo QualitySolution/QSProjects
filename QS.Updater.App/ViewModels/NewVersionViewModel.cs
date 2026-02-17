@@ -77,10 +77,25 @@ namespace QS.Updater.App.ViewModels {
 		public string DbUpdateInfo {
 			get {
 				var selectedVersion = Version.Parse(SelectedRelease.Version);
-				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
-					return $"Внимание! После обновления программы потребуется провести обновление базы данных. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {selectedVersion.Major}.{selectedVersion.Minor} не смогут работать с базой после ее обновления.";
-				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
-					return $"Потребуется провести изменение базы данных. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {selectedVersion.Major}.{selectedVersion.Minor}.х будет сохранена.";
+				// Проверяем, что выбранная версия не ниже версии базы данных
+				if(dataBaseInfo != null) {
+					var dbMajorMinor = new Version(dataBaseInfo.Version.Major, dataBaseInfo.Version.Minor);
+					var selectedMajorMinor = new Version(selectedVersion.Major, selectedVersion.Minor);
+
+					if(selectedMajorMinor < dbMajorMinor) {
+						return $"Внимание! Версия базы данных ({dataBaseInfo.Version.Major}.{dataBaseInfo.Version.Minor}) новее выбранной версии программы. " +
+						       $"Вам необходимо обновить программу минимум до версии {dataBaseInfo.Version.Major}.{dataBaseInfo.Version.Minor}, " +
+						       $"иначе вы не сможете зайти в программу.";
+					}
+				}
+
+				if(WillDbChange.Any()) {
+					var maxDbVersion = WillDbChange.First().Version;
+					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
+						return $"Внимание! После обновления программы потребуется провести обновление базы данных до {maxDbVersion}. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {selectedVersion.Major}.{selectedVersion.Minor} не смогут работать с базой после ее обновления.";
+					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
+						return $"Потребуется провести изменение базы данных до {maxDbVersion}. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {selectedVersion.Major}.{selectedVersion.Minor}.х будет сохранена.";
+				}
 				return null;
 			}
 		}
@@ -95,7 +110,7 @@ namespace QS.Updater.App.ViewModels {
 			set => SetField(ref selectedRelease, value);
 		}
 
-		public bool VisibleDbUpdateInfo => WillDbChange.Any();
+		public bool VisibleDbUpdateInfo => DbUpdateInfo != null;
 		public bool VisibleDbInfo => dataBaseInfo != null;
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
 
