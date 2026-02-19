@@ -39,9 +39,11 @@ namespace QS.Updater
 					}
 				}
 				else if(checkBaseVersion.Result == CheckBaseResult.BaseVersionGreater) {
-					updateInfo = applicationUpdater.TryAnotherChannel();
-					if(applicationUpdater.CanUpdate)
-						updateInfo = applicationUpdater.RunUpdate();
+					if(applicationUpdater.CanSwitchChannel) {
+						updateInfo = applicationUpdater.TryAnotherChannel();
+						if(applicationUpdater.CanUpdate)
+							updateInfo = applicationUpdater.RunUpdate();
+					}
 				}
 				
 				if(updateInfo?.Status == UpdateStatus.AppUpdateIsRunning) {

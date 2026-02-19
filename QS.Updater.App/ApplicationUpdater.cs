@@ -48,6 +48,27 @@ namespace QS.Updater.App {
 		public UpdateInfo LastResults { get; private set; }
 		public bool CanUpdate => LastResponse?.Releases.Any() ?? false;
 		public Version UpdateToVersion => Version.Parse(LastResponse.Releases.First().Version);
+		
+		/// <summary>
+		/// Определяет, имеет ли смысл предлагать пользователю переключение на другой канал обновлений.
+		/// Возвращает false при проблемах с подпиской (истекла, заблокирована и т.д.).
+		/// </summary>
+		public bool CanSwitchChannel {
+			get {
+				if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
+					return false;
+				
+				if(LastResponse == null)
+					return false;
+				
+				// Если есть проблемы с подпиской, переключение канала бессмысленно
+				var subscriptionStatus = LastResponse.SubscriptionStatus;
+				return subscriptionStatus != SubscriptionStatus.Expired
+				       && subscriptionStatus != SubscriptionStatus.ExpiredUnsupported
+				       && subscriptionStatus != SubscriptionStatus.ExpiredSupported
+				       && subscriptionStatus != SubscriptionStatus.Blocked;
+			}
+		}
 		#endregion
 
 		public UpdateInfo CheckUpdate() {
@@ -140,10 +161,7 @@ namespace QS.Updater.App {
 		}	
 
 		public UpdateInfo? TryAnotherChannel() {
-			if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
-				return null;
 			var cancelText = "Не надо";
-
 			var buttons = channelService.AvailableChannels
 				.Where(x => x != channelService.CurrentChannel)
 				.Select(x => x.GetEnumTitle())
