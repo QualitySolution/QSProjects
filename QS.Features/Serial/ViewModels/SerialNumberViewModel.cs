@@ -44,13 +44,13 @@ namespace QS.Serial.ViewModels
 			set {
 				if (SetField(ref serialNumber, value)) {
 					SerialNumberEncoder.Number = SerialNumber;
-					OnPropertyChanged(nameof(SensetiveOk));
+					OnPropertyChanged(nameof(SensitiveOk));
 					OnPropertyChanged(nameof(ResultText));
 				}
 			}
 		}
 
-		public bool SensetiveOk => String.IsNullOrWhiteSpace(SerialNumber) || (SerialNumberEncoder.IsValid && !SerialNumberEncoder.IsExpired);
+		public bool SensitiveOk => String.IsNullOrWhiteSpace(SerialNumber) || (SerialNumberEncoder.IsValid && !SerialNumberEncoder.IsExpired);
 
 		public string ResultText { 
 			get{
@@ -59,11 +59,20 @@ namespace QS.Serial.ViewModels
 					"Если вы уверены что серийный номер правильный, попробуйте обновить программу.";
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";
-				if(SerialNumberEncoder.IsExpired)
-					return "Срок действия серийного номера истек";
 				if(SerialNumberEncoder.IsValid) {
 					var productService = autofacScope.Resolve<IProductService>(new TypedParameter(typeof(ISerialNumberService), new SerialNumberService(SerialNumber)));
-					return productService?.GetEditionName(SerialNumberEncoder.EditionId);
+					var result = "Редакция: " + productService?.GetEditionName(SerialNumberEncoder.EditionId);
+					
+					if(SerialNumberEncoder.ExpiryDate.HasValue) {
+						var dateStr = SerialNumberEncoder.ExpiryDate.Value.ToShortDateString();
+						result += $"\nДействителен до: {dateStr}";
+					}
+					
+					if(SerialNumberEncoder.IsExpired) {
+						result += "\nСрок действия серийного номера истек";
+					}
+					
+					return result;
 				}
 				return null;
 			} 

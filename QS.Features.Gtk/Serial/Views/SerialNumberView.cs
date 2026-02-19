@@ -14,7 +14,7 @@ namespace QS.Serial.Views
 
 			serialnumberentry1.Binding.AddBinding(viewModel, vm => vm.SerialNumber, w => w.Text).InitializeFromSource();
 			labelResult.Binding.AddBinding(viewModel, v => v.ResultText, w => w.LabelProp).InitializeFromSource();
-			ybuttonApply.Binding.AddBinding(viewModel, v => v.SensetiveOk, w => w.Sensitive).InitializeFromSource();
+			ybuttonApply.Binding.AddBinding(viewModel, v => v.SensitiveOk, w => w.Sensitive).InitializeFromSource();
 		}
 
 		protected void OnYbuttonApplyClicked(object sender, EventArgs e)
