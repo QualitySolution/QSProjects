@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using Autofac;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
@@ -18,18 +17,22 @@ namespace QS.Serial.ViewModels
 		private readonly dynamic parametersService;
 		private readonly IApplicationQuitService quitService;
 		private readonly IInteractiveQuestion interactive;
-		private readonly ILifetimeScope autofacScope;
+		private readonly IProductService productService;
 		private readonly byte lastEdition;
 
-		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder,
-			ParametersService parametersService, IApplicationQuitService quitService, 
-			IInteractiveQuestion interactive, ILifetimeScope autofacScope) : base(navigation)
+		public SerialNumberViewModel(
+			INavigationManager navigation,
+			SerialNumberEncoder encoder,
+			ParametersService parametersService,
+			IApplicationQuitService quitService, 
+			IInteractiveQuestion interactive,
+			IProductService productService = null) : base(navigation)
 		{
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
-			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
+			this.productService = productService;
 			serialNumber = this.parametersService.serial_number;
 			Title = "Замена серийного номера";
 			SerialNumberEncoder.Number = serialNumber;
@@ -60,8 +63,12 @@ namespace QS.Serial.ViewModels
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";
 				if(SerialNumberEncoder.IsValid) {
-					var productService = autofacScope.Resolve<IProductService>(new TypedParameter(typeof(ISerialNumberService), new SerialNumberService(SerialNumber)));
-					var result = "Редакция: " + productService?.GetEditionName(SerialNumberEncoder.EditionId);
+					string result = String.Empty;
+					if(productService != null)
+						result = "Редакция: " + productService.GetEditionName(SerialNumberEncoder.EditionId);
+					else {
+						result = "Корректен";
+					}
 					
 					if(SerialNumberEncoder.ExpiryDate.HasValue) {
 						var dateStr = SerialNumberEncoder.ExpiryDate.Value.ToShortDateString();
