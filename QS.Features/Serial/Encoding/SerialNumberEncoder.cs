@@ -86,6 +86,8 @@ namespace QS.Serial.Encoding
 					case 1:
 						DecodedProduct = SerialCommon.GetProductFromBinary(summaryArray, 8);
 						IsAnotherProduct = DecodedProduct != forProduct;
+						ProductId = 2; //Выпускались только для спецодежды.
+						EditionId = 2; //Приравниваются к профессиональной редакции.
 						break;
 					case 2:
 						ClientId = BitConverter.ToUInt16(summaryArray, 1);
