@@ -126,6 +126,8 @@ namespace QS.Serial.Encoding
 		private void Clear()
 		{
 			DecodedProduct = String.Empty;
+			ProductId = default;
+			EditionId = default;
 			CodeVersion = default;
 			ClientId = default;
 			Employees = default;
