@@ -21,6 +21,7 @@ message CheckForUpdatesResponse{
   string title = 2;
   string message = 3;
   SubscriptionStatus subscription_status = 4;
+  google.protobuf.Timestamp subscription_active_until = 5;
 }
 
 message ReleaseInfo{
