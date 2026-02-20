@@ -17,14 +17,14 @@ node {
    {
    	  sh 'find QSProjects -type d -name "TestResults" -exec rm -rf {} + || true'
       try {  
-   	     sh 'dotnet test --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" -p:CoverletOutputFormat=cobertura QSProjects/QSProjects.dotnet.sln'
+   	  sh 'dotnet test --logger trx --collect:"XPlat Code Coverage" QSProjects/QSProjects.dotnet.sln'
       } catch (e) {}
       finally{
         discoverReferenceBuild()
         recordCoverage id: 'coverage-prev', name: 'Coverage (vs previous build)', ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
         discoverGitReferenceBuild()
         recordCoverage id: 'coverage-master', name: 'Coverage (vs master)', ignoreParsingErrors: true, tools: [[parser: 'COBERTURA', pattern: '**/coverage.cobertura.xml']]
-        mstest testResultsFile:"**/test-results.trx", keepLongStdio: true
+        mstest testResultsFile:"**/*.trx", keepLongStdio: true
       }
    }
    stage('Build Net4.x') {
