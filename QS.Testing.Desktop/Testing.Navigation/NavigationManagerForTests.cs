@@ -5,7 +5,7 @@ using QS.Dialog;
 using QS.Navigation;
 using QS.ViewModels.Dialog;
 
-namespace QS.Testing.Testing.Navigation {
+namespace QS.Testing.Navigation {
 	
 	/// <summary>
 	/// Пока не полная реализация упрощенного менеджера навигации предназначенного для использования в тестах.

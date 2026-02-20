@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using QS.Testing.Testing.Navigation;
-using QS.ViewModels.Dialog;
+using QS.Testing.Navigation;
 
 namespace QS.Navigation
 {
@@ -19,11 +18,11 @@ namespace QS.Navigation
 		}
 
 		public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			IDictionary<string, object> ctorArgs,
 			string hash,
 			Action<ContainerBuilder> addingRegistrations = null,
-			Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
+			Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
@@ -35,12 +34,12 @@ namespace QS.Navigation
 		}
 
 		public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			string hash,
 			Action<ContainerBuilder> addingRegistrations = null,
-			Action<TViewModel> configureViewModel = null) where TViewModel : DialogViewModelBase
+			Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel
 		{
 			var scope = addingRegistrations == null ? Container.BeginLifetimeScope() : Container.BeginLifetimeScope(addingRegistrations);
 			var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
