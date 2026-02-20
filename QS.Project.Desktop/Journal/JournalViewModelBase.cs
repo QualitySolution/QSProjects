@@ -14,7 +14,8 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Journal
 {
-	public abstract class JournalViewModelBase : DialogViewModelBase, ISlideableViewModel
+	public abstract class JournalViewModelBase<TNode> : DialogViewModelBase, ISlideableViewModel, IJournalViewModel
+		where TNode : class
 	{
 		
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -53,6 +54,11 @@ namespace QS.Journal
 			get => actionsViewModel;
 			set => SetField(ref actionsViewModel, value);
 		}
+
+		/// <summary>
+		/// Удобное свойство для доступа к ActionsViewModel как к ButtonJournalActionsViewModel.
+		/// </summary>
+		public virtual ButtonJournalActionsViewModel<TNode> ButtonActionsViewModel => ActionsViewModel as ButtonJournalActionsViewModel<TNode>;
 
 		public void Refresh(bool needResetItemsCountForNextLoad = true)
 		{

@@ -6,7 +6,9 @@ using QS.Navigation;
 using QS.Project.Journal.DataLoader;
 
 namespace QS.Journal {
-	public class UowJournalViewModelBase : JournalViewModelBase, IDisposable {
+	public class UowJournalViewModelBase<TNode> : JournalViewModelBase<TNode>, IDisposable
+		where TNode : class
+	{
 
 		public UowJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IEntityChangeWatcher changeWatcher) : base(navigation) {
 			ChangeWatcher = changeWatcher;

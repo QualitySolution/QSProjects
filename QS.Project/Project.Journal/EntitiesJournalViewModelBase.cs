@@ -25,7 +25,7 @@ namespace QS.Project.Journal
 	/// <summary>
 	/// Базовый класс для журналов разрабатываемых внутри ВВ используется с завязкой на TDI поэтому не переносим в dotnet. 
 	/// </summary>
-	public abstract class EntitiesJournalViewModelBase<TNode> : UowJournalViewModelBase, ITdiJournal, IEntityAutocompleteSelector
+	public abstract class EntitiesJournalViewModelBase<TNode> : UowJournalViewModelBase<TNode>, ITdiJournal, IEntityAutocompleteSelector
 		where TNode : JournalEntityNodeBase
 	{
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

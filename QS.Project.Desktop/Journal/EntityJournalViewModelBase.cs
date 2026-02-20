@@ -18,7 +18,7 @@ using QS.ViewModels.Dialog;
 
 namespace QS.Journal
 {
-	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : UowJournalViewModelBase
+	public abstract class EntityJournalViewModelBase<TEntity, TEntityViewModel, TNode> : UowJournalViewModelBase<TNode>
 		where TEntity : class, IDomainObject
 		where TEntityViewModel : DialogViewModelBase
 		where TNode : class

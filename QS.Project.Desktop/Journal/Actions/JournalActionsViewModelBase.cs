@@ -8,11 +8,12 @@ namespace QS.Journal.Actions
 	/// </summary>
 	/// <typeparam name="TNode">Тип узла (строки) журнала</typeparam>
 	public abstract class JournalActionsViewModelBase<TNode> : ViewModelBase, IJournalEventsHandler
+		where TNode : class
 	{
 		/// <summary>
 		/// View model журнала, к которому относятся действия
 		/// </summary>
-		public JournalViewModelBase Journal { get; set; }
+		public JournalViewModelBase<TNode> Journal { get; set; }
 
 		#region IJournalEventsHandler
 

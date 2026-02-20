@@ -9,6 +9,7 @@ namespace QS.Journal.Actions
 	/// </summary>
 	/// <typeparam name="TNode">Тип узла (строки) журнала</typeparam>
 	public class ButtonJournalActionsViewModel<TNode> : JournalActionsViewModelBase<TNode>, IButtonJournalActionsViewModel
+		where TNode : class
 	{
 		private IList<TNode> selectedNodes = new List<TNode>();
 
