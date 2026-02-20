@@ -9,7 +9,6 @@ using QS.Dialog;
 using QS.DomainModel.Entity;
 using QS.Navigation;
 using QS.Project.DB;
-using QS.Project.Services;
 using QS.Project.Versioning;
 using QS.Updates;
 using QS.Utilities.Text;
@@ -26,6 +25,7 @@ namespace QS.Updater.App.ViewModels {
 		private readonly IInteractiveMessage interactive;
 		private readonly IDataBaseInfo dataBaseInfo;
 		private readonly IChangeableConfiguration configuration;
+		private readonly CheckBaseVersion checkBaseVersion;
 
 		public NewVersionViewModel(
 			ReleaseInfo[] releases,
@@ -36,6 +36,7 @@ namespace QS.Updater.App.ViewModels {
 			IGuiDispatcher guiDispatcher,
 			IInteractiveMessage interactive,
 			IChangeableConfiguration configuration,
+			CheckBaseVersion checkBaseVersion = null,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -46,12 +47,15 @@ namespace QS.Updater.App.ViewModels {
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-			
+			this.checkBaseVersion = checkBaseVersion;
+
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
 				throw new ArgumentException("Коллекция должна быть не пустая.", nameof(this.Releases));
 			
-			//Заполняем выпуски которые могут быть установлены.
+			checkBaseVersion?.Check();
+			
+			//Заполняем выпуски, которые могут быть установлены.
 			//Здесь пропускаем все дубликаты ссылок на установку.
 			HashSet<string> added = new HashSet<string>();
 			foreach(var release in Releases) {
@@ -69,12 +73,30 @@ namespace QS.Updater.App.ViewModels {
 		#region Свойства View
 		public readonly ReleaseInfo[] Releases;
 		public string MainInfoText => $"Доступная версия: {Releases.First().Version} \t Установленная версия: {applicationInfo.Version.VersionToShortString()}";
+		public string DbInfoText => $"Версия базы данных: {dataBaseInfo?.Version.VersionToShortString() ?? "неизвестно"}";
 		public string DbUpdateInfo {
 			get {
-				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
-					return $"Внимание! Потребуется провести обновление базы данных. Убедитесь что вы знаете пароль администратора. Клиенты с версиями ниже {SelectedRelease.Version:2} не смогут работать с базой после ее обновления.";
-				if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
-					return $"Потребуется провести изменение базы данных. Убедитесь что вы знаете пароль администратора. Совместимость с клиентами {SelectedRelease.Version:2}.х будет сохранена.";
+				var selectedVersion = Version.Parse(SelectedRelease.Version);
+				// Проверяем, что выбранная версия не ниже версии базы данных
+				if(dataBaseInfo != null) {
+					var dbMajorMinor = new Version(dataBaseInfo.Version.Major, dataBaseInfo.Version.Minor);
+					var selectedMajorMinor = new Version(selectedVersion.Major, selectedVersion.Minor);
+
+					if(selectedMajorMinor < dbMajorMinor) {
+						return $"Внимание! Версия базы данных ({dataBaseInfo.Version.Major}.{dataBaseInfo.Version.Minor}) новее выбранной версии программы. " +
+						       $"Вам необходимо обновить программу минимум до версии {dataBaseInfo.Version.Major}.{dataBaseInfo.Version.Minor}, " +
+						       $"иначе вы не сможете зайти в программу.";
+					}
+				}
+
+				if(WillDbChange.Any()) {
+					var maxDbVersionText = WillDbChange.First().Version;
+					var maxDbVersion = Version.Parse(maxDbVersionText);
+					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.BreakingChange))
+						return $"Внимание! После обновления программы потребуется провести обновление базы данных до {maxDbVersionText}. Убедитесь что вы знаете пароль администратора базы. Клиенты с версиями ниже {maxDbVersion.ToString(2)} не смогут работать с базой после ее обновления.";
+					if(WillDbChange.Any(x => x.DatabaseUpdate == DatabaseUpdate.Required))
+						return $"Потребуется провести изменение базы данных до {maxDbVersionText}. Убедитесь что вы знаете пароль администратора базы. Совместимость с клиентами {maxDbVersion.ToString(2)}.х будет сохранена.";
+				}
 				return null;
 			}
 		}
@@ -82,24 +104,18 @@ namespace QS.Updater.App.ViewModels {
 		public readonly List<ReleaseInfo> CanSelectedReleases = new List<ReleaseInfo>();
 
 		private ReleaseInfo selectedRelease;
-		[PropertyChangedAlso(nameof(VisibleDbInfo))]
+		[PropertyChangedAlso(nameof(VisibleDbUpdateInfo))]
 		[PropertyChangedAlso(nameof(DbUpdateInfo))]
 		public virtual ReleaseInfo SelectedRelease {
 			get => selectedRelease;
 			set => SetField(ref selectedRelease, value);
 		}
 
-		public bool VisibleDbInfo => WillDbChange.Any();
+		public bool VisibleDbUpdateInfo => DbUpdateInfo != null;
+		public bool VisibleDbInfo => dataBaseInfo != null;
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
-		public bool CanSkipVersion 
-		{
-			get 
-			{
-				Version selectedVersion = Version.Parse(SelectedRelease.Version);
-				return applicationInfo.Version.Major >= selectedVersion.Major && applicationInfo.Version.Minor >= selectedVersion.Minor;
-			}
-		}
 
+		public bool CanSkipUpdate => checkBaseVersion?.Result != CheckBaseResult.BaseVersionGreater;
 		#endregion
 
 		#region Helpers
@@ -112,7 +128,6 @@ namespace QS.Updater.App.ViewModels {
 
 		#region Действия
 		public void SkipVersion() {
-			if (!CanSkipVersion) return;
 			skipVersionState.SaveSkipVersion(Version.Parse(Releases.First().Version));
 			Close(false, CloseSource.Cancel);
 		}
@@ -172,8 +187,8 @@ namespace QS.Updater.App.ViewModels {
 		}
 
 		public void OffAutoUpdate() {
-			configuration[$"AppUpdater:Channel"] = UpdateChannel.OffAutoUpdate.ToString();
-			Close(false, CloseSource.Self);
+			configuration[$"AppUpdater:Channel"] = nameof(UpdateChannel.Off);
+			Close(false, CloseSource.Cancel);
 		}
 		#endregion
 	}

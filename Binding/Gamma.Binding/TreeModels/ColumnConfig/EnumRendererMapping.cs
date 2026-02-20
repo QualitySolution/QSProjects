@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -90,6 +90,7 @@ namespace Gamma.ColumnConfig
 		/// <param name="func">Func</param>
 		public EnumRendererMapping<TNode, TItem> HideCondition(Func<TNode, TItem, bool> func)
 		{
+			cellRenderer.IsDynamicallyFillList = true;
 			cellRenderer.HideItemFunc = func;
 			return this;
 		}

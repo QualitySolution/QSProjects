@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -9,7 +9,7 @@
     <widget-library name="../../Binding/Gamma.Binding/bin/Debug/GammaBinding.dll" />
     <widget-library name="../bin/Debug/QS.Updater.App.Gtk.dll" internal="true" />
   </import>
-  <widget class="Gtk.Bin" id="QS.Updater.App.Views.NewVersionView" design-size="1047 597">
+  <widget class="Gtk.Bin" id="QS.Updater.App.Views.NewVersionView" design-size="1047 618">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -23,6 +23,18 @@
           </widget>
           <packing>
             <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gamma.GtkWidgets.yLabel" id="labelBaseInfo">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">ylabel1</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -79,7 +91,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="AutoSize">True</property>
           </packing>
         </child>
@@ -116,7 +128,7 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">2</property>
+            <property name="Position">3</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -129,7 +141,7 @@
             <property name="Wrap">True</property>
           </widget>
           <packing>
-            <property name="Position">3</property>
+            <property name="Position">4</property>
             <property name="AutoSize">False</property>
             <property name="Expand">False</property>
           </packing>
@@ -139,22 +151,9 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="buttonSkip">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonLater">
                 <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">Пропустить обновление</property>
-                <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonSkipClicked" />
-              </widget>
-              <packing>
-                <property name="Position">0</property>
-                <property name="AutoSize">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="buttonCancel">
-                <property name="MemberName" />
+                <property name="Tooltip" translatable="yes">Закрывает окно обновления без выполнения каких-либо действий.</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Напомнить позже</property>
@@ -162,18 +161,34 @@
                 <signal name="Clicked" handler="OnButtonCancelClicked" />
               </widget>
               <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonSkip">
+                <property name="MemberName" />
+                <property name="Tooltip" translatable="yes">Помечает текущую версию как пропущенную и не предлагает обновление до выхода следующей версии.</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Пропустить выпуск</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnButtonSkipClicked" />
+              </widget>
+              <packing>
                 <property name="Position">1</property>
                 <property name="AutoSize">False</property>
               </packing>
             </child>
             <child>
-              <widget class="Gamma.GtkWidgets.yButton" id="buttonOk">
+              <widget class="Gamma.GtkWidgets.yButton" id="buttonOffAutoUpdate">
                 <property name="MemberName" />
+                <property name="Tooltip" translatable="yes">Полностью отключает проверку обновлений. Для повторного включения необходимо заново выбрать канал обновлений.</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">Скачать и установить</property>
+                <property name="Label" translatable="yes">Не получать обновления</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonOkClicked" />
+                <signal name="Clicked" handler="OnButtonOffAutoUpdateClicked" />
               </widget>
               <packing>
                 <property name="Position">2</property>
@@ -182,7 +197,24 @@
             </child>
           </widget>
           <packing>
-            <property name="Position">4</property>
+            <property name="Position">5</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gamma.GtkWidgets.yButton" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextAndIcon</property>
+            <property name="Icon">stock:gtk-apply Menu</property>
+            <property name="Label" translatable="yes">Скачать и установить</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="OnButtonOkClicked" />
+          </widget>
+          <packing>
+            <property name="Position">6</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using Autofac;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;
@@ -18,18 +17,22 @@ namespace QS.Serial.ViewModels
 		private readonly dynamic parametersService;
 		private readonly IApplicationQuitService quitService;
 		private readonly IInteractiveQuestion interactive;
-		private readonly ILifetimeScope autofacScope;
+		private readonly IProductService productService;
 		private readonly byte lastEdition;
 
-		public SerialNumberViewModel(INavigationManager navigation, SerialNumberEncoder encoder,
-			ParametersService parametersService, IApplicationQuitService quitService, 
-			IInteractiveQuestion interactive, ILifetimeScope autofacScope) : base(navigation)
+		public SerialNumberViewModel(
+			INavigationManager navigation,
+			SerialNumberEncoder encoder,
+			ParametersService parametersService,
+			IApplicationQuitService quitService, 
+			IInteractiveQuestion interactive,
+			IProductService productService = null) : base(navigation)
 		{
 			SerialNumberEncoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
-			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
+			this.productService = productService;
 			serialNumber = this.parametersService.serial_number;
 			Title = "Замена серийного номера";
 			SerialNumberEncoder.Number = serialNumber;
@@ -44,13 +47,13 @@ namespace QS.Serial.ViewModels
 			set {
 				if (SetField(ref serialNumber, value)) {
 					SerialNumberEncoder.Number = SerialNumber;
-					OnPropertyChanged(nameof(SensetiveOk));
+					OnPropertyChanged(nameof(SensitiveOk));
 					OnPropertyChanged(nameof(ResultText));
 				}
 			}
 		}
 
-		public bool SensetiveOk => String.IsNullOrWhiteSpace(SerialNumber) || (SerialNumberEncoder.IsValid && !SerialNumberEncoder.IsExpired);
+		public bool SensitiveOk => String.IsNullOrWhiteSpace(SerialNumber) || (SerialNumberEncoder.IsValid && !SerialNumberEncoder.IsExpired);
 
 		public string ResultText { 
 			get{
@@ -59,11 +62,24 @@ namespace QS.Serial.ViewModels
 					"Если вы уверены что серийный номер правильный, попробуйте обновить программу.";
 				if (SerialNumberEncoder.IsAnotherProduct) 
 					return "Серийный номер от другого продукта.";
-				if(SerialNumberEncoder.IsExpired)
-					return "Срок действия серийного номера истек";
 				if(SerialNumberEncoder.IsValid) {
-					var productService = autofacScope.Resolve<IProductService>(new TypedParameter(typeof(ISerialNumberService), new SerialNumberService(SerialNumber)));
-					return productService?.GetEditionName(SerialNumberEncoder.EditionId);
+					string result = String.Empty;
+					if(productService != null)
+						result = "Редакция: " + productService.GetEditionName(SerialNumberEncoder.EditionId);
+					else {
+						result = "Корректен";
+					}
+					
+					if(SerialNumberEncoder.ExpiryDate.HasValue) {
+						var dateStr = SerialNumberEncoder.ExpiryDate.Value.ToShortDateString();
+						result += $"\nДействителен до: {dateStr}";
+					}
+					
+					if(SerialNumberEncoder.IsExpired) {
+						result += "\nСрок действия серийного номера истек";
+					}
+					
+					return result;
 				}
 				return null;
 			} 

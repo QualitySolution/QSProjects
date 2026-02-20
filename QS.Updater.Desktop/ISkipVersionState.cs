@@ -1,5 +1,6 @@
 ﻿using System;
-namespace QS.Updater.App
+
+namespace QS.Updater
 {
 	public interface ISkipVersionState
 	{
