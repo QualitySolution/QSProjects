@@ -58,11 +58,8 @@ namespace QS.Updater.App {
 				if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
 					return false;
 				
-				if(LastResponse == null)
-					return false;
-				
 				// Если есть проблемы с подпиской, переключение канала бессмысленно
-				var subscriptionStatus = LastResponse.SubscriptionStatus;
+				var subscriptionStatus = LastResponse?.SubscriptionStatus;
 				return subscriptionStatus != SubscriptionStatus.Expired
 				       && subscriptionStatus != SubscriptionStatus.ExpiredUnsupported
 				       && subscriptionStatus != SubscriptionStatus.ExpiredSupported
@@ -72,10 +69,9 @@ namespace QS.Updater.App {
 		#endregion
 
 		public UpdateInfo CheckUpdate() {
-			// Если установлен канал OffAutoUpdate - автообновление отключено
 			if(channelService?.CurrentChannel == UpdateChannel.Off) {
-				logger.Info("Автоматическое обновление отключено (канал OffAutoUpdate)");
-				return new UpdateInfo("Автообновление отключено", "Автоматическое обновление отключено в настройках", UpdateStatus.Ok, ImportanceLevel.Info);
+				logger.Info("Автоматическое обновление отключено (канал Off)");
+				return LastResults = new UpdateInfo("Обновление отключено", "Выбран канал «Без обновлений». Выберите другой канал.", UpdateStatus.Ok, ImportanceLevel.Info);
 			}
 			
 			ReleaseChannel.TryParse(channelService?.CurrentChannel.ToString(), out ReleaseChannel channel);
@@ -123,10 +119,10 @@ namespace QS.Updater.App {
 		/// <summary>
 		/// Показывает окно с информацией о новой версии и возможностью ее установить.
 		/// </summary>
-		public UpdateInfo? RunUpdate() {
+		public UpdateInfo RunUpdate() {
 			if(!CanUpdate) {
 				interactive.ShowMessage(LastResults.ImportanceLevel, LastResults.Message, LastResults.Title);
-				return null;
+				return LastResults;
 			}
 			else {
 				var page = navigation.OpenViewModel<NewVersionViewModel, ReleaseInfo[]>(null, LastResponse.Releases.ToArray());
@@ -167,7 +163,7 @@ namespace QS.Updater.App {
 				.Select(x => x.GetEnumTitle())
 				.Union(new[] { cancelText }).ToArray();
 			var answer = interactive.Question(buttons,
-				"В используемом канале нет новых версий. При этом у вас более новая версия БД. Хотите проверить обновления в другом канале?");
+				"В используемом канале нет новых версий. При этом у вас более новая версия БД. Вы можете переключить канал обновлений.");
 			if(answer == cancelText || String.IsNullOrEmpty(answer))
 				return null;
 			var channel = channelService.AvailableChannels.First(x => x.GetEnumTitle() == answer);

@@ -23,6 +23,9 @@ namespace QS.Updater
 	
 	public enum UpdateStatus 
 	{
+		/// <summary>
+		/// Есть обновления.
+		/// </summary>
 		Ok,
 		/// <summary>
 		/// Обновление пропущено пользователем
@@ -36,6 +39,9 @@ namespace QS.Updater
 		/// Запущена установка обновления. Необходимо закрыть приложение.
 		/// </summary>
 		AppUpdateIsRunning,
+		/// <summary>
+		/// Установлена последняя версия приложения.
+		/// </summary>
 		UpToDate,
 		/// <summary>
 		/// Версия базы данных не соответствует версии приложения.
