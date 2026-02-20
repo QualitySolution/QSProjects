@@ -21,7 +21,6 @@ namespace QS.Updater.App {
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher gui;
 		private readonly IApplicationQuitService quitService;
-		private readonly ISkipVersionState skipVersionState;
 		private readonly IUpdateChannelService channelService;
 		private readonly ParametersService parametersService;
 
@@ -32,7 +31,6 @@ namespace QS.Updater.App {
 			IInteractiveService interactive,
 			IGuiDispatcher gui,
 			IApplicationQuitService quitService,
-			ISkipVersionState skipVersionState = null,
 			IUpdateChannelService channelService = null,
 			ParametersService parametersService = null) {
 			this.releasesService = releasesService ?? throw new ArgumentNullException(nameof(releasesService));
@@ -41,61 +39,93 @@ namespace QS.Updater.App {
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.gui = gui ?? throw new ArgumentNullException(nameof(gui));
 			this.quitService = quitService ?? throw new ArgumentNullException(nameof(quitService));
-			this.skipVersionState = skipVersionState;
 			this.channelService = channelService;
 			this.parametersService = parametersService;
 		}
 
-		public UpdateInfo CheckUpdate(bool manualRun) {
+		#region Результаты проверки
+		public CheckForUpdatesResponse LastResponse { get; private set; }
+		public UpdateInfo LastResults { get; private set; }
+		public bool CanUpdate => LastResponse?.Releases.Any() ?? false;
+		public Version UpdateToVersion => Version.Parse(LastResponse.Releases.First().Version);
+		
+		/// <summary>
+		/// Определяет, имеет ли смысл предлагать пользователю переключение на другой канал обновлений.
+		/// Возвращает false при проблемах с подпиской (истекла, заблокирована и т.д.).
+		/// </summary>
+		public bool CanSwitchChannel {
+			get {
+				if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
+					return false;
+				
+				// Если есть проблемы с подпиской, переключение канала бессмысленно
+				var subscriptionStatus = LastResponse?.SubscriptionStatus;
+				return subscriptionStatus != SubscriptionStatus.Expired
+				       && subscriptionStatus != SubscriptionStatus.ExpiredUnsupported
+				       && subscriptionStatus != SubscriptionStatus.ExpiredSupported
+				       && subscriptionStatus != SubscriptionStatus.Blocked;
+			}
+		}
+		#endregion
+
+		public UpdateInfo CheckUpdate() {
+			if(channelService?.CurrentChannel == UpdateChannel.Off) {
+				logger.Info("Автоматическое обновление отключено (канал Off)");
+				return LastResults = new UpdateInfo("Обновление отключено", "Выбран канал «Без обновлений». Выберите другой канал.", UpdateStatus.Ok, ImportanceLevel.Info);
+			}
+			
 			ReleaseChannel.TryParse(channelService?.CurrentChannel.ToString(), out ReleaseChannel channel);
-			return CheckUpdate(manualRun, channel);
+			return CheckUpdate(channel);
 		}
 
-		private UpdateInfo CheckUpdate(bool manualRun, ReleaseChannel channel) {
+		private UpdateInfo CheckUpdate(ReleaseChannel channel) {
 			logger.Info("Запрашиваем информацию о новых версиях с сервера");
 			string serial = parametersService?.Dynamic.serial_number ?? String.Empty;
-			CheckForUpdatesResponse response;
 			try {
-				 response = releasesService.CheckForUpdates(
+				LastResponse = releasesService.CheckForUpdates(
 					applicationInfo.ProductCode,
 					applicationInfo.Version.VersionToShortString(),
 					applicationInfo.Modification ?? String.Empty,
 					serial,
 					channel
-					);
+				);
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Ошибка доступа к серверу обновления.");
-				return new UpdateInfo("Ошибка доступа к серверу обновления", "Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже", UpdateStatus.ConnectionError, ImportanceLevel.Error);
+				return LastResults = new UpdateInfo("Ошибка доступа к серверу обновления",
+					"Не удалось подключиться к серверу обновлений.\nПожалуйста, повторите попытку позже", UpdateStatus.ConnectionError,
+					ImportanceLevel.Error);
 			}
 
-			if (!response.Releases.Any()) 
-			{
-				UpdateInfo updateInfo;
-				if (!string.IsNullOrWhiteSpace(response.Title) && !string.IsNullOrWhiteSpace(response.Message)) 
-				{
-					logger.Info(response.Title);
-					updateInfo = new UpdateInfo(response.Title, response.Message, UpdateStatus.ExternalError, ImportanceLevel.Warning);
+			if(LastResponse.Releases.Any()) {
+				LastResults = new UpdateInfo("Ок", string.Empty, UpdateStatus.Ok, ImportanceLevel.Info);
+			}
+			else {
+				if(!string.IsNullOrWhiteSpace(LastResponse.Title) && !string.IsNullOrWhiteSpace(LastResponse.Message)) {
+					logger.Info(LastResponse.Title);
+					LastResults = new UpdateInfo(LastResponse.Title, LastResponse.Message, UpdateStatus.ExternalError,
+						ImportanceLevel.Warning);
 				}
 				else {
-
 					logger.Info("Нет новых версий программы.");
-					updateInfo = new UpdateInfo("Нет новых версий программы",
+					LastResults = new UpdateInfo("Нет новых версий программы",
 						$"<b>Ваша версия программного продукта: {applicationInfo.Version.VersionToShortString()}</b>\nНа данный момент это самая последняя версия",
 						UpdateStatus.UpToDate, ImportanceLevel.Info);
 				}
-
-				if (manualRun) 
-				{
-					interactive.ShowMessage(updateInfo.ImportanceLevel, updateInfo.Message, updateInfo.Title);
-				}
-
-				return updateInfo;
 			}
-			
-			var updateToVersion = Version.Parse(response.Releases.First().Version);
-			if(manualRun || !skipVersionState.IsSkippedVersion(updateToVersion)) {
-				var page = navigation.OpenViewModel<NewVersionViewModel, ReleaseInfo[]>(null, response.Releases.ToArray());
+			return LastResults;
+		}
+
+		/// <summary>
+		/// Показывает окно с информацией о новой версии и возможностью ее установить.
+		/// </summary>
+		public UpdateInfo RunUpdate() {
+			if(!CanUpdate) {
+				interactive.ShowMessage(LastResults.ImportanceLevel, LastResults.Message, LastResults.Title);
+				return LastResults;
+			}
+			else {
+				var page = navigation.OpenViewModel<NewVersionViewModel, ReleaseInfo[]>(null, LastResponse.Releases.ToArray());
 				var isClosed = false;
 				string title = string.Empty;
 				string message = string.Empty;
@@ -124,27 +154,21 @@ namespace QS.Updater.App {
 				gui.WaitInMainLoop(() => isClosed);
 				return new UpdateInfo(title, message, status, ImportanceLevel.Info);
 			}
-			
-			logger.Info("Ок");
-			return new UpdateInfo("Ок", string.Empty, UpdateStatus.Ok, ImportanceLevel.Info);
 		}	
 
-		public void TryAnotherChannel() {
-			if(channelService == null || channelService.AvailableChannels.All(x => x == channelService.CurrentChannel))
-				return;
+		public UpdateInfo? TryAnotherChannel() {
 			var cancelText = "Не надо";
-
 			var buttons = channelService.AvailableChannels
 				.Where(x => x != channelService.CurrentChannel)
 				.Select(x => x.GetEnumTitle())
 				.Union(new[] { cancelText }).ToArray();
 			var answer = interactive.Question(buttons,
-				"В используемом канале нет новых версий. При этом у вас более новая версия БД. Хотите проверить обновления в другом канале?");
+				"В используемом канале нет новых версий. При этом у вас более новая версия БД. Вы можете переключить канал обновлений.");
 			if(answer == cancelText || String.IsNullOrEmpty(answer))
-				return;
+				return null;
 			var channel = channelService.AvailableChannels.First(x => x.GetEnumTitle() == answer);
 			ReleaseChannel.TryParse(channel.ToString(), out ReleaseChannel releaseChannel);
-			_ = CheckUpdate(false, releaseChannel);
+			return CheckUpdate(releaseChannel);
 		}
 	}
 }

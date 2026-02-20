@@ -25,7 +25,7 @@ namespace QS.Testing.Gui {
 
 		public void WaitInMainLoop(Func<bool> checkStop, uint sleepMilliseconds = 20)
 		{
-			throw new NotImplementedException();
+			// Для тестов не ждем - нет главного GUI потока.
 		}
 
 		public void WaitRedraw()

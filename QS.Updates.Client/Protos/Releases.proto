@@ -1,43 +1,64 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
 package QS.Updates;
 
 service Releases {
-	rpc CheckForUpdates (CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
+  rpc CheckForUpdates (CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
 }
 
 message CheckForUpdatesRequest{
-	int32 product_code = 1;
-	string version = 2;
-	string modification = 3;
-	string serial_number = 4;
-	ReleaseChannel channel = 5;
+  int32 product_code = 1;
+  string version = 2;
+  string modification = 3;
+  string serial_number = 4;
+  ReleaseChannel channel = 5;
 }
 
 message CheckForUpdatesResponse{
-	repeated ReleaseInfo releases = 1;
-	string title = 2;
-	string message = 3;
+  repeated ReleaseInfo releases = 1;
+  string title = 2;
+  string message = 3;
+  SubscriptionStatus subscription_status = 4;
+  google.protobuf.Timestamp subscription_active_until = 5;
 }
 
 message ReleaseInfo{
-	string version = 1;
-	google.protobuf.Timestamp date = 2;
-	string changes = 3;
-	string news_link = 4;
-	string installer_link = 5;
-	DatabaseUpdate database_update = 6;
+  string version = 1;
+  google.protobuf.Timestamp date = 2;
+  string changes = 3;
+  string news_link = 4;
+  string installer_link = 5;
+  DatabaseUpdate database_update = 6;
 }
 
+//Перечисление говорящее требуется ли при установке версии обновлять базу
 enum DatabaseUpdate{
-	DATABASE_UPDATE_NONE = 0;
-	DATABASE_UPDATE_REQUIRED = 1;
-	DATABASE_UPDATE_BREAKING_CHANGE = 2;
+  //Не требуется обновление базы
+  DATABASE_UPDATE_NONE = 0;
+  //Требуется минорное обновление
+  DATABASE_UPDATE_REQUIRED = 1;
+  //Требуется обратно несовместимое обновление
+  DATABASE_UPDATE_BREAKING_CHANGE = 2;
 }
 
 enum ReleaseChannel{
-	RELEASE_CHANNEL_CURRENT = 0;
-	RELEASE_CHANNEL_STABLE = 1;
+  RELEASE_CHANNEL_CURRENT = 0;
+  RELEASE_CHANNEL_STABLE = 1;
+}
+
+enum SubscriptionStatus{
+  //Подписка отсутствует, нормально для бесплатной версии
+  SUBSCRIPTION_STATUS_NONE = 0;
+  //Подписка активна
+  SUBSCRIPTION_STATUS_ACTIVE = 1;
+  //Серийный номер заблокирован или некорректен, работа приложения должна быть не возможна.
+  SUBSCRIPTION_STATUS_BLOCKED = 2;
+  // Подписка истекла, можно переключить на стабильный канал
+  SUBSCRIPTION_STATUS_EXPIRED = 3;
+  // Подписка истекла, версия приложения снята с поддержки
+  SUBSCRIPTION_STATUS_EXPIRED_UNSUPPORTED = 4;
+  // Подписка истекла, но версия приложения еще поддерживается
+  SUBSCRIPTION_STATUS_EXPIRED_SUPPORTED = 5;
 }

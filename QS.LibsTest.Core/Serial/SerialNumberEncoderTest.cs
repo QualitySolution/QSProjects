@@ -25,8 +25,12 @@ namespace QS.Test.Serial
 			var encoder = new SerialNumberEncoder(appInfo);
 			encoder.Number = sn;
 			Assert.That(encoder.IsValid, Is.EqualTo(isValid));
-			if(isValid)
+			if(isValid) {
 				Assert.That(encoder.CodeVersion, Is.EqualTo(1));
+				Assert.That(encoder.DecodedProduct, Is.EqualTo("workwear"));
+				Assert.That(encoder.ProductId, Is.EqualTo(2)); //Номера первой версии выпускались только для Спецодежды
+				Assert.That(encoder.EditionId, Is.EqualTo(2)); //Номера первой версии приравниваются к Профессиональной редакции
+			}
 		}
 		
 		[Test(Description = "Тест набора серийных номеров версии 2")]

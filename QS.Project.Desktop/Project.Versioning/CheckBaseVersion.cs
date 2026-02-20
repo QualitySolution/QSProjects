@@ -9,7 +9,7 @@ namespace QS.Project.Versioning
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		#region Результат
-		public CheckBaseResult ResultFlags { get; private set;}
+		public CheckBaseResult Result { get; private set;}
 
 		public string TextMessage { get; private set;}
 		#endregion
@@ -28,16 +28,16 @@ namespace QS.Project.Versioning
 		/// </summary>
 		public bool Check ()
 		{
-			ResultFlags = CheckBaseResult.Ok;
+			Result = CheckBaseResult.Ok;
 
 			if (string.IsNullOrWhiteSpace (parametersService.product_name)) {
-				ResultFlags |= CheckBaseResult.IncorrectProduct;
+				Result = CheckBaseResult.IncorrectProduct;
 				TextMessage = "Название продукта в базе данных не указано.";
 				return true;
 			}
 
 			if (parametersService.product_name != ApplicationInfo.ProductName) {
-				ResultFlags |= CheckBaseResult.IncorrectProduct;
+				Result = CheckBaseResult.IncorrectProduct;
 				TextMessage = "База данных от другого продукта.";
 				logger.Fatal ("База данных от другого продукта. (База: {0} Программа: {1})",
 					parametersService.product_name,
@@ -49,12 +49,12 @@ namespace QS.Project.Versioning
 			if(ApplicationInfo.CompatibleModifications.Length > 0) {
 				if(String.IsNullOrWhiteSpace(parametersService.edition)) {
 					TextMessage = "Редакция базы не указана!";
-					ResultFlags |= CheckBaseResult.UnsupportedEdition;
+					Result = CheckBaseResult.UnsupportedEdition;
 					return true;
 				}
 
 				if(!ApplicationInfo.CompatibleModifications.Contains((string)parametersService.edition)) {
-					ResultFlags |= CheckBaseResult.UnsupportedEdition;
+					Result = CheckBaseResult.UnsupportedEdition;
 					TextMessage = "Редакция базы данных не поддерживается.\n";
 					TextMessage += "Поддерживаемые редакции: " + String.Join(" ,", ApplicationInfo.CompatibleModifications) 
 						+ "\nРедакция базы данных: " + parametersService.edition;
@@ -65,20 +65,20 @@ namespace QS.Project.Versioning
 
 			if (String.IsNullOrWhiteSpace (parametersService.version) 
 				|| !Version.TryParse (parametersService.version, out baseVersion)) {
-				ResultFlags |= CheckBaseResult.IncorrectVersion;
+				Result = CheckBaseResult.IncorrectVersion;
 				TextMessage = "Версия базы данных не определена.";
 				return true;
 			}
 				
 			if (ApplicationInfo.Version.Major != baseVersion.Major || ApplicationInfo.Version.Minor != baseVersion.Minor) {
 				TextMessage = "Версия продукта не совпадает с версией базы данных.\n";
-				TextMessage += String.Format ("Версия продукта: {0}.{1}", ApplicationInfo.Version.Major, ApplicationInfo.Version.Minor); 
+				TextMessage += $"Версия продукта: {ApplicationInfo.Version.Major}.{ApplicationInfo.Version.Minor}"; 
 				TextMessage += "\nВерсия базы данных: " + parametersService.version;
 
 				if(ApplicationInfo.Version > baseVersion)
-					ResultFlags |= CheckBaseResult.BaseVersionLess;
+					Result = CheckBaseResult.BaseVersionLess;
 				else
-					ResultFlags |= CheckBaseResult.BaseVersionGreater;
+					Result = CheckBaseResult.BaseVersionGreater;
 				return true;
 			}
 
@@ -86,32 +86,31 @@ namespace QS.Project.Versioning
 		}
 	}
 
-	[Flags]
 	public enum CheckBaseResult
 	{
 		/// <summary>
 		/// Версия базы корректна и позволяет работать.
 		/// </summary>
-		Ok = 0x0,
+		Ok,
 		/// <summary>
 		/// База данных от другого продукта.
 		/// </summary>
-		IncorrectProduct = 0x1,
+		IncorrectProduct,
 		/// <summary>
 		/// Не поддерживаемая редакция базы.
 		/// </summary>
-		UnsupportedEdition = 0x2,
+		UnsupportedEdition,
 		/// <summary>
 		/// Версия базы не определена.
 		/// </summary>
-		IncorrectVersion = 0x4,
+		IncorrectVersion,
 		/// <summary>
 		/// Программа новее базы. Для продолжения работы обновление базы обязательно.
 		/// </summary>
-		BaseVersionLess = 0x8,
+		BaseVersionLess,
 		/// <summary>
 		/// База данных новее программы. Для продолжения работы необходимо обновление программы.
-		BaseVersionGreater = 0x16
+		/// </summary>
+		BaseVersionGreater
 	}
 }
-
