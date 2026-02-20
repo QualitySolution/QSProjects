@@ -128,6 +128,32 @@ namespace QS.Journal
 
 		#region Configure actions
 
+		/// <summary>
+		/// Создает ButtonJournalActionsViewModel для типа узла журнала.
+		/// Дочерние классы могут вызвать этот метод для создания стандартной view model действий.
+		/// </summary>
+		protected virtual ButtonJournalActionsViewModel<TNode> CreateButtonActionsViewModel()
+		{
+			var actionsViewModel = new ButtonJournalActionsViewModel<TNode>();
+			actionsViewModel.Journal = this;
+			ActionsViewModel = actionsViewModel;
+			return actionsViewModel;
+		}
+
+		/// <summary>
+		/// Добавляет кнопку "Обновить" в правую часть панели действий.
+		/// </summary>
+		protected virtual void AddRefreshButton()
+		{
+			ButtonActionsViewModel.AddRightAction(
+				"Обновить",
+				selected => Refresh(),
+				selected => true,
+				selected => true,
+				"F5"
+			);
+		}
+
 		protected virtual void CreatePopupActions()
 		{
 		}

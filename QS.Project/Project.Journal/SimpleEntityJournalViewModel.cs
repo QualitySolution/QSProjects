@@ -1,18 +1,18 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using NHibernate.Criterion;
+using NHibernate.Transform;
 using NHibernate;
 using QS.DomainModel.Entity;
-using QS.Services;
-using QS.Tdi;
-using NHibernate.Transform;
-using System.Linq.Expressions;
-using System.Reflection;
-using NHibernate.Criterion;
-using QS.Project.Journal.EntitySelector;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
 using QS.Journal.Actions;
+using QS.Project.Journal.EntitySelector;
+using QS.Services;
+using QS.Tdi;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Linq;
+using System.Reflection;
+using System;
 
 namespace QS.Project.Journal
 {
@@ -87,7 +87,7 @@ namespace QS.Project.Journal
 			
 			// Добавляем кнопку "Обновить" справа (если еще не добавлена)
 			if(!actionsViewModel.RightActions.Any())
-				AddRefreshAction(actionsViewModel);
+				AddRefreshButton();
 		}
 
 		#endregion

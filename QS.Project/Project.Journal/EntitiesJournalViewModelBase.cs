@@ -89,9 +89,7 @@ namespace QS.Project.Journal
 			EntityConfigs = new Dictionary<Type, JournalEntityConfig<TNode>>();
 			
 			// Создаем новую view model для действий
-			var actionsViewModel = new ButtonJournalActionsViewModel<TNode>();
-			actionsViewModel.Journal = this;
-			ActionsViewModel = actionsViewModel;
+			CreateButtonActionsViewModel();
 			
 			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction
 			PropertyChanged += (sender, args) => {
@@ -312,22 +310,7 @@ namespace QS.Project.Journal
 			UpdateDoubleClickAction();
 			
 			// Добавляем кнопку "Обновить" справа
-			AddRefreshAction(actionsViewModel);
-		}
-
-		/// <summary>
-		/// Добавляет кнопку "Обновить" в правую часть панели
-		/// </summary>
-		protected virtual void AddRefreshAction(ButtonJournalActionsViewModel<TNode> actionsViewModel)
-		{
-			var refreshAction = new JournalAction<TNode>(
-				"Обновить",
-				selected => Refresh(),
-				selected => true,
-				selected => true,
-				"F5"
-			);
-			actionsViewModel.AddRightAction(refreshAction);
+			AddRefreshButton();
 		}
 
 		/// <summary>

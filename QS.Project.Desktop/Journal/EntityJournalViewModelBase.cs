@@ -80,7 +80,7 @@ namespace QS.Journal
 			UpdateOnChanges(typeof(TEntity));
 		}
 
-		protected void CreateNodeActions()
+		protected virtual void CreateNodeActions()
 		{
 			var actionsViewModel = (ButtonJournalActionsViewModel<TNode>)ActionsViewModel;
 			
