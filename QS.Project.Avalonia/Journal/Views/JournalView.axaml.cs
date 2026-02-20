@@ -13,7 +13,7 @@ namespace QS.Journal.Views;
 /// </summary>
 public partial class JournalView : UserControl
 {
-	private JournalViewModelBase? viewModel;
+	private IJournalViewModel? viewModel;
 	protected IAvaloniaViewResolver? viewResolver;
 
 	public JournalView()
@@ -21,7 +21,7 @@ public partial class JournalView : UserControl
 		InitializeComponent();
 	}
 
-	public JournalView(JournalViewModelBase viewModel, IAvaloniaViewResolver? viewResolver) : this()
+	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver) : this()
 	{
 		this.viewResolver = viewResolver;
 		ViewModel = viewModel;
@@ -43,7 +43,7 @@ public partial class JournalView : UserControl
 	}
 
 
-	public JournalViewModelBase? ViewModel
+	public IJournalViewModel? ViewModel
 	{
 		get => viewModel;
 		set
