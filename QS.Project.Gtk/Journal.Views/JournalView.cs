@@ -18,7 +18,7 @@ using QS.Views.Resolve;
 namespace QS.Journal.Views
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : DialogViewBase<IJournalViewMode>
+	public partial class JournalView : DialogViewBase<IJournalViewModel>
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -32,7 +32,7 @@ namespace QS.Journal.Views
 
 		#endregion
 
-		public JournalView(IJournalViewMode viewModel, IGtkViewResolver viewResolver = null) : base(viewModel)
+		public JournalView(IJournalViewModel viewModel, IGtkViewResolver viewResolver = null) : base(viewModel)
 		{
 			this.viewResolver = viewResolver;
 			this.Build();

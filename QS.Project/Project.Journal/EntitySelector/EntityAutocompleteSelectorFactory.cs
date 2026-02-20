@@ -4,7 +4,7 @@ using QS.Journal;
 namespace QS.Project.Journal.EntitySelector
 {
 	public class EntityAutocompleteSelectorFactory<TJournal> : IEntityAutocompleteSelectorFactory
-		where TJournal : IJournalViewMode, IEntityAutocompleteSelector
+		where TJournal : IJournalViewModel, IEntityAutocompleteSelector
 	{
 		private Func<TJournal> _selectorCtorFunc;
 

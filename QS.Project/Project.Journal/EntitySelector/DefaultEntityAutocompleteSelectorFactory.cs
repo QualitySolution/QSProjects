@@ -7,7 +7,7 @@ using QS.Services;
 namespace QS.Project.Journal.EntitySelector
 {
 	public class DefaultEntityAutocompleteSelectorFactory<TEntity, TJournalViewModel, TJournalFilterViewModel> : DefaultEntitySelectorFactory<TEntity, TJournalViewModel, TJournalFilterViewModel> , IEntityAutocompleteSelectorFactory
-		where TJournalViewModel : IJournalViewMode, IEntityAutocompleteSelector
+		where TJournalViewModel : IJournalViewModel, IEntityAutocompleteSelector
 		where TJournalFilterViewModel : class, IJournalFilter
 		where TEntity : class, IDomainObject
 	{
