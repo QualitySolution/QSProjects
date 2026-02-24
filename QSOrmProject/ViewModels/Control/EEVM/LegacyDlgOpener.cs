@@ -1,15 +1,14 @@
 using QS.Navigation;
 using QS.Tdi;
-using QS.ViewModels.Dialog;
 
 namespace QS.ViewModels.Control.EEVM {
 	public class LegacyDlgOpener<TTdiDialog>
 		: IEntityDlgOpener
 		where TTdiDialog : ITdiTab {
 		private readonly ITdiCompatibilityNavigation _tdiCompatibilityNavigation;
-		private readonly DialogViewModelBase _masterViewModel;
+		private readonly IDialogViewModel _masterViewModel;
 
-		public LegacyDlgOpener(ITdiCompatibilityNavigation tdiCompatibilityNavigation, DialogViewModelBase masterViewModel) {
+		public LegacyDlgOpener(ITdiCompatibilityNavigation tdiCompatibilityNavigation, IDialogViewModel masterViewModel) {
 			_tdiCompatibilityNavigation = tdiCompatibilityNavigation;
 			_masterViewModel = masterViewModel;
 		}

@@ -209,7 +209,7 @@ namespace QS.Navigation
 		#region Открытие TdiTab из ViewModel
 
 		public ITdiPage OpenTdiTab<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab
@@ -220,7 +220,7 @@ namespace QS.Navigation
 		}
 
 		public ITdiPage OpenTdiTab<TTab, TCtorArg1>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
@@ -232,7 +232,7 @@ namespace QS.Navigation
 		}
 
 		public ITdiPage OpenTdiTab<TTab, TCtorArg1, TCtorArg2>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2,
 			OpenPageOptions options = OpenPageOptions.None,
@@ -245,7 +245,7 @@ namespace QS.Navigation
 		}
 
 		public ITdiPage OpenTdiTab<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
@@ -261,7 +261,7 @@ namespace QS.Navigation
 		}
 
 		public ITdiPage OpenTdiTabNamedArgs<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			IDictionary<string, object> ctorArgs,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,

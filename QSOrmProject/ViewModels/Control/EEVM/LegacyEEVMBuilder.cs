@@ -80,7 +80,7 @@ namespace QS.ViewModels.Control.EEVM
 		#region Перехват вызовов для работы без диалогов ParentViewModel
 
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournal<TJournalViewModel>()
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewModel
 		{
 			if(parameters.DialogViewModel == null)
 				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
@@ -90,7 +90,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel>()
-			where TJournalViewModel : JournalViewModelBase
+			where TJournalViewModel : IJournalViewModel
 		{
 			if(parameters.DialogViewModel == null) {
 				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager);
@@ -102,7 +102,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(Action<TJournalFilterViewModel> filterParams)
-				where TJournalViewModel : JournalViewModelBase
+				where TJournalViewModel : IJournalViewModel
 				where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(parameters.DialogViewModel == null) {
 				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filterParams);
@@ -114,7 +114,7 @@ namespace QS.ViewModels.Control.EEVM
 		}
 
 		public new virtual CommonEEVMBuilder<TEntity> UseViewModelJournalAndAutocompleter<TJournalViewModel, TJournalFilterViewModel>(TJournalFilterViewModel filter)
-				where TJournalViewModel : JournalViewModelBase
+				where TJournalViewModel : IJournalViewModel
 				where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			if(parameters.DialogViewModel == null) {
 				EntitySelector = new TdiJournalViewModelSelector<TEntity, TJournalViewModel, TJournalFilterViewModel>(legacyParameters.GetDialogTab, parameters.NavigationManager, filter);

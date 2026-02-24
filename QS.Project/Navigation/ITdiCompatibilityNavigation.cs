@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Autofac;
 using QS.Tdi;
-using QS.ViewModels.Dialog;
 
 namespace QS.Navigation
 {
@@ -70,30 +69,30 @@ namespace QS.Navigation
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 
 		ITdiPage OpenTdiTab<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 		ITdiPage OpenTdiTab<TTab, TCtorArg1>(
-			DialogViewModelBase master, TCtorArg1 arg1,
+			IDialogViewModel master, TCtorArg1 arg1,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 		ITdiPage OpenTdiTab<TTab, TCtorArg1, TCtorArg2>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			TCtorArg1 arg1,
 			TCtorArg2 arg2, OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 		ITdiPage OpenTdiTab<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			Type[] ctorTypes,
 			object[] ctorValues,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
 			Action<ContainerBuilder> addingRegistrations = null) where TTab : ITdiTab;
 		ITdiPage OpenTdiTabNamedArgs<TTab>(
-			DialogViewModelBase master,
+			IDialogViewModel master,
 			IDictionary<string, object> ctorArgs,
 			OpenPageOptions options = OpenPageOptions.None,
 			Action<TTab> configureTab = null,
