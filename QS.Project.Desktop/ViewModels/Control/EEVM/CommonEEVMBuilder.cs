@@ -115,7 +115,7 @@ namespace QS.ViewModels.Control.EEVM
 			else if(typeof(IDomainObject).IsAssignableFrom(typeof(TEntity))) {
 				// Создаем UowEntityAdapter только если TEntity реализует IDomainObject
 				var adapterType = typeof(UowEntityAdapter<>).MakeGenericType(typeof(TEntity));
-				entityAdapter = (IEntityAdapter<TEntity>)Activator.CreateInstance(adapterType, parameters.UnitOfWork);
+				entityAdapter = (IEntityAdapter<TEntity>)Activator.CreateInstance(adapterType, parameters);
 			}
 			else {
 				throw new InvalidOperationException(
