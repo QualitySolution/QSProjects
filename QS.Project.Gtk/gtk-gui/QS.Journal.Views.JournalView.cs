@@ -10,8 +10,6 @@ namespace QS.Journal.Views
 
 		private global::Gtk.CheckButton checkShowFilter;
 
-		private global::Gtk.Button buttonRefresh;
-
 		private global::Gtk.HBox hboxFilter;
 
 		private global::Gtk.HBox hboxSearch;
@@ -58,44 +56,29 @@ namespace QS.Journal.Views
 			w1.PackType = ((global::Gtk.PackType)(1));
 			w1.Position = 2;
 			w1.Expand = false;
-			// Container child hboxButtons.Gtk.Box+BoxChild
-			this.buttonRefresh = new global::Gtk.Button();
-			this.buttonRefresh.CanFocus = true;
-			this.buttonRefresh.Name = "buttonRefresh";
-			this.buttonRefresh.UseUnderline = true;
-			this.buttonRefresh.Label = global::Mono.Unix.Catalog.GetString("Обновить");
-			global::Gtk.Image w2 = new global::Gtk.Image();
-			w2.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-refresh", global::Gtk.IconSize.Menu);
-			this.buttonRefresh.Image = w2;
-			this.hboxButtons.Add(this.buttonRefresh);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hboxButtons[this.buttonRefresh]));
-			w3.PackType = ((global::Gtk.PackType)(1));
-			w3.Position = 3;
-			w3.Expand = false;
-			w3.Fill = false;
 			this.vboxMain.Add(this.hboxButtons);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxButtons]));
-			w4.Position = 0;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxButtons]));
+			w2.Position = 0;
+			w2.Expand = false;
+			w2.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hboxFilter = new global::Gtk.HBox();
 			this.hboxFilter.Name = "hboxFilter";
 			this.hboxFilter.Spacing = 6;
 			this.vboxMain.Add(this.hboxFilter);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxFilter]));
-			w5.Position = 1;
-			w5.Expand = false;
-			w5.Fill = false;
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxFilter]));
+			w3.Position = 1;
+			w3.Expand = false;
+			w3.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hboxSearch = new global::Gtk.HBox();
 			this.hboxSearch.Name = "hboxSearch";
 			this.hboxSearch.Spacing = 6;
 			this.vboxMain.Add(this.hboxSearch);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxSearch]));
-			w6.Position = 2;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hboxSearch]));
+			w4.Position = 2;
+			w4.Expand = false;
+			w4.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.HeightRequest = 300;
@@ -107,16 +90,16 @@ namespace QS.Journal.Views
 			this.tableview.Name = "tableview";
 			this.GtkScrolledWindow.Add(this.tableview);
 			this.vboxMain.Add(this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow]));
-			w8.Position = 3;
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.GtkScrolledWindow]));
+			w6.Position = 3;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.progressbarLoading = new global::Gtk.ProgressBar();
 			this.progressbarLoading.Name = "progressbarLoading";
 			this.vboxMain.Add(this.progressbarLoading);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.progressbarLoading]));
-			w9.Position = 4;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.progressbarLoading]));
+			w7.Position = 4;
+			w7.Expand = false;
+			w7.Fill = false;
 			// Container child vboxMain.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
@@ -129,16 +112,16 @@ namespace QS.Journal.Views
 			this.labelFooter.LabelProp = global::Mono.Unix.Catalog.GetString("####");
 			this.labelFooter.SingleLineMode = true;
 			this.hbox1.Add(this.labelFooter);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.labelFooter]));
-			w10.Position = 0;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.labelFooter]));
+			w8.Position = 0;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.vseparator1 = new global::Gtk.VSeparator();
 			this.vseparator1.Name = "vseparator1";
 			this.hbox1.Add(this.vseparator1);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vseparator1]));
-			w11.Position = 1;
-			w11.Expand = false;
-			w11.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vseparator1]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.eventboxTotalRow = new global::Gtk.EventBox();
 			this.eventboxTotalRow.Events = ((global::Gdk.EventMask)(256));
@@ -150,15 +133,15 @@ namespace QS.Journal.Views
 			this.labelTotalRow.UseMarkup = true;
 			this.eventboxTotalRow.Add(this.labelTotalRow);
 			this.hbox1.Add(this.eventboxTotalRow);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.eventboxTotalRow]));
-			w13.Position = 2;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.eventboxTotalRow]));
+			w11.Position = 2;
+			w11.Expand = false;
+			w11.Fill = false;
 			this.vboxMain.Add(this.hbox1);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
-			w14.Position = 5;
-			w14.Expand = false;
-			w14.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vboxMain[this.hbox1]));
+			w12.Position = 5;
+			w12.Expand = false;
+			w12.Fill = false;
 			this.Add(this.vboxMain);
 			if ((this.Child != null))
 			{

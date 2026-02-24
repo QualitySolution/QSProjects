@@ -52,7 +52,6 @@ namespace QS.Journal.Views
 			if(ThrowExceptionOnDataLoad)
 				ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 			checkShowFilter.Clicked += (sender, e) => { ViewModel.IsFilterShow = checkShowFilter.Active; };
-			buttonRefresh.Clicked += (sender, e) => { ViewModel.Refresh(); };
 			tableview.ButtonReleaseEvent += Tableview_ButtonReleaseEvent;
 			tableview.Selection.Changed += Selection_Changed;
 			SetSelectionMode(ViewModel.TableSelectionMode);
@@ -433,10 +432,5 @@ namespace QS.Journal.Views
 		Left = 1,
 		Middle = 2,
 		Right = 3
-	}
-
-	public enum JournalActionsType {
-		ButtonActions,
-		PopupActions
 	}
 }
