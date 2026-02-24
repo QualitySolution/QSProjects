@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Gtk;
 using QS.Navigation;
-using QS.ViewModels;
 
 namespace QS.Views.Resolve
 {
@@ -25,7 +24,7 @@ namespace QS.Views.Resolve
 		/// <typeparam name="TViewModel">Тип ViewModel, может быть интерфейсом или базовым классом, для регистрации одного View ко многим реализациям ViewModel</typeparam>
 		/// <typeparam name="TView">Тип View</typeparam>
 		public RegisteredGtkViewResolver RegisterView<TViewModel, TView>()
-			where TViewModel : ViewModelBase
+			where TViewModel : class
 			where TView : Widget
 		{
 			registeredViews.Add(new TypeMatchViewResolveRule(typeof(TViewModel), typeof(TView)));
