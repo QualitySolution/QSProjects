@@ -58,12 +58,8 @@ namespace QS.Journal
 
 			if(currentPermissionService != null && !currentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanRead)
 				throw new AbortCreatingPageException($"У вас нет прав для просмотра документов типа: {typeof(TEntity).GetSubjectName()}", "Невозможно открыть журнал");
-
-			// Создаем новую view model для действий
-			var actionsViewModel = new ButtonJournalActionsViewModel<TNode>();
-			actionsViewModel.Journal = this;
-			ActionsViewModel = actionsViewModel;
-
+			
+			CreateButtonActionsViewModel();
 			CreateNodeActions();
 			
 			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction
@@ -79,6 +75,8 @@ namespace QS.Journal
 
 			UpdateOnChanges(typeof(TEntity));
 		}
+		
+		protected ThreadDataLoader<TNode> ThreadDataLoader => DataLoader as ThreadDataLoader<TNode>;
 
 		protected virtual void CreateNodeActions()
 		{
