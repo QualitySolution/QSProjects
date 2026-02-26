@@ -6,16 +6,34 @@
              x:CompileBindings="False"
              mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
-        <TextBox x:Name="EntryText"
-                 IsReadOnly="True"
-                 MinWidth="150"
-                 VerticalAlignment="Center"
-                 Text="{Binding EntityTitle}"
-                 Watermark="(не выбрано)"/>
+        <!-- Поле ввода с кнопкой очистки внутри -->
+        <Grid>
+            <TextBox x:Name="EntryText"
+                     IsReadOnly="True"
+                     MinWidth="150"
+                     VerticalAlignment="Center"
+                     Text="{Binding EntityTitle}"
+                     Watermark="(не выбрано)"
+                     Padding="5,5,28,5"/>
+            <Button x:Name="ButtonClean"
+                    Content="×"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontSize="18"
+                    Padding="6,0"
+                    Margin="0,0,2,0"
+                    Cursor="Hand"
+                    ToolTip.Tip="Очистить"
+                    IsVisible="{Binding SensitiveCleanButton}"
+                    Click="OnCleanClicked"/>
+        </Grid>
         <Button x:Name="ButtonSelect"
                 Content="..."
                 Width="28"
                 Margin="2,0,0,0"
+                Padding="2, 6"
                 VerticalAlignment="Center"
                 IsVisible="{Binding SensitiveSelectButton}"
                 Click="OnSelectClicked"/>
@@ -23,16 +41,10 @@
                 Content="✎"
                 Width="28"
                 Margin="2,0,0,0"
+                Padding="2, 6"
                 VerticalAlignment="Center"
                 IsVisible="{Binding SensitiveViewButton}"
                 Click="OnViewClicked"/>
-        <Button x:Name="ButtonClean"
-                Content="✕"
-                Width="28"
-                Margin="2,0,0,0"
-                VerticalAlignment="Center"
-                IsVisible="{Binding SensitiveCleanButton}"
-                Click="OnCleanClicked"/>
     </StackPanel>
 </UserControl>
 
