@@ -1,0 +1,38 @@
+<UserControl x:Class="QS.Views.Widgets.EntityEntryView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:CompileBindings="False"
+             mc:Ignorable="d">
+    <StackPanel Orientation="Horizontal">
+        <TextBox x:Name="EntryText"
+                 IsReadOnly="True"
+                 MinWidth="150"
+                 VerticalAlignment="Center"
+                 Text="{Binding EntityTitle}"
+                 Watermark="(не выбрано)"/>
+        <Button x:Name="ButtonSelect"
+                Content="..."
+                Width="28"
+                Margin="2,0,0,0"
+                VerticalAlignment="Center"
+                IsVisible="{Binding SensitiveSelectButton}"
+                Click="OnSelectClicked"/>
+        <Button x:Name="ButtonView"
+                Content="✎"
+                Width="28"
+                Margin="2,0,0,0"
+                VerticalAlignment="Center"
+                IsVisible="{Binding SensitiveViewButton}"
+                Click="OnViewClicked"/>
+        <Button x:Name="ButtonClean"
+                Content="✕"
+                Width="28"
+                Margin="2,0,0,0"
+                VerticalAlignment="Center"
+                IsVisible="{Binding SensitiveCleanButton}"
+                Click="OnCleanClicked"/>
+    </StackPanel>
+</UserControl>
+
