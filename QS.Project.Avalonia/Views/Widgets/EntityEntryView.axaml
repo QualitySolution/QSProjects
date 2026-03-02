@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="Root"
              x:CompileBindings="False"
              mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
@@ -12,7 +13,7 @@
                      IsReadOnly="True"
                      MinWidth="150"
                      VerticalAlignment="Center"
-                     Text="{Binding EntityTitle}"
+                     Text="{Binding ViewModel.EntityTitle, ElementName=Root}"
                      Watermark="(не выбрано)"
                      Padding="5,5,28,5"/>
             <Button x:Name="ButtonClean"
@@ -26,7 +27,7 @@
                     Margin="0,0,2,0"
                     Cursor="Hand"
                     ToolTip.Tip="Очистить"
-                    IsVisible="{Binding SensitiveCleanButton}"
+                    IsVisible="{Binding ViewModel.SensitiveCleanButton, ElementName=Root}"
                     Click="OnCleanClicked"/>
         </Grid>
         <Button x:Name="ButtonSelect"
@@ -35,7 +36,7 @@
                 Margin="2,0,0,0"
                 Padding="2, 6"
                 VerticalAlignment="Center"
-                IsVisible="{Binding SensitiveSelectButton}"
+                IsEnabled="{Binding ViewModel.SensitiveSelectButton, ElementName=Root}"
                 Click="OnSelectClicked"/>
         <Button x:Name="ButtonView"
                 Content="✎"
@@ -43,8 +44,7 @@
                 Margin="2,0,0,0"
                 Padding="2, 6"
                 VerticalAlignment="Center"
-                IsVisible="{Binding SensitiveViewButton}"
+                IsEnabled="{Binding ViewModel.SensitiveViewButton, ElementName=Root}"
                 Click="OnViewClicked"/>
     </StackPanel>
 </UserControl>
-

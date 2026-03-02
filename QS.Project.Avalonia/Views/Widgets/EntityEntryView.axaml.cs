@@ -27,13 +27,6 @@ public partial class EntityEntryView : UserControl
         AvaloniaXamlLoader.Load(this);
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == ViewModelProperty)
-            DataContext = change.NewValue;
-    }
-
     private void OnSelectClicked(object? sender, RoutedEventArgs e)
         => ViewModel?.OpenSelectDialog();
 
@@ -43,4 +36,3 @@ public partial class EntityEntryView : UserControl
     private void OnCleanClicked(object? sender, RoutedEventArgs e)
         => ViewModel?.CleanEntity();
 }
-
