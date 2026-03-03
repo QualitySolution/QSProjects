@@ -19,12 +19,25 @@ public partial class EntityEntryView : UserControl
 
     public EntityEntryView()
     {
-        InitializeComponent();
+        InitializeComponent(true);
+        UpdateNoModelState();
     }
 
-    private void InitializeComponent()
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        AvaloniaXamlLoader.Load(this);
+        base.OnPropertyChanged(change);
+        if (change.Property == ViewModelProperty)
+            UpdateNoModelState();
+    }
+
+    private void UpdateNoModelState()
+    {
+        bool has = ViewModel != null;
+
+        if (EntryText    != null) EntryText.Watermark    = has ? "(не выбрано)" : "(нет модели)";
+        if (ButtonSelect != null) ButtonSelect.IsEnabled = has && ViewModel!.SensitiveSelectButton;
+        if (ButtonView   != null) ButtonView.IsEnabled   = has && ViewModel!.SensitiveViewButton;
+        if (ButtonClean  != null) ButtonClean.IsVisible  = has && ViewModel!.SensitiveCleanButton;
     }
 
     private void OnSelectClicked(object? sender, RoutedEventArgs e)
