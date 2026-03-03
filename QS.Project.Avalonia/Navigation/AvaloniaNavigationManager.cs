@@ -13,7 +13,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	public IPage? CurrentPage
 	{
 		get => currentPage;
-		protected set => this.RaiseAndSetIfChanged(ref currentPage, value);
+		set => this.RaiseAndSetIfChanged(ref currentPage, value);
 	}
 
 	public ObservableCollection<IAvaloniaPage> Pages { get; protected set; } = [];
