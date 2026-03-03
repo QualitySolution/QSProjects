@@ -37,6 +37,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 
 	public bool AskClosePage(IPage page, CloseSource source = CloseSource.External) {
 		Pages.Remove((IAvaloniaPage)page);
+		ClosePage(page, source);
 		CurrentPage = Pages.Count > 0 ? Pages[0] : null;
 		return true;
 	}
@@ -73,6 +74,6 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	public void ForceClosePage(IPage page, CloseSource source = CloseSource.External) {
-		AskClosePage(page);
+		AskClosePage(page, source);
 	}
 }
