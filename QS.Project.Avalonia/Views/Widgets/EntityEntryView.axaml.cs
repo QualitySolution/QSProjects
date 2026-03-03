@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using QS.ViewModels.Control.EEVM;
 
 namespace QS.Views.Widgets;

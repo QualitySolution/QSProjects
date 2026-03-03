@@ -1,6 +1,5 @@
 ﻿using System;
 using QS.DomainModel.Entity;
-using QS.Services;
 
 namespace QS.Dialog
 {
