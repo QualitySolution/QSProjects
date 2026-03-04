@@ -8,6 +8,11 @@
              d:DesignWidth="800"
              x:DataType="journal:IJournalViewModel"
              mc:Ignorable="d">
+    <UserControl.Styles>
+        <Style Selector="DataGridColumnHeader /template/ ContentPresenter">
+            <Setter Property="Margin" Value="0,0,-6,0"/>
+        </Style>
+    </UserControl.Styles>
     <DockPanel>
         <!-- Панель действий сверху -->
         <ContentControl x:Name="actionsContainer"
