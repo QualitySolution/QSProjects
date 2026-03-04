@@ -80,7 +80,6 @@
     <PackageReference Include="DynamicData" Version="9.0.4" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="ReactiveUI" Version="20.1.63" />
-    <PackageReference Include="Splat" Version="15.1.1" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
