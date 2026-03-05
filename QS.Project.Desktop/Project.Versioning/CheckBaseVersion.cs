@@ -47,7 +47,7 @@ namespace QS.Project.Versioning
 			}
 
 			if(ApplicationInfo.CompatibleModifications.Length > 0) {
-				if(String.IsNullOrWhiteSpace(parametersService.edition)) {
+				if(String.IsNullOrWhiteSpace(parametersService.edition) && !ApplicationInfo.CompatibleModifications.Any(String.IsNullOrWhiteSpace)) {
 					TextMessage = "Редакция базы не указана!";
 					Result = CheckBaseResult.UnsupportedEdition;
 					return true;
