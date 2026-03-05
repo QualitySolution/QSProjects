@@ -39,6 +39,7 @@
       <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj" />
       <ProjectReference Include="..\QS.Updates.Client\QS.Updates.Client.csproj" />
       <ProjectReference Include="..\QS.Testing.Desktop\QS.Testing.Desktop.csproj" />
+      <ProjectReference Include="..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
     </ItemGroup>
 
 </Project>
