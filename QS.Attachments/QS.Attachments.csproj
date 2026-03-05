@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentNHibernate" Version="3.4.0" />
+      <PackageReference Include="FluentNHibernate" Version="3.4.1" />
       <PackageReference Include="NLog" Version="6.1.1" />
       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
