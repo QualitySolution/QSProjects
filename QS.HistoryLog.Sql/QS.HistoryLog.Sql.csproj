@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>QS.HistoryLog</RootNamespace>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
