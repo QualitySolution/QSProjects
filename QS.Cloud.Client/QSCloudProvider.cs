@@ -118,11 +118,10 @@ namespace QS.Cloud.Client
 					NeedToUpdateLauncher = cloudResponce.NeedUpdateLauncher
 				};
 			}
-			catch(RpcException ex) {
+			catch(RpcException ex) when(ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated || ex.StatusCode == Grpc.Core.StatusCode.PermissionDenied) {
 				resp = new LoginToServerResponse {
 					Success = false,
-					ErrorMessage = ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated ?
-						"Неверные данные для входа" : ex.StatusCode.ToString()
+					ErrorMessage = "Неверные данные для входа: " + ex.Message
 				};
 			}
 
