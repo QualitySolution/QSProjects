@@ -27,7 +27,7 @@ namespace QS.Cloud.Client
 						new ChannelOption(ChannelOptions.MaxReceiveMessageLength, 10 * 1024 * 1024), // 10MB
 						new ChannelOption(ChannelOptions.MaxSendMessageLength, 10 * 1024 * 1024) // 10MB
 					};
-					channel = new Channel(serviceAddress, servicePort, ChannelCredentials.Insecure, channelOptions);
+                                        channel = new Channel(serviceAddress, servicePort, new SslCredentials(), channelOptions);
 				}
 				if (channel.State == ChannelState.TransientFailure)
 					channel.ConnectAsync();

@@ -10,7 +10,7 @@ namespace QS.Cloud.Client
 		public AliveCloudClient(ISessionInfoProvider sessionInfoProvider, string serviceAddress, int servicePort)
 			: base(sessionInfoProvider, serviceAddress, servicePort) { }
 		public AliveCloudClient(ISessionInfoProvider sessionInfoProvider)
-			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
+			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

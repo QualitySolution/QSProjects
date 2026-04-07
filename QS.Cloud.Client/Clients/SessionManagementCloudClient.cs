@@ -8,7 +8,7 @@ namespace QS.Cloud.Client
 			: base(sessionInfoProvider, serviceAddress, servicePort) { }
 
 		public SessionManagementCloudClient(ISessionInfoProvider sessionInfoProvider)
-			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
+                        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
 		public bool CloseSession()
 		{

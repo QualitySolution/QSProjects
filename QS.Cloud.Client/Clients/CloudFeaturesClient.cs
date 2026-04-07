@@ -8,7 +8,7 @@ namespace QS.Cloud.Client
     public class CloudFeaturesClient: CloudClientBySession
     {
         public CloudFeaturesClient(ISessionInfoProvider sessionInfoProvider) 
-	        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
+                : base(sessionInfoProvider, "core.cloud.qsolution.ru", 443) { }
         
         #region Запросы
         public IList<Feature> GetAvailableFeatures(string baseGuid)

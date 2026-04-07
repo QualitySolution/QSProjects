@@ -5,7 +5,7 @@ namespace QS.Cloud.Client
 	public class UserManagementCloudClient : CloudClientBySession
 	{
 		public UserManagementCloudClient(ISessionInfoProvider sessionInfoProvider)
-			: base(sessionInfoProvider, "core.cloud.qsolution.ru", 4200) { }
+                        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
 
 		public CreateUserResponse CreateUser(string login, string userName, string email, string password)

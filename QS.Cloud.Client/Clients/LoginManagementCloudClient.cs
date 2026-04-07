@@ -7,7 +7,7 @@ namespace QS.Cloud.Client
 	public class LoginManagementCloudClient : CloudClientByBasicAuth
 	{
 		public LoginManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
-			: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 4200) { }
+                        : base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
 		public StartResponse Start(string launcherVersion) {
 			var client = new LoginManagement.LoginManagementClient(Channel);
