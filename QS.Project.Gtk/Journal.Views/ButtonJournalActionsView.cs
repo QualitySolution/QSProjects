@@ -68,7 +68,7 @@ namespace QS.Journal.Views {
 				return;
 
 			// Создаем кнопки для левых действий
-			var leftWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
+			var leftWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionForView action)>();
 			foreach (var action in viewModel.LeftActionsView) {
 				var widget = CreateButtonWidget(action);
 				leftWidgets.Add((widget, action));
@@ -76,7 +76,7 @@ namespace QS.Journal.Views {
 			}
 
 			// Создаем кнопки для правых действий (упаковываем в конец)
-			var rightWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionView action)>();
+			var rightWidgets = new System.Collections.Generic.List<(Widget widget, IJournalActionForView action)>();
 			foreach (var action in viewModel.RightActionsView) {
 				var widget = CreateButtonWidget(action);
 				rightWidgets.Add((widget, action));
@@ -98,7 +98,7 @@ namespace QS.Journal.Views {
 			}
 		}
 
-		private Widget CreateButtonWidget(IJournalActionView action)
+		private Widget CreateButtonWidget(IJournalActionForView action)
 		{
 			// Если есть дочерние действия - создаем MenuButton
 			if (action.ChildActionsView != null && action.ChildActionsView.Any()) {
@@ -110,7 +110,7 @@ namespace QS.Journal.Views {
 			}
 		}
 
-		private Widget CreateButton(IJournalActionView action)
+		private Widget CreateButton(IJournalActionForView action)
 		{
 			var button = new yButton();
 			button.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible
@@ -126,7 +126,7 @@ namespace QS.Journal.Views {
 			return button;
 		}
 
-		private Widget CreateMenuButton(IJournalActionView action)
+		private Widget CreateMenuButton(IJournalActionForView action)
 		{
 			var menuButton = new MenuButton();
 			menuButton.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible

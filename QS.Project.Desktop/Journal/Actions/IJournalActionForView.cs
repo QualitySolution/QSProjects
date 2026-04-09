@@ -7,7 +7,7 @@ namespace QS.Journal.Actions
 	/// <summary>
 	/// Интерфейс для представления действия во View (не дженерик)
 	/// </summary>
-	public interface IJournalActionView : INotifyPropertyChanged
+	public interface IJournalActionForView : INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Название действия
@@ -27,7 +27,7 @@ namespace QS.Journal.Actions
 		/// <summary>
 		/// Дочерние действия (для выпадающих меню)
 		/// </summary>
-		IEnumerable<IJournalActionView> ChildActionsView { get; }
+		IEnumerable<IJournalActionForView> ChildActionsView { get; }
 		
 		/// <summary>
 		/// Выполнить действие

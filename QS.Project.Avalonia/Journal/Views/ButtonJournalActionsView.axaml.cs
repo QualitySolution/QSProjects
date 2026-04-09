@@ -114,7 +114,7 @@ namespace QS.Journal.Views
 			}
 		}
 
-		private Button CreateButton(IJournalActionView action)
+		private Button CreateButton(IJournalActionForView action)
 		{
 			var button = new Button();
 			
@@ -132,7 +132,7 @@ namespace QS.Journal.Views
 			return button;
 		}
 
-		private DropDownButton CreateDropDownButton(IJournalActionView action)
+		private DropDownButton CreateDropDownButton(IJournalActionForView action)
 		{
 			var dropDownButton = new DropDownButton();
 			
@@ -157,7 +157,7 @@ namespace QS.Journal.Views
 			return dropDownButton;
 		}
 
-		private MenuItem CreateMenuItem(IJournalActionView action)
+		private MenuItem CreateMenuItem(IJournalActionForView action)
 		{
 			var menuItem = new MenuItem();
 			

@@ -10,11 +10,11 @@ namespace QS.Journal.Actions
 		/// <summary>
 		/// Коллекция действий для отображения (слева)
 		/// </summary>
-		ObservableCollection<IJournalActionView> LeftActionsView { get; }
+		ObservableCollection<IJournalActionForView> LeftActionsView { get; }
 		
 		/// <summary>
 		/// Коллекция действий для отображения справа на панели
 		/// </summary>
-		ObservableCollection<IJournalActionView> RightActionsView { get; }
+		ObservableCollection<IJournalActionForView> RightActionsView { get; }
 	}
 }

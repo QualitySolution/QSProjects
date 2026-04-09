@@ -8,7 +8,7 @@ namespace QS.Journal.Actions
 	/// Действие журнала
 	/// </summary>
 	/// <typeparam name="TNode">Тип узла (строки) журнала</typeparam>
-	public class JournalAction<TNode> : PropertyChangedBase, IJournalActionView
+	public class JournalAction<TNode> : PropertyChangedBase, IJournalActionForView
 	{
 		/// <summary>
 		/// Инициализирует новый объект класса JournalAction
@@ -109,15 +109,15 @@ namespace QS.Journal.Actions
 		
 		public string HotKeys { get; }
 
-		#region IJournalActionView
+		#region IJournalActionForView
 
 		/// <summary>
 		/// Дочерние действия для View (не дженерик)
 		/// </summary>
-		public IEnumerable<IJournalActionView> ChildActionsView => ChildActions;
+		public IEnumerable<IJournalActionForView> ChildActionsView => ChildActions;
 
 		/// <summary>
-		/// Выполнить действие (для IJournalActionView)
+		/// Выполнить действие (для IJournalActionForView)
 		/// </summary>
 		public void Execute()
 		{

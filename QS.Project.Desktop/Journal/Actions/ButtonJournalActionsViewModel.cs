@@ -21,7 +21,7 @@ namespace QS.Journal.Actions
 		/// <summary>
 		/// Коллекция действий для View (не дженерик) (слева)
 		/// </summary>
-		public ObservableCollection<IJournalActionView> LeftActionsView { get; }
+		public ObservableCollection<IJournalActionForView> LeftActionsView { get; }
 
 		/// <summary>
 		/// Список действий журнала, расположенных справа на панели
@@ -31,7 +31,7 @@ namespace QS.Journal.Actions
 		/// <summary>
 		/// Коллекция действий для View (не дженерик), расположенных справа
 		/// </summary>
-		public ObservableCollection<IJournalActionView> RightActionsView { get; }
+		public ObservableCollection<IJournalActionForView> RightActionsView { get; }
 
 		private JournalAction<TNode> doubleClickAction;
 		/// <summary>
@@ -45,9 +45,9 @@ namespace QS.Journal.Actions
 		public ButtonJournalActionsViewModel()
 		{
 			LeftActions = new ObservableCollection<JournalAction<TNode>>();
-			LeftActionsView = new ObservableCollection<IJournalActionView>();
+			LeftActionsView = new ObservableCollection<IJournalActionForView>();
 			RightActions = new ObservableCollection<JournalAction<TNode>>();
-			RightActionsView = new ObservableCollection<IJournalActionView>();
+			RightActionsView = new ObservableCollection<IJournalActionForView>();
 		}
 
 		/// <summary>
