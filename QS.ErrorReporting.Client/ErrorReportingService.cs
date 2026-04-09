@@ -8,7 +8,10 @@ namespace QS.ErrorReporting
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
         
         public static string ServiceAddress = "fail.cloud.qsolution.ru";
-        public static int ServicePort = 4202;
+        public static int ServicePort = 443;
+
+        private static ChannelCredentials Credentials =>
+            ServicePort == 443 ? (ChannelCredentials)new SslCredentials() : ChannelCredentials.Insecure;
 
         public ErrorReportingService()
         {
@@ -18,7 +21,7 @@ namespace QS.ErrorReporting
         private Channel Channel {
             get {
                 if(channel == null || channel.State == ChannelState.Shutdown)
-                    channel = new Channel(ServiceAddress, ServicePort, ChannelCredentials.Insecure);
+                    channel = new Channel(ServiceAddress, ServicePort, Credentials);
                 if (channel.State == ChannelState.TransientFailure)
                     channel.ConnectAsync();
                 return channel;
