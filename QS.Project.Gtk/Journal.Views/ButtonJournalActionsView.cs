@@ -134,13 +134,11 @@ namespace QS.Journal.Views {
 			// Создаем меню с дочерними действиями
 			var menu = new Menu();
 			foreach (var childAction in action.ChildActionsView)
-			{
-				var menuItem = CreateMenuItem(childAction);
-				menu.Add(menuItem);
-			}
+				menu.Add(CreateMenuItem(childAction));
+			
 			menuButton.Menu = menu;
-
-			// Биндинг свойств через Fluent API
+			menu.ShowAll();
+			
 			menuButton.Binding.AddSource(action)
 				.AddBinding(a => a.Title, w => w.Label)
 				.AddBinding(a => a.Sensitive, w => w.Sensitive)
@@ -150,10 +148,9 @@ namespace QS.Journal.Views {
 			return menuButton;
 		}
 
-		private MenuItem CreateMenuItem(IJournalActionView action)
+		private MenuItem CreateMenuItem(IJournalActionForView action)
 		{
 			var menuItem = new yMenuItem(action.Title);
-			menuItem.NoShowAll = true; // Позволяет управлять видимостью через свойство Visible
 			
 			// Биндинг свойств через Fluent API
 			menuItem.Binding.AddSource(action)

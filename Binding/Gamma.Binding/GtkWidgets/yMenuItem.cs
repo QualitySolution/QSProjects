@@ -29,7 +29,6 @@ namespace Gamma.GtkWidgets {
 					label.LabelProp = value;
 				else
 					throw new InvalidOperationException("Данное свойство можно использовать только если дочерний виджет является Label. Возможно использован пустой конструктор либо задан другой виджет");
-				((Label)Child).LabelProp = value;
 			}
 		}
 		
