@@ -26,6 +26,7 @@ namespace QS.Updater.DB.ViewModels
 		private readonly dynamic parametersService;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
+		private readonly DatabaseCharsetChecker charsetChecker;
 		CancellationTokenSource cancellation = new CancellationTokenSource();
 
 		private UpdateHop[] hops;
@@ -37,13 +38,15 @@ namespace QS.Updater.DB.ViewModels
 			IMySQLProvider mySQLProvider,
 			ParametersService parametersService,
 			IInteractiveService interactive,
-			IGuiDispatcher guiDispatcher) : base(navigation)
+			IGuiDispatcher guiDispatcher,
+			DatabaseCharsetChecker charsetChecker) : base(navigation)
 		{
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			SQLProvider = mySQLProvider;
 			this.parametersService = parametersService ?? throw new ArgumentNullException(nameof(parametersService));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
+			this.charsetChecker = charsetChecker ?? throw new ArgumentNullException(nameof(charsetChecker));
 
 			FileName = System.IO.Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -113,7 +116,8 @@ namespace QS.Updater.DB.ViewModels
 					}
 				}
 
-				TotalProgress.Start(maxValue: hops.Length, text: String.Format("Обновление: {0} → {1}",
+				int totalSteps = hops.Length + (charsetChecker.IsEnabled ? 1 : 0);
+				TotalProgress.Start(maxValue: totalSteps, text: String.Format("Обновление: {0} → {1}",
 						dbVersion.VersionToShortString(),
 						hops.Last().Destination.VersionToShortString()
 					));
@@ -125,7 +129,14 @@ namespace QS.Updater.DB.ViewModels
 					TotalProgress.Add();
 				}
 				parametersService.UpdateInProgress = null;
-				
+
+				if (charsetChecker.IsEnabled && !cancellation.IsCancellationRequested) {
+					logger.Info("Запускаем проверку кодировки таблиц базы данных.");
+					TotalProgress.Update("Проверка кодировки таблиц базы данных");
+					charsetChecker.FixTablesCharset(SQLProvider.DbConnection, OperationProgress, cancellation.Token);
+					TotalProgress.Add();
+				}
+
 				TotalProgress.Close();
 				logger.Info("Обновление до версии завершено.");
 				Success = true;
