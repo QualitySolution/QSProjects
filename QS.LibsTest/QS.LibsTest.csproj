@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -110,6 +110,7 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\NumberName123987TestView.cs" />
+    <Compile Include="Widgets\GtkUI\ValidatedEntryTest.cs" />
     <Compile Include="TestApp\Views\DialogWithDocumentationView.cs" />
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithDocumentationView.cs" />
     <Compile Include="TestApp\Views\JournalWithDocumentationView.cs" />
@@ -139,6 +140,8 @@
     <Folder Include="Views\Resolve\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Resove\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Widgets\GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QS.Banks.Contracts\QS.Banks.Contracts.csproj">
