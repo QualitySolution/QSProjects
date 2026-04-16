@@ -108,6 +108,7 @@
     <Compile Include="gtk-gui\QS.Test.TestApp.Views.DialogWithEntityUoWBuilderView.cs" />
     <Compile Include="TestNamespace\ViewModels\OneLevel\NumberName123987TestViewModel.cs" />
     <Compile Include="TestNamespace\Views\OneLevel\NumberName123987TestView.cs" />
+    <Compile Include="Widgets\GtkUI\ValidatedEntryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Banks\" />
@@ -134,6 +135,8 @@
     <Folder Include="Views\Resolve\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Resove\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Widgets\GtkUI\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\QSBanks\QSBanks.csproj">
