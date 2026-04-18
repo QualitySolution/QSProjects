@@ -68,11 +68,55 @@ namespace QS.DbManagement
 		}
 
 		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
-			throw new NotImplementedException();
+			var result = new List<DbInfo>();
+
+			var databases = connection.Query<string>("SHOW DATABASES;").ToList();
+			var systemDbs = new[] { "information_schema", "mysql", "performance_schema", "sys" };
+
+			foreach(var dbName in databases.Except(systemDbs)) {
+				// Безопасно проверяем существование таблицы прямо внутри базы
+				var checkTableSql = $"SHOW TABLES IN `{dbName}` LIKE 'base_parameters'";
+				var tableExists = connection.QueryFirstOrDefault<string>(checkTableSql) != null;
+
+				if(tableExists) {
+					var sqlData = $"SELECT name, str_value FROM `{dbName}`.base_parameters WHERE name IN ('product_name', 'version')";
+
+					try {
+						var parameters = connection.Query(sqlData)
+							.ToDictionary(row => (string)row.name, row => (string)row.str_value);
+
+						parameters.TryGetValue("product_name", out var productName);
+						parameters.TryGetValue("version", out var version);
+
+						if(productName == applicationInfo.ProductName) {
+							result.Add(new DbInfo {
+								BaseName = dbName,
+								Title = dbName,
+								Version = version
+							});
+						}
+					}
+					catch(MySqlException) {}
+				}
+			}
+
+			return result;
 		}
 
-		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
-			throw new NotImplementedException();
+		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) 
+		{
+			var builder = new MySqlConnectionStringBuilder(ConnectionString) {
+				Database = dbInfo.BaseName
+			};
+
+			return new LoginToDatabaseResponse {
+				ConnectionString = builder.ConnectionString,
+				Login = UserName,
+				Parameters = new Dictionary<string, string>
+				{
+					{ "BaseTitle", dbInfo.Title }
+				}
+			};
 		}
 
 		LoginToServerResponse IDbProvider.LoginToServer() {
