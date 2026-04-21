@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Grpc.Core;
 using QS.Cloud.Client;
 using QS.Project.Versioning;
 
@@ -26,7 +25,7 @@ namespace QS.Cloud.Email.DesktopClient
 		#region Запросы
 
 		/// <summary>
-		/// Отправляет одно письмо. ApplicationId заполняется автоматически из IApplicationInfo.
+		/// Отправляет одно письмо.
 		/// </summary>
 		public string SendMessage(string address, string subject, string text, IList<EmailAttachment>? attachments = null)
 		{
@@ -34,7 +33,7 @@ namespace QS.Cloud.Email.DesktopClient
 		}
 
 		/// <summary>
-		/// Отправляет несколько писем. ApplicationId заполняется автоматически из IApplicationInfo.
+		/// Отправляет несколько писем.
 		/// </summary>
 		public string SendMessages(IEnumerable<DesktopEmailMessage> messages, IProgress<int>? progress = default, CancellationToken token = default)
 		{
@@ -53,7 +52,7 @@ namespace QS.Cloud.Email.DesktopClient
 		}
 
 		/// <summary>
-		/// Асинхронно отправляет несколько писем. ApplicationId заполняется автоматически из IApplicationInfo.
+		/// Асинхронно отправляет несколько писем.
 		/// </summary>
 		public async Task<string> SendMessagesAsync(IEnumerable<DesktopEmailMessage> messages, IProgress<int>? progress = default, CancellationToken token = default)
 		{
