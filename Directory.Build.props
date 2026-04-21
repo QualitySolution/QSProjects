@@ -1,0 +1,10 @@
+﻿<Project>
+  <PropertyGroup>
+    <Version>1.8</Version>
+    <AssemblyVersion>1.8</AssemblyVersion>
+    <FileVersion>1.8</FileVersion>
+    <Company>Quality Solution</Company>
+    <Copyright>Quality Solution 2026</Copyright>
+  </PropertyGroup>
+</Project>
+
