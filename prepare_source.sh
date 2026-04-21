@@ -44,7 +44,7 @@ nuget restore ../My-FyiReporting/MajorsilenceReporting-Linux-GtkViewer.sln
 dotnet test QSProjects.dotnet.sln
 ;;&
     *6*)
-msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln    
+msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln
 mono ~/.nuget/packages/nunit.consolerunner/3.16.3/tools/nunit3-console.exe QS.LibsTest/bin/Debug/QS.LibsTest.dll --framework=mono-4.0
 ;;&
 esac
