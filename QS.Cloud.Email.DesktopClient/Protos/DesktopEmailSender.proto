@@ -1,0 +1,28 @@
+﻿syntax = "proto3";
+
+package QS.Cloud.Email;
+
+service DesktopEmailSender {
+    rpc SendEmail (stream SendEmailRequest) returns (SendEmailResponse);
+}
+
+// Отправка
+message SendEmailRequest {
+	EmailMessage messages = 1;
+	int32 application_id = 2;
+}
+
+message EmailMessage {
+    string address = 1;
+    string subject = 2;
+    string text = 3;
+	repeated Attachment files = 4;
+}
+
+message SendEmailResponse {
+    string results = 1;
+}
+message Attachment{
+	bytes file = 1;
+	string file_name = 2;
+}
