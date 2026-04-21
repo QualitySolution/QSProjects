@@ -11,6 +11,12 @@ namespace QS.DBScripts.Models
 		private readonly IDbCreateController controller;
 		private readonly CreationScript script;
 
+		/// <summary>
+		/// Если true (по умолчанию), после создания базы автоматически записывает
+		/// новый GUID в таблицу base_parameters (параметр BaseGuid).
+		/// </summary>
+		public bool FillBaseGuid { get; set; } = true;
+
 		public MySqlDbCreateModel(IDbCreateController controller, CreationScript script)
 		{
 			this.controller = controller ?? throw new ArgumentNullException(nameof(controller));
@@ -99,6 +105,16 @@ namespace QS.DBScripts.Models
 					myscript.StatementExecuted += Myscript_StatementExecuted;
 					var commands = myscript.Execute();
 					logger.Debug("Выполнено {0} SQL-команд.", commands);
+
+					if (FillBaseGuid) {
+						logger.Info("Генерируем BaseGuid");
+						cmd.CommandText =
+							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseGuid', @guid)";
+						cmd.Parameters.Clear();
+						cmd.Parameters.AddWithValue("@guid", Guid.NewGuid().ToString());
+						cmd.ExecuteNonQuery();
+						logger.Info("BaseGuid успешно записан.");
+					}
 
 				}
 				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.

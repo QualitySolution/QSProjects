@@ -31,8 +31,6 @@ namespace QS.Updater.App.Views
 		private global::Gamma.GtkWidgets.yButton buttonOffAutoUpdate;
 
 		private global::Gamma.GtkWidgets.yButton buttonOk;
-		
-		private global::Gamma.GtkWidgets.yButton ybuttonOffAutoUpdate;
 
 		protected virtual void Build()
 		{
@@ -185,7 +183,6 @@ namespace QS.Updater.App.Views
 			this.buttonSkip.Clicked += new global::System.EventHandler(this.OnButtonSkipClicked);
 			this.buttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
-			this.ybuttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
 		}
 	}
 }
