@@ -37,7 +37,7 @@ cd ../QSProjects
 git pull --autostash
 ;;&
     *2*)
-nuget restore ../QSProjects/QSProjectsLib.sln;
+nuget restore ../QSProjects/QSProjectsLib.sln -Properties UseNetStandardTarget=true;
 nuget restore ../My-FyiReporting/MajorsilenceReporting-Linux-GtkViewer.sln
 ;;&
     *5*)
