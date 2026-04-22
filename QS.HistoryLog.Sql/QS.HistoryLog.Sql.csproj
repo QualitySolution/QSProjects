@@ -2,7 +2,20 @@
 
   <PropertyGroup>
     <RootNamespace>QS.HistoryLog</RootNamespace>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <Configurations>Debug;Release;DebugStandart;ReleaseStandart</Configurations>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(UseNetStandardTarget)' == 'true'
+    Or '$(Configuration)' == 'DebugStandart'
+    Or '$(Configuration)' == 'ReleaseStandart' ">
+	  <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(UseNetStandardTarget)' != 'true'
+    And '$(Configuration)' != 'DebugStandart'
+    And '$(Configuration)' != 'ReleaseStandart' ">
+	  <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

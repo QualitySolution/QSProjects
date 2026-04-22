@@ -37,14 +37,14 @@ cd ../QSProjects
 git pull --autostash
 ;;&
     *2*)
-nuget restore ../QSProjects/QSProjectsLib.sln;
+UseNetStandardTarget=true nuget restore ../QSProjects/QSProjectsLib.sln;
 nuget restore ../My-FyiReporting/MajorsilenceReporting-Linux-GtkViewer.sln
 ;;&
     *5*)
 dotnet test QSProjects.dotnet.sln
 ;;&
     *6*)
-msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln    
+msbuild /p:Configuration=Debug /p:Platform=x86 QSProjectsLib.sln
 mono ~/.nuget/packages/nunit.consolerunner/3.16.3/tools/nunit3-console.exe QS.LibsTest/bin/Debug/QS.LibsTest.dll --framework=mono-4.0
 ;;&
 esac

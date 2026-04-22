@@ -7,7 +7,7 @@ node {
          extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'QSProjects']],
          userRemoteConfigs: scm.userRemoteConfigs
       ])
-      sh 'nuget restore QSProjects/SolutionLinux/QSProjectsLib.sln'
+      sh 'UseNetStandardTarget=true nuget restore QSProjects/SolutionLinux/QSProjectsLib.sln'
    }
    stage('My-FyiReporting') {
       checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/release/1.8']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'My-FyiReporting']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/QualitySolution/My-FyiReporting.git']]]
