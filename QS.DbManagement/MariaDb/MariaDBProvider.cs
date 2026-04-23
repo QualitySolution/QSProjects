@@ -39,17 +39,29 @@ namespace QS.DbManagement
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
 
-			Server = parameters.First(p => p.Name == "Server").Value;
+			string serverValue = parameters.First(p => p.Name == "Server").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
 			this.password = password;
 
+			string host = serverValue;
+			uint? port = null;
+			if(serverValue.Contains(":")) {
+				var parts = serverValue.Split(':');
+				host = parts[0];
+				if(uint.TryParse(parts[1], out var parsedPort))
+					port = parsedPort;
+			}
+			Server = serverValue;
+
 			var builder = new MySqlConnectionStringBuilder {
-				Server = Server,
+				Server = host,
 				UserID = UserName,
 				Password = password,
 				AllowUserVariables = true,
 				ConvertZeroDateTime = true
 			};
+			if(port != null)
+				builder.Port = port.Value;
 			connectionStringBuilder = builder;
 			connection = new MySqlConnection(builder.ConnectionString);
 		}
@@ -70,8 +82,7 @@ namespace QS.DbManagement
 
 				CanCreateDatabase = IsAdmin || grants.Any(g =>
 					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0); 
-				//todo : разбить на токены и одним циклом по массиву прав проставить булы
+					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0);
 
 				return new LoginToServerResponse {
 					Success = true,
