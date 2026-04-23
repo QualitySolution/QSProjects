@@ -31,7 +31,6 @@ namespace QS.DbManagement
 		#region Параметры подключения
 		public string Server { get; }
 		public string UserName { get; }
-		public string ProductName { get; }
 		private readonly string password;
 		#endregion
 
@@ -53,17 +52,15 @@ namespace QS.DbManagement
 			}
 			Server = serverValue;
 
-			var builder = new MySqlConnectionStringBuilder {
+			ConnectionStringBuilder = new MySqlConnectionStringBuilder {
 				Server = host,
 				UserID = UserName,
 				Password = password,
-				AllowUserVariables = true,
-				ConvertZeroDateTime = true
+				AllowUserVariables = true
 			};
 			if(port != null)
-				builder.Port = port.Value;
-			connectionStringBuilder = builder;
-			connection = new MySqlConnection(builder.ConnectionString);
+				ConnectionStringBuilder.Port = port.Value;
+			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
 		}
 
 		#region IDbProvider
@@ -87,7 +84,8 @@ namespace QS.DbManagement
 				return new LoginToServerResponse {
 					Success = true,
 					IsAdmin = IsAdmin,
-					NeedToUpdateLauncher = false
+					NeedToUpdateLauncher = false,
+					CanCreateDatabase = CanCreateDatabase
 				};
 			}
 			catch(MySqlException ex) {
@@ -136,8 +134,7 @@ namespace QS.DbManagement
 				result.Add(new DbInfo {
 					BaseName = dbName,
 					Title = title ?? dbName,
-					Version = version,
-					CanCreateDatabase = CanCreateDatabase
+					Version = version
 				});
 			}
 
@@ -146,15 +143,14 @@ namespace QS.DbManagement
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			try {
-				connectionStringBuilder.Database = dbInfo.BaseName;
+				ConnectionStringBuilder.Database = dbInfo.BaseName;
 
 				return new LoginToDatabaseResponse {
 					Success = true,
-					ConnectionString = connectionStringBuilder.ConnectionString,
+					ConnectionString = ConnectionStringBuilder.ConnectionString,
 					Login = UserName,
 					Parameters = new Dictionary<string, string> {
-						{ "BaseTitle", dbInfo.Title },
-						{ "SessionId", string.Empty }
+						{ "BaseTitle", dbInfo.Title }
 					}
 				};
 			}
@@ -189,7 +185,6 @@ namespace QS.DbManagement
 		public void Dispose() {
 			connection?.Dispose();
 		}
-
 		#endregion
 	}
 }
