@@ -12,7 +12,7 @@ namespace QS.DbManagement
 			Title = "MariaDB или MySQL";
 			Parameters.Add(new ConnectionParameter("Server", "Адрес сервера"));
 			Parameters.Add(new ConnectionParameter("Login", "Пользователь"));
-			IconBytes = Assembly.GetExecutingAssembly().GetResourceByteArray("QS.DbManagement.Assets.mariadb.png");
+			IconBytes = Assembly.GetExecutingAssembly().GetResourceByteArray("QS.DbManagement.Assets.mariadb.ico");
 		}
 
 		public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) {
