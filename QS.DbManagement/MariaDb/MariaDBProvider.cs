@@ -5,7 +5,6 @@ using QS.Project.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
 
 namespace QS.DbManagement
@@ -52,15 +51,15 @@ namespace QS.DbManagement
 			}
 			Server = serverValue;
 
-			ConnectionStringBuilder = new MySqlConnectionStringBuilder {
+			connectionStringBuilder = new MySqlConnectionStringBuilder {
 				Server = host,
 				UserID = UserName,
 				Password = password,
 				AllowUserVariables = true
 			};
 			if(port != null)
-				ConnectionStringBuilder.Port = port.Value;
-			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
+				connectionStringBuilder.Port = port.Value;
+			connection = new MySqlConnection(connectionStringBuilder.ConnectionString);
 		}
 
 		#region IDbProvider
@@ -143,11 +142,11 @@ namespace QS.DbManagement
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			try {
-				ConnectionStringBuilder.Database = dbInfo.BaseName;
+				connectionStringBuilder.Database = dbInfo.BaseName;
 
 				return new LoginToDatabaseResponse {
 					Success = true,
-					ConnectionString = ConnectionStringBuilder.ConnectionString,
+					ConnectionString = connectionStringBuilder.ConnectionString,
 					Login = UserName,
 					Parameters = new Dictionary<string, string> {
 						{ "BaseTitle", dbInfo.Title }
