@@ -18,7 +18,7 @@
                 DoubleTapped="Databases_OnDoubleTapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel MaxHeight="20" HorizontalAlignment="Stretch">
+                        <DockPanel MaxHeight="30" HorizontalAlignment="Stretch">
                             <Label Content="{Binding Title}" />
                             <Label HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Version}" />
                         </DockPanel>
