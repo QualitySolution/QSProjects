@@ -36,7 +36,7 @@ namespace QS.Cloud.Email.BackendClient
         /// <summary>
         /// Отправляет одно письмо.
         /// </summary>
-        public string SendEmail(string emailAddress, string title, string text)
+        public virtual string SendEmail(string emailAddress, string title, string text)
         {
             return SendEmails(new[] { new BackendEmailMessage(emailAddress, title, text) });
         }
@@ -44,7 +44,7 @@ namespace QS.Cloud.Email.BackendClient
         /// <summary>
         /// Отправляет несколько писем.
         /// </summary>
-        public string SendEmails(IEnumerable<BackendEmailMessage> messages)
+        public virtual string SendEmails(IEnumerable<BackendEmailMessage> messages)
         {
             var client = new BackendEmailSender.BackendEmailSenderClient(Channel);
             var request = BuildRequest(messages);
@@ -54,7 +54,7 @@ namespace QS.Cloud.Email.BackendClient
         /// <summary>
         /// Асинхронно отправляет одно письмо.
         /// </summary>
-        public Task<string> SendEmailAsync(string emailAddress, string title, string text)
+        public virtual Task<string> SendEmailAsync(string emailAddress, string title, string text)
         {
             return SendEmailsAsync(new[] { new BackendEmailMessage(emailAddress, title, text) });
         }
@@ -62,7 +62,7 @@ namespace QS.Cloud.Email.BackendClient
         /// <summary>
         /// Асинхронно отправляет несколько писем.
         /// </summary>
-        public async Task<string> SendEmailsAsync(IEnumerable<BackendEmailMessage> messages)
+        public virtual async Task<string> SendEmailsAsync(IEnumerable<BackendEmailMessage> messages)
         {
             var client = new BackendEmailSender.BackendEmailSenderClient(Channel);
             var request = BuildRequest(messages);
