@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ReactiveUI;
 
 namespace QS.DbManagement {
@@ -11,16 +12,39 @@ namespace QS.DbManagement {
 			set => this.RaiseAndSetIfChanged(ref connectionTitle, value);
 		}
 
-		public ConnectionTypeBase ConnectionType { get; }
+		ConnectionTypeBase connectionType;
+		public ConnectionTypeBase ConnectionType {
+			get => connectionType;
+			set {
+				if(connectionType == value)
+					return;
+				// Сохраняем значения параметров, чтобы перенести те, что имеют общие имена
+				var previousValues = CustomParameters.ToDictionary(p => p.Name, p => p.Value);
+				this.RaiseAndSetIfChanged(ref connectionType, value);
+				var newParameters = new List<ConnectionParameterValue>();
+				if(connectionType != null) {
+					foreach(var parameter in connectionType.Parameters) {
+						previousValues.TryGetValue(parameter.Name, out var carriedValue);
+						newParameters.Add(new ConnectionParameterValue(parameter, carriedValue));
+					}
+				}
+				// Меняем ссылку целиком, чтобы привязкиW перечитали список
+				CustomParameters = newParameters;
+			}
+		}
 
-		public List<ConnectionParameterValue> CustomParameters { get; } = new List<ConnectionParameterValue>();
+		List<ConnectionParameterValue> customParameters = new List<ConnectionParameterValue>();
+		public List<ConnectionParameterValue> CustomParameters {
+			get => customParameters;
+			private set => this.RaiseAndSetIfChanged(ref customParameters, value);
+		}
 
 		public bool Last { get; set; } = false;
-		
+
 		public int? LastBaseId { get; set; }
 
 		public Connection(ConnectionTypeBase connectionType, IDictionary<string, string> parameters) {
-			ConnectionType = connectionType;
+			this.connectionType = connectionType;
 			ConnectionTitle = parameters["Title"];
 			Last = parameters.ContainsKey("Last") && parameters["Last"] == "True";
 			if(parameters.ContainsKey("LastBaseId") && int.TryParse(parameters["LastBaseId"], out int lastBaseId))
@@ -30,7 +54,7 @@ namespace QS.DbManagement {
 		}
 
 		public Connection(Connection other) {
-			ConnectionType = other.ConnectionType;
+			connectionType = other.ConnectionType;
 			ConnectionTitle = other.ConnectionTitle;
 			foreach(var parameter in other.CustomParameters)
 				CustomParameters.Add(parameter.Clone() as ConnectionParameterValue);

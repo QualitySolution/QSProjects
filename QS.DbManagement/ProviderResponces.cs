@@ -7,8 +7,8 @@ namespace QS.DbManagement.Responces
 		public string ErrorMessage { get; set; }
 	}
 
-    public class LoginToServerResponse : Response
-    {
+    public class LoginToServerResponse : Response {
+		public bool CanCreateDatabase { get; set; }
 		public bool IsAdmin { get; set; }
 		public bool NeedToUpdateLauncher { get; set; }
     }
