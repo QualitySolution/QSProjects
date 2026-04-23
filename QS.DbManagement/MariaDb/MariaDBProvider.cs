@@ -41,7 +41,6 @@ namespace QS.DbManagement
 
 			Server = parameters.First(p => p.Name == "Server").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
-			ProductName = parameters.First(p => p.Name == "ProductName").Value;
 			this.password = password;
 
 			var builder = new MySqlConnectionStringBuilder {
@@ -96,25 +95,22 @@ namespace QS.DbManagement
 				connection.Open();
 
 			var databases = connection.Query<string>("SHOW DATABASES").ToList();
-			var expectedProductName = ProductName;
+			byte expectedProductCode = applicationInfo.ProductCode;
 
 			foreach(var dbName in databases.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase)) {
-				var tableExists = connection.QueryFirstOrDefault<string>(
-					$"SHOW TABLES IN `{dbName}` LIKE 'base_parameters'") != null;
-
-				if(!tableExists)
-					continue;
-
-				string productName = null;
+				byte? productCode = null;
 				string version = null;
+				string title = null;
 				try {
 					var rows = connection.Query<(string name, string str_value)>(
-						$"SELECT name, str_value FROM `{dbName}`.base_parameters WHERE name IN ('product_name', 'version')").ToList();
+						$"SELECT name, str_value FROM `{dbName}`.base_parameters WHERE name IN ('ProductCode', 'version', 'BaseTitle')").ToList();
 					foreach(var row in rows) {
-						if(string.Equals(row.name, "product_name", StringComparison.OrdinalIgnoreCase))
-							productName = row.str_value;
+						if(string.Equals(row.name, "ProductCode", StringComparison.OrdinalIgnoreCase))
+							productCode = Convert.ToByte(row.str_value);
 						else if(string.Equals(row.name, "version", StringComparison.OrdinalIgnoreCase))
 							version = row.str_value;
+						else if(string.Equals(row.name, "BaseTitle", StringComparison.OrdinalIgnoreCase))
+							title = row.str_value;
 					}
 				}
 				catch(MySqlException ex) {
@@ -122,13 +118,13 @@ namespace QS.DbManagement
 					continue;
 				}
 
-				if(!string.IsNullOrEmpty(expectedProductName)
-					&& !string.Equals(productName, expectedProductName, StringComparison.OrdinalIgnoreCase))
+				if((expectedProductCode != null)
+					&& (productCode != expectedProductCode))
 					continue;
 
 				result.Add(new DbInfo {
 					BaseName = dbName,
-					Title = dbName,
+					Title = title ?? dbName,
 					Version = version,
 					CanCreateDatabase = CanCreateDatabase
 				});
@@ -147,7 +143,7 @@ namespace QS.DbManagement
 					Login = UserName,
 					Parameters = new Dictionary<string, string> {
 						{ "BaseTitle", dbInfo.Title },
-						{ "SessionId", string.Empty }	
+						{ "SessionId", string.Empty }
 					}
 				};
 			}
