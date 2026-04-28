@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System;
+using QS.Cloud.Client.Clients;
 
 namespace QS.Cloud.Client
 {
@@ -30,6 +31,7 @@ namespace QS.Cloud.Client
 		private CloudFeaturesClient featuresClient;
 		private LoginManagementCloudClient loginClient;
 		private SessionManagementCloudClient sessionClient;
+		private DataBaseManagementCloudClient dbClient;
 		private UserManagementCloudClient userClient;
 
 
@@ -39,6 +41,7 @@ namespace QS.Cloud.Client
 			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
 			
 			loginClient = new LoginManagementCloudClient(authInfo);
+			dbClient = new DataBaseManagementCloudClient(authInfo);
 		}
 
 		public bool AddUser(string username, string password)
@@ -53,7 +56,7 @@ namespace QS.Cloud.Client
 	
 		public bool CreateDatabase(string databaseName, string title)
 		{
-			throw new NotImplementedException();
+			return dbClient.CreateDataBase(databaseName, title).Succsess;
 		}
 	
 		public void Dispose()
