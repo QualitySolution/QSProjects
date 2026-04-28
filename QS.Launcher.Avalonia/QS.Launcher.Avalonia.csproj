@@ -53,7 +53,7 @@
     <Compile Update="Views\Pages\LoginView.axaml.cs">
       <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Pages\DataBasesView.axaml.cs">
+    <Compile Update="Views\Pages\DataBase\DataBasesView.axaml.cs">
       <DependentUpon>DataBasesView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Pages\UserManagementView.axaml.cs">

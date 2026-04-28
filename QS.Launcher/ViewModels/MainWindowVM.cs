@@ -2,6 +2,7 @@ using QS.Launcher.ViewModels.PageViewModels;
 using ReactiveUI;
 using System;
 using QS.ViewModels;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher.ViewModels {
 	public class MainWindowVM : ViewModelBase {

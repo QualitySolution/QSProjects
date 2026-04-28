@@ -4,6 +4,7 @@ using QS.DbManagement;
 using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {

@@ -1,0 +1,27 @@
+<Window x:Class="QS.Launcher.Views.Pages.DataBase.CreateDataBaseWindow"
+		xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
+		xmlns:views="clr-namespace:QS.Launcher.Views"
+		Width="280"
+		Height="290"
+		MinWidth="240"
+		MinHeight="250"
+		d:DesignHeight="290"
+		d:DesignWidth="280"
+		x:DataType="vm:DataBase.CreateDataBaseVM"
+		Title="Создание базы"
+		mc:Ignorable="d"
+>
+	<StackPanel Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center">
+		<Label Margin="5" Content="Введите название базы:" />
+		<TextBox Margin="5" Text="{Binding DbName}" Watermark="Название в базе" />
+
+		<Label Margin="5" Content="Введите имя базы:" />
+		<TextBox Margin="5" Text="{Binding DbTitle}" Watermark="Имя для сервиса" />
+
+		<Button Margin="5" Command="{Binding CreateDataBaseCommand}" IsVisible="{Binding Provider.CanCreateDatabase}" Content="Создать базу данных" />
+	</StackPanel>
+</Window>

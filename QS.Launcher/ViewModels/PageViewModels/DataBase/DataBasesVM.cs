@@ -1,16 +1,19 @@
 using DynamicData.Kernel;
 using QS.DbManagement;
 using QS.Dialog;
+using QS.Launcher.AppRunner;
+using QS.Project.Versioning;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using QS.Launcher.AppRunner;
-using QS.Project.Versioning;
+using System.Xml.Linq;
 
-namespace QS.Launcher.ViewModels.PageViewModels {
+namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class DataBasesVM : CarouselPageVM {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -23,12 +26,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				this.RaiseAndSetIfChanged(ref provider, value);
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
-				
+
 				// Загружаем и устанавливаем последнюю выбранную базу
 				LoadLastSelectedDatabase();
 			}
 		}
-		
+
 		public void SetProvider(IDbProvider dbProvider, Connection connection, Action saveConnections) {
 			currentConnection = connection;
 			saveConnectionsAction = saveConnections;
@@ -56,8 +59,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public bool VisibleShouldCloseLauncherCheckBox => launcherOptions?.IsStandalone ?? false;
 
 		public ICommand ConnectCommand { get; }
+		public ReactiveCommand<Unit, Unit> OpenCreateDatabaseCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
+		public event Func<DataBasesVM, Task<(string dbTitle, string dbName)>> RequestShowCreateDbWindow;
 
 		IInteractiveMessage interactiveMessage;
 
@@ -69,19 +74,34 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.launcherOptions = launcherOptions;
-			
+
 			logger.Info($">>> DataBasesVM constructor: launcherOptions={launcherOptions}, IsStandalone={launcherOptions?.IsStandalone}");
 
-			IObservable<bool> canExecute = this
+			IObservable<bool> canExecuteConnection = this
 				.WhenAnyValue(x => x.SelectedDatabase)
 				.Select(x => x != null);
-			ConnectCommand = ReactiveCommand.Create(Connect, canExecute);
+
+			IObservable<bool> canExecuteCreation = this
+				.WhenAnyValue(x => x.SelectedDatabase)
+				.Select(x => x != null);
+			ConnectCommand = ReactiveCommand.Create(Connect, canExecuteConnection);
+			OpenCreateDatabaseCommand = ReactiveCommand.CreateFromTask(OpenCreateDatabaseAsync);
 		}
-		
+		private async Task OpenCreateDatabaseAsync() {
+			if(OpenCreateDatabaseCommand != null) {
+				(string title, string name)  = await RequestShowCreateDbWindow.Invoke(this);
+
+				Databases = provider.GetUserDatabases(applicationInfo).AsList();
+				this.RaisePropertyChanged(nameof(Databases));
+				SelectedDatabase = Databases.FirstOrDefault(db => db.Title == title && db.BaseName == name);
+				this.RaisePropertyChanged(nameof(SelectedDatabase));
+			}
+		}
+
 		private void LoadLastSelectedDatabase() {
 			if(Databases == null || Databases.Count == 0)
 				return;
-			
+
 			// Используем LastBaseId из текущего подключения
 			if(currentConnection?.LastBaseId != null) 
 				SelectedDatabase = Databases.FirstOrDefault(db => db.BaseId == currentConnection.LastBaseId.Value);
@@ -107,22 +127,21 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			// В in-process режиме НЕ делаем shutdown (возвращаем false)
 			var isStandalone = launcherOptions?.IsStandalone ?? false;
 			logger.Info($">>> Connect: IsStandalone={isStandalone}, ShouldCloseLauncherAfterStart={ShouldCloseLauncherAfterStart}");
-			
+
 			bool shouldCloseLauncher = isStandalone && ShouldCloseLauncherAfterStart;
-			
+
 			logger.Info($">>> Connect: shouldCloseLauncher={shouldCloseLauncher}");
-			
+
 			StartLaunchProgram?.Invoke(shouldCloseLauncher);
 			appRunner.Run(resp);
 		}
-		
+
 		private void SaveLastSelectedDatabase() {
 			if(SelectedDatabase == null || currentConnection == null)
 				return;
-			
 			// Сохраняем BaseId в текущее подключение
 			currentConnection.LastBaseId = SelectedDatabase.BaseId;
-			
+
 			// Вызываем сохранение подключений
 			saveConnectionsAction?.Invoke();
 		}

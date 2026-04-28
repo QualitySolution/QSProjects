@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class LoginVM : CarouselPageVM {

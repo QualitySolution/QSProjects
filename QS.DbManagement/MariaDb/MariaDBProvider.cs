@@ -16,7 +16,7 @@ namespace QS.DbManagement
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 
 		readonly MySqlConnection connection;
-		readonly MySqlConnectionStringBuilder connectionStringBuilder;
+		readonly MySqlConnectionStringBuilder ConnectionStringBuilder;
 
 		public bool IsConnected => connection.State == ConnectionState.Open;
 
@@ -28,10 +28,15 @@ namespace QS.DbManagement
 		/// </summary>
 		public bool CanCreateDatabase { get; private set; }
 
+		/// <summary>
+		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы, 
+		/// нужен потом при применения скрипта с наполнением базы
+		/// </summary>
+		public string CreatedTitle { get; private set; }
+
 		#region Параметры подключения
 		public string Server { get; }
 		public string UserName { get; }
-		public string ProductName { get; }
 		private readonly string password;
 		#endregion
 
@@ -39,19 +44,29 @@ namespace QS.DbManagement
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
 
-			Server = parameters.First(p => p.Name == "Server").Value;
+			string serverValue = parameters.First(p => p.Name == "Server").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
 			this.password = password;
 
-			var builder = new MySqlConnectionStringBuilder {
-				Server = Server,
+			string host = serverValue;
+			uint? port = null;
+			if(serverValue.Contains(":")) {
+				var parts = serverValue.Split(':');
+				host = parts[0];
+				if(uint.TryParse(parts[1], out var parsedPort))
+					port = parsedPort;
+			}
+			Server = serverValue;
+
+			ConnectionStringBuilder = new MySqlConnectionStringBuilder {
+				Server = host,
 				UserID = UserName,
 				Password = password,
-				AllowUserVariables = true,
-				ConvertZeroDateTime = true
+				AllowUserVariables = true
 			};
-			connectionStringBuilder = builder;
-			connection = new MySqlConnection(builder.ConnectionString);
+			if(port != null)
+				ConnectionStringBuilder.Port = port.Value;
+			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
 		}
 
 		#region IDbProvider
@@ -70,13 +85,13 @@ namespace QS.DbManagement
 
 				CanCreateDatabase = IsAdmin || grants.Any(g =>
 					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0); 
-				//todo : разбить на токены и одним циклом по массиву прав проставить булы
+					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0);
 
 				return new LoginToServerResponse {
 					Success = true,
 					IsAdmin = IsAdmin,
-					NeedToUpdateLauncher = false
+					NeedToUpdateLauncher = false,
+					CanCreateDatabase = CanCreateDatabase
 				};
 			}
 			catch(MySqlException ex) {
@@ -125,8 +140,7 @@ namespace QS.DbManagement
 				result.Add(new DbInfo {
 					BaseName = dbName,
 					Title = title ?? dbName,
-					Version = version,
-					CanCreateDatabase = CanCreateDatabase
+					Version = version
 				});
 			}
 
@@ -135,15 +149,14 @@ namespace QS.DbManagement
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			try {
-				connectionStringBuilder.Database = dbInfo.BaseName;
+				ConnectionStringBuilder.Database = dbInfo.BaseName;
 
 				return new LoginToDatabaseResponse {
 					Success = true,
-					ConnectionString = connectionStringBuilder.ConnectionString,
+					ConnectionString = ConnectionStringBuilder.ConnectionString,
 					Login = UserName,
 					Parameters = new Dictionary<string, string> {
-						{ "BaseTitle", dbInfo.Title },
-						{ "SessionId", string.Empty }
+						{ "BaseTitle", dbInfo.Title }
 					}
 				};
 			}
@@ -165,7 +178,8 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase(string databaseName) {
+		public bool CreateDatabase(string databaseName, string title) {
+			CreatedTitle = title;
 			string sql = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
 			return connection.Execute(sql) != 0;
 		}
@@ -178,7 +192,6 @@ namespace QS.DbManagement
 		public void Dispose() {
 			connection?.Dispose();
 		}
-
 		#endregion
 	}
 }

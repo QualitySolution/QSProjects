@@ -25,6 +25,8 @@ namespace QS.Cloud.Client
 		#endregion
 		public string UserName { get; private set; }
 
+		public bool CanCreateDatabase => throw new NotImplementedException();
+
 		private CloudFeaturesClient featuresClient;
 		private LoginManagementCloudClient loginClient;
 		private SessionManagementCloudClient sessionClient;
@@ -49,7 +51,7 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase(string databaseName)
+		public bool CreateDatabase(string databaseName, string title)
 		{
 			throw new NotImplementedException();
 		}
