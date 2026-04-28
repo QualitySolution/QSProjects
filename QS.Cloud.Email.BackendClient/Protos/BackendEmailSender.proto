@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package QS.Cloud.Email;
+
+service BackendEmailSender {
+    rpc SendEmail (SendEmailBackendRequest) returns (SendEmailBackendResponse);
+}
+
+message SendEmailBackendRequest {
+    repeated OutgoingEmail messages = 1;
+}
+
+message OutgoingEmail {
+    string email_address = 1;
+    string title = 2;
+    string text = 3;
+}
+
+message SendEmailBackendResponse {
+    string results = 1;
+}
+

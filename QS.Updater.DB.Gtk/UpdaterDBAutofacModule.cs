@@ -14,6 +14,7 @@ namespace QS.Updater
 			builder.RegisterType<SQLDBUpdater>().As<IDBUpdater>();
 			#region Models
 			builder.RegisterType<MySqlDbCreateModel>().AsSelf();
+			builder.RegisterType<DatabaseCharsetChecker>().AsSelf();
 			#endregion
 			#region Desktop
 			builder.RegisterType<UserCreateDbController>().As<IDBCreator>();

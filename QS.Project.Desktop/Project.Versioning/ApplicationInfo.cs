@@ -9,15 +9,7 @@ namespace QS.Project.Versioning
 	/// </summary>
 	public class ApplicationInfo : IApplicationInfo
 	{
-		private string productName;
-		/// <summary>
-		/// По умолчанию возвращает имя входной сборки. Можно переопределить при регистрации в DI,
-		/// например для того, чтобы лаунчер сопоставлял базы по значению base_parameters.product_name.
-		/// </summary>
-		public string ProductName {
-			get => productName ?? Assembly.GetName().Name;
-			set => productName = value;
-		}
+		public string ProductName => Assembly.GetName().Name;
 		public string ProductTitle => Assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
 
 		public string Modification { get; set; }
