@@ -1,0 +1,45 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.DataBase.CreateDataBaseProgressView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
+             x:DataType="vm:CreateDataBaseProgressVM"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
+    <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+        <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="Создание базы данных" />
+
+        <StackPanel Grid.Row="1" Margin="5,15,5,5" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Image x:Name="cogwheel" Height="32" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
+                <Image.Transitions>
+                    <Transitions>
+                        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:4.00" />
+                    </Transitions>
+                </Image.Transitions>
+                <Image.Styles>
+                    <Style Selector="Image">
+                        <Setter Property="RenderTransform" Value="rotate(0deg)" />
+                    </Style>
+                    <Style Selector="Image.rolled">
+                        <Setter Property="RenderTransform" Value="rotate(720deg)" />
+                    </Style>
+                </Image.Styles>
+            </Image>
+            <Label Margin="10,0,0,0" VerticalAlignment="Center" Content="{Binding CurrentText}" />
+        </StackPanel>
+
+        <ProgressBar Grid.Row="2" Margin="5,10,5,5"
+                     Minimum="{Binding MinValue}"
+                     Maximum="{Binding MaxValue}"
+                     Value="{Binding Value}" />
+
+        <TextBlock Grid.Row="3" Margin="5" HorizontalAlignment="Center" FontSize="11" Foreground="#7A000000"
+                   Text="{Binding DbTitle, StringFormat='База: {0}'}" />
+
+        <Button Grid.Row="5" Margin="5,15,5,5" HorizontalAlignment="Stretch"
+                Command="{Binding CancelCommand}" Content="Отмена" />
+    </Grid>
+</UserControl>

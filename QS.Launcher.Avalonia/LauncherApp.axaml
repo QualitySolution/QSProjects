@@ -2,6 +2,10 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters1="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
+             xmlns:vmDb="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
+             xmlns:views="using:QS.Launcher.Views.Pages"
+             xmlns:viewsDb="using:QS.Launcher.Views.Pages.DataBase"
              x:CompileBindings="False"
              RequestedThemeVariant="Light">
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
@@ -10,6 +14,27 @@
         <converters1:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
         <converters1:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
     </Application.Resources>
+
+    <Application.DataTemplates>
+        <DataTemplate DataType="{x:Type vm:LoginVM}">
+            <views:LoginView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vmDb:DataBasesVM}">
+            <views:DataBasesView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:BaseManagementVM}">
+            <views:BaseManagementView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:UserManagementVM}">
+            <views:UserManagementView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vmDb:CreateDataBaseSettingsVM}">
+            <viewsDb:CreateDataBaseSettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vmDb:CreateDataBaseProgressVM}">
+            <viewsDb:CreateDataBaseProgressView />
+        </DataTemplate>
+    </Application.DataTemplates>
 
     <Application.Styles>
         <FluentTheme />

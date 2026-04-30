@@ -56,6 +56,12 @@
     <Compile Update="Views\Pages\DataBase\DataBasesView.axaml.cs">
       <DependentUpon>DataBasesView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Pages\DataBase\CreateDataBaseSettingsView.axaml.cs">
+      <DependentUpon>CreateDataBaseSettingsView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\DataBase\CreateDataBaseProgressView.axaml.cs">
+      <DependentUpon>CreateDataBaseProgressView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Pages\UserManagementView.axaml.cs">
       <DependentUpon>UserManagementView.axaml</DependentUpon>
     </Compile>

@@ -15,7 +15,11 @@ namespace QS.DbManagement
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 
 		readonly MySqlConnection connection;
-		readonly MySqlConnectionStringBuilder ConnectionStringBuilder;
+		/// <summary>
+		/// Публичный, чтобы внешние компоненты могли получить подключение
+		/// без повторного разбора параметров.
+		/// </summary>
+		public MySqlConnectionStringBuilder ConnectionStringBuilder { get; }
 
 		public bool IsConnected => connection.State == ConnectionState.Open;
 

@@ -3,40 +3,28 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
-using QS.Launcher.Views.Pages.DataBase;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
 	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-	private DataBasesVM ViewModel;
 
-	public DataBasesView(DataBasesVM viewModel) {
+	public DataBasesView() {
 		InitializeComponent();
 
-		DataContext = ViewModel = viewModel;
-
-		viewModel.StartLaunchProgram += HandleStartMainProgram;
-		viewModel.RequestShowCreateDbWindow += ShowCreateDatabaseWindowAsync;
+		DataContextChanged += (_, _) => {
+			if(DataContext is DataBasesVM vm)
+				vm.StartLaunchProgram += HandleStartMainProgram;
+		};
 
 		KeyDown += (s, e) => {
 			if(e.Key == Key.Enter) {
-				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
-				viewModel.ConnectCommand.Execute(null);
+				TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
+				if(DataContext is DataBasesVM vm)
+					vm.ConnectCommand.Execute(null);
 			}
 		};
-	}
-
-	private async Task<(string? dbTitle, string? dbName)> ShowCreateDatabaseWindowAsync(DataBasesVM dataBases) {
-		CreateDataBaseVM viewModel = new CreateDataBaseVM(ViewModel.Provider);
-		var window = new CreateDataBaseWindow(viewModel);
-
-		var parentWindow = TopLevel.GetTopLevel(this) as Window;
-		if(parentWindow != null) {
-			await window.ShowDialog(parentWindow);
-		}
-		return window.GetResult();
 	}
 
 	public async void HandleStartMainProgram(bool shouldCloseLauncher) {
@@ -46,17 +34,16 @@ public partial class DataBasesView : UserControl {
 		cogwheel.Classes.Add("rolled");
 
 		var transition = cogwheel.Transitions.OfType<TransformOperationsTransition>().FirstOrDefault();
-		await Task.Delay(transition.Duration);
+		if(transition != null)
+			await Task.Delay(transition.Duration);
 		loadingPanel.IsVisible = false;
 
 		if(shouldCloseLauncher) {
 			logger.Info($">>> HandleStartMainProgram: Вызываем Shutdown!");
-			// NewProcessRunner: закрываем всё приложение лаунчера (Shutdown)
 			(LauncherApp.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
 		}
 		else {
 			logger.Info($">>> HandleStartMainProgram: Закрываем только окно");
-			// InProcessRunner: закрываем только окно лаунчера
 			var window = TopLevel.GetTopLevel(this) as Window;
 			window?.Close();
 		}
@@ -68,7 +55,7 @@ public partial class DataBasesView : UserControl {
 	}
 
 	private void Databases_OnDoubleTapped(object? sender, TappedEventArgs e) {
-		if(databases.SelectedItem is not null)
-			ViewModel.ConnectCommand.Execute(null);
+		if(databases.SelectedItem is not null && DataContext is DataBasesVM vm)
+			vm.ConnectCommand.Execute(null);
 	}
 }

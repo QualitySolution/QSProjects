@@ -2,10 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media.Transformation;
-using Avalonia.Platform;
 using Avalonia.Styling;
 using QS.Launcher.ViewModels.PageViewModels;
-using System.Globalization;
 
 namespace QS.Launcher.Views.Pages;
 
@@ -13,8 +11,8 @@ public partial class LoginView : UserControl
 {
 	private readonly Style upStyle;
 
-    public LoginView(LoginVM viewModel)
-    {
+	public LoginView()
+	{
 		upStyle = new Style(x => x.OfType<ItemsControl>().Class("up")) {
 			Setters =
 			{
@@ -24,23 +22,22 @@ public partial class LoginView : UserControl
 			},
 		};
 
-        InitializeComponent();
+		InitializeComponent();
 
 		loginContainer.Styles.Add(upStyle);
-
-		DataContext = viewModel;
 
 		Loaded += (s, e) => {
 			passwordTextBox.Focus();
 		};
 
 		KeyDown += (s, e) => {
-			if(e.Key == Avalonia.Input.Key.Enter) {
-				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
-				viewModel.LoginCommand.Execute(null);
+			if(e.Key == Key.Enter) {
+				TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
+				if(DataContext is LoginVM vm)
+					vm.LoginCommand.Execute(null);
 			}
 		};
-    }
+	}
 
 
 	private void ShowCreationView(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

@@ -1,7 +1,9 @@
 using Autofac;
 using Microsoft.Extensions.DependencyInjection;
+using QS.DBScripts.Controllers;
 using QS.DbManagement;
 using QS.Launcher.AppRunner;
+using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
@@ -14,7 +16,12 @@ namespace QS.Launcher {
 				.AddSingleton<LoginVM>()
 				.AddSingleton<DataBasesVM>()
 				.AddSingleton<UserManagementVM>()
-				.AddSingleton<BaseManagementVM>();
+				.AddSingleton<BaseManagementVM>()
+				// Wizard-страницы создания БД — Transient: новый экземпляр на каждое открытие.
+				.AddTransient<CreateDataBaseSettingsVM>()
+				.AddTransient<CreateDataBaseProgressVM>()
+				// Сервисы лаунчера, нужные wizard-страницам.
+				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>();
 		}
 
 		public static IServiceCollection AddLauncherOptions(this IServiceCollection services, LauncherOptions launcherOptions) {

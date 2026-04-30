@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QS.Project.Abstract\QS.Project.Abstract.csproj" />
+    <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />
     <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
   </ItemGroup>
 
