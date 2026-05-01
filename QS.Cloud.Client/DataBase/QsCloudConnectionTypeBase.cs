@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using QS.Utilities.Extensions;
 
-namespace QS.Cloud.Client {
+namespace QS.Cloud.Client.DataBase {
 	public class QsCloudConnectionTypeBase : ConnectionTypeBase {
 		public QsCloudConnectionTypeBase() {
 			Title = "QS: Облако";

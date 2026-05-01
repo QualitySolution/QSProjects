@@ -10,13 +10,12 @@ namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
 	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	public DataBasesView() {
+	public DataBasesView(DataBasesVM viewModel) {
 		InitializeComponent();
 
-		DataContextChanged += (_, _) => {
-			if(DataContext is DataBasesVM vm)
-				vm.StartLaunchProgram += HandleStartMainProgram;
-		};
+		DataContext = viewModel;
+
+		viewModel.StartLaunchProgram += HandleStartMainProgram;
 
 		KeyDown += (s, e) => {
 			if(e.Key == Key.Enter) {
@@ -40,10 +39,12 @@ public partial class DataBasesView : UserControl {
 
 		if(shouldCloseLauncher) {
 			logger.Info($">>> HandleStartMainProgram: Вызываем Shutdown!");
+			// NewProcessRunner: закрываем всё приложение лаунчера (Shutdown)
 			(LauncherApp.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
 		}
 		else {
 			logger.Info($">>> HandleStartMainProgram: Закрываем только окно");
+			// InProcessRunner: закрываем только окно лаунчера
 			var window = TopLevel.GetTopLevel(this) as Window;
 			window?.Close();
 		}

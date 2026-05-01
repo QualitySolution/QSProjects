@@ -10,7 +10,7 @@ using System.Reflection;
 using System;
 using QS.Cloud.Client.Clients;
 
-namespace QS.Cloud.Client
+namespace QS.Cloud.Client.DataBase
 {
 	public class QSCloudProvider : IDbProvider {
 		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

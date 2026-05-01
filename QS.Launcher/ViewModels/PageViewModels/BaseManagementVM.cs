@@ -9,7 +9,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public DatabaseViewModel SelectedDatabase { get; set; }
 
 		public BaseManagementVM() {
-			
 		}
 	}
 }

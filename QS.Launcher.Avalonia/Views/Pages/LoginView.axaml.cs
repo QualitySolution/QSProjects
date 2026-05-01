@@ -11,7 +11,7 @@ public partial class LoginView : UserControl
 {
 	private readonly Style upStyle;
 
-	public LoginView()
+	public LoginView(LoginVM viewModel)
 	{
 		upStyle = new Style(x => x.OfType<ItemsControl>().Class("up")) {
 			Setters =
@@ -25,6 +25,8 @@ public partial class LoginView : UserControl
 		InitializeComponent();
 
 		loginContainer.Styles.Add(upStyle);
+
+		DataContext = viewModel;
 
 		Loaded += (s, e) => {
 			passwordTextBox.Focus();

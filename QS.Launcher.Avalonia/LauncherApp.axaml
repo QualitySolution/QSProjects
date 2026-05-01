@@ -15,27 +15,6 @@
         <converters1:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
     </Application.Resources>
 
-    <Application.DataTemplates>
-        <DataTemplate DataType="{x:Type vm:LoginVM}">
-            <views:LoginView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vmDb:DataBasesVM}">
-            <views:DataBasesView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:BaseManagementVM}">
-            <views:BaseManagementView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:UserManagementVM}">
-            <views:UserManagementView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vmDb:CreateDataBaseSettingsVM}">
-            <viewsDb:CreateDataBaseSettingsView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vmDb:CreateDataBaseProgressVM}">
-            <viewsDb:CreateDataBaseProgressView />
-        </DataTemplate>
-    </Application.DataTemplates>
-
     <Application.Styles>
         <FluentTheme />
 
