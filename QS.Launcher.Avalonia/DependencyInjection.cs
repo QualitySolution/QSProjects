@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.Launcher.Services;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
+using QS.Launcher.Views.Pages.DataBase;
 
 namespace QS.Launcher;
 public static partial class DependencyInjection {
@@ -13,6 +14,8 @@ public static partial class DependencyInjection {
 			.AddSingleton<UserControl, DataBasesView>()
 			.AddSingleton<UserControl, UserManagementView>()
 			.AddSingleton<UserControl, BaseManagementView>()
+			.AddTransient<UserControl, CreateDataBaseSettingsView>()
+			.AddTransient<UserControl, CreateDataBaseProgressView>()
 			.AddSingleton<IUiThreadInvoker, AvaloniaUiThreadInvoker>();
 	}
 }

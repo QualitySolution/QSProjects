@@ -9,8 +9,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	/// По «Далее» создаёт CreateDataBaseProgressVM и пушит её в Carousel поверх текущей
 	/// </summary>
 	public class CreateDataBaseSettingsVM : CarouselPageVM {
-		public IDbProvider Provider { get; }
-		public Connection Connection { get; }
+		public IDbProvider Provider { get; private set; }
+		public Connection Connection { get; private set; }
 		private readonly IServiceProvider services;
 
 		private string dbTitle;
@@ -34,9 +34,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// </summary>
 		public event Action<CreateDataBaseProgressVM> ProgressPageRequested;
 
-		public CreateDataBaseSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services) {
-			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+		public CreateDataBaseSettingsVM(IServiceProvider services) {
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
 
 			var canCreate = this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
@@ -46,11 +44,18 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			CancelCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
 		}
 
+		public void SetDbSettings(IDbProvider provider, Connection connection) {
+			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+		}
+
 		private void GoToProgress() {
 			// Резолв через ActivatorUtilities — DI подставляет IDbCreatorInteraction/IUiThreadInvoker,
 			// а провайдер/соединение/имена приходят как runtime-аргументы.
 			var progress = Microsoft.Extensions.DependencyInjection.ActivatorUtilities
-				.CreateInstance<CreateDataBaseProgressVM>(services, Provider, Connection, DbName, DbTitle);
+				.GetServiceOrCreateInstance<CreateDataBaseProgressVM>(services);
+
+			progress.SetDbSettings(dbName, dbTitle, Provider, Connection);
 
 			ProgressPageRequested?.Invoke(progress);
 			PushPageCommand?.Execute(progress);

@@ -6,8 +6,10 @@ using QS.Launcher.ViewModels.PageViewModels.DataBase;
 namespace QS.Launcher.Views.Pages.DataBase;
 
 public partial class CreateDataBaseProgressView : UserControl {
-	public CreateDataBaseProgressView() {
+	public CreateDataBaseProgressView(CreateDataBaseProgressVM progressVM) {
 		InitializeComponent();
+
+		DataContext = progressVM;
 	}
 
 	private void OnLoaded(object? sender, RoutedEventArgs e) {

@@ -16,10 +16,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public IDbProvider Provider { get; }
-		public Connection Connection { get; }
-		public string DbName { get; }
-		public string DbTitle { get; }
+		public IDbProvider Provider { get; private set; }
+		public Connection Connection { get; private set; }
+		public string DbName { get; private set; }
+		public string DbTitle { get; private set; }
 
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IServiceProvider services;
@@ -67,18 +67,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
 		public CreateDataBaseProgressVM(
-			IDbProvider provider,
-			Connection connection,
-			string dbName,
-			string dbTitle,
 			IDbCreatorInteraction interaction,
 			IUiThreadInvoker uiThread,
 			IServiceProvider services)
 		{
-			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
-			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-			DbName = dbName ?? throw new ArgumentNullException(nameof(dbName));
-			DbTitle = dbTitle ?? throw new ArgumentNullException(nameof(dbTitle));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.uiThread = uiThread ?? throw new ArgumentNullException(nameof(uiThread));
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
@@ -89,6 +81,16 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				cts.Cancel();
 				PopToRootCommand?.Execute(null);
 			});
+		}
+
+		public void SetDbSettings(
+			string dbName,
+			string dbTitle, 
+			IDbProvider provider, Connection connection) {
+			DbName = dbName ?? throw new ArgumentNullException(nameof(dbName));
+			DbTitle = dbTitle ?? throw new ArgumentNullException(nameof(dbTitle));
+			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
 		}
 
 		public async Task StartCreationAsync() {

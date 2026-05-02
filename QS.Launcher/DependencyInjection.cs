@@ -17,10 +17,9 @@ namespace QS.Launcher {
 				.AddSingleton<DataBasesVM>()
 				.AddSingleton<UserManagementVM>()
 				.AddSingleton<BaseManagementVM>()
-				// Wizard-страницы создания БД — Transient: новый экземпляр на каждое открытие.
-				.AddTransient<CreateDataBaseSettingsVM>()
-				.AddTransient<CreateDataBaseProgressVM>()
-				// Сервисы лаунчера, нужные wizard-страницам.
+				// Wizard-страницы создания БД
+				.AddSingleton<CreateDataBaseSettingsVM>()
+				.AddSingleton<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>();
 		}
 

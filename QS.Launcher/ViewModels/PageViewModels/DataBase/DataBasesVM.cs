@@ -97,8 +97,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(provider == null || currentConnection == null)
 				return;
 
-			var settings = ActivatorUtilities.CreateInstance<CreateDataBaseSettingsVM>(
-				serviceProvider, provider, currentConnection);
+			var settings = ActivatorUtilities.GetServiceOrCreateInstance<CreateDataBaseSettingsVM>(serviceProvider);
+			settings.SetDbSettings(Provider, CurrentConnection);
 
 			settings.ProgressPageRequested += progressVm => {
 				progressVm.DatabaseCreated += OnDatabaseCreatedFromWizard;
