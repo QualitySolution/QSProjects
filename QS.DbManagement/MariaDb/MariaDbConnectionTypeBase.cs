@@ -1,7 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
+using QS.DBScripts;
+using QS.DBScripts.Controllers;
+using QS.DBScripts.Models;
+using QS.Utilities.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using QS.Utilities.Extensions;
 
 namespace QS.DbManagement
 {
@@ -18,6 +22,17 @@ namespace QS.DbManagement
 		public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) {
 			return parameters.Any(p => p.Name == "Server" && !string.IsNullOrEmpty(p.Value)) &&
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
+		}
+
+		public override IDBCreator CreatorFactory(CreatorFactoryArgs args){
+			var provider = (MariaDBProvider)args.Provider;
+			var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
+			return new MySqlDbCreateModel(
+				provider.ConnectionStringBuilder.ConnectionString,
+				scripts,
+				args.Progress,
+				args.Interaction,
+				args.CancellationToken);
 		}
 
 		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 

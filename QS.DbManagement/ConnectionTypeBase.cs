@@ -17,24 +17,17 @@ namespace QS.DbManagement {
 
 		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null);
 
-		/// <summary>
-		/// Заполняется композиционным корнем приложения 
-		/// который один знает обо всех конкретных реализациях creator-ов и
-		/// о том, как из IDbProvider достать строку подключения
-		///
-		///   interaction        — канал диалогов с пользователем
-		///   serviceProvider    — для резолва дополнительных зависимостей
-		/// </summary>
-		public Func<CreatorFactoryArgs, IDBCreator> CreatorFactory { get; set; }
+		public abstract IDBCreator CreatorFactory(CreatorFactoryArgs args);
 
 		public IDBCreator CreateCreator(CreatorFactoryArgs args) {
-			if(CreatorFactory == null)
-				throw new InvalidOperationException(
-					$"Для типа подключения '{ConnectionTypeName}' не задана CreatorFactory. "
-					+ "Зарегистрируйте её в композиционном корне приложения.");
 			return CreatorFactory(args);
 		}
 	}
+
+	/// <summary>
+	///   interaction — канал диалогов с пользователем
+	///   serviceProvider — для резолва дополнительных зависимостей
+	/// </summary>
 	public class CreatorFactoryArgs {
 		public IDbProvider Provider { get; set; }
 		public IProgressBarDisplayable Progress { get; set; }

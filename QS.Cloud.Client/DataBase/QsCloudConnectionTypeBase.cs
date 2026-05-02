@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using QS.Utilities.Extensions;
+using QS.DBScripts.Controllers;
 
 namespace QS.Cloud.Client.DataBase {
 	public class QsCloudConnectionTypeBase : ConnectionTypeBase {
 		public QsCloudConnectionTypeBase() {
 			Title = "QS: Облако";
 			ConnectionTypeName = "QSCloud";
-			
+
 			Parameters.Add(new ConnectionParameter("Account","Организация"));
 			Parameters.Add(new ConnectionParameter("Login","Пользователь"));
-			
+
 			IconBytes = Assembly.GetExecutingAssembly().GetResourceByteArray("QS.Cloud.Client.Icons.qscloud.ico");
 		}
 
@@ -23,5 +24,12 @@ namespace QS.Cloud.Client.DataBase {
 
 		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 
 			=> new QSCloudProvider(parameters, password);
+
+		public override IDBCreator CreatorFactory(CreatorFactoryArgs args) 
+			=> new QsCloudDbCreator(
+				args.Provider,
+				args.Progress,
+				args.Interaction,
+				args.CancellationToken);
 	}
 }
