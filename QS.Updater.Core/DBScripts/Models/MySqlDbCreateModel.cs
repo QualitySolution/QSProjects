@@ -43,7 +43,7 @@ namespace QS.DBScripts.Models
 			return Task.Run(() => RunCreation(dbName, dbTitle), cancellationToken);
 		}
 
-		public bool RunCreation(string dbName, string dbTitle) {
+		public bool RunCreation(string dbName, string dbTitle = null) {
 			using(var connectionDB = new MySqlConnection(connectionString)) {
 				try {
 					logger.Info("Connecting to MySQL...");
@@ -105,6 +105,16 @@ namespace QS.DBScripts.Models
 						cmd.Parameters.AddWithValue("@guid", Guid.NewGuid().ToString());
 						cmd.ExecuteNonQuery();
 						logger.Info("BaseGuid успешно записан.");
+					}
+
+					if(dbTitle != null) {
+						logger.Info("Генерируем BaseTitle");
+						cmd.CommandText =
+							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseTitle', @title)";
+						cmd.Parameters.Clear();
+						cmd.Parameters.AddWithValue("@title", dbTitle);
+						cmd.ExecuteNonQuery();
+						logger.Info("BaseTitle успешно записан.");
 					}
 
 				}

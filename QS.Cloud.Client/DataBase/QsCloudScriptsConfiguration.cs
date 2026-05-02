@@ -12,7 +12,7 @@ namespace QS.Cloud.Client.DataBase {
 			return new CreationScript(
 				Assembly.GetAssembly(typeof(QsCloudScriptsConfiguration)),
 				"QS.Cloud.Client.Scripts.new_empty.sql",
-				new Version(1, 0, 1)
+				new Version(1, 7)
 			);
 		}
 
@@ -22,7 +22,7 @@ namespace QS.Cloud.Client.DataBase {
 			configuration.AddUpdate(
 				new Version(1, 0),
 				new Version(1, 0, 1),
-				"QS.Cloud.Client.Scripts.1.0.1.sql");
+				"QS.Cloud.Client.Scripts.1.7.sql");
 
 			return configuration;
 		}

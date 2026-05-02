@@ -126,6 +126,13 @@ CREATE TABLE `base_parameters` (
   `str_value` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+
+INSERT INTO `base_parameters` (`name`, `str_value`) VALUES
+('ProductCode', '5'),
+('product_name', 'ClientManager'),
+('version', '1.7');
+
 -- --------------------------------------------------------
 
 --
