@@ -25,7 +25,7 @@ namespace QS.Cloud.Client.DataBase {
 		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 
 			=> new QSCloudProvider(parameters, password);
 
-		public override IDBCreator CreatorFactory(CreatorFactoryArgs args) 
+		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args)
 			=> new QsCloudDbCreator(
 				args.Provider,
 				args.Progress,

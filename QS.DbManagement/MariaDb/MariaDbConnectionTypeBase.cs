@@ -24,7 +24,7 @@ namespace QS.DbManagement
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDBCreator CreatorFactory(CreatorFactoryArgs args){
+		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args){
 			var provider = (MariaDBProvider)args.Provider;
 			var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
 			return new MySqlDbCreateModel(

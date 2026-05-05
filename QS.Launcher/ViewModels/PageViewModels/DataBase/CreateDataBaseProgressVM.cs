@@ -102,7 +102,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					CancellationToken = cts.Token,
 					ServiceProvider = services
 				};
-				IDBCreator creator = Connection.ConnectionType.CreateCreator(args);
+				IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
 				bool ok = await creator.RunCreationAsync(DbName, DbTitle);
 				if(ok)
 					DatabaseCreated?.Invoke();

@@ -1,4 +1,7 @@
+using System.Threading;
+using Grpc.Core;
 using QS.Cloud.Core;
+
 namespace QS.Cloud.Client.Clients {
 	public class DataBaseManagementCloudClient : CloudClientByBasicAuth {
 		public DataBaseManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
@@ -7,7 +10,15 @@ namespace QS.Cloud.Client.Clients {
 		public CreateDataBaseResponse CreateDataBase(string dbName, string dbTitle) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new CreateDataBaseRequest { Name = dbName, Title = dbTitle };
-			return client.CreateDataBase(request, headers); ;
+			return client.CreateDataBase(request, headers);
+		}
+
+		public AsyncServerStreamingCall<FillDataBaseProgress> FillDataBase(
+			string dbName, string dbTitle, CancellationToken cancellationToken = default)
+		{
+			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
+			var request = new FillDataBaseRequest { Name = dbName, Title = dbTitle };
+			return client.FillDataBase(request, headers, cancellationToken: cancellationToken);
 		}
 	}
 }

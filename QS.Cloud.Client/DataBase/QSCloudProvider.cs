@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System;
+using System.Threading;
 using QS.Cloud.Client.Clients;
 
 namespace QS.Cloud.Client.DataBase
@@ -57,6 +58,12 @@ namespace QS.Cloud.Client.DataBase
 		public bool CreateDatabase(string databaseName, string title)
 		{
 			return dbClient.CreateDataBase(databaseName, title).Succsess;
+		}
+
+		public AsyncServerStreamingCall<FillDataBaseProgress> FillDataBase(
+			string databaseName, string title, CancellationToken cancellationToken = default)
+		{
+			return dbClient.FillDataBase(databaseName, title, cancellationToken);
 		}
 	
 		public void Dispose()

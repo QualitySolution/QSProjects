@@ -3,15 +3,23 @@ using QS.DBScripts.Models;
 using QS.Updater.DB;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace QS.Cloud.Client.DataBase {
 	public class QsCloudScriptsConfiguration : IDbScriptsConfiguration {
+		private string ResourceName = "QS.Cloud.Client.Scripts.new_empty.sql";
+		public bool HasCreationScript() {
+			return Assembly.GetAssembly(typeof(QsCloudScriptsConfiguration))
+				.GetReferencedAssemblies().Select(x => x.FullName)
+				.Contains(ResourceName);
+		}
+
 		public CreationScript MakeCreationScript() {
 			return new CreationScript(
 				Assembly.GetAssembly(typeof(QsCloudScriptsConfiguration)),
-				"QS.Cloud.Client.Scripts.new_empty.sql",
+				ResourceName,
 				new Version(1, 7)
 			);
 		}

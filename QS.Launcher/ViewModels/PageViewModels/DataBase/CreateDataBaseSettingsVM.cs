@@ -50,8 +50,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private void GoToProgress() {
-			// Резолв через ActivatorUtilities — DI подставляет IDbCreatorInteraction/IUiThreadInvoker,
-			// а провайдер/соединение/имена приходят как runtime-аргументы.
 			var progress = Microsoft.Extensions.DependencyInjection.ActivatorUtilities
 				.GetServiceOrCreateInstance<CreateDataBaseProgressVM>(services);
 

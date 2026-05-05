@@ -17,9 +17,9 @@ namespace QS.DbManagement {
 
 		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null);
 
-		public abstract IDBCreator CreatorFactory(CreatorFactoryArgs args);
+		public abstract IDbCreatorModel CreatorFactory(CreatorFactoryArgs args);
 
-		public IDBCreator CreateCreator(CreatorFactoryArgs args) {
+		public IDbCreatorModel CreateCreator(CreatorFactoryArgs args) {
 			return CreatorFactory(args);
 		}
 	}

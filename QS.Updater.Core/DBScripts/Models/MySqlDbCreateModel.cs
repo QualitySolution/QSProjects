@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace QS.DBScripts.Models
 {
-	public class MySqlDbCreateModel : IDBCreator
+	public class MySqlDbCreateModel : IDbCreatorModel
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 

@@ -8,5 +8,7 @@ namespace QS.DBScripts
 		CreationScript MakeCreationScript();
 
 		UpdateConfiguration MakeUpdateConfiguration();
+
+		bool HasCreationScript();
 	}
 }
