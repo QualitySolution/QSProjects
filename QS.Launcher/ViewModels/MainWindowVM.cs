@@ -23,7 +23,7 @@ namespace QS.Launcher.ViewModels {
 
 		public int PagesCount {
 			get => rootPagesCount;
-			set { /* кол-во корневых страниц фиксируется в ctor */ }
+			set { }
 		}
 
 		public MainWindowVM(

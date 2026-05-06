@@ -5,9 +5,6 @@ using QS.DbManagement;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
-	/// <summary>
-	/// По «Далее» создаёт CreateDataBaseProgressVM и пушит её в Carousel поверх текущей
-	/// </summary>
 	public class CreateDataBaseSettingsVM : CarouselPageVM {
 		public IDbProvider Provider { get; private set; }
 		public Connection Connection { get; private set; }

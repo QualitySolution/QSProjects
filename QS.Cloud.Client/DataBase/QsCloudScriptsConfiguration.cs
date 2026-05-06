@@ -28,8 +28,8 @@ namespace QS.Cloud.Client.DataBase {
 			var configuration = new UpdateConfiguration();
 
 			configuration.AddUpdate(
-				new Version(1, 0),
-				new Version(1, 0, 1),
+				new Version(1, 7),
+				new Version(1, 7, 1),
 				"QS.Cloud.Client.Scripts.1.7.sql");
 
 			return configuration;

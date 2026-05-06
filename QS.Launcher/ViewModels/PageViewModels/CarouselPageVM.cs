@@ -18,12 +18,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public ICommand PushPageCommand { get; set; }
 
 		/// <summary>
-		/// Закрыть текущую нерутовую страницу и вернуться на предыдущую.
+		/// Закрыть текущую нерутовую страницу и вернуться на предыдущую
 		/// </summary>
 		public ICommand PopPageCommand { get; set; }
 
 		/// <summary>
-		/// Закрыть все нерутовые страницы и вернуться к корневым вкладкам.
+		/// Закрыть все нерутовые страницы и вернуться к корневым вкладкам
 		/// </summary>
 		public ICommand PopToRootCommand { get; set; }
 	}

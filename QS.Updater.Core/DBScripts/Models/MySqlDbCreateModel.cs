@@ -1,14 +1,10 @@
-using FluentNHibernate.Cfg.Db;
 using MySqlConnector;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
-using QS.Project.DB;
-using QS.Project.Domain;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace QS.DBScripts.Models
 {

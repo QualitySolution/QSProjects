@@ -50,7 +50,7 @@ namespace QS.Cloud.Client.DataBase
 					throw new InvalidOperationException("Ошибка в создании сесии");
 				}
 				else if(!session.IsAdmin) {
-					await interaction.ReportErrorAsync("Вы не имеете прав Администратора", "Запрос в облако, по типу SELECT cloud_users.multi_ip as multiIp, base_access.admin AS isAdmin, base_access.read_only as readOnly \" +\n\t\t\t\t\t\t\t\"FROM cloud_users \" + \n\t\t\t\t\t\t\t\"LEFT JOIN base_access ON base_access.user_id = cloud_users.id \" +\n\t\t\t\t\t\t\t\"WHERE cloud_users.id = @id AND base_access.base_id = @dbid;");
+					await interaction.ReportErrorAsync("Вы не имеете прав Администратора", "Запрос в облако");
 				}
 
 				var infoProvider = new SessionInfoProvider(sessionId: session.SessionId);

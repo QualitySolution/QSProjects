@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace QS.Cloud.Client.DataBase
 {
-	public class QSCloudProvider : IDbProvider, IDbCreatorModel {
+	public class QSCloudProvider : IDbProvider {
 
 		/// <summary>
 		/// Публичный - в типе родключения нужен доступ, реализацию он знает и так
@@ -137,14 +137,6 @@ namespace QS.Cloud.Client.DataBase
 			}
 
 			return resp;
-		}
-
-		public Task<bool> RunCreationAsync(string dbName, string dbTitle) {
-			throw new NotImplementedException();
-		}
-
-		public void RunCreation(string server, string dbname) {
-			throw new NotImplementedException();
 		}
 	}
 }
