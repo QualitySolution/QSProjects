@@ -10,11 +10,18 @@ using System.Reflection;
 using System;
 using System.Threading;
 using QS.Cloud.Client.Clients;
+using QS.DBScripts.Controllers;
+using System.Threading.Tasks;
 
 namespace QS.Cloud.Client.DataBase
 {
-	public class QSCloudProvider : IDbProvider {
-		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+	public class QSCloudProvider : IDbProvider, IDbCreatorModel {
+
+		/// <summary>
+		/// Публичный - в типе родключения нужен доступ, реализацию он знает и так
+		/// </summary>
+		public int BaseId { get; private set; }
+		public BasicAuthInfoProvider AuthInfo { get; private set; }
 
 		public bool IsConnected => throw new NotImplementedException();
 
@@ -22,27 +29,23 @@ namespace QS.Cloud.Client.DataBase
 
 		#region Параметры подключени
 		public string Account { get; private set; }
-		
 
 		#endregion
 		public string UserName { get; private set; }
 
 		public bool CanCreateDatabase => throw new NotImplementedException();
 
-		private CloudFeaturesClient featuresClient;
 		private LoginManagementCloudClient loginClient;
-		private SessionManagementCloudClient sessionClient;
 		private DataBaseManagementCloudClient dbClient;
-		private UserManagementCloudClient userClient;
 
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
-			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
+			AuthInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
 			
-			loginClient = new LoginManagementCloudClient(authInfo);
-			dbClient = new DataBaseManagementCloudClient(authInfo);
+			loginClient = new LoginManagementCloudClient(AuthInfo);
+			dbClient = new DataBaseManagementCloudClient(AuthInfo);
 		}
 
 		public bool AddUser(string username, string password)
@@ -57,13 +60,9 @@ namespace QS.Cloud.Client.DataBase
 	
 		public bool CreateDatabase(string databaseName, string title)
 		{
-			return dbClient.CreateDataBase(databaseName, title).Succsess;
-		}
-
-		public AsyncServerStreamingCall<FillDataBaseProgress> FillDataBase(
-			string databaseName, string title, CancellationToken cancellationToken = default)
-		{
-			return dbClient.FillDataBase(databaseName, title, cancellationToken);
+			CreateDataBaseResponse response = dbClient.CreateDataBase(databaseName, title);
+			BaseId = response.BaseId;
+			return true;
 		}
 	
 		public void Dispose()
@@ -138,6 +137,14 @@ namespace QS.Cloud.Client.DataBase
 			}
 
 			return resp;
+		}
+
+		public Task<bool> RunCreationAsync(string dbName, string dbTitle) {
+			throw new NotImplementedException();
+		}
+
+		public void RunCreation(string server, string dbname) {
+			throw new NotImplementedException();
 		}
 	}
 }

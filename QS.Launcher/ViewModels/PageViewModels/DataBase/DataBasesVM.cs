@@ -91,7 +91,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		/// <summary>
-		/// создаёт CreateDataBaseSettingsVM возвращает фокус на DataBasesVM и обновляет список баз.
+		/// создаёт <see cref="CreateDataBaseSettingsVM"/> возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
 		/// </summary>
 		private void OpenCreateDatabase() {
 			if(provider == null || currentConnection == null)

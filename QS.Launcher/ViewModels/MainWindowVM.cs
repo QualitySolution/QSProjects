@@ -34,7 +34,7 @@ namespace QS.Launcher.ViewModels {
 			IServiceProvider provider)
 		{
 			Pages = new ObservableCollection<CarouselPageVM> {
-				loginVM, dataBasesVM, baseManagementVM, userManagementVM
+				loginVM, dataBasesVM
 			};
 			rootPagesCount = Pages.Count;
 			login = loginVM;

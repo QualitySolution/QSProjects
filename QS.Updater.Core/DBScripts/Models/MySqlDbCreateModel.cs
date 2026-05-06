@@ -1,6 +1,9 @@
+using FluentNHibernate.Cfg.Db;
 using MySqlConnector;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using QS.Project.DB;
+using QS.Project.Domain;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -37,7 +40,28 @@ namespace QS.DBScripts.Models
 			this.cancellationToken = cancellationToken;
 		}
 
-		public Task<bool> RunCreationAsync(string dbName, string dbTitle) {
+		public MySqlDbCreateModel(
+			string server, uint port, string login, string password,
+			IDbScriptsConfiguration scripts,
+			IProgressBarDisplayable progress,
+			IDbCreatorInteraction interaction,
+			CancellationToken cancellationToken) {
+
+			this.connectionString = new MySqlConnectionStringBuilder {
+				Server = server,
+				Port = port,
+				UserID = login,
+				Password = password,
+				AllowUserVariables = true
+			}.ConnectionString;
+			this.scripts = scripts.MakeCreationScript() ?? throw new ArgumentNullException(nameof(scripts));
+			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
+			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
+			this.cancellationToken = cancellationToken;
+		}
+
+
+		public Task<bool> RunCreationAsync(string dbName, string dbTitle = null) {
 			// Тяжёлая часть с MySqlScript.Execute синхронная,
 			// поэтому уносим её на пул, чтобы не блокировать UI-поток
 			return Task.Run(() => RunCreation(dbName, dbTitle), cancellationToken);

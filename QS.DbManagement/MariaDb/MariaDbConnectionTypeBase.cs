@@ -27,12 +27,14 @@ namespace QS.DbManagement
 		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args){
 			var provider = (MariaDBProvider)args.Provider;
 			var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
-			return new MySqlDbCreateModel(
+			var creator = new MySqlDbCreateModel(
 				provider.ConnectionStringBuilder.ConnectionString,
 				scripts,
 				args.Progress,
 				args.Interaction,
 				args.CancellationToken);
+			creator.FillBaseGuid = false;
+			return creator;
 		}
 
 		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 

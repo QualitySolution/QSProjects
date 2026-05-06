@@ -1,12 +1,16 @@
+using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
+using QS.DBScripts;
+using QS.DBScripts.Controllers;
+using QS.DBScripts.Models;
+using QS.Utilities.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using QS.Utilities.Extensions;
-using QS.DBScripts.Controllers;
 
 namespace QS.Cloud.Client.DataBase {
 	public class QsCloudConnectionTypeBase : ConnectionTypeBase {
+
 		public QsCloudConnectionTypeBase() {
 			Title = "QS: Облако";
 			ConnectionTypeName = "QSCloud";
@@ -22,14 +26,21 @@ namespace QS.Cloud.Client.DataBase {
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 
-			=> new QSCloudProvider(parameters, password);
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) {
+			return new QSCloudProvider(parameters, password);
+		}
 
-		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args)
-			=> new QsCloudDbCreator(
-				args.Provider,
+		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args) {
+			var provider = (QSCloudProvider)args.Provider;
+			var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
+			var creator = new QsCloudDbCreator(
+				provider.BaseId,
+				provider.AuthInfo,
+				scripts,
 				args.Progress,
 				args.Interaction,
 				args.CancellationToken);
+			return creator;
+		}
 	}
 }

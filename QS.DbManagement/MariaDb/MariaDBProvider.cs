@@ -1,4 +1,5 @@
 using Dapper;
+using FluentNHibernate.Cfg.Db;
 using MySqlConnector;
 using QS.DbManagement.Responces;
 using QS.Project.Versioning;
@@ -15,9 +16,9 @@ namespace QS.DbManagement
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 
 		readonly MySqlConnection connection;
+
 		/// <summary>
-		/// Публичный, чтобы внешние компоненты могли получить подключение
-		/// без повторного разбора параметров.
+		/// Публичный - в типе родключения нужен доступ, реализацию он знает и так
 		/// </summary>
 		public MySqlConnectionStringBuilder ConnectionStringBuilder { get; }
 
@@ -25,10 +26,6 @@ namespace QS.DbManagement
 
 		public bool IsAdmin { get; private set; }
 
-		/// <summary>
-		/// Есть ли у текущего пользователя право создавать базы данных.
-		/// Определяется в момент <see cref="LoginToServer"/> из SHOW GRANTS.
-		/// </summary>
 		public bool CanCreateDatabase { get; private set; }
 
 		/// <summary>

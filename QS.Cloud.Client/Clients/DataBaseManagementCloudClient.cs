@@ -12,13 +12,5 @@ namespace QS.Cloud.Client.Clients {
 			var request = new CreateDataBaseRequest { Name = dbName, Title = dbTitle };
 			return client.CreateDataBase(request, headers);
 		}
-
-		public AsyncServerStreamingCall<FillDataBaseProgress> FillDataBase(
-			string dbName, string dbTitle, CancellationToken cancellationToken = default)
-		{
-			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
-			var request = new FillDataBaseRequest { Name = dbName, Title = dbTitle };
-			return client.FillDataBase(request, headers, cancellationToken: cancellationToken);
-		}
 	}
 }

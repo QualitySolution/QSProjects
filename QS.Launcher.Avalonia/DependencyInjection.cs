@@ -12,8 +12,6 @@ public static partial class DependencyInjection {
 			.AddSingleton<MainWindow>()
 			.AddSingleton<UserControl, LoginView>()
 			.AddSingleton<UserControl, DataBasesView>()
-			.AddSingleton<UserControl, UserManagementView>()
-			.AddSingleton<UserControl, BaseManagementView>()
 			.AddTransient<UserControl, CreateDataBaseSettingsView>()
 			.AddTransient<UserControl, CreateDataBaseProgressView>()
 			.AddSingleton<IUiThreadInvoker, AvaloniaUiThreadInvoker>();

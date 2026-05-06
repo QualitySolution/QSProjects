@@ -5,35 +5,15 @@ package QS.Cloud.Core;
 service DataBaseManagement{
 	// Создать пустую базу
 	rpc CreateDataBase (CreateDataBaseRequest) returns (CreateDataBaseResponse);
-
-	// Наполняет базу стримит, прогресс-сообщения клиенту по мере выполнения
-	rpc FillDataBase (FillDataBaseRequest) returns (stream FillDataBaseProgress);
 }
 
 message CreateDataBaseRequest{
 	string name = 1;
 	string title = 2;
+	uint32 product_id = 3;
 }
 
 message CreateDataBaseResponse{
-	bool succsess = 1;
-}
-
-message FillDataBaseRequest{
-	string name = 1;
-	string title = 2;
-}
-
-message FillDataBaseProgress{
-	enum Stage {
-		STARTED = 0;
-		PROGRESS = 1;
-		FINISHED = 2;
-	}
-	Stage stage = 1;
-	double current = 2;
-	double max = 3;
-	string text = 4;
-	bool success = 5;
-	string error_text = 6;
+	int32 base_id = 1;
+	string base_guid = 2;
 }
