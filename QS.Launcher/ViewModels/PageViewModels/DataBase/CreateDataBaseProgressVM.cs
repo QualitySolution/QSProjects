@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +20,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public IDbProvider Provider { get; private set; }
 		public Connection Connection { get; private set; }
-		public string DbName { get; private set; }
-		public string DbTitle { get; private set; }
+		private IReadOnlyList<DbCreationPhase> phases = Array.Empty<DbCreationPhase>();
 
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IServiceProvider services;
@@ -83,14 +84,15 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			});
 		}
 
-		public void SetDbSettings(
-			string dbName,
-			string dbTitle, 
-			IDbProvider provider, Connection connection) {
-			DbName = dbName ?? throw new ArgumentNullException(nameof(dbName));
-			DbTitle = dbTitle ?? throw new ArgumentNullException(nameof(dbTitle));
+		public void SetPipeline(
+			IDbProvider provider, Connection connection,
+			IEnumerable<DbCreationPhase> phases) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			if(phases == null) throw new ArgumentNullException(nameof(phases));
+			this.phases = phases.ToList();
+			if(this.phases.Count == 0)
+				throw new ArgumentException("Пайплайн создания базы пуст.", nameof(phases));
 		}
 
 		public async Task StartCreationAsync() {
@@ -102,12 +104,19 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					CancellationToken = cts.Token,
 					ServiceProvider = services
 				};
-				IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
-				bool ok = await creator.RunCreationAsync(DbName, DbTitle);
-				if(ok)
-					DatabaseCreated?.Invoke();
-				else
-					DatabaseCreationFailed?.Invoke();
+
+				for(int i = 0; i < phases.Count; i++) {
+					cts.Token.ThrowIfCancellationRequested();
+					var phase = phases[i];
+					uiThread.Post(() => CurrentText = phase.Title);
+
+					bool ok = await phase.Action(args);
+					if(!ok) {
+						DatabaseCreationFailed?.Invoke();
+						return;
+					}
+				}
+				DatabaseCreated?.Invoke();
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Создание базы отменено.");

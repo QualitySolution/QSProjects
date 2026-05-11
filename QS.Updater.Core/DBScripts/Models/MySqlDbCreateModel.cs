@@ -74,15 +74,15 @@ namespace QS.DBScripts.Models
 					var sql = "SHOW DATABASES;";
 					var cmd = new MySqlCommand(sql, connectionDB);
 					bool needDropBase = false;
+					bool hasBase = false;
 					using(var rdr = cmd.ExecuteReader()) {
 						while(rdr.Read()) {
 							if(rdr[0].ToString() == dbName) {
 								if(interaction.AskDropExistingDatabaseAsync(dbName).GetAwaiter().GetResult()) {
 									needDropBase = true;
-									break;
 								}
-								else
-									return false;
+								hasBase = true;
+								break;
 							}
 						}
 					}
@@ -104,9 +104,11 @@ namespace QS.DBScripts.Models
 						cmd.ExecuteNonQuery();
 					}
 
-					progress.Add(text: $"Создаем базу {dbName}");
-					cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbName);
-					cmd.ExecuteNonQuery();
+					if(!hasBase || needDropBase) {
+						progress.Add(text: $"Создаем базу {dbName}");
+						cmd.CommandText = String.Format("CREATE SCHEMA `{0}` DEFAULT CHARACTER SET utf8mb4 ;", dbName);
+						cmd.ExecuteNonQuery();
+					}
 					cmd.CommandText = String.Format("USE `{0}` ;", dbName);
 					cmd.ExecuteNonQuery();
 

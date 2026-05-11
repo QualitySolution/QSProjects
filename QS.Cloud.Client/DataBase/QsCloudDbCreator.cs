@@ -62,7 +62,7 @@ namespace QS.Cloud.Client.DataBase
 
 				var creator = new MySqlDbCreateModel(session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password, configuration, progress, interaction, cancellationToken);
 				creator.FillBaseGuid = false;
-				bool success = await creator.RunCreationAsync(dbName, dbTitle);
+				bool success = await creator.RunCreationAsync(session.Db.BaseName, dbTitle);
 
 				sessionLife.Dispose();
 

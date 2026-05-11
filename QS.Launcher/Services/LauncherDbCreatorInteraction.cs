@@ -26,9 +26,9 @@ namespace QS.Launcher.Services {
 
 		public Task<bool> AskDropExistingDatabaseAsync(string dbName) {
 			var tcs = new TaskCompletionSource<bool>();
-			uiThread.Post(() => {
+			uiThread.Post(async () => {
 				try {
-					bool answer = question.Question(
+					bool answer = await question.QuestionAsync(
 						$"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?",
 						"Создание базы данных");
 					tcs.TrySetResult(answer);

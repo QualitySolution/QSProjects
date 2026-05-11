@@ -178,7 +178,7 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase(string databaseName, string title) {
+		public bool CreateDatabase(string databaseName, string title, IServiceProvider services = null) {
 			CreatedTitle = title;
 			string sql = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
 			return connection.Execute(sql) != 0;

@@ -12,18 +12,16 @@ using System.Threading;
 using QS.Cloud.Client.Clients;
 using QS.DBScripts.Controllers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace QS.Cloud.Client.DataBase
 {
 	public class QSCloudProvider : IDbProvider {
 
-		/// <summary>
-		/// Публичный - в типе родключения нужен доступ, реализацию он знает и так
-		/// </summary>
 		public int BaseId { get; private set; }
 		public BasicAuthInfoProvider AuthInfo { get; private set; }
 
-		public bool IsConnected => throw new NotImplementedException();
+		public bool IsConnected { get; private set; }
 
 		public bool IsAdmin { get; protected set; }
 
@@ -33,7 +31,7 @@ namespace QS.Cloud.Client.DataBase
 		#endregion
 		public string UserName { get; private set; }
 
-		public bool CanCreateDatabase => throw new NotImplementedException();
+		public bool CanCreateDatabase => dbClient.CanConnect;
 
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
@@ -58,9 +56,10 @@ namespace QS.Cloud.Client.DataBase
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase(string databaseName, string title)
+		public bool CreateDatabase(string databaseName, string title, IServiceProvider services)
 		{
-			CreateDataBaseResponse response = dbClient.CreateDataBase(databaseName, title);
+			IApplicationInfo applicationInfo = services.GetService<IApplicationInfo>();
+			CreateDataBaseResponse response = dbClient.CreateDataBase(databaseName, title, applicationInfo);
 			BaseId = response.BaseId;
 			return true;
 		}
