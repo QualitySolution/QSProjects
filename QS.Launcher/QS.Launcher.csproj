@@ -20,6 +20,7 @@
 	  <PackageReference Include="ReactiveUI" Version="22.3.1" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Insider.Desktop\Insider.Desktop.csproj" />
 	  <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
 	  <ProjectReference Include="..\QS.DbManagement\QS.DbManagement.csproj" />
 	  <ProjectReference Include="..\QS.Project.Core\QS.Project.Core.csproj" />

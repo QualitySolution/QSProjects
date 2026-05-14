@@ -1,5 +1,6 @@
 using System;
-using Autofac;
+using System.Threading;
+using System.Threading.Tasks;
 using QS.DBScripts.Models;
 using QS.DBScripts.ViewModels;
 using QS.Dialog;
@@ -8,22 +9,25 @@ using QS.Navigation;
 
 namespace QS.DBScripts.Controllers
 {
-	public class UserCreateDbController : IDBCreator, IDbCreateController
+	public class UserCreateDbController : IDBCreator, IDbCreatorInteraction
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly INavigationManager navigation;
-		private readonly ILifetimeScope autofacScope;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
+		private readonly IDbScriptsConfiguration scripts;
 
-		public UserCreateDbController(INavigationManager navigation, ILifetimeScope autofacScope, IInteractiveService interactive, IGuiDispatcher guiDispatcher)
+		public UserCreateDbController(
+			INavigationManager navigation,
+			IInteractiveService interactive,
+			IGuiDispatcher guiDispatcher,
+			IDbScriptsConfiguration scripts)
 		{
-
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
-			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
+			this.scripts = scripts ?? throw new ArgumentNullException(nameof(scripts));
 		}
 
 		public void RunCreation(string server, string dbname)
@@ -37,30 +41,75 @@ namespace QS.DBScripts.Controllers
 			};
 		}
 
-		void StartCreation(string server, string dbname, string login, string password)
+		async void StartCreation(string server, string dbname, string login, string password)
 		{
-			var createModel = autofacScope.Resolve<MySqlDbCreateModel>(new TypedParameter(typeof(IDbCreateController), this));
+			ParseServer(server, out string host, out uint port);
+
+			bool success = false;
 			try {
-				bool success = createModel.RunCreation(server, dbname, login, password);
-				if (success)
-					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
+				var createModel = new MySqlDbCreateModel(
+					host, port, login, password,
+					scripts,
+					Progress,
+					interaction: this,
+					cancellationToken: CancellationToken.None);
+
+				success = await createModel.RunCreationAsync(dbname, dbTitle: null);
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка создания базы.");
+				guiDispatcher.RunInGuiTread(() => interactive.ShowMessage(ImportanceLevel.Error, ex.Message));
 			}
 			finally {
-				if(progressPage != null)
-					navigation.ForceClosePage(progressPage, CloseSource.FromParentPage);
+				guiDispatcher.RunInGuiTread(() => {
+					if(progressPage != null)
+						navigation.ForceClosePage(progressPage, CloseSource.FromParentPage);
+				});
+			}
+
+			if(success) {
+				guiDispatcher.RunInGuiTread(() =>
+					interactive.ShowMessage(ImportanceLevel.Info,
+						"Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей."));
 			}
 		}
 
-		#region Взаимодействие с моделью
-		public void WasError(string text, string lastSqlCommand)
-		{
-			interactive.ShowMessage(ImportanceLevel.Error, text);
+		private static void ParseServer(string server, out string host, out uint port) {
+			port = 3306;
+			var parts = (server ?? string.Empty).Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			if(parts.Length == 0)
+				throw new InvalidOperationException("Имя сервера не корректно.");
+			host = parts[0];
+			if(parts.Length > 1)
+				uint.TryParse(parts[1], out port);
 		}
 
-		public bool NeedDropDatabaseIfExists(string dbname)
-		{
-			return interactive.Question($"База с именем `{dbname}` уже существует на сервере. Удалить существующую базу перед созданием новой?");
+		#region IDbCreatorInteraction
+
+		public Task<bool> AskDropExistingDatabaseAsync(string dbName) {
+			var tcs = new TaskCompletionSource<bool>();
+			guiDispatcher.RunInGuiTread(() => {
+				try {
+					tcs.SetResult(interactive.Question(
+						$"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?"));
+				}
+				catch(Exception ex) { tcs.SetException(ex); }
+			});
+			return tcs.Task;
 		}
+
+		public Task ReportErrorAsync(string text, string lastExecutedStatement) {
+			var tcs = new TaskCompletionSource<bool>();
+			guiDispatcher.RunInGuiTread(() => {
+				try {
+					interactive.ShowMessage(ImportanceLevel.Error, text);
+					tcs.SetResult(true);
+				}
+				catch(Exception ex) { tcs.SetException(ex); }
+			});
+			return tcs.Task;
+		}
+		#endregion
 
 		#region Свойства процесса
 
@@ -75,7 +124,6 @@ namespace QS.DBScripts.Controllers
 				return progressPage.ViewModel.Progress;
 			}
 		}
-		#endregion
 		#endregion
 	}
 }

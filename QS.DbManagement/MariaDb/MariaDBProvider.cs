@@ -1,4 +1,5 @@
 using Dapper;
+using FluentNHibernate.Cfg.Db;
 using MySqlConnector;
 using QS.DbManagement.Responces;
 using QS.Project.Versioning;
@@ -15,17 +16,23 @@ namespace QS.DbManagement
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 
 		readonly MySqlConnection connection;
-		readonly MySqlConnectionStringBuilder connectionStringBuilder;
+
+		/// <summary>
+		/// Публичный - в типе родключения нужен доступ, реализацию он знает и так
+		/// </summary>
+		public MySqlConnectionStringBuilder ConnectionStringBuilder { get; }
 
 		public bool IsConnected => connection.State == ConnectionState.Open;
 
 		public bool IsAdmin { get; private set; }
 
-		/// <summary>
-		/// Есть ли у текущего пользователя право создавать базы данных.
-		/// Определяется в момент <see cref="LoginToServer"/> из SHOW GRANTS.
-		/// </summary>
 		public bool CanCreateDatabase { get; private set; }
+
+		/// <summary>
+		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы, 
+		/// нужен потом при применения скрипта с наполнением базы
+		/// </summary>
+		public string CreatedTitle { get; private set; }
 
 		#region Параметры подключения
 		public string Server { get; }
@@ -51,15 +58,15 @@ namespace QS.DbManagement
 			}
 			Server = serverValue;
 
-			connectionStringBuilder = new MySqlConnectionStringBuilder {
+			ConnectionStringBuilder = new MySqlConnectionStringBuilder {
 				Server = host,
 				UserID = UserName,
 				Password = password,
 				AllowUserVariables = true
 			};
 			if(port != null)
-				connectionStringBuilder.Port = port.Value;
-			connection = new MySqlConnection(connectionStringBuilder.ConnectionString);
+				ConnectionStringBuilder.Port = port.Value;
+			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
 		}
 
 		#region IDbProvider
@@ -142,11 +149,11 @@ namespace QS.DbManagement
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			try {
-				connectionStringBuilder.Database = dbInfo.BaseName;
+				ConnectionStringBuilder.Database = dbInfo.BaseName;
 
 				return new LoginToDatabaseResponse {
 					Success = true,
-					ConnectionString = connectionStringBuilder.ConnectionString,
+					ConnectionString = ConnectionStringBuilder.ConnectionString,
 					Login = UserName,
 					Parameters = new Dictionary<string, string> {
 						{ "BaseTitle", dbInfo.Title }
@@ -171,7 +178,8 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase(string databaseName) {
+		public bool CreateDatabase(string databaseName, string title, IServiceProvider services = null) {
+			CreatedTitle = title;
 			string sql = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
 			return connection.Execute(sql) != 0;
 		}
