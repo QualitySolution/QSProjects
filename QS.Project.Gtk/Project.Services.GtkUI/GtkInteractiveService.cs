@@ -1,4 +1,5 @@
 using QS.Dialog;
+using System.Threading.Tasks;
 
 namespace QS.Project.Services.GtkUI {
 	public class GtkInteractiveService : IInteractiveService
@@ -24,6 +25,14 @@ namespace QS.Project.Services.GtkUI {
 		public string Question(string[] buttons, string message, string title = null)
 		{
 			return interactiveQuestion.Question(buttons, message, title);
+		}
+
+		public Task<bool> QuestionAsync(string message, string title = null) {
+			throw new System.NotImplementedException();
+		}
+
+		public Task<string> QuestionAsync(string[] buttons, string message, string title = null) {
+			throw new System.NotImplementedException();
 		}
 	}
 }
