@@ -41,7 +41,8 @@ namespace QS.Cloud.Client
 		
 		public virtual async void Dispose()
 		{
-			await channel?.ShutdownAsync();
+			if(channel != null)
+				await channel.ShutdownAsync();
 		}
 	}
 }
