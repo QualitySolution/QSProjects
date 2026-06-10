@@ -12,7 +12,7 @@ namespace QS.Cloud.Client.DataBase {
 		private string ResourceName = "QS.Cloud.Client.Scripts.new_empty.sql";
 		public bool HasCreationScript() {
 			return Assembly.GetAssembly(typeof(QsCloudScriptsConfiguration))
-				.GetReferencedAssemblies().Select(x => x.FullName)
+				.GetManifestResourceNames()
 				.Contains(ResourceName);
 		}
 

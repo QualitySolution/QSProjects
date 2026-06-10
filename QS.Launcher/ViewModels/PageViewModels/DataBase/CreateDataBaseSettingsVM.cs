@@ -1,7 +1,6 @@
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using QS.DbManagement;
 using QS.DBScripts.Controllers;
 using ReactiveUI;
@@ -55,12 +54,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			var pipeline = new[] {
 				new DbCreationPhase(
 					"Создание базы данных",
-					(args) => Task.FromResult(args.Provider.CreateDatabase(DbName, DbTitle, services))),
+					args => args.Provider.CreateDatabase(DbName, DbTitle, services)),
 				new DbCreationPhase(
 					"Наполнение базы данных",
-					async args => {
+					args => {
 						IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
-						return await creator.RunCreationAsync(DbName, DbTitle);
+						return creator.RunCreation(DbName, DbTitle);
 					})
 			};
 

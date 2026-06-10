@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 using QS.DbManagement;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
-using QS.Launcher.Services;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
-	/// <summary>
-	/// показывает прогресс создания базы, прогресс приходит из не-UI потока, поэтому все мутации
-	/// reactive-свойств проксируются через IUiThreadInvoker
-	/// </summary>
 	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -24,10 +19,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IServiceProvider services;
-		private readonly IUiThreadInvoker uiThread;
+		private readonly IGuiDispatcher guiDispatcher;
 		private readonly CancellationTokenSource cts;
 
-		#region IProgressBarDisplayable backed properties
+		#region IProgressBarDisplayable поля
 
 		private double minValue;
 		private double maxValue = 1;
@@ -58,10 +53,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		#endregion
 
-		/// <summary>Поднимается, когда база успешно создана, на него должен быть подписан DataBasesVM</summary>
 		public event Action DatabaseCreated;
-
-		/// <summary>Поднимается, когда создание завершилось отменой</summary>
 		public event Action DatabaseCreationFailed;
 
 		public ReactiveCommand<Unit, Unit> StartCreationCommand { get; }
@@ -69,11 +61,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public CreateDataBaseProgressVM(
 			IDbCreatorInteraction interaction,
-			IUiThreadInvoker uiThread,
+			IGuiDispatcher guiDispatcher,
 			IServiceProvider services)
 		{
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
-			this.uiThread = uiThread ?? throw new ArgumentNullException(nameof(uiThread));
+			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
 			cts = new CancellationTokenSource();
 
@@ -95,6 +87,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				throw new ArgumentException("Пайплайн создания базы пуст.", nameof(phases));
 		}
 
+		/// <summary>
+		/// выносим всю синхронную цепочку фаз в пул, чтобы UI поток оставался свободным для перерисовки прогрессбара
+		/// </summary>
 		public async Task StartCreationAsync() {
 			try {
 				var args = new CreatorFactoryArgs {
@@ -105,18 +100,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					ServiceProvider = services
 				};
 
-				for(int i = 0; i < phases.Count; i++) {
-					cts.Token.ThrowIfCancellationRequested();
-					var phase = phases[i];
-					uiThread.Post(() => CurrentText = phase.Title);
+				bool success = await Task.Run(() => RunPipeline(args), cts.Token);
 
-					bool ok = await phase.Action(args);
-					if(!ok) {
-						DatabaseCreationFailed?.Invoke();
-						return;
-					}
-				}
-				DatabaseCreated?.Invoke();
+				if(success)
+					DatabaseCreated?.Invoke();
+				else
+					DatabaseCreationFailed?.Invoke();
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Создание базы отменено.");
@@ -124,14 +113,23 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Сбой в процессе создания базы.");
-				await interaction.ReportErrorAsync(ex.Message, null);
+				interaction.ReportError(ex.Message, null);
 				DatabaseCreationFailed?.Invoke();
 			}
 		}
+		private bool RunPipeline(CreatorFactoryArgs args) {
+			foreach(var phase in phases) {
+				args.CancellationToken.ThrowIfCancellationRequested();
+				guiDispatcher.RunInGuiTread(() => CurrentText = phase.Title);
+				if(!phase.Action(args))
+					return false;
+			}
+			return true;
+		}
 
-		#region IProgressBarDisplayable
+		#region IProgressBarDisplayable методы
 		public void Start(double maxValue = 1, double minValue = 0, string text = null, double startValue = 0) {
-			uiThread.Post(() => {
+			guiDispatcher.RunInGuiTread(() => {
 				MaxValue = maxValue;
 				MinValue = minValue;
 				Value = startValue;
@@ -140,20 +138,20 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			});
 		}
 
-		public void Update(double curValue) => uiThread.Post(() => Value = curValue);
+		public void Update(double curValue) => guiDispatcher.RunInGuiTread(() => Value = curValue);
 
-		public void UpdateMax(double maxValue) => uiThread.Post(() => MaxValue = maxValue);
+		public void UpdateMax(double maxValue) => guiDispatcher.RunInGuiTread(() => MaxValue = maxValue);
 
-		public void Update(string curText) => uiThread.Post(() => CurrentText = curText);
+		public void Update(string curText) => guiDispatcher.RunInGuiTread(() => CurrentText = curText);
 
 		public void Add(double addValue = 1, string text = null) {
-			uiThread.Post(() => {
+			guiDispatcher.RunInGuiTread(() => {
 				Value += addValue;
 				if(text != null) CurrentText = text;
 			});
 		}
 
-		public void Close() => uiThread.Post(() => IsStarted = false);
+		public void Close() => guiDispatcher.RunInGuiTread(() => IsStarted = false);
 		#endregion
 	}
 }

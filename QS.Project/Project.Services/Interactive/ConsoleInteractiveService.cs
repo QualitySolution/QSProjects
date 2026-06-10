@@ -23,18 +23,9 @@ namespace QS.Project.Services.Interactive
 		{
 			return interactiveQuestion.Question(message, title);
 		}
-		
 		public string Question(string[] buttons, string message, string title = null)
 		{
 			return interactiveQuestion.Question(buttons, message, title);
-		}
-
-		public Task<bool> QuestionAsync(string message, string title = null) {
-			throw new System.NotImplementedException();
-		}
-
-		public Task<string> QuestionAsync(string[] buttons, string message, string title = null) {
-			throw new System.NotImplementedException();
 		}
 	}
 }

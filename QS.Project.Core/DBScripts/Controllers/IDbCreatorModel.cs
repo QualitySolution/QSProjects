@@ -1,12 +1,12 @@
-using System.Threading.Tasks;
-
 namespace QS.DBScripts.Controllers
 {
 	/// <summary>
-	/// Низкоуровневая модель создания БД: знает, как физически создать и наполнить базу
+	/// Низкоуровневая модель наполнения БД для конкретного движка
 	/// </summary>
 	public interface IDbCreatorModel
 	{
-		Task<bool> RunCreationAsync(string dbName, string dbTitle);
+		// Метод блокирует вызывающий поток на время работы с базой
+		// Вынесение в фоновый поток — ответственность вызывающего кода
+		bool RunCreation(string dbName, string dbTitle);
 	}
 }

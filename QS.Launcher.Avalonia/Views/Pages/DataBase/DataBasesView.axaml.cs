@@ -10,18 +10,19 @@ namespace QS.Launcher.Views.Pages;
 public partial class DataBasesView : UserControl {
 	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+	private readonly DataBasesVM ViewModel;
+
 	public DataBasesView(DataBasesVM viewModel) {
 		InitializeComponent();
 
-		DataContext = viewModel;
+		DataContext = ViewModel = viewModel;
 
-		viewModel.StartLaunchProgram += HandleStartMainProgram;
+		ViewModel.StartLaunchProgram += HandleStartMainProgram;
 
 		KeyDown += (s, e) => {
 			if(e.Key == Key.Enter) {
 				TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
-				if(DataContext is DataBasesVM vm)
-					vm.ConnectCommand.Execute(null);
+				ViewModel.ConnectCommand.Execute(null);
 			}
 		};
 	}
@@ -56,7 +57,7 @@ public partial class DataBasesView : UserControl {
 	}
 
 	private void Databases_OnDoubleTapped(object? sender, TappedEventArgs e) {
-		if(databases.SelectedItem is not null && DataContext is DataBasesVM vm)
-			vm.ConnectCommand.Execute(null);
+		if(databases.SelectedItem is not null)
+			ViewModel.ConnectCommand.Execute(null);
 	}
 }

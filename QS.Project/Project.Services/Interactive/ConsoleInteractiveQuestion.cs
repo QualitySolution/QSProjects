@@ -37,13 +37,5 @@ namespace QS.Project.Services.Interactive
 			}
 			return null;
 		}
-
-		public Task<bool> QuestionAsync(string message, string title = null) {
-			throw new NotImplementedException();
-		}
-
-		public Task<string> QuestionAsync(string[] buttons, string message, string title = null) {
-			throw new NotImplementedException();
-		}
 	}
 }

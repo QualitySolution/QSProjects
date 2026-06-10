@@ -5,7 +5,6 @@ using QS.DBScripts.Models;
 using QS.Dialog;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QS.Cloud.Client.DataBase
 {
@@ -14,7 +13,6 @@ namespace QS.Cloud.Client.DataBase
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly int baseId;
-
 		private readonly IProgressBarDisplayable progress;
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IDbScriptsConfiguration configuration;
@@ -24,33 +22,33 @@ namespace QS.Cloud.Client.DataBase
 
 		public QsCloudDbCreator(
 			int baseId,
-			BasicAuthInfoProvider AuthInfo,
+			BasicAuthInfoProvider authInfo,
 			IDbScriptsConfiguration configuration,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
 			CancellationToken cancellationToken)
 		{
 			this.baseId = baseId;
-
-			loginClient = new LoginManagementCloudClient(AuthInfo);
-
-			this.configuration = configuration ?? throw new ArgumentNullException(nameof(progress));
+			loginClient = new LoginManagementCloudClient(authInfo);
+			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.cancellationToken = cancellationToken;
 		}
 
-
-		public async Task<bool> RunCreationAsync(string dbName, string dbTitle) {
+		public bool RunCreation(string dbName, string dbTitle) {
 			try {
+				cancellationToken.ThrowIfCancellationRequested();
+
 				StartSessionResponse session = loginClient.StartSession(baseId);
 
 				if(!session.Success) {
-					await interaction.ReportErrorAsync("Ошибка в создании сесии", "Запрос в облако");
-					throw new InvalidOperationException("Ошибка в создании сесии");
+					interaction.ReportError("Ошибка в создании сессии", "Запрос в облако");
+					return false;
 				}
-				else if(!session.IsAdmin) {
-					await interaction.ReportErrorAsync("Вы не имеете прав Администратора", "Запрос в облако");
+				if(!session.IsAdmin) {
+					interaction.ReportError("Вы не имеете прав Администратора", "Запрос в облако");
+					return false;
 				}
 
 				var infoProvider = new SessionInfoProvider(sessionId: session.SessionId);
@@ -60,12 +58,13 @@ namespace QS.Cloud.Client.DataBase
 				};
 				sessionLife.KeepAlive();
 
-				var creator = new MySqlDbCreateModel(session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password, configuration, progress, interaction, cancellationToken);
+				var creator = new MySqlDbCreateModel(
+					session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
+					configuration, progress, interaction, cancellationToken);
 				creator.FillBaseGuid = false;
-				bool success = await creator.RunCreationAsync(session.Db.BaseName, dbTitle);
+				bool success = creator.RunCreation(session.Db.BaseName, dbTitle);
 
 				sessionLife.Dispose();
-
 				return success;
 			}
 			catch(OperationCanceledException) {
@@ -74,7 +73,7 @@ namespace QS.Cloud.Client.DataBase
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Ошибка при создании базы в облаке.");
-				await interaction.ReportErrorAsync(ex.Message, null);
+				interaction.ReportError(ex.Message, null);
 				throw;
 			}
 			finally {

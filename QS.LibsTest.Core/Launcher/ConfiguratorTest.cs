@@ -430,8 +430,10 @@ namespace QS.Test.Launcher {
 			public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
 				=> Substitute.For<IDbProvider>();
 
-			public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args)
-				=> Substitute.For<IDbCreatorModel>();
+			public TestConnectionType WithStubCreator() {
+				CreatorFactory = args => Substitute.For<IDbCreatorModel>();
+				return this;
+			}
 		}
 	}
 }

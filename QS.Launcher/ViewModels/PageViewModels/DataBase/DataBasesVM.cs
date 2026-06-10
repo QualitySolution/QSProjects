@@ -25,10 +25,22 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				this.RaiseAndSetIfChanged(ref provider, value);
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
+				this.RaisePropertyChanged(nameof(CanCreateDatabase));
 
 				LoadLastSelectedDatabase();
 			}
 		}
+
+		/// <summary>
+		/// можно создать базу только если:
+		/// есть права пользователя на создание
+		/// тип подключения поддерживает создание в текущем окружении
+		/// задана фабрика и зарегистрирован скрипт создания
+		/// </summary>
+		public bool CanCreateDatabase =>
+			provider != null
+			&& provider.CanCreateDatabase
+			&& currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true;
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -94,7 +106,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// создаёт <see cref="CreateDataBaseSettingsVM"/> возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
 		/// </summary>
 		private void OpenCreateDatabase() {
-			if(provider == null || currentConnection == null)
+			if(!CanCreateDatabase)
 				return;
 
 			var settings = ActivatorUtilities.GetServiceOrCreateInstance<CreateDataBaseSettingsVM>(serviceProvider);
@@ -147,6 +159,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			SaveLastSelectedDatabase();
 
+			// Определяем, нужно ли закрывать лаунчер через Shutdown
+			// В standalone режиме учитываем галочку ShouldCloseLauncherAfterStart
+			// В in-process режиме НЕ делаем shutdown (возвращаем false)
 			var isStandalone = launcherOptions?.IsStandalone ?? false;
 			logger.Info($">>> Connect: IsStandalone={isStandalone}, ShouldCloseLauncherAfterStart={ShouldCloseLauncherAfterStart}");
 

@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.DBScripts;
-using QS.DBScripts.Controllers;
 using QS.DBScripts.Models;
 using QS.Utilities.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +17,16 @@ namespace QS.DbManagement
 			Parameters.Add(new ConnectionParameter("Server", "Адрес сервера"));
 			Parameters.Add(new ConnectionParameter("Login", "Пользователь"));
 			IconBytes = Assembly.GetExecutingAssembly().GetResourceByteArray("QS.DbManagement.Assets.mariadb.ico");
+
+
+			CreatorFactory = args => {
+				var p = (MariaDBProvider)args.Provider;
+				var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
+				return new MySqlDbCreateModel(
+					p.ConnectionStringBuilder.ConnectionString,
+					scripts, args.Progress, args.Interaction, args.CancellationToken) { FillBaseGuid = false };
+			};
+
 		}
 
 		public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) {
@@ -24,20 +34,7 @@ namespace QS.DbManagement
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbCreatorModel CreatorFactory(CreatorFactoryArgs args){
-			var provider = (MariaDBProvider)args.Provider;
-			var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
-			var creator = new MySqlDbCreateModel(
-				provider.ConnectionStringBuilder.ConnectionString,
-				scripts,
-				args.Progress,
-				args.Interaction,
-				args.CancellationToken);
-			creator.FillBaseGuid = false;
-			return creator;
-		}
-
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) 
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
 			=> new MariaDBProvider(parameters, password);
 	}
 }

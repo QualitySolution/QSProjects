@@ -16,7 +16,7 @@
 			</Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" HorizontalAlignment="Stretch" Content="Выберите базу данных:" />
-			<Button Grid.Row="0" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding Provider.CanCreateDatabase}" Content="Создать базу данных" />
+			<Button Grid.Row="0" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding CanCreateDatabase}" Content="Создать базу данных" />
             <ListBox x:Name="databases" Grid.ColumnSpan="2" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" 
                 ItemsSource="{Binding Databases}"
                 SelectedItem="{Binding SelectedDatabase}"

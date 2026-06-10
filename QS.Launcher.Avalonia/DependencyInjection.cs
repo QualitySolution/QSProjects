@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using QS.Launcher.Services;
+using QS.Dialog;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
 using QS.Launcher.Views.Pages.DataBase;
@@ -14,6 +14,6 @@ public static partial class DependencyInjection {
 			.AddSingleton<UserControl, DataBasesView>()
 			.AddTransient<UserControl, CreateDataBaseSettingsView>()
 			.AddTransient<UserControl, CreateDataBaseProgressView>()
-			.AddSingleton<IUiThreadInvoker, AvaloniaUiThreadInvoker>();
+			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>();
 	}
 }

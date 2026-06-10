@@ -1,7 +1,9 @@
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using System;
+using System.Collections.Generic;
 
 namespace QS.DbManagement {
 
@@ -17,16 +19,29 @@ namespace QS.DbManagement {
 
 		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null);
 
-		public abstract IDbCreatorModel CreatorFactory(CreatorFactoryArgs args);
+		public Func<CreatorFactoryArgs, IDbCreatorModel> CreatorFactory { get; set; }
+
+		/// <summary>
+		/// Создание базы доступно, только если задана фабрика и приложение
+		/// зарегистрировало конфигурацию скриптов с реальным скриптом создания
+		/// </summary>
+		public virtual bool SupportsDatabaseCreation(IServiceProvider services) {
+			return CreatorFactory != null
+				&& services.GetService<IDbScriptsConfiguration>()?.HasCreationScript() == true;
+		}
 
 		public IDbCreatorModel CreateCreator(CreatorFactoryArgs args) {
+			if(CreatorFactory == null)
+				throw new InvalidOperationException(
+					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика создания БД (CreatorFactory). "
+					+ "Заполните её в композиционном корне приложения.");
 			return CreatorFactory(args);
 		}
 	}
 
 	/// <summary>
 	///   interaction — канал диалогов с пользователем
-	///   serviceProvider — для резолва дополнительных зависимостей
+	///   serviceProvider — для получения дополнительных зависимостей
 	/// </summary>
 	public class CreatorFactoryArgs {
 		public IDbProvider Provider { get; set; }

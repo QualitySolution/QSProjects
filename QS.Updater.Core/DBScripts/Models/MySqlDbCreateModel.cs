@@ -4,7 +4,6 @@ using QS.Dialog;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QS.DBScripts.Models
 {
@@ -57,12 +56,6 @@ namespace QS.DBScripts.Models
 		}
 
 
-		public Task<bool> RunCreationAsync(string dbName, string dbTitle = null) {
-			// Тяжёлая часть с MySqlScript.Execute синхронная,
-			// поэтому уносим её на пул, чтобы не блокировать UI-поток
-			return Task.Run(() => RunCreation(dbName, dbTitle), cancellationToken);
-		}
-
 		public bool RunCreation(string dbName, string dbTitle = null) {
 			using(var connectionDB = new MySqlConnection(connectionString)) {
 				try {
@@ -78,7 +71,7 @@ namespace QS.DBScripts.Models
 					using(var rdr = cmd.ExecuteReader()) {
 						while(rdr.Read()) {
 							if(rdr[0].ToString() == dbName) {
-								if(interaction.AskDropExistingDatabaseAsync(dbName).GetAwaiter().GetResult()) {
+								if(interaction.AskDropExistingDatabase(dbName)) {
 									needDropBase = true;
 								}
 								hasBase = true;
@@ -146,8 +139,6 @@ namespace QS.DBScripts.Models
 				}
 				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.
 					logger.Error(ex, "Ошибка подключения к серверу.");
-					interaction.ReportErrorAsync("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.", lastExecutedStatement)
-						.GetAwaiter().GetResult();
 					return false;
 				}
 				catch(MySqlException ex) {
@@ -159,7 +150,7 @@ namespace QS.DBScripts.Models
 						text = "Не удалось подключиться к серверу БД.";
 					else
 						text = ex.Message;
-					interaction.ReportErrorAsync(text, lastExecutedStatement).GetAwaiter().GetResult();
+					interaction.ReportError(text, lastExecutedStatement);
 					return false;
 				}
 				finally {

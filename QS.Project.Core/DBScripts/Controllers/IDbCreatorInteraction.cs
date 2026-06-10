@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace QS.DBScripts.Controllers
 {
 	/// <summary>
@@ -7,8 +5,8 @@ namespace QS.DBScripts.Controllers
 	/// </summary>
 	public interface IDbCreatorInteraction
 	{
-		Task<bool> AskDropExistingDatabaseAsync(string dbName);
+		bool AskDropExistingDatabase(string dbName);
 
-		Task ReportErrorAsync(string text, string lastExecutedStatement);
+		void ReportError(string text, string lastExecutedStatement);
 	}
 }

@@ -26,13 +26,5 @@ namespace QS.Project.Services.GtkUI {
 		{
 			return interactiveQuestion.Question(buttons, message, title);
 		}
-
-		public Task<bool> QuestionAsync(string message, string title = null) {
-			throw new System.NotImplementedException();
-		}
-
-		public Task<string> QuestionAsync(string[] buttons, string message, string title = null) {
-			throw new System.NotImplementedException();
-		}
 	}
 }

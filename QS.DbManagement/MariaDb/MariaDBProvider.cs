@@ -1,5 +1,4 @@
 using Dapper;
-using FluentNHibernate.Cfg.Db;
 using MySqlConnector;
 using QS.DbManagement.Responces;
 using QS.Project.Versioning;
@@ -29,7 +28,7 @@ namespace QS.DbManagement
 		public bool CanCreateDatabase { get; private set; }
 
 		/// <summary>
-		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы, 
+		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы,
 		/// нужен потом при применения скрипта с наполнением базы
 		/// </summary>
 		public string CreatedTitle { get; private set; }
