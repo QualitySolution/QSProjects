@@ -139,6 +139,7 @@ namespace QS.DBScripts.Models
 				}
 				catch(InvalidCastException ex) { //FIXME Временный для более адекватного обхода проблемы с отсутствием поддержки MariaDB 10.10. Удалить как починим работу с этой версией.
 					logger.Error(ex, "Ошибка подключения к серверу.");
+					interaction.ReportError("Работа с MariaDB 10.10 пока не поддерживается. Установите версию MariaDB 10.9.", lastExecutedStatement);
 					return false;
 				}
 				catch(MySqlException ex) {
