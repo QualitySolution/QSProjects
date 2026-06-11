@@ -24,7 +24,7 @@ namespace QS.DbManagement
 				var scripts = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>();
 				return new MySqlDbCreateModel(
 					p.ConnectionStringBuilder.ConnectionString,
-					scripts, args.Progress, args.Interaction, args.CancellationToken) { FillBaseGuid = false };
+					scripts.MakeCreationScript(), args.Progress, args.Interaction, args.CancellationToken) { FillBaseGuid = false };
 			};
 
 		}

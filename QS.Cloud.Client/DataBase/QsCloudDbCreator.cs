@@ -60,7 +60,7 @@ namespace QS.Cloud.Client.DataBase
 
 				var creator = new MySqlDbCreateModel(
 					session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
-					configuration, progress, interaction, cancellationToken);
+					configuration.MakeCreationScript(), progress, interaction, cancellationToken);
 				creator.FillBaseGuid = false;
 				bool success = creator.RunCreation(session.Db.BaseName, dbTitle);
 

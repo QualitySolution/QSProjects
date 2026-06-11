@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using QS.DBScripts.Models;
 using QS.DBScripts.ViewModels;
 using QS.Dialog;
@@ -16,18 +15,18 @@ namespace QS.DBScripts.Controllers
 		private readonly INavigationManager navigation;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
-		private readonly IDbScriptsConfiguration scripts;
+		private readonly CreationScript creationScript;
 
 		public UserCreateDbController(
 			INavigationManager navigation,
 			IInteractiveService interactive,
 			IGuiDispatcher guiDispatcher,
-			IDbScriptsConfiguration scripts)
+			CreationScript creationScript)
 		{
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
-			this.scripts = scripts ?? throw new ArgumentNullException(nameof(scripts));
+			this.creationScript = creationScript ?? throw new ArgumentNullException(nameof(creationScript));
 		}
 
 		public void RunCreation(string server, string dbname)
@@ -41,36 +40,29 @@ namespace QS.DBScripts.Controllers
 			};
 		}
 
-		async void StartCreation(string server, string dbname, string login, string password)
+		void StartCreation(string server, string dbname, string login, string password)
 		{
-			ParseServer(server, out string host, out uint port);
-
-			bool success = false;
 			try {
+				ParseServer(server, out string host, out uint port);
+
 				var createModel = new MySqlDbCreateModel(
 					host, port, login, password,
-					scripts,
+					creationScript,
 					Progress,
 					interaction: this,
 					cancellationToken: CancellationToken.None);
 
-				success = await createModel.RunCreationAsync(dbname, dbTitle: null);
+				bool success = createModel.RunCreation(dbname);
+				if(success)
+					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Ошибка создания базы.");
-				guiDispatcher.RunInGuiTread(() => interactive.ShowMessage(ImportanceLevel.Error, ex.Message));
+				interactive.ShowMessage(ImportanceLevel.Error, ex.Message);
 			}
 			finally {
-				guiDispatcher.RunInGuiTread(() => {
-					if(progressPage != null)
-						navigation.ForceClosePage(progressPage, CloseSource.FromParentPage);
-				});
-			}
-
-			if(success) {
-				guiDispatcher.RunInGuiTread(() =>
-					interactive.ShowMessage(ImportanceLevel.Info,
-						"Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей."));
+				if(progressPage != null)
+					navigation.ForceClosePage(progressPage, CloseSource.FromParentPage);
 			}
 		}
 
@@ -85,33 +77,21 @@ namespace QS.DBScripts.Controllers
 		}
 
 		#region IDbCreatorInteraction
+		//Создание идет в GUI-потоке (как и раньше), прогресс сам прокачивает событийный цикл,
+		//поэтому диалоги показываем напрямую.
 
-		public Task<bool> AskDropExistingDatabaseAsync(string dbName) {
-			var tcs = new TaskCompletionSource<bool>();
-			guiDispatcher.RunInGuiTread(() => {
-				try {
-					tcs.SetResult(interactive.Question(
-						$"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?"));
-				}
-				catch(Exception ex) { tcs.SetException(ex); }
-			});
-			return tcs.Task;
+		public bool AskDropExistingDatabase(string dbName)
+		{
+			return interactive.Question($"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?");
 		}
 
-		public Task ReportErrorAsync(string text, string lastExecutedStatement) {
-			var tcs = new TaskCompletionSource<bool>();
-			guiDispatcher.RunInGuiTread(() => {
-				try {
-					interactive.ShowMessage(ImportanceLevel.Error, text);
-					tcs.SetResult(true);
-				}
-				catch(Exception ex) { tcs.SetException(ex); }
-			});
-			return tcs.Task;
+		public void ReportError(string text, string lastExecutedStatement)
+		{
+			interactive.ShowMessage(ImportanceLevel.Error, text);
 		}
 		#endregion
 
-		#region Свойства процесса
+		#region Progress page
 
 		IPage<ProgressWindowViewModel> progressPage;
 		public IProgressBarDisplayable Progress {

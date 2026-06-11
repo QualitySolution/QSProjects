@@ -12,7 +12,7 @@ namespace QS.DBScripts.Models
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly string connectionString;
-		private readonly CreationScript scripts;
+		private readonly CreationScript script;
 		private readonly IProgressBarDisplayable progress;
 		private readonly IDbCreatorInteraction interaction;
 		private readonly CancellationToken cancellationToken;
@@ -21,7 +21,7 @@ namespace QS.DBScripts.Models
 
 		public MySqlDbCreateModel(
 			string connectionString,
-			IDbScriptsConfiguration scripts,
+			CreationScript script,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
 			CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ namespace QS.DBScripts.Models
 			if(string.IsNullOrWhiteSpace(connectionString))
 				throw new ArgumentException("Connection string is required", nameof(connectionString));
 			this.connectionString = connectionString;
-			this.scripts = scripts.MakeCreationScript() ?? throw new ArgumentNullException(nameof(scripts));
+			this.script = script ?? throw new ArgumentNullException(nameof(script));
 			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.cancellationToken = cancellationToken;
@@ -37,7 +37,7 @@ namespace QS.DBScripts.Models
 
 		public MySqlDbCreateModel(
 			string server, uint port, string login, string password,
-			IDbScriptsConfiguration scripts,
+			CreationScript script,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
 			CancellationToken cancellationToken) {
@@ -49,7 +49,7 @@ namespace QS.DBScripts.Models
 				Password = password,
 				AllowUserVariables = true
 			}.ConnectionString;
-			this.scripts = scripts.MakeCreationScript() ?? throw new ArgumentNullException(nameof(scripts));
+			this.script = script ?? throw new ArgumentNullException(nameof(script));
 			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.cancellationToken = cancellationToken;
@@ -84,7 +84,7 @@ namespace QS.DBScripts.Models
 
 					progress.Start(text: "Получаем скрипт создания базы");
 
-					string sqlScript = scripts.GetSqlScript();
+					string sqlScript = script.GetSqlScript();
 					int predictedCount = Regex.Matches(sqlScript, ";").Count;
 
 					logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
