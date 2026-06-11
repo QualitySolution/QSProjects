@@ -9,13 +9,22 @@ namespace QS.Cloud.Client
 		private readonly int servicePort;
 		private readonly ChannelCredentials credentials;
 
+		//Локальная отладка: при заданном OverrideAddress лаунчер подключается к локально
+		//поднятому серверу (localhost:4200) без SSL, минуя облачный адрес.
+		public static string OverrideAddress { get; set; } = "localhost";
+		public static int? OverridePort { get; set; } = 4200;
+		public static bool UseInsecureOverride { get; set; } = true;
+
 		protected Metadata headers;
-        
+
 		public CloudClientServiceBase(string serviceAddress, int servicePort, ChannelCredentials credentials = null)
 		{
-			this.serviceAddress = serviceAddress;
-			this.servicePort = servicePort;
-			this.credentials = credentials ?? (servicePort == 443 ? (ChannelCredentials)new SslCredentials() : ChannelCredentials.Insecure);
+			this.serviceAddress = OverrideAddress ?? serviceAddress;
+			this.servicePort = OverridePort ?? servicePort;
+			var useInsecure = OverrideAddress != null && UseInsecureOverride;
+			this.credentials = credentials ?? (useInsecure
+				? ChannelCredentials.Insecure
+				: (this.servicePort == 443 ? (ChannelCredentials)new SslCredentials() : ChannelCredentials.Insecure));
 		}
 
 		private Channel channel;
