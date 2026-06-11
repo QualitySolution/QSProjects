@@ -47,6 +47,12 @@ namespace QS.Widgets
 						this.Changed += RemoveInvalidSymbols;
 						this.Changed += RegexValidate;
 						break;
+					case ValidationType.MultipleEmail:
+						regex = new Regex(@"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@" +
+							@"[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$");
+						this.Changed += RemoveInvalidSymbolsMultiple;
+						this.Changed += MultipleEmailValidate;
+						break;
 					default:
 						break;
 				}
@@ -87,6 +93,26 @@ namespace QS.Widgets
 			this.Text = Text.Replace(" ", "").Replace("\n", "");
 		}
 
+		protected void RemoveInvalidSymbolsMultiple(object sender, System.EventArgs Args)
+		{
+			this.Text = Text.Replace(" ", "").Replace("\n", "").Replace(";", ",");
+		}
+
+		protected void MultipleEmailValidate(object sender, System.EventArgs Args)
+		{
+			var text = (sender as Gtk.Entry).Text;
+			if(string.IsNullOrEmpty(text)) {
+				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal);
+				return;
+			}
+			var emails = text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			bool allValid = emails.Length > 0 && System.Array.TrueForAll(emails, e => regex.IsMatch(e.Trim()));
+			if(!allValid)
+				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal, new Gdk.Color(255, 0, 0));
+			else
+				(sender as Gtk.Entry).ModifyText(Gtk.StateType.Normal);
+		}
+
 		protected override void OnChanged()
 		{
 			Binding.FireChange(w => w.Text);
@@ -98,6 +124,7 @@ namespace QS.Widgets
 		None,
 		Numeric,
 		Email,
+		MultipleEmail,
 		Price,
 		CustomRegex
 	};
