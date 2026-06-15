@@ -185,8 +185,8 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool DropDatabase(string databaseName) {
-			string sql = $"DROP DATABASE IF EXISTS `{databaseName}`";
+		public bool DropDatabase(DbInfo database) {
+			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
 			return connection.Execute(sql) != 0;
 		}
 
@@ -195,8 +195,8 @@ namespace QS.DbManagement
 		/// а сам экспорт вынесен в <see cref="MariaDbBackupService"/>.
 		/// Метод блокирующий - вызывать из фонового потока.
 		/// </summary>
-		public void BackupDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbBackupService().Backup(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			new MariaDbBackupService().Backup(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
 		}
 
 		/// <summary>

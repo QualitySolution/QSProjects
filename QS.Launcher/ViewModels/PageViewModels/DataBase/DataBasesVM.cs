@@ -44,10 +44,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				|| provider is MariaDBProvider);
 
 		/// <summary>
-		/// Управление базой (резервная копия, удаление) пока поддержано только для MariaDB-провайдера,
-		/// облако реализуем отдельно.
+		/// Управление базой (резервная копия, удаление) идёт через IDbProvider -
+		/// поддержано и для MariaDB, и для облака. Видно при активном подключении.
 		/// </summary>
-		public bool CanManageDatabases => provider is MariaDBProvider;
+		public bool CanManageDatabases => provider != null;
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -178,7 +178,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			try {
-				await System.Threading.Tasks.Task.Run(() => provider.DropDatabase(database.BaseName));
+				await System.Threading.Tasks.Task.Run(() => provider.DropDatabase(database));
 				RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
 					$"База данных «{database.Title}» удалена.", "Удаление базы данных");

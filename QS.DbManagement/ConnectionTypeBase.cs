@@ -49,5 +49,11 @@ namespace QS.DbManagement {
 		public IDbCreatorInteraction Interaction { get; set; }
 		public System.Threading.CancellationToken CancellationToken { get; set; }
 		public IServiceProvider ServiceProvider { get; set; }
+
+		/// <summary>
+		/// Необязательный путь к SQL-дампу. Если задан - движок создания наполняет базу
+		/// импортом дампа вместо встроенного скрипта (поддерживает облачный creator).
+		/// </summary>
+		public string ImportDumpFilePath { get; set; }
 	}
 }

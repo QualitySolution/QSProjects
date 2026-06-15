@@ -30,7 +30,8 @@ namespace QS.Cloud.Client.DataBase {
 					scripts,
 					args.Progress,
 					args.Interaction,
-					args.CancellationToken);
+					args.CancellationToken,
+					args.ImportDumpFilePath);
 			};
 		}
 

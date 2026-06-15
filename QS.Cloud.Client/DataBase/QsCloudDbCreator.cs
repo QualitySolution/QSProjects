@@ -1,4 +1,6 @@
+using MySqlConnector;
 using QS.Cloud.Core;
+using QS.DbManagement;
 using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.DBScripts.Models;
@@ -17,6 +19,7 @@ namespace QS.Cloud.Client.DataBase
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IDbScriptsConfiguration configuration;
 		private readonly CancellationToken cancellationToken;
+		private readonly string importDumpFilePath;
 
 		private LoginManagementCloudClient loginClient;
 
@@ -26,7 +29,8 @@ namespace QS.Cloud.Client.DataBase
 			IDbScriptsConfiguration configuration,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
-			CancellationToken cancellationToken)
+			CancellationToken cancellationToken,
+			string importDumpFilePath = null)
 		{
 			this.baseId = baseId;
 			loginClient = new LoginManagementCloudClient(authInfo);
@@ -34,6 +38,7 @@ namespace QS.Cloud.Client.DataBase
 			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.cancellationToken = cancellationToken;
+			this.importDumpFilePath = importDumpFilePath;
 		}
 
 		public bool RunCreation(string dbName, string dbTitle) {
@@ -58,11 +63,27 @@ namespace QS.Cloud.Client.DataBase
 				};
 				sessionLife.KeepAlive();
 
-				var creator = new MySqlDbCreateModel(
-					session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
-					configuration.MakeCreationScript(), progress, interaction, cancellationToken);
-				creator.FillBaseGuid = false;
-				bool success = creator.RunCreation(session.Db.BaseName, dbTitle);
+				bool success;
+				if(!string.IsNullOrWhiteSpace(importDumpFilePath)) {
+					// Наполнение импортом выбранного дампа вместо встроенного скрипта.
+					var builder = new MySqlConnectionStringBuilder {
+						Server = session.Db.Server,
+						Port = session.Db.Port,
+						UserID = session.Db.Login,
+						Password = session.Db.Password,
+						Database = session.Db.BaseName,
+						AllowUserVariables = true
+					};
+					new MariaDbImportService().Import(builder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken);
+					success = true;
+				}
+				else {
+					var creator = new MySqlDbCreateModel(
+						session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
+						configuration.MakeCreationScript(), progress, interaction, cancellationToken);
+					creator.FillBaseGuid = false;
+					success = creator.RunCreation(session.Db.BaseName, dbTitle);
+				}
 
 				sessionLife.Dispose();
 				return success;

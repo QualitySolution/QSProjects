@@ -40,9 +40,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public bool IsBackupMode => Operation == DbWizardOperation.Backup;
 
 		/// <summary>
-		/// Импорт дампа при создании пока поддержан только для MariaDB (не через облако).
+		/// Импорт дампа при создании: MariaDB напрямую, облако - через свой creator
+		/// (доступен, когда тип подключения поддерживает создание, т.е. есть creator).
 		/// </summary>
-		public bool CanImportDump => Operation == DbWizardOperation.Create && Provider is MariaDBProvider;
+		public bool CanImportDump => Operation == DbWizardOperation.Create
+			&& (Provider is MariaDBProvider
+				|| Connection?.ConnectionType?.SupportsDatabaseCreation(services) == true);
 
 		#region Создание
 
@@ -119,10 +122,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			Operation = DbWizardOperation.Backup;
 
 			BackupTargetTitle = database.Title;
+			// У облачного DbInfo нет BaseName - подставляем Title в имя файла.
+			var fileBaseName = string.IsNullOrEmpty(database.BaseName) ? database.Title : database.BaseName;
 			BackupFilePath = Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
 				"Резервные копии",
-				string.Format("{0}-{1:yyMMdd-HHmm}.sql", database.BaseName, DateTime.Now));
+				string.Format("{0}-{1:yyMMdd-HHmm}.sql", fileBaseName, DateTime.Now));
 		}
 
 		private void GoToProgress() {
@@ -135,8 +140,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					new DbCreationPhase(
 						"Создание резервной копии базы данных",
 						args => {
-							((MariaDBProvider)args.Provider).BackupDatabase(
-								backupTarget.BaseName, BackupFilePath, args.Progress, args.CancellationToken);
+							// BackupDatabase теперь на IDbProvider - работает и для MariaDB, и для облака.
+							args.Provider.BackupDatabase(
+								backupTarget, BackupFilePath, args.Progress, args.CancellationToken);
 							args.CancellationToken.ThrowIfCancellationRequested();
 							return true;
 						})
@@ -165,6 +171,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					phases.Add(new DbCreationPhase(
 						"Наполнение базы данных",
 						args => {
+							// Передаём дамп в creator: облачный creator зальёт его вместо скрипта.
+							args.ImportDumpFilePath = ImportDumpFilePath;
 							IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
 							return creator.RunCreation(DbName, DbTitle);
 						}));

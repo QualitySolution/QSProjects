@@ -5,6 +5,8 @@ package QS.Cloud.Core;
 service DataBaseManagement{
 	// Создать пустую базу
 	rpc CreateDataBase (CreateDataBaseRequest) returns (CreateDataBaseResponse);
+	// Удалить базу: дроп реальной базы на сервере + чистка реестра (bases/base_access)
+	rpc DropDataBase (DropDataBaseRequest) returns (DropDataBaseResponse);
 }
 
 message CreateDataBaseRequest{
@@ -16,4 +18,12 @@ message CreateDataBaseRequest{
 message CreateDataBaseResponse{
 	int32 base_id = 1;
 	string base_guid = 2;
+}
+
+message DropDataBaseRequest{
+	int32 base_id = 1;
+}
+
+message DropDataBaseResponse{
+	bool success = 1;
 }

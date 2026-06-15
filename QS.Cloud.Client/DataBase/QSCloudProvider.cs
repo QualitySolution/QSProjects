@@ -3,6 +3,7 @@ using MySqlConnector;
 using QS.Cloud.Core;
 using QS.DbManagement.Responces;
 using QS.DbManagement;
+using QS.Dialog;
 using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,9 +70,37 @@ namespace QS.Cloud.Client.DataBase
 			loginClient.Dispose();
 		}
 	
-		public bool DropDatabase(string databaseName)
+		public bool DropDatabase(DbInfo database)
 		{
-			throw new NotImplementedException();
+			// Удаление - лёгкая операция с бухгалтерией реестра, делаем на сервере унарным gRPC.
+			var response = dbClient.DropDataBase(database.BaseId);
+			return response.Success;
+		}
+
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation)
+		{
+			// Бэкап тяжёлый - берём временное подключение к базе через сессию и гоним экспорт локально,
+			// тем же сервисом, что и MariaDB (по аналогии с наполнением при создании).
+			var session = loginClient.StartSession(database.BaseId);
+			if(!session.Success)
+				throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
+
+			var sessionLife = new AliveCloudClient(new SessionInfoProvider(session.SessionId));
+			sessionLife.KeepAlive();
+			try {
+				var builder = new MySqlConnectionStringBuilder {
+					Server = session.Db.Server,
+					Port = session.Db.Port,
+					UserID = session.Db.Login,
+					Password = session.Db.Password,
+					Database = session.Db.BaseName,
+					AllowUserVariables = true
+				};
+				new MariaDbBackupService().Backup(builder, session.Db.BaseName, filePath, progress, cancellation);
+			}
+			finally {
+				sessionLife.Dispose();
+			}
 		}
 
 		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
