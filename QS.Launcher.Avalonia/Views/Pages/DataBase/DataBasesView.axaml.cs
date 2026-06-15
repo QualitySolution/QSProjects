@@ -2,6 +2,8 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using QS.DbManagement;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,5 +61,15 @@ public partial class DataBasesView : UserControl {
 	private void Databases_OnDoubleTapped(object? sender, TappedEventArgs e) {
 		if(databases.SelectedItem is not null)
 			ViewModel.ConnectCommand.Execute(null);
+	}
+
+	private void BackupDatabase_OnClick(object? sender, RoutedEventArgs e) {
+		if((sender as Control)?.DataContext is DbInfo database)
+			ViewModel.BackupDatabaseCommand.Execute(database);
+	}
+
+	private void DeleteDatabase_OnClick(object? sender, RoutedEventArgs e) {
+		if((sender as Control)?.DataContext is DbInfo database)
+			ViewModel.DeleteDatabaseCommand.Execute(database);
 	}
 }

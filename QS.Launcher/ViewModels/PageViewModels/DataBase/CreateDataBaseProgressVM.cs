@@ -10,12 +10,23 @@ using QS.Dialog;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+	/// <summary>
+	/// Универсальная страница прогресса: последовательно выполняет пайплайн фаз
+	/// (создание базы, наполнение, резервное копирование и т.п.) в одном фоновом потоке.
+	/// </summary>
 	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public IDbProvider Provider { get; private set; }
 		public Connection Connection { get; private set; }
 		private IReadOnlyList<DbCreationPhase> phases = Array.Empty<DbCreationPhase>();
+
+		private string operationTitle = "Создание базы данных";
+		/// <summary>Заголовок страницы - задаётся настройками под конкретную операцию.</summary>
+		public string OperationTitle {
+			get => operationTitle;
+			set => this.RaiseAndSetIfChanged(ref operationTitle, value);
+		}
 
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IServiceProvider services;
@@ -53,10 +64,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		#endregion
 
-		public event Action DatabaseCreated;
-		public event Action DatabaseCreationFailed;
+		public event Action OperationCompleted;
+		public event Action OperationFailed;
 
-		public ReactiveCommand<Unit, Unit> StartCreationCommand { get; }
+		public ReactiveCommand<Unit, Unit> StartCommand { get; }
 		public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
 		public CreateDataBaseProgressVM(
@@ -69,7 +80,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
 			cts = new CancellationTokenSource();
 
-			StartCreationCommand = ReactiveCommand.CreateFromTask(StartCreationAsync);
+			StartCommand = ReactiveCommand.CreateFromTask(RunAsync);
 			CancelCommand = ReactiveCommand.Create(() => {
 				cts.Cancel();
 				PopToRootCommand?.Execute(null);
@@ -90,7 +101,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// <summary>
 		/// выносим всю синхронную цепочку фаз в пул, чтобы UI поток оставался свободным для перерисовки прогрессбара
 		/// </summary>
-		public async Task StartCreationAsync() {
+		public async Task RunAsync() {
 			try {
 				var args = new CreatorFactoryArgs {
 					Provider = Provider,
@@ -103,18 +114,18 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				bool success = await Task.Run(() => RunPipeline(args), cts.Token);
 
 				if(success)
-					DatabaseCreated?.Invoke();
+					OperationCompleted?.Invoke();
 				else
-					DatabaseCreationFailed?.Invoke();
+					OperationFailed?.Invoke();
 			}
 			catch(OperationCanceledException) {
-				logger.Info("Создание базы отменено.");
-				DatabaseCreationFailed?.Invoke();
+				logger.Info("Операция с базой отменена.");
+				OperationFailed?.Invoke();
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Сбой в процессе создания базы.");
+				logger.Error(ex, "Сбой в процессе выполнения операции с базой.");
 				interaction.ReportError(ex.Message, null);
-				DatabaseCreationFailed?.Invoke();
+				OperationFailed?.Invoke();
 			}
 		}
 		private bool RunPipeline(CreatorFactoryArgs args) {

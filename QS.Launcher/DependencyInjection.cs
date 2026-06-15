@@ -16,8 +16,7 @@ namespace QS.Launcher {
 				.AddSingleton<LoginVM>()
 				.AddSingleton<DataBasesVM>()
 				.AddSingleton<UserManagementVM>()
-				.AddSingleton<BaseManagementVM>()
-				// Wizard-страницы создания БД
+				// Wizard-страницы создания БД и операций с базой
 				.AddSingleton<CreateDataBaseSettingsVM>()
 				.AddSingleton<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>();

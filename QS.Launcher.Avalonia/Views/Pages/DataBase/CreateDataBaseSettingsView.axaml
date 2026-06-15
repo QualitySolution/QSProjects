@@ -8,18 +8,34 @@
              d:DesignWidth="450"
              x:DataType="vm:CreateDataBaseSettingsVM"
              mc:Ignorable="d">
-    <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto">
-        <Label Grid.Row="0" Margin="5" FontSize="16" Content="Создание новой базы данных" FontWeight="Bold" />
+    <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,*,Auto">
 
-        <Label Grid.Row="1" Margin="5" Content="Название:" />
-        <TextBox Grid.Row="2" Margin="5" Text="{Binding DbTitle}" Watermark="для программы" />
+        <StackPanel Grid.Row="0" IsVisible="{Binding IsCreateMode}">
+            <Label Margin="5" FontSize="16" Content="Создание новой базы данных" FontWeight="Bold" />
 
-        <Label Grid.Row="3" Margin="5" Content="Имя базы:" />
-        <TextBox Grid.Row="4" Margin="5" Text="{Binding DbName}" Watermark="для сервера" />
+            <Label Margin="5" Content="Название:" />
+            <TextBox Margin="5" Text="{Binding DbTitle}" Watermark="для программы" />
 
-        <Grid Grid.Row="6" ColumnDefinitions="*,*">
+            <Label Margin="5" Content="Имя базы:" />
+            <TextBox Margin="5" Text="{Binding DbName}" Watermark="для сервера" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="0" IsVisible="{Binding IsBackupMode}">
+            <Label Margin="5" FontSize="16" Content="Резервная копия базы данных" FontWeight="Bold" />
+
+            <Label Margin="5" Content="База:" />
+            <TextBox Margin="5" Text="{Binding BackupTargetTitle}" IsReadOnly="True" />
+
+            <Label Margin="5" Content="Файл резервной копии:" />
+            <Grid Margin="5" ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Text="{Binding BackupFilePath}" Watermark="путь к .sql файлу" />
+                <Button Grid.Column="1" Margin="5,0,0,0" Content="Обзор..." Click="BrowseBackupFile_OnClick" />
+            </Grid>
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*">
             <Button Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding CancelCommand}" Content="Отмена" />
-            <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding CreateDataBaseCommand}" IsDefault="True" Content="Далее" />
+            <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ProceedCommand}" IsDefault="True" Content="Далее" />
         </Grid>
     </Grid>
 </UserControl>

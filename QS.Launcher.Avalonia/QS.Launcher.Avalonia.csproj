@@ -47,9 +47,6 @@
     <Compile Update="LauncherApp.axaml.cs">
       <DependentUpon>LauncherApp.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Pages\BaseManagementView.axaml.cs">
-      <DependentUpon>BaseManagementView.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\Pages\LoginView.axaml.cs">
       <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>
