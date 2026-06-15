@@ -15,7 +15,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 	/// <summary>
 	/// Универсальная страница настроек операции с базой: ввод параметров создания базы
-	/// либо выбор файла для резервной копии. Конкретную операцию строит <see cref="GoToProgress"/>.
+	/// (с необязательным импортом дампа для MariaDB) либо выбор файла для резервной копии.
+	/// Конкретную операцию (состав пайплайна фаз) строит <see cref="GoToProgress"/>.
 	/// </summary>
 	public class CreateDataBaseSettingsVM : CarouselPageVM {
 		public IDbProvider Provider { get; private set; }
@@ -31,11 +32,17 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				this.RaiseAndSetIfChanged(ref operation, value);
 				this.RaisePropertyChanged(nameof(IsCreateMode));
 				this.RaisePropertyChanged(nameof(IsBackupMode));
+				this.RaisePropertyChanged(nameof(CanImportDump));
 			}
 		}
 
 		public bool IsCreateMode => Operation == DbWizardOperation.Create;
 		public bool IsBackupMode => Operation == DbWizardOperation.Backup;
+
+		/// <summary>
+		/// Импорт дампа при создании пока поддержан только для MariaDB (не через облако).
+		/// </summary>
+		public bool CanImportDump => Operation == DbWizardOperation.Create && Provider is MariaDBProvider;
 
 		#region Создание
 
@@ -49,6 +56,13 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public string DbName {
 			get => dbName;
 			set => this.RaiseAndSetIfChanged(ref dbName, value);
+		}
+
+		/// <summary>Необязательный путь к SQL-дампу, заливаемому в созданную базу (только MariaDB).</summary>
+		private string importDumpFilePath;
+		public string ImportDumpFilePath {
+			get => importDumpFilePath;
+			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
 		}
 
 		#endregion
@@ -94,6 +108,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public void SetDbSettings(IDbProvider provider, Connection connection) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+			ImportDumpFilePath = null;
 			Operation = DbWizardOperation.Create;
 		}
 
@@ -129,17 +144,33 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			}
 			else {
 				progress.OperationTitle = "Создание базы данных";
-				pipeline = new[] {
+				var phases = new System.Collections.Generic.List<DbCreationPhase> {
 					new DbCreationPhase(
 						"Создание базы данных",
-						args => args.Provider.CreateDatabase(DbName, DbTitle, services)),
-					new DbCreationPhase(
+						args => args.Provider.CreateDatabase(DbName, DbTitle, services))
+				};
+
+				if(!string.IsNullOrWhiteSpace(ImportDumpFilePath) && Provider is MariaDBProvider) {
+					// Залить выбранный дамп вместо стандартного наполнения скриптом.
+					phases.Add(new DbCreationPhase(
+						"Импорт дампа в базу данных",
+						args => {
+							((MariaDBProvider)args.Provider).ImportDatabase(
+								DbName, ImportDumpFilePath, args.Progress, args.CancellationToken);
+							args.CancellationToken.ThrowIfCancellationRequested();
+							return true;
+						}));
+				}
+				else if(Connection.ConnectionType.SupportsDatabaseCreation(services)) {
+					phases.Add(new DbCreationPhase(
 						"Наполнение базы данных",
 						args => {
 							IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
 							return creator.RunCreation(DbName, DbTitle);
-						})
-				};
+						}));
+				}
+
+				pipeline = phases.ToArray();
 			}
 
 			progress.SetPipeline(Provider, Connection, pipeline);

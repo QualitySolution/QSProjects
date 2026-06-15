@@ -18,6 +18,12 @@
 
             <Label Margin="5" Content="Имя базы:" />
             <TextBox Margin="5" Text="{Binding DbName}" Watermark="для сервера" />
+
+            <Label Margin="5,15,5,0" Content="Импорт из дампа (.sql, необязательно):" IsVisible="{Binding CanImportDump}" />
+            <Grid Margin="5" ColumnDefinitions="*,Auto" IsVisible="{Binding CanImportDump}">
+                <TextBox Grid.Column="0" Text="{Binding ImportDumpFilePath}" Watermark="путь к .sql дампу" />
+                <Button Grid.Column="1" Margin="5,0,0,0" Content="Обзор..." Click="BrowseImportFile_OnClick" />
+            </Grid>
         </StackPanel>
 
         <StackPanel Grid.Row="0" IsVisible="{Binding IsBackupMode}">

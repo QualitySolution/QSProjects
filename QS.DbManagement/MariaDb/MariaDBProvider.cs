@@ -199,6 +199,15 @@ namespace QS.DbManagement
 			new MariaDbBackupService().Backup(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
 		}
 
+		/// <summary>
+		/// Импорт SQL-дампа в уже созданную базу. Взаимодействие с базой идёт через провайдер,
+		/// а сам импорт вынесен в <see cref="MariaDbImportService"/>.
+		/// Метод блокирующий - вызывать из фонового потока.
+		/// </summary>
+		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			new MariaDbImportService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
+		}
+
 		public void Dispose() {
 			connection?.Dispose();
 		}

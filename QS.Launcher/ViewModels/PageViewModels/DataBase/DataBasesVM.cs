@@ -33,15 +33,15 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		/// <summary>
-		/// можно создать базу только если:
-		/// есть права пользователя на создание
-		/// тип подключения поддерживает создание в текущем окружении
-		/// задана фабрика и зарегистрирован скрипт создания
+		/// можно создать базу если есть права пользователя на создание И
+		/// либо тип подключения поддерживает создание скриптом (есть фабрика + скрипт),
+		/// либо это MariaDB (наполнение возможно импортом дампа в мастере)
 		/// </summary>
 		public bool CanCreateDatabase =>
 			provider != null
 			&& provider.CanCreateDatabase
-			&& currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true;
+			&& (currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true
+				|| provider is MariaDBProvider);
 
 		/// <summary>
 		/// Управление базой (резервная копия, удаление) пока поддержано только для MariaDB-провайдера,
