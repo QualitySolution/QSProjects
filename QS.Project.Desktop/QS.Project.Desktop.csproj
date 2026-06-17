@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
       <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj" />
       <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
