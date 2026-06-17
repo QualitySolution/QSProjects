@@ -192,20 +192,20 @@ namespace QS.DbManagement
 
 		/// <summary>
 		/// Резервное копирование базы в SQL-скрипт. Взаимодействие с базой идёт через провайдер,
-		/// а сам экспорт вынесен в <see cref="MariaDbBackupService"/>.
+		/// а сам экспорт вынесен в <see cref="MariaDbDumpService"/>.
 		/// Метод блокирующий - вызывать из фонового потока.
 		/// </summary>
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbBackupService().Backup(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
+			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
 		}
 
 		/// <summary>
 		/// Импорт SQL-дампа в уже созданную базу. Взаимодействие с базой идёт через провайдер,
-		/// а сам импорт вынесен в <see cref="MariaDbImportService"/>.
+		/// а сам импорт вынесен в <see cref="MariaDbDumpService"/>.
 		/// Метод блокирующий - вызывать из фонового потока.
 		/// </summary>
 		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbImportService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
+			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
 		}
 
 		public void Dispose() {

@@ -1,4 +1,3 @@
-using MySqlConnector;
 using QS.Cloud.Core;
 using QS.DbManagement;
 using QS.DBScripts;
@@ -45,48 +44,28 @@ namespace QS.Cloud.Client.DataBase
 			try {
 				cancellationToken.ThrowIfCancellationRequested();
 
-				StartSessionResponse session = loginClient.StartSession(baseId);
+				using(var session = CloudDbSession.Open(loginClient, baseId)) {
+					if(!session.Success) {
+						interaction.ReportError("Ошибка в создании сессии", "Запрос в облако");
+						return false;
+					}
+					if(!session.IsAdmin) {
+						interaction.ReportError("Вы не имеете прав Администратора", "Запрос в облако");
+						return false;
+					}
 
-				if(!session.Success) {
-					interaction.ReportError("Ошибка в создании сессии", "Запрос в облако");
-					return false;
-				}
-				if(!session.IsAdmin) {
-					interaction.ReportError("Вы не имеете прав Администратора", "Запрос в облако");
-					return false;
-				}
+					if(!string.IsNullOrWhiteSpace(importDumpFilePath)) {
+						// Наполнение импортом выбранного дампа вместо встроенного скрипта.
+						new MariaDbDumpService().Import(session.ConnectionStringBuilder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken);
+						return true;
+					}
 
-				var infoProvider = new SessionInfoProvider(sessionId: session.SessionId);
-				var sessionLife = new AliveCloudClient(infoProvider);
-				sessionLife.NewMessage += (mes) => {
-					progress.Update("Сессия: " + mes + " в статусе " + sessionLife.LastStatus.ToString());
-				};
-				sessionLife.KeepAlive();
-
-				bool success;
-				if(!string.IsNullOrWhiteSpace(importDumpFilePath)) {
-					// Наполнение импортом выбранного дампа вместо встроенного скрипта.
-					var builder = new MySqlConnectionStringBuilder {
-						Server = session.Db.Server,
-						Port = session.Db.Port,
-						UserID = session.Db.Login,
-						Password = session.Db.Password,
-						Database = session.Db.BaseName,
-						AllowUserVariables = true
-					};
-					new MariaDbImportService().Import(builder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken);
-					success = true;
-				}
-				else {
 					var creator = new MySqlDbCreateModel(
 						session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
 						configuration.MakeCreationScript(), progress, interaction, cancellationToken);
 					creator.FillBaseGuid = false;
-					success = creator.RunCreation(session.Db.BaseName, dbTitle);
+					return creator.RunCreation(session.Db.BaseName, dbTitle);
 				}
-
-				sessionLife.Dispose();
-				return success;
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Создание базы в облаке отменено пользователем.");

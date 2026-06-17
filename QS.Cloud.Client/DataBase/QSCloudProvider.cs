@@ -81,25 +81,10 @@ namespace QS.Cloud.Client.DataBase
 		{
 			// Бэкап тяжёлый - берём временное подключение к базе через сессию и гоним экспорт локально,
 			// тем же сервисом, что и MariaDB (по аналогии с наполнением при создании).
-			var session = loginClient.StartSession(database.BaseId);
-			if(!session.Success)
-				throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
-
-			var sessionLife = new AliveCloudClient(new SessionInfoProvider(session.SessionId));
-			sessionLife.KeepAlive();
-			try {
-				var builder = new MySqlConnectionStringBuilder {
-					Server = session.Db.Server,
-					Port = session.Db.Port,
-					UserID = session.Db.Login,
-					Password = session.Db.Password,
-					Database = session.Db.BaseName,
-					AllowUserVariables = true
-				};
-				new MariaDbBackupService().Backup(builder, session.Db.BaseName, filePath, progress, cancellation);
-			}
-			finally {
-				sessionLife.Dispose();
+			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
+				if(!session.Success)
+					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
+				new MariaDbDumpService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
 			}
 		}
 
