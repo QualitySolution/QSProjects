@@ -41,6 +41,17 @@ namespace QS.ErrorReporting.Handlers {
 			}
 			
 			var mysqlExceptions = exception.FindAllExceptionTypeInInner<MySqlException>().ToArray();
+			if(mysqlExceptions.Any(IsCommandTimeout)) {
+				var message = String.Join("\n", mysqlExceptions.Select(e => e.Message));
+				interactiveMessage.ShowMessage(ImportanceLevel.Error,
+					message + "\n\nВремя ожидания выполнения запроса к базе данных истекло. Повторите попытку позже. " +
+					"Если ошибка повторяется, обратитесь к вашему системному администратору.",
+					"Время ожидания истекло");
+				if(settings?.SendAutomatically ?? false)
+					errorReporter?.SendReport(exception, ErrorType.Known);
+				return true;
+			}
+
 			if(mysqlExceptions.Any(e => e.Number == 1042)) {
 				var message = String.Join("\n", mysqlExceptions.Select(e => e.Message));
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, 
@@ -53,6 +64,11 @@ namespace QS.ErrorReporting.Handlers {
 			}
 
 			return false;
+		}
+
+		private static bool IsCommandTimeout(MySqlException exception) {
+			return exception.Message.IndexOf("Command Timeout expired", StringComparison.InvariantCultureIgnoreCase) >= 0
+				|| exception.Message.IndexOf("Query execution was interrupted", StringComparison.InvariantCultureIgnoreCase) >= 0;
 		}
 	}
 }
