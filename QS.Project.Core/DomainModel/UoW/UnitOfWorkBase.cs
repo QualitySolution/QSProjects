@@ -74,11 +74,11 @@ namespace QS.DomainModel.UoW
 			} catch(Exception ex)
 			{
 				logger.Error(ex, $"Исключение при комите в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
-				if(transaction.IsActive)
+				if(transaction?.IsActive ?? false)
 					transaction.Rollback();
 				throw;
 			} finally {
-				transaction.Dispose();
+				transaction?.Dispose();
 				transaction = null;
 			}
 		}
