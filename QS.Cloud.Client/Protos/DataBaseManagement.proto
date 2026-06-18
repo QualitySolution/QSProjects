@@ -5,7 +5,7 @@ package QS.Cloud.Core;
 service DataBaseManagement{
 	// Создать пустую базу
 	rpc CreateDataBase (CreateDataBaseRequest) returns (CreateDataBaseResponse);
-	// Удалить базу: дроп реальной базы на сервере + чистка реестра (bases/base_access)
+	// Удалить базу и очистить реестр
 	rpc DropDataBase (DropDataBaseRequest) returns (DropDataBaseResponse);
 }
 

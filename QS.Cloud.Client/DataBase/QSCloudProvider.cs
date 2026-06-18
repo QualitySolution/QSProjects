@@ -72,15 +72,12 @@ namespace QS.Cloud.Client.DataBase
 	
 		public bool DropDatabase(DbInfo database)
 		{
-			// Удаление - лёгкая операция с бухгалтерией реестра, делаем на сервере унарным gRPC.
 			var response = dbClient.DropDataBase(database.BaseId);
 			return response.Success;
 		}
 
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation)
 		{
-			// Бэкап тяжёлый - берём временное подключение к базе через сессию и гоним экспорт локально,
-			// тем же сервисом, что и MariaDB (по аналогии с наполнением при создании).
 			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
 				if(!session.Success)
 					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);

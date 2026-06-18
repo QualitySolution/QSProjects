@@ -6,14 +6,14 @@ using QS.Dialog;
 
 namespace QS.DbManagement {
 	public class MariaDbDumpService {
-		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
+		/// <summary>Выгружает базу <paramref name="databaseName"/> в файл <paramref name="filePath"/></summary>
 		public void Export(
 			MySqlConnectionStringBuilder connectionSettings,
 			string databaseName,
 			string filePath,
 			IProgressBarDisplayable progress,
-			CancellationToken cancellation) {
+			CancellationToken cancellation)
+		{
 			if(string.IsNullOrWhiteSpace(filePath))
 				throw new ArgumentException("Не указан путь к файлу резервной копии.", nameof(filePath));
 
@@ -21,7 +21,7 @@ namespace QS.DbManagement {
 			if(!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
 				Directory.CreateDirectory(directory);
 
-			logger.Info("Создаём резервную копию базы {0} в файл {1}", databaseName, filePath);
+			progress?.Update($"Создаём резервную копию базы {databaseName} в файл {filePath}");
 
 			RunWithBackup(connectionSettings, databaseName, backup => {
 				bool started = false;
@@ -45,6 +45,7 @@ namespace QS.DbManagement {
 			});
 		}
 
+		/// <summary>Заливает дамп <paramref name="filePath"/> в уже существующую базу <paramref name="databaseName"/></summary>
 		public void Import(
 			MySqlConnectionStringBuilder connectionSettings,
 			string databaseName,
@@ -56,7 +57,7 @@ namespace QS.DbManagement {
 			if(!File.Exists(filePath))
 				throw new FileNotFoundException("Файл дампа не найден.", filePath);
 
-			logger.Info("Импортируем дамп {0} в базу {1}", filePath, databaseName);
+			progress?.Update($"Импортируем дамп {filePath} в базу {databaseName}");
 
 			RunWithBackup(connectionSettings, databaseName, backup => {
 				bool started = false;
@@ -79,7 +80,7 @@ namespace QS.DbManagement {
 			if(connectionSettings == null)
 				throw new ArgumentNullException(nameof(connectionSettings));
 			if(string.IsNullOrWhiteSpace(databaseName))
-				throw new ArgumentException("Не указано имя базы.", nameof(databaseName));
+				throw new ArgumentException("Не указано имя базы", nameof(databaseName));
 
 			var builder = new MySqlConnectionStringBuilder(connectionSettings.ConnectionString) {
 				Database = databaseName
@@ -87,9 +88,10 @@ namespace QS.DbManagement {
 
 			using(var connection = new MySqlConnection(builder.ConnectionString)) {
 				connection.Open();
-				using(var command = connection.CreateCommand())
-				using(var backup = new MySqlBackup(command)) {
-					action(backup);
+				using(var command = connection.CreateCommand()) {
+					using(var backup = new MySqlBackup(command)) {
+						action(backup);
+					}
 				}
 			}
 		}

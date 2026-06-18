@@ -4,6 +4,9 @@ using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 
 namespace QS.Cloud.Client.DataBase {
+	/// <summary>
+	/// Временное подключение к облачной базе
+	/// </summary>
 	public sealed class CloudDbSession : IDisposable {
 		private readonly AliveCloudClient sessionLife;
 
@@ -22,6 +25,10 @@ namespace QS.Cloud.Client.DataBase {
 			ConnectionStringBuilder = connectionStringBuilder;
 		}
 
+		/// <summary>
+		/// Открывает сессию к базе. При успехе запускает keep-alive и собирает строку подключения;
+		/// при отказе возвращает сессию с <see cref="Success"/> = false
+		/// </summary>
 		public static CloudDbSession Open(LoginManagementCloudClient loginClient, int baseId) {
 			var session = loginClient.StartSession(baseId);
 			if(!session.Success)
@@ -38,7 +45,6 @@ namespace QS.Cloud.Client.DataBase {
 				Database = session.Db.BaseName,
 				AllowUserVariables = true
 			};
-
 			return new CloudDbSession(session, sessionLife, builder);
 		}
 
