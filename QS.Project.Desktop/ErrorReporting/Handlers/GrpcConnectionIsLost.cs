@@ -40,7 +40,9 @@ namespace QS.ErrorReporting.Handlers {
 					return true;
 				case StatusCode.Unknown:
 				case StatusCode.Internal:
-					return IsConnectionFailureMessage(exception.Status.Detail);
+					return IsConnectionFailureMessage(exception.Status.Detail)
+						|| IsConnectionFailureMessage(exception.Message)
+						|| IsConnectionFailureMessage(exception.ToString());
 				default:
 					return false;
 			}
@@ -51,6 +53,8 @@ namespace QS.ErrorReporting.Handlers {
 				return false;
 
 			return message.IndexOf("Stream removed", StringComparison.InvariantCultureIgnoreCase) >= 0
+				|| message.IndexOf("grpc_message\":\"Stream removed", StringComparison.InvariantCultureIgnoreCase) >= 0
+				|| message.IndexOf("Error received from peer", StringComparison.InvariantCultureIgnoreCase) >= 0
 				|| message.IndexOf("HTTP/2 connection faulted", StringComparison.InvariantCultureIgnoreCase) >= 0
 				|| message.IndexOf("request stream was aborted", StringComparison.InvariantCultureIgnoreCase) >= 0
 				|| message.IndexOf("failed to connect", StringComparison.InvariantCultureIgnoreCase) >= 0
