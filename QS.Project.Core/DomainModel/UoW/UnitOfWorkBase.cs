@@ -87,8 +87,15 @@ namespace QS.DomainModel.UoW
 		{
 			if(transaction != null) {
 				if(!transaction.WasCommitted && !transaction.WasRolledBack
-				&& transaction.IsActive && session.Connection.State == System.Data.ConnectionState.Open)
-					transaction.Rollback();
+				&& transaction.IsActive && session.Connection.State == System.Data.ConnectionState.Open) {
+					try {
+						transaction.Rollback();
+					} catch(NullReferenceException ex) {
+						// Исключение возникает внутри MySqlConnector при закрытии соединения после Rollback.
+						// https://github.com/mysql-net/MySqlConnector/issues/1378
+						logger.Warn(ex, $"Исключение при откате транзакции в {GetType()}:{ActionTitle?.UserActionTitle}(Created:{ActionTitle?.CallerMemberName}:{ActionTitle?.CallerLineNumber})");
+					}
+				}
 
 				transaction.Dispose();
 				transaction = null;
@@ -202,4 +209,3 @@ namespace QS.DomainModel.UoW
 		}
 	}
 }
-
