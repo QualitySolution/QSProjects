@@ -6,15 +6,15 @@ using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher.Views.Pages.DataBase;
 
-public partial class CreateDataBaseSettingsView : UserControl {
-	public CreateDataBaseSettingsView(CreateDataBaseSettingsVM settingsVM) {
+public partial class BackupDbSettingsView : UserControl {
+	public BackupDbSettingsView(BackupDbSettingsVM viewModel) {
 		InitializeComponent();
 
-		DataContext = settingsVM;
+		DataContext = viewModel;
 	}
 
 	private async void BrowseBackupFile_OnClick(object? sender, RoutedEventArgs e) {
-		if(DataContext is not CreateDataBaseSettingsVM vm)
+		if(DataContext is not BackupDbSettingsVM vm)
 			return;
 
 		var topLevel = TopLevel.GetTopLevel(this);
@@ -38,24 +38,5 @@ public partial class CreateDataBaseSettingsView : UserControl {
 		var file = await topLevel.StorageProvider.SaveFilePickerAsync(options);
 		if(file != null)
 			vm.BackupFilePath = file.Path.LocalPath;
-	}
-
-	private async void BrowseImportFile_OnClick(object? sender, RoutedEventArgs e) {
-		if(DataContext is not CreateDataBaseSettingsVM vm)
-			return;
-
-		var topLevel = TopLevel.GetTopLevel(this);
-		if(topLevel == null)
-			return;
-
-		var options = new FilePickerOpenOptions {
-			Title = "Выбрать дамп базы данных",
-			AllowMultiple = false,
-			FileTypeFilter = new[] { new FilePickerFileType("SQL-скрипт") { Patterns = new[] { "*.sql" } } }
-		};
-
-		var files = await topLevel.StorageProvider.OpenFilePickerAsync(options);
-		if(files.Count > 0)
-			vm.ImportDumpFilePath = files[0].Path.LocalPath;
 	}
 }

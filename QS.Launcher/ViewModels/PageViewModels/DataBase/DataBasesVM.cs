@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData.Kernel;
-using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.Dialog;
 using QS.Launcher.AppRunner;
@@ -33,21 +33,20 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		/// <summary>
-		/// можно создать базу если есть права пользователя на создание И
-		/// либо тип подключения поддерживает создание скриптом (есть фабрика + скрипт),
-		/// либо это MariaDB (наполнение возможно импортом дампа в мастере)
+		/// можно создать базу только если:
+		/// есть права пользователя на создание
+		/// тип подключения поддерживает создание в текущем окружении
+		/// задана фабрика и зарегистрирован скрипт создания
 		/// </summary>
 		public bool CanCreateDatabase =>
 			provider != null
 			&& provider.CanCreateDatabase
-			&& (currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true
-				|| provider is MariaDBProvider);
+			&& (currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true);
 
 		/// <summary>
-		/// Управление базой (резервная копия, удаление) идёт через IDbProvider -
-		/// поддержано и для MariaDB, и для облака. Видно при активном подключении.
+		/// резервная копия, удаление
 		/// </summary>
-		public bool CanManageDatabases => provider != null;
+		public bool CanManageDatabases => provider != null;//может надо сделать чисто на удаление 
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -117,71 +116,55 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		/// <summary>
-		/// Мастер настроек/прогресса един для всех операций с базой - резолвим один раз
-		/// и один раз подписываемся на завершение операции (без накопления подписок).
-		/// </summary>
-		private CreateDataBaseSettingsVM settingsWizard;
-		private CreateDataBaseSettingsVM SettingsWizard {
-			get {
-				if(settingsWizard == null) {
-					settingsWizard = ActivatorUtilities.GetServiceOrCreateInstance<CreateDataBaseSettingsVM>(serviceProvider);
-					settingsWizard.ProgressPageRequested += progressVm => {
-						progressVm.OperationCompleted -= OnWizardOperationCompleted;
-						progressVm.OperationCompleted += OnWizardOperationCompleted;
-					};
-				}
-				return settingsWizard;
-			}
-		}
-
-		/// <summary>
-		/// открывает мастер создания базы, по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
+		/// открывает страницу создания базы; по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
 		/// </summary>
 		private void OpenCreateDatabase() {
 			if(!CanCreateDatabase)
 				return;
 
-			SettingsWizard.SetDbSettings(Provider, CurrentConnection);
-			PushPageCommand?.Execute(SettingsWizard);
+			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider);
+			settings.OperationCompleted += () => OnOperationCompleted(settings);
+			PushPageCommand?.Execute(settings);
 		}
 
 		/// <summary>
-		/// открывает мастер резервного копирования выбранной базы
+		/// открывает страницу резервного копирования выбранной базы
 		/// </summary>
 		private void OpenBackup(DbInfo database) {
 			if(database == null || !CanManageDatabases)
 				return;
 
-			SettingsWizard.SetBackupSettings(Provider, CurrentConnection, database);
-			PushPageCommand?.Execute(SettingsWizard);
+			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider);
+			settings.OperationCompleted += () => OnOperationCompleted(settings);
+			PushPageCommand?.Execute(settings);
 		}
 
-		private void OnWizardOperationCompleted() {
-			// Закрываем все wizard-страницы и возвращаемся на DataBasesVM.
+		private void OnOperationCompleted(DbOperationSettingsVM operation) {
+			// Закрываем все нерутовые страницы и возвращаемся на DataBasesVM
 			PopToRootCommand?.Execute(null);
 			RefreshDatabases();
 
-			if(settingsWizard?.Operation == DbWizardOperation.Backup)
+			if(operation is BackupDbSettingsVM backup)
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					$"Резервная копия базы данных сохранена:\n{settingsWizard.BackupFilePath}",
+					$"Резервная копия базы данных сохранена:\n{backup.BackupFilePath}",
 					"Резервное копирование");
 		}
 
-		private async System.Threading.Tasks.Task DeleteDatabaseAsync(DbInfo database) {
+		private async Task DeleteDatabaseAsync(DbInfo database) {
 			if(database == null || !CanManageDatabases)
 				return;
 
-			// Question() кидает исключение на UI-потоке, поэтому диалог и удаление выполняем в фоне.
-			bool confirmed = await System.Threading.Tasks.Task.Run(() => interactiveQuestion.Question(
+			// Question кидает исключение на UIпотоке, поэтому диалог и удаление выполняем в фоне
+			bool confirmed = await Task.Run(() => interactiveQuestion.Question(
 				$"Безвозвратно удалить базу данных «{database.Title}»?", "Удаление базы данных"));
 			if(!confirmed)
 				return;
 
 			try {
-				await System.Threading.Tasks.Task.Run(() => provider.DropDatabase(database));
+				await Task.Run(() => provider.DropDatabase(database));
 				RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					$"База данных «{database.Title}» удалена.", "Удаление базы данных");
+					$"База данных {database.Title} удалена.", "Удаление базы данных");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось удалить базу {0}", database.BaseName);
