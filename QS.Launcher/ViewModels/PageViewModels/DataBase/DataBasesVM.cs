@@ -26,27 +26,25 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
 				this.RaisePropertyChanged(nameof(CanCreateDatabase));
+				this.RaisePropertyChanged(nameof(CanDropDatabase));
+				this.RaisePropertyChanged(nameof(CanBackupDatabase));
 				this.RaisePropertyChanged(nameof(CanManageDatabases));
 
 				LoadLastSelectedDatabase();
 			}
 		}
 
-		/// <summary>
-		/// можно создать базу только если:
-		/// есть права пользователя на создание
-		/// тип подключения поддерживает создание в текущем окружении
-		/// задана фабрика и зарегистрирован скрипт создания
-		/// </summary>
 		public bool CanCreateDatabase =>
-			provider != null
-			&& provider.CanCreateDatabase
-			&& (currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true);
+			currentConnection?.ConnectionType?.CanCreateDatabase(provider, serviceProvider) == true;
 
-		/// <summary>
-		/// резервная копия, удаление
-		/// </summary>
-		public bool CanManageDatabases => provider != null;//может надо сделать чисто на удаление 
+		public bool CanDropDatabase =>
+			currentConnection?.ConnectionType?.CanDropDatabase(provider) == true;
+
+		public bool CanBackupDatabase =>
+			currentConnection?.ConnectionType?.CanBackupDatabase(provider) == true;
+
+		public bool CanManageDatabases =>
+			CanDropDatabase || CanBackupDatabase;
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -131,7 +129,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// открывает страницу резервного копирования выбранной базы
 		/// </summary>
 		private void OpenBackup(DbInfo database) {
-			if(database == null || !CanManageDatabases)
+			if(database == null || !CanBackupDatabase)
 				return;
 
 			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider);
@@ -151,7 +149,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private async Task DeleteDatabaseAsync(DbInfo database) {
-			if(database == null || !CanManageDatabases)
+			if(database == null || !CanDropDatabase)
 				return;
 
 			// Question кидает исключение на UIпотоке, поэтому диалог и удаление выполняем в фоне

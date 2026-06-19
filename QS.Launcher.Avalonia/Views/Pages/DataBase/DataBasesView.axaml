@@ -31,8 +31,10 @@
                                     IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanManageDatabases}">
                                 <Button.Flyout>
                                     <MenuFlyout>
-                                        <MenuItem Header="Сделать резервную копию" Click="BackupDatabase_OnClick" />
-                                        <MenuItem Header="Удалить базу" Click="DeleteDatabase_OnClick" />
+                                        <MenuItem Header="Сделать резервную копию" Click="BackupDatabase_OnClick"
+											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanBackupDatabase}" />
+                                        <MenuItem Header="Удалить базу" Click="DeleteDatabase_OnClick"
+											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanDropDatabase}" />
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>

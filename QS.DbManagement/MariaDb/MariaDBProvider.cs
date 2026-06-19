@@ -28,6 +28,7 @@ namespace QS.DbManagement
 		public bool IsAdmin { get; private set; }
 
 		public bool CanCreateDatabase { get; private set; }
+		public bool CanDropDatabase { get; private set; }
 
 		/// <summary>
 		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы,
@@ -88,11 +89,14 @@ namespace QS.DbManagement
 					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
 					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0);
 
+				CanDropDatabase = IsAdmin || grants.Any(g =>
+					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
+					|| g.IndexOf("DROP", StringComparison.OrdinalIgnoreCase) >= 0);
+
 				return new LoginToServerResponse {
 					Success = true,
 					IsAdmin = IsAdmin,
-					NeedToUpdateLauncher = false,
-					CanCreateDatabase = CanCreateDatabase
+					NeedToUpdateLauncher = false
 				};
 			}
 			catch(MySqlException ex) {
@@ -196,14 +200,6 @@ namespace QS.DbManagement
 		/// </summary>
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
 			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
-		}
-
-		/// <summary>
-		/// Импорт дампа в уже созданную базу
-		/// Метод блокирующий - вызывать из фонового потока
-		/// </summary>
-		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation, string dbTitle = null) {
-			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation, dbTitle);
 		}
 
 		public void Dispose() {

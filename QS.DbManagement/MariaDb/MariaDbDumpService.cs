@@ -54,10 +54,7 @@ namespace QS.DbManagement {
 			CancellationToken cancellation,
 			string title = null)
 		{
-			if(string.IsNullOrWhiteSpace(filePath))
-				throw new ArgumentException("Не указан путь к файлу дампа.", nameof(filePath));
-			if(!File.Exists(filePath))
-				throw new FileNotFoundException("Файл дампа не найден.", filePath);
+			SqlDumpFileValidator.EnsureLooksLikeSqlDump(filePath);
 
 			progress?.Update($"Импортируем дамп {filePath} в базу {databaseName}");
 

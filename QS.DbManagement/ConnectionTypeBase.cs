@@ -21,21 +21,65 @@ namespace QS.DbManagement {
 
 		public Func<CreatorFactoryArgs, IDbCreatorModel> CreatorFactory { get; set; }
 
+		public Func<CreatorFactoryArgs, IDbCreatorModel> ImportFactory { get; set; }
+
 		/// <summary>
-		/// Создание базы доступно, только если задана фабрика и приложение
-		/// зарегистрировало конфигурацию скриптов с реальным скриптом создания
+		/// умеет создавать базу, если
+		/// задана фабрика,
+		/// в конфигурации есть скрипт создания.
+		/// НЕ учитывает права пользователя
 		/// </summary>
 		public virtual bool SupportsDatabaseCreation(IServiceProvider services) {
 			return CreatorFactory != null
 				&& services.GetService<IDbScriptsConfiguration>()?.HasCreationScript() == true;
 		}
 
+		/// <summary>
+		/// умеет наполнять базу дампом, если задана фабрика
+		/// 
+		/// НЕ учитывает права пользователя
+		/// </summary>
+		public virtual bool SupportsDatabaseImport(IServiceProvider services) {
+			return ImportFactory != null;
+		}
+
+		#region Права пользователя по управлению базой
+
+		public bool CanCreateDatabase(IDbProvider provider, IServiceProvider services) {
+			return provider != null
+				&& provider.CanCreateDatabase
+				&& SupportsDatabaseCreation(services);
+		}
+
+		public bool CanImportDatabase(IDbProvider provider, IServiceProvider services) {
+			return provider != null
+				&& provider.CanCreateDatabase
+				&& SupportsDatabaseImport(services);
+		}
+
+		public bool CanBackupDatabase(IDbProvider provider) {
+			return provider != null
+				&& provider.CanDropDatabase;
+		}
+
+		public bool CanDropDatabase(IDbProvider provider) {
+			return provider != null
+				&& provider.CanDropDatabase;
+		}
+		#endregion
+
 		public IDbCreatorModel CreateCreator(CreatorFactoryArgs args) {
 			if(CreatorFactory == null)
 				throw new InvalidOperationException(
-					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика создания БД (CreatorFactory). "
-					+ "Заполните её в композиционном корне приложения.");
+					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика создания БД");
 			return CreatorFactory(args);
+		}
+
+		public IDbCreatorModel CreateImporter(CreatorFactoryArgs args) {
+			if(ImportFactory == null)
+				throw new InvalidOperationException(
+					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика импорта дампа");
+			return ImportFactory(args);
 		}
 	}
 
