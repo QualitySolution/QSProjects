@@ -49,6 +49,13 @@ namespace QS.Launcher.ViewModels {
 			page.PushPageCommand = ReactiveCommand.Create<CarouselPageVM>(PushPage);
 			page.PopPageCommand = ReactiveCommand.Create(PopPage);
 			page.PopToRootCommand = ReactiveCommand.Create(PopToRoot);
+			page.PopToPageCommand = ReactiveCommand.Create<Type>(type => {
+				var method = GetType()
+					.GetMethod(nameof(PopToPage))
+					.MakeGenericMethod(type);
+
+				method.Invoke(this, null);
+			});
 		}
 
 		public void SaveConnections() {
@@ -91,9 +98,6 @@ namespace QS.Launcher.ViewModels {
 				SelectedPageIndex = rootPagesCount - 1;
 		}
 
-		/// <summary>
-		/// Найти первую страницу указанного типа в стеке и переключиться на неё, сняв всё, что стоит выше
-		/// </summary>
 		public void PopToPage<TPage>() where TPage : CarouselPageVM {
 			int targetIdx = -1;
 			for(int i = 0; i < Pages.Count; i++) {

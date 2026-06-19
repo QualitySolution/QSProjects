@@ -48,7 +48,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					"Импорт дампа в базу данных",
 					args => {
 						((MariaDBProvider)args.Provider).ImportDatabase(
-							DbName, ImportDumpFilePath, args.Progress, args.CancellationToken);
+							DbName, ImportDumpFilePath, args.Progress, args.CancellationToken, DbTitle);
 						args.CancellationToken.ThrowIfCancellationRequested();
 						return true;
 					}));

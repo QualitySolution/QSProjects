@@ -141,7 +141,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private void OnOperationCompleted(DbOperationSettingsVM operation) {
 			// Закрываем все нерутовые страницы и возвращаемся на DataBasesVM
-			PopToRootCommand?.Execute(null);
+			PopToPageCommand?.Execute(GetType());
 			RefreshDatabases();
 
 			if(operation is BackupDbSettingsVM backup)

@@ -2,9 +2,6 @@ using System.Windows.Input;
 using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
-	/// <summary>
-	/// NextPage/PreviousPage/ChangePage — кольцевая навигация по корневым страницам
-	/// </summary>
 	public class CarouselPageVM : ViewModelBase {
 		public ICommand NextPageCommand { get; set; }
 
@@ -26,5 +23,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		/// Закрыть все нерутовые страницы и вернуться к корневым вкладкам
 		/// </summary>
 		public ICommand PopToRootCommand { get; set; }
+
+		/// <summary>
+		/// Найти первую страницу указанного типа в стеке и переключиться на неё, сняв всё, что стоит выше
+		/// </summary>
+		public ICommand PopToPageCommand { get; set; }
 	}
 }
