@@ -33,7 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
 		}
 
-		public bool CanImportDump => Connection?.ConnectionType?.SupportsDatabaseImport(Services) == true;
+		public bool CanImportDump => Connection?.ConnectionType?.CanImportDatabase(Provider, Services) == true;
 
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			var phases = new List<DbCreationPhase> {

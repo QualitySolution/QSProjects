@@ -32,7 +32,8 @@ namespace QS.Cloud.Client.DataBase
 		#endregion
 		public string UserName { get; private set; }
 
-		public bool CanCreateDatabase => dbClient.CanConnect;
+		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
+		public bool CanDropDatabase => CanCreateDatabase;
 
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
@@ -133,6 +134,7 @@ namespace QS.Cloud.Client.DataBase
 			try {
 				cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
+				IsAdmin = cloudResponce.YouAccountAdmin;
 				resp = new LoginToServerResponse {
 					Success = true,
 					IsAdmin = cloudResponce.YouAccountAdmin,

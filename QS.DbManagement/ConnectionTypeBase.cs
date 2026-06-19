@@ -24,8 +24,10 @@ namespace QS.DbManagement {
 		public Func<CreatorFactoryArgs, IDbCreatorModel> ImportFactory { get; set; }
 
 		/// <summary>
-		/// Создание базы доступно, только если задана фабрика и приложение
-		/// зарегистрировало конфигурацию скриптов с реальным скриптом создания
+		/// умеет создавать базу, если
+		/// задана фабрика,
+		/// в конфигурации есть скрипт создания.
+		/// НЕ учитывает права пользователя
 		/// </summary>
 		public virtual bool SupportsDatabaseCreation(IServiceProvider services) {
 			return CreatorFactory != null
@@ -33,11 +35,38 @@ namespace QS.DbManagement {
 		}
 
 		/// <summary>
-		/// Импорт дампа доступен, если тип подключения умеет наполнять базу из файла
+		/// умеет наполнять базу дампом, если задана фабрика
+		/// 
+		/// НЕ учитывает права пользователя
 		/// </summary>
 		public virtual bool SupportsDatabaseImport(IServiceProvider services) {
 			return ImportFactory != null;
 		}
+
+		#region Права пользователя по управлению базой
+
+		public bool CanCreateDatabase(IDbProvider provider, IServiceProvider services) {
+			return provider != null
+				&& provider.CanCreateDatabase
+				&& SupportsDatabaseCreation(services);
+		}
+
+		public bool CanImportDatabase(IDbProvider provider, IServiceProvider services) {
+			return provider != null
+				&& provider.CanCreateDatabase
+				&& SupportsDatabaseImport(services);
+		}
+
+		public bool CanBackupDatabase(IDbProvider provider) {
+			return provider != null
+				&& provider.CanDropDatabase;
+		}
+
+		public bool CanDropDatabase(IDbProvider provider) {
+			return provider != null
+				&& provider.CanDropDatabase;
+		}
+		#endregion
 
 		public IDbCreatorModel CreateCreator(CreatorFactoryArgs args) {
 			if(CreatorFactory == null)

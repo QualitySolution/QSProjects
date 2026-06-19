@@ -31,5 +31,6 @@ namespace QS.DbManagement
 
 		bool IsAdmin { get; }
 		bool CanCreateDatabase { get; }
+		bool CanDropDatabase { get; }
 	}
 }
