@@ -198,14 +198,6 @@ namespace QS.DbManagement
 			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
 		}
 
-		/// <summary>
-		/// Импорт дампа в уже созданную базу
-		/// Метод блокирующий - вызывать из фонового потока
-		/// </summary>
-		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation, string dbTitle = null) {
-			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation, dbTitle);
-		}
-
 		public void Dispose() {
 			connection?.Dispose();
 		}

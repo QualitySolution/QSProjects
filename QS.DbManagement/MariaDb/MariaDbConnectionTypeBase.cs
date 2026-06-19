@@ -27,6 +27,12 @@ namespace QS.DbManagement
 					scripts.MakeCreationScript(), args.Progress, args.Interaction, args.CancellationToken) { FillBaseGuid = false };
 			};
 
+			ImportFactory = args => {
+				var p = (MariaDBProvider)args.Provider;
+				return new MariaDbImportModel(
+					p.ConnectionStringBuilder, args.ImportDumpFilePath, args.Progress, args.CancellationToken);
+			};
+
 		}
 
 		public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) {

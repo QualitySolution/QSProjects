@@ -33,8 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
 		}
 
-		public bool CanImportDump => Provider is MariaDBProvider
-			|| Connection?.ConnectionType?.SupportsDatabaseCreation(Services) == true;
+		public bool CanImportDump => Connection?.ConnectionType?.SupportsDatabaseImport(Services) == true;
 
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			var phases = new List<DbCreationPhase> {
@@ -43,21 +42,19 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 					args => args.Provider.CreateDatabase(DbName, DbTitle, Services))
 			};
 
-			if(!string.IsNullOrWhiteSpace(ImportDumpFilePath) && Provider is MariaDBProvider) {
+			if(!string.IsNullOrWhiteSpace(ImportDumpFilePath)
+				&& Connection.ConnectionType.SupportsDatabaseImport(Services)) {
 				phases.Add(new DbCreationPhase(
 					"Импорт дампа в базу данных",
 					args => {
-						((MariaDBProvider)args.Provider).ImportDatabase(
-							DbName, ImportDumpFilePath, args.Progress, args.CancellationToken, DbTitle);
-						args.CancellationToken.ThrowIfCancellationRequested();
-						return true;
+						args.ImportDumpFilePath = ImportDumpFilePath;
+						return Connection.ConnectionType.CreateImporter(args).RunCreation(DbName, DbTitle);
 					}));
 			}
 			else if(Connection.ConnectionType.SupportsDatabaseCreation(Services)) {
 				phases.Add(new DbCreationPhase(
 					"Наполнение базы данных",
 					args => {
-						args.ImportDumpFilePath = ImportDumpFilePath;
 						IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
 						return creator.RunCreation(DbName, DbTitle);
 					}));

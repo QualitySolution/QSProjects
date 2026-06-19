@@ -33,6 +33,9 @@ namespace QS.Cloud.Client.DataBase {
 					args.CancellationToken,
 					args.ImportDumpFilePath);
 			};
+
+			// QsCloudDbCreator сам импортирует дамп, когда задан ImportDumpFilePath
+			ImportFactory = CreatorFactory;
 		}
 
 		public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) {

@@ -21,6 +21,8 @@ namespace QS.DbManagement {
 
 		public Func<CreatorFactoryArgs, IDbCreatorModel> CreatorFactory { get; set; }
 
+		public Func<CreatorFactoryArgs, IDbCreatorModel> ImportFactory { get; set; }
+
 		/// <summary>
 		/// Создание базы доступно, только если задана фабрика и приложение
 		/// зарегистрировало конфигурацию скриптов с реальным скриптом создания
@@ -30,12 +32,25 @@ namespace QS.DbManagement {
 				&& services.GetService<IDbScriptsConfiguration>()?.HasCreationScript() == true;
 		}
 
+		/// <summary>
+		/// Импорт дампа доступен, если тип подключения умеет наполнять базу из файла
+		/// </summary>
+		public virtual bool SupportsDatabaseImport(IServiceProvider services) {
+			return ImportFactory != null;
+		}
+
 		public IDbCreatorModel CreateCreator(CreatorFactoryArgs args) {
 			if(CreatorFactory == null)
 				throw new InvalidOperationException(
-					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика создания БД (CreatorFactory). "
-					+ "Заполните её в композиционном корне приложения.");
+					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика создания БД");
 			return CreatorFactory(args);
+		}
+
+		public IDbCreatorModel CreateImporter(CreatorFactoryArgs args) {
+			if(ImportFactory == null)
+				throw new InvalidOperationException(
+					$"Для типа подключения '{ConnectionTypeName}' не настроена фабрика импорта дампа");
+			return ImportFactory(args);
 		}
 	}
 
