@@ -26,6 +26,7 @@ namespace QS.Updater.App.ViewModels {
 		private readonly IDataBaseInfo dataBaseInfo;
 		private readonly IChangeableConfiguration configuration;
 		private readonly CheckBaseVersion checkBaseVersion;
+		private readonly IUpdateChannelService channelService;
 
 		public NewVersionViewModel(
 			ReleaseInfo[] releases,
@@ -37,6 +38,7 @@ namespace QS.Updater.App.ViewModels {
 			IInteractiveMessage interactive,
 			IChangeableConfiguration configuration,
 			CheckBaseVersion checkBaseVersion = null,
+			IUpdateChannelService channelService = null,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
@@ -48,6 +50,7 @@ namespace QS.Updater.App.ViewModels {
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 			this.checkBaseVersion = checkBaseVersion;
+			this.channelService = channelService;
 
 			this.dataBaseInfo = dataBaseInfo;
 			if(!releases.Any())
@@ -114,7 +117,7 @@ namespace QS.Updater.App.ViewModels {
 		public bool VisibleDbUpdateInfo => DbUpdateInfo != null;
 		public bool VisibleDbInfo => dataBaseInfo != null;
 		public bool VisibleSelectRelease => CanSelectedReleases.Count() > 1;
-
+		public bool VisibleUpdateOff => channelService != null && channelService.CurrentChannel != UpdateChannel.Off;
 		public bool CanSkipUpdate => checkBaseVersion?.Result != CheckBaseResult.BaseVersionGreater;
 		#endregion
 

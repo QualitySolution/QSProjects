@@ -10,10 +10,7 @@ public static partial class DependencyInjection {
 	public static IServiceCollection AddPages(this IServiceCollection services) {
 		return services
 			.AddSingleton<MainWindow>()
-			.AddSingleton<UserControl, LoginView>()
-			.AddSingleton<UserControl, DataBasesView>()
-			.AddTransient<UserControl, CreateDataBaseSettingsView>()
-			.AddTransient<UserControl, CreateDataBaseProgressView>()
+			.AddSingleton<PageViewLocator>()
 			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>();
 	}
 }

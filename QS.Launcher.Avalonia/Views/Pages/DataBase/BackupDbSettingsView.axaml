@@ -1,0 +1,30 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.DataBase.BackupDbSettingsView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
+             x:DataType="vm:BackupDbSettingsVM"
+             mc:Ignorable="d">
+    <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,*,Auto">
+        <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="{Binding Title}" />
+
+        <StackPanel Grid.Row="1">
+            <Label Margin="5" Content="База:" />
+            <TextBox Margin="5" Text="{Binding BackupTargetTitle}" IsReadOnly="True" />
+
+            <Label Margin="5" Content="Файл резервной копии:" />
+            <Grid Margin="5" ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Text="{Binding BackupFilePath}" Watermark="путь к .sql файлу" />
+                <Button Grid.Column="1" Margin="5,0,0,0" Content="Обзор..." Click="BrowseBackupFile_OnClick" />
+            </Grid>
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*">
+            <Button Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding CancelCommand}" Content="Отмена" />
+            <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ProceedCommand}" IsDefault="True" Content="Далее" />
+        </Grid>
+    </Grid>
+</UserControl>

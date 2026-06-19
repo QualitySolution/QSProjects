@@ -10,7 +10,7 @@
              Loaded="OnLoaded"
              mc:Ignorable="d">
     <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-        <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="Создание базы данных" />
+        <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="{Binding OperationTitle}" />
 
         <StackPanel Grid.Row="1" Margin="5,15,5,5" Orientation="Horizontal" HorizontalAlignment="Center">
             <Image x:Name="cogwheel" Height="32" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">

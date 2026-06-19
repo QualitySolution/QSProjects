@@ -17,5 +17,11 @@ namespace QS.Cloud.Client.Clients {
 			var request = new CreateDataBaseRequest { Name = dbName, Title = dbTitle, ProductId = applicationInfo.ProductCode };
 			return client.CreateDataBase(request, headers);
 		}
+
+		public DropDataBaseResponse DropDataBase(int baseId) {
+			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
+			var request = new DropDataBaseRequest { BaseId = baseId };
+			return client.DropDataBase(request, headers);
+		}
 	}
 }

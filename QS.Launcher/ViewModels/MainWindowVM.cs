@@ -29,7 +29,6 @@ namespace QS.Launcher.ViewModels {
 		public MainWindowVM(
 			DataBasesVM dataBasesVM,
 			LoginVM loginVM,
-			BaseManagementVM baseManagementVM,
 			UserManagementVM userManagementVM,
 			IServiceProvider provider)
 		{

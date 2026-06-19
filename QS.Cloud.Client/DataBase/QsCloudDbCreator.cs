@@ -1,4 +1,5 @@
 using QS.Cloud.Core;
+using QS.DbManagement;
 using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.DBScripts.Models;
@@ -17,6 +18,7 @@ namespace QS.Cloud.Client.DataBase
 		private readonly IDbCreatorInteraction interaction;
 		private readonly IDbScriptsConfiguration configuration;
 		private readonly CancellationToken cancellationToken;
+		private readonly string importDumpFilePath;
 
 		private LoginManagementCloudClient loginClient;
 
@@ -26,7 +28,8 @@ namespace QS.Cloud.Client.DataBase
 			IDbScriptsConfiguration configuration,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
-			CancellationToken cancellationToken)
+			CancellationToken cancellationToken,
+			string importDumpFilePath = null)
 		{
 			this.baseId = baseId;
 			loginClient = new LoginManagementCloudClient(authInfo);
@@ -34,38 +37,35 @@ namespace QS.Cloud.Client.DataBase
 			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.cancellationToken = cancellationToken;
+			this.importDumpFilePath = importDumpFilePath;
 		}
 
 		public bool RunCreation(string dbName, string dbTitle) {
 			try {
 				cancellationToken.ThrowIfCancellationRequested();
 
-				StartSessionResponse session = loginClient.StartSession(baseId);
+				using(var session = CloudDbSession.Open(loginClient, baseId)) {
+					if(!session.Success) {
+						interaction.ReportError("Ошибка в создании сессии", "Запрос в облако");
+						return false;
+					}
+					if(!session.IsAdmin) {
+						interaction.ReportError("Вы не имеете прав Администратора", "Запрос в облако");
+						return false;
+					}
 
-				if(!session.Success) {
-					interaction.ReportError("Ошибка в создании сессии", "Запрос в облако");
-					return false;
+					if(!string.IsNullOrWhiteSpace(importDumpFilePath)) {
+						// Наполнение импортом выбранного дампа вместо встроенного скрипта.
+						new MariaDbDumpService().Import(session.ConnectionStringBuilder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken);
+						return true;
+					}
+
+					var creator = new MySqlDbCreateModel(
+						session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
+						configuration.MakeCreationScript(), progress, interaction, cancellationToken);
+					creator.FillBaseGuid = false;
+					return creator.RunCreation(session.Db.BaseName, dbTitle);
 				}
-				if(!session.IsAdmin) {
-					interaction.ReportError("Вы не имеете прав Администратора", "Запрос в облако");
-					return false;
-				}
-
-				var infoProvider = new SessionInfoProvider(sessionId: session.SessionId);
-				var sessionLife = new AliveCloudClient(infoProvider);
-				sessionLife.NewMessage += (mes) => {
-					progress.Update("Сессия: " + mes + " в статусе " + sessionLife.LastStatus.ToString());
-				};
-				sessionLife.KeepAlive();
-
-				var creator = new MySqlDbCreateModel(
-					session.Db.Server, session.Db.Port, session.Db.Login, session.Db.Password,
-					configuration.MakeCreationScript(), progress, interaction, cancellationToken);
-				creator.FillBaseGuid = false;
-				bool success = creator.RunCreation(session.Db.BaseName, dbTitle);
-
-				sessionLife.Dispose();
-				return success;
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Создание базы в облаке отменено пользователем.");

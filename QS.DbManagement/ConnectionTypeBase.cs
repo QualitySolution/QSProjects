@@ -49,5 +49,7 @@ namespace QS.DbManagement {
 		public IDbCreatorInteraction Interaction { get; set; }
 		public System.Threading.CancellationToken CancellationToken { get; set; }
 		public IServiceProvider ServiceProvider { get; set; }
+
+		public string ImportDumpFilePath { get; set; }
 	}
 }

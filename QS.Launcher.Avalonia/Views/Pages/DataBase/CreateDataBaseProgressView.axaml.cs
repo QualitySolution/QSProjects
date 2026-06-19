@@ -16,6 +16,6 @@ public partial class CreateDataBaseProgressView : UserControl {
 		cogwheel.Classes.Add("rolled");
 
 		if(DataContext is CreateDataBaseProgressVM vm)
-			vm.StartCreationCommand.Execute().Subscribe();
+			vm.StartCommand.Execute().Subscribe();
 	}
 }

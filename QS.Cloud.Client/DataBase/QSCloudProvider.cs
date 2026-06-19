@@ -3,6 +3,7 @@ using MySqlConnector;
 using QS.Cloud.Core;
 using QS.DbManagement.Responces;
 using QS.DbManagement;
+using QS.Dialog;
 using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,9 +70,19 @@ namespace QS.Cloud.Client.DataBase
 			loginClient.Dispose();
 		}
 	
-		public bool DropDatabase(string databaseName)
+		public bool DropDatabase(DbInfo database)
 		{
-			throw new NotImplementedException();
+			var response = dbClient.DropDataBase(database.BaseId);
+			return response.Success;
+		}
+
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation)
+		{
+			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
+				if(!session.Success)
+					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
+				new MariaDbDumpService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
+			}
 		}
 
 		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {

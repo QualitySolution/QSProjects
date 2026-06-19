@@ -1,11 +1,13 @@
 using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Responces;
+using QS.Dialog;
 using QS.Project.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 
 namespace QS.DbManagement
 {
@@ -183,9 +185,25 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool DropDatabase(string databaseName) {
-			string sql = $"DROP DATABASE IF EXISTS `{databaseName}`";
+		public bool DropDatabase(DbInfo database) {
+			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
 			return connection.Execute(sql) != 0;
+		}
+
+		/// <summary>
+		/// Резервное копирование базы в SQL-скрипт
+		/// Метод блокирующий - вызывать из фонового потока
+		/// </summary>
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
+		}
+
+		/// <summary>
+		/// Импорт SQL-дампа в уже созданную базу
+		/// Метод блокирующий - вызывать из фонового потока
+		/// </summary>
+		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
 		}
 
 		public void Dispose() {

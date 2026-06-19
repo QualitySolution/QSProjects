@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData.Kernel;
-using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.Dialog;
 using QS.Launcher.AppRunner;
@@ -26,6 +26,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
 				this.RaisePropertyChanged(nameof(CanCreateDatabase));
+				this.RaisePropertyChanged(nameof(CanManageDatabases));
 
 				LoadLastSelectedDatabase();
 			}
@@ -40,7 +41,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public bool CanCreateDatabase =>
 			provider != null
 			&& provider.CanCreateDatabase
-			&& currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true;
+			&& (currentConnection?.ConnectionType?.SupportsDatabaseCreation(serviceProvider) == true);
+
+		/// <summary>
+		/// резервная копия, удаление
+		/// </summary>
+		public bool CanManageDatabases => provider != null;//может надо сделать чисто на удаление 
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -72,10 +78,13 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public ICommand ConnectCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenCreateDatabaseCommand { get; }
+		public ICommand BackupDatabaseCommand { get; }
+		public ICommand DeleteDatabaseCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
 
 		IInteractiveMessage interactiveMessage;
+		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IServiceProvider serviceProvider;
 
 		private readonly IAppRunner appRunner;
@@ -85,12 +94,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			IAppRunner appRunner,
 			IApplicationInfo applicationInfo,
 			IInteractiveMessage interactiveMessage,
+			IInteractiveQuestion interactiveQuestion,
 			LauncherOptions launcherOptions,
 			IServiceProvider serviceProvider)
 		{
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
+			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.launcherOptions = launcherOptions;
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
@@ -100,32 +111,65 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecuteConnection);
 			OpenCreateDatabaseCommand = ReactiveCommand.Create(OpenCreateDatabase);
+			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
+			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
 		}
 
 		/// <summary>
-		/// создаёт <see cref="CreateDataBaseSettingsVM"/> возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
+		/// открывает страницу создания базы; по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
 		/// </summary>
 		private void OpenCreateDatabase() {
 			if(!CanCreateDatabase)
 				return;
 
-			var settings = ActivatorUtilities.GetServiceOrCreateInstance<CreateDataBaseSettingsVM>(serviceProvider);
-			settings.SetDbSettings(Provider, CurrentConnection);
-
-			settings.ProgressPageRequested += progressVm => {
-				progressVm.DatabaseCreated += OnDatabaseCreatedFromWizard;
-				progressVm.DatabaseCreationFailed += () => {
-					// пользователь сам решит вернуться или попробовать снова
-				};
-			};
-
+			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider);
+			settings.OperationCompleted += () => OnOperationCompleted(settings);
 			PushPageCommand?.Execute(settings);
 		}
 
-		private void OnDatabaseCreatedFromWizard() {
-			// Закрываем все wizard-страницы и возвращаемся на DataBasesVM.
+		/// <summary>
+		/// открывает страницу резервного копирования выбранной базы
+		/// </summary>
+		private void OpenBackup(DbInfo database) {
+			if(database == null || !CanManageDatabases)
+				return;
+
+			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider);
+			settings.OperationCompleted += () => OnOperationCompleted(settings);
+			PushPageCommand?.Execute(settings);
+		}
+
+		private void OnOperationCompleted(DbOperationSettingsVM operation) {
+			// Закрываем все нерутовые страницы и возвращаемся на DataBasesVM
 			PopToRootCommand?.Execute(null);
 			RefreshDatabases();
+
+			if(operation is BackupDbSettingsVM backup)
+				interactiveMessage.ShowMessage(ImportanceLevel.Success,
+					$"Резервная копия базы данных сохранена:\n{backup.BackupFilePath}",
+					"Резервное копирование");
+		}
+
+		private async Task DeleteDatabaseAsync(DbInfo database) {
+			if(database == null || !CanManageDatabases)
+				return;
+
+			// Question кидает исключение на UIпотоке, поэтому диалог и удаление выполняем в фоне
+			bool confirmed = await Task.Run(() => interactiveQuestion.Question(
+				$"Безвозвратно удалить базу данных «{database.Title}»?", "Удаление базы данных"));
+			if(!confirmed)
+				return;
+
+			try {
+				await Task.Run(() => provider.DropDatabase(database));
+				RefreshDatabases();
+				interactiveMessage.ShowMessage(ImportanceLevel.Success,
+					$"База данных {database.Title} удалена.", "Удаление базы данных");
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Не удалось удалить базу {0}", database.BaseName);
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Ошибка удаления базы данных");
+			}
 		}
 
 		public void RefreshDatabases() {

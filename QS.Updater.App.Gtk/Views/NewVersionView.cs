@@ -27,7 +27,10 @@ namespace QS.Updater.App.Views {
 			comboSelectInstaller.Binding.AddBinding(ViewModel, v => v.SelectedRelease, w => w.SelectedItem).InitializeFromSource();
 
 			buttonSkip.Binding.AddBinding(ViewModel, vm => vm.CanSkipUpdate, w => w.Sensitive).InitializeFromSource();
-			buttonOffAutoUpdate.Binding.AddBinding(ViewModel, vm => vm.CanSkipUpdate, w => w.Sensitive).InitializeFromSource();
+			buttonOffAutoUpdate.Binding.AddSource(ViewModel)
+				.AddBinding(vm => vm.VisibleUpdateOff, w => w.Visible)
+				.AddBinding(vm => vm.CanSkipUpdate, w => w.Sensitive)
+				.InitializeFromSource();
 
 			for(uint i = 0; i < ViewModel.Releases.Length; i++) {
 				uint baseRow = i * 4;
