@@ -51,7 +51,9 @@ namespace QS.DbManagement {
 			string databaseName,
 			string filePath,
 			IProgressBarDisplayable progress,
-			CancellationToken cancellation) {
+			CancellationToken cancellation,
+			string title = null)
+		{
 			if(string.IsNullOrWhiteSpace(filePath))
 				throw new ArgumentException("Не указан путь к файлу дампа.", nameof(filePath));
 			if(!File.Exists(filePath))
@@ -73,6 +75,19 @@ namespace QS.DbManagement {
 					progress?.Update(e.CurrentBytes);
 				};
 				backup.ImportFromFile(filePath);
+
+				if(!string.IsNullOrEmpty(title))
+				{
+					progress?.Update("Вставляем BaseTitle");
+					backup.Command.CommandText = @"INSERT INTO base_parameters (name, str_value) 
+						VALUES ('BaseTitle', @title)
+						ON DUPLICATE KEY UPDATE
+							str_value = VALUES(str_value);";
+					backup.Command.Parameters.Clear();
+					backup.Command.Parameters.AddWithValue("@title", title);
+					backup.Command.ExecuteNonQuery();
+					progress?.Update("Новый BaseTitle вставлен");
+				}
 			});
 		}
 

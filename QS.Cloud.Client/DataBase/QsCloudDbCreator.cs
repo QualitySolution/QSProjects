@@ -56,7 +56,7 @@ namespace QS.Cloud.Client.DataBase
 
 					if(!string.IsNullOrWhiteSpace(importDumpFilePath)) {
 						// Наполнение импортом выбранного дампа вместо встроенного скрипта.
-						new MariaDbDumpService().Import(session.ConnectionStringBuilder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken);
+						new MariaDbDumpService().Import(session.ConnectionStringBuilder, session.Db.BaseName, importDumpFilePath, progress, cancellationToken, dbTitle);
 						return true;
 					}
 

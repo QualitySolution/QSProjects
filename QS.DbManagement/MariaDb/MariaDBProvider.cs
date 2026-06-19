@@ -191,7 +191,7 @@ namespace QS.DbManagement
 		}
 
 		/// <summary>
-		/// Резервное копирование базы в SQL-скрипт
+		/// Резервное копирование базы в скрипт
 		/// Метод блокирующий - вызывать из фонового потока
 		/// </summary>
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
@@ -199,11 +199,11 @@ namespace QS.DbManagement
 		}
 
 		/// <summary>
-		/// Импорт SQL-дампа в уже созданную базу
+		/// Импорт дампа в уже созданную базу
 		/// Метод блокирующий - вызывать из фонового потока
 		/// </summary>
-		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation);
+		public void ImportDatabase(string databaseName, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation, string dbTitle = null) {
+			new MariaDbDumpService().Import(ConnectionStringBuilder, databaseName, filePath, progress, cancellation, dbTitle);
 		}
 
 		public void Dispose() {
