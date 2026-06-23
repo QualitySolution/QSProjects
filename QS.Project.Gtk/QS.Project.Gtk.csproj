@@ -82,6 +82,8 @@
     <Compile Include="Project.Dialogs.GtkUI\EntityEditSimpleDialog.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Widgets.GtkUI\LeftRightListView.cs" />
+    <Compile Include="Widgets.GtkUI\Pipeline\PipelineStageView.cs" />
+    <Compile Include="Widgets.GtkUI\Pipeline\PipelineView.cs" />
     <Compile Include="Widgets.GtkUI\UserPermissionWidget.cs" />
     <Compile Include="Widgets.GtkUI\UserEntityPermissionWidget.cs" />
     <Compile Include="Project.Dialogs.GtkUI\TypeOfEntityDlg.cs" />
@@ -230,7 +232,9 @@
     <Compile Include="Widgets.GtkUI\TimePicker.cs" />
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\objects.xml" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
@@ -289,6 +293,9 @@
     <EmbeddedResource Include="Icons\close-button.png" />
     <EmbeddedResource Include="Icons\Eye.png" />
     <EmbeddedResource Include="Icons\CrossedEye.png" />
+	<EmbeddedResource Include="Icons\pipeline.png">
+      <LogicalName>pipeline.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />

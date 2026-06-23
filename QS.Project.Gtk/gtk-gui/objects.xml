@@ -1,0 +1,11 @@
+<objects attr-sync="on">
+  <object 
+	  type="QS.Widgets.GtkUI.Pipeline.PipelineView" 
+	  palette-category="QS.Project" 
+	  allow-children="false" 
+	  icon="pipeline.png" 
+	  base-type="Gtk.Fixed">
+    <itemgroups />
+    <signals />
+  </object>
+</objects>
