@@ -3,12 +3,15 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
 		<ProjectGuid>{F22749B2-E35B-455D-BD8D-081373B16FC7}</ProjectGuid>
-		<RootNamespace>QS.BusinessCommon</RootNamespace>
+		<RootNamespace>QS.Measurement</RootNamespace>
+		<AssemblyName>QS.Measurement</AssemblyName>
 		<Company>Quality Solution</Company>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\QS.Project.Core\QS.Project.Core.csproj" />
+      <ProjectReference Include="..\..\QS.Project\QS.Project.csproj" />
+      <ProjectReference Include="..\..\QS.Project.Desktop\QS.Project.Desktop.csproj" />
     </ItemGroup>
 
 </Project>

@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.HistoryLog", "QS.History
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{7FE3C597-F9E0-43BE-BF73-142234C00C19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.BusinessCommon", "Modules\QS.BusinessCommon\QS.BusinessCommon.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Measurement", "Modules\QS.Measurement\QS.Measurement.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Report.Core", "QS.Report.Core\QS.Report.Core.csproj", "{3E194A95-AC31-43D0-B93D-64164402A6DD}"
 EndProject
