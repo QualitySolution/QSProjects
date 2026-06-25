@@ -9,11 +9,12 @@ using System.ComponentModel;
 
 namespace QS.Widgets.GtkUI.Pipeline {
 
-    /// <summary>
-    /// Виджет пайплайна - линия этапов с соединительными линиями
-    /// </summary>
-	// ToolboxItem настраивается через objects.xml
-	public class PipelineView : Fixed
+	/// <summary>
+	/// Виджет пайплайна - линия этапов с соединительными линиями
+	/// </summary>
+	[ToolboxItem(true)]
+	[Category("QS.Project")]
+	public class PipelineView : HBox
     {
         private int _lineHeight = 3;
         private int _pipelineSidePadding = 20;
@@ -40,6 +41,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
         private Gdk.Color _stageSymbolColor = new Gdk.Color(255, 255, 255);
         private Gdk.Color _stageAdditionalInfoTextColor = new Gdk.Color(255, 0, 0);
 
+		private Fixed _fixedContainer;
         private List<PipelineStageView> _stages = new List<PipelineStageView>();
         private List<DrawingArea> _connectors = new List<DrawingArea>();
         private Label _titleLabel;
@@ -328,11 +330,14 @@ namespace QS.Widgets.GtkUI.Pipeline {
 
         public PipelineView()
         {
+			_fixedContainer = new Fixed();
 			_titleLabel = new Label();
             _titleLabel.Justify = Justification.Center;
             _titleLabel.Wrap = false;
             _titleLabel.HeightRequest = _titleHeight;
-            Put(_titleLabel, 0, 0);
+			_fixedContainer.Put(_titleLabel, 0, 0);
+
+			PackStart(_fixedContainer, true, true, 0);
 
             SizeAllocated += OnPipelineSizeAllocated;
             Realized += OnPipelineRealized;
@@ -437,7 +442,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
                 stage.StageViewModel = stageViewModels[i];
 
                 _stages.Add(stage);
-                Put(stage, 0, 0);
+				_fixedContainer.Put(stage, 0, 0);
                 stage.ShowAll();
 
                 if (i < stageViewModels.Count - 1)
@@ -447,7 +452,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
                     connector.HeightRequest = _connectorDrawHeight;
                     connector.ExposeEvent += OnConnectorExpose;
                     _connectors.Add(connector);
-                    Put(connector, 0, 0);
+					_fixedContainer.Put(connector, 0, 0);
                     connector.Show();
                 }
             }
@@ -543,7 +548,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
             if (HasTitle())
             {
                 _titleLabel.WidthRequest = pipelineWidth;
-                Move(_titleLabel, startX, y);
+				_fixedContainer.Move(_titleLabel, startX, y);
                 _titleLabel.Show();
             }
             else
@@ -554,7 +559,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
             int stageX = startX;
             for (int i = 0; i < _stages.Count; i++)
             {
-                Move(_stages[i], stageX, stagesY);
+				_fixedContainer.Move(_stages[i], stageX, stagesY);
 
                 if (i < _connectors.Count)
                 {
@@ -569,7 +574,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
                     if (_connectors[i].WidthRequest != connectorWidth)
                         _connectors[i].WidthRequest = connectorWidth;
 
-                    Move(_connectors[i], connectorX, stagesY + _stages[i].CircleCenterOffsetY - _connectorDrawHeight / 2);
+					_fixedContainer.Move(_connectors[i], connectorX, stagesY + _stages[i].CircleCenterOffsetY - _connectorDrawHeight / 2);
                     _connectors[i].QueueDraw();
                 }
 

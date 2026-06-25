@@ -233,9 +233,6 @@
     <Compile Include="gtk-gui\QS.Widgets.GtkUI.TimePicker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\objects.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">
       <Project>{190cea0d-ea23-4c91-8030-203a5afed7b7}</Project>
       <Name>Gamma.Binding</Name>
