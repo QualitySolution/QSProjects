@@ -1,5 +1,5 @@
 using System;
-using QS.DbManagement.Responces;
+using QS.DbManagement.Entities;
 
 namespace QS.Launcher.AppRunner {
 	public class InProcessRunner : IAppRunner {

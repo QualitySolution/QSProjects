@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using QS.DbManagement;
-using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Launcher;
 
@@ -429,11 +428,6 @@ namespace QS.Test.Launcher {
 
 			public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
 				=> Substitute.For<IDbProvider>();
-
-			public TestConnectionType WithStubCreator() {
-				CreatorFactory = args => Substitute.For<IDbCreatorModel>();
-				return this;
-			}
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using ReactiveUI;
 
-namespace QS.DbManagement {
+namespace QS.DbManagement.Entities {
 	public class ConnectionParameterValue : ReactiveObject {
 		private readonly ConnectionParameter parameter;
 

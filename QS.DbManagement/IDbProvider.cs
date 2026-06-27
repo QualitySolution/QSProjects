@@ -1,9 +1,9 @@
-using QS.DbManagement.Responces;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Threading;
 using System;
+using QS.DbManagement.Entities;
 
 namespace QS.DbManagement
 {
@@ -13,7 +13,10 @@ namespace QS.DbManagement
 
 		bool ChangePassword(string username, string oldPassword, string newPassword);
 
-		bool CreateDatabase(string databaseName, string title, IServiceProvider services = null);
+		/// <summary>
+		/// Создаёт базу и сразу наполняет её
+		/// </summary>
+		bool CreateDatabase(DbCreationRequest request);
 
 		bool DropDatabase(DbInfo database);
 
