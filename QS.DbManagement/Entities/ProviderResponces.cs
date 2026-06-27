@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace QS.DbManagement.Responces
+namespace QS.DbManagement.Entities
 {
 	public class Response {
 		public bool Success { get; set; }

@@ -4,10 +4,11 @@ using System.Reactive;
 using System.Reactive.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
-	public abstract class DbOperationSettingsVM : CarouselPageVM, IDbOperationSettings {
+	public abstract class DbOperationSettingsVM : CarouselPageVM {
 		protected IDbProvider Provider { get; }
 		protected Connection Connection { get; }
 		protected IServiceProvider Services { get; }

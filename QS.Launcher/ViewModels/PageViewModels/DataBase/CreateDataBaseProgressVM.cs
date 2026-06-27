@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using ReactiveUI;
@@ -103,7 +104,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// </summary>
 		public async Task RunAsync() {
 			try {
-				var args = new CreatorFactoryArgs {
+				var args = new DbPhaseArgs {
 					Provider = Provider,
 					Progress = this,
 					Interaction = interaction,
@@ -128,7 +129,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				OperationFailed?.Invoke();
 			}
 		}
-		private bool RunPipeline(CreatorFactoryArgs args) {
+		private bool RunPipeline(DbPhaseArgs args) {
 			foreach(var phase in phases) {
 				args.CancellationToken.ThrowIfCancellationRequested();
 				guiDispatcher.RunInGuiTread(() => CurrentText = phase.Title);

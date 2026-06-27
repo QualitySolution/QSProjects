@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
-using QS.DBScripts.Controllers;
+using QS.DbManagement.Entities;
+using QS.Project.Versioning;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
@@ -11,6 +12,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			: base(provider, connection, services) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
 				(name, title) => !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(title)));
+
+			CanImportDump = services.GetRequiredService<DbCapabilities>().CanImport(provider);
 		}
 
 		public override string Title => "Создание базы данных";
@@ -33,34 +36,29 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
 		}
 
-		public bool CanImportDump => Connection?.ConnectionType?.CanImportDatabase(Provider, Services) == true;
+		public bool CanImportDump;
 
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
-			var phases = new List<DbCreationPhase> {
-				new DbCreationPhase(
-					"Создание базы данных",
-					args => args.Provider.CreateDatabase(DbName, DbTitle, Services))
+			return new[] {
+				new DbCreationPhase("Создание базы данных", args => {
+					IDbFillStrategy fillStrategy;
+					if(string.IsNullOrWhiteSpace(ImportDumpFilePath))
+						fillStrategy = args.ServiceProvider.GetRequiredService<IDbFillStrategy>();
+					else
+						fillStrategy = new DumpDbFillStrategy(ImportDumpFilePath);
+
+					var request = new DbCreationRequest {
+						DbName = DbName,
+						DbTitle = DbTitle,
+						FillStrategy = fillStrategy,
+						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
+						Progress = args.Progress,
+						Interaction = args.Interaction,
+						CancellationToken = args.CancellationToken,
+					};
+					return args.Provider.CreateDatabase(request);
+				})
 			};
-
-			if(!string.IsNullOrWhiteSpace(ImportDumpFilePath)
-				&& Connection.ConnectionType.SupportsDatabaseImport(Services)) {
-				phases.Add(new DbCreationPhase(
-					"Импорт дампа в базу данных",
-					args => {
-						args.ImportDumpFilePath = ImportDumpFilePath;
-						return Connection.ConnectionType.CreateImporter(args).RunCreation(DbName, DbTitle);
-					}));
-			}
-			else if(Connection.ConnectionType.SupportsDatabaseCreation(Services)) {
-				phases.Add(new DbCreationPhase(
-					"Наполнение базы данных",
-					args => {
-						IDbCreatorModel creator = Connection.ConnectionType.CreateCreator(args);
-						return creator.RunCreation(DbName, DbTitle);
-					}));
-			}
-
-			return phases;
 		}
 	}
 }

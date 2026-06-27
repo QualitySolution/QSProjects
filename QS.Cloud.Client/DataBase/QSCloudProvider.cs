@@ -1,7 +1,6 @@
 using Grpc.Core;
 using MySqlConnector;
 using QS.Cloud.Core;
-using QS.DbManagement.Responces;
 using QS.DbManagement;
 using QS.Dialog;
 using QS.Project.Versioning;
@@ -13,14 +12,11 @@ using System.Threading;
 using QS.Cloud.Client.Clients;
 using QS.DBScripts.Controllers;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using QS.DbManagement.Entities;
 
 namespace QS.Cloud.Client.DataBase
 {
 	public class QSCloudProvider : IDbProvider {
-
-		public int BaseId { get; private set; }
-		public BasicAuthInfoProvider AuthInfo { get; private set; }
 
 		public bool IsConnected { get; private set; }
 
@@ -42,10 +38,10 @@ namespace QS.Cloud.Client.DataBase
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
-			AuthInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
-			
-			loginClient = new LoginManagementCloudClient(AuthInfo);
-			dbClient = new DataBaseManagementCloudClient(AuthInfo);
+			var authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
+
+			loginClient = new LoginManagementCloudClient(authInfo);
+			dbClient = new DataBaseManagementCloudClient(authInfo);
 		}
 
 		public bool AddUser(string username, string password)
@@ -58,12 +54,33 @@ namespace QS.Cloud.Client.DataBase
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase(string databaseName, string title, IServiceProvider services)
+		public bool CreateDatabase(DbCreationRequest request)
 		{
-			IApplicationInfo applicationInfo = services.GetService<IApplicationInfo>();
-			CreateDataBaseResponse response = dbClient.CreateDataBase(databaseName, title, applicationInfo);
-			BaseId = response.BaseId;
-			return true;
+			if(request == null)
+				throw new ArgumentNullException(nameof(request));
+
+			// 1. Создаём базу в облаке (gRPC). BaseId нужен только локально — открыть сессию.
+			var response = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo);
+
+			// 2. Открываем временную сессию к созданной базе и наполняем её тем же механизмом, что и MariaDB.
+			using(var session = CloudDbSession.Open(loginClient, response.BaseId)) {
+				if(!session.Success) {
+					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, "Создание базы в облаке");
+					return false;
+				}
+				if(!session.IsAdmin) {
+					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы.", "Создание базы в облаке");
+					return false;
+				}
+
+				var filler = request.FillStrategy.CreateFiller(new DbFillResources {
+					ConnectionString = session.ConnectionStringBuilder.ConnectionString,
+					Progress = request.Progress,
+					Interaction = request.Interaction,
+					CancellationToken = request.CancellationToken,
+				});
+				return filler.RunCreation(session.Db.BaseName, request.DbTitle);
+			}
 		}
 	
 		public void Dispose()

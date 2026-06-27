@@ -1,4 +1,4 @@
-namespace QS.DbManagement {
+namespace QS.DbManagement.Entities {
 	public class DbInfo {
 		public string Title { get; set; }
 		public string BaseName { get; set; }

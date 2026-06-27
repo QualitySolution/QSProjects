@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {

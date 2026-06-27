@@ -1,6 +1,6 @@
 using Dapper;
 using MySqlConnector;
-using QS.DbManagement.Responces;
+using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -29,12 +29,6 @@ namespace QS.DbManagement
 
 		public bool CanCreateDatabase { get; private set; }
 		public bool CanDropDatabase { get; private set; }
-
-		/// <summary>
-		/// Переданный в <see cref="CreateDatabase"/> тайтл созданой базы,
-		/// нужен потом при применения скрипта с наполнением базы
-		/// </summary>
-		public string CreatedTitle { get; private set; }
 
 		#region Параметры подключения
 		public string Server { get; }
@@ -183,10 +177,21 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase(string databaseName, string title, IServiceProvider services = null) {
-			CreatedTitle = title;
-			string sql = $"CREATE DATABASE IF NOT EXISTS `{databaseName}`";
-			return connection.Execute(sql) != 0;
+		public bool CreateDatabase(DbCreationRequest request) {
+			if(request == null)
+				throw new ArgumentNullException(nameof(request));
+			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+
+			var fillBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
+				Database = request.DbName
+			};
+			var filler = request.FillStrategy.CreateFiller(new DbFillResources {
+				ConnectionString = fillBuilder.ConnectionString,
+				Progress = request.Progress,
+				Interaction = request.Interaction,
+				CancellationToken = request.CancellationToken,
+			});
+			return filler.RunCreation(request.DbName, request.DbTitle);
 		}
 
 		public bool DropDatabase(DbInfo database) {

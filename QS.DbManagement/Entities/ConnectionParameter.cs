@@ -1,4 +1,4 @@
-namespace QS.DbManagement
+namespace QS.DbManagement.Entities
 {
 	public class ConnectionParameter
 	{

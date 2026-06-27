@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using QS.DbManagement.Responces;
+using QS.DbManagement.Entities;
 
 namespace QS.Launcher.AppRunner {
 	public class NewProcessRunner : IAppRunner {

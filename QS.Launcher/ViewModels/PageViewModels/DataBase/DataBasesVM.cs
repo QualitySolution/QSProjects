@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData.Kernel;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Launcher.AppRunner;
 using QS.Project.Versioning;
@@ -34,14 +35,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			}
 		}
 
-		public bool CanCreateDatabase =>
-			currentConnection?.ConnectionType?.CanCreateDatabase(provider, serviceProvider) == true;
+		public bool CanCreateDatabase => capabilities.CanCreate(provider);
 
-		public bool CanDropDatabase =>
-			currentConnection?.ConnectionType?.CanDropDatabase(provider) == true;
+		public bool CanDropDatabase => capabilities.CanDrop(provider);
 
-		public bool CanBackupDatabase =>
-			currentConnection?.ConnectionType?.CanBackupDatabase(provider) == true;
+		public bool CanBackupDatabase => capabilities.CanBackup(provider);
 
 		public bool CanManageDatabases =>
 			CanDropDatabase || CanBackupDatabase;
@@ -87,6 +85,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private readonly IAppRunner appRunner;
 		private readonly IApplicationInfo applicationInfo;
+		private readonly DbCapabilities capabilities;
 
 		public DataBasesVM(
 			IAppRunner appRunner,
@@ -94,7 +93,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
 			LauncherOptions launcherOptions,
-			IServiceProvider serviceProvider)
+			IServiceProvider serviceProvider,
+			DbCapabilities capabilities)
 		{
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
@@ -102,6 +102,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.launcherOptions = launcherOptions;
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+			this.capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
 
 			IObservable<bool> canExecuteConnection = this
 				.WhenAnyValue(x => x.SelectedDatabase)
