@@ -17,26 +17,25 @@ namespace QS.DbManagement {
 		/// </summary>
 		public static void EnsureLooksLikeSqlDump(string filePath) {
 			if(string.IsNullOrWhiteSpace(filePath))
-				throw new ArgumentException("Не указан путь к файлу дампа.", nameof(filePath));
+				throw new ArgumentException("Не указан путь к файлу дампа", nameof(filePath));
 			if(!File.Exists(filePath))
-				throw new FileNotFoundException("Файл дампа не найден.", filePath);
+				throw new FileNotFoundException("Файл дампа не найден", filePath);
 			if(new FileInfo(filePath).Length == 0)
-				throw new InvalidDataException("Файл дампа пуст.");
+				throw new InvalidDataException("Файл дампа пуст");
 
 			string head = ReadHead(filePath, InspectBytes);
 
-			// Бинарный файл (картинка/архив/документ) почти всегда содержит нулевые байты.
+			// Бинарный файл почти всегда содержит нулевые байты
 			if(head.IndexOf('\0') >= 0)
 				throw new InvalidDataException(
-					"Файл не похож на SQL-дамп: это бинарный файл, а не текстовый SQL-скрипт.");
+					"Файл не похож на SQL-дамп: это бинарный файл, а не текстовый SQL-скрипт");
 
 			string trimmed = head.TrimStart('﻿', ' ', '\t', '\r', '\n');
 			bool looksLikeSql = SqlStartTokens.Any(
 				token => trimmed.StartsWith(token, StringComparison.OrdinalIgnoreCase));
 			if(!looksLikeSql)
 				throw new InvalidDataException(
-					"Файл не похож на SQL-дамп: в начале файла нет SQL-инструкций. "
-					+ "Выберите корректный файл дампа (.sql).");
+					"Файл не похож на SQL-дамп: в начале файла нет SQL-инструкций");
 		}
 
 		private static string ReadHead(string filePath, int maxBytes) {

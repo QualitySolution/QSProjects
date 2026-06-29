@@ -12,8 +12,7 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	/// <summary>
-	/// Универсальная страница прогресса: последовательно выполняет пайплайн фаз
-	/// (создание базы, наполнение, резервное копирование и т.п.) в одном фоновом потоке.
+	/// последовательно выполняет пайплайн фаз в одном фоновом потоке
 	/// </summary>
 	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -107,7 +106,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				var args = new DbPhaseArgs {
 					Provider = Provider,
 					Progress = this,
-					Interaction = interaction,
 					CancellationToken = cts.Token,
 					ServiceProvider = services
 				};

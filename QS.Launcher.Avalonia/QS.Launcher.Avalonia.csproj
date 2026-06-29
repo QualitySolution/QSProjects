@@ -56,6 +56,9 @@
     <Compile Update="Views\Pages\DataBase\CreateDbSettingsView.axaml.cs">
       <DependentUpon>CreateDbSettingsView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Pages\DataBase\ImportDbSettingsView.axaml.cs">
+      <DependentUpon>ImportDbSettingsView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Pages\DataBase\BackupDbSettingsView.axaml.cs">
       <DependentUpon>BackupDbSettingsView.axaml</DependentUpon>
     </Compile>

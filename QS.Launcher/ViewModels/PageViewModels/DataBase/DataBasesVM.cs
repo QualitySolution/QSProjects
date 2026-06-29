@@ -27,6 +27,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				Databases = provider.GetUserDatabases(applicationInfo).AsList();
 				this.RaisePropertyChanged(nameof(Databases));
 				this.RaisePropertyChanged(nameof(CanCreateDatabase));
+				this.RaisePropertyChanged(nameof(CanImportDatabase));
 				this.RaisePropertyChanged(nameof(CanDropDatabase));
 				this.RaisePropertyChanged(nameof(CanBackupDatabase));
 				this.RaisePropertyChanged(nameof(CanManageDatabases));
@@ -36,6 +37,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public bool CanCreateDatabase => capabilities.CanCreate(provider);
+
+		public bool CanImportDatabase => capabilities.CanImport(provider);
 
 		public bool CanDropDatabase => capabilities.CanDrop(provider);
 
@@ -74,6 +77,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public ICommand ConnectCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenCreateDatabaseCommand { get; }
+		public ReactiveCommand<Unit, Unit> OpenImportDatabaseCommand { get; }
 		public ICommand BackupDatabaseCommand { get; }
 		public ICommand DeleteDatabaseCommand { get; }
 
@@ -110,6 +114,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecuteConnection);
 			OpenCreateDatabaseCommand = ReactiveCommand.Create(OpenCreateDatabase);
+			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
 			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
 			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
 		}
@@ -122,6 +127,18 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider);
+			settings.OperationCompleted += () => OnOperationCompleted(settings);
+			PushPageCommand?.Execute(settings);
+		}
+
+		/// <summary>
+		/// открывает страницу импорта базы из дампа; по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
+		/// </summary>
+		private void OpenImportDatabase() {
+			if(!CanImportDatabase)
+				return;
+
+			var settings = new ImportDbSettingsVM(Provider, CurrentConnection, serviceProvider);
 			settings.OperationCompleted += () => OnOperationCompleted(settings);
 			PushPageCommand?.Execute(settings);
 		}
