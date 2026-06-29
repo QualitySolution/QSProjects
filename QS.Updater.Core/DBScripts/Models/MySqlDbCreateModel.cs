@@ -1,4 +1,5 @@
 using MySqlConnector;
+using QS.DbManagement.Creation;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using System;
@@ -19,20 +20,15 @@ namespace QS.DBScripts.Models
 
 		public bool FillBaseGuid { get; set; } = true;
 
-		public MySqlDbCreateModel(
-			string connectionString,
-			CreationScript script,
-			IProgressBarDisplayable progress,
-			IDbCreatorInteraction interaction,
-			CancellationToken cancellationToken)
+		public MySqlDbCreateModel(MySqlCreationResources resources)
 		{
 			if(string.IsNullOrWhiteSpace(connectionString))
 				throw new ArgumentException("Connection string is required", nameof(connectionString));
-			this.connectionString = connectionString;
-			this.script = script ?? throw new ArgumentNullException(nameof(script));
-			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
-			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
-			this.cancellationToken = cancellationToken;
+			this.connectionString = resources.ConnectionString;
+			this.script = resources.Script ?? throw new ArgumentNullException(nameof(script));
+			this.progress = resources.Progress ?? throw new ArgumentNullException(nameof(progress));
+			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(interaction));
+			this.cancellationToken = resources.CancellationToken;
 		}
 
 		public MySqlDbCreateModel(

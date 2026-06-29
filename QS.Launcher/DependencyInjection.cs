@@ -7,9 +7,24 @@ using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.DbManagement.Creation;
+using System;
+using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
+		public static IServiceCollection AddLauncherDataBaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
+		{
+			var map = new DbResourcesCreationMap();
+			foreach(var resourceCrator in resourceCratorMap) {
+				map.Register(resourceCrator.res, resourceCrator.creator);
+			}
+
+			return services
+				.AddSingleton(map)
+				.AddSingleton<DbCreationFactory>();
+		}
+
 		public static IServiceCollection AddLauncherViewModels(this IServiceCollection services) {
 			return services
 				.AddSingleton<MainWindowVM>()
@@ -19,7 +34,6 @@ namespace QS.Launcher {
 				// Страница прогресса создаётся заново на каждую операцию с базой
 				.AddTransient<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
-				.AddSingleton<IDbFillStrategyFactory, DbFillStrategyFactory>()
 				.AddSingleton<DbCapabilities>();
 		}
 
