@@ -1,3 +1,4 @@
+using Gamma.Binding.Core;
 using Gdk;
 using Gtk;
 using QS.ViewModels.Widgets.Pipeline;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace QS.Widgets.GtkUI.Pipeline {
 
@@ -52,15 +54,19 @@ namespace QS.Widgets.GtkUI.Pipeline {
         private int _lastLayoutWidth = -1;
         private int _lastLayoutHeight = -1;
 
-        public PipelineViewModel ViewModel
-        {
+		[Browsable(false)]
+		public BindingControler<PipelineView> Binding { get; private set; }
+
+		[Browsable(false)]
+		public PipelineViewModel ViewModel {
             get => _viewModel; 
             set => SetViewModel(value);
         }
 
-        #region Дизайн
+		#region Дизайн
 
-        public float HorizontalAlignment
+		[Browsable(false)]
+		public float HorizontalAlignment
         {
             get => _horizontalAlignment;
             set
@@ -70,8 +76,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public float VerticalAlignment
-        {
+		[Browsable(false)]
+        public float VerticalAlignment {
             get => _verticalAlignment;
             set
             {
@@ -80,8 +86,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int LineHeight
-        {
+		[Browsable(false)]
+        public int LineHeight {
             get => _lineHeight;
             set
             {
@@ -90,8 +96,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int PipelineSidePadding
-        {
+		[Browsable(false)]
+        public int PipelineSidePadding {
             get => _pipelineSidePadding;
             set
             {
@@ -100,8 +106,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int PipelineVerticalPadding
-        {
+		[Browsable(false)]
+        public int PipelineVerticalPadding {
             get => _pipelineVerticalPadding;
             set
             {
@@ -110,8 +116,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int MinStageGap
-        {
+		[Browsable(false)]
+        public int MinStageGap {
             get => _minStageGap;
             set
             {
@@ -120,8 +126,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int LineSideInset
-        {
+		[Browsable(false)]
+        public int LineSideInset {
             get => _lineSideInset;
             set
             {
@@ -130,8 +136,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int ConnectorDrawHeight
-        {
+		[Browsable(false)]
+        public int ConnectorDrawHeight {
             get => _connectorDrawHeight;
             set
             {
@@ -141,8 +147,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int TitleHeight
-        {
+		[Browsable(false)]
+        public int TitleHeight {
             get => _titleHeight;
             set
             {
@@ -152,8 +158,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int TitleBottomSpacing
-        {
+		[Browsable(false)]
+        public int TitleBottomSpacing {
             get => _titleBottomSpacing;
             set
             {
@@ -164,8 +170,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
 
         #region Дизайн стадии
 
-        public int StageCircleRadius
-        {
+		[Browsable(false)]
+        public int StageCircleRadius {
             get => _stageCircleRadius;
             set
             {
@@ -174,8 +180,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int StagePadding
-        {
+		[Browsable(false)]
+        public int StagePadding {
             get => _stagePadding;
             set
             {
@@ -184,8 +190,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int StageAdditionalInfoHeight
-        {
+		[Browsable(false)]
+        public int StageAdditionalInfoHeight {
             get => _stageAdditionalInfoHeight;
             set
             {
@@ -194,8 +200,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int StageNameHeight
-        {
+		[Browsable(false)]
+        public int StageNameHeight {
             get => _stageNameHeight;
             set
             {
@@ -204,8 +210,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int StageInnerSpacing
-        {
+		[Browsable(false)]
+        public int StageInnerSpacing {
             get => _stageInnerSpacing;
             set
             {
@@ -214,8 +220,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public int StageTextHorizontalPadding
-        {
+		[Browsable(false)]
+        public int StageTextHorizontalPadding {
             get => _stageTextHorizontalPadding;
             set
             {
@@ -224,8 +230,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public double StageNormalBorderWidth
-        {
+		[Browsable(false)]
+        public double StageNormalBorderWidth {
             get => _stageNormalBorderWidth;
             set
             {
@@ -234,8 +240,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public double StageActiveBorderWidth
-        {
+		[Browsable(false)]
+        public double StageActiveBorderWidth {
             get => _stageActiveBorderWidth;
             set
             {
@@ -244,8 +250,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color ConnectorColor
-        {
+		[Browsable(false)]
+        public Gdk.Color ConnectorColor {
             get => _connectorColor;
             set
             {
@@ -254,8 +260,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageNotStartedColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageNotStartedColor {
             get => _stageNotStartedColor;
             set
             {
@@ -264,8 +270,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageInProgressColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageInProgressColor {
             get => _stageInProgressColor;
             set
             {
@@ -274,8 +280,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageCompletedColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageCompletedColor {
             get => _stageCompletedColor;
             set
             {
@@ -284,8 +290,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageFailedColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageFailedColor {
             get => _stageFailedColor;
             set
             {
@@ -294,8 +300,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageBorderColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageBorderColor {
             get => _stageBorderColor;
             set
             {
@@ -304,8 +310,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageSymbolColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageSymbolColor {
             get => _stageSymbolColor;
             set
             {
@@ -314,8 +320,8 @@ namespace QS.Widgets.GtkUI.Pipeline {
             }
         }
 
-        public Gdk.Color StageAdditionalInfoTextColor
-        {
+		[Browsable(false)]
+        public Gdk.Color StageAdditionalInfoTextColor {
             get => _stageAdditionalInfoTextColor;
             set
             {
@@ -330,6 +336,10 @@ namespace QS.Widgets.GtkUI.Pipeline {
 
         public PipelineView()
         {
+			Binding = new BindingControler<PipelineView>(this, new Expression<Func<PipelineView, object>>[] {
+				(w => w.ViewModel),
+			});
+
 			_fixedContainer = new Fixed();
 			_titleLabel = new Label();
             _titleLabel.Justify = Justification.Center;
@@ -343,7 +353,6 @@ namespace QS.Widgets.GtkUI.Pipeline {
             Realized += OnPipelineRealized;
 
             SetViewModel(new PipelineViewModel());
-            UpdateTitleLabel();
 
             ShowAll();
         }
@@ -357,9 +366,10 @@ namespace QS.Widgets.GtkUI.Pipeline {
             _viewModel = viewModel ?? new PipelineViewModel();
             BindViewModel();
             RebuildStagesFromViewModel();
-        }
+            UpdateTitleLabel();
+		}
 
-        private void BindViewModel()
+		private void BindViewModel()
         {
             if (_viewModel == null)
                 return;
@@ -420,12 +430,12 @@ namespace QS.Widgets.GtkUI.Pipeline {
         {
             foreach (var stage in _stages)
             {
-                Remove(stage);
+				_fixedContainer.Remove(stage);
             }
 
             foreach (var connector in _connectors)
             {
-                Remove(connector);
+				_fixedContainer.Remove(connector);
             }
 
             _stages.Clear();
@@ -670,7 +680,10 @@ namespace QS.Widgets.GtkUI.Pipeline {
                 int width = connector.Allocation.Width;
                 int centerY = connector.Allocation.Height / 2;
 
-                context.SetSourceRGB(_connectorColor.Red / 65535.0, _connectorColor.Green / 65535.0, _connectorColor.Blue / 65535.0);
+				context.SetSourceRGB(0.976, 0.976, 0.976);
+				context.Paint();
+
+				context.SetSourceRGB(_connectorColor.Red / 65535.0, _connectorColor.Green / 65535.0, _connectorColor.Blue / 65535.0);
                 context.LineWidth = _lineHeight;
                 context.MoveTo(0, centerY);
                 context.LineTo(width, centerY);

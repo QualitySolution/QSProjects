@@ -217,6 +217,9 @@ namespace QS.Widgets.GtkUI.Pipeline {
 
 		private void OnDrawingAreaExpose(object o, ExposeEventArgs args) {
 			using(var context = CairoHelper.Create(args.Event.Window)) {
+				context.SetSourceRGB(0.976, 0.976, 0.976);
+				context.Paint();
+
 				DrawCircle(context);
 			}
 		}
