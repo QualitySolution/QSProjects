@@ -1,6 +1,7 @@
 using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Entities;
+using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -177,20 +178,17 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase(DbCreationRequest request) {
+		public bool CreateDatabase<CreationArgs>(DbCreationRequest<CreationArgs> request) where CreationArgs : DbCreationResources {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
 
-			var fillBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
+			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
 				Database = request.DbName
 			};
-			var filler = request.FillStrategy.CreateFiller(new DbFillResources {
-				ConnectionString = fillBuilder.ConnectionString,
-				Progress = request.Progress,
-				CancellationToken = request.CancellationToken,
-			});
-			return filler.RunCreation(request.DbName, request.DbTitle);
+			request.CreationResources.ConnectionString = connectionStringBuilder.ConnectionString;
+			var creationModel = request.CreationFactory.Create(request.CreationResources);
+			return creationModel.RunCreation(request.DbName, request.DbTitle);
 		}
 
 		public bool DropDatabase(DbInfo database) {

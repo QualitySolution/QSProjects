@@ -1,18 +1,19 @@
+using FluentNHibernate.Cfg.Db;
 using Grpc.Core;
 using MySqlConnector;
+using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
+using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System;
 using System.Threading;
-using QS.Cloud.Client.Clients;
-using QS.DBScripts.Controllers;
 using System.Threading.Tasks;
-using QS.DbManagement.Entities;
 
 namespace QS.Cloud.Client.DataBase
 {
@@ -54,31 +55,25 @@ namespace QS.Cloud.Client.DataBase
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase(DbCreationRequest request)
-		{
+		public bool CreateDatabase<CreationArgs>(DbCreationRequest<CreationArgs> request) where CreationArgs : DbCreationResources {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 
-			// 1. Создаём базу в облаке (gRPC). BaseId нужен только локально — открыть сессию.
 			var response = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo);
 
-			// 2. Открываем временную сессию к созданной базе и наполняем её тем же механизмом, что и MariaDB.
 			using(var session = CloudDbSession.Open(loginClient, response.BaseId)) {
 				if(!session.Success) {
 					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, "Создание базы в облаке");
 					return false;
 				}
 				if(!session.IsAdmin) {
-					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы.", "Создание базы в облаке");
+					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", "Создание базы в облаке");
 					return false;
 				}
 
-				var filler = request.FillStrategy.CreateFiller(new DbFillResources {
-					ConnectionString = session.ConnectionStringBuilder.ConnectionString,
-					Progress = request.Progress,
-					CancellationToken = request.CancellationToken,
-				});
-				return filler.RunCreation(session.Db.BaseName, request.DbTitle);
+				request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
+				var creationModel = request.CreationFactory.Create(request.CreationResources);
+				return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 			}
 		}
 	

@@ -1,11 +1,13 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
+using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
+using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.Project.Versioning;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class ImportDbSettingsVM : DbOperationSettingsVM {
@@ -41,16 +43,20 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			// Наполнение из дампа. Конкретную стратегию строит фабрика по пути.
 			return new[] {
 				new DbCreationPhase("Импорт базы данных из дампа", args => {
-					var strategy = args.ServiceProvider.GetRequiredService<IDbFillStrategyFactory>().ForDump(ImportDumpFilePath);
+					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
 
-					var request = new DbCreationRequest {
+					var request = new DbCreationRequest<DbDumpResources> {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						FillStrategy = strategy,
+						CreationFactory = factory,
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
-						Progress = args.Progress,
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-						CancellationToken = args.CancellationToken,
+						CreationResources =new DbDumpResources{
+							Progress = args.Progress,
+							DumpFilePath = ImportDumpFilePath,
+							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
+							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),
+							CancellationToken = args.CancellationToken }
 					};
 					return args.Provider.CreateDatabase(request);
 				})

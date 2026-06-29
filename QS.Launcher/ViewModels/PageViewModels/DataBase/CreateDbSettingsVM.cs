@@ -1,11 +1,15 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
+using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
+using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.Project.Versioning;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
@@ -32,16 +36,20 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			return new[] {
 				new DbCreationPhase("Создание базы данных", args => {
-					var strategy = args.ServiceProvider.GetRequiredService<IDbFillStrategyFactory>().ForScript();
+					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
 
-					var request = new DbCreationRequest {
+					var request = new DbCreationRequest<MySqlCreationResources> {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						FillStrategy = strategy,
+						CreationFactory = factory,
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
-						Progress = args.Progress,
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-						CancellationToken = args.CancellationToken,
+						//заполнение строки подключения оставляем провайдеру
+						CreationResources =new MySqlCreationResources{
+							Progress = args.Progress,
+							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
+							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),
+							CancellationToken = args.CancellationToken }
 					};
 					return args.Provider.CreateDatabase(request);
 				})
