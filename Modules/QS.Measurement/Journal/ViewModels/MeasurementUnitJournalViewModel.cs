@@ -1,11 +1,12 @@
 using NHibernate;
 using NHibernate.Transform;
 using QS.Dialog;
+using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
+using QS.Journal;
 using QS.Measurement.ViewModels;
 using QS.Navigation;
 using QS.Permissions;
-using QS.Project.Journal;
 using QS.Project.Services;
 using QS.Measurement.Domain;
 
@@ -15,11 +16,11 @@ namespace QS.Measurement.Journal.ViewModels
 	{
 		public MeasurementUnitJournalViewModel(
 			IUnitOfWorkFactory unitOfWorkFactory,
-			IInteractiveService interactiveService,
 			INavigationManager navigationManager,
+			IEntityChangeWatcher changeWatcher,
 			IDeleteEntityService deleteEntityService = null,
 			ICurrentPermissionService currentPermissionService = null
-			) : base(unitOfWorkFactory, interactiveService, navigationManager, deleteEntityService, currentPermissionService)
+			) : base(unitOfWorkFactory, navigationManager, changeWatcher, deleteEntityService, currentPermissionService)
 		{
 		}
 

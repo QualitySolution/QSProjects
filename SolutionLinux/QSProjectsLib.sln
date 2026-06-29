@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSAttachment", "..\Modules\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSBanks", "..\Modules\QSBanks\QSBanks.csproj", "{D21C0F94-5B1B-49E1-A5B0-50C3F99287E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSDocTemplates", "Modules\QSDocTemplates\QSDocTemplates.csproj", "{55CD5E7C-3164-4A5D-9DA8-F29F5E9D170C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSDocTemplates", "..\Modules\QSDocTemplates\QSDocTemplates.csproj", "{55CD5E7C-3164-4A5D-9DA8-F29F5E9D170C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSOrmProject", "..\QSOrmProject\QSOrmProject.csproj", "{00D32969-612C-417E-9565-BEC6A7719F80}"
 EndProject
@@ -58,7 +58,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.LibsTest", "..\QS.LibsTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Banks", "..\Modules\QS.Banks\QS.Banks.csproj", "{301F793C-130B-44EB-A45D-60D5F040B0AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Measurement", "Modules\QS.Measurement\QS.Measurement.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Measurement", "..\Modules\QS.Measurement\QS.Measurement.csproj", "{F22749B2-E35B-455D-BD8D-081373B16FC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Report.Gtk", "..\QS.Report.Gtk\QS.Report.Gtk.csproj", "{42708CEE-08D8-43D5-AFE0-9992EB46E9F9}"
 EndProject
@@ -127,7 +127,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Banks.Contracts", "..\Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.HistoryLog.Sql", "..\QS.HistoryLog.Sql\QS.HistoryLog.Sql.csproj", "{EE2E555A-497B-47AD-A9B3-78DE422CECA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Measurement.Gtk", "Modules\QS.Measurement.Gtk\QS.Measurement.Gtk.csproj", "{AF3521E6-7B25-4F10-BD94-78B587C843B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Measurement.Gtk", "..\Modules\QS.Measurement.Gtk\QS.Measurement.Gtk.csproj", "{AF3521E6-7B25-4F10-BD94-78B587C843B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Launcher.Gtk", "..\QS.Launcher.Gtk\QS.Launcher.Gtk.csproj", "{A54C2769-77C5-41B8-BA3F-00F87733AC51}"
 EndProject

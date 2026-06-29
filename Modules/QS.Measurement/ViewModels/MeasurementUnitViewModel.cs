@@ -4,6 +4,7 @@ using QS.Project.Domain;
 using QS.Validation;
 using QS.ViewModels.Dialog;
 using QS.Measurement.Domain;
+using QS.DomainModel.NotifyChange;
 
 namespace QS.Measurement.ViewModels
 {
@@ -11,10 +12,11 @@ namespace QS.Measurement.ViewModels
 	{
 		public MeasurementUnitViewModel(
 			IEntityUoWBuilder uowBuilder,
-			IUnitOfWorkFactory unitOfWorkFactory,
+			IUnitOfWork unitOfWork,
 			INavigationManager navigation,
-			IValidator validator
-			) : base(uowBuilder, unitOfWorkFactory, navigation, validator)
+			IValidator validator,
+			IEntityChangeWatcher changeWatcher = null
+			) : base(uowBuilder, unitOfWork, navigation, validator, changeWatcher)
 		{
 		}
 	}
