@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System;
 using QS.DbManagement.Entities;
-using QS.DBScripts.Controllers;
 
 namespace QS.DbManagement
 {
@@ -17,7 +16,7 @@ namespace QS.DbManagement
 		/// <summary>
 		/// Создаёт базу и сразу наполняет её
 		/// </summary>
-		bool CreateDatabase<CreationArgs>(DbCreationRequest<CreationArgs> request) where CreationArgs : DbCreationResources;
+		bool CreateDatabase(DbCreationRequest request);
 
 		bool DropDatabase(DbInfo database);
 

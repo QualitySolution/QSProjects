@@ -4,12 +4,11 @@ using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
 using QS.DBScripts;
 using QS.DBScripts.Controllers;
+using QS.DBScripts.Models;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
@@ -38,14 +37,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				new DbCreationPhase("Создание базы данных", args => {
 					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
 
-					var request = new DbCreationRequest<MySqlCreationResources> {
+					var request = new DbCreationRequest {
 						DbName = DbName,
 						DbTitle = DbTitle,
 						CreationFactory = factory,
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-						//заполнение строки подключения оставляем провайдеру
-						CreationResources =new MySqlCreationResources{
+						// строку подключения заполнит провайдер
+						CreationResources = new MySqlCreationResources {
 							Progress = args.Progress,
 							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),

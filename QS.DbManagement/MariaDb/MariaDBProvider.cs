@@ -178,7 +178,7 @@ namespace QS.DbManagement
 			return connection.Execute(sql) != 0;
 		}
 
-		public bool CreateDatabase<CreationArgs>(DbCreationRequest<CreationArgs> request) where CreationArgs : DbCreationResources {
+		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");

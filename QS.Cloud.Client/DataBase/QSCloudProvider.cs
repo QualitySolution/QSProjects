@@ -55,7 +55,7 @@ namespace QS.Cloud.Client.DataBase
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase<CreationArgs>(DbCreationRequest<CreationArgs> request) where CreationArgs : DbCreationResources {
+		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 
