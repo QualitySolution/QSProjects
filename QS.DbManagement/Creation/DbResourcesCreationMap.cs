@@ -18,6 +18,13 @@ namespace QS.DbManagement.Creation {
 			_map[resource] = arg => Activator.CreateInstance(creator, arg);
 		}
 
-		public object Resolve(DbCreationResources arg) => _map[arg.GetType()](arg);
+		public object Resolve(DbCreationResources arg)
+		{
+			if(arg == null)
+				throw new ArgumentNullException(nameof(arg));
+			if(!_map.TryGetValue(arg.GetType(), out var creator))
+				throw new InvalidOperationException($"Нет зарегистрированного создателя для ресурса {arg.GetType().Name}");
+			return creator(arg);
+		}
 	}
 }

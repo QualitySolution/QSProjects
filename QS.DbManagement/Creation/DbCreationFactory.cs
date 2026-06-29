@@ -1,7 +1,6 @@
-using MySqlConnector;
 using QS.DBScripts.Controllers;
 using System;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace QS.DbManagement.Creation {
 	public class DbCreationFactory
@@ -9,12 +8,17 @@ namespace QS.DbManagement.Creation {
 		private readonly DbResourcesCreationMap _map;
 
 		public DbCreationFactory(DbResourcesCreationMap map) {
-			_map = map;
+			_map = map ?? throw new ArgumentNullException(nameof(map));
 		}
 
-		public IDbCreatorModel Create<Arg>(Arg resources) where Arg : DbCreationResources
+		public IDbCreatorModel Create(DbCreationResources resources)
 		{
-			return (IDbCreatorModel)_map.Resolve(resources);
+			try {
+				return (IDbCreatorModel)_map.Resolve(resources);
+			}
+			catch(TargetInvocationException ex) when(ex.InnerException != null) {
+				throw ex.InnerException;
+			}
 		}
 	}
 }

@@ -1,5 +1,4 @@
 using MySqlConnector;
-using QS.DbManagement.Creation;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
 using System;
@@ -22,12 +21,14 @@ namespace QS.DBScripts.Models
 
 		public MySqlDbCreateModel(MySqlCreationResources resources)
 		{
-			if(string.IsNullOrWhiteSpace(connectionString))
-				throw new ArgumentException("Connection string is required", nameof(connectionString));
+			if(resources == null)
+				throw new ArgumentNullException(nameof(resources));
+			if(string.IsNullOrWhiteSpace(resources.ConnectionString))
+				throw new ArgumentException("Connection string is required", nameof(resources));
 			this.connectionString = resources.ConnectionString;
-			this.script = resources.Script ?? throw new ArgumentNullException(nameof(script));
-			this.progress = resources.Progress ?? throw new ArgumentNullException(nameof(progress));
-			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(interaction));
+			this.script = resources.Script ?? throw new ArgumentNullException(nameof(resources.Script));
+			this.progress = resources.Progress ?? throw new ArgumentNullException(nameof(resources.Progress));
+			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(resources.Interactions));
 			this.cancellationToken = resources.CancellationToken;
 		}
 
