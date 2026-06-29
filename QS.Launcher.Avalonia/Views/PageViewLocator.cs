@@ -21,6 +21,7 @@ public class PageViewLocator {
 			[typeof(DataBasesVM)] = vm => new DataBasesView((DataBasesVM)vm),
 			[typeof(UserManagementVM)] = vm => new UserManagementView((UserManagementVM)vm),
 			[typeof(CreateDbSettingsVM)] = vm => new CreateDbSettingsView((CreateDbSettingsVM)vm),
+			[typeof(ImportDbSettingsVM)] = vm => new ImportDbSettingsView((ImportDbSettingsVM)vm),
 			[typeof(BackupDbSettingsVM)] = vm => new BackupDbSettingsView((BackupDbSettingsVM)vm),
 			[typeof(CreateDataBaseProgressVM)] = vm => new CreateDataBaseProgressView((CreateDataBaseProgressVM)vm),
 		};

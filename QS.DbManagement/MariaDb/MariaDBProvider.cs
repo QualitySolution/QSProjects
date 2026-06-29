@@ -188,7 +188,6 @@ namespace QS.DbManagement
 			var filler = request.FillStrategy.CreateFiller(new DbFillResources {
 				ConnectionString = fillBuilder.ConnectionString,
 				Progress = request.Progress,
-				Interaction = request.Interaction,
 				CancellationToken = request.CancellationToken,
 			});
 			return filler.RunCreation(request.DbName, request.DbTitle);

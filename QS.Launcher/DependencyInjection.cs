@@ -19,7 +19,7 @@ namespace QS.Launcher {
 				// Страница прогресса создаётся заново на каждую операцию с базой
 				.AddTransient<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
-				.AddSingleton<IDbFillStrategy, ScriptDbFillStrategy>()
+				.AddSingleton<IDbFillStrategyFactory, DbFillStrategyFactory>()
 				.AddSingleton<DbCapabilities>();
 		}
 

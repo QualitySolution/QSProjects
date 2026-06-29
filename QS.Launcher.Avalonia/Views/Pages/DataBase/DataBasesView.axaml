@@ -6,6 +6,7 @@
              xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
              xmlns:vmdb="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
              xmlns:dbm="clr-namespace:QS.DbManagement;assembly=QS.DbManagement"
+             xmlns:dbme="clr-namespace:QS.DbManagement.Entities;assembly=QS.DbManagement"
              d:DesignHeight="650"
              d:DesignWidth="450"
              x:DataType="vmdb:DataBasesVM"
@@ -17,14 +18,13 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" HorizontalAlignment="Stretch" Content="Выберите базу данных:" />
-			<Button Grid.Row="0" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding CanCreateDatabase}" Content="Создать базу данных" />
+            <Label Grid.Row="0" Grid.ColumnSpan="2" Margin="5,0,0,0" HorizontalAlignment="Stretch" Content="Выберите базу данных:" />
             <ListBox x:Name="databases" Grid.ColumnSpan="2" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch" 
                 ItemsSource="{Binding Databases}"
                 SelectedItem="{Binding SelectedDatabase}"
                 DoubleTapped="Databases_OnDoubleTapped">
                 <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="dbm:DbInfo">
+                    <DataTemplate x:DataType="dbme:DbInfo">
                         <DockPanel MaxHeight="30" HorizontalAlignment="Stretch">
                             <Button DockPanel.Dock="Right" Margin="4,0,0,0" Padding="8,0" VerticalAlignment="Center"
                                     Background="Transparent" BorderThickness="0" FontWeight="Bold" Content="⋮"
@@ -48,16 +48,20 @@
 	            </ListBox.KeyBindings>
             </ListBox>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="2" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto">
-                <Button IsDefault="True" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
+                <Button Grid.Row="0" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Stretch" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding CanCreateDatabase}" Content="Создать базу данных" />
 
-	            <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
+	            <Button Grid.Row="1" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Stretch" Command="{Binding OpenImportDatabaseCommand}" IsVisible="{Binding CanImportDatabase}" Content="Импортировать базу" />
 
-	            <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Content="Не закрывать лаунчер после подключения" Foreground="#7A000000" 
-	                      IsChecked="{Binding !ShouldCloseLauncherAfterStart}" 
+                <Button Grid.Row="2" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
+
+	            <Button Grid.Row="2" Grid.Column="1" IsDefault="True" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
+
+	            <CheckBox Grid.Row="3" Grid.ColumnSpan="2" Margin="5" Content="Не закрывать лаунчер после подключения" Foreground="#7A000000"
+	                      IsChecked="{Binding !ShouldCloseLauncherAfterStart}"
 	                      IsVisible="{Binding VisibleShouldCloseLauncherCheckBox}" />
 
-	            <StackPanel x:Name="loadingPanel" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" IsVisible="False" Orientation="Horizontal">
+	            <StackPanel x:Name="loadingPanel" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" IsVisible="False" Orientation="Horizontal">
                     <Label Margin="5" Content="Запуск..." />
                     <Image x:Name="cogwheel" Height="32" Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
                         <Image.Transitions>
@@ -76,7 +80,7 @@
                     </Image>
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" IsVisible="{Binding IsAdmin}">
+                <StackPanel Grid.Row="5" Grid.ColumnSpan="2" IsVisible="{Binding IsAdmin}">
                     <Grid ColumnDefinitions="*, Auto, *">
                         <Separator Grid.Column="0" />
 

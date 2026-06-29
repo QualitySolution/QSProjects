@@ -76,7 +76,6 @@ namespace QS.Cloud.Client.DataBase
 				var filler = request.FillStrategy.CreateFiller(new DbFillResources {
 					ConnectionString = session.ConnectionStringBuilder.ConnectionString,
 					Progress = request.Progress,
-					Interaction = request.Interaction,
 					CancellationToken = request.CancellationToken,
 				});
 				return filler.RunCreation(session.Db.BaseName, request.DbTitle);

@@ -1,4 +1,4 @@
-<UserControl x:Class="QS.Launcher.Views.Pages.DataBase.CreateDbSettingsView"
+<UserControl x:Class="QS.Launcher.Views.Pages.DataBase.ImportDbSettingsView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
              d:DesignHeight="650"
              d:DesignWidth="450"
-             x:DataType="vm:CreateDbSettingsVM"
+             x:DataType="vm:ImportDbSettingsVM"
              mc:Ignorable="d">
     <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,*,Auto">
         <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="{Binding Title}" />
@@ -17,6 +17,12 @@
 
             <Label Margin="5" Content="Имя базы:" />
             <TextBox Margin="5" Text="{Binding DbName}" Watermark="для сервера" />
+
+            <Label Margin="5,15,5,0" Content="Дамп (.sql):" />
+            <Grid Margin="5" ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Text="{Binding ImportDumpFilePath}" Watermark="путь к .sql дампу" />
+                <Button Grid.Column="1" Margin="5,0,0,0" Content="Обзор..." Click="BrowseImportFile_OnClick" />
+            </Grid>
         </StackPanel>
 
         <Grid Grid.Row="2" ColumnDefinitions="*,*">

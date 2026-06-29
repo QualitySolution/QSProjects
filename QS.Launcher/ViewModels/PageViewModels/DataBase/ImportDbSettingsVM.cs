@@ -8,14 +8,16 @@ using QS.Project.Versioning;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
-	public class CreateDbSettingsVM : DbOperationSettingsVM {
-		public CreateDbSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services)
+	public class ImportDbSettingsVM : DbOperationSettingsVM {
+		public ImportDbSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services)
 			: base(provider, connection, services) {
-			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
-				(name, title) => !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(title)));
+			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle, x => x.ImportDumpFilePath,
+				(name, title, dump) => !string.IsNullOrWhiteSpace(name)
+					&& !string.IsNullOrWhiteSpace(title)
+					&& !string.IsNullOrWhiteSpace(dump)));
 		}
 
-		public override string Title => "Создание базы данных";
+		public override string Title => "Импорт базы данных из дампа";
 
 		private string dbTitle;
 		public string DbTitle {
@@ -29,10 +31,17 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			set => this.RaiseAndSetIfChanged(ref dbName, value);
 		}
 
+		private string importDumpFilePath;
+		public string ImportDumpFilePath {
+			get => importDumpFilePath;
+			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
+		}
+
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
+			// Наполнение из дампа. Конкретную стратегию строит фабрика по пути.
 			return new[] {
-				new DbCreationPhase("Создание базы данных", args => {
-					var strategy = args.ServiceProvider.GetRequiredService<IDbFillStrategyFactory>().ForScript();
+				new DbCreationPhase("Импорт базы данных из дампа", args => {
+					var strategy = args.ServiceProvider.GetRequiredService<IDbFillStrategyFactory>().ForDump(ImportDumpFilePath);
 
 					var request = new DbCreationRequest {
 						DbName = DbName,
