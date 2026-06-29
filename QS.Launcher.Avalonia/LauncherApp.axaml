@@ -2,6 +2,10 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters1="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
+             xmlns:vmDb="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
+             xmlns:views="using:QS.Launcher.Views.Pages"
+             xmlns:viewsDb="using:QS.Launcher.Views.Pages.DataBase"
              x:CompileBindings="False"
              RequestedThemeVariant="Light">
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->

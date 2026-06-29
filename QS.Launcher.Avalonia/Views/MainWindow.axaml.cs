@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using QS.Launcher.ViewModels;
 using System.Collections.Generic;
+
 namespace QS.Launcher.Views;
 
 public partial class MainWindow : Window {

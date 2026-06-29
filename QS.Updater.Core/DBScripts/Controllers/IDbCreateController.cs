@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using QS.Dialog;
 
 namespace QS.DBScripts.Controllers

@@ -1,4 +1,6 @@
-﻿namespace QS.Dialog
+using System.Threading.Tasks;
+
+namespace QS.Dialog
 {
 	public interface IInteractiveQuestion
 	{
