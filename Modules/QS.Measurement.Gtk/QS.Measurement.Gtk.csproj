@@ -1,14 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AD329D59-938D-42AC-ABE2-B0F14FDBB7C6}</ProjectGuid>
+    <ProjectGuid>{AF3521E6-7B25-4F10-BD94-78B587C843B0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>QSBusinessCommon</RootNamespace>
-    <AssemblyName>QSBusinessCommon</AssemblyName>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <RootNamespace>QS.Measurement</RootNamespace>
+    <AssemblyName>QS.Measurement.Gtk</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <Nullable>disable</Nullable>
     <TargetFrameworkProfile />
@@ -41,20 +39,13 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\QSBusinessCommon.MeasurementUnitsDlg.cs" />
-    <Compile Include="Dialogs\MeasurementUnitsDlg.cs" />
-    <Compile Include="MeasurementUnitsOrmMapping.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
+    <Compile Include="gtk-gui\QS.Measurement.Views.MeasurementUnitView.cs" />
+    <Compile Include="Views\MeasurementUnitView.cs" />
+    <Compile Include="Journal\MeasurementJournalColumnsConfigs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Binding\Gamma.Binding\Gamma.Binding.csproj">
@@ -65,30 +56,19 @@
       <Project>{C01AE5A4-3CFF-4C7B-884D-45B07ACDE761}</Project>
       <Name>QS.Project.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj">
-      <Project>{28A78143-42E3-40E7-86F5-DD7E1679BE86}</Project>
-      <Name>QS.Project</Name>
+    <ProjectReference Include="..\..\QS.Project.Desktop\QS.Project.Desktop.csproj">
+      <Project>{5ef2a7da-3886-4809-95df-880bd783a211}</Project>
+      <Name>QS.Project.Desktop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\QS.Project\QS.Project.csproj" />
     <ProjectReference Include="..\..\QS.Project.Gtk\QS.Project.Gtk.csproj">
       <Project>{3C0F3944-CBD5-4BD6-83D4-CF33AD6FC68C}</Project>
       <Name>QS.Project.Gtk</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.BusinessCommon\QS.BusinessCommon.csproj">
+    <ProjectReference Include="..\QS.Measurement\QS.Measurement.csproj">
       <Project>{F22749B2-E35B-455D-BD8D-081373B16FC7}</Project>
-      <Name>QS.BusinessCommon</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\QSOrmProject\QSOrmProject.csproj">
-      <Project>{00D32969-612C-417E-9565-BEC6A7719F80}</Project>
-      <Name>QSOrmProject</Name>
+      <Name>QS.Measurement</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
-    <PackageReference Include="FluentNHibernate" Version="3.4.1" />
-    <PackageReference Include="Iesi.Collections" Version="4.0.5" />
-    <PackageReference Include="NHibernate" Version="5.5.2" />
-    <PackageReference Include="NLog" Version="6.1.1" />
-    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
-    <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
