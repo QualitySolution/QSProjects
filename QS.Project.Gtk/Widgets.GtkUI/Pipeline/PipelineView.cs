@@ -680,7 +680,7 @@ namespace QS.Widgets.GtkUI.Pipeline {
                 int width = connector.Allocation.Width;
                 int centerY = connector.Allocation.Height / 2;
 
-				context.SetSourceRGB(0.976, 0.976, 0.976);
+				context.SetSourceRGB(0.949, 0.949, 0.949);
 				context.Paint();
 
 				context.SetSourceRGB(_connectorColor.Red / 65535.0, _connectorColor.Green / 65535.0, _connectorColor.Blue / 65535.0);
