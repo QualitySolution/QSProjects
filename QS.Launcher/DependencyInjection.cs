@@ -7,24 +7,9 @@ using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
-using QS.DbManagement.Creation;
-using System;
-using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
-		public static IServiceCollection AddLauncherDataBaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
-		{
-			var map = new DbResourcesCreationMap();
-			foreach(var resourceCrator in resourceCratorMap) {
-				map.Register(resourceCrator.res, resourceCrator.creator);
-			}
-
-			return services
-				.AddSingleton(map)
-				.AddSingleton<DbCreationFactory>();
-		}
-
 		public static IServiceCollection AddLauncherViewModels(this IServiceCollection services) {
 			return services
 				.AddSingleton<MainWindowVM>()
@@ -46,9 +31,12 @@ namespace QS.Launcher {
 				.AddSingleton<Configurator>();
 		} 
 
-		public static IServiceCollection AddConnectionType(this IServiceCollection services, ConnectionTypeBase connectionType) {
-			services.AddSingleton(connectionType);
-			return services;
+		/// <summary>
+		/// Тип подключения создаётся контейнером, чтобы получить свои зависимости через DI
+		/// </summary>
+		public static IServiceCollection AddConnectionType<TConnectionType>(this IServiceCollection services)
+			where TConnectionType : ConnectionTypeBase {
+			return services.AddSingleton<ConnectionTypeBase, TConnectionType>();
 		}
 
 		#region AppRunner

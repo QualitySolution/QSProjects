@@ -11,49 +11,40 @@ namespace QS.DBScripts.Models
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private readonly string connectionString;
-		private readonly CreationScript script;
-		private readonly IProgressBarDisplayable progress;
+		private string connectionString;
+		private CreationScript script;
+		private IProgressBarDisplayable progress;
 		private readonly IDbCreatorInteraction interaction;
-		private readonly CancellationToken cancellationToken;
+		private CancellationToken cancellationToken;
+		private readonly IDbScriptsConfiguration scriptsConfiguration;
 
 		public bool FillBaseGuid { get; set; } = true;
 
-		public MySqlDbCreateModel(MySqlCreationResources resources)
+		public MySqlDbCreateModel(IDbScriptsConfiguration scriptsConfiguration, IDbCreatorInteraction interaction)
 		{
-			if(resources == null)
-				throw new ArgumentNullException(nameof(resources));
-			if(string.IsNullOrWhiteSpace(resources.ConnectionString))
-				throw new ArgumentException("Connection string is required", nameof(resources));
-			this.connectionString = resources.ConnectionString;
-			this.script = resources.Script ?? throw new ArgumentNullException(nameof(resources.Script));
-			this.progress = resources.Progress ?? throw new ArgumentNullException(nameof(resources.Progress));
-			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(resources.Interactions));
-			this.cancellationToken = resources.CancellationToken;
-		}
-
-		public MySqlDbCreateModel(
-			string server, uint port, string login, string password,
-			CreationScript script,
-			IProgressBarDisplayable progress,
-			IDbCreatorInteraction interaction,
-			CancellationToken cancellationToken) {
-
-			this.connectionString = new MySqlConnectionStringBuilder {
-				Server = server,
-				Port = port,
-				UserID = login,
-				Password = password,
-				AllowUserVariables = true
-			}.ConnectionString;
-			this.script = script ?? throw new ArgumentNullException(nameof(script));
-			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
+			this.scriptsConfiguration = scriptsConfiguration ?? throw new ArgumentNullException(nameof(scriptsConfiguration));
 			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
-			this.cancellationToken = cancellationToken;
 		}
 
+		public MySqlDbCreateModel(CreationScript script, IDbCreatorInteraction interaction)
+		{
+			this.script = script ?? throw new ArgumentNullException(nameof(script));
+			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
+		}
 
-		public bool RunCreation(string dbName, string dbTitle = null) {
+		public bool RunCreation(string connectionString, string dbName, string dbTitle, IProgressBarDisplayable progress, CancellationToken cancellationToken)
+		{
+			if(string.IsNullOrWhiteSpace(connectionString))
+				throw new ArgumentException("Connection string is required", nameof(connectionString));
+			this.connectionString = connectionString;
+			this.progress = progress ?? throw new ArgumentNullException(nameof(progress));
+			this.cancellationToken = cancellationToken;
+			if(script == null)
+				script = scriptsConfiguration.MakeCreationScript();
+			return RunCreationCore(dbName, dbTitle);
+		}
+
+		private bool RunCreationCore(string dbName, string dbTitle) {
 			using(var connectionDB = new MySqlConnection(connectionString)) {
 				try {
 					logger.Info("Connecting to MySQL...");

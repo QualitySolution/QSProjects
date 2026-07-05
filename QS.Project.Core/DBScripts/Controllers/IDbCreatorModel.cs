@@ -1,3 +1,6 @@
+using QS.Dialog;
+using System.Threading;
+
 namespace QS.DBScripts.Controllers
 {
 	/// <summary>
@@ -7,6 +10,6 @@ namespace QS.DBScripts.Controllers
 	{
 		// Метод блокирует вызывающий поток на время работы с базой
 		// Вынесение в фоновый поток — ответственность вызывающего кода
-		bool RunCreation(string dbName, string dbTitle);
+		bool RunCreation(string connectionString, string dbName, string dbTitle, IProgressBarDisplayable progress, CancellationToken cancellationToken);
 	}
 }

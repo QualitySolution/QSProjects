@@ -1,3 +1,4 @@
+using MySqlConnector;
 using System;
 using System.Threading;
 using QS.DBScripts.Models;
@@ -45,14 +46,17 @@ namespace QS.DBScripts.Controllers
 			try {
 				ParseServer(server, out string host, out uint port);
 
-				var createModel = new MySqlDbCreateModel(
-					host, port, login, password,
-					creationScript,
-					Progress,
-					interaction: this,
-					cancellationToken: CancellationToken.None);
+				var connectionString = new MySqlConnectionStringBuilder {
+					Server = host,
+					Port = port,
+					UserID = login,
+					Password = password,
+					AllowUserVariables = true
+				}.ConnectionString;
 
-				bool success = createModel.RunCreation(dbname);
+				var createModel = new MySqlDbCreateModel(creationScript, interaction: this);
+
+				bool success = createModel.RunCreation(connectionString, dbname, dbTitle: null, Progress, CancellationToken.None);
 				if(success)
 					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
 			}

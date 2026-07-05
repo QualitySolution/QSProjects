@@ -1,10 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
-using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
-using QS.DBScripts;
 using QS.DBScripts.Controllers;
-using QS.DBScripts.Models;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
@@ -35,20 +32,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			return new[] {
 				new DbCreationPhase("Создание базы данных", args => {
-					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
-
 					var request = new DbCreationRequest {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						CreationFactory = factory,
-						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
+						CreationModel = args.ServiceProvider.GetRequiredService<IDbCreatorModel>(),
+						Progress = args.Progress,
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-						// строку подключения заполнит провайдер
-						CreationResources = new MySqlCreationResources {
-							Progress = args.Progress,
-							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),
-							CancellationToken = args.CancellationToken }
+						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
+						CancellationToken = args.CancellationToken
 					};
 					return args.Provider.CreateDatabase(request);
 				})

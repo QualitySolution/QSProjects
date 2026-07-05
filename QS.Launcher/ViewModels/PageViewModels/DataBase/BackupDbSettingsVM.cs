@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				new DbCreationPhase(
 					"Создание резервной копии базы данных",
 					args => {
-						args.Provider.BackupDatabase(database, BackupFilePath, args.Progress, args.CancellationToken);
+						args.Provider.BackupDatabase(database, BackupFilePath,
+							args.ServiceProvider.GetRequiredService<IDbDumpService>(),
+							args.Progress, args.CancellationToken);
 						args.CancellationToken.ThrowIfCancellationRequested();
 						return true;
 					})
