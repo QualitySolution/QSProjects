@@ -5,10 +5,10 @@ using MySqlConnector;
 using QS.Dialog;
 
 namespace QS.DbManagement {
-	public class MariaDbDumpService {
+	public class MariaDbDumpService : IDbDumpService {
 		/// <summary>Выгружает базу <paramref name="databaseName"/> в файл <paramref name="filePath"/></summary>
 		public void Export(
-			MySqlConnectionStringBuilder connectionSettings,
+			string connectionString,
 			string databaseName,
 			string filePath,
 			IProgressBarDisplayable progress,
@@ -23,7 +23,7 @@ namespace QS.DbManagement {
 
 			progress?.Update($"Создаём резервную копию базы {databaseName} в файл {filePath}");
 
-			RunWithBackup(connectionSettings, databaseName, backup => {
+			RunWithBackup(connectionString, databaseName, backup => {
 				bool started = false;
 				string currentTable = null;
 				backup.ExportProgressChanged += (sender, e) => {
@@ -47,7 +47,7 @@ namespace QS.DbManagement {
 
 		/// <summary>Заливает дамп <paramref name="filePath"/> в уже существующую базу <paramref name="databaseName"/></summary>
 		public void Import(
-			MySqlConnectionStringBuilder connectionSettings,
+			string connectionString,
 			string databaseName,
 			string filePath,
 			IProgressBarDisplayable progress,
@@ -58,7 +58,7 @@ namespace QS.DbManagement {
 
 			progress?.Update($"Импортируем дамп {filePath} в базу {databaseName}");
 
-			RunWithBackup(connectionSettings, databaseName, backup => {
+			RunWithBackup(connectionString, databaseName, backup => {
 				bool started = false;
 				backup.ImportProgressChanged += (sender, e) => {
 					if(cancellation.IsCancellationRequested) {
@@ -88,13 +88,13 @@ namespace QS.DbManagement {
 			});
 		}
 
-		private void RunWithBackup(MySqlConnectionStringBuilder connectionSettings, string databaseName, Action<MySqlBackup> action) {
-			if(connectionSettings == null)
-				throw new ArgumentNullException(nameof(connectionSettings));
+		private void RunWithBackup(string connectionString, string databaseName, Action<MySqlBackup> action) {
+			if(string.IsNullOrWhiteSpace(connectionString))
+				throw new ArgumentException("Не указана строка подключения", nameof(connectionString));
 			if(string.IsNullOrWhiteSpace(databaseName))
 				throw new ArgumentException("Не указано имя базы", nameof(databaseName));
 
-			var builder = new MySqlConnectionStringBuilder(connectionSettings.ConnectionString) {
+			var builder = new MySqlConnectionStringBuilder(connectionString) {
 				Database = databaseName
 			};
 

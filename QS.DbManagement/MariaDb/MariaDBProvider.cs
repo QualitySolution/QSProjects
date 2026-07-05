@@ -1,7 +1,6 @@
 using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Entities;
-using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -186,9 +185,26 @@ namespace QS.DbManagement
 			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
 				Database = request.DbName
 			};
-			request.CreationResources.ConnectionString = connectionStringBuilder.ConnectionString;
-			var creationModel = request.CreationFactory.Create(request.CreationResources);
-			return creationModel.RunCreation(request.DbName, request.DbTitle);
+			return request.CreationModel.RunCreation(
+				connectionStringBuilder.ConnectionString,
+				request.DbName, request.DbTitle,
+				request.Progress, request.CancellationToken);
+		}
+
+		/// <summary>
+		/// Создание базы с наполнением из пользовательского дампа
+		/// Метод блокирующий - вызывать из фонового потока
+		/// </summary>
+		public bool ImportDatabase(DbImportRequest request) {
+			if(request == null)
+				throw new ArgumentNullException(nameof(request));
+			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+
+			request.DumpService.Import(
+				ConnectionStringBuilder.ConnectionString, request.DbName, request.DumpFilePath,
+				request.Progress, request.CancellationToken, request.DbTitle);
+			request.CancellationToken.ThrowIfCancellationRequested();
+			return true;
 		}
 
 		public bool DropDatabase(DbInfo database) {
@@ -200,8 +216,8 @@ namespace QS.DbManagement
 		/// Резервное копирование базы в скрипт
 		/// Метод блокирующий - вызывать из фонового потока
 		/// </summary>
-		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
+		public void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			dumpService.Export(ConnectionStringBuilder.ConnectionString, database.BaseName, filePath, progress, cancellation);
 		}
 
 		public void Dispose() {

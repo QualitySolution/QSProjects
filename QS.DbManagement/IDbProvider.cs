@@ -14,13 +14,18 @@ namespace QS.DbManagement
 		bool ChangePassword(string username, string oldPassword, string newPassword);
 
 		/// <summary>
-		/// Создаёт базу и сразу наполняет её
+		/// Создаёт базу и наполняет её скриптом создания
 		/// </summary>
 		bool CreateDatabase(DbCreationRequest request);
 
+		/// <summary>
+		/// Создаёт базу и наполняет её пользовательским дампом
+		/// </summary>
+		bool ImportDatabase(DbImportRequest request);
+
 		bool DropDatabase(DbInfo database);
 
-		void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation);
+		void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation);
 
 		bool AddUser(string username, string password);
 

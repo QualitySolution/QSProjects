@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
-using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
 using QS.DBScripts.Controllers;
 using QS.Project.Versioning;
@@ -39,24 +38,19 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
-			// Наполнение из дампа.
 			return new[] {
 				new DbCreationPhase("Импорт базы данных из дампа", args => {
-					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
-
-					var request = new DbCreationRequest {
+					var request = new DbImportRequest {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						CreationFactory = factory,
-						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
+						DumpFilePath = ImportDumpFilePath,
+						DumpService = args.ServiceProvider.GetRequiredService<IDbDumpService>(),
+						Progress = args.Progress,
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
-						// строку подключения заполнит провайдер
-						CreationResources = new DbDumpResources {
-							Progress = args.Progress,
-							DumpFilePath = ImportDumpFilePath,
-							CancellationToken = args.CancellationToken }
+						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
+						CancellationToken = args.CancellationToken
 					};
-					return args.Provider.CreateDatabase(request);
+					return args.Provider.ImportDatabase(request);
 				})
 			};
 		}
