@@ -48,6 +48,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 			this.WhenAnyValue(x => x.SelectedUser)
 				.Subscribe(_ => OnSelectedUserChanged());
+
+			this.WhenAnyValue(x => x.SelectedUser, x => x.IsNewUser)
+				.Subscribe(_ => {
+					this.RaisePropertyChanged(nameof(ShowEditForm));
+					this.RaisePropertyChanged(nameof(PasswordWatermark));
+				});
 		}
 
 		/// <summary>Задаёт провайдера подключения и обновляет состояние страницы.</summary>
@@ -128,6 +134,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		public bool HasSelectedUser => SelectedUser != null;
+
+		/// <summary>Форма редактирования видна, только когда выбран пользователь или создаётся новый</summary>
+		public bool ShowEditForm => IsNewUser || SelectedUser != null;
+
+		/// <summary>Подсказка в поле пароля зависит от режима формы</summary>
+		public string PasswordWatermark => IsNewUser
+			? "задайте пароль нового пользователя"
+			: "оставьте пустым, чтобы не менять";
 
 		public ReactiveCommand<Unit, Unit> NewUserCommand { get; }
 		public ReactiveCommand<Unit, Unit> SaveUserCommand { get; }
