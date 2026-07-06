@@ -251,8 +251,10 @@ namespace QS.DbManagement
 			if(options.Count == 0)
 				return true;
 
-			foreach(var host in HostsOf(user.Login))
-				connection.Execute($"ALTER USER '{EscapeString(user.Login)}'@'{EscapeString(host)}' {string.Join(" ", options)}");
+			// одним батчем по всем хостам логина - меньше сетевых обращений (роллбека тут всё равно нет: DDL по учёткам самокоммитится)
+			string suffix = string.Join(" ", options);
+			connection.Execute(string.Join(";", HostsOf(user.Login)
+				.Select(host => $"ALTER USER '{EscapeString(user.Login)}'@'{EscapeString(host)}' {suffix}")));
 			return true;
 		}
 
@@ -260,8 +262,8 @@ namespace QS.DbManagement
 			ValidateLogin(login);
 			EnsureOpen();
 
-			foreach(var host in HostsOf(login))
-				connection.Execute($"DROP USER IF EXISTS '{EscapeString(login)}'@'{EscapeString(host)}'");
+			connection.Execute(string.Join(";", HostsOf(login)
+				.Select(host => $"DROP USER IF EXISTS '{EscapeString(login)}'@'{EscapeString(host)}'")));
 			userHosts.Remove(login);
 			return true;
 		}
@@ -270,16 +272,7 @@ namespace QS.DbManagement
 			EnsureOpen();
 
 			var databases = GetUserDatabases(applicationInfo);
-			// объединяем гранты всех хостов логина
-			var grants = new List<string>();
-			foreach(var host in HostsOf(login)) {
-				try {
-					grants.AddRange(connection.Query<string>($"SHOW GRANTS FOR '{EscapeString(login)}'@'{EscapeString(host)}'"));
-				}
-				catch(MySqlException ex) {
-					logger.Debug(ex, "Не удалось получить гранты пользователя {0}@{1}", login, host);
-				}
-			}
+			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
 
 			bool globalAdmin = HasGlobalAdminGrant(grants);
 
@@ -296,7 +289,7 @@ namespace QS.DbManagement
 						var scope = GrantScope(g);
 						if(scope == null)
 							return false;
-						// шаблонные гранты вида `prefix\_%` не разворачиваем - учитываются только *.* и точное имя базы
+						// шаблонные гранты вида не разворачиваем
 						return scope == "*" || string.Equals(UnescapeGrantPattern(scope), db.BaseName, StringComparison.OrdinalIgnoreCase);
 					})
 					.SelectMany(GrantPrivileges)
@@ -321,26 +314,28 @@ namespace QS.DbManagement
 				throw new ArgumentException("Не указано имя базы", nameof(access));
 			EnsureOpen();
 
-			var grantsByHost = new Dictionary<string, List<string>>();
-			foreach(var host in HostsOf(login)) {
-				try {
-					grantsByHost[host] = connection.Query<string>($"SHOW GRANTS FOR '{EscapeString(login)}'@'{EscapeString(host)}'").ToList();
-				}
-				catch(MySqlException ex) {
-					logger.Debug(ex, "Не удалось получить гранты {0}@{1}", login, host);
-				}
-			}
+			var grantsByHost = ReadGrantsByHost(login);
 			if(grantsByHost.Count == 0)
 				throw new InvalidOperationException($"Пользователь {login} не найден на сервере.");
 
 			if(HasGlobalAdminGrant(grantsByHost.Values.SelectMany(g => g)))
 				throw new InvalidOperationException(
-					$"У пользователя {login} глобальные права на весь сервер, доступ к отдельным базам для него не настраивается.");
+					$"У пользователя {login} глобальные права на весь сервер");
 
+			string privileges = null;
+			if(access.HasAccess) {
+				if(access.IsAdmin)
+					privileges = "ALL PRIVILEGES";
+				else if(access.ReadOnly)
+					privileges = "SELECT, LOCK TABLES, SHOW VIEW";
+				else
+					privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW";
+			}
+
+			var statements = new List<string>();
 			foreach(var hostGrants in grantsByHost) {
 				string user = $"'{EscapeString(login)}'@'{EscapeString(hostGrants.Key)}'";
 
-				// отзываем прежние права ровно по тем шаблонам, по которым они были выданы,
 				foreach(var grant in hostGrants.Value) {
 					string scope = GrantScope(grant);
 					if(scope == null || scope == "*"
@@ -348,24 +343,36 @@ namespace QS.DbManagement
 						continue;
 					string pattern = $"`{EscapeIdentifier(scope)}`.*";
 					if(GrantPrivileges(grant).Any(p => p != "USAGE"))
-						connection.Execute($"REVOKE ALL PRIVILEGES ON {pattern} FROM {user}");
+						statements.Add($"REVOKE ALL PRIVILEGES ON {pattern} FROM {user}");
 					// ALL PRIVILEGES не включает право раздачи грантов - его отзываем отдельно
 					if(grant.IndexOf("WITH GRANT OPTION", StringComparison.OrdinalIgnoreCase) >= 0)
-						connection.Execute($"REVOKE GRANT OPTION ON {pattern} FROM {user}");
+						statements.Add($"REVOKE GRANT OPTION ON {pattern} FROM {user}");
 				}
 
-				if(access.HasAccess) {
-					string privileges;
-					if(access.IsAdmin)
-						privileges = "ALL PRIVILEGES";
-					else if(access.ReadOnly)
-						privileges = "SELECT, LOCK TABLES, SHOW VIEW";
-					else
-						privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW";
-					connection.Execute($"GRANT {privileges} ON `{EscapeGrantPattern(access.BaseName)}`.* TO {user}");
+				if(privileges != null)
+					statements.Add($"GRANT {privileges} ON `{EscapeGrantPattern(access.BaseName)}`.* TO {user}");
+			}
+
+			if(statements.Count > 0)
+				connection.Execute(string.Join(";", statements));
+			return true;
+		}
+
+		private Dictionary<string, List<string>> ReadGrantsByHost(string login) {
+			var hosts = HostsOf(login).ToList();
+			var result = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+			string sql = string.Join(";", hosts
+				.Select(h => $"SHOW GRANTS FOR '{EscapeString(login)}'@'{EscapeString(h)}'"));
+			try {
+				using(var multi = connection.QueryMultiple(sql)) {
+					foreach(var host in hosts)
+						result[host] = multi.Read<string>().ToList();
 				}
 			}
-			return true;
+			catch(MySqlException ex) {
+				logger.Debug(ex, "Не удалось получить гранты пользователя {0}", login);
+			}
+			return result;
 		}
 
 		private class MySqlUserRow {
@@ -382,7 +389,7 @@ namespace QS.DbManagement
 		private static void ValidateLogin(string login) {
 			if(string.IsNullOrWhiteSpace(login))
 				throw new ArgumentException("Логин пользователя не может быть пустым");
-			if(login.Length > 80) // ограничение MariaDB, в MySQL строже (32) - это проверит сам сервер
+			if(login.Length > 80) 
 				throw new ArgumentException("Логин пользователя длиннее 80 символов");
 		}
 
@@ -446,6 +453,7 @@ namespace QS.DbManagement
 			return scope;
 		}
 
+		/// <summary>Список привилегий из строки GRANT</summary>
 		private static IEnumerable<string> GrantPrivileges(string grant) {
 			int grantIdx = grant.IndexOf("GRANT ", StringComparison.OrdinalIgnoreCase);
 			int onIdx = grant.IndexOf(" ON ", StringComparison.OrdinalIgnoreCase);
@@ -453,7 +461,6 @@ namespace QS.DbManagement
 				return Enumerable.Empty<string>();
 			int start = grantIdx + 6; //6 = "GRANT "
 			string privsPart = grant.Substring(start, onIdx - start);
-			// списки колонок "SELECT (col1, col2)" выкидываем - запятые внутри скобок не разделители привилегий
 			privsPart = Regex.Replace(privsPart, @"\([^)]*\)", string.Empty);
 			return privsPart.Split(',')
 				.Select(p => p.Trim().ToUpperInvariant())

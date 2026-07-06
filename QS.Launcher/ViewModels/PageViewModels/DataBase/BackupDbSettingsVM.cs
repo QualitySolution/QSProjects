@@ -11,7 +11,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class BackupDbSettingsVM : DbOperationSettingsVM {
 		private readonly DbInfo database;
 
-		public BackupDbSettingsVM(DbInfo database, IDbProvider provider, Connection connection, IServiceProvider services)
+		public BackupDbSettingsVM(DbInfo database, IDbManager provider, Connection connection, IServiceProvider services)
 			: base(provider, connection, services) {
 			this.database = database ?? throw new ArgumentNullException(nameof(database));
 

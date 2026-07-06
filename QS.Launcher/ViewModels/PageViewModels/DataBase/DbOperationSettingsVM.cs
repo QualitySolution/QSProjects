@@ -9,11 +9,11 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public abstract class DbOperationSettingsVM : CarouselPageVM {
-		protected IDbProvider Provider { get; }
+		protected IDbManager Provider { get; }
 		protected Connection Connection { get; }
 		protected IServiceProvider Services { get; }
 
-		protected DbOperationSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services) {
+		protected DbOperationSettingsVM(IDbManager provider, Connection connection, IServiceProvider services) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
 			Services = services ?? throw new ArgumentNullException(nameof(services));

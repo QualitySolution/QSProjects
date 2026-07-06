@@ -19,6 +19,7 @@ namespace QS.DbManagement.Entities {
 	}
 
 	/// <summary>
+	/// Какие поля <see cref="DbUserInfo"/> и виды доступа поддерживает конкретный провайдер
 	/// </summary>
 	[Flags]
 	public enum DbUserFields {
