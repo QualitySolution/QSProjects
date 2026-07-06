@@ -18,7 +18,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IApplicationInfo applicationInfo;
 
-		private IDbProvider provider;
+		private IDbUserManager provider;
 
 		public UserManagementVM(
 			IInteractiveMessage interactiveMessage,
@@ -51,8 +51,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		/// <summary>Задаёт провайдера подключения и обновляет состояние страницы.</summary>
-		public void SetProvider(IDbProvider dbProvider) {
-			provider = dbProvider ?? throw new ArgumentNullException(nameof(dbProvider));
+		public void SetProvider(IDbUserManager userManager) {
+			provider = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
 			OwnNewPassword = null;
 			OwnConfirmPassword = null;
@@ -339,6 +339,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			var user = SelectedUser;
 			if(user == null)
 				return;
+			// Сохраняем только изменённые строки - каждая строка это отдельный запрос к серверу
 			var changedRows = BaseAccesses.Where(r => r.IsDirty).ToList();
 			if(changedRows.Count == 0)
 				return;
@@ -349,7 +350,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				});
 				foreach(var row in changedRows)
 					row.AcceptChanges();
-				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Доступы сохранены.", "Доступ к базам");
+				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Доступы сохранены", "Доступ к базам");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось сохранить доступы пользователя {0}", user.Login);

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
-		public CreateDbSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services)
+		public CreateDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services)
 			: base(provider, connection, services) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
 				(name, title) => !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(title)));

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class ImportDbSettingsVM : DbOperationSettingsVM {
-		public ImportDbSettingsVM(IDbProvider provider, Connection connection, IServiceProvider services)
+		public ImportDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services)
 			: base(provider, connection, services) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle, x => x.ImportDumpFilePath,
 				(name, title, dump) => !string.IsNullOrWhiteSpace(name)

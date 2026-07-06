@@ -7,7 +7,7 @@ namespace QS.DbManagement.Entities {
 	/// Контекст выполнения одной фазы операциии <see cref="DbCreationPhase"/>
 	/// </summary>
 	public class DbPhaseArgs {
-		public IDbProvider Provider { get; set; }
+		public IDbManager Provider { get; set; }
 		public IProgressBarDisplayable Progress { get; set; }
 		public CancellationToken CancellationToken { get; set; }
 		public IServiceProvider ServiceProvider { get; set; }

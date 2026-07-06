@@ -15,8 +15,8 @@ namespace QS.DbManagement {
 		/// Создание из встроенного скрипта, если
 		/// сервер разрешает и зарегистрирован скрипт создания
 		/// </summary>
-		public bool CanCreate(IDbProvider provider) {
-			return provider?.CanCreateDatabase == true
+		public bool CanCreate(IDbManager manager) {
+			return manager?.CanCreateDatabase == true
 				&& scripts?.HasCreationScript() == true;
 		}
 
@@ -24,26 +24,26 @@ namespace QS.DbManagement {
 		/// Наполнение дампом, если
 		/// есть права на создание
 		/// </summary>
-		public bool CanImport(IDbProvider provider) {
-			return provider?.CanCreateDatabase == true;
+		public bool CanImport(IDbManager manager) {
+			return manager?.CanCreateDatabase == true;
 		}
 
 		/// <summary>для любой подключённой базы</summary>
-		public bool CanBackup(IDbProvider provider) {
-			return provider != null;
+		public bool CanBackup(IDbManager manager) {
+			return manager != null;
 		}
 
 		/// <summary>по праву провайдера</summary>
-		public bool CanDrop(IDbProvider provider) {
-			return provider?.CanDropDatabase == true;
+		public bool CanDrop(IDbManager manager) {
+			return manager?.CanDropDatabase == true;
 		}
 
-		public bool CanChangeOwnPassword(IDbProvider provider) {
-			return provider != null;
+		public bool CanChangeOwnPassword(IDbUserManager userManager) {
+			return userManager != null;
 		}
 
-		public bool CanManageUsers(IDbProvider provider) {
-			return provider?.CanManageUsers == true;
+		public bool CanManageUsers(IDbUserManager userManager) {
+			return userManager?.CanManageUsers == true;
 		}
 	}
 }

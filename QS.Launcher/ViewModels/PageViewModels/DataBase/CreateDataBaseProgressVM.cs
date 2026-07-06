@@ -17,7 +17,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public IDbProvider Provider { get; private set; }
+		public IDbManager Provider { get; private set; }
 		public Connection Connection { get; private set; }
 		private IReadOnlyList<DbCreationPhase> phases = Array.Empty<DbCreationPhase>();
 
@@ -88,7 +88,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public void SetPipeline(
-			IDbProvider provider, Connection connection,
+			IDbManager provider, Connection connection,
 			IEnumerable<DbCreationPhase> phases) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
