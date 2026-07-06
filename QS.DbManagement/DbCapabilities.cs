@@ -37,5 +37,13 @@ namespace QS.DbManagement {
 		public bool CanDrop(IDbProvider provider) {
 			return provider?.CanDropDatabase == true;
 		}
+
+		public bool CanChangeOwnPassword(IDbProvider provider) {
+			return provider != null;
+		}
+
+		public bool CanManageUsers(IDbProvider provider) {
+			return provider?.CanManageUsers == true;
+		}
 	}
 }

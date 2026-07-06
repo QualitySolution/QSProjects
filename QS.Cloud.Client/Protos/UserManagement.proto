@@ -2,10 +2,29 @@ syntax = "proto3";
 
 package QS.Cloud.Core;
 service UserManagement{
+	rpc GetUsers (GetUsersRequest) returns (GetUsersResponse);
 	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
 	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+	rpc GetUserBaseAccess (GetUserBaseAccessRequest) returns (GetUserBaseAccessResponse);
 	rpc ChangeBaseAccess (ChangeBaseAccessRequest) returns (ChangeBaseAccessResponse);
+}
+
+message UserInfo{
+	string login = 1;
+	string name = 2;
+	string email = 3;
+	string phone = 4;
+	string post = 5;
+	string comment = 6;
+	bool disabled = 7;
+	bool is_account_admin = 8;
+}
+
+message GetUsersRequest{
+}
+message GetUsersResponse{
+	repeated UserInfo users = 1;
 }
 
 message CreateUserRequest{
@@ -13,12 +32,26 @@ message CreateUserRequest{
 	string name = 2;
 	string email = 3;
 	string password = 4;
+	string phone = 5;
+	string post = 6;
+	string comment = 7;
+	bool is_account_admin = 8;
 }
 message CreateUserResponse{
 	bool success = 1;
 	string message = 2;
 }
+
 message UpdateUserRequest{
+	string login = 1;
+	string name = 2;
+	string email = 3;
+	string phone = 4;
+	string post = 5;
+	string comment = 6;
+	bool disabled = 7;
+	bool is_account_admin = 8;
+	string new_password = 9;
 }
 message UpdateUserResponse{
 	bool success = 1;
@@ -28,10 +61,24 @@ message UpdateUserResponse{
 message DeleteUserRequest{
 	string user = 1;
 }
-
 message DeleteUserResponse {
 	bool success = 1;
 	string message = 2;
+}
+
+message GetUserBaseAccessRequest{
+	string user = 1;
+	uint32 product_id = 2;
+}
+message BaseAccessInfo{
+	int32 base_id = 1;
+	string base_title = 2;
+	bool has_access = 3;
+	bool admin = 4;
+	bool read_only = 5;
+}
+message GetUserBaseAccessResponse{
+	repeated BaseAccessInfo bases = 1;
 }
 
 message ChangeBaseAccessRequest{
@@ -39,7 +86,7 @@ message ChangeBaseAccessRequest{
 	int32 base_id = 2;
 	bool grant = 3;
 	bool admin = 4;
-
+	bool read_only = 5;
 }
 message ChangeBaseAccessResponse {
 	bool success = 1;

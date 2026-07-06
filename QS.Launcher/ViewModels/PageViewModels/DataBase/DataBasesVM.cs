@@ -6,10 +6,12 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData.Kernel;
+using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Launcher.AppRunner;
+using QS.Launcher.ViewModels.PageViewModels;
 using QS.Project.Versioning;
 using ReactiveUI;
 
@@ -31,6 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				this.RaisePropertyChanged(nameof(CanDropDatabase));
 				this.RaisePropertyChanged(nameof(CanBackupDatabase));
 				this.RaisePropertyChanged(nameof(CanManageDatabases));
+				this.RaisePropertyChanged(nameof(CanOpenUserManagement));
 
 				LoadLastSelectedDatabase();
 			}
@@ -46,6 +49,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public bool CanManageDatabases =>
 			CanDropDatabase || CanBackupDatabase;
+
+		public bool CanOpenUserManagement => capabilities.CanChangeOwnPassword(provider);
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -80,6 +85,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> OpenImportDatabaseCommand { get; }
 		public ICommand BackupDatabaseCommand { get; }
 		public ICommand DeleteDatabaseCommand { get; }
+		public ReactiveCommand<Unit, Unit> OpenUserManagementCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
 
@@ -117,6 +123,16 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
 			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
 			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
+			OpenUserManagementCommand = ReactiveCommand.Create(OpenUserManagement);
+		}
+
+		private void OpenUserManagement() {
+			if(provider == null)
+				return;
+
+			var vm = serviceProvider.GetRequiredService<UserManagementVM>();
+			vm.SetProvider(provider);
+			PushPageCommand?.Execute(vm);
 		}
 
 		/// <summary>

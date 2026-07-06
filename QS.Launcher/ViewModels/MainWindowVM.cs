@@ -29,7 +29,6 @@ namespace QS.Launcher.ViewModels {
 		public MainWindowVM(
 			DataBasesVM dataBasesVM,
 			LoginVM loginVM,
-			UserManagementVM userManagementVM,
 			IServiceProvider provider)
 		{
 			Pages = new ObservableCollection<CarouselPageVM> {

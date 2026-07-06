@@ -11,7 +11,27 @@ namespace QS.DbManagement
 	{
 		string UserName { get; }
 
-		bool ChangePassword(string username, string oldPassword, string newPassword);
+		#region Управление пользователями
+
+		bool ChangeOwnPassword(string newPassword);
+
+		bool CanManageUsers { get; }
+
+		DbUserFields SupportedUserFields { get; }
+
+		List<DbUserInfo> GetUsers();
+
+		bool CreateUser(DbUserInfo user, string password);
+
+		bool UpdateUser(DbUserInfo user, string newPassword = null);
+
+		bool DeleteUser(string login);
+
+		List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo);
+
+		bool SetUserBaseAccess(string login, DbUserBaseAccess access);
+
+		#endregion
 
 		/// <summary>
 		/// Создаёт базу и наполняет её скриптом создания
@@ -26,8 +46,6 @@ namespace QS.DbManagement
 		bool DropDatabase(DbInfo database);
 
 		void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation);
-
-		bool AddUser(string username, string password);
 
 		LoginToServerResponse LoginToServer();
 
