@@ -32,6 +32,7 @@ namespace QS.Cloud.Client.DataBase
 
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
+		private UserManagementCloudClient userClient;
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
@@ -40,17 +41,123 @@ namespace QS.Cloud.Client.DataBase
 
 			loginClient = new LoginManagementCloudClient(authInfo);
 			dbClient = new DataBaseManagementCloudClient(authInfo);
+			userClient = new UserManagementCloudClient(authInfo);
 		}
 
-		public bool AddUser(string username, string password)
-		{
-			throw new NotImplementedException();
+		#region Управление пользователями
+
+		public bool CanManageUsers => IsAdmin;
+
+		public DbUserFields SupportedUserFields =>
+			DbUserFields.Name | DbUserFields.Email | DbUserFields.Phone | DbUserFields.Post
+			| DbUserFields.Comment | DbUserFields.AdminFlag | DbUserFields.Disabling | DbUserFields.BaseReadOnly;
+
+		public bool ChangeOwnPassword(string newPassword) {
+			try {
+				return loginClient.ChangePassword(newPassword).Success;
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
 		}
-	
-		public bool ChangePassword(string username, string oldPassword, string newPassword)
-		{
-			throw new NotImplementedException();
+
+		public List<DbUserInfo> GetUsers() {
+			try {
+				return userClient.GetUsers().Select(u => new DbUserInfo {
+					Login = u.Login,
+					Name = u.Name,
+					Email = u.Email,
+					Phone = u.Phone,
+					Post = u.Post,
+					Comment = u.Comment,
+					Disabled = u.Disabled,
+					IsAdmin = u.IsAccountAdmin,
+					IsCurrentUser = string.Equals(u.Login, UserName, StringComparison.OrdinalIgnoreCase)
+				}).ToList();
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
 		}
+
+		public bool CreateUser(DbUserInfo user, string password) {
+			try {
+				var response = userClient.CreateUser(ToCloudUser(user), password);
+				if(!response.Success)
+					throw new InvalidOperationException(response.Message);
+				return true;
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
+		}
+
+		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
+			try {
+				var response = userClient.UpdateUser(ToCloudUser(user), newPassword);
+				if(!response.Success)
+					throw new InvalidOperationException(response.Message);
+				return true;
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
+		}
+
+		public bool DeleteUser(string login) {
+			try {
+				var response = userClient.DeleteUser(login);
+				if(!response.Success)
+					throw new InvalidOperationException(response.Message);
+				return true;
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
+		}
+
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) {
+			try {
+				return userClient.GetUserBaseAccess(login, applicationInfo.ProductCode).Select(b => new DbUserBaseAccess {
+					BaseId = b.BaseId,
+					Title = b.BaseTitle,
+					HasAccess = b.HasAccess,
+					IsAdmin = b.Admin,
+					ReadOnly = b.ReadOnly
+				}).ToList();
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
+		}
+
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) {
+			try {
+				bool ok = userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly);
+				if(!ok)
+					throw new InvalidOperationException("Не удалось изменить доступ к базе");
+				return true;
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
+			}
+		}
+
+		private static QS.Cloud.Core.UserInfo ToCloudUser(DbUserInfo user) => new QS.Cloud.Core.UserInfo {
+			Login = user.Login ?? "",
+			Name = user.Name ?? "",
+			Email = user.Email ?? "",
+			Phone = user.Phone ?? "",
+			Post = user.Post ?? "",
+			Comment = user.Comment ?? "",
+			Disabled = user.Disabled,
+			IsAccountAdmin = user.IsAdmin
+		};
+
+		private static Exception CloudError(RpcException ex) =>
+			new InvalidOperationException(string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail);
+
+		#endregion
 	
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
@@ -102,6 +209,8 @@ namespace QS.Cloud.Client.DataBase
 		public void Dispose()
 		{
 			loginClient.Dispose();
+			dbClient.Dispose();
+			userClient.Dispose();
 		}
 	
 		public bool DropDatabase(DbInfo database)

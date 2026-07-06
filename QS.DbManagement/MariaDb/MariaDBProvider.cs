@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace QS.DbManagement
@@ -69,23 +71,18 @@ namespace QS.DbManagement
 
 		public LoginToServerResponse LoginToServer() {
 			try {
-				if(connection.State != ConnectionState.Open)
-					connection.Open();
+				EnsureOpen();
 
 				var grants = connection.Query<string>("SHOW GRANTS FOR CURRENT_USER").ToList();
 
-				IsAdmin = grants.Any(g =>
-					g.IndexOf("ALL PRIVILEGES ON *.*", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("GRANT OPTION", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("SUPER", StringComparison.OrdinalIgnoreCase) >= 0);
+				IsAdmin = HasGlobalAdminGrant(grants);
 
-				CanCreateDatabase = IsAdmin || grants.Any(g =>
-					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) >= 0);
+				var privileges = new HashSet<string>(grants
+					.Where(g => GrantScope(g) != null)
+					.SelectMany(GrantPrivileges));
 
-				CanDropDatabase = IsAdmin || grants.Any(g =>
-					g.IndexOf("ALL PRIVILEGES", StringComparison.OrdinalIgnoreCase) >= 0
-					|| g.IndexOf("DROP", StringComparison.OrdinalIgnoreCase) >= 0);
+				CanCreateDatabase = IsAdmin || privileges.Contains("ALL PRIVILEGES") || privileges.Contains("CREATE");
+				CanDropDatabase = IsAdmin || privileges.Contains("ALL PRIVILEGES") || privileges.Contains("DROP");
 
 				return new LoginToServerResponse {
 					Success = true,
@@ -105,8 +102,7 @@ namespace QS.DbManagement
 		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
 			var result = new List<DbInfo>();
 
-			if(connection.State != ConnectionState.Open)
-				connection.Open();
+			EnsureOpen();
 
 			var databases = connection.Query<string>("SHOW DATABASES").ToList();
 			byte expectedProductCode = applicationInfo.ProductCode;
@@ -167,17 +163,309 @@ namespace QS.DbManagement
 			}
 		}
 
-		public bool AddUser(string username, string password) {
-			string sql = $"CREATE USER IF NOT EXISTS '{username}' IDENTIFIED BY '{password}'";
-			return connection.Execute(sql) != 0;
+		#region Управление пользователями
+
+		public DbUserFields SupportedUserFields =>
+			DbUserFields.BaseReadOnly
+			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None);
+
+		public bool CanManageUsers => IsAdmin;
+
+		private static readonly string[] SystemUsers = { "root", "mariadb.sys", "mysql", "PUBLIC" };
+
+		private readonly Dictionary<string, List<string>> userHosts = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+		private bool? supportsAccountLock;
+		private bool SupportsAccountLock {
+			get {
+				if(supportsAccountLock == null) {
+					EnsureOpen();
+					supportsAccountLock = connection.ExecuteScalar<long>(
+						"SELECT COUNT(*) FROM information_schema.COLUMNS " +
+						"WHERE TABLE_SCHEMA = 'mysql' AND TABLE_NAME = 'user' AND COLUMN_NAME = 'account_locked'") > 0;
+				}
+				return supportsAccountLock.Value;
+			}
 		}
 
-		public bool ChangePassword(string username, string oldPassword, string newPassword) {
-			string sql = $"ALTER USER '{username}'@'%' IDENTIFIED BY '{newPassword}'";
-			return connection.Execute(sql) != 0;
+		public bool ChangeOwnPassword(string newPassword)
+		{
+			if(string.IsNullOrEmpty(newPassword))
+				throw new ArgumentException("Пароль не может быть пустым", nameof(newPassword));
+			EnsureOpen();
+
+			connection.Execute($"ALTER USER CURRENT_USER() IDENTIFIED BY '{EscapeString(newPassword)}'");
+			return true;
 		}
 
-		public bool CreateDatabase(DbCreationRequest request) {
+		public List<DbUserInfo> GetUsers()
+		{
+			EnsureOpen();
+
+			string lockedColumn = SupportsAccountLock ? "account_locked" : "NULL";
+			var rows = connection.Query<MySqlUserRow>(
+				$"SELECT User AS Login, Host, {lockedColumn} AS AccountLocked FROM mysql.user ORDER BY User, Host").ToList();
+
+			userHosts.Clear();
+			var result = new List<DbUserInfo>();
+			foreach(var userRows in rows
+				.Where(r => !string.IsNullOrEmpty(r.Login)
+					&& !r.Login.StartsWith("mysql.", StringComparison.OrdinalIgnoreCase)
+					&& !SystemUsers.Contains(r.Login, StringComparer.OrdinalIgnoreCase))
+				.GroupBy(r => r.Login, StringComparer.Ordinal)) {
+
+				userHosts[userRows.Key] = userRows.Select(r => string.IsNullOrEmpty(r.Host) ? "%" : r.Host).ToList();
+				result.Add(new DbUserInfo {
+					Login = userRows.Key,
+					// отключён, только если заблокированы все хосты логина
+					Disabled = userRows.All(r => string.Equals(r.AccountLocked, "Y", StringComparison.OrdinalIgnoreCase)),
+					IsCurrentUser = string.Equals(userRows.Key, UserName, StringComparison.OrdinalIgnoreCase)
+				});
+			}
+			return result;
+		}
+
+		public bool CreateUser(DbUserInfo user, string password)
+		{
+			ValidateLogin(user?.Login);
+			if(string.IsNullOrEmpty(password))
+				throw new ArgumentException("Пароль не может быть пустым", nameof(password));
+			EnsureOpen();
+
+			string lockOption = user.Disabled && SupportsAccountLock ? " ACCOUNT LOCK" : string.Empty;
+			connection.Execute($"CREATE USER '{EscapeString(user.Login)}'@'%' IDENTIFIED BY '{EscapeString(password)}'{lockOption}");
+			userHosts[user.Login] = new List<string> { "%" };
+			return true;
+		}
+
+		public bool UpdateUser(DbUserInfo user, string newPassword = null)
+		{
+			ValidateLogin(user?.Login);
+			EnsureOpen();
+
+			var options = new List<string>();
+			if(!string.IsNullOrEmpty(newPassword))
+				options.Add($"IDENTIFIED BY '{EscapeString(newPassword)}'");
+			if(SupportsAccountLock)
+				options.Add(user.Disabled ? "ACCOUNT LOCK" : "ACCOUNT UNLOCK");
+			if(options.Count == 0)
+				return true;
+
+			foreach(var host in HostsOf(user.Login))
+				connection.Execute($"ALTER USER '{EscapeString(user.Login)}'@'{EscapeString(host)}' {string.Join(" ", options)}");
+			return true;
+		}
+
+		public bool DeleteUser(string login) {
+			ValidateLogin(login);
+			EnsureOpen();
+
+			foreach(var host in HostsOf(login))
+				connection.Execute($"DROP USER IF EXISTS '{EscapeString(login)}'@'{EscapeString(host)}'");
+			userHosts.Remove(login);
+			return true;
+		}
+
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) {
+			EnsureOpen();
+
+			var databases = GetUserDatabases(applicationInfo);
+			// объединяем гранты всех хостов логина
+			var grants = new List<string>();
+			foreach(var host in HostsOf(login)) {
+				try {
+					grants.AddRange(connection.Query<string>($"SHOW GRANTS FOR '{EscapeString(login)}'@'{EscapeString(host)}'"));
+				}
+				catch(MySqlException ex) {
+					logger.Debug(ex, "Не удалось получить гранты пользователя {0}@{1}", login, host);
+				}
+			}
+
+			bool globalAdmin = HasGlobalAdminGrant(grants);
+
+			return databases.Select(db => {
+				var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
+				if(globalAdmin) {
+					access.HasAccess = true;
+					access.IsAdmin = true;
+					return access;
+				}
+
+				var privileges = grants
+					.Where(g => {
+						var scope = GrantScope(g);
+						if(scope == null)
+							return false;
+						// шаблонные гранты вида `prefix\_%` не разворачиваем - учитываются только *.* и точное имя базы
+						return scope == "*" || string.Equals(UnescapeGrantPattern(scope), db.BaseName, StringComparison.OrdinalIgnoreCase);
+					})
+					.SelectMany(GrantPrivileges)
+					.Where(p => p != "USAGE")
+					.ToList();
+
+				if(privileges.Count == 0)
+					return access;
+
+				access.HasAccess = true;
+				if(privileges.Contains("ALL PRIVILEGES"))
+					access.IsAdmin = true;
+				else if(privileges.All(p => p == "SELECT" || p == "LOCK TABLES" || p == "SHOW VIEW"))
+					access.ReadOnly = true;
+				return access;
+			}).ToList();
+		}
+
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) {
+			ValidateLogin(login);
+			if(string.IsNullOrWhiteSpace(access?.BaseName))
+				throw new ArgumentException("Не указано имя базы", nameof(access));
+			EnsureOpen();
+
+			var grantsByHost = new Dictionary<string, List<string>>();
+			foreach(var host in HostsOf(login)) {
+				try {
+					grantsByHost[host] = connection.Query<string>($"SHOW GRANTS FOR '{EscapeString(login)}'@'{EscapeString(host)}'").ToList();
+				}
+				catch(MySqlException ex) {
+					logger.Debug(ex, "Не удалось получить гранты {0}@{1}", login, host);
+				}
+			}
+			if(grantsByHost.Count == 0)
+				throw new InvalidOperationException($"Пользователь {login} не найден на сервере.");
+
+			if(HasGlobalAdminGrant(grantsByHost.Values.SelectMany(g => g)))
+				throw new InvalidOperationException(
+					$"У пользователя {login} глобальные права на весь сервер, доступ к отдельным базам для него не настраивается.");
+
+			foreach(var hostGrants in grantsByHost) {
+				string user = $"'{EscapeString(login)}'@'{EscapeString(hostGrants.Key)}'";
+
+				// отзываем прежние права ровно по тем шаблонам, по которым они были выданы,
+				foreach(var grant in hostGrants.Value) {
+					string scope = GrantScope(grant);
+					if(scope == null || scope == "*"
+						|| !string.Equals(UnescapeGrantPattern(scope), access.BaseName, StringComparison.OrdinalIgnoreCase))
+						continue;
+					string pattern = $"`{EscapeIdentifier(scope)}`.*";
+					if(GrantPrivileges(grant).Any(p => p != "USAGE"))
+						connection.Execute($"REVOKE ALL PRIVILEGES ON {pattern} FROM {user}");
+					// ALL PRIVILEGES не включает право раздачи грантов - его отзываем отдельно
+					if(grant.IndexOf("WITH GRANT OPTION", StringComparison.OrdinalIgnoreCase) >= 0)
+						connection.Execute($"REVOKE GRANT OPTION ON {pattern} FROM {user}");
+				}
+
+				if(access.HasAccess) {
+					string privileges;
+					if(access.IsAdmin)
+						privileges = "ALL PRIVILEGES";
+					else if(access.ReadOnly)
+						privileges = "SELECT, LOCK TABLES, SHOW VIEW";
+					else
+						privileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW";
+					connection.Execute($"GRANT {privileges} ON `{EscapeGrantPattern(access.BaseName)}`.* TO {user}");
+				}
+			}
+			return true;
+		}
+
+		private class MySqlUserRow {
+			public string Login { get; set; }
+			public string Host { get; set; }
+			public string AccountLocked { get; set; }
+		}
+
+		private IReadOnlyList<string> HostsOf(string login) =>
+			userHosts.TryGetValue(login, out var hosts) && hosts.Count > 0
+				? (IReadOnlyList<string>)hosts
+				: new[] { "%" };
+
+		private static void ValidateLogin(string login) {
+			if(string.IsNullOrWhiteSpace(login))
+				throw new ArgumentException("Логин пользователя не может быть пустым");
+			if(login.Length > 80) // ограничение MariaDB, в MySQL строже (32) - это проверит сам сервер
+				throw new ArgumentException("Логин пользователя длиннее 80 символов");
+		}
+
+		private static bool HasGlobalAdminGrant(IEnumerable<string> grants) =>
+			grants.Any(g => {
+				if(GrantScope(g) != "*")
+					return false;
+				var privileges = GrantPrivileges(g).ToList();
+				return privileges.Contains("ALL PRIVILEGES")
+					|| privileges.Contains("SUPER")
+					|| privileges.Contains("CREATE USER");
+			});
+
+		private static string EscapeString(string value) =>
+			value == null ? string.Empty : value.Replace("\\", "\\\\").Replace("'", "\\'");
+
+		private static string EscapeIdentifier(string value) =>
+			value == null ? string.Empty : value.Replace("`", "``");
+
+		private static string EscapeGrantPattern(string dbName) =>
+			EscapeIdentifier(dbName).Replace("_", "\\_").Replace("%", "\\%");
+
+		private static string UnescapeGrantPattern(string pattern) =>
+			pattern.Replace("\\_", "_").Replace("\\%", "%");
+
+		private static string GrantScope(string grant) {
+			int onIdx = grant.IndexOf(" ON ", StringComparison.OrdinalIgnoreCase);
+			if(onIdx < 0)
+				return null;
+			string rest = grant.Substring(onIdx + 4).TrimStart(); //4 = " ON "
+
+			string scope;
+			int pos;
+			if(rest.StartsWith("`", StringComparison.Ordinal)) {
+				var name = new StringBuilder();
+				pos = 1;
+				while(pos < rest.Length) {
+					if(rest[pos] == '`') {
+						if(pos + 1 < rest.Length && rest[pos + 1] == '`') {
+							name.Append('`');
+							pos += 2;
+							continue;
+						}
+						pos++;
+						break;
+					}
+					name.Append(rest[pos]);
+					pos++;
+				}
+				scope = name.ToString();
+			}
+			else {
+				pos = rest.IndexOf('.');
+				if(pos < 0)
+					return null;
+				scope = rest.Substring(0, pos).Trim();
+			}
+
+			if(pos + 1 >= rest.Length || rest[pos] != '.' || rest[pos + 1] != '*')
+				return null;
+			return scope;
+		}
+
+		private static IEnumerable<string> GrantPrivileges(string grant) {
+			int grantIdx = grant.IndexOf("GRANT ", StringComparison.OrdinalIgnoreCase);
+			int onIdx = grant.IndexOf(" ON ", StringComparison.OrdinalIgnoreCase);
+			if(grantIdx < 0 || onIdx < 0 || onIdx <= grantIdx)
+				return Enumerable.Empty<string>();
+			int start = grantIdx + 6; //6 = "GRANT "
+			string privsPart = grant.Substring(start, onIdx - start);
+			// списки колонок "SELECT (col1, col2)" выкидываем - запятые внутри скобок не разделители привилегий
+			privsPart = Regex.Replace(privsPart, @"\([^)]*\)", string.Empty);
+			return privsPart.Split(',')
+				.Select(p => p.Trim().ToUpperInvariant())
+				.Where(p => p.Length > 0);
+		}
+
+		#endregion
+
+		public bool CreateDatabase(DbCreationRequest request)
+		{
+			EnsureOpen();
+
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
@@ -195,7 +483,10 @@ namespace QS.DbManagement
 		/// Создание базы с наполнением из пользовательского дампа
 		/// Метод блокирующий - вызывать из фонового потока
 		/// </summary>
-		public bool ImportDatabase(DbImportRequest request) {
+		public bool ImportDatabase(DbImportRequest request)
+		{
+			EnsureOpen();
+
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
@@ -207,7 +498,10 @@ namespace QS.DbManagement
 			return true;
 		}
 
-		public bool DropDatabase(DbInfo database) {
+		public bool DropDatabase(DbInfo database)
+		{
+			EnsureOpen();
+
 			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
 			return connection.Execute(sql) != 0;
 		}
@@ -218,6 +512,12 @@ namespace QS.DbManagement
 		/// </summary>
 		public void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation) {
 			dumpService.Export(ConnectionStringBuilder.ConnectionString, database.BaseName, filePath, progress, cancellation);
+		}
+
+
+		private void EnsureOpen() {
+			if(connection.State != ConnectionState.Open)
+				connection.Open();
 		}
 
 		public void Dispose() {

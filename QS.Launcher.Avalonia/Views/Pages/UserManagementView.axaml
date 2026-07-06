@@ -4,18 +4,100 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
+             xmlns:dbme="clr-namespace:QS.DbManagement.Entities;assembly=QS.DbManagement"
+             d:DesignHeight="700"
+             d:DesignWidth="700"
              x:DataType="vm:UserManagementVM"
              mc:Ignorable="d">
     <ScrollViewer>
-        <Grid>
-            <Label Content="Управление пользователями" />
-            <Button Command="{Binding ChangePageCommand}" Content="Назад">
-                <Button.CommandParameter>
-                    <x:Int32>1</x:Int32>
-                </Button.CommandParameter>
-            </Button>
-        </Grid>
+        <StackPanel Margin="20" Spacing="10">
+            <Label FontSize="18" FontWeight="Bold" Content="Управление пользователями" />
+
+            <!-- Смена своего пароля - доступна всем -->
+            <Border Padding="12" CornerRadius="6" BorderBrush="#22000000" BorderThickness="1">
+                <StackPanel Spacing="5">
+                    <Label FontWeight="Bold" Content="Смена своего пароля" />
+                    <Label Content="Новый пароль:" />
+                    <TextBox PasswordChar="•" Text="{Binding OwnNewPassword}" />
+                    <Label Content="Повторите пароль:" />
+                    <TextBox PasswordChar="•" Text="{Binding OwnConfirmPassword}" />
+                    <Button HorizontalAlignment="Right" Command="{Binding ChangeOwnPasswordCommand}" Content="Сменить пароль" />
+                </StackPanel>
+            </Border>
+
+            <!-- Управление другими пользователями - только при наличии прав -->
+            <Border Padding="12" CornerRadius="6" BorderBrush="#22000000" BorderThickness="1"
+                    IsVisible="{Binding CanManageUsers}">
+                <Grid ColumnDefinitions="220,*" RowDefinitions="Auto,*">
+                    <Label Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" Content="Пользователи" />
+
+                    <!-- Список пользователей -->
+                    <DockPanel Grid.Row="1" Grid.Column="0" Margin="0,5,10,0">
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="5" Margin="0,5,0,0">
+                            <Button Command="{Binding NewUserCommand}" Content="Создать" />
+                            <Button Command="{Binding DeleteUserCommand}" Content="Удалить" />
+                            <Button Command="{Binding RefreshUsersCommand}" Content="Обновить" />
+                        </StackPanel>
+                        <ListBox MinHeight="200" ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="dbme:DbUserInfo">
+                                    <TextBlock Text="{Binding Login}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+
+                    <!-- Форма редактирования -->
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                        <Label Content="Логин:" />
+                        <TextBox Text="{Binding EditLogin}" IsEnabled="{Binding IsNewUser}" />
+
+                        <Label Content="Имя:" IsVisible="{Binding ShowName}" />
+                        <TextBox Text="{Binding EditName}" IsVisible="{Binding ShowName}" />
+
+                        <Label Content="Email:" IsVisible="{Binding ShowEmail}" />
+                        <TextBox Text="{Binding EditEmail}" IsVisible="{Binding ShowEmail}" />
+
+                        <Label Content="Телефон:" IsVisible="{Binding ShowPhone}" />
+                        <TextBox Text="{Binding EditPhone}" IsVisible="{Binding ShowPhone}" />
+
+                        <Label Content="Должность:" IsVisible="{Binding ShowPost}" />
+                        <TextBox Text="{Binding EditPost}" IsVisible="{Binding ShowPost}" />
+
+                        <Label Content="Комментарий:" IsVisible="{Binding ShowComment}" />
+                        <TextBox Text="{Binding EditComment}" AcceptsReturn="True" MaxHeight="60" IsVisible="{Binding ShowComment}" />
+
+                        <CheckBox Content="Администратор учётной записи" IsChecked="{Binding EditIsAdmin}" IsVisible="{Binding ShowAdminFlag}" />
+                        <CheckBox Content="Отключён" IsChecked="{Binding EditDisabled}" IsVisible="{Binding ShowDisabling}" />
+
+                        <Label Content="Пароль:" />
+                        <TextBox PasswordChar="•" Text="{Binding EditNewPassword}" Watermark="оставьте пустым, чтобы не менять" />
+
+                        <Button HorizontalAlignment="Right" Command="{Binding SaveUserCommand}" Content="Сохранить пользователя" />
+
+                        <!-- Доступ к базам -->
+                        <StackPanel Spacing="4" Margin="0,10,0,0" IsVisible="{Binding HasSelectedUser}">
+                            <Separator />
+                            <Label FontWeight="Bold" Content="Доступ к базам" />
+                            <ItemsControl ItemsSource="{Binding BaseAccesses}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:BaseAccessRowVM">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,2">
+                                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{Binding Title}" />
+                                            <CheckBox Grid.Column="1" Margin="4,0" Content="Доступ" IsChecked="{Binding HasAccess}" />
+                                            <CheckBox Grid.Column="2" Margin="4,0" Content="Админ" IsChecked="{Binding IsAdmin}" />
+                                            <CheckBox Grid.Column="3" Margin="4,0" Content="Чтение" IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button HorizontalAlignment="Right" Command="{Binding SaveAccessCommand}" Content="Сохранить доступы" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Button HorizontalAlignment="Left" Command="{Binding BackCommand}" Content="Назад" />
+        </StackPanel>
     </ScrollViewer>
 </UserControl>
