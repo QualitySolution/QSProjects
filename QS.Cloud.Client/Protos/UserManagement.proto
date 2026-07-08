@@ -87,6 +87,7 @@ message ChangeBaseAccessRequest{
 	bool grant = 3;
 	bool admin = 4;
 	bool read_only = 5;
+	uint32 product_id = 6;
 }
 message ChangeBaseAccessResponse {
 	bool success = 1;

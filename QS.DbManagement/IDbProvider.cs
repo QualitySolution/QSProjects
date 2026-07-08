@@ -33,7 +33,7 @@ namespace QS.DbManagement
 		/// </summary>
 		bool ImportDatabase(DbImportRequest request);
 
-		bool DropDatabase(DbInfo database);
+		bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo);
 
 		void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation);
 	}
@@ -68,7 +68,7 @@ namespace QS.DbManagement
 		/// <summary>
 		/// меняет доступ пользователя к базе согласно флагам <paramref name="access"/>
 		/// </summary>
-		bool SetUserBaseAccess(string login, DbUserBaseAccess access);
+		bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo);
 	}
 
 	public interface IDbProvider : IDbManager, IDbUserManager, IDisposable {}

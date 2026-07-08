@@ -308,7 +308,7 @@ namespace QS.DbManagement
 			}).ToList();
 		}
 
-		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) {
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
 			ValidateLogin(login);
 			if(string.IsNullOrWhiteSpace(access?.BaseName))
 				throw new ArgumentException("Не указано имя базы", nameof(access));
@@ -505,7 +505,7 @@ namespace QS.DbManagement
 			return true;
 		}
 
-		public bool DropDatabase(DbInfo database)
+		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
 		{
 			EnsureOpen();
 

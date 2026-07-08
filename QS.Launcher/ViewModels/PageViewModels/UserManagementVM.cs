@@ -360,7 +360,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			try {
 				await Task.Run(() => {
 					foreach(var row in changedRows)
-						provider.SetUserBaseAccess(user.Login, row.ToAccess());
+						provider.SetUserBaseAccess(user.Login, row.ToAccess(), applicationInfo);
 				});
 				foreach(var row in changedRows)
 					row.AcceptChanges();

@@ -131,9 +131,9 @@ namespace QS.Cloud.Client.DataBase
 			}
 		}
 
-		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) {
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
 			try {
-				bool ok = userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly);
+				bool ok = userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, applicationInfo.ProductCode);
 				if(!ok)
 					throw new InvalidOperationException("Не удалось изменить доступ к базе");
 				return true;
@@ -213,9 +213,9 @@ namespace QS.Cloud.Client.DataBase
 			userClient.Dispose();
 		}
 	
-		public bool DropDatabase(DbInfo database)
+		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
 		{
-			var response = dbClient.DropDataBase(database.BaseId);
+			var response = dbClient.DropDataBase(database.BaseId, applicationInfo);
 			return response.Success;
 		}
 

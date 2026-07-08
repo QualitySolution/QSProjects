@@ -5,11 +5,9 @@ using System.Threading;
 
 namespace QS.Cloud.Client.Clients {
 	public class DataBaseManagementCloudClient : CloudClientByBasicAuth {
-		private IApplicationInfo applicationInfo { get; set; }
 		public DataBaseManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
-						: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443) 
+						: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443)
 		{
-			this.applicationInfo = applicationInfo;
 		}
 
 		public CreateDataBaseResponse CreateDataBase(string dbName, string dbTitle, IApplicationInfo applicationInfo) {
@@ -18,9 +16,9 @@ namespace QS.Cloud.Client.Clients {
 			return client.CreateDataBase(request, headers);
 		}
 
-		public DropDataBaseResponse DropDataBase(int baseId) {
+		public DropDataBaseResponse DropDataBase(int baseId, IApplicationInfo applicationInfo) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
-			var request = new DropDataBaseRequest { BaseId = baseId };
+			var request = new DropDataBaseRequest { BaseId = baseId, ProductId = applicationInfo.ProductCode };
 			return client.DropDataBase(request, headers);
 		}
 	}
