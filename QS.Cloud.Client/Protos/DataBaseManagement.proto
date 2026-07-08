@@ -22,6 +22,7 @@ message CreateDataBaseResponse{
 
 message DropDataBaseRequest{
 	int32 base_id = 1;
+	uint32 product_id = 2;
 }
 
 message DropDataBaseResponse{

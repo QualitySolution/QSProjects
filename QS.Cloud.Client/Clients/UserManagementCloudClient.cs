@@ -64,7 +64,7 @@ namespace QS.Cloud.Client
 			return response.Bases.ToList();
 		}
 
-		public bool ChangeBaseAccess(string user, int baseId, bool grant, bool admin, bool readOnly)
+		public bool ChangeBaseAccess(string user, int baseId, bool grant, bool admin, bool readOnly, uint productId)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new ChangeBaseAccessRequest {
@@ -72,7 +72,8 @@ namespace QS.Cloud.Client
 				BaseId = baseId,
 				Grant = grant,
 				Admin = admin,
-				ReadOnly = readOnly
+				ReadOnly = readOnly,
+				ProductId = productId
 			};
 			var response = client.ChangeBaseAccess(request, headers);
 			return response.Success;

@@ -193,7 +193,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			try {
-				await Task.Run(() => provider.DropDatabase(database));
+				await Task.Run(() => provider.DropDatabase(database, applicationInfo));
 				RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
 					$"База данных {database.Title} удалена.", "Удаление базы данных");
