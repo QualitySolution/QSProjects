@@ -13,8 +13,6 @@ public partial class CreateDataBaseProgressView : UserControl {
 	}
 
 	private void OnLoaded(object? sender, RoutedEventArgs e) {
-		cogwheel.Classes.Add("rolled");
-
 		if(DataContext is CreateDataBaseProgressVM vm)
 			vm.StartCommand.Execute().Subscribe();
 	}
