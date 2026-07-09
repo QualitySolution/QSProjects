@@ -47,6 +47,8 @@ namespace QS.DbManagement
 
 		bool CanManageUsers { get; }
 
+		bool CanManageBaseAccess { get; }
+
 		/// <summary>
 		/// Какие поля пользователя и виды доступа поддерживает провайдер
 		/// </summary>

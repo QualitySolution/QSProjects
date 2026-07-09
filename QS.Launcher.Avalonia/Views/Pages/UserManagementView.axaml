@@ -119,6 +119,9 @@
                         </ItemsControl>
 
                         <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveAccessCommand}" Content="Сохранить доступы" />
+                        <TextBlock Margin="5,0,5,5" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
+                                   Text="Недостаточно прав для изменения доступов"
+                                   IsVisible="{Binding !CanManageBaseAccess}" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

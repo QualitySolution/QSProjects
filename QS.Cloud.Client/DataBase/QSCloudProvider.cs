@@ -47,6 +47,7 @@ namespace QS.Cloud.Client.DataBase
 		#region Управление пользователями
 
 		public bool CanManageUsers => IsAdmin;
+		public bool CanManageBaseAccess => IsAdmin;
 
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.Name | DbUserFields.Email | DbUserFields.Phone | DbUserFields.Post

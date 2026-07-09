@@ -31,6 +31,7 @@ namespace QS.DbManagement
 
 		public bool CanCreateDatabase { get; private set; }
 		public bool CanDropDatabase { get; private set; }
+		public bool CanManageBaseAccess { get; private set; }
 
 		#region Параметры подключения
 		public string Server { get; }
@@ -67,7 +68,7 @@ namespace QS.DbManagement
 			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
 		}
 
-		#region IDbProvider
+		#region Управление базами
 
 		public LoginToServerResponse LoginToServer() {
 			try {
@@ -76,6 +77,7 @@ namespace QS.DbManagement
 				var grants = connection.Query<string>("SHOW GRANTS FOR CURRENT_USER").ToList();
 
 				IsAdmin = HasGlobalAdminGrant(grants);
+				CanManageBaseAccess = HasGlobalGrantOption(grants);
 
 				var privileges = new HashSet<string>(grants
 					.Where(g => GrantScope(g) != null)
@@ -163,6 +165,58 @@ namespace QS.DbManagement
 			}
 		}
 
+		public bool CreateDatabase(DbCreationRequest request)
+		{
+			EnsureOpen();
+
+			if(request == null)
+				throw new ArgumentNullException(nameof(request));
+			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+
+			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
+				Database = request.DbName
+			};
+			return request.CreationModel.RunCreation(
+				connectionStringBuilder.ConnectionString,
+				request.DbName, request.DbTitle,
+				request.Progress, request.CancellationToken);
+		}
+
+		/// <summary>
+		/// Создание базы с наполнением из пользовательского дампа
+		/// Метод блокирующий - вызывать из фонового потока
+		/// </summary>
+		public bool ImportDatabase(DbImportRequest request)
+		{
+			EnsureOpen();
+
+			if(request == null)
+				throw new ArgumentNullException(nameof(request));
+			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+
+			request.DumpService.Import(
+				ConnectionStringBuilder.ConnectionString, request.DbName, request.DumpFilePath,
+				request.Progress, request.CancellationToken, request.DbTitle);
+			request.CancellationToken.ThrowIfCancellationRequested();
+			return true;
+		}
+
+		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
+		{
+			EnsureOpen();
+
+			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
+			return connection.Execute(sql) != 0;
+		}
+
+		/// <summary>
+		/// Резервное копирование базы в скрипт
+		/// Метод блокирующий - вызывать из фонового потока
+		/// </summary>
+		public void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation) {
+			dumpService.Export(ConnectionStringBuilder.ConnectionString, database.BaseName, filePath, progress, cancellation);
+		}
+
 		#region Управление пользователями
 
 		public DbUserFields SupportedUserFields =>
@@ -188,8 +242,7 @@ namespace QS.DbManagement
 			}
 		}
 
-		public bool ChangeOwnPassword(string newPassword)
-		{
+		public bool ChangeOwnPassword(string newPassword) {
 			if(string.IsNullOrEmpty(newPassword))
 				throw new ArgumentException("Пароль не может быть пустым", nameof(newPassword));
 			EnsureOpen();
@@ -198,8 +251,7 @@ namespace QS.DbManagement
 			return true;
 		}
 
-		public List<DbUserInfo> GetUsers()
-		{
+		public List<DbUserInfo> GetUsers() {
 			EnsureOpen();
 
 			string lockedColumn = SupportsAccountLock ? "account_locked" : "NULL";
@@ -225,8 +277,7 @@ namespace QS.DbManagement
 			return result;
 		}
 
-		public bool CreateUser(DbUserInfo user, string password)
-		{
+		public bool CreateUser(DbUserInfo user, string password) {
 			ValidateLogin(user?.Login);
 			if(string.IsNullOrEmpty(password))
 				throw new ArgumentException("Пароль не может быть пустым", nameof(password));
@@ -238,8 +289,7 @@ namespace QS.DbManagement
 			return true;
 		}
 
-		public bool UpdateUser(DbUserInfo user, string newPassword = null)
-		{
+		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
 			ValidateLogin(user?.Login);
 			EnsureOpen();
 
@@ -389,7 +439,7 @@ namespace QS.DbManagement
 		private static void ValidateLogin(string login) {
 			if(string.IsNullOrWhiteSpace(login))
 				throw new ArgumentException("Логин пользователя не может быть пустым");
-			if(login.Length > 80) 
+			if(login.Length > 80)
 				throw new ArgumentException("Логин пользователя длиннее 80 символов");
 		}
 
@@ -402,6 +452,10 @@ namespace QS.DbManagement
 					|| privileges.Contains("SUPER")
 					|| privileges.Contains("CREATE USER");
 			});
+
+		private static bool HasGlobalGrantOption(IEnumerable<string> grants) =>
+			grants.Any(g => GrantScope(g) == "*"
+				&& g.Contains("WITH GRANT OPTION"));
 
 		private static string EscapeString(string value) =>
 			value == null ? string.Empty : value.Replace("\\", "\\\\").Replace("'", "\\'");
@@ -468,59 +522,6 @@ namespace QS.DbManagement
 		}
 
 		#endregion
-
-		public bool CreateDatabase(DbCreationRequest request)
-		{
-			EnsureOpen();
-
-			if(request == null)
-				throw new ArgumentNullException(nameof(request));
-			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
-
-			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
-				Database = request.DbName
-			};
-			return request.CreationModel.RunCreation(
-				connectionStringBuilder.ConnectionString,
-				request.DbName, request.DbTitle,
-				request.Progress, request.CancellationToken);
-		}
-
-		/// <summary>
-		/// Создание базы с наполнением из пользовательского дампа
-		/// Метод блокирующий - вызывать из фонового потока
-		/// </summary>
-		public bool ImportDatabase(DbImportRequest request)
-		{
-			EnsureOpen();
-
-			if(request == null)
-				throw new ArgumentNullException(nameof(request));
-			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
-
-			request.DumpService.Import(
-				ConnectionStringBuilder.ConnectionString, request.DbName, request.DumpFilePath,
-				request.Progress, request.CancellationToken, request.DbTitle);
-			request.CancellationToken.ThrowIfCancellationRequested();
-			return true;
-		}
-
-		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
-		{
-			EnsureOpen();
-
-			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
-			return connection.Execute(sql) != 0;
-		}
-
-		/// <summary>
-		/// Резервное копирование базы в скрипт
-		/// Метод блокирующий - вызывать из фонового потока
-		/// </summary>
-		public void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			dumpService.Export(ConnectionStringBuilder.ConnectionString, database.BaseName, filePath, progress, cancellation);
-		}
-
 
 		private void EnsureOpen() {
 			if(connection.State != ConnectionState.Open)
