@@ -59,6 +59,10 @@ namespace QS.DbManagement {
 			progress?.Update($"Импортируем дамп {filePath} в базу {databaseName}");
 
 			RunWithBackup(connectionString, databaseName, backup => {
+				// ускоряет дамп
+				backup.Command.CommandText = "SET SESSION foreign_key_checks = 0, unique_checks = 0;";
+				backup.Command.ExecuteNonQuery();
+
 				bool started = false;
 				backup.ImportProgressChanged += (sender, e) => {
 					if(cancellation.IsCancellationRequested) {
@@ -101,6 +105,7 @@ namespace QS.DbManagement {
 			using(var connection = new MySqlConnection(builder.ConnectionString)) {
 				connection.Open();
 				using(var command = connection.CreateCommand()) {
+					command.CommandTimeout = 0;
 					using(var backup = new MySqlBackup(command)) {
 						action(backup);
 					}
