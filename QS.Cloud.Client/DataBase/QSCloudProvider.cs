@@ -287,7 +287,13 @@ namespace QS.Cloud.Client.DataBase
 			catch(RpcException ex) when(ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated || ex.StatusCode == Grpc.Core.StatusCode.PermissionDenied) {
 				resp = new LoginToServerResponse {
 					Success = false,
-					ErrorMessage = "Неверные данные для входа: " + ex.Message
+					ErrorMessage = "Неверные данные для входа: " + (string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail)
+				};
+			}
+			catch(RpcException ex) {
+				resp = new LoginToServerResponse {
+					Success = false,
+					ErrorMessage = "Не удалось подключиться к облаку QS: " + (string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail)
 				};
 			}
 
