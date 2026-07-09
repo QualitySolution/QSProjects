@@ -40,8 +40,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			SaveUserCommand = ReactiveCommand.CreateFromTask(SaveUserAsync, canSaveUser);
 
 			var hasSelectedUser = this.WhenAnyValue(x => x.SelectedUser).Select(u => u != null);
-			var canSaveAccess = this.WhenAnyValue(x => x.SelectedUser, x => x.CanManageBaseAccess,
-				(user, canManage) => user != null && canManage);
+			var canSaveAccess = this.WhenAnyValue(x => x.SelectedUser, x => x.CanManageBaseAccess, x => x.BaseAccessLocked,
+				(user, canManage, locked) => user != null && canManage && !locked);
 			NewUserCommand = ReactiveCommand.Create(StartNewUser);
 			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
 			SaveAccessCommand = ReactiveCommand.CreateFromTask(SaveAccessAsync, canSaveAccess);
@@ -175,6 +175,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private void OnSelectedUserChanged() {
 			this.RaisePropertyChanged(nameof(HasSelectedUser));
 			BaseAccesses.Clear();
+			this.RaisePropertyChanged(nameof(BaseAccessLocked));
 			if(SelectedUser == null) {
 				IsNewUser = false;
 				return;
@@ -341,6 +342,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public ObservableCollection<BaseAccessRowVM> BaseAccesses { get; }
 
+		// Доступ пользователя следует из глобальных прав на сервер и точечно не настраивается
+		public bool BaseAccessLocked => BaseAccesses.Count > 0 && BaseAccesses.All(r => !r.CanEdit);
+
 		private void LoadBaseAccess(string login) {
 			if(applicationInfo == null)
 				return;
@@ -353,6 +357,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				logger.Error(ex, "Не удалось получить доступы пользователя {0}", login);
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Доступ к базам");
 			}
+			this.RaisePropertyChanged(nameof(BaseAccessLocked));
 		}
 
 		private async Task SaveAccessAsync() {

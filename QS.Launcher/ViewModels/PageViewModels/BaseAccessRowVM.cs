@@ -9,11 +9,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public bool ShowReadOnly { get; }
 
+		public bool CanEdit { get; }
+
 		public BaseAccessRowVM(DbUserBaseAccess access, bool showReadOnly) {
 			BaseId = access.BaseId;
 			BaseName = access.BaseName;
 			Title = access.Title;
 			ShowReadOnly = showReadOnly;
+			CanEdit = access.CanEdit;
 			hasAccess = originalHasAccess = access.HasAccess;
 			isAdmin = originalIsAdmin = access.IsAdmin;
 			readOnly = originalReadOnly = access.ReadOnly;
