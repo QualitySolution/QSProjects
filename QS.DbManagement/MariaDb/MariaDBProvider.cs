@@ -329,8 +329,11 @@ namespace QS.DbManagement
 			return databases.Select(db => {
 				var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
 				if(globalAdmin) {
+					// доступ следует из грантов на *.* - аддитивная модель прав не позволяет
+					// сузить его точечным REVOKE, поэтому строки не редактируются
 					access.HasAccess = true;
 					access.IsAdmin = true;
+					access.CanEdit = false;
 					return access;
 				}
 

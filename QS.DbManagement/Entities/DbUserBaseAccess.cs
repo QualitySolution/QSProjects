@@ -13,5 +13,6 @@ namespace QS.DbManagement.Entities {
 		public bool IsAdmin { get; set; }
 
 		public bool ReadOnly { get; set; }
+		public bool CanEdit { get; set; } = true;
 	}
 }

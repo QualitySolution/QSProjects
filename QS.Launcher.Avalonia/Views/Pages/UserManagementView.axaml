@@ -108,15 +108,19 @@
                                         <TextBlock Grid.Column="0" VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
                                         <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding HasAccess}" />
+                                                  IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
                                         <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding IsAdmin}" />
+                                                  IsChecked="{Binding IsAdmin}" IsEnabled="{Binding CanEdit}" />
                                         <CheckBox Grid.Column="3" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" />
+                                                  IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" IsEnabled="{Binding CanEdit}" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <TextBlock Margin="5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
+                                   Text="У пользователя глобальные права на весь сервер — доступ к отдельным базам не настраивается"
+                                   IsVisible="{Binding BaseAccessLocked}" />
 
                         <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveAccessCommand}" Content="Сохранить доступы" />
                         <TextBlock Margin="5,0,5,5" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
