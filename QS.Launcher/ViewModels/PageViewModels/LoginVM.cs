@@ -11,6 +11,8 @@ using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class LoginVM : CarouselPageVM {
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private byte[] companyImage;
 		public byte[] CompanyImage {
 			get => companyImage;
@@ -108,19 +110,25 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public void Login() {
 			if(SelectedConnection is null)
 				return;
-			
-			dbProvider = SelectedConnection.CreateProvider(Password);
-			var resp = dbProvider.LoginToServer();
 
-			Task.Run(() => SaveCommand.Execute(null));
+			try {
+				dbProvider = SelectedConnection.CreateProvider(Password);
+				var resp = dbProvider.LoginToServer();
 
-			if(resp.Success) {
-				dbVM.SetProvider(dbProvider, SelectedConnection, SaveConnections);
-				dbVM.IsAdmin = resp.IsAdmin;
-				NextPageCommand?.Execute(null);
+				Task.Run(() => SaveCommand.Execute(null));
+
+				if(resp.Success) {
+					dbVM.SetProvider(dbProvider, SelectedConnection, SaveConnections);
+					dbVM.IsAdmin = resp.IsAdmin;
+					NextPageCommand?.Execute(null);
+				}
+				else
+					interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 			}
-			else
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка при входе на сервер.");
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Не удалось войти");
+			}
 		}
 
 		public bool CanLogin => SelectedConnection != null &&
