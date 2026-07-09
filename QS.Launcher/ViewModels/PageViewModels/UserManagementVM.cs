@@ -40,9 +40,11 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			SaveUserCommand = ReactiveCommand.CreateFromTask(SaveUserAsync, canSaveUser);
 
 			var hasSelectedUser = this.WhenAnyValue(x => x.SelectedUser).Select(u => u != null);
+			var canSaveAccess = this.WhenAnyValue(x => x.SelectedUser, x => x.CanManageBaseAccess,
+				(user, canManage) => user != null && canManage);
 			NewUserCommand = ReactiveCommand.Create(StartNewUser);
 			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
-			SaveAccessCommand = ReactiveCommand.CreateFromTask(SaveAccessAsync, hasSelectedUser);
+			SaveAccessCommand = ReactiveCommand.CreateFromTask(SaveAccessAsync, canSaveAccess);
 			RefreshUsersCommand = ReactiveCommand.Create(RefreshUsers);
 			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
 
@@ -64,6 +66,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			OwnConfirmPassword = null;
 
 			this.RaisePropertyChanged(nameof(CanManageUsers));
+			this.RaisePropertyChanged(nameof(CanManageBaseAccess));
 			this.RaisePropertyChanged(nameof(ShowName));
 			this.RaisePropertyChanged(nameof(ShowEmail));
 			this.RaisePropertyChanged(nameof(ShowPhone));
@@ -115,6 +118,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		#region Управление пользователями
 
 		public bool CanManageUsers => provider?.CanManageUsers == true;
+
+		/// <summary>Может ли текущий пользователь сохранять доступы к базам</summary>
+		public bool CanManageBaseAccess => provider?.CanManageBaseAccess == true;
 
 		public bool ShowName => (provider?.SupportedUserFields.HasFlag(DbUserFields.Name)) == true;
 		public bool ShowEmail => (provider?.SupportedUserFields.HasFlag(DbUserFields.Email)) == true;
