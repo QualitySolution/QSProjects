@@ -352,6 +352,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				var rows = provider.GetUserBaseAccess(login, applicationInfo);
 				foreach(var row in rows)
 					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly));
+
+				var profile = rows.FirstOrDefault(r => !string.IsNullOrEmpty(r.Name) || !string.IsNullOrEmpty(r.Email));
+				if(profile != null) {
+					if(string.IsNullOrEmpty(EditName))
+						EditName = profile.Name;
+					if(string.IsNullOrEmpty(EditEmail))
+						EditEmail = profile.Email;
+				}
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось получить доступы пользователя {0}", login);
@@ -369,9 +377,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(changedRows.Count == 0)
 				return;
 			try {
+				string name = EditName;
+				string email = EditEmail;
 				await Task.Run(() => {
-					foreach(var row in changedRows)
-						provider.SetUserBaseAccess(user.Login, row.ToAccess(), applicationInfo);
+					foreach(var row in changedRows) {
+						var access = row.ToAccess();
+						// профиль пишется в таблицу users каждой базы, куда выдаём доступ
+						access.Name = name;
+						access.Email = email;
+						provider.SetUserBaseAccess(user.Login, access, applicationInfo);
+					}
 				});
 				foreach(var row in changedRows)
 					row.AcceptChanges();

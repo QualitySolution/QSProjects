@@ -14,5 +14,7 @@ namespace QS.DbManagement.Entities {
 
 		public bool ReadOnly { get; set; }
 		public bool CanEdit { get; set; } = true;
+		public string Name { get; set; }
+		public string Email { get; set; }
 	}
 }
