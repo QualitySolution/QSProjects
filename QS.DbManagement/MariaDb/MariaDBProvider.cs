@@ -221,9 +221,12 @@ namespace QS.DbManagement
 
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.BaseReadOnly
-			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None);
+			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None)
+			| (SupportsAdminFlag ? DbUserFields.AdminFlag : DbUserFields.None);
 
 		public bool CanManageUsers => IsAdmin;
+
+		private bool SupportsAdminFlag => CanManageUsers && CanManageBaseAccess;
 
 		private static readonly string[] SystemUsers = { "root", "mariadb.sys", "mysql", "PUBLIC" };
 
@@ -255,8 +258,11 @@ namespace QS.DbManagement
 			EnsureOpen();
 
 			string lockedColumn = SupportsAccountLock ? "account_locked" : "NULL";
+
 			var rows = connection.Query<MySqlUserRow>(
-				$"SELECT User AS Login, Host, {lockedColumn} AS AccountLocked FROM mysql.user ORDER BY User, Host").ToList();
+				$"SELECT User AS Login, Host, {lockedColumn} AS AccountLocked, " +
+				"Super_priv AS SuperPriv, Create_user_priv AS CreateUserPriv " +
+				"FROM mysql.user ORDER BY User, Host").ToList();
 
 			userHosts.Clear();
 			var result = new List<DbUserInfo>();
@@ -271,6 +277,9 @@ namespace QS.DbManagement
 					Login = userRows.Key,
 					// отключён, только если заблокированы все хосты логина
 					Disabled = userRows.All(r => string.Equals(r.AccountLocked, "Y", StringComparison.OrdinalIgnoreCase)),
+					// админ, если хоть на одном хосте есть SUPER или CREATE USER
+					IsAdmin = userRows.Any(r => string.Equals(r.SuperPriv, "Y", StringComparison.OrdinalIgnoreCase)
+						|| string.Equals(r.CreateUserPriv, "Y", StringComparison.OrdinalIgnoreCase)),
 					IsCurrentUser = string.Equals(userRows.Key, UserName, StringComparison.OrdinalIgnoreCase)
 				});
 			}
@@ -284,7 +293,14 @@ namespace QS.DbManagement
 			EnsureOpen();
 
 			string lockOption = user.Disabled && SupportsAccountLock ? " ACCOUNT LOCK" : string.Empty;
-			connection.Execute($"CREATE USER '{EscapeString(user.Login)}'@'%' IDENTIFIED BY '{EscapeString(password)}'{lockOption}");
+			string account = $"'{EscapeString(user.Login)}'@'%'";
+			var statements = new List<string> {
+				$"CREATE USER {account} IDENTIFIED BY '{EscapeString(password)}'{lockOption}"
+			};
+			if(SupportsAdminFlag && user.IsAdmin)
+				statements.Add($"GRANT ALL PRIVILEGES ON *.* TO {account} WITH GRANT OPTION");
+
+			connection.Execute(string.Join(";", statements));
 			userHosts[user.Login] = new List<string> { "%" };
 			return true;
 		}
@@ -298,13 +314,22 @@ namespace QS.DbManagement
 				options.Add($"IDENTIFIED BY '{EscapeString(newPassword)}'");
 			if(SupportsAccountLock)
 				options.Add(user.Disabled ? "ACCOUNT LOCK" : "ACCOUNT UNLOCK");
-			if(options.Count == 0)
-				return true;
-
-			// одним батчем по всем хостам логина - меньше сетевых обращений (роллбека тут всё равно нет: DDL по учёткам самокоммитится)
 			string suffix = string.Join(" ", options);
-			connection.Execute(string.Join(";", HostsOf(user.Login)
-				.Select(host => $"ALTER USER '{EscapeString(user.Login)}'@'{EscapeString(host)}' {suffix}")));
+
+			// одним батчем по всем хостам логина
+			var statements = new List<string>();
+			foreach(var host in HostsOf(user.Login)) {
+				string account = $"'{EscapeString(user.Login)}'@'{EscapeString(host)}'";
+				if(options.Count > 0)
+					statements.Add($"ALTER USER {account} {suffix}");
+				if(SupportsAdminFlag)
+					statements.Add(user.IsAdmin
+						? $"GRANT ALL PRIVILEGES ON *.* TO {account} WITH GRANT OPTION"
+						: $"REVOKE ALL PRIVILEGES, GRANT OPTION ON *.* FROM {account}");
+			}
+			if(statements.Count == 0)
+				return true;
+			connection.Execute(string.Join(";", statements));
 			return true;
 		}
 
@@ -432,6 +457,8 @@ namespace QS.DbManagement
 			public string Login { get; set; }
 			public string Host { get; set; }
 			public string AccountLocked { get; set; }
+			public string SuperPriv { get; set; }
+			public string CreateUserPriv { get; set; }
 		}
 
 		private IReadOnlyList<string> HostsOf(string login) =>
