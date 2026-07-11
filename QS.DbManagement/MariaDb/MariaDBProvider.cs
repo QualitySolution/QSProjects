@@ -221,6 +221,7 @@ namespace QS.DbManagement
 
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.BaseReadOnly
+			| DbUserFields.Name | DbUserFields.Email
 			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None)
 			| (SupportsAdminFlag ? DbUserFields.AdminFlag : DbUserFields.None);
 
@@ -351,7 +352,7 @@ namespace QS.DbManagement
 
 			bool globalAdmin = HasGlobalAdminGrant(grants);
 
-			return databases.Select(db => {
+			var result = databases.Select(db => {
 				var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
 				if(globalAdmin) {
 					// доступ следует из грантов на *.* - аддитивная модель прав не позволяет
@@ -384,6 +385,25 @@ namespace QS.DbManagement
 					access.ReadOnly = true;
 				return access;
 			}).ToList();
+
+			foreach(var access in result.Where(a => a.HasAccess))
+				FillUsersProfile(access, login);
+			return result;
+		}
+
+		private void FillUsersProfile(DbUserBaseAccess access, string login) {
+			try {
+				var row = connection.QueryFirstOrDefault(
+					$"SELECT name AS Name, email AS Email FROM `{EscapeIdentifier(access.BaseName)}`.users WHERE login = @login",
+					new { login });
+				if(row != null) {
+					access.Name = row.Name;
+					access.Email = row.Email;
+				}
+			}
+			catch(MySqlException ex) {
+				logger.Debug(ex, "Не удалось прочитать users в базе {0}", access.BaseName);
+			}
 		}
 
 		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
@@ -433,7 +453,35 @@ namespace QS.DbManagement
 
 			if(statements.Count > 0)
 				connection.Execute(string.Join(";", statements));
+
+			SyncUsersTable(login, access);
 			return true;
+		}
+
+		// если таблицы может не быть, тогда молча пропускаем; запись идемпотентна
+		private void SyncUsersTable(string login, DbUserBaseAccess access) {
+			bool tableExists = connection.ExecuteScalar<bool>(
+				"SELECT COUNT(*) > 0 FROM information_schema.tables WHERE table_schema = @db AND table_name = 'users'",
+				new { db = access.BaseName });
+			if(!tableExists)
+				return;
+
+			string table = $"`{EscapeIdentifier(access.BaseName)}`.users";
+
+			if(!access.HasAccess) {
+				connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login });
+				return;
+			}
+
+			var p = new { login, name = access.Name, email = access.Email, admin = access.IsAdmin };
+			var existingId = connection.QueryFirstOrDefault<int?>($"SELECT id FROM {table} WHERE login = @login", new { login });
+			if(existingId != null)
+				// пустые поля формы не затирают уже заполненное приложением значение (COALESCE/NULLIF)
+				connection.Execute($"UPDATE {table} SET name = COALESCE(NULLIF(@name, ''), name), " +
+					"email = COALESCE(NULLIF(@email, ''), email), admin = @admin, deactivated = FALSE WHERE login = @login", p);
+			else
+				connection.Execute($"INSERT INTO {table} (name, login, email, admin, deactivated) " +
+					"VALUES (COALESCE(NULLIF(@name, ''), @login), @login, NULLIF(@email, ''), @admin, FALSE)", p);
 		}
 
 		private Dictionary<string, List<string>> ReadGrantsByHost(string login) {
